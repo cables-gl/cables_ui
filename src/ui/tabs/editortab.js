@@ -32,31 +32,57 @@ CABLES.UI.EditorTab = function (options)
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
-    let showSaveButton = true;
-    if (!CABLES.sandbox.isDevEnv())
+    let allowEdit = false;
+    if (gui.user.roles.includes("alwaysEditor"))
     {
-        if (options.name.startsWith("Ops."))
+        // users with "alwaysEditor" role are always allowed to edit everything
+        allowEdit = true;
+    }
+    else if (options.name.startsWith("Ops.User."))
+    {
+        if (gui.user.isAdmin || options.name.startsWith("Ops.User." + gui.user.usernameLowercase + "."))
         {
-            if (options.name.startsWith("Ops.User."))
+            // admins may edit any userop, users are only allowed to edit their own userops
+            allowEdit = true;
+        }
+    }
+    else if (gui.user.isAdmin)
+    {
+        if (CABLES.sandbox.isDevEnv())
+        {
+            // admins are only allowed to edit everything on dev
+            allowEdit = true;
+        }
+        else
+        {
+            if (!options.name.startsWith("Ops."))
             {
-                if (!(gui.user.isAdmin || options.name.startsWith("Ops.User." + gui.user.usernameLowercase + ".")))
-                {
-                    this._editor.setOptions({ "readOnly": "true" });
-                    showSaveButton = false;
-                }
-            }
-            else if (!gui.user.roles.includes("alwaysEditor"))
-            {
-                this._editor.setOptions({ "readOnly": "true" });
-                showSaveButton = false;
+                allowEdit = true;
             }
         }
     }
+    else if (options.name.startsWith("Ops."))
+    {
+        // only alwaysadmins and admins on dev are allowed to edit ops
+        allowEdit = false;
+    }
+    else
+    {
+        // everyone is allowed to edit anything that is not an op
+        allowEdit = true;
+    }
 
-    if (showSaveButton)
+    if (allowEdit)
     {
         if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
-        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+        if (!options.hideFormatButton)
+        {
+            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+        }
+    }
+    else
+    {
+        this._editor.setOptions({ "readOnly": "true" });
     }
 
     // this._editor.setValue(options.content,-1);
@@ -80,6 +106,7 @@ CABLES.UI.EditorTab = function (options)
     else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
     else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
     else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
+    else if (options.syntax == "json") this._editor.session.setMode("ace/mode/json");
     else
     {
         this._editor.session.setMode("ace/mode/plain_text");
@@ -99,7 +126,11 @@ CABLES.UI.EditorTab = function (options)
 
     setTimeout(() =>
     {
-        CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+        if (!options.inactive)
+        {
+            CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+            gui.mainTabs.activateTab(this._tab.id);
+        }
     }, 100);
 };
 

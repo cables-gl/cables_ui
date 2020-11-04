@@ -64,9 +64,12 @@ CABLES.GLGUI.GlUiCanvas = class
         // this.canvas.style.display='block';
         // this.canvas.style.position='absolute';
         this.canvas.style.border = "0px solid white";
+        this.canvas.style.outline = "0";
+
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
         this.canvas.setAttribute("tabindex", 10);
+
 
         this._parentEle = parentEle;
 
@@ -105,14 +108,14 @@ CABLES.GLGUI.GlUiCanvas = class
             this.activityHigh();
 
             this.glPatch.needsRedraw = true;
-            this._mouseButton = e.buttons;
+            // this._mouseButton = e.buttons;
         });
 
         this.canvas.addEventListener("mouseup", (e) =>
         {
             this.activityHigh();
             this.glPatch.needsRedraw = true;
-            this._mouseButton = -1;
+            // this._mouseButton = -1;
         });
 
         this.canvas.addEventListener("mouseleave", (e) =>
@@ -129,6 +132,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
+            event.preventDefault();
             // const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
             // let delta = CGL.getWheelSpeed(event);
@@ -193,22 +197,22 @@ CABLES.GLGUI.GlUiCanvas = class
 
     activityIdle()
     {
-        this._targetFps = 20;
+        this._targetFps = 10;
     }
 
     activityHigh()
     {
         this._targetFps = 0;
         clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 1000);
+        this._activityTimeout = setTimeout(() => { this.activityMedium(); }, 40000);
     }
 
     activityMedium()
     {
         this._targetFps = 30;
-        if (!this.glPatch.mouseOverCanvas) this._targetFps = 25;
+        if (!this.glPatch.mouseOverCanvas) this._targetFps = 0;
         clearTimeout(this._activityTimeout);
-        this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 2000);
+        this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
 
     render()
@@ -233,7 +237,12 @@ CABLES.GLGUI.GlUiCanvas = class
             this._firstTime = false;
         }
 
-        cgl.gl.clearColor(0.23, 0.23, 0.23, 0);
+        cgl.gl.clearColor(
+            CABLES.GLGUI.VISUALCONFIG.colors.background[0],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[1],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[2],
+            CABLES.GLGUI.VISUALCONFIG.colors.background[3]);
+
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         this.glPatch.debugData.targetFps = this._targetFps;
@@ -245,6 +254,11 @@ CABLES.GLGUI.GlUiCanvas = class
             0, 0, // mouse
             this._mouseButton // mouse button
         );
+        if (this.glPatch.isAnimated)
+        {
+            this.activityHigh();
+            // this._targetFps = 0;
+        }
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();

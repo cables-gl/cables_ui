@@ -34,9 +34,9 @@ CABLES.CMD.PATCH.save = function (force)
                 dosave = false;
 
                 CABLES.UI.MODAL.showError("Not Collaborator", "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>");
-                CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;");
-                CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;");
-                CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;");
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;";
             }
         }
     }
@@ -100,12 +100,14 @@ CABLES.CMD.PATCH.createFile = function ()
 
 CABLES.CMD.PATCH.uploadFile = function ()
 {
+    if (!window.gui) return;
     const fileElem = document.getElementById("hiddenfileElem");
     if (fileElem) fileElem.click();
 };
 
 CABLES.CMD.PATCH.uploadFileDialog = function ()
 {
+    if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
     jQuery.event.props.push("dataTransfer");
 
@@ -190,63 +192,110 @@ CABLES.CMD.PATCH.createVarNumber = function (next)
         });
 };
 
+CABLES.CMD.PATCH.stats = function (force)
+{
+    let report = "";
+    const patch = gui.corePatch();
 
-CABLES.CMD.PATCH._createVariable = function (name, p, p2, value)
+    report += "<h3>Ops</h3>";
+
+    const opsCount = {};
+    for (let i = 0; i < patch.ops.length; i++)
+    {
+        opsCount[patch.ops[i].objName] = opsCount[patch.ops[i].objName] || 0;
+        opsCount[patch.ops[i].objName]++;
+    }
+
+    report += patch.ops.length + " Ops total<br/>";
+    report += Object.keys(opsCount).length + " unique ops<br/>";
+    report += "<br/>";
+
+    for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
+
+    // ---
+    report += "<hr/>";
+
+    report += "<h3>Subpatches</h3>";
+
+    const subpatchNumOps = {};
+    for (let i = 0; i < patch.ops.length; i++)
+    {
+        const key = patch.ops[i].uiAttribs.subPatch || "root";
+
+        subpatchNumOps[key] = subpatchNumOps[key] || 0;
+        subpatchNumOps[key]++;
+    }
+
+    for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
+
+
+    CABLES.UI.MODAL.show(report, { "title": "stats" });
+};
+
+
+CABLES.CMD.PATCH._createVariable = function (name, p, p2, value, next)
 {
     let portName = "Value";
-    let opSetter;
-    let opGetter;
+    let opSetterName;
+    let opGetterName;
 
     if (p.type == CABLES.OP_PORT_TYPE_VALUE)
     {
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetNumber;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
     {
         portName = "Object";
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetObject);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetObject);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
     {
         portName = "Array";
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetArray);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetArray);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_STRING)
     {
-        opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetString);
-        opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetString);
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
     }
 
-    opSetter.getPort(portName).set(value);
-
-    if (p.direction == CABLES.PORT_DIR_IN)
+    gui.patchView.addOp(opSetterName, { "onOpAdd": (opSetter) =>
     {
-        p.parent.patch.link(opGetter, portName, p.parent, p.name);
-
-        if (p2)
+        gui.patchView.addOp(opGetterName, { "onOpAdd": (opGetter) =>
         {
-            p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
-            console.log(p2);
-        }
-    }
-    else
-    {
-        p.parent.patch.link(opSetter, portName, p.parent, p.name);
+            console.log(p, p.type, CABLES.OP_PORT_TYPE_VALUE, opGetter, opSetter);
+            opSetter.getPort(portName).set(value);
 
-        if (p2)
-        {
-            p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
-            console.log(p2);
-        }
-    }
+            if (p.direction == CABLES.PORT_DIR_IN)
+            {
+                p.parent.patch.link(opGetter, portName, p.parent, p.name);
 
-    opSetter.varName.set(name);
-    opGetter.varName.set(name);
+                if (p2)
+                {
+                    p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
+                    console.log(p2);
+                }
+            }
+            else
+            {
+                p.parent.patch.link(opSetter, portName, p.parent, p.name);
 
-    return { "setter": opSetter, "getter": opGetter };
+                if (p2)
+                {
+                    p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
+                    console.log(p2);
+                }
+            }
+
+            opSetter.varName.set(name);
+            opGetter.varName.set(name);
+
+            if (next)next(opSetter, opGetter);
+        } });
+    } });
 };
 
 
@@ -301,13 +350,14 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
 
             link.remove();
 
-            const varops = CABLES.CMD.PATCH._createVariable(str, p2, p1, p2.get());
+            CABLES.CMD.PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
+            {
+                let uiop = gui.patch().getUiOp(getter);
+                uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
 
-            let uiop = gui.patch().getUiOp(varops.getter);
-            uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
-
-            uiop = gui.patch().getUiOp(varops.setter);
-            uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
+                uiop = gui.patch().getUiOp(setter);
+                uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
+            });
         });
 };
 
@@ -318,10 +368,12 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-            const varops = CABLES.CMD.PATCH._createVariable(str, p, null, p.get());
-
-            const uiop = gui.patch().getUiOp(varops.getter);
-            uiop.setPos(varops.setter.uiAttribs.translate.x, varops.setter.uiAttribs.translate.y + 40);
+            CABLES.CMD.PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
+            {
+                getter.uiAttr({ "translate": { "x": setter.uiAttribs.translate.x, "y": setter.uiAttribs.translate.y + 40 } });
+                // const uiop = gui.patch().getUiOp(getter);
+                // uiop.setPos(setter.uiAttribs.translate.x, setter.uiAttribs.translate.y + 40);
+            });
         });
 };
 
@@ -453,13 +505,13 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
     CABLES.UI.MODAL.prompt(
         "Replace String Values",
         "Search for...",
-        "assets/",
+        "/assets/",
         function (srch)
         {
             CABLES.UI.MODAL.prompt(
                 "Replace String Values",
                 "...replace with",
-                "/assets/" + gui.project()._id + "/",
+                "/assets/" + gui.project()._id,
                 function (rplc)
                 {
                     const ops = gui.patch().ops;
@@ -470,13 +522,14 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
                             if (ops[i].portsIn[j].thePort.uiAttribs && ops[i].portsIn[j].thePort.uiAttribs.display && ops[i].portsIn[j].thePort.uiAttribs.display == "file")
                             {
                                 console.log("filename:", ops[i].portsIn[j].thePort.get());
-                                console.log("srch", srch);
-                                console.log("rplc", rplc);
+                                // console.log("srch", srch);
+                                // console.log("rplc", rplc);
                                 let v = ops[i].portsIn[j].thePort.get();
 
                                 if (v) console.log("srch index", v.indexOf(srch));
                                 if (v && v.indexOf(srch) == 0)
                                 {
+                                    console.log("found str!");
                                     v = rplc + v.substring(srch.length);
                                     ops[i].portsIn[j].thePort.set(v);
                                     console.log("result filename:", v);
@@ -651,6 +704,11 @@ CABLES.CMD.commands.push(
         "cmd": "find commented ops",
         "category": "patch",
         "func": CABLES.CMD.PATCH.findCommentedOps
+    },
+    {
+        "cmd": "patch statistics",
+        "category": "patch",
+        "func": CABLES.CMD.PATCH.stats
     },
     {
         "cmd": "analyze patch",

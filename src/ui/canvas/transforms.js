@@ -1,16 +1,16 @@
 
-var CABLES=CABLES||{}
-CABLES.UI=CABLES.UI||{};
+var CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.TransformsIcon=class
+CABLES.UI.TransformsIcon = class
 {
-    constructor(cgl,id)
+    constructor(cgl, id)
     {
-        this._cgl=cgl;
-        this._pos=vec3.create();
-        this._screenPos=vec2.create();
-        this._id=id;
-        this.lastUpdate=performance.now();
+        this._cgl = cgl;
+        this._pos = vec3.create();
+        this._screenPos = vec2.create();
+        this._id = id;
+        this.lastUpdate = performance.now();
 
         const container = cgl.canvas.parentElement;
 
@@ -23,29 +23,30 @@ CABLES.UI.TransformsIcon=class
         this._eleCenter.classList.add("transformSpot");
         container.appendChild(this._eleCenter);
 
-        this._eleCenter.addEventListener("click",()=>
+        this._eleCenter.addEventListener("click", () =>
         {
-            const op=gui.corePatch().getOpById(id);
-            if(!op)return;
-            gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch||0);
+            const op = gui.corePatch().getOpById(id);
+            if (!op) return;
+            gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch || 0);
             gui.patch().focusOp(id);
-            gui.patch().getViewBox().center(op.uiAttribs.translate.x,op.uiAttribs.translate.y);
+            gui.patch().getViewBox().center(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
             gui.patch().setSelectedOpById(id);
-            $('#patch').focus();
+
+            gui.patchView.focus();
         });
     }
 
     update()
     {
-        this.lastUpdate=performance.now();
+        this.lastUpdate = performance.now();
         this._updateScreenPos();
-        this._eleCenter.style.left=this._screenPos[0]+"px";
-        this._eleCenter.style.top=this._screenPos[1]+"px";
+        this._eleCenter.style.left = this._screenPos[0] + "px";
+        this._eleCenter.style.top = this._screenPos[1] + "px";
     }
 
-    setPos(x,y,z)
+    setPos(x, y, z)
     {
-        vec3.set(this._pos,x,y,z);
+        vec3.set(this._pos, x, y, z);
         this.update();
     }
 
@@ -53,10 +54,10 @@ CABLES.UI.TransformsIcon=class
     {
         this._cgl.pushModelMatrix();
 
-        const m=mat4.create();
-        const pos=vec3.create();
-        const emptyvec3=vec3.create();
-        const trans=vec3.create();
+        const m = mat4.create();
+        const pos = vec3.create();
+        const emptyvec3 = vec3.create();
+        const trans = vec3.create();
 
         mat4.translate(this._cgl.mvMatrix, this._cgl.mMatrix, this._pos);
         mat4.multiply(m, this._cgl.vMatrix, this._cgl.mMatrix);
@@ -66,18 +67,18 @@ CABLES.UI.TransformsIcon=class
 
         this._cgl.popModelMatrix();
 
-        if(pos[2]>0)
+        if (pos[2] > 0)
         {
-            this._screenPos[0]=-3000;
+            this._screenPos[0] = -3000;
         }
         else
         {
-            var vp = this._cgl.getViewPort();
-            var x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
-            var y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
-    
-            this._screenPos[0]=x/this._cgl.pixelDensity;
-            this._screenPos[1]=y/this._cgl.pixelDensity;
+            const vp = this._cgl.getViewPort();
+            const x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
+            const y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
+
+            this._screenPos[0] = x / this._cgl.pixelDensity;
+            this._screenPos[1] = y / this._cgl.pixelDensity;
         }
     }
 
@@ -85,46 +86,43 @@ CABLES.UI.TransformsIcon=class
     {
         this._eleCenter.remove();
     }
+};
 
-}
-
-CABLES.UI.TransformsOverlay=class
+CABLES.UI.TransformsOverlay = class
 {
-
     constructor()
     {
-        this._transforms={};
-        this._lastCheck=0;
+        this._transforms = {};
+        this._lastCheck = 0;
     }
 
-    add(cgl,id,x,y,z)
+    add(cgl, id, x, y, z)
     {
-        this._transforms[id]=this._transforms[id]||new CABLES.UI.TransformsIcon(cgl,id);
-        this._transforms[id].setPos(x,y,z);
+        this._transforms[id] = this._transforms[id] || new CABLES.UI.TransformsIcon(cgl, id);
+        this._transforms[id].setPos(x, y, z);
 
-        if(performance.now()-this._lastCheck>50)
+        if (performance.now() - this._lastCheck > 50)
         {
-            for(var i in this._transforms)
+            for (const i in this._transforms)
             {
-                if(performance.now()-this._transforms[i].lastUpdate>100)
+                if (performance.now() - this._transforms[i].lastUpdate > 100)
                 {
                     this._transforms[i].dispose();
                     delete this._transforms[i];
                 }
             }
 
-            this._lastCheck=performance.now();
+            this._lastCheck = performance.now();
         }
     }
 
     setVisible(b)
     {
-        if(!b)
-        for(var i in this._transforms)
-        {
-            this._transforms[i].dispose();
-            delete this._transforms[i];
-        }
+        if (!b)
+            for (const i in this._transforms)
+            {
+                this._transforms[i].dispose();
+                delete this._transforms[i];
+            }
     }
-
-}
+};

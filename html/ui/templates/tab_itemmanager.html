@@ -17,11 +17,11 @@
             <span class="iconbutton info" data-infotext="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
                 <i class="icon icon-upload"></i>
             </span>
-            
+
             <span class="iconbutton info" data-infotext="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
                 <i class="icon icon-file-plus"></i>
             </span>
-            
+
             <span class="divider"></span>
 
             <span id="switch-display-icons" class="switch switch-left {{#compare display '==' 'icons' }}switch-active{{/compare}}">
@@ -32,7 +32,7 @@
             </span>
 
             <span class="divider"></span>
-            
+
             <input id="filefilter" type="search" class="medium" autocomplete="off" oninput="gui.fileManager.setFilter(this.value)" style="margin:0px;width:100px;border:1px solid #aaa;padding:4px !important;font-size:13px;" placeholder="Filter..." value="{{filter}}">
         </div>
     </div>
@@ -64,7 +64,7 @@
                     <div class="tt info fileFilterable item item-container {{#if selected}} selected {{/if}} draggable" id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" data-info="Drag this File to the patchfield to create op!" data-searchable="{{title}}" data-tt="{{title}}">
                         <div>
                             {{#if preview}}
-                            <div class="preview" style="width:90%;height:calc(90% - 22px);;background-color:#777;background-image:url(img/checkerboard.png);background-size:40%;background-repeat:repeat;">
+                            <div class="preview bgPatternDark" style="width:90%;height:calc(90% - 22px);;background-color:#777;">
                                 <div style="background-image:url({{preview}}?rnd={{file.cachebuster}});width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center center;">
                                 </div>
                             </div>
@@ -198,12 +198,12 @@
                     <a class="info icon icon-1x icon-trash" ></a>
                 </span>
             {{/compare}}
-                
+
             <!-- &nbsp;&nbsp;<a class="tt icon icon-1x icon-editbox" data-tt="edit file" data-infotext="file_edit"></a> -->
             <br/><br/>
 
             <b style="word-break: break-all;">{{file.fileDb.fileName}}</b>
-            
+
             {{#compare source '==' 'patch' }}
                 <br/><br/>
                 {{#if file.imgSizeWidth}}
@@ -225,7 +225,9 @@
             File Ops
             <br/><br/>
             {{#each file.ops}}
-                <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{title}}')">&nbsp;add <b>{{op}}</b></a>
+                <!-- <a class="button fa fa-plus-circle" onclick="gui.patch().addAssetOp('{{op}}','{{portname}}','{{../file.fileDb.fileName}}','{{.}}')">&nbsp;add <b>{{.}}</b></a> -->
+                <a class="button fa fa-plus-circle" onclick="gui.patchView.addAssetOpAuto('/assets/{{../file.fileDb.projectId}}/{{../file.fileDb.fileName}}')">&nbsp;add <b>{{.}}</b></a>
+
                 <br/><br/>
             {{/each}}
         {{/if}}

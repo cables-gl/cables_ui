@@ -5,8 +5,6 @@ CABLES.SandboxBrowser = function (cfg)
     CABLES.EventTarget.apply(this);
     this._cfg = cfg;
 
-    console.log(cfg);
-
     if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
     else CABLES.UI.userSettings.load({});
 
@@ -48,7 +46,7 @@ CABLES.SandboxBrowser.prototype.getUrlDocOpsAll = function ()
 
 CABLES.SandboxBrowser.prototype.getAssetPrefix = function ()
 {
-    const url = this._cfg.urlCables + "/assets/" + this._cfg.patchId;
+    const url = this._cfg.urlCables + "/assets/" + this._cfg.patchId + "/";
     return url;
 };
 
@@ -191,23 +189,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
         }
     });
 
-    // CABLESUILOADER.talkerAPI.addEventListener(
-    //     "uploadProgress",
-    //     function(options,next)
-    //     {
-    //         if(options.complete>=100)
-    //         {
-    //             $('#uploadprogresscontainer').hide();
-    //             CABLES.UI.notify("File Uploaded");
-    //         }
-    //         else $('#uploadprogresscontainer').show();
-
-    //         console.log("file upl!",options.complete);
-    //         $('#uploadprogress').css({"width":options.complete+'%'});
-
-    //         gui.refreshFileManager();
-    //     });
-
     CABLESUILOADER.talkerAPI.addEventListener("jobStart", (options, next) =>
     {
         gui.jobs().start({ "id": options.id, "title": options.title });
@@ -229,7 +210,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
         incrementStartup();
         this.loadUserOps(() =>
         {
-            console.log("setpatch...");
             if (cb) cb();
         });
     });
@@ -258,16 +238,15 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
         incrementStartup();
         logStartup("User Ops loaded");
 
-        gui.patch().setProject(proj);
+        gui.patchView.setProject(proj, cb);
 
         if (proj.ui)
         {
             gui.bookmarks.set(proj.ui.bookmarks);
-            $("#options").html(gui.bookmarks.getHtml());
+            document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
         }
 
-        gui.patch().showProjectParams();
-        cb();
+        // gui.patch().showProjectParams();
     });
 
     loadjs(userOpsUrls, lid);

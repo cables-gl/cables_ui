@@ -15,7 +15,7 @@ CABLES.UI.SetPortTitle = function (opId, portId, oldtitle)
         oldtitle,
         function (name)
         {
-            console.log("jaja!", opId, portId, oldtitle);
+            // console.log("jaja!", opId, portId, oldtitle);
 
             const op = gui.corePatch().getOpById(opId);
             const p = op.getPort(portId);
@@ -37,10 +37,16 @@ CABLES.UI.Port = function (thePort)
     this.opUi = null;
     this._posX = 0;
     this._posY = 0;
+    this._eleDropOp = ele.byId("drop-op-cursor");
 
     let hovering = false;
     let linkingLine = null;
     let cancelDeleteLink = false;
+
+    thePort.on("onLinkChanged", () =>
+    {
+        this.opUi.redrawLinks();
+    });
 
     thePort.addEventListener("onUiAttrChange", function (attribs)
     {
@@ -150,7 +156,7 @@ CABLES.UI.Port = function (thePort)
             CABLES.UI.selectedStartPort = self.thePort;
         }
 
-        $("#patch").focus();
+        ele.byId("patch").focus();
         if (!linkingLine)
         {
             this.startx = this.matrix.e + this.attrs.x;
@@ -166,6 +172,8 @@ CABLES.UI.Port = function (thePort)
 
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.isAnimated()) return;
         if (self.thePort.direction == CABLES.PORT_DIR_IN && self.thePort.uiAttribs.useVariable) return;
+
+        gui.log.userInteraction("drag move port " + self.thePort.name);
 
         CABLES.UI.MOUSEDRAGGINGPORT = true;
 
@@ -186,8 +194,7 @@ CABLES.UI.Port = function (thePort)
 
         if (window.CABLES.UI.selectedEndOp)
         {
-            $("#drop-op-cursor").hide();
-
+            ele.hide(self._eleDropOp);
 
             if (CABLES.UI.selectedStartPort)
             {
@@ -205,12 +212,14 @@ CABLES.UI.Port = function (thePort)
             if (event.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
                 gui.setCursor("port_remove");
+                ele.hide(self._eleDropOp);
             }
             else
             {
-                $("#drop-op-cursor").css({ "top": b - 12, "left": a - 37 });
+                self._eleDropOp.style.top = b - 12 + "px";
+                self._eleDropOp.style.left = a - 37 + "px";
                 gui.setCursor("port_add");
-                $("#drop-op-cursor").show();
+                ele.show(self._eleDropOp);
             }
         }
 
@@ -222,7 +231,7 @@ CABLES.UI.Port = function (thePort)
         else
         {
             gui.setCursor();
-            $("#drop-op-cursor").hide();
+            ele.hide(self._eleDropOp);
 
             let txt = CABLES.Link.canLinkText(CABLES.UI.selectedEndPort.thePort, CABLES.UI.selectedStartPort);
             if (txt == "can link") CABLES.UI.getPortDescription(CABLES.UI.selectedEndPort.thePort);
@@ -247,12 +256,12 @@ CABLES.UI.Port = function (thePort)
     {
         if (linkingLine) linkingLine.remove();
         linkingLine = null;
-        $("#drop-op-cursor").hide();
+        ele.hide(self._eleDropOp);
     }
 
     function finishDragUI()
     {
-        $("#drop-op-cursor").hide();
+        ele.hide(self._eleDropOp);
         CABLES.UI.selectedEndOp = null;
         removeLinkingLine();
         self.opUi.isDragging = false;
@@ -267,7 +276,6 @@ CABLES.UI.Port = function (thePort)
         removeLinkingLine();
         if (event.stopPropagation)event.stopPropagation();
         if (event.preventDefault)event.preventDefault();
-
 
         let foundAutoOp = false;
         if (CABLES.UI.selectedEndOp && !CABLES.UI.selectedEndPort)
@@ -474,6 +482,7 @@ CABLES.UI.Port = function (thePort)
 
         perf.finish();
     }
+
     this.updateUI = updateUI;
 
     function updateHoverToolTip(event)
@@ -635,10 +644,9 @@ CABLES.UI.Port = function (thePort)
         this.rect.attr({ "width": 10, "height": 6, }); // for firefox compatibility: ff seems to ignore css width/height of svg rect?!
         this.rect.node.classList.add(CABLES.UI.uiConfig.getPortClass(self.thePort));
         this.rect.node.classList.add("port");
+        self.rect.node.addEventListener("contextmenu", contextMenu);
 
         group.push(this.rect);
-
-        $(self.rect.node).bind("contextmenu", contextMenu);
 
         self.rect.hover(hover, hoverOut);
         self.rect.drag(dragMove, dragStart, dragEnd);

@@ -6,6 +6,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     constructor(cgl, options)
     {
         super();
+        options = options || {};
+        console.log("options.initNumRects", options.initNum);
 
         if (!cgl)
         {
@@ -13,8 +15,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             throw new Error("[RectInstancer] no cgl");
         }
 
+        this._name = options.name || "unknown";
         this._counter = 0;
-        this._num = 5000;
+        this._num = options.initNum || 1000;
         this._needsRebuild = true;
         this._needsRebuildReason = "";
         this._rects = [];
@@ -25,14 +28,14 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._needsTextureUpdate = false;
         this._draggingRect = null;
         this._reUploadAttribs = true;
-        this._updateRangesMin = {};
-        this._updateRangesMax = {};
+        // this._updateRangesMin = {};
+        // this._updateRangesMax = {};
         this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
 
         this._meshAttrPos = null;
         this._meshAttrCol = null;
         this._meshAttrSize = null;
-        this._meshAttrCirc = null;
+        this._meshAttrDeco = null;
         this._meshAttrRect = null;
         this._meshAttrTex = null;
 
@@ -44,7 +47,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this.ATTR_POS = "instPos";
         this.ATTR_COLOR = "instCol";
         this.ATTR_SIZE = "instSize";
-        this.ATTR_CIRCLE = "circle";
+        this.ATTR_DECO = "instDeco";
 
 
         this._shader = new CGL.Shader(cgl, "rectinstancer");
@@ -54,12 +57,10 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN vec4 instCol;"
             .endl() + "IN vec2 attrTexCoord;"
             .endl() + "IN vec4 texRect;"
-
             .endl() + "IN vec2 instSize;"
-        // .endl()+'IN float outline;'
+            .endl() + "IN float instDeco;"
 
-            .endl() + "IN float circle;"
-            .endl() + "OUT float frCircle;"
+            .endl() + "OUT float decoration;"
 
             // .endl()+'OUT float outlinefrag;'
             .endl() + "OUT vec4 posSize;"
@@ -77,7 +78,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    float aspect=resX/resY;"
 
             .endl() + "    useTexture=contentTexture;"
-            .endl() + "    frCircle=circle;"
+            .endl() + "    decoration=instDeco;"
 
             .endl() + "    uv=attrTexCoord*texRect.zw+texRect.xy;"
             .endl() + "    uv.y=1.0-uv.y;"
@@ -114,8 +115,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN float zz;"
             // .endl()+'IN float outlinefrag;'
             .endl() + "IN vec2 uv;"
-            .endl() + "IN float frCircle;"
+            .endl() + "IN float decoration;"
             .endl() + "IN float useTexture;"
+            .endl() + "UNI float time;"
             .endl() + "UNI sampler2D tex[8];"
 
             .endl() + "void main()"
@@ -123,15 +125,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
             .endl() + "   outColor=col;"
 
-        // outlines
-        // .endl()+'   if(outlinefrag>0.0){'
-
-        // .endl()+'       float add=(1.0-step(outlinefrag,posSize.x));'
-        // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));'
-        // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));'
-        // .endl()+'       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));'
-        // .endl()+'       outColor.rgb+=vec3(add*0.4);'
-        // .endl()+'   }'
 
             .endl() + "if(useTexture>=0.0)"
             .endl() + "{"
@@ -141,35 +134,72 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "       float smpl=texture(tex[0],uv).r;"
             .endl() + "       float scale = 1.0 / fwidth(smpl);"
             .endl() + "       float signedDistance = (smpl - 0.5) * scale*0.5;"
-
             .endl() + "       float color = clamp(signedDistance + 0.5, 0.0, 1.0);"
-
             .endl() + "       outColor=vec4(outColor.rgb, color);"
             .endl() + "   #endif"
-            .endl() + "   #ifndef SDF_TEXTURE"
 
-            .endl() + "   if(int(useTexture)==0)outColor=texture(tex[0],uv);"
-            .endl() + "   if(int(useTexture)==1)outColor=texture(tex[1],uv);"
-            .endl() + "   if(int(useTexture)==2)outColor=texture(tex[2],uv);"
-            .endl() + "   if(int(useTexture)==3)outColor=texture(tex[3],uv);"
-            .endl() + "   if(int(useTexture)==4)outColor=texture(tex[4],uv);"
-            .endl() + "   if(int(useTexture)==5)outColor=texture(tex[5],uv);"
+            .endl() + "   #ifndef SDF_TEXTURE"
+            .endl() + "     if(int(useTexture)==0)outColor=texture(tex[0],uv);"
+            .endl() + "     if(int(useTexture)==1)outColor=texture(tex[1],uv);"
+            .endl() + "     if(int(useTexture)==2)outColor=texture(tex[2],uv);"
+            .endl() + "     if(int(useTexture)==3)outColor=texture(tex[3],uv);"
+            .endl() + "     if(int(useTexture)==4)outColor=texture(tex[4],uv);"
+            .endl() + "     if(int(useTexture)==5)outColor=texture(tex[5],uv);"
             .endl() + "   #endif"
             .endl() + "}"
 
-            .endl() + "if(frCircle>0.0)"
+            .endl() + "if(decoration==1.0)" // circle
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
+            .endl() + "   if(outColor.a==0.0)discard;"
             .endl() + "}"
 
-        // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
 
+            .endl() + "if(decoration==2.0)" // border
+            .endl() + "{"
+            .endl() + "   float outlinefrag=0.003;"
+            .endl() + "       float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
+            .endl() + "       outColor.rgb+=vec3(add*0.4);"
+            .endl() + "   }"
+
+            .endl() + "if(decoration==3.0)" // stripes
+            .endl() + "{"
+            .endl() + "    float w=0.03;"
+            .endl() + "    outColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));"
+            .endl() + "}"
+
+            .endl() + "if(decoration==4.0)" // border no content
+            .endl() + "{"
+            .endl() + "   float outlinefrag=0.003;"
+            .endl() + "       float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
+            // .endl() + "       outColor.rgb=vec3(add*0.4);"
+            .endl() + "       if(add==0.0)outColor.a=0.0;"
+            .endl() + "}"
+
+            .endl() + "if(decoration==5.0)" // cursor
+            .endl() + "{"
+            .endl() + "     if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)outColor.a=1.0;"
+            .endl() + "     else outColor.a=0.0;"
+            .endl() + "}"
+
+        // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
+        // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
+
+        // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg=uv;"
 
             .endl() + "}");
 
+
+        this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
@@ -241,7 +271,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         for (i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
         for (i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
         // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
-        for (i = 0; i < this._num; i++) this._attrBuffCircle[i] = 0;// Math.random();
+        for (i = 0; i < this._num; i++) this._attrBuffDeco[i] = 0;// Math.random();
         for (i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
 
         for (i = 0; i < 4 * this._num; i += 4)
@@ -259,14 +289,14 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         const oldAttrTextures = this._attrBuffTextures;
         const oldAttrColors = this._attrBuffCol;
         const oldAttrSizes = this._attrBuffSizes;
-        const oldAttrCircle = this._attrBuffCircle;
+        const oldAttrCircle = this._attrBuffDeco;
         const oldAttrTexRect = this._attrTexRect;
 
         this._attrBuffPos = new Float32Array(3 * this._num);
         this._attrBuffTextures = new Float32Array(this._num);
         this._attrBuffCol = new Float32Array(4 * this._num);
         this._attrBuffSizes = new Float32Array(2 * this._num);
-        this._attrBuffCircle = new Float32Array(this._num);
+        this._attrBuffDeco = new Float32Array(this._num);
         this._attrTexRect = new Float32Array(4 * this._num);
         this.clear();
 
@@ -274,7 +304,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         if (oldAttrTextures) this._attrBuffTextures.set(oldAttrTextures);
         if (oldAttrColors) this._attrBuffCol.set(oldAttrColors);
         if (oldAttrSizes) this._attrBuffSizes.set(oldAttrSizes);
-        if (oldAttrCircle) this._attrBuffCircle.set(oldAttrCircle);
+        if (oldAttrCircle) this._attrBuffDeco.set(oldAttrCircle);
         if (oldAttrTexRect) this._attrTexRect.set(oldAttrTexRect);
     }
 
@@ -345,6 +375,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0 / zoom);
+        this._uniTime.set(performance.now() / 1000);
 
         if (this._needsTextureUpdate) this._setupTextures();
         this._bindTextures();
@@ -371,7 +402,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
-            this._meshAttrCirc = this._mesh.setAttribute(this.ATTR_CIRCLE, this._attrBuffCircle, 1, { "instanced": true });
+            this._meshAttrDeco = this._mesh.setAttribute(this.ATTR_DECO, this._attrBuffDeco, 1, { "instanced": true });
             this._meshAttrRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
             this._meshAttrTex = this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this._reUploadAttribs = false;
@@ -396,10 +427,10 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         //     this._resetAttrRange(this.ATTR_SIZE);
         // }
 
-        // if (this._updateRangesMin[this.ATTR_CIRCLE] != 9999)
+        // if (this._updateRangesMin[this.ATTR_DECO] != 9999)
         // {
-        //     this._mesh.setAttributeRange(this.ATTR_CIRCLE, this._attrBuffCircle, this._updateRangesMin[this.ATTR_CIRCLE], this._updateRangesMax[this.ATTR_CIRCLE]);
-        //     this._resetAttrRange(this.ATTR_CIRCLE);
+        //     this._mesh.setAttributeRange(this.ATTR_DECO, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
+        //     this._resetAttrRange(this.ATTR_DECO);
         // }
 
         // if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
@@ -424,7 +455,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         if (this._counter > this._num - 100)
         {
             this._num += 1000;
-            console.log("resize to", this._num);
+            console.log("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
             this._needsRebuildReason = "resize";
@@ -480,7 +511,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._bounds.minZ = Math.min(this._attrBuffPos[i + 2], this._bounds.minZ);
             this._bounds.maxZ = Math.max(this._attrBuffPos[i + 2], this._bounds.maxZ);
         }
-
 
         this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, i, i + 3);
         this._needsBoundsRecalc = true;
@@ -551,17 +581,11 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, idx * 4, idx * 4 + 4);
     }
 
-    setCircle(idx, o)
+    setDecoration(idx, o)
     {
-        if (this._attrBuffCircle[idx] != o)
-        {
-            this._needsRebuild = true;
-        }
-        else return;
-        this._attrBuffCircle[idx] = o;
-        this._setAttrRange(this._meshAttrCirc, idx, idx + 1);
+        this._attrBuffDeco[idx] = o;
+        this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx, idx + 1);
     }
-
 
     setAllTexture(tex, sdf)
     {
@@ -573,17 +597,17 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         }
     }
 
-    _resetAttrRange(attr)
-    {
-        this._updateRangesMin[attr] = 9999;
-        this._updateRangesMax[attr] = -9999;
-    }
+    // _resetAttrRange(attr)
+    // {
+    //     this._updateRangesMin[attr] = 9999;
+    //     this._updateRangesMax[attr] = -9999;
+    // }
 
-    _setAttrRange(attr, start, end)
-    {
-        this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
-        this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
-    }
+    // _setAttrRange(attr, start, end)
+    // {
+    //     this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
+    //     this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
+    // }
 
 
     // setOutline(idx,o)
@@ -631,18 +655,16 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     {
         if (!this._interactive) return;
 
-        for (let i = 0; i < this._rects.length; i++)
-            this._rects[i].mouseDown(e);
+
+        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseDown(e);
     }
 
     mouseUp(e)
     {
         if (!this._interactive) return;
 
-        for (let i = 0; i < this._rects.length; i++)
-            this._rects[i].mouseUp(e);
+        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseUp(e);
 
-        if (this._draggingRect)
-            this._draggingRect.mouseDragEnd();
+        if (this._draggingRect) this._draggingRect.mouseDragEnd();
     }
 };

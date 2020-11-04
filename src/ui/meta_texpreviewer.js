@@ -44,17 +44,17 @@ CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
     .endl() + "UNI float width;"
     .endl() + "UNI float height;"
 
-    .endl() + "float checkerboard()"
-    .endl() + "{"
-    .endl() + "    float num=40.0;"
-    .endl() + "    float h=(height/width)*num;"
-    .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
-    .endl() + "    return mod(total,2.0)*0.1+0.05;"
-    .endl() + "}"
+// .endl() + "float checkerboard()"
+// .endl() + "{"
+// .endl() + "    float num=40.0;"
+// .endl() + "    float h=(height/width)*num;"
+// .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
+// .endl() + "    return mod(total,2.0)*0.1+0.05;"
+// .endl() + "}"
 
     .endl() + "void main()"
     .endl() + "{"
-    .endl() + "    vec4 col=vec4(vec3(checkerboard()),1.0);"
+    .endl() + "    vec4 col=vec4(0.0);"
     .endl() + "    vec4 colTex=texture2D(tex,texCoord);"
     .endl() + "    outColor = mix(col,colTex,colTex.a);"
     .endl() + "}";
@@ -94,7 +94,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     }
     const previewCanvas = previewCanvasEle.getContext("2d");
 
-    if (previewCanvas && port && port.get())
+    if (previewCanvas && port && port.get() && !port.get().cubemap)
     {
         const perf = CABLES.uiperf.start("texpreview");
         const cgl = port.parent.patch.cgl;
@@ -241,6 +241,8 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
         }
         this._texturePorts[i].updated = CABLES.now();
     }
+
+    gui.setElementBgPattern(this._ele);
 };
 
 CABLES.UI.TexturePreviewer.prototype.show = function ()
@@ -252,6 +254,7 @@ CABLES.UI.TexturePreviewer.prototype.show = function ()
 
 CABLES.UI.TexturePreviewer.prototype.hide = function ()
 {
+    ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
     this._paused = true;
 };
 
@@ -298,6 +301,7 @@ CABLES.UI.TexturePreviewer.prototype.pressedEscape = function ()
     this._lastClicked = null;
     const ele = document.getElementById("bgpreview");
     if (ele)ele.style.display = "none";
+    this.hide();
 };
 
 CABLES.UI.TexturePreviewer.prototype.render = function ()
@@ -389,6 +393,8 @@ CABLES.UI.TexturePreviewer.prototype.hoverEnd = function ()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 {
+    ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+
     if (!this._listeningFrame && p)
     {
         this._listeningFrame = true;
@@ -397,7 +403,6 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
             this.render();
         });
     }
-
 
     this._lastClickedP = p;
     this._lastClicked = this.updateTexturePort(p);

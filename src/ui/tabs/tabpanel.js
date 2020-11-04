@@ -101,10 +101,12 @@ CABLES.UI.TabPanel = function (eleId)
 {
     CABLES.EventTarget.apply(this);
 
+    this.id = CABLES.uuid();
     this._eleId = eleId;
     this._tabs = [];
     this._eleContentContainer = null;
     this._eleTabPanel = null;
+    this.showTabListButton = false;
 
     if (!this._eleTabPanel)
     {
@@ -130,8 +132,41 @@ CABLES.UI.TabPanel = function (eleId)
 CABLES.UI.TabPanel.prototype.updateHtml = function ()
 {
     let html = "";
-    html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { "tabs": this._tabs });
+    html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { "id": this.id, "tabs": this._tabs });
     this._eleTabPanel.innerHTML = html;
+
+    const editortabList = document.getElementById("editortabList" + this.id);
+    if (!this.showTabListButton)
+    {
+        editortabList.style.display = "none";
+        editortabList.parentElement.style["padding-left"] = "0";
+    }
+    else
+    {
+        editortabList.parentElement.style["padding-left"] = "34px";
+
+        editortabList.style.display = "block";
+        editortabList.addEventListener(
+            "mousedown",
+            (e) =>
+            {
+                const items = [];
+                for (let i = 0; i < this._tabs.length; i++)
+                {
+                    const tab = this._tabs[i];
+                    items.push({
+                        "title": tab.options.name,
+                        "func": () => { console.log(tab); this.activateTab(tab.id); }
+                    });
+                }
+                CABLES.contextMenu.show(
+                    {
+                        "items": items
+                    }, e.target);
+            },
+        );
+    }
+
 
     for (let i = 0; i < this._tabs.length; i++)
     {
@@ -182,7 +217,11 @@ CABLES.UI.TabPanel.prototype.activateTabByName = function (name)
         else this._tabs[i].deactivate();
     }
 
-    if (!found) console.log("[activateTabByName] could not find tab", name);
+    if (!found)
+    {
+        console.log("[activateTabByName] could not find tab", name);
+        // console.log(new Error().stack);
+    }
 
     this.updateHtml();
 };

@@ -4,21 +4,23 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLGUI.VISUALCONFIG =
 {
     "OpTitlePaddingLeftRight": 10,
+    "OpTitlePaddingExtTitle": 5,
 
     "portWidth": 10,
     "portHeight": 6,
     "portPadding": 2,
 
-    "snapX": 12,
-    "snapY": 20,
+    // "snapX": 12,
+    // "snapY": 20,
 
     "opHeight": 31,
     "opWidth": 90,
 
     "minZoom": 15,
     "zoomSmooth": 2,
-    "zoomDefault": 300,
+    "zoomDefault": 500,
 
+    "clickMaxDuration": 300,
 
     "namespaceColors":
     {
@@ -36,7 +38,10 @@ CABLES.GLGUI.VISUALCONFIG =
         "opBgRect": [51 / 255, 51 / 255, 51 / 255, 1],
         "opBgRectSelected": [73 / 255, 73 / 255, 73 / 255, 1],
         "patchComment": [0.8, 0.8, 0.8, 1],
-        "opTitleExt": [0.65, 0.65, 0.65, 1.0],
-        "patchSelectionArea": [0, 0.5, 0.7, 0.25]
+        "opTitleExt": [0.8, 0.8, 0.8, 1.0],
+        "patchSelectionArea": [0, 0.5, 0.7, 0.25],
+
+        "opBoundsRect": [0.26, 0.26, 0.26, 1],
+        "background": [0.24, 0.24, 0.24, 1]
     }
 };

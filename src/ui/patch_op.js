@@ -27,14 +27,9 @@ CABLES.UI.isComment = function (objname)
     return objname.indexOf("Ops.Ui.Comment") == 0;
 };
 
-CABLES.UI.snapOpPosX = function (posX)
+CABLES.UI.isMultilineString = function (str)
 {
-    return Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX;
-};
-
-CABLES.UI.snapOpPosY = function (posY)
-{
-    return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
+    return ((str.match(/\n/g) || []).length > 0);
 };
 
 CABLES.UI.updateHoverToolTip = function (event, port)
@@ -45,12 +40,26 @@ CABLES.UI.updateHoverToolTip = function (event, port)
     let val = null;
     if (port)
     {
-        if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
+        if (port.type == CABLES.OP_PORT_TYPE_VALUE)
         {
-            val = port.get();
+            val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
             else val = "\"" + val + "\"";
             txt += ": <span class=\"code\">" + val + "</span>";
+        }
+        else if (port.type == CABLES.OP_PORT_TYPE_STRING)
+        {
+            val = port.getValueForDisplay();
+            if (CABLES.UI.isMultilineString(val))
+            {
+                val = "\"" + val + "\"";
+                txt += ": <span class=\"code multiline-string-port\">" + val + "</span>";
+            }
+            else
+            {
+                val = "\"" + val + "\"";
+                txt += ": <span class=\"code\">" + val + "</span>";
+            }
         }
         else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
@@ -64,7 +73,10 @@ CABLES.UI.updateHoverToolTip = function (event, port)
 
                     if (CABLES.UTILS.isNumeric(val[i]))txt += Math.round(val[i] * 1000) / 1000;
                     else if (typeof val[i] == "string")txt += "\"" + val[i] + "\"";
-                    else if (typeof val[i] == "object")txt += "[object]";
+                    else if (typeof val[i] == "object")
+                    {
+                        txt += "[object]";
+                    }
                     else JSON.stringify(val[i]);
                 }
 
@@ -87,7 +99,10 @@ CABLES.UI.getPortDescription = function (thePort)
 {
     let str = "";
 
-    str += "[" + thePort.getTypeString() + "] ";
+    let objType = thePort.uiAttribs.objType || "";
+    if (objType)objType += " ";
+
+    str += "[" + objType + thePort.getTypeString() + "] ";
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
@@ -260,6 +275,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         else
         {
+            if (!label) return;
             if (commentText || backgroundResize) return;
             const labelWidth = label.getBBox().width + 20;
             let setw = w;
@@ -295,7 +311,6 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
     {
         opui.isMouseOver = false;
         self.hoverFitPort = false;
-        // $('#drop-op-canlink').hide();
         gui.setCursor("default");
     }
 
@@ -318,7 +333,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
             return;
         }
 
-        $("#patch").focus();
+        document.getElementById("patch").focus();
 
         if (e.buttos == 2)
         {
@@ -414,6 +429,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
         shakeLastX = a;
 
+        gui.log.userInteraction("moves op");
         gui.patch().moveSelectedOps(dx, dy, a, b, e);
         this._updateElementOrder(true);
         gui.setStateUnsaved();
@@ -440,44 +456,9 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         if (CABLES.UI.LINKHOVER)
         {
             const oldLink = CABLES.UI.LINKHOVER;
-            if (oldLink.p1 && oldLink.p2)
-            {
-                let portIn = oldLink.p1;
-                let portOut = oldLink.p2;
 
-                if (oldLink.p2.thePort.direction == CABLES.PORT_DIR_IN)
-                {
-                    portIn = oldLink.p2;
-                    portOut = oldLink.p1;
-                }
-
-                oldLink.unlink();
-
-                if (CABLES.Link.canLink(opui.op.portsIn[0], portOut.thePort))
-                {
-                    gui.corePatch().link(
-                        opui.op,
-                        opui.op.portsIn[0].getName(), portOut.thePort.parent, portOut.thePort.getName()
-                    );
-
-                    gui.corePatch().link(
-                        opui.op,
-                        opui.op.portsOut[0].getName(), portIn.thePort.parent, portIn.thePort.getName()
-                    );
-
-                    const pos = gui.patch().getCanvasCoordsMouse(e);
-
-                    // opui.setPos(portOut.thePort.parent.uiAttribs.translate.x,opui.op.uiAttribs.translate.y);
-                    opui.setPos(pos.x, opui.op.uiAttribs.translate.y);
-                }
-                else
-                {
-                    gui.corePatch().link(
-                        portIn.thePort.parent, portIn.thePort.getName(),
-                        portOut.thePort.parent, portOut.thePort.getName()
-                    );
-                }
-            }
+            const pos = gui.patch().getCanvasCoordsMouse(e);
+            gui.patchView.insertOpInLink(oldLink, opui.op, pos.x, pos.y);
         }
 
         gui.patch().moveSelectedOpsFinished();
@@ -978,8 +959,8 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
 
                 if (CABLES.UI.userSettings.get("snapToGrid"))
                 {
-                    pos.x = CABLES.UI.snapOpPosX(pos.x);
-                    pos.y = CABLES.UI.snapOpPosY(pos.y);
+                    pos.x = gui.patchView.snapOpPosX(pos.x);
+                    pos.y = gui.patchView.snapOpPosY(pos.y);
                 }
 
                 let width = pos.x - opX;
@@ -1187,7 +1168,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
     this.isMouseOver = false;
 
-    op.addEventListener("onUiAttribsChange", (attribs) =>
+
+    this._uiAttrChanged = function (attribs)
     {
         if (!attribs) return;
 
@@ -1250,7 +1232,13 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         {
             this.oprect.updateComment();
         }
-    });
+        if (attribs.hasOwnProperty("selected"))
+        {
+            this.setSelected(attribs.selected);
+
+            // gui.patch().updateOpParams(this.op.id);
+        }
+    };
 
     this.fixTitle = function ()
     {
@@ -1263,6 +1251,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         this.hide();
         this.oprect.getGroup().remove();
         this.oprect.deleteUi();
+        console.log("op ui removed", op.getTitle());
     };
 
     this.getHeight = function ()
@@ -1454,11 +1443,16 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         return posy;
     };
 
+    this.redrawLinks = function ()
+    {
+        for (const j in this.links) this.links[j].redraw();
+    };
+
     this.setPosFromUiAttr = function ()
     {
         this.setPos(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
         // console.log(this.op.uiAttribs.translate.x, this.op.uiAttribs.translate.y);
-        for (const j in self.links) self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.setPos = function (_x, _y)
@@ -1473,8 +1467,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         if (!self.op.uiAttribs.translate || self.op.uiAttribs.translate.x != posx || self.op.uiAttribs.translate.y != posy)
             self.op.uiAttr({ "translate": { "x": posx, "y": posy } });
 
-        for (const j in self.links)
-            self.links[j].redraw();
+        this.redrawLinks();
     };
 
     this.doMove = function (dx, dy, a, b, e)
@@ -1507,8 +1500,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
-            pos.x = CABLES.UI.snapOpPosX(pos.x);
-            pos.y = CABLES.UI.snapOpPosY(pos.y);
+            pos.x = gui.patchView.snapOpPosX(pos.x);
+            pos.y = gui.patchView.snapOpPosY(pos.y);
         }
 
         if (e.shiftKey)
@@ -1598,16 +1591,6 @@ const OpUi = function (paper, op, x, y, w, h, txt)
                 if (groupCount > 0)
                 {
                     groupCount = 0;
-                    // if(dir==0)
-                    // {
-                    //     $(this).before("<tr><td></td></tr>");
-                    //     $(this).data('hasBefore',true);
-                    // }
-                    // else
-                    // {
-                    //     $(this).after("<tr><td></td></tr>");
-                    //     $(this).data('hasAfter',true);
-                    // }
                     ports[i].setUiAttribs({ "spaceBefore": true });
 
                     console.log("----");
@@ -1616,48 +1599,6 @@ const OpUi = function (paper, op, x, y, w, h, txt)
             console.log(name);
             lastName = name;
         }
-
-
-        //     function testSpacers()
-        //     {
-        //         var name=$(this).data("portname");
-        //         if(name.substring(0,3) == lastName.substring(0,3))
-        //         {
-        //             groupCount++;
-        //         }
-        //         else
-        //         {
-        //             if(groupCount>0)
-        //             {
-        //                 groupCount=0;
-        //                 // $(this).css({"background-color":"red"});
-        //                 // $(this).addClass("paramGroupSpacer");
-        //                 if(dir==0)
-        //                 {
-        //                     $(this).before("<tr><td></td></tr>");
-        //                     $(this).data('hasBefore',true);
-        //                 }
-        //                 else
-        //                 {
-        //                     $(this).after("<tr><td></td></tr>");
-        //                     $(this).data('hasAfter',true);
-        //                 }
-
-        //                 console.log("----");
-        //             }
-        //         }
-        //         console.log(name);
-        //         lastName=name;
-        //     }
-
-        //     $('.opports_in').each(testSpacers);
-
-        //     lastName='';
-        //     groupCount=0;
-        //     dir=1;
-
-    //     jQuery.fn.reverse = [].reverse;
-    //     $('.opports_in').reverse().each(testSpacers);
     };
 
     this.initPorts = function ()
@@ -1789,4 +1730,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
     {
         this.initPorts();
     }.bind(this));
+
+    op.addEventListener("onUiAttribsChange", this._uiAttrChanged.bind(this));
+    // this.initPorts();
+    this._uiAttrChanged();
 };

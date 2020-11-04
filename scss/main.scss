@@ -85,7 +85,7 @@ hr
 }
 
 .clickable {cursor:pointer;}
-.hidden { display:none;}
+.hidden { display:none !important;}
 .clear { clear:both; }
 .fleft { float:left; }
 .fright { float:right !important; }
@@ -205,7 +205,7 @@ input[type="text"]
     // text-transform: capitalize;
 	text-align: center;
 	margin-bottom: 2px;
-    color: $button-text-color;
+    color: var(--color-12);
 	background-color: var(--color-02);
     border-radius: 29px;
 
@@ -780,6 +780,29 @@ input
     }
 }
 
+#bgpreviewButtonsContainer
+{
+    position:absolute;
+    z-index: 99999999;
+}
+
+// #bgpreviewButtonsContainer:hover
+#bgpreviewButtons
+{
+    display:block;
+}
+
+#bgpreviewButtons
+{
+    margin-right:10px;
+    margin-top:10px;
+    // display:none;
+}
+
+#bgpreviewButtons a
+{
+}
+
 #bgpreview
 {
     display:none;
@@ -806,15 +829,27 @@ input
     transform: scale(1, -1);
 }
 
+#offlineIndicator
+{
+    border:2px solid red;
+    background-color: red;
+    position: absolute;
+    width:1px;
+    height:1px;
+    border-radius: 10px;
+    margin-left:-10px;
+    margin-top:-4px;
+}
 
-#offlineIndicator,#userindicatorcontainer
+
+#userindicatorcontainer
 {
     width:30px;
     height:30px;
     position:absolute;
-    top:10px;
-    left:12px;
-    z-index:99999;
+    top:5px;
+    left:5px;
+    z-index:999;
     overflow:hidden;
     pointer-events: none;
 }

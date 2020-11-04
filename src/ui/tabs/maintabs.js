@@ -5,9 +5,12 @@ CABLES.UI.MainTabPanel = function (tabs)
 {
     CABLES.EventTarget.apply(this);
     this._tabs = tabs;
+    this._tabs.showTabListButton = true;
     this._visible = false;
     this._ele = document.getElementById("maintabs");
     this._ele.style.display = "none";
+
+
     // this._tabs.addTab(new CABLES.UI.Tab("welcome",{"icon":"cables","closable":true}));
 
     // this._tabs.addEventListener("onTabActivated",function(tab)
@@ -20,11 +23,11 @@ CABLES.UI.MainTabPanel = function (tabs)
     {
         const wasVisible = this._visible;
         if (!existedBefore) this.show();
-        console.log("existedBefore", existedBefore);
 
         document.getElementById("editorminimized").classList.add("editorminimized_changed");
         setTimeout(() => { document.getElementById("editorminimized").classList.remove("editorminimized_changed"); }, 200);
 
+        tabs.activateTab("");
         tabs.activateTab(tab.id);
 
         if (!wasVisible && window.gui) gui.setLayout();

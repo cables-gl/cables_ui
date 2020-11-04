@@ -8,6 +8,7 @@ CABLES.GLGUI.GlPatchAPI = class
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
+        this._flowvisStartFrame = 0;
 
         this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
@@ -18,7 +19,6 @@ CABLES.GLGUI.GlPatchAPI = class
 
     _initPatch()
     {
-        console.log("patch.ops.length", this._patch.ops.length);
         let i = 0;
         for (i = 0; i < this._patch.ops.length; i++)
         {
@@ -36,6 +36,7 @@ CABLES.GLGUI.GlPatchAPI = class
                     const link = op.portsIn[ip].links[il];
                     const l = new CABLES.GLGUI.GlLink(
                         this._glPatch,
+                        link,
                         link.id,
                         link.portIn.parent.id,
                         link.portOut.parent.id,
@@ -49,9 +50,29 @@ CABLES.GLGUI.GlPatchAPI = class
         }
     }
 
+    stopFlowModeActivity()
+    {
+        for (let i = 0; i < this._patch.ops.length; i++)
+        {
+            const op = this._patch.ops[i];
+
+            for (let ip = 0; ip < op.portsIn.length; ip++)
+            {
+                for (let il = 0; il < op.portsIn[ip].links.length; il++)
+                {
+                    const link = op.portsIn[ip].links[il];
+                    this._glPatch.links[link.id].setFlowModeActivity(1);
+                }
+            }
+        }
+    }
 
     updateFlowModeActivity()
     {
+        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
+        if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
+        if (this._glPatch.frameCount % 6 != 0) return;
+
         const perf = CABLES.uiperf.start("[glpatch] update flow mode");
         for (let i = 0; i < this._patch.ops.length; i++)
         {
@@ -62,7 +83,14 @@ CABLES.GLGUI.GlPatchAPI = class
                 for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
                     const link = op.portsIn[ip].links[il];
-                    this._glPatch.links[link.id].setFlowModeActivity(link.activityCounter);
+                    let newClass = 0;
+
+                    if (link.activityCounter >= 1) newClass = 1;
+                    if (link.activityCounter >= 2) newClass = 2;
+                    if (link.activityCounter >= 5) newClass = 3;
+                    if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+
+                    this._glPatch.links[link.id].setFlowModeActivity(newClass);
                     link.activityCounter = 0;
                 }
             }
@@ -83,7 +111,9 @@ CABLES.GLGUI.GlPatchAPI = class
             p2 = p1;
             p1 = t;
         }
-        const l = new CABLES.GLGUI.GlLink(this._glPatch, link.id, p1.parent.id, p2.parent.id,
+
+        console.log("ONLINK!", link);
+        const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,
             p1.type);
@@ -111,15 +141,17 @@ CABLES.GLGUI.GlPatchAPI = class
         gui.opParams.show(op);
     }
 
-    unlinkPort(opid, portid)
-    {
-        const op = gui.corePatch().getOpById(opid);
-        const p = op.getPortById(portid);
-        p.removeLinks();
-    }
+    // unlinkPort(opid, portid)
+    // {
+    //     const op = gui.corePatch().getOpById(opid);
+    //     const p = op.getPortById(portid);
+    //     p.removeLinks();
+    // }
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
+        console.log("patchapi removeLink!");
+
         const opIn = gui.corePatch().getOpById(opIdIn);
         const pIn = opIn.getPortById(portIdIn);
         const opOut = gui.corePatch().getOpById(opIdOut);
@@ -156,6 +188,7 @@ CABLES.GLGUI.GlPatchAPI = class
 
     setOpUiAttribs(opid, attrName, val)
     {
+        // debugger;
         const op = gui.corePatch().getOpById(opid);
         const attr = {};
         attr[attrName] = val;

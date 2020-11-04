@@ -12,11 +12,9 @@
 .cursor_port_add{ cursor:url(/ui/img/add.png) 10 10, auto }
 
 
-
 #drop-op-cursor
 {
 	position: absolute;
-	display:none;
 	width:75px;
 	height:20px;
 	z-index: $z-index-patch-drop-op;
@@ -120,7 +118,7 @@
     background-color:var(--patch-bg-color);
     width:100%;
     height:100%;
-
+    top: 0px;
 }
 
 #patch
@@ -426,12 +424,12 @@
     }
 }
 
+
 #subpatch_nav
 {
     // background-color: var(--color-01);
 	position: relative;
 	z-index: $z-index-patch-subpatch-nav;
-	display: none;
 
 	#subpatch_breadcrumb
 	{

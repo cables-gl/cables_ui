@@ -31,7 +31,7 @@ CABLES.UI.Bookmarks = function ()
 
     this.getHtml = function ()
     {
-        const subs = gui.patch().getSubPatches(true);
+        const subs = gui.patchView.getSubPatches(true);
 
         const bm = [];
         for (const i in bookmarks)
@@ -53,8 +53,7 @@ CABLES.UI.Bookmarks = function ()
             }
         }
 
-        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs });
-        // $('#meta_content_bookmarks').html(html);
+        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         return html;
     };
 
@@ -91,18 +90,29 @@ CABLES.UI.Bookmarks = function ()
                 if (bookmarks[i] == id)
                 {
                     this.remove(id);
-                    $(".toggle-bookmark-button")
-                        .removeClass("icon-bookmark-filled")
-                        .addClass("icon-bookmark");
+
+                    const elements = document.getElementsByClassName("toggle-bookmark-button");
+                    for (let eli = 0; eli < elements.length; eli++)
+                    {
+                        console.log(eli, elements[eli].classList);
+                        elements[eli].classList.remove("icon-bookmark-filled");
+                        elements[eli].classList.add("icon-bookmark");
+                    }
                     CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_removed);
                     return;
                 }
             }
 
             bookmarks.push(id);
-            $(".toggle-bookmark-button")
-                .removeClass("icon-bookmark")
-                .addClass("icon-bookmark-filled");
+
+            const elements = document.getElementsByClassName("toggle-bookmark-button");
+            for (let eli = 0; eli < elements.length; eli++)
+            {
+                console.log(eli, elements[eli].classList);
+                elements[eli].classList.add("icon-bookmark-filled");
+                elements[eli].classList.remove("icon-bookmark");
+            }
+
             gui.patch().focusOp(id);
             CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }

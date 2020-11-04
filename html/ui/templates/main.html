@@ -19,7 +19,7 @@
     <div id="subpatch_breadcrumb"></div>
 </div>
 
-<div id="drop-op-cursor"></div>
+<div id="drop-op-cursor" class="hidden"></div>
 
 <div id="suggestionDialog"></div>
 <div id="modalbg" class="modal-bg-look" onclick="gui.pressedEscape();" style="display:none;"></div>
@@ -41,6 +41,7 @@
     <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></a>
     <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
     <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
+    <a class="tt info icon icon-search iconhover" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="" data-infotext=""></a>
 
 
     <a class="tt icon icon-gizmo iconhover" onclick="gui.helperContextMenu(this);" data-tt="toggle helper" data-infotext="toggle_helper"></a>
@@ -76,7 +77,15 @@
     <span class="icon icon-chevron-right"></span>
 </div>
 
-<canvas id="bgpreview" data-infotext="texpreview" class="info"></canvas>
+<canvas id="bgpreview" data-infotext="texpreview" class="info">
+</canvas>
+
+<div id="bgpreviewButtonsContainer" class="hidden">
+    <div id="bgpreviewButtons">
+        <a class="icon-x icon fright" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
+    </div>
+</div>
+
 
 <div id="patchviews">
     <div id="patch" tabindex="1" class="visible"></div>
@@ -92,29 +101,52 @@
 <div id="splitterPatch" class="splitter"></div>
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterTimeline" class="splitter"></div>
-<div id="splitterEditor" class="splitter"></div>
+<!-- <div id="splitterEditor" class="splitter"></div> -->
 <div id="splitterMaintabs" class="splitter"></div>
-
 
 <div id="vue-app"></div>
 
-<div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
+<!-- <div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
     <div class="icon icon-cables"></div>
+</div> -->
+<div id="userindicatorcontainer">
+    <span id="userindicator" class="hidden" >
+    <span style="background-color:white;display:block;width:2px;height:2px;float:left;margin:1px;"></span>
+    <span style="background-color:white;display:block;width:2px;height:2px;float:left;margin:1px;"></span>
+</span>
 </div>
-<div id="offlineIndicator"><span class="icon icon-x icon-1x" style="background-color:red;"></span></div>
-<div id="userindicatorcontainer"><span id="userindicator" class="icon icon-users icon-1x hidden" style="background-color:white;"></span></div>
 
-<div id="uploadprogresscontainer">
-    <div id="uploadprogress"></div>
-</div>
 
-<ul id="jobs"></ul>
+
 
 <div id="menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
     <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
+            <li class="nav_logo" >
+                <div id="offlineIndicator" style="background-color:red;"></span></div>
+
+                <div id="nav-logo" class="icon icon-cables"></div>
+                <div id="nav-loading" class="fa fa-circle-o-notch fa-spin"></div>&nbsp;
+
+                <div id="uploadprogresscontainer" class="hidden">
+                    <div id="uploadprogress"></div>
+                </div>
+
+                <ul class="nav-submenu">
+                    <li class="nav_jobs">
+                        <div id="jobs"></div>
+                    </li>
+                    <li class="divide"></li>
+                    <li class="nav_socketinfo">
+                        <div id="navsocketinfo"></div>
+                    </li>
+
+
+                </ul>
+            </li>
+
             <li class="nav_cables"><b>cables - <b id="username">???</b></b>
                 <ul class="nav-submenu">
                     <li class="nav_preferences">My preferences</span></li>
@@ -134,7 +166,7 @@
                 </ul>
             </li>
 
-            <li class="nav-item-help">
+            <li class="nav-item-project">
                 <b id="patchname">...</b>
                 <ul class="nav-submenu">
                     <li class="nav_patch_settings">Patch settings</li>
@@ -244,68 +276,17 @@
     <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
 
     <div id="splitterMeta" class="splitter"></div>
-    <div id="infoArea"></div>
+
+    <div id="infoAreaContainer">
+        <a class="icon-x icon fright" style="position: relative;z-index: 9999;right: 30px;top: 10px;" onclick="gui.closeInfo();">.</a>
+        <div id="infoArea"></div>
+    </div>
 </div>
 
 <div id="options"></div>
 
 
-<div class="" style="float:right">
-    <div class="hidden easingselect" >
-        <div>
-            <a class="button icon-linear" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_LINEAR);">&nbsp;Linear</a>
-            <a class="button icon-absolut" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ABSOLUTE);">&nbsp;Absolute</a>
-        <br/>
-        <br/>
-        </div>
-        <div>
-            <div class="title">Sin</div>
 
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_SIN_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Cubic</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_CUBIC_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Quart</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUART_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUART_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUART_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Quint</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUINT_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUINT_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_QUINT_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Expo</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_EXPO_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_EXPO_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_EXPO_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Back</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BACK_IN);"><span class="icon icon-ease-cub-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BACK_INOUT);"><span class="icon icon-ease-cubic"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BACK_OUT);"><span class="icon icon-ease-cub-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Elastic</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ELASTIC_IN);"><span class="icon icon-ease-exp-in"></span></a>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_ELASTIC_OUT);"><span class="icon icon-ease-exp-out"></span></a>
-        </div>
-        <div>
-            <div class="title">Bounce</div>
-            <a class="button" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
-        </div>
-    </div>
-</div>
 
 <form id="hiddenupload" class="hide">
     <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.handleFileInputUpload(this.files)"/>

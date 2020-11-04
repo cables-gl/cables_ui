@@ -9,11 +9,12 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
         options = options || {};
         this._visible = true;
+        this._hovering = false;
         this._rectInstancer = instancer;
         this._attrIndex = instancer.getIndex();
         this._parent = options.parent || null;
         this.childs = [];
-        this._circle = false;
+        this._decoration = false;
         this._x = 0;
         this._y = 0;
         this._z = 0;
@@ -59,6 +60,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     get draggable() { return this._draggable; }
 
+    get isDragging() { return this._isDragging; }
+
     get idx() { return this._attrIndex; }
 
     addChild(c)
@@ -66,11 +69,11 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this.childs.push(c);
     }
 
-    setCircle(c)
+    setDecoration(c)
     {
-        this._circle = c;
-        if (c) this._rectInstancer.setCircle(this._attrIndex, 1);
-        else this._rectInstancer.setCircle(this._attrIndex, 0);
+        this._decoration = c;
+        this._rectInstancer.setDecoration(this._attrIndex, c);
+        // else this._rectInstancer.setDecoration(this._attrIndex, 0);
     }
 
     get visible() { return this._visible; }
@@ -80,6 +83,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._visible = v;
         this._updateSize();
 
+        if (!this.visible) this._hovering = false;
         for (let i = 0; i < this.childs.length; i++) this.childs[i].visible = v;
     }
 
@@ -215,6 +219,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
+
+        // if (hovering && !this._hovering) console.log(this);
         this._hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent("hover", this);
@@ -254,8 +260,11 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         }
     }
 
+
     dispose()
     {
+        console.log("rect dispose!!!");
+        this.setDecoration(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
     }

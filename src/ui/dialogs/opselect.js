@@ -23,6 +23,9 @@ CABLES.UI.OpSelect = class
         this._eleSearchinfo = null;
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
         this._newOpOptions = {};
+        this._searchInputEle = null;
+        this._enterPressedEarly = false;
+        this._searching = false;
     }
 
     close()
@@ -31,34 +34,47 @@ CABLES.UI.OpSelect = class
         gui.patchView.focus();
     }
 
+    _getQuery()
+    {
+        return document.getElementById("opsearch").value;
+    }
+
     updateOptions(opname)
     {
         const perf = CABLES.uiperf.start("opselect.udpateOptions");
         const num = $(".searchbrowser .searchable:visible").length;
-        const query = $("#opsearch").val();
+        const query = this._getQuery();
+
+        const eleTypeStart = ele.byId("search_startType");
+        const eleTypeMore = ele.byId("search_startTypeMore");
+        const eleNoResults = ele.byId("search_noresults");
 
         if (query.length === 0)
         {
-            $("#search_startType").show();
+            ele.show(eleTypeStart);// .classList.remove("hidden");
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
                     this._list[i].element[0].style.display = "none";
         }
-        else $("#search_startType").hide();
+        else ele.hide(eleTypeStart);// .classList.add("hidden");
 
-        if (query.length == 1) $("#search_startTypeMore").show();
-        else $("#search_startTypeMore").hide();
+        if (query.length == 1) ele.show(eleTypeMore);// .classList.remove("hidden");
+        else ele.hide(eleTypeMore);// .classList.add("hidden");
 
-        if (num === 0 && query.length > 1)
+
+        if (num == 0 && query.length > 1)
         {
-            $("#search_noresults").show();
-            $("#searchinfo").empty();
-            const userOpName = `Ops.User.${gui.user.usernameLowercase}.${$("#opsearch").val()}`;
+            ele.show(eleNoResults);// .classList.remove("hidden");
+            ele.byId("searchinfo").innerHMTL = "";
+            const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
             $(".userCreateOpName").html(userOpName);
             $("#createuserop").attr("onclick", `gui.serverOps.create('${userOpName}');`);
         }
-        else $("#search_noresults").hide();
+        else
+        {
+            ele.hide(eleNoResults);// .classList.add("hidden");
+        }
 
         let optionsHtml = "";
 
@@ -69,9 +85,9 @@ CABLES.UI.OpSelect = class
 
         optionsHtml += `&nbsp;found ${num} ops.`;// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
-        if (gui.user.isAdmin && $("#opsearch").val() && ($("#opsearch").val().startsWith("Ops.") || $("#opsearch").val().startsWith("Op.")))
+        if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
         {
-            optionsHtml += `&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create('${$("#opsearch").val()}');">create op</a>`;
+            optionsHtml += `&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create('${this._getQuery()}');">create op</a>`;
         }
 
         if (opname && (gui.user.isAdmin || opname.startsWith(`Ops.User.${gui.user.username}`)) && gui.serverOps.isServerOp(opname))
@@ -188,6 +204,13 @@ CABLES.UI.OpSelect = class
                 points += shortnessPoints;
                 scoreDebug += `+${shortnessPoints} shortness namespace<br/>`;
             }
+
+            if (found && this._list[i].old)
+            {
+                points -= 1;
+                scoreDebug += "-1 outdated<br/>";
+            }
+
 
             if (found && list[i].pop > 0)
             {
@@ -331,7 +354,7 @@ CABLES.UI.OpSelect = class
 
     search()
     {
-        const q = $("#opsearch").val();
+        const q = this._getQuery();
         // if(q==this.lastQuery)return;
         this.lastQuery = q;
         this._search(q);
@@ -375,15 +398,15 @@ CABLES.UI.OpSelect = class
 
         tinysort.defaults.order = "desc";
 
-        clearTimeout(this._sortTimeout);
-        this._sortTimeout = setTimeout(
-            () =>
-            {
-                tinysort(".searchresult", { "data": "score" });
-                this.Navigate(0);
-                this.updateOptions();
-            }, 150,
-        );
+        // clearTimeout(this._sortTimeout);
+        // this._sortTimeout = setTimeout(
+        //     () =>
+        //     {
+        tinysort(".searchresult", { "data": "score" });
+        this.Navigate(0);
+        this.updateOptions();
+        // }, 150,
+        // );
 
 
         perf.finish();
@@ -426,10 +449,7 @@ CABLES.UI.OpSelect = class
 
             for (let i = 0; i < this._list.length; i++)
             {
-                if (!this._list[i].shortName)
-                {
-                    this._list[i].shortName = this._list[i].name;
-                }
+                if (!this._list[i].shortName) this._list[i].shortName = this._list[i].name;
 
                 maxPop = Math.max(this._list[i].pop || 0, maxPop);
                 this._list[i].id = i;
@@ -439,6 +459,9 @@ CABLES.UI.OpSelect = class
                 this._list[i]._lowerCaseName = this._list[i].name.toLowerCase();
                 this._list[i]._nameSpace = `${this._list[i].nameSpace.toLowerCase()}.`;
                 this._list[i]._nameSpaceFull = `${this._list[i].nameSpace.toLowerCase()}.${this._list[i].shortName.toLowerCase()}`;
+
+                const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
+                if (this._list[i]._lowerCaseName.indexOf("deprecated") > -1 || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
             }
 
             CABLES.UI.OPSELECT.maxPop = maxPop;
@@ -458,13 +481,14 @@ CABLES.UI.OpSelect = class
 
     show(options, linkOp, linkPort, link)
     {
+        this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
 
-
         this._newOpOptions =
         {
+            "subPatch": options.subPatch,
             "onOpAdd": options.onOpAdd,
             "linkNewOpToPort": linkPort,
             "linkNewOpToOp": linkOp,
@@ -472,18 +496,18 @@ CABLES.UI.OpSelect = class
         };
 
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
-        console.log("_forceShowOldOps", this._forceShowOldOps);
+        this._searchInputEle = document.getElementById("opsearch");
 
         if (options.search)
         {
-            $("#opsearch").val(options.search);
+            this._searchInputEle.value = options.search;
             this.search();
         }
 
         if (this.firstTime) this.search();
         if (!this._list || !this._html) this.prepare();
 
-        $("#search_noresults").hide();
+        ele.hide(ele.byId("search_noresults"));
 
         CABLES.UI.MODAL.show(null,
             {
@@ -491,6 +515,7 @@ CABLES.UI.OpSelect = class
                 "element": "#opsearchmodal",
                 "transparent": true,
                 "onClose": this.close,
+                "nopadding": true
             });
 
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
@@ -510,7 +535,7 @@ CABLES.UI.OpSelect = class
 
         this.clear = function ()
         {
-            let v = $("#opsearch").val();
+            let v = this._getQuery();
 
             if (v.indexOf(".") > 0)
             {
@@ -553,21 +578,32 @@ CABLES.UI.OpSelect = class
 
     onInput(e)
     {
-        this.displayBoxIndex = 0;
-        this.updateInfo();
-        this.search();
+        clearTimeout(this._keyTimeout);
+
+        document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+        this._searching = true;
+
+        this._keyTimeout = setTimeout(() =>
+        {
+            this._keyTimeout = null;
+            this.displayBoxIndex = 0;
+            this.updateInfo();
+            this.search();
+            document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+            this._searching = false;
+            if (this._enterPressedEarly) this.addSelectedOp();
+        }, 250);
     }
 
     addOp(opname)
     {
         if (opname && opname.length > 2)
         {
+            gui.log.userInteraction("adds op " + opname);
+
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
-            if (this._onOpAdd)
-            {
-                this._onOpAdd();
-            }
+            if (this._onOpAdd) this._onOpAdd();
         }
     }
 
@@ -587,21 +623,27 @@ CABLES.UI.OpSelect = class
             break;
 
         case 13:
-            this.addSelectedOp();
+            if (this._searching)
+            {
+                this._enterPressedEarly = true;
+                return;
+            }
+            else this.addSelectedOp();
+
             e.preventDefault();
             break;
 
         case 8:
-            if (this._backspaceDelay)
-            {
-                clearTimeout(this._backspaceDelay);
-            }
+            // if (this._backspaceDelay)
+            // {
+            //     clearTimeout(this._backspaceDelay);
+            // }
 
-            this._backspaceDelay = setTimeout(() =>
-            {
-                this._backspaceDelay = null;
-                this.onInput();
-            }, 300);
+            // this._backspaceDelay = setTimeout(() =>
+            // {
+            // this._backspaceDelay = null;
+            this.onInput();
+            // }, 300);
 
             return true;
         case 38: // up
@@ -646,7 +688,7 @@ CABLES.UI.OpSelect = class
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        shortName = opdoc.shortNameDisplay;
+                        if (!this._forceShowOldOps) shortName = opdoc.shortNameDisplay;
                     }
 
                     if (hidden)
@@ -660,6 +702,12 @@ CABLES.UI.OpSelect = class
 
                     if (isFunction && !hidden)
                     {
+                        let oldState = "";
+                        if (hidden)oldState = "OLD";
+                        if (opdocHidden)oldState = "OLD";
+                        if (opname.indexOf("Deprecated") > -1)oldState = "DEPREC";
+                        if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
+
                         const op = {
                             "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
                             "isOp": isOp,
@@ -667,7 +715,7 @@ CABLES.UI.OpSelect = class
                             "userOp": opname.startsWith("Ops.User"),
                             "shortName": shortName,
                             "nameSpace": nameSpace,
-                            "old": opdocHidden,
+                            "oldState": oldState,
                             "lowercasename": lowercasename,
                         };
                         op.pop = gui.opDocs.getPopularity(opname);

@@ -5,7 +5,7 @@
 
     </body>
 
-<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
+<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script><!-- electron module workaround/fix -->
     <script>
 "use strict";
         var CABLESUILOADER = CABLESUILOADER || {};
@@ -34,7 +34,7 @@
         CABLESUILOADER.uiLoadStart=performance.now();
         CABLESUILOADER.startup={};
         CABLESUILOADER.startup.log=[];
-        CABLESUILOADER.startup.maxEvents=16-1;
+        CABLESUILOADER.startup.maxEvents=17-1;
         CABLESUILOADER.startup.numEvents=0;
 
         function incrementStartup()
@@ -163,7 +163,7 @@
                                             }
                                             else
                                             {
-                                                if (window.module) module = window.module;
+
                                                 CABLES.uiperf = new CABLES.UiPerformance();
 
                                                 startUi(cfg);
@@ -205,8 +205,6 @@
         CABLES.UI.talker.send('cables', {"cmd":"sendConfig"} );
         */
 
-
-        console.log("started...");
         if(! (function() { return !this; })() ) console.log('not in strict mode: footer html' );
 
 

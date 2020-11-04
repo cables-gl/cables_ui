@@ -10,22 +10,44 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
 
-        this._sourcePort = $("#params_port").html();
+        this._sourcePort = document.getElementById("params_port").innerHTML;
         this._templatePort = Handlebars.compile(this._sourcePort);
 
-        this._sourceHead = $("#params_op_head").html();
+        this._sourceHead = document.getElementById("params_op_head").innerHTML;// $("#params_op_head").html();
         this._templateHead = Handlebars.compile(this._sourceHead);
 
         this._currentOp = null;
 
         this._updateWatchPorts();
-
-        // this._cycleWatchPort = false;
     }
 
     dispose()
     {
         this._watchPorts.length = 0;
+    }
+
+    clear()
+    {
+        this._currentOp = null;
+    }
+
+    refresh()
+    {
+        this.show(this._currentOp);
+    }
+
+    removePorts()
+    {
+        for (let i = 0; i < this._watchPorts.length; i++)
+        {
+            delete this._watchPorts[i]._tempLastUiValue;
+            delete this._watchPorts[i]._tempLastUiEle;
+            delete this._watchPorts[i]._tempLastUiEleId;
+        }
+
+        this._watchPorts.length = 0;
+        this._watchAnimPorts.length = 0;
+        this._watchColorPicker.length = 0;
     }
 
     show(op)
@@ -35,9 +57,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             op = gui.corePatch().getOpById(op);
         }
 
-
         this._currentOp = op;
-        if (!op) return;
+        if (!op)
+        {
+            this.removePorts();
+            return;
+        }
         op.emitEvent("uiParamPanel");
         if (op.id != self._oldOpParamsId)
         {
@@ -52,7 +77,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
 
-        let i = 0;
         this.emitEvent("opSelected", op);
 
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
@@ -61,7 +85,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (self.timeLine)
         {
             let foundAnim = false;
-            for (i = 0; i < op.portsIn.length; i++)
+            for (let i = 0; i < op.portsIn.length; i++)
             {
                 if (op.portsIn[i].isAnimated())
                 {
@@ -91,9 +115,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         // if (!currentOp) return;
 
-        this._watchPorts = [];
-        this._watchAnimPorts = [];
-        this._watchColorPicker = [];
+        this.removePorts();
 
         let ownsOp = false;
         if (op.objName.startsWith("Ops.User." + gui.user.username)) ownsOp = true;
@@ -110,7 +132,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
         let oldversion = false;
-        if (doc && doc.oldVersion) oldversion = doc.oldVersion;
+        let newestVersion = false;
+        if (doc && doc.oldVersion)
+        {
+            oldversion = doc.oldVersion;
+            console.log(doc);
+            newestVersion = doc.newestVersion;
+        }
 
         let html = this._templateHead({
             op,
@@ -120,6 +148,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
             ownsOp,
             "oldVersion": oldversion,
+            "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
             "hasExample": hasScreenshot,
         });
@@ -137,7 +166,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             let lastGroup = null;
             const perfLoop = CABLES.uiperf.start("_showOpParamsLOOP");
 
-            for (i = 0; i < op.portsIn.length; i++)
+            for (let i = 0; i < op.portsIn.length; i++)
             {
                 let startGroup = null;
                 let groupSpacer = false;
@@ -243,7 +272,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
         });
 
-        // $('#options').html(html);
         document.getElementById("options").innerHTML = html;
 
         // gui.showOpDoc(op.objName);
@@ -254,15 +282,16 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         this.updateUiAttribs();
 
-        for (i = 0; i < op.portsIn.length; i++)
+        for (let i = 0; i < op.portsIn.length; i++)
         {
             if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == "file")
             {
                 let shortName = String(op.portsIn[i].get() || "none");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
+
                 $("#portFilename_" + i).html("<span class=\"button fa fa-folder-open-o monospace\" style=\"text-transform:none;font-family:monospace;font-size: 13px;\">" + shortName + "</span>");
 
-                if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".png"))
+                if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".webp"))
                 {
                     $("#portFileVal_" + i + "_preview").css("max-width", "100%");
                     $("#portFileVal_" + i + "_preview").html("<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>");
@@ -303,10 +332,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             (function (index)
             {
-                $("#portdelete_in_" + index).on("click", function (e)
+                $("#portdelete_in_" + index).on("click", (e) =>
                 {
                     op.portsIn[index].removeLinks();
-                    self.showOpParams(op);
+                    // gui.patchView.showOpParams(op);
+                    gui.opParams.show(op);
                 });
             }(ipip));
         }
@@ -325,7 +355,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     if (_thePort.isAnimated())
                     {
                         gui.timeLine().setAnim(_thePort.anim, {
-                            "name": _thePort.name,
+                            "opid": _thePort.parent.id,
+                            "name": _thePort.parent.getTitle() + ": " + _thePort.name,
                         });
                     }
                 });
@@ -352,7 +383,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (performance.now() - this._uiAttrFpsLast > 1000)
         {
             this._uiAttrFpsLast = performance.now();
-            if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates!", this._uiAttrFpsCount, this._currentOp.name);
+            if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
             this._uiAttrFpsCount = 0;
         }
 
@@ -438,18 +469,18 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && thePort.type != CABLES.OP_PORT_TYPE_STRING && thePort.type != CABLES.OP_PORT_TYPE_ARRAY && thePort.type != CABLES.OP_PORT_TYPE_OBJECT) continue;
 
                 let newValue = "";
-                const id = ".watchPortValue_" + thePort.watchId;
+                const id = "watchPortValue_" + thePort.watchId;
                 let el = null;
 
                 if (thePort.isAnimated())
                 {
-                    el = $(id);
+                    el = $("." + id);
                     thePort._tempLastUiValue = thePort.get();
-                    if (el.val() != thePort.get()) el.val(thePort.get());
+                    if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {
-                    newValue = this._formatNumber(thePort.get());
+                    newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
@@ -458,7 +489,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
-                    newValue = "\"" + thePort.get() + "\"";
+                    newValue = "\"" + thePort.getValueForDisplay() + "\"";
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {
@@ -470,13 +501,25 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     newValue = String(thePort.get());
                 }
 
-                if (thePort._tempLastUiValue != newValue)
+                // if (thePort._tempLastUiValue != newValue)
                 {
-                    el = $(id);
-                    el.html(newValue);
-                    thePort._tempLastUiValue = newValue;
-                }
+                    let ele = thePort._tempLastUiEle;
+                    // if (!ele || thePort._tempLastUiEleId != id)
+                    // {
+                    ele = document.getElementsByClassName(id);
+                    if (ele.length > 0)
+                    {
+                        ele = thePort._tempLastUiEle = ele[0];
+                        thePort._tempLastUiEleId = id;
+                    }
+                    // }
 
+                    if (ele)
+                    {
+                        ele.innerHTML = newValue;
+                        thePort._tempLastUiValue = newValue;
+                    }
+                }
 
                 CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
             }

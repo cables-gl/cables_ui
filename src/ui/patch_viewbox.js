@@ -45,8 +45,9 @@ CABLES.UI.PatchViewBox.prototype._init = function ()
             "stroke-width": 1
         });
 
-        $("#minimap svg").on("mousemove touchmove", this._dragMiniMap.bind(this));
-        $("#minimap svg").on("mousedown", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("mousemove", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("touchmove", this._dragMiniMap.bind(this));
+        document.querySelector("#minimap svg").addEventListener("mousedown", this._dragMiniMap.bind(this));
     }
 };
 
@@ -104,12 +105,7 @@ CABLES.UI.PatchViewBox.prototype._fixAspectRatio = function (vb)
 
 CABLES.UI.PatchViewBox.prototype._setDefaultViewbox = function ()
 {
-    if (!this._showingNavHelperEmpty)
-    {
-        this._showingNavHelperEmpty = true;
-        this._eleNavHelperEmpty.style.display = "block";
-        this.set(-200, -200, 400, 400);
-    }
+    this.set(-200, -200, 400, 400);
 };
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
@@ -315,7 +311,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
             if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
             else delta = 1 + 0.2 * wheelMultiplier;
 
-            this.zoom(delta);
+            this.zoom(delta, event);
         }
         if (event.ctrlKey || event.altKey || event.metaKey) // disable chrome pinch/zoom gesture
         {
@@ -326,7 +322,7 @@ CABLES.UI.PatchViewBox.prototype.bindWheel = function (ele)
     });
 };
 
-CABLES.UI.PatchViewBox.prototype.zoom = function (delta)
+CABLES.UI.PatchViewBox.prototype.zoom = function (delta, event)
 {
     if (delta == 0) return;
 
@@ -339,16 +335,17 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta)
         this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
     }
 
-    const oldx = (event.clientX - this._elePatch.offsetLeft);
-    const oldy = (event.clientY - this._elePatch.offsetTop);
-    const x = (this._viewBox.x) + Number(oldx / this._zoom);
-    const y = (this._viewBox.y) + Number(oldy / this._zoom);
+    const mousePixelX = (event.clientX - this._elePatch.offsetLeft);
+    const mousePixelY = (event.clientY - this._elePatch.offsetTop);
+
+    const x = (this._viewBox.x) + Number(mousePixelX / this._zoom);
+    const y = (this._viewBox.y) + Number(mousePixelY / this._zoom);
 
     this._zoom = ((this._zoom || 1) * delta) || 1;
 
     this.set(
-        x - (oldx / this._zoom),
-        y - (oldy / this._zoom),
+        x - (mousePixelX / this._zoom),
+        y - (mousePixelY / this._zoom),
         patchWidth / this._zoom,
         patchHeight / this._zoom
     );

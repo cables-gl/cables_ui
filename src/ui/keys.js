@@ -75,10 +75,12 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
 
             if (!k.target || k.target == e.target.id)
             {
+                gui.log.userInteraction("pressed " + e.key);
+
                 if (k.cb) k.cb(e);
                 else console.warn("[keys] key event has no callback", k);
 
-                e.preventDefault();
+                if (!e.dontPreventDefault) e.preventDefault();
 
                 return;
             }

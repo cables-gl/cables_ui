@@ -36,9 +36,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                 if (this._serverDate != data.updated)
                 {
                     CABLES.UI.MODAL.showError("meanwhile...", "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;");
-                    CABLES.UI.MODAL.contentElement.append("<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;");
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                 }
                 else
                 {
@@ -66,7 +66,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
             gui.bookmarks.cleanUp();
             data.ui.bookmarks = gui.bookmarks.getBookmarks();
-            data.ui.viewBox = this._viewBox.serialize();
+            // data.ui.viewBox = this._viewBox.serialize();
             data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
             data.ui.renderer = {};
             data.ui.renderer.w = gui.rendererWidth;
@@ -93,9 +93,18 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             return;
         }
 
+        const project = gui.project();
+        console.log("core settings", project._id);
+        let prompt = "Enter a name for the copy of this Project.<br/><br/>The following users will have access to the copy: ";
+        project.userList.forEach((name, i) =>
+        {
+            if (i > 0) prompt += ", ";
+            prompt += name;
+        });
+
         CABLES.UI.MODAL.prompt(
             "Save As...",
-            "Enter a name for the copy of this Project.<br/>The collaborators of this project will also have access to the copy.",
+            prompt,
             gui.corePatch().name,
             (name) =>
             {
@@ -173,7 +182,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         };
 
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
-        data.ui.viewBox = gui.patch()._viewBox.serialize();
+        // data.ui.viewBox = gui.patch()._viewBox.serialize();
+
+        gui.patchView.serialize(data.ui);
         data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
 
         data.ui.renderer = {};
@@ -232,6 +243,10 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     "name": name,
                     "namespace": currentProject.namespace,
                     "data": data,
+                    "buildInfo": {
+                        "core": CABLES.build,
+                        "ui": CABLES.UI.build
+                    }
                 },
                 function (err, r)
                 {
@@ -257,27 +272,23 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     else CABLES.UI.notify("Patch saved");
 
                     this._serverDate = r.updated;
-
                     const thePatch = gui.corePatch();
                     const cgl = thePatch.cgl;
-
                     const doSaveScreenshot = gui.corePatch().isPlaying();
-                    const w = $("#glcanvas").attr("width");
-                    const h = $("#glcanvas").attr("height");
+                    const w = cgl.canvas.width / cgl.pixelDensity;
+                    const h = cgl.canvas.height / cgl.pixelDensity;
 
                     if (doSaveScreenshot)
                     {
-                        $("#glcanvas").attr("width", 640);
-                        $("#glcanvas").attr("height", 360);
+                        cgl.canvas.width = "640px";
+                        cgl.canvas.height = "360px";
                     }
 
                     if (doSaveScreenshot)
                     {
                         const screenshotTimeout = setTimeout(function ()
                         {
-                            //                             gui.corePatch().cgl.setSize(w,h);
-                            //                             gui.corePatch().resume();
-                            cgl.setSize(w / cgl.pixelDensity, h / cgl.pixelDensity);
+                            cgl.setSize(w, h);
                             thePatch.resume();
                         }, 300);
 
@@ -291,7 +302,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         {
                             clearTimeout(screenshotTimeout);
 
-                            cgl.setSize(w / cgl.pixelDensity, h / cgl.pixelDensity);
+                            cgl.setSize(w, h);
                             thePatch.resume();
 
                             const reader = new FileReader();

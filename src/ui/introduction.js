@@ -25,11 +25,11 @@ function ()
             console.error("defineIntroStep called with empty argument(s)");
             return;
         }
-        const el = $(selector).first();
-        if (el.length)
+        const el = document.querySelector(selector);
+        if (el)
         { /* if element exists */
-            el.attr("data-step", stepTmp);
-            el.attr("data-intro", text);
+            el.setAttribute("data-step", stepTmp);
+            el.setAttribute("data-intro", text);
             stepTmp++;
         }
         else
@@ -66,7 +66,7 @@ function ()
             "left"
         );
         defineIntroStep(
-            ".button.projectname",
+            ".nav-item-project",
             "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
             "bottom"
         );

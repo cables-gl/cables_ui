@@ -10,7 +10,7 @@ CABLES.UI.Patch = function (_gui)
     const self = this;
     this.ops = [];
     this.scene = null;
-    this.disabled = CABLES.UI.userSettings.get("svgpatchviewdisable");
+    this.disabled = CABLES.UI.userSettings.get("glpatchview");
     const gui = _gui;
 
     let currentProject = null;
@@ -119,9 +119,19 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
+    this.focus = function ()
+    {
+        $("#patch").focus();
+    };
+
     this.isFocussed = function ()
     {
         return $("#patch").is(":focus");
+    };
+
+    this.serialize = function (dataUi)
+    {
+        dataUi.viewBox = this._viewBox.serialize();
     };
 
 
@@ -149,37 +159,41 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
-                console.log("svg paste cliup....");
-
-
                 self.setSelectedOp(null);
+                gui.patch().checkOpsInSync();
+
+                // setTimeout(function ()
+                // {
                 for (let i = 0; i < ops.length; i++)
                 {
                     const uiop = self.addSelectedOpById(ops[i].id);
 
-                    uiop.setSelected(false);
-                    uiop.setSelected(true);
+                    if (uiop)
+                    {
+                        uiop.setSelected(false);
+                        uiop.setSelected(true);
+                    }
+                    else console.log("paste: cant find uiop", ops[i].id);
+
                     gui.setStateUnsaved();
                 }
 
-                setTimeout(function ()
+                gui.patch().setCurrentSubPatch(currentSubPatch);
+
+                if (focusSubpatchop)
                 {
-                    gui.patch().setCurrentSubPatch(currentSubPatch);
+                    console.log(focusSubpatchop, mouseX, mouseY);
+                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
+                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
-                    if (focusSubpatchop)
-                    {
-                        console.log(focusSubpatchop, mouseX, mouseY);
-                        const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                        // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+                    const uiop = gui.patch().getUiOp(op);
+                    // uiop.setPos(mouseX, mouseY);
 
-                        const uiop = gui.patch().getUiOp(op);
-                        // uiop.setPos(mouseX, mouseY);
-
-                        // gui.patch().focusOp(op.id,true);
-                        // console.log(op);
-                        // gui.patch().centerViewBoxOps();
-                    }
-                }, 100);
+                    // gui.patch().focusOp(op.id,true);
+                    // console.log(op);
+                    // gui.patch().centerViewBoxOps();
+                }
+                // }, 100);
             });
     };
 
@@ -336,8 +350,8 @@ CABLES.UI.Patch = function (_gui)
     gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
     gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
 
-    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Align selected ops vertical or horizontal", "down", "patch", {}, (e) => { this.alignSelectedOps(); });
+    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
     gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("COMPRESS!"); this.compressSelectedOps(); });
 
     gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { spacePressed = true; gui.setCursor("grab"); });
@@ -731,45 +745,15 @@ CABLES.UI.Patch = function (_gui)
         {
             if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
             if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
-
-            if (proj.ui.renderer)
-            {
-                if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
-                {
-                    proj.ui.renderer.w = 640;
-                    proj.ui.renderer.h = 360;
-                }
-
-                gui.rendererWidth = proj.ui.renderer.w;
-                gui.rendererHeight = proj.ui.renderer.h;
-                gui.corePatch().cgl.canvasScale = proj.ui.renderer.s || 1;
-                gui.setLayout();
-            }
-
-            gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
         self.updateViewBox();
         currentSubPatch = 0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
-        gui.patchView.store.setServerDate(proj.updated);
 
         gui.corePatch().clear();
         gui.patch().updateBounds();
-
-        gui.serverOps.loadProjectLibs(proj, function ()
-        {
-            gui.corePatch().deSerialize(proj);
-            CABLES.undo.clear();
-            CABLES.UI.MODAL.hideLoading();
-            self.updateSubPatches();
-            gui.patch().updateBounds();
-
-            // gui.patchConnection.send(CABLES.PACO_LOAD, {
-            //     "patch": JSON.stringify(proj),
-            // });
-        });
     };
 
     this.show = function (_scene)
@@ -959,6 +943,31 @@ CABLES.UI.Patch = function (_gui)
 
     function doLink() {}
 
+    this.checkOpsInSync = function ()
+    {
+        console.log("core ops / ui ops: ", gui.corePatch().ops.length, this.ops.length);
+
+        let notFound = 0;
+        for (let i = 0; i < gui.corePatch().ops.length; i++)
+        {
+            let found = false;
+            for (let j = 0; j < this.ops.length; j++)
+            {
+                if (gui.corePatch().ops[i] == this.ops[j].op)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                notFound++;
+                console.log("creating unfound uiop..... ", gui.corePatch().ops[i]);
+                this.initUiOp(gui.corePatch().ops[i], true);
+            }
+        }
+    };
+
     this.removeQuickLinkLine = function ()
     {
         if (self.quickLinkLine)
@@ -982,16 +991,38 @@ CABLES.UI.Patch = function (_gui)
     {
         function checkDuplicatePorts(op)
         {
-            for (let j = 0; j < op.portsIn.length; j++)
-                for (let i = 0; i < op.portsIn.length; i++)
-                    if (i != j)
-                        if (op.portsIn[i].name == op.portsIn[j].name)
+            let objName = null;
+            let portName = null;
+
+            for (let k = 0; k < op.portsOut.length; k++)
+            {
+                for (let j = 0; j < op.portsIn.length; j++)
+                {
+                    if (op.portsIn[j].name == op.portsOut[k].name)
+                    {
+                        objName = op.objName;
+                        portName = op.portsIn[j].name;
+                    }
+                    for (let i = 0; i < op.portsIn.length; i++)
+                    {
+                        if ((i != j && op.portsIn[i].name == op.portsIn[j].name))
                         {
-                            console.error("op " + op.objName + " has duplicate port names (" + op.portsIn[j].name + "), they must be unique. ");
-                            CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
+                            objName = op.objName;
+                            portName = op.portsIn[j].name;
                         }
+                    }
+                }
+            }
+
+            if (portName)
+            {
+                console.error("op " + objName + " has duplicate port names (" + portName + "), they must be unique. ");
+                CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
+            }
         }
+
         const op = uiOp.op;
+
 
         if (!isLoading)
         {
@@ -1036,8 +1067,8 @@ CABLES.UI.Patch = function (_gui)
 
         if (op.uiAttribs.hasOwnProperty("translate"))
         {
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = CABLES.UI.snapOpPosX(op.uiAttribs.translate.x);
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = CABLES.UI.snapOpPosY(op.uiAttribs.translate.y);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = gui.patchView.snapOpPosX(op.uiAttribs.translate.x);
+            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = gui.patchView.snapOpPosY(op.uiAttribs.translate.y);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
         }
 
@@ -1065,21 +1096,21 @@ CABLES.UI.Patch = function (_gui)
 
         if (!isLoading)
         {
-            setTimeout(function ()
-            {
-                if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
+            // setTimeout(function ()
+            // {
+            if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
 
-                if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
-                showAddedOpTimeout = setTimeout(function ()
-                {
-                    gui.patch().setSelectedOp(null);
-                    gui.patch().setSelectedOp(uiOp);
-                    gui.opParams.show(op);
-                    gui.patch().updateBounds();
-                    gui.patch().getViewBox().update();
-                    uiOp.oprect.showFocus();
-                }, 30);
+            if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
+            showAddedOpTimeout = setTimeout(function ()
+            {
+                gui.patch().setSelectedOp(null);
+                gui.patch().setSelectedOp(uiOp);
+                gui.opParams.show(op);
+                gui.patch().updateBounds();
+                gui.patch().getViewBox().update();
+                uiOp.oprect.showFocus();
             }, 30);
+            // }, 30);
         }
 
         // select ops after pasting...
@@ -1094,12 +1125,12 @@ CABLES.UI.Patch = function (_gui)
             uiOp.oprect.showFocus();
             gui.patch().updateBounds();
 
-            setTimeout(function ()
-            {
-                // this fixes links not showing up after pasting
-                uiOp.setPos();
-                gui.patch().getViewBox().update();
-            }, 30);
+            // setTimeout(function ()
+            // {
+            // this fixes links not showing up after pasting
+            uiOp.setPos();
+            // gui.patch().getViewBox().update();
+            // }, 30);
         }
 
         if (uiOp.op.objName.startsWith("Ops.Deprecated.")) uiOp.op.uiAttr({ "error": "Op is deprecated" });
@@ -1187,79 +1218,16 @@ CABLES.UI.Patch = function (_gui)
             this.checkLinkTimeWarnings();
         }.bind(this));
 
-        scene.addEventListener("onLink", function (p1, p2)
-        {
-            if (this.disabled) return;
-            gui.setStateUnsaved();
-
-            let uiPort1 = null;
-            let uiPort2 = null;
-            for (let i = 0; i < self.ops.length; i++)
-            {
-                for (let j = 0; j < self.ops[i].portsIn.length; j++)
-                {
-                    if (this.ops[i].portsIn[j].thePort == p1)
-                    {
-                        uiPort1 = this.ops[i].portsIn[j];
-                        break;
-                    }
-                    if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
-                }
-                // for (var jo in this.ops[i].portsOut) {
-                for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
-                {
-                    if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
-                    if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
-                }
-            }
-
-            if (!uiPort1 || !uiPort2)
-            {
-                console.log("no uiport found");
-                return;
-            }
-
-            const thelink = new UiLink(uiPort1, uiPort2);
-
-            uiPort1.opUi.links.push(thelink);
-            uiPort2.opUi.links.push(thelink);
-
-            if (!isLoading && !uiPort1.opUi.isHidden()) thelink.show();
-
-
-            if (!isLoading)
-            {
-                // todo: update is too often ?? check if current op is linked else do not update!!!
-                this.updateCurrentOpParams();
-
-                const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
-                {
-                    CABLES.undo.add({
-                        "title": "link",
-                        undo()
-                        {
-                            const op1 = scene.getOpById(op1Id);
-                            const op2 = scene.getOpById(op2Id);
-                            if (!op1 || !op2)
-                            {
-                                console.warn("undo: op not found");
-                                return;
-                            }
-                            op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                        },
-                        redo()
-                        {
-                            scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                        }
-                    });
-                }(p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
-            }
-            this.checkLinkTimeWarnings();
-        }.bind(this));
+        scene.addEventListener("onLink", this.onLinkEvent.bind(this));
+        scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
 
         scene.addEventListener("onOpDelete", function (op)
         {
-            if (this.disabled) return;
+            if (this.disabled)
+            {
+                console.log("wont delete, patch is disabled");
+                return;
+            }
             const undofunc = (function (opname, opid)
             {
                 const oldValues = {};
@@ -1280,46 +1248,138 @@ CABLES.UI.Patch = function (_gui)
                 });
             }(op.objName, op.id));
 
+            let found = false;
             for (const i in self.ops)
             {
                 if (self.ops[i].op == op)
                 {
                     const theUi = self.ops[i];
+                    found = true;
+                    console.log("found op to delete!!!");
 
                     theUi.hideAddButtons();
                     theUi.remove();
                     self.ops.splice(i, 1);
                 }
             }
+
+            if (!found)console.log("delete ops NOT FOUND!!!");
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
         });
+    };
 
-        scene.addEventListener("onOpAdd",
-            function (op)
+    this.onLinkEvent = function (p1, p2)
+    {
+        if (this.disabled) return;
+
+        if (!isLoading)
+            console.log("onlink event!", p1.parent.name, p1.name);
+
+        gui.setStateUnsaved();
+
+        let uiPort1 = null;
+        let uiPort2 = null;
+        for (let i = 0; i < self.ops.length; i++)
+        {
+            for (let j = 0; j < self.ops[i].portsIn.length; j++)
             {
-                if (this.disabled) return;
-                gui.setStateUnsaved();
-                this._elPatch.focus();
-                let width = CABLES.UI.uiConfig.opWidth;
-                if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+                if (this.ops[i].portsIn[j].thePort == p1)
+                {
+                    uiPort1 = this.ops[i].portsIn[j];
+                    break;
+                }
+                if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
+            }
+            // for (var jo in this.ops[i].portsOut) {
+            for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
+            {
+                if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
+                if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
+            }
+        }
 
-                const x = CABLES.UI.OPSELECT.newOpPos.x;
-                const y = CABLES.UI.OPSELECT.newOpPos.y;
-                const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
+        if (!uiPort1 || !uiPort2)
+        {
+            if (!isLoading)
+                console.warn("no uiport found");
 
-                self.ops.push(uiOp);
+            gui.patch().checkOpsInSync();
 
-                uiOp.wasAdded = false;
+            this.onLinkEvent(p1, p2);
+            return;
+        }
 
-                // setTimeout(
-                // ()=>{
-                doAddOp(uiOp);
-                this.opCollisionTest(uiOp);
-                self.checkLinkTimeWarnings();
+        const thelink = new UiLink(uiPort1, uiPort2);
 
-                // },10);
-            }.bind(this));
+        uiPort1.opUi.links.push(thelink);
+        uiPort2.opUi.links.push(thelink);
+
+        if (!isLoading)
+        {
+            uiPort1.opUi.redrawLinks();
+            uiPort2.opUi.redrawLinks();
+
+            if (!uiPort1.opUi.isHidden()) thelink.show();
+
+            // todo: update is too often ?? check if current op is linked else do not update!!!
+
+            const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
+            {
+                CABLES.undo.add({
+                    "title": "link",
+                    undo()
+                    {
+                        const op1 = scene.getOpById(op1Id);
+                        const op2 = scene.getOpById(op2Id);
+                        if (!op1 || !op2)
+                        {
+                            console.warn("undo: op not found");
+                            return;
+                        }
+                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                    },
+                    redo()
+                    {
+                        scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+                    }
+                });
+            }(this.scene, p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
+        }
+        this.checkLinkTimeWarnings();
+    };
+
+    this.initUiOp = function (op, norandom)
+    {
+        // if (!norandom && Math.random() > 0.9) return;
+        if (this.disabled) return;
+
+        // console.log("onopadd 2");
+        if (!isLoading)
+        // console.log("onop add event!", op.name);
+
+            gui.setStateUnsaved();
+        this._elPatch.focus();
+        let width = CABLES.UI.uiConfig.opWidth;
+        if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+
+        // console.log("onopadd 3");
+
+        const x = CABLES.UI.OPSELECT.newOpPos.x;
+        const y = CABLES.UI.OPSELECT.newOpPos.y;
+        const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
+
+        self.ops.push(uiOp);
+
+        uiOp.wasAdded = false;
+
+        // setTimeout(
+        // ()=>{
+        doAddOp(uiOp);
+        this.opCollisionTest(uiOp);
+        self.checkLinkTimeWarnings();
+
+        // },10);
     };
 
     this.setOpColor = function (col)
@@ -1359,33 +1419,33 @@ CABLES.UI.Patch = function (_gui)
     {
         if (currentSubPatch == which) return;
 
-        console.log("switch subpatch:", which);
+        // console.log("switch subpatch:", which);
+        gui.log.userInteraction("switch subpatch " + which);
 
         gui.setWorking(true, "patch");
 
-        setTimeout(function ()
+        // setTimeout(function ()
+        // {
+        subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+
+        for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+
+        currentSubPatch = which;
+        self.updateSubPatches();
+
+        if (subPatchViewBoxes[which])
         {
-            subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+            // viewBox = subPatchViewBoxes[which];
+            this._viewBox.deSerialize(subPatchViewBoxes[which]);
+            this.updateViewBox();
+        }
 
-            for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+        this._elPatch.focus();
 
-            currentSubPatch = which;
-            self.updateSubPatches();
+        gui.setWorking(false, "patch");
 
-            if (subPatchViewBoxes[which])
-            {
-                // viewBox = subPatchViewBoxes[which];
-                this._viewBox.deSerialize(subPatchViewBoxes[which]);
-                this.updateViewBox();
-            }
-
-            this._elPatch.focus();
-            gui.patchView.updateSubPatchBreadCrumb(currentSubPatch);
-
-            gui.setWorking(false, "patch");
-
-            this.currentPatchBounds = this.getSubPatchBounds();
-        }.bind(this), 10);
+        this.currentPatchBounds = this.getSubPatchBounds();
+        // }.bind(this), 10);
     };
 
 
@@ -1464,6 +1524,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.opCollisionTest = function (uiOp)
     {
+        if (!uiOp) return;
         const perf = CABLES.uiperf.start("opCollisionTest");
         let found = false;
         let count = 1;
@@ -1601,6 +1662,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.updatedOpPositionsFromUiAttribs = function (ops)
     {
+        self.checkOpsInSync();
         for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x, ops[i].op.uiAttribs.translate.y);
@@ -1898,49 +1960,49 @@ CABLES.UI.Patch = function (_gui)
 
     this.addAssetOpAuto = function (filename, event)
     {
-        if (!event) return;
-        let opname = "";
-
-        if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpImage;
-        else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpAudio;
-        else if (filename.endsWith(".3d.json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d;
-        else if (filename.endsWith(".mp4" || ".m4a" || ".mpg")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpVideo;
-        else if (filename.endsWith(".glb")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpGltf;
-        else if (filename.endsWith(".json")) opname = CABLES.UI.DEFAULTOPNAMES.defaultOpJson;
-        else
-        {
-            CABLES.UI.notify("no known operator found");
-            return;
-        }
-
-        const x = gui.patch().getCanvasCoordsMouse(event).x;
-        const y = gui.patch().getCanvasCoordsMouse(event).y;
-
-        const uiAttr = { "translate": { "x": x, "y": y } };
-        const op = gui.corePatch().addOp(opname, uiAttr);
-
-        for (let i = 0; i < op.portsIn.length; i++)
-            if (op.portsIn[i].uiAttribs.display == "file")
-                op.portsIn[i].set(filename);
+        gui.patchView.addAssetOpAuto(filename, event);
     };
+    // {
+    //     if (!event) return;
 
-    this.addAssetOp = function (opname, portname, filename, title)
-    {
-        if (!title) title = filename;
+    //     const ops = CABLES.UI.getOpsForFilename(filename);
 
-        const uiAttr = {
-            "title": title,
-            "translate": {
-                "x": this._viewBox.getCenterX(),
-                "y": this._viewBox.getCenterY()
-            }
-        };
-        gui.corePatch().addOp(opname, uiAttr, function (op)
-        {
-            if (op) op.getPort(portname).set("/assets/" + currentProject._id + "/" + filename);
-            console.log("new op", op, opname);
-        });
-    };
+    //     if (ops.length == 0)
+    //     {
+    //         CABLES.UI.notify("no known operator found");
+    //         return;
+    //     }
+
+    //     const opname = ops[0];
+
+    //     const x = gui.patch().getCanvasCoordsMouse(event).x;
+    //     const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+    //     const uiAttr = { "translate": { "x": x, "y": y } };
+    //     const op = gui.corePatch().addOp(opname, uiAttr);
+
+    //     for (let i = 0; i < op.portsIn.length; i++)
+    //         if (op.portsIn[i].uiAttribs.display == "file")
+    //             op.portsIn[i].set(filename);
+    // };
+
+    // this.addAssetOp = function (opname, portname, filename, title)
+    // {
+    //     if (!title) title = filename;
+
+    //     const uiAttr = {
+    //         "title": title,
+    //         "translate": {
+    //             "x": this._viewBox.getCenterX(),
+    //             "y": this._viewBox.getCenterY()
+    //         }
+    //     };
+    //     gui.corePatch().addOp(opname, uiAttr, function (op)
+    //     {
+    //         if (op) op.getPort(portname).set("/assets/" + currentProject._id + "/" + filename);
+    //         console.log("new op", op, opname);
+    //     });
+    // };
 
     this.disableEnableOps = function ()
     {
@@ -1996,45 +2058,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.getSubPatches = function (sort)
     {
-        let foundPatchIds = [];
-        const subPatches = [];
-        let i = 0;
-
-        for (i = 0; i < this.ops.length; i++)
-            if (this.ops[i].op.patchId && this.ops[i].op.patchId.get() !== 0)
-                foundPatchIds.push(this.ops[i].op.patchId.get());
-
-        // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
-        for (i = 0; i < this.ops.length; i++)
-            if (this.ops[i].op.uiAttribs && this.ops[i].op.uiAttribs.subPatch)
-                if (foundPatchIds.indexOf(this.ops[i].op.uiAttribs.subPatch) == -1)
-                    foundPatchIds.push(this.ops[i].op.uiAttribs.subPatch);
-
-        foundPatchIds = CABLES.uniqueArray(foundPatchIds);
-
-        for (i = 0; i < foundPatchIds.length; i++)
-        {
-            let found = false;
-            for (let j = 0; j < this.ops.length; j++)
-                if (this.ops[j].op.patchId != 0 && this.ops[j].op.patchId && this.ops[j].op.patchId.get() == foundPatchIds[i])
-                {
-                    subPatches.push({
-                        "name": this.ops[j].op.name,
-                        "id": foundPatchIds[i]
-                    });
-                    found = true;
-                }
-
-            if (!found)
-                subPatches.push({
-                    "name": "lost patch " + foundPatchIds[i],
-                    "id": foundPatchIds[i]
-                });
-        }
-
-        if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
-
-        return subPatches;
+        return gui.patchView.getSubPatches(sort);
     };
 
     this.linkTwoOps = function (op1, op2)

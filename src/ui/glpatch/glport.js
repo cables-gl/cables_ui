@@ -11,32 +11,50 @@ CABLES.GLGUI.GlPort = class
         this._glop = glop;
         this._glPatch = glpatch;
         this._rect = new CABLES.GLGUI.GlRect(rectInstancer, { "parent": oprect, "interactive": true });
-        this._rect.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth, CABLES.GLGUI.VISUALCONFIG.portHeight);
 
+        this._posX = i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding);
         glpatch.setDrawableColorByType(this._rect, p.type);
 
-        let y = 0;
-        if (this._port.direction == 1) y = CABLES.UI.uiConfig.opHeight - CABLES.GLGUI.VISUALCONFIG.portHeight;
-
-        this._rect.setPosition(i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding), y);
         oprect.addChild(this._rect);
 
         this._rect.on("mousedown", this._onMouseDown.bind(this));
         this._rect.on("mouseup", this._onMouseUp.bind(this));
         this._rect.on("hover", this._onHover.bind(this));
         this._rect.on("unhover", this._onUnhover.bind(this));
+
+        this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
+
+        this._updateSize();
+    }
+
+    _updateSize()
+    {
+        let h = CABLES.GLGUI.VISUALCONFIG.portHeight;
+        if (this._port.isLinked()) h *= 1.5;
+
+        let y = 0;
+        if (this._port.direction == 1) y = CABLES.UI.uiConfig.opHeight - CABLES.GLGUI.VISUALCONFIG.portHeight;
+        else if (this._port.isLinked()) y -= CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
+
+        this._rect.setPosition(this._posX, y);
+        this._rect.setSize(CABLES.GLGUI.VISUALCONFIG.portWidth, h);
+    }
+
+    _onLinkChanged()
+    {
+        this._updateSize();
     }
 
     _onMouseDown(e, rect)
     {
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
-        {
-            this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
-        }
-        else
-        {
-            this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name);
-        }
+        // if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
+        // {
+        //     this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
+        // }
+        // else
+        // {
+        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e.buttons);
+        // }
     }
 
     _onMouseUp(e, rect)
@@ -50,6 +68,9 @@ CABLES.GLGUI.GlPort = class
             "clientX": this._glPatch.viewBox.mouseX,
             "clientY": this._glPatch.viewBox.mouseY - 25,
         };
+
+        console.log(this._glop._links);
+
 
         console.log("port", this._port.name, this._rect.isHovering());
         CABLES.UI.updateHoverToolTip(event, this._port);

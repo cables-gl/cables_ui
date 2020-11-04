@@ -94,6 +94,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                 "content": port.get() + "",
                 "name": editorObj.name,
                 "syntax": port.uiAttribs.editorSyntax,
+                "hideFormatButton": port.uiAttribs.hideFormatButton,
                 "editorObj": editorObj,
                 "onClose": function (which)
                 {
@@ -269,7 +270,10 @@ CABLES.UI.initPortInputListener = function (op, index)
     {
         let v = "" + ele.val();
 
-        if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number")
+
+        if (
+            op.portsIn[index].uiAttribs.display != "bool" &&
+            (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number"))
         {
             if (isNaN(v) || v === "")
             {
@@ -291,7 +295,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                 else
                 {
                     ele.addClass("invalid");
-                    console.log("invalid number", op.portsIn[index]);
+                    console.log("invalid number", op.portsIn[index], mathParsed);
                 }
                 return;
             }
@@ -356,7 +360,6 @@ CABLES.UI.initPortInputListener = function (op, index)
                     });
             }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
         }
-
 
         op.portsIn[index].set(v);
         gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
@@ -439,7 +442,6 @@ CABLES.UI.initPortClickListener = function (op, index)
         }
     }
 
-
     $("#portgraph_in_" + index).on("click", function (e)
     {
         if (op.portsIn[index].isAnimated())
@@ -447,7 +449,8 @@ CABLES.UI.initPortClickListener = function (op, index)
             op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
             $("#portgraph_in_" + index).toggleClass("timingbutton_active");
             gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-                "name": op.portsIn[index].name,
+                "name": op.getTitle() + ": " + op.portsIn[index].name,
+                "opid": op.id,
                 "defaultValue": parseFloat($("#portval_" + index).val())
             });
         }
@@ -461,7 +464,6 @@ CABLES.UI.initPortClickListener = function (op, index)
         if (port) port.setVariable(e.target.value);
         else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
     });
-
 
     $("#portremovevar_" + index).on("click", function (e)
     {
@@ -516,7 +518,8 @@ CABLES.UI.initPortClickListener = function (op, index)
 
         op.portsIn[index].toggleAnim();
         gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
-            "name": op.portsIn[index].name,
+            "opid": op.id,
+            "name": op.getTitle() + ": " + op.portsIn[index].name,
             "defaultValue": parseFloat($("#portval_" + index).val())
         });
         op.portsIn[index].parent.refreshParams();

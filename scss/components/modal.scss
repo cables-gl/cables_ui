@@ -1,154 +1,130 @@
-
 /* shared between vue / normal cables, should only contain color and opacity */
 .modal-bg-look {
     background-color: var(--color-05);
     opacity: 0.45;
 }
 
-#modalbg
-{
-    top:0px;
-    left:0px;
-    width:100%;
-    height:100%;
+#modalbg {
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
     position: absolute;
     z-index: $z-index-modal-bg;
 }
 
-.nopadding
-{
-    padding:0px !important;
-    
-    .top
-    {
-        padding:20px;
+.nopadding {
+    padding: 0px !important;
+
+    .top {
+        padding: 20px;
         background-color: var(--color-01);
 
-        h3
-        {
-            margin-top:0px;
+        h3 {
+            margin-top: 0px;
         }
 
-        a
-        {
-            color:$highlight-color;
+        a {
+            color: $highlight-color;
             text-decoration: underline;
         }
     }
 
-    .bottom
-    {
-        padding:20px;
+    .bottom {
+        padding: 20px;
     }
-
 }
 
-#modalcontainer
-{
+#modalcontainer {
     border-radius: $border-radius-popups;
-	position: absolute;
-	display: block;
-	left:50%;
+    position: absolute;
+    display: block;
+    left: 50%;
     transform: translateX(-50%);
-    top:10%;
-	width:auto;
-    height:auto;
-	min-width: 720px;
+    top: 10%;
+    width: auto;
+    height: auto;
+    min-width: 720px;
     max-height: 75%;
-	overflow: auto;
-	z-index: $z-index-modal-container;
-	background-color: $background-color-dark;
+    overflow: auto;
+    z-index: $z-index-modal-container;
+    background-color: $background-color-dark;
     min-height: 100px;
-	-webkit-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
-    -moz-box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
-    box-shadow: -1px 1px 34px -6px rgba(0,0,0,0.68);
+    -webkit-box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
+    -moz-box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
+    box-shadow: -1px 1px 34px -6px rgba(0, 0, 0, 0.68);
 
-	padding-bottom: 15px;
+    padding-bottom: 15px;
 
-	.modalclose
-    {
-        right:15px;
+    .modalclose {
+        right: 15px;
         margin-top: 5px;
-		background-color: transparent;
+        background-color: transparent;
         position: absolute;
-		display: none;
-		.fa
-		{
-			font-size: 23px;
-		}
+        display: none;
+        .fa {
+            font-size: 23px;
+        }
     }
 
-    &.transparent
-    {
+    &.transparent {
         background-color: transparent !important;
         -webkit-box-shadow: none;
         -moz-box-shadow: none;
         box-shadow: none;
-
     }
-
 }
 
-#modalcontent
-{
-    padding:15px;
-	font-size: $font-size-default+3;
-    user-select:text;
-    -webkit-user-select: text;  /* Chrome all / Safari all */
-    -moz-user-select: text;     /* Firefox all */
-    -ms-user-select: text;      /* IE 10+ */
+#modalcontent {
+    padding: 15px;
+    font-size: $font-size-default + 3;
+    user-select: text;
+    -webkit-user-select: text; /* Chrome all / Safari all */
+    -moz-user-select: text; /* Firefox all */
+    -ms-user-select: text; /* IE 10+ */
 
-    pre
-    {
+    pre {
         max-width: 700px;
         overflow: auto;
     }
-
-
 }
 
-#modalheader
-{
-	// position: absolute;
-	// background-color: $color-background-input;
-	color:$highlight-color;
-	text-align: center;
-	font-size: 17px;
-	padding:5px;
+#modalheader {
+    // position: absolute;
+    // background-color: $color-background-input;
+    color: $highlight-color;
+    text-align: center;
+    font-size: 17px;
+    padding: 5px;
     text-transform: uppercase;
 }
 
-
-
-
-.shaderErrorCode
-{
-    font-family: SourceCodePro,monospace;
+.shaderErrorCode,
+.code {
+    font-family: SourceCodePro, monospace;
     white-space: pre;
     background-color: var(--color-03);
-    padding:10px;
+    padding: 10px;
     max-height: 600px;
     overflow: auto;
-    user-select:text;
-    -webkit-user-select: text;  /* Chrome all / Safari all */
-    -moz-user-select: text;     /* Firefox all */
-    -ms-user-select: text;      /* IE 10+ */
+    user-select: text;
+    -webkit-user-select: text; /* Chrome all / Safari all */
+    -moz-user-select: text; /* Firefox all */
+    -ms-user-select: text; /* IE 10+ */
     max-width: 800px;
     overflow: auto;
 
-    .error
-    {
+    .error {
         background-color: #400;
         width: 100%;
     }
 }
 
-.modalScrollContent
-{
+.modalScrollContent {
     user-select: text;
     clear: both;
     background-color: $background-color-brighter;
     max-height: 500px;
     overflow-y: scroll;
-    padding:20px;
+    padding: 20px;
 }
