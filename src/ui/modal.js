@@ -271,12 +271,15 @@ CABLES.UI.MODAL.showException = function (ex, op)
         console.log("ignore file blob exception...");
         return;
     }
+
     if (op)
     {
         CABLES.UI.MODAL.showOpException(ex, op.objName);
         return;
     }
+
     console.log(ex.stack);
+
     if (!CABLES.UI.loaded)
     {
         let html = "";

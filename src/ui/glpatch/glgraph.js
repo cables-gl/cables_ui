@@ -6,11 +6,13 @@ CABLES.GLGUI.GlGraph = class
     constructor(splineRenderer)
     {
         this._splineRenderer = splineRenderer;
-        this._anim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_ABSOLUTE });
+        this._values = [];
+
+        for (let i = 0; i < 100; i++) this._values[i] = 0;
         this._idx = this._splineRenderer.getSplineIndex();
 
-        this._scaleX = 50.0;
-        this._scaleY = 10.0;
+        this._scaleX = 0.5;
+        this._scaleY = 5.0;
 
         this._width = 10;
         this._height = 10;
@@ -34,23 +36,38 @@ CABLES.GLGUI.GlGraph = class
         this._splineRenderer.setWidth(0.05);
     }
 
-    set(time, value)
-    {
-        const points = [];
 
-        const start = Math.floor(this._anim.getLength() - 10);
-        for (let i = start; i < this._anim.getLength(); i += 0.05)
+    set(value)
+    {
+        // const points = [];
+        // const start = Math.floor(this._anim.getLength() - 10);
+
+        // for (let i = Math.floor(this._anim.getLength() * 10) / 10; i > 0; i -= 0.033)
+        // {
+        //     const x = 10 * this._scaleX + (i) * this._scaleX;
+        //     if (x > 0) points.push(x, this._height * this._scaleY - this._anim.getValue(i) * this._scaleY, 0);
+        // }
+
+        // this._anim.clearBefore(time - 10);
+
+        // this._splineRenderer.setSpline(this._idx, points);
+        // this._anim.setValue(time, value);
+
+        for (let i = this._values.length - 1; i > 0; i--)
         {
-            const x = 10 * this._scaleX + (i - this._anim.getLength()) * this._scaleX;
-            if (x > 0)
-                points.push(x,
-                    this._height * this._scaleY - this._anim.getValue(i) * this._scaleY, 0);
+            this._values[i] = this._values[i - 1];
         }
 
-        this._anim.clearBefore(time - 10);
+        this._values[0] = value;
+        // this._values.push(value);
+        const points = [];
 
+        for (let i = 0; i < this._values.length; i++)
+        {
+            points.push(i * this._scaleX, this._height * this._scaleY - this._values[i] * this._scaleY, 0);
+            // points.push((i + 1) * this._scaleX, this._height * this._scaleY - this._values[i] * this._scaleY, 0);
+        }
         this._splineRenderer.setSpline(this._idx, points);
-        this._anim.setValue(time, value);
     }
 
     render(resX, resY, scrollX, scrollY, zoom)

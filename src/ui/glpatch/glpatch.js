@@ -409,7 +409,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this.performanceGraph.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -445,27 +444,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = this.viewBox._mousePatchY;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
-        this.performanceGraph.set(this.time, this.debugData.renderMs);
+        this.performanceGraph.set(this.debugData.renderMs);
 
         this.mouseState.debug(this.debugData);
 
-        // this.debugData.renderMs = Math.round(((this.debugData.renderMs || 0) + performance.now() - starttime) * 0.5 * 10) / 10;
+        this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+        this.debugData.glPrimitives = CGL.profileData.profileMeshNumElements;
+        this.debugData.glUpdateAttribs = CGL.profileData.profileMeshAttributes;
+
+        CGL.profileData.clear();
 
         let str = "";
-        for (const n in this.debugData)
-            str += n + ": " + this.debugData[n] + "\n";
+        for (const n in this.debugData) str += n + ": " + this.debugData[n] + "\n";
 
         this._debugtext.text = str;
-
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
 
-
         perf.finish();
     }
-
 
     mouseMove(x, y)
     {
