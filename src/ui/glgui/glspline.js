@@ -159,6 +159,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
+            .endl() + "    col.a=1.0;"
             .endl() + "    outColor = col;"
             .endl() + "}");
 
@@ -196,7 +197,9 @@ CABLES.GLGUI.SplineDrawer = class
             // this._cgl.pushDepthWrite(true);
             // this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
 
-            this._mesh.render(this._shader);
+            // console.log("PL!", this._points.length);
+            if (this._points.length > 0)
+                this._mesh.render(this._shader);
             this._cgl.popShader();
 
             // this._cgl.popDepthTest();
@@ -207,7 +210,7 @@ CABLES.GLGUI.SplineDrawer = class
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
-            console.log("yay");
+            // console.log("yay");
 
             this.rebuild();
             // this._mesh.unBind();
@@ -307,6 +310,8 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (!isDifferent) return; // nothing has changed...
 
+        // if (points.length == 6)points.push(points[3], points[4], points[5]);
+
         this._splines[idx].origPoints = points;
         this._splines[idx].points = this.tessEdges(points);
 
@@ -382,13 +387,14 @@ CABLES.GLGUI.SplineDrawer = class
             }
         }
 
+        // console.log("this._speeds", this._speeds);
         this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
     }
 
 
     _updateAttribsCoordinates(idx)
     {
-        if (!this._mesh)
+        if (!this._mesh || !this._colors)
         {
             this._rebuildLater = true;
             return;
@@ -398,6 +404,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
+
 
         // if (!off)console.log(idx, this._splines[idx]);
         // console.log(points.length, off);
@@ -414,10 +421,15 @@ CABLES.GLGUI.SplineDrawer = class
                     this._points3[off + count] = points[(i + 1) * 3 + k];
                     count++;
                 }
+
+                if (!this._colors) this._colors = new Float32Array(1000);
+                // {
+                // console.log("yay COLORZ");
                 this._colors[(off + count) / 3 * 4 + 0] = this._splines[idx].color[0];
                 this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
                 this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
                 this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
+                // }
             }
         }
 
@@ -427,9 +439,14 @@ CABLES.GLGUI.SplineDrawer = class
         this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
 
         // console.log(count, this._colors.length / 3 * 4);
+        // if (this._speeds.length != points.length / 3) this._updateAttribsSpeed(idx);
+        // console.log(this._speeds.length, ((count)) / 6);
 
 
-        this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
+        // this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
+        // count += 10000;
+        // console.log(this._splines[idx].startOffset, points.length / 3, count, this._mesh.getAttribute("spline"));
+
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
@@ -450,20 +467,26 @@ CABLES.GLGUI.SplineDrawer = class
 
         for (let i = 0; i < this._splines.length; i++)
         {
+            this._splines[i].startOffset = count * 6;
+
             if (this._splines[i].points)
                 for (let j = 0; j < this._splines[i].points.length / 3; j++)
                 {
-                    this._splineIndex[(count - 3) / 3] = i;
+                    this._splineIndex[numPoints] = i;
 
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
+
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
+
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
+
+
                     numPoints++;
                 }
         }
 
-        console.log("numpoints", numPoints);
 
+        if (this._thePoints.length === 0) return;
         this.buildMesh();
 
         const newLength = numPoints * 3 * 6;
@@ -476,7 +499,7 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (this._points.length != newLength)
         {
-            console.log("spline buffer length changed!!!!", newLength);
+            // console.log("spline buffer length changed!!!!", newLength);
             this._colors = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);
@@ -495,9 +518,11 @@ CABLES.GLGUI.SplineDrawer = class
         {
             if (this._splineIndex)
             {
-                if (lastIndex != this._splineIndex[i])
-                    if (this._splines[this._splineIndex[i]])
-                        this._splines[this._splineIndex[i]].startOffset = count;
+                // if (lastIndex != this._splineIndex[i])
+                // {
+                // this._splines[this._splineIndex[i]] = this._splines[this._splineIndex[i]] || {};
+                // this._splines[this._splineIndex[i]].startOffset = count;
+                // }
 
                 if (i > 1 && lastIndex != this._splineIndex[i]) drawable = 0.0;
                 else drawable = 1.0;
@@ -547,6 +572,26 @@ CABLES.GLGUI.SplineDrawer = class
             // console.log("spl ", i);
             this._updateAttribsCoordinates(this._splines[i].index);
         }
+
+
+        const rows = [[
+            "idx",
+            "origPoints",
+            "offset",
+            "verts"]];
+
+
+        for (let i = 0; i < this._splines.length; i++)
+        {
+            rows.push([
+                i,
+                (this._splines[i].origPoints || []).length / 3,
+                this._splines[i].startOffset / 3,
+                this._splines[i].points.length / 3]);
+        }
+
+        console.table(rows);
+        // console.log("this._points.length", this._points.length / 3 / 6);
 
 
         this._rebuildLater = false;

@@ -194,6 +194,8 @@ CABLES.GLGUI.GlRectDragLine = class
             if (this._rect && this._glPort)
             {
                 // this._lineDrawer.setLine(this.-111_lineIdx111,
+
+
                 this._splineDrawer.setSpline(this._splineIdx,
                     [
                         this._glPort.glOp.x + this._rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
@@ -202,6 +204,8 @@ CABLES.GLGUI.GlRectDragLine = class
                         this._x,
                         this._y,
                         0]);
+
+                this._splineDrawer.setSplineColor(this._splineIdx, [1, 1, 1, 1]);
             }
         }
     }
