@@ -83,6 +83,8 @@ CABLES.GLGUI.GlPort = class
         CABLES.UI.hideToolTip();
     }
 
+    get type() { return this._port.type; }
+
     get port() { return this._port; }
 
     get id() { return this._id; }

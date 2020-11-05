@@ -27,10 +27,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.frameCount = 0;
 
-        this.graphSplines = new CABLES.GLGUI.SplineDrawer(cgl);
-        this.performanceGraph = new CABLES.GLGUI.GlGraph(this.graphSplines);
+        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._overlaySplines.zPos = 0.5;
+        this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
-        this.splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
@@ -41,7 +42,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
-        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._lines, this);
+        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
         this._fpsStartTime = 0;
 
         this.cacheOIRxa = 0;
@@ -61,10 +62,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor2.setSize(10, 10);
         this._cursor2.setDecoration(5);
 
-        this._cursorUnPredicted = this._overLayRects.createRect();
-        this._cursorUnPredicted.setSize(5, 5);
-        this._cursorUnPredicted.setDecoration(5);
-        this._cursorUnPredicted.setColor(1, 1, 1, 1);
+        // this._cursorUnPredicted = this._overLayRects.createRect();
+        // this._cursorUnPredicted.setSize(5, 5);
+        // this._cursorUnPredicted.setDecoration(5);
+        // this._cursorUnPredicted.setColor(1, 1, 1, 1);
 
         this._redrawFlash = this._overLayRects.createRect();
         this._redrawFlash.setSize(50, 5);
@@ -347,6 +348,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 
+        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         if (this._fadeOutRect.visible)
@@ -374,7 +376,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-        this._cgl.setCursor("none");
+
+        if (drawGlCursor) this._cgl.setCursor("none");
+        else this._cgl.setCursor("auto");
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
 
@@ -384,34 +388,34 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
 
-
         this.viewBox.setSize(resX, resY);
 
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-        this._cursorUnPredicted.setPosition(this.viewBox.mousePatchNotPredicted[0], this.viewBox.mousePatchNotPredicted[1]);
-
-        const z = this.viewBox.zoom / (50 / 1);
-        this._cursor2.setSize(z, z);
-        this._cursorUnPredicted.setSize(z / 2, z / 2);
-
+        this._cursor2.visible = drawGlCursor;
+        if (drawGlCursor)
+        {
+            const a = this.viewBox.screenToPatchCoord(0, 0);
+            const b = this.viewBox.screenToPatchCoord(20, 20);
+            const z = (b[0] - a[0]);
+            this._cursor2.setSize(z, z);
+            this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+        }
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
-
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this.splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this.performanceGraph.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -440,8 +444,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // this.debugData.viewResX = this.viewBox._viewResX;
         // this.debugData.viewResY = this.viewBox._viewResY;
 
-        this.debugData._mousePatchX = this.viewBox._mousePatchX;
-        this.debugData._mousePatchY = this.viewBox._mousePatchY;
+        this.debugData._mousePatchX = Math.round(this.viewBox._mousePatchX * 100) / 100;
+        this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
         this.performanceGraph.set(this.debugData.renderMs);
@@ -451,6 +455,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
         this.debugData.glPrimitives = CGL.profileData.profileMeshNumElements;
         this.debugData.glUpdateAttribs = CGL.profileData.profileMeshAttributes;
+        // console.log(CGL.profileData.profileMeshAttributes);
 
         CGL.profileData.clear();
 

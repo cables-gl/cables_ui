@@ -3,20 +3,20 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.GlCable = class
 {
-    constructor(glPatch, linedrawer, buttonRect, type)
+    constructor(glPatch, splineDrawer, buttonRect, type)
     {
         this._buttonSize = 12;
 
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
         this._type = type;
-        this._lineDrawer = linedrawer;
+        // this._lineDrawer = linedrawer;
 
-        this._lineIdx0 = this._lineDrawer.getIndex();
-        this._lineIdx1 = this._lineDrawer.getIndex();
-        this._lineIdx2 = this._lineDrawer.getIndex();
+        // this._lineIdx0 = this._lineDrawer.getIndex();
+        // this._lineIdx1 = this._lineDrawer.getIndex();
+        // this._lineIdx2 = this._lineDrawer.getIndex();
 
-        this._splineDrawer = this._glPatch.splineDrawer;
+        this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
         this._buttonRect.setDecoration(1);
@@ -41,6 +41,7 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
     }
 
+
     dispose()
     {
         this.setColor(0, 0, 0, 0);
@@ -54,7 +55,7 @@ CABLES.GLGUI.GlCable = class
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2)dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
 
-        this._glPatch.splineDrawer.setSpline(this._splineIdx,
+        this._splineDrawer.setSpline(this._splineIdx,
             [
                 this._x, this._y, 0,
                 this._x, this._y - dist, 0,
@@ -101,7 +102,7 @@ CABLES.GLGUI.GlCable = class
 
     setColor(r, g, b, a)
     {
-        this._glPatch.splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
+        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
         // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
@@ -111,7 +112,7 @@ CABLES.GLGUI.GlCable = class
 
     setSpeed(speed)
     {
-        this._glPatch.splineDrawer.setSplineSpeed(this._splineIdx, speed);
+        this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
         // this._lineDrawer.setSpeed(this._lineIdx0, speed);
         // this._lineDrawer.setSpeed(this._lineIdx1, speed);
         // this._lineDrawer.setSpeed(this._lineIdx2, speed);

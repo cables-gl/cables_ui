@@ -73,7 +73,7 @@ CABLES.GLGUI.GlLink = class
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch.lineDrawer, this._buttonRect, this._type);
+        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
