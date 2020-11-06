@@ -164,10 +164,10 @@ CABLES.GLGUI.GlRectDragLine = class
     {
         if (!this.isActive) return;
 
-        if (!this._glPort && !this._startGlPorts.length)
-        {
-            this._clearSpline();
-        }
+        // if (!this._glPort && !this._startGlPorts.length)
+        // {
+        this._clearSpline();
+        // }
 
 
         if (this._glPort)
