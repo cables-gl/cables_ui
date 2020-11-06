@@ -151,28 +151,27 @@ CABLES.GLGUI.GlRectDragLine = class
 
     _update()
     {
-        // let i = 0;
-        // for (i = 0; i < this._lineIndices.length; i++)
-        // {
-        //     this._lineDrawer.setLine(this._lineIndices[i], 0, 0, 0, 0);
-        // }
+        for (let i = 0; i < this._lineIndices.length; i++)
+        {
+            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
+        }
+
 
         if (this._glPort)
         {
             this._glPatch.setDrawableColorByType(this, this._glPort.type);
         }
-        // this._splineDrawer.setSpline(this._splineIdx,
 
 
         if (this._startGlPorts.length)
         {
             for (let i = 0; i < this._startGlPorts.length; i++)
             {
-                // if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._lineDrawer.getIndex();
+                if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._splineDrawer.getSplineIndex();
 
                 // this._lineDrawer.setColor(this._lineIndices[i], 0, 1, 0, 1);
 
-                this._splineDrawer.setSpline(this._splineIdx,
+                this._splineDrawer.setSpline(this._lineIndices[i],
                     [
                         this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
                         this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + CABLES.GLGUI.VISUALCONFIG.portHeight / 2,
@@ -231,8 +230,12 @@ CABLES.GLGUI.GlRectDragLine = class
 
     setColor(r, g, b, a)
     {
-        // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
+        for (let i = 0; i < this._lineIndices.length; i++)
+        {
+            this._splineDrawer.setSplineColor(this._lineIndices[i], [r, g, b, a]);
+        }
+
         this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        console.log("set color dragline", r, g, b, a);
+        // console.log("set color dragline", r, g, b, a);
     }
 };
