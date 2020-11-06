@@ -19,6 +19,16 @@ CABLES.GLGUI.Text = class
         this._align = 0;
         this._scale = 1;
 
+
+        this._font = CABLES.GLGUI.MSDF_FONT_WORKSANS;
+        if (this._font && this._font.chars)
+        {
+            this._font.characters = {};
+
+            for (let i = 0; i < this._font.chars.length; i++) this._font.characters[this._font.chars[i].char] = this._font.chars[i];
+        }
+
+
         this.rebuild();
     }
 
@@ -56,7 +66,7 @@ CABLES.GLGUI.Text = class
 
     _map(x)
     {
-        return x * 0.2 * this._scale;
+        return x * 0.12 * this._scale;
     }
 
     setParentRect(r)
@@ -76,22 +86,24 @@ CABLES.GLGUI.Text = class
         for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColor(this._color);
     }
 
+
     rebuild()
     {
         // if(this._string===undefined || this._string===null)return;
 
-        const font = CABLES.GLGUI.SDF_FONT_ARIAL;
         let w = 0;
         for (let i = 0; i < this._string.length; i++)
         {
-            const ch = font.characters[this._string[i]] || font.characters["?"];
+            // const ch = this.getChar(font, font.characters[this._string[i]]);
+
+            const ch = this._font.characters[this._string[i]] || this._font.characters["?"];
             // if(!font.characters[ch]) ch="?";
-            w += ch.advance;
+            w += ch.xadvance;
         }
 
         this._width = this._map(w);
 
-        const lineHeight = this._map(font.size / 2) + 13;
+        const lineHeight = this._map(this._font.info.size / 2) + 13;
         let posX = this._x;
         let posY = this._y + lineHeight;
         let countLines = 1;
@@ -109,7 +121,7 @@ CABLES.GLGUI.Text = class
         for (let i = 0; i < this._string.length; i++)
         {
             const char = this._string.charAt(i);
-            const ch = font.characters[char] || font.characters["?"];
+            const ch = this._font.characters[char] || this._font.characters["?"];
             if (char == "\n")
             {
                 posX = 0;
@@ -122,15 +134,21 @@ CABLES.GLGUI.Text = class
             rect.visible = this._visible;
             this._rects[rectCount] = rect;
 
-            rect.setPosition(posX - this._map(ch.originX), posY - this._map(ch.originY));
+            // if (i == 3)
+            // console.log(posX - this._map(ch.xoffset), posY - this._map(ch.yoffset));
+            rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 5.0); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
             rect.setColor(this._color);
+
+            // console.log(ch.x / this._font.info.size, ch.y / this._font.info.size);
             rect.setTexRect(
-                ch.x / font.width, ch.y / font.height,
-                ch.width / font.width, ch.height / font.height);
+                // ch.x / this._font.width, ch.y / this._font.height,
+                ch.x / 1024, ch.y / 1024,
+
+                ch.width / 1024, ch.height / 1024);
             rect.setTexture(this._textWriter.getFontTexture());
 
-            posX += this._map(ch.advance);
+            posX += this._map(ch.xadvance);
         }
 
         for (let i = rectCount + 1; i < this._rects.length; i++)
