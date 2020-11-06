@@ -1065,6 +1065,16 @@ CABLES.UI.GUI = function (cfg)
             win.focus();
         });
 
+        document.querySelectorAll(".nav_create_from_template").forEach((el) =>
+        {
+            const href = el.dataset.href;
+            el.addEventListener("click", () =>
+            {
+                const win = window.open(CABLES.sandbox.getCablesUrl() + href, "_blank");
+                win.focus();
+            });
+        });
+
         $(".nav_preferences").bind("click", function (event)
         {
             CABLES.CMD.UI.showPreferences();
