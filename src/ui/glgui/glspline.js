@@ -433,6 +433,8 @@ CABLES.GLGUI.SplineDrawer = class
             }
         }
 
+        count--;
+
         // this._mesh.setAttribute("vcolor", this._colors, 4);
         // this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
 
