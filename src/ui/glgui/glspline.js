@@ -159,7 +159,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
-            .endl() + "    col.a=1.0;"
+            // .endl() + "    col.a=1.0;"
             .endl() + "    outColor = col;"
             .endl() + "}");
 

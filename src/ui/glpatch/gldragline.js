@@ -156,12 +156,10 @@ CABLES.GLGUI.GlRectDragLine = class
             this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
         }
 
-
         if (this._glPort)
         {
             this._glPatch.setDrawableColorByType(this, this._glPort.type);
         }
-
 
         if (this._startGlPorts.length)
         {
