@@ -18,9 +18,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
         this._startGlPorts = [];
         this._lineIndices = [];
-
-        this._active = false;
-
+        this._clearSpline();
         glpatch.on("mouseup", (e) =>
         {
             if (!this.isActive) return;
@@ -151,23 +149,26 @@ CABLES.GLGUI.GlRectDragLine = class
         this._update();
     }
 
+    _clearSpline()
+    {
+        for (let i = 0; i < this._lineIndices.length; i++)
+        {
+            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
+            this._splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
+        }
+        this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
+        this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0]);
+    }
+
     _update()
     {
+        if (!this.isActive) return;
+
         if (!this._glPort && !this._startGlPorts.length)
         {
-            if (!this._active) return;
-
-            this._active = false;
-            for (let i = 0; i < this._lineIndices.length; i++)
-            {
-                this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
-                this._splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
-            }
-            this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
+            this._clearSpline();
         }
 
-
-        this._active = true;
 
         if (this._glPort)
         {
@@ -230,6 +231,7 @@ CABLES.GLGUI.GlRectDragLine = class
         this._startGlPorts.length = 0;
         this.setPort(null);
         this._glPatch.allowDragging = this._patchDragWasAllowed;
+        this._clearSpline();
     }
 
     setPosition(x, y)
