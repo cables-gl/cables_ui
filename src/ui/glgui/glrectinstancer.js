@@ -206,7 +206,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
-        // .endl() + "   outColor.rg=uv;"
+        // .endl() + "   outColor.rg+=uv*0.3;"
+        // .endl() + "   outColor.a+=0.5;"
 
             .endl() + "}");
 
@@ -605,6 +606,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._rects.length; i++)
         {
+            console.log("set all tex!");
             this._rects[i].setTexture(tex);
         }
     }

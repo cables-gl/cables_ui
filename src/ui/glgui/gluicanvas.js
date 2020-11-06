@@ -55,6 +55,9 @@ CABLES.GLGUI.GlUiCanvas = class
         this.height = 0;
         this._mouseX = 0;
         this._mouseY = 0;
+        this.loaded = false;
+        this._inited = false;
+
         // this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         // this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
@@ -83,15 +86,15 @@ CABLES.GLGUI.GlUiCanvas = class
                 "glCanvasResizeToWindow": false
             });
 
-        for (let i = 0; i <= 8; i++) this.patch.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
 
         this.glPatch = new CABLES.GLGUI.GlPatch(this.patch.cgl);
         this.patchApi = new CABLES.GLGUI.GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
 
-        this.patch.addEventListener("onRenderFrame", this.render.bind(this));
 
         this.patch.cgl.pixelDensity = window.devicePixelRatio;
+        this.patch.cgl.updateSize();
+
         this.setSize(100, 100);
 
         this.canvas.addEventListener("mousemove", (e) =>
@@ -156,6 +159,7 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.parentResized();
         this.activityHigh();
+        this.patch.addEventListener("onRenderFrame", this.render.bind(this));
     }
 
     get element()
@@ -214,6 +218,20 @@ CABLES.GLGUI.GlUiCanvas = class
         {
             return;
         }
+        const cgl = this.patch.cgl;
+
+        if (!this._inited)
+        {
+            for (let i = 0; i <= 8; i++) this.patch.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
+        }
+
+
+        cgl.gl.clearColor(0, 0, 0, 1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+
+        if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
+
 
         if (this._oldTargetFps != this._targetFps)
         {
@@ -221,19 +239,8 @@ CABLES.GLGUI.GlUiCanvas = class
             this._oldTargetFps = this._targetFps;
         }
 
-        const cgl = this.patch.cgl;
 
         cgl.renderStart(cgl);
-
-        if (!this._fontTex)
-        {
-            this._fontTex = CGL.Texture.load(this.patch.cgl, "/ui/img/WorkSans-Regular.ttf.png", // sdf_font_arial.png
-                () =>
-                {
-                    this.glPatch.setFont(this._fontTex);
-                    this.glPatch.needsRedraw = true;
-                }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
-        }
 
 
         if (this._firstTime)

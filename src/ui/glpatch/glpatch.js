@@ -338,12 +338,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     }
 
 
-    setFont(f)
-    {
-        this._textWriter.setFont(f);
-        this._textWriterOverlay.setFont(f);
-    }
-
     render(resX, resY)
     {
         this.frameCount++;
