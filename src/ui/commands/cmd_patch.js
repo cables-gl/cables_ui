@@ -42,11 +42,13 @@ CABLES.CMD.PATCH.save = function (force)
     }
 
     if (dosave)
+    {
         if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
         {
-            gui.patch().saveCurrentProject();
+            gui.patch().saveCurrentProject(undefined, undefined, undefined, force);
             CABLES.UI.lastSave = Date.now();
         }
+    }
 };
 
 CABLES.CMD.PATCH.saveAs = function ()

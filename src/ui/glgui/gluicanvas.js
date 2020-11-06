@@ -154,13 +154,6 @@ CABLES.GLGUI.GlUiCanvas = class
         });
 
 
-        this._fontTex = CGL.Texture.load(this.patch.cgl, "/ui/img/sdf_font_arial.png",
-            () =>
-            {
-                this.glPatch.setFont(this._fontTex);
-                this.glPatch.needsRedraw = true;
-            }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
-
         this.parentResized();
         this.activityHigh();
     }
@@ -217,6 +210,17 @@ CABLES.GLGUI.GlUiCanvas = class
 
     render()
     {
+        if (!this._fontTex)
+        {
+            this._fontTex = CGL.Texture.load(this.patch.cgl, "/ui/img/sdf_font_arial.png",
+                () =>
+                {
+                    this.glPatch.setFont(this._fontTex);
+                    this.glPatch.needsRedraw = true;
+                }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
+        }
+
+
         if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
             return;

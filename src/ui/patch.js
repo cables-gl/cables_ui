@@ -465,7 +465,7 @@ CABLES.UI.Patch = function (_gui)
     {
         this._serverDate = updated;
         CABLES.UI.MODAL.hide(true);
-        CABLES.CMD.PATCH.save();
+        CABLES.CMD.PATCH.save(true);
     };
 
     this.saveCurrentProject = function (cb, _id, _name, _force)

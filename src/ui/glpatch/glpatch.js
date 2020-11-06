@@ -29,9 +29,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this._overlaySplines.zPos = 0.5;
-        this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
+        // this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+
+
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
         this._rectInstancer = new CABLES.GLGUI.RectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
@@ -439,6 +441,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
 
         this.debugData.viewZoom = this.viewBox.zoom;
+
         // this.debugData.viewbox_scrollX = this.viewBox.scrollX;
         // this.debugData.viewbox_scrollY = this.viewBox.scrollY;
         // this.debugData.viewResX = this.viewBox._viewResX;
@@ -448,7 +451,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
 
-        this.performanceGraph.set(this.debugData.renderMs);
+        // this.performanceGraph.set(this.debugData.renderMs);
 
         this.mouseState.debug(this.debugData);
 

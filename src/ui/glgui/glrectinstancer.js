@@ -136,6 +136,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "       float signedDistance = (smpl - 0.5) * scale*0.5;"
             .endl() + "       float color = clamp(signedDistance + 0.5, 0.0, 1.0);"
             .endl() + "       outColor=vec4(outColor.rgb, color);"
+            // .endl() + "       outColor=vec4(vec3(smpl), color);"
             .endl() + "   #endif"
 
             .endl() + "   #ifndef SDF_TEXTURE"
