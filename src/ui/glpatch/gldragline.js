@@ -19,6 +19,8 @@ CABLES.GLGUI.GlRectDragLine = class
         this._startGlPorts = [];
         this._lineIndices = [];
 
+        this._active = false;
+
         glpatch.on("mouseup", (e) =>
         {
             if (!this.isActive) return;
@@ -151,10 +153,21 @@ CABLES.GLGUI.GlRectDragLine = class
 
     _update()
     {
-        for (let i = 0; i < this._lineIndices.length; i++)
+        if (!this._glPort && !this._startGlPorts.length)
         {
-            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
+            if (!this._active) return;
+
+            this._active = false;
+            for (let i = 0; i < this._lineIndices.length; i++)
+            {
+                this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
+                this._splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
+            }
+            this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
         }
+
+
+        this._active = true;
 
         if (this._glPort)
         {
