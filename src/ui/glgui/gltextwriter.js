@@ -33,6 +33,7 @@ CABLES.GLGUI.TextWriter = class
                     this._rectDrawer.setAllTexture(this._fontTex, true);
                 }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
         }
+
         this._rectDrawer.render(resX, resY, scrollX, scrollY, zoom);
     }
 

@@ -118,7 +118,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN float decoration;"
             .endl() + "IN float useTexture;"
             .endl() + "UNI float time;"
-            .endl() + "UNI sampler2D tex[8];"
+            .endl() + "UNI sampler2D tex;"
+        // .endl() + "UNI sampler2D tex;"
 
 
             .endl() + "float median(float r, float g, float b)"
@@ -134,29 +135,22 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
             .endl() + "if(useTexture>=0.0)"
             .endl() + "{"
-
             .endl() + "   #ifdef SDF_TEXTURE"
-
-            .endl() + "       vec4 smpl=texture(tex[0],uv);"
-
-            .endl() + "float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;"
-
-            .endl() + "vec2 msdfUnit = 8.0/vec2(1024.0);"
-
-
-            .endl() + "sigDist *= dot(msdfUnit, 0.5/fwidth(uv));"
-            .endl() + "float opacity = clamp(sigDist + 0.5, 0.0, 1.0);"
-
-            .endl() + "       outColor=vec4(outColor.rgb, opacity);"
+            .endl() + "        vec4 smpl=texture(tex,uv);"
+            .endl() + "        float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;"
+            .endl() + "        vec2 msdfUnit = 8.0/vec2(1024.0);"
+            .endl() + "        sigDist *= dot(msdfUnit, 0.5/fwidth(uv));"
+            .endl() + "        float opacity = clamp(sigDist + 0.5, 0.0, 1.0);"
+            .endl() + "        outColor=vec4(outColor.rgb, opacity);"
             .endl() + "   #endif"
 
             .endl() + "   #ifndef SDF_TEXTURE"
-            .endl() + "     if(int(useTexture)==0)outColor=texture(tex[0],uv);"
-            .endl() + "     if(int(useTexture)==1)outColor=texture(tex[1],uv);"
-            .endl() + "     if(int(useTexture)==2)outColor=texture(tex[2],uv);"
-            .endl() + "     if(int(useTexture)==3)outColor=texture(tex[3],uv);"
-            .endl() + "     if(int(useTexture)==4)outColor=texture(tex[4],uv);"
-            .endl() + "     if(int(useTexture)==5)outColor=texture(tex[5],uv);"
+            .endl() + "        outColor=texture(tex,uv);"
+            // .endl() + "     if(int(useTexture)==1)outColor=texture(tex[1],uv);"
+            // .endl() + "     if(int(useTexture)==2)outColor=texture(tex[2],uv);"
+            // .endl() + "     if(int(useTexture)==3)outColor=texture(tex[3],uv);"
+            // .endl() + "     if(int(useTexture)==4)outColor=texture(tex[4],uv);"
+            // .endl() + "     if(int(useTexture)==5)outColor=texture(tex[5],uv);"
             .endl() + "   #endif"
             .endl() + "}"
 
@@ -219,7 +213,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
 
-        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4, 5, 6, 7, 8]);
+        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4]);
 
         this._geom = new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -372,12 +366,24 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     _bindTextures()
     {
-        for (let i = 0; i < this._textures.length; i++)
+        for (let i = 0; i < 4; i++)
         {
-            if (this._textures[i])
-                this._cgl.setTexture(this._textures[i].num, this._textures[i].texture.tex);
+            if (this._textures[0])
+                this._cgl.setTexture(i, this._textures[0].texture.tex);
+            // if (this._textures[i])
+                // this._cgl.setTexture(this._textures[i].num, this._textures[i].texture.tex);
+            // else
+            // if (this._textures[0]) this._cgl.setTexture(i, this._textures[0].texture.tex);
+
+
+            // CGL.Texture.getEmptyTexture(this._cgl).tex
+
+
+            // this._cgl.setTexture(this._textures[0].num, this._textures[0].texture.tex);
             // console.log("bind",i,this._textures[i].texture.width);
         }
+
+        if (this._textures[0]) this._cgl.setTexture(0, this._textures[0].texture.tex);
     }
 
 
@@ -606,7 +612,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._rects.length; i++)
         {
-            console.log("set all tex!");
             this._rects[i].setTexture(tex);
         }
     }
