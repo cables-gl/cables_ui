@@ -953,40 +953,40 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         const undoGroup = CABLES.undo.startGroup();
 
-        for (let i = 0; i < p.links.length; i++)
-        {
-            const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
-            {
-                CABLES.undo.add({
-                    "title": "Unlink port",
-                    undo()
-                    {
-                        patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
-                    },
-                    redo()
-                    {
-                        const op1 = patch.getOpById(op1Id);
-                        const op2 = patch.getOpById(op2Id);
-                        if (!op1 || !op2)
-                        {
-                            console.warn("undo: op not found");
-                            return;
-                        }
-                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                    }
-                });
-            }(
-                this._p,
-                p.links[i].portIn.getName(),
-                p.links[i].portOut.getName(),
-                p.links[i].portIn.parent.id,
-                p.links[i].portOut.parent.id
-            ));
-        }
+        // for (let i = 0; i < p.links.length; i++)
+        // {
+        //     const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+        //     {
+        //         CABLES.undo.add({
+        //             "title": "Unlink port",
+        //             undo()
+        //             {
+        //                 patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
+        //             },
+        //             redo()
+        //             {
+        //                 const op1 = patch.getOpById(op1Id);
+        //                 const op2 = patch.getOpById(op2Id);
+        //                 if (!op1 || !op2)
+        //                 {
+        //                     console.warn("undo: op not found");
+        //                     return;
+        //                 }
+        //                 op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+        //             }
+        //         });
+        //     }(
+        //         this._p,
+        //         p.links[i].portIn.getName(),
+        //         p.links[i].portOut.getName(),
+        //         p.links[i].portIn.parent.id,
+        //         p.links[i].portOut.parent.id
+        //     ));
+        // }
 
-        CABLES.undo.endGroup(undoGroup, "Unlink Port");
 
         p.removeLinks();
+        CABLES.undo.endGroup(undoGroup, "Unlink Port");
     }
 
     linkPortToOp(e, opid, pid, op2id)

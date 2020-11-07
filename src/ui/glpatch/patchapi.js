@@ -122,6 +122,39 @@ CABLES.GLGUI.GlPatchAPI = class
     _onUnLink(a, b, link)
     {
         if (!link) return;
+
+
+        // for (let i = 0; i < p.links.length; i++)
+        // {
+        const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+        {
+            CABLES.undo.add({
+                "title": "Unlink port",
+                undo()
+                {
+                    patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
+                },
+                redo()
+                {
+                    const op1 = patch.getOpById(op1Id);
+                    const op2 = patch.getOpById(op2Id);
+                    if (!op1 || !op2)
+                    {
+                        console.warn("undo: op not found");
+                        return;
+                    }
+                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                }
+            });
+        }(
+            link.portOut.parent.patch,
+            link.portIn.getName(),
+            link.portOut.getName(),
+            link.portIn.parent.id,
+            link.portOut.parent.id
+        ));
+        // }
+
         this._glPatch.deleteLink(link.id);
     }
 
