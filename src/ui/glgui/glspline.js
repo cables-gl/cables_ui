@@ -159,7 +159,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
-            .endl() + "    col.a=1.0;"
+            // .endl() + "    col.a=1.0;"
             .endl() + "    outColor = col;"
             .endl() + "}");
 
@@ -268,12 +268,13 @@ CABLES.GLGUI.SplineDrawer = class
 
         this.setSplineColor(idx, 0, 0, 0, 0);
 
-        for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
-        {
-            this._splines[idx].origPoints[i + 0] =
+        if (this._splines[idx].origPoints)
+            for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
+            {
+                this._splines[idx].origPoints[i + 0] =
             this._splines[idx].origPoints[i + 1] =
             this._splines[idx].origPoints[i + 2] = 0;
-        }
+            }
         this.setSpline(idx, this._splines[idx].origPoints);
     }
 
@@ -414,6 +415,11 @@ CABLES.GLGUI.SplineDrawer = class
         {
             for (let j = 0; j < 6; j++)
             {
+                this._colors[(off + count) / 3 * 4 + 0] = this._splines[idx].color[0];
+                this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
+                this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
+                this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
+
                 for (let k = 0; k < 3; k++)
                 {
                     this._points[off + count] = points[(Math.max(0, i - 1)) * 3 + k];
@@ -421,22 +427,12 @@ CABLES.GLGUI.SplineDrawer = class
                     this._points3[off + count] = points[(i + 1) * 3 + k];
                     count++;
                 }
-
-                if (!this._colors) this._colors = new Float32Array(1000);
-                // {
-                // console.log("yay COLORZ");
-                this._colors[(off + count) / 3 * 4 + 0] = this._splines[idx].color[0];
-                this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
-                this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
-                this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
-                // }
             }
         }
 
-        // this._mesh.setAttribute("vcolor", this._colors, 4);
-        // this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
+        // count -= 1;
+        // console.log(count / 3);
 
-        this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
 
         // console.log(count, this._colors.length / 3 * 4);
         // if (this._speeds.length != points.length / 3) this._updateAttribsSpeed(idx);
@@ -447,6 +443,9 @@ CABLES.GLGUI.SplineDrawer = class
         // count += 10000;
         // console.log(this._splines[idx].startOffset, points.length / 3, count, this._mesh.getAttribute("spline"));
 
+        console.log(count);
+
+        this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
@@ -583,11 +582,12 @@ CABLES.GLGUI.SplineDrawer = class
 
         for (let i = 0; i < this._splines.length; i++)
         {
-            rows.push([
-                i,
-                (this._splines[i].origPoints || []).length / 3,
-                this._splines[i].startOffset / 3,
-                this._splines[i].points.length / 3]);
+            if (this._splines[i].points)
+                rows.push([
+                    i,
+                    (this._splines[i].origPoints || []).length / 3,
+                    this._splines[i].startOffset / 3,
+                    this._splines[i].points.length / 3]);
         }
 
         console.table(rows);
@@ -604,6 +604,7 @@ CABLES.GLGUI.SplineDrawer = class
 
     tessEdges(oldArr)
     {
+        if (!oldArr) return;
         let count = 0;
         const step = 0.003;
         const oneMinusStep = 1 - step;

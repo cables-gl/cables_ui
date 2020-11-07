@@ -120,6 +120,12 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "UNI float time;"
             .endl() + "UNI sampler2D tex[8];"
 
+
+            .endl() + "float median(float r, float g, float b)"
+            .endl() + "{"
+            .endl() + "return max(min(r, g), min(max(r, g), b));"
+            .endl() + "}"
+
             .endl() + "void main()"
             .endl() + "{"
 
@@ -130,13 +136,18 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "{"
 
             .endl() + "   #ifdef SDF_TEXTURE"
-            // https://blog.mapbox.com/drawing-text-with-signed-distance-fields-in-mapbox-gl-b0933af6f817
-            .endl() + "       float smpl=texture(tex[0],uv).r;"
-            .endl() + "       float scale = 1.0 / fwidth(smpl);"
-            .endl() + "       float signedDistance = (smpl - 0.5) * scale*0.5;"
-            .endl() + "       float color = clamp(signedDistance + 0.5, 0.0, 1.0);"
-            .endl() + "       outColor=vec4(outColor.rgb, color);"
-            // .endl() + "       outColor=vec4(vec3(smpl), color);"
+
+            .endl() + "       vec4 smpl=texture(tex[0],uv);"
+
+            .endl() + "float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;"
+
+            .endl() + "vec2 msdfUnit = 8.0/vec2(1024.0);"
+
+
+            .endl() + "sigDist *= dot(msdfUnit, 0.5/fwidth(uv));"
+            .endl() + "float opacity = clamp(sigDist + 0.5, 0.0, 1.0);"
+
+            .endl() + "       outColor=vec4(outColor.rgb, opacity);"
             .endl() + "   #endif"
 
             .endl() + "   #ifndef SDF_TEXTURE"
@@ -195,7 +206,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
-        // .endl() + "   outColor.rg=uv;"
+        // .endl() + "   outColor.rg+=uv*0.3;"
+        // .endl() + "   outColor.a+=0.5;"
 
             .endl() + "}");
 
@@ -594,6 +606,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._rects.length; i++)
         {
+            console.log("set all tex!");
             this._rects[i].setTexture(tex);
         }
     }
