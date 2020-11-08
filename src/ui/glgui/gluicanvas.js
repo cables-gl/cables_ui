@@ -220,11 +220,6 @@ CABLES.GLGUI.GlUiCanvas = class
         }
         const cgl = this.patch.cgl;
 
-        if (!this._inited)
-        {
-            for (let i = 0; i <= 8; i++) this.patch.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
-        }
-
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -242,6 +237,12 @@ CABLES.GLGUI.GlUiCanvas = class
 
         cgl.renderStart(cgl);
 
+
+        if (!this._inited)
+        {
+            for (let i = 0; i <= 8; i++) this.patch.cgl.setTexture(i, CGL.Texture.getEmptyTexture(this.patch.cgl).tex);
+            this._inited = true;
+        }
 
         if (this._firstTime)
         {

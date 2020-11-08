@@ -430,29 +430,10 @@ CABLES.GLGUI.SplineDrawer = class
             }
         }
 
-        // count -= 1;
-        // console.log(count / 3);
-
-
-        // console.log(count, this._colors.length / 3 * 4);
-        // if (this._speeds.length != points.length / 3) this._updateAttribsSpeed(idx);
-        // console.log(this._speeds.length, ((count)) / 6);
-
-
-        // this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
-        // count += 10000;
-        // console.log(this._splines[idx].startOffset, points.length / 3, count, this._mesh.getAttribute("spline"));
-
-        console.log(count);
-
         this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
-
-        // console.log("attr range", off, count, this._points.length, this._points.subarray(off, count));
-        // console.log("spline points.length", (off + count) / 3);
-        // console.log("colors", this._colors.length / 4);
     }
 
     rebuild()
