@@ -83,7 +83,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
 
         this.quickLinkSuggestion = new CABLES.GLGUI.QuickLinkSuggestion(this);
-        this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
+        // this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
         this.needsRedraw = false;
@@ -456,10 +456,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         CGL.profileData.clear();
 
-        let str = "";
-        for (const n in this.debugData) str += n + ": " + this.debugData[n] + "\n";
+        // let str = "";
+        // for (const n in this.debugData) str += n + ": " + this.debugData[n] + "\n";
 
-        this._debugtext.text = str;
+        // this._debugtext.text = str;
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();

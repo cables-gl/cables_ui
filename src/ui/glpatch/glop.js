@@ -459,16 +459,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         let count = 0;
         for (let i = 0; i < this._op.portsIn.length; i++)
         {
-            if (this._op.portsIn[i].id == id)
-                return count * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
-
-            if (!this._op.portsIn[i].isHidden())count++;
+            if (this._op.portsIn[i].id == id) return count * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
+            if (!this._op.portsIn[i].isHidden()) count++;
         }
 
         for (let i = 0; i < this._op.portsOut.length; i++)
         {
-            if (this._op.portsOut[i].id == id)
-                return i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
+            if (this._op.portsOut[i].id == id) return i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
         }
 
         return 100;
