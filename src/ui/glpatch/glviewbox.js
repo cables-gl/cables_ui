@@ -230,6 +230,13 @@ CABLES.GLGUI.ViewBox = class
         if (!this._animScrollX.isFinished(time)) this._scrollX = this._animScrollX.getValue(time);
         if (!this._animScrollY.isFinished(time)) this._scrollY = this._animScrollY.getValue(time);
 
+
+        if (this._zoom != this._zoom)
+        {
+            this._zoom = 400;
+        }
+
+
         this.setMousePos(this._mouseX, this._mouseY);
 
         if (!this._boundingRect)
@@ -289,6 +296,13 @@ CABLES.GLGUI.ViewBox = class
     {
         let ops = gui.patchView.getSelectedOps();
         if (ops.length == 0)ops = gui.corePatch().ops;
+        if (ops.length == 0)
+        {
+            this._zoom = 400;
+            this._scrollX = 0;
+            this._scrollY = 0;
+            return;
+        }
 
         const bb = new CGL.BoundingBox();
         const subp = this.glPatch.getCurrentSubPatch();
@@ -318,11 +332,11 @@ CABLES.GLGUI.ViewBox = class
         bb.size[0] *= padding;
         bb.size[1] *= padding;
 
-        console.log(bb);
 
         const zx = bb.size[0] / 2; // zoom on x
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
-        const z = Math.max(400, Math.max(zy, zx));
+        let z = Math.max(400, Math.max(zy, zx));
+        if (z > 99999)z = 400;
 
         if (noAnim) this._zoom = z;
         else this.animateZoom(z);
@@ -366,8 +380,6 @@ CABLES.GLGUI.ViewBox = class
         this._storeCurrentSubPatch();
 
         dataui.viewBoxesGl = this._subPatchViewBoxes;
-
-        console.log("serialize glviewbox!!!");
     }
 
     deSerialize(dataui)

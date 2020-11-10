@@ -143,12 +143,11 @@ CABLES.GLGUI.GlCable = class
         distX = closestX - cx;
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
+        console.log(distX, distY);
 
         if (distance <= r)
         {
-            this._buttonRect.setPosition(
-                closestX - this._buttonSize / 2, closestY - this._buttonSize / 2
-            );
+            this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
             this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
