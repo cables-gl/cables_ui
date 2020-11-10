@@ -10,11 +10,6 @@ CABLES.GLGUI.GlCable = class
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
         this._type = type;
-        // this._lineDrawer = linedrawer;
-
-        // this._lineIdx0 = this._lineDrawer.getIndex();
-        // this._lineIdx1 = this._lineDrawer.getIndex();
-        // this._lineIdx2 = this._lineDrawer.getIndex();
 
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
@@ -26,12 +21,13 @@ CABLES.GLGUI.GlCable = class
         this._y = 0;
         this._y2 = 0;
         this._x2 = 0;
-        this._h = CABLES.GLGUI.VISUALCONFIG.portHeight * 1.5;
+
+        this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
 
         this._glPatch.on("mousemove", (e) =>
         {
             if (this._visible)
-                this.collideMouse(this._x, this._y - this._h, this._x2, this._y2 + this._h, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+                this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
         });
     }
 
@@ -41,7 +37,6 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
     }
 
-
     dispose()
     {
         this.setColor(0, 0, 0, 0);
@@ -50,27 +45,21 @@ CABLES.GLGUI.GlCable = class
 
     _updateLinePos()
     {
-        let dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
-
-        if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2)dist = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
-
+        if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2) this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
         this._splineDrawer.setSpline(this._splineIdx,
             [
                 this._x, this._y, 0,
-                this._x, this._y - dist, 0,
-                // this._x, this._y - dist, 0,
-                this._x2, this._y2 + dist, 0,
-                // this._x2, this._y2 + dist, 0,
+                this._x, this._y - this._distFromPort, 0,
+                this._x2, this._y2 + this._distFromPort, 0,
                 this._x2, this._y2, 0,
-                // this._x2, this._y2, 0
             ]);
 
         if (this._visible)
         {
-            // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - dist);
-            // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - dist, this._x2, this._y2 + dist);
-            // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + dist, this._x2, this._y2);
+            // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._distFromPort);
+            // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort);
+            // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._distFromPort, this._x2, this._y2);
         }
         else
         {
