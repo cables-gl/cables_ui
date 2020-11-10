@@ -47,7 +47,7 @@ CABLES.GLGUI.GlCable = class
     _updateDistFromPort()
     {
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2) this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
-        else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
+        else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.9; // magic number...?!
     }
 
     _updateLinePos()

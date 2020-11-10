@@ -213,7 +213,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
 
-        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4]);
+        this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
         this._geom = new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);

@@ -375,7 +375,7 @@ CABLES.GLGUI.ViewBox = class
         if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;
 
-        if (this.scrollX != this.scrollX) this.scrollX = 0;
+        if (this._scrollX != this._scrollX) this._scrollX = 0;
 
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
