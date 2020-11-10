@@ -7,7 +7,7 @@ CABLES.GLGUI.VISUALCONFIG =
     "OpTitlePaddingExtTitle": 5,
 
     "portWidth": 10,
-    "portHeight": 6,
+    "portHeight": 5,
     "portPadding": 2,
 
     // "snapX": 12,

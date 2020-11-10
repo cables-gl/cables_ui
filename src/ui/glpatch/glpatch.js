@@ -56,6 +56,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
+        this._focusRect.setDecoration(4);
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
@@ -334,6 +335,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this.selectOpId(op.id);
             gui.opParams.show(op.id);
+            this.focusOp(op.id);
         }
     }
 
@@ -429,37 +431,22 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.profileMouseEvents = 0;
         }
 
-
         this.debugData["glpatch.allowDragging"] = this.allowDragging;
         this.debugData.rects = this._rectInstancer.getNumRects();
         this.debugData["text rects"] = this._textWriter.rectDrawer.getNumRects();
-
         this.debugData.viewZoom = this.viewBox.zoom;
-
-        // this.debugData.viewbox_scrollX = this.viewBox.scrollX;
-        // this.debugData.viewbox_scrollY = this.viewBox.scrollY;
-        // this.debugData.viewResX = this.viewBox._viewResX;
-        // this.debugData.viewResY = this.viewBox._viewResY;
 
         this.debugData._mousePatchX = Math.round(this.viewBox._mousePatchX * 100) / 100;
         this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
-
-        // this.performanceGraph.set(this.debugData.renderMs);
 
         this.mouseState.debug(this.debugData);
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
         this.debugData.glPrimitives = CGL.profileData.profileMeshNumElements;
         this.debugData.glUpdateAttribs = CGL.profileData.profileMeshAttributes;
-        // console.log(CGL.profileData.profileMeshAttributes);
 
         CGL.profileData.clear();
-
-        // let str = "";
-        // for (const n in this.debugData) str += n + ": " + this.debugData[n] + "\n";
-
-        // this._debugtext.text = str;
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();

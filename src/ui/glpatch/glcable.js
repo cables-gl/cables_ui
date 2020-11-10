@@ -22,7 +22,8 @@ CABLES.GLGUI.GlCable = class
         this._y2 = 0;
         this._x2 = 0;
 
-        this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
+        this._distFromPort = 0;
+        this._updateDistFromPort();
 
         this._glPatch.on("mousemove", (e) =>
         {
@@ -43,9 +44,15 @@ CABLES.GLGUI.GlCable = class
         this._splineDrawer.deleteSpline(this._splineIdx);
     }
 
-    _updateLinePos()
+    _updateDistFromPort()
     {
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2) this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
+        else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.4; // magic number...?!
+    }
+
+    _updateLinePos()
+    {
+        this._updateDistFromPort();
 
         this._splineDrawer.setSpline(this._splineIdx,
             [
@@ -84,7 +91,8 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
-            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2
+            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2,
+            0.96
         );
     }
 
@@ -106,7 +114,6 @@ CABLES.GLGUI.GlCable = class
         // this._lineDrawer.setSpeed(this._lineIdx1, speed);
         // this._lineDrawer.setSpeed(this._lineIdx2, speed);
     }
-
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
@@ -155,6 +162,8 @@ CABLES.GLGUI.GlCable = class
         }
         else
         {
+            this._buttonRect.setPosition(0, 0);
+
             this._buttonRect.interactive = false;
             this._buttonRect.visible = false;
             this._buttonRect._hovering = false;

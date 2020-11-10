@@ -442,8 +442,7 @@ CABLES.GLGUI.SplineDrawer = class
     {
         if (this._splines.length == 0) return;
 
-        console.log("rebuild!");
-
+        // console.log("rebuild!");
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
@@ -456,13 +455,9 @@ CABLES.GLGUI.SplineDrawer = class
                 for (let j = 0; j < this._splines[i].points.length / 3; j++)
                 {
                     this._splineIndex[numPoints] = i;
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
-
 
                     numPoints++;
                 }

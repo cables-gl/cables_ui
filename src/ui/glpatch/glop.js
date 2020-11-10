@@ -245,6 +245,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (this._glRectBg) this._glRectBg.dispose();
         if (this._glTitle) this._glTitle.dispose();
+        if (this._glComment) this._glComment.dispose();
+        if (this._glTitleExt) this._glTitleExt.dispose();
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 
         this._op = null;
@@ -431,6 +433,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _updateColors()
     {
+        if (!this._glRectBg || !this._glTitle) return;
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setDecoration(3);
