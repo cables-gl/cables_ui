@@ -151,7 +151,7 @@ CABLES.GLGUI.GlCable = class
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
 
-        if (distance <= r)
+        if (distance <= r && !this._glPatch.isMouseOverOp())
         {
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
             this._buttonRect.visible = true;

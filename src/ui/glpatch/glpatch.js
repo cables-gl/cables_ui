@@ -233,6 +233,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return document.activeElement == this._cgl.canvas;
     }
 
+    isMouseOverOp()
+    {
+        return this._hoverOps.length > 0;
+    }
+
     getOpAt(x, y)
     {
     }
