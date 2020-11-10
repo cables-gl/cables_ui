@@ -41,8 +41,10 @@ CABLES.UI.TexturePreviewer.MODE_ACTIVE = 1;
 CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
     .endl() + "IN vec2 texCoord;"
     .endl() + "UNI sampler2D tex;"
+    .endl() + "UNI samplerCube cubeMap;"
     .endl() + "UNI float width;"
     .endl() + "UNI float height;"
+    .endl() + "UNI float type;"
 
 // .endl() + "float checkerboard()"
 // .endl() + "{"
@@ -56,6 +58,73 @@ CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
     .endl() + "{"
     .endl() + "    vec4 col=vec4(0.0);"
     .endl() + "    vec4 colTex=texture2D(tex,texCoord);"
+
+    .endl() + "    if(type==1.0)"
+    .endl() + "    {"
+    .endl() + "        vec4 depth=vec4(0.);"
+    .endl() + "        vec2 localST=texCoord;"
+    .endl() + "        localST.y = 1. - localST.y;"
+    // .endl() + "        //Scale Tex coordinates such that each quad has local coordinates from 0,0 to 1,1"
+    .endl() + "        localST.t = mod(localST.t*3.,1.);"
+    .endl() + "        localST.s = mod(localST.s*4.,1.);"
+
+    .endl() + "        #ifdef WEBGL2"
+    .endl() + "            #define texCube texture"
+    .endl() + "        #endif"
+    .endl() + "        #ifdef WEBGL1"
+    .endl() + "            #define texCube textureCube"
+    .endl() + "        #endif"
+
+
+    // .endl() + "        //Due to the way my depth-cubeMap is rendered, objects to the -x,y,z side is projected to the positive x,y,z side"
+    // .endl() + "        //Inside where top/bottom is to be drawn?"
+    .endl() + "        if (texCoord.s*4.> 1. && texCoord.s*4.<2.)"
+    .endl() + "        {"
+    .endl() + "            //Bottom (-y) quad"
+    .endl() + "            if (texCoord.t*3. < 1.)"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(localST.s*2.-1.,-1.,-localST.t*2.+1.);//Due to the (arbitrary) way I choose as up in my depth-viewmatrix, i her emultiply the latter coordinate with -1"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "            //top (+y) quad"
+    .endl() + "            else if (texCoord.t*3. > 2.)"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(localST.s*2.-1.,1.,localST.t*2.-1.);//Get lower y texture, which is projected to the +y part of my cubeMap"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "            else//Front (-z) quad"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(localST.s*2.-1.,-localST.t*2.+1.,1.);"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "        }"
+    // .endl() + "        //If not, only these ranges should be drawn"
+    .endl() + "        else if (texCoord.t*3. > 1. && texCoord.t*3. < 2.)"
+    .endl() + "        {"
+    .endl() + "            if (texCoord.x*4. < 1.)//left (-x) quad"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(-1.,-localST.t*2.+1.,localST.s*2.-1.);"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "            else if (texCoord.x*4. < 3.)//right (+x) quad (front was done above)"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(1,-localST.t*2.+1.,-localST.s*2.+1.);"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "            else //back (+z) quad"
+    .endl() + "            {"
+    .endl() + "                vec3 dir=vec3(-localST.s*2.+1.,-localST.t*2.+1.,-1.);"
+    .endl() + "                depth = texCube(cubeMap, dir);"
+    .endl() + "            }"
+    .endl() + "        }"
+    .endl() + "        colTex = vec4(vec3(depth),1.);"
+    .endl() + "    }"
+
+    .endl() + "    if(type==2.0)"
+    .endl() + "    {"
+    .endl() + "       colTex.rgb=vec3(0.0,1.0,0.0);"
+    .endl() + "    }"
+
     .endl() + "    outColor = mix(col,colTex,colTex.a);"
     .endl() + "}";
 
@@ -81,6 +150,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     if (!tp.port)port = tp;
     const id = tp.id;
     const texSlot = 5;
+    const texSlotCubemap = texSlot + 1;
 
     let meta = true;
     if (ele)meta = false;
@@ -94,7 +164,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     }
     const previewCanvas = previewCanvasEle.getContext("2d");
 
-    if (previewCanvas && port && port.get() && !port.get().cubemap)
+    if (previewCanvas && port && port.get())
     {
         const perf = CABLES.uiperf.start("texpreview");
         const cgl = port.parent.patch.cgl;
@@ -119,8 +189,11 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
             this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
             this._shader.setSource(CABLES.UI.TexturePreviewer.VERTSHADER, CABLES.UI.TexturePreviewer.FRAGSHADER);
             this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
+            this._shaderTexCubemapUniform = new CGL.Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
+
             this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
             this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
+            this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
         }
 
         cgl.pushPMatrix();
@@ -129,9 +202,28 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         // if(port.get().oldTexFlip) mat4.ortho(cgl.pMatrix,-1,1,-1,1,0.001,11);
 
         const oldTex = cgl.getTexture(texSlot);
-        cgl.setTexture(texSlot, port.get().tex);
+        const oldTexCubemap = cgl.getTexture(texSlotCubemap);
+
+        let texType = 0;
+        if (port.get().cubemap) texType = 1;
+        if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
+
+        if (texType == 0)
+        {
+            cgl.setTexture(texSlot, port.get().tex);
+        }
+        else if (texType == 1)
+        {
+            cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
+        }
+
+        // this._shader.toggleDefine("CUBEMAP", true);
+
+        this._shaderTypeUniform.setValue(texType);
+
         this._mesh.render(this._shader);
-        cgl.setTexture(texSlot, oldTex);
+        if (texType == 0) cgl.setTexture(texSlot, oldTex);
+        if (texType == 1) cgl.setTexture(texSlotCubemap, oldTexCubemap);
 
         cgl.popPMatrix();
         cgl.resetViewPort();
@@ -143,6 +235,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         const s = this._getCanvasSize(port, port.get(), meta);
         if (s[0] == 0 || s[1] == 0) return;
 
+        if (texType == 1)s[0] *= 1.33;
         previewCanvasEle.width = s[0];
         previewCanvasEle.height = s[1];
 
