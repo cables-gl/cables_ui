@@ -156,6 +156,8 @@ CABLES.GLGUI.GlPatchAPI = class
 
     _onAddOp(op)
     {
+        gui.patchView.testCollision(op);
+
         this._glPatch.addOp(op);
     }
 
@@ -184,6 +186,7 @@ CABLES.GLGUI.GlPatchAPI = class
         else console.error("could not remove link");
     }
 
+
     addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
     {
         const opIn = gui.corePatch().getOpById(opIdIn);
@@ -196,10 +199,7 @@ CABLES.GLGUI.GlPatchAPI = class
             "y": 0,
             "onOpAdd": (op) =>
             {
-                op.setUiAttrib({ "translate": { "x": x, "y": y } });
-                // console.log("ONOPADD!!!", x, y);
-                // op.uiAttribs.translate.x = x;
-                // op.uiAttribs.translate.y = y;
+                op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
             } }, null, null, link);
     }
 
