@@ -10,7 +10,7 @@ CABLES.UI.Patch = function (_gui)
     const self = this;
     this.ops = [];
     this.scene = null;
-    this.disabled = CABLES.UI.userSettings.get("glpatchview");
+    this.disabled = (CABLES.UI.userSettings.get("glpatchview") || document.location.href.indexOf("glui") > -1);
     const gui = _gui;
 
     let currentProject = null;

@@ -370,6 +370,7 @@ CABLES.GLGUI.ViewBox = class
 
     screenToPatchCoord(x, y, aspect)
     {
+        if (this._scrollY != this._scrollY) this._scrollY = 0;
         const z = 1 / (this._viewResX / 2 / this.zoom);
         let zy = z;
         if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
@@ -379,6 +380,12 @@ CABLES.GLGUI.ViewBox = class
 
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
+
+        if (mouseAbsY != mouseAbsY)
+        {
+            console.log("WRONG!!!! VIEWBOX!!!", this, z, mouseAbsX, mouseAbsY, asp);
+            this.center(true);
+        }
 
         return [mouseAbsX, mouseAbsY];
     }
