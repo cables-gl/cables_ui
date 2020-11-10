@@ -180,6 +180,8 @@ CABLES.GLGUI.SplineDrawer = class
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        if (this._splines.length == 0) return;
+
         // if (this._count < 2) return;
 
 
@@ -438,7 +440,8 @@ CABLES.GLGUI.SplineDrawer = class
 
     rebuild()
     {
-        // this._thePoints = [];
+        if (this._splines.length == 0) return;
+
         console.log("rebuild!");
 
         this._splineIndex = [];

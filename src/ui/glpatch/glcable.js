@@ -143,7 +143,6 @@ CABLES.GLGUI.GlCable = class
         distX = closestX - cx;
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
-        console.log(distX, distY);
 
         if (distance <= r)
         {
