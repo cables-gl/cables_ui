@@ -1399,7 +1399,8 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true, "ignoreInput": true }, (e) =>
         {
-            if ($("#patch").is(":focus"))
+            // if ($("#patch").is(":focus"))
+            if (this.patchView.hasFocus())
             {
                 CABLES.CMD.PATCH.save();
             }

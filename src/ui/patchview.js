@@ -122,6 +122,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();
     }
 
+    hasFocus()
+    {
+        return this._patchRenderer.isFocussed();
+    }
+
     focus()
     {
         if (this._patchRenderer.focus) this._patchRenderer.focus();
