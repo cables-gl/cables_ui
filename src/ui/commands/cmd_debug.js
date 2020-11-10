@@ -31,8 +31,20 @@ CABLES.CMD.DEBUG.glguiFull = function ()
     new CABLES.GLGUI.GlGuiFull();
 };
 
+CABLES.CMD.DEBUG.debugGlUi = function ()
+{
+    new CABLES.UI.GlDebugTab(gui.mainTabs);
+    gui.maintabPanel.show();
+};
+
 
 CABLES.CMD.commands.push(
+    {
+        "cmd": "glui debug",
+        "category": "debug",
+        "func": CABLES.CMD.DEBUG.debugGlUi,
+        "icon": "command"
+    },
     {
         "cmd": "test all ops",
         "category": "debug",
