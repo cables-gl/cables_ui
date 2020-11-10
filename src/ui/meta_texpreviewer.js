@@ -53,12 +53,16 @@ CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
 // .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
 // .endl() + "    return mod(total,2.0)*0.1+0.05;"
 // .endl() + "}"
+    .endl() + "float LinearizeDepth(float d,float zNear,float zFar)"
+    .endl() + "{"
+    .endl() + "float z_n = 2.0 * d - 1.0;"
+    .endl() + "return 2.0 * zNear / (zFar + zNear - z_n * (zFar - zNear));"
+    .endl() + "}"
 
     .endl() + "void main()"
     .endl() + "{"
     .endl() + "    vec4 col=vec4(0.0);"
     .endl() + "    vec4 colTex=texture2D(tex,texCoord);"
-
     .endl() + "    if(type==1.0)"
     .endl() + "    {"
     .endl() + "        vec4 depth=vec4(0.);"
@@ -122,7 +126,10 @@ CABLES.UI.TexturePreviewer.FRAGSHADER = "".endl()
 
     .endl() + "    if(type==2.0)"
     .endl() + "    {"
-    .endl() + "       colTex.rgb=vec3(0.0,1.0,0.0);"
+    .endl() + "       float near = 0.1;"
+    .endl() + "       float far = 50.;"
+    .endl() + "       float depth = LinearizeDepth(colTex.r, near, far);"
+    .endl() + "       colTex.rgb = vec3(depth);"
     .endl() + "    }"
 
     .endl() + "    outColor = mix(col,colTex,colTex.a);"
@@ -208,7 +215,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         if (port.get().cubemap) texType = 1;
         if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
 
-        if (texType == 0)
+        if (texType == 0 || texType == 2)
         {
             cgl.setTexture(texSlot, port.get().tex);
         }
