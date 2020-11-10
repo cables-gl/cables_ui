@@ -192,18 +192,28 @@ CABLES.GLGUI.ViewBox = class
         const x = this._scrollX + mouse[0];
         const y = this._scrollY + mouse[1];
 
-        // const oldZoom = this._zoom;
+
+        const oldZoom = this._zoom;
         this._zoom = newZoom;
 
         const mouseAfterZoom = this.screenToPatchCoord(this._mouseX, this._mouseY, true);
 
-        // this._zoom = oldZoom;
-
-        // this.animateZoom(newZoom, 0.1);
-
-        this.scrollTo(
-            x - mouseAfterZoom[0],
-            y - mouseAfterZoom[1]);
+        const animate = true;
+        if (animate)
+        {
+            this._zoom = oldZoom;
+            const dur = 0.3;
+            this.animateZoom(newZoom, dur);
+            this.animateScrollTo(
+                x - mouseAfterZoom[0],
+                y - mouseAfterZoom[1], dur);
+        }
+        else
+        {
+            this.scrollTo(
+                x - mouseAfterZoom[0],
+                y - mouseAfterZoom[1]);
+        }
 
         gui.patchView.emitEvent("viewBoxChange");
     }
