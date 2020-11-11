@@ -143,6 +143,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
+
+        gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
     }
 
     _onCanvasMouseDown(e)
@@ -290,6 +292,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glop.dispose();
     }
 
+    toggleOpsEnable()
+    {
+        let willDisable = true;
+        const ops = gui.patchView.getSelectedOps();
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (!ops[i].enabled)willDisable = false;
+        }
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            ops[i].setEnabled(!willDisable);
+        }
+    }
+
     addLink(l)
     {
         if (this.links[l.id]) this.links[l.id].dispose();
@@ -310,6 +327,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
+        op.addEventListener("onEnabledChange", () =>
+        {
+            glOp.update();
+        });
         op.addEventListener("onUiAttribsChange",
             (newAttribs) =>
             {
@@ -387,7 +408,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-        console.log(this._spacePressed);
+        // console.log(this._spacePressed);
         if (drawGlCursor) this._cgl.setCursor("none");
         else this._cgl.setCursor("auto");
         this._cgl.pushDepthTest(true);

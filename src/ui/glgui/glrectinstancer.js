@@ -132,7 +132,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "void main()"
             .endl() + "{"
 
-            .endl() + "   outColor=col;"
+            .endl() + "   outColor.rgb=col.rgb;"
+            .endl() + "   outColor.a=1.0;"
 
 
             .endl() + "if(useTexture>=0.0)"
@@ -210,7 +211,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
         // .endl() + "   outColor.a+=0.5;"
-
+            .endl() + "outColor.a*=col.a;"
             .endl() + "}");
 
 

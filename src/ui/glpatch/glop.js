@@ -369,6 +369,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
+
         if (this._glRectError && this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length == 0)
         {
             console.log("REMOVE ERROR DOT!!!");
@@ -447,6 +448,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
+
+
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;
     }
@@ -468,6 +471,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             {
                 this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
             }
+        }
+        if (!this._op.enabled)
+        {
+            this._glRectBg.setOpacity(0.2);
+            this._glTitle.setOpacity(0.2);
+        }
+        else
+        {
+            this._glRectBg.setOpacity(1.0);
+            this._glTitle.setOpacity(1.0);
         }
     }
 
