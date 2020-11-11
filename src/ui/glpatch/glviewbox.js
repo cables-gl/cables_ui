@@ -381,11 +381,7 @@ CABLES.GLGUI.ViewBox = class
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
-        if (mouseAbsY != mouseAbsY)
-        {
-            console.log("WRONG!!!! VIEWBOX!!!", this, z, mouseAbsX, mouseAbsY, asp);
-            this.center(true);
-        }
+        if (mouseAbsY != mouseAbsY) this.center(true);
 
         return [mouseAbsX, mouseAbsY];
     }
