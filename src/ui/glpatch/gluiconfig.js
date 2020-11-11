@@ -6,6 +6,9 @@ CABLES.GLGUI.VISUALCONFIG =
     "OpTitlePaddingLeftRight": 10,
     "OpTitlePaddingExtTitle": 5,
 
+    "OpErrorDotSize": 8,
+
+
     "portWidth": 10,
     "portHeight": 5,
     "portPadding": 2,
@@ -42,6 +45,8 @@ CABLES.GLGUI.VISUALCONFIG =
         "patchSelectionArea": [0, 0.5, 0.7, 0.25],
 
         "opBoundsRect": [0.26, 0.26, 0.26, 1],
-        "background": [0.24, 0.24, 0.24, 1]
+        "background": [0.24, 0.24, 0.24, 1],
+        "opError": [1.0, 0.24, 0.24, 1]
+
     }
 };

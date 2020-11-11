@@ -119,6 +119,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN float useTexture;"
             .endl() + "UNI float time;"
             .endl() + "UNI sampler2D tex;"
+            .endl() + "UNI float zoom;"
+
         // .endl() + "UNI sampler2D tex;"
 
 
@@ -158,10 +160,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
+            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer) * 1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner);"
             .endl() + "   if(outColor.a==0.0)discard;"
             .endl() + "}"
-
 
             .endl() + "if(decoration==2.0)" // border
             .endl() + "{"
@@ -194,6 +195,13 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "{"
             .endl() + "     if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)outColor.a=1.0;"
             .endl() + "     else outColor.a=0.0;"
+            .endl() + "}"
+
+            .endl() + "if(decoration==6.0)" // filled circle
+            .endl() + "{"
+            .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
+            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "   if(outColor.a==0.0)discard;"
             .endl() + "}"
 
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"

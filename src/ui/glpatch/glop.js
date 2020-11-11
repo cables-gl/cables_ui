@@ -31,6 +31,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._dragOldUiAttribs = null;
         this._rectDecoration = 0;
 
+        this._glRectError = null;
+
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
         this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
@@ -366,6 +368,25 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     update()
     {
         let doUpdateSize = false;
+
+        if (this._glRectError && !this.opUiAttribs.uierrors)
+        {
+            console.log("REMOVE ERROR DOT!!!");
+            this._glRectError.dispose();
+            this._glRectError = null;
+        }
+        if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
+        {
+            if (!this._glRectError)
+            {
+                this._glRectError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glRectError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glRectError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
+                this._glRectError.setPosition(0 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2, this.h / 2 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2);
+                this._glRectError.setDecoration(6);
+            }
+        }
+
 
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
