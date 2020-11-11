@@ -250,9 +250,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
                 if (!this._rects[i].visible) continue;
                 if (this._rects[i].x == this._bounds.minX && this._rects[i].y == this._bounds.minY && this._rects[i].w == this._bounds.maxX - this._bounds.minX && this._rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
 
-                const x = this._rects[i].x;
-                const y = this._rects[i].y;
-                const z = this._rects[i].z;
+                const x = this._rects[i].x || 0;
+                const y = this._rects[i].y || 0;
+                const z = this._rects[i].z || 0;
                 const x2 = x + this._rects[i].w;
                 const y2 = y + this._rects[i].h;
 
