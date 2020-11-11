@@ -387,7 +387,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             }
         }
 
-
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " | " + this.opUiAttribs.extendTitle);

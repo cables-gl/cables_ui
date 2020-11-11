@@ -104,6 +104,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // }
 
 
+        // ele.byId("patch").addEventListener("keyup", (e) =>
+        // {
+        //     if (e.which == 32) this._spacePressed = false;
+        // });
+
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -121,6 +126,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
             this._patchAPI.stopFlowModeActivity();
         });
+
+        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (e) => { this._spacePressed = false; });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
@@ -379,7 +387,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-
+        console.log(this._spacePressed);
         if (drawGlCursor) this._cgl.setCursor("none");
         else this._cgl.setCursor("auto");
         this._cgl.pushDepthTest(true);
@@ -844,5 +852,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         console.log("SET PROJECT GLPATCH!!!");
 
         this.viewBox.deSerialize(proj.ui);
+    }
+
+    get spacePressed()
+    {
+        return this._spacePressed;
     }
 };

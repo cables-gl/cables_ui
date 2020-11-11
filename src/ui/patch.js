@@ -329,7 +329,8 @@ CABLES.UI.Patch = function (_gui)
             CABLES.UI.hideInfo();
         });
 
-    $("#patch").keyup(function (e)
+
+    ele.byId("patch").addEventListener("keyup", (e) =>
     {
         switch (e.which)
         {
