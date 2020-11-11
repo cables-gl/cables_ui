@@ -137,6 +137,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "IN float fProgress;"
             .endl() + "IN float fspeed;"
 
+            .endl() + "UNI vec2 mousePos;"
 
             .endl() + "UNI float a;"
             .endl() + "UNI float time;"
@@ -148,7 +149,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
 
-            .endl() + "    float minOpacity=0.5;"
+            .endl() + "    float minOpacity=0.6;"
 
             .endl() + "    if(fspeed==0.0)col.a=minOpacity;"
             .endl() + "    if(fspeed==1.0)col.a=1.0;"
@@ -157,6 +158,9 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "        col.a=step(0.5,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
             .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
             .endl() + "    }"
+
+        // .endl() + "    if(distance(gl_FragCoord.xy,mousePos)<20.0)discard;"
+
 
             .endl() + "    {{MODULE_COLOR}}"
             // .endl() + "    col.a=1.0;"
@@ -171,6 +175,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
         this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
+        this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
     }
 
     set zPos(v)
@@ -178,10 +183,17 @@ CABLES.GLGUI.SplineDrawer = class
         this._uniZpos.setValue(v);
     }
 
-    render(resX, resY, scrollX, scrollY, zoom)
+    render(resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
     {
+        if (this._splines.length == 0) return;
+
         // if (this._count < 2) return;
 
+        if (mouseX)
+        {
+            // this._uniMousePos.setValue([mouseX, resY - mouseY]);
+            // console.log(mouseX, mouseY);
+        }
 
         if (this._mesh)
         {
@@ -438,9 +450,9 @@ CABLES.GLGUI.SplineDrawer = class
 
     rebuild()
     {
-        // this._thePoints = [];
-        console.log("rebuild!");
+        if (this._splines.length == 0) return;
 
+        // console.log("rebuild!");
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
@@ -453,13 +465,9 @@ CABLES.GLGUI.SplineDrawer = class
                 for (let j = 0; j < this._splines[i].points.length / 3; j++)
                 {
                     this._splineIndex[numPoints] = i;
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
-
                     this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
-
 
                     numPoints++;
                 }

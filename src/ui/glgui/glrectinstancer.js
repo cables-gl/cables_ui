@@ -213,7 +213,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
 
-        this._uniTexture = new CGL.Uniform(this._shader, "t[]", "tex", [0, 1, 2, 3, 4]);
+        this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
         this._geom = new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
@@ -241,7 +241,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         {
             const perf = CABLES.uiperf.start("[glRectInstancer] recalcBounds");
 
-            this._newBounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
+            const defaultMin = 999999;
+            const defaultMax = -999999;
+            this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
 
             for (let i = 0; i < this._rects.length; i++)
             {
@@ -262,6 +264,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
                 this._newBounds.minZ = Math.min(z, this._newBounds.minZ);
                 this._newBounds.maxZ = Math.max(z, this._newBounds.maxZ);
             }
+
+            this._newBounds.changed = (this._newBounds.minX != defaultMin || this._newBounds.minY != defaultMin);
 
             this._needsBoundsRecalc = false;
             perf.finish();

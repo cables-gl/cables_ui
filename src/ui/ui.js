@@ -1399,7 +1399,7 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true, "ignoreInput": true }, (e) =>
         {
-            if ($("#patch").is(":focus"))
+            if (this.patchView.hasFocus())
             {
                 CABLES.CMD.PATCH.save();
             }
@@ -1528,7 +1528,7 @@ CABLES.UI.GUI = function (cfg)
         self.patch().getViewBox().update();
 
 
-        if (CABLES.UI.userSettings.get("glpatchview") == true) CABLES.CMD.DEBUG.glguiFull();
+        if (CABLES.UI.userSettings.get("glpatchview") == true || document.location.href.indexOf("glui") > -1) CABLES.CMD.DEBUG.glguiFull();
 
 
         this._elGlCanvas.hover(function (e)

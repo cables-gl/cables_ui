@@ -122,6 +122,23 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();
     }
 
+    hasFocus()
+    {
+        return this._patchRenderer.isFocussed();
+    }
+
+    testCollision(op)
+    {
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
+        {
+            const b = gui.corePatch().ops[j];
+            if (b == op) continue;
+
+            if (op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + 40 } });
+        }
+    }
+
     focus()
     {
         if (this._patchRenderer.focus) this._patchRenderer.focus();

@@ -123,9 +123,6 @@ CABLES.GLGUI.GlPatchAPI = class
     {
         if (!link) return;
 
-
-        // for (let i = 0; i < p.links.length; i++)
-        // {
         const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
         {
             CABLES.undo.add({
@@ -153,13 +150,14 @@ CABLES.GLGUI.GlPatchAPI = class
             link.portIn.parent.id,
             link.portOut.parent.id
         ));
-        // }
 
         this._glPatch.deleteLink(link.id);
     }
 
     _onAddOp(op)
     {
+        gui.patchView.testCollision(op);
+
         this._glPatch.addOp(op);
     }
 
@@ -173,13 +171,6 @@ CABLES.GLGUI.GlPatchAPI = class
         const op = gui.corePatch().getOpById(opid);
         gui.opParams.show(op);
     }
-
-    // unlinkPort(opid, portid)
-    // {
-    //     const op = gui.corePatch().getOpById(opid);
-    //     const p = op.getPortById(portid);
-    //     p.removeLinks();
-    // }
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
@@ -195,6 +186,7 @@ CABLES.GLGUI.GlPatchAPI = class
         else console.error("could not remove link");
     }
 
+
     addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
     {
         const opIn = gui.corePatch().getOpById(opIdIn);
@@ -207,10 +199,7 @@ CABLES.GLGUI.GlPatchAPI = class
             "y": 0,
             "onOpAdd": (op) =>
             {
-                op.setUiAttrib({ "translate": { "x": x, "y": y } });
-                console.log("ONOPADD!!!", x, y);
-                // op.uiAttribs.translate.x = x;
-                // op.uiAttribs.translate.y = y;
+                op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
             } }, null, null, link);
     }
 
@@ -221,7 +210,6 @@ CABLES.GLGUI.GlPatchAPI = class
 
     setOpUiAttribs(opid, attrName, val)
     {
-        // debugger;
         const op = gui.corePatch().getOpById(opid);
         const attr = {};
         attr[attrName] = val;

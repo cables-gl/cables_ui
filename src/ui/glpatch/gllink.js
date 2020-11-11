@@ -31,8 +31,11 @@ CABLES.GLGUI.GlLink = class
         {
             const pressTime = performance.now() - this._buttonDownTime;
 
+
             if (
                 this._buttonDown == CABLES.UI.MOUSE_BUTTON_RIGHT &&
+                this._mouseDownX - e.offsetX == 0 &&
+                this._mouseDownY - e.offsetY == 0 &&
                 pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
@@ -67,7 +70,8 @@ CABLES.GLGUI.GlLink = class
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            console.log("BUTTONRECT MOUSE DOWN!!!!!!");
+            this._mouseDownX = e.offsetX;
+            this._mouseDownY = e.offsetY;
 
             this._buttonDown = e.buttons;
             this._buttonDownTime = performance.now();
