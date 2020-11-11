@@ -369,7 +369,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
-        if (this._glRectError && !this.opUiAttribs.uierrors)
+        if (this._glRectError && this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length == 0)
         {
             console.log("REMOVE ERROR DOT!!!");
             this._glRectError.dispose();
