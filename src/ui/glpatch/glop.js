@@ -193,7 +193,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._rectDecoration = 2;
             }
 
-            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) // todo: better use uiattr comment_title
             {
                 this._hidePorts = true;
                 this._hideBgRect = true;
@@ -211,6 +211,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this.updateSize();
     }
 
+    _updateCommentPosition()
+    {
+        if (this._glComment)
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, 0.8);
+            else this._glComment.setPosition(0, this._height + 20);
+    }
+
     updateSize()
     {
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
@@ -219,7 +226,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         this._glRectBg.setSize(this._width, this._height);
 
-        if (this._glComment) this._glComment.setPosition(this._width, 0);
+        this._updateCommentPosition();
     }
 
     addLink(l)
@@ -313,7 +320,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);
         if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0.8);
-        if (this._glComment) this._glComment.setPosition(this.w + 10, 0.8);
+        this._updateCommentPosition();
     }
 
     getUiAttribs()
@@ -478,16 +485,17 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitleExt = null;
         }
 
-        if (this.opUiAttribs.comment)
+        const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
+        if (comment)
         {
             if (!this._glComment)
             {
-                this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
+                this._glComment = new CABLES.GLGUI.Text(this._textWriter, comment);
                 this._glComment.setParentRect(this._glRectBg);
                 this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
             }
 
-            if (this.opUiAttribs.comment != this._glComment.text) this._glComment.text = this.opUiAttribs.comment;
+            if (comment != this._glComment.text) this._glComment.text = comment;
             this._glComment.visible = this.visible;
         }
 

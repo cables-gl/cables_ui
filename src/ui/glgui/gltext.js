@@ -18,6 +18,7 @@ CABLES.GLGUI.Text = class
         this._color = [1, 1, 1, 1];
         this._align = 0;
         this._scale = 1;
+        this._parentRect = null;
 
 
         this._font = CABLES.GLGUI.MSDF_FONT_WORKSANS;
@@ -111,6 +112,8 @@ CABLES.GLGUI.Text = class
 
         const lineHeight = this._map(this._font.info.size / 2) + 13;
         let posX = this._x;
+
+
         let posY = this._y + lineHeight;
         let countLines = 1;
 
@@ -130,7 +133,8 @@ CABLES.GLGUI.Text = class
             const ch = this._font.characters[char] || this._font.characters["?"];
             if (char == "\n")
             {
-                posX = 0;
+                posX = this._x;
+                if (this._parentRect) posX = this._x + this._parentRect.x;
                 posY += lineHeight;
                 countLines++;
                 continue;
