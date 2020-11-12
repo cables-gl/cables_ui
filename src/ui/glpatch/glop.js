@@ -11,14 +11,22 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._visible = true;
         this._glPatch = glPatch;
         this._op = op;
+        this._glRectNames = [];
         this._instancer = instancer;
         this._width = CABLES.GLGUI.VISUALCONFIG.opWidth;
         this._height = CABLES.GLGUI.VISUALCONFIG.opHeight;
         this._needsUpdate = true;
         this._textWriter = null;
+
         this._glTitleExt = null;
+        this._glRectNames.push("_glTitleExt");
+
         this._glTitle = null;
+        this._glRectNames.push("_glTitle");
+
         this._glComment = null;
+        this._glRectNames.push("_glComment");
+
         this._glPorts = [];
         this.opUiAttribs = {};
         this._links = {};
@@ -32,12 +40,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._rectDecoration = 0;
 
         this._glDotError = null;
+        this._glRectNames.push("_glDotError");
         this._glDotWarning = null;
+        this._glRectNames.push("_glDotWarning");
         this._glDotHint = null;
+        this._glRectNames.push("_glDotHint");
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
         this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+        this._glRectNames.push("_glRectBg");
 
         this._setupPorts(this._op.portsIn);
         this._setupPorts(this._op.portsOut);
@@ -351,10 +363,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             visi = false;
         }
 
-        if (this._glRectBg) this._glRectBg.visible = visi;
-        if (this._glTitle) this._glTitle.visible = visi;
-        if (this._glTitleExt) this._glTitleExt.visible = visi;
-        if (this._glComment) this._glComment.visible = visi;
+        // if (this._glRectBg) this._glRectBg.visible = visi;
+
+        for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
+
 
         for (const i in this._links) this._links[i].visible = visi;
 

@@ -8,6 +8,8 @@ CABLES.UI.GUI = function (cfg)
 
     const self = this;
     this.log = new CABLES.UI.Logger();
+
+    this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
     let showMiniMap = false;
@@ -872,7 +874,7 @@ CABLES.UI.GUI = function (cfg)
             "params_file", {
                 file,
                 fileId,
-                "projectId": self.patch().getCurrentProject()._id
+                "projectId": this.patchId
             });
 
         $("#options").html(html);

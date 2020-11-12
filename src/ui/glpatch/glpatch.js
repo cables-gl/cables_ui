@@ -835,7 +835,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setCurrentSubPatch(sub)
     {
-        if (this._currentSubpatch == sub) return;
+        if (this._currentSubpatch == sub)
+        {
+            for (const i in this._glOpz)
+                this._glOpz[i].updateVisible();
+
+            return;
+        }
 
         this._currentSubpatch = sub;
         console.log("set subpatch", sub);
