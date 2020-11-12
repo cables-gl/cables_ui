@@ -124,7 +124,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
 
 
-            this._patchAPI.stopFlowModeActivity();
+            // this._patchAPI.stopFlowModeActivity();
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
@@ -418,7 +418,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
-        if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
+        this._patchAPI.updateFlowModeActivity();
 
         this.viewBox.setSize(resX, resY);
 

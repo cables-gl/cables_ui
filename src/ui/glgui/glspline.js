@@ -149,17 +149,16 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
 
-            .endl() + "    float minOpacity=0.45;"
+            .endl() + "    float minOpacity=0.6;"
 
-            .endl() + "    if(fspeed==0.0)col.a=minOpacity;"
+
+            .endl() + "    if(fspeed==0.0)col.a=minOpacity*0.5;"
             .endl() + "    if(fspeed==1.0)col.a=1.0;"
             .endl() + "    if(fspeed>=2.0)"
             .endl() + "    {"
             .endl() + "        col.a=step(0.5,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
             .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
             .endl() + "    }"
-
-        // .endl() + "    if(distance(gl_FragCoord.xy,mousePos)<20.0)discard;"
 
 
             .endl() + "    {{MODULE_COLOR}}"
@@ -487,7 +486,6 @@ CABLES.GLGUI.SplineDrawer = class
 
         if (this._points.length != newLength)
         {
-            // console.log("spline buffer length changed!!!!", newLength);
             this._colors = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);
