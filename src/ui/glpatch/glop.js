@@ -44,11 +44,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._rectDecoration = 0;
 
         this._glDotError = null;
-        this._glRectNames.push("_glDotError");
         this._glDotWarning = null;
-        this._glRectNames.push("_glDotWarning");
         this._glDotHint = null;
-        this._glRectNames.push("_glDotHint");
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -321,6 +318,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);
         if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0.8);
         this._updateCommentPosition();
+        this._updateErrorDots();
     }
 
     getUiAttribs()
@@ -376,10 +374,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             visi = false;
         }
 
-        // if (this._glRectBg) this._glRectBg.visible = visi;
-
         for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
 
+        this._updateErrorDots();
 
         for (const i in this._links) this._links[i].visible = visi;
 
@@ -392,8 +389,17 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this._visible;
     }
 
-    updateErrorDots()
+    _updateErrorDots()
     {
+        if (!this.isInCurrentSubPatch())
+        {
+            if (this._glDotHint) this._glDotHint.visible = false;
+            if (this._glDotWarnings) this._glDotWarnings.visible = false;
+            if (this._glDotError) this._glDotError.visible = false;
+
+            return;
+        }
+
         if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
         {
             let hasHints = false;
@@ -402,14 +408,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
             for (let i = 0; i < this.opUiAttribs.uierrors.length; i++)
             {
-                if (this.opUiAttribs.uierrors[i].level == 0)hasHints = true;
-                if (this.opUiAttribs.uierrors[i].level == 1)hasWarnings = true;
-                if (this.opUiAttribs.uierrors[i].level == 2)hasErrors = true;
+                if (this.opUiAttribs.uierrors[i].level == 0) hasHints = true;
+                if (this.opUiAttribs.uierrors[i].level == 1) hasWarnings = true;
+                if (this.opUiAttribs.uierrors[i].level == 2) hasErrors = true;
             }
-
-            if (!hasErrors && this._glDotError) this._glDotError.visible = false;
-            if (!hasWarnings && this._glDotWarning) this._glDotWarning.visible = false;
-            if (!hasHints && this._glDotHint) this._glDotHint.visible = false;
 
             let dotX = 0 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
             const dotY = this.h / 2 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
@@ -420,43 +422,48 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._glDotHint.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
                 this._glDotHint.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorHint);
                 this._glDotHint.setDecoration(6);
-                this._glDotHint.visible = false;
 
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotWarning.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
                 this._glDotWarning.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorWarning);
                 this._glDotWarning.setDecoration(6);
-                this._glDotWarning.visible = false;
 
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
                 this._glDotError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
                 this._glDotError.setDecoration(6);
-                this._glDotError.visible = false;
             }
+
+            console.log("hasHints warns errors", hasHints, hasWarnings, hasErrors);
+
             if (hasHints)
             {
                 this._glDotHint.setPosition(dotX, dotY, 0);
                 this._glDotHint.visible = true;
                 dotX += 2;
             }
+            else this._glDotHint.visible = false;
 
             if (hasWarnings)
             {
-                this._glDotWarning.setPosition(dotX, dotY, 1);
+                this._glDotWarning.setPosition(dotX, dotY, 0);
                 this._glDotWarning.visible = true;
                 dotX += 2;
             }
+            else this._glDotWarning.visible = false;
 
             if (hasErrors)
             {
-                this._glDotError.setPosition(dotX, dotY, 2);
+                this._glDotError.setPosition(dotX, dotY, 0);
                 this._glDotError.visible = true;
                 dotX += 2;
             }
+            else this._glDotError.visible = false;
         }
+
         if (
-            (this._glDotError || this._glDotWarning || this._glDotHint) && (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0))
+            (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0) &&
+            (this._glDotError || this._glDotWarning || this._glDotHint))
         {
             if (this._glDotError) this._glDotError.dispose();
             if (this._glDotWarning) this._glDotWarning.dispose();
@@ -464,14 +471,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glDotError = null;
             this._glDotWarning = null;
             this._glDotHint = null;
+            console.log("remove all errordots");
         }
     }
 
     update()
     {
         let doUpdateSize = false;
-
-        this.updateErrorDots();
 
 
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
@@ -535,6 +541,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
+        this._updateErrorDots();
 
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;
