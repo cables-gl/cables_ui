@@ -63,7 +63,7 @@ CABLES.UI.Exporter = function (project)
                     msg += "<br/><br/>If this is a copy of another patch then please do the right thing and ask the original author for permission. In general it's a good idea to give them credits by mentioning their user name and a link to the original patch</div><br/>";
 
                     msg += "<br/><br/><br/>";
-                    msg += "<a class=\"bluebutton\" href=\"" + r.downloadUrl + "\">Download " + Math.round(r.size * 100) / 100 + " mb</a>";
+                    msg += "<a class=\"bluebutton\" href=\"" + r.urls.downloadUrl + "\">Download " + Math.round(r.size * 100) / 100 + " mb</a>";
                     msg += "<br/><br/>";
                     msg += "<div class=\"shaderErrorCode\">" + r.log + "</div>";
                 }
