@@ -2015,13 +2015,7 @@ CABLES.UI.Patch = function (_gui)
 
         for (let j = 0; j < selectedOps.length; j++)
         {
-            const op = selectedOps[j].op;
-
-            op.markChilds();
-
-            for (let i = 0; i < self.ops.length; i++)
-                if (self.ops[i].op.marked)
-                    self.ops[i].setEnabled(newstate);
+            selectedOps[j].setEnabled(newstate);
         }
     };
 
