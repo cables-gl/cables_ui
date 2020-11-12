@@ -141,8 +141,7 @@ CABLES.GLGUI.SplineDrawer = class
 
             .endl() + "UNI float a;"
             .endl() + "UNI float time;"
-            // .endl() + "UNI sampler2D tex;"
-            .endl() + ""
+
             .endl() + "{{MODULES_HEAD}}"
             .endl() + "void main()"
             .endl() + "{"
@@ -150,7 +149,6 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    col.a=1.0;"
 
             .endl() + "    float minOpacity=0.6;"
-
 
             .endl() + "    if(fspeed==0.0)col.a=minOpacity*0.5;"
             .endl() + "    if(fspeed==1.0)col.a=1.0;"
@@ -160,9 +158,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
             .endl() + "    }"
 
-
             .endl() + "    {{MODULE_COLOR}}"
-            // .endl() + "    col.a=1.0;"
             .endl() + "    outColor = col;"
             .endl() + "}");
 
