@@ -63,11 +63,19 @@ CABLES.UI.Exporter = function (project)
     //                 msg += "<div style=\"max-width:800px\">Cables has been built by a team of dedicated developers who have invested a huge amount of time and effort. Right now cables is free, so please support us by linking back to cables in any web page or piece work that uses it. Thank you";
     //                 msg += "<br/><br/>If this is a copy of another patch then please do the right thing and ask the original author for permission. In general it's a good idea to give them credits by mentioning their user name and a link to the original patch</div><br/>";
 
+<<<<<<< HEAD
     //                 msg += "<br/><br/><br/>";
     //                 msg += "<a class=\"bluebutton\" href=\"" + r.downloadUrl + "\">Download " + Math.round(r.size * 100) / 100 + " mb</a>";
     //                 msg += "<br/><br/>";
     //                 msg += "<div class=\"shaderErrorCode\">" + r.log + "</div>";
     //             }
+=======
+                    msg += "<br/><br/><br/>";
+                    msg += "<a class=\"bluebutton\" href=\"" + r.urls.downloadUrl + "\">Download " + Math.round(r.size * 100) / 100 + " mb</a>";
+                    msg += "<br/><br/>";
+                    msg += "<div class=\"shaderErrorCode\">" + r.log + "</div>";
+                }
+>>>>>>> aa9c47f5656bba40d6e415023769a9e7e65416ae
 
     //             CABLES.UI.MODAL.show(msg);
     //         });
