@@ -27,6 +27,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glComment = null;
         this._glRectNames.push("_glComment");
 
+        this._hidePorts = false;
+        this._hideBgRect = false;
+
+
         this._glPorts = [];
         this.opUiAttribs = {};
         this._links = {};
@@ -191,6 +195,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
+                this._hidePorts = true;
+                this._hideBgRect = true;
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
                 this._transparent = true;
@@ -554,6 +560,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glRectBg.setOpacity(1.0);
             this._glTitle.setOpacity(1.0);
         }
+
+        if (this._hideBgRect) this._glRectBg.setOpacity(0.1);
+        if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
     }
 
     set selected(s)
