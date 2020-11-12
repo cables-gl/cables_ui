@@ -46,7 +46,10 @@ CABLES.GLGUI.VISUALCONFIG =
 
         "opBoundsRect": [0.26, 0.26, 0.26, 1],
         "background": [0.24, 0.24, 0.24, 1],
-        "opError": [1.0, 0.24, 0.24, 1]
+        "opError": [1.0, 0.24, 0.1, 1],
+        "opErrorWarning": [1.0, 0.7, 0.1, 1],
+        "opErrorHint": [0.5, 0.5, 0.5, 1]
+
 
     }
 };
