@@ -31,9 +31,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._dragOldUiAttribs = null;
         this._rectDecoration = 0;
 
-        this._glRectError = null;
-        this._glRectWarning = null;
-        this._glRectHint = null;
+        this._glDotError = null;
+        this._glDotWarning = null;
+        this._glDotHint = null;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -382,63 +382,63 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 if (this.opUiAttribs.uierrors[i].level == 2)hasErrors = true;
             }
 
-            if (!hasErrors && this._glRectError) this._glRectError.visible = false;
-            if (!hasWarnings && this._glRectWarning) this._glRectWarning.visible = false;
-            if (!hasHints && this._glRectHint) this._glRectHint.visible = false;
+            if (!hasErrors && this._glDotError) this._glDotError.visible = false;
+            if (!hasWarnings && this._glDotWarning) this._glDotWarning.visible = false;
+            if (!hasHints && this._glDotHint) this._glDotHint.visible = false;
 
             let dotX = 0 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
             const dotY = this.h / 2 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
 
-            if (!this._glRectHint)
+            if (!this._glDotHint)
             {
-                this._glRectHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glRectHint.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
-                this._glRectHint.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorHint);
-                this._glRectHint.setDecoration(6);
-                this._glRectHint.visible = false;
+                this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotHint.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotHint.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorHint);
+                this._glDotHint.setDecoration(6);
+                this._glDotHint.visible = false;
 
-                this._glRectWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glRectWarning.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
-                this._glRectWarning.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorWarning);
-                this._glRectWarning.setDecoration(6);
-                this._glRectWarning.visible = false;
+                this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotWarning.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotWarning.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorWarning);
+                this._glDotWarning.setDecoration(6);
+                this._glDotWarning.visible = false;
 
-                this._glRectError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glRectError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
-                this._glRectError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
-                this._glRectError.setDecoration(6);
-                this._glRectError.visible = false;
+                this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
+                this._glDotError.setDecoration(6);
+                this._glDotError.visible = false;
             }
             if (hasHints)
             {
-                this._glRectHint.setPosition(dotX, dotY, 0);
-                this._glRectHint.visible = true;
+                this._glDotHint.setPosition(dotX, dotY, 0);
+                this._glDotHint.visible = true;
                 dotX += 2;
             }
 
             if (hasWarnings)
             {
-                this._glRectWarning.setPosition(dotX, dotY, 1);
-                this._glRectWarning.visible = true;
+                this._glDotWarning.setPosition(dotX, dotY, 1);
+                this._glDotWarning.visible = true;
                 dotX += 2;
             }
 
             if (hasErrors)
             {
-                this._glRectError.setPosition(dotX, dotY, 2);
-                this._glRectError.visible = true;
+                this._glDotError.setPosition(dotX, dotY, 2);
+                this._glDotError.visible = true;
                 dotX += 2;
             }
         }
         if (
-            (this._glRectError || this._glRectWarning || this._glRectHint) && (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0))
+            (this._glDotError || this._glDotWarning || this._glDotHint) && (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0))
         {
-            if (this._glRectError) this._glRectError.dispose();
-            if (this._glRectWarning) this._glRectWarning.dispose();
-            if (this._glRectHint) this._glRectHint.dispose();
-            this._glRectError = null;
-            this._glRectWarning = null;
-            this._glRectHint = null;
+            if (this._glDotError) this._glDotError.dispose();
+            if (this._glDotWarning) this._glDotWarning.dispose();
+            if (this._glDotHint) this._glDotHint.dispose();
+            this._glDotError = null;
+            this._glDotWarning = null;
+            this._glDotHint = null;
         }
     }
 
@@ -509,7 +509,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
-
 
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;

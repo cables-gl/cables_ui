@@ -10,6 +10,7 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
         this._x = 0;
         this._y = 0;
         this._buttonStates = [false, false, false, false, false];
+        this._numFingers = 0;
 
         this._isDragging = false;
         this._mouseDownX = 0;
@@ -49,7 +50,22 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
             if (e.buttons) this._setButton(e.buttons, true);
             else this._setButtonsUp();
         });
+
+        canvas.addEventListener("touchmove", (e) =>
+        {
+            this._numFingers = e.touches.length;
+        });
+        canvas.addEventListener("touchenter", (e) =>
+        {
+            this._numFingers = e.touches.length;
+        });
+        canvas.addEventListener("touchleave", (e) =>
+        {
+            this._numFingers = e.touches.length;
+        });
     }
+
+    get numFingers() { return this._numFingers; }
 
     get mouseOverCanvas() { return this._mouseOverCanvas; }
 
