@@ -725,9 +725,12 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
         for (let i = 0; i < proj.ops.length; i++)
         {
-            if (this.getOpLibs(proj.ops[i].objName).length)console.log("op with libs:", ops[i].objName, this.getOpLibs(proj.ops[i].objName));
-            libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-            coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+            if (proj.ops[i])
+            {
+                if (this.getOpLibs(proj.ops[i].objName).length)console.log("op with libs:", ops[i].objName, this.getOpLibs(proj.ops[i].objName));
+                libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
+                coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+            }
         }
 
 
