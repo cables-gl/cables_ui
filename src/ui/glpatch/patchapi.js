@@ -199,7 +199,8 @@ CABLES.GLGUI.GlPatchAPI = class
             "y": 0,
             "onOpAdd": (op) =>
             {
-                op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
+                // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
+                op.setUiAttrib({ "translate": { "x": x, "y": y } });
             } }, null, null, link);
     }
 

@@ -29,7 +29,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this._overlaySplines.zPos = 0.5;
-        // this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
+        this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
 
@@ -104,6 +104,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // }
 
 
+        // ele.byId("patch").addEventListener("keyup", (e) =>
+        // {
+        //     if (e.which == 32) this._spacePressed = false;
+        // });
+
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -122,6 +127,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._patchAPI.stopFlowModeActivity();
         });
 
+        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (e) => { this._spacePressed = false; });
+
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, {}, (e) => { gui.patchView.unlinkSelectedOps(); });
@@ -135,6 +143,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
+
+        gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
     }
 
     _onCanvasMouseDown(e)
@@ -282,6 +292,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         glop.dispose();
     }
 
+    toggleOpsEnable()
+    {
+        let willDisable = true;
+        const ops = gui.patchView.getSelectedOps();
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (!ops[i].enabled)willDisable = false;
+        }
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            ops[i].setEnabled(!willDisable);
+        }
+    }
+
     addLink(l)
     {
         if (this.links[l.id]) this.links[l.id].dispose();
@@ -302,6 +327,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
+        op.addEventListener("onEnabledChange", () =>
+        {
+            glOp.update();
+        });
         op.addEventListener("onUiAttribsChange",
             (newAttribs) =>
             {
@@ -379,7 +408,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-
+        // console.log(this._spacePressed);
         if (drawGlCursor) this._cgl.setCursor("none");
         else this._cgl.setCursor("auto");
         this._cgl.pushDepthTest(true);
@@ -427,6 +456,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
+
         this.needsRedraw = false;
 
         if (performance.now() - this._fpsStartTime > 1000)
@@ -448,6 +478,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.mouseState.debug(this.debugData);
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
+
+        this.performanceGraph.set(performance.now() - starttime); //
+
         this.debugData.glPrimitives = CGL.profileData.profileMeshNumElements;
         this.debugData.glUpdateAttribs = CGL.profileData.profileMeshAttributes;
 
@@ -840,5 +873,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         console.log("SET PROJECT GLPATCH!!!");
 
         this.viewBox.deSerialize(proj.ui);
+    }
+
+    get spacePressed()
+    {
+        return this._spacePressed;
     }
 };

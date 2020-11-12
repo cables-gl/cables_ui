@@ -13,6 +13,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._cachedSubpatchNames = {};
         this.isPasting = false;
         this._showingNavHelperEmpty = false;
+        this._lastTempOPs = [];
 
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
@@ -1257,6 +1258,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         } });
     }
 
+
+    tempUnlinkOp()
+    {
+    }
 
     insertOpInLink(oldLink, op, x, y)
     {

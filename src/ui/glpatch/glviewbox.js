@@ -103,7 +103,7 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasMouseDown(e)
     {
-        if (this.glPatch.mouseState.buttonRight)
+        if (this.glPatch.mouseState.buttonRight || this.glPatch.spacePressed)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
@@ -114,19 +114,11 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasMouseMove(e)
     {
-        // const isFocused = (document.activeElement === this._cgl.canvas);
-        // if (!isFocused && document.activeElement.tagName != "INPUT")
-        // {
-        //     console.log(document.activeElement.tagName);
-        //     console.log("not focussed");
-        //     this._cgl.canvas.focus();
-        // }
-
         this.setMousePos(e.offsetX, e.offsetY);
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if (this.glPatch.mouseState.buttonRight && this.glPatch.allowDragging)
+        if ((this.glPatch.mouseState.buttonRight || (this.glPatch.spacePressed && this.glPatch.mouseState.buttonLeft)) && this.glPatch.allowDragging)
         {
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
@@ -381,11 +373,7 @@ CABLES.GLGUI.ViewBox = class
         const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
-        if (mouseAbsY != mouseAbsY)
-        {
-            console.log("WRONG!!!! VIEWBOX!!!", this, z, mouseAbsX, mouseAbsY, asp);
-            this.center(true);
-        }
+        if (mouseAbsY != mouseAbsY) this.center(true);
 
         return [mouseAbsX, mouseAbsY];
     }

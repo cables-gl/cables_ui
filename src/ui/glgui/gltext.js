@@ -78,10 +78,16 @@ CABLES.GLGUI.Text = class
         this._parentRect.on("positionChanged", this.rebuild.bind(this));
     }
 
-    setColor(r, g, b)
+    setOpacity(a)
     {
+        this.setColor(this._color[0], this._color[1], this._color[2], a);
+    }
+
+    setColor(r, g, b, a)
+    {
+        if (a === undefined)a = 1.0;
         if (r.length) vec4.set(this._color, r[0], r[1], r[2], 1);
-        else vec4.set(this._color, r, g, b, 1);
+        else vec4.set(this._color, r, g, b, a);
 
         for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColor(this._color);
     }

@@ -149,7 +149,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 col=fcolor;"
             .endl() + "    col.a=1.0;"
 
-            .endl() + "    float minOpacity=0.6;"
+            .endl() + "    float minOpacity=0.45;"
 
             .endl() + "    if(fspeed==0.0)col.a=minOpacity;"
             .endl() + "    if(fspeed==1.0)col.a=1.0;"

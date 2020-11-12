@@ -119,6 +119,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "IN float useTexture;"
             .endl() + "UNI float time;"
             .endl() + "UNI sampler2D tex;"
+            .endl() + "UNI float zoom;"
+
         // .endl() + "UNI sampler2D tex;"
 
 
@@ -130,7 +132,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "void main()"
             .endl() + "{"
 
-            .endl() + "   outColor=col;"
+            .endl() + "   outColor.rgb=col.rgb;"
+            .endl() + "   outColor.a=1.0;"
 
 
             .endl() + "if(useTexture>=0.0)"
@@ -158,10 +161,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   outColor.a=smoothstep(0.22,0.2,outer) * 1.0-smoothstep(0.12,0.1,inner);"
+            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer) * 1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner);"
             .endl() + "   if(outColor.a==0.0)discard;"
             .endl() + "}"
-
 
             .endl() + "if(decoration==2.0)" // border
             .endl() + "{"
@@ -196,13 +198,20 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "     else outColor.a=0.0;"
             .endl() + "}"
 
+            .endl() + "if(decoration==6.0)" // filled circle
+            .endl() + "{"
+            .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
+            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "   if(outColor.a==0.0)discard;"
+            .endl() + "}"
+
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
         // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
         // .endl() + "   outColor.a+=0.5;"
-
+            .endl() + "outColor.a*=col.a;"
             .endl() + "}");
 
 
@@ -250,9 +259,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
                 if (!this._rects[i].visible) continue;
                 if (this._rects[i].x == this._bounds.minX && this._rects[i].y == this._bounds.minY && this._rects[i].w == this._bounds.maxX - this._bounds.minX && this._rects[i].h == this._bounds.maxY - this._bounds.minY) continue;
 
-                const x = this._rects[i].x;
-                const y = this._rects[i].y;
-                const z = this._rects[i].z;
+                const x = this._rects[i].x || 0;
+                const y = this._rects[i].y || 0;
+                const z = this._rects[i].z || 0;
                 const x2 = x + this._rects[i].w;
                 const y2 = y + this._rects[i].h;
 
