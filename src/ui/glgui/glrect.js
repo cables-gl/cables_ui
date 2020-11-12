@@ -66,16 +66,21 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     get idx() { return this._attrIndex; }
 
+
+    hasChild(c)
+    {
+        return this.childs.indexOf(c) > -1;
+    }
+
     addChild(c)
     {
-        this.childs.push(c);
+        if (!this.hasChild(c)) this.childs.push(c);
     }
 
     setDecoration(c)
     {
         this._decoration = c;
         this._rectInstancer.setDecoration(this._attrIndex, c);
-        // else this._rectInstancer.setDecoration(this._attrIndex, 0);
     }
 
     get visible() { return this._visible; }
