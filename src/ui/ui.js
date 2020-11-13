@@ -345,25 +345,25 @@ CABLES.UI.GUI = function (cfg)
             const editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elMaintab.style.left = iconBarWidth + "px";
-            this._elMaintab.style.top = menubarHeight;
+            this._elMaintab.style.top = menubarHeight + "px";
             this._elMaintab.style.height = (editorHeight - 2) + "px";
-            this._elMaintab.style.width = editorWidth;
+            this._elMaintab.style.width = editorWidth + "px";
 
 
             this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth;
-            this._elSplitterMaintabs.style.height = patchHeight - 2;
-            this._elSplitterMaintabs.style.width = 5;
-            this._elSplitterMaintabs.style.top = menubarHeight;
+            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
+            this._elSplitterMaintabs.style.height = patchHeight - 2 + "px";
+            this._elSplitterMaintabs.style.width = 5 + "px";
+            this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
             this._elEditorMinimized.style.display = "none";
-            this._elEditorMinimized.style.left = iconBarWidth;
-            this._elEditorMinimized.style.top = menubarHeight;
+            this._elEditorMinimized.style.left = iconBarWidth + "px";
+            this._elEditorMinimized.style.top = menubarHeight + "px";
 
             this._elEditorMaximized.style.display = "block";
-            this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3;
-            this._elEditorMaximized.style.top = menubarHeight;
+            this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
+            this._elEditorMaximized.style.top = menubarHeight + "px";
 
             // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
@@ -376,8 +376,8 @@ CABLES.UI.GUI = function (cfg)
             else this._elEditorMinimized.style.display = "none";
 
             this._elSplitterMaintabs.style.display = "none";
-            this._elEditorMinimized.style.left = iconBarWidth;
-            this._elEditorMinimized.style.top = menubarHeight;
+            this._elEditorMinimized.style.left = iconBarWidth + "px";
+            this._elEditorMinimized.style.top = menubarHeight + "px";
 
             // $("#subpatch_nav").css("left", iconBarWidth + 25);
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
@@ -481,8 +481,8 @@ CABLES.UI.GUI = function (cfg)
             this._elMiniMap.style.display = "none";
         }
 
-        this._elLibrary.style.left = iconBarWidth;
-        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth;
+        this._elLibrary.style.left = iconBarWidth + "px";
+        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
         this._elLibrary.style.bottom = 0;
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
@@ -572,6 +572,8 @@ CABLES.UI.GUI = function (cfg)
         }
 
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
+
+        $("#maintabs").css("top", menubarHeight);
         $("#maintabs").css("height", window.innerHeight - menubarHeight);
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 

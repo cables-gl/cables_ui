@@ -38,8 +38,8 @@ CABLES.ContextMenu.prototype.show = function (obj, parent)
         document.body.appendChild(this._element);
     }
 
-    this._element.style.left = rect.left + 5;
-    this._element.style.top = rect.top + 5;
+    this._element.style.left = rect.left + 5 + "px";
+    this._element.style.top = rect.top + 5 + "px";
 
     if (obj && obj.items && obj.items.length > 0)
     {
