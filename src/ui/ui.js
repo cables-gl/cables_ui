@@ -263,18 +263,15 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
-
         this.corePatch().pause();
         this.patchView.pause();
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>
         {
             this._corePatch.cgl.updateSize();
-
             this.corePatch().resume();
             this.patchView.resume();
         }, 50);
-
 
         let iconBarWidth = 80;
         if (CABLES.UI.userSettings.get("hideSizeBar"))
@@ -297,8 +294,6 @@ CABLES.UI.GUI = function (cfg)
         if (gui.timeLine() && gui.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
-        // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
-
         const timedisplayheight = 25;
 
         let patchHeight = window.innerHeight - menubarHeight - 2;
@@ -611,9 +606,7 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreviewButtonContainer.style.right = this.rendererWidth + "px";
         this._elBgPreviewButtonContainer.style.top = -1 + "px";
 
-
         this.emitEvent("setLayout");
-
 
         perf.finish();
     };

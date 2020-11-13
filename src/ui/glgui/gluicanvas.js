@@ -101,12 +101,10 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.glPatch.on("paused", () =>
         {
-            console.log("paused");
             this.patch.pause();
         });
         this.glPatch.on("resumed", () =>
         {
-            console.log("resume");
             this.patch.cgl.setSize(this.width, this.height);
             this.patch.resume();
         });
@@ -231,7 +229,6 @@ CABLES.GLGUI.GlUiCanvas = class
 
     render()
     {
-        console.log("render!");
         if (this.glPatch.paused) return;
         if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
@@ -246,16 +243,12 @@ CABLES.GLGUI.GlUiCanvas = class
 
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
 
-
         if (this._oldTargetFps != this._targetFps)
         {
-            // console.log("target fps:",this._targetFps)
             this._oldTargetFps = this._targetFps;
         }
 
-
         cgl.renderStart(cgl);
-
 
         if (!this._inited)
         {
