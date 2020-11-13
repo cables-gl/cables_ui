@@ -13,13 +13,13 @@ CABLES.UI.showToolTip = function (e, txt)
     if (e)
         if (e.style)
         {
-            CABLES.UI.eleTooltip.style.top = e.getBoundingClientRect().top + 25;
-            CABLES.UI.eleTooltip.style.left = e.getBoundingClientRect().left;
+            CABLES.UI.eleTooltip.style.top = e.getBoundingClientRect().top + 25 + "px";
+            CABLES.UI.eleTooltip.style.left = e.getBoundingClientRect().left + "px";
         }
         else
         {
-            CABLES.UI.eleTooltip.style.top = e.clientY + 12;
-            CABLES.UI.eleTooltip.style.left = e.clientX + 25;
+            CABLES.UI.eleTooltip.style.top = e.clientY + 12 + "px";
+            CABLES.UI.eleTooltip.style.left = e.clientX + 25 + "px";
         }
 
     CABLES.UI.eleTooltip.innerHTML = txt;

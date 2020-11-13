@@ -2153,17 +2153,17 @@ CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
 };
 
 // todo use eventtarget...
-CABLES.UI.GUI.prototype.callEvent = function (name, params)
-{
-    console.warn("gui old callEvent / replace...", name, params);
-    if (this._eventListeners.hasOwnProperty(name))
-    {
-        for (const i in this._eventListeners[name])
-        {
-            this._eventListeners[name][i](params);
-        }
-    }
-};
+// CABLES.UI.GUI.prototype.callEvent = function (name, params)
+// {
+//     console.warn("gui old callEvent / replace...", name, params);
+//     if (this._eventListeners.hasOwnProperty(name))
+//     {
+//         for (const i in this._eventListeners[name])
+//         {
+//             this._eventListeners[name][i](params);
+//         }
+//     }
+// };
 
 
 CABLES.UI.GUI.prototype.initCoreListeners = function ()
