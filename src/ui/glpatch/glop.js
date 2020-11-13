@@ -434,8 +434,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._glDotError.setDecoration(6);
             }
 
-            console.log("hasHints warns errors", hasHints, hasWarnings, hasErrors);
-
             if (hasHints)
             {
                 this._glDotHint.setPosition(dotX, dotY, 0);

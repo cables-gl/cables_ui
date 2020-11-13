@@ -28,7 +28,7 @@ $(document).ready(function ()
     });
 
 
-    document.getElementById("splitterMaintabs").addEventListener("mousedown", function (ev)
+    function resizeTabs(ev)
     {
         gui.pauseProfiling();
         ev.preventDefault();
@@ -45,9 +45,12 @@ $(document).ready(function ()
         }
 
         document.addEventListener("mousemove", mm);
+        document.addEventListener("touchmove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
-    });
+    }
 
+    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs);
+    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs);
     // document.getElementById('splitterEditor').addEventListener("mousedown",function (e)
     // {
     //     e.preventDefault();
