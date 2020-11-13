@@ -1313,13 +1313,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     pause()
     {
-        console.log("pause");
         if (this._patchRenderer && this._patchRenderer.pause) this._patchRenderer.pause();
     }
 
     resume()
     {
-        console.log("resume");
         if (this._patchRenderer && this._patchRenderer.resume) this._patchRenderer.resume();
+    }
+
+    setSize(x, y, w, h)
+    {
+        if (this._patchRenderer) this._patchRenderer.setSize(x, y, w, h);
     }
 };

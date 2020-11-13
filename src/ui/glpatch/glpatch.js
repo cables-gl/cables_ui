@@ -894,7 +894,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     pause()
     {
-        console.log("glpatch pause");
         this.paused = true;
         this.emitEvent("paused");
     }
@@ -903,5 +902,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this.paused = false;
         this.emitEvent("resumed");
+    }
+
+    setSize(x, y, w, h)
+    {
+
     }
 };

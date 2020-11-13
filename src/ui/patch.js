@@ -12,6 +12,7 @@ CABLES.UI.Patch = function (_gui)
     this.scene = null;
     this.disabled = (CABLES.UI.userSettings.get("glpatchview") || document.location.href.indexOf("glui") > -1);
     const gui = _gui;
+    this._svgEle = null;
 
     let currentProject = null;
     let currentOp = null;
@@ -1923,6 +1924,12 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
+    this.setSize = function (x, y, w, h)
+    {
+        this._svgEle = this._svgEle || document.querySelector("#patch svg");
+        this._svgEle.style.width = w + "px";
+        this._svgEle.style.height = h + "px";
+    };
 
     this.resetOpValues = function (opid)
     {
