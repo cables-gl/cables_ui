@@ -109,6 +109,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         //     if (e.which == 32) this._spacePressed = false;
         // });
 
+        cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
+        cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this));
+
         cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
         cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
@@ -124,7 +128,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
 
 
-            this._patchAPI.stopFlowModeActivity();
+            // this._patchAPI.stopFlowModeActivity();
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
@@ -418,7 +422,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setPosition(0, this._showRedrawFlash % 30, 1000);
         this.viewBox.update();
 
-        if (CABLES.UI.userSettings.get("glflowmode")) this._patchAPI.updateFlowModeActivity();
+        this._patchAPI.updateFlowModeActivity();
 
         this.viewBox.setSize(resX, resY);
 
@@ -831,7 +835,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setCurrentSubPatch(sub)
     {
-        if (this._currentSubpatch == sub) return;
+        if (this._currentSubpatch == sub)
+        {
+            for (const i in this._glOpz)
+                this._glOpz[i].updateVisible();
+
+            return;
+        }
 
         this._currentSubpatch = sub;
         console.log("set subpatch", sub);

@@ -11,14 +11,26 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._visible = true;
         this._glPatch = glPatch;
         this._op = op;
+        this._glRectNames = [];
         this._instancer = instancer;
         this._width = CABLES.GLGUI.VISUALCONFIG.opWidth;
         this._height = CABLES.GLGUI.VISUALCONFIG.opHeight;
         this._needsUpdate = true;
         this._textWriter = null;
+
         this._glTitleExt = null;
+        this._glRectNames.push("_glTitleExt");
+
         this._glTitle = null;
+        this._glRectNames.push("_glTitle");
+
         this._glComment = null;
+        this._glRectNames.push("_glComment");
+
+        this._hidePorts = false;
+        this._hideBgRect = false;
+
+
         this._glPorts = [];
         this.opUiAttribs = {};
         this._links = {};
@@ -31,11 +43,14 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._dragOldUiAttribs = null;
         this._rectDecoration = 0;
 
-        this._glRectError = null;
+        this._glDotError = null;
+        this._glDotWarning = null;
+        this._glDotHint = null;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
         this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+        this._glRectNames.push("_glRectBg");
 
         this._setupPorts(this._op.portsIn);
         this._setupPorts(this._op.portsOut);
@@ -175,8 +190,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                 this._rectDecoration = 2;
             }
 
-            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) // todo: better use uiattr comment_title
             {
+                this._hidePorts = true;
+                this._hideBgRect = true;
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
                 this._transparent = true;
@@ -191,6 +208,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this.updateSize();
     }
 
+    _updateCommentPosition()
+    {
+        if (this._glComment)
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, 0.8);
+            else this._glComment.setPosition(0, this._height + 20);
+    }
+
     updateSize()
     {
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
@@ -199,7 +223,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         this._glRectBg.setSize(this._width, this._height);
 
-        if (this._glComment) this._glComment.setPosition(this._width, 0);
+        this._updateCommentPosition();
     }
 
     addLink(l)
@@ -293,7 +317,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);
         if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0.8);
-        if (this._glComment) this._glComment.setPosition(this.w + 10, 0.8);
+        this._updateCommentPosition();
+        this._updateErrorDots();
     }
 
     getUiAttribs()
@@ -349,10 +374,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             visi = false;
         }
 
-        if (this._glRectBg) this._glRectBg.visible = visi;
-        if (this._glTitle) this._glTitle.visible = visi;
-        if (this._glTitleExt) this._glTitleExt.visible = visi;
-        if (this._glComment) this._glComment.visible = visi;
+        for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
+
+        this._updateErrorDots();
 
         for (const i in this._links) this._links[i].visible = visi;
 
@@ -365,28 +389,96 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this._visible;
     }
 
+    _updateErrorDots()
+    {
+        if (!this.isInCurrentSubPatch())
+        {
+            if (this._glDotHint) this._glDotHint.visible = false;
+            if (this._glDotWarnings) this._glDotWarnings.visible = false;
+            if (this._glDotError) this._glDotError.visible = false;
+
+            return;
+        }
+
+        if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
+        {
+            let hasHints = false;
+            let hasWarnings = false;
+            let hasErrors = false;
+
+            for (let i = 0; i < this.opUiAttribs.uierrors.length; i++)
+            {
+                if (this.opUiAttribs.uierrors[i].level == 0) hasHints = true;
+                if (this.opUiAttribs.uierrors[i].level == 1) hasWarnings = true;
+                if (this.opUiAttribs.uierrors[i].level == 2) hasErrors = true;
+            }
+
+            let dotX = 0 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
+            const dotY = this.h / 2 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2;
+
+            if (!this._glDotHint)
+            {
+                this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotHint.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotHint.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorHint);
+                this._glDotHint.setDecoration(6);
+
+                this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotWarning.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotWarning.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opErrorWarning);
+                this._glDotWarning.setDecoration(6);
+
+                this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
+                this._glDotError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
+                this._glDotError.setDecoration(6);
+            }
+
+            console.log("hasHints warns errors", hasHints, hasWarnings, hasErrors);
+
+            if (hasHints)
+            {
+                this._glDotHint.setPosition(dotX, dotY, 0);
+                this._glDotHint.visible = true;
+                dotX += 2;
+            }
+            else this._glDotHint.visible = false;
+
+            if (hasWarnings)
+            {
+                this._glDotWarning.setPosition(dotX, dotY, 0);
+                this._glDotWarning.visible = true;
+                dotX += 2;
+            }
+            else this._glDotWarning.visible = false;
+
+            if (hasErrors)
+            {
+                this._glDotError.setPosition(dotX, dotY, 0);
+                this._glDotError.visible = true;
+                dotX += 2;
+            }
+            else this._glDotError.visible = false;
+        }
+
+        if (
+            (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0) &&
+            (this._glDotError || this._glDotWarning || this._glDotHint))
+        {
+            if (this._glDotError) this._glDotError.dispose();
+            if (this._glDotWarning) this._glDotWarning.dispose();
+            if (this._glDotHint) this._glDotHint.dispose();
+            this._glDotError = null;
+            this._glDotWarning = null;
+            this._glDotHint = null;
+            console.log("remove all errordots");
+        }
+    }
+
     update()
     {
         let doUpdateSize = false;
 
-
-        if (this._glRectError && this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length == 0)
-        {
-            console.log("REMOVE ERROR DOT!!!");
-            this._glRectError.dispose();
-            this._glRectError = null;
-        }
-        if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
-        {
-            if (!this._glRectError)
-            {
-                this._glRectError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glRectError.setSize(CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize, CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize);
-                this._glRectError.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opError);
-                this._glRectError.setPosition(0 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2, this.h / 2 - CABLES.GLGUI.VISUALCONFIG.OpErrorDotSize / 2);
-                this._glRectError.setDecoration(6);
-            }
-        }
 
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
@@ -399,16 +491,17 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitleExt = null;
         }
 
-        if (this.opUiAttribs.comment)
+        const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
+        if (comment)
         {
             if (!this._glComment)
             {
-                this._glComment = new CABLES.GLGUI.Text(this._textWriter, this.opUiAttribs.comment);
+                this._glComment = new CABLES.GLGUI.Text(this._textWriter, comment);
                 this._glComment.setParentRect(this._glRectBg);
                 this._glComment.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchComment);
             }
 
-            if (this.opUiAttribs.comment != this._glComment.text) this._glComment.text = this.opUiAttribs.comment;
+            if (comment != this._glComment.text) this._glComment.text = comment;
             this._glComment.visible = this.visible;
         }
 
@@ -448,7 +541,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
-
+        this._updateErrorDots();
 
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;
@@ -482,6 +575,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glRectBg.setOpacity(1.0);
             this._glTitle.setOpacity(1.0);
         }
+
+        if (this._hideBgRect) this._glRectBg.setOpacity(0.1);
+        if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
     }
 
     set selected(s)

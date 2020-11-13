@@ -8,6 +8,8 @@ CABLES.UI.GUI = function (cfg)
 
     const self = this;
     this.log = new CABLES.UI.Logger();
+
+    this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
     let showMiniMap = false;
@@ -872,7 +874,7 @@ CABLES.UI.GUI = function (cfg)
             "params_file", {
                 file,
                 fileId,
-                "projectId": self.patch().getCurrentProject()._id
+                "projectId": this.patchId
             });
 
         $("#options").html(html);
@@ -1558,12 +1560,16 @@ CABLES.UI.GUI = function (cfg)
         console.groupCollapsed("welcome to cables!");
         console.log("build info:");
         const buildInfoTable = [];
-        buildInfoTable.push({ "title": "cables", "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
         if (buildInfo)
         {
             const infoRow = {
                 "title": "project"
             };
+            if (buildInfo.host)
+            {
+                infoRow.host = buildInfo.host;
+            }
             if (buildInfo.core)
             {
                 if (buildInfo.core.created)

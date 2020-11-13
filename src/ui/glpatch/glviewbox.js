@@ -41,6 +41,8 @@ CABLES.GLGUI.ViewBox = class
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
+
+        cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
     }
 
     setSize(w, h)
@@ -103,7 +105,7 @@ CABLES.GLGUI.ViewBox = class
 
     _onCanvasMouseDown(e)
     {
-        if (this.glPatch.mouseState.buttonRight || this.glPatch.spacePressed)
+        if (this.glPatch.mouseState.buttonRight || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
@@ -112,13 +114,19 @@ CABLES.GLGUI.ViewBox = class
         }
     }
 
+    _onCanvasTouchMove(e)
+    {
+        console.log(e);
+        console.log(e.touches.length);
+    }
+
     _onCanvasMouseMove(e)
     {
         this.setMousePos(e.offsetX, e.offsetY);
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if ((this.glPatch.mouseState.buttonRight || (this.glPatch.spacePressed && this.glPatch.mouseState.buttonLeft)) && this.glPatch.allowDragging)
+        if ((this.glPatch.mouseState.buttonRight || ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && this.glPatch.mouseState.buttonLeft)) && this.glPatch.allowDragging)
         {
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;

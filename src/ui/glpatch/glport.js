@@ -17,6 +17,7 @@ CABLES.GLGUI.GlPort = class
 
         oprect.addChild(this._rect);
 
+
         this._rect.on("mousedown", this._onMouseDown.bind(this));
         this._rect.on("mouseup", this._onMouseUp.bind(this));
         this._rect.on("hover", this._onHover.bind(this));

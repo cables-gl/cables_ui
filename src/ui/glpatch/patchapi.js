@@ -69,6 +69,8 @@ CABLES.GLGUI.GlPatchAPI = class
 
     updateFlowModeActivity()
     {
+        const flowMode = CABLES.UI.userSettings.get("glflowmode");
+
         if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 6 != 0) return;
@@ -86,9 +88,14 @@ CABLES.GLGUI.GlPatchAPI = class
                     let newClass = 0;
 
                     if (link.activityCounter >= 1) newClass = 1;
-                    if (link.activityCounter >= 2) newClass = 2;
-                    if (link.activityCounter >= 5) newClass = 3;
-                    if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+
+                    if (flowMode)
+                    {
+                        if (link.activityCounter >= 2) newClass = 2;
+
+                        if (link.activityCounter >= 5) newClass = 3;
+                        if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+                    }
 
                     this._glPatch.links[link.id].setFlowModeActivity(newClass);
                     link.activityCounter = 0;

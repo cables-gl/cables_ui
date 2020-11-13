@@ -295,7 +295,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                 newOp.setUiAttrib({
                     "translate": trans,
-                    "subPatch": this.patchView.getCurrentSubPatch()
+                    "subPatch": this.getCurrentSubPatch()
                 });
             } });
     }

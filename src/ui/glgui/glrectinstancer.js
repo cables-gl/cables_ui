@@ -230,6 +230,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
 
 
+        if (this._cgl.glVersion == 1) this._shader.enableExtension("GL_OES_standard_derivatives");
         this._mesh = new CGL.Mesh(cgl, this._geom);
         this._mesh.numInstances = this._num;
 

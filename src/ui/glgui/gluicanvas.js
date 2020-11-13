@@ -58,6 +58,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.loaded = false;
         this._inited = false;
 
+        document.body.style["touch-action"] = "none";
         // this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         // this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
