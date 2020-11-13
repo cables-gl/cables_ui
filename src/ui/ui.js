@@ -565,33 +565,37 @@ CABLES.UI.GUI = function (cfg)
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
 
-        if (this.rendererWidth === 0)
+        clearTimeout(this.delayedResizeCanvas);
+        this._elCablesCanvas.css("display", "none");
+        this.delayedResizeCanvas = setTimeout(() =>
         {
-            this._elGlCanvas.attr("width", window.innerWidth);
-            this._elGlCanvas.attr("height", window.innerHeight);
-            this._elGlCanvas.css("z-index", 9999);
-        }
-        else
-        {
-            const density = this._corePatch.cgl.pixelDensity;
+            this._elCablesCanvas.css("display", "initial");
+            if (this.rendererWidth === 0)
+            {
+                this._elGlCanvas.attr("width", window.innerWidth);
+                this._elGlCanvas.attr("height", window.innerHeight);
+                this._elGlCanvas.css("z-index", 9999);
+            }
+            else
+            {
+                const density = this._corePatch.cgl.pixelDensity;
 
-            this._elGlCanvas.attr("width", this.rendererWidth * density);
-            this._elGlCanvas.attr("height", self.rendererHeight * density);
-            this._elGlCanvas.css("width", this.rendererWidth);
-            this._elGlCanvas.css("height", self.rendererHeight);
-            // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
-            // console.log("!!!",window.innerWidth,this.rendererWidth)
+                this._elGlCanvas.attr("width", this.rendererWidth * density);
+                this._elGlCanvas.attr("height", self.rendererHeight * density);
+                this._elGlCanvas.css("width", this.rendererWidth);
+                this._elGlCanvas.css("height", self.rendererHeight);
+                // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
+                // console.log("!!!",window.innerWidth,this.rendererWidth)
 
-            this._elCablesCanvas.css("width", this.rendererWidth + "px");
-            this._elCablesCanvas.css("height", self.rendererHeight + "px");
+                this._elCablesCanvas.css("width", this.rendererWidth + "px");
+                this._elCablesCanvas.css("height", self.rendererHeight + "px");
 
-            this._elCablesCanvas.css("transform-origin", "top right");
-            this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
+                this._elCablesCanvas.css("transform-origin", "top right");
+                this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
 
-            this._corePatch.cgl.updateSize();
-        }
-
-
+                this._corePatch.cgl.updateSize();
+            }
+        }, 300);
         this._elBgPreview.style.right = this.rendererWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 

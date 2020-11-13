@@ -51,21 +51,6 @@ $(document).ready(function ()
 
     document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs);
     document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs);
-    // document.getElementById('splitterEditor').addEventListener("mousedown",function (e)
-    // {
-    //     e.preventDefault();
-    //     CABLES.SPLITPANE.bound=true;
-    //     function mm(e)
-    //     {
-    //         e.preventDefault();
-    //         gui.editorWidth=e.clientX-gui._elIconBar.outerWidth();
-    //         if(gui.editorWidth<30)gui.editorWidth=30;
-    //         CABLES.UI.userSettings.set("editorWidth",gui.editorWidth);
-    //         gui.setLayout();
-    //     }
-    //     document.addEventListener("mousemove",mm);
-    //     CABLES.SPLITPANE.listeners.push(mm);
-    // });
 
     document.getElementById("splitterRenderer").addEventListener("mousedown", function (ev)
     {
