@@ -98,6 +98,19 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.setSize(100, 100);
 
+
+        this.glPatch.on("pause", () =>
+        {
+            console.log("paused");
+            this.patch.pause();
+        });
+        this.glPatch.on("resume", () =>
+        {
+            console.log("resume");
+            this.patch.resume();
+        });
+
+
         this.canvas.addEventListener("mousemove", (e) =>
         {
             this.activityHigh();
@@ -213,14 +226,16 @@ CABLES.GLGUI.GlUiCanvas = class
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
 
+
     render()
     {
+        if (this.glPatch.paused) return;
         if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
             return;
         }
-        const cgl = this.patch.cgl;
 
+        const cgl = this.patch.cgl;
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);

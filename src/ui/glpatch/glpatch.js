@@ -12,6 +12,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.logEvents(false, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
 
+        this.paused = false;
+
         this._cgl = cgl;
         this.mouseState = new CABLES.GLGUI.MouseState(cgl.canvas);
 
@@ -888,5 +890,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     get spacePressed()
     {
         return this._spacePressed;
+    }
+
+    pause()
+    {
+        console.log("glpatch pause");
+        this.paused = true;
+        this.emitEvent("paused");
+    }
+
+    resume()
+    {
+        this.paused = false;
+        this.emitEvent("resumed");
     }
 };

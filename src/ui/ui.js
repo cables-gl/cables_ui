@@ -237,6 +237,7 @@ CABLES.UI.GUI = function (cfg)
 
         this._elMenubar.show();
 
+
         if (this.rendererWidth === undefined || self.rendererHeight === undefined)
         {
             this.rendererWidth = window.innerWidth * 0.4;
@@ -259,6 +260,17 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
+
+
+        this.corePatch().pause();
+        this.patchView.pause();
+        clearTimeout(this.delayedResizeCanvas);
+        this.delayedResizeCanvas = setTimeout(() =>
+        {
+            this.corePatch().resume();
+            this.patchView.resume();
+        }, 300);
+
 
         let iconBarWidth = 80;
         if (CABLES.UI.userSettings.get("hideSizeBar"))
@@ -565,37 +577,32 @@ CABLES.UI.GUI = function (cfg)
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
 
-        clearTimeout(this.delayedResizeCanvas);
-        this._elCablesCanvas.css("display", "none");
-        this.delayedResizeCanvas = setTimeout(() =>
+        if (this.rendererWidth === 0)
         {
-            this._elCablesCanvas.css("display", "initial");
-            if (this.rendererWidth === 0)
-            {
-                this._elGlCanvas.attr("width", window.innerWidth);
-                this._elGlCanvas.attr("height", window.innerHeight);
-                this._elGlCanvas.css("z-index", 9999);
-            }
-            else
-            {
-                const density = this._corePatch.cgl.pixelDensity;
+            this._elGlCanvas.attr("width", window.innerWidth);
+            this._elGlCanvas.attr("height", window.innerHeight);
+            this._elGlCanvas.css("z-index", 9999);
+        }
+        else
+        {
+            const density = this._corePatch.cgl.pixelDensity;
 
-                this._elGlCanvas.attr("width", this.rendererWidth * density);
-                this._elGlCanvas.attr("height", self.rendererHeight * density);
-                this._elGlCanvas.css("width", this.rendererWidth);
-                this._elGlCanvas.css("height", self.rendererHeight);
-                // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
-                // console.log("!!!",window.innerWidth,this.rendererWidth)
+            this._elGlCanvas.attr("width", this.rendererWidth * density);
+            this._elGlCanvas.attr("height", self.rendererHeight * density);
+            this._elGlCanvas.css("width", this.rendererWidth);
+            this._elGlCanvas.css("height", self.rendererHeight);
+            // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
+            // console.log("!!!",window.innerWidth,this.rendererWidth)
 
-                this._elCablesCanvas.css("width", this.rendererWidth + "px");
-                this._elCablesCanvas.css("height", self.rendererHeight + "px");
+            this._elCablesCanvas.css("width", this.rendererWidth + "px");
+            this._elCablesCanvas.css("height", self.rendererHeight + "px");
 
-                this._elCablesCanvas.css("transform-origin", "top right");
-                this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
+            this._elCablesCanvas.css("transform-origin", "top right");
+            this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
 
-                this._corePatch.cgl.updateSize();
-            }
-        }, 300);
+            this._corePatch.cgl.updateSize();
+        }
+
         this._elBgPreview.style.right = this.rendererWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 
