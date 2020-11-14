@@ -128,6 +128,8 @@ CABLES.GLGUI.ViewBox = class
 
         if ((this.glPatch.mouseState.buttonRight || ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && this.glPatch.mouseState.buttonLeft)) && this.glPatch.allowDragging)
         {
+            this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
+
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
 
@@ -140,6 +142,7 @@ CABLES.GLGUI.ViewBox = class
     {
         this._oldScrollX = this._scrollX;
         this._oldScrollY = this._scrollY;
+        this.glPatch.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
     }
 
     _onCanvasDblClick(e)

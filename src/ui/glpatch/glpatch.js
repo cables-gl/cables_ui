@@ -3,6 +3,9 @@
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
+CABLES.GLGUI.CURSOR_NORMAL = 0;
+CABLES.GLGUI.CURSOR_HAND = 1;
+
 CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 {
     constructor(cgl)
@@ -84,6 +87,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._fadeOutRect.setColor(0, 0, 0, 0.0);
         this._fadeOutRect.visible = true;
 
+        this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
         this.quickLinkSuggestion = new CABLES.GLGUI.QuickLinkSuggestion(this);
         // this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
@@ -151,6 +155,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
+    }
+
+    setCursor(c)
+    {
+        this._cursor = c;
     }
 
     _onCanvasMouseDown(e)
@@ -414,9 +423,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-        // console.log(this._spacePressed);
         if (drawGlCursor) this._cgl.setCursor("none");
-        else this._cgl.setCursor("auto");
+        else
+        {
+            if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
+            else this._cgl.setCursor("auto");
+        }
+
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
 
