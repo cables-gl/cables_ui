@@ -68,6 +68,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._startGlPorts.length === 0)
             {
+                // left click
                 gui.patchView.linkPortToOp(
                     e,
                     this._startPortOpId,
@@ -76,6 +77,7 @@ CABLES.GLGUI.GlRectDragLine = class
             }
             else
             {
+                // right click
                 const opids = [];
                 const portnames = [];
                 for (let i = 0; i < this._startGlPorts.length; i++)
@@ -100,14 +102,16 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._startGlPorts.length === 0)
             {
+                // left click
                 gui.patchView.linkPorts(this._startPortOpId, this._startPortName, opid, portName);
             }
             else
             {
+                // right click
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
-                    gui.patchView.linkPorts(this._startPortOpId,
-                        this._startPortName,
+                    gui.patchView.linkPorts(opid,
+                        portName,
                         this._startGlPorts[i].glOp.id,
                         this._startGlPorts[i].name);
                 }

@@ -573,7 +573,7 @@ CABLES.GLGUI.SplineDrawer = class
                     this._splines[i].points.length / 3]);
         }
 
-        console.table(rows);
+        // console.table(rows);
         // console.log("this._points.length", this._points.length / 3 / 6);
 
 

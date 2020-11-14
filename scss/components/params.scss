@@ -7,7 +7,7 @@
     .toggle-bookmark-button
     {
         position: absolute;
-        top: 15;
+        top: 15px;
         right: 34px;
     }
 
@@ -217,7 +217,7 @@
 	{
 		background-color: $color-background-input;
         border: 1px solid $background-color-brighter;
-        width:100% !important;
+        width:95% !important;
 	}
 
     textarea,input
@@ -226,7 +226,6 @@
         -moz-user-select: text;
         -ms-user-select: text;
     }
-
 
     input.value,.linkedValue
     {
