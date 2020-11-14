@@ -119,6 +119,35 @@ CABLES.GLGUI.GlPatchAPI = class
             p1 = t;
         }
 
+        const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+        {
+            CABLES.undo.add({
+                "title": "Link port",
+                undo()
+                {
+                    const op1 = patch.getOpById(op1Id);
+                    const op2 = patch.getOpById(op2Id);
+                    if (!op1 || !op2)
+                    {
+                        console.warn("undo: op not found");
+                        return;
+                    }
+                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                },
+                redo()
+                {
+                    patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
+                }
+            });
+        }(
+            link.portOut.parent.patch,
+            p1.name,
+            p2.name,
+            p1.parent.id,
+            p2.parent.id
+        ));
+
+
         console.log("ONLINK!", link);
         const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
