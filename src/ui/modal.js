@@ -141,7 +141,7 @@ CABLES.UI.MODAL.show = function (content, options)
 
     CABLES.UI.MODAL._setVisible(true);
     document.getElementById("modalbg").style.display = "block";
-    gui.callEvent("showModal");
+    gui.emitEvent("showModal");
 };
 
 CABLES.UI.MODAL.showLoading = function (title, content)

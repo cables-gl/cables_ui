@@ -233,9 +233,12 @@ CABLES.UI.GUI = function (cfg)
         this._elTLtimetimeline = this._elTLtimetimeline || document.getElementById("timetimeline");
         this._elTLsplitterTimeline = this._elTLsplitterTimeline || document.getElementById("splitterTimeline");
 
+        this._elSubpatchNav = this._elSubpatchNav || document.getElementById("subpatch_nav");
+
         const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
         this._elMenubar.show();
+
 
         if (this.rendererWidth === undefined || self.rendererHeight === undefined)
         {
@@ -260,6 +263,16 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
 
+        this.corePatch().pause();
+        this.patchView.pause();
+        clearTimeout(this.delayedResizeCanvas);
+        this.delayedResizeCanvas = setTimeout(() =>
+        {
+            this._corePatch.cgl.updateSize();
+            this.corePatch().resume();
+            this.patchView.resume();
+        }, 50);
+
         let iconBarWidth = 80;
         if (CABLES.UI.userSettings.get("hideSizeBar"))
         {
@@ -281,8 +294,6 @@ CABLES.UI.GUI = function (cfg)
         if (gui.timeLine() && gui.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
-        // if (CABLES.UI.fileSelect.visible) filesHeight = $('#library').height();
-
         const timedisplayheight = 25;
 
         let patchHeight = window.innerHeight - menubarHeight - 2;
@@ -313,12 +324,15 @@ CABLES.UI.GUI = function (cfg)
             $(".naventry").show();
         }
 
-        $("#subpatch_nav").css(
-            {
-                "width": patchWidth + "px",
-                "left": iconBarWidth + "px",
-                "top": menubarHeight + 1
-            });
+        this._elSubpatchNav.style.width = patchWidth + "px";
+        this._elSubpatchNav.style.left = iconBarWidth + "px";
+        this._elSubpatchNav.style.top = menubarHeight + 1 + "px";
+        // $("#subpatch_nav").css(
+        //     {
+        //         "width": patchWidth + "px",
+        //         "left": iconBarWidth + "px",
+        //         "top": menubarHeight + 1
+        //     });
 
         let editorWidth = self.editorWidth;
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
@@ -331,33 +345,28 @@ CABLES.UI.GUI = function (cfg)
             const editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elMaintab.style.left = iconBarWidth + "px";
-            this._elMaintab.style.top = menubarHeight;
+            this._elMaintab.style.top = menubarHeight + "px";
             this._elMaintab.style.height = (editorHeight - 2) + "px";
-            this._elMaintab.style.width = editorWidth;
+            this._elMaintab.style.width = editorWidth + "px";
 
-            // var editEls=document.getElementsByClassName("tabcontent");
-            // for(var i=0;i<editEls.length;i++)
-            // {
-            //     editEls[i].style.height=(editorHeight-10)+"px";
-            //     console.log(editorHeight);
-            // }
 
             this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
-            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth;
-            this._elSplitterMaintabs.style.height = patchHeight - 2;
-            this._elSplitterMaintabs.style.width = 5;
-            this._elSplitterMaintabs.style.top = menubarHeight;
+            this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
+            this._elSplitterMaintabs.style.height = patchHeight - 2 + "px";
+            this._elSplitterMaintabs.style.width = 5 + "px";
+            this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
             this._elEditorMinimized.style.display = "none";
-            this._elEditorMinimized.style.left = iconBarWidth;
-            this._elEditorMinimized.style.top = menubarHeight;
+            this._elEditorMinimized.style.left = iconBarWidth + "px";
+            this._elEditorMinimized.style.top = menubarHeight + "px";
 
             this._elEditorMaximized.style.display = "block";
-            this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3;
-            this._elEditorMaximized.style.top = menubarHeight;
+            this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
+            this._elEditorMaximized.style.top = menubarHeight + "px";
 
-            $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
+            // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
+            this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
         }
         else
         {
@@ -367,10 +376,11 @@ CABLES.UI.GUI = function (cfg)
             else this._elEditorMinimized.style.display = "none";
 
             this._elSplitterMaintabs.style.display = "none";
-            this._elEditorMinimized.style.left = iconBarWidth;
-            this._elEditorMinimized.style.top = menubarHeight;
+            this._elEditorMinimized.style.left = iconBarWidth + "px";
+            this._elEditorMinimized.style.top = menubarHeight + "px";
 
-            $("#subpatch_nav").css("left", iconBarWidth + 25);
+            // $("#subpatch_nav").css("left", iconBarWidth + 25);
+            this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
         }
 
         // if(showingEditor)
@@ -435,8 +445,6 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
-        $("#patch svg").css("height", patchHeight);
-        $("#patch svg").css("width", patchWidth);
 
         this._elSplitterPatch.css("left", window.innerWidth - this.rendererWidthScaled - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
@@ -445,13 +453,16 @@ CABLES.UI.GUI = function (cfg)
         this._elSplitterRenderer.css("width", this.rendererWidthScaled);
 
 
+        this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
+
         this._elPatch.css("height", patchHeight);
         this._elPatch.css("width", patchWidth);
         this._elPatch.css("top", menubarHeight);
         this._elPatch.css("left", patchLeft);
 
-        $("#searchbox").css("left", patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
-        $("#searchbox").css("width", CABLES.UI.uiConfig.miniMapWidth);
+
+        // $("#searchbox").css("left", patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
+        // $("#searchbox").css("width", CABLES.UI.uiConfig.miniMapWidth);
 
         if (showMiniMap)
         {
@@ -470,8 +481,8 @@ CABLES.UI.GUI = function (cfg)
             this._elMiniMap.style.display = "none";
         }
 
-        this._elLibrary.style.left = iconBarWidth;
-        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth;
+        this._elLibrary.style.left = iconBarWidth + "px";
+        this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
         this._elLibrary.style.bottom = 0;
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
@@ -538,8 +549,8 @@ CABLES.UI.GUI = function (cfg)
         this._elMeta.css("width", metaWidth);
         this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
 
-        $("#performance_glcanvas").css("bottom", 0);
-        $("#performance_glcanvas").css("right", this.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
+        // $("#performance_glcanvas").css("bottom", 0);
+        // $("#performance_glcanvas").css("right", this.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
 
         this._elMenubar.css("top", 0);
         this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
@@ -561,6 +572,8 @@ CABLES.UI.GUI = function (cfg)
         }
 
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
+
+        $("#maintabs").css("top", menubarHeight);
         $("#maintabs").css("height", window.innerHeight - menubarHeight);
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
@@ -587,10 +600,7 @@ CABLES.UI.GUI = function (cfg)
 
             this._elCablesCanvas.css("transform-origin", "top right");
             this._elCablesCanvas.css("transform", "scale(" + this._corePatch.cgl.canvasScale + ")");
-
-            this._corePatch.cgl.updateSize();
         }
-
 
         this._elBgPreview.style.right = this.rendererWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
@@ -598,9 +608,7 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreviewButtonContainer.style.right = this.rendererWidth + "px";
         this._elBgPreviewButtonContainer.style.top = -1 + "px";
 
-
         this.emitEvent("setLayout");
-
 
         perf.finish();
     };
@@ -2145,17 +2153,17 @@ CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
 };
 
 // todo use eventtarget...
-CABLES.UI.GUI.prototype.callEvent = function (name, params)
-{
-    console.warn("gui old callEvent / replace...", name, params);
-    if (this._eventListeners.hasOwnProperty(name))
-    {
-        for (const i in this._eventListeners[name])
-        {
-            this._eventListeners[name][i](params);
-        }
-    }
-};
+// CABLES.UI.GUI.prototype.callEvent = function (name, params)
+// {
+//     console.warn("gui old callEvent / replace...", name, params);
+//     if (this._eventListeners.hasOwnProperty(name))
+//     {
+//         for (const i in this._eventListeners[name])
+//         {
+//             this._eventListeners[name][i](params);
+//         }
+//     }
+// };
 
 
 CABLES.UI.GUI.prototype.initCoreListeners = function ()

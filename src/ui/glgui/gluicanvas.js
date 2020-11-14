@@ -98,6 +98,18 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.setSize(100, 100);
 
+
+        this.glPatch.on("paused", () =>
+        {
+            this.patch.pause();
+        });
+        this.glPatch.on("resumed", () =>
+        {
+            this.patch.cgl.setSize(this.width, this.height);
+            this.patch.resume();
+        });
+
+
         this.canvas.addEventListener("mousemove", (e) =>
         {
             this.activityHigh();
@@ -178,11 +190,13 @@ CABLES.GLGUI.GlUiCanvas = class
     {
         this.width = w;
         this.height = h;
-        this.canvas.style.width = w + "px";
-        this.canvas.style.height = h + "px";
-        this.canvas.width = w;
-        this.canvas.height = h;
-        this.patch.cgl.setSize(w, h);
+
+        this.canvas.style.width = this.width + "px";
+        this.canvas.style.height = this.height + "px";
+        this.canvas.width = this.width;
+        this.canvas.height = this.height;
+
+        if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width, this.height);
     }
 
     dispose()
@@ -215,12 +229,13 @@ CABLES.GLGUI.GlUiCanvas = class
 
     render()
     {
+        if (this.glPatch.paused) return;
         if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
             return;
         }
-        const cgl = this.patch.cgl;
 
+        const cgl = this.patch.cgl;
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -228,16 +243,12 @@ CABLES.GLGUI.GlUiCanvas = class
 
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
 
-
         if (this._oldTargetFps != this._targetFps)
         {
-            // console.log("target fps:",this._targetFps)
             this._oldTargetFps = this._targetFps;
         }
 
-
         cgl.renderStart(cgl);
-
 
         if (!this._inited)
         {
