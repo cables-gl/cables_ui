@@ -283,7 +283,7 @@ CABLES.UI.MODAL.showException = function (ex, op)
     if (!CABLES.UI.loaded)
     {
         let html = "";
-        html += "<div class=\"startuperror\"><b>error</b>\n";
+        html += "<div class=\"startUpError\"><b>error</b>\n";
         html += "<br/>";
         html += ex.message;
         html += "<br/><br/><a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\">reload</a>";

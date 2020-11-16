@@ -68,6 +68,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _onBgRectDrag(rect)
     {
+        if (!this._glRectBg) return;
+
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
 
