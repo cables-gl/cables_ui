@@ -351,6 +351,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             {
                 glOp.opUiAttribs = op.uiAttribs;
                 glOp.update();
+
+
                 // if (newAttribs.hasOwnProperty("translate"))
                 // {
                 //     glOp.updatePosition();
