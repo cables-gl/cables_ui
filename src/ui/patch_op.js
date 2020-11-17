@@ -1177,11 +1177,13 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         {
             this.oprect.updateErrorIndicator();
             if (selected) gui.opParams.updateUiAttribs();
+            console.warn("old ui warning attribute, use op.setUiError !");
         }
         if (attribs.hasOwnProperty("error"))
         {
             this.oprect.updateErrorIndicator();
             if (selected) gui.opParams.updateUiAttribs();
+            console.warn("old ui error attribute, use op.setUiError !");
         }
         if (attribs.hasOwnProperty("uierrors"))
         {

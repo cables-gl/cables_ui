@@ -56,7 +56,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     _onUiAttrChange(attr)
     {
         if (!attr) return;
-        // console.log("attr change", attr);
+        console.log("attr change", attr);
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
     }
 
@@ -90,6 +90,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this.refreshTimeout = setTimeout(() =>
         {
             this.show(this._currentOp);
+            console.log("show op from delay");
         }, 33);
     }
 
@@ -435,6 +436,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             this._uiAttrFpsLast = performance.now();
             if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
             this._uiAttrFpsCount = 0;
+            // console.log((new Error()).stack);
         }
 
         const perf = CABLES.uiperf.start("updateUiAttribs");
