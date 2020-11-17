@@ -23,11 +23,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     dispose()
     {
+        this._stopListeners();
         this._watchPorts.length = 0;
     }
 
     clear()
     {
+        this._stopListeners();
         this._currentOp = null;
     }
 
@@ -50,14 +52,63 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchColorPicker.length = 0;
     }
 
+
+    _onUiAttrChange(attr)
+    {
+        if (!attr) return;
+        // console.log("attr change", attr);
+        if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
+    }
+
+    _stopListeners(op)
+    {
+        if (!op) return;
+        for (let i = 0; i < op.portsIn.length; i++)
+        {
+            op.portsIn[i].off("onUiAttrChange", this._onUiAttrChange.bind(this));
+        }
+    }
+
+    _startListeners(op)
+    {
+        if (!op)
+        {
+            this._stopListeners();
+            return;
+        }
+
+        // op.addEventListener("onUiAttrChange", this._onUiAttrChange.bind(this));
+        for (let i = 0; i < op.portsIn.length; i++)
+        {
+            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChange.bind(this));
+        }
+    }
+
+    refreshDelayed()
+    {
+        clearTimeout(this.refreshTimeout);
+        this.refreshTimeout = setTimeout(() =>
+        {
+            this.show(this._currentOp);
+        }, 33);
+    }
+
     show(op)
     {
+        clearTimeout(this.refreshTimeout);
         if (typeof op == "string")
         {
             op = gui.corePatch().getOpById(op);
         }
 
+        if (this._currentOp != op)
+        {
+            if (this._currentOp) this._stopListeners();
+            this._startListeners(op);
+        }
+
         this._currentOp = op;
+
         if (!op)
         {
             this.removePorts();
@@ -136,7 +187,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (doc && doc.oldVersion)
         {
             oldversion = doc.oldVersion;
-            console.log(doc);
             newestVersion = doc.newestVersion;
         }
 
