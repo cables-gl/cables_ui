@@ -251,6 +251,49 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
             }
         }
 
+        if (str == ":error")
+        {
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            {
+                const op = gui.corePatch().ops[i];
+
+                if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
+                    for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
+                    {
+                        results.push({ op, "score": 1 });
+                        foundNum++;
+                    }
+            }
+        }
+        else
+        if (str == ":warning")
+        {
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            {
+                const op = gui.corePatch().ops[i];
+
+                if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
+                    for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
+                    {
+                        results.push({ op, "score": 1 });
+                        foundNum++;
+                    }
+            }
+        }
+        else
+        if (str == ":hint")
+        {
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            {
+                const op = gui.corePatch().ops[i];
+                if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
+                {
+                    results.push({ op, "score": 1 });
+                    foundNum++;
+                }
+            }
+        }
+        else
         if (str == ":commented")
         {
             for (let i = 0; i < gui.corePatch().ops.length; i++)

@@ -335,20 +335,24 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta, event)
         this._viewBox.h = this._viewBox.w * (this._elePatch.offsetHeight / this._elePatch.offsetWidth);
     }
 
-    const mousePixelX = (event.clientX - this._elePatch.offsetLeft);
-    const mousePixelY = (event.clientY - this._elePatch.offsetTop);
 
-    const x = (this._viewBox.x) + Number(mousePixelX / this._zoom);
-    const y = (this._viewBox.y) + Number(mousePixelY / this._zoom);
+    if (event)
+    {
+        const mousePixelX = (event.clientX - this._elePatch.offsetLeft);
+        const mousePixelY = (event.clientY - this._elePatch.offsetTop);
 
-    this._zoom = ((this._zoom || 1) * delta) || 1;
+        const x = (this._viewBox.x) + Number(mousePixelX / this._zoom);
+        const y = (this._viewBox.y) + Number(mousePixelY / this._zoom);
 
-    this.set(
-        x - (mousePixelX / this._zoom),
-        y - (mousePixelY / this._zoom),
-        patchWidth / this._zoom,
-        patchHeight / this._zoom
-    );
+        this._zoom = ((this._zoom || 1) * delta) || 1;
+
+        this.set(
+            x - (mousePixelX / this._zoom),
+            y - (mousePixelY / this._zoom),
+            patchWidth / this._zoom,
+            patchHeight / this._zoom
+        );
+    }
     gui.patchView.emitEvent("viewBoxChange");
 };
 

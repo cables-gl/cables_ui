@@ -30,15 +30,21 @@ CABLES.Op.prototype.checkLinkTimeWarnings = function ()
 
     if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
     {
-        working = hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose");
+        working =
+            hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
+            hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
+
+        console.log("hasparent", hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2"));
+
         if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + "ImageCompose";
     }
 
     if (this._needsParentOp && working)
     {
         working = hasParent(this, CABLES.OP_PORT_TYPE_OBJECT, this._needsParentOp);
-        if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + this._needsParentOp;
+        if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + this._needsParentOp + "";
     }
+
 
     if (this._needsLinkedToWork.length > 0)
     {
