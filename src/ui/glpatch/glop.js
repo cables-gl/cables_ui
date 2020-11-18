@@ -164,15 +164,25 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
+        console.log("before in subpatch", this.isInCurrentSubPatch());
+
         if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
         this._needsUpdate = true;
+
+        console.log("is in subpatch", this.isInCurrentSubPatch(), this.opUiAttribs.subPatch);
     }
 
     get uiAttribs()
     {
         return this.opUiAttribs;
+    }
+
+    updateIfNeeded()
+    {
+        if (this._needsUpdate) this.update();
+        this._needsUpdate = false;
     }
 
     setTitle(title, textWriter)

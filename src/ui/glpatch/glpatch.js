@@ -349,8 +349,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         op.addEventListener("onUiAttribsChange",
             (newAttribs) =>
             {
-                glOp.opUiAttribs = op.uiAttribs;
-                glOp.update();
+                glOp.uiAttribs = op.uiAttribs;
+                // glOp.opUiAttribs = op.uiAttribs;
+                // glOp.update();
 
 
                 // if (newAttribs.hasOwnProperty("translate"))
@@ -376,9 +377,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             glOp.uiAttribs = op.uiAttribs;
         }
 
-        glOp.updatePosition();
+        // glOp.updatePosition();
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
-        glOp.updateVisible();
+        // glOp.updateVisible();
         glOp.update();
         this.unselectAll();
 
@@ -398,6 +399,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             console.error("BROKEN");
         }
+
+        for (const i in this._glOpz)
+        {
+            this._glOpz[i].updateIfNeeded();
+        }
+
+
         this.frameCount++;
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;

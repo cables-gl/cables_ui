@@ -268,6 +268,9 @@ CABLES.CMD.PATCH._createVariable = function (name, p, p2, value, next)
     {
         gui.patchView.addOp(opGetterName, { "onOpAdd": (opGetter) =>
         {
+            opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
+            opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
+
             console.log(p, p.type, CABLES.OP_PORT_TYPE_VALUE, opGetter, opSetter);
             opSetter.getPort(portName).set(value);
 
@@ -372,7 +375,11 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
         {
             CABLES.CMD.PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
             {
-                getter.uiAttr({ "translate": { "x": setter.uiAttribs.translate.x, "y": setter.uiAttribs.translate.y + 40 } });
+                getter.uiAttr({ "translate": {
+
+                    "x": setter.uiAttribs.translate.x,
+                    "y": setter.uiAttribs.translate.y + 40
+                } });
                 // const uiop = gui.patch().getUiOp(getter);
                 // uiop.setPos(setter.uiAttribs.translate.x, setter.uiAttribs.translate.y + 40);
             });
