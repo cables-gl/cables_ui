@@ -330,6 +330,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     focusOp(opid)
     {
+        gui.opParams.show(opid);
+
         this._focusRectOp = this._glOpz[opid];
         this._focusRectAnim.clear();
         this._focusRectAnim.setValue(this._time, 0);
