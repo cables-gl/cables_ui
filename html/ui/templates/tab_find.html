@@ -14,6 +14,9 @@
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':commented';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Commented</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':unconnected';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Unconnected</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':user';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">User Made</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':error';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">With Errors</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':warning';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">With Warnings</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':hint';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Any Hint</a>
 
         {{#each colors}}
         &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>
@@ -28,4 +31,8 @@
         </div>
     </div>
 
+
+
 </script>
+
+

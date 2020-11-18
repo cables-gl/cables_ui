@@ -58,8 +58,8 @@ CABLES.UI.CanvasLens = class
         this._x = e.clientX - rect.left; // x position within the element.
         this._y = e.clientY - rect.top; // y position within the element.
 
-        this._lensCanvas.style.left = e.clientX - this._size2;
-        this._lensCanvas.style.top = e.clientY + 15;
+        this._lensCanvas.style.left = e.clientX - this._size2 + "px";
+        this._lensCanvas.style.top = e.clientY + 15 + "px";
     }
 
     _onMouseLeave()

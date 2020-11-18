@@ -164,6 +164,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             // console.log(ops[i]);
             if (ops[i].uiAttribs.error) delete ops[i].uiAttribs.error;
             if (ops[i].uiAttribs.warning) delete ops[i].uiAttribs.warning;
+            if (ops[i].uiAttribs.hint) delete ops[i].uiAttribs.hint;
+            if (ops[i].uiAttribs.uierrors) delete ops[i].uiAttribs.uierrors;
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "saving project", "indicator": "canvas" });
@@ -175,6 +177,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         if (_id) id = _id;
         if (_name) name = _name;
         let data = gui.corePatch().serialize(true);
+
 
         data.ui = {
             "viewBox": {},
