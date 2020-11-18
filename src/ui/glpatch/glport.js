@@ -54,7 +54,7 @@ CABLES.GLGUI.GlPort = class
         // }
         // else
         // {
-        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e.buttons);
+        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
         // }
     }
 
