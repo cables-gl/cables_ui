@@ -211,13 +211,13 @@ CABLES.GLGUI.ViewBox = class
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], dur);
+                y - mouseAfterZoom[1], dur, true);
         }
         else
         {
             this.scrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1]);
+                y - mouseAfterZoom[1], true);
         }
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -285,9 +285,11 @@ CABLES.GLGUI.ViewBox = class
         this._animZoom.setValue(this.glPatch.time + dur, z);
     }
 
-    animateScrollTo(x, y, dur)
+    animateScrollTo(x, y, dur, userInteraction)
     {
-        const p = this._eleTabs.getBoundingClientRect().left / 4;
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        if (userInteraction)p = 0;
+        console.log("offset", p);
 
         dur = dur || 0.25;
 
@@ -300,9 +302,11 @@ CABLES.GLGUI.ViewBox = class
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
-    scrollTo(x, y)
+    scrollTo(x, y, userInteraction)
     {
-        const p = this._eleTabs.getBoundingClientRect().left / 4;
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        if (userInteraction)p = 0;
+        console.log("offset", p);
 
         this._scrollX = x;
         this._scrollY = y;
