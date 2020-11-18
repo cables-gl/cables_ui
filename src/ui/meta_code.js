@@ -16,6 +16,7 @@ CABLES.UI.MetaCode = function (tabs)
     let initialized = false;
     let op = null;
     this._lastSelectedOp = null;
+    this._currentName = null;
 
     this.init = function ()
     {
@@ -45,10 +46,14 @@ CABLES.UI.MetaCode = function (tabs)
         // this._tab.activate();
         if (!op)
         {
+            this._currentName = null;
             this._tab.html("<h3>Code</h3>Select any Op");
             return;
         }
 
+        // if (this._currentName == op.objName) return;
+
+        this._currentName = op.objName;
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
 

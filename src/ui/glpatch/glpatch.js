@@ -393,6 +393,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        // console.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
+        if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
+        {
+            console.error("BROKEN");
+        }
         this.frameCount++;
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
@@ -646,7 +651,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectedGlOps[id] = this._glOpz[id];
             this._glOpz[id].selected = true;
         }
-        else console.warn("[glpatch selectOpId] unknown opid", id);
+        // else console.warn("[glpatch selectOpId] unknown opid", id);
     }
 
     _selectOpsInRect(xa, ya, xb, yb)

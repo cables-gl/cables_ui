@@ -186,9 +186,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             if (!hadCallback)
             {
-                console.log("HAD NO loadOpLibs CALLBACK!!!!");
+                console.error("HAD NO loadOpLibs CALLBACK!!!!");
             }
-            else console.log("had loadoplibs callback...");
+            // else console.log("had loadoplibs callback...");
         }, 500);
         gui.serverOps.loadOpLibs(opname, () =>
         {
