@@ -31,7 +31,6 @@ CABLES.GLGUI.GlLink = class
         {
             const pressTime = performance.now() - this._buttonDownTime;
 
-
             if (
                 this._buttonDown == CABLES.UI.MOUSE_BUTTON_RIGHT &&
                 this._mouseDownX - e.offsetX == 0 &&
@@ -51,9 +50,7 @@ CABLES.GLGUI.GlLink = class
                 }
             }
 
-
-            if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT &&
-                pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
+            if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
                 this._glPatch.patchAPI.addOpIntoLink(
                     this._opIdInput,
@@ -63,7 +60,6 @@ CABLES.GLGUI.GlLink = class
                     this._glPatch.viewBox.mousePatchX,
                     this._glPatch.viewBox.mousePatchY);
             }
-
 
             this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;
         });
@@ -90,6 +86,16 @@ CABLES.GLGUI.GlLink = class
         this.update();
     }
 
+    get opIn()
+    {
+        return this._opIn;
+    }
+
+    get opOut()
+    {
+        return this._opOut;
+    }
+
     get id()
     {
         return this._id;
@@ -109,6 +115,16 @@ CABLES.GLGUI.GlLink = class
 
     get opIdInput() { return this._opIdInput; }
 
+    get portIdIn()
+    {
+        return this._portIdInput;
+    }
+
+    get portIdOut()
+    {
+        return this._portIdOutput;
+    }
+
 
     updateVisible()
     {
@@ -119,7 +135,6 @@ CABLES.GLGUI.GlLink = class
     {
         this._cable.visible = v;
         this._visible = v;
-        // this._buttonRect.visible = v;
         this._updatePosition();
     }
 
@@ -181,8 +196,8 @@ CABLES.GLGUI.GlLink = class
     {
         if (this._opOut) this._opOut.removeLink(this._id);
         if (this._opIn) this._opIn.removeLink(this._id);
-        this._cable.dispose();
 
+        this._cable.dispose();
         this._buttonRect.dispose();
         this._buttonRect = null;
     }
@@ -190,5 +205,11 @@ CABLES.GLGUI.GlLink = class
     setFlowModeActivity(act)
     {
         this._cable.setSpeed(act);
+    }
+
+    highlight(b)
+    {
+        if (b) this._cable.setColor(1, 1, 1, 1);
+        else this._glPatch.setDrawableColorByType(this._cable, this._type);
     }
 };

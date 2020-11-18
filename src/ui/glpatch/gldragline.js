@@ -56,9 +56,7 @@ CABLES.GLGUI.GlRectDragLine = class
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
                 if (!e.altKey)
-                {
                     gui.patchView.unlinkPort(opid, glport.id);
-                }
 
                 this._startGlPorts = glports;
             }
