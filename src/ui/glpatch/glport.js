@@ -70,17 +70,9 @@ CABLES.GLGUI.GlPort = class
             "clientY": this._glPatch.viewBox.mouseY - 25
         };
 
-        console.log(this._glop._links);
-        // console.log("port", this._port.name, this._rect.isHovering());
-
         for (const i in this._glop._links)
-        {
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
-            {
-                console.log("HIGHLIGHT!!!!");
                 this._glop._links[i].highlight(true);
-            }
-        }
 
         CABLES.UI.updateHoverToolTip(event, this._port);
     }
@@ -92,9 +84,7 @@ CABLES.GLGUI.GlPort = class
         CABLES.UI.hideToolTip();
 
         for (const i in this._glop._links)
-        {
             this._glop._links[i].highlight(false);
-        }
     }
 
     get type() { return this._port.type; }

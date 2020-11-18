@@ -43,6 +43,8 @@ CABLES.GLGUI.ViewBox = class
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
 
         cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
+
+        this._eleTabs = document.getElementById("splitterMaintabs");
     }
 
     setSize(w, h)
@@ -227,7 +229,10 @@ CABLES.GLGUI.ViewBox = class
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return -this._scrollX / this._zoom; }
+    get scrollXZoom()
+    {
+        return (-this._scrollX) / this._zoom;
+    }
 
     get scrollYZoom() { return this._scrollY / this._zoom; }
 
@@ -282,11 +287,13 @@ CABLES.GLGUI.ViewBox = class
 
     animateScrollTo(x, y, dur)
     {
+        const p = this._eleTabs.getBoundingClientRect().left / 4;
+
         dur = dur || 0.25;
 
         this._animScrollX.clear();
         this._animScrollX.setValue(this.glPatch.time, this._scrollX);
-        this._animScrollX.setValue(this.glPatch.time + dur, x);
+        this._animScrollX.setValue(this.glPatch.time + dur, x - p);
 
         this._animScrollY.clear();
         this._animScrollY.setValue(this.glPatch.time, this._scrollY);
@@ -295,6 +302,8 @@ CABLES.GLGUI.ViewBox = class
 
     scrollTo(x, y)
     {
+        const p = this._eleTabs.getBoundingClientRect().left / 4;
+
         this._scrollX = x;
         this._scrollY = y;
 
@@ -353,6 +362,8 @@ CABLES.GLGUI.ViewBox = class
         const cy = bb.center[1] * (this._viewResX / this._viewResY);
 
         // this.scrollTo(bb.center[0], cy);
+
+
         this.animateScrollTo(bb.center[0], cy);
 
 
@@ -374,7 +385,7 @@ CABLES.GLGUI.ViewBox = class
     screenToPatchCoord(x, y, aspect)
     {
         if (this._scrollY != this._scrollY) this._scrollY = 0;
-        const z = 1 / (this._viewResX / 2 / this.zoom);
+        const z = 1 / ((this._viewResX / 2) / this.zoom);
         let zy = z;
         if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;
