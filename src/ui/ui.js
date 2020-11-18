@@ -149,6 +149,7 @@ CABLES.UI.GUI = function (cfg)
             this.patchView.centerView(x, y);
             this.patchView.setSelectedOpById(opid);
             this.patchView.focus();
+            gui.opParams.show(opid);
         }
 
         gui.find().setClicked(idx);
