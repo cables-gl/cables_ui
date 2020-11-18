@@ -62,6 +62,7 @@
 
         incrementStartup();
         logStartup("Start");
+        const numRetries=5;
 
         CABLESUILOADER.loadAll=function(cfg)
         {
@@ -123,6 +124,10 @@
                                 return;
                             }
 
+                            loadjs.ready('cables_vue', function()
+                                    {
+                                        logStartup('loaded cables vue');
+                                        incrementStartup();
                             // local ops are only available in electron version
                             var localOpCode = CABLES.sandbox.getLocalOpCode();
                             // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
@@ -149,10 +154,7 @@
                                 incrementStartup();
                                 logStartup('loaded cables ops');
 
-                                    loadjs.ready('cables_vue', function()
-                                    {
-                                        logStartup('loaded cables vue');
-                                        incrementStartup();
+
 
                                         function waitForAce()
                                         {
