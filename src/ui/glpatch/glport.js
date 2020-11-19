@@ -54,7 +54,7 @@ CABLES.GLGUI.GlPort = class
         // }
         // else
         // {
-        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e.buttons);
+        this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
         // }
     }
 
@@ -67,13 +67,13 @@ CABLES.GLGUI.GlPort = class
     {
         const event = {
             "clientX": this._glPatch.viewBox.mouseX,
-            "clientY": this._glPatch.viewBox.mouseY - 25,
+            "clientY": this._glPatch.viewBox.mouseY - 25
         };
 
-        console.log(this._glop._links);
+        for (const i in this._glop._links)
+            if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
+                this._glop._links[i].highlight(true);
 
-
-        console.log("port", this._port.name, this._rect.isHovering());
         CABLES.UI.updateHoverToolTip(event, this._port);
     }
 
@@ -82,6 +82,9 @@ CABLES.GLGUI.GlPort = class
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
         CABLES.UI.hideToolTip();
+
+        for (const i in this._glop._links)
+            this._glop._links[i].highlight(false);
     }
 
     get type() { return this._port.type; }

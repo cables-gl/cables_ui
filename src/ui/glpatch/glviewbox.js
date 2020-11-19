@@ -43,6 +43,8 @@ CABLES.GLGUI.ViewBox = class
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
 
         cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
+
+        this._eleTabs = document.getElementById("splitterMaintabs");
     }
 
     setSize(w, h)
@@ -209,13 +211,13 @@ CABLES.GLGUI.ViewBox = class
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], dur);
+                y - mouseAfterZoom[1], dur, true);
         }
         else
         {
             this.scrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1]);
+                y - mouseAfterZoom[1], true);
         }
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -227,7 +229,10 @@ CABLES.GLGUI.ViewBox = class
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return -this._scrollX / this._zoom; }
+    get scrollXZoom()
+    {
+        return (-this._scrollX) / this._zoom;
+    }
 
     get scrollYZoom() { return this._scrollY / this._zoom; }
 
@@ -280,21 +285,29 @@ CABLES.GLGUI.ViewBox = class
         this._animZoom.setValue(this.glPatch.time + dur, z);
     }
 
-    animateScrollTo(x, y, dur)
+    animateScrollTo(x, y, dur, userInteraction)
     {
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        if (userInteraction)p = 0;
+        console.log("offset", p);
+
         dur = dur || 0.25;
 
         this._animScrollX.clear();
         this._animScrollX.setValue(this.glPatch.time, this._scrollX);
-        this._animScrollX.setValue(this.glPatch.time + dur, x);
+        this._animScrollX.setValue(this.glPatch.time + dur, x - p);
 
         this._animScrollY.clear();
         this._animScrollY.setValue(this.glPatch.time, this._scrollY);
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
-    scrollTo(x, y)
+    scrollTo(x, y, userInteraction)
     {
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        if (userInteraction)p = 0;
+        console.log("offset", p);
+
         this._scrollX = x;
         this._scrollY = y;
 
@@ -353,6 +366,8 @@ CABLES.GLGUI.ViewBox = class
         const cy = bb.center[1] * (this._viewResX / this._viewResY);
 
         // this.scrollTo(bb.center[0], cy);
+
+
         this.animateScrollTo(bb.center[0], cy);
 
 
@@ -374,7 +389,7 @@ CABLES.GLGUI.ViewBox = class
     screenToPatchCoord(x, y, aspect)
     {
         if (this._scrollY != this._scrollY) this._scrollY = 0;
-        const z = 1 / (this._viewResX / 2 / this.zoom);
+        const z = 1 / ((this._viewResX / 2) / this.zoom);
         let zy = z;
         if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;

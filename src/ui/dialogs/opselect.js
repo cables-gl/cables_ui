@@ -603,7 +603,7 @@ CABLES.UI.OpSelect = class
 
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
-            if (this._onOpAdd) this._onOpAdd();
+            // if (this._onOpAdd) this._onOpAdd();
         }
     }
 

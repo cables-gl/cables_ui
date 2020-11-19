@@ -175,6 +175,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         return this.opUiAttribs;
     }
 
+    updateIfNeeded()
+    {
+        if (this._needsUpdate) this.update();
+        this._needsUpdate = false;
+    }
+
     setTitle(title, textWriter)
     {
         if (textWriter) this._textWriter = textWriter;

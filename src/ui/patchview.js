@@ -181,8 +181,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     addOp(opname, options)
     {
+        let hadCallback = false;
+        setTimeout(() =>
+        {
+            if (!hadCallback)
+            {
+                console.error("HAD NO loadOpLibs CALLBACK!!!!");
+            }
+            // else console.log("had loadoplibs callback...");
+        }, 500);
         gui.serverOps.loadOpLibs(opname, () =>
         {
+            hadCallback = true;
             const uiAttribs = {};
             options = options || {};
 

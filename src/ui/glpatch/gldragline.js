@@ -41,21 +41,22 @@ CABLES.GLGUI.GlRectDragLine = class
             this.stop();
         });
 
-        glpatch.on("mouseDownOverPort", (glport, opid, portName, button) =>
+        glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
         {
-            this._button = button;
+            this._button = e.buttons;
 
-            if (button == CABLES.UI.MOUSE_BUTTON_LEFT)
+            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
                 this.setPort(glport, opid, portName);
             }
             else
-            if (button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
                 this.setPort(glport, opid, portName);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
-                gui.patchView.unlinkPort(opid, glport.id);
+                if (!e.altKey)
+                    gui.patchView.unlinkPort(opid, glport.id);
 
                 this._startGlPorts = glports;
             }
