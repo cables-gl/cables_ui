@@ -135,7 +135,9 @@
 
 .filelistcontainer
 {
-    height:calc(100% - 260px);overflow-y:auto;
+    height:calc(100% - 260px);
+    overflow-y:auto;
+    position: absolute;
 }
 
 .filemanager_header
