@@ -32,7 +32,6 @@ CABLES.API.Connection = function (ui)
         }
     }
 
-
     client.on("message", function (message)
     {
         if (message.data.data.success === true)

@@ -32,6 +32,7 @@ const htmlLine = function (parentElement, color)
         line.style["-webkit-transform"] = "rotate(" + angle + "rad)";
         line.style["-o-transform"] = "rotate(" + angle + "rad)";
         line.style["-ms-transform"] = "rotate(" + angle + "rad)";
+        line.style["z-index"] = "9999";
         // line.setAttribute('style');
     }
 
@@ -49,6 +50,7 @@ const htmlLine = function (parentElement, color)
 
         const alpha = Math.PI - Math.atan2(-b, a);
 
+
         setPos(x, y, c, alpha);
     };
 
@@ -64,6 +66,7 @@ const htmlLine = function (parentElement, color)
 
     parentElement.appendChild(createLineElement(100, 100, 200, 200));
     this.hide();
+
 
     // this._eleCenter = document.createElement('div');
     // this._eleCenter.id="gizmo";
