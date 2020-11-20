@@ -16,7 +16,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.keys = new CABLES.UI.KeyManager();
     this.opParams = new CABLES.UI.OpParampanel();
-    this.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
+    this.socket = null;
 
     if (!cfg) cfg = {};
     if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -61,7 +61,7 @@ CABLES.UI.GUI = function (cfg)
     this.mainTabs = new CABLES.UI.TabPanel("maintabs");
     this.maintabPanel = new CABLES.UI.MainTabPanel(this.mainTabs);
 
-    this.chat = new CABLES.UI.Chat(this.mainTabs, this.socket);
+    this.chat = null;
 
 
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
@@ -2286,6 +2286,9 @@ function startUi(cfg)
                     CABLES.editorSession.open();
                     gui.bindKeys();
                     gui.jobs().updateJobListing();
+
+                    gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
+                    gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
 
                     logStartup("finished loading cables");
 

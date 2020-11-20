@@ -21,6 +21,8 @@ function ()
 
     this.updateJobListing = function ()
     {
+        if (!window.gui || !gui.chat) return;
+
         let str = "";
         let indicator = null;
 
