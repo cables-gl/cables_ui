@@ -36,6 +36,6 @@ CABLES.UI.Logger = class extends CABLES.EventTarget
 
     userInteraction(text)
     {
-        this.log({ "initiator": "userinteraction", "text": text });
+        // this.log({ "initiator": "userinteraction", "text": text });
     }
 };
