@@ -96,11 +96,11 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         const project = gui.project();
 
         const copyCollaborators = project.settings.opExample.length == 0; // dont do this for example patches
-
+        let prompt = "Enter a name for the copy of this Project.";
 
         if (copyCollaborators)
         {
-            let prompt = "Enter a name for the copy of this Project.<br/><br/>The following users will have access to the copy: ";
+            prompt += "<br/><br/>The following users will have access to the copy: ";
             project.userList.forEach((name, i) =>
             {
                 if (i > 0) prompt += ", ";
