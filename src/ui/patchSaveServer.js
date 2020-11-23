@@ -95,7 +95,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
         const project = gui.project();
 
-        const copyCollaborators = project.settings.opExample.length > 0; // dont do this for example patches
+        const copyCollaborators = project.settings.opExample.length == 0; // dont do this for example patches
 
 
         if (copyCollaborators)
