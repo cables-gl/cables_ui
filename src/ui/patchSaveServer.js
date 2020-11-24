@@ -94,13 +94,20 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         }
 
         const project = gui.project();
-        console.log("core settings", project._id);
-        let prompt = "Enter a name for the copy of this Project.<br/><br/>The following users will have access to the copy: ";
-        project.userList.forEach((name, i) =>
+
+        const copyCollaborators = project.settings.opExample.length == 0; // dont do this for example patches
+        let prompt = "Enter a name for the copy of this Project.";
+
+        if (copyCollaborators)
         {
-            if (i > 0) prompt += ", ";
-            prompt += name;
-        });
+            prompt += "<br/><br/>The following users will have access to the copy: ";
+            project.userList.forEach((name, i) =>
+            {
+                if (i > 0) prompt += ", ";
+                prompt += name;
+            });
+        }
+
 
         CABLES.UI.MODAL.prompt(
             "Save As...",
@@ -112,7 +119,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     {
                         "name": name,
                         "originalId": gui.project()._id,
-                        "copyCollaborators": true
+                        "copyCollaborators": copyCollaborators
                     },
                     (err, d) =>
                     {
