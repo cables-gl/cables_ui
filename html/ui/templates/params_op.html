@@ -5,9 +5,9 @@
 
         <a onclick="gui.opParams.opContextMenu(this)" class="tt icon icon-triple-dot iconhover op-contextmenu info" data-info="More Options"></a>
         {{#if isBookmarked}}
-            <a onclick="gui.bookmarks.add()" class="icon iconhover icon-bookmark-filled info toggle-bookmark-button" data-info="Add Bookmark"></a>
+            <a onclick="gui.bookmarks.add('{{op.id}}')" class="icon iconhover icon-bookmark-filled info toggle-bookmark-button" data-info="Add Bookmark"></a>
         {{else}}
-            <a onclick="gui.bookmarks.add()" class="icon iconhover icon-bookmark info toggle-bookmark-button" data-info="Add Bookmark"></a>
+            <a onclick="gui.bookmarks.add('{{op.id}}')" class="icon iconhover icon-bookmark info toggle-bookmark-button" data-info="Add Bookmark"></a>
         {{/if}}
 
         <div class="panel params_op_head">
