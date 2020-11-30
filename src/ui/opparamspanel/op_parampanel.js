@@ -52,8 +52,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchColorPicker.length = 0;
     }
 
+    _onUiAttrChangeOp(attr)
+    {
+        if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
+    }
 
-    _onUiAttrChange(attr)
+    _onUiAttrChangePort(attr)
     {
         if (!attr) return;
         console.log("attr change", attr);
@@ -63,9 +67,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     _stopListeners(op)
     {
         if (!op) return;
+
+        op.off("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
+
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].off("onUiAttrChange", this._onUiAttrChange.bind(this));
+            op.portsIn[i].off("onUiAttrChange", this._onUiAttrChangePort.bind(this));
         }
     }
 
@@ -77,10 +84,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             return;
         }
 
-        // op.addEventListener("onUiAttrChange", this._onUiAttrChange.bind(this));
+        op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChange.bind(this));
+            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this));
         }
     }
 
@@ -425,17 +432,21 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     updateUiErrors()
     {
+        console.log("updateUiErrors!!!");
         const el = document.getElementById("op_params_uierrors");
 
+
+        if (!this._currentOp.uiAttribs.uierrors || this._currentOp.uiAttribs.uierrors.length == 0)
+        {
+            el.innerHTML = "no uierrors";
+            return;
+        }
+        else
         if (document.getElementsByClassName("warning-error") != this._currentOp.uiAttribs.uierrors.length)
         {
             el.innerHTML = "";
         }
 
-        if (!this._currentOp.uiAttribs.uierrors || this._currentOp.uiAttribs.uierrors.length == 0)
-        {
-            el.innerHTML = "no uierrors";
-        }
 
         if (!el)
         {
@@ -450,9 +461,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 let div = document.getElementById("uierror_" + err.id);
 
                 let str = "";
-                if (err.level == 0) str += "<b>Hint:</b>";
-                if (err.level == 1) str += "<b>Warning:</b>";
-                if (err.level == 2) str += "<b>Error:</b>";
+                if (err.level == 0) str += "<b>Hint: </b>";
+                if (err.level == 1) str += "<b>Warning: </b>";
+                if (err.level == 2) str += "<b>Error: </b>";
                 str += err.txt;
                 // str += "(" + err.id + ")";
 
