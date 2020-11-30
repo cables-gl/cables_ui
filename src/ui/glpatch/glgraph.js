@@ -7,14 +7,12 @@ CABLES.GLGUI.GlGraph = class
     {
         this.numValues = 22;
 
-
         this._splineRenderer = splineRenderer;
         this._values = [];
         this._points = [];
 
         for (let i = 0; i < this.numValues; i++) this._values[i] = 0;
         for (let i = 0; i < this.numValues * 3; i++) this._points[i] = Math.random();
-
 
         this._scaleX = 6.01;
         this._scaleY = 31.01;
@@ -42,7 +40,7 @@ CABLES.GLGUI.GlGraph = class
         this._splineRenderer.setSpline(rightLine, [this._width * this._scaleX, 0, 0, this._width * this._scaleX, this._height * this._scaleY, 0]);
         this._splineRenderer.setSplineColor(rightLine, [0.5, 0.5, 0.5, 1]);
 
-        this._splineRenderer.setWidth(0.15);
+        this._splineRenderer.setWidth(0.12);
     }
 
 

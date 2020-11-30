@@ -231,7 +231,7 @@ CABLES.GLGUI.SplineDrawer = class
         {
             "points": [],
             "color": [1, 1, 1, 1],
-            "speed": 0,
+            "speed": 1,
             "index": this._count
         };
 

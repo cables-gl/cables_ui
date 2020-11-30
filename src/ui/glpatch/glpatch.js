@@ -34,6 +34,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this._overlaySplines.zPos = 0.5;
+
         this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
@@ -50,6 +51,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
+
+        this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
+        this._hoverCable.setPosition(0, 0, 100, 100);
+        this._hoverCable.setColor(1, 1, 1, 0.5);
+
+
         this._fpsStartTime = 0;
 
         this.cacheOIRxa = 0;
@@ -229,6 +236,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
+        this._hoverCable.visible = false;
 
         if (Object.keys(this._selectedGlOps).length == 0) gui.patchView.showDefaultPanel();
     }

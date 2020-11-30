@@ -99,3 +99,34 @@
 //     // border:2px solid red;
 //     display: none;
 // }
+
+
+
+.key, .infoareaContent code
+{
+    text-transform: capitalize;
+    /* border: 1px solid #777; */
+    border-radius: 3px;
+    border-bottom: 4px solid var(--color-06);
+    padding: 0px;
+    padding-bottom: 0px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: var( --color-07);
+    line-height: 24px;
+    color: var( --color-01);
+    font-family: monospace;
+
+    // text-transform: capitalize;
+    // border:1px solid #777;
+    // border-radius: 3px;
+    // border-bottom: 4px solid #777;
+    // padding:0px;
+    // padding-bottom:2px;
+    // padding-left:6px;
+    // padding-right:6px;
+    // background-color:#333;
+    // color:white;
+    // font-family: "SourceSansPro";
+    // line-height:27px;
+}

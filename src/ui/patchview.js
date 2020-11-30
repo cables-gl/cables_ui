@@ -575,7 +575,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     found = true;
                 }
 
-            if (!found)
+            if (!found && foundPatchIds[i] != 0)
                 subPatches.push({
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
