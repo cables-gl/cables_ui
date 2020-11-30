@@ -44,7 +44,7 @@ CABLES.UI.TEXTS = {
     "projectExportNotSaved": "patch not saved - save patch before exporting",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
+    "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
     "canvas": "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
