@@ -18,6 +18,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         this._currentOp = null;
 
+        this._eventPrefix = CABLES.uuid();
+
         this._updateWatchPorts();
     }
 
@@ -66,13 +68,14 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     _stopListeners(op)
     {
+        op = op || this._currentOp;
         if (!op) return;
 
-        op.off("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
+        this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
 
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].off("onUiAttrChange", this._onUiAttrChangePort.bind(this));
+            op.portsIn[i].off(this._eventPrefix);
         }
     }
 
@@ -84,10 +87,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             return;
         }
 
-        op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
+        this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this));
+            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix);
         }
     }
 
@@ -432,13 +435,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     updateUiErrors()
     {
-        console.log("updateUiErrors!!!");
         const el = document.getElementById("op_params_uierrors");
-
 
         if (!this._currentOp.uiAttribs.uierrors || this._currentOp.uiAttribs.uierrors.length == 0)
         {
-            el.innerHTML = "no uierrors";
+            el.innerHTML = "";
             return;
         }
         else
@@ -446,7 +447,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             el.innerHTML = "";
         }
-
 
         if (!el)
         {
