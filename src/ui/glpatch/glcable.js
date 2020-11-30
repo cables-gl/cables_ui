@@ -26,7 +26,7 @@ CABLES.GLGUI.GlCable = class
         this._distFromPort = 0;
         this._updateDistFromPort();
 
-        this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
     }
 
     set visible(v)
@@ -37,18 +37,16 @@ CABLES.GLGUI.GlCable = class
 
     _checkCollide(e)
     {
-        console.log("mousemove");
         if (this._visible)
             this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
     {
-        console.log("dispose!!!");
         this._disposed = true;
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
-        this._glPatch.removeEventListener("mousemove", this._checkCollide.bind(this));
+        this._glPatch.removeEventListener(this._listenerMousemove);
         this._glPatch._hoverCable.visible = false;
     }
 
@@ -174,7 +172,6 @@ CABLES.GLGUI.GlCable = class
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
 
-        console.log(distance);
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
             // this._glPatch._hoverCable.visible = true;
