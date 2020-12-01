@@ -183,7 +183,7 @@
 #timelineTitle
 {
     position: absolute;
-    z-index: 9999999;
+    z-index: $zindex_over - 1;
     bottom:10px;
     left:10px;
 }

@@ -747,7 +747,7 @@ input
 
 #uiperf
 {
-    z-index: 9999999999999;
+    z-index: $zindex_high;
     padding:20px;
     position:absolute;
     // background-color: rgba(0,0,0,1);
@@ -785,11 +785,11 @@ input
     }
 }
 
-#bgpreviewButtonsContainer
-{
-    position:absolute;
-    z-index: 99999999;
-}
+// #bgpreviewButtonsContainer
+// {
+//     position:absolute;
+//     z-index: 99999999;
+// }
 
 // #bgpreviewButtonsContainer:hover
 #bgpreviewButtons

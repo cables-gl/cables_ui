@@ -17,13 +17,13 @@
     position: absolute;
     margin-left:-10px;
     margin-top:-10px;
-    z-index: 99999999;
+    z-index: $zindex_over;
     cursor:pointer;
 }
 
 .gizmoLine
 {
-    z-index: 99999;
+    z-index: $zindex_over;
     position: absolute;
     pointer-events: none;
 }

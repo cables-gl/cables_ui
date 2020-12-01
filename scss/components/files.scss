@@ -3,7 +3,7 @@
 {
     background-color:var(--color-07);
     position:absolute;
-    z-index:99999;
+    z-index:$zindex_high;
     overflow:hidden;
 
     left:2px;

@@ -106,6 +106,8 @@ function ()
 
     this.setProgress = function (jobId, progress)
     {
+        console.log("upl progress", progress);
+        if (progress != 100)document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in jobs)

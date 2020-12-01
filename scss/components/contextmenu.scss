@@ -3,7 +3,7 @@
 
 .contextmenu
 {
-    z-index: 9999999999;
+    z-index: $zindex_highest;
     border:1px solid #444;
     background-color: #000;
     position: absolute;
@@ -37,7 +37,7 @@
     position: absolute;
     background-color: red;
     opacity: 0.0;
-    z-index: 9999999998;
+    z-index: $zindex_highest+1;
     width:100vw;
     height:100vh;
     top:0px;

@@ -54,6 +54,7 @@ CABLES.uploadDragLeave = function (event)
 CABLES.uploadFile = function (file)
 {
     const reader = new FileReader();
+
     reader.addEventListener("load",
         () =>
         {
