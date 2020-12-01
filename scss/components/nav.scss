@@ -48,10 +48,13 @@
 
 #menubar
 {
-    overflow: visible;
+    overflow: hidden;
 }
 
-
+#menubar:hover
+{
+    overflow: visible;
+}
 
 #loggedin,#loggedout
 {
