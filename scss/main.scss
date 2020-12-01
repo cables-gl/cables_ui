@@ -502,7 +502,7 @@ body,div
 .splitter
 {
     background-color:var(--color-splitter);
-    z-index: $z-index-section-splitter;
+    z-index: $zindex_high;
     position: absolute;
     display: block;
 }
@@ -511,12 +511,14 @@ body,div
 {
     height:4px;
     cursor:ns-resize;
+    z-index: $zindex_high;
 }
 
 #splitterMeta
 {
     height:2px;
     padding:4px !important;
+    z-index: $zindex_high;
     cursor:ns-resize;
 }
 
@@ -524,7 +526,7 @@ body,div
 {
     height:15px !important;
     width:15px !important;
-    z-index: $z-index-canvas-iconbar-bottom-splitter;
+    z-index: $zindex_high;
     cursor:ne-resize;
 }
 
@@ -533,11 +535,13 @@ body,div
     height:4px;
     right:0px;
     cursor:ns-resize;
+    z-index: $zindex_high;
 }
 
 
 #splitterPatch,#splitterEditor,#splitterMaintabs
 {
+    z-index: $zindex_high;
     width:4px;
     height:100%;
     cursor:ew-resize;
@@ -590,7 +594,7 @@ body,div
     padding:10px;
     opacity: 0.8;
     border-radius: 5px;
-    z-index: $z-index-notify;
+    z-index: $zindex_highest;
     display: none;
 }
 
@@ -601,7 +605,7 @@ body,div
     background-color: var(--color-03);
     padding:10px;
     border-radius: 5px;
-    z-index: $z-index-delayed;
+    z-index: $zindex_over;
     display: block;
 }
 
@@ -684,7 +688,7 @@ input
     background-color: var(--color-07);
     mask-repeat: no-repeat;
     display: block;
-    z-index: $z-index-undev-logo;
+    z-index: $zindex_highest;
 }
 
 .shaderErrorCode

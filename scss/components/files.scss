@@ -24,7 +24,7 @@
     display:none;
     position: absolute;
     background-color: var(--color-03);
-    z-index: $z-index-library;
+    z-index: $zindex_over;
 
     .suffix
     {

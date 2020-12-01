@@ -61,7 +61,7 @@
 .tooltip {
     position: absolute;
     pointer-events: none;
-    z-index: $z-index-tooltip;
+    z-index: $zindex_highest;
     background-color: var(--color-01);
     color: var(--color-13);
     padding: 7px;

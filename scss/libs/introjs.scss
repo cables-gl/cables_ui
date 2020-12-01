@@ -1,3 +1,8 @@
+// intro.js
+$z-index-intro-tooltip: $zindex_highest !important;
+$z-index-intro-element-to-be-explained: $z-index-intro-tooltip;
+
+
 .introjs-overlay {
   position: absolute;
   box-sizing: content-box;

@@ -9,7 +9,7 @@
     // border:1px solid red;
     width:500px;
     height:170px;
-    z-index: $z-index-key-presenter;
+    z-index: $zindex_highest+1;
     pointer-events: none;
 
     .kp-line
