@@ -455,10 +455,10 @@ CABLES.UI.GUI = function (cfg)
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
-        this._elPatch.style.height = patchHeight;
-        this._elPatch.style.width = patchWidth;
-        this._elPatch.style.top = menubarHeight;
-        this._elPatch.style.left = patchLeft;
+        this._elPatch.style.height = patchHeight + "px";
+        this._elPatch.style.width = patchWidth + "px";
+        this._elPatch.style.top = menubarHeight + "px";
+        this._elPatch.style.left = patchLeft + "px";
 
 
         if (showMiniMap)

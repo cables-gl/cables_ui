@@ -55,7 +55,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
-        console.log(this._patchRenderer);
         this._patchRenderer.setProject(proj);
 
         this.store.setServerDate(proj.updated);

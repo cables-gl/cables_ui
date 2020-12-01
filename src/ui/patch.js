@@ -1257,7 +1257,6 @@ CABLES.UI.Patch = function (_gui)
                 {
                     const theUi = self.ops[i];
                     found = true;
-                    console.log("found op to delete!!!");
 
                     theUi.hideAddButtons();
                     theUi.remove();
@@ -1265,7 +1264,6 @@ CABLES.UI.Patch = function (_gui)
                 }
             }
 
-            if (!found)console.log("delete ops NOT FOUND!!!");
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
         });
