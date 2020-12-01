@@ -410,8 +410,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
             gui.serverOps.clone(oldName, opname);
-            gui.opSelect().reload();
-            gui.serverOps.execute(opname);
+            // gui.opSelect().reload();
+            // gui.serverOps.execute(opname);
         });
     };
 
