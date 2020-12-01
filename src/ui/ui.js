@@ -194,7 +194,7 @@ CABLES.UI.GUI = function (cfg)
     {
         this.pauseProfiling();
         const perf = CABLES.uiperf.start("gui.setlayout");
-        this._elCanvasIconbar = this._elCanvasIconbar || $("#canvasicons");
+        this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasicons");
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
@@ -1983,11 +1983,9 @@ CABLES.UI.GUI = function (cfg)
     {
         if (!this._elCanvasIconbar) return;
 
-        this._elCanvasIconbar.css({
-            "width": document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width,
-            "left": this._elSplitterPatch.get()[0].getBoundingClientRect().left,
-            "top": this.rendererHeight * this._corePatch.cgl.canvasScale + 1,
-        });
+        this._elCanvasIconbar.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
+        this._elCanvasIconbar.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
+        this._elCanvasIconbar.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
     };
 
     this.getCanvasSizeString = function (cgl)
@@ -2007,46 +2005,32 @@ CABLES.UI.GUI = function (cfg)
     this.showCanvasModal = function (_show)
     {
         if (!this._elCanvasIconbar) return;
+
+        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
+
         if (_show)
         {
-            $("#canvasmodal").show();
-            this._elCanvasIconbar.show();
-            this._elCanvasIconbar.css({ "opacity": 1 });
+            ele.show(this._elCanvasModalDarkener);
+            ele.show(this._elCanvasIconbar);
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
-
-            // var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
-            // if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
         else
         {
-            this._elCanvasIconbar.hide();
-            $("#canvasmodal").hide();
+            ele.hide(this._elCanvasIconbar);
+            ele.hide(this._elCanvasModalDarkener);
         }
     };
 
     this.init = function (next)
     {
-        // if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
-        $("#infoArea").show();
-
-        // $("#infoArea").hover(
-        //     function (e)
-        //     {
-        //         CABLES.UI.showInfo();
-        //     }, function ()
-        //     {
-        //         CABLES.UI.hideInfo();
-        //     });
-
-        $("#canvasmodal").on("mousedown",
-            function (e)
+        document.getElementById("canvasmodal").addEventListener("mousedown",
+            (e) =>
             {
                 gui.patch().lastMouseMoveEvent = null;
                 gui.showCanvasModal(false);
                 gui.patchView.focus();
-
                 e.preventDefault();
             });
 

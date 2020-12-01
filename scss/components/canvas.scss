@@ -49,7 +49,6 @@
 {
     background-color: var(--color-01);
     color:var(--color-13);
-    display: none;
     position: absolute;
     z-index: $zindex_over;
     padding-left: 28px; /* to give resize-window icon some space */
@@ -104,8 +103,6 @@
     background-color: black;
     opacity: 0.3;
     z-index: $zindex_lowest - 1; // background darkener
-    // pointer-events: none;
-    display: none;
 }
 
 #cablescanvas
