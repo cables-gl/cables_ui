@@ -286,13 +286,10 @@ CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)
 
     if (!meta)
     {
-        maxWidth = Math.min($("#patch").width(), port.parent.patch.cgl.canvas.width);
-        maxHeight = Math.min($("#patch").height(), port.parent.patch.cgl.canvas.height);
+        const patchRect = document.getElementById("patch").getBoundingClientRect();
+        maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvas.width);
+        maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvas.height);
     }
-    // else
-    // {
-    //     document.getElementById("meta_preview_textures").offsetWidth - 30;
-    // }
 
     const aspect = tex.height / tex.width;
     let w = tex.width;
@@ -332,16 +329,17 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
         containerEle = document.getElementById("meta_preview_textures");
     }
 
+    let html = "";
     for (let i = 0; i < this._texturePorts.length; i++)
     {
         if (this._texturePorts[i].doShow && !document.getElementById("preview" + this._texturePorts[i].id))
         {
-            const html = CABLES.UI.getHandleBarHtml("meta_preview_texture", { "tex": this._htmlDataObject(this._texturePorts[i]) });
-            $("#meta_preview_textures").append(html);
+            html += CABLES.UI.getHandleBarHtml("meta_preview_texture", { "tex": this._htmlDataObject(this._texturePorts[i]) });
             this._texturePorts[i].element = document.getElementById("preview" + this._texturePorts[i].id);
         }
         this._texturePorts[i].updated = CABLES.now();
     }
+    document.getElementById("meta_preview_textures").innerHTML = html;
 
     if (window.gui)gui.setElementBgPattern(this._ele);
 };
@@ -529,7 +527,7 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 
 CABLES.UI.TexturePreviewer.prototype.clear = function (tp)
 {
-    $("#meta_preview_textures").html("");
+    document.getElementById("meta_preview_textures").innerHTML = "";
     this._texturePorts.length = 0;
     this._updateHtml();
 };

@@ -28,7 +28,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     static getElement()
     {
-        return $("#patchviews .visible");
+        return document.querySelector("#patchviews .visible");
+        // return $("#patchviews .visible");
     }
 
     setProject(proj, cb)
@@ -120,7 +121,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     updateBoundingRect()
     {
-        this.boundingRect = CABLES.UI.PatchView.getElement()[0].getBoundingClientRect();
+        this.boundingRect = CABLES.UI.PatchView.getElement().getBoundingClientRect();
     }
 
     hasFocus()

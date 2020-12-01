@@ -785,11 +785,11 @@ input
     }
 }
 
-// #bgpreviewButtonsContainer
-// {
-//     position:absolute;
-//     z-index: 99999999;
-// }
+#bgpreviewButtonsContainer
+{
+    position:absolute;
+    z-index: $zindex_over;
+}
 
 // #bgpreviewButtonsContainer:hover
 #bgpreviewButtons

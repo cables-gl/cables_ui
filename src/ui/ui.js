@@ -455,14 +455,11 @@ CABLES.UI.GUI = function (cfg)
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
-        this._elPatch.css("height", patchHeight);
-        this._elPatch.css("width", patchWidth);
-        this._elPatch.css("top", menubarHeight);
-        this._elPatch.css("left", patchLeft);
+        this._elPatch.style.height = patchHeight;
+        this._elPatch.style.width = patchWidth;
+        this._elPatch.style.top = menubarHeight;
+        this._elPatch.style.left = patchLeft;
 
-
-        // $("#searchbox").css("left", patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
-        // $("#searchbox").css("width", CABLES.UI.uiConfig.miniMapWidth);
 
         if (showMiniMap)
         {
