@@ -35,7 +35,7 @@ CABLES.UI.TEXTS = {
     "portObjectSnapshot": "see at object data snapshot",
 
     "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `[d]` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical spacing\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
-    "patchSelectedOp": "## Selected Single Op\n\n* `[t]` set op title\n* `[d]` disable op and childs\n* `[shift+d]` temporary unlink op \n* `[x]` unlink op \n* `[del]` delete op\n* `[page up/down]` snap to parent/child op",
+    "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `del` delete op\n* `page up/down` snap to parent/child op",
 
     "projectSettingsPublic": "make patch public - everyone can see it",
     "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
@@ -44,7 +44,7 @@ CABLES.UI.TEXTS = {
     "projectExportNotSaved": "patch not saved - save patch before exporting",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `[esc]: Quick-add op` \n* `[space] + mouse drag:`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `[mod] + s`: Save patch \n* `[mod] + v`: Paste \n* `[mod] + a`: Select all ops",
+    "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
     "canvas": "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",

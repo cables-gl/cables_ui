@@ -122,15 +122,16 @@ CABLES.UI.Bookmarks = function ()
     {
         if (gui.keys.shiftKey)
         {
-            console.log("YES");
             const op = gui.corePatch().getOpById(id);
             gui.opParams.show(op);
         }
         else
         {
-            gui.patch().setSelectedOpById(id);
-            gui.patch().centerViewBoxOps();
-            gui.patch().focusOp(id);
+            gui.patchView.centerSelectOp(id);
+            // gui.patchView.focusOp(id);
+            // gui.patch().setSelectedOpById(id);
+            // gui.patch().centerViewBoxOps();
+            // gui.patch().focusOp(id);
         }
     };
 

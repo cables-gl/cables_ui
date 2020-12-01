@@ -13,10 +13,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._sourcePort = document.getElementById("params_port").innerHTML;
         this._templatePort = Handlebars.compile(this._sourcePort);
 
-        this._sourceHead = document.getElementById("params_op_head").innerHTML;// $("#params_op_head").html();
+        this._sourceHead = document.getElementById("params_op_head").innerHTML;
         this._templateHead = Handlebars.compile(this._sourceHead);
 
         this._currentOp = null;
+
+        this._eventPrefix = CABLES.uuid();
 
         this._updateWatchPorts();
     }
@@ -52,8 +54,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchColorPicker.length = 0;
     }
 
+    _onUiAttrChangeOp(attr)
+    {
+        if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
+    }
 
-    _onUiAttrChange(attr)
+    _onUiAttrChangePort(attr)
     {
         if (!attr) return;
         console.log("attr change", attr);
@@ -62,10 +68,14 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     _stopListeners(op)
     {
+        op = op || this._currentOp;
         if (!op) return;
+
+        this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
+
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].off("onUiAttrChange", this._onUiAttrChange.bind(this));
+            op.portsIn[i].off(this._eventPrefix);
         }
     }
 
@@ -77,10 +87,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             return;
         }
 
-        // op.addEventListener("onUiAttrChange", this._onUiAttrChange.bind(this));
+        this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
         for (let i = 0; i < op.portsIn.length; i++)
         {
-            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChange.bind(this));
+            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix);
         }
     }
 
@@ -423,6 +433,69 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         perf.finish();
     }
 
+    updateUiErrors()
+    {
+        const el = document.getElementById("op_params_uierrors");
+
+        if (!this._currentOp.uiAttribs.uierrors || this._currentOp.uiAttribs.uierrors.length == 0)
+        {
+            el.innerHTML = "";
+            return;
+        }
+        else
+        if (document.getElementsByClassName("warning-error") != this._currentOp.uiAttribs.uierrors.length)
+        {
+            el.innerHTML = "";
+        }
+
+        if (!el)
+        {
+            console.log("no uiarrors html ele?!");
+        }
+        else
+        {
+            for (let i = 0; i < this._currentOp.uiAttribs.uierrors.length; i++)
+            {
+                const err = this._currentOp.uiAttribs.uierrors[i];
+
+                let div = document.getElementById("uierror_" + err.id);
+
+                let str = "";
+                if (err.level == 0) str += "<b>Hint: </b>";
+                if (err.level == 1) str += "<b>Warning: </b>";
+                if (err.level == 2) str += "<b>Error: </b>";
+                str += err.txt;
+                // str += "(" + err.id + ")";
+
+                if (!div)
+                {
+                    div = document.createElement("div");
+                    div.id = "uierror_" + err.id;
+                    div.classList.add("warning-error");
+                    div.classList.add("warning-error-level" + err.level);
+                    el.appendChild(div);
+                    // console.log(err);
+                }
+
+                div.innerHTML = str;
+            }
+        }
+
+
+        //     {{#if op.uiAttribs.uierrors }}
+        //     {{#each op.uiAttribs.uierrors}}
+        //         <div class="warning-error warning-error-level{{level}}"  >
+
+        //             {{#compare level '==' 0 }}Hint:{{/compare}}
+        //             {{#compare level '==' 1 }}Warning:{{/compare}}
+        //             {{#compare level '==' 2 }}Error:{{/compare}}
+
+        //             {{{txt}}}<br/>
+        //         </div>
+        //     {{/each}}
+        // {{/if}}
+    }
+
     updateUiAttribs()
     {
         if (gui.patchView.isPasting) return;
@@ -488,6 +561,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 el.innerHTML = "<div class=\"panelhead\">info</div><div class=\"panel\">" + this._currentOp.uiAttribs.info + "</div>";
             }
         }
+
+        this.updateUiErrors();
 
         perf.finish();
     }

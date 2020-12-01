@@ -575,7 +575,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     found = true;
                 }
 
-            if (!found)
+            if (!found && foundPatchIds[i] != 0)
                 subPatches.push({
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
@@ -1106,6 +1106,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
         else console.log("patchRenderer has no function focusOp");
+    }
+
+    centerSelectOp(opid)
+    {
+        const op = this._p.getOpById(opid);
+
+        this.focusOp(opid);
+        this.setSelectedOpById(opid);
+        this.focus();
+
+        if (op && op.uiAttribs && op.uiAttribs.translate)
+            this.centerView(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
     }
 
     setSelectedOpById(opid)

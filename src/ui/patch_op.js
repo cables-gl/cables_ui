@@ -1189,8 +1189,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
 
             if (selected)
             {
-                gui.opParams.updateUiAttribs();
-                gui.patch().updateOpParams(this.op.id);
+                // gui.opParams.updateUiAttribs();
+                // gui.patch().updateOpParams(this.op.id);
             }
         }
         if (attribs.hasOwnProperty("color"))

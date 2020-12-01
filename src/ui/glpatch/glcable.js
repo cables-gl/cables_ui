@@ -10,6 +10,7 @@ CABLES.GLGUI.GlCable = class
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
         this._type = type;
+        this._disposed = false;
 
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
@@ -19,17 +20,13 @@ CABLES.GLGUI.GlCable = class
 
         this._x = 0;
         this._y = 0;
-        this._y2 = 0;
         this._x2 = 0;
+        this._y2 = 0;
 
         this._distFromPort = 0;
         this._updateDistFromPort();
 
-        this._glPatch.on("mousemove", (e) =>
-        {
-            if (this._visible)
-                this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
-        });
+        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
     }
 
     set visible(v)
@@ -38,10 +35,19 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
     }
 
+    _checkCollide(e)
+    {
+        if (this._visible)
+            this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+    }
+
     dispose()
     {
+        this._disposed = true;
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
+        this._glPatch.removeEventListener(this._listenerMousemove);
+        this._glPatch._hoverCable.visible = false;
     }
 
     _updateDistFromPort()
@@ -70,6 +76,15 @@ CABLES.GLGUI.GlCable = class
         }
         else
         {
+            this._splineDrawer.setSpline(this._splineIdx,
+                [
+                    0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0,
+                    0, 0, 0
+                ]);
+
+
             // this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);
             // this._lineDrawer.setLine(this._lineIdx1, 0, 0, 0, 0);
             // this._lineDrawer.setLine(this._lineIdx2, 0, 0, 0, 0);
@@ -117,6 +132,12 @@ CABLES.GLGUI.GlCable = class
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
+        if (this._disposed)
+        {
+            console.log("disposed already!!!?!");
+            return;
+        }
+
         // is either end INSIDE the circle?
         // if so, return true immediately
         const inside1 = this._collidePointCircle(x1, y1, cx, cy, r);
@@ -151,8 +172,13 @@ CABLES.GLGUI.GlCable = class
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
 
-        if (distance <= r && !this._glPatch.isMouseOverOp())
+        if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
+            // this._glPatch._hoverCable.visible = true;
+            this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
+            this._glPatch._hoverCable.setColor(1, 1, 1, 0.25);
+            this._glPatch._hoverCable.visible = true;
+
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
             this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
@@ -162,8 +188,6 @@ CABLES.GLGUI.GlCable = class
         }
         else
         {
-            this._buttonRect.setPosition(0, 0);
-
             this._buttonRect.interactive = false;
             this._buttonRect.visible = false;
             this._buttonRect._hovering = false;

@@ -82,7 +82,7 @@
 
 <div id="bgpreviewButtonsContainer" class="hidden">
     <div id="bgpreviewButtons">
-        <a class="icon-x icon fright" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
+        <a class="icon-x icon fright iconhover" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
     </div>
 </div>
 
@@ -275,10 +275,12 @@
 <div id="meta">
     <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
 
-    <div id="splitterMeta" class="splitter"></div>
+    <div id="splitterMeta" class="splitter">
+        <a class="icon-x icon fright iconhover" style="position: absolute;z-index: 9999;right: 10px;margin-top: 10px;" onclick="gui.closeInfo();">.</a>
+
+    </div>
 
     <div id="infoAreaContainer">
-        <a class="icon-x icon fright" style="position: relative;z-index: 9999;right: 30px;top: 10px;" onclick="gui.closeInfo();">.</a>
         <div id="infoArea"></div>
     </div>
 </div>
