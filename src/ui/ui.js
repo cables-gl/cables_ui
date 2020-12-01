@@ -2285,7 +2285,7 @@ function startUi(cfg)
 
                     CABLES.editorSession.open();
                     gui.bindKeys();
-                    gui.jobs().updateJobListing();
+
 
                     gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
