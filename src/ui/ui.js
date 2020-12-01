@@ -192,7 +192,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setLayout = function ()
     {
-        gui.pauseProfiling();
+        this.pauseProfiling();
         const perf = CABLES.uiperf.start("gui.setlayout");
         this._elCanvasIconbar = this._elCanvasIconbar || $("#canvasicons");
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
@@ -291,7 +291,7 @@ CABLES.UI.GUI = function (cfg)
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
-        if (gui.timeLine() && gui.timeLine().hidden) timelineUiHeight = 0;
+        if (this.timeLine() && this.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
         const timedisplayheight = 25;
@@ -533,7 +533,7 @@ CABLES.UI.GUI = function (cfg)
             $("#splitterTimeline").hide();
         }
 
-        if (gui.timeLine()) gui.timeLine().updateViewBox();
+        if (this.timeLine()) this.timeLine().updateViewBox();
 
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
@@ -692,10 +692,10 @@ CABLES.UI.GUI = function (cfg)
 
     this.showTiming = function ()
     {
-        gui.timeLine().hidden = false;
+        this.timeLine().hidden = false;
         showTiming = true;
         $("#timing").show();
-        gui.setLayout();
+        this.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
 
