@@ -41,9 +41,10 @@
 
     .tabs
     {
-        // height: 32px;
-        height: auto;
+        height: 32px;
+        // height: auto;
         padding:0px;
+        padding-left: 4px;
 
         width:100%;
         // margin-bottom: 3px;
@@ -161,7 +162,7 @@
     background-color:$background-color-dark;
     margin: 0;
     // background-color: blue;
-    z-index: $z-index-editor;
+    z-index: $zindex_over;
     position: absolute;
     overflow: hidden;
     // top: 50;

@@ -199,10 +199,9 @@
                 </span>
             {{/compare}}
 
-            <!-- &nbsp;&nbsp;<a class="tt icon icon-1x icon-editbox" data-tt="edit file" data-infotext="file_edit"></a> -->
             <br/><br/>
 
-            <b style="word-break: break-all;">{{file.fileDb.fileName}}</b>
+            <b style="word-break: break-all;"><a href="#" onclick="window.open(CABLES.sandbox.getCablesUrl() + '/asset/patches/?filename=/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}', '_blank').focus();">{{file.fileDb.fileName}}</a></b>
 
             {{#compare source '==' 'patch' }}
                 <br/><br/>

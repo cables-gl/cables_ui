@@ -17,13 +17,13 @@
     position: absolute;
     margin-left:-10px;
     margin-top:-10px;
-    z-index: 99999999;
+    z-index: $zindex_over;
     cursor:pointer;
 }
 
 .gizmoLine
 {
-    z-index: 99999;
+    z-index: $zindex_over;
     position: absolute;
     pointer-events: none;
 }
@@ -31,7 +31,7 @@
 .gizmo
 {
     position: absolute;
-    z-index: $z-index-canvas-gizmo;
+    z-index: $zindex_over;
     border-radius:5px;
     width:12px;
     height:12px;
@@ -49,9 +49,8 @@
 {
     background-color: var(--color-01);
     color:var(--color-13);
-    display: none;
     position: absolute;
-    z-index: $z-index-canvas-icons;
+    z-index: $zindex_over;
     padding-left: 28px; /* to give resize-window icon some space */
 
     a
@@ -90,7 +89,7 @@
             float:left;
             padding-right: 20px;
         }
-    
+
     }
 }
 
@@ -103,15 +102,13 @@
     bottom:0px;
     background-color: black;
     opacity: 0.3;
-    z-index: $z-index-canvas-modal;
-    // pointer-events: none;
-    display: none;
+    z-index: $zindex_lowest - 1; // background darkener
 }
 
 #cablescanvas
 {
     display: none;
-    z-index: $z-index-canvas-wrapper;
+    z-index: $zindex_lowest;
 }
 
 #glcanvas
@@ -120,7 +117,7 @@
     top:0px;
     // right:0px;
     outline: none;
-    z-index: $z-index-canvas;
+    z-index: $zindex_lowest;
 
     &.maximized
     {

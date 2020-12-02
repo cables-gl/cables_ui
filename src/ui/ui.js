@@ -1,7 +1,6 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.undo = new UndoManager();
 
-
 CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -63,29 +62,17 @@ CABLES.UI.GUI = function (cfg)
 
     this.chat = null;
 
-
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
-    // var _socket=null;
-    // var _connection = null;
     let savedState = true;
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
-    // this.profiler = new CABLES.UI.Profiler(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-
 
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
     this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
-    // this.preview = new CABLES.UI.Preview();
-    // this.hoverPreview = new CABLES.UI.Preview();
-
-    // if(!CABLES.UI.userSettings.get("tabsLastTitle"))
-    // {
-    //     this.metaTabs.setTabNum(0);
-    // }
 
     const favIconLink = document.createElement("link");
     document.getElementsByTagName("head")[0].appendChild(favIconLink);
@@ -100,7 +87,6 @@ CABLES.UI.GUI = function (cfg)
     this._oldCanvasHeight = 0;
     this._oldShowingEditor = false;
     this._eventListeners = {};
-
 
     this.project = function ()
     {
@@ -126,10 +112,6 @@ CABLES.UI.GUI = function (cfg)
     {
         return _patch;
     };
-
-    // this.editor = function() {
-    //     return _editor;
-    // };
 
     this.jobs = function ()
     {
@@ -192,9 +174,9 @@ CABLES.UI.GUI = function (cfg)
 
     this.setLayout = function ()
     {
-        gui.pauseProfiling();
+        this.pauseProfiling();
         const perf = CABLES.uiperf.start("gui.setlayout");
-        this._elCanvasIconbar = this._elCanvasIconbar || $("#canvasicons");
+        this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasicons");
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
@@ -291,7 +273,7 @@ CABLES.UI.GUI = function (cfg)
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
-        if (gui.timeLine() && gui.timeLine().hidden) timelineUiHeight = 0;
+        if (this.timeLine() && this.timeLine().hidden) timelineUiHeight = 0;
 
         const filesHeight = 0;
         const timedisplayheight = 25;
@@ -302,27 +284,24 @@ CABLES.UI.GUI = function (cfg)
         if (showTiming)
         {
             patchHeight = patchHeight - this.timingHeight - 2;
-
-            // $(".easingselect").css("bottom", 0);
-            // $(".easingselect").css("left", patchWidth + iconBarWidth);
         }
         else
         {
             patchHeight -= timelineUiHeight;
         }
 
-        if (patchWidth < 600)
-        {
-            $("#username").hide();
-            $(".projectname").hide();
-            $(".naventry").hide();
-        }
-        else
-        {
-            $("#username").show();
-            $(".projectname").show();
-            $(".naventry").show();
-        }
+        // if (patchWidth < 600)
+        // {
+        //     $("#username").hide();
+        //     // $(".projectname").hide();
+        //     $(".naventry").hide();
+        // }
+        // else
+        // {
+        //     $("#username").show();
+        //     // $(".projectname").show();
+        //     $(".naventry").show();
+        // }
 
         this._elSubpatchNav.style.width = patchWidth + "px";
         this._elSubpatchNav.style.left = iconBarWidth + "px";
@@ -455,14 +434,11 @@ CABLES.UI.GUI = function (cfg)
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
-        this._elPatch.css("height", patchHeight);
-        this._elPatch.css("width", patchWidth);
-        this._elPatch.css("top", menubarHeight);
-        this._elPatch.css("left", patchLeft);
+        this._elPatch.style.height = patchHeight + "px";
+        this._elPatch.style.width = patchWidth + "px";
+        this._elPatch.style.top = menubarHeight + "px";
+        this._elPatch.style.left = patchLeft + "px";
 
-
-        // $("#searchbox").css("left", patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth + 1);
-        // $("#searchbox").css("width", CABLES.UI.uiConfig.miniMapWidth);
 
         if (showMiniMap)
         {
@@ -533,7 +509,7 @@ CABLES.UI.GUI = function (cfg)
             $("#splitterTimeline").hide();
         }
 
-        if (gui.timeLine()) gui.timeLine().updateViewBox();
+        if (this.timeLine()) this.timeLine().updateViewBox();
 
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
@@ -692,10 +668,10 @@ CABLES.UI.GUI = function (cfg)
 
     this.showTiming = function ()
     {
-        gui.timeLine().hidden = false;
+        this.timeLine().hidden = false;
         showTiming = true;
         $("#timing").show();
-        gui.setLayout();
+        this.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
 
@@ -1986,11 +1962,9 @@ CABLES.UI.GUI = function (cfg)
     {
         if (!this._elCanvasIconbar) return;
 
-        this._elCanvasIconbar.css({
-            "width": document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width,
-            "left": this._elSplitterPatch.get()[0].getBoundingClientRect().left,
-            "top": this.rendererHeight * this._corePatch.cgl.canvasScale + 1,
-        });
+        this._elCanvasIconbar.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
+        this._elCanvasIconbar.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
+        this._elCanvasIconbar.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
     };
 
     this.getCanvasSizeString = function (cgl)
@@ -2010,46 +1984,32 @@ CABLES.UI.GUI = function (cfg)
     this.showCanvasModal = function (_show)
     {
         if (!this._elCanvasIconbar) return;
+
+        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
+
         if (_show)
         {
-            $("#canvasmodal").show();
-            this._elCanvasIconbar.show();
-            this._elCanvasIconbar.css({ "opacity": 1 });
+            ele.show(this._elCanvasModalDarkener);
+            ele.show(this._elCanvasIconbar);
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
-
-            // var sizeStr='size: '+cgl.canvasWidth+' x '+cgl.canvasHeight;
-            // if(cgl.canvasScale!=1)sizeStr+=' (scale: '+cgl.canvasScale+') '
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
         else
         {
-            this._elCanvasIconbar.hide();
-            $("#canvasmodal").hide();
+            ele.hide(this._elCanvasIconbar);
+            ele.hide(this._elCanvasModalDarkener);
         }
     };
 
     this.init = function (next)
     {
-        // if(CABLES.UI.userSettings.get("editorMinimized"))gui._ignoreOpenEditor=true;
-        $("#infoArea").show();
-
-        // $("#infoArea").hover(
-        //     function (e)
-        //     {
-        //         CABLES.UI.showInfo();
-        //     }, function ()
-        //     {
-        //         CABLES.UI.hideInfo();
-        //     });
-
-        $("#canvasmodal").on("mousedown",
-            function (e)
+        document.getElementById("canvasmodal").addEventListener("mousedown",
+            (e) =>
             {
                 gui.patch().lastMouseMoveEvent = null;
                 gui.showCanvasModal(false);
                 gui.patchView.focus();
-
                 e.preventDefault();
             });
 
@@ -2071,22 +2031,7 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.UI.hideInfo();
         });
-        /* Tab pane on the right */
-        // $('.tab_files').hover(function(e) {
-        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_files);
-        // }, function() {
-        //     CABLES.UI.hideInfo();
-        // });
-        // $('.tab_profiler').hover(function(e) {
-        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_profiler);
-        // }, function() {
-        //     CABLES.UI.hideInfo();
-        // });
-        // $('.tab_screen').hover(function(e) {
-        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.tab_screen);
-        // }, function() {
-        //     CABLES.UI.hideInfo();
-        // });
+
         $(".download_screenshot").hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.download_screenshot);
@@ -2285,7 +2230,7 @@ function startUi(cfg)
 
                     CABLES.editorSession.open();
                     gui.bindKeys();
-                    gui.jobs().updateJobListing();
+
 
                     gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);

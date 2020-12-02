@@ -48,10 +48,13 @@
 
 #menubar
 {
-    overflow: visible;
+    overflow: hidden;
 }
 
-
+#menubar:hover
+{
+    overflow: visible;
+}
 
 #loggedin,#loggedout
 {
@@ -98,7 +101,7 @@
     background-color: $color-menubar-background;
     top:0px;
     left:0px;
-    z-index: $z-index-cables-logo;
+    // z-index: $z-index-cables-logo;
     // border-bottom: 1px solid var(--color-06);
 
     .icon-cables
@@ -114,7 +117,7 @@ nav
 {
 
     float:left;
-    z-index: $z-index-nav;
+    z-index: $zindex_over;
     $nav-li-padding: 7px 14px;
 
     .nav_logo
@@ -182,7 +185,7 @@ nav
         //ul li ul
         .nav-submenu
         {
-            z-index: $z-index-nav-submenu;
+            z-index: $zindex_over;
             padding: 0;
             position: absolute;
             top: 29px;
@@ -268,7 +271,7 @@ nav
     }
     ul li ul
     {
-        z-index: 9999;
+        // z-index: 9999;
         padding: 0;
         position: absolute;
         top: 28px;

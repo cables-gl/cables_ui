@@ -53,6 +53,7 @@ function ()
             if (lastIndicator) gui.setWorking(false, lastIndicator);
         }
 
+
         document.getElementById("jobs").innerHTML = str;
         document.getElementById("navsocketinfo").innerHTML = gui.chat.getUserInfoHtml();
         if (!this._listenerStarted) this.startListener();
@@ -82,8 +83,12 @@ function ()
             }
         }
 
-        // document.querySelector(".cables-logo .icon-cables").classList.add("blinkanim");
         gui.showLoadingProgress(true);
+
+        gui.on("uiloaded", () =>
+        {
+            this.updateJobListing();
+        });
 
         jobs.push(job);
         this.updateJobListing();
@@ -101,6 +106,8 @@ function ()
 
     this.setProgress = function (jobId, progress)
     {
+        console.log("upl progress", progress);
+        if (progress != 100)document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in jobs)

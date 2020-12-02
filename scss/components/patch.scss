@@ -17,7 +17,7 @@
 	position: absolute;
 	width:75px;
 	height:20px;
-	z-index: $z-index-patch-drop-op;
+	z-index: $zindex_over;
 	background-image: url(/ui/img/dragicon.png);
 	background-size: 100% 100%;
 	pointer-events: none;
@@ -127,7 +127,7 @@
     position:absolute;
     border:1px solid rgb(26, 26, 26);
     overflow: hidden;
-    z-index: 10;
+    // z-index: 10;
     // background-color:var(--patch-bg-color);
     user-select: none;
 
@@ -362,7 +362,7 @@
 #suggestionDialog
 {
     position: absolute;
-    z-index: $z-index-patch-suggestion-dialog;
+    z-index: $zindex_highest;
     bottom: 100px;
 
     .suggestion
@@ -427,9 +427,8 @@
 
 #subpatch_nav
 {
-    // background-color: var(--color-01);
 	position: relative;
-	z-index: $z-index-patch-subpatch-nav;
+	z-index: zindex_over;
 
 	#subpatch_breadcrumb
 	{
@@ -562,7 +561,7 @@ rect
 #patchnavhelper,#patchnavhelperEmpty
 {
     display:none;
-    z-index: 99999999999;
+    z-index: $zindex_over;
     color:var(--text-color);
     background-color: var(--color-04);
     padding:20px;

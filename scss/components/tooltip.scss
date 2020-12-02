@@ -61,7 +61,7 @@
 .tooltip {
     position: absolute;
     pointer-events: none;
-    z-index: $z-index-tooltip;
+    z-index: $zindex_highest;
     background-color: var(--color-01);
     color: var(--color-13);
     padding: 7px;
@@ -91,16 +91,6 @@
         @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 3, $bgColor: $background-color-dark);
     }
 }
-
-// #hoverPreviewer
-// {
-//     position: absolute;
-//     z-index: 99999999;
-//     // border:2px solid red;
-//     display: none;
-// }
-
-
 
 .key, .infoareaContent code
 {

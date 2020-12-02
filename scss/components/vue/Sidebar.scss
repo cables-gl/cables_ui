@@ -1,3 +1,9 @@
+$z-index-sidebar: $zindex_over;
+$z-index-sidebar-customizer: $zindex_over; // must be below sidebar, because of slide-in animation
+$z-index-sidebar-customizer-bg: $zindex_over;
+$z-index-sidebar-dragged-element: $zindex_highest !important;
+
+
 #icon-bar {
 //   padding-top: 28px;
   background-color: var(--color-01);

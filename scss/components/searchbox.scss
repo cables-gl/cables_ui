@@ -3,7 +3,7 @@
 {
     position: absolute;
     top:31px;
-    z-index: $z-index-searchbox;
+    z-index: $zindex_highest;
     display:none;
 
 	background-color: $color-searchInputContainer;
@@ -48,7 +48,7 @@
         .icon {
             margin-left: 5px;
         }
-        
+
         input {
             -webkit-appearance: none;
             -webkit-user-select: auto;
