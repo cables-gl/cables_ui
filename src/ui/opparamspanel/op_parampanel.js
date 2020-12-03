@@ -435,6 +435,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     updateUiErrors()
     {
+        if (!this._currentOp) return;
         const el = document.getElementById("op_params_uierrors");
 
         if (!this._currentOp.uiAttribs.uierrors || this._currentOp.uiAttribs.uierrors.length == 0)

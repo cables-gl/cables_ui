@@ -336,7 +336,15 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                                         if (gui.onSaveProject) gui.onSaveProject();
                                     });
                             };
-                            reader.readAsDataURL(screenBlob);
+
+                            try
+                            {
+                                reader.readAsDataURL(screenBlob);
+                            }
+                            catch (e)
+                            {
+                                console.log(e);
+                            }
                         });
                     }
                 }.bind(this)
