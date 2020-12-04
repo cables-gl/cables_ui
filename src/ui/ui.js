@@ -464,49 +464,52 @@ CABLES.UI.GUI = function (cfg)
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
 
-        if (showTiming)
+        if (this._elTLoverviewtimeline)
         {
-            $("#timelineui").css("width", timelineWidth);
-            $("#timing").css("width", timelineWidth);
-            $("#timing").css("bottom", filesHeight);
+            if (showTiming)
+            {
+                $("#timelineui").css("width", timelineWidth);
+                $("#timing").css("width", timelineWidth);
+                $("#timing").css("bottom", filesHeight);
 
-            $("#timelineui").show();
-            $("#timing").css("height", this.timingHeight);
-            $("#timing").css("left", iconBarWidth);
+                $("#timelineui").show();
+                $("#timing").css("height", this.timingHeight);
+                $("#timing").css("left", iconBarWidth);
 
-            $("#overviewtimeline").css("margin-top", timelineUiHeight);
-            $("#overviewtimeline svg").css("width", timelineWidth);
-            $("#overviewtimeline svg").css("height", 25);
+                $("#overviewtimeline").css("margin-top", timelineUiHeight);
+                $("#overviewtimeline svg").css("width", timelineWidth);
+                $("#overviewtimeline svg").css("height", 25);
 
-            $("#timetimeline").css("margin-top", timelineUiHeight + timedisplayheight);
-            $("#timetimeline svg").css("width", timelineWidth);
-            $("#timetimeline svg").css("height", 25);
+                $("#timetimeline").css("margin-top", timelineUiHeight + timedisplayheight);
+                $("#timetimeline svg").css("width", timelineWidth);
+                $("#timetimeline svg").css("height", 25);
 
-            $("#timeline svg").css("width", timelineWidth);
-            $("#timeline svg").css("height", this.timingHeight - timedisplayheight);
-            $("#timeline svg").css("margin-top", timelineUiHeight + timedisplayheight + timedisplayheight);
+                $("#timeline svg").css("width", timelineWidth);
+                $("#timeline svg").css("height", this.timingHeight - timedisplayheight);
+                $("#timeline svg").css("margin-top", timelineUiHeight + timedisplayheight + timedisplayheight);
 
-            $("#timeline svg").show();
+                $("#timeline svg").show();
 
-            this._elTLoverviewtimeline.style.display = "block";
-            this._elTLtimetimeline.style.display = "block";
-            this._elTLkeycontrols.style.display = "block";
-            this._elTLsplitterTimeline.style.display = "block";
-            this._elTLtimelineTitle.style.display = "block";
+                this._elTLoverviewtimeline.style.display = "block";
+                this._elTLtimetimeline.style.display = "block";
+                this._elTLkeycontrols.style.display = "block";
+                this._elTLsplitterTimeline.style.display = "block";
+                this._elTLtimelineTitle.style.display = "block";
 
-            $("#splitterTimeline").css("bottom", this.timingHeight - 4);
-        }
-        else
-        {
-            this._elTLoverviewtimeline.style.display = "none";
-            this._elTLtimetimeline.style.display = "none";
-            this._elTLkeycontrols.style.display = "none";
-            this._elTLtimelineTitle.style.display = "none";
-            this._elTLsplitterTimeline.style.display = "none";
+                $("#splitterTimeline").css("bottom", this.timingHeight - 4);
+            }
+            else
+            {
+                this._elTLoverviewtimeline.style.display = "none";
+                this._elTLtimetimeline.style.display = "none";
+                this._elTLkeycontrols.style.display = "none";
+                this._elTLtimelineTitle.style.display = "none";
+                this._elTLsplitterTimeline.style.display = "none";
 
-            $("#timeline svg").hide();
-            $("#timing").css("height", timelineUiHeight);
-            $("#splitterTimeline").hide();
+                $("#timeline svg").hide();
+                $("#timing").css("height", timelineUiHeight);
+                $("#splitterTimeline").hide();
+            }
         }
 
         if (this.timeLine()) this.timeLine().updateViewBox();
