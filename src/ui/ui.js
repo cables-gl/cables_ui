@@ -2182,6 +2182,15 @@ function startUi(cfg)
             incrementStartup();
             CABLES.sandbox.initRouting(() =>
             {
+                document.addEventListener("visibilitychange", function ()
+                {
+                    if (!document.hidden)
+                    {
+                        gui.setLayout();
+                        gui.patchView.store.checkUpdated();
+                    }
+                }, false);
+
                 incrementStartup();
                 gui.opDocs = new CABLES.UI.OpDocs(() =>
                 {
@@ -2287,14 +2296,6 @@ function startUi(cfg)
 
     CABLES.watchPortVisualize.init();
 
-    document.addEventListener("visibilitychange", function ()
-    {
-        if (!document.hidden)
-        {
-            gui.setLayout();
-            gui.patchView.store.checkUpdated();
-        }
-    }, false);
 
     logStartup("Init UI done");
 }
