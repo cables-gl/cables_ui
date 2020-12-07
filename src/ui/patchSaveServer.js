@@ -95,7 +95,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
         const project = gui.project();
 
-        const copyCollaborators = project.settings.opExample.length == 0; // dont do this for example patches
+        const copyCollaborators = (project.settings.opExample.length != 0 || !project.settings.isPublic); // dont do this for example and public patches
+        console.log("collabs", project.settings, copyCollaborators);
         let prompt = "Enter a name for the copy of this Project.";
 
         if (copyCollaborators)
@@ -106,6 +107,10 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                 if (i > 0) prompt += ", ";
                 prompt += name;
             });
+        }
+        else
+        {
+            prompt += "<br/><br/>Collaborators will NOT be copied for public patches!";
         }
 
 
