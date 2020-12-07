@@ -240,8 +240,10 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
         // const h=w*(port.get().height/port.get().width);
 
+
         const s = this._getCanvasSize(port, port.get(), meta);
         if (s[0] == 0 || s[1] == 0) return;
+
 
         if (texType == 1)s[0] *= 1.33;
         previewCanvasEle.width = s[0];
@@ -286,9 +288,9 @@ CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)
 
     if (!meta)
     {
-        const patchRect = document.getElementById("patch").getBoundingClientRect();
-        maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvas.width);
-        maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvas.height);
+        const patchRect = gui.patchView.element.getBoundingClientRect();
+        maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
+        maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
     }
 
     const aspect = tex.height / tex.width;

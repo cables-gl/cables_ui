@@ -585,7 +585,7 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreview.style.top = menubarHeight + "px";
 
         this._elBgPreviewButtonContainer.style.right = this.rendererWidth + "px";
-        this._elBgPreviewButtonContainer.style.top = -1 + "px";
+        // this._elBgPreviewButtonContainer.style.top = -1 + "px";
 
         this.emitEvent("setLayout");
 
@@ -2242,7 +2242,6 @@ function startUi(cfg)
 
                     CABLES.editorSession.open();
                     gui.bindKeys();
-
 
                     gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
