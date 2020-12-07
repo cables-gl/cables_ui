@@ -541,7 +541,6 @@ CABLES.UI.TexturePreviewer.prototype.setMode = function (m)
 CABLES.UI.TexturePreviewer.prototype.updateTexturePort = function (port)
 {
     // if(this._paused || port!=this._lastClicked)return;
-    // console.log(port);
     let doUpdateHtml = false;
     const p = port;
     let idx = -1;

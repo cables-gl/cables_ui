@@ -2249,6 +2249,11 @@ function startUi(cfg)
 
                     logStartup("finished loading cables");
 
+                    setTimeout(() =>
+                    {
+                        if (CABLES.UI.userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
+                    }, 1000);
+
                     if (window.module) module = window.module; // electronn workaround/fix
 
                     gui.socket.sendInfo(gui.user.username + " joined");
