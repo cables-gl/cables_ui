@@ -28,7 +28,7 @@
     position:absolute;
     top:100px;
     left:100px;
-    z-index:99;
+    z-index:$zindex_over;
     cursor:pointer;
     background-color: $button-background-color;
     background-color: var(--color-01);
