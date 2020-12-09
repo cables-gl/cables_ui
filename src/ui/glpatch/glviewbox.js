@@ -287,9 +287,14 @@ CABLES.GLGUI.ViewBox = class
 
     animateScrollTo(x, y, dur, userInteraction)
     {
+        // if (x != x)x = 0;
+        // if (y != y)y = 0;
+        // console.log(x, y, dur);
+
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
         if (userInteraction)p = 0;
-        console.log("offset", p);
+        if (p != p)p = 0;
+        // console.log("offset", p);
 
         dur = dur || 0.25;
 
@@ -304,9 +309,10 @@ CABLES.GLGUI.ViewBox = class
 
     scrollTo(x, y, userInteraction)
     {
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
-        if (userInteraction)p = 0;
-        console.log("offset", p);
+        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        // if (userInteraction)p = 0;
+        // if (p != p)p = 0;
+        // console.log("offset", p);
 
         this._scrollX = x;
         this._scrollY = y;
@@ -363,9 +369,15 @@ CABLES.GLGUI.ViewBox = class
         if (noAnim) this._zoom = z;
         else this.animateZoom(z);
 
-        const cy = bb.center[1] * (this._viewResX / this._viewResY);
+        let cy = bb.center[1] * (this._viewResX / this._viewResY);
 
         // this.scrollTo(bb.center[0], cy);
+
+        if (cy != cy)
+        {
+            console.log("cy nan!!!!");
+            cy = 0;
+        }
 
 
         this.animateScrollTo(bb.center[0], cy);

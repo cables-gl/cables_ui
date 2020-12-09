@@ -571,9 +571,6 @@ CABLES.UI.GUI = function (cfg)
             this._elGlCanvas.attr("height", self.rendererHeight * density);
             this._elGlCanvas.css("width", this.rendererWidth);
             this._elGlCanvas.css("height", self.rendererHeight);
-            // this._elGlCanvas.css('left', window.innerWidth-this.rendererWidth*density);
-            // console.log("!!!",window.innerWidth,this.rendererWidth)
-
             this._elCablesCanvas.css("width", this.rendererWidth + "px");
             this._elCablesCanvas.css("height", self.rendererHeight + "px");
 
@@ -585,7 +582,6 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreview.style.top = menubarHeight + "px";
 
         this._elBgPreviewButtonContainer.style.right = this.rendererWidth + "px";
-        // this._elBgPreviewButtonContainer.style.top = -1 + "px";
 
         this.emitEvent("setLayout");
 

@@ -1060,11 +1060,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             const fitp = op1.findFittingPort(p);
 
-            for (let i = 0; i < portnames.length; i++)
-            {
-                op2 = this._p.getOpById(opids[i]);
-                this._p.link(op2, portnames[i], op1, fitp.name);
-            }
+            if (fitp)
+                for (let i = 0; i < portnames.length; i++)
+                {
+                    op2 = this._p.getOpById(opids[i]);
+                    this._p.link(op2, portnames[i], op1, fitp.name);
+                }
         }
     }
 
