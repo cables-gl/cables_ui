@@ -49,20 +49,6 @@
         margin-bottom: 3px;;
 	}
 
-    .warning-error-level2
-    {
-        background: var(--color-bg-error);
-    }
-
-    .warning-error-level1
-    {
-        background: var(--color-bg-warning);
-    }
-
-    .warning-error-level0
-    {
-        background: var(--color-bg-hint);
-    }
 
 
 	.icon-link {
@@ -115,6 +101,21 @@
 
 
 	}
+}
+.warning-error-level2,.warning-error-level2:hover
+{
+    background: var(--color-bg-error) !important;
+}
+
+
+.warning-error-level1
+{
+    background: var(--color-bg-warning);
+}
+
+.warning-error-level0
+{
+    background: var(--color-bg-hint);
 }
 
 

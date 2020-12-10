@@ -480,6 +480,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                 div.innerHTML = str;
             }
+            gui.patchView.checkPatchErrors();
         }
 
 
