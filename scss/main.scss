@@ -148,7 +148,9 @@ input[type="text"]
     overflow: hidden;
     text-overflow: ellipsis;
     float:left;
-    width:auto;
+    // width:auto;
+    min-width:80%;
+    margin-right:5px;
 }
 
 .button_colorpick
