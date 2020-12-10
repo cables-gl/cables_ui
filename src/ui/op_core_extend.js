@@ -34,8 +34,6 @@ CABLES.Op.prototype.checkLinkTimeWarnings = function ()
             hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
             hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
 
-        console.log("hasparent", hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2"));
-
         if (!working) notWorkingMsg = CABLES.UI.TEXTS.working_connected_to + "ImageCompose";
     }
 
