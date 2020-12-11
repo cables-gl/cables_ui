@@ -41,6 +41,7 @@ CABLES.UI.FindTab = function (tabs, str)
 
     gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
 
+    gui.corePatch().addEventListener("warningErrorIconChange", this._updateCb);
     gui.corePatch().addEventListener("onOpDelete", this._updateCb);
     gui.corePatch().addEventListener("onOpAdd", this._updateCb);
     gui.corePatch().addEventListener("commentChanged", this._updateCb);
