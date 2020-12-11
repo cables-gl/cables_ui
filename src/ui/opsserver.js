@@ -408,6 +408,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
     this.cloneDialog = function (oldName)
     {
+        if (gui.showGuestWarning()) return;
+
         this.opNameDialog("Clone operator", name, function (newname)
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
@@ -564,6 +566,12 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     // Shows the editor and displays the code of an op in it
     this.edit = function (opname, readOnly, cb)
     {
+        if (gui.isGuestEditor())
+        {
+            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            return;
+        }
+
         if (!opname || opname == "")
         {
             console.log("UNKNOWN OPNAME ", opname);

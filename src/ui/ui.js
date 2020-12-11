@@ -163,6 +163,15 @@ CABLES.UI.GUI = function (cfg)
         return _introduction;
     };
 
+    this.showGuestWarning = function ()
+    {
+        if (gui.isGuestEditor())
+        {
+            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            return true;
+        }
+    };
+
     this.isGuestEditor = function ()
     {
         return this.user.username == "guest";
