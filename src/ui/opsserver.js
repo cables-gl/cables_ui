@@ -606,12 +606,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                                 }
                                 else
                                 {
-                                    // editor.setValue(res.opFullCode, 1);
-
                                     if (!CABLES.Patch.getOpClass(opname))
-                                    {
                                         gui.opSelect().reload();
-                                    }
 
                                     // exec ???
                                     gui.serverOps.execute(opname, function ()

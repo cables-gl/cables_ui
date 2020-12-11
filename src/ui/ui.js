@@ -163,6 +163,11 @@ CABLES.UI.GUI = function (cfg)
         return _introduction;
     };
 
+    this.isGuestEditor = function ()
+    {
+        return this.user.username == "guest";
+    };
+
     this.infoHeight = 200;
     this.timingHeight = 250;
     this.rendererWidth = 640;
