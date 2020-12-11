@@ -2253,6 +2253,8 @@ function startUi(cfg)
 
                     gui.socket.sendInfo(gui.user.username + " joined");
                     gui.socket.updateMembers();
+                    gui.patchView.checkPatchErrors();
+
 
                     gui.patchView.setCurrentSubPatch(0);
 

@@ -1,4 +1,5 @@
 
+
 #searchbox,#cmdpalette
 {
     position: absolute;
@@ -114,6 +115,12 @@
     .selected
     {
         border-left:2px solid var(--color-07);
+    }
+
+    .resultError
+    {
+        border:0;
+        background-color: black;
     }
 }
 

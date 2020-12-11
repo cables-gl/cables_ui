@@ -169,10 +169,11 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 
     html += "</h3>";
 
-
+    if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
     if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
-    html += "" + op.objName + "<br/>";
+    // html += "" + op.objName + "<br/>";
     html += result.where || "";
+
 
     let highlightsubpatch = "";
     if (op.uiAttribs.subPatch == gui.patch().getCurrentSubPatch()) highlightsubpatch = "highlight";
@@ -260,7 +261,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
                 if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                     for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
                     {
-                        results.push({ op, "score": 1 });
+                        results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt + "!!!!" });
                         foundNum++;
                     }
             }
@@ -433,7 +434,10 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     if (foundNum === 0)
     {
-        html = "<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No ops found</div>";
+        let what = "ops";
+        if (str == ":error")what = "errors";
+
+        html = "<div style=\"pointer-events:none\">&nbsp;&nbsp;&nbsp;No " + what + " found</div>";
     }
     else
     {
@@ -450,7 +454,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
     }
 
     this._eleResults.innerHTML = html;
-
+    gui.patchView.checkPatchErrors();
     const timeUsed = performance.now() - startTime;
 
     if (!userInvoked) this.focus();

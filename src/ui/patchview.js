@@ -343,9 +343,42 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.showSelectedOpsPanel();
     }
 
+    checkPatchErrors()
+    {
+        this.hasUiErrors = false;
+
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
+            {
+                for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
+                {
+                    if (ops[i].uiAttribs.uierrors[j].level == 2)
+                    {
+                        this.hasUiErrors = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        clearTimeout(this._checkErrorTimeout);
+        if (this.hasUiErrors)
+        {
+            ele.show(ele.byId("nav-item-error"));
+        }
+        else
+        {
+            ele.hide(ele.byId("nav-item-error"));
+        }
+        this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
+    }
+
     showBookmarkParamsPanel()
     {
         let html = "<div class=\"panel\">";
+        this.checkPatchErrors();
 
         const project = gui.project();
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
