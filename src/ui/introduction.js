@@ -51,7 +51,7 @@ function ()
             "bottom"
         );
         defineIntroStep(
-            "#infoArea",
+            "#infoAreaContainer",
             "In the info area you get help. Hover over any element on the page to receive information about it.",
             "left"
         );
