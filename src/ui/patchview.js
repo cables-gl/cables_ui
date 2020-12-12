@@ -345,6 +345,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     checkPatchErrors()
     {
+        const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
         const ops = gui.corePatch().ops;
@@ -361,6 +362,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     }
                 }
             }
+        }
+
+        if (hadErrors != this.hasUiErrors)
+        {
+            gui.corePatch().emitEvent("warningErrorIconChange");
         }
 
         clearTimeout(this._checkErrorTimeout);

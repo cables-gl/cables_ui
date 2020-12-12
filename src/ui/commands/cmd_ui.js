@@ -5,6 +5,7 @@ CABLES.CMD.commands = CABLES.CMD.commands || [];
 
 CABLES.CMD.UI.settings = function ()
 {
+    if (gui.showGuestWarning()) return;
     gui.showSettings();
 };
 
@@ -234,6 +235,7 @@ CABLES.CMD.UI.toggleIntroCompleted = function ()
 
 CABLES.CMD.UI.showPreferences = function ()
 {
+    if (gui.showGuestWarning()) return;
     new CABLES.UI.Preferences(gui.mainTabs);
     gui.maintabPanel.show();
 };

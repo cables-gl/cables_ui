@@ -102,7 +102,9 @@ CABLES.UI.TEXTS = {
     "filemanager_file_create": "Create a file",
 
     "editorSaveButton": "Save",
-    "editorFormatButton": "Format"
+    "editorFormatButton": "Format",
+
+    "guestHint": "Guest account - limited functionality / please register to use this feature!"
 };
 
 CABLES.UI.TIPS = [

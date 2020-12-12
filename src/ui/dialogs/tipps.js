@@ -37,7 +37,7 @@ CABLES.UI.Tipps = function ()
 
         html += "<div class=\"tip\">";
         html += "  <div style=\"width:320px;max-height:300px;padding:20px;float:left\">";
-        html += "    <img style=\"max-width:300px;min-height:273px;max-height:273px;align:left;\" src=\"https://docs.cables.gl/ui_walkthrough/video/" + tip.img + "\" />";
+        html += "    <img style=\"max-width:300px;min-height:273px;max-height:273px;align:left;\" src=\"https://cables.gl/docs/0_howtouse/ui_walkthrough/video/" + tip.img + "\" />";
         html += "  </div>";
         html += "  <div style=\"width:320px;float:left;\">";
         html += "    <h3>" + (tip.title || "Did you know...") + "</h3>";

@@ -72,6 +72,12 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
     this._fileSource = this._fileSource || "lib";
     if (this._firstTimeOpening) this._fileSource = "patch";
 
+    if (gui.isGuestEditor())
+    {
+        this._buildHtml();
+        return;
+    }
+
     gui.jobs().start({ "id": "getFileList", "title": "Loading file list" });
 
     CABLESUILOADER.talkerAPI.send(
@@ -313,12 +319,20 @@ CABLES.UI.FileManager.prototype.setDisplay = function (type)
 
 CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
 {
+    if (gui.isGuestEditor())
+    {
+        if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (CABLES.UI.TEXTS.guestHint);
+        return;
+    }
+
+
     const html = CABLES.UI.getHandleBarHtml("filemanager_header", {
         "fileSelectOp": this._filePortOp,
         "filterType": this._filterType,
         "source": this._fileSource,
         "display": this._manager.getDisplay(),
-        "filter": this._manager.titleFilter,
+        "filter": this._manager.titleFilter
+
     });
     if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (html);
 

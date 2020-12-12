@@ -189,9 +189,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             html += "this op crashed before, you should reload the page.<br/><br/>";
             html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
 
-            CABLES.UI.MODAL.show(html, {
-                "title": "need to reload page",
-            });
+            CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
 
             return;
         }
@@ -207,7 +205,11 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 {
                     CABLES.UI.notify(num + " ops reloaded");
 
-                    for (let i = 0; i < ops.length; i++) gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
+                    for (let i = 0; i < ops.length; i++)
+                    {
+                        gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
+                        delete ops[i].uiAttribs.uierrors;
+                    }
 
                     if (ops.length > 0) this.saveOpLayout(ops[0]);
                     gui.patch().checkCollisionsEdge();
@@ -406,6 +408,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
     this.cloneDialog = function (oldName)
     {
+        if (gui.showGuestWarning()) return;
+
         this.opNameDialog("Clone operator", name, function (newname)
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
@@ -562,6 +566,12 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     // Shows the editor and displays the code of an op in it
     this.edit = function (opname, readOnly, cb)
     {
+        if (gui.isGuestEditor())
+        {
+            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            return;
+        }
+
         if (!opname || opname == "")
         {
             console.log("UNKNOWN OPNAME ", opname);
@@ -604,18 +614,16 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                                 }
                                 else
                                 {
-                                    // editor.setValue(res.opFullCode, 1);
-
                                     if (!CABLES.Patch.getOpClass(opname))
-                                    {
                                         gui.opSelect().reload();
-                                    }
 
                                     // exec ???
                                     gui.serverOps.execute(opname, function ()
                                     {
                                         setStatus("saved " + opname);
                                         editor.focus();
+
+                                        setTimeout(() => { gui.opParams.refresh(); }, 100);
                                     });
                                 }
                             },
