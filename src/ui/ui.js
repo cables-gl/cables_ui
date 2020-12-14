@@ -2256,6 +2256,8 @@ function startUi(cfg)
                     gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
 
+                    CABLES.UI.startIdleListeners();
+
                     logStartup("finished loading cables");
 
                     setTimeout(() =>
@@ -2268,7 +2270,6 @@ function startUi(cfg)
                     gui.socket.sendInfo(gui.user.username + " joined");
                     gui.socket.updateMembers();
                     gui.patchView.checkPatchErrors();
-
 
                     gui.patchView.setCurrentSubPatch(0);
 

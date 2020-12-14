@@ -8,6 +8,7 @@ CABLES.UI.idleModeStart = 0;
 
 CABLES.UI.startIdleMode = function ()
 {
+    if (!CABLES.UI.loaded || !window.gui) return;
     if (CABLES.UI.idling) return;
 
     // if( CABLES.UI.idleFocus)
@@ -46,6 +47,7 @@ CABLES.UI.idleInteractivity = function ()
 
 CABLES.UI.stopIdleMode = function ()
 {
+    if (!CABLES.UI.loaded || !window.gui) return;
     if (!CABLES.UI.idling) return;
 
     console.log("idled for ", Math.round((Date.now() - CABLES.UI.idleModeStart) / 1000) + " seconds");
@@ -63,22 +65,25 @@ CABLES.UI.visibilityChanged = function (e)
     else CABLES.UI.stopIdleMode();
 };
 
-window.addEventListener("focus", (event) =>
+CABLES.UI.startIdleListeners = function ()
 {
-    CABLES.UI.idleFocus = true;
-    clearTimeout(CABLES.UI.idleTimeout);
-    CABLES.UI.stopIdleMode();
-});
+    window.addEventListener("focus", (event) =>
+    {
+        CABLES.UI.idleFocus = true;
+        clearTimeout(CABLES.UI.idleTimeout);
+        CABLES.UI.stopIdleMode();
+    });
 
-window.addEventListener("blur", (event) =>
-{
-    CABLES.UI.idleFocus = false;
-    clearTimeout(CABLES.UI.idleTimeout);
+    window.addEventListener("blur", (event) =>
+    {
+        CABLES.UI.idleFocus = false;
+        clearTimeout(CABLES.UI.idleTimeout);
+        CABLES.UI.idleTimeout = setTimeout(CABLES.UI.startIdleMode, CABLES.UI.idleTime * 1000);
+    });
+
+    document.addEventListener("keydown", CABLES.UI.idleInteractivity, false);
+    document.addEventListener("mousemove", CABLES.UI.idleInteractivity);
+    document.addEventListener("visibilitychange", CABLES.UI.visibilityChanged);
+
     CABLES.UI.idleTimeout = setTimeout(CABLES.UI.startIdleMode, CABLES.UI.idleTime * 1000);
-});
-
-document.addEventListener("keydown", CABLES.UI.idleInteractivity, false);
-document.addEventListener("mousemove", CABLES.UI.idleInteractivity);
-document.addEventListener("visibilitychange", CABLES.UI.visibilityChanged);
-
-CABLES.UI.idleTimeout = setTimeout(CABLES.UI.startIdleMode, CABLES.UI.idleTime * 1000);
+};
