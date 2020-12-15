@@ -2258,6 +2258,9 @@ function startUi(cfg)
 
                     CABLES.UI.startIdleListeners();
 
+                    gui.jobs().updateJobListing();
+
+
                     logStartup("finished loading cables");
 
                     setTimeout(() =>
