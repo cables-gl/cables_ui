@@ -223,22 +223,22 @@ CABLES.GLGUI.GlPatchAPI = class
     }
 
 
-    addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
-    {
-        const opIn = gui.corePatch().getOpById(opIdIn);
-        const pIn = opIn.getPortById(portIdIn);
-        const opOut = gui.corePatch().getOpById(opIdOut);
-        const pOut = opOut.getPortById(portIdOut);
-        const link = pOut.getLinkTo(pIn);
-        // options, linkOp, linkPort, link)
-        gui.opSelect().show({ "x": 0,
-            "y": 0,
-            "onOpAdd": (op) =>
-            {
-                // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
-                op.setUiAttrib({ "translate": { "x": x, "y": y } });
-            } }, null, null, link);
-    }
+    // addOpIntoLink(opIdIn, opIdOut, portIdIn, portIdOut, x, y)
+    // {
+    //     const opIn = gui.corePatch().getOpById(opIdIn);
+    //     const pIn = opIn.getPortById(portIdIn);
+    //     const opOut = gui.corePatch().getOpById(opIdOut);
+    //     const pOut = opOut.getPortById(portIdOut);
+    //     const link = pOut.getLinkTo(pIn);
+    //     // options, linkOp, linkPort, link)
+    //     gui.opSelect().show({ "x": 0,
+    //         "y": 0,
+    //         "onOpAdd": (op) =>
+    //         {
+    //             // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
+    //             op.setUiAttrib({ "translate": { "x": x, "y": y } });
+    //         } }, null, null, link);
+    // }
 
     deleteOp(id)
     {

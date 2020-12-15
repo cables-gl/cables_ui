@@ -543,6 +543,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
         }
+
+        gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
         this._p.emitEvent("subpatchCreated");
     }
 
