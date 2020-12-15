@@ -123,9 +123,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
 
+        if (e.altKey || e.metaKey)
+        {
+            if (!e.shiftKey) this._glPatch.unselectAll();
+            gui.patchView.selectChilds(this.op.id);
+        }
+
         if (!this.selected)
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
+
             this._glPatch.selectOpId(this.id);
         }
 
@@ -164,7 +171,15 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+        if (attr.selected)
+        {
+            this._glPatch.selectOpId(this._id);
+        }
+        if (attr && !this.opUiAttribs.selected && attr.selected)
+        {
+            console.log("selected op!");
+            this._glPatch.selectOpId(this._id);
+        }
 
         this.opUiAttribs = attr;
         this._needsUpdate = true;

@@ -1169,6 +1169,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else console.log("patchRenderer has no function setSelectedOpById");
     }
 
+    selectChilds(id)
+    {
+        const op = gui.corePatch().getOpById(id);
+        op.selectChilds();
+    }
+
     refreshCurrentOpParamsByPort(p1, p2)
     {
         if (this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
