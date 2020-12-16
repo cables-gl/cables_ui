@@ -310,13 +310,14 @@ CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)
 
 CABLES.UI.TexturePreviewer.prototype._htmlDataObject = function (o)
 {
-    return {
-        "title": o.port.parent.getName() + " - " + o.port.name,
-        "id": o.id,
-        "opid": o.opid,
-        "order": parseInt(o.lastTimeClicked, 10),
-        "size": o.port.get().width + " x " + o.port.get().height
-    };
+    if (o.port.get())
+        return {
+            "title": o.port.parent.getName() + " - " + o.port.name,
+            "id": o.id,
+            "opid": o.opid,
+            "order": parseInt(o.lastTimeClicked, 10),
+            "size": o.port.get().width + " x " + o.port.get().height
+        };
 };
 
 CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()

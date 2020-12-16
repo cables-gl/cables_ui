@@ -543,6 +543,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
         }
+
+        gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
         this._p.emitEvent("subpatchCreated");
     }
 
@@ -1165,6 +1167,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
         // else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
         else console.log("patchRenderer has no function setSelectedOpById");
+    }
+
+    selectChilds(id)
+    {
+        const op = gui.corePatch().getOpById(id);
+        op.selectChilds();
     }
 
     refreshCurrentOpParamsByPort(p1, p2)
