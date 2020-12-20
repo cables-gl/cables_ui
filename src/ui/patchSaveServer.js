@@ -117,7 +117,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         CABLES.UI.MODAL.prompt(
             "Save As...",
             prompt,
-            gui.corePatch().name,
+            "copy of " + gui.corePatch().name,
             (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
