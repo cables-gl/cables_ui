@@ -1236,11 +1236,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                 for (let j = 0; j < newOp.portsIn.length; j++)
                 {
-                    console.log(newOp.portsIn[j].name, newOp.portsIn[i].name);
-                    if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                    if (newOp.portsIn[j] && origOp.portsIn[i])
                     {
-                        found = true;
-                        break;
+                        console.log(newOp.portsIn[j].name, newOp.portsIn[i].name);
+                        if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                        {
+                            found = true;
+                            break;
+                        }
                     }
                 }
 
