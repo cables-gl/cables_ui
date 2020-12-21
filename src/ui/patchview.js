@@ -1238,7 +1238,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 {
                     if (newOp.portsIn[j] && origOp.portsIn[i])
                     {
-                        console.log(newOp.portsIn[j].name, newOp.portsIn[i].name);
                         if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
                         {
                             found = true;
