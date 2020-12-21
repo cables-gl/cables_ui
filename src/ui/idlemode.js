@@ -5,22 +5,12 @@ CABLES.UI.idleTime = 180;
 CABLES.UI.idling = false;
 CABLES.UI.idleTimeout = null;
 CABLES.UI.idleModeStart = 0;
+CABLES.UI.idleFocus = false;
 
 CABLES.UI.startIdleMode = function ()
 {
     if (!CABLES.UI.loaded || !window.gui) return;
     if (CABLES.UI.idling) return;
-
-    // if( CABLES.UI.idleFocus)
-    // {
-    //     console.log("is focussed, not starting idle mode!!");
-    //     return;
-    // }
-
-    // console.log("start idle...");
-    // console.log("document.hidden:",document.hidden);
-    // console.log("CABLES.UI.idleFocus:",CABLES.UI.idleFocus);
-
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
     CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/>click to resume<br/></center>");
@@ -34,14 +24,13 @@ CABLES.UI.startIdleMode = function ()
 
 CABLES.UI.idleInteractivity = function ()
 {
-    if (CABLES.UI.idleFocus)
+    CABLES.UI.idleFocus = true;
+
+    if (CABLES.UI.idling) CABLES.UI.stopIdleMode();
+    if (!document.hidden)
     {
-        if (CABLES.UI.idling) CABLES.UI.stopIdleMode();
-        if (!document.hidden)
-        {
-            clearTimeout(CABLES.UI.idleTimeout);
-            CABLES.UI.idleTimeout = setTimeout(CABLES.UI.startIdleMode, CABLES.UI.idleTime * 1000);
-        }
+        clearTimeout(CABLES.UI.idleTimeout);
+        CABLES.UI.idleTimeout = setTimeout(CABLES.UI.startIdleMode, CABLES.UI.idleTime * 1000);
     }
 };
 
@@ -67,6 +56,8 @@ CABLES.UI.visibilityChanged = function (e)
 
 CABLES.UI.startIdleListeners = function ()
 {
+    console.log("idle listeners started!");
+
     window.addEventListener("focus", (event) =>
     {
         CABLES.UI.idleFocus = true;

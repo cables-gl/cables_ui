@@ -95,8 +95,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
         const project = gui.project();
 
-        const copyCollaborators = (project.settings.opExample.length != 0 || !project.settings.isPublic); // dont do this for example and public patches
-        console.log("collabs", project.settings, copyCollaborators);
+        const copyCollaborators = (project.settings.opExample.length == 0 && !project.settings.isPublic); // dont do this for example and public patches
+        console.log("collabsen", project.settings, copyCollaborators);
         let prompt = "Enter a name for the copy of this Project.";
 
         if (copyCollaborators)
@@ -117,7 +117,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         CABLES.UI.MODAL.prompt(
             "Save As...",
             prompt,
-            gui.corePatch().name,
+            "copy of " + gui.corePatch().name,
             (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
