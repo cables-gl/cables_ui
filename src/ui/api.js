@@ -10,46 +10,92 @@ CABLES.API = function ()
     {
         url = CABLES.sandbox.getUrlApiPrefix() + url;
 
-        $.ajax(
+        fetch(url,
             {
-                method,
-                url,
-                data
+                "dataType": "json",
+                "data": data,
+                "method": method,
             })
-            .done(function (data)
+            .then(function (response)
             {
-                if (doCache)
-                    cache.push({ url, method, data });
+                console.log(response);
 
-                if (cbSuccess) cbSuccess(data);
-            })
-            .fail(function (data)
-            {
-                if (CABLES && CABLES.UI && CABLES.UI.MODAL)
+                response.json().then(function (_data)
                 {
-                    if (data.statusText == "NOT_LOGGED_IN")
-                    {
-                        CABLES.UI.MODAL.showError("not logged in", "<br/>you are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">continue</a> <br/><br/> ");
-                    }
-                    else
-                    if (data.statusText == "Multiple Choices")
-                    {
-                        console.warn("ajax unknown file response...");
-                        console.log(url);
-                    }
-                    else
-                    {
-                        if (!cbError) CABLES.UI.MODAL.show("12 Ajax Error: " + data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
-                        console.log(data);
-                    }
-                }
+                    if (doCache)
+                        cache.push({ url, method, _data });
 
-                if (cbError)cbError(data.responseJSON, data);
+                    if (cbSuccess) cbSuccess(_data);
+                });
             })
-            .always(function ()
+            .catch(function (response)
             {
-            // console.log( "complete" );
+                response.json().then(function (_data)
+                {
+                    if (CABLES && CABLES.UI && CABLES.UI.MODAL)
+                    {
+                        if (_data.statusText == "NOT_LOGGED_IN")
+                        {
+                            CABLES.UI.MODAL.showError("not logged in", "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">continue</a> <br/><br/> ");
+                        }
+                        else
+                        if (_data.statusText == "Multiple Choices")
+                        {
+                            console.warn("ajax unknown file response...");
+                            console.log(url);
+                        }
+                        else
+                        {
+                            if (!cbError) CABLES.UI.MODAL.show("12 Ajax Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
+                            console.log(_data);
+                        }
+                    }
+
+                    if (cbError)cbError(_data.responseJSON, _data);
+                });
             });
+
+
+        // $.ajax(
+        //     {
+        //         method,
+        //         url,
+        //         data
+        //     })
+        //     .done(function (data)
+        //     {
+        //         if (doCache)
+        //             cache.push({ url, method, data });
+
+        //         if (cbSuccess) cbSuccess(data);
+        //     })
+        //     .fail(function (data)
+        //     {
+        //         if (CABLES && CABLES.UI && CABLES.UI.MODAL)
+        //         {
+        //             if (data.statusText == "NOT_LOGGED_IN")
+        //             {
+        //                 CABLES.UI.MODAL.showError("not logged in", "<br/>you are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">continue</a> <br/><br/> ");
+        //             }
+        //             else
+        //             if (data.statusText == "Multiple Choices")
+        //             {
+        //                 console.warn("ajax unknown file response...");
+        //                 console.log(url);
+        //             }
+        //             else
+        //             {
+        //                 if (!cbError) CABLES.UI.MODAL.show("12 Ajax Error: " + data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
+        //                 console.log(data);
+        //             }
+        //         }
+
+        //         if (cbError)cbError(data.responseJSON, data);
+        //     })
+        //     .always(function ()
+        //     {
+        //     // console.log( "complete" );
+        //     });
     }
 
     this.hasCached = function (url, method)
