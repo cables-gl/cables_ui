@@ -41,12 +41,12 @@ CABLES.API = function ()
                         else
                         if (_data.statusText == "Multiple Choices")
                         {
-                            console.warn("ajax unknown file response...");
+                            console.warn("Fetch unknown file response...");
                             console.log(url);
                         }
                         else
                         {
-                            if (!cbError) CABLES.UI.MODAL.show("12 Ajax Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
+                            if (!cbError) CABLES.UI.MODAL.show("Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
                             console.log(_data);
                         }
                     }
