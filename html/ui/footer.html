@@ -125,54 +125,52 @@
                             }
 
                             loadjs.ready('cables_vue', function()
-                                    {
-                                        logStartup('loaded cables vue');
-                                        incrementStartup();
-                            // local ops are only available in electron version
-                            var localOpCode = CABLES.sandbox.getLocalOpCode();
-                            // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
-
-                            // if(localOpPaths && localOpPaths.length > 0) {
-                            //     localOpPaths = localOpPaths.concat(opPathsToLoad);
-                            // }
-
-                            // append the local-op-code to document
-                            function addJS(jsCode) {
-                                var s = document.createElement('script');
-
-                                s.type = 'text/javascript';
-                                s.innerText = jsCode;
-                                document.getElementsByTagName('head')[0].appendChild(s);
-                            }
-
-                            addJS(localOpCode);
-
-                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
-
-                            loadjs.ready('cables_ops', function()
                             {
-                                incrementStartup();
-                                logStartup('loaded cables ops');
+                                            logStartup('loaded cables vue');
+                                            incrementStartup();
+                                // local ops are only available in electron version
+                                var localOpCode = CABLES.sandbox.getLocalOpCode();
+                                // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
 
+                                // if(localOpPaths && localOpPaths.length > 0) {
+                                //     localOpPaths = localOpPaths.concat(opPathsToLoad);
+                                // }
 
+                                // append the local-op-code to document
+                                function addJS(jsCode) {
+                                    var s = document.createElement('script');
 
-                                        function waitForAce()
+                                    s.type = 'text/javascript';
+                                    s.innerText = jsCode;
+                                    document.getElementsByTagName('head')[0].appendChild(s);
+                                }
+
+                                addJS(localOpCode);
+
+                                loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
+
+                                loadjs.ready('cables_ops', function()
+                                {
+                                    incrementStartup();
+                                    logStartup('loaded cables ops');
+
+                                    function waitForAce()
+                                    {
+                                        if(!window.ace || !ace.define || !ace.edit)
                                         {
-                                            if(!window.ace || !ace.define || !ace.edit)
-                                            {
-                                                console.log("tim waits for ace...");
-                                                setTimeout(waitForAce,100);
-                                            }
-                                            else
-                                            {
-
-                                                CABLES.uiperf = new CABLES.UiPerformance();
-
-                                                startUi(cfg);
-                                            }
+                                            console.log("tim waits for ace...");
+                                            setTimeout(waitForAce,100);
                                         }
+                                        else
+                                        {
 
-                                        waitForAce();
+                                            CABLES.uiperf = new CABLES.UiPerformance();
+
+                                            startUi(cfg);
+                                        }
+                                    }
+
+                                    waitForAce();
 
                                 });
                             });
