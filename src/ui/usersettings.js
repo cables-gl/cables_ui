@@ -57,7 +57,7 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
 
     this._settings[key] = value || false;
 
-    if (wasChanged)console.log("usersetting changed", key, value);
+    // if (wasChanged)console.log("usersetting changed", key, value);
 
     if (this._wasLoaded)
     {

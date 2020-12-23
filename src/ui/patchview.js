@@ -29,7 +29,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     static getElement()
     {
         return document.querySelector("#patchviews .visible");
-        // return $("#patchviews .visible");
     }
 
     setProject(proj, cb)
