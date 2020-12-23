@@ -31,8 +31,6 @@ CABLES.UI.GUI = function (cfg)
         },
         "variables":
         {
-            "katze": 1,
-            "hund": 2323
         }
     });
 

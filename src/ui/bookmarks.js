@@ -113,7 +113,7 @@ CABLES.UI.Bookmarks = function ()
                 elements[eli].classList.remove("icon-bookmark");
             }
 
-            gui.patch().focusOp(id);
+            gui.patchView.centerSelectOp(id);
             CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }
     };

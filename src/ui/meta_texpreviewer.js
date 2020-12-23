@@ -25,8 +25,7 @@ CABLES.UI.TexturePreviewer = function (tabs)
     this.setSize();
     this._ele.addEventListener("click", function ()
     {
-        if (window.gui)
-            gui.patch().focusOp(this._lastClicked.opid, true);
+        if (window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
     }.bind(this));
 
     CABLES.UI.userSettings.addEventListener("onChange", (key, v) =>
@@ -333,6 +332,7 @@ CABLES.UI.TexturePreviewer.prototype._updateHtml = function ()
     }
 
     let html = "";
+
     for (let i = 0; i < this._texturePorts.length; i++)
     {
         if (this._texturePorts[i].doShow && !document.getElementById("preview" + this._texturePorts[i].id))

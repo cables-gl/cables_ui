@@ -54,7 +54,8 @@
 </script>
 
 <script id="meta_preview_texture" type="text/x-handlebars-template">
-    <div id="preview{{tex.id}}" onclick="gui.patch().focusOp('{{tex.opid}}');gui.patch().centerViewBoxOp('{{tex.opid}}');gui.patch().setSelectedOpById('{{tex.opid}}');" class="previewcontainer tt" data-tt="{{tex.title}} {{tex.size}}" data-sort="0">
+
+    <div id="preview{{tex.id}}" onclick="gui.patchView.centerSelectOp('{{tex.opid}}');" class="previewcontainer tt" data-tt="{{tex.title}} {{tex.size}}" data-sort="0">
         <canvas id="preview_img_{{tex.id}}" style="transform:scale(1 -1)" class="bgPatternBright" ></canvas>
         <div>
             {{tex.title}} | <span id="activity{{tex.id}}"></span>
