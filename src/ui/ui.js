@@ -1936,7 +1936,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.reloadDocs = function (cb)
     {
-        gui.opDocs = new CABLES.UI.OpDocs(cb);
+        gui.opDocs = new CABLES.UI.OpDocs();
+        if (cb)cb();
     };
 
     this.setStateSaved = function ()
@@ -2200,83 +2201,82 @@ function startUi(cfg)
                 }, false);
 
                 incrementStartup();
-                gui.opDocs = new CABLES.UI.OpDocs(() =>
+                gui.opDocs = new CABLES.UI.OpDocs();
+                gui.opSelect().prepare();
+                CABLES.UI.userSettings.init();
+                incrementStartup();
+                $("#username").html(gui.user.usernameLowercase);
+                $("#delayed").hide();
+
+                gui.metaCode().init();
+                gui.metaDoc.init();
+                gui.opSelect().reload();
+                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                gui.showWelcomeNotifications();
+                incrementStartup();
+                gui.showUiElements();
+                gui.setLayout();
+                gui.patch().fixTitlePositions();
+                gui.opSelect().prepare();
+                incrementStartup();
+                gui.opSelect().search();
+                gui.setElementBgPattern(ele.byId("cablescanvas"));
+
+
+                CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                 {
-                    CABLES.UI.userSettings.init();
-                    incrementStartup();
-                    $("#username").html(gui.user.usernameLowercase);
-                    $("#delayed").hide();
-
-                    gui.metaCode().init();
-                    gui.metaDoc.init();
-                    gui.opSelect().reload();
-                    // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-                    gui.showWelcomeNotifications();
-                    incrementStartup();
-                    gui.showUiElements();
-                    gui.setLayout();
-                    gui.patch().fixTitlePositions();
-                    gui.opSelect().prepare();
-                    incrementStartup();
-                    gui.opSelect().search();
-                    gui.setElementBgPattern(ele.byId("cablescanvas"));
-
-
-                    CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
+                    if (key == "bgpattern")
                     {
-                        if (key == "bgpattern")
-                        {
-                            gui.setElementBgPattern(ele.byId("cablescanvas"));
-                            gui.setElementBgPattern(ele.byId("bgpreview"));
-                        }
+                        gui.setElementBgPattern(ele.byId("cablescanvas"));
+                        gui.setElementBgPattern(ele.byId("bgpreview"));
+                    }
 
-                        if (key == "theme-bright")
-                        {
-                            gui.updateTheme();
-                        }
-
-                        if (key == "straightLines")
-                        {
-                            gui.patch().updateSubPatches();
-                        }
-
-                        if (key == "hideSizeBar")
-                        {
-                            gui.setLayout();
-                        }
-                    });
-
-                    if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
-
-                    CABLES.editorSession.open();
-                    gui.bindKeys();
-
-                    gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
-                    gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
-
-                    CABLES.UI.startIdleListeners();
-
-                    gui.jobs().updateJobListing();
-
-
-                    logStartup("finished loading cables");
-
-                    setTimeout(() =>
+                    if (key == "theme-bright")
                     {
-                        if (CABLES.UI.userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
-                    }, 1000);
+                        gui.updateTheme();
+                    }
 
-                    if (window.module) module = window.module; // electronn workaround/fix
+                    if (key == "straightLines")
+                    {
+                        gui.patch().updateSubPatches();
+                    }
 
-                    gui.socket.sendInfo(gui.user.username + " joined");
-                    gui.socket.updateMembers();
-                    gui.patchView.checkPatchErrors();
-
-                    gui.patchView.setCurrentSubPatch(0);
-
-                    CABLES.UI.loaded = true;
-                    setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
+                    if (key == "hideSizeBar")
+                    {
+                        gui.setLayout();
+                    }
                 });
+
+                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+
+                CABLES.editorSession.open();
+                gui.bindKeys();
+
+                gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
+                gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
+
+                CABLES.UI.startIdleListeners();
+
+                gui.jobs().updateJobListing();
+
+
+                logStartup("finished loading cables");
+
+                setTimeout(() =>
+                {
+                    if (CABLES.UI.userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
+                }, 1000);
+
+                if (window.module) module = window.module; // electronn workaround/fix
+
+                gui.socket.sendInfo(gui.user.username + " joined");
+                gui.socket.updateMembers();
+                gui.patchView.checkPatchErrors();
+
+                gui.patchView.setCurrentSubPatch(0);
+
+                CABLES.UI.loaded = true;
+                setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
             });
         });
     });

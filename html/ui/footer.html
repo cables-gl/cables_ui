@@ -29,6 +29,7 @@
             return {before: before, after:after};
         }());
 
+        CABLESUILOADER.preload={};
         CABLESUILOADER.GlobalVarTester.before(window);
 
         CABLESUILOADER.uiLoadStart=performance.now();
@@ -112,6 +113,23 @@
                             incrementStartup();
                             logStartup('loaded ui');
 
+
+
+            fetch(CABLESUILOADER.noCacheUrl(
+                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
+            .then(function (response)
+            {
+                response.json().then(function (_data)
+                {
+                    CABLESUILOADER.preload.opDocsAll=_data;
+                });
+            })
+            .catch(function (response)
+            {
+                console.error("preloading error",response);
+            });
+
+
                             try
                             {
                                 loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
@@ -147,6 +165,7 @@
 
                                 addJS(localOpCode);
 
+
                                 loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
                                 loadjs.ready('cables_ops', function()
@@ -154,23 +173,7 @@
                                     incrementStartup();
                                     logStartup('loaded cables ops');
 
-                                    function waitForAce()
-                                    {
-                                        if(!window.ace || !ace.define || !ace.edit)
-                                        {
-                                            console.log("tim waits for ace...");
-                                            setTimeout(waitForAce,100);
-                                        }
-                                        else
-                                        {
-
-                                            CABLES.uiperf = new CABLES.UiPerformance();
-
-                                            startUi(cfg);
-                                        }
-                                    }
-
-                                    waitForAce();
+                                    waitForAce(cfg);
 
                                 });
                             });
@@ -179,6 +182,29 @@
                 });
             });
         };
+
+        function waitForAce(cfg)
+        {
+            if(!CABLESUILOADER.preload.opDocsAll)
+            {
+                console.log("waiting for opDocsAll...");
+                setTimeout(waitForAce,100);
+            }
+            else
+            if(!window.ace || !ace.define || !ace.edit)
+            {
+                console.log("tim waits for ace...");
+                setTimeout(waitForAce,100);
+            }
+            else
+            {
+
+                CABLES.uiperf = new CABLES.UiPerformance();
+
+                startUi(cfg);
+            }
+        }
+
 
 
         document.addEventListener('DOMContentLoaded', function(event)
@@ -211,6 +237,11 @@
 
 
     </script>
+
+
+<div class="preloading" style="font-family:fontawesome"></div>
+<div class="preloading" style="font-family:SourceSansPro"></div>
+
 
 
 </html>
