@@ -67,6 +67,7 @@
 
         CABLESUILOADER.loadAll=function(cfg)
         {
+            CABLESUILOADER.cfg=cfg;
             if(!window.hasOwnProperty('loadjs'))
             {
                 setTimeout(CABLESUILOADER.loadAll,100);
@@ -173,7 +174,7 @@
                                     incrementStartup();
                                     logStartup('loaded cables ops');
 
-                                    waitForAce(cfg);
+                                    waitForAce();
 
                                 });
                             });
@@ -183,7 +184,7 @@
             });
         };
 
-        function waitForAce(cfg)
+        function waitForAce()
         {
             if(!CABLESUILOADER.preload.opDocsAll)
             {
@@ -201,7 +202,7 @@
 
                 CABLES.uiperf = new CABLES.UiPerformance();
 
-                startUi(cfg);
+                startUi(CABLESUILOADER.cfg);
             }
         }
 
