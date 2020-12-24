@@ -29,6 +29,7 @@
             return {before: before, after:after};
         }());
 
+        CABLESUILOADER.preload={};
         CABLESUILOADER.GlobalVarTester.before(window);
 
         CABLESUILOADER.uiLoadStart=performance.now();
@@ -112,6 +113,23 @@
                             incrementStartup();
                             logStartup('loaded ui');
 
+
+
+            fetch(CABLESUILOADER.noCacheUrl(
+                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
+            .then(function (response)
+            {
+                response.json().then(function (_data)
+                {
+                    CABLESUILOADER.preload.opDocsAll=_data;
+                });
+            })
+            .catch(function (response)
+            {
+                console.error("preloading error",response);
+            });
+
+
                             try
                             {
                                 loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
@@ -125,54 +143,37 @@
                             }
 
                             loadjs.ready('cables_vue', function()
-                                    {
-                                        logStartup('loaded cables vue');
-                                        incrementStartup();
-                            // local ops are only available in electron version
-                            var localOpCode = CABLES.sandbox.getLocalOpCode();
-                            // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
-
-                            // if(localOpPaths && localOpPaths.length > 0) {
-                            //     localOpPaths = localOpPaths.concat(opPathsToLoad);
-                            // }
-
-                            // append the local-op-code to document
-                            function addJS(jsCode) {
-                                var s = document.createElement('script');
-
-                                s.type = 'text/javascript';
-                                s.innerText = jsCode;
-                                document.getElementsByTagName('head')[0].appendChild(s);
-                            }
-
-                            addJS(localOpCode);
-
-                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
-
-                            loadjs.ready('cables_ops', function()
                             {
-                                incrementStartup();
-                                logStartup('loaded cables ops');
+                                            logStartup('loaded cables vue');
+                                            incrementStartup();
+                                // local ops are only available in electron version
+                                var localOpCode = CABLES.sandbox.getLocalOpCode();
+                                // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
+
+                                // if(localOpPaths && localOpPaths.length > 0) {
+                                //     localOpPaths = localOpPaths.concat(opPathsToLoad);
+                                // }
+
+                                // append the local-op-code to document
+                                function addJS(jsCode) {
+                                    var s = document.createElement('script');
+
+                                    s.type = 'text/javascript';
+                                    s.innerText = jsCode;
+                                    document.getElementsByTagName('head')[0].appendChild(s);
+                                }
+
+                                addJS(localOpCode);
 
 
+                                loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
-                                        function waitForAce()
-                                        {
-                                            if(!window.ace || !ace.define || !ace.edit)
-                                            {
-                                                console.log("tim waits for ace...");
-                                                setTimeout(waitForAce,100);
-                                            }
-                                            else
-                                            {
+                                loadjs.ready('cables_ops', function()
+                                {
+                                    incrementStartup();
+                                    logStartup('loaded cables ops');
 
-                                                CABLES.uiperf = new CABLES.UiPerformance();
-
-                                                startUi(cfg);
-                                            }
-                                        }
-
-                                        waitForAce();
+                                    waitForAce(cfg);
 
                                 });
                             });
@@ -181,6 +182,29 @@
                 });
             });
         };
+
+        function waitForAce(cfg)
+        {
+            if(!CABLESUILOADER.preload.opDocsAll)
+            {
+                console.log("waiting for opDocsAll...");
+                setTimeout(waitForAce,100);
+            }
+            else
+            if(!window.ace || !ace.define || !ace.edit)
+            {
+                console.log("tim waits for ace...");
+                setTimeout(waitForAce,100);
+            }
+            else
+            {
+
+                CABLES.uiperf = new CABLES.UiPerformance();
+
+                startUi(cfg);
+            }
+        }
+
 
 
         document.addEventListener('DOMContentLoaded', function(event)
@@ -213,6 +237,11 @@
 
 
     </script>
+
+
+<div class="preloading" style="font-family:fontawesome"></div>
+<div class="preloading" style="font-family:SourceSansPro"></div>
+
 
 
 </html>

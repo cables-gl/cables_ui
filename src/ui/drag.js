@@ -1,11 +1,18 @@
 CABLES = CABLES || {};
 
-CABLES.dragImage = new Image();
-CABLES.dragImage.src = "/ui/img/dragicon.png";
 
 CABLES.DragNDrop = function ()
 {
     this.internal = false;
+};
+
+CABLES.DragNDrop.loadImage = function (_event, p)
+{
+    if (!CABLES.dragImage)
+    {
+        CABLES.dragImage = new Image();
+        CABLES.dragImage.src = "/ui/img/dragicon.png";
+    }
 };
 
 CABLES.DragNDrop.startDragLibraryFile = function (_event, p)

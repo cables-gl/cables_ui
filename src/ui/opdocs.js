@@ -1,7 +1,7 @@
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
-CABLES.UI.OpDocs = function (cb)
+CABLES.UI.OpDocs = function ()
 {
     const self = this;
     let opDocs = [];
@@ -104,24 +104,28 @@ CABLES.UI.OpDocs = function (cb)
     }
 
 
-    CABLES.api.get(
-        CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
-        function (res)
-        {
-            logStartup("Op docs loaded");
+    // return "doc/ops/all";
 
-            if (window.process && window.process.versions.electron) res = JSON.parse(res);
 
-            opDocs = res.opDocs;
-            extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
-            self.libs = res.libs;
-            self.coreLibs = res.coreLibs;
-            gui.opSelect().prepare();
+    // CABLES.api.get(
+    //     CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
+    //     function (res)
+    // {
+    logStartup("Op docs loaded");
+    const res = CABLESUILOADER.preload.opDocsAll;
+    // console.log(res);
+    // if (window.process && window.process.versions.electron) res = JSON.parse(res);
 
-            if (cb)cb();
-        },
-        function (res, e) { console.error("err", res, e); if (cb)cb(); }
-    );
+    opDocs = res.opDocs;
+    extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
+    self.libs = res.libs;
+    self.coreLibs = res.coreLibs;
+
+
+    // },
+    // function (res, e) { console.error("err", res, e); if (cb)cb(); }
+    // );
+
 
     this.getSummary = function (opname)
     {

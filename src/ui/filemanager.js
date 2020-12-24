@@ -15,6 +15,8 @@ CABLES.UI.FileManager = function (cb)
     gui.maintabPanel.show();
     CABLES.UI.userSettings.set("fileManagerOpened", true);
 
+    CABLES.DragNDrop.loadImage();
+
     this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager_display") || "icons");
 
     this.reload(cb);
