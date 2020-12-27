@@ -1950,10 +1950,10 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
-        window.onbeforeunload = function ()
-        {
-            gui.patchConnection.send(CABLES.PACO_CLEAR);
-        };
+        // window.onbeforeunload = function ()
+        // {
+        //     gui.patchConnection.send(CABLES.PACO_CLEAR);
+        // };
     };
 
 

@@ -39,7 +39,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._msgs.length; i++)
         {
-            if (this._msgs[i].type == "info")
+            if (this._msgs[i].name == "info")
             {
                 html += "<b>";
                 html += this._msgs[i].text;

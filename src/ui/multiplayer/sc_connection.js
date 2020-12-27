@@ -13,7 +13,9 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._paco = null;
         if (cfg) this._init();
 
-        this._state = new CABLES.UI.ScState(this);
+        window.gui.on("uiloaded", () =>
+        {
+        });
     }
 
     get state() { return this._state; }
@@ -25,18 +27,19 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
         }
-        if (this._state.getNumClients() > 1)
-        {
-            const json = gui.corePatch().serialize(true);
-            gui.patchConnection.send(CABLES.PACO_LOAD,
-                {
-                    "patch": JSON.stringify(json)
-                });
-        }
-        else
-        {
-            CABLES.UI.notifyError("could not start paco");
-        }
+
+        // if (this._state.getNumClients() > 1)
+        // {
+        const json = gui.corePatch().serialize(true);
+        this._paco.send(CABLES.PACO_LOAD,
+            {
+                "patch": JSON.stringify(json)
+            });
+        // }
+        // else
+        // {
+        //     CABLES.UI.notifyError("could not start paco");
+        // }
     }
 
     get clientId() { return this._socket.clientId; }
@@ -72,8 +75,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
                 this.emitEvent("connectionChanged");
 
+                // send me patch
                 gui.socket.sendInfo(gui.user.username + " joined");
                 gui.socket.updateMembers();
+
+                gui.socket.sendControl("resync");
             }
         })();
 
@@ -122,6 +128,9 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
                 this._handlePacoMessage(msg);
             }
         })();
+
+
+        this._state = new CABLES.UI.ScState(this);
     }
 
     isConnected()
@@ -131,11 +140,14 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendInfo(text)
     {
-        this._send("info", { "type": "info", text });
+        this._send("info", { "name": "info", text });
     }
 
-    sendControl(payload)
+    sendControl(name, payload)
     {
+        payload = payload || {};
+        payload.name = name;
+
         this._send("control", payload);
     }
 
@@ -153,17 +165,18 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendChat(text)
     {
-        this._send("chat", { "type": "chatmsg", text, "username": gui.user.username });
+        this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
     sendPaco(payload)
     {
+        payload.name = "paco";
         this._send("paco", payload);
     }
 
     updateMembers()
     {
-        this.sendControl({ "type": "pingMembers" });
+        this.sendControl("pingMembers", {});
 
         setTimeout(() =>
         {
@@ -187,7 +200,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleChatChannelMsg(msg)
     {
-        if (msg.type == "chatmsg")
+        if (msg.name == "chatmsg")
         {
             this.emitEvent("onChatMessage", msg);
         }
@@ -197,10 +210,21 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (msg.clientId == this._socket.clientId) return;
 
-        if (msg.type == "paco")
+        if (msg.name == "paco")
         {
+            console.log("paco message !");
+
             if (!this._paco)
             {
+                console.log(msg);
+
+                if (msg.data.event != CABLES.PACO_LOAD)
+                {
+                    return;
+                }
+                // debugger;
+
+                console.log("first paco message !");
                 gui.corePatch().clear();
                 this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
                 gui.patchConnection.connectors.push(this._paco);
@@ -212,14 +236,20 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleControlChannelMessage(msg)
     {
-        if (msg.type == "pingMembers")
+        if (msg.name === "resync")
         {
-            this.sendControl({
-                "type": "pingAnswer",
+            if (msg.clientId == this._socket.clientId) return;
+
+            console.log("RESYNC sending paco patch....");
+            this.startPacoSend();
+        }
+        if (msg.name === "pingMembers")
+        {
+            this.sendControl("pingAnswer", {
                 "username": gui.user.usernameLowercase,
             });
         }
-        if (msg.type == "pingAnswer")
+        if (msg.name === "pingAnswer")
         {
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
@@ -236,7 +266,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleInfoChannelMsg(msg)
     {
-        if (msg.type == "info")
+        if (msg.name == "info")
         {
             this.emitEvent("onInfoMessage", msg);
         }

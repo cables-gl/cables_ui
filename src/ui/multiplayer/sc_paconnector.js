@@ -11,23 +11,28 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
 
     send(event, vars)
     {
+        // if (this.receiving) return;
         if (!this._sccon)
         {
             console.log("NOPE!");
             return;
         }
+
+
         const data = { "event": event, "vars": vars };
-        this._sccon.sendPaco({ "type": "paco", "data": data });
+        this._sccon.sendPaco({ "data": data });
     }
 
     receive(pacoMsg)
     {
+        // this.receiving = true;
         if (!this._receiver)
             this._receiver = new CABLES.PatchConnectionReceiver(
-                gui.corePatch()
+                gui.corePatch(), {}, this
             );
 
         this._receiver._receive(pacoMsg);
+        // this.receiving = false;
     }
 };
 

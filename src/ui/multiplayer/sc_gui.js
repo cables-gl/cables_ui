@@ -37,8 +37,6 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
     _getUserInfoHtml()
     {
-        console.log("infohtml!!!!");
-
         const html = CABLES.UI.getHandleBarHtml("socketinfo", {
             "numClients": this._connection.state.getNumClients(),
             "users": this._connection.state.users,
