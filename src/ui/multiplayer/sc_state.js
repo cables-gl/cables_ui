@@ -7,6 +7,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         super();
         this._clients = {};
         this._connection = connection;
+        this.updateIntervalSeconds = 2;
 
         connection.addEventListener("onPingAnswer", this.onPingAnswer.bind(this));
     }
@@ -46,7 +47,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         {
             const client = this._clients[clientId];
 
-            if (client.lastSeen && Date.now() - client.lastSeen > timeOutSeconds * 1000)
+            if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds * 1000)
             {
                 delete this._clients[client.clientId];
                 userlistChanged = true;

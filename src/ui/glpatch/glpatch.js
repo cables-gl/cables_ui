@@ -72,21 +72,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
-        this._glCursors = [];
+        this._glCursors = {};
         this._localGlCursor = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
         this._localGlCursor.setColor(1, 1, 1, 1);
-        this._glCursors.push(this._localGlCursor);
+        this._glCursors[0] = this._localGlCursor;
 
 
-        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        for (let i = 0; i < this._glCursors.length; i++)
-        {
-            this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
-        }
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // for (let i = 0; i < this._glCursors.length; i++)
+        // {
+        //     this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
+        // }
 
         // this._cursorUnPredicted = this._overLayRects.createRect();
         // this._cursorUnPredicted.setSize(5, 5);
@@ -173,6 +173,18 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
+
+
+        gui.on("uiloaded", () =>
+        {
+            console.log("listening to cursorpos...");
+            gui.socket.on("cursorPos", (msg) =>
+            {
+                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
+
+                this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
+            });
+        });
     }
 
     setCursor(c)

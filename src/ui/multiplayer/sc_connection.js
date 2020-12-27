@@ -89,6 +89,15 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         (async () =>
         {
+            const uiChannel = this._socket.subscribe(this._socket.channelName + "/ui");
+            for await (const msg of uiChannel)
+            {
+                this._handleUiChannelMsg(msg);
+            }
+        })();
+
+        (async () =>
+        {
             const infoChannel = this._socket.subscribe(this._socket.channelName + "/info");
             for await (const msg of infoChannel)
             {
@@ -129,6 +138,16 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         this._send("control", payload);
     }
+
+
+    sendUi(name, payload)
+    {
+        payload = payload || {};
+        payload.name = name;
+        // console.log("sending UI msg...", name, this._active, this._connected);
+        this._send("ui", payload);
+    }
+
 
     sendChat(text)
     {
@@ -203,9 +222,14 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         }
     }
 
+    _handleUiChannelMsg(msg)
+    {
+        // console.log("msg", msg);
+        this.emitEvent(msg.name, msg);
+    }
+
     _handleInfoChannelMsg(msg)
     {
-        console.log(msg);
         if (msg.type == "info")
         {
             this.emitEvent("onInfoMessage", msg);

@@ -9,7 +9,6 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         this._msgs = [];
         this._socket = socket;
         this._tabs = tabs;
-        this.updateIntervalSeconds = 10;
 
         socket.addEventListener("onChatMessage", this.onChatMsg.bind(this));
         socket.addEventListener("onInfoMessage", this.onChatMsg.bind(this));

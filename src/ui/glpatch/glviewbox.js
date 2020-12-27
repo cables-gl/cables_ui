@@ -89,6 +89,10 @@ CABLES.GLGUI.ViewBox = class
         const coord = this.screenToPatchCoord(x + dx, y + dy);
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
 
+        if (this._mousePatchX != coord[0] || this._mousePatchY != coord[1])
+            gui.socket.sendUi("cursorPos", { "x": coord[0], "y": coord[1] });
+
+
         this._mousePatchX = coord[0];
         this._mousePatchY = coord[1];
         this._mouseX = x;
