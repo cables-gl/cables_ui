@@ -1890,12 +1890,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.startPacoReceiver = function ()
     {
-        this.patch().scene.clear();
+        // this.patch().scene.clear();
 
-        const conn = new CABLES.PatchConnectionReceiver(
-            this.patch().scene, {},
-            new CABLES.PatchConnectorSocketIO()
-        );
+        // const conn = new CABLES.PatchConnectionReceiver(
+        //     this.patch().scene, {},
+        //     new CABLES.PatchConnectorSocketIO(),
+        //     this.connector = new PatchConnectorBroadcastChannel()
+
+        // );
     };
 
     this.setStateUnsaved = function ()
