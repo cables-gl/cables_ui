@@ -229,6 +229,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
                 this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
                 gui.patchConnection.connectors.push(this._paco);
             }
+            else if (msg.data.event == CABLES.PACO_LOAD) return;
+
 
             this._paco.receive(msg.data);
         }
