@@ -9,7 +9,23 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         this._connection = connection;
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
+
+        gui.on("netCursorPos", (payload) => { this._connection.sendUi("netCursorPos", payload); });
+
+
+        gui.on("netOpPos", (payload) => { this._connection.sendUi("netOpPos", payload); });
+
+
+        this._connection.on("netOpPos", (msg) =>
+        {
+            const op = gui.corePatch().getOpById(msg.opId);
+            if (op)
+            {
+                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+            }
+        });
     }
+
 
     updateHtml()
     {

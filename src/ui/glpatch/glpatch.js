@@ -177,8 +177,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.on("uiloaded", () =>
         {
-            console.log("listening to cursorpos...");
-            gui.socket.on("cursorPos", (msg) =>
+            gui.socket.on("netCursorPos", (msg) =>
             {
                 if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
 
@@ -386,6 +385,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 // glOp.opUiAttribs = op.uiAttribs;
                 // glOp.update();
 
+                if (newAttribs.fromNetwork)
+                {
+                    delete newAttribs.fromNetwork;
+                    delete op.uiAttribs;
+                }
+                else
+                {
+                    if (glOp.uiAttribs && glOp.uiAttribs.translate)
+                    {
+                        gui.emitEvent("netOpPos", {
+                            "opId": glOp.op.id,
+                            "x": glOp.uiAttribs.translate.x,
+                            "y": glOp.uiAttribs.translate.y });
+                    }
+                }
 
                 // if (newAttribs.hasOwnProperty("translate"))
                 // {

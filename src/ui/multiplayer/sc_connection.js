@@ -25,7 +25,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
         }
-        if (gui.chat.getNumClients() > 1)
+        if (this._state.getNumClients() > 1)
         {
             const json = gui.corePatch().serialize(true);
             gui.patchConnection.send(CABLES.PACO_LOAD,
@@ -142,10 +142,12 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendUi(name, payload)
     {
-        payload = payload || {};
-        payload.name = name;
-        // console.log("sending UI msg...", name, this._active, this._connected);
-        this._send("ui", payload);
+        if (this.state.getNumClients() > 1)
+        {
+            payload = payload || {};
+            payload.name = name;
+            this._send("ui", payload);
+        }
     }
 
 
@@ -193,6 +195,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handlePacoMessage(msg)
     {
+        if (msg.clientId == this._socket.clientId) return;
+
         if (msg.type == "paco")
         {
             if (!this._paco)
@@ -202,7 +206,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
                 gui.patchConnection.connectors.push(this._paco);
             }
 
-            if (msg.clientId != this._socket.clientId) this._paco.receive(msg.data);
+            this._paco.receive(msg.data);
         }
     }
 
@@ -224,6 +228,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleUiChannelMsg(msg)
     {
+        if (msg.clientId == this._socket.clientId) return;
+
         // console.log("msg", msg);
         this.emitEvent(msg.name, msg);
     }

@@ -104,6 +104,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                         const u = JSON.parse(oldUiAttribs);
                         // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
 
+
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
                     }
                     catch (e) {}
