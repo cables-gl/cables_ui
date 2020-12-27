@@ -12,8 +12,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._connected = false;
         this._paco = null;
         if (cfg) this._init();
+
+        this._state = new CABLES.UI.ScState(this);
     }
 
+    get state() { return this._state; }
 
     startPacoSend()
     {
@@ -54,6 +57,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             for await (const { error } of this._socket.listener("error"))
             {
+                this.emitEvent("connectionChanged");
                 console.error(error);
                 this._connected = false;
             }
@@ -63,7 +67,13 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 // console.info("cables-socketcluster clientId", this._socket.clientId);
+                console.log("sc connected!");
                 this._connected = true;
+
+                this.emitEvent("connectionChanged");
+
+                gui.socket.sendInfo(gui.user.username + " joined");
+                gui.socket.updateMembers();
             }
         })();
 
@@ -195,6 +205,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     _handleInfoChannelMsg(msg)
     {
+        console.log(msg);
         if (msg.type == "info")
         {
             this.emitEvent("onInfoMessage", msg);

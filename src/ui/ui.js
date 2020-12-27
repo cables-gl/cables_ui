@@ -2253,6 +2253,7 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
+                gui._socketUi = new CABLES.UI.ScGui(gui.socket);
                 gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
 
                 CABLES.UI.startIdleListeners();
@@ -2269,8 +2270,6 @@ function startUi(cfg)
 
                 if (window.module) module = window.module; // electronn workaround/fix
 
-                gui.socket.sendInfo(gui.user.username + " joined");
-                gui.socket.updateMembers();
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);
