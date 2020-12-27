@@ -179,7 +179,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             gui.socket.on("netCursorPos", (msg) =>
             {
-                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
+                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects, msg.clientId);
 
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });

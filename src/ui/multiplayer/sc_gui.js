@@ -34,6 +34,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         });
     }
 
+    getClientColor(clientId)
+    {
+        return this._connection.state.getClientColor(clientId);
+    }
 
     updateHtml()
     {
@@ -41,13 +45,21 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         if (this._connection.state.getNumClients() > 1) document.getElementById("userindicator").classList.remove("hidden");
         else document.getElementById("userindicator").classList.add("hidden");
+
+        if (this._connection.state.getNumClients() > 1)
+            document.getElementById("nav-clientlist").innerHTML =
+                CABLES.UI.getHandleBarHtml("socket_userlist", {
+                    "numClients": this._connection.state.getNumClients(),
+                    "clients": this._connection.state.clients,
+                    "connected": this._connection.isConnected()
+                });
+        else document.getElementById("nav-clientlist").innerHTML = "";
     }
 
     _getUserInfoHtml()
     {
         const html = CABLES.UI.getHandleBarHtml("socketinfo", {
             "numClients": this._connection.state.getNumClients(),
-            "users": this._connection.state.users,
             "clients": this._connection.state.clients,
             "connected": this._connection.isConnected()
         });

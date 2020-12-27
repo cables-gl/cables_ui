@@ -2255,7 +2255,7 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
-                gui._socketUi = new CABLES.UI.ScGui(gui.socket);
+                gui.socketUi = new CABLES.UI.ScGui(gui.socket);
                 gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
 
                 CABLES.UI.startIdleListeners();
