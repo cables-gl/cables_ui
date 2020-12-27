@@ -374,45 +374,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
-        op.addEventListener("onEnabledChange", () =>
-        {
-            glOp.update();
-        });
-        op.addEventListener("onUiAttribsChange",
-            (newAttribs) =>
-            {
-                glOp.uiAttribs = op.uiAttribs;
-                // glOp.opUiAttribs = op.uiAttribs;
-                // glOp.update();
-
-                if (newAttribs.fromNetwork)
-                {
-                    delete newAttribs.fromNetwork;
-                    delete op.uiAttribs;
-                }
-                else
-                {
-                    if (glOp.uiAttribs && glOp.uiAttribs.translate)
-                    {
-                        gui.emitEvent("netOpPos", {
-                            "opId": glOp.op.id,
-                            "x": glOp.uiAttribs.translate.x,
-                            "y": glOp.uiAttribs.translate.y });
-                    }
-                }
-
-                // if (newAttribs.hasOwnProperty("translate"))
-                // {
-                //     glOp.updatePosition();
-                // }
-            });
-
-        if (!op.uiAttribs.translate)
-        {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY };
-            else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
-        }
-
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -424,6 +385,44 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             glOp.uiAttribs = op.uiAttribs;
         }
 
+
+        op.addEventListener("onEnabledChange", () =>
+        {
+            glOp.update();
+        });
+        op.addEventListener("onUiAttribsChange",
+            (newAttribs) =>
+            {
+                glOp.uiAttribs = op.uiAttribs;
+                // glOp.opUiAttribs = op.uiAttribs;
+                // glOp.update();
+
+                if (newAttribs && newAttribs.translate)
+                {
+                    if (newAttribs.fromNetwork)
+                    {
+                        delete newAttribs.fromNetwork;
+                    }
+                    else
+                        glOp.sendNetPos();
+                }
+
+                if (newAttribs.hasOwnProperty("translate"))
+                {
+                    glOp.updatePosition();
+                }
+            });
+
+
+        if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
+        {
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
+                op.uiAttr({ "translate": { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY } });
+            else
+                op.uiAttr({ "translate": { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y } });
+
+            // glOp.sendNetPos();
+        }
         // glOp.updatePosition();
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         // glOp.updateVisible();
@@ -436,6 +435,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             gui.opParams.show(op.id);
             this.focusOp(op.id);
         }
+        if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
+        {
+            glOp.sendNetPos();
+            glOp.updatePosition();
+        }
+
+        delete op.uiAttribs.createdLocally;
     }
 
 

@@ -196,6 +196,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             options = options || {};
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
+            if (options.createdLocally) uiAttribs.createdLocally = true;
 
             console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
@@ -863,6 +864,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         }
                         json.ops[i].uiAttribs.translate.x = x;
                         json.ops[i].uiAttribs.translate.y = y;
+
+                        gui.emitEvent("netOpPos", {
+                            "opId": json.ops[i].id,
+                            "x": json.ops[i].uiAttribs.translate.x,
+                            "y": json.ops[i].uiAttribs.translate.y });
                     }
 
                     const undofunc = (function (opid)
