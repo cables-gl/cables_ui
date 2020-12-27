@@ -18,6 +18,7 @@ CABLES.GLGUI.GlCursor = class extends CABLES.EventTarget
         this._cursor2.setColor(col.r, col.g, col.b, 1);
     }
 
+    setColor(r, g, b, a) { this._cursor2.setColor(1, 1, 1, 1); }
 
     get visible() { return this._cursor2.visible; }
 

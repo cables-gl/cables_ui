@@ -74,6 +74,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._glCursors = [];
         this._localGlCursor = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
+        this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors.push(this._localGlCursor);
 
 
