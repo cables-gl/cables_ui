@@ -72,10 +72,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
+        this._glCursors = [];
+        this._localGlCursor = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
+        this._glCursors.push(this._localGlCursor);
 
-        this._cursor2 = this._overLayRects.createRect();
-        this._cursor2.setSize(10, 10);
-        this._cursor2.setDecoration(5);
+
+        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        for (let i = 0; i < this._glCursors.length; i++)
+        {
+            this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
+        }
 
         // this._cursorUnPredicted = this._overLayRects.createRect();
         // this._cursorUnPredicted.setSize(5, 5);
@@ -469,15 +479,23 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        this._cursor2.visible = drawGlCursor;
-        if (drawGlCursor)
+        this._localGlCursor.visible = drawGlCursor;
+
+        if (this._glCursors.length > 1 || drawGlCursor)
         {
             const a = this.viewBox.screenToPatchCoord(0, 0);
             const b = this.viewBox.screenToPatchCoord(20, 20);
             const z = (b[0] - a[0]);
-            this._cursor2.setSize(z, z);
-            this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+            this._localGlCursor.setSize(z, z);
+            this._localGlCursor.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+
+
+            for (let i = 0; i < this._glCursors.length; i++)
+            {
+                this._glCursors[i].setSize(z, z);
+            }
         }
+
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
