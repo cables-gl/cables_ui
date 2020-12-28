@@ -18,7 +18,6 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         this._connection.on("connectionChanged", this._updateClientList.bind(this));
         this._connection.state.on("userListChanged", this._updateClientList.bind(this));
 
-
         this._connection.on("netActivityIn", this._activityIn.bind(this));
         this._connection.on("netActivityOut", this._activityOut.bind(this));
     }
@@ -50,7 +49,7 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
 
     show()
     {
-        this._tab = new CABLES.UI.Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true });
+        this._tab = new CABLES.UI.Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
         const html = CABLES.UI.getHandleBarHtml("tab_chat", {});

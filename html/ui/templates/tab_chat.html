@@ -21,11 +21,21 @@
 
 <script id="chat_clientlist" type="text/x-handlebars-template">
 
+    <table>
     {{#each clients}}
-        - {{username}}
-        {{#if isMe}} (me) {{/if}}
-        - {{#if lost}}timeout??{{/if}}
-        <br/>
-
+        <tr>
+            <td>
+            <span style="display:inline-block;width:12px;height:12px;border-radius:20px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});"></span>
+            </td>
+            <td>
+                {{username}}
+            </td>
+            <td>
+                {{#if isMe}} (me) {{/if}}
+                {{#if lost}}timeout??{{/if}}
+            </td>
+        </tr>
     {{/each}}
-    </script>
+    </table>
+
+</script>
