@@ -1890,12 +1890,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.startPacoReceiver = function ()
     {
-        this.patch().scene.clear();
+        // this.patch().scene.clear();
 
-        const conn = new CABLES.PatchConnectionReceiver(
-            this.patch().scene, {},
-            new CABLES.PatchConnectorSocketIO()
-        );
+        // const conn = new CABLES.PatchConnectionReceiver(
+        //     this.patch().scene, {},
+        //     new CABLES.PatchConnectorSocketIO(),
+        //     this.connector = new PatchConnectorBroadcastChannel()
+
+        // );
     };
 
     this.setStateUnsaved = function ()
@@ -1950,10 +1952,10 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
-        window.onbeforeunload = function ()
-        {
-            gui.patchConnection.send(CABLES.PACO_CLEAR);
-        };
+        // window.onbeforeunload = function ()
+        // {
+        //     gui.patchConnection.send(CABLES.PACO_CLEAR);
+        // };
     };
 
 
@@ -2253,6 +2255,7 @@ function startUi(cfg)
                 gui.bindKeys();
 
                 gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
+                gui.socketUi = new CABLES.UI.ScGui(gui.socket);
                 gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
 
                 CABLES.UI.startIdleListeners();
@@ -2269,8 +2272,6 @@ function startUi(cfg)
 
                 if (window.module) module = window.module; // electronn workaround/fix
 
-                gui.socket.sendInfo(gui.user.username + " joined");
-                gui.socket.updateMembers();
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);

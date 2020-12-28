@@ -87,6 +87,14 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             glOps[i].setPassiveDragOffset(offX, offY);
     }
 
+    sendNetPos()
+    {
+        gui.emitEvent("netOpPos", {
+            "opId": this._op.id,
+            "x": this._op.uiAttribs.translate.x,
+            "y": this._op.uiAttribs.translate.y });
+    }
+
     _onBgRectDragEnd(rect)
     {
         const glOps = this._glPatch.selectedGlOps;
@@ -103,6 +111,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
                     {
                         const u = JSON.parse(oldUiAttribs);
                         // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+
 
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
                     }
@@ -150,9 +159,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     get selected() { return this.opUiAttribs.selected; }
 
-    get x() { return this.opUiAttribs.translate.x; }
+    get x() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.x; else return 0; }
 
-    get y() { return this.opUiAttribs.translate.y; }
+    get y() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.y; else return 0; }
 
     get w() { return this._width; }
 
@@ -336,6 +345,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     updatePosition()
     {
         if (!this._glRectBg) return;
+        if (!this.opUiAttribs.translate) return;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, 0.8);
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);

@@ -72,10 +72,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
+        this._glCursors = {};
+        this._localGlCursor = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
+        this._localGlCursor.setColor(1, 1, 1, 1);
+        this._glCursors[0] = this._localGlCursor;
 
-        this._cursor2 = this._overLayRects.createRect();
-        this._cursor2.setSize(10, 10);
-        this._cursor2.setDecoration(5);
+
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
+        // for (let i = 0; i < this._glCursors.length; i++)
+        // {
+        //     this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
+        // }
 
         // this._cursorUnPredicted = this._overLayRects.createRect();
         // this._cursorUnPredicted.setSize(5, 5);
@@ -162,6 +173,17 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
+
+
+        gui.on("uiloaded", () =>
+        {
+            gui.socket.on("netCursorPos", (msg) =>
+            {
+                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects, msg.clientId);
+
+                this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
+            });
+        });
     }
 
     setCursor(c)
@@ -352,30 +374,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
 
-        op.addEventListener("onEnabledChange", () =>
-        {
-            glOp.update();
-        });
-        op.addEventListener("onUiAttribsChange",
-            (newAttribs) =>
-            {
-                glOp.uiAttribs = op.uiAttribs;
-                // glOp.opUiAttribs = op.uiAttribs;
-                // glOp.update();
-
-
-                // if (newAttribs.hasOwnProperty("translate"))
-                // {
-                //     glOp.updatePosition();
-                // }
-            });
-
-        if (!op.uiAttribs.translate)
-        {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY };
-            else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
-        }
-
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -387,6 +385,44 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             glOp.uiAttribs = op.uiAttribs;
         }
 
+
+        op.addEventListener("onEnabledChange", () =>
+        {
+            glOp.update();
+        });
+        op.addEventListener("onUiAttribsChange",
+            (newAttribs) =>
+            {
+                glOp.uiAttribs = op.uiAttribs;
+                // glOp.opUiAttribs = op.uiAttribs;
+                // glOp.update();
+
+                if (newAttribs && newAttribs.translate)
+                {
+                    if (newAttribs.fromNetwork)
+                    {
+                        delete newAttribs.fromNetwork;
+                    }
+                    else
+                        glOp.sendNetPos();
+                }
+
+                if (newAttribs.hasOwnProperty("translate"))
+                {
+                    glOp.updatePosition();
+                }
+            });
+
+
+        if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
+        {
+            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
+                op.uiAttr({ "translate": { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY } });
+            else
+                op.uiAttr({ "translate": { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y } });
+
+            // glOp.sendNetPos();
+        }
         // glOp.updatePosition();
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
         // glOp.updateVisible();
@@ -399,6 +435,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             gui.opParams.show(op.id);
             this.focusOp(op.id);
         }
+        if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
+        {
+            glOp.sendNetPos();
+            glOp.updatePosition();
+        }
+
+        delete op.uiAttribs.createdLocally;
     }
 
 
@@ -469,15 +512,23 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        this._cursor2.visible = drawGlCursor;
-        if (drawGlCursor)
+        this._localGlCursor.visible = drawGlCursor;
+
+        if (this._glCursors.length > 1 || drawGlCursor)
         {
             const a = this.viewBox.screenToPatchCoord(0, 0);
             const b = this.viewBox.screenToPatchCoord(20, 20);
             const z = (b[0] - a[0]);
-            this._cursor2.setSize(z, z);
-            this._cursor2.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+            this._localGlCursor.setSize(z, z);
+            this._localGlCursor.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+
+
+            for (let i = 0; i < this._glCursors.length; i++)
+            {
+                this._glCursors[i].setSize(z, z);
+            }
         }
+
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 

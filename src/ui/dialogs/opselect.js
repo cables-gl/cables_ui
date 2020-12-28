@@ -601,9 +601,10 @@ CABLES.UI.OpSelect = class
         {
             gui.log.userInteraction("adds op " + opname);
 
+            this._newOpOptions.createdLocally = true;
+
             CABLES.UI.MODAL.hide();
             gui.patchView.addOp(opname, this._newOpOptions);
-            // if (this._onOpAdd) this._onOpAdd();
         }
     }
 

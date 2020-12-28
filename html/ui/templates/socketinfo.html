@@ -15,3 +15,12 @@
     {{/each}}
 
 </script>
+
+
+<script id="socket_userlist" type="text/x-handlebars-template">
+
+    {{#each clients}}
+        <div style="color:black;text-align:center;display:inline-block;width:20px;height:20px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});border-radius:100px;overflow: hidden;">{{shortname}}</div>
+    {{/each}}
+
+</script>

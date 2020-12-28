@@ -58,36 +58,14 @@ CABLES.GLGUI.ViewBox = class
 
     setMousePos(x, y)
     {
-        // const frames = 3;
-        // let dx = (x - this._lastPosPixel[0]);
-        // const dy = (y - this._lastPosPixel[1]);
-
-
-        // this._mouseSmoothCount = this._mouseSmoothCount++ % frames;
-
-        // this._mouseSmooth[this._mouseSmoothCount++] = dx;
-        // dx = 0;
-        // for (let i = 0; i < frames; i++)
-        // {
-        //     dx += this._mouseSmooth[i];
-        //     this._mouseSmooth[i] *= 0.33333;
-        // }
-
-        // dx /= frames;
-        // // console.log(dx);
-        // dx *= Math.abs(dx * 0.333);
-
         const dx = 0;
         const dy = 0;
-        // console.log(dx);
-
-        // dx *= dx;
-        // console.log(this._mouseSmooth);
-
-        // console.log(this._lastPosPixel, dx, dy);
 
         const coord = this.screenToPatchCoord(x + dx, y + dy);
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
+
+        if (this._mousePatchX != coord[0] || this._mousePatchY != coord[1])
+            gui.emitEvent("netCursorPos", { "x": coord[0], "y": coord[1] });
 
         this._mousePatchX = coord[0];
         this._mousePatchY = coord[1];
