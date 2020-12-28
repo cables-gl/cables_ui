@@ -523,7 +523,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._localGlCursor.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
 
-            for (let i = 0; i < this._glCursors.length; i++)
+            for (const i in this._glCursors)
             {
                 this._glCursors[i].setSize(z, z);
             }
