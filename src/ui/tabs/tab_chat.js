@@ -7,19 +7,46 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
     {
         super();
         this._msgs = [];
-        this._socket = socket;
+        this._connection = socket;
         this._tabs = tabs;
+        this.activityCounterIn = 0;
+        this.activityCounterOut = 0;
 
-        socket.addEventListener("onChatMessage", this.onChatMsg.bind(this));
-        socket.addEventListener("onInfoMessage", this.onChatMsg.bind(this));
+        this._connection.on("onChatMessage", this.onChatMsg.bind(this));
+        this._connection.on("onInfoMessage", this.onChatMsg.bind(this));
+
+        this._connection.on("connectionChanged", this._updateClientList.bind(this));
+        this._connection.state.on("userListChanged", this._updateClientList.bind(this));
+
+
+        this._connection.on("netActivityIn", this._activityIn.bind(this));
+        this._connection.on("netActivityOut", this._activityOut.bind(this));
     }
 
     onChatMsg(payload)
     {
         this._msgs.push(payload);
         this._updateText();
+        this._updateClientList();
     }
 
+    _activityIn()
+    {
+        const ele = document.getElementById("netactivityIn");
+        if (!ele) return;
+        this.activityCounterIn++;
+
+        ele.innerHTML = this.activityCounterIn;
+    }
+
+    _activityOut()
+    {
+        const ele = document.getElementById("netactivityOut");
+        if (!ele) return;
+        this.activityCounterOut++;
+
+        ele.innerHTML = this.activityCounterOut;
+    }
 
     show()
     {
@@ -29,6 +56,21 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         const html = CABLES.UI.getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
         this._updateText();
+    }
+
+    _updateClientList()
+    {
+        const ele = document.getElementById("chat-clientlist");
+
+        if (ele)
+        {
+            const html = CABLES.UI.getHandleBarHtml("chat_clientlist", {
+                "numClients": this._connection.state.getNumClients(),
+                "clients": this._connection.state.clients,
+                "connected": this._connection.isConnected()
+            });
+            ele.innerHTML = html;
+        }
     }
 
     _updateText()
@@ -55,10 +97,11 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
         }
 
         logEle.innerHTML = html;
+        this._updateClientList();
     }
 
     send(text)
     {
-        this._socket.sendChat(text);
+        this._connection.sendChat(text);
     }
 };

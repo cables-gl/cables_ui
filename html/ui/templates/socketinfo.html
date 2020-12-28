@@ -1,18 +1,9 @@
 
 <script id="socketinfo" type="text/x-handlebars-template">
-
-    Connected: {{connected}}
+    Socket Connected: {{connected}}
     <br/>
     Num clients: {{numClients}}
     <br/>
-    {{#each clients}}
-        - {{username}}
-        {{#if isMe}} (me) {{/if}}
-        - {{#if lost}}timeout??{{/if}}
-        <!-- - {{timeout}} -->
-    <br/>
-
-    {{/each}}
 
 </script>
 
@@ -24,3 +15,4 @@
     {{/each}}
 
 </script>
+

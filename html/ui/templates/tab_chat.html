@@ -3,14 +3,29 @@
 
     <div class="tabContentScrollContainer">
 
-        userlist:<br/>
-        <div id="userlist"></div>
+        <div id="netactivity">
+            Traffic - In: <span id="netactivityIn"></span> - Out: <span id="netactivityOut"></span>
+        </div>
+        <h3>Clients</h3>
+        <div id="chat-clientlist"></div>
 
         <hr/>
-        chat:<br/>
+        <h3>Chat</h3>
         <div id="chatmsgs" ></div>
         <input type="text" id="newchatmsg"/>
         <a onclick="gui.chat.send(document.getElementById('newchatmsg').value);document.getElementById('newchatmsg').value='';" class="button">send</a>
     </div>
 
 </script>
+
+
+<script id="chat_clientlist" type="text/x-handlebars-template">
+
+    {{#each clients}}
+        - {{username}}
+        {{#if isMe}} (me) {{/if}}
+        - {{#if lost}}timeout??{{/if}}
+        <br/>
+
+    {{/each}}
+    </script>
