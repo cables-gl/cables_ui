@@ -43,9 +43,6 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
     {
         document.getElementById("navsocketinfo").innerHTML = this._getUserInfoHtml();
 
-        if (this._connection.state.getNumClients() > 1) document.getElementById("userindicator").classList.remove("hidden");
-        else document.getElementById("userindicator").classList.add("hidden");
-
         if (this._connection.state.getNumClients() > 1)
             document.getElementById("nav-clientlist").innerHTML =
                 CABLES.UI.getHandleBarHtml("socket_userlist", {

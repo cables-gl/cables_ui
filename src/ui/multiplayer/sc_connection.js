@@ -60,15 +60,18 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             for await (const { error } of this._socket.listener("error"))
             {
-                this.emitEvent("connectionChanged");
                 console.error(error);
                 this._connected = false;
+
+                this.emitEvent("connectionChanged");
+                this.emitEvent("netActivityIn");
             }
         })();
         (async () =>
         {
             for await (const event of this._socket.listener("connect"))
             {
+                this.emitEvent("netActivityIn");
                 // console.info("cables-socketcluster clientId", this._socket.clientId);
                 console.log("sc connected!");
                 this._connected = true;
@@ -90,6 +93,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const msg of controlChannel)
             {
                 this._handleControlChannelMessage(msg);
+                this.emitEvent("netActivityIn");
             }
         })();
 
@@ -99,6 +103,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const msg of uiChannel)
             {
                 this._handleUiChannelMsg(msg);
+                this.emitEvent("netActivityIn");
             }
         })();
 
@@ -108,6 +113,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const msg of infoChannel)
             {
                 this._handleInfoChannelMsg(msg);
+                this.emitEvent("netActivityIn");
             }
         })();
 
@@ -117,6 +123,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const msg of chatChannel)
             {
                 this._handleChatChannelMsg(msg);
+                this.emitEvent("netActivityIn");
             }
         })();
 
@@ -126,6 +133,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const msg of pacoChannel)
             {
                 this._handlePacoMessage(msg);
+                this.emitEvent("netActivityIn");
             }
         })();
 
@@ -194,6 +202,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
                 topic,
                 ...payload,
             };
+
+            this.emitEvent("netActivityOut");
             this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
         }
     }
