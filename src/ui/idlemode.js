@@ -56,6 +56,7 @@ CABLES.UI.visibilityChanged = function (e)
 
 CABLES.UI.startIdleListeners = function ()
 {
+    if (gui.isRemoteClient) return;
     console.log("idle listeners started!");
 
     window.addEventListener("focus", (event) =>

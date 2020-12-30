@@ -18,7 +18,7 @@ CABLES.UI.GUI = function (cfg)
     this.socket = null;
 
     this.isRemoteClient = cfg.remoteClient;
-    console.log("is remoteclient", cfg.remoteClient);
+
 
     if (!cfg) cfg = {};
     if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -236,12 +236,11 @@ CABLES.UI.GUI = function (cfg)
 
         this._elMenubar.show();
 
-
         if (this.isRemoteClient)
         {
-            this._elGlCanvas.addClass("maximized");
-            this.rendererWidth = 0;
-            showingEditor = false;
+            // this._elGlCanvas.addClass("maximized");
+            // this.rendererWidth = 0;
+            // showingEditor = false;
         }
 
         if (this.rendererWidth === undefined || self.rendererHeight === undefined)
@@ -1534,7 +1533,9 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.UI.userSettings.get("showMinimap") == true) CABLES.CMD.UI.showMinimap();
         self.patch().getViewBox().update();
 
-
+        if (this.isRemoteClient)
+            new CABLES.UI.NoPatchEditor();
+        else
         if (CABLES.UI.userSettings.get("glpatchview") == true || document.location.href.indexOf("glui") > -1) CABLES.CMD.DEBUG.glguiFull();
 
 
@@ -2028,6 +2029,11 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
+        if (this.isRemoteClient)
+        {
+            document.getElementById("undev").style.display = "none";
+        }
+
         CABLES.UI.initSplitPanes();
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
