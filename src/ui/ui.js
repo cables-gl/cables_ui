@@ -238,9 +238,9 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.isRemoteClient)
         {
-            // this._elGlCanvas.addClass("maximized");
-            // this.rendererWidth = 0;
-            // showingEditor = false;
+            this._elGlCanvas.addClass("maximized");
+            this.rendererWidth = 0;
+            showingEditor = false;
         }
 
         if (this.rendererWidth === undefined || self.rendererHeight === undefined)
