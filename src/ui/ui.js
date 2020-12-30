@@ -18,6 +18,7 @@ CABLES.UI.GUI = function (cfg)
     this.socket = null;
 
     this.isRemoteClient = cfg.remoteClient;
+    console.log("is remoteclient", cfg.remoteClient);
 
     if (!cfg) cfg = {};
     if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
