@@ -445,6 +445,35 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     }
 
 
+    _drawCursor()
+    {
+        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
+
+        if (drawGlCursor) this._cgl.setCursor("none");
+        else
+        {
+            if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
+            else this._cgl.setCursor("auto");
+        }
+
+        this._localGlCursor.visible = drawGlCursor;
+
+        const a = this.viewBox.screenToPatchCoord(0, 0);
+        const b = this.viewBox.screenToPatchCoord(20, 20);
+        const z = (b[0] - a[0]);
+
+        if (drawGlCursor)
+        {
+            this._localGlCursor.setSize(z, z);
+            this._localGlCursor.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
+        }
+
+        for (const i in this._glCursors)
+        {
+            this._glCursors[i].setSize(z, z);
+        }
+    }
+
     render(resX, resY)
     {
         // console.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
@@ -463,7 +492,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 
-        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         if (this._fadeOutRect.visible)
@@ -491,12 +519,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._focusRect.setColor(1, 1, 1, v);
         }
 
-        if (drawGlCursor) this._cgl.setCursor("none");
-        else
-        {
-            if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
-            else this._cgl.setCursor("auto");
-        }
 
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
@@ -512,23 +534,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        this._localGlCursor.visible = drawGlCursor;
 
-        if (this._glCursors.length > 1 || drawGlCursor)
-        {
-            const a = this.viewBox.screenToPatchCoord(0, 0);
-            const b = this.viewBox.screenToPatchCoord(20, 20);
-            const z = (b[0] - a[0]);
-            this._localGlCursor.setSize(z, z);
-            this._localGlCursor.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-
-
-            for (const i in this._glCursors)
-            {
-                this._glCursors[i].setSize(z, z);
-            }
-        }
-
+        this._drawCursor();
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
