@@ -660,8 +660,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
-            x = gui.patchView.snapOpPosX(x);
-            y = gui.patchView.snapOpPosY(y);
+            x = this._glPatch.snapLines.snapX(x);
+            y = this._glPatch.snapLines.snapX(y);
+            // x = gui.patchView.snapOpPosX(x);
+            // y = gui.patchView.snapOpPosY(y);
         }
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });

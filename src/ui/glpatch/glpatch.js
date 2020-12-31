@@ -77,6 +77,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
+        this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
 
         // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
         // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
@@ -492,6 +493,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 
+
+        this.snapLines.render();
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         if (this._fadeOutRect.visible)
