@@ -661,7 +661,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (CABLES.UI.userSettings.get("snapToGrid"))
         {
             x = this._glPatch.snapLines.snapX(x);
-            y = this._glPatch.snapLines.snapX(y);
+            y = this._glPatch.snapLines.snapY(y);
             // x = gui.patchView.snapOpPosX(x);
             // y = gui.patchView.snapOpPosY(y);
         }

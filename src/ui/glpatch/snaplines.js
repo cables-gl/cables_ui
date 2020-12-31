@@ -14,6 +14,25 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
         this._rects = [];
         this._root = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
         this._root.setSize(1, 1);
+
+
+        const size = 100000;
+        const hsize = size / 2;
+
+        // for (let i = -300; i < 300; i++)
+        // {
+        //     const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
+        //     r.setSize(1, size);
+        //     r.setPosition(i * CABLES.UI.uiConfig.snapX, -hsize, 0.19);
+        //     r.setColor(0, 0, 0, 0.06);
+        // }
+        // for (let i = -300; i < 300; i++)
+        // {
+        //     const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
+        //     r.setSize(size, 1);
+        //     r.setPosition(-hsize, i * CABLES.UI.uiConfig.snapY, 0.19);
+        //     r.setColor(0, 0, 0, 0.06);
+        // }
     }
 
     update()
@@ -21,22 +40,17 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
         const hashmap = {};
         const ops = gui.corePatch().ops;
 
-        const sops = gui.patchView.getSelectedOps();
-        let sop = null;
-        if (sops.length == 1)
-        {
-            sop = sops[0];
-        }
-
+        const selOps = gui.patchView.getSelectedOps();
+        let selOp = null;
+        if (selOps.length == 1) selOp = selOps[0];
 
         for (let i = 0; i < ops.length; i++)
         {
-            if (sop != ops[i])
+            if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1)
                 hashmap[ops[i].uiAttribs.translate.x] = ops[i].uiAttribs.translate.x;
         }
 
         const coords = Object.values(hashmap);
-
 
         for (let i = 0; i < coords.length; i++)
         {
@@ -53,9 +67,7 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
         {
             this._rects[i].setSize(1, 110);
         }
-        // console.log(Object.values(hashmap));
     }
-
 
     render()
     {
@@ -66,32 +78,20 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
     {
         const x = gui.patchView.snapOpPosX(_x);
         let nx = x;
-
-        // const ops = gui.patchView.getSelectedOps();
-
-        // let opx = _x;
-        // if (ops.length == 1)
-        // {
-        //     const op = ops[0];
-        //     opx = op.uiAttribs.translate.x;
-        // }
-
         let found = -1;
+
         for (let i = 0; i < this._rects.length; i++)
         {
-            if (Math.abs(this._rects[i].x - x) < 50)
+            if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3)
             {
                 found = i;
-
                 nx = this._rects[i].x;
             }
         }
 
-
         if (found > -1) this._rects[found].setSize(1, 600000);
         return nx;
     }
-
 
     snapY(y)
     {
