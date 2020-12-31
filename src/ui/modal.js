@@ -22,12 +22,12 @@ CABLES.UI.MODAL.init = function (options)
     if (window.gui)gui.showCanvasModal(false);
 
     if (CABLES.UI.MODAL.contentElement)
-    {
         CABLES.UI.MODAL.contentElement.style.display = "none";
-    }
+
     CABLES.UI.MODAL.contentElement = document.getElementById("modalcontent");
     CABLES.UI.MODAL.headerElement = document.getElementById("modalheader");
-    CABLES.UI.MODAL.headerElement.innerHTML = "";
+    if (CABLES.UI.MODAL.headerElement)
+        CABLES.UI.MODAL.headerElement.innerHTML = "";
     if (options && options.element)
     {
         CABLES.UI.MODAL.contentElement = document.querySelector(options.element);
@@ -79,6 +79,7 @@ CABLES.UI.MODAL.hide = function (force)
         console.log("not forcing close");
         return;
     }
+
 
     document.getElementById("modalclose").style.display = "block";
     CABLES.UI.MODAL.init();
@@ -159,7 +160,8 @@ CABLES.UI.MODAL.showLoading = function (title, content)
 
 CABLES.UI.MODAL.showClose = function ()
 {
-    document.getElementById("modalclose").style.display = "block";
+    if (document.getElementById("modalclose"))
+        document.getElementById("modalclose").style.display = "block";
 };
 
 CABLES.UI.MODAL.showError = function (title, content)

@@ -7,6 +7,7 @@ CABLES.GLGUI.GlCursor = class extends CABLES.EventTarget
     {
         super();
 
+
         this._glPatch = glPatch;
         this._instancer = instancer;
         this._cursor2 = this._instancer.createRect();

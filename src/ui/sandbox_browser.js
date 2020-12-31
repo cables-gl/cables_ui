@@ -115,7 +115,7 @@ CABLES.SandboxBrowser.prototype.showBrowserWarning = function (id)
 {
     const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-    if (!window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
+    if (!gui.isRemoteClient && !window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
     {
         iziToast.error({
             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
