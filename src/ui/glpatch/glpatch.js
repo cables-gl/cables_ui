@@ -419,9 +419,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
         {
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
-                op.uiAttr({ "translate": { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY } });
+                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
             else
-                op.uiAttr({ "translate": { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y } });
+                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
 
             // glOp.sendNetPos();
         }
