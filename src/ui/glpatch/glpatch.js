@@ -77,6 +77,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
+        this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
 
         // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
         // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
@@ -132,6 +133,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // {
         //     if (e.which == 32) this._spacePressed = false;
         // });
+
 
         cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
@@ -417,9 +419,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
         {
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
-                op.uiAttr({ "translate": { "x": this.viewBox.mousePatchX, "y": this.viewBox.mousePatchY } });
+                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
             else
-                op.uiAttr({ "translate": { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y } });
+                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
 
             // glOp.sendNetPos();
         }
@@ -492,6 +494,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 
+
+        this.snapLines.render();
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         if (this._fadeOutRect.visible)
