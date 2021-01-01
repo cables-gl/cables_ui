@@ -494,6 +494,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.isAnimated = false;
         this._time = (performance.now() - this._timeStart) / 1000;
 
+        for (const i in this._glCursors)
+        {
+            this._glCursors[i].updateAnim();
+        }
 
         this.snapLines.render();
 
