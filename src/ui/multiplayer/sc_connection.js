@@ -21,7 +21,6 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     startPacoSend()
     {
-        if (!this._sendPaco) return;
         if (!this._paco)
         {
             this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
@@ -30,6 +29,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         // if (this._state.getNumClients() > 1)
         // {
+        if (!this._sendPaco) return;
+
         const json = gui.corePatch().serialize(true);
         this._paco.send(CABLES.PACO_LOAD,
             {
