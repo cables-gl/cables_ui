@@ -15,6 +15,9 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         this._receivePaco = gui.patchView.rendererName == "glpatch";
         this._sendPaco = !gui.isRemoteClient;
+
+        console.log("this._receivePaco", this._receivePaco);
+        console.log("this._sendPaco", this._sendPaco);
     }
 
     get state() { return this._state; }
