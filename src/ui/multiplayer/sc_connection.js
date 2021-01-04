@@ -13,7 +13,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._paco = null;
         if (cfg) this._init();
 
-        this._usePaco = !gui.isRemoteClient && gui.patchView.rendererName == "glpatch";
+        this._usePaco = gui.patchView.rendererName == "glpatch";
     }
 
     get state() { return this._state; }
@@ -178,6 +178,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendPaco(payload)
     {
+        if (gui.isRemoteClient) return;
         payload.name = "paco";
         this._send("paco", payload);
     }
