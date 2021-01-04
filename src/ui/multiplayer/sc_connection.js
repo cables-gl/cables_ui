@@ -13,14 +13,15 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._paco = null;
         if (cfg) this._init();
 
-        this._usePaco = gui.patchView.rendererName == "glpatch";
+        this._receivePaco = gui.patchView.rendererName == "glpatch";
+        this._sendPaco = !gui.isRemoteClient;
     }
 
     get state() { return this._state; }
 
     startPacoSend()
     {
-        if (!this._usePaco) return;
+        if (!this._sendPaco) return;
         if (!this._paco)
         {
             this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
@@ -128,7 +129,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         (async () =>
         {
-            if (!this._usePaco) return;
+            if (!this._receivePaco) return;
             const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
             for await (const msg of pacoChannel)
             {
@@ -178,7 +179,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
     sendPaco(payload)
     {
-        if (gui.isRemoteClient) return;
+        if (!this._sendPaco) return;
         payload.name = "paco";
         this._send("paco", payload);
     }
