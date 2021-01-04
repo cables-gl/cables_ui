@@ -31,6 +31,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         return document.querySelector("#patchviews .visible");
     }
 
+    get rendererName()
+    {
+        return this._patchRenderer.name;
+    }
+
     setProject(proj, cb)
     {
         if (proj && proj.ui)
@@ -1339,6 +1344,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     tempUnlinkOp()
     {
     }
+
 
     insertOpInLink(oldLink, op, x, y)
     {

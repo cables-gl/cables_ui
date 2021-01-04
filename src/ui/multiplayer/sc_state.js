@@ -22,14 +22,12 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         if (!client) userListChanged = true;
 
-
         this._clients[payload.clientId] = {
             "username": payload.username,
             "shortname": payload.username.substr(0, 2).toUpperCase(),
             "clientId": payload.clientId,
             "lastSeen": payload.lastSeen,
             "isMe": payload.clientId == this._connection.clientId,
-
             "color": this.getClientColor(payload.clientId)
         };
 

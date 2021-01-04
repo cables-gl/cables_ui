@@ -1,5 +1,3 @@
-
-
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -9,4 +7,6 @@ CABLES.UI.NoPatchEditor = class extends CABLES.EventTarget
     {
         super();
     }
+
+    get name() { return "nopatch"; }
 };
