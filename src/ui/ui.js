@@ -16,7 +16,7 @@ CABLES.UI.GUI = function (cfg)
     this.keys = new CABLES.UI.KeyManager();
     this.opParams = new CABLES.UI.OpParampanel();
     this.socket = null;
-
+    this.watchPortVisualizer = null;
     this.isRemoteClient = cfg.remoteClient;
 
 
@@ -2029,6 +2029,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
+        gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
+
         if (this.isRemoteClient)
         {
             document.getElementById("undev").style.display = "none";
@@ -2329,8 +2331,6 @@ function startUi(cfg)
     //             }
     //         }
     //     });
-
-    CABLES.watchPortVisualize.init();
 
 
     logStartup("Init UI done");

@@ -1,37 +1,93 @@
 CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
 
-CABLES.WatchPortVisualizer = function ()
+CABLES.UI.WatchPortVisualizer = class
 {
-    this._canvasWidth = 300;
-    this._canvasHeight = 120;
+    constructor(v, dv)
+    {
+        this._canvasWidth = 300;
+        this._canvasHeight = 120;
 
-    const a = {
-        "hund": 123,
-        "hund-katze": false,
-    };
+        this.created = false;
+        this._lastId = 0;
+        this._visible = false;
 
-    this.created = false;
-    const self = this;
-    this._lastId = 0;
-    this._visible = false;
+        this._num = this._canvasWidth / 2;
+        this._buff = [];
+        this._buff.length = this._num;
 
-    this._num = this._canvasWidth / 2;
-    this._buff = [];
-    this._buff.length = this._num;
+        this._position = 0;
+        this._ele = null;
 
-    this._position = 0;
-    this._ele = null;
+        this._max = -Number.MAX_VALUE;
+        this._min = Number.MAX_VALUE;
+        this._lastValue = Number.MAX_VALUE;
+        this._firstTime = true;
 
-    this._max = -Number.MAX_VALUE;
-    this._min = Number.MAX_VALUE;
-    this._lastValue = Number.MAX_VALUE;
-    this._firstTime = true;
+        this._init();
+    }
 
-    this.update = function (classname, id, value)
+    _init()
+    {
+        this.canvas = document.createElement("canvas");
+        this.canvas.id = "watchportpreview";
+        this.canvas.width = this._canvasWidth;
+        this.canvas.height = this._canvasHeight;
+        this.canvas.style.display = "none";
+        this.canvas.style.position = "absolute";
+        this.canvas.style.border = "4px solid #000";
+        this.canvas.style["z-index"] = 9999999;
+        const body = document.getElementsByTagName("body")[0];
+        body.appendChild(this.canvas);
+        this.ctx = this.canvas.getContext("2d");
+        this.update();
+
+        $(document).on("mouseenter", ".watchPort", (e) =>
+        {
+            this._visible = true;
+            this.canvas.style.display = "block";
+
+            this._ele = e.target;
+            const offset = e.target.getBoundingClientRect();
+            this.canvas.style.left = offset.left + "px";
+            this.canvas.style.top = offset.top + 30 + "px";
+        });
+
+        $(document).on("mouseleave", ".watchPort", () =>
+        {
+            this.canvas.style.display = "none";
+            this._visible = false;
+            this._lastId = "xxx";
+        });
+
+        $(document).on("click", ".linkedValue", (e) =>
+        {
+            if (!navigator.clipboard)
+            {
+                console.log("no clipbopard found...");
+                return;
+            }
+
+            navigator.clipboard
+                .writeText(this.innerHTML)
+                .then(() =>
+                {
+                    CABLES.UI.notify("Copied value to clipboard");
+                })
+                .catch((err) =>
+                {
+                    console.log("copy failed", err);
+                });
+
+            e.preventDefault();
+        });
+    }
+
+    update(classname, id, value)
     {
         let i = 0;
         if (!this._visible) return;
-        if (!self._ele.hasClass(classname.substr(1))) return;
+        if (!this._ele.classList.contains(classname)) return;
         if (this._lastId != classname)
         {
             // console.log('reset',this._lastId,id);
@@ -50,7 +106,7 @@ CABLES.WatchPortVisualizer = function ()
         if (this._firstTime && this._lastValue == value) return;
         this._firstTime = false;
 
-        self.canvas.style.display = "block";
+        this.canvas.style.display = "block";
 
         this._max = Math.max(value, this._max);
         this._min = Math.min(value, this._min);
@@ -103,69 +159,5 @@ CABLES.WatchPortVisualizer = function ()
         this.ctx.fillStyle = "#666";
         this.ctx.fillText("max:" + Math.round(this._max * 100) / 100, 10, this.canvas.height - 10);
         this.ctx.fillText("min:" + Math.round(this._min * 100) / 100, 10, this.canvas.height - 30);
-    };
-
-    this.create = function ()
-    {
-        this.canvas = document.createElement("canvas");
-        this.canvas.id = "watchportpreview";
-        this.canvas.width = this._canvasWidth;
-        this.canvas.height = this._canvasHeight;
-        this.canvas.style.display = "block";
-        this.canvas.style.position = "absolute";
-        this.canvas.style["z-index"] = 9999999;
-        const body = document.getElementsByTagName("body")[0];
-        body.appendChild(this.canvas);
-        this.ctx = this.canvas.getContext("2d");
-        this.update();
-    };
-
-    this.init = function ()
-    {
-        $(document).on("mouseenter", ".watchPort", function ()
-        {
-            if (!self.canvas) self.create();
-
-            self._visible = true;
-            self._ele = $(this);
-
-            const offset = $(this).offset();
-            self.canvas.style.left = offset.left;
-            self.canvas.style.top = offset.top + 30;
-        });
-
-        $(document).on("mouseleave", ".watchPort", function ()
-        {
-            self.canvas.style.display = "none";
-            self._visible = false;
-            self._lastId = "xxx";
-        });
-
-        $(document).on("click", ".linkedValue", function (e)
-        {
-            // console.log(this);
-            // console.log(this.innerHTML);
-
-            if (!navigator.clipboard)
-            {
-                console.log("no clipbopard found...");
-                return;
-            }
-
-            navigator.clipboard
-                .writeText(this.innerHTML)
-                .then(() =>
-                {
-                    CABLES.UI.notify("Copied value to clipboard");
-                })
-                .catch((err) =>
-                {
-                    console.log("copy failed", err);
-                });
-
-            e.preventDefault();
-        });
-    };
+    }
 };
-
-CABLES.watchPortVisualize = new CABLES.WatchPortVisualizer();

@@ -650,7 +650,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     }
                 }
 
-                CABLES.watchPortVisualize.update(id, thePort.watchId, thePort.get());
+                gui.watchPortVisualizer.update(id, thePort.watchId, thePort.get());
             }
 
             perf.finish();
