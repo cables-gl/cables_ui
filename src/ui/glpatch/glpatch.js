@@ -15,6 +15,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.logEvents(false, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
 
+
         this.paused = false;
 
         this._cgl = cgl;
@@ -272,6 +273,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
     }
+
+    get name() { return "glpatch"; }
 
     get time() { return this._time; }
 

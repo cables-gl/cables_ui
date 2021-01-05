@@ -11,11 +11,16 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._scConfig = cfg;
         this._connected = false;
         this._paco = null;
-        if (cfg) this._init();
 
-        window.gui.on("uiloaded", () =>
-        {
-        });
+
+        this._receivePaco = gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
+        this._sendPacoInitial = !gui.isRemoteClient;
+
+        console.log("this._receivePaco", this._receivePaco);
+        console.log("this._sendPacoInitial", this._sendPacoInitial);
+
+
+        if (cfg) this._init();
     }
 
     get state() { return this._state; }
@@ -30,6 +35,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         // if (this._state.getNumClients() > 1)
         // {
+        // if (!this._sendPacoInitial) return;
+
         const json = gui.corePatch().serialize(true);
         this._paco.send(CABLES.PACO_LOAD,
             {
@@ -129,6 +136,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         (async () =>
         {
+            if (!this._receivePaco) return;
             const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
             for await (const msg of pacoChannel)
             {

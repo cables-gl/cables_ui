@@ -45,6 +45,8 @@ CABLES.UI.Patch = function (_gui)
     this._uiAttrFpsLast = 0;
     this._uiAttrFpsCount = 0;
 
+    this.name = "svgpatch";
+
     const pastedupdateTimeout = null;
 
     CABLES.editorSession.addListener("param",
