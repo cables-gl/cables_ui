@@ -153,6 +153,10 @@ input[type="text"]
     margin-right:5px;
 }
 
+.valuetext.inspectable {
+    min-width: 60%;
+}
+
 .button_colorpick
 {
     width: 15px;
