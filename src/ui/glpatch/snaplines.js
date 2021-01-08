@@ -50,7 +50,7 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1)
+            if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
                 hashmap[ops[i].uiAttribs.translate.x] = ops[i].uiAttribs.translate.x;
         }
 
@@ -61,7 +61,7 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
             if (!this._rects[i])
             {
                 this._rects[i] = new CABLES.GLGUI.GlRect(this._instancer, { "parent": this._root, "interactive": false });
-                this._rects[i].setColor(0, 0, 0, 0.5);
+                this._rects[i].setColor(0, 0, 0, 0.15);
             }
 
             this._rects[i].setPosition(coords[i], -300000);
@@ -81,20 +81,15 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
     snapX(_x)
     {
         const x = gui.patchView.snapOpPosX(_x);
-        let nx = x;
         let found = -1;
 
         for (let i = 0; i < this._rects.length; i++)
         {
-            if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3)
-            {
-                found = i;
-                nx = this._rects[i].x;
-            }
+            if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3) found = i;
         }
 
         if (found > -1) this._rects[found].setSize(1, 600000);
-        return nx;
+        return x;
     }
 
     snapY(y)

@@ -36,7 +36,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this._overlaySplines.zPos = 0.5;
 
-        this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
+        // this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
 
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
 
@@ -592,7 +592,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
-        this.performanceGraph.set(performance.now() - starttime); //
+        // this.performanceGraph.set(performance.now() - starttime); //
 
         this.debugData.glPrimitives = CGL.profileData.profileMeshNumElements;
         this.debugData.glUpdateAttribs = CGL.profileData.profileMeshAttributes;
