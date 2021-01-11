@@ -35,7 +35,7 @@ CABLES.UI.WatchPortVisualizer = class
         this.canvas.height = this._canvasHeight;
         this.canvas.style.display = "none";
         this.canvas.style.position = "absolute";
-        this.canvas.style.border = "4px solid #000";
+        // this.canvas.style.border = "4px solid #000";
         this.canvas.style["z-index"] = 9999999;
         const body = document.getElementsByTagName("body")[0];
         body.appendChild(this.canvas);
@@ -45,7 +45,7 @@ CABLES.UI.WatchPortVisualizer = class
         $(document).on("mouseenter", ".watchPort", (e) =>
         {
             this._visible = true;
-            this.canvas.style.display = "block";
+            // this.canvas.style.display = "block";
 
             this._ele = e.target;
             const offset = e.target.getBoundingClientRect();
