@@ -440,7 +440,7 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
         }());
     }
 
-    function printNode(op, portName, html, key, node, path, level)
+    function printNode(op, portName, html, key, node, path, level, inputDataType = "Object")
     {
         html += "<tr class=\"row\">";
         let i = 0;
@@ -495,9 +495,9 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
             }
         }
         const hideclass = "";
-        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeArray('" + op.id + "', '" + portName + "', '" + path + "')\" class=\"treebutton\">Array</a>";
+        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeArray('" + op.id + "', '" + portName + "', '" + path + "', '" + inputDataType + "')\" class=\"treebutton\">Array</a>";
         html += "&nbsp;";
-        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeNode('" + op.id + "', '" + portName + "', '" + path + "', '" + dataType + "')\" class=\"treebutton " + dataType.toLowerCase() + "\">" + dataType + "</a>";
+        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeNode('" + op.id + "', '" + portName + "', '" + path + "', '" + dataType + "', '" + inputDataType + "')\" class=\"treebutton " + dataType.toLowerCase() + "\">" + dataType + "</a>";
         html += "</td>";
 
         html += "</tr>";
@@ -509,7 +509,7 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
                 for (i = 0; i < node.length; i++)
                 {
                     const newPath = path + "." + i;
-                    html = printNode(op, portName, html, i, node[i], newPath, level + 1);
+                    html = printNode(op, portName, html, i, node[i], newPath, level + 1, inputDataType);
                 }
             }
             else if (typeof node === "object")
@@ -519,7 +519,7 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
                 {
                     const newKey = children[i];
                     const newPath = path + "." + newKey;
-                    html = printNode(op, portName, html, newKey, node[newKey], newPath, level + 1);
+                    html = printNode(op, portName, html, newKey, node[newKey], newPath, level + 1, inputDataType);
                 }
             }
         }
@@ -527,7 +527,7 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
         return html;
     }
 
-    function printJsonInfo(json, op, portName)
+    function printJsonInfo(json, op, portName, inputDataType = "Object")
     {
         if (!json) return;
 
@@ -559,13 +559,13 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
             if (Array.isArray(json))
             {
                 const path = i;
-                html = printNode(op, portName, html, i, json[i], path, 1);
+                html = printNode(op, portName, html, i, json[i], path, 1, inputDataType);
             }
             else if (typeof json === "object")
             {
                 const key = elements[i];
                 const path = key;
-                html = printNode(op, portName, html, key, json[key], path, 1);
+                html = printNode(op, portName, html, key, json[key], path, 1, inputDataType);
             }
         }
         html += "</table>";
@@ -577,7 +577,12 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
     try
     {
         const thing = port.get();
-        const jsonInfo = printJsonInfo(thing, port.parent, port.name);
+        let inputDataType = "Object";
+        if (Array.isArray(thing))
+        {
+            inputDataType = "Array";
+        }
+        const jsonInfo = printJsonInfo(thing, port.parent, port.name, inputDataType);
         CABLES.UI.MODAL.hideLoading();
 
         let fullHTML = "";
@@ -609,27 +614,26 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
     }
 };
 CABLES.UI.MODAL.showPortStructureHelpers = {};
-CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, path, dataType)
+CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, path, dataType, inputDataType = "Object")
 {
     const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp("Ops.Json.ObjectGet" + dataType + "ByPath");
+    const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
     newop.getPort("Path").set(path);
-    op.patch.link(op, portName, newop, "Object");
-    // gui.patch().focusOp(newop.id, true);
+    op.patch.link(op, portName, newop, inputDataType);
+    gui.patch().focusOp(newop.id, true);
     gui.patchView.centerSelectOp(newop.id);
-    // CABLES.UI.MODAL.hide();
+    CABLES.UI.MODAL.hide();
 };
 
-CABLES.UI.MODAL.showPortStructureHelpers.exposeArray = function (opId, portName, path)
+CABLES.UI.MODAL.showPortStructureHelpers.exposeArray = function (opId, portName, path, inputDataType = "Object")
 {
     const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp("Ops.Json.ObjectGetArrayValuesByPath");
+    const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "GetArrayValuesByPath");
     newop.getPort("Path").set(path);
-    op.patch.link(op, portName, newop, "Object");
-    // gui.patch().focusOp(newop.id, true);
+    op.patch.link(op, portName, newop, inputDataType);
+    gui.patch().focusOp(newop.id, true);
     gui.patchView.centerSelectOp(newop.id);
-
-    // CABLES.UI.MODAL.hide();
+    CABLES.UI.MODAL.hide();
 };
 
 CABLES.UI.MODAL.showCode = function (title, code, type)
