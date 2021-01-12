@@ -104,7 +104,7 @@ CABLES.UI.TEXTS = {
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",
 
-    "guestHint": "Guest account - limited functionality / please register to use this feature!"
+    "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!"
 };
 
 CABLES.UI.TIPS = [
