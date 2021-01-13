@@ -168,7 +168,9 @@ CABLES.UI.GUI = function (cfg)
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint +
+            "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+            );
             return true;
         }
     };
@@ -817,6 +819,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.createProject = function ()
     {
+        if (gui.showGuestWarning()) return;
+
         CABLES.UI.MODAL.prompt(
             "New Project",
             "Enter a name for your new Project",

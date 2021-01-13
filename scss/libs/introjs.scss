@@ -1,12 +1,12 @@
 // intro.js
-$z-index-intro-tooltip: 100 !important;
+$z-index-intro-tooltip: $zindex_high !important;
 $z-index-intro-element-to-be-explained: $z-index-intro-tooltip;
 
 
 .introjs-overlay {
   position: absolute;
   box-sizing: content-box;
-  z-index: 90;
+  z-index: $zindex_high - 1;
   background-color: #000;
   opacity: 0;
   background: -moz-radial-gradient(center,ellipse farthest-corner,rgba(0,0,0,0.4) 0,rgba(0,0,0,0.9) 100%);
@@ -38,11 +38,11 @@ $z-index-intro-element-to-be-explained: $z-index-intro-tooltip;
 .introjs-showElement,
 tr.introjs-showElement > td,
 tr.introjs-showElement > th {
-  z-index: 9999999 !important;
+  z-index: $zindex_high !important;
 }
 
 .introjs-disableInteraction {
-  z-index: 99999999 !important;
+  z-index: $zindex_high !important;
   position: absolute;
   background-color: white;
   opacity: 0;
@@ -58,7 +58,7 @@ tr.introjs-showElement > th {
 .introjs-helperLayer {
   box-sizing: content-box;
   position: absolute;
-  z-index: 9999998;
+  z-index: ($zindex_high );
   background-color: #FFF;
   background-color: rgba(255,255,255,.9);
   border: 1px solid #777;
@@ -76,7 +76,7 @@ tr.introjs-showElement > th {
   box-sizing: content-box;
   position: absolute;
   visibility: hidden;
-  z-index: 100000000;
+  z-index: ($zindex_high + 1);
   background-color: transparent;
   -webkit-transition: all 0.3s ease-out;
      -moz-transition: all 0.3s ease-out;
@@ -101,7 +101,7 @@ tr.introjs-showElement > th {
   visibility: visible;
   top: -16px;
   left: -16px;
-  z-index: 9999999999 !important;
+  z-index: $zindex_high !important;
   padding: 2px;
   font-family: Arial, verdana, tahoma;
   font-size: 13px;
