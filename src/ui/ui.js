@@ -1945,17 +1945,6 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    this.closeInfo = function ()
-    {
-        this.infoHeight = 0;
-        this.setLayout();
-    };
-
-    this.reloadDocs = function (cb)
-    {
-        gui.opDocs = new CABLES.UI.OpDocs();
-        if (cb)cb();
-    };
 
     this.setStateSaved = function ()
     {
@@ -1967,10 +1956,20 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
-        // window.onbeforeunload = function ()
-        // {
-        //     gui.patchConnection.send(CABLES.PACO_CLEAR);
-        // };
+        window.onbeforeunload = null;
+    };
+
+
+    this.closeInfo = function ()
+    {
+        this.infoHeight = 0;
+        this.setLayout();
+    };
+
+    this.reloadDocs = function (cb)
+    {
+        gui.opDocs = new CABLES.UI.OpDocs();
+        if (cb)cb();
     };
 
 

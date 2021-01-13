@@ -97,17 +97,21 @@ CABLES.API.Connection = function (ui)
         connected = true;
         ui.jobs().finish("connecting");
     });
+
     client.on("disconnect", function ()
     {
         console.log("disconnect!!!");
     });
 
 
-    window.onbeforeunload = function (e)
-    {
-        client.disconnect();
-        connected = false;
-    };
+    // todo:when onbeforeunload!=null browser shows reload-confirm dialog!
+    // is there any other way to disconnect when reloading ??
+
+    // window.onbeforeunload = function (e)
+    // {
+    //     client.disconnect();
+    //     connected = false;
+    // };
 
 
     client.connect();
