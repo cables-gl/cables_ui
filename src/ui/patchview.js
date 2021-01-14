@@ -137,7 +137,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
             const b = gui.corePatch().ops[j];
-            if (b == op) continue;
+            if (b.deleted || b == op) continue;
 
             if (op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + 40 } });
