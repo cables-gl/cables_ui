@@ -52,6 +52,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
     saveAs()
     {
+        if (gui.showGuestWarning()) return;
+
         if (window.process && window.process.versions.electron)
         {
             const electron = require("electron");
@@ -148,6 +150,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
     saveCurrentProject(cb, _id, _name, _force)
     {
+        if (gui.showGuestWarning()) return;
+
+
         if (this.loadingError)
         {
             CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
@@ -168,6 +173,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
     _saveCurrentProject(cb, _id, _name)
     {
+        if (gui.showGuestWarning()) return;
+
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
 
@@ -281,7 +288,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     {
                         let msg = "no response";
                         if (r)msg = r.msg;
+
                         CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
+
                         console.log(r);
                         return;
                     }

@@ -168,7 +168,9 @@ CABLES.UI.GUI = function (cfg)
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint +
+            "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+            );
             return true;
         }
     };
@@ -817,6 +819,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.createProject = function ()
     {
+        if (gui.showGuestWarning()) return;
+
         CABLES.UI.MODAL.prompt(
             "New Project",
             "Enter a name for your new Project",
@@ -1941,17 +1945,6 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    this.closeInfo = function ()
-    {
-        this.infoHeight = 0;
-        this.setLayout();
-    };
-
-    this.reloadDocs = function (cb)
-    {
-        gui.opDocs = new CABLES.UI.OpDocs();
-        if (cb)cb();
-    };
 
     this.setStateSaved = function ()
     {
@@ -1963,10 +1956,20 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.patch().getCurrentProject().name;
         document.title = title;
-        // window.onbeforeunload = function ()
-        // {
-        //     gui.patchConnection.send(CABLES.PACO_CLEAR);
-        // };
+        window.onbeforeunload = null;
+    };
+
+
+    this.closeInfo = function ()
+    {
+        this.infoHeight = 0;
+        this.setLayout();
+    };
+
+    this.reloadDocs = function (cb)
+    {
+        gui.opDocs = new CABLES.UI.OpDocs();
+        if (cb)cb();
     };
 
 

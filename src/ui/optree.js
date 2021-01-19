@@ -6,7 +6,7 @@ CABLES.SerializeOps = function (root, prefix)
 
     for (const i in root)
     {
-        if (i != "Deprecated")
+        if (i != "Deprecated" && i != "Admin")
             items.push(
                 {
                     "name": i,

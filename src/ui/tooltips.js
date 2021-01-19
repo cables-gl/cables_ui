@@ -59,12 +59,14 @@ CABLES.UI.showInfo = function (txt)
 {
     txt = txt || CABLES.UI.TEXTS.infoArea;
     CABLES.UI.eleInfoArea = CABLES.UI.eleInfoArea || document.getElementById("infoArea");
+    CABLES.UI.eleInfoArea.classList.remove("hidden");
     CABLES.UI.eleInfoArea.innerHTML = "<div class=\"infoareaContent\">" + mmd(txt || "") + "</div>";
 };
 
 CABLES.UI.hideInfo = function ()
 {
     CABLES.UI.eleInfoArea = CABLES.UI.eleInfoArea || document.getElementById("infoArea");
+    CABLES.UI.eleInfoArea.classList.add("hidden");
     CABLES.UI.eleInfoArea.innerHTML = "";
 };
 
