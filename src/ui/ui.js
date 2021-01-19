@@ -71,7 +71,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
-    this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
+    // this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
 
@@ -1720,10 +1720,10 @@ CABLES.UI.GUI = function (cfg)
     //     self.profiler.show();
     // };
 
-    this.showMetaPaco = function ()
-    {
-        this.metaPaco.show();
-    };
+    // this.showMetaPaco = function ()
+    // {
+    //     this.metaPaco.show();
+    // };
 
     this.metaCode = function ()
     {
