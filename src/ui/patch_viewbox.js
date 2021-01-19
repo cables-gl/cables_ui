@@ -139,18 +139,17 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
         else if (this._viewBox.y > gui.patch().currentPatchBounds.y + gui.patch().currentPatchBounds.h) showHelper = true;
         else if (this._viewBox.y < gui.patch().currentPatchBounds.y - this._viewBox.h) showHelper = true;
 
-        if (showHelper || this._viewBox.w > 20000 || this._viewBox.w < 30)
-        {
-            this._eleNavHelper.style.display = "block";
-            this._showingNavHelper = true;
-        }
-        else
-        {
-            if (this._showingNavHelper)
+        if (!gui.isRemoteClient)
+            if (showHelper || this._viewBox.w > 20000 || this._viewBox.w < 30)
             {
-                this._eleNavHelper.style.display = "none";
+                this._eleNavHelper.style.display = "block";
+                this._showingNavHelper = true;
             }
-        }
+            else
+            {
+                if (this._showingNavHelper)
+                    this._eleNavHelper.style.display = "none";
+            }
     }
 
     perf.finish();

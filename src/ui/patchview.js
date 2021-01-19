@@ -71,7 +71,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
 
-            if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
+            if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
             {
                 this._showingNavHelperEmpty = true;
                 document.getElementById("patchnavhelperEmpty").style.display = "block";
