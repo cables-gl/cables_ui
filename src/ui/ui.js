@@ -2298,6 +2298,16 @@ function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
+                new QRCode(document.getElementById("remote_view_qr"), {
+                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,
+                    "width": 200,
+                    "height": 200,
+                    "colorDark": "#000000",
+                    "colorLight": "#ffffff",
+                    "correctLevel": QRCode.CorrectLevel.H
+                });
+
+
                 CABLES.UI.loaded = true;
                 setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
             });
