@@ -9,11 +9,10 @@ CABLES.CMD.UI.settings = function ()
     gui.showSettings();
 };
 
-// CABLES.CMD.UI.settingsContributors = function() {
-//     gui.showSettings();
-//     gui.projectSettings().setTab('users');
-// };
-
+CABLES.CMD.UI.openRemoteViewer = function ()
+{
+    window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId);
+};
 
 CABLES.CMD.UI.files = function ()
 {
@@ -466,6 +465,12 @@ CABLES.CMD.commands.push(
         "cmd": "chat",
         "category": "ui",
         "func": CABLES.CMD.UI.showChat,
+        "icon": "command",
+    },
+    {
+        "cmd": "open remote viewer",
+        "category": "ui",
+        "func": CABLES.CMD.UI.openRemoteViewer,
         "icon": "command",
     },
 

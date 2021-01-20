@@ -71,7 +71,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.variables = new CABLES.UI.MetaVars(this.metaTabs);
-    this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
+    // this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
 
@@ -1724,10 +1724,10 @@ CABLES.UI.GUI = function (cfg)
     //     self.profiler.show();
     // };
 
-    this.showMetaPaco = function ()
-    {
-        this.metaPaco.show();
-    };
+    // this.showMetaPaco = function ()
+    // {
+    //     this.metaPaco.show();
+    // };
 
     this.metaCode = function ()
     {
@@ -2297,6 +2297,16 @@ function startUi(cfg)
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);
+
+                new QRCode(document.getElementById("remote_view_qr"), {
+                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,
+                    "width": 200,
+                    "height": 200,
+                    "colorDark": "#000000",
+                    "colorLight": "#ffffff",
+                    "correctLevel": QRCode.CorrectLevel.H
+                });
+
 
                 CABLES.UI.loaded = true;
                 setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
