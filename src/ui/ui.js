@@ -2298,6 +2298,8 @@ function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
+                document.getElementById("loadingstatusLog").style.display = "none";
+
                 CABLES.UI.loaded = true;
                 setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
             });
