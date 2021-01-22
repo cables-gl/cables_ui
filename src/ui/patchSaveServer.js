@@ -197,7 +197,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         if (_name) name = _name;
         let data = gui.corePatch().serialize(true);
 
-
         data.ui = {
             "viewBox": {},
             "timeLineLength": gui.timeLine().getTimeLineLength()
@@ -258,6 +257,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         {
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
+
+            console.log("saving data ", Math.round(data.length / 1024) + "kb");
 
             CABLES.sandbox.savePatch(
                 {

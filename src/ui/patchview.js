@@ -71,7 +71,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
 
-            if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
+            if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
             {
                 this._showingNavHelperEmpty = true;
                 document.getElementById("patchnavhelperEmpty").style.display = "block";
@@ -139,7 +139,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const b = gui.corePatch().ops[j];
             if (b.deleted || b == op) continue;
 
-            if (op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+            if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + 40 } });
         }
     }

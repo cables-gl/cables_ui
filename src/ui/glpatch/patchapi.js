@@ -119,6 +119,12 @@ CABLES.GLGUI.GlPatchAPI = class
             p1 = t;
         }
 
+        if (!link.portOut)
+        {
+            console.log("link has no portout!");
+            return;
+        }
+
         const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
         {
             CABLES.undo.add({
