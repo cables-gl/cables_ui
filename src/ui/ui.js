@@ -2298,6 +2298,8 @@ function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
+                document.getElementById("loadingstatusLog").style.display = "none";
+
                 new QRCode(document.getElementById("remote_view_qr"), {
                     "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,
                     "width": 200,
