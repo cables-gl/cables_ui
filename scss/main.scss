@@ -65,6 +65,12 @@ hr
 }
 
 
+canvas
+{
+    -webkit-user-select: none;
+    user-select: none;
+}
+
 *,*:hover
 {
     -webkit-tap-highlight-color: transparent;
