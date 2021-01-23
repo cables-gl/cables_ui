@@ -1210,13 +1210,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         inp.parent.setUiError(id, null);
 
-        console.log("validating!!!");
-
         if (!inp.isLinked()) return;
-
         if (outp.get() == null) return;
-
-        console.log("objtype", p1.uiAttribs.objType, p2.uiAttribs.objType, outp.get());
         if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
 
         const errorMsg = "Object in port <b>" + inp.name + "</b> is not of type " + inp.uiAttribs.objType;
