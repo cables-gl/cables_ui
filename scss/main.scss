@@ -65,9 +65,14 @@ hr
 }
 
 
+*,*:hover
+{
+    -webkit-tap-highlight-color: transparent;
+    outline: none !important;
+}
+
 *
 {
-    outline: none;
     color:var(--text-color);
     // user-select:none;
     // -webkit-user-select: none;  /* Chrome all / Safari all */
