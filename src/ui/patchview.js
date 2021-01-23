@@ -20,6 +20,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
+        corepatch.addEventListener("onLink", this._portValidate.bind(this));
+        corepatch.addEventListener("onUnLink", this._portValidate.bind(this));
+
         corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
     }
@@ -1184,6 +1187,57 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const op = gui.corePatch().getOpById(id);
         op.selectChilds();
     }
+
+
+    _portValidate(p1, p2)
+    {
+        if (p1.type != CABLES.OP_PORT_TYPE_OBJECT) return;
+        let inp = null;
+        let outp = null;
+
+        if (p1.direction === CABLES.PORT_DIR_IN)
+        {
+            inp = p1;
+            outp = p2;
+        }
+        else
+        {
+            inp = p2;
+            outp = p1;
+        }
+
+        const id = "_validator" + inp.name;
+
+        inp.parent.setUiError(id, null);
+
+        console.log("validating!!!");
+
+        if (!inp.isLinked()) return;
+
+        if (outp.get() == null) return;
+
+        console.log("objtype", p1.uiAttribs.objType, p2.uiAttribs.objType, outp.get());
+        if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
+
+        const errorMsg = "Object in port <b>" + inp.name + "</b> is not of type " + inp.uiAttribs.objType;
+
+        // check if both have defined objtype
+        if (p1.uiAttribs.objType && p2.uiAttribs.objType && p1.uiAttribs.objType != p2.uiAttribs.objType)
+        {
+            inp.parent.setUiError(id, errorMsg);
+            return;
+        }
+
+        // validate by object value
+        if (inp.uiAttribs.objType && outp.get())
+        {
+            if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof CGL.Geometry)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof CGL.Shader)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.parent.setUiError(id, errorMsg);
+        }
+    }
+
 
     refreshCurrentOpParamsByPort(p1, p2)
     {
