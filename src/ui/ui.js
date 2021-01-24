@@ -223,8 +223,8 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreview = ele.byId("bgpreview");
         this._elBgPreviewButtonContainer = ele.byId("bgpreviewButtonsContainer");
 
-        this._elOptions = this._elOptions || $("#options");
-        this._elMeta = this._elMeta || $("#meta");
+        this._elOptions = this._elOptions || document.getElementById("options");
+        this._elMeta = this._elMeta || document.getElementById("meta");
         this._elMenubar = this._elMenubar || $("#menubar");
         this._elSplitterMeta = this._elSplitterMeta || $("#splitterMeta");
         this._elInforArea = this._elInforArea || $("#infoArea");
@@ -562,51 +562,38 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.showTwoMetaPanels())
         {
-            console.log("two meta panel");
-            this._elOptions.css("left", window.innerWidth - this.rendererWidthScaled - 1);
-            this._elOptions.css("top", self.rendererHeightScaled);
-            this._elOptions.css("width", optionsWidth);
-            this._elOptions.css("height", window.innerHeight - self.rendererHeightScaled);
-
             metaWidth = this.rendererWidthScaled - optionsWidth + 1;
-            this._elMeta.css("right", 0);
-            this._elMeta.css("top", self.rendererHeightScaled);
-            this._elMeta.css("width", metaWidth);
-            this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
 
+            this._elOptions.style.left = window.innerWidth - this.rendererWidthScaled - 1 + "px";
+            this._elOptions.style.top = self.rendererHeightScaled + "px";
+            this._elOptions.style.width = optionsWidth + "px";
+            this._elOptions.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+
+            this._elMeta.style.right = 0 + "px";
+            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.width = metaWidth + "px";
+            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
 
             this._elSplitterMeta.css("bottom", self.infoHeight + "px");
             this._elSplitterMeta.css("width", metaWidth - 28 + "px");
-
             this._elSplitterMeta.css("display", "block");
-            this._elOptions.css("display", "block");
+            this._elOptions.style.display = "block";
         }
         else
         {
-            console.log("one meta panel");
             metaWidth = this.rendererWidthScaled;
-            this._elMeta.css("right", 0);
+            this._elMeta.style.right = 0 + "px";
 
-            // this._elMeta.css("left", window.innerWidth - this.rendererWidthScaled - 1);
-            this._elMeta.css("top", self.rendererHeightScaled);
-            this._elMeta.css("width", metaWidth);
-            this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
+            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.width = metaWidth + "px";
+            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
 
-            // const metaWidth = this.rendererWidthScaled - optionsWidth + 1;
-            this._elOptions.css("width", 0);
-            this._elOptions.css("height", 0);
+            this._elOptions.style.width = 0 + "px";
+            this._elOptions.style.height = 0 + "px";
+            this._elOptions.style.display = "none";
 
-            this._elOptions.css("display", "none");
             this._elSplitterMeta.css("display", "none");
-            // this._elSplitterMeta.css("width", metaWidth - 28 + "px");
-
-            // this._elMeta.css("top", self.rendererHeightScaled);
-            // this._elMeta.css("width", metaWidth);
-            // this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
         }
-
-        // $("#performance_glcanvas").css("bottom", 0);
-        // $("#performance_glcanvas").css("right", this.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
 
         this._elMenubar.css("top", 0);
         this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
