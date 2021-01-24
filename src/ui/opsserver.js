@@ -145,6 +145,9 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 else l.subType = "number";
             }
 
+            if (op.portsIn[i].uiAttribs.objType) l.objType = op.portsIn[i].uiAttribs.objType;
+
+
             opObj.portsIn.push(l);
         }
 
@@ -163,6 +166,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 else if (op.portsOut[i].uiAttribs.display == "file") l.subType = "url";
                 else l.subType = "number";
             }
+            if (op.portsOut[i].uiAttribs.objType) l.objType = op.portsOut[i].uiAttribs.objType;
 
             opObj.portsOut.push(l);
         }
