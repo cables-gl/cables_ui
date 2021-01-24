@@ -20,6 +20,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         this._eventPrefix = CABLES.uuid();
 
+
         this._updateWatchPorts();
     }
 
@@ -333,7 +334,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
         });
 
-        document.getElementById("options").innerHTML = html;
+        let eleId = "options";
+        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+
+        const ele = document.getElementById(eleId);
+
+        if (ele) ele.innerHTML = html;
+        else return;
 
         // gui.showOpDoc(op.objName);
         CABLES.UI.bindInputListeners();

@@ -517,12 +517,10 @@ CABLES.UI.Patch = function (_gui)
         for (const i in this.ops) this.ops[i].fixTitle();
     };
 
-
     this.center = function (x, y)
     {
         this.getViewBox().center(x, y);
     };
-
 
     this.centerViewBoxOps = function ()
     {
