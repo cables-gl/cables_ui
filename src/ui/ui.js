@@ -599,6 +599,7 @@ CABLES.UI.GUI = function (cfg)
         this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
         this._elMenubar.css("height", menubarHeight);
 
+
         if (self.infoHeight === 0)
         {
             this._elInforArea.hide();
