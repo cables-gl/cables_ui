@@ -65,6 +65,10 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
     let savedState = true;
+
+
+    this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
+
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
@@ -189,6 +193,21 @@ CABLES.UI.GUI = function (cfg)
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
+
+    this.showTwoMetaPanels = function ()
+    {
+        let r = true;
+        if (this.rendererWidth < 700) r = false;
+
+        const haschanged = this._showingtwoMetaPanel != r;
+        this._showingtwoMetaPanel = r;
+
+        if (haschanged)
+            this.metaOpParams.updateVisibility(r);
+
+        return r;
+    };
+
     this.setLayout = function ()
     {
         this.pauseProfiling();
@@ -204,9 +223,8 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreview = ele.byId("bgpreview");
         this._elBgPreviewButtonContainer = ele.byId("bgpreviewButtonsContainer");
 
-
-        this._elOptions = this._elOptions || $("#options");
-        this._elMeta = this._elMeta || $("#meta");
+        this._elOptions = this._elOptions || document.getElementById("options");
+        this._elMeta = this._elMeta || document.getElementById("meta");
         this._elMenubar = this._elMenubar || $("#menubar");
         this._elSplitterMeta = this._elSplitterMeta || $("#splitterMeta");
         this._elInforArea = this._elInforArea || $("#infoArea");
@@ -219,7 +237,6 @@ CABLES.UI.GUI = function (cfg)
         this._elEditor = this._elEditor || document.getElementById("editor");
         this._elLibrary = this._elLibrary || document.getElementById("library");
         this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
-        // this._elSplitterEditor = this._elSplitterEditor || document.getElementById("splitterEditor");
         this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
@@ -540,26 +557,48 @@ CABLES.UI.GUI = function (cfg)
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
-        this._elOptions.css("left", window.innerWidth - this.rendererWidthScaled - 1);
-        this._elOptions.css("top", self.rendererHeightScaled);
-        this._elOptions.css("width", optionsWidth);
-        this._elOptions.css("height", window.innerHeight - self.rendererHeightScaled);
 
-        const metaWidth = this.rendererWidthScaled - optionsWidth + 1;
-        this._elMeta.css("right", 0);
-        this._elMeta.css("top", self.rendererHeightScaled);
-        this._elMeta.css("width", metaWidth);
-        this._elMeta.css("height", window.innerHeight - self.rendererHeightScaled);
+        let metaWidth;
 
-        // $("#performance_glcanvas").css("bottom", 0);
-        // $("#performance_glcanvas").css("right", this.rendererWidthScaled - optionsWidth - $("#performance_glcanvas").width() + 1);
+        if (this.showTwoMetaPanels())
+        {
+            metaWidth = this.rendererWidthScaled - optionsWidth + 1;
+
+            this._elOptions.style.left = window.innerWidth - this.rendererWidthScaled - 1 + "px";
+            this._elOptions.style.top = self.rendererHeightScaled + "px";
+            this._elOptions.style.width = optionsWidth + "px";
+            this._elOptions.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+
+            this._elMeta.style.right = 0 + "px";
+            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.width = metaWidth + "px";
+            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+
+            this._elSplitterMeta.css("bottom", self.infoHeight + "px");
+            this._elSplitterMeta.css("width", metaWidth - 28 + "px");
+            this._elSplitterMeta.css("display", "block");
+            this._elOptions.style.display = "block";
+        }
+        else
+        {
+            metaWidth = this.rendererWidthScaled;
+            this._elMeta.style.right = 0 + "px";
+
+            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.width = metaWidth + "px";
+            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+
+            this._elOptions.style.width = 0 + "px";
+            this._elOptions.style.height = 0 + "px";
+            this._elOptions.style.display = "none";
+
+            this._elSplitterMeta.css("display", "none");
+        }
 
         this._elMenubar.css("top", 0);
         this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
         this._elMenubar.css("height", menubarHeight);
 
-        this._elSplitterMeta.css("bottom", self.infoHeight + "px");
-        this._elSplitterMeta.css("width", metaWidth - 28 + "px");
 
         if (self.infoHeight === 0)
         {
@@ -2297,6 +2336,8 @@ function startUi(cfg)
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);
+
+                document.getElementById("loadingstatusLog").style.display = "none";
 
                 new QRCode(document.getElementById("remote_view_qr"), {
                     "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,

@@ -145,6 +145,9 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 else l.subType = "number";
             }
 
+            if (op.portsIn[i].uiAttribs.objType) l.objType = op.portsIn[i].uiAttribs.objType;
+
+
             opObj.portsIn.push(l);
         }
 
@@ -163,6 +166,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 else if (op.portsOut[i].uiAttribs.display == "file") l.subType = "url";
                 else l.subType = "number";
             }
+            if (op.portsOut[i].uiAttribs.objType) l.objType = op.portsOut[i].uiAttribs.objType;
 
             opObj.portsOut.push(l);
         }
@@ -201,17 +205,18 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             gui.corePatch().reloadOp(
                 name,
-                function (num, ops)
+                function (num, newOps)
                 {
                     CABLES.UI.notify(num + " ops reloaded");
 
-                    for (let i = 0; i < ops.length; i++)
+                    for (let i = 0; i < newOps.length; i++)
                     {
-                        gui.patch().opCollisionTest(gui.patch().getUiOp(ops[i]));
-                        delete ops[i].uiAttribs.uierrors;
+                        // gui.patchView.testCollision(newOps[i])
+                        gui.patch().opCollisionTest(gui.patch().getUiOp(newOps[i]));
+                        delete newOps[i].uiAttribs.uierrors;
                     }
 
-                    if (ops.length > 0) this.saveOpLayout(ops[0]);
+                    if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.patch().checkCollisionsEdge();
                     if (next)next();
                 }.bind(this),
