@@ -922,6 +922,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     alignSelectedOpsVert(ops)
     {
+        if (ops.length == 1)
+        {
+            const op = ops[0];
+            if (op.portsIn[0] && op.portsIn[0].links.length)
+            {
+                const pre = op.portsIn[0].links[0].portOut.parent;
+
+                if (pre.uiAttribs.translate && op.uiAttribs.translate)
+                    op.setUiAttrib({ "translate": { "x": pre.uiAttribs.translate.x, "y": op.uiAttribs.translate.y } });
+            }
+        }
+
         if (ops.length > 0)
         {
             let j = 0;
