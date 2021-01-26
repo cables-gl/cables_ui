@@ -114,7 +114,7 @@
 
 
 
-<div id="menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
+<div id="menubar" class="hidden" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
     <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
@@ -130,23 +130,21 @@
                 </div>
 
                 <ul class="nav-submenu">
-                    <li class="nav_jobs">
+                    <li class="nav_cablesweb">Open cables.gl</span></li>
+                    <li class="divide"></li>
+                    <li class="nav_jobs" style="background-color: var(--color-02);">
                         <div id="jobs"></div>
                     </li>
                     <li class="divide"></li>
-                    <li class="nav_socketinfo">
+                    <li class="nav_socketinfo" style="background-color: var(--color-02);">
                         <div id="navsocketinfo"></div>
                     </li>
-
-
                 </ul>
             </li>
 
             <li class="nav_cables"><b>cables - <b id="username">???</b></b>
                 <ul class="nav-submenu">
                     <li class="nav_preferences">My preferences</span></li>
-                    <li class="divide"></li>
-                    <li class="nav_cablesweb">Open cables.gl</span></li>
                     <li class="divide"></li>
                     <li class="nav-sub-submenu">
                         New Patch
@@ -268,9 +266,6 @@
 
 
 
-    <div id="" style="float:right;">
-        &nbsp;
-    </div>
 
 
     <!-- <div id="serverproject" style="float:right;display:none;">

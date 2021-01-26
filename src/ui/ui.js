@@ -225,7 +225,7 @@ CABLES.UI.GUI = function (cfg)
 
         this._elOptions = this._elOptions || document.getElementById("options");
         this._elMeta = this._elMeta || document.getElementById("meta");
-        this._elMenubar = this._elMenubar || $("#menubar");
+        this._elMenubar = this._elMenubar || document.getElementById("menubar");
         this._elSplitterMeta = this._elSplitterMeta || $("#splitterMeta");
         this._elInforArea = this._elInforArea || $("#infoArea");
         this._elGlCanvas = this._elGlCanvas || $("#glcanvas");
@@ -253,7 +253,6 @@ CABLES.UI.GUI = function (cfg)
 
         const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
-        this._elMenubar.show();
 
         if (this.isRemoteClient)
         {
@@ -318,7 +317,7 @@ CABLES.UI.GUI = function (cfg)
         const filesHeight = 0;
         const timedisplayheight = 25;
 
-        let patchHeight = window.innerHeight - menubarHeight - 2;
+        let patchHeight = window.innerHeight - 2;
         const patchWidth = window.innerWidth - this.rendererWidthScaled - 6 - iconBarWidth;
 
         if (showTiming)
@@ -402,72 +401,14 @@ CABLES.UI.GUI = function (cfg)
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
         }
 
-        // if(showingEditor)
-        // {
-        //     this._elEditorMinimized.style.display = "none";
-        //     var editWidth=self.editorWidth;
-
-        //     if (editWidth > window.innerWidth - this.rendererWidth -iconBarWidth)
-        //     {
-        //         this.rendererWidth = window.innerWidth - editWidth - iconBarWidth -20;
-        //         this.updateCanvasIconBar();
-        //     }
-
-        //     var editorbarHeight = 76;
-
-        //     this._elEditor.style.display = "block";
-        //     this._elEditor.style.left = iconBarWidth;
-        //     this._elEditor.style.top = menubarHeight;
-
-        //     this._elEditorBar.css('height', editorbarHeight);
-        //     this._elEditorBar.css('top',  1);
-
-        //     var editorHeight = patchHeight - 2 - editorbarHeight;
-
-        //     this._elAceEditor.css('height', editorHeight);
-        //     this._elAceEditor.css('width', editWidth);
-        //     $('#ace_editors .ace_tab_content').css('top',  1 + editorbarHeight);
-        //     this._elAceEditor.css('left', 0);
-
-        //     $('#editorfoot').css('width', editWidth);
-
-        //     this._elEditorBar.css('width', editWidth);
-
-        //     this._elSplitterEditor.style.display = "block";
-        //     this._elSplitterEditor.style.left= editWidth + iconBarWidth;
-        //     this._elSplitterEditor.style.height= patchHeight - 2;
-        //     this._elSplitterEditor.style.width= 5;
-        //     this._elSplitterEditor.style.top= menubarHeight;
-
-        //     _editor.resize();
-
-        // } else {
-
-        //     this._elSplitterEditor.style.display = "none";
-        //     this._elEditor.style.display = "none";
-        //     editorWidth = 0;
-
-        //     if(_editor.getNumTabs()>0)
-        //     {
-        //         this._elEditorMinimized.style.display = "block";
-        //         this._elEditorMinimized.style.left = iconBarWidth;
-        //         this._elEditorMinimized.style.top = patchHeight / 2 - 100;
-        //     }
-        //     else this._elEditorMinimized.style.display = "none";
-        // }
-
         const elIconBarMargin = 30;
         this._elIconBar.css("height", window.innerHeight - elIconBarMargin);
         this._elIconBar.css("top", elIconBarMargin);
 
-        // $("#jobs").css("left", iconBarWidth);
-
         if (this.rendererWidth < 100) this.rendererWidth = 100;
-
 
         this._elSplitterPatch.css("left", window.innerWidth - this.rendererWidthScaled - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
-        this._elSplitterPatch.css("top", menubarHeight);
         this._elSplitterRenderer.css("top", this.rendererHeightScaled);
         this._elSplitterRenderer.css("width", this.rendererWidthScaled);
 
@@ -476,7 +417,7 @@ CABLES.UI.GUI = function (cfg)
 
         this._elPatch.style.height = patchHeight + "px";
         this._elPatch.style.width = patchWidth + "px";
-        this._elPatch.style.top = menubarHeight + "px";
+        this._elPatch.style.top = 0 + "px";
         this._elPatch.style.left = patchLeft + "px";
 
 
@@ -557,7 +498,6 @@ CABLES.UI.GUI = function (cfg)
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
-
         let metaWidth;
 
         if (this.showTwoMetaPanels())
@@ -595,10 +535,8 @@ CABLES.UI.GUI = function (cfg)
             this._elSplitterMeta.css("display", "none");
         }
 
-        this._elMenubar.css("top", 0);
-        this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
-        this._elMenubar.css("height", menubarHeight);
-
+        this._elMenubar.style.top = 0 + "px";
+        this._elMenubar.style.height = menubarHeight + "px";
 
         if (self.infoHeight === 0)
         {
@@ -1571,6 +1509,8 @@ CABLES.UI.GUI = function (cfg)
         $("#cablescanvas").show();
         $("#loadingstatus").hide();
         $("#mainContainer").show();
+        document.getElementById("menubar").classList.remove("hidden");
+
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.uiperf.show();
         if (CABLES.UI.userSettings.get("showMinimap") == true) CABLES.CMD.UI.showMinimap();
