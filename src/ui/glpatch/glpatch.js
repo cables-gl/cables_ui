@@ -140,11 +140,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this));
 
-        cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
-        cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
-        cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
-        cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
-        cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this));
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this));
+        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this));
+        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
@@ -192,12 +192,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setCursor(c)
     {
         this._cursor = c;
-    }
-
-    _onCanvasMouseDown(e)
-    {
-        this.emitEvent("mousedown", e);
-        this._rectInstancer.mouseDown(e);
     }
 
     _onCanvasMouseMove(e)
@@ -254,9 +248,21 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
     }
 
+    _onCanvasMouseDown(e)
+    {
+        try { this._cgl.canvas.setPointerCapture(e.pointerId); }
+        catch (er) { console.log(er); }
+
+        this.emitEvent("mousedown", e);
+        this._rectInstancer.mouseDown(e);
+    }
+
     _onCanvasMouseUp(e)
     {
         this._rectInstancer.mouseUp(e);
+
+        try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
+        catch (er) { console.log(er); }
 
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
