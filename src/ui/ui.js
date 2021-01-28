@@ -20,8 +20,8 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
 
     this._CANVASMODE_NORMAL = 0;
-    this._CANVASMODE_FULLSCREEN = 1;
-    this._CANVASMODE_PATCHBG = 2;
+    this._CANVASMODE_FULLSCREEN = 2;
+    this._CANVASMODE_PATCHBG = 1;
     this._canvasMode = this._CANVASMODE_NORMAL;
 
     if (!cfg) cfg = {};
@@ -570,17 +570,9 @@ CABLES.UI.GUI = function (cfg)
         $("#maintabs").css("height", window.innerHeight - menubarHeight);
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
-        delete this._elCablesCanvas.style["z-index"];
-        this._elCablesCanvas.style.right = "0px";
-        this._elCablesCanvas.style.left = "initial";
-
-        console.log("this._canvasMode", this._canvasMode);
-
 
         if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
         {
-            console.log("!FULLEDXFCNKJDHNKJEDHNKJ");
-
             this._elCablesCanvas.style.left = 0 + "px";
             this._elCablesCanvas.style.right = "initial";
 
@@ -608,12 +600,16 @@ CABLES.UI.GUI = function (cfg)
         {
             const density = this._corePatch.cgl.pixelDensity;
 
+            this._elCablesCanvas.style["z-index"] = 1;
+
             this._elGlCanvas.attr("width", this.rendererWidth * density);
             this._elGlCanvas.attr("height", self.rendererHeight * density);
             this._elGlCanvas.css("width", this.rendererWidth);
             this._elGlCanvas.css("height", self.rendererHeight);
             this._elCablesCanvas.style.width = this.rendererWidth + "px";
             this._elCablesCanvas.style.height = self.rendererHeight + "px";
+            this._elCablesCanvas.style.right = "0px";
+            this._elCablesCanvas.style.left = "initial";
 
             this._elCablesCanvas.style["transform-origin"] = "top right";
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
@@ -649,64 +645,40 @@ CABLES.UI.GUI = function (cfg)
         $("#serialized").val(self.patch().scene.serialize());
     };
 
-    this.cycleRendererSizePatchBg = function ()
+    this.cycleRendererSize = function ()
     {
-        console.log("!", this._canvasMode);
-        if (this._canvasMode != this._CANVASMODE_NORMAL && this._canvasMode != this._CANVASMODE_PATCHBG) return;
-
-        this.showCanvasModal(false);
-        if (this._canvasMode !== this._CANVASMODE_PATCHBG)
+        if (this._canvasMode == this._CANVASMODE_NORMAL)
         {
-            this._elGlCanvas.addClass("maximizedBg");
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
+        }
 
-            this._canvasMode = this._CANVASMODE_PATCHBG;
+        this._canvasMode++;
+
+        if (this._canvasMode > this._CANVASMODE_FULLSCREEN) this._canvasMode = 0;
+
+
+        if (this._canvasMode == this._CANVASMODE_PATCHBG)
+        {
+            this.rendererHeight = 34;
+            this.rightPanelWidth = this._oldCanvasWidth;
+        }
+        else if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+        {
+
         }
         else
         {
-            this._canvasMode = this._CANVASMODE_NORMAL;
-
-            this._elGlCanvas.removeClass("maximizedBg");
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
-        }
-
-        this.setLayout();
-        this.setLayout();
-    };
-
-    this.cycleRendererSize = function ()
-    {
-        if (this._canvasMode != this._CANVASMODE_NORMAL && this._canvasMode != this._CANVASMODE_FULLSCREEN) return;
-
-        this.showCanvasModal(false);
-        if (this._canvasMode == this._CANVASMODE_NORMAL)
-        {
-            this._canvasMode = this._CANVASMODE_FULLSCREEN;
-            this._elGlCanvas.addClass("maximized");
-            this._oldCanvasWidth = this.rendererWidth;
-            this._oldCanvasHeight = this.rendererHeight;
-            this._oldShowingEditor = showingEditor;
-
-            showingEditor = false;
-        }
-        else
-        {
-            this._elGlCanvas.removeClass("maximized");
-            this.rendererWidth = this._oldCanvasWidth;
-            this.rendererHeight = this._oldCanvasHeight;
-            showingEditor = this._oldShowingEditor;
-
-            this._canvasMode = this._CANVASMODE_NORMAL;
 
             this.showCanvasModal(true);
         }
 
         this.setLayout();
+        this.showCanvasModal(false);
     };
-
 
     function updateTimingIcon()
     {
@@ -2045,7 +2017,11 @@ CABLES.UI.GUI = function (cfg)
 
         this._elCanvasIconbar.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
         this._elCanvasIconbar.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
-        this._elCanvasIconbar.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
+
+        if (this._canvasMode == this._CANVASMODE_PATCHBG)
+            this._elCanvasIconbar.style.top = 0;
+        else
+            this._elCanvasIconbar.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
     };
 
     this.getCanvasSizeString = function (cgl)
@@ -2064,6 +2040,15 @@ CABLES.UI.GUI = function (cfg)
 
     this.showCanvasModal = function (_show)
     {
+        if (this._canvasMode == this._CANVASMODE_PATCHBG)
+        {
+            ele.show(this._elCanvasIconbar);
+            const cgl = this._corePatch.cgl;
+            this.updateCanvasIconBar();
+            this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
+            return;
+        }
+
         if (!this._elCanvasIconbar) return;
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
