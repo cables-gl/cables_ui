@@ -40,11 +40,9 @@
     <a class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></a>
     <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></a>
     <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
-    <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="toggle sound" data-infotext="toggle_sound"></a>
-    <a class="tt info icon icon-search iconhover" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="" data-infotext=""></a>
-
-
-    <a class="tt icon icon-gizmo iconhover" onclick="gui.helperContextMenu(this);" data-tt="toggle helper" data-infotext="toggle_helper"></a>
+    <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-infotext="toggle_sound"></a>
+    <a class="tt info icon icon-search iconhover" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="Pixel Magnifier" data-infotext="canvas_lens"></a>
+    <a class="tt info icon icon-gizmo iconhover" onclick="gui.helperContextMenu(this);" data-tt="Toggle Helper" data-infotext="toggle_helper"></a>
 
     <!-- <a class="tt icon icon-cube iconhover" id="canvasIconHelper" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
     <!-- <a class="tt icon icon-gizmo iconhover" id="canvasIconTransforms" onclick="CABLES.CMD.UI.toggleTransformOverlay();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
@@ -52,7 +50,7 @@
     <a class="tt icon icon-triple-dot iconhover" onclick="gui.rendererContextMenu(this)" data-tt="more options"></a>
 
     <div class="canvasInfo">
-        <span id="canvasInfoSize" class="info" data-infotext="renderer_setsize"></span>
+        <span id="canvasInfoSize" class="" ></span>
         <span id="canvasInfoFPS" class="" ></span>
     </div>
 
