@@ -528,13 +528,10 @@ CABLES.UI.GUI = function (cfg)
             this._elOptions.style.width = 0 + "px";
             this._elOptions.style.height = 0 + "px";
             this._elOptions.style.display = "none";
-
-            // this._elSplitterMeta.css("display", "none");
         }
 
         this._elSplitterMeta.css("bottom", self.infoHeight + "px");
         this._elSplitterMeta.css("width", metaWidth - 28 + "px");
-
 
         this._elMenubar.style.top = 0 + "px";
         this._elMenubar.style.height = menubarHeight + "px";
