@@ -22,14 +22,14 @@ CABLES.UI.TEXTS = {
     "linkAddCircle": "## Link \n\n* `[left click]` - insert op \n* `[right click]` - delete link \n* `[shift+left click]` - insert op",
 
     "timeLineToggle": "Toggle timeline / keyframing panel",
-    "timeLineTime": "* shows current frame/time in seconds\n\n * click to enter frame to go to",
+    "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
 
-    "portFloatInput": "* use mousewheel or up/down keys to inc/decrement by 0.1",
-    "portFloatDrag": "* hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
+    "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
+    "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
     "portUnlink": "Click to unlink port",
-    "portCreateOp": "create and connect new texture op",
-    "portAnimKeep": "keep in keyframing view",
-    "portAnimToggle": "toggle parameter animation. enable to keyframe parameter",
+    "portCreateOp": "Create and connect new texture op",
+    "portAnimKeep": "Keep in keyframing view",
+    "portAnimToggle": "Toggle parameter animation. enable to keyframe parameter",
 
     "portDirIn": "## Input Port \n\n",
     "portDirOut": "## Output Port\n\n",
