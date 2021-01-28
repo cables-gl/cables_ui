@@ -574,9 +574,6 @@ CABLES.UI.GUI = function (cfg)
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
 
-            this._elSplitterMeta.css("bottom", self.infoHeight + "px");
-            this._elSplitterMeta.css("width", metaWidth - 28 + "px");
-            this._elSplitterMeta.css("display", "block");
             this._elOptions.style.display = "block";
         }
         else
@@ -592,8 +589,12 @@ CABLES.UI.GUI = function (cfg)
             this._elOptions.style.height = 0 + "px";
             this._elOptions.style.display = "none";
 
-            this._elSplitterMeta.css("display", "none");
+            // this._elSplitterMeta.css("display", "none");
         }
+
+        this._elSplitterMeta.css("bottom", self.infoHeight + "px");
+        this._elSplitterMeta.css("width", metaWidth - 28 + "px");
+        // this._elSplitterMeta.css("display", "block");
 
         this._elMenubar.css("top", 0);
         this._elMenubar.css("width", window.innerWidth - this.rendererWidthScaled - 10);
