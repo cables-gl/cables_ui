@@ -264,6 +264,17 @@ CABLES.UI.GUI = function (cfg)
 
 
         let iconBarWidth = 80;
+
+        if (CABLES.UI.userSettings.get("hideSizeBar"))
+        {
+            iconBarWidth = 0;
+            this._elIconBar.hide();
+        }
+        else
+        {
+            this._elIconBar.show();
+        }
+
         let patchHeight = window.innerHeight - 2;
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled - 6 - iconBarWidth;
@@ -307,16 +318,6 @@ CABLES.UI.GUI = function (cfg)
             this.patchView.resume();
         }, 50);
 
-
-        if (CABLES.UI.userSettings.get("hideSizeBar"))
-        {
-            iconBarWidth = 0;
-            this._elIconBar.hide();
-        }
-        else
-        {
-            this._elIconBar.show();
-        }
 
         document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
         this._elIconBar[0].style.width = iconBarWidth + "px";
