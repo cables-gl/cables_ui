@@ -601,7 +601,7 @@ CABLES.UI.GUI = function (cfg)
         {
             const density = this._corePatch.cgl.pixelDensity;
 
-            this._elCablesCanvas.style["z-index"] = 1;
+            this._elCablesCanvas.style["z-index"] = 10;
 
             this._elGlCanvas.attr("width", this.rendererWidth * density);
             this._elGlCanvas.attr("height", self.rendererHeight * density);
