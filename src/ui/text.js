@@ -7,26 +7,29 @@ CABLES.UI.TEXTS = {
     /* Menu ------------------ */
     /* Patch */
 
-    "save_screenshot": "## save screenshot\n\ndownload renderer output as an image file",
-    "toggle_sound": "## toggle sound\n\nturn sound on or off",
-    "renderer_maximize": "## toggle fullscreen",
+    "save_screenshot": "## Save Screenshot\n\nDownload renderer output as an image file",
+    "toggle_sound": "## Toggle Sound\n\nTurn sound on or off",
+    "toggle_helper": "Enable or disable of showing helper and bounding boxes",
+    "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n`ctrl/cmd`+`c` copy hovered color to clipboard",
+
+    "renderer_maximize": "## Toggle Fullscreen",
     "renderer_setsize": "## Canvas Size \n\n* click to set canvas size",
-    "infoarea": "## infoarea\n\nlook here for contextual information",
+    "infoarea": "## Infoarea\n\nLook here for contextual information",
 
     "nav_patch_new": "## New Patch\n\nCreates a new patch",
     "nav_patch_open": "## Open Patch\n\nLoad an existing patch",
 
     "linkAddCircle": "## Link \n\n* `[left click]` - insert op \n* `[right click]` - delete link \n* `[shift+left click]` - insert op",
 
-    "timeLineToggle": "toggle timeline / keyframing panel",
-    "timeLineTime": "* shows current frame/time in seconds\n\n * click to enter frame to go to",
+    "timeLineToggle": "Toggle timeline / keyframing panel",
+    "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
 
-    "portFloatInput": "* use mousewheel or up/down keys to inc/decrement by 0.1",
-    "portFloatDrag": "* hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
+    "portFloatInput": "* Use mousewheel or up/down keys to inc/decrement by 0.1",
+    "portFloatDrag": "* Hold left mouse button and drag to change value. \n\n* hold shift to for smaller increase.",
     "portUnlink": "Click to unlink port",
-    "portCreateOp": "create and connect new texture op",
-    "portAnimKeep": "keep in keyframing view",
-    "portAnimToggle": "toggle parameter animation. enable to keyframe parameter",
+    "portCreateOp": "Create and connect new texture op",
+    "portAnimKeep": "Keep in keyframing view",
+    "portAnimToggle": "Toggle parameter animation. enable to keyframe parameter",
 
     "portDirIn": "## Input Port \n\n",
     "portDirOut": "## Output Port\n\n",

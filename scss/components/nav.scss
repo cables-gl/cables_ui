@@ -94,6 +94,7 @@
 #menubar
 {
     display:block;
+    z-index: $zindex_over;
 }
 
 .cables-logo
@@ -122,7 +123,6 @@ nav
 {
 
     float:left;
-    z-index: $zindex_over;
     $nav-li-padding: 7px 14px;
 
     .nav_logo

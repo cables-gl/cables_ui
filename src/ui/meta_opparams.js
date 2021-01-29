@@ -23,12 +23,17 @@ CABLES.UI.MetaOpParams.prototype.updateVisibility = function (b)
     if (!window.gui) return;
     // this._tab.remove();
 
+    if (this._tabs.getActiveTab() != this._tab) this._prevTab = this._tabs.getActiveTab();
+
     this._tabs.closeTab(this._tab.id);
+    if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
+
 
     if (b === undefined)b = !gui.showTwoMetaPanels();
 
     if (b === false)
     {
+        this._prevTab = this._tabs.getActiveTab();
         this._tabs.addTab(this._tab);
         this._tabs.activateTab(this._tab.id);
     }

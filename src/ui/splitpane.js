@@ -15,7 +15,12 @@ CABLES.UI.initSplitPanes = function ()
         {
             gui.pauseProfiling();
             e.preventDefault();
-            gui.rendererWidth = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+
+            const pos = (window.innerWidth - e.clientX) * (1 / gui.corePatch().cgl.canvasScale);
+
+            if (gui.rendererWidth != -1) gui.rendererWidth = pos;
+            gui.splitpanePatchPos = pos;
+
             gui.setLayout();
             gui.updateCanvasIconBar();
         }
