@@ -435,12 +435,10 @@ CABLES.UI.GUI = function (cfg)
         this.rightPanelWidth = this.rendererWidthScaled;
         if (this._canvasMode == this._CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
 
-
         this._elSplitterPatch.css("left", window.innerWidth - this.rightPanelWidth - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
         this._elSplitterRenderer.css("top", this.rendererHeightScaled);
         this._elSplitterRenderer.css("width", this.rendererWidthScaled);
-
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
