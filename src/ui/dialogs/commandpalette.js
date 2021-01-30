@@ -15,13 +15,6 @@ CABLES.UI.CommandPallet = function ()
     const canceledSearch = 0;
     const idSearch = 1;
 
-    // TODO: Maybe move to sidebar-customizer created function!?
-    // this.initVueSidebarCustomizer = function ()
-    // {
-    //     vueStore.commit("sidebar/setAllItems", CABLES.CMD.commands); // set all commands to be used in the customizer
-    // };
-
-    // this.initVueSidebarCustomizer();
 
     this.isVisible = function ()
     {

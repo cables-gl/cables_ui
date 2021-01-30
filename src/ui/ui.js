@@ -1509,13 +1509,9 @@ CABLES.UI.GUI = function (cfg)
         }
         else if ($("#cmdpalette").is(":visible")) gui.cmdPallet.close();
         else if ($(".contextmenu").is(":visible")) CABLES.contextMenu.close();
-        // else if(gui.find().isVisible()) gui.find().close();
-        // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
         else if ($("#sidebar").is(":visible")) $("#sidebar").animate({
             "width": "toggle"
         }, 200);
-        // else if ($(".easingselect").is(":visible")) $(".easingselect").hide();
-        // else if (vueStore.getters["sidebar/sidebarCustomizerVisible"]) vueStore.commit("sidebar/setCustomizerVisible", false);
         else if (CABLES.UI.MODAL._visible)
         {
             CABLES.UI.MODAL.hide(true);
