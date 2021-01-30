@@ -1,6 +1,11 @@
 
+.cbl_iconbarContainer
+{
+    position: absolute;
+    z-index: $zindex_over;
+}
 
-#cbl_iconbar
+.cbl_iconbar
 {
     border-radius: 5px;
     background-color:var(--color-01);
@@ -16,7 +21,25 @@
         &:hover
         {
             background-color: var(--color-05);
+
+            .icontext
+            {
+                display: block;
+            }
         }
+    }
+
+    .icontext
+    {
+        position: absolute;
+        display: none;
+        background-color: var(--color-01);
+        border-radius: 5px;
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+        white-space: nowrap;
+        margin-left:27px;
     }
 }
 

@@ -55,10 +55,7 @@ CABLES.IconBar = class
         this._eleContainer = document.createElement("div");
 
         this._eleContainer.id = "iconbar_" + this._id;
-
-        this._eleContainer.style.position = "absolute";
-        this._eleContainer.style["z-index"] = "99999";
-
+        this._eleContainer.classList.add("cbl_iconbarContainer");
 
         const html = CABLES.UI.getHandleBarHtml("iconbar", {
             "items": this._items,
@@ -67,8 +64,8 @@ CABLES.IconBar = class
 
         this._eleContainer.innerHTML = html;
 
-        this._eleContainer.style.top = 100 + "px";
-        this._eleContainer.style.left = 10 + "px";
+        // this._eleContainer.style.top = 100 + "px";
+        // this._eleContainer.style.left = 10 + "px";
 
         document.body.appendChild(this._eleContainer);
     }

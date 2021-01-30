@@ -419,10 +419,18 @@ CABLES.UI.GUI = function (cfg)
 
         if (this._elIconbarLeft)
         {
-            this._elIconbarLeft.style.top = menubarHeight + 300 + "px";
+            if (CABLES.UI.userSettings.get("hideSizeBar"))
+            {
+                this._elIconbarLeft.style.display = "none";
+            }
+            else
+            {
+                this._elIconbarLeft.style.display = "block";
+                this._elIconbarLeft.style.top = menubarHeight + 300 + "px";
 
-            if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 10 + "px";
-            else this._elIconbarLeft.style.left = 10 + "px";
+                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
+                else this._elIconbarLeft.style.left = 10 + "px";
+            }
         }
 
 
@@ -1594,6 +1602,8 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (CABLES.UI.userSettings.get("timelineOpened") == true) this.showTiming();
 
+        gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
+
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
@@ -2327,10 +2337,6 @@ function startUi(cfg)
                 CABLES.UI.startIdleListeners();
 
                 gui.jobs().updateJobListing();
-
-
-                gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
-
 
                 logStartup("finished loading cables");
 
