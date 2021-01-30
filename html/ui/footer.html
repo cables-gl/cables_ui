@@ -35,7 +35,7 @@ ook
         CABLESUILOADER.uiLoadStart=performance.now();
         CABLESUILOADER.startup={};
         CABLESUILOADER.startup.log=[];
-        CABLESUILOADER.startup.maxEvents=17-1;
+        CABLESUILOADER.startup.maxEvents=16-1;
         CABLESUILOADER.startup.numEvents=0;
 
         function incrementStartup()
@@ -138,20 +138,20 @@ ook
             });
 
 
-                            try
-                            {
-                                loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
+                            // try
+                            // {
+                                // loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
                                 if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                                 else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
 
-                            }catch(e)
-                            {
-                                console.log("err",e);
-                                return;
-                            }
+                            // }catch(e)
+                            // {
+                            //     console.log("err",e);
+                            //     return;
+                            // }
 
-                            loadjs.ready('cables_vue', function()
-                            {
+                            // loadjs.ready('cables_vue', function()
+                            // {
                                             logStartup('loaded cables vue');
                                             incrementStartup();
                                 // local ops are only available in electron version
@@ -184,7 +184,7 @@ ook
                                     waitForAce();
 
                                 });
-                            });
+                            // });
                         });
                     });
                 });

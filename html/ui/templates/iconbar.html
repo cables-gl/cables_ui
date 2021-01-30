@@ -1,0 +1,14 @@
+
+<script id="iconbar" type="text/x-handlebars-template">
+
+    <div id="cbl_iconbar">
+
+        {{#each items}}
+            <div class="item tt" data-tt="{{cmd}}" onclick="CABLES.CMD.exec('{{cmd}}');">
+                <span class="icon icon-{{icon}} " ></span>
+            </div>
+        {{/each}}
+
+    </div>
+
+</script>

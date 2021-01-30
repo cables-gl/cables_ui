@@ -1469,4 +1469,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer) this._patchRenderer.setSize(x, y, w, h);
     }
+
+    zoomStep(step)
+    {
+        this._patchRenderer.zoomStep(step);
+    }
 };

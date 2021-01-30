@@ -302,6 +302,11 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
+    this.zoomStep = function (step)
+    {
+        this._viewBox.zoomStep(step);
+    };
+
     this.cursorNavigate = function (dir)
     {
         if (selectedOps.length == 0) return;
@@ -384,6 +389,10 @@ CABLES.UI.Patch = function (_gui)
         self.showProjectParams();
     });
 
+    gui.keys.key("-", "Zoom out", "down", "patch", {}, (e) => { this._viewBox.zoomStep(1); });
+    gui.keys.key("=", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
+    gui.keys.key("+", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
+
 
     $("#patch").keydown(function (e)
     {
@@ -406,12 +415,6 @@ CABLES.UI.Patch = function (_gui)
             break;
         case 71: // g show graphs
             self.showSelectedOpsGraphs();
-            break;
-        case 187:
-            this._viewBox.zoomStep(-1);
-            break;
-        case 189:
-            this._viewBox.zoomStep(1);
             break;
         default:
             // console.log('key ',e.which,e.key);
