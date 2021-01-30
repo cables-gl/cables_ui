@@ -51,8 +51,8 @@ CABLES.IconBar = class
 
     _buildHtml()
     {
-        if (this._eleContainer) this._eleContainer.remove();
-        this._eleContainer = document.createElement("div");
+        if (this._eleContainer) this._eleContainer.innerHTML = "";
+        else this._eleContainer = document.createElement("div");
 
         this._eleContainer.id = "iconbar_" + this._id;
         this._eleContainer.classList.add("cbl_iconbarContainer");

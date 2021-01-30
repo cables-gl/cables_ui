@@ -426,7 +426,7 @@ CABLES.UI.GUI = function (cfg)
             else
             {
                 this._elIconbarLeft.style.display = "block";
-                this._elIconbarLeft.style.top = menubarHeight + 300 + "px";
+                this._elIconbarLeft.style.bottom = 10 + "px";
 
                 if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
                 else this._elIconbarLeft.style.left = 10 + "px";
