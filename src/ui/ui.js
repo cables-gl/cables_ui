@@ -421,10 +421,8 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elIconbarLeft.style.top = menubarHeight + 300 + "px";
 
-            if (this.maintabPanel.isVisible())
-                this._elIconbarLeft.style.left = editorWidth + 10 + "px";
-            else
-                this._elIconbarLeft.style.left = 10 + "px";
+            if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 10 + "px";
+            else this._elIconbarLeft.style.left = 10 + "px";
         }
 
 
