@@ -8,7 +8,7 @@
 .cbl_iconbar
 {
     border-radius: $iconbar-borderradius;
-    background-color:var(--color-03);
+    background-color:$color-bar-bg;
     color:white;
     padding:4px;
 
@@ -22,7 +22,7 @@
 
         &:hover
         {
-            background-color: var(--color-05);
+            background-color: $color-bar-hover;
 
             .icontext
             {

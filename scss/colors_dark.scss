@@ -55,11 +55,19 @@ $background-color-dark: var(--color-02);
 $background-color-brighter: var(--color-03);
 $background-color-hover: var(--color-04);
 
-$color-menubar-background: var(--color-01);
+
+$color-bar-hover: var(--color-04);
+$color-bar-bg: var(--color-03);
+
+
+$color-menubar-background: $color-bar-bg;
 $color-menubar-background-active: $background-color-dark;
 $color-menubar-background-hover: $color-menubar-background;
 $color-menubar-text: var(--text-color);
 $color-menubar-hover: var(--color-13);
+
+
+
 
 $color-rubberband: var(--color-special);
 
