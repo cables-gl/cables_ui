@@ -18,21 +18,24 @@ CABLES.IconBar = class
     _updateItems()
     {
         this._items = [];
-
-        const defaultItems = ["save patch", "add op", "show settings", "toggle fullscreen"];
-        const itemObj = CABLES.UI.userSettings.get(this._id) || {};
-
-        for (let i = 0; i < defaultItems.length; i++)
-            if (!itemObj.hasOwnProperty(defaultItems[i]))
-                itemObj[defaultItems[i]] = true;
-
-        CABLES.UI.userSettings.set(this._id, itemObj);
-
         const items = [];
-        for (const i in itemObj)
+        if (this._id == "sidebar_left")
         {
-            if (itemObj[i]) items.push(i);
+            const defaultItems = ["save patch", "add op", "show settings", "toggle fullscreen"];
+            const itemObj = CABLES.UI.userSettings.get(this._id) || {};
+
+            for (let i = 0; i < defaultItems.length; i++)
+                if (!itemObj.hasOwnProperty(defaultItems[i]))
+                    itemObj[defaultItems[i]] = true;
+
+            CABLES.UI.userSettings.set(this._id, itemObj);
+
+            for (const i in itemObj)
+            {
+                if (itemObj[i]) items.push(i);
+            }
         }
+
 
         for (let i = 0; i < items.length; i++)
         {

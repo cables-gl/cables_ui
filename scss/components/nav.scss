@@ -1,5 +1,5 @@
 
-#nav-loading, #nav-logo
+#nav-loading
 {
     position: absolute;
     display:block;
@@ -32,7 +32,7 @@
 
 	li
 	{
-		color:$color-menubar-text;
+        color:$color-menubar-text;
 
 		&:hover
 		{
@@ -95,6 +95,11 @@
 {
     display:block;
     z-index: $zindex_over;
+    top:10px;
+    margin-top:10px;
+    border:5px solid $color-menubar-background;
+    left:10px;
+    border-radius: 6px;;
 }
 
 .cables-logo
@@ -125,16 +130,18 @@ nav
     float:left;
     $nav-li-padding: 7px 14px;
 
-    .nav_logo
-    {
-        width:15px;
-    }
+    // .nav_logo
+    // {
+    //     width:15px;
+    // }
 
 
         li
         {
           font-family: $headline-font, arial;
           font-weight: 400;
+          vertical-align: top;
+
         }
 
         a
@@ -173,9 +180,15 @@ nav
                   float: right;
             }
 
-            span
-            {
-                margin-left: 20px;
+
+            // span
+            // {
+            //     margin-left: 20px;
+            // }
+
+
+            .icon {
+                margin-left: 0 !important;
             }
         }
         ul li:hover
@@ -260,10 +273,10 @@ nav
         padding: $nav-li-padding;
         cursor: pointer;
 
-        span
-        {
-            margin-left: 20px;
-        }
+        // span
+        // {
+        //     margin-left: 20px;
+        // }
     }
     ul li:hover
     {

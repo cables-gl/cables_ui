@@ -324,7 +324,7 @@ CABLES.UI.GUI = function (cfg)
         // document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
         // this._elIconBar[0].style.width = iconBarWidth + "px";
 
-        const menubarHeight = 30;
+        const menubarHeight = 0;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
 
         let timelineUiHeight = 40;
@@ -356,9 +356,12 @@ CABLES.UI.GUI = function (cfg)
         //     $(".naventry").show();
         // }
 
+        const elEditorMinMaxYPos = 100;
+
+
         this._elSubpatchNav.style.width = patchWidth + "px";
         this._elSubpatchNav.style.left = iconBarWidth + "px";
-        this._elSubpatchNav.style.top = menubarHeight + 1 + "px";
+        this._elSubpatchNav.style.top = elEditorMinMaxYPos + 1 + "px";
 
 
         // $("#subpatch_nav").css(
@@ -373,13 +376,14 @@ CABLES.UI.GUI = function (cfg)
 
         const patchLeft = iconBarWidth;
 
+
         if (this.maintabPanel.isVisible())
         {
             const editorbarHeight = 76;
             const editorHeight = patchHeight - 2 - editorbarHeight;
 
             this._elMaintab.style.left = iconBarWidth + "px";
-            this._elMaintab.style.top = menubarHeight + "px";
+            this._elMaintab.style.top = 0 + "px";
             this._elMaintab.style.height = (editorHeight - 2) + "px";
             this._elMaintab.style.width = editorWidth + "px";
 
@@ -393,17 +397,21 @@ CABLES.UI.GUI = function (cfg)
 
             this._elEditorMinimized.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth + "px";
-            this._elEditorMinimized.style.top = menubarHeight + "px";
+            this._elEditorMinimized.style.top = elEditorMinMaxYPos + "px";
 
             this._elEditorMaximized.style.display = "block";
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
-            this._elEditorMaximized.style.top = menubarHeight + "px";
+            this._elEditorMaximized.style.top = elEditorMinMaxYPos + "px";
+
+            this._elMenubar.style.left = editorWidth + 10 + "px";
 
             // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
         }
         else
         {
+            this._elMenubar.style.left = 10 + "px";
+
             this._elEditorMaximized.style.display = "none";
 
             if (this.mainTabs.getNumTabs() > 0) this._elEditorMinimized.style.display = "block";
@@ -411,7 +419,7 @@ CABLES.UI.GUI = function (cfg)
 
             this._elSplitterMaintabs.style.display = "none";
             this._elEditorMinimized.style.left = iconBarWidth + "px";
-            this._elEditorMinimized.style.top = menubarHeight + "px";
+            this._elEditorMinimized.style.top = 80 + "px";
 
             // $("#subpatch_nav").css("left", iconBarWidth + 25);
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
@@ -569,7 +577,7 @@ CABLES.UI.GUI = function (cfg)
         this._elSplitterMeta.css("width", metaWidth - 28 + "px");
 
         this._elMenubar.style.top = 0 + "px";
-        this._elMenubar.style.height = menubarHeight + "px";
+        // this._elMenubar.style.height = menubarHeight + "px";
 
         if (self.infoHeight === 0)
         {

@@ -119,7 +119,7 @@
             <li class="nav_logo" >
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
-                <div id="nav-logo" class="icon icon-cables"></div>
+                <span id="nav-logo" class="icon icon-1_25x icon-cables"></span>
                 <div id="nav-loading" class="fa fa-circle-o-notch fa-spin"></div>&nbsp;
 
                 <div id="uploadprogresscontainer" class="hidden">
@@ -139,25 +139,9 @@
                 </ul>
             </li>
 
-            <li class="nav_cables"><b>cables - <b id="username">???</b></b>
-                <ul class="nav-submenu">
-                    <li class="nav_preferences">My preferences</span></li>
-                    <li class="divide"></li>
-                    <li class="nav-sub-submenu">
-                        New Patch
-                        <span class="icon icon-chevron-right"></span>
-                        <ul>
-                            <li><a class="nav_patch_new">Empty</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
 
-            <li class="nav-item-project">
-                <b id="patchname">...</b>
+            <li class="">
+                <span id="patchname" class=""  ></span>
                 <ul class="nav-submenu">
                     <li class="nav_patch_settings">Patch settings</li>
                     <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
@@ -188,7 +172,7 @@
                 </ul>
             </li>
 
-            <li>
+            <!-- <li>
                 Op
                 <ul class="nav-submenu">
                     <li class="nav_op_addOp">Add<span class="shortcut">[esc]</span></li>
@@ -197,13 +181,34 @@
                     <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
                     <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
                     <li class="divide"></li>
+
+                </ul>
+            </li> -->
+
+            <li class="nav_cables" ><span class="icon icon-1_25x icon-user"></span>
+                <ul class="nav-submenu">
+                    <li class="nav_preferences">Editor Preferences</span></li>
+                    <li class="xxx">Account Settings</span></li>
                     <li class="nav_op_createOp">Code an new op</li>
 
+                    <li class="divide"></li>
+                    <li class="nav-sub-submenu">
+                        New Patch
+                        <span class="icon icon-chevron-right"></span>
+                        <ul>
+                            <li><a class="nav_patch_new">Empty</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
 
+
             <li>
-                Tools
+                <span class="icon icon-1_25x icon-eye"></span>
+
                 <ul class="nav-submenu">
                     <!-- <li class="nav_files">Files</li> -->
                     <li class="nav_filemanager">Files</li>
@@ -216,7 +221,8 @@
             </li>
 
             <li class="nav-item-help">
-                Help
+                <span class="icon icon-1_25x icon-help"></span>
+
                 <ul class="nav-submenu">
                     <li class="nav_help_documentation">Documentation</li>
                     <li class="nav_help_introduction">Introduction</li>
