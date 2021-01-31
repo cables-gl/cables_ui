@@ -2,39 +2,38 @@
 
 // todo: all tab stuff should be removed when new tabbar
 
-#editorminimized
+
+
+#editorminimized,#editormaximized
 {
-    position:absolute;
-    // top:140px;
-    left:100px;
-    z-index:99;
+    z-index:$zindex_over;
+    top:10px;
+
     cursor:pointer;
     padding: 10px;
     // background-color: $button-background-color;
     background-color: var(--color-01);
-    border-top: 10px solid var(--color-01);
-    border-bottom: 10px solid var(--color-01);
+    // border-top: 10px solid var(--color-01);
+    // border-bottom: 10px solid var(--color-01);
+
+    border-top-right-radius: $iconbar-borderradius;
+    border-bottom-right-radius: $iconbar-borderradius;
+    position:absolute;
+
+}
+
+
+#editorminimized
+{
 }
 
 .editorminimized_changed
 {
     background-color: var(--color-06) !important;
-    border-bottom: 10px solid var(--color-06) !important;
-    border-top: 10px solid var(--color-06) !important;
 }
 
 #editormaximized
 {
-    position:absolute;
-    top:100px;
-    left:100px;
-    z-index:$zindex_over;
-    cursor:pointer;
-    background-color: $button-background-color;
-    background-color: var(--color-01);
-    border-top: 10px solid var(--color-01);
-    padding: 10px;
-    border-bottom: 10px solid var(--color-01);
 }
 
 #editor

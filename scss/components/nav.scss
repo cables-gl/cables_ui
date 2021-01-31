@@ -1,9 +1,10 @@
 
 #nav-loading
 {
-    position: absolute;
-    display:block;
-    top:8px;
+    // position: absolute;
+    // display:block;
+    // top:8px;
+    margin:3px;
 }
 
 #jobs
@@ -17,9 +18,13 @@
     // padding:15px !important;
 }
 
-#menubar,#timelineui
+#timelineui
 {
     padding-right:10px;
+}
+
+.menubar,#timelineui
+{
     position:absolute;
     background-color: $color-menubar-background;
     overflow: hidden;
@@ -30,13 +35,20 @@
         color:var(--color-warning);
     }
 
+    li.main
+    {
+        border-top-left-radius: $iconbar-borderradius;
+        border-top-right-radius: $iconbar-borderradius;
+        min-height:21px;
+    }
+
 	li
 	{
         color:$color-menubar-text;
 
 		&:hover
 		{
-			color: $color-menubar-hover;
+            color: $color-menubar-hover;
 		}
 	}
     .button
@@ -46,12 +58,12 @@
 
 }
 
-#menubar
+.menubar
 {
     overflow: hidden;
 }
 
-#menubar:hover
+.menubar:hover
 {
     overflow: visible;
 }
@@ -62,7 +74,7 @@
     display:none;
 }
 
-#menubar,#timing
+.menubar,#timing
 {
     .button
     {
@@ -91,15 +103,15 @@
     }
 }
 
-#menubar
+.menubar
 {
     display:block;
     z-index: $zindex_over;
-    top:10px;
     margin-top:10px;
     border:5px solid $color-menubar-background;
     left:10px;
-    border-radius: 6px;;
+    border-radius: $iconbar-borderradius;
+    height: 30px;
 }
 
 .cables-logo
@@ -128,13 +140,7 @@ nav
 {
 
     float:left;
-    $nav-li-padding: 7px 14px;
-
-    // .nav_logo
-    // {
-    //     width:15px;
-    // }
-
+    $nav-li-padding: 5px 10px;
 
         li
         {
@@ -166,7 +172,7 @@ nav
         {
             //font: bold 12px/18px arial;
             display: inline-block;
-            margin-right: -4px;
+            // margin-right: -4px;
             position: relative;
             padding: $nav-li-padding;
             cursor: pointer;
@@ -376,5 +382,18 @@ nav
     .unchecked
     {
         opacity: 0;
+    }
+}
+
+.nav-clientlist
+{
+    padding-top:4px;
+    padding-left:3px;
+    padding-right:3px;
+
+    div
+    {
+        margin-left:2px;
+        margin-right:2px;
     }
 }

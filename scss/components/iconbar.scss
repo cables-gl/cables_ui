@@ -7,7 +7,7 @@
 
 .cbl_iconbar
 {
-    border-radius: 5px;
+    border-radius: $iconbar-borderradius;
     background-color:var(--color-03);
     color:white;
     padding:4px;
@@ -15,7 +15,7 @@
     .item
     {
         cursor:pointer;
-        padding:5px;
+        padding:$iconbar-borderradius;
         padding-bottom: 3px;
         border-radius: 3px;
         margin-bottom: 3px;
@@ -36,8 +36,8 @@
         position: absolute;
         display: none;
         background-color: var(--color-03);
-        border-bottom-right-radius: 5px;
-        border-top-right-radius: 5px;
+        border-bottom-right-radius: $iconbar-borderradius;
+        border-top-right-radius: $iconbar-borderradius;
         padding:5px;
         padding-left:10px;
         padding-right:10px;
