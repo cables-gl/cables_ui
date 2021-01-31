@@ -1,0 +1,48 @@
+
+.cbl_iconbarContainer
+{
+    position: absolute;
+    z-index: $zindex_over;
+}
+
+.cbl_iconbar
+{
+    border-radius: 5px;
+    background-color:var(--color-03);
+    color:white;
+    padding:4px;
+
+    .item
+    {
+        cursor:pointer;
+        padding:5px;
+        padding-bottom: 3px;
+        border-radius: 3px;
+        margin-bottom: 3px;
+
+        &:hover
+        {
+            background-color: var(--color-05);
+
+            .icontext
+            {
+                display: block;
+            }
+        }
+    }
+
+    .icontext
+    {
+        position: absolute;
+        display: none;
+        background-color: var(--color-03);
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+        white-space: nowrap;
+        margin-left:27px;
+    }
+}
+

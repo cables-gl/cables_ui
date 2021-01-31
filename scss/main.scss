@@ -13,7 +13,6 @@ $border-radius-popups:12px;
 
 // import last
 @import 'libs/cutegrids.scss';
-@import 'libs/dragula.scss';
 @import 'libs/introjs-custom-styles';
 
 
@@ -938,12 +937,8 @@ input
 @import 'components/op-doc.scss';
 @import 'libs/iztoast.scss';
 @import 'libs/highlightjs-monokai';
-// vue-components
-@import 'components/vue/Sidebar.scss';
-@import 'components/vue/SidebarCustomizerBackground.scss';
-@import 'components/vue/SidebarCustomizer.scss';
-@import 'components/vue/Switch.scss';
 @import 'components/tabpanel.scss';
 @import 'components/item_manager.scss';
+@import 'components/iconbar.scss';
 
 

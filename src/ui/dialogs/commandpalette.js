@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -14,13 +15,6 @@ CABLES.UI.CommandPallet = function ()
     const canceledSearch = 0;
     const idSearch = 1;
 
-    // TODO: Maybe move to sidebar-customizer created function!?
-    this.initVueSidebarCustomizer = function ()
-    {
-        vueStore.commit("sidebar/setAllItems", CABLES.CMD.commands); // set all commands to be used in the customizer
-    };
-
-    this.initVueSidebarCustomizer();
 
     this.isVisible = function ()
     {
@@ -53,49 +47,28 @@ CABLES.UI.CommandPallet = function ()
         const el = $(ev.target);
         const cmd = el.closest(".result").data("cmd");
 
+        const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
+
         // replace the pin-icon / set / remove icon from sidebar
         const addToSidebar = !isCmdInSidebar(cmd);
         if (addToSidebar)
         {
             el.removeClass(self._bookmarkInactiveIcon);
             el.addClass(self._bookmarkActiveIcon);
-            vueStore.commit("sidebar/addItem", cmd); // add item to icon bar if it does not exist already
+
+            itemObj[cmd] = true;
         }
         else
         { // remove from sidebar
             el.removeClass(self._bookmarkActiveIcon);
             el.addClass(self._bookmarkInactiveIcon);
-            vueStore.commit("sidebar/removeItem", cmd);
+
+            itemObj[cmd] = false;
         }
-        vueStore.dispatch("sidebar/writeLocalStorage"); // update local storage
-        const newItem = {
-            "userAction": addToSidebar ? "add" : "remove",
-            cmd
-        };
-        const sidebarObj = CABLES.UI.userSettings.get("sidebar") || {};
-        sidebarObj.items = sidebarObj.items || [];
-        const items = sidebarObj.items;
-        let itemFound = false;
-        if (items)
-        {
-            for (let i = 0; i < items.length; i++)
-            {
-                if (items[i].cmd === newItem.cmd)
-                {
-                    if (!items[i].userAction && items[i].userAction !== newItem.userAction)
-                    {
-                        items[i].userAction = newItem.userAction; // item existed, just chenge user action
-                        itemFound = true;
-                        break;
-                    }
-                }
-            }
-        }
-        if (!itemFound)
-        {
-            items.push(newItem);
-        }
-        CABLES.UI.userSettings.set("sidebar", sidebarObj);
+
+        CABLES.UI.userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
+
+        gui.iconBarLeft.refresh();
     };
 
     this.onResultClick = function (ev)
@@ -108,7 +81,8 @@ CABLES.UI.CommandPallet = function ()
 
     function isCmdInSidebar(cmdName)
     {
-        return vueStore.getters["sidebar/iconBarContainsCmd"](cmdName);
+        const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
+        return itemObj.hasOwnProperty(cmdName) && itemObj[cmdName];
     }
 
     /*

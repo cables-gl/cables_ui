@@ -221,6 +221,8 @@ CABLES.UI.GUI = function (cfg)
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
 
+        this._elIconbarLeft = document.getElementById("iconbar_sidebar_left");
+
         this.patchView.updateBoundingRect();
 
         this._elPatch = this.patchView.element;
@@ -237,7 +239,7 @@ CABLES.UI.GUI = function (cfg)
 
 
         this._elEditorBar = this._elEditorBar || $("#editorbar");
-        this._elIconBar = this._elIconBar || $("#icon-bar");
+        // this._elIconBar = this._elIconBar || $("#icon-bar");
 
         this._elMaintab = this._elMaintab || document.getElementById("maintabs");
         this._elEditor = this._elEditor || document.getElementById("editor");
@@ -260,20 +262,20 @@ CABLES.UI.GUI = function (cfg)
         this._elCablesCanvas = this._elCablesCanvas || document.getElementById("cablescanvas");
 
 
-        const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
+        // const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
 
-        let iconBarWidth = 80;
+        const iconBarWidth = 0;
 
-        if (CABLES.UI.userSettings.get("hideSizeBar"))
-        {
-            iconBarWidth = 0;
-            this._elIconBar.hide();
-        }
-        else
-        {
-            this._elIconBar.show();
-        }
+        // if (CABLES.UI.userSettings.get("hideSizeBar"))
+        // {
+        //     iconBarWidth = 0;
+        //     this._elIconBar.hide();
+        // }
+        // else
+        // {
+        //     this._elIconBar.show();
+        // }
 
         let patchHeight = window.innerHeight - 2;
 
@@ -319,8 +321,8 @@ CABLES.UI.GUI = function (cfg)
         }, 50);
 
 
-        document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
-        this._elIconBar[0].style.width = iconBarWidth + "px";
+        // document.getElementsByTagName("nav")[0].style["margin-left"] = iconBarWidth + "px";
+        // this._elIconBar[0].style.width = iconBarWidth + "px";
 
         const menubarHeight = 30;
         const optionsWidth = Math.max(400, this.rendererWidthScaled / 2);
@@ -357,6 +359,7 @@ CABLES.UI.GUI = function (cfg)
         this._elSubpatchNav.style.width = patchWidth + "px";
         this._elSubpatchNav.style.left = iconBarWidth + "px";
         this._elSubpatchNav.style.top = menubarHeight + 1 + "px";
+
 
         // $("#subpatch_nav").css(
         //     {
@@ -414,22 +417,36 @@ CABLES.UI.GUI = function (cfg)
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
         }
 
-        const elIconBarMargin = 30;
-        this._elIconBar.css("height", window.innerHeight - elIconBarMargin);
-        this._elIconBar.css("top", elIconBarMargin);
+        if (this._elIconbarLeft)
+        {
+            if (CABLES.UI.userSettings.get("hideSizeBar"))
+            {
+                this._elIconbarLeft.style.display = "none";
+            }
+            else
+            {
+                this._elIconbarLeft.style.display = "block";
+                this._elIconbarLeft.style.bottom = 10 + "px";
+
+                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
+                else this._elIconbarLeft.style.left = 10 + "px";
+            }
+        }
+
+
+        // const elIconBarMargin = 30;
+        // this._elIconBar.css("height", window.innerHeight);
+        // this._elIconBar.css("top", elIconBarMargin);
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
-
         this.rightPanelWidth = this.rendererWidthScaled;
         if (this._canvasMode == this._CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
-
 
         this._elSplitterPatch.css("left", window.innerWidth - this.rightPanelWidth - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
         this._elSplitterRenderer.css("top", this.rendererHeightScaled);
         this._elSplitterRenderer.css("width", this.rendererWidthScaled);
-
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
@@ -1500,13 +1517,9 @@ CABLES.UI.GUI = function (cfg)
         }
         else if ($("#cmdpalette").is(":visible")) gui.cmdPallet.close();
         else if ($(".contextmenu").is(":visible")) CABLES.contextMenu.close();
-        // else if(gui.find().isVisible()) gui.find().close();
-        // else if($('#library').is(':visible')) CABLES.UI.fileSelect.hide();
         else if ($("#sidebar").is(":visible")) $("#sidebar").animate({
             "width": "toggle"
         }, 200);
-        // else if ($(".easingselect").is(":visible")) $(".easingselect").hide();
-        else if (vueStore.getters["sidebar/sidebarCustomizerVisible"]) vueStore.commit("sidebar/setCustomizerVisible", false);
         else if (CABLES.UI.MODAL._visible)
         {
             CABLES.UI.MODAL.hide(true);
@@ -1588,6 +1601,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
         if (CABLES.UI.userSettings.get("timelineOpened") == true) this.showTiming();
+
+        gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
 
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
@@ -2322,7 +2337,6 @@ function startUi(cfg)
                 CABLES.UI.startIdleListeners();
 
                 gui.jobs().updateJobListing();
-
 
                 logStartup("finished loading cables");
 

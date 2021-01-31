@@ -10,29 +10,29 @@ const svgmin = require("gulp-svgmin");
 const fs = require("fs");
 const browserify = require("browserify");
 const babelify = require("babelify");
-const vueify = require("vueify-babel-7-support");
+// const vueify = require("vueify-babel-7-support");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
 const footer = require("gulp-footer");
 const getRepoInfo = require("git-repo-info");
 
-function _vueify()
-{
-    return browserify("vue-src/main.js")
-        .transform(vueify)
-        .transform(babelify.configure({
-            "presets": [
-                "@babel/preset-env"
-            ],
-            "plugins": [
-                "@babel/plugin-transform-runtime",
-                "@babel/plugin-proposal-object-rest-spread"
-            ]
-        }))
-        .bundle()
-        .pipe(fs.createWriteStream("dist/js/bundle.js"));
-}
+// function _vueify()
+// {
+//     return browserify("vue-src/main.js")
+//         .transform(vueify)
+//         .transform(babelify.configure({
+//             "presets": [
+//                 "@babel/preset-env"
+//             ],
+//             "plugins": [
+//                 "@babel/plugin-transform-runtime",
+//                 "@babel/plugin-proposal-object-rest-spread"
+//             ]
+//         }))
+//         .bundle()
+//         .pipe(fs.createWriteStream("dist/js/bundle.js"));
+// }
 
 function _lint()
 {
@@ -179,7 +179,7 @@ function _watch(cb)
     gulp.watch("scss/**/*.scss", gulp.series(_sass));
     gulp.watch("html/**/*.html", gulp.series(_html_ui));
     gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
-    gulp.watch("vue-src/**/*", gulp.series(_vueify));
+    // gulp.watch("vue-src/**/*", gulp.series(_vueify));
     gulp.watch("src-talkerapi/**/*", gulp.series(_scripts_talkerapi));
     cb();
 }
@@ -192,7 +192,7 @@ function _electron_watch(cb)
     gulp.watch("scss/**/*.scss", gulp.series(_sass, _electronapp));
     gulp.watch("html/**/*.html", gulp.series(_html_ui));
     gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
-    gulp.watch("vue-src/**/*", gulp.series(_vueify));
+    // gulp.watch("vue-src/**/*", gulp.series(_vueify));
     gulp.watch("src-electron/**/*", gulp.series(_electronapp));
     cb();
 }
@@ -214,7 +214,7 @@ gulp.task("default", gulp.series(
     _scripts_libs_ui,
     _scripts_ops,
     _sass,
-    _vueify,
+    // _vueify,
     _svgcss,
     _scripts_talkerapi,
     _watch,
@@ -233,7 +233,7 @@ gulp.task("build", gulp.series(
     _scripts_ui,
     _scripts_talkerapi,
     _sass,
-    _vueify
+    // _vueify
 ));
 
 /**
@@ -248,7 +248,7 @@ gulp.task("electron", gulp.series(
     _scripts_libs_ui,
     _scripts_ops,
     _sass,
-    _vueify,
+    // _vueify,
     _electronapp,
     _electron_watch
 ));

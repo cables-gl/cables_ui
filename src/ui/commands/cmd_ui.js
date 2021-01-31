@@ -260,6 +260,15 @@ CABLES.CMD.UI.toggleTouchpadMode = function ()
     else CABLES.UI.notify("Touchpad Mode disabled");
 };
 
+CABLES.CMD.UI.zoomOut = function ()
+{
+    gui.patchView.zoomStep(1);
+};
+CABLES.CMD.UI.zoomIn = function ()
+{
+    gui.patchView.zoomStep(-1);
+};
+
 CABLES.CMD.commands.push(
     {
         "cmd": "show settings",
@@ -472,6 +481,19 @@ CABLES.CMD.commands.push(
         "category": "ui",
         "func": CABLES.CMD.UI.openRemoteViewer,
         "icon": "command",
+    },
+
+    {
+        "cmd": "zoom in",
+        "category": "ui",
+        "func": CABLES.CMD.UI.zoomIn,
+        "icon": "plus",
+    },
+    {
+        "cmd": "zoom Out",
+        "category": "ui",
+        "func": CABLES.CMD.UI.zoomOut,
+        "icon": "minus",
     },
 
 
