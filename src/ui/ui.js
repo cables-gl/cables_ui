@@ -359,11 +359,6 @@ CABLES.UI.GUI = function (cfg)
         const subPatchNavPosY = 100;
 
 
-        this._elSubpatchNav.style.width = patchWidth + "px";
-        this._elSubpatchNav.style.left = iconBarWidth + "px";
-        this._elSubpatchNav.style.top = subPatchNavPosY + 1 + "px";
-
-
         // $("#subpatch_nav").css(
         //     {
         //         "width": patchWidth + "px",
@@ -446,6 +441,10 @@ CABLES.UI.GUI = function (cfg)
         this._elMenubar.style.left = menupos + 10 + "px";
         const rMenuBar = this._elMenubar.getBoundingClientRect();
         document.getElementById("multiplayerbar").style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
+
+        // this._elSubpatchNav.style.width = patchWidth + "px";
+        this._elSubpatchNav.style.left = menupos - 20 + "px";
+        this._elSubpatchNav.style.top = 55 + "px";
 
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
