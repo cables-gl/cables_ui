@@ -52,6 +52,8 @@ CABLES.UI.TEXTS = {
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
 
+    "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - minimize panel",
+
     "tab_files": "## Files \n\nUpload and manage your files",
     "tab_code": "## Code\n\noperator code",
     "tab_doc": "## Documentation\n\noperator documentation",

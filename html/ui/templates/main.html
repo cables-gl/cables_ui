@@ -111,17 +111,16 @@
 
 
 
-<div id="menubar" class="hidden" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
+<div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
     <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
-            <li class="nav_logo" >
+            <li class="nav_logo main" >
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
-                <div id="nav-logo" class="icon icon-cables"></div>
-                <div id="nav-loading" class="fa fa-circle-o-notch fa-spin"></div>&nbsp;
-
+                <span id="nav-logo" class="icon icon-1_25x icon-cables"></span>
+                <div id="nav-loading" ><span class="fa fa-circle-o-notch fa-spin" style="color:white;"></span></div>
                 <div id="uploadprogresscontainer" class="hidden">
                     <div id="uploadprogress"></div>
                 </div>
@@ -139,27 +138,11 @@
                 </ul>
             </li>
 
-            <li class="nav_cables"><b>cables - <b id="username">???</b></b>
-                <ul class="nav-submenu">
-                    <li class="nav_preferences">My preferences</span></li>
-                    <li class="divide"></li>
-                    <li class="nav-sub-submenu">
-                        New Patch
-                        <span class="icon icon-chevron-right"></span>
-                        <ul>
-                            <li><a class="nav_patch_new">Empty</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
-                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
 
-            <li class="nav-item-project">
-                <b id="patchname">...</b>
+            <li class="main">
+                <span id="patchname" onclick="CABLES.CMD.UI.settings();"></span>
                 <ul class="nav-submenu">
-                    <li class="nav_patch_settings">Patch settings</li>
+                    <li class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings</li>
                     <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
 
                     <li class="divide"></li>
@@ -188,7 +171,7 @@
                 </ul>
             </li>
 
-            <li>
+            <!-- <li>
                 Op
                 <ul class="nav-submenu">
                     <li class="nav_op_addOp">Add<span class="shortcut">[esc]</span></li>
@@ -197,13 +180,35 @@
                     <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
                     <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
                     <li class="divide"></li>
+
+                </ul>
+            </li> -->
+
+            <li class="nav_cables main" >
+                <span class="icon icon-1_25x icon-user"></span>
+                <ul class="nav-submenu">
+                    <li class="nav_preferences">My Editor Preferences</span></li>
+                    <!-- <li class="xxx">Account Settings</span></li> -->
                     <li class="nav_op_createOp">Code an new op</li>
 
+                    <li class="divide"></li>
+                    <li class="nav-sub-submenu">
+                        New Patch
+                        <span class="icon icon-chevron-right"></span>
+                        <ul>
+                            <li><a class="nav_patch_new">Empty</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
+                            <li><a class="nav_create_from_template" data-href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
+                        </ul>
+                    </li>
                 </ul>
             </li>
 
-            <li>
-                Tools
+
+            <li class="main">
+                <span class="icon icon-1_25x icon-eye"></span>
+
                 <ul class="nav-submenu">
                     <!-- <li class="nav_files">Files</li> -->
                     <li class="nav_filemanager">Files</li>
@@ -215,8 +220,9 @@
                 </ul>
             </li>
 
-            <li class="nav-item-help">
-                Help
+            <li class="nav-item-help main">
+                <span class="icon icon-1_25x icon-help"></span>
+
                 <ul class="nav-submenu">
                     <li class="nav_help_documentation">Documentation</li>
                     <li class="nav_help_introduction">Introduction</li>
@@ -235,13 +241,18 @@
                 <span class="icon-alert-triangle icon" style="background-color: red;display:inherit;margin:-3px;"></span>&nbsp;
             </li>
 
-            <li class="nav-clientlist"  id="nav-clientlist" onclick="CABLES.CMD.UI.showChat()" style="background-color:transparent;position: absolute;">
-
-            </li>
-
-
         </ul>
+
+
     </nav>
+
+</div>
+
+
+<div id="multiplayerbar" class="menubar" style="cursor:pointer;">
+    <div class="nav-clientlist"  id="nav-clientlist" style="" onclick="CABLES.CMD.UI.showChat()"></div>
+</div>
+
 
     <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
 
@@ -278,8 +289,6 @@
     <!-- <div id="loggedout"> -->
         <!-- <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a> -->
     <!-- </div> -->
-
-</div>
 
 
 <div id="meta">

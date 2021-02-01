@@ -70,13 +70,20 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         document.getElementById("navsocketinfo").innerHTML = this._getUserInfoHtml();
 
         if (this._connection.state.getNumClients() > 1)
+        {
+            document.getElementById("multiplayerbar").style.display = "block";
             document.getElementById("nav-clientlist").innerHTML =
                 CABLES.UI.getHandleBarHtml("socket_userlist", {
                     "numClients": this._connection.state.getNumClients(),
                     "clients": this._connection.state.clients,
                     "connected": this._connection.isConnected()
                 });
-        else document.getElementById("nav-clientlist").innerHTML = "";
+        }
+        else
+        {
+            document.getElementById("multiplayerbar").style.display = "none";
+            document.getElementById("nav-clientlist").innerHTML = "";
+        }
     }
 
     _getUserInfoHtml()
