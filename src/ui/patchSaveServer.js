@@ -258,7 +258,13 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
 
-            console.log("saving data ", Math.round(data.length / 1024) + "kb");
+            const origSize = Math.round(data.length / 1024);
+
+            data = LZString.compress(data);
+
+
+            console.log("saving data ", Math.round(data.length / 1024) + " / " + origSize + "kb");
+            // console.log(compressed);
 
             CABLES.sandbox.savePatch(
                 {
