@@ -107,6 +107,10 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                     gui.setStateUnsaved();
                     gui.jobs().finish("saveeditorcontent");
                     port.set(content);
+                },
+                "onChange": function (e)
+                {
+                    gui.setStateUnsaved();
                 }
             });
     }

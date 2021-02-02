@@ -97,6 +97,7 @@ CABLES.UI.EditorTab = function (options)
         function (e)
         {
             gui.mainTabs.setChanged(this._tab.id, true);
+            if (options.onChange) options.onChange();
         }.bind(this),
     );
 
