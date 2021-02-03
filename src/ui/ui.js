@@ -642,6 +642,13 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
+
+        document.getElementById("canvasflash").style.width = this.rendererWidth + "px";
+        document.getElementById("canvasflash").style.height = this.rendererHeight + "px";
+        document.getElementById("canvasflash").style.right = 0 + "px";
+        document.getElementById("canvasflash").style.top = 0 + "px";
+
+
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 

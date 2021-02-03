@@ -104,21 +104,21 @@
 }
 
 
-.blinking{
+.blinking
+{
 	animation:blinkingText 0.8s infinite;
 }
-@keyframes blinkingText{
+@keyframes blinkingText
+{
 	0%{		color: var(--color-special);	}
     25%{	color: var(--color-12);	}
     50%{		color: var(--color-special);	}
     75%{	color: var(--color-12);	}
-    // 66%{	color: var(--color-special);	}
-
 }
 
 #patchname
 {
-    margin-top:1px;
+    margin-top:2px;
 }
 
 .menubar

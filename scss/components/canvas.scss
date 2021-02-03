@@ -128,3 +128,21 @@
 
     }
 }
+
+#canvasflash
+{
+    position: absolute;
+    z-index: 99999;
+}
+
+.flash
+{
+    animation:flashAnim 0.3s infinite ease-out;
+    animation-iteration-count: 1
+}
+
+@keyframes flashAnim
+{
+	0%{		background-color: var(--color-special);	}
+    100%{	background-color: transparent;	}
+}
