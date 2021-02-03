@@ -415,3 +415,22 @@ nav
         margin-right:2px;
     }
 }
+
+
+#logo-loading
+{
+    // montage -tile x1  Logo_Saving_40x40_0000* -geometry +0 -background none logo_saving.png
+    background-image:url(/ui/img/logo_saving.png);
+    width:20px;
+    height:20px;
+    background-size:auto 100%;
+    -webkit-animation: bkg 1.0s steps(10) infinite;
+    transition: none;
+
+}
+
+@-webkit-keyframes bkg {
+    0% {background-position: 0px top;}
+  100% {background-position: -400px top;}
+}
+
