@@ -863,7 +863,9 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
-        $("#patchname").html(name);
+        document.getElementById("patchname").innerHTML = name;
+        document.getElementById("patchname").dataset.patchname = name;
+
         gui.corePatch().name = name;
     };
 
@@ -1816,7 +1818,7 @@ CABLES.UI.GUI = function (cfg)
             else if (where == "canvas")
             {
                 r = document.getElementById("cablescanvas").getBoundingClientRect();
-                this._elGlCanvas.css({ "opacity": 0.7 });
+                // this._elGlCanvas.css({ "opacity": 0.7 });
             }
             else r = document.body.getBoundingClientRect();
 
@@ -1832,7 +1834,7 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
-            if (where == "canvas") this._elGlCanvas.css({ "opacity": 1 });
+            // if (where == "canvas") this._elGlCanvas.css({ "opacity": 1 });
             $(".workingindicator").hide();
         }
     };

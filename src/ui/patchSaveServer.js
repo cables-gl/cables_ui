@@ -258,7 +258,16 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             data = JSON.stringify(data);
             gui.patch().getLargestPort();
 
-            console.log("saving data ", Math.round(data.length / 1024) + "kb");
+            const origSize = Math.round(data.length / 1024);
+
+            data = LZString.compress(data);
+
+            document.getElementById("patchname").innerHTML = "Saving Patch";
+
+            document.getElementById("patchname").classList.add("blinking");
+
+            console.log("saving data ", Math.round(data.length / 1024) + " / " + origSize + "kb");
+            // console.log(compressed);
 
             CABLES.sandbox.savePatch(
                 {
@@ -284,6 +293,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     if (this._savedPatchCallback) this._savedPatchCallback();
                     this._savedPatchCallback = null;
 
+                    document.getElementById("patchname").classList.remove("blinking");
+                    document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
+
                     if (!r || !r.success)
                     {
                         let msg = "no response";
@@ -307,6 +319,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     {
                         cgl.canvas.width = "640px";
                         cgl.canvas.height = "360px";
+                        cgl.canvas.style.width = w + "px";
+                        cgl.canvas.style.height = h + "px";
                     }
 
                     if (doSaveScreenshot)
@@ -318,7 +332,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         }, 300);
 
                         thePatch.pause();
-                        cgl.setSize(640, 360);
+                        cgl.setSize(640, 360, true);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
