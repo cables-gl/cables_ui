@@ -342,7 +342,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         }, 300);
 
                         thePatch.pause();
-                        cgl.setSize(640, 360, true);
+                        cgl.setSize(640, 360);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
