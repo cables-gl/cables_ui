@@ -328,8 +328,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
                     if (doSaveScreenshot)
                     {
-                        document.getElementById("patchname").innerHTML = "save screenshot";
-
                         cgl.canvas.width = "640px";
                         cgl.canvas.height = "360px";
                         cgl.canvas.style.width = w + "px";
