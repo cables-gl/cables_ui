@@ -758,13 +758,22 @@ CABLES.UI.GUI = function (cfg)
     {
         if (show)
         {
-            document.getElementById("nav-logo").classList.add("hidden");
+            // document.getElementById("nav-logo_idle").style.opacity = 0.3;
+
+            document.getElementById("nav-logo_idle").classList.add("logoFadeout");
+            document.getElementById("nav-logo_idle").classList.remove("logoFadein");
+
+
             document.getElementById("nav-loading").classList.remove("hidden");
         }
         else
         {
-            document.getElementById("nav-logo").classList.remove("hidden");
-            document.getElementById("nav-loading").classList.add("hidden");
+            setTimeout(() =>
+            {
+                document.getElementById("nav-logo_idle").classList.remove("logoFadeout");
+                document.getElementById("nav-logo_idle").classList.add("logoFadein");
+                document.getElementById("nav-loading").classList.add("hidden");
+            }, 250);
         }
     };
 

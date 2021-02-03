@@ -152,7 +152,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
     {
         if (gui.showGuestWarning()) return;
 
-
         if (this.loadingError)
         {
             CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
