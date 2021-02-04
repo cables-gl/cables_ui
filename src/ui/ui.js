@@ -470,8 +470,8 @@ CABLES.UI.GUI = function (cfg)
             this._elMiniMapContainer.style.display = "block";
             this._elMiniMap.style.display = "block";
 
-            this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4;
-            this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24;
+            this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4 + "px";
+            this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24 + "px";
 
             $("#minimapContainer .title_closed").hide();
             $("#minimapContainer .title_opened").show();
