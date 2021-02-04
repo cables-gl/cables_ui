@@ -433,14 +433,11 @@ margin-right: 10px;;
 
 #nav-loading
 {
-    // montage -tile x1  Logo_Saving_40x40_0000* -geometry +0 -background none logo_saving.png
-    // background-image:url(/ui/img/logo_saving.png);
-    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0 MCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOm5vbmU7fS5jbHMtMntmaWxsOiNmZmY7fTwvc3R5 bGU+PC9kZWZzPjxnIGlkPSJFbXB0eV80MHg0MF9CRyI+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0 aD0iNDAiIGhlaWdodD0iNDAiLz48L2c+PGcgaWQ9IkxvYWRpbmciPjxwYXRoIGNsYXNzPSJjbHMt MiIgZD0iTTE4LjY1LDI5LjgxbC41MS0zLjY4YTYuMTUsNi4xNSwwLDAsMS0zLjI3LTEuNWwtMi40 NywyLjc4QTkuODgsOS44OCwwLDAsMCwxOC42NSwyOS44MVoiLz48L2c+PC9zdmc+");
-
+    background: url("data:image/svg+xml;base64,PHN2ZyBpZD0iTGF5ZXJfMSIgZGF0YS1uYW1lPSJMYXllciAxIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0MCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOm5vbmU7fS5jbHMtMntmaWxsOiNmZmY7fTwvc3R5bGU+PC9kZWZzPjxnIGlkPSJFbXB0eV80MHg0MF9CRyIgZGF0YS1uYW1lPSJFbXB0eSA0MHg0MCBCRyI+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiLz48L2c+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuNDEsMjYuNTNsLTIuNzctMi40NEE2LjE2LDYuMTYsMCwwLDEsMjAsMjYuMTksNi4wNyw2LjA3LDAsMCwxLDE2LjM5LDI1YTQuNTQsNC41NCwwLDAsMS0uNDgtLjM5bC0yLjQ2LDIuOGE5Ljg2LDkuODYsMCwwLDAsMTQtLjkxWiIvPjwvc3ZnPg==");
     width:20px;
     height:20px;
     background-size:100% 100%;
-    -webkit-animation: bkg 0.333s linear infinite;
+    animation: bkg 0.333s linear infinite;
     transition: none;
     position: absolute;
     z-index: 90;
