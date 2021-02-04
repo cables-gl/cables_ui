@@ -327,7 +327,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         gui.opParams.clear();
 
-        ele.byId("options").innerHTML = html;
+        let eleId = "options";
+        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+
+        ele.byId(eleId).innerHTML = html;
         gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);

@@ -243,6 +243,7 @@ CABLES.UI.TabPanel.prototype.activateTab = function (id)
 {
     for (let i = 0; i < this._tabs.length; i++)
     {
+        if (this._tabs[i].active) this.previousActiveTab = this._tabs[i];
         if (this._tabs[i].id === id)
         {
             this.emitEvent("onTabActivated", this._tabs[i]);
@@ -283,8 +284,12 @@ CABLES.UI.TabPanel.prototype.closeTab = function (id)
     this.emitEvent("onTabRemoved", tab);
     tab.remove();
 
-    if (idx > this._tabs.length - 1) idx = this._tabs.length - 1;
-    if (this._tabs[idx]) this.activateTab(this._tabs[idx].id);
+    if (this.previousActiveTab) this.activateTab(this.previousActiveTab.id);
+    else
+    {
+        if (idx > this._tabs.length - 1) idx = this._tabs.length - 1;
+        if (this._tabs[idx]) this.activateTab(this._tabs[idx].id);
+    }
 
     this.updateHtml();
 };
