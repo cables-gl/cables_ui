@@ -23,9 +23,12 @@ CABLES.UI.MetaOpParams.prototype.updateVisibility = function (b)
     if (!window.gui) return;
 
     if (this._tabs.getActiveTab() != this._tab) this._prevTab = this._tabs.getActiveTab();
-
+    console.log(this._prevTab);
     this._tabs.closeTab(this._tab.id);
+
     if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
+    // if (this._tabs.previousActiveTab) this.activateTab(this.previousActiveTab.id);
+
 
     if (b === undefined)b = !gui.showTwoMetaPanels();
 
