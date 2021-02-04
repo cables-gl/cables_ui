@@ -1,11 +1,4 @@
 
-#nav-loading
-{
-    // position: absolute;
-    // display:block;
-    // top:8px;
-    margin:3px;
-}
 
 #jobs
 {
@@ -104,21 +97,21 @@
 }
 
 
-.blinking{
+.blinking
+{
 	animation:blinkingText 0.8s infinite;
 }
-@keyframes blinkingText{
+@keyframes blinkingText
+{
 	0%{		color: var(--color-special);	}
     25%{	color: var(--color-12);	}
     50%{		color: var(--color-special);	}
     75%{	color: var(--color-12);	}
-    // 66%{	color: var(--color-special);	}
-
 }
 
 #patchname
 {
-    margin-top:1px;
+    margin-top:2px;
 }
 
 .menubar
@@ -415,3 +408,66 @@ nav
         margin-right:2px;
     }
 }
+
+
+#nav-logo
+{
+margin-right: 10px;;
+}
+
+#nav-logo_idle
+{
+    background-image:url(/ui/img/logo.png);
+    background-size:auto 100%;
+    width:20px;
+    height:20px;
+    display: block;
+    background-size:100% 100%;
+    position: absolute;
+    z-index: 100;
+}
+
+#nav-loading
+{
+    // montage -tile x1  Logo_Saving_40x40_0000* -geometry +0 -background none logo_saving.png
+    background-image:url(/ui/img/logo_saving.png);
+    width:20px;
+    height:20px;
+    background-size:auto 100%;
+    -webkit-animation: bkg 0.6666s steps(10) infinite;
+    transition: none;
+    position: absolute;
+    z-index: 90;
+}
+
+@-webkit-keyframes bkg {
+    0% {background-position: 0px top;}
+  100% {background-position: -400px top;}
+}
+
+
+.logoFadein
+{
+    animation:animLogoFadein 0.2s normal forwards ease-out;
+    animation-iteration-count: 1
+}
+
+@keyframes animLogoFadein
+{
+	0%{		opacity: 0.3;	}
+    100%{	opacity: 1;	}
+}
+
+
+.logoFadeout
+{
+    animation:animLogoFadeout 0.2s normal forwards ease-out;
+    animation-iteration-count: 1
+}
+
+@keyframes animLogoFadeout
+{
+	0%{		opacity: 1;	}
+    100%{	opacity: 0.3;	}
+}
+

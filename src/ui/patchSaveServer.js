@@ -152,7 +152,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
     {
         if (gui.showGuestWarning()) return;
 
-
         if (this.loadingError)
         {
             CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
@@ -173,6 +172,22 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
     _saveCurrentProject(cb, _id, _name)
     {
+        function finishAnimations()
+        {
+            document.getElementById("patchname").classList.remove("blinking");
+            document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
+
+
+            document.getElementById("canvasflash").classList.remove("hidden");
+            document.getElementById("canvasflash").classList.add("flash");
+
+            setTimeout(() =>
+            {
+                document.getElementById("canvasflash").classList.add("hidden");
+                document.getElementById("canvasflash").classList.remove("flash");
+            }, 320);
+        }
+
         if (gui.showGuestWarning()) return;
 
         const ops = gui.corePatch().ops;
@@ -263,7 +278,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             data = LZString.compress(data);
 
             document.getElementById("patchname").innerHTML = "Saving Patch";
-
             document.getElementById("patchname").classList.add("blinking");
 
             console.log("saving data ", Math.round(data.length / 1024) + " / " + origSize + "kb");
@@ -293,9 +307,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     if (this._savedPatchCallback) this._savedPatchCallback();
                     this._savedPatchCallback = null;
 
-                    document.getElementById("patchname").classList.remove("blinking");
-                    document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
-
                     if (!r || !r.success)
                     {
                         let msg = "no response";
@@ -321,10 +332,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         cgl.canvas.height = "360px";
                         cgl.canvas.style.width = w + "px";
                         cgl.canvas.style.height = h + "px";
-                    }
 
-                    if (doSaveScreenshot)
-                    {
                         const screenshotTimeout = setTimeout(function ()
                         {
                             cgl.setSize(w, h);
@@ -332,7 +340,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         }, 300);
 
                         thePatch.pause();
-                        cgl.setSize(640, 360, true);
+                        cgl.setSize(640, 360);
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
@@ -348,6 +356,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
                             reader.onload = function (event)
                             {
+                                console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
                                 CABLESUILOADER.talkerAPI.send(
                                     "saveScreenshot",
                                     {
@@ -363,6 +372,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                                         // console.log("screenshot saved!");
                                         gui.jobs().finish("screenshotsave");
                                         if (gui.onSaveProject) gui.onSaveProject();
+
+                                        finishAnimations();
                                     });
                             };
 
@@ -375,6 +386,11 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                                 console.log(e);
                             }
                         });
+                        // }, false, "image/webp", 80);
+                    }
+                    else
+                    {
+                        finishAnimations();
                     }
                 }.bind(this)
 

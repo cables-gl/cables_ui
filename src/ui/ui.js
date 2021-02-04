@@ -642,6 +642,13 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
+
+        document.getElementById("canvasflash").style.width = this.rendererWidth + "px";
+        document.getElementById("canvasflash").style.height = this.rendererHeight + "px";
+        document.getElementById("canvasflash").style.right = 0 + "px";
+        document.getElementById("canvasflash").style.top = 0 + "px";
+
+
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 
@@ -751,13 +758,22 @@ CABLES.UI.GUI = function (cfg)
     {
         if (show)
         {
-            document.getElementById("nav-logo").classList.add("hidden");
+            // document.getElementById("nav-logo_idle").style.opacity = 0.3;
+
+            document.getElementById("nav-logo_idle").classList.add("logoFadeout");
+            document.getElementById("nav-logo_idle").classList.remove("logoFadein");
+
+
             document.getElementById("nav-loading").classList.remove("hidden");
         }
         else
         {
-            document.getElementById("nav-logo").classList.remove("hidden");
-            document.getElementById("nav-loading").classList.add("hidden");
+            setTimeout(() =>
+            {
+                document.getElementById("nav-logo_idle").classList.remove("logoFadeout");
+                document.getElementById("nav-logo_idle").classList.add("logoFadein");
+                document.getElementById("nav-loading").classList.add("hidden");
+            }, 250);
         }
     };
 
