@@ -428,23 +428,48 @@ margin-right: 10px;;
     z-index: 100;
 }
 
+
+
+
 #nav-loading
 {
     // montage -tile x1  Logo_Saving_40x40_0000* -geometry +0 -background none logo_saving.png
-    background-image:url(/ui/img/logo_saving.png);
+    // background-image:url(/ui/img/logo_saving.png);
+    background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA0MCA0 MCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOm5vbmU7fS5jbHMtMntmaWxsOiNmZmY7fTwvc3R5 bGU+PC9kZWZzPjxnIGlkPSJFbXB0eV80MHg0MF9CRyI+PHJlY3QgY2xhc3M9ImNscy0xIiB3aWR0 aD0iNDAiIGhlaWdodD0iNDAiLz48L2c+PGcgaWQ9IkxvYWRpbmciPjxwYXRoIGNsYXNzPSJjbHMt MiIgZD0iTTE4LjY1LDI5LjgxbC41MS0zLjY4YTYuMTUsNi4xNSwwLDAsMS0zLjI3LTEuNWwtMi40 NywyLjc4QTkuODgsOS44OCwwLDAsMCwxOC42NSwyOS44MVoiLz48L2c+PC9zdmc+");
+
     width:20px;
     height:20px;
-    background-size:auto 100%;
-    -webkit-animation: bkg 0.6666s steps(10) infinite;
+    background-size:100% 100%;
+    -webkit-animation: bkg 0.333s linear infinite;
     transition: none;
     position: absolute;
     z-index: 90;
 }
 
-@-webkit-keyframes bkg {
-    0% {background-position: 0px top;}
-  100% {background-position: -400px top;}
+@keyframes bkg {
+  100% {transform:rotate(360deg)}
 }
+
+
+// sequence anim,...
+//
+// #nav-loading
+// {
+//     // montage -tile x1  Logo_Saving_40x40_0000* -geometry +0 -background none logo_saving.png
+//     // background-image:url(/ui/img/logo_saving.png);
+//     width:20px;
+//     height:20px;
+//     background-size:auto 100%;
+//     -webkit-animation: bkg 0.6666s steps(10) infinite;
+//     transition: none;
+//     position: absolute;
+//     z-index: 90;
+// }
+// @-webkit-keyframes bkg {
+//     0% {background-position: 0px top;}
+//   100% {background-position: -400px top;}
+// }
+
 
 
 .logoFadein
