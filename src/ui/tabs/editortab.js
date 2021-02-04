@@ -13,6 +13,7 @@ CABLES.UI.EditorTab = function (options)
             "icon": null,
             "type": options.syntax,
             "name": options.name,
+            "dataId": options.dataId,
             "infotext": "a code editor",
             "singleton": options.singleton,
         });

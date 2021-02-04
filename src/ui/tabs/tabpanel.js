@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -12,6 +13,7 @@ CABLES.UI.Tab = function (title, options)
     if (!options.hasOwnProperty("name")) this.options.name = title;
 
     this.icon = this.options.icon || null;
+    this.dataId = options.dataId;
     this.title = title;
     this.active = false;
     this.toolbarContainerEle = document.createElement("div");
@@ -253,6 +255,12 @@ CABLES.UI.TabPanel.prototype.activateTab = function (id)
     }
     this.updateHtml();
 };
+
+CABLES.UI.TabPanel.prototype.getTabByDataId = function (dataId)
+{
+    for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].dataId == dataId) return this._tabs[i];
+};
+
 
 CABLES.UI.TabPanel.prototype.getTabByTitle = function (title)
 {

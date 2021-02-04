@@ -3,7 +3,6 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.MetaOpParams = function (tabs)
 {
-    console.log("create metaop params!!!", tabs);
     this._tabs = tabs;
     this._tab = new CABLES.UI.Tab("op", { "icon": "cables", "infotext": "tab_doc", "showTitle": false, "hideToolbar": true, "padding": true });
 
@@ -27,7 +26,7 @@ CABLES.UI.MetaOpParams.prototype.updateVisibility = function (b)
 
     if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
 
-    if (b === undefined)b = !gui.showTwoMetaPanels();
+    if (b === undefined) b = !gui.showTwoMetaPanels();
 
     if (b === false)
     {

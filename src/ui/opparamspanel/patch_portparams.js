@@ -74,23 +74,46 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     const port = op.getPortByName(portname);
     if (!port) return console.log("paramedit port not found");
 
-    const name = op.name + " " + port.name;
+    let name = op.name + " " + port.name;
 
-    let editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
-    if (!editorObj && gui.mainTabs.getTabByTitle(name))
+    let existingTab = gui.mainTabs.getTabByTitle(name);
+    let count = 0;
+    while (existingTab)
     {
-        CABLES.editorSession.remove(name, "param");
-        const tab = gui.mainTabs.getTabByTitle(name);
-        gui.mainTabs.closeTab(tab.id);
-
-        editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
+        count++;
+        if (!gui.mainTabs.getTabByTitle(name + " (" + count + ")")) break;
     }
+    if (count > 0)
+        name = name + " (" + count + ")";
+
+
+    const dataId = opid + portname;
+    existingTab = gui.mainTabs.getTabByDataId(dataId);
+    if (existingTab)
+    {
+        gui.mainTabs.activateTabByName(existingTab.title);
+
+        return;
+    }
+
+    const editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
+
+
+    // if (!editorObj && gui.mainTabs.getTabByTitle(name))
+    // {
+    //     CABLES.editorSession.remove(name, "param");
+    //     const tab = gui.mainTabs.getTabByTitle(name);
+    //     gui.mainTabs.closeTab(tab.id);
+
+    //     editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
+    // }
 
     if (editorObj)
     {
         new CABLES.UI.EditorTab(
             {
                 "title": name,
+                "dataId": dataId,
                 "content": port.get() + "",
                 "name": editorObj.name,
                 "syntax": port.uiAttribs.editorSyntax,
@@ -98,7 +121,6 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                 "editorObj": editorObj,
                 "onClose": function (which)
                 {
-                    console.log("close!!! missing infos...");
                     CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                 },
                 "onSave": function (setStatus, content)

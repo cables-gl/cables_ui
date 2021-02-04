@@ -21,6 +21,11 @@ CABLES.EditorSession.prototype.store = function ()
     // console.log(tab);
 };
 
+CABLES.EditorSession.prototype.openEditors = function ()
+{
+    return this._openEditors;
+};
+
 /**
  * remove a editor session
  * @name CABLES.EditorSession#remove
