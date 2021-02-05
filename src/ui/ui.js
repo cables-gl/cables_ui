@@ -2269,11 +2269,13 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
         $("#delayed").hide();
     });
 
-    this._corePatch.on("performance", function (perf)
+    this._corePatch.on("performance", (perf) =>
     {
         let str = " " + perf.fps + " FPS | " + perf.ms + " MS";
         if (gui.corePatch().cgl.glVersion == 1)str += " | WebGL 1";
-        $("#canvasInfoFPS").html(str);
+
+        this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
+        this._elCanvasInfoFps.innerHTML = str;
     });
 };
 
