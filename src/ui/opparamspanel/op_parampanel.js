@@ -334,10 +334,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
         });
 
-        let eleId = "options";
-        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
 
-        const ele = document.getElementById(eleId);
+        const ele = document.getElementById(gui.getParamPanelEleId());
 
         if (ele) ele.innerHTML = html;
         else return;

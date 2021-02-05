@@ -327,10 +327,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         gui.opParams.clear();
 
-        let eleId = "options";
-        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
-
-        ele.byId(eleId).innerHTML = html;
+        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
         gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
@@ -413,7 +410,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         html += "</div>";
 
-        ele.byId("options").innerHTML = html;
+        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }
 
     getSelectionBounds()

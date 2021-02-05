@@ -197,6 +197,12 @@ CABLES.UI.GUI = function (cfg)
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
+    this.getParamPanelEleId = function ()
+    {
+        let eleId = "options";
+        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+        return eleId;
+    };
 
     this.showTwoMetaPanels = function ()
     {
