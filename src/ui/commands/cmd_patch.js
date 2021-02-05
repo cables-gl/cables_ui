@@ -631,7 +631,7 @@ CABLES.CMD.commands.push(
         "cmd": "create subpatch",
         "category": "patch",
         "func": CABLES.CMD.PATCH.createSubPatchFromSelection,
-        "icon": "maximize"
+        "icon": "add_op"
     },
     {
         "cmd": "export static html",
