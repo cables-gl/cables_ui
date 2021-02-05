@@ -141,6 +141,14 @@ CABLES.SandboxBrowser.prototype.addMeUserlist = function (options, cb)
     });
 };
 
+CABLES.SandboxBrowser.prototype.getBlueprintOps = function (options, cb)
+{
+    CABLESUILOADER.talkerAPI.send("getBlueprintOps", options, (err, r) =>
+    {
+        if (cb)cb(err, r);
+    });
+};
+
 CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 {
     const proj = this._cfg.patch;

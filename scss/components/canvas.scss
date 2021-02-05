@@ -143,6 +143,7 @@
 
 @keyframes flashAnim
 {
-	0%{		background-color: var(--color-13);	}
+    0%{		background-color: var(--color-13);	}
+    10%{		background-color: var(--color-13);	}
     100%{	background-color: transparent;	}
 }

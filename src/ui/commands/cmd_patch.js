@@ -649,7 +649,7 @@ CABLES.CMD.commands.push(
         "cmd": "add op",
         "category": "patch",
         "func": CABLES.CMD.PATCH.addOp,
-        "icon": "plus"
+        "icon": "add_op"
     },
     {
         "cmd": "edit op",

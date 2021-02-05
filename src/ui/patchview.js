@@ -327,7 +327,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         gui.opParams.clear();
 
-        ele.byId("options").innerHTML = html;
+        let eleId = "options";
+        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+
+        ele.byId(eleId).innerHTML = html;
         gui.setTransformGizmo(null);
 
         CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
@@ -594,22 +597,45 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     getSubPatches(sort)
     {
         let foundPatchIds = [];
+        let importedPatchIds = [];
         const subPatches = [];
         const ops = gui.corePatch().ops;
 
         let i = 0;
 
         for (i = 0; i < ops.length; i++)
+        {
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
+            {
                 foundPatchIds.push(ops[i].patchId.get());
+            }
+        }
 
-        // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
         for (i = 0; i < ops.length; i++)
-            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch)
-                if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
-                    foundPatchIds.push(ops[i].uiAttribs.subPatch);
+        {
+            if (ops[i].uiAttribs)
+            {
+                if (ops[i].uiAttribs.blueprintId)
+                {
+                    // find ops that are imported by ImportSubPatch op
+                    if (importedPatchIds.indexOf(ops[i].uiAttribs.blueprintId) == -1)
+                    {
+                        importedPatchIds.push(ops[i].uiAttribs.subPatch);
+                    }
+                }
+                else if (ops[i].uiAttribs.subPatch)
+                {
+                    // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
+                    if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
+                    {
+                        foundPatchIds.push(ops[i].uiAttribs.subPatch);
+                    }
+                }
+            }
+        }
 
         foundPatchIds = CABLES.uniqueArray(foundPatchIds);
+        importedPatchIds = CABLES.uniqueArray(importedPatchIds);
 
         for (i = 0; i < foundPatchIds.length; i++)
         {
@@ -629,6 +655,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
                 });
+        }
+
+        for (i = 0; i < importedPatchIds.length; i++)
+        {
+            subPatches.push({
+                "name": "Imported patch: " + importedPatchIds[i],
+                "id": importedPatchIds[i]
+            });
         }
 
         if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });

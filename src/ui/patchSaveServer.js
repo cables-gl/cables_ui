@@ -178,9 +178,6 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
             document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
 
 
-            document.getElementById("canvasflash").classList.remove("hidden");
-            document.getElementById("canvasflash").classList.add("flash");
-
             setTimeout(() =>
             {
                 document.getElementById("canvasflash").classList.add("hidden");
@@ -341,6 +338,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
                         thePatch.pause();
                         cgl.setSize(640, 360);
+                        document.getElementById("canvasflash").classList.remove("hidden");
+                        document.getElementById("canvasflash").classList.add("flash");
+
                         thePatch.renderOneFrame();
                         thePatch.renderOneFrame();
                         gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });

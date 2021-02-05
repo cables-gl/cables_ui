@@ -470,8 +470,8 @@ CABLES.UI.GUI = function (cfg)
             this._elMiniMapContainer.style.display = "block";
             this._elMiniMap.style.display = "block";
 
-            this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4;
-            this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24;
+            this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4 + "px";
+            this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24 + "px";
 
             $("#minimapContainer .title_closed").hide();
             $("#minimapContainer .title_opened").show();
@@ -1437,14 +1437,14 @@ CABLES.UI.GUI = function (cfg)
                 return;
             }
 
-            const selectedOp = gui.patch().getSelectedOps();
-            const selectedOpId = selectedOp[0].op.id;
+            const selectedOp = gui.patchView.getSelectedOps();
+            const selectedOpId = selectedOp[0].id;
 
             let portName = null;
 
             for (let i = 0; i < selectedOp[0].portsIn.length; i++)
             {
-                const port = selectedOp[0].portsIn[i].thePort;
+                const port = selectedOp[0].portsIn[i];
                 const type = port.getTypeString();
 
                 if (type === "String")
@@ -2118,6 +2118,8 @@ CABLES.UI.GUI = function (cfg)
         }
 
         CABLES.UI.initSplitPanes();
+
+
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
             {

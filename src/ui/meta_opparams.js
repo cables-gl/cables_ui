@@ -9,7 +9,6 @@ CABLES.UI.MetaOpParams = function (tabs)
     this._op = null;
     this.html = "";
 
-
     this._tab.addEventListener("onActivate", () =>
     {
         this.show();
@@ -21,15 +20,13 @@ CABLES.UI.MetaOpParams = function (tabs)
 CABLES.UI.MetaOpParams.prototype.updateVisibility = function (b)
 {
     if (!window.gui) return;
-    // this._tab.remove();
 
     if (this._tabs.getActiveTab() != this._tab) this._prevTab = this._tabs.getActiveTab();
-
     this._tabs.closeTab(this._tab.id);
+
     if (this._prevTab) this._tabs.activateTab(this._prevTab.id);
 
-
-    if (b === undefined)b = !gui.showTwoMetaPanels();
+    if (b === undefined) b = !gui.showTwoMetaPanels();
 
     if (b === false)
     {
@@ -38,7 +35,6 @@ CABLES.UI.MetaOpParams.prototype.updateVisibility = function (b)
         this._tabs.activateTab(this._tab.id);
     }
 };
-
 
 CABLES.UI.MetaOpParams.prototype.init = function ()
 {
