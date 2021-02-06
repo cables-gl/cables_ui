@@ -5,6 +5,17 @@
     z-index: $zindex_over;
 }
 
+.cbl_iconbar_hor
+{
+    padding-bottom: 2px !important;
+    display: inline-block;
+
+    .item
+    {
+        display: inline-block;
+    }
+}
+
 .cbl_iconbar
 {
     border-radius: $iconbar-borderradius;

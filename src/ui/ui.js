@@ -197,6 +197,12 @@ CABLES.UI.GUI = function (cfg)
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
 
+    this.getParamPanelEleId = function ()
+    {
+        let eleId = "options";
+        if (!gui.showTwoMetaPanels()) eleId = "options_meta";
+        return eleId;
+    };
 
     this.showTwoMetaPanels = function ()
     {
@@ -2263,11 +2269,13 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
         $("#delayed").hide();
     });
 
-    this._corePatch.on("performance", function (perf)
+    this._corePatch.on("performance", (perf) =>
     {
         let str = " " + perf.fps + " FPS | " + perf.ms + " MS";
         if (gui.corePatch().cgl.glVersion == 1)str += " | WebGL 1";
-        $("#canvasInfoFPS").html(str);
+
+        this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
+        this._elCanvasInfoFps.innerHTML = str;
     });
 };
 

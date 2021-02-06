@@ -36,25 +36,23 @@
 
 <div id="canvasflash" class="hidden"></div>
 <div id="canvasmodal" class="hidden"></div>
-<div id="canvasicons" class="hidden">
-    <a class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></a>
-    <a class="tt info icon icon-maximize iconhover" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></a>
-    <a class="tt info icon icon-image iconhover" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></a>
-    <a class="tt info icon icon-volume-2 iconhover" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-infotext="toggle_sound"></a>
-    <a class="tt info icon icon-picker iconhover" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="Pixel Magnifier" data-infotext="canvas_lens"></a>
-    <a class="tt info icon icon-gizmo iconhover" onclick="gui.helperContextMenu(this);" data-tt="Toggle Helper" data-infotext="toggle_helper"></a>
+<div id="canvasicons" class="hidden ">
+    <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
+    <div class="cbl_iconbar cbl_iconbar_hor">
+        <span class="item"><span class="tt info icon icon-maximize icon-1_25x" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></span></span>
+        <span class="item"><span class="tt info icon icon-image icon-1_25x" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></span></span>
+        <span class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-infotext="toggle_sound"></span></span>
+        <span class="item"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="Pixel Magnifier" data-infotext="canvas_lens"></span></span>
+        <span class="item"><span class="tt info icon icon-gizmo icon-1_25x" onclick="gui.helperContextMenu(this);" data-tt="Toggle Helper" data-infotext="toggle_helper"></span></span>
 
-    <!-- <a class="tt icon icon-cube iconhover" id="canvasIconHelper" onclick="CABLES.CMD.UI.toggleHelper();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
-    <!-- <a class="tt icon icon-gizmo iconhover" id="canvasIconTransforms" onclick="CABLES.CMD.UI.toggleTransformOverlay();" data-tt="toggle helper" data-infotext="toggle_helper"></a> -->
+        <span class="item"><span class="tt icon icon-triple-dot icon-1_25x" onclick="gui.rendererContextMenu(this)" data-tt="more options"></span></span>
 
-    <a class="tt icon icon-triple-dot iconhover" onclick="gui.rendererContextMenu(this)" data-tt="more options"></a>
-
-    <div class="canvasInfo">
         <span id="canvasInfoSize" class="" ></span>
         <span id="canvasInfoFPS" class="" ></span>
+        <span class="canvasInfo"></span>
     </div>
-
 </div>
+
 
 <div id="notify"></div>
 <div id="delayed"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
@@ -117,7 +115,7 @@
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
                 <!-- <span id="nav-logo" class="icon icon-1_25x icon-cables"></span> -->
-                <span id="nav-logo" class="">
+                <span id="nav-logo" class="icon-empty icon">
                     <div id="nav-logo_idle"></div>
                     <div id="nav-loading"></div>
                 </span>

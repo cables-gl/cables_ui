@@ -50,6 +50,7 @@
     background-color: var(--color-01);
     color:var(--color-13);
     position: absolute;
+    padding-bottom: 30px;;
     z-index: $zindex_over;
     padding-left: 28px; /* to give resize-window icon some space */
 
@@ -61,33 +62,39 @@
     }
 
     .icon-resize-window {
-        position: relative;
+        position: absolute;
         width: 10px;
         height: 10px;
         top: 20px;
-        left: -28px;
+        left: 3px;
         display: block;
         opacity: 0.3;
         cursor: nesw-resize;
     }
 
-
-    .canvasInfo
+    .cbl_iconbar
     {
-        position: absolute;
-        margin-top: -6px;
-        display: inline-block;
-        width:100%;
+        margin-top: 3px;
+        padding-right:5px;
+
+    }
+
+    .canvasInfo,.cbl_iconbar
+    {
+        // position: absolute;
+        // display: inline-block;
 
         span
         {
+
+    vertical-align: middle;
             font-family: monospace;
         }
 
         #canvasInfoFPS
         {
-            float:left;
-            padding-right: 20px;
+            // float:left;
+            // padding-right: 20px;
         }
 
     }
