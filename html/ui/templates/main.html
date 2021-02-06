@@ -38,7 +38,7 @@
 <div id="canvasmodal" class="hidden"></div>
 <div id="canvasicons" class="hidden ">
     <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
-    <div class="cbl_iconbar cbl_iconbar_hor">
+    <div id="canvasIconBar" class="cbl_iconbar cbl_iconbar_hor ">
         <span class="item"><span class="tt info icon icon-maximize icon-1_25x" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-infotext="renderer_maximize"></span></span>
         <span class="item"><span class="tt info icon icon-image icon-1_25x" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-infotext="save_screenshot"></span></span>
         <span class="item"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-infotext="toggle_sound"></span></span>
@@ -48,7 +48,7 @@
         <span class="item"><span class="tt icon icon-triple-dot icon-1_25x" onclick="gui.rendererContextMenu(this)" data-tt="more options"></span></span>
 
         <span id="canvasInfoSize" class="" ></span>
-        <span id="canvasInfoFPS" class="" ></span>
+        <span id="canvasInfoFPS" style="padding-right: 10px;vertical-align:top;margin-top: 5px;display: inline-block;" ></span>
         <span class="canvasInfo"></span>
     </div>
 </div>

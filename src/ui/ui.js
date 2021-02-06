@@ -222,7 +222,10 @@ CABLES.UI.GUI = function (cfg)
     {
         this.pauseProfiling();
         const perf = CABLES.uiperf.start("gui.setlayout");
-        this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasicons");
+        this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
+        this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
+
+
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
@@ -312,6 +315,7 @@ CABLES.UI.GUI = function (cfg)
 
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
+
 
         const cgl = this._corePatch.cgl;
         if (cgl.canvasWidth) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
@@ -654,6 +658,8 @@ CABLES.UI.GUI = function (cfg)
         document.getElementById("canvasflash").style.right = 0 + "px";
         document.getElementById("canvasflash").style.top = 0 + "px";
 
+
+        this._elCanvasIconbar.style["margin-left"] = this.rendererWidth / 2 + "px";
 
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
@@ -2059,15 +2065,17 @@ CABLES.UI.GUI = function (cfg)
 
     this.updateCanvasIconBar = function ()
     {
-        if (!this._elCanvasIconbar) return;
+        if (!this._elCanvasIconbarContainer) return;
 
-        this._elCanvasIconbar.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
-        this._elCanvasIconbar.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
+        this._elCanvasIconbarContainer.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
+        this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
-            this._elCanvasIconbar.style.top = 0;
+            this._elCanvasIconbarContainer.style.top = 0;
         else
-            this._elCanvasIconbar.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
+            this._elCanvasIconbarContainer.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
+
+        this._elCanvasIconbar.style["margin-left"] = this.rendererWidth / 2 + "px";
     };
 
     this.getCanvasSizeString = function (cgl)
@@ -2088,28 +2096,28 @@ CABLES.UI.GUI = function (cfg)
     {
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
-            ele.show(this._elCanvasIconbar);
+            ele.show(this._elCanvasIconbarContainer);
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
             return;
         }
 
-        if (!this._elCanvasIconbar) return;
+        if (!this._elCanvasIconbarContainer) return;
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (_show)
         {
             ele.show(this._elCanvasModalDarkener);
-            ele.show(this._elCanvasIconbar);
+            ele.show(this._elCanvasIconbarContainer);
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
         }
         else
         {
-            ele.hide(this._elCanvasIconbar);
+            ele.hide(this._elCanvasIconbarContainer);
             ele.hide(this._elCanvasModalDarkener);
         }
     };
