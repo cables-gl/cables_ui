@@ -96,8 +96,6 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         };
         data.ping = CABLES.api.pingTime;
 
-        console.log("pign", CABLES.api.pingTime);
-
         const html = CABLES.UI.getHandleBarHtml("socketinfo", data);
         return html;
     }
