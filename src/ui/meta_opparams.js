@@ -4,7 +4,7 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.MetaOpParams = function (tabs)
 {
     this._tabs = tabs;
-    this._tab = new CABLES.UI.Tab("op", { "icon": "cables", "infotext": "tab_doc", "showTitle": false, "hideToolbar": true, "padding": true });
+    this._tab = new CABLES.UI.Tab("op", { "icon": "cables", "infotext": "tab_doc", "showTitle": false, "hideToolbar": true, "padding": false });
 
     this._op = null;
     this.html = "";
