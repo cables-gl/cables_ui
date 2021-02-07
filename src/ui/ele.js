@@ -26,6 +26,11 @@ CABLES.Ele = class
     {
         if (el)el.classList.add("hidden");
     }
+
+    create(n)
+    {
+        return document.createElement(n);
+    }
 };
 
 window.ele = new CABLES.Ele();

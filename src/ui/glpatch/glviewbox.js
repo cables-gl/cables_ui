@@ -318,15 +318,18 @@ CABLES.GLGUI.ViewBox = class
         {
             if (ops[i].uiAttribs.subPatch != subp) continue;
 
-            bb.applyPos(
-                ops[i].uiAttribs.translate.x,
-                ops[i].uiAttribs.translate.y,
-                0);
+            if (ops[i].uiAttribs.translate)
+            {
+                bb.applyPos(
+                    ops[i].uiAttribs.translate.x,
+                    ops[i].uiAttribs.translate.y,
+                    0);
 
-            bb.applyPos(
-                ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
-                ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
-                0);
+                bb.applyPos(
+                    ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
+                    ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
+                    0);
+            }
         }
 
         bb.calcCenterSize();
