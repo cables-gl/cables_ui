@@ -293,6 +293,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.isRemoteClient)
         {
+            this._canvasMode = this._CANVASMODE_FULLSCREEN;
             this._elGlCanvas.addClass("maximized");
             this.rendererWidth = 0;
             showingEditor = false;
