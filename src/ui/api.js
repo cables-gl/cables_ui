@@ -15,11 +15,14 @@ CABLES.API = class
 
     ping()
     {
-        const startTime = performance.now();
-        this.request("GET", "ping", {}, () =>
+        if (!CABLES.UI.idling)
         {
-            this.pingTime = Math.round(performance.now() - startTime);
-        });
+            const startTime = performance.now();
+            this.request("GET", "ping", {}, () =>
+            {
+                this.pingTime = Math.round(performance.now() - startTime);
+            });
+        }
 
         setTimeout(this.ping.bind(this), 30000);
     }

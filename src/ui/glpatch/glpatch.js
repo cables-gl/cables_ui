@@ -177,6 +177,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
 
+        gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
+
 
         gui.on("uiloaded", () =>
         {
@@ -1022,5 +1026,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setSize(x, y, w, h)
     {
 
+    }
+
+    zoomStep(s)
+    {
+        this.viewBox.zoomStep(s);
     }
 };

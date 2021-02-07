@@ -458,4 +458,10 @@ CABLES.GLGUI.ViewBox = class
                 this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
             }, timeGrey * 1000 + 10);
     }
+
+    zoomStep(s)
+    {
+        const z = this._zoom + 200 * s;
+        this.animateZoom(z);
+    }
 };
