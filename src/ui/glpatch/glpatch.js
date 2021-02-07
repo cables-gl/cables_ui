@@ -153,9 +153,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
             console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
-
-
-            // this._patchAPI.stopFlowModeActivity();
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
@@ -436,7 +433,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
             else
+            {
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
+            }
 
             // glOp.sendNetPos();
         }
