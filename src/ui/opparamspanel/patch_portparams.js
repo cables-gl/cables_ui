@@ -68,8 +68,18 @@ CABLES.UI.checkDefaultValue = function (op, index)
 
 CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 {
-    new CABLES.UI.SpreadSheetTab(gui.mainTabs,
+    const op = gui.corePatch().getOpById(opid);
+    if (!op) return console.log("paramedit op not found");
+
+    const port = op.getPortByName(portname);
+    if (!port) return console.log("paramedit port not found");
+
+    new CABLES.UI.SpreadSheetTab(gui.mainTabs, port.get(),
         {
+            "onchange": (content) =>
+            {
+                port.set(content);
+            }
         });
 };
 CABLES.UI.openParamStringEditor = function (opid, portname, cb)
