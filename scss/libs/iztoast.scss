@@ -1,6 +1,6 @@
 // iziToast
 $z-index-izitoast-capsule: $zindex_highest;
-$z-index-izitoast-wrapper: $zindex_highest;
+$z-index-izitoast-wrapper: $zindex_highest+10;
 $z-index-izitoast-after: -1;
 $z-index-izitoast-progressbar: 1;
 
