@@ -47,7 +47,10 @@
 
 #canvasicons
 {
-    background-color: var(--color-01);
+    // background-color: var(--color-01);
+    height: 150px;
+    background:linear-gradient(var(--color-01), var(--color-01),transparent,transparent);
+
     color:var(--color-13);
     position: absolute;
     padding-bottom: 30px;;
@@ -77,6 +80,9 @@
         margin-top: 3px;
         padding-right:5px;
 
+        margin-left: 10px;
+        margin-top: 10px;
+        transform:translate(-50%);
     }
 
     .canvasInfo,.cbl_iconbar

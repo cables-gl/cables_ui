@@ -71,13 +71,14 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         if (this._connection.state.getNumClients() > 1)
         {
+            const data = {
+                "numClients": this._connection.state.getNumClients(),
+                "clients": this._connection.state.clients,
+                "connected": this._connection.isConnected()
+            };
+
+            document.getElementById("nav-clientlist").innerHTML = CABLES.UI.getHandleBarHtml("socket_userlist", data);
             document.getElementById("multiplayerbar").style.display = "block";
-            document.getElementById("nav-clientlist").innerHTML =
-                CABLES.UI.getHandleBarHtml("socket_userlist", {
-                    "numClients": this._connection.state.getNumClients(),
-                    "clients": this._connection.state.clients,
-                    "connected": this._connection.isConnected()
-                });
         }
         else
         {
@@ -88,11 +89,14 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
     _getUserInfoHtml()
     {
-        const html = CABLES.UI.getHandleBarHtml("socketinfo", {
+        const data = {
             "numClients": this._connection.state.getNumClients(),
             "clients": this._connection.state.clients,
-            "connected": this._connection.isConnected()
-        });
+            "connected": this._connection.isConnected(),
+        };
+        data.ping = CABLES.api.pingTime;
+
+        const html = CABLES.UI.getHandleBarHtml("socketinfo", data);
         return html;
     }
 };
