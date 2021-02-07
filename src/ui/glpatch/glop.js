@@ -52,8 +52,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
         this._glRectNames.push("_glRectBg");
 
-        this._setupPorts(this._op.portsIn);
-        this._setupPorts(this._op.portsOut);
+        this.refreshPorts();
 
         this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
         this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
@@ -323,12 +322,24 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
     }
 
+    refreshPorts()
+    {
+        for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
+        this._glPorts.length = 0;
+
+        this._setupPorts(this._op.portsIn);
+        this._setupPorts(this._op.portsOut);
+
+        console.log("refresh ports");
+    }
+
     _setupPorts(ports)
     {
         let count = 0;
         for (let i = 0; i < ports.length; i++)
         {
             if (ports[i].uiAttribs.display == "dropdown") continue;
+            if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
 
             this._setupPort(count, ports[i]);
@@ -623,7 +634,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         for (let i = 0; i < this._op.portsIn.length; i++)
         {
             if (this._op.portsIn[i].id == id) return count * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
-            if (!this._op.portsIn[i].isHidden()) count++;
+            if (
+                this._op.portsIn[i].isHidden() ||
+                this._op.portsIn[i].uiAttribs.display == "dropdown" ||
+                this._op.portsIn[i].uiAttribs.display == "readonly" ||
+                this._op.portsIn[i].uiAttribs.hidePort) continue;
+            count++;
         }
 
         for (let i = 0; i < this._op.portsOut.length; i++)
