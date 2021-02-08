@@ -11,14 +11,17 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this._cols = 3;
         this._rows = 30;
 
-        this.data = [];
+
+        this.cells = [];
         this._inputs = [];
         this._options = options;
         this.colNames = ["a", "b", "c", "d"];
 
+        this.data = { "cells": this.cells, "colnames": this.colnames };
+
         if (data) this.initData(data);
 
-        this._tab = new CABLES.UI.Tab("spreadsheet", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
         this._tabs.addTab(this._tab, true);
 
         this._id = "spread" + CABLES.uuid();
@@ -28,7 +31,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
 
-        this.data.length = this._rows;
+        this.cells.length = this._rows;
 
         if (!data)
             for (let y = 0; y < this._rows; y++)
@@ -80,30 +83,32 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
     initData(data)
     {
-        for (let y = 0; y < data.length; y++)
+        data.cells = data.cells || [];
+        this._colNames = data.colNames || [];
+        for (let y = 0; y < data.cells.length; y++)
         {
             if (y == 0)
             {
-                this.colNames = Object.keys(data[y]);
+                this.colNames = Object.keys(data.cells[y]);
             }
-            this.data[y] = [];
+            this.cells[y] = [];
 
-            console.log(data[y]);
+            console.log(data.cells[y]);
 
-            for (const i in data[y])
+            for (const i in data.cells[y])
             {
-                this.data[y][this.colNames.indexOf("" + i)] = data[y][i];
+                this.cells[y][this.colNames.indexOf("" + i)] = data.cells[y][i];
             }
         }
-        console.log(this.data);
+        console.log(this.cells);
     }
 
     get(x, y)
     {
         if (y == -1) return this.colNames[x];
-        if (!this.data) return undefined;
-        if (!this.data[y]) return undefined;
-        return this.data[y][x];
+        if (!this.cells) return undefined;
+        if (!this.cells[y]) return undefined;
+        return this.cells[y][x];
     }
 
     set(x, y, v)
@@ -114,8 +119,8 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
             return;
         }
 
-        this.data[y] = this.data[y] || [];
-        this.data[y][x] = v;
+        this.cells[y] = this.cells[y] || [];
+        this.cells[y][x] = v;
     }
 
     _change(e)
@@ -126,31 +131,9 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this.set(x, y, e.target.value);
 
-        if (this._options.onchange) this._options.onchange(this.asObjectArray());
-    }
-
-    asObjectArray()
-    {
-        const arr = [];
-        arr.length = this._rows;
-        let lastRow = 0;
-        for (let y = 0; y < this._rows; y++)
-        {
-            const o = {};
-            arr[y] = o;
-
-            for (let x = 0; x < this._cols; x++)
-            {
-                let v = this.get(x, y);
-                if (CABLES.UTILS.isNumeric(v)) v = parseFloat(v);
-                if (v != "") lastRow = y;
-
-                o[this.colNames[x]] = v;
-            }
-        }
-        arr.length = lastRow;
-
-        return arr;
+        this.data.colNames = this.colNames;
+        this.data.cols = this._cols;
+        if (this._options.onchange) this._options.onchange(this.data);
     }
 
 

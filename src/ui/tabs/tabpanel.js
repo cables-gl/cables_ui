@@ -131,6 +131,23 @@ CABLES.UI.TabPanel = function (eleId)
     });
 };
 
+
+CABLES.UI.TabPanel.prototype.getUniqueTitle = function (title)
+{
+    const existingTab = this.getTabByTitle(title);
+    let count = 0;
+    while (existingTab)
+    {
+        count++;
+        if (!this.getTabByTitle(title + " (" + count + ")")) break;
+    }
+
+    if (count > 0)
+        title = title + " (" + count + ")";
+
+    return title;
+};
+
 CABLES.UI.TabPanel.prototype.updateHtml = function ()
 {
     let html = "";

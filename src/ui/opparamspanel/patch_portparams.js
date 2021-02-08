@@ -66,6 +66,11 @@ CABLES.UI.checkDefaultValue = function (op, index)
 };
 
 
+CABLES.UI.openParamSpreadSheetEditor = function ()
+{
+
+};
+
 CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 {
     const op = gui.corePatch().getOpById(opid);
@@ -74,8 +79,10 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
     const port = op.getPortByName(portname);
     if (!port) return console.log("paramedit port not found");
 
+
     new CABLES.UI.SpreadSheetTab(gui.mainTabs, port.get(),
         {
+            "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {
                 port.set(content);
@@ -90,17 +97,19 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     const port = op.getPortByName(portname);
     if (!port) return console.log("paramedit port not found");
 
-    let name = op.name + " " + port.name;
+    const name = op.name + " " + port.name;
 
-    let existingTab = gui.mainTabs.getTabByTitle(name);
-    let count = 0;
-    while (existingTab)
-    {
-        count++;
-        if (!gui.mainTabs.getTabByTitle(name + " (" + count + ")")) break;
-    }
-    if (count > 0)
-        name = name + " (" + count + ")";
+    gui.mainTabs.getUniqueTitle(name);
+
+    // let existingTab = gui.mainTabs.getTabByTitle(name);
+    // let count = 0;
+    // while (existingTab)
+    // {
+    //     count++;
+    //     if (!gui.mainTabs.getTabByTitle(name + " (" + count + ")")) break;
+    // }
+    // if (count > 0)
+    //     name = name + " (" + count + ")";
 
 
     const dataId = opid + portname;
