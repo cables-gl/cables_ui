@@ -134,7 +134,12 @@ CABLES.CMD.UI.showSearch = function (str)
 
 CABLES.CMD.UI.toggleMaxRenderer = function ()
 {
-    gui.cycleRendererSize();
+    gui.cycleFullscreen();
+};
+
+CABLES.CMD.UI.togglePatchBgRenderer = function ()
+{
+    gui.cyclePatchBg();
 };
 
 CABLES.CMD.UI.showKeys = function ()
@@ -372,6 +377,14 @@ CABLES.CMD.commands.push(
         "icon": "maximize",
         "hotkey": "CMD + ENTER",
     },
+    {
+        "cmd": "patch background renderer [CMD+SHIFT+ENTER]",
+        "category": "ui",
+        "func": CABLES.CMD.UI.togglePatchBgRenderer,
+        "icon": "maximize",
+        "hotkey": "CMD + ENTER",
+    },
+
     {
         "cmd": "show keyboard shortcutds",
         "category": "ui",

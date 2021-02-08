@@ -45,36 +45,32 @@ CABLES.GLGUI.GlLink = class
                 if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
                 {
                     const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
-                    gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, coord[0], coord[1]);
+                    gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
                     return;
                 }
             }
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
-                const opIn = gui.corePatch().getOpById(this._opIdInput);
-                const pIn = opIn.getPortById(this._portIdInput);
-                const opOut = gui.corePatch().getOpById(this._opIdOutput);
-                const pOut = opOut.getPortById(this._portIdOutput);
-                const llink = pOut.getLinkTo(pIn);
-                // options, linkOp, linkPort, link)
+                const
+                    opIn = gui.corePatch().getOpById(this._opIdInput),
+                    pIn = opIn.getPortById(this._portIdInput),
+                    opOut = gui.corePatch().getOpById(this._opIdOutput),
+                    pOut = opOut.getPortById(this._portIdOutput),
+                    llink = pOut.getLinkTo(pIn);
 
                 console.log("this._glPatch.subPatch", this._glPatch.subPatch);
-                gui.opSelect().show({ "x": 0,
-                    "y": 0,
-                    "onOpAdd": (op) =>
-                    {
-                        // op.setUiAttrib({ "translate": { "x": coord[0], "y": coord[1] } });
-                        op.setUiAttrib({ "subPatch": this._glPatch.subPatch, "translate": { "x": this._glPatch.viewBox.mousePatchX, "y": this._glPatch.viewBox.mousePatchY } });
-                    } }, null, null, llink);
-
-                // this._glPatch.patchAPI.addOpIntoLink(
-                //     this._opIdInput,
-                //     this._opIdOutput,
-                //     this._portIdInput,
-                //     this._portIdOutput,
-                //     this._glPatch.viewBox.mousePatchX,
-                //     this._glPatch.viewBox.mousePatchY);
+                gui.opSelect().show(
+                    { "x": 0,
+                        "y": 0,
+                        "onOpAdd": (op) =>
+                        {
+                            op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
+                                "translate": {
+                                    "x": gui.patchView.snapOpPosX(opOut.uiAttribs.translate.x),
+                                    "y": gui.patchView.snapOpPosY(this._glPatch.viewBox.mousePatchY)
+                                } });
+                        } }, null, null, llink);
             }
 
             this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;

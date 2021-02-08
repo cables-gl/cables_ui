@@ -293,6 +293,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.isRemoteClient)
         {
+            this._canvasMode = this._CANVASMODE_FULLSCREEN;
             this._elGlCanvas.addClass("maximized");
             this.rendererWidth = 0;
             showingEditor = false;
@@ -619,7 +620,7 @@ CABLES.UI.GUI = function (cfg)
             this._elGlCanvas.attr("width", window.innerWidth);
             this._elGlCanvas.attr("height", window.innerHeight);
 
-            this._elCablesCanvas.style["z-index"] = 999;
+            this._elCablesCanvas.style["z-index"] = 40;
         }
         else if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
@@ -689,35 +690,54 @@ CABLES.UI.GUI = function (cfg)
         $("#serialized").val(self.patch().scene.serialize());
     };
 
-    this.cycleRendererSize = function ()
+
+    this._switchCanvasSizeNormal = function ()
     {
+        this._canvasMode = this._CANVASMODE_NORMAL;
+        this.rendererWidth = this._oldCanvasWidth;
+        this.rendererHeight = this._oldCanvasHeight;
+    };
+
+    this.cyclePatchBg = function ()
+    {
+        if (this._canvasMode == this._CANVASMODE_FULLSCREEN) this.cycleFullscreen();
+
         if (this._canvasMode == this._CANVASMODE_NORMAL)
         {
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-        }
 
-        this._canvasMode++;
-
-        if (this._canvasMode > this._CANVASMODE_FULLSCREEN) this._canvasMode = 0;
-
-
-        if (this._canvasMode == this._CANVASMODE_PATCHBG)
-        {
-            this.rendererHeight = 34;
+            this._canvasMode = this._CANVASMODE_PATCHBG;
+            this.rendererHeight = 100;
             this.rightPanelWidth = this._oldCanvasWidth;
-        }
-        else if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
-        {
-
         }
         else
         {
+            this._switchCanvasSizeNormal();
+        }
+
+        this.setLayout();
+        this.showCanvasModal(false);
+    };
+
+    this.cycleFullscreen = function ()
+    {
+        if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+        {
+            this._canvasMode = this._CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
+        }
+        else
+        {
+            this._oldCanvasWidth = this.rendererWidth;
+            this._oldCanvasHeight = this.rendererHeight;
+            this.rightPanelWidth = this.rendererWidth;
+            this._canvasMode = this._CANVASMODE_FULLSCREEN;
 
-            this.showCanvasModal(true);
+            if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
+            this.notifiedFullscreen = true;
         }
 
         this.setLayout();
@@ -1175,7 +1195,7 @@ CABLES.UI.GUI = function (cfg)
 
         $("#button_cycleRenderSize").bind("click", function (event)
         {
-            self.cycleRendererSize();
+            self.cycleFullscreen();
         });
 
         $(".nav_viewProjectLink").bind("click", function (event)
@@ -1472,8 +1492,8 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("Escape", "Open Op Create (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
-        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleRendererSize(); });
-        this.keys.key("Enter", "Cycle size of renderer between normal and background", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cycleRendererSizePatchBg(); });
+        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
+        this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
@@ -1530,7 +1550,7 @@ CABLES.UI.GUI = function (cfg)
         {
             if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
             {
-                this.cycleRendererSize();
+                this.cycleFullscreen();
             }
             else
             {

@@ -66,6 +66,22 @@ CABLES.UI.checkDefaultValue = function (op, index)
 };
 
 
+CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
+{
+    const op = gui.corePatch().getOpById(opid);
+    if (!op) return console.log("paramedit op not found");
+
+    const port = op.getPortByName(portname);
+    if (!port) return console.log("paramedit port not found");
+
+    new CABLES.UI.SpreadSheetTab(gui.mainTabs, port.get(),
+        {
+            "onchange": (content) =>
+            {
+                port.set(content);
+            }
+        });
+};
 CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 {
     const op = gui.corePatch().getOpById(opid);
@@ -98,15 +114,6 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 
     const editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
 
-
-    // if (!editorObj && gui.mainTabs.getTabByTitle(name))
-    // {
-    //     CABLES.editorSession.remove(name, "param");
-    //     const tab = gui.mainTabs.getTabByTitle(name);
-    //     gui.mainTabs.closeTab(tab.id);
-
-    //     editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
-    // }
 
     if (editorObj)
     {
@@ -428,6 +435,14 @@ CABLES.UI.initPortClickListener = function (op, index)
             });
         }
     });
+
+    $("#portspreadsheet_in_" + index).on("click", function (e)
+    {
+        const thePort = op.portsIn[index];
+
+        CABLES.UI.openParamSpreadSheetEditor(op.id, op.portsIn[index].name);
+    });
+
 
     $("#portedit_in_" + index).on("click", function (e)
     {

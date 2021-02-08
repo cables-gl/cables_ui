@@ -47,8 +47,7 @@
 
 #canvasicons
 {
-    // background-color: var(--color-01);
-    height: 150px;
+    height: 100px;
     background:linear-gradient(var(--color-01), var(--color-01),transparent,transparent);
 
     color:var(--color-13);
@@ -87,22 +86,15 @@
 
     .canvasInfo,.cbl_iconbar
     {
-        // position: absolute;
-        // display: inline-block;
-
         span
         {
-
-    vertical-align: middle;
+            vertical-align: middle;
             font-family: monospace;
         }
 
         #canvasInfoFPS
         {
-            // float:left;
-            // padding-right: 20px;
         }
-
     }
 }
 

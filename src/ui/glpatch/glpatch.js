@@ -153,9 +153,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
             console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
-
-
-            // this._patchAPI.stopFlowModeActivity();
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
@@ -176,6 +173,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
+
+        gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
 
 
         gui.on("uiloaded", () =>
@@ -397,11 +398,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
 
-        op.addEventListener("onEnabledChange", () =>
+        op.on("onPortAdd", () => { glOp.refreshPorts(); });
+
+        op.on("onEnabledChange", () =>
         {
             glOp.update();
         });
-        op.addEventListener("onUiAttribsChange",
+        op.on("onUiAttribsChange",
             (newAttribs) =>
             {
                 glOp.uiAttribs = op.uiAttribs;
@@ -430,7 +433,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
             else
+            {
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
+            }
 
             // glOp.sendNetPos();
         }
@@ -1020,5 +1025,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     setSize(x, y, w, h)
     {
 
+    }
+
+    zoomStep(s)
+    {
+        this.viewBox.zoomStep(s);
     }
 };

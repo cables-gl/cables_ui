@@ -168,3 +168,57 @@
 {
     color:#000 !important;
 }
+
+
+.editor_spreadsheet
+{
+
+    table {
+        border-spacing: 0px;
+        border-collapse: separate;
+        width:100%;
+    };
+
+    td,tr
+    {
+        border:0px;
+        padding:0px;
+    }
+
+    .colname
+    {
+        margin-bottom: 3px;
+        background-color: var(--color-04);
+        border-bottom:1px solid var(--color-special);
+    }
+
+    .rownum
+    {
+        background-color: var(--color-04);
+        color: var(--color-11);
+        text-align: right;
+        font-family: monospace;
+        padding-right:5px;
+        padding-left:5px;
+        border-bottom:1px solid var(--color-02);
+        user-select: none;
+    }
+
+    input
+    {
+        font-family: monospace;
+        border:0px;
+        padding:5px;
+        border-bottom:1px solid var(--color-02);
+        border-left:1px solid var(--color-02);
+        background-color: var(--color-05);
+        color: var(--color-11);
+        width:100%;
+
+        &:focus
+        {
+            background-color: var(--color-06);
+            color: var(--color-11);
+        }
+    }
+}

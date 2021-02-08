@@ -128,6 +128,10 @@
                         </td><td >
                             <a class="button fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" >edit</a>
                         {{/compare}}
+                        {{#compare port.uiAttribs.display '==' 'spreadsheet' }}
+                        </td><td >
+                            <a class="button fa fa-edit" id="portspreadsheet_{{ dirStr }}_{{ portnum }}" >edit</a>
+                        {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
                             </td><td >
                             <a class="info graphbutton fa fa-plus-circle" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ></a>

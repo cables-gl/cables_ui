@@ -12,7 +12,8 @@ CABLES.UI.TEXTS = {
     "toggle_helper": "Enable or disable of showing helper and bounding boxes",
     "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n`ctrl/cmd`+`c` copy hovered color to clipboard",
 
-    "renderer_maximize": "## Toggle Fullscreen",
+    "renderer_patchbg": "## Toggle Patch Background\n\n`cmd/ctrl`+`shift`+`enter` Toggle patch nackground renderer",
+    "renderer_maximize": "## Toggle Fullscreen\n\n`cmd/ctrl`+`enter` Toggle Fullscreen",
     "renderer_setsize": "## Canvas Size \n\n* click to set canvas size",
     "infoarea": "## Infoarea\n\nLook here for contextual information",
 

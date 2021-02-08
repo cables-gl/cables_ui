@@ -318,15 +318,18 @@ CABLES.GLGUI.ViewBox = class
         {
             if (ops[i].uiAttribs.subPatch != subp) continue;
 
-            bb.applyPos(
-                ops[i].uiAttribs.translate.x,
-                ops[i].uiAttribs.translate.y,
-                0);
+            if (ops[i].uiAttribs.translate)
+            {
+                bb.applyPos(
+                    ops[i].uiAttribs.translate.x,
+                    ops[i].uiAttribs.translate.y,
+                    0);
 
-            bb.applyPos(
-                ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
-                ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
-                0);
+                bb.applyPos(
+                    ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
+                    ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
+                    0);
+            }
         }
 
         bb.calcCenterSize();
@@ -457,5 +460,11 @@ CABLES.GLGUI.ViewBox = class
                 this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
                 this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
             }, timeGrey * 1000 + 10);
+    }
+
+    zoomStep(s)
+    {
+        const z = this._zoom + 200 * s;
+        this.animateZoom(z);
     }
 };

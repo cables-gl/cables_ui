@@ -19,6 +19,7 @@ CABLES.GLGUI.GlRectDragLine = class
         this._startGlPorts = [];
         this._lineIndices = [];
         this._clearSpline();
+
         glpatch.on("mouseup", (e) =>
         {
             if (!this.isActive) return;
@@ -30,10 +31,14 @@ CABLES.GLGUI.GlRectDragLine = class
 
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT && this._glPort && this._glPort.port)
             {
+                let x = this._glPatch.viewBox.mousePatchX;
+
+                if (Math.abs(this._glPort.glOp.x - x) < 100)x = this._glPort.glOp.x;
+
                 gui.opSelect().show(
                     {
                         "subPatch": this._glPatch.subPatch,
-                        "x": this._glPatch.viewBox.mousePatchX,
+                        "x": x,
                         "y": this._glPatch.viewBox.mousePatchY
                     }, this._glPort.port.parent, this._glPort.port);
             }
@@ -49,14 +54,12 @@ CABLES.GLGUI.GlRectDragLine = class
             {
                 this.setPort(glport, opid, portName);
             }
-            else
-            if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            else if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
             {
                 this.setPort(glport, opid, portName);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
-                if (!e.altKey)
-                    gui.patchView.unlinkPort(opid, glport.id);
+                if (!e.altKey) gui.patchView.unlinkPort(opid, glport.id);
 
                 this._startGlPorts = glports;
             }
