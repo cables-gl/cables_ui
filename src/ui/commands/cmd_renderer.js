@@ -132,22 +132,22 @@ CABLES.CMD.commands.push({
     "cmd": "toggle fullscreen",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.fullscreen,
-    "icon": "monitor"
+    "icon": "canvas_max"
 }, {
     "cmd": "change canvas size",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.changeSize,
-    "icon": "maximize"
+    "icon": "canvas_resize"
 }, {
     "cmd": "reset canvas size",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.resetSize,
-    "icon": "maximize"
+    "icon": "canvas_resize"
 }, {
     "cmd": "set canvas aspect ratio",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.aspect,
-    "icon": "monitor"
+    "icon": "canvas_resize"
 }, {
     "cmd": "animation renderer",
     "category": "renderer",
@@ -162,7 +162,7 @@ CABLES.CMD.commands.push({
     "cmd": "scale canvas",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.scaleCanvas,
-    "icon": "image"
+    "icon": "canvas_resize"
 }
 
 
