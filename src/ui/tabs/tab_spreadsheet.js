@@ -8,18 +8,21 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         super();
         this._tabs = tabs;
 
-        this._cols = 3;
+        this._numCols = 3;
         this._rows = 30;
-
 
         this.cells = [];
         this._inputs = [];
         this._options = options;
-        this.colNames = ["a", "b", "c", "d"];
+        this.colNames = [];
 
-        this.data = { "cells": this.cells, "colnames": this.colnames };
+        this.data = { "cells": this.cells, "colNames": this.colNames };
 
         if (data) this.initData(data);
+        else
+        {
+            for (let i = 0; i < this._numCols; i++) this.getColName(i);
+        }
 
         this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
         this._tabs.addTab(this._tab, true);
@@ -33,13 +36,43 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this.cells.length = this._rows;
 
-        if (!data)
-            for (let y = 0; y < this._rows; y++)
-                for (let x = 0; x < this._cols; x++)
-                    this.set(x, y, "");
+        // if (!this.cells)
+        //     for (let y = 0; y < this._rows; y++)
+        //         for (let x = 0; x < this._numCols; x++)
+        //             this.set(x, y, "");
 
         this._html();
     }
+
+
+    getColName(_c)
+    {
+        _c = parseFloat(_c);
+
+        if (this.colNames.length > _c && this.colNames[_c])
+        {
+            return this.colNames[_c];
+        }
+
+        let str = "";
+
+
+        let c = parseFloat(_c);
+
+        if (c < 0) throw new Error("col invalid");
+
+        while (c >= 0)
+        {
+            str = "abcdefghijklmnopqrstuvwxyz"[c % 26] + str;
+            c = Math.floor(c / 26) - 1;
+        }
+
+        console.log("colname", c, str);
+        this.colNames[_c] = str;
+
+        return str;
+    }
+
 
     _html()
     {
@@ -61,53 +94,104 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
             }
             tr.appendChild(tdr);
 
-            for (let x = 0; x < this._cols; x++)
+            for (let x = 0; x < this._numCols; x++)
             {
                 const td = ele.create("td");
                 tr.appendChild(td);
 
                 const input = ele.create("input");
-                input.dataset.y = y;
                 input.dataset.x = x;
+                input.dataset.y = y;
+                this._inputs[x + y * this._numCols] = input;
 
-                if (y == -1) input.classList.add("colname");
-
-                input.value = this.get(x, y) || "";
+                if (y == -1)
+                {
+                    input.classList.add("colname");
+                    input.value = this.getColName(x);
+                }
+                else
+                {
+                    input.value = this.get(x, y) || "";
+                }
 
                 td.appendChild(input);
 
+
                 input.addEventListener("change", this._change.bind(this));
+                input.addEventListener("keydown", this._onKey.bind(this), false);
             }
         }
     }
 
+
+    _focusCell(x, y)
+    {
+        const inp = this._inputs[(y * this._numCols) + x];
+
+        if (inp)
+        {
+            inp.focus();
+
+            setTimeout(() =>
+            {
+                inp.select();
+            }, 50);
+        }
+    }
+
+
+    _onKey(e)
+    {
+        const x = parseFloat(e.target.dataset.x);
+        const y = parseFloat(e.target.dataset.y);
+
+        if (e.keyCode == 38)
+        {
+            this._focusCell(x, y - 1);
+        }
+        else if (e.keyCode == 40)
+        {
+            this._focusCell(x, y + 1);
+        }
+        else if (e.keyCode == 37)
+        {
+            this._focusCell(x - 1, y);
+        }
+        else if (e.keyCode == 39)
+        {
+            this._focusCell(x + 1, y);
+        }
+        // else console.log(e.keyCode);
+    }
+
+
     initData(data)
     {
-        data.cells = data.cells || [];
-        this._colNames = data.colNames || [];
-        for (let y = 0; y < data.cells.length; y++)
-        {
-            if (y == 0)
-            {
-                this.colNames = Object.keys(data.cells[y]);
-            }
-            this.cells[y] = [];
+        this.cells = data.cells || [];
+        this.colNames = data.colNames || [];
+        // for (let y = 0; y < data.cells.length; y++)
+        // {
+        //     if (y == 0)
+        //     {
+        //         this.colNames = Object.keys(data.cells[y]);
+        //     }
+        //     this.cells[y] = [];
 
-            console.log(data.cells[y]);
+        //     console.log(data.cells[y]);
 
-            for (const i in data.cells[y])
-            {
-                this.cells[y][this.colNames.indexOf("" + i)] = data.cells[y][i];
-            }
-        }
+        //     for (const i in data.cells[y])
+        //     {
+        //         this.cells[y][this.colNames.indexOf("" + i)] = data.cells[y][i];
+        //     }
+        // }
         console.log(this.cells);
     }
 
     get(x, y)
     {
-        if (y == -1) return this.colNames[x];
+        if (y == -1) return this.getColName(x);
         if (!this.cells) return undefined;
-        if (!this.cells[y]) return undefined;
+        if (!this.cells[y]) return [];
         return this.cells[y][x];
     }
 
@@ -115,6 +199,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
     {
         if (y == -1)
         {
+            console.log("set colname", x, v);
             this.colNames[x] = v;
             return;
         }
@@ -131,8 +216,13 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this.set(x, y, e.target.value);
 
+        // for (let i = 0; i < this._numCols; i++) this.getColName(i);
+
+        this.data.cols = this._numCols;
+        this.data.cells = this.cells;
         this.data.colNames = this.colNames;
-        this.data.cols = this._cols;
+        console.log("colnames", this.colNames);
+        this._options.onchange(null);
         if (this._options.onchange) this._options.onchange(this.data);
     }
 
