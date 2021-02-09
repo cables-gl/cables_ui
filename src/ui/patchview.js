@@ -1460,7 +1460,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             oldLink.remove();
         }
 
-        if (portIn && portOut)
+        if (portIn && portOut && op.portsOut[0])
         {
             if (CABLES.Link.canLink(op.portsIn[0], portOut))
             {

@@ -50,21 +50,21 @@ CABLES.CMD.UI.toggleMute = function ()
     }
 };
 
-CABLES.CMD.UI.toggleEditor = function ()
-{
-    gui.toggleEditor();
-};
+// CABLES.CMD.UI.toggleEditor = function ()
+// {
+//     gui.toggleEditor();
+// };
 
-CABLES.CMD.UI.hideEditor = function ()
-{
-    gui.closeEditor();
-};
+// CABLES.CMD.UI.hideEditor = function ()
+// {
+//     gui.closeEditor();
+// };
 
-CABLES.CMD.UI.showEditor = function ()
-{
-    // gui.showEditor();
-    console.log("todo: add showeditor for maintabs");
-};
+// CABLES.CMD.UI.showEditor = function ()
+// {
+//     // gui.showEditor();
+//     console.log("todo: add showeditor for maintabs");
+// };
 
 CABLES.CMD.UI.TimelinePlay = function ()
 {
@@ -327,31 +327,19 @@ CABLES.CMD.commands.push(
         "cmd": "toggle timeline",
         "category": "ui",
         "func": CABLES.CMD.UI.toggleTimeline,
+        "icon": "timeline"
     },
     {
         "cmd": "hide timeline",
         "category": "ui",
         "func": CABLES.CMD.UI.hideTimeline,
+        "icon": "timeline"
     },
     {
         "cmd": "show timeline",
         "category": "ui",
         "func": CABLES.CMD.UI.showTimeline,
-    },
-    {
-        "cmd": "toggle editor",
-        "category": "ui",
-        "func": CABLES.CMD.UI.toggleEditor,
-    },
-    {
-        "cmd": "hide editor",
-        "category": "ui",
-        "func": CABLES.CMD.UI.hideEditor,
-    },
-    {
-        "cmd": "show editor",
-        "category": "ui",
-        "func": CABLES.CMD.UI.showEditor,
+        "icon": "timeline"
     },
     {
         "cmd": "hide minimap",
@@ -374,14 +362,14 @@ CABLES.CMD.commands.push(
         "cmd": "maximize renderer [CMD+ENTER]",
         "category": "ui",
         "func": CABLES.CMD.UI.toggleMaxRenderer,
-        "icon": "maximize",
+        "icon": "canvas_max",
         "hotkey": "CMD + ENTER",
     },
     {
         "cmd": "patch background renderer [CMD+SHIFT+ENTER]",
         "category": "ui",
         "func": CABLES.CMD.UI.togglePatchBgRenderer,
-        "icon": "maximize",
+        "icon": "canvas_patchbg",
         "hotkey": "CMD + ENTER",
     },
 
@@ -410,6 +398,7 @@ CABLES.CMD.commands.push(
         "category": "patch",
         "func": CABLES.CMD.UI.centerPatchOps,
         "hotkey": "c",
+        "icon": "subpatch"
     },
     {
         "cmd": "start presentation mode",
@@ -481,7 +470,7 @@ CABLES.CMD.commands.push(
         "cmd": "Preferences",
         "category": "ui",
         "func": CABLES.CMD.UI.showPreferences,
-        "icon": "command",
+        "icon": "cables_editor",
     },
     {
         "cmd": "chat",
