@@ -281,6 +281,7 @@ CABLES.CMD.commands.push(
         "category": "ui",
         "func": CABLES.CMD.UI.settings,
         "icon": "settings",
+        "infotext": "cmd_patchsettings"
     },
     // {
     //     cmd: "manage patch contributors",
@@ -399,7 +400,8 @@ CABLES.CMD.commands.push(
         "category": "patch",
         "func": CABLES.CMD.UI.centerPatchOps,
         "hotkey": "c",
-        "icon": "subpatch"
+        "icon": "subpatch",
+        "infotext": "cmd_centerpatch"
     },
     {
         "cmd": "start presentation mode",
@@ -491,12 +493,16 @@ CABLES.CMD.commands.push(
         "category": "ui",
         "func": CABLES.CMD.UI.zoomIn,
         "icon": "plus",
+        "hotkey": "+",
+        "infotext": "cmd_zoomin"
     },
     {
         "cmd": "zoom out",
         "category": "ui",
         "func": CABLES.CMD.UI.zoomOut,
         "icon": "minus",
+        "hotkey": "-",
+        "infotext": "cmd_zoomout"
     },
 
 

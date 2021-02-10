@@ -73,13 +73,12 @@ CABLES.IconBar = class
 
         const html = CABLES.UI.getHandleBarHtml("iconbar", {
             "items": this._items,
-            "id": this._id
+            "id": this._id,
+            "vertical": this.vertical
         });
 
         this._eleContainer.innerHTML = html;
 
-        // this._eleContainer.style.top = 100 + "px";
-        // this._eleContainer.style.left = 10 + "px";
 
         document.body.appendChild(this._eleContainer);
     }

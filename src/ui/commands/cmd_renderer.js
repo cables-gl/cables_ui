@@ -132,7 +132,8 @@ CABLES.CMD.commands.push({
     "cmd": "toggle fullscreen",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.fullscreen,
-    "icon": "canvas_max"
+    "icon": "canvas_max",
+    "infotext": "renderer_maximize"
 }, {
     "cmd": "change canvas size",
     "category": "renderer",

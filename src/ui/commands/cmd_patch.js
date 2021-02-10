@@ -581,14 +581,16 @@ CABLES.CMD.commands.push(
         "category": "patch",
         "func": CABLES.CMD.PATCH.save,
         "icon": "save",
-        "hotkey": "CMD + s"
+        "hotkey": "CTRL/CMD + s",
+        "infotext": "cmd_savepatch"
+
     },
     {
         "cmd": "save patch as...",
         "category": "patch",
         "func": CABLES.CMD.PATCH.saveAs,
         "icon": "save",
-        "hotkey": "CMD + SHIFT + s"
+        "hotkey": "CTRL/CMD + SHIFT + s",
     },
     {
         "cmd": "upload file dialog",
@@ -649,7 +651,8 @@ CABLES.CMD.commands.push(
         "cmd": "add op",
         "category": "patch",
         "func": CABLES.CMD.PATCH.addOp,
-        "icon": "op"
+        "icon": "op",
+        "infotext": "cmd_addop"
     },
     {
         "cmd": "edit op",
