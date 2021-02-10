@@ -318,6 +318,10 @@ CABLES.UI.GUI = function (cfg)
         this.rendererHeight = Math.floor(this.rendererHeight);
 
 
+        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
+        if (this._elCanvasIconbarBottom) this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+
+
         const cgl = this._corePatch.cgl;
         if (cgl.canvasWidth) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
 
@@ -1657,6 +1661,8 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.UI.userSettings.get("timelineOpened") == true) this.showTiming();
 
         gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
+
+        gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
 
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();

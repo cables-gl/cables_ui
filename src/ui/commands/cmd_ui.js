@@ -154,7 +154,8 @@ CABLES.CMD.UI.showCommandPallet = function ()
 
 CABLES.CMD.UI.centerPatchOps = function ()
 {
-    gui.patch().centerViewBoxOps();
+    gui.patchView.centerView();
+    // gui.patch().centerViewBoxOps();
 };
 
 CABLES.CMD.UI.flowVis = function ()
@@ -492,7 +493,7 @@ CABLES.CMD.commands.push(
         "icon": "plus",
     },
     {
-        "cmd": "zoom Out",
+        "cmd": "zoom out",
         "category": "ui",
         "func": CABLES.CMD.UI.zoomOut,
         "icon": "minus",

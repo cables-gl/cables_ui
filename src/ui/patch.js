@@ -522,7 +522,8 @@ CABLES.UI.Patch = function (_gui)
 
     this.center = function (x, y)
     {
-        this.getViewBox().center(x, y);
+        if (x === undefined) this.centerViewBoxOps();
+        else this.getViewBox().center(x, y);
     };
 
     this.centerViewBoxOps = function ()

@@ -6,6 +6,7 @@ CABLES.IconBar = class
         this._items = [];
         this._id = which;
         this._eleContainer = null;
+        this.vertical = true;
 
         this._updateItems();
     }
@@ -19,6 +20,14 @@ CABLES.IconBar = class
     {
         this._items = [];
         const items = [];
+
+        if (this._id == "sidebar_bottom")
+        {
+            this.vertical = false;
+
+            items.push("center patch", "zoom out", "zoom in");
+        }
+
         if (this._id == "sidebar_left")
         {
             const defaultItems = ["save patch", "add op", "show settings", "toggle fullscreen"];
@@ -57,8 +66,10 @@ CABLES.IconBar = class
         if (this._eleContainer) this._eleContainer.innerHTML = "";
         else this._eleContainer = document.createElement("div");
 
+
         this._eleContainer.id = "iconbar_" + this._id;
         this._eleContainer.classList.add("cbl_iconbarContainer");
+        if (!this.vertical) this._eleContainer.classList.add("cbl_iconbar_hor");
 
         const html = CABLES.UI.getHandleBarHtml("iconbar", {
             "items": this._items,
