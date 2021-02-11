@@ -971,6 +971,13 @@ CABLES.UI.GUI = function (cfg)
 
     this.highlightHtmlElement = function (target, opid)
     {
+        if (target == null)
+        {
+            this._highlightEleOpId = null;
+            ele.classList.add("hidden");
+            returnl;
+        }
+
         this._highlightEleOpId = opid;
         const r = target.getBoundingClientRect();
         const ele = document.getElementById("inspectHtmlOverlay");
@@ -987,7 +994,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 this._highlightEleOpId = null;
                 ele.classList.add("hidden");
-            }, 500);
+            }, 3000);
     };
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
