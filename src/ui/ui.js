@@ -975,8 +975,10 @@ CABLES.UI.GUI = function (cfg)
         {
             this._highlightEleOpId = null;
             ele.classList.add("hidden");
-            returnl;
+            return;
         }
+
+        if (!target) return;
 
         this._highlightEleOpId = opid;
         const r = target.getBoundingClientRect();
