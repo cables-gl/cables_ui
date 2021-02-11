@@ -394,7 +394,8 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 }
                 else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
 
-                document.getElementById("item_details").innerHTML = html;
+                if (document.getElementById("item_details"))
+                    document.getElementById("item_details").innerHTML = html;
 
                 const delEle = document.getElementById("filedelete" + itemId);
                 if (delEle)
