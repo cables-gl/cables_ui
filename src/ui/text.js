@@ -38,7 +38,7 @@ CABLES.UI.TEXTS = {
     "portMouseCreate": "* press left mousebutton (or press and drag) to create and link new op",
     "portObjectSnapshot": "see at object data snapshot",
 
-    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `[d]` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical spacing\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
+    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical spacing\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
     "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `del` delete op\n* `page up/down` snap to parent/child op",
 
     "projectSettingsPublic": "make patch public - everyone can see it",
@@ -109,6 +109,14 @@ CABLES.UI.TEXTS = {
 
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",
+
+    "cmd_centerpatch": "`c` center patch or selected ops",
+    "cmd_zoomin": "`+` Zoom In",
+    "cmd_zoomout": "`-` Zoom Out",
+    "cmd_savepatch": "`CTRL/CMD`+`S` Save Patch",
+    "cmd_addop": "`esc` Add Operator",
+    "cmd_patchsettings": "## Open Patch settings",
+
 
     "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!"
 };
