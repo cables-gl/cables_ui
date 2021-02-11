@@ -971,33 +971,26 @@ CABLES.UI.GUI = function (cfg)
 
     this.highlightHtmlElement = function (target, opid)
     {
-        if (target == null)
-        {
-            this._highlightEleOpId = null;
-            const ele = document.getElementById("inspectHtmlOverlay");
-            ele.classList.add("hidden");
-            return;
-        }
-
+        if (!this.isCanvasFocussed) return;
         if (!target) return;
 
         this._highlightEleOpId = opid;
         const r = target.getBoundingClientRect();
         const ele = document.getElementById("inspectHtmlOverlay");
         ele.classList.remove("hidden");
-        console.log(r);
+
         ele.style.left = r.x + "px";
         ele.style.top = r.y + "px";
         ele.style.width = r.width + "px";
         ele.style.height = r.height + "px";
 
-        clearTimeout(this._highlightEleTimeout);
-        this._highlightEleTimeout = setTimeout(
-            () =>
-            {
-                this._highlightEleOpId = null;
-                ele.classList.add("hidden");
-            }, 3000);
+        // clearTimeout(this._highlightEleTimeout);
+        // this._highlightEleTimeout = setTimeout(
+        //     () =>
+        //     {
+        //         this._highlightEleOpId = null;
+        //         ele.classList.add("hidden");
+        //     }, 3000);
     };
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
@@ -2164,6 +2157,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.showCanvasModal = function (_show)
     {
+        this.isCanvasFocussed = _show;
+
+        if (!_show)
+        {
+            document.getElementById("inspectHtmlOverlay").classList.add("hidden");
+        }
+
+
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
