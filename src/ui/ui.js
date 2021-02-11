@@ -966,6 +966,30 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
+    this._highlightEleTimeout = null;
+    this._highlightEleOpId = null;
+
+    this.highlightHtmlElement = function (target, opid)
+    {
+        this._highlightEleOpId = opid;
+        const r = target.getBoundingClientRect();
+        const ele = document.getElementById("inspectHtmlOverlay");
+        ele.classList.remove("hidden");
+        console.log(r);
+        ele.style.left = r.x + "px";
+        ele.style.top = r.y + "px";
+        ele.style.width = r.width + "px";
+        ele.style.height = r.height + "px";
+
+        clearTimeout(this._highlightEleTimeout);
+        this._highlightEleTimeout = setTimeout(
+            () =>
+            {
+                this._highlightEleOpId = null;
+                ele.classList.add("hidden");
+            }, 500);
+    };
+
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     this.replaceNavShortcuts = function ()
     {
