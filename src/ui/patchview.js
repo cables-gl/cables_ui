@@ -594,7 +594,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     getSubPatches(sort)
     {
         let foundPatchIds = [];
-        let importedPatchIds = [];
+        let foundBlueprintIds = [];
         const subPatches = [];
         const ops = gui.corePatch().ops;
 
@@ -614,10 +614,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 if (ops[i].uiAttribs.blueprintId)
                 {
-                    // find ops that are imported by ImportSubPatch op
-                    if (importedPatchIds.indexOf(ops[i].uiAttribs.blueprintId) == -1)
+                    if (foundBlueprintIds.indexOf(ops[i].uiAttribs.blueprintId) == -1)
                     {
-                        importedPatchIds.push(ops[i].uiAttribs.subPatch);
+                        foundBlueprintIds.push(ops[i].uiAttribs.blueprintId);
                     }
                 }
                 else if (ops[i].uiAttribs.subPatch)
@@ -632,7 +631,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
 
         foundPatchIds = CABLES.uniqueArray(foundPatchIds);
-        importedPatchIds = CABLES.uniqueArray(importedPatchIds);
+        foundBlueprintIds = CABLES.uniqueArray(foundBlueprintIds);
 
         for (i = 0; i < foundPatchIds.length; i++)
         {
@@ -640,8 +639,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             for (let j = 0; j < ops.length; j++)
                 if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
+                    let name = ops[j].name;
+                    if (ops[j].uiAttribs && ops[j].uiAttribs.blueprintId)
+                    {
+                        name = "From Blueprint: " + name;
+                    }
                     subPatches.push({
-                        "name": ops[j].name,
+                        "name": name,
                         "id": foundPatchIds[i]
                     });
                     found = true;
@@ -654,11 +658,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 });
         }
 
-        for (i = 0; i < importedPatchIds.length; i++)
+        for (i = 0; i < foundBlueprintIds.length; i++)
         {
             subPatches.push({
-                "name": "Imported patch: " + importedPatchIds[i],
-                "id": importedPatchIds[i]
+                "name": "Blueprint: " + foundBlueprintIds[i],
+                "id": foundBlueprintIds[i]
             });
         }
 
