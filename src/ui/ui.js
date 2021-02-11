@@ -974,6 +974,7 @@ CABLES.UI.GUI = function (cfg)
         if (target == null)
         {
             this._highlightEleOpId = null;
+            const ele = document.getElementById("inspectHtmlOverlay");
             ele.classList.add("hidden");
             return;
         }
