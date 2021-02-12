@@ -966,6 +966,7 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
+
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     this.replaceNavShortcuts = function ()
     {
@@ -2130,6 +2131,9 @@ CABLES.UI.GUI = function (cfg)
 
     this.showCanvasModal = function (_show)
     {
+        this.isCanvasFocussed = _show;
+
+
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
@@ -2415,6 +2419,8 @@ function startUi(cfg)
                 CABLES.UI.startIdleListeners();
 
                 gui.jobs().updateJobListing();
+
+                new CABLES.UI.HtmlInspector();
 
                 logStartup("finished loading cables");
 
