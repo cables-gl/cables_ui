@@ -2131,21 +2131,25 @@ CABLES.UI.GUI = function (cfg)
 
     this.showCanvasModal = function (_show)
     {
-        this.isCanvasFocussed = _show;
-
+        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
+            this.isCanvasFocussed = false;
+
+            ele.hide(this._elCanvasModalDarkener);
+
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
             return;
         }
 
+        this.isCanvasFocussed = _show;
+
         if (!this._elCanvasIconbarContainer) return;
 
-        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (_show)
         {

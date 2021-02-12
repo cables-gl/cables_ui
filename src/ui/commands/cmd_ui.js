@@ -400,7 +400,7 @@ CABLES.CMD.commands.push(
         "category": "patch",
         "func": CABLES.CMD.UI.centerPatchOps,
         "hotkey": "c",
-        "icon": "subpatch",
+        "icon": "patch_center",
         "infotext": "cmd_centerpatch"
     },
     {
