@@ -288,8 +288,8 @@ CABLES.UI.GUI = function (cfg)
 
         let patchHeight = window.innerHeight - 2;
 
-        let patchWidth = window.innerWidth - this.rendererWidthScaled - 6 - iconBarWidth;
-        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth - 6 - iconBarWidth;
+        let patchWidth = window.innerWidth - this.rendererWidthScaled;
+        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
         if (this.isRemoteClient)
         {
@@ -351,7 +351,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (showTiming)
         {
-            patchHeight = patchHeight - this.timingHeight - 2;
+            patchHeight -= this.timingHeight;
         }
         else
         {
@@ -389,8 +389,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.maintabPanel.isVisible())
         {
-            const editorbarHeight = 76;
-            const editorHeight = patchHeight - 2 - editorbarHeight;
+            const editorbarHeight = 767;
+            const editorHeight = patchHeight - editorbarHeight;
 
             this._elMaintab.style.left = iconBarWidth + "px";
             this._elMaintab.style.top = 0 + "px";
@@ -401,7 +401,7 @@ CABLES.UI.GUI = function (cfg)
             this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = patchHeight - 2 + "px";
+            this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
@@ -429,22 +429,6 @@ CABLES.UI.GUI = function (cfg)
 
             // $("#subpatch_nav").css("left", iconBarWidth + 25);
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
-        }
-
-        if (this._elIconbarLeft)
-        {
-            if (CABLES.UI.userSettings.get("hideSizeBar"))
-            {
-                this._elIconbarLeft.style.display = "none";
-            }
-            else
-            {
-                this._elIconbarLeft.style.display = "block";
-                this._elIconbarLeft.style.bottom = 10 + "px";
-
-                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
-                else this._elIconbarLeft.style.left = 10 + "px";
-            }
         }
 
 
@@ -503,6 +487,7 @@ CABLES.UI.GUI = function (cfg)
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
+        let timelineHeight = this.timingHeight;
 
         if (this._elTLoverviewtimeline)
         {
@@ -540,6 +525,7 @@ CABLES.UI.GUI = function (cfg)
             }
             else
             {
+                timelineHeight = 0;
                 this._elTLoverviewtimeline.style.display = "none";
                 this._elTLtimetimeline.style.display = "none";
                 this._elTLkeycontrols.style.display = "none";
@@ -557,7 +543,24 @@ CABLES.UI.GUI = function (cfg)
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
+        if (this._elIconbarLeft)
+        {
+            if (CABLES.UI.userSettings.get("hideSizeBar"))
+            {
+                this._elIconbarLeft.style.display = "none";
+            }
+            else
+            {
+                this._elIconbarLeft.style.display = "block";
+                this._elIconbarLeft.style.bottom = 10 + timelineHeight + "px";
+
+                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
+                else this._elIconbarLeft.style.left = 10 + "px";
+            }
+        }
+
         let metaWidth;
+
 
         if (this.showTwoMetaPanels())
         {
@@ -609,7 +612,7 @@ CABLES.UI.GUI = function (cfg)
 
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
         $("#maintabs").css("top", menubarHeight);
-        $("#maintabs").css("height", window.innerHeight - menubarHeight);
+        $("#maintabs").css("height", window.innerHeight - menubarHeight - timelineHeight);
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
 
@@ -2131,21 +2134,25 @@ CABLES.UI.GUI = function (cfg)
 
     this.showCanvasModal = function (_show)
     {
-        this.isCanvasFocussed = _show;
-
+        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
+            this.isCanvasFocussed = false;
+
+            ele.hide(this._elCanvasModalDarkener);
+
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
             return;
         }
 
+        this.isCanvasFocussed = _show;
+
         if (!this._elCanvasIconbarContainer) return;
 
-        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (_show)
         {
