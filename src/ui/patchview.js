@@ -580,9 +580,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 if (ops[i].patchId.get() == subId)
                 {
+                    let type = "subpatch";
+                    if (ops[i].uiAttribs && ops[i].uiAttribs.blueprint) type = "blueprint_subpatch";
                     arr.push({
                         "name": ops[i].name,
-                        "id": ops[i].patchId.get()
+                        "id": ops[i].patchId.get(),
+                        "type": type
                     });
                     if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
@@ -594,7 +597,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     getSubPatches(sort)
     {
         let foundPatchIds = [];
-        let foundBlueprintIds = [];
+        const foundBlueprints = {};
         const subPatches = [];
         const ops = gui.corePatch().ops;
 
@@ -612,12 +615,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             if (ops[i].uiAttribs)
             {
-                if (ops[i].uiAttribs.blueprintId)
+                if (ops[i].uiAttribs.blueprint)
                 {
-                    if (foundBlueprintIds.indexOf(ops[i].uiAttribs.blueprintId) == -1)
-                    {
-                        foundBlueprintIds.push(ops[i].uiAttribs.blueprintId);
-                    }
+                    foundBlueprints[ops[i].uiAttribs.blueprint.id] = ops[i].uiAttribs.blueprint;
                 }
                 else if (ops[i].uiAttribs.subPatch)
                 {
@@ -631,40 +631,49 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
 
         foundPatchIds = CABLES.uniqueArray(foundPatchIds);
-        foundBlueprintIds = CABLES.uniqueArray(foundBlueprintIds);
 
         for (i = 0; i < foundPatchIds.length; i++)
         {
             let found = false;
             for (let j = 0; j < ops.length; j++)
+            {
                 if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
-                    let name = ops[j].name;
-                    if (ops[j].uiAttribs && ops[j].uiAttribs.blueprintId)
+                    if (ops[j].uiAttribs && ops[j].uiAttribs.blueprint)
                     {
-                        name = "From Blueprint: " + name;
+                        found = true;
                     }
-                    subPatches.push({
-                        "name": name,
-                        "id": foundPatchIds[i]
-                    });
-                    found = true;
+                    else
+                    {
+                        subPatches.push({
+                            "name": ops[j].name,
+                            "id": foundPatchIds[i],
+                            "type": "blueprint_subpatch"
+                        });
+                        found = true;
+                    }
                 }
+            }
 
             if (!found && foundPatchIds[i] != 0)
+            {
                 subPatches.push({
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
                 });
+            }
         }
 
-        for (i = 0; i < foundBlueprintIds.length; i++)
+        Object.keys(foundBlueprints).forEach((blueprintId) =>
         {
+            const blueprint = foundBlueprints[blueprintId];
+            const blueprintName = blueprint.name || "unnamed";
             subPatches.push({
-                "name": "Blueprint: " + foundBlueprintIds[i],
-                "id": foundBlueprintIds[i]
+                "name": "Blueprint: " + blueprintName,
+                "id": blueprint.subpatchId,
+                "type": "blueprint"
             });
-        }
+        });
 
         if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
@@ -682,7 +691,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         for (let i = names.length - 1; i >= 0; i--)
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
-            str += "<a onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
+            str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
         }
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
