@@ -399,6 +399,20 @@ CABLES.UI.TabPanel.prototype.addIframeTab = function (title, url, options)
     const frame = document.getElementById("iframe" + id);
     const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
+
+    talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
+    {
+        CABLES.sandbox.setManualScreenshot(opts.manualScreenshot);
+
+        if (opts.manualScreenshot)
+        {
+            gui.patchView.store.saveScreenshot(true, () =>
+            {
+                talkerAPI.send("screenshotSaved");
+            });
+        }
+    });
+
     talkerAPI.addEventListener("notify", (opts, next) =>
     {
         CABLES.UI.notify(opts.msg);

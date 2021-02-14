@@ -170,21 +170,21 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                 }.bind(this));
     }
 
+    finishAnimations()
+    {
+        document.getElementById("patchname").classList.remove("blinking");
+        document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
+
+
+        setTimeout(() =>
+        {
+            document.getElementById("canvasflash").classList.add("hidden");
+            document.getElementById("canvasflash").classList.remove("flash");
+        }, 320);
+    }
+
     _saveCurrentProject(cb, _id, _name)
     {
-        function finishAnimations()
-        {
-            document.getElementById("patchname").classList.remove("blinking");
-            document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
-
-
-            setTimeout(() =>
-            {
-                document.getElementById("canvasflash").classList.add("hidden");
-                document.getElementById("canvasflash").classList.remove("flash");
-            }, 320);
-        }
-
         if (gui.showGuestWarning()) return;
 
         const ops = gui.corePatch().ops;
@@ -291,7 +291,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         "ui": CABLES.UI.build
                     }
                 },
-                function (err, r)
+                (err, r) =>
                 {
                     if (err)
                     {
@@ -320,79 +320,18 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     const thePatch = gui.corePatch();
                     const cgl = thePatch.cgl;
                     const doSaveScreenshot = gui.corePatch().isPlaying();
-                    const w = cgl.canvas.width / cgl.pixelDensity;
-                    const h = cgl.canvas.height / cgl.pixelDensity;
 
-                    if (doSaveScreenshot)
+                    if (CABLES.sandbox.manualScreenshot())console.log("not sending screenshot...");
+
+                    if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot())
                     {
-                        cgl.canvas.width = "640px";
-                        cgl.canvas.height = "360px";
-                        cgl.canvas.style.width = w + "px";
-                        cgl.canvas.style.height = h + "px";
-
-                        const screenshotTimeout = setTimeout(function ()
-                        {
-                            cgl.setSize(w, h);
-                            thePatch.resume();
-                        }, 300);
-
-                        thePatch.pause();
-                        cgl.setSize(640, 360);
-                        document.getElementById("canvasflash").classList.remove("hidden");
-                        document.getElementById("canvasflash").classList.add("flash");
-
-                        thePatch.renderOneFrame();
-                        thePatch.renderOneFrame();
-                        gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
-
-                        cgl.screenShot(function (screenBlob)
-                        {
-                            clearTimeout(screenshotTimeout);
-
-                            cgl.setSize(w, h);
-                            thePatch.resume();
-
-                            const reader = new FileReader();
-
-                            reader.onload = function (event)
-                            {
-                                console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
-                                CABLESUILOADER.talkerAPI.send(
-                                    "saveScreenshot",
-                                    {
-                                        "id": currentProject._id,
-                                        "screenshot": event.target.result
-                                    },
-                                    function (error, re)
-                                    {
-                                        if (error)
-                                        {
-                                            console.warn("[screenshot save error]", error);
-                                        }
-                                        // console.log("screenshot saved!");
-                                        gui.jobs().finish("screenshotsave");
-                                        if (gui.onSaveProject) gui.onSaveProject();
-
-                                        finishAnimations();
-                                    });
-                            };
-
-                            try
-                            {
-                                reader.readAsDataURL(screenBlob);
-                            }
-                            catch (e)
-                            {
-                                console.log(e);
-                            }
-                        });
-                        // }, false, "image/webp", 80);
+                        this.saveScreenshot();
                     }
                     else
                     {
-                        finishAnimations();
+                        this.finishAnimations();
                     }
-                }.bind(this)
+                }
 
             );
         }
@@ -445,5 +384,89 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         const lastSeparatorIndex = filename.lastIndexOf(separator);
         const name = filename.substring(lastSeparatorIndex + 1, lastDotIndex);
         return name;
+    }
+
+
+    saveScreenshot(hires, cb)
+    {
+        const thePatch = gui.corePatch();
+        const cgl = thePatch.cgl;
+        const currentProject = gui.project();
+
+        const w = cgl.canvas.width / cgl.pixelDensity;
+        const h = cgl.canvas.height / cgl.pixelDensity;
+
+        let screenshotWidth = 640;
+        let screenshotHeight = 360;
+
+        if (hires)
+        {
+            screenshotWidth = 1280;
+            screenshotHeight = 720;
+        }
+
+        cgl.canvas.width = screenshotWidth + "px";
+        cgl.canvas.height = screenshotHeight + "px";
+        cgl.canvas.style.width = screenshotWidth + "px";
+        cgl.canvas.style.height = screenshotHeight + "px";
+
+        const screenshotTimeout = setTimeout(function ()
+        {
+            cgl.setSize(w, h);
+            thePatch.resume();
+        }, 300);
+
+        thePatch.pause();
+        cgl.setSize(screenshotWidth, screenshotHeight);
+        document.getElementById("canvasflash").classList.remove("hidden");
+        document.getElementById("canvasflash").classList.add("flash");
+
+        thePatch.renderOneFrame();
+        thePatch.renderOneFrame();
+        gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
+
+        cgl.screenShot((screenBlob) =>
+        {
+            clearTimeout(screenshotTimeout);
+
+            cgl.setSize(w, h);
+            thePatch.resume();
+
+            const reader = new FileReader();
+
+            reader.onload = (event) =>
+            {
+                console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
+                CABLESUILOADER.talkerAPI.send(
+                    "saveScreenshot",
+                    {
+                        "id": currentProject._id,
+                        "screenshot": event.target.result
+                    },
+                    (error, re) =>
+                    {
+                        if (error)
+                        {
+                            console.warn("[screenshot save error]", error);
+                        }
+                        // console.log("screenshot saved!");
+                        gui.jobs().finish("screenshotsave");
+                        if (gui.onSaveProject) gui.onSaveProject();
+                        if (cb)cb();
+
+                        this.finishAnimations();
+                    });
+            };
+
+            try
+            {
+                reader.readAsDataURL(screenBlob);
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+        });
+        // }, false, "image/webp", 80);
     }
 };
