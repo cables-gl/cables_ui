@@ -24,6 +24,16 @@ CABLES.SandboxBrowser.prototype.isOffline = function ()
     return !navigator.onLine;
 };
 
+CABLES.SandboxBrowser.prototype.setManualScreenshot = function (b)
+{
+    this._cfg.patch.settings.manualScreenshot = b;
+};
+
+CABLES.SandboxBrowser.prototype.manualScreenshot = function ()
+{
+    return this._cfg.patch.settings.manualScreenshot;
+};
+
 CABLES.SandboxBrowser.prototype.getCablesUrl = function ()
 {
     return this._cfg.urlCables;
@@ -166,6 +176,9 @@ CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
 CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 {
     gui.setUser(this._cfg.user);
+
+    console.log("INIT ROUTING!");
+
 
     CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
     {
