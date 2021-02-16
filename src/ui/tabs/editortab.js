@@ -67,6 +67,19 @@ CABLES.UI.EditorTab = function (options)
         // only alwaysadmins and admins on dev are allowed to edit ops
         allowEdit = false;
     }
+    else if (options.name.includes("/att_"))
+    {
+        let opNameForAttachment = null;
+        if (options.editorObj && options.editorObj.data && options.editorObj.data.opname)
+        {
+            opNameForAttachment = options.editorObj.data.opname;
+        }
+        if (gui.user.isAdmin || (opNameForAttachment && opNameForAttachment.startsWith("Ops.User." + gui.user.usernameLowercase + ".")))
+        {
+            // admins may edit any attachment, users are only allowed to edit attachments of their own userops
+            allowEdit = true;
+        }
+    }
     else
     {
         // everyone is allowed to edit anything that is not an op
