@@ -60,36 +60,36 @@ function ()
             "When you select an op in the patch panel its parameters will be shown here.",
             "left"
         );
-        defineIntroStep(
-            "#metatabpanel",
-            "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
-            "left"
-        );
-        defineIntroStep(
-            ".nav-item-project",
-            "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
-            "bottom"
-        );
+        // defineIntroStep(
+        //     "#metatabpanel",
+        //     "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
+        //     "left"
+        // );
+        // defineIntroStep(
+        //     ".nav-item-project",
+        //     "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
+        //     "bottom"
+        // );
         defineIntroStep(
             ".nav-item-help",
             "Make sure to check out the video tutorials and documentation, these will help you get started in a blink!",
             "bottom"
         );
-        defineIntroStep(
-            "#icon-bar",
-            "In the sidebar you can access often used features.",
-            "right"
-        );
-        defineIntroStep(
-            "#icon-bar .icon-three-dots",
-            "Feel free to customize it by pressing the <i>…</i> icon.",
-            "top"
-        );
-        defineIntroStep(
-            "#icon-bar li[data-cmd=\"add op\"]",
-            "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
-            "right"
-        );
+        // defineIntroStep(
+        //     "#icon-bar",
+        //     "In the sidebar you can access often used features.",
+        //     "right"
+        // );
+        // defineIntroStep(
+        //     "#icon-bar .icon-three-dots",
+        //     "Feel free to customize it by pressing the <i>…</i> icon.",
+        //     "top"
+        // );
+        // defineIntroStep(
+        //     "#icon-bar li[data-cmd=\"add op\"]",
+        //     "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
+        //     "right"
+        // );
     }
 
     let introStepsDefined = false;
