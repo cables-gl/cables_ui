@@ -416,6 +416,8 @@ CABLES.UI.GUI = function (cfg)
 
             // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
+
+            gui.mainTabs.updateSize();
         }
         else
         {
