@@ -43,14 +43,12 @@ ook
             CABLESUILOADER.startup.numEvents++;
             document.getElementById("loadingstatusBar").style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
 
-
             // console.log('startup',CABLESUILOADER.startup.numEvents);
         }
 
         function logStartup(title)
         {
-            //console.log('[startup] ',title);
-
+            if(CABLES && CABLES.sandbox && !CABLES.sandbox.isDevEnv())return;
 
             const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
             CABLESUILOADER.startup.log.push(
@@ -60,7 +58,6 @@ ook
             });
 
             document.getElementById("loadingstatusLog").innerHTML+=title+" ("+timeUsed+") <br/>";
-
         }
 
         CABLESUILOADER.noCacheUrl=function(url)

@@ -2096,7 +2096,7 @@ CABLES.UI.GUI = function (cfg)
         if (!this._elCanvasIconbarContainer) return;
 
         this._elCanvasIconbarContainer.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
-        this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
+        this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + 4 + "px";
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
             this._elCanvasIconbarContainer.style.top = 0;
