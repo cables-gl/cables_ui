@@ -68,6 +68,7 @@ CABLES.UI.Tab.prototype.remove = function ()
 CABLES.UI.Tab.prototype.html = function (html)
 {
     this.contentEle.innerHTML = html;
+    this.updateSize();
 };
 
 CABLES.UI.Tab.prototype.isVisible = function ()
@@ -383,6 +384,7 @@ CABLES.UI.TabPanel.prototype.addTab = function (tab, activate)
     this.updateHtml();
     this.emitEvent("onTabAdded", tab, false);
 
+    // setTimeout(() => { this.updateSize(); console.log("update size of tab"); }, 200);
     return tab;
 };
 

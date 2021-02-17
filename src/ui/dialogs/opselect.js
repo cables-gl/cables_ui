@@ -336,9 +336,12 @@ CABLES.UI.OpSelect = class
             const opDoc = gui.opDocs.get2(opname);
 
             let html = "<div id=\"opselect-layout\">";
-            html += `<a target="_blank" href="${CABLES.sandbox.getCablesUrl()}/op/${opname || ""}" class="open-docs-button button button--with-icon">View Documentation <i class="icon icon-link"></i></a>`;
+
             html += "</div>";
+            html += `<a target="_blank" href="${CABLES.sandbox.getCablesUrl()}/op/${opname || ""}" class="button-small">View Documentation</a>`;
+
             html += opDoc;
+
             html += htmlFoot;
 
             this._eleSearchinfo.innerHTML = html;
