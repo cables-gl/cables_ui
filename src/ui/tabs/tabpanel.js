@@ -78,6 +78,7 @@ CABLES.UI.Tab.prototype.isVisible = function ()
 
 CABLES.UI.Tab.prototype.updateSize = function ()
 {
+    if (!this.contentEle || !this.contentEle.parentElement) return;
     if (!this.toolbarContainerEle) return;
     this.contentEle.style.height = (this.contentEle.parentElement.clientHeight - this.toolbarContainerEle.clientHeight - 3) + "px";
 };
