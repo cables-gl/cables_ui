@@ -10,7 +10,7 @@ CABLES.CMD.RENDERER.screenshot = function ()
 
 CABLES.CMD.RENDERER.fullscreen = function ()
 {
-    gui.cycleRendererSize();
+    gui.cycleFullscreen();
 };
 
 CABLES.CMD.RENDERER.animRenderer = function ()
