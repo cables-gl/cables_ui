@@ -118,7 +118,7 @@
 .menubar
 {
     display:block;
-    z-index: 9;
+    z-index: $zindex_superlow;
     margin-top:10px;
     border:5px solid $color-menubar-background;
     left:10px;
