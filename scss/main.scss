@@ -168,6 +168,10 @@ input[type="text"]
     min-width: 60%;
 }
 
+.button{
+    user-select: none;
+
+}
 .button_colorpick
 {
     width: 15px;

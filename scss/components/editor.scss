@@ -192,7 +192,7 @@
         border-bottom:1px solid var(--color-special);
     }
 
-    .rownum
+    .rownum,.colnum
     {
         background-color: var(--color-04);
         color: var(--color-11);
@@ -201,7 +201,13 @@
         padding-right:5px;
         padding-left:5px;
         border-bottom:1px solid var(--color-02);
+
         user-select: none;
+    }
+    .colnum
+    {
+        border-right:1px solid var(--color-02);
+        text-align:left;
     }
 
     input,span
