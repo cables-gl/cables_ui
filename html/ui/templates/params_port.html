@@ -250,6 +250,7 @@
             {{#compare port.type '==' 5 }}
                 <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}">{{port.port.getValueForDisplay}}</span>
 
+
                 <span class="button-small fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br />
             {{/compare}}
 
@@ -259,6 +260,9 @@
             <!-- </td><td> -->
                 {{/if}}
                 <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >Array {{port.val.length}}</span>
+
+                <span class="button-small fa fa-align-justify info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"></span><br />
+
                 <span class="button-small fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span>
                 <span class="button-small fa fa-gear info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"></span><br/>
             </td>

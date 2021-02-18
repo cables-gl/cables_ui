@@ -218,6 +218,25 @@ CABLES.UI.GUI = function (cfg)
         return r;
     };
 
+
+    this.watchArray = function (opid, which)
+    {
+        const op = gui.corePatch().getOpById(opid);
+        if (!op)
+        {
+            console.log("opid not found:", opid);
+            return;
+        }
+        const port = op.getPort(which);
+        if (!port)
+        {
+            console.log("port not found:", which);
+        }
+
+
+        new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
+    };
+
     this.setLayout = function ()
     {
         this.pauseProfiling();
