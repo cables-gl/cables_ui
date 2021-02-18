@@ -25,16 +25,22 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         this.data = port.get();
 
 
-        port.on("change", () =>
-        {
-            this._updatePortValue();
-        });
+        this.portListenerId = this.port.on("change", this._updatePortValue.bind(this));
+
+
         // else
         // {
         //     for (let i = 0; i < this._numCols; i++) this.getColName(i);
         // }
 
         this._tab = new CABLES.UI.Tab(options.title || "watch " + port.name, { "icon": "spreadsheet", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+
+        this._tab.on("close", () =>
+        {
+            console.log("tab close");
+            this.port.off(this.portListenerId);
+        });
+
         this._tabs.addTab(this._tab, true);
 
         this._id = "spread" + CABLES.uuid();
@@ -113,7 +119,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
     _updatePortValue()
     {
-        if (!this.port.get()) return;
+        if (!this.port || !this.port.get()) return;
         this.data = this.port.get();
 
         this._eleTable.remove();

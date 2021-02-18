@@ -300,6 +300,7 @@ CABLES.UI.TabPanel.prototype.closeTab = function (id)
         if (this._tabs[i].id == id)
         {
             tab = this._tabs[i];
+            tab.emitEvent("close");
             this._tabs.splice(i, 1);
             idx = i;
             break;
