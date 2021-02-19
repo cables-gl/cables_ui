@@ -218,6 +218,25 @@ CABLES.UI.GUI = function (cfg)
         return r;
     };
 
+
+    this.watchArray = function (opid, which)
+    {
+        const op = gui.corePatch().getOpById(opid);
+        if (!op)
+        {
+            console.log("opid not found:", opid);
+            return;
+        }
+        const port = op.getPort(which);
+        if (!port)
+        {
+            console.log("port not found:", which);
+        }
+
+
+        new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
+    };
+
     this.setLayout = function ()
     {
         this.pauseProfiling();
@@ -604,9 +623,16 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elInforArea.hide();
             $("#splitterMeta").hide();
+
+            document.getElementById("infoAreaMin").style.width = (metaWidth - 20) + "px";
+            document.getElementById("infoAreaMin").classList.remove("hidden");
         }
         else
         {
+            document.getElementById("infoAreaMin").classList.add("hidden");
+
+            $("#splitterMeta").show();
+            this._elInforArea.show();
             this._elInforArea.css("width", (metaWidth - 20) + "px");
             this._elInforArea.css("height", (self.infoHeight) + "px");
             this._elInforArea.css("top", (window.innerHeight - self.rendererHeight - self.infoHeight) + "px");
@@ -2067,8 +2093,15 @@ CABLES.UI.GUI = function (cfg)
     };
 
 
+    this.openInfo = function ()
+    {
+        CABLES.UI.userSettings.set("closeInfoArea", false);
+        this.infoHeight = 200;
+        this.setLayout();
+    };
     this.closeInfo = function ()
     {
+        CABLES.UI.userSettings.set("closeInfoArea", true);
         this.infoHeight = 0;
         this.setLayout();
     };
@@ -2430,6 +2463,8 @@ function startUi(cfg)
                 gui.jobs().updateJobListing();
 
                 new CABLES.UI.HtmlInspector();
+
+                if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
 
                 logStartup("finished loading cables");
 

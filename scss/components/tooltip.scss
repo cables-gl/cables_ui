@@ -29,7 +29,17 @@
     // }
 }
 
-#infoArea {
+#infoAreaMin
+{
+    position: absolute;
+    bottom:0px;
+    background-color: black;
+    cursor:pointer;
+    text-align: center;
+}
+
+#infoArea
+{
     width: 100%;
     position: absolute;
     min-width: 10px !important;
