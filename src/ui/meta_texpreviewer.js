@@ -20,7 +20,7 @@ CABLES.UI.TexturePreviewer = function (tabs)
     this._tempTexturePort = null;
     this._hoveringTexPort = false;
     this._listeningFrame = false;
-
+    this._emptyCubemap = null;
     this._ele = document.getElementById("bgpreview");
     this.setSize();
     this._ele.addEventListener("click", function ()
@@ -159,6 +159,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     const texSlot = 5;
     const texSlotCubemap = texSlot + 1;
 
+
     let meta = true;
     if (ele)meta = false;
 
@@ -176,6 +177,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         const perf = CABLES.uiperf.start("texpreview");
         const cgl = port.parent.patch.cgl;
 
+        if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
         CGL.profileData.profileTexPreviews++;
 
         if (!this._mesh)
@@ -218,6 +220,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         if (texType == 0 || texType == 2)
         {
             cgl.setTexture(texSlot, port.get().tex);
+            cgl.setTexture(texSlotCubemap, this._emptyCubemap.cubemap, cgl.gl.TEXTURE_CUBE_MAP);
         }
         else if (texType == 1)
         {
