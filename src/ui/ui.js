@@ -342,7 +342,7 @@ CABLES.UI.GUI = function (cfg)
 
 
         const cgl = this._corePatch.cgl;
-        if (cgl.canvasWidth) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
+        this.getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
@@ -2145,7 +2145,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarContainer.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
 
 
-        if (this.rendererWidth < 500)
+        if (this.rendererWidth < 600)
         {
             this._elCanvasIconbar.style["margin-left"] = 0;
             this._elCanvasIconbar.style.right = this.rendererWidth + "px";
@@ -2161,14 +2161,31 @@ CABLES.UI.GUI = function (cfg)
 
     this.getCanvasSizeString = function (cgl)
     {
-        let sizeStr = "<a class=\"button-small\" onclick=\"CABLES.CMD.RENDERER.changeSize()\" > Size " + cgl.canvasWidth + "x" + cgl.canvasHeight + "</a>";
-        sizeStr += "<a class=\"button-small\" onclick=\"gui.rendererAspectMenu(this)\">Aspect</a>";
+        this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
+
+
+        let sizeStr = " Size " + cgl.canvasWidth + "x" + cgl.canvasHeight;
         if (cgl.canvasScale != 1)sizeStr += " Scale " + cgl.canvasScale + " ";
         if (cgl.pixelDensity != 1)sizeStr += " (" + (cgl.canvasWidth / cgl.pixelDensity) + "x" + (cgl.canvasHeight / cgl.pixelDensity) + "x" + cgl.pixelDensity + ")";
 
 
+        this._elCanvasInfoSize.innerHTML = sizeStr;
+
+
+        this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
+        // this._elCanvasInfoAspect.innerHTML = "Aspect";
+
+
         const zoom = Math.round(window.devicePixelRatio * 100);
-        if (zoom != 100)sizeStr += " Zoom " + zoom + "%";
+        if (zoom != 100)
+        {
+            ele.show(this._eleCanvasInfoZoom);
+            this._eleCanvasInfoZoom.innerHTML = "Zoom " + zoom + "% ";
+        }
+        else
+        {
+            ele.hide(this._eleCanvasInfoZoom);
+        }
 
         return sizeStr;
     };
@@ -2367,11 +2384,18 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 
     this._corePatch.on("performance", (perf) =>
     {
-        let str = " " + perf.fps + " FPS | " + perf.ms + " MS";
-        if (gui.corePatch().cgl.glVersion == 1)str += " | WebGL 1";
+        if (gui.corePatch().cgl.glVersion == 1)
+        {
+            this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
+            this._elCanvasInfoVer.innerHTML = "WebGL 1";
+        }
+        else ele.hide(document.getElementById("canvasInfoVersion"));
 
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
-        this._elCanvasInfoFps.innerHTML = str;
+        this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+
+        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+        this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
     });
 };
 
