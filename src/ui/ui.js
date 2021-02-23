@@ -1872,13 +1872,16 @@ CABLES.UI.GUI = function (cfg)
     {
         window.onmessage = function (e)
         {
-            const c = (e.data || "").split(":");
-            if (c.length > 1)
+            if (e.data && typeof e.data == "string")
             {
-                if (c[0] == "projectname") gui.setProjectName(c[1]);
-                if (c[0] == "notify") CABLES.UI.notify(c[1]);
-                if (c[0] == "notifyerror") CABLES.UI.notifyError(c[1]);
-                if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
+                const c = e.data.split(":");
+                if (c.length > 1)
+                {
+                    if (c[0] == "projectname") gui.setProjectName(c[1]);
+                    if (c[0] == "notify") CABLES.UI.notify(c[1]);
+                    if (c[0] == "notifyerror") CABLES.UI.notifyError(c[1]);
+                    if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
+                }
             }
         }.bind(this);
 
