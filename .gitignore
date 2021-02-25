@@ -2,6 +2,7 @@
 node_modules
 dist/js/*.js
 dist/buildInfo.json
+dist/js/buildInfo.json
 dist/js/libs/*.js
 dist/js/*.map
 *.min.js
