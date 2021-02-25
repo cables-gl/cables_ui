@@ -176,7 +176,14 @@ ook
                                 {
                                     incrementStartup();
                                     logStartup('loaded cables ops');
-
+                                    const uiBuild = CABLES.UI.build;
+                                    const coreBuild = CABLES.build;
+                                    if(uiBuild && uiBuild.git) {
+                                        logStartup("UI buildmessage: " + uiBuild.git.message);
+                                    }
+                                    if(coreBuild && coreBuild.git) {
+                                        logStartup("CORE buildmessage: " + coreBuild.git.message);
+                                    }
                                     waitForAce();
 
                                 });

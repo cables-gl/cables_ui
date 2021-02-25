@@ -18,6 +18,7 @@ CABLES.UI.Bookmarks = function ()
         return false;
     };
 
+
     this.cleanUp = function ()
     {
         let i;
