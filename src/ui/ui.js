@@ -307,9 +307,6 @@ CABLES.UI.GUI = function (cfg)
 
         let patchHeight = window.innerHeight - 2;
 
-        let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
-
         if (this.isRemoteClient)
         {
             this._canvasMode = this._CANVASMODE_FULLSCREEN;
@@ -335,6 +332,9 @@ CABLES.UI.GUI = function (cfg)
 
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
+
+        let patchWidth = window.innerWidth - this.rendererWidthScaled;
+        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
 
         this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
@@ -763,9 +763,11 @@ CABLES.UI.GUI = function (cfg)
             this._canvasMode = this._CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
+            console.log("normal mode!");
         }
         else
         {
+            console.log("FS mode!");
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
@@ -775,8 +777,8 @@ CABLES.UI.GUI = function (cfg)
             this.notifiedFullscreen = true;
         }
 
-        this.setLayout();
         this.showCanvasModal(false);
+        this.setLayout();
     };
 
     function updateTimingIcon()
