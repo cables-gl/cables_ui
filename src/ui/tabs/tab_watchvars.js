@@ -13,13 +13,16 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         this._patch.addEventListener("variablesChanged", this._html.bind(this));
         this._patch.addEventListener("variableRename", this._html.bind(this));
 
-
         this._tab = new CABLES.UI.Tab("Variables", { "icon": "align-justify", "infotext": "tab_watchvars", "padding": true, "singleton": "false", });
 
         this._tab.on("close", () =>
         {
+            const vars = this._patch.getVars();
+            for (const y in vars)
+                vars[y].removeListener(this._updateVar.bind(this));
+
+
             console.log("tab close");
-            this.port.off(this.portListenerId);
         });
 
         this._tabs.addTab(this._tab, true);
@@ -57,11 +60,12 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
 
     _html()
     {
+        this._eleTable.innerHTML = "";
+
         const vars = this._patch.getVars();
-
         const table = this._eleTable;
-
         const trHead = ele.create("tr");
+
         for (let x = 0; x < 3; x++)
         {
             const tdr = ele.create("td");
@@ -85,14 +89,24 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
             tr.appendChild(tdName);
 
             const tdVal = ele.create("td");
-            tdVal.innerHTML = "<span>" + vars[y]._v + "</span>";
+            tdVal.innerHTML = "<span id=\"var" + y + "\">" + vars[y]._v + "</span>";
             tr.appendChild(tdVal);
 
             const tdType = ele.create("td");
             tdType.innerHTML = vars[y].type;
             tdType.classList.add("rownumleft");
             tr.appendChild(tdType);
+
+            vars[y].addListener(this._updateVar.bind(this));
         }
+    }
+
+    _updateVar(v, vrbl)
+    {
+        const ele = document.getElementById("var" + vrbl._name);
+
+        if (!ele) return console.log("var watcher element not found!");
+        ele.innerHTML = v;
     }
 
     show()
