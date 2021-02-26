@@ -218,6 +218,25 @@ CABLES.UI.GUI = function (cfg)
         return r;
     };
 
+
+    this.watchArray = function (opid, which)
+    {
+        const op = gui.corePatch().getOpById(opid);
+        if (!op)
+        {
+            console.log("opid not found:", opid);
+            return;
+        }
+        const port = op.getPort(which);
+        if (!port)
+        {
+            console.log("port not found:", which);
+        }
+
+
+        new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
+    };
+
     this.setLayout = function ()
     {
         this.pauseProfiling();
@@ -288,9 +307,6 @@ CABLES.UI.GUI = function (cfg)
 
         let patchHeight = window.innerHeight - 2;
 
-        let patchWidth = window.innerWidth - this.rendererWidthScaled - 6 - iconBarWidth;
-        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth - 6 - iconBarWidth;
-
         if (this.isRemoteClient)
         {
             this._canvasMode = this._CANVASMODE_FULLSCREEN;
@@ -317,13 +333,16 @@ CABLES.UI.GUI = function (cfg)
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
+        let patchWidth = window.innerWidth - this.rendererWidthScaled;
+        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
+
 
         this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
         if (this._elCanvasIconbarBottom) this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
 
 
         const cgl = this._corePatch.cgl;
-        if (cgl.canvasWidth) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
+        this.getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
@@ -351,7 +370,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (showTiming)
         {
-            patchHeight = patchHeight - this.timingHeight - 2;
+            patchHeight -= this.timingHeight;
         }
         else
         {
@@ -389,8 +408,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.maintabPanel.isVisible())
         {
-            const editorbarHeight = 76;
-            const editorHeight = patchHeight - 2 - editorbarHeight;
+            const editorbarHeight = 767;
+            const editorHeight = patchHeight - editorbarHeight;
 
             this._elMaintab.style.left = iconBarWidth + "px";
             this._elMaintab.style.top = 0 + "px";
@@ -401,7 +420,7 @@ CABLES.UI.GUI = function (cfg)
             this._elAceEditor.css("height", editorHeight);
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
-            this._elSplitterMaintabs.style.height = patchHeight - 2 + "px";
+            this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
             this._elSplitterMaintabs.style.width = 5 + "px";
             this._elSplitterMaintabs.style.top = menubarHeight + "px";
 
@@ -416,6 +435,8 @@ CABLES.UI.GUI = function (cfg)
 
             // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
+
+            gui.mainTabs.updateSize();
         }
         else
         {
@@ -429,22 +450,6 @@ CABLES.UI.GUI = function (cfg)
 
             // $("#subpatch_nav").css("left", iconBarWidth + 25);
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
-        }
-
-        if (this._elIconbarLeft)
-        {
-            if (CABLES.UI.userSettings.get("hideSizeBar"))
-            {
-                this._elIconbarLeft.style.display = "none";
-            }
-            else
-            {
-                this._elIconbarLeft.style.display = "block";
-                this._elIconbarLeft.style.bottom = 10 + "px";
-
-                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
-                else this._elIconbarLeft.style.left = 10 + "px";
-            }
         }
 
 
@@ -503,6 +508,7 @@ CABLES.UI.GUI = function (cfg)
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
+        let timelineHeight = this.timingHeight;
 
         if (this._elTLoverviewtimeline)
         {
@@ -540,6 +546,7 @@ CABLES.UI.GUI = function (cfg)
             }
             else
             {
+                timelineHeight = 0;
                 this._elTLoverviewtimeline.style.display = "none";
                 this._elTLtimetimeline.style.display = "none";
                 this._elTLkeycontrols.style.display = "none";
@@ -557,7 +564,24 @@ CABLES.UI.GUI = function (cfg)
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
+        if (this._elIconbarLeft)
+        {
+            if (CABLES.UI.userSettings.get("hideSizeBar"))
+            {
+                this._elIconbarLeft.style.display = "none";
+            }
+            else
+            {
+                this._elIconbarLeft.style.display = "block";
+                this._elIconbarLeft.style.bottom = 10 + timelineHeight + "px";
+
+                if (this.maintabPanel.isVisible()) this._elIconbarLeft.style.left = editorWidth + 20 + "px";
+                else this._elIconbarLeft.style.left = 10 + "px";
+            }
+        }
+
         let metaWidth;
+
 
         if (this.showTwoMetaPanels())
         {
@@ -599,9 +623,16 @@ CABLES.UI.GUI = function (cfg)
         {
             this._elInforArea.hide();
             $("#splitterMeta").hide();
+
+            document.getElementById("infoAreaMin").style.width = (metaWidth - 20) + "px";
+            document.getElementById("infoAreaMin").classList.remove("hidden");
         }
         else
         {
+            document.getElementById("infoAreaMin").classList.add("hidden");
+
+            $("#splitterMeta").show();
+            this._elInforArea.show();
             this._elInforArea.css("width", (metaWidth - 20) + "px");
             this._elInforArea.css("height", (self.infoHeight) + "px");
             this._elInforArea.css("top", (window.innerHeight - self.rendererHeight - self.infoHeight) + "px");
@@ -609,7 +640,7 @@ CABLES.UI.GUI = function (cfg)
 
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
         $("#maintabs").css("top", menubarHeight);
-        $("#maintabs").css("height", window.innerHeight - menubarHeight);
+        $("#maintabs").css("height", window.innerHeight - menubarHeight - timelineHeight);
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - 50);
 
 
@@ -732,9 +763,11 @@ CABLES.UI.GUI = function (cfg)
             this._canvasMode = this._CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
+            console.log("normal mode!");
         }
         else
         {
+            console.log("FS mode!");
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
@@ -744,8 +777,8 @@ CABLES.UI.GUI = function (cfg)
             this.notifiedFullscreen = true;
         }
 
-        this.setLayout();
         this.showCanvasModal(false);
+        this.setLayout();
     };
 
     function updateTimingIcon()
@@ -1672,7 +1705,22 @@ CABLES.UI.GUI = function (cfg)
         console.groupCollapsed("welcome to cables!");
         console.log("build info:");
         const buildInfoTable = [];
-        buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        if (CABLES.build && CABLES.UI.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        }
+        else if (CABLES.UI.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": CABLES.UI.build.created, "core_branch": undefined, "core_git": undefined, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        }
+        else if (CABLES.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": undefined, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": undefined, "ui_git": undefined });
+        }
+        else
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": undefined, "core_branch": undefined, "core_git": undefined, "ui_branch": undefined, "ui_git": undefined });
+        }
         if (buildInfo)
         {
             const infoRow = {
@@ -1841,11 +1889,17 @@ CABLES.UI.GUI = function (cfg)
     {
         window.onmessage = function (e)
         {
-            const c = e.data.split(":");
-            if (c[0] == "projectname") gui.setProjectName(c[1]);
-            if (c[0] == "notify") CABLES.UI.notify(c[1]);
-            if (c[0] == "notifyerror") CABLES.UI.notifyError(c[1]);
-            if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
+            if (e.data && typeof e.data == "string")
+            {
+                const c = e.data.split(":");
+                if (c.length > 1)
+                {
+                    if (c[0] == "projectname") gui.setProjectName(c[1]);
+                    if (c[0] == "notify") CABLES.UI.notify(c[1]);
+                    if (c[0] == "notifyerror") CABLES.UI.notifyError(c[1]);
+                    if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
+                }
+            }
         }.bind(this);
 
         const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
@@ -2062,8 +2116,15 @@ CABLES.UI.GUI = function (cfg)
     };
 
 
+    this.openInfo = function ()
+    {
+        CABLES.UI.userSettings.set("closeInfoArea", false);
+        this.infoHeight = 200;
+        this.setLayout();
+    };
     this.closeInfo = function ()
     {
+        CABLES.UI.userSettings.set("closeInfoArea", true);
         this.infoHeight = 0;
         this.setLayout();
     };
@@ -2093,7 +2154,7 @@ CABLES.UI.GUI = function (cfg)
         if (!this._elCanvasIconbarContainer) return;
 
         this._elCanvasIconbarContainer.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
-        this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + "px";
+        this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + 4 + "px";
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
             this._elCanvasIconbarContainer.style.top = 0;
@@ -2101,7 +2162,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarContainer.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
 
 
-        if (this.rendererWidth < 500)
+        if (this.rendererWidth < 600)
         {
             this._elCanvasIconbar.style["margin-left"] = 0;
             this._elCanvasIconbar.style.right = this.rendererWidth + "px";
@@ -2117,35 +2178,56 @@ CABLES.UI.GUI = function (cfg)
 
     this.getCanvasSizeString = function (cgl)
     {
-        let sizeStr = "<a class=\"button-small\" onclick=\"CABLES.CMD.RENDERER.changeSize()\" > Size " + cgl.canvasWidth + "x" + cgl.canvasHeight + "</a>";
-        sizeStr += "<a class=\"button-small\" onclick=\"gui.rendererAspectMenu(this)\">Aspect</a>";
+        this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
+
+
+        let sizeStr = " Size " + cgl.canvasWidth + "x" + cgl.canvasHeight;
         if (cgl.canvasScale != 1)sizeStr += " Scale " + cgl.canvasScale + " ";
         if (cgl.pixelDensity != 1)sizeStr += " (" + (cgl.canvasWidth / cgl.pixelDensity) + "x" + (cgl.canvasHeight / cgl.pixelDensity) + "x" + cgl.pixelDensity + ")";
 
 
+        this._elCanvasInfoSize.innerHTML = sizeStr;
+
+
+        this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
+        // this._elCanvasInfoAspect.innerHTML = "Aspect";
+
+
         const zoom = Math.round(window.devicePixelRatio * 100);
-        if (zoom != 100)sizeStr += " Zoom " + zoom + "%";
+        if (zoom != 100)
+        {
+            ele.show(this._eleCanvasInfoZoom);
+            this._eleCanvasInfoZoom.innerHTML = "Zoom " + zoom + "% ";
+        }
+        else
+        {
+            ele.hide(this._eleCanvasInfoZoom);
+        }
 
         return sizeStr;
     };
 
     this.showCanvasModal = function (_show)
     {
-        this.isCanvasFocussed = _show;
-
+        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (this._canvasMode == this._CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
+            this.isCanvasFocussed = false;
+
+            ele.hide(this._elCanvasModalDarkener);
+
             const cgl = this._corePatch.cgl;
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString(cgl);
             return;
         }
 
+        this.isCanvasFocussed = _show;
+
         if (!this._elCanvasIconbarContainer) return;
 
-        this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
         if (_show)
         {
@@ -2319,11 +2401,18 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 
     this._corePatch.on("performance", (perf) =>
     {
-        let str = " " + perf.fps + " FPS | " + perf.ms + " MS";
-        if (gui.corePatch().cgl.glVersion == 1)str += " | WebGL 1";
+        if (gui.corePatch().cgl.glVersion == 1)
+        {
+            this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
+            this._elCanvasInfoVer.innerHTML = "WebGL 1";
+        }
+        else ele.hide(document.getElementById("canvasInfoVersion"));
 
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
-        this._elCanvasInfoFps.innerHTML = str;
+        this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+
+        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+        this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
     });
 };
 
@@ -2421,6 +2510,8 @@ function startUi(cfg)
                 gui.jobs().updateJobListing();
 
                 new CABLES.UI.HtmlInspector();
+
+                if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
 
                 logStartup("finished loading cables");
 

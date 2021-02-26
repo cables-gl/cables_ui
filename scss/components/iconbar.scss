@@ -40,6 +40,33 @@
                 display: block;
             }
         }
+
+        &.textButton
+        {
+            background-color: $color-bar-hover;
+            padding-left:5px;
+            padding-right:5px;
+            margin-right:3px;
+            margin-left:3px;
+
+            &:hover
+            {
+                background-color: var(--color-06);
+                color:var(--color-special);
+            }
+        }
+
+        &.nonInteractive
+        {
+            margin-right:3px;
+            margin-left:3px;
+            background-color: var(--color-02);
+            cursor:default;
+            &:hover
+            {
+                background-color: var(--color-02);
+            }
+        }
     }
 
     .icontext

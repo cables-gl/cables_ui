@@ -168,6 +168,10 @@ input[type="text"]
     min-width: 60%;
 }
 
+.button{
+    user-select: none;
+
+}
 .button_colorpick
 {
     width: 15px;
@@ -572,6 +576,11 @@ body,div
     width:4px;
     height:100%;
     cursor:ew-resize;
+}
+
+#splitterPatch
+{
+    background-color: transparent;
 }
 
 // #performance_glcanvas

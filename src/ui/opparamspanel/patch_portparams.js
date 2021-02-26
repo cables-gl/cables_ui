@@ -97,9 +97,9 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     const port = op.getPortByName(portname);
     if (!port) return console.log("paramedit port not found");
 
-    const name = op.name + " " + port.name;
+    let name = op.name + " " + port.name;
 
-    gui.mainTabs.getUniqueTitle(name);
+    name = gui.mainTabs.getUniqueTitle(name);
 
     // let existingTab = gui.mainTabs.getTabByTitle(name);
     // let count = 0;
@@ -113,7 +113,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 
 
     const dataId = opid + portname;
-    existingTab = gui.mainTabs.getTabByDataId(dataId);
+    const existingTab = gui.mainTabs.getTabByDataId(dataId);
     if (existingTab)
     {
         gui.mainTabs.activateTabByName(existingTab.title);

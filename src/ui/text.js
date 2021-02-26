@@ -12,6 +12,14 @@ CABLES.UI.TEXTS = {
     "toggle_helper": "Enable or disable of showing helper and bounding boxes",
     "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n`ctrl/cmd`+`c` copy hovered color to clipboard",
 
+    "canvas_size": "## Canvas Size\n\nCanvas size in pixels\n\nclick to set the canvas manually",
+    "canvas_aspect": "## Canvas Aspect ratio\n\nclick to choose an aspect ratio",
+    "canvas_zoom": "## Website Zoom\n\nYour browser is zoomed in, use ctrl/cmd and +/- to change zoom",
+    "canvas_version": "## WebGl Version",
+    "canvas_fps": "## FPS\n\nCurrently number of rendered frames per second",
+    "canvas_ms": "## Miliseconds\n\nCurrent amount of time needed to render the mainloop",
+
+
     "renderer_patchbg": "## Toggle Patch Background\n\n`cmd/ctrl`+`shift`+`enter` Toggle patch nackground renderer",
     "renderer_maximize": "## Toggle Fullscreen\n\n`cmd/ctrl`+`enter` Toggle Fullscreen",
     "renderer_setsize": "## Canvas Size \n\n* click to set canvas size",

@@ -43,14 +43,11 @@ ook
             CABLESUILOADER.startup.numEvents++;
             document.getElementById("loadingstatusBar").style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
 
-
             // console.log('startup',CABLESUILOADER.startup.numEvents);
         }
 
         function logStartup(title)
         {
-            //console.log('[startup] ',title);
-
 
             const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
             CABLESUILOADER.startup.log.push(
@@ -59,8 +56,8 @@ ook
                 "time":timeUsed
             });
 
-            document.getElementById("loadingstatusLog").innerHTML+=title+" ("+timeUsed+") <br/>";
-
+            if(!CABLES || !CABLES.sandbox || !CABLES.sandbox.isDevEnv())return;
+                document.getElementById("loadingstatusLog").innerHTML+=title+" ("+timeUsed+") <br/>";
         }
 
         CABLESUILOADER.noCacheUrl=function(url)
@@ -179,7 +176,14 @@ ook
                                 {
                                     incrementStartup();
                                     logStartup('loaded cables ops');
-
+                                    const uiBuild = CABLES.UI.build;
+                                    const coreBuild = CABLES.build;
+                                    if(uiBuild && uiBuild.git) {
+                                        logStartup("UI buildmessage: " + uiBuild.git.message);
+                                    }
+                                    if(coreBuild && coreBuild.git) {
+                                        logStartup("CORE buildmessage: " + coreBuild.git.message);
+                                    }
                                     waitForAce();
 
                                 });
@@ -220,6 +224,7 @@ ook
 
             CABLESUILOADER.talkerAPI.send("requestPatchData",{},function(response)
             {
+                console.log(response);
                 CABLESUILOADER.loadAll(response);
             });
         });

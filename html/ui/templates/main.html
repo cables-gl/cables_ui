@@ -54,9 +54,13 @@
 
         <span class="item"><span class="tt icon icon-triple-dot icon-1_25x" onclick="gui.rendererContextMenu(this)" data-tt="more options"></span></span>
 
-        <span id="canvasInfoSize" class="" ></span>
-        <span id="canvasInfoFPS" style="padding-right: 10px;vertical-align:top;margin-top: 5px;display: inline-block;" ></span>
-        <span class="canvasInfo"></span>
+        <span class="item textButton info" data-infotext="canvas_size" id="canvasInfoSize" onclick="CABLES.CMD.RENDERER.changeSize()"></span>
+        <span class="item textButton info" data-infotext="canvas_aspect" id="canvasInfoAspect" onclick="gui.rendererAspectMenu(this)">Aspect</span>
+        <span class="item nonInteractive info" data-infotext="canvas_zoom" id="canvasInfoZoom"></span>
+        <span class="item nonInteractive info" data-infotext="canvas_version" id="canvasInfoVersion"></span>
+        <span class="item nonInteractive info" data-infotext="canvas_fps" id="canvasInfoFPS"></span>
+        <span class="item nonInteractive info" data-infotext="canvas_ms" id="canvasInfoMS"></span>
+
     </div>
 </div>
 
@@ -306,6 +310,7 @@
     <div id="infoAreaContainer">
         <div id="infoArea" class="hidden"></div>
     </div>
+    <div id="infoAreaMin" class="hidden" onclick="gui.openInfo();"><span class="icon icon-chevron-up"></span></div>
 </div>
 
 <div id="options"></div>

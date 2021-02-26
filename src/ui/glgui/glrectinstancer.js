@@ -431,7 +431,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         if (this._reUploadAttribs)
         {
             const perf = CABLES.uiperf.start("[glRectInstancer] _reUploadAttribs");
-            console.log("reupload all attribs");
+            // console.log("reupload all attribs");
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
