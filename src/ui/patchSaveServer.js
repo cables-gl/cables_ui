@@ -51,8 +51,14 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
                             if (buildInfo.updateWarning)
                             {
-                                newCore = buildInfo.core.timestamp > CABLES.build.timestamp;
-                                newUi = buildInfo.ui.timestamp > CABLES.UI.build.timestamp;
+                                if (CABLES.build)
+                                {
+                                    newCore = buildInfo.core.timestamp > CABLES.build.timestamp;
+                                }
+                                if (CABLES.UI.build)
+                                {
+                                    newUi = buildInfo.ui.timestamp > CABLES.UI.build.timestamp;
+                                }
                             }
 
                             if (newCore || newUi)
