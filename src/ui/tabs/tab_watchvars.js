@@ -13,7 +13,12 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         this._patch.addEventListener("variablesChanged", this._html.bind(this));
         this._patch.addEventListener("variableRename", this._html.bind(this));
 
-        this._tab = new CABLES.UI.Tab("Variables", { "icon": "align-justify", "infotext": "tab_watchvars", "padding": true, "singleton": "false", });
+        this._tab = new CABLES.UI.Tab("Variables", {
+            "icon": "align-justify",
+            "infotext": "tab_watchvars",
+            "padding": true,
+            "singleton": "false", });
+
 
         this._tab.on("close", () =>
         {
@@ -21,22 +26,24 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
             for (const y in vars)
                 vars[y].removeListener(this._updateVar.bind(this));
 
-
             console.log("tab close");
         });
 
         this._tabs.addTab(this._tab, true);
 
+
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
         this._ele = document.getElementById(this._id);
         this._ele.classList.add("editor_spreadsheet");
+        this._ele.classList.add("tabcontent-scroll");
 
         this._eleIconbar = ele.create("div");
         this._ele.appendChild(this._eleIconbar);
 
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
+
 
         // this._eleIconMinus = ele.create("a");
         // this._eleIconMinus.innerHTML = "-";
@@ -103,9 +110,10 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
 
     _updateVar(v, vrbl)
     {
+        if (!vrbl) return console.log("[varwatcher] no variable");
         const ele = document.getElementById("var" + vrbl._name);
 
-        if (!ele) return console.log("var watcher element not found!");
+        if (!ele) return console.log("[varwatcher] var element not found!");
         ele.innerHTML = v;
     }
 
