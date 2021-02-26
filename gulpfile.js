@@ -8,31 +8,13 @@ const sourcemaps = require("gulp-sourcemaps");
 const svgcss = require("gulp-svg-css");
 const svgmin = require("gulp-svgmin");
 const fs = require("fs");
-const browserify = require("browserify");
-const babelify = require("babelify");
-// const vueify = require("vueify-babel-7-support");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
-const footer = require("gulp-footer");
 const getRepoInfo = require("git-repo-info");
+const footer = require("gulp-footer");
 
-// function _vueify()
-// {
-//     return browserify("vue-src/main.js")
-//         .transform(vueify)
-//         .transform(babelify.configure({
-//             "presets": [
-//                 "@babel/preset-env"
-//             ],
-//             "plugins": [
-//                 "@babel/plugin-transform-runtime",
-//                 "@babel/plugin-proposal-object-rest-spread"
-//             ]
-//         }))
-//         .bundle()
-//         .pipe(fs.createWriteStream("dist/js/bundle.js"));
-// }
+let buildInfo = getBuildInfo();
 
 function _lint()
 {
@@ -71,7 +53,7 @@ function _scripts_talkerapi()
 function _scripts_core()
 {
     return gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/libs/*"])
+        .src(["../cables/build/**/*.*", "!../cables/build/buildInfo.json", "!../cables/build/libs/*"])
         .pipe(gulp.dest("dist/js/"));
 }
 
@@ -95,27 +77,46 @@ function _scripts_ops()
 
 function _scripts_ui()
 {
+    return gulp
+        .src(["src/ui/**/*.js"])
+        .pipe(sourcemaps.init())
+        .pipe(concat("cablesui.max.js"))
+        .pipe(gulp.dest("dist/js"))
+        .pipe(rename("cablesui.min.js"))
+        .pipe(uglify())
+        .pipe(sourcemaps.write("./"))
+        .pipe(gulp.dest("dist/js"));
+}
+
+function _append_build_info()
+{
+    return gulp
+        .src(["dist/js/cablesui.max.js", "dist/js/cablesui.min.js"])
+        .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
+        .pipe(gulp.dest("dist/js/"));
+}
+
+function getBuildInfo()
+{
     const git = getRepoInfo();
     const date = new Date();
-    const buildInfo = {
+    return {
         "timestamp": date.getTime(),
         "created": date.toISOString(),
         "git": {
             "branch": git.branch,
             "commit": git.sha,
             "date": git.committerDate,
+            "message": git.commitMessage
         }
     };
-    return gulp
-        .src(["src/ui/**/*.js"])
-        .pipe(sourcemaps.init())
-        .pipe(concat("cablesui.max.js"))
-        .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
-        .pipe(gulp.dest("dist/js"))
-        .pipe(rename("cablesui.min.js"))
-        .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js"));
+}
+
+function _update_buildInfo(cb)
+{
+    buildInfo = getBuildInfo();
+    fs.writeFileSync("dist/buildInfo.json", JSON.stringify(buildInfo));
+    cb();
 }
 
 function _html_ui()
@@ -166,34 +167,30 @@ function _electronapp()
 {
     const copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
     const electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
-    // var someOtherOperation = gulp.src('./assets').pipe(gulp.dest('out/assets'));
     return merge(copydist, electronsrc);
 }
 
 function _watch(cb)
 {
-    gulp.watch("../cables/build/**/*.js", gulp.series(_scripts_core));
-    // gulp.watch("../cables/build/libs/**/*.js", ["scripts_core_libs"]);
-    gulp.watch("src/ops/**/*.js", gulp.series(_scripts_ops));
-    gulp.watch("src/ui/**/*.js", gulp.series(_scripts_ui)); // ,'electron' // electron broke the watch SOMEHOW
-    gulp.watch("scss/**/*.scss", gulp.series(_sass));
-    gulp.watch("html/**/*.html", gulp.series(_html_ui));
-    gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
-    // gulp.watch("vue-src/**/*", gulp.series(_vueify));
-    gulp.watch("src-talkerapi/**/*", gulp.series(_scripts_talkerapi));
+    gulp.watch("../cables/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
+    gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
+    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
+    gulp.watch("src-talkerapi/**/*", gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
     cb();
 }
 
 function _electron_watch(cb)
 {
-    gulp.watch("../cables/src/core/build/**/*.js", gulp.series(_scripts_core));
-    gulp.watch("src/ops/**/*.js", gulp.series(_scripts_ops));
-    gulp.watch("src/ui/**/*.js", gulp.series(_scripts_ui, _electronapp));
-    gulp.watch("scss/**/*.scss", gulp.series(_sass, _electronapp));
-    gulp.watch("html/**/*.html", gulp.series(_html_ui));
-    gulp.watch("icons/**/*.svg", gulp.series(_svgcss));
-    // gulp.watch("vue-src/**/*", gulp.series(_vueify));
-    gulp.watch("src-electron/**/*", gulp.series(_electronapp));
+    gulp.watch("../cables/src/core/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
+    gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
+    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info, _electronapp));
+    gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info, _electronapp));
+    gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
+    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _append_build_info, _electronapp));
     cb();
 }
 
@@ -208,7 +205,9 @@ function _electron_watch(cb)
  * Run "gulp"
  */
 gulp.task("default", gulp.series(
+    _update_buildInfo,
     _scripts_ui,
+    _append_build_info,
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
@@ -225,15 +224,16 @@ gulp.task("default", gulp.series(
  * Run "gulp build"
  */
 gulp.task("build", gulp.series(
+    _update_buildInfo,
     _svgcss,
     _html_ui,
     _scripts_libs_ui,
     _scripts_ops,
     _scripts_core,
     _scripts_ui,
+    _append_build_info,
     _scripts_talkerapi,
     _sass,
-    // _vueify
 ));
 
 /**
@@ -241,14 +241,15 @@ gulp.task("build", gulp.series(
  * Run "gulp electron"
  */
 gulp.task("electron", gulp.series(
+    _update_buildInfo,
     _svgcss,
     _scripts_ui,
+    _append_build_info,
     _lint,
     _html_ui,
     _scripts_libs_ui,
     _scripts_ops,
     _sass,
-    // _vueify,
     _electronapp,
     _electron_watch
 ));

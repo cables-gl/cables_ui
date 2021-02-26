@@ -39,12 +39,37 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                    gui.jobs().finish("checkupdated");
                 }
                 else
                 {
-                    if (cb)cb(null);
+                    CABLESUILOADER.talkerAPI.send("getBuildInfo", {},
+                        (err, buildInfo) =>
+                        {
+                            let newCore = false;
+                            let newUi = false;
+
+                            if (buildInfo.updateWarning)
+                            {
+                                newCore = buildInfo.core.timestamp > CABLES.build.timestamp;
+                                newUi = buildInfo.ui.timestamp > CABLES.UI.build.timestamp;
+                            }
+
+                            if (newCore || newUi)
+                            {
+                                CABLES.UI.MODAL.showError("meanwhile...", "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>");
+                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
+                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save progress</a>&nbsp;&nbsp;";
+                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                                gui.jobs().finish("checkupdated");
+                            }
+                            else
+                            {
+                                gui.jobs().finish("checkupdated");
+                                if (cb)cb(null);
+                            }
+                        });
                 }
-                gui.jobs().finish("checkupdated");
             }.bind(this), function () { /* ignore errors */ }
         );
     }

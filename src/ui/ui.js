@@ -1703,7 +1703,22 @@ CABLES.UI.GUI = function (cfg)
         console.groupCollapsed("welcome to cables!");
         console.log("build info:");
         const buildInfoTable = [];
-        buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        if (CABLES.build && CABLES.UI.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        }
+        else if (CABLES.UI.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": CABLES.UI.build.created, "core_branch": undefined, "core_git": undefined, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+        }
+        else if (CABLES.build)
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": undefined, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": undefined, "ui_git": undefined });
+        }
+        else
+        {
+            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": undefined, "core_branch": undefined, "core_git": undefined, "ui_branch": undefined, "ui_git": undefined });
+        }
         if (buildInfo)
         {
             const infoRow = {
