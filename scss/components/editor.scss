@@ -190,9 +190,11 @@
         margin-bottom: 3px;
         background-color: var(--color-04);
         border-bottom:1px solid var(--color-special);
+        font-weight: bold;
+        padding:4px;
     }
 
-    .rownum,.colnum
+    .rownum,.colnum,.rownumleft
     {
         background-color: var(--color-04);
         color: var(--color-11);
@@ -203,6 +205,10 @@
         border-bottom:1px solid var(--color-02);
 
         user-select: none;
+    }
+    .rownumleft
+    {
+        text-align: left;
     }
     .colnum
     {

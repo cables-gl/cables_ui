@@ -25,7 +25,7 @@ CABLES.GLGUI.TextWriter = class
             this._fontTex = CGL.Texture.load(this._cgl, "/ui/img/WorkSans-Regular.ttf.png", // sdf_font_arial.png
                 () =>
                 {
-                    console.log(this._fontTex);
+                    // console.log(this._fontTex);
                     // this.glPatch.setFont(this._fontTex);
                     // this.glPatch.needsRedraw = true;
                     // this.loaded = true;

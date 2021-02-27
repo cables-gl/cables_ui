@@ -47,16 +47,9 @@ CABLES.IconBar = class
 
 
         for (let i = 0; i < items.length; i++)
-        {
             for (let j = 0; j < CABLES.CMD.commands.length; j++)
-            {
                 if (CABLES.CMD.commands[j].cmd == items[i])
-                {
                     this.addItem(CABLES.CMD.commands[j]);
-                    console.log(items[i], CABLES.CMD.commands[j]);
-                }
-            }
-        }
 
         this._buildHtml();
     }
