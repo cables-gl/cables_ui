@@ -78,7 +78,7 @@ CABLES.UI.GUI = function (cfg)
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
 
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
-    this.variables = new CABLES.UI.MetaVars(this.metaTabs);
+    // this.variables = new CABLES.UI.MetaVars(this.metaTabs);
     // this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);

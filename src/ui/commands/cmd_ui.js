@@ -275,6 +275,13 @@ CABLES.CMD.UI.zoomIn = function ()
     gui.patchView.zoomStep(-1);
 };
 
+CABLES.CMD.UI.watchVars = function ()
+{
+    new CABLES.UI.WatchVarTab(gui.mainTabs);
+
+    // gui.patchView.zoomStep(-1);
+};
+
 CABLES.CMD.commands.push(
     {
         "cmd": "show settings",
@@ -504,6 +511,12 @@ CABLES.CMD.commands.push(
         "hotkey": "-",
         "infotext": "cmd_zoomout"
     },
-
+    {
+        "cmd": "watch variables",
+        "category": "ui",
+        "func": CABLES.CMD.UI.watchVars,
+        "icon": "align-justify",
+        "infotext": "cmd_watchvars"
+    },
 
 );
