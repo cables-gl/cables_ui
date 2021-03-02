@@ -603,7 +603,6 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
             CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
             CABLES.UI.MODAL._setVisible(true);
             document.getElementById("modalbg").style.display = "block";
-            hljs.highlightBlock(document.getElementById("portvalue"));
             CABLES.UI.MODAL.hideLoading();
         });
     }
