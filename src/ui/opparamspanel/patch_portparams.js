@@ -85,6 +85,7 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {
+                console.log(content);
                 port.set(content);
             }
         });
