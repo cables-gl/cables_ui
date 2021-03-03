@@ -140,7 +140,7 @@ CABLES.UI.Profiler.prototype.update = function ()
         html += "<td class=\"colname\">Port Name</td>";
         html += "<td class=\"colname\">Per Frame</td>";
         html += "<td class=\"colname\">Time used</td>";
-        if (cumulate) html += "<td class=\"colname\">Num Ops</td>";
+        html += "<td class=\"colname\">Ops</td>";
         html += "</td>";
 
         for (let i in sortedItems)
@@ -153,8 +153,18 @@ CABLES.UI.Profiler.prototype.update = function ()
                 for (i = 0; i < 2 - (item.percent + "").length; i++)
                     pad += "&nbsp;";
 
-            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td><span>" + item.title + "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td>";
+
+            html += "<span>";
+
+
+            html += item.title;
+            html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+
             if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
+            if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";
+
+
             html += "</tr>";
 
             if (item.percent > 0)
