@@ -136,7 +136,7 @@ CABLES.UI.Profiler.prototype.update = function ()
         html += "<tr>";
         html += "<td class=\"colname\">%</td>";
         html += "<td class=\"colname\">Port Name</td>";
-        html += "<td class=\"colname\">Trigger/Frame</td>";
+        html += "<td class=\"colname\">Per Frame</td>";
         html += "<td class=\"colname\">Time used</td>";
         html += "<td class=\"colname\">Num Ops</td>";
         html += "</td>";
@@ -151,7 +151,7 @@ CABLES.UI.Profiler.prototype.update = function ()
                 for (i = 0; i < 2 - (item.percent + "").length; i++)
                     pad += "&nbsp;";
 
-            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td><span>" + item.title + "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + " </span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td><span>" + item.title + "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
             if (item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
             html += "</tr>";
 
