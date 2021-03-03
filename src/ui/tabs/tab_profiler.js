@@ -54,7 +54,9 @@ CABLES.UI.Profiler.prototype.update = function ()
     const sortedItems = [];
     let htmlData = "";
 
-    const cumulate = true;
+    let cumulate = true;
+    if (this._subTab == 1) cumulate = false;
+
     const cumulated = {};
     const cumulatedSubPatches = {};
     const opids = {};
@@ -131,18 +133,26 @@ CABLES.UI.Profiler.prototype.update = function ()
         html += "<h3>Ops</h3>";
         html += "<table>";
 
+        html += "<tr>";
+        html += "<td class=\"colname\">%</td>";
+        html += "<td class=\"colname\">Port Name</td>";
+        html += "<td class=\"colname\">Trigger/Frame</td>";
+        html += "<td class=\"colname\">Time used</td>";
+        html += "<td class=\"colname\">Num Ops</td>";
+        html += "</td>";
+
         for (let i in sortedItems)
         {
             item = sortedItems[i];
             pad = "";
 
-            html += "<tr><td>";
+            html += "<tr><td><span>";
             if (sortedItems.length > 0)
                 for (i = 0; i < 2 - (item.percent + "").length; i++)
                     pad += "&nbsp;";
 
-            html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " times</td><td> " + Math.round(item.timeUsed) + "ms </td>";
-            if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
+            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td><span>" + item.title + "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + " </span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+            if (item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
             html += "</tr>";
 
             if (item.percent > 0)
@@ -183,8 +193,8 @@ CABLES.UI.Profiler.prototype.update = function ()
         for (let i = 0; i < subPatches.length; i++)
         {
             html += "<tr>";
-            html += "<td>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</td>";
-            html += "<td><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</td>";
+            html += "<td><span>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</span></td>";
+            html += "<td><span><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</span></td>";
             html += "</tr>";
         }
         html += "</table>";
