@@ -145,6 +145,7 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
             geom.vertexNormals = verts.slice();
             CABLES.GL_MARKER.SPHERE.mesh3 = new CGL.Mesh(cgl, geom);
         }
+
         bufferData();
     }
 
@@ -251,13 +252,14 @@ CABLES.GL_MARKER.drawLineSourceDest = function ({
             // verts.push(destX, destY, destZ);
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            const geom = new CGL.Geometry();
+            const geom = new CGL.Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
             CABLES.GL_MARKER.ARROW_SRC_DST.geom = geom;
             CABLES.GL_MARKER.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         }
+
         bufferData();
     }
     else
@@ -305,13 +307,14 @@ CABLES.GL_MARKER.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-            const geom = new CGL.Geometry();
+            const geom = new CGL.Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
             CABLES.GL_MARKER.ARROW.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         }
+
         bufferData();
     }
 
@@ -361,13 +364,14 @@ CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
 
             const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-            const geom = new CGL.Geometry();
+            const geom = new CGL.Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
             CABLES.GL_MARKER.XPLANE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
+
         bufferData();
     }
 
@@ -432,13 +436,14 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
 
             const tc = new Float32Array([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
-            const geom = new CGL.Geometry();
+            const geom = new CGL.Geometry("helpermesh");
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
             CABLES.GL_MARKER.CUBE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
+
         bufferData();
     }
 

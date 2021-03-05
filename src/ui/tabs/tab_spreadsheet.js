@@ -3,18 +3,23 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 {
-    constructor(tabs, data, options)
+    constructor(tabs, port, data, options)
     {
         super();
         this._tabs = tabs;
 
-        this._numCols = 3;
+        options = options || {};
+
+        this._numCols = options.numColumns || 3;
         this._rows = 30;
 
+        this._port = port;
         this.cells = [];
         this._inputs = [];
         this._options = options;
         this.colNames = [];
+
+        port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
 
         this.data = { "cells": this.cells, "colNames": this.colNames };
 
@@ -28,8 +33,21 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this._tabs.addTab(this._tab, true);
 
         this._id = "spread" + CABLES.uuid();
+        // this.rebuildHtml();
+        this._updateUiAttribs();
+    }
+
+    _updateUiAttribs()
+    {
+        this._numCols = this._port.uiAttribs.spread_numColumns || 1;
+        this.rebuildHtml();
+    }
+
+    rebuildHtml()
+    {
         this._tab.html("<div id='" + this._id + "'></div>");
         this._ele = document.getElementById(this._id);
+        if (!this._ele) return;
         this._ele.classList.add("editor_spreadsheet");
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
@@ -42,6 +60,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         //             this.set(x, y, "");
 
         this._html();
+        this._options.onchange(this.data);
     }
 
 
@@ -116,7 +135,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
                 td.appendChild(input);
 
-
                 input.addEventListener("change", this._change.bind(this));
                 input.addEventListener("keydown", this._onKey.bind(this), false);
             }
@@ -161,6 +179,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         {
             this._focusCell(x + 1, y);
         }
+        else this._change(e);
         // else console.log(e.keyCode);
     }
 
@@ -221,6 +240,9 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this.data.cols = this._numCols;
         this.data.cells = this.cells;
         this.data.colNames = this.colNames;
+
+        this.data.colNames.length = this._numCols;
+
         console.log("colnames", this.colNames);
         this._options.onchange(null);
         if (this._options.onchange) this._options.onchange(this.data);

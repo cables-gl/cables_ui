@@ -19,7 +19,6 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
             "padding": true,
             "singleton": "false", });
 
-
         this._tab.on("close", () =>
         {
             const vars = this._patch.getVars();
@@ -30,7 +29,6 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         });
 
         this._tabs.addTab(this._tab, true);
-
 
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
@@ -43,20 +41,6 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
 
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
-
-
-        // this._eleIconMinus = ele.create("a");
-        // this._eleIconMinus.innerHTML = "-";
-        // this._eleIconMinus.classList.add("button");
-        // this._eleIconMinus.addEventListener("click", () => { this._changeColumns(-1); });
-        // this._eleIconbar.appendChild(this._eleIconMinus);
-
-
-        // this._eleIconPlus = ele.create("a");
-        // this._eleIconPlus.innerHTML = "+";
-        // this._eleIconPlus.classList.add("button");
-        // this._eleIconPlus.addEventListener("click", () => { this._changeColumns(1); });
-        // this._eleIconbar.appendChild(this._eleIconPlus);
 
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);

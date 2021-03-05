@@ -20,10 +20,12 @@ CABLES.UI.Profiler = function (tabs)
 
 CABLES.UI.Profiler.prototype.setTab = function (which)
 {
+    ele.byId("profilerTabOpsCum").classList.remove("tabActiveSubtab");
     ele.byId("profilerTabOps").classList.remove("tabActiveSubtab");
     ele.byId("profilerTabSubpatches").classList.remove("tabActiveSubtab");
     ele.byId("profilerTabPeaks").classList.remove("tabActiveSubtab");
-    if (which == 0) ele.byId("profilerTabOps").classList.add("tabActiveSubtab");
+    if (which == 0) ele.byId("profilerTabOpsCum").classList.add("tabActiveSubtab");
+    if (which == 3) ele.byId("profilerTabOps").classList.add("tabActiveSubtab");
     if (which == 1) ele.byId("profilerTabSubpatches").classList.add("tabActiveSubtab");
     if (which == 2) ele.byId("profilerTabPeaks").classList.add("tabActiveSubtab");
 
@@ -54,7 +56,9 @@ CABLES.UI.Profiler.prototype.update = function ()
     const sortedItems = [];
     let htmlData = "";
 
-    const cumulate = true;
+    let cumulate = true;
+    if (this._subTab == 1 || this._subTab == 3) cumulate = false;
+
     const cumulated = {};
     const cumulatedSubPatches = {};
     const opids = {};
@@ -126,23 +130,41 @@ CABLES.UI.Profiler.prototype.update = function ()
     let item = null;
     let pad = "";
 
-    if (this._subTab == 0)
+    if (this._subTab == 0 || this._subTab == 3)
     {
         html += "<h3>Ops</h3>";
         html += "<table>";
+
+        html += "<tr>";
+        html += "<td class=\"colname\">%</td>";
+        html += "<td class=\"colname\">Port Name</td>";
+        html += "<td class=\"colname\">Per Frame</td>";
+        html += "<td class=\"colname\">Time used</td>";
+        html += "<td class=\"colname\">Ops</td>";
+        html += "</td>";
 
         for (let i in sortedItems)
         {
             item = sortedItems[i];
             pad = "";
 
-            html += "<tr><td>";
+            html += "<tr><td><span>";
             if (sortedItems.length > 0)
                 for (i = 0; i < 2 - (item.percent + "").length; i++)
                     pad += "&nbsp;";
 
-            html += pad + Math.floor(item.percent * 100) / 100 + "% </td><td>" + item.title + "</td><td> " + item.numTriggers + " times</td><td> " + Math.round(item.timeUsed) + "ms </td>";
-            if (item.numCumulated)html += "<td>" + item.numCumulated + " ops</td>";
+            html += pad + Math.floor(item.percent * 100) / 100 + "% </span></td><td>";
+
+            html += "<span>";
+
+
+            html += item.title;
+            html += "</span></td><td><span> " + Math.round(item.numTriggers * 10) / 10 + "x</span></td><td><span> " + Math.round(item.timeUsed) + "ms </span></td>";
+
+            if (cumulate && item.numCumulated)html += "<td><span>" + item.numCumulated + "</span></td>";
+            if (!cumulate) html += "<td ><a class=\"button-small\" onclick=\"gui.patchView.centerSelectOp('" + item.opid + "')\">op</a></td>";
+
+
             html += "</tr>";
 
             if (item.percent > 0)
@@ -183,8 +205,8 @@ CABLES.UI.Profiler.prototype.update = function ()
         for (let i = 0; i < subPatches.length; i++)
         {
             html += "<tr>";
-            html += "<td>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</td>";
-            html += "<td><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</td>";
+            html += "<td><span>" + Math.floor(subPatches[i].percent * 100) / 100 + "%</span></td>";
+            html += "<td><span><a onclick=\"gui.patchView.setCurrentSubPatch('" + subPatches[i].subPatch + "')\">" + subPatches[i].name + "</span></td>";
             html += "</tr>";
         }
         html += "</table>";
@@ -215,7 +237,8 @@ CABLES.UI.Profiler.prototype.start = function ()
 {
     gui.corePatch().profile(true);
     this.update();
-    ele.byId("profilerTabOps").addEventListener("click", () => { this.setTab(0); });
+    ele.byId("profilerTabOpsCum").addEventListener("click", () => { this.setTab(0); });
+    ele.byId("profilerTabOps").addEventListener("click", () => { this.setTab(3); });
     ele.byId("profilerTabSubpatches").addEventListener("click", () => { this.setTab(1); });
     ele.byId("profilerTabPeaks").addEventListener("click", () => { this.setTab(2); });
 
