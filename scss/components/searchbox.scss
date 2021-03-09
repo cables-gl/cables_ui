@@ -112,6 +112,11 @@
         background-color: var(--color-05);
     }
 
+    .blueprint, .blueprint_subpatch
+    {
+        border-left: 5px solid var(--color_op_handle_default);
+    }
+
     .selected
     {
         border-left:2px solid var(--color-07);

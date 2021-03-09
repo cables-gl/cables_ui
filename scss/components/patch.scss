@@ -465,6 +465,10 @@
 				background-color: var(--color_op_bg_active);
 		    }
 
+            &.blueprint, &.blueprint_subpatch {
+                border-left: 5px solid var(--color_op_handle_default);
+            }
+
 		}
 	}
 
