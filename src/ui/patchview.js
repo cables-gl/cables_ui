@@ -1287,6 +1287,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof CGL.Geometry)) inp.parent.setUiError(id, errorMsg);
             if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof CGL.Shader)) inp.parent.setUiError(id, errorMsg);
             if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.parent.setUiError(id, errorMsg);
+            // * audio
+            if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "audioNode" && !(outp.get() instanceof AudioNode)) inp.parent.setUiError(id, errorMsg);
         }
     }
 
