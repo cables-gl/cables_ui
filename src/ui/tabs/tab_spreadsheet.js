@@ -152,7 +152,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
             setTimeout(() =>
             {
-                inp.select();
+                // inp.select();
             }, 50);
         }
     }

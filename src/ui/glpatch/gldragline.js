@@ -114,6 +114,11 @@ CABLES.GLGUI.GlRectDragLine = class
                 // right click
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
+                    if (!this._startGlPorts[i].glOp)
+                    {
+                        console.log("glop unknown?", this._startGlPorts, this._startGlPorts[i]);
+                        return;
+                    }
                     gui.patchView.linkPorts(opid,
                         portName,
                         this._startGlPorts[i].glOp.id,

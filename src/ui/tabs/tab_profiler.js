@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -24,10 +25,13 @@ CABLES.UI.Profiler.prototype.setTab = function (which)
     ele.byId("profilerTabOps").classList.remove("tabActiveSubtab");
     ele.byId("profilerTabSubpatches").classList.remove("tabActiveSubtab");
     ele.byId("profilerTabPeaks").classList.remove("tabActiveSubtab");
+    ele.byId("profilerTabEvents").classList.remove("tabActiveSubtab");
+
     if (which == 0) ele.byId("profilerTabOpsCum").classList.add("tabActiveSubtab");
     if (which == 3) ele.byId("profilerTabOps").classList.add("tabActiveSubtab");
     if (which == 1) ele.byId("profilerTabSubpatches").classList.add("tabActiveSubtab");
     if (which == 2) ele.byId("profilerTabPeaks").classList.add("tabActiveSubtab");
+    if (which == 4) ele.byId("profilerTabEvents").classList.add("tabActiveSubtab");
 
     gui.corePatch().profiler.clear();
     this._subTab = which;
@@ -130,6 +134,13 @@ CABLES.UI.Profiler.prototype.update = function ()
     let item = null;
     let pad = "";
 
+    if (this._subTab == 4)
+    {
+        for (let i = 0; i < CGL.profileData.heavyEvents.length; i++)
+        {
+            html += CGL.profileData.heavyEvents[i].event + " - " + CGL.profileData.heavyEvents[i].name + "<br/>";
+        }
+    }
     if (this._subTab == 0 || this._subTab == 3)
     {
         html += "<h3>Ops</h3>";
@@ -241,6 +252,7 @@ CABLES.UI.Profiler.prototype.start = function ()
     ele.byId("profilerTabOps").addEventListener("click", () => { this.setTab(3); });
     ele.byId("profilerTabSubpatches").addEventListener("click", () => { this.setTab(1); });
     ele.byId("profilerTabPeaks").addEventListener("click", () => { this.setTab(2); });
+    ele.byId("profilerTabEvents").addEventListener("click", () => { this.setTab(4); });
 
     if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 1000);
 };

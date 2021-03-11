@@ -9,14 +9,15 @@
 
             <div id="profilerui" style="display:none" class="editor_spreadsheet">
 
-                <a onclick="gui.corePatch().profiler.clear();" class="button fa fa-trash-o">reset</a>
+                <a onclick="gui.corePatch().profiler.clear();CGL.profileData.heavyEvents=[];" class="button fa fa-trash-o">reset</a>
                 <br/>
                 <br/>
                 <div class="text-center">
                     <a id="profilerTabOpsCum" class="tabActiveSubtab" data-info="file_source_patch">Cumulated Ops</a>
                     <a id="profilerTabOps" class="tabSubtab" data-info="file_source_patch">Individual Ops</a>
-                    <a id="profilerTabSubpatches"class="tabSubtab" data-info="file_source_patch">Subpatches</a>
-                    <a id="profilerTabPeaks"class="tabSubtab" data-info="file_source_patch">Peaks</a>
+                    <a id="profilerTabSubpatches" class="tabSubtab" data-info="file_source_patch">Subpatches</a>
+                    <a id="profilerTabPeaks" class="tabSubtab" data-info="file_source_patch">Peaks</a>
+                    <a id="profilerTabEvents" class="tabSubtab" data-info="file_source_patch">Events</a>
                 </div>
                 <br/><br/>
 
