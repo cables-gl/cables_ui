@@ -52,7 +52,7 @@ CABLES.UI.Port = function (thePort)
     {
         if (attribs.hasOwnProperty("hidePort"))
         {
-            self.thePort.removeLinks();
+            // self.thePort.removeLinks();
             self.opUi.initPorts();
             gui.patch().updateOpParams(self.opUi.op.id);
             self.opUi.setPos();
