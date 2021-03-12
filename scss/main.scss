@@ -44,6 +44,7 @@ h1, h2, h3, h4, h5, h6 {
 //   text-transform: capitalize;
 }
 
+
 h2
 {
     margin-top: 0px;
@@ -443,7 +444,9 @@ input[type=text]:active, input[type=text]:focus, input[type=search]:active, inpu
 
 ::selection
 {
-  background: $color-background-input-selected;
+    background: var(--color-09);
+    color: var(--color-13);
+
 }
 
 

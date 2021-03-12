@@ -741,6 +741,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this.unselectAll();
         this.selectOpId(id);
+
+        if (this._glOpz[id] && !this._glOpz[id].isInCurrentSubPatch()) this.setCurrentSubPatch(this._glOpz[id].getSubPatch());
     }
 
     selectOpId(id)
@@ -750,7 +752,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this._selectedGlOps[id] = this._glOpz[id];
             this._glOpz[id].selected = true;
         }
-        // else console.warn("[glpatch selectOpId] unknown opid", id);
     }
 
     _selectOpsInRect(xa, ya, xb, yb)
@@ -964,6 +965,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             return;
         }
 
+        this.unselectAll();
+
         this._currentSubpatch = sub;
         console.log("set subpatch", sub);
 
@@ -977,6 +980,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
         this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
         this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+
+
+        gui.patchView.updateSubPatchBreadCrumb(sub);
+
 
         setTimeout(() =>
         {
