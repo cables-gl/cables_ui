@@ -197,6 +197,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        this._hoverCable.visible = false;
+
         this.emitEvent("mousemove", e);
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
@@ -405,6 +407,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             glOp.update();
         });
+
         op.on("onUiAttribsChange",
             (newAttribs) =>
             {
@@ -503,7 +506,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             this._glOpz[i].updateIfNeeded();
         }
-
 
         this.frameCount++;
         this.isAnimated = false;
@@ -622,6 +624,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
+
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
