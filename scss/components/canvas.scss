@@ -49,7 +49,7 @@
 {
     height: 100px;
     background:linear-gradient(var(--color-01), var(--color-01),transparent,transparent);
-
+    user-select: none;
     color:var(--color-13);
     position: absolute;
     padding-bottom: 30px;;

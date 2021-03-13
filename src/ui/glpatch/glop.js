@@ -402,6 +402,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    getSubPatch()
+    {
+        return this.opUiAttribs.subPatch;
+    }
+
     isInCurrentSubPatch()
     {
         return this.opUiAttribs.subPatch == this._glPatch.subPatch;

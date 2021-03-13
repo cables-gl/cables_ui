@@ -115,6 +115,9 @@ CABLES.GLGUI.GlCable = class
     setColor(r, g, b, a)
     {
         this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
+        this._r = r;
+        this._g = g;
+        this._b = b;
         // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
         // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
@@ -176,7 +179,7 @@ CABLES.GLGUI.GlCable = class
         {
             // this._glPatch._hoverCable.visible = true;
             this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
-            this._glPatch._hoverCable.setColor(1, 1, 1, 0.25);
+            this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
             this._glPatch._hoverCable.visible = true;
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
