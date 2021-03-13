@@ -133,12 +133,13 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     let item = null;
     let pad = "";
+    const cgl = gui.corePatch().cgl;
 
     if (this._subTab == 4)
     {
-        for (let i = 0; i < CGL.profileData.heavyEvents.length; i++)
+        for (let i = 0; i < cgl.profileData.heavyEvents.length; i++)
         {
-            html += CGL.profileData.heavyEvents[i].event + " - " + CGL.profileData.heavyEvents[i].name + "<br/>";
+            html += cgl.profileData.heavyEvents[i].event + " - " + cgl.profileData.heavyEvents[i].name + "<br/>";
         }
     }
     if (this._subTab == 0 || this._subTab == 3)

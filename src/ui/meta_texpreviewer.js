@@ -178,7 +178,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         const cgl = port.parent.patch.cgl;
 
         if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
-        CGL.profileData.profileTexPreviews++;
+        port.parent.patch.cgl.profileData.profileTexPreviews++;
 
         if (!this._mesh)
         {
