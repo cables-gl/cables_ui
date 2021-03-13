@@ -87,7 +87,6 @@ CABLES.GLGUI.GlUiCanvas = class
                 "glCanvasResizeToWindow": false
             });
 
-
         this.glPatch = new CABLES.GLGUI.GlPatch(this.patch.cgl);
         this.patchApi = new CABLES.GLGUI.GlPatchAPI(_patch, this.glPatch);
         this.patchApi.reset();
@@ -103,12 +102,12 @@ CABLES.GLGUI.GlUiCanvas = class
         {
             this.patch.pause();
         });
+
         this.glPatch.on("resumed", () =>
         {
             this.patch.cgl.setSize(this.width, this.height);
             this.patch.resume();
         });
-
 
         this.canvas.addEventListener("mousemove", (e) =>
         {
