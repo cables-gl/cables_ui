@@ -608,10 +608,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         // this.performanceGraph.set(performance.now() - starttime); //
 
-        this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
-        this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
+        if (this._cgl.profileData)
+        {
+            this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
+            this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
 
-        this._cgl.profileData.clear();
+            this._cgl.profileData.clear();
+        }
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
