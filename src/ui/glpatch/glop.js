@@ -330,7 +330,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._setupPorts(this._op.portsIn);
         this._setupPorts(this._op.portsOut);
 
-        console.log("refresh ports");
+        // console.log("refresh ports");
     }
 
     _setupPorts(ports)
@@ -369,7 +369,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         return this.opUiAttribs;
     }
-
 
     _getTitleWidth()
     {
@@ -418,10 +417,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         let visi = this._visible;
 
-        if (!this.isInCurrentSubPatch())
-        {
-            visi = false;
-        }
+        if (!this.isInCurrentSubPatch()) visi = false;
 
         for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
 
@@ -629,8 +625,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set selected(s)
     {
-        this.opUiAttribs.selected = s;
-        this._updateColors();
+        if (s != this.opUiAttribs.selected)
+        {
+            this.opUiAttribs.selected = s;
+            this._updateColors();
+        }
     }
 
     getPortPos(id)
