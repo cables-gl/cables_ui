@@ -41,41 +41,41 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
 
     update()
     {
-        const hashmap = {};
-        const ops = gui.corePatch().ops;
+        // const hashmap = {};
+        // const ops = gui.corePatch().ops;
 
-        const selOps = gui.patchView.getSelectedOps();
-        let selOp = null;
-        if (selOps.length == 1) selOp = selOps[0];
+        // const selOps = gui.patchView.getSelectedOps();
+        // let selOp = null;
+        // if (selOps.length == 1) selOp = selOps[0];
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
-                hashmap[ops[i].uiAttribs.translate.x] = ops[i].uiAttribs.translate.x;
-        }
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
+        //         hashmap[ops[i].uiAttribs.translate.x] = ops[i].uiAttribs.translate.x;
+        // }
 
-        const coords = Object.values(hashmap);
+        // const coords = Object.values(hashmap);
 
-        for (let i = 0; i < coords.length; i++)
-        {
-            if (!this._rects[i])
-            {
-                this._rects[i] = new CABLES.GLGUI.GlRect(this._instancer, { "parent": this._root, "interactive": false });
-                this._rects[i].setColor(0, 0, 0, 0.15);
-            }
+        // for (let i = 0; i < coords.length; i++)
+        // {
+        //     if (!this._rects[i])
+        //     {
+        //         this._rects[i] = new CABLES.GLGUI.GlRect(this._instancer, { "parent": this._root, "interactive": false });
+        //         this._rects[i].setColor(0, 0, 0, 0.15);
+        //     }
 
-            this._rects[i].setPosition(coords[i], -300000);
-        }
+        //     this._rects[i].setPosition(coords[i], -300000);
+        // }
 
-        for (let i = 0; i < this._rects.length; i++)
-        {
-            this._rects[i].setSize(1, 110);
-        }
+        // for (let i = 0; i < this._rects.length; i++)
+        // {
+        //     this._rects[i].setSize(1, 110);
+        // }
     }
 
     render()
     {
-        this.update();
+        // this.update();
     }
 
     snapX(_x)
