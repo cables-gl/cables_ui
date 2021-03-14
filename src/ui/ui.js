@@ -2140,12 +2140,13 @@ CABLES.UI.GUI = function (cfg)
 
     this.pauseProfiling = function ()
     {
-        CGL.profileData.pause = true;
+        if (!this._corePatch.cgl || !this._corePatch.cgl.profileData) return;
+        this._corePatch.cgl.profileData.pause = true;
 
         clearTimeout(this._timeoutPauseProfiler);
-        this._timeoutPauseProfiler = setTimeout(function ()
+        this._timeoutPauseProfiler = setTimeout(() =>
         {
-            CGL.profileData.pause = false;
+            this._corePatch.cgl.profileData.pause = false;
         }, 200);
     };
 

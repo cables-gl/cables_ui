@@ -1591,11 +1591,8 @@ const OpUi = function (paper, op, x, y, w, h, txt)
                 {
                     groupCount = 0;
                     ports[i].setUiAttribs({ "spaceBefore": true });
-
-                    console.log("----");
                 }
             }
-            console.log(name);
             lastName = name;
         }
     };
