@@ -647,8 +647,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     {
                         subPatches.push({
                             "name": ops[j].name,
-                            "id": foundPatchIds[i],
-                            "type": "blueprint_subpatch"
+                            "id": foundPatchIds[i]
                         });
                         found = true;
                     }
