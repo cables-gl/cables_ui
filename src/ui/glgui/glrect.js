@@ -148,7 +148,6 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     {
         if (this._texture == t) return;
         this._texture = t;
-
         this.emitEvent("textureChanged");
     }
 
@@ -178,29 +177,15 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         return x > this._absX && x < this._absX + this._w && y > this._absY && y < this._absY + this._h;
     }
 
-    // setOutline(o)
-    // {
-    //     if(!o) o=0;
-    //     else if(o===true) o=1;
-
-    //     this._rectInstancer.setOutline(this._attrIndex,o);
-    // }
-
     mouseUp(e)
     {
-        if (this._hovering)
-        {
-            this.emitEvent("mouseup", e, this);
-        }
+        if (this._hovering) this.emitEvent("mouseup", e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseUp(e);
     }
 
     mouseDown(e)
     {
-        if (this._hovering)
-        {
-            this.emitEvent("mousedown", e, this);
-        }
+        if (this._hovering) this.emitEvent("mousedown", e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseDown(e);
     }
 

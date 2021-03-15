@@ -794,7 +794,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     {
         function libReady()
         {
-            console.log("finished loading libs for " + opName);
+            // console.log("finished loading libs for " + opName);
 
             const libsToLoad = this.getOpLibs(opName);
             for (let i = 0; i < libsToLoad.length; i++)

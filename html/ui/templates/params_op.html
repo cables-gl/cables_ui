@@ -62,10 +62,14 @@
                 </div>
                 <br/><br/>
             {{/if}}
-            <div class="warning-error warning-error-level2" id="options_error"  >
-                OLD ERROR MSG<br/>
-                <i>Error:</i> {{op.uiAttribs.error}}
-            </div>
+
+            {{#if op.uiAttribs.error }}
+
+                <div class="warning-error warning-error-level2" id="options_error"  >
+                    OLD ERROR MSG<br/>
+                    <i>Error:</i> {{op.uiAttribs.error}}
+                </div>
+            {{/if}}
 
             {{#if op.uiAttribs.errors }}
                 {{#each op.uiAttribs.errors}}
@@ -100,13 +104,17 @@
                 <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
             {{/if}}
 
-            <div class="warning" id="options_warning" >
-            	<i>Warning:</i> {{op.uiAttribs.warning}}
-            </div>
+            {{#if op.uiAttribs.warning }}
+                <div class="warning" id="options_warning" >
+                    <i>Warning:</i> {{op.uiAttribs.warning}}
+                </div>
+            {{/if}}
 
-            <div class="hint" id="options_hint" >
-            	<i>Hint:</i> {{op.uiAttribs.hint}}
-            </div>
+            {{#if op.uiAttribs.hint }}
+                <div class="hint" id="options_hint" >
+            	    <i>Hint:</i> {{op.uiAttribs.hint}}
+                </div>
+            {{/if}}
 
             <!-- {{#if op.uiAttribs.notWorkingMsg }}
                 <div class="warning" id="options_warning" >

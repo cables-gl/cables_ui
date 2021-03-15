@@ -42,7 +42,7 @@ class LibLoader
 
                 const i = this.libsToLoad.indexOf(libName);
                 this.libsToLoad.splice(i, 1);
-                console.log("finished loading lib: " + libName);
+                // console.log("finished loading lib: " + libName);
                 CABLES.UI.loadedLibs.push(libName);
                 this.checkAllLoaded();
             }.bind(this);

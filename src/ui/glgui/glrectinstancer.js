@@ -521,7 +521,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._needsBoundsRecalc = true;
         }
 
-
         this._attrBuffPos[i + 0] = x;
         this._attrBuffPos[i + 1] = y;
         this._attrBuffPos[i + 2] = z;
