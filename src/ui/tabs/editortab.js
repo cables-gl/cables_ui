@@ -96,6 +96,7 @@ CABLES.UI.EditorTab = function (options)
     }
     else
     {
+        console.log("editor readonly");
         this._editor.setOptions({ "readOnly": "true" });
     }
 
