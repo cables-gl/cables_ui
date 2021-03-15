@@ -481,6 +481,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                         content,
                         syntax,
                         editorObj,
+                        "allowEdit": self.canEditAttachment(gui.user, opname),
                         "inactive": inactive,
                         onClose(which)
                         {
@@ -512,46 +513,11 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                             );
                         },
                     });
-                    // this is done in the callback now
-
-                    // setTimeout(()=>{
-                    // console.log("settab!", editorObj.name);
-                    // gui.mainTabs.activateTabByName(title);
-                    // },200);
                 }
 
 
                 if (cb) cb();
                 else gui.maintabPanel.show();
-                // gui.showEditor();
-                // gui.editor().addTab({
-                //     content: content,
-                //     title: attachmentName,
-                //     syntax: syntax,
-                //     id:CABLES.Editor.sanitizeId('editattach_'+opname+attachmentName),
-                //     editorObj: editorObj,
-                //     toolbarHtml: toolbarHtml,
-                //     onSave: function(setStatus, content) {
-                //         CABLES.api.post(
-                //             'op/' + opname + '/attachment/' + attachmentName, {
-                //                 content: content
-                //             },
-                //             function(res) {
-                //                 setStatus('saved');
-                //                 gui.serverOps.execute( opname );
-                //             },
-                //             function(res) {
-                //                 setStatus('ERROR: not saved - '+res.msg);
-                //                 console.log('err res', res);
-                //             }
-                //         );
-                //     },
-                //     onClose: function(which) {
-                //         if(which.editorObj && which.editorObj.name)
-                //             CABLES.editorSession.remove(which.editorObj.name,which.editorObj.type);
-                //     },
-
-                // });
             },
             (err) =>
             {
@@ -652,6 +618,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                         "content": rslt.code,
                         "singleton": true,
                         "syntax": "js",
+                        "allowEdit": self.canEditOp(gui.user, editorObj.name),
                         "onSave": save,
                         editorObj,
                         onClose(which)
@@ -829,13 +796,67 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         return this.loaded;
     };
 
-    this.canEditOp = function (opname)
+    this.ownsOp = function (opname)
     {
-        // if (gui.user.isAdmin) return true;
-
-        const usernamespace = "Ops.User." + gui.user.usernameLowercase;
+        const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
         if (opname.indexOf(usernamespace) == 0) return true;
+        return false;
+    };
 
+    this.canEditOp = function (user, opName)
+    {
+        if (user.roles.includes("alwaysEditor"))
+        {
+            // users with "alwaysEditor" role are always allowed to edit everything
+            return true;
+        }
+        if (opName.startsWith("Ops.User."))
+        {
+            if (user.isAdmin || this.ownsOp(opName))
+            {
+                // admins may edit any userop, users are only allowed to edit their own userops
+                return true;
+            }
+        }
+        if (user.isAdmin)
+        {
+            // admins are only allowed to edit everything on dev
+            if (CABLES.sandbox.isDevEnv())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return false;
+    };
+
+    this.canEditAttachment = function (user, opName)
+    {
+        if (user.roles.includes("alwaysEditor"))
+        {
+            // users with "alwaysEditor" role are always allowed to edit everything
+            return true;
+        }
+        if (this.ownsOp(opName))
+        {
+            // users are only allowed to edit attachments of their own userops
+            return true;
+        }
+        if (user.isAdmin)
+        {
+            // admins are only allowed to edit everything on dev
+            if (CABLES.sandbox.isDevEnv())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
         return false;
     };
 
