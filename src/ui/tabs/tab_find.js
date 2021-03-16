@@ -409,15 +409,12 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
             {
                 if (ops[i].objName.indexOf(ops[i].name) == -1) score += 2; // extra points if non default name
 
+                if (String(ops[i].name || "").indexOf("var set") === 0) score += 2; // extra points if var setter
+
                 where = "name: " + this.highlightWord(str, ops[i].name);
                 score += 2;
             }
 
-            if (String(ops[i].name || "").indexOf("var set") === 0)
-            {
-                // extra points if var setter
-                score += 2;
-            }
 
             const op = ops[i];
             for (let j = 0; j < op.portsIn.length; j++)

@@ -17,7 +17,7 @@ CABLES.GLGUI.VISUALCONFIG =
     // "snapY": 20,
 
     "opHeight": 31,
-    "opWidth": 90,
+    "opWidth": 20,
 
     "minZoom": 15,
     "zoomSmooth": 2,
