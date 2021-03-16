@@ -137,10 +137,8 @@ CABLES.GLGUI.GlLink = class
         return this._portIdOutput;
     }
 
-
     updateVisible()
     {
-
     }
 
     set visible(v)
@@ -200,6 +198,9 @@ CABLES.GLGUI.GlLink = class
             console.log("[glLink] unknown ops...");
             return;
         }
+
+        this._opIn.updateVisible();
+        this._opOut.updateVisible();
 
         this._updatePosition();
     }
