@@ -177,9 +177,9 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 
 
     let highlightsubpatch = "";
-    if (op.uiAttribs.subPatch == gui.patch().getCurrentSubPatch()) highlightsubpatch = "highlight";
+    if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-    if (op.uiAttribs.subPatch != 0) html += "<br/> subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patch().getSubPatchPathString(op.uiAttribs.subPatch) + "</span>";
+    if (op.uiAttribs.subPatch != 0) html += "<br/> subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
 
     html += "</div>";
 
@@ -262,7 +262,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
                 if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                     for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
                     {
-                        results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt + "!!!!" });
+                        results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
                         foundNum++;
                     }
             }
@@ -424,7 +424,7 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
                 }
             }
 
-            if (score > 0 && gui.patch().isOpCurrentSubpatch(op)) score++;
+            if (score > 0 && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
             if (score > 0)
             {
                 results.push({ "op": ops[i], score, where });
