@@ -94,7 +94,7 @@ CABLES.UI.MetaCode = function (tabs)
                             op,
                             doc,
                             summary,
-                            "ownsOp": gui.serverOps.canEditOp(op.objName),
+                            "ownsOp": gui.serverOps.ownsOp(op.objName),
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,

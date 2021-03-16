@@ -4,6 +4,8 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.EditorTab = function (options)
 {
     this._editor = null;
+    if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
+
     this._options = options;
 
     gui.maintabPanel.show();
@@ -33,60 +35,7 @@ CABLES.UI.EditorTab = function (options)
 
     this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
 
-    let allowEdit = false;
-    if (gui.user.roles.includes("alwaysEditor"))
-    {
-        // users with "alwaysEditor" role are always allowed to edit everything
-        allowEdit = true;
-    }
-    else if (options.name.startsWith("Ops.User."))
-    {
-        if (gui.user.isAdmin || options.name.startsWith("Ops.User." + gui.user.usernameLowercase + "."))
-        {
-            // admins may edit any userop, users are only allowed to edit their own userops
-            allowEdit = true;
-        }
-    }
-    else if (gui.user.isAdmin)
-    {
-        if (CABLES.sandbox.isDevEnv())
-        {
-            // admins are only allowed to edit everything on dev
-            allowEdit = true;
-        }
-        else
-        {
-            if (!options.name.startsWith("Ops."))
-            {
-                allowEdit = true;
-            }
-        }
-    }
-    else if (options.name.startsWith("Ops."))
-    {
-        // only alwaysadmins and admins on dev are allowed to edit ops
-        allowEdit = false;
-    }
-    else if (options.name.includes("/att_"))
-    {
-        let opNameForAttachment = null;
-        if (options.editorObj && options.editorObj.data && options.editorObj.data.opname)
-        {
-            opNameForAttachment = options.editorObj.data.opname;
-        }
-        if (gui.user.isAdmin || (opNameForAttachment && opNameForAttachment.startsWith("Ops.User." + gui.user.usernameLowercase + ".")))
-        {
-            // admins may edit any attachment, users are only allowed to edit attachments of their own userops
-            allowEdit = true;
-        }
-    }
-    else
-    {
-        // everyone is allowed to edit anything that is not an op
-        allowEdit = true;
-    }
-
-    if (allowEdit)
+    if (options.allowEdit)
     {
         if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
         if (!options.hideFormatButton)
@@ -99,7 +48,6 @@ CABLES.UI.EditorTab = function (options)
         this._editor.setOptions({ "readOnly": "true" });
     }
 
-    // this._editor.setValue(options.content,-1);
     this._editor.resize();
 
     const undoManager = this._editor.session.getUndoManager();

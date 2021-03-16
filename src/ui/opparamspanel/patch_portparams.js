@@ -375,8 +375,6 @@ CABLES.UI.initPortInputListener = function (op, index)
             else v = false;
         }
 
-        console.log();
-
         if (!CABLES.mouseDraggingValue)
         {
             const undoAdd = (function (oldv, newv, opid, portname)
