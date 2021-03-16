@@ -413,6 +413,12 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
                 score += 2;
             }
 
+            if (String(ops[i].name || "").indexOf("var set") === 0)
+            {
+                // extra points if var setter
+                score += 2;
+            }
+
             const op = ops[i];
             for (let j = 0; j < op.portsIn.length; j++)
             {

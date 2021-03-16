@@ -7,7 +7,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     {
         super();
         options = options || {};
-        console.log("options.initNumRects", options.initNum);
 
         if (!cgl)
         {
@@ -336,7 +335,6 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     _setupTextures()
     {
-        console.log("SETTING UP TEXTURES!!");
         this._needsTextureUpdate = false;
         this._textures.length = 0;
         let count = 0;
