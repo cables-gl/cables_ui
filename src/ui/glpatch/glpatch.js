@@ -461,6 +461,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         delete op.uiAttribs.createdLocally;
     }
 
+    screenToPatchCoord(x, y)
+    {
+        return this.viewBox.screenToPatchCoord(x, y);
+    }
 
     _drawCursor()
     {
