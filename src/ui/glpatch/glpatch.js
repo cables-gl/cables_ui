@@ -400,13 +400,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             glOp.uiAttribs = op.uiAttribs;
         }
 
-
+        op.on("onPortRemoved", () => { glOp.refreshPorts(); });
         op.on("onPortAdd", () => { glOp.refreshPorts(); });
 
-        op.on("onEnabledChange", () =>
-        {
-            glOp.update();
-        });
+        op.on("onEnabledChange", () => { glOp.update(); });
 
         op.on("onUiAttribsChange",
             (newAttribs) =>

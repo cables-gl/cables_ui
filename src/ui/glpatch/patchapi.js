@@ -201,6 +201,9 @@ CABLES.GLGUI.GlPatchAPI = class
         gui.patchView.testCollision(op);
 
         this._glPatch.addOp(op);
+
+
+        // this.fireEvent("onPortAdd", p);
     }
 
     _onDeleteOp(op)
