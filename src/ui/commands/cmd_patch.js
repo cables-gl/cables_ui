@@ -375,6 +375,13 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
         {
             CABLES.CMD.PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
             {
+                if (!setter.uiAttribs.translate)
+                    setter.uiAttr({ "translate": {
+                        "x": p.parent.uiAttribs.translate.x,
+                        "y": p.parent.uiAttribs.translate.y + 40
+                    } });
+
+
                 getter.uiAttr({ "translate": {
 
                     "x": setter.uiAttribs.translate.x,

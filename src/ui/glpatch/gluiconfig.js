@@ -4,7 +4,7 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLGUI.VISUALCONFIG =
 {
     "OpTitlePaddingLeftRight": 10,
-    "OpTitlePaddingExtTitle": 5,
+    "OpTitlePaddingExtTitle": 1,
 
     "OpErrorDotSize": 8,
 
@@ -17,7 +17,7 @@ CABLES.GLGUI.VISUALCONFIG =
     // "snapY": 20,
 
     "opHeight": 31,
-    "opWidth": 90,
+    "opWidth": 20,
 
     "minZoom": 15,
     "zoomSmooth": 2,
