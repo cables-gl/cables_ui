@@ -1424,7 +1424,7 @@ CABLES.UI.Patch = function (_gui)
         return op.uiAttribs.subPatch == currentSubPatch;
     };
 
-    this.setCurrentSubPatch = function (which)
+    this.setCurrentSubPatch = function (which, next)
     {
         if (currentSubPatch == which) return;
 
@@ -1455,6 +1455,8 @@ CABLES.UI.Patch = function (_gui)
 
         this.currentPatchBounds = this.getSubPatchBounds();
         // }.bind(this), 10);
+
+        if (next) next();
     };
 
 

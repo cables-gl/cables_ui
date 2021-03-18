@@ -170,8 +170,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
 
         const opname = ops[0];
-
         const uiAttr = {};
+
         if (event)
         {
             let coord = {};
@@ -181,10 +181,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
             else coord = gui.patch().getCanvasCoordsMouse(event);
-
-            console.log("coord", coord);
-            // const x = gui.patch().getCanvasCoordsMouse(event).x;
-            // const y = gui.patch().getCanvasCoordsMouse(event).y;
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
@@ -1211,14 +1207,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._patchRenderer.serialize(dataUi);
     }
 
-    setCurrentSubPatch(subpatch)
+    setCurrentSubPatch(subpatch, next)
     {
-        if (this._patchRenderer.setCurrentSubPatch) this._patchRenderer.setCurrentSubPatch(subpatch);
+        if (this._patchRenderer.setCurrentSubPatch)
+        {
+            this._patchRenderer.setCurrentSubPatch(subpatch, () =>
+            {
+                gui.patchView.updateSubPatchBreadCrumb(subpatch);
+                if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
+                if (next) next();
+            });
+        }
         else console.log("patchRenderer has no function setCurrentSubPatch");
-
-        gui.patchView.updateSubPatchBreadCrumb(subpatch);
-
-        if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
     }
 
     focusOp(opid)
@@ -1226,7 +1226,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
         else console.log("patchRenderer has no function focusOp");
     }
-
 
     centerSelectOp(opid)
     {
