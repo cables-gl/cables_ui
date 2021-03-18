@@ -1426,7 +1426,11 @@ CABLES.UI.Patch = function (_gui)
 
     this.setCurrentSubPatch = function (which, next)
     {
-        if (currentSubPatch == which) return;
+        if (currentSubPatch == which)
+        {
+            if (next)next();
+            return;
+        }
 
         // console.log("switch subpatch:", which);
         gui.log.userInteraction("switch subpatch " + which);
