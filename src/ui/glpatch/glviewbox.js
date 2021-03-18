@@ -457,7 +457,7 @@ CABLES.GLGUI.ViewBox = class
                 this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
                 this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
 
-                next();
+                if (next)next();
             }, timeGrey * 1000 + 10);
     }
 
