@@ -988,10 +988,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
         this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
 
-        if (next) setTimeout(next, timeVisibleAgain * 1000);
-
         gui.patchView.updateSubPatchBreadCrumb(sub);
-
 
         setTimeout(() =>
         {
@@ -1001,7 +998,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             }
         }, timeGrey * 1000);
 
-        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain);
+        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
     }
 
     mouseToPatchCoords(x, y)

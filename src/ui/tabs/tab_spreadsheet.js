@@ -35,6 +35,8 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this._id = "spread" + CABLES.uuid();
         // this.rebuildHtml();
         this._updateUiAttribs();
+        // console.log(data);
+        // this._sendChange();
     }
 
     _updateUiAttribs()
@@ -60,7 +62,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         //             this.set(x, y, "");
 
         this._html();
-        this._options.onchange(this.data);
     }
 
 
@@ -135,7 +136,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
                 td.appendChild(input);
 
-                input.addEventListener("change", this._change.bind(this));
+                input.addEventListener("change", this._onInputChange.bind(this));
                 input.addEventListener("keydown", this._onKey.bind(this), false);
             }
         }
@@ -179,7 +180,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         {
             this._focusCell(x + 1, y);
         }
-        else this._change(e);
+        else this._onInputChange(e);
         // else console.log(e.keyCode);
     }
 
@@ -225,18 +226,11 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this.cells[y] = this.cells[y] || [];
         this.cells[y][x] = v;
+        this._sendChange();
     }
 
-    _change(e)
+    _sendChange()
     {
-        console.log(e.target.dataset.x, e.target.dataset.y);
-        const x = e.target.dataset.x;
-        const y = e.target.dataset.y;
-
-        this.set(x, y, e.target.value);
-
-        // for (let i = 0; i < this._numCols; i++) this.getColName(i);
-
         this.data.cols = this._numCols;
         this.data.cells = this.cells;
         this.data.colNames = this.colNames;
@@ -246,6 +240,16 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         console.log("colnames", this.colNames);
         this._options.onchange(null);
         if (this._options.onchange) this._options.onchange(this.data);
+    }
+
+    _onInputChange(e)
+    {
+        console.log(e.target.dataset.x, e.target.dataset.y);
+        const x = e.target.dataset.x;
+        const y = e.target.dataset.y;
+
+        this.set(x, y, e.target.value);
+        // for (let i = 0; i < this._numCols; i++) this.getColName(i);
     }
 
 
