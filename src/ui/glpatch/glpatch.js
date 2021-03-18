@@ -400,13 +400,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             glOp.uiAttribs = op.uiAttribs;
         }
 
-
+        op.on("onPortRemoved", () => { glOp.refreshPorts(); });
         op.on("onPortAdd", () => { glOp.refreshPorts(); });
 
-        op.on("onEnabledChange", () =>
-        {
-            glOp.update();
-        });
+        op.on("onEnabledChange", () => { glOp.update(); });
 
         op.on("onUiAttribsChange",
             (newAttribs) =>
@@ -464,6 +461,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         delete op.uiAttribs.createdLocally;
     }
 
+    screenToPatchCoord(x, y)
+    {
+        return this.viewBox.screenToPatchCoord(x, y);
+    }
 
     _drawCursor()
     {

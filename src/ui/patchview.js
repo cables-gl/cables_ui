@@ -174,10 +174,19 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const uiAttr = {};
         if (event)
         {
-            const x = gui.patch().getCanvasCoordsMouse(event).x;
-            const y = gui.patch().getCanvasCoordsMouse(event).y;
+            let coord = {};
+            if (this._patchRenderer.screenToPatchCoord)
+            {
+                const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX, event.clientY);
+                coord = { "x": coordArr[0], "y": coordArr[1] };
+            }
+            else coord = gui.patch().getCanvasCoordsMouse(event);
 
-            uiAttr.translate = { "x": x, "y": y };
+            console.log("coord", coord);
+            // const x = gui.patch().getCanvasCoordsMouse(event).x;
+            // const y = gui.patch().getCanvasCoordsMouse(event).y;
+
+            uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
         const op = gui.corePatch().addOp(opname, uiAttr);
 

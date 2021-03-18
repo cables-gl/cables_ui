@@ -1048,11 +1048,16 @@ CABLES.UI.Patch = function (_gui)
             }(op.id, op.objName));
         }
 
-        op.onAddPort = function (p)
+        op.on("onPortAdd", (p) =>
         {
             uiOp.addPort(p.direction, p);
             uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        };
+        });
+        // op.onAddPort = function (p)
+        // {
+        //     uiOp.addPort(p.direction, p);
+        //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        // };
 
         if (op.uiAttribs && op.uiAttribs.subPatch)
         {

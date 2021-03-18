@@ -56,20 +56,21 @@ CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
         const filepath = event.dataTransfer.getData("filepath");
         console.log(filepath);
 
-        gui.patch().addAssetOpAuto(filepath, event);
+        // gui.patch().addAssetOpAuto(filepath, event);
+        gui.patchView.addAssetOpAuto(filepath, event);
 
-        document.getElementById("patch").removeEventListener("drop", drop);
-        document.getElementById("patch").removeEventListener("dragover", dragover);
-        document.getElementById("patch").removeEventListener("dragleave", dragleave);
-        document.getElementById("patch").removeEventListener("dragend", dragleave);
+        document.getElementById("patchviews").removeEventListener("drop", drop);
+        document.getElementById("patchviews").removeEventListener("dragover", dragover);
+        document.getElementById("patchviews").removeEventListener("dragleave", dragleave);
+        document.getElementById("patchviews").removeEventListener("dragend", dragleave);
 
         CABLES.unBindUploadDragNDrop();
         CABLES.bindUploadDragNDrop();
         self.internal = false;
     }
 
-    document.getElementById("patch").addEventListener("dragover", dragover);
-    document.getElementById("patch").addEventListener("dragleave", dragleave);
-    document.getElementById("patch").addEventListener("dragend", dragleave);
-    document.getElementById("patch").addEventListener("drop", drop);
+    document.getElementById("patchviews").addEventListener("dragover", dragover);
+    document.getElementById("patchviews").addEventListener("dragleave", dragleave);
+    document.getElementById("patchviews").addEventListener("dragend", dragleave);
+    document.getElementById("patchviews").addEventListener("drop", drop);
 };
