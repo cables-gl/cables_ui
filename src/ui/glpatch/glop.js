@@ -179,6 +179,20 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
+        // let foundChange = false;
+        // // console.log("attr", attr);
+        // for (let i in attr)
+        // {
+        //     // console.log("i", i);
+        //     if (!this.opUiAttribs.hasOwnProperty(i) || this.opUiAttribs[i] !== attr[i])
+        //     {
+        //         foundChange = true;
+        //         break;
+        //     }
+        // }
+        // if (!foundChange) return;
+
+
         if (attr.selected)
         {
             this._glPatch.selectOpId(this._id);

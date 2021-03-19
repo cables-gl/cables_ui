@@ -962,13 +962,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         return this._currentSubpatch;
     }
 
-    setCurrentSubPatch(sub)
+    setCurrentSubPatch(sub, next)
     {
         if (this._currentSubpatch == sub)
         {
             for (const i in this._glOpz)
                 this._glOpz[i].updateVisible();
 
+            if (next)next();
             return;
         }
 
@@ -978,7 +979,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         console.log("set subpatch", sub);
 
         const dur = 0.1;
-
         const timeGrey = dur * 1.5;
         const timeVisibleAgain = dur * 3.0;
 
@@ -988,9 +988,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
         this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
 
-
         gui.patchView.updateSubPatchBreadCrumb(sub);
-
 
         setTimeout(() =>
         {
@@ -1000,7 +998,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             }
         }, timeGrey * 1000);
 
-        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain);
+        this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
     }
 
     mouseToPatchCoords(x, y)

@@ -1,6 +1,5 @@
 CABLES = CABLES || {};
 
-
 CABLES.DragNDrop = function ()
 {
     this.internal = false;

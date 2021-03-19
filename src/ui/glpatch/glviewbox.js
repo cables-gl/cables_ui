@@ -208,10 +208,7 @@ CABLES.GLGUI.ViewBox = class
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom()
-    {
-        return (-this._scrollX) / this._zoom;
-    }
+    get scrollXZoom() { return (-this._scrollX) / this._zoom; }
 
     get scrollYZoom() { return this._scrollY / this._zoom; }
 
@@ -302,7 +299,7 @@ CABLES.GLGUI.ViewBox = class
     center(noAnim)
     {
         let ops = gui.patchView.getSelectedOps();
-        if (ops.length == 0)ops = gui.corePatch().ops;
+        if (ops.length == 0) ops = gui.corePatch().ops;
         if (ops.length == 0)
         {
             this._zoom = 400;
@@ -438,7 +435,7 @@ CABLES.GLGUI.ViewBox = class
         }
     }
 
-    animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain)
+    animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next)
     {
         this._storeCurrentSubPatch();
 
@@ -459,6 +456,8 @@ CABLES.GLGUI.ViewBox = class
                 this._animZoom.clear();
                 this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
                 this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
+
+                if (next)next();
             }, timeGrey * 1000 + 10);
     }
 
