@@ -1346,12 +1346,26 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         {
             lastScaleHeightMax = maxv;
             lastScaleHeightMin = minv;
-            updateTimeDisplay;
-            updateTimeDisplay;
-            updateTimeDisplay;
-            updateTimeDisplay;
-            updateTimeDisplay;
-            updateTimeDisplayViewBox();
+
+            if (count === 0)
+            {
+                maxv = 1;
+                minv = -1;
+            }
+
+            if (maxv == minv)
+            {
+                maxv += 2;
+                minv -= 2;
+            }
+
+            const s = Math.abs(maxv) + Math.abs(minv);
+            self.setValueScale($("#timeline svg").height() / 2.3 / (s - Math.abs(s) * 0.2));
+
+            console.log("before", viewBox.y);
+            viewBox.y = -maxv * 1.1 * CABLES.ANIM.VALUESCALE;
+            console.log("after", viewBox.y);
+            self.updateViewBox();
             self.updateOverviewLine();
         }
     };
