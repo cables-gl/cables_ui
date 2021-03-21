@@ -189,6 +189,7 @@ CABLES.ANIM.Key.prototype.initUI = function ()
         self.isDragging = false;
     };
 
+
     this.doMove = function (dx, dy, a, b, e, newPos)
     {
         if (!this.showCircle) return;
@@ -461,7 +462,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     this._loopBegin = -1;
     this._loopEnd = 0;
 
-
     let oldPos = 0;
     overviewRect = paperOverview.rect(0, 0, 10, 10).attr({
         "x": 0, "y": 0, "width": 20, "height": 30
@@ -553,6 +553,16 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     // cursorLineOverview.attr({stroke: "#ffffff", "stroke-width": 1});
     cursorLineOverview.node.classList.add("timeline-cursor");
 
+    this.show = function ()
+    {
+        this.hidden = false;
+
+        $("#timing").show();
+        this.updateTime();
+        this.updatePlayIcon();
+        updateTimeDisplay();
+        setTimeout(self.updateTime, 50);
+    };
 
     this.setTimeLineLength = function (l)
     {
@@ -2126,6 +2136,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     this.setAnim(tlEmpty);
     self.updateViewBox();
     self.setAnim(tlEmpty);
+    this.updatePlayIcon();
 
     $("#timeline").bind("contextmenu", function (e)
     {
@@ -2151,4 +2162,27 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         projectLength = Math.floor((parseFloat(l)) / gui.timeLine().getFPS());
         self.redraw();
     };
+
+
+    setTimeout(() =>
+    {
+        console.log("gui.scene().timer.isPlaying", gui.scene().timer.isPlaying());
+        if (gui.scene().timer.isPlaying())
+        {
+            console.log("playing!!!!!!!");
+            this.updatePlayIcon();
+            this.updateTime();
+            updateTimeDisplay();
+            this.refresh(); this.redraw();
+        }
+
+        gui.scene().timer.on("playPause", () =>
+        {
+            console.log("play pause!!!");
+            this.updatePlayIcon();
+            this.updateTime();
+            updateTimeDisplay();
+            this.refresh();
+        });
+    }, 100);
 };

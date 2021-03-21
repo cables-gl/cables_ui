@@ -816,9 +816,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.showTiming = function ()
     {
-        this.timeLine().hidden = false;
         showTiming = true;
-        $("#timing").show();
+        this.timeLine().show();
         this.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
@@ -1472,6 +1471,18 @@ CABLES.UI.GUI = function (cfg)
         });
 
 
+        $("#patchviews canvas").keyup(function (e)
+        {
+            switch (e.which)
+            {
+            case 32: // space play
+                const timeused = Date.now() - spaceBarStart;
+                if (timeused < 500) gui.timeLine().togglePlay();
+                spaceBarStart = 0;
+                break;
+            }
+        });
+
         $("#patch").keyup(function (e)
         {
             switch (e.which)
@@ -1694,7 +1705,7 @@ CABLES.UI.GUI = function (cfg)
         }
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
-        if (CABLES.UI.userSettings.get("timelineOpened") == true) this.showTiming();
+
 
         gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
 
@@ -1762,6 +1773,7 @@ CABLES.UI.GUI = function (cfg)
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
+
 
         gui.patchView.focus();
     };
@@ -2515,6 +2527,8 @@ function startUi(cfg)
                 new CABLES.UI.HtmlInspector();
 
                 if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
+
+                if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 logStartup("finished loading cables");
 
