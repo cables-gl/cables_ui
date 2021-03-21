@@ -418,6 +418,37 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }
 
+    getSubPatchBounds(subPatch)
+    {
+        const perf = CABLES.uiperf.start("patch.getSubPatchBounds");
+
+        const bounds = {
+            "minx": 9999999,
+            "maxx": -9999999,
+            "miny": 9999999,
+            "maxy": -9999999,
+        };
+        const ops = this._p.ops;
+
+        for (let j = 0; j < ops.length; j++)
+            if (ops[j].objName.indexOf("Ops.Ui.") == -1)
+            {
+                if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
+                    if (ops[j].uiAttribs.subPatch == subPatch)
+                    {
+                        bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
+                        bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x);
+                        bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
+                        bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
+                    }
+            }
+
+
+        perf.finish();
+
+        return bounds;
+    }
+
     getSelectionBounds()
     {
         const ops = this.getSelectedOps();
@@ -480,6 +511,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     createSubPatchFromSelection()
     {
         const selectedOps = this.getSelectedOps();
+        console.log("getSelectionBounds", this.getSelectionBounds());
         const bounds = this.getSelectionBounds();
         const trans = {
             "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
