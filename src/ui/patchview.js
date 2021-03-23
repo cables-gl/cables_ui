@@ -1497,7 +1497,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     insertOpInLink(oldLink, op, x, y)
     {
-        if (op.portsIn[0].isLinked() || portOut.isLinked()) return;
+        if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
 
 
         let portIn = oldLink.portIn;
