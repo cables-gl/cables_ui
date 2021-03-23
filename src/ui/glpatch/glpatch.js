@@ -387,7 +387,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         if (!op) console.error("no op at addop", op);
 
-        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = 0;
+        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
         let glOp = this._glOpz[op.id];
         if (!glOp)
