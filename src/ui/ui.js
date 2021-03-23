@@ -643,7 +643,7 @@ CABLES.UI.GUI = function (cfg)
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
         $("#maintabs").css("top", menubarHeight);
         $("#maintabs").css("height", window.innerHeight - menubarHeight - timelineHeight);
-        $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - this.timingHeight - 50);
+        $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - timelineHeight - 50);
 
 
         if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
