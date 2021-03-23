@@ -2195,10 +2195,9 @@ CABLES.UI.GUI = function (cfg)
     {
         this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
 
-
         let sizeStr = " Size " + Math.floor(100 * cgl.canvasWidth) / 100 + "x" + Math.floor(100 * cgl.canvasHeight) / 100;
-        if (cgl.canvasScale != 1)sizeStr += " Scale " + cgl.canvasScale + " ";
-        if (cgl.pixelDensity != 1)sizeStr += " (" + Math.floor(100 * cgl.canvasWidth / cgl.pixelDensity) / 100 + "x" + Math.floor(100 * cgl.canvasHeight / cgl.pixelDensity) / 100 + "x" + cgl.pixelDensity + ")";
+        if (cgl.canvasScale != 1) sizeStr += " Scale " + cgl.canvasScale + " ";
+        if (cgl.pixelDensity != 1) sizeStr += " (" + Math.floor(100 * cgl.canvasWidth / cgl.pixelDensity) / 100 + "x" + Math.floor(100 * cgl.canvasHeight / cgl.pixelDensity) / 100 + "x" + cgl.pixelDensity + ")";
 
         this._elCanvasInfoSize.innerHTML = sizeStr;
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");

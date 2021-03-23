@@ -44,9 +44,12 @@ CABLES.GLGUI.GlLink = class
             {
                 if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
                 {
+                    // if (gui.patchView.shouldAutoInsertOpInLink(this._glPatch.selectedGlOps[i].op, this._link))
+                    // {
                     const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
                     gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
                     return;
+                    // }
                 }
             }
 
