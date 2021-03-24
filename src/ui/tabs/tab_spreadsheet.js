@@ -11,13 +11,16 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         options = options || {};
 
         this._numCols = options.numColumns || 3;
-        this._rows = 30;
+        this._rows = 25;
 
         this._port = port;
         this.cells = [];
         this._inputs = [];
         this._options = options;
         this.colNames = [];
+
+        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+        this._tabs.addTab(this._tab, true);
 
         port.on("onUiAttrChange", this._updateUiAttribs.bind(this));
 
@@ -29,14 +32,9 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
             for (let i = 0; i < this._numCols; i++) this.getColName(i);
         }
 
-        this._tab = new CABLES.UI.Tab(options.title || "", { "icon": "edit", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
-        this._tabs.addTab(this._tab, true);
 
         this._id = "spread" + CABLES.uuid();
-        // this.rebuildHtml();
         this._updateUiAttribs();
-        // console.log(data);
-        // this._sendChange();
     }
 
     _updateUiAttribs()
@@ -56,11 +54,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this.cells.length = this._rows;
 
-        // if (!this.cells)
-        //     for (let y = 0; y < this._rows; y++)
-        //         for (let x = 0; x < this._numCols; x++)
-        //             this.set(x, y, "");
-
         this._html();
     }
 
@@ -75,8 +68,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         }
 
         let str = "";
-
-
         let c = parseFloat(_c);
 
         if (c < 0) throw new Error("col invalid");
@@ -136,12 +127,13 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
                 td.appendChild(input);
 
+
+                input.addEventListener("change", this._checkNumRows.bind(this));
                 input.addEventListener("input", this._onInputChange.bind(this));
                 input.addEventListener("keydown", this._onKey.bind(this), false);
             }
         }
     }
-
 
     _focusCell(x, y)
     {
@@ -184,27 +176,64 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         // else console.log(e.keyCode);
     }
 
+    _checkNumRows()
+    {
+        console.log(this.cells);
+
+
+        let lastLine = this.cells.length - 1;
+        for (let i = this.cells.length - 1; i > 0; i--)
+        {
+            if (this.cells[i])
+            {
+                let foundContent = false;
+                for (let x = 0; x < this._numCols; x++)
+                    if (this.cells[i][x] && this.cells[i][x].length > 0)
+                    {
+                        console.log(i, this.cells[i]);
+                        foundContent = true;
+                        lastLine = i;
+                    }
+
+                if (foundContent) break;
+            }
+
+
+            // for (let x = 0; x < this._numCols; x++)
+            // {
+            //     console.log(this.cells[x]);
+            // }
+        }
+
+        console.log("lastLine", lastLine);
+
+        lastLine += 10;
+        if (this._rows != lastLine)
+        {
+            this._rows = lastLine;
+            this.rebuildHtml();
+        }
+
+        console.log("lastline", lastLine);
+
+        // const newRows = lastLine + 10;
+        // if (this._rows != newRows)
+        // {
+        //     this._rows = this.cells.length + 10;
+        //     this.rebuildHtml();
+        // }
+        // if()
+
+        // if (this.cells.length >= this._rows)
+        // {
+        // }
+    }
 
     initData(data)
     {
         this.cells = data.cells || [];
         this.colNames = data.colNames || [];
-        // for (let y = 0; y < data.cells.length; y++)
-        // {
-        //     if (y == 0)
-        //     {
-        //         this.colNames = Object.keys(data.cells[y]);
-        //     }
-        //     this.cells[y] = [];
-
-        //     console.log(data.cells[y]);
-
-        //     for (const i in data.cells[y])
-        //     {
-        //         this.cells[y][this.colNames.indexOf("" + i)] = data.cells[y][i];
-        //     }
-        // }
-        console.log(this.cells);
+        this._checkNumRows();
     }
 
     get(x, y)
@@ -234,10 +263,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this.data.cols = this._numCols;
         this.data.cells = this.cells;
         this.data.colNames = this.colNames;
-
         this.data.colNames.length = this._numCols;
-
-        console.log("colnames", this.colNames);
         this._options.onchange(null);
         if (this._options.onchange) this._options.onchange(this.data);
     }
@@ -251,7 +277,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
         this.set(x, y, e.target.value);
         // for (let i = 0; i < this._numCols; i++) this.getColName(i);
     }
-
 
     show()
     {
