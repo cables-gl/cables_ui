@@ -1,7 +1,7 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.idleTime = 180;
+CABLES.UI.idleTime = 10;// 180;
 CABLES.UI.idling = false;
 CABLES.UI.idleTimeout = null;
 CABLES.UI.idleModeStart = 0;
@@ -17,6 +17,7 @@ CABLES.UI.startIdleMode = function ()
 
     if (gui.patch()) gui.patch().stopFlowVis();
     gui.corePatch().pause();
+    gui.emitEvent("uiIdleStart");
     CABLES.UI.idling = true;
     clearTimeout(CABLES.UI.idleTimeout);
     CABLES.UI.idleModeStart = Date.now();
@@ -45,6 +46,7 @@ CABLES.UI.stopIdleMode = function ()
     CABLES.UI.MODAL.hide();
     CABLES.UI.idling = false;
     clearTimeout(CABLES.UI.idleTimeout);
+    gui.emitEvent("uiIdleEnd");
 };
 
 CABLES.UI.visibilityChanged = function (e)
