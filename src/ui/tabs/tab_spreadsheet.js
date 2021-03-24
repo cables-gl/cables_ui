@@ -136,7 +136,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
                 td.appendChild(input);
 
-                input.addEventListener("change", this._onInputChange.bind(this));
+                input.addEventListener("input", this._onInputChange.bind(this));
                 input.addEventListener("keydown", this._onKey.bind(this), false);
             }
         }
@@ -244,7 +244,7 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
     _onInputChange(e)
     {
-        console.log(e.target.dataset.x, e.target.dataset.y);
+        console.log("onchange...", e.target.value);
         const x = e.target.dataset.x;
         const y = e.target.dataset.y;
 

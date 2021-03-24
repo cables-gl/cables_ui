@@ -13,7 +13,7 @@ CABLES.UI.startIdleMode = function ()
     if (CABLES.UI.idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/>click to resume<br/></center>");
+    CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/><br/>Click to resume<br/></center>");
 
     if (gui.patch()) gui.patch().stopFlowVis();
     gui.corePatch().pause();
