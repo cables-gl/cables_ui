@@ -142,11 +142,6 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
     return this._tab.isVisible();
 };
 
-// CABLES.UI.FindTab.prototype._addResultOp
-// {
-
-// }
-
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
     if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
@@ -469,7 +464,11 @@ CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
     this._maxIdx = -1;
     this.setSelectedOp(null);
     this.setClicked(-1);
-    this.doSearch(str || "", userInvoked);
+
+    const strs = str.split(" ");
+
+
+    this.doSearch(strs[0] || "", userInvoked);
 };
 
 CABLES.UI.FindTab.prototype.setClicked = function (num)
