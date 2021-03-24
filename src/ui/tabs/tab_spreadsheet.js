@@ -45,10 +45,12 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
     rebuildHtml()
     {
-        this._tab.html("<div id='" + this._id + "'></div>");
+        this._tab.html("<div id='" + this._id + "' ></div>");
         this._ele = document.getElementById(this._id);
         if (!this._ele) return;
         this._ele.classList.add("editor_spreadsheet");
+        this._ele.classList.add("tabcontent-scroll");
+
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
 

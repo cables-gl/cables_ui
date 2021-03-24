@@ -1,7 +1,7 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.idleTime = 10;// 180;
+CABLES.UI.idleTime = 180;
 CABLES.UI.idling = false;
 CABLES.UI.idleTimeout = null;
 CABLES.UI.idleModeStart = 0;
