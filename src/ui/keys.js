@@ -55,12 +55,18 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
         {
             const k = this._keys[i];
 
+
             if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
+
+
             if (k.key != (e.key + "").toLowerCase() || k.event != "up") continue;
+
             if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
+
             if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
+
 
             if (!k.target || k.target == e.target.id)
             {
@@ -69,7 +75,7 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
 
                 if (!e.dontPreventDefault) e.preventDefault();
 
-                return;
+                // return;
             }
         }
     }
@@ -85,7 +91,6 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
         for (let i = 0; i < this._keys.length; i++)
         {
             const k = this._keys[i];
-
 
             if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
             if (k.key != (e.key + "").toLowerCase() || k.event != "down") continue;
@@ -103,7 +108,7 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
 
                 if (!e.dontPreventDefault) e.preventDefault();
 
-                return;
+                // return;
             }
         }
     }

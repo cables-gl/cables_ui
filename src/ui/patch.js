@@ -389,6 +389,14 @@ CABLES.UI.Patch = function (_gui)
         self.showProjectParams();
     });
 
+    gui.keys.key(" ", "Play/Pause timeline", "up", "patch", {}, (e) =>
+    {
+        console.log("space!!!", gui.spaceBarStart);
+        const timeused = Date.now() - gui.spaceBarStart;
+        if (timeused < 500) gui.timeLine().togglePlay();
+        gui.spaceBarStart = 0;
+    });
+
     gui.keys.key("-", "Zoom out", "down", "patch", {}, (e) => { this._viewBox.zoomStep(1); });
     gui.keys.key("=", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
     gui.keys.key("+", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
