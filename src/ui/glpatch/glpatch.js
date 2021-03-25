@@ -178,6 +178,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
 
+        gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, {}, (e) =>
+        {
+            const timeused = Date.now() - gui.spaceBarStart;
+            if (timeused < 500) gui.timeLine().togglePlay();
+            gui.spaceBarStart = 0;
+        });
 
         gui.on("uiloaded", () =>
         {
@@ -540,9 +546,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             const v = 1.0 - this._focusRectAnim.getValue(this._time);
             const dist = 20;
 
-            this._focusRect.setPosition(this._focusRectOp.x - v * dist, this._focusRectOp.y - v * dist);
-            this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
-            this._focusRect.setColor(1, 1, 1, v);
+            if (this._focusRectOp)
+            {
+                this._focusRect.setPosition(this._focusRectOp.x - v * dist, this._focusRectOp.y - v * dist);
+                this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
+                this._focusRect.setColor(1, 1, 1, v);
+            }
+            else console.log("no focusrectop");
         }
 
 

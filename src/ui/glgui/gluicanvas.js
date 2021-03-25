@@ -77,6 +77,7 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this._parentEle = parentEle;
 
+
         if (parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
 
@@ -97,6 +98,15 @@ CABLES.GLGUI.GlUiCanvas = class
 
         this.setSize(100, 100);
 
+        gui.on("uiIdleStart", () =>
+        {
+            this.patch.pause();
+        });
+
+        gui.on("uiIdleEnd", () =>
+        {
+            this.patch.resume();
+        });
 
         this.glPatch.on("paused", () =>
         {

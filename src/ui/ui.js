@@ -18,6 +18,7 @@ CABLES.UI.GUI = function (cfg)
     this.socket = null;
     this.watchPortVisualizer = null;
     this.isRemoteClient = cfg.remoteClient;
+    this.spaceBarStart = 0;
 
     this._CANVASMODE_NORMAL = 0;
     this._CANVASMODE_FULLSCREEN = 2;
@@ -1402,8 +1403,6 @@ CABLES.UI.GUI = function (cfg)
             this.mainTabs.emitEvent("resize");
         }, false);
 
-        let spaceBarStart = 0;
-
 
         $(document).keydown(function (e)
         {
@@ -1453,47 +1452,47 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        $("#patch").keydown(function (e)
-        {
-            switch (e.which)
-            {
-            case 32: // space play
-                if (spaceBarStart === 0) spaceBarStart = Date.now();
-                break;
+        // $("#patch").keydown(function (e)
+        // {
+        //     switch (e.which)
+        //     {
+        //     // case 32: // space play
+        //     //     if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now();
+        //     //     break;
 
-            case 74: // j
-                gui.timeLine().jumpKey(-1);
-                break;
-            case 75: // k
-                gui.timeLine().jumpKey(1);
-                break;
-            }
-        });
+        //     case 74: // j
+        //         gui.timeLine().jumpKey(-1);
+        //         break;
+        //     case 75: // k
+        //         gui.timeLine().jumpKey(1);
+        //         break;
+        //     }
+        // });
 
 
-        $("#patchviews canvas").keyup(function (e)
-        {
-            switch (e.which)
-            {
-            case 32: // space play
-                const timeused = Date.now() - spaceBarStart;
-                if (timeused < 500) gui.timeLine().togglePlay();
-                spaceBarStart = 0;
-                break;
-            }
-        });
+        // $("#patchviews canvas").keyup(function (e)
+        // {
+        //     switch (e.which)
+        //     {
+        //     case 32: // space play
+        //         const timeused = Date.now() - gui.spaceBarStart;
+        //         if (timeused < 500) gui.timeLine().togglePlay();
+        //         gui.spaceBarStart = 0;
+        //         break;
+        //     }
+        // });
 
-        $("#patch").keyup(function (e)
-        {
-            switch (e.which)
-            {
-            case 32: // space play
-                const timeused = Date.now() - spaceBarStart;
-                if (timeused < 500) gui.timeLine().togglePlay();
-                spaceBarStart = 0;
-                break;
-            }
-        });
+        // $("#patch").keyup(function (e)
+        // {
+        //     switch (e.which)
+        //     {
+        //     case 32: // space play
+        //         const timeused = Date.now() - gui.spaceBarStart;
+        //         if (timeused < 500) gui.timeLine().togglePlay();
+        //         gui.spaceBarStart = 0;
+        //         break;
+        //     }
+        // });
 
         $("#timeline").keydown(function (e)
         {
@@ -1546,11 +1545,15 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
 
+        this.keys.key(" ", "Play/Pause timeline", "down", null, {}, (e) => { console.log("space down!"); if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+
+
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (!$("#ace_editors textarea").is(":focus") && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });
+
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
 

@@ -692,6 +692,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     isCurrentOpId(opid)
     {
+        if (!this._currentOp) return false;
         return this._currentOp.id == opid;
     }
 

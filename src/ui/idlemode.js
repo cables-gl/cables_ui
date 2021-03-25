@@ -13,10 +13,11 @@ CABLES.UI.startIdleMode = function ()
     if (CABLES.UI.idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/>click to resume<br/></center>");
+    CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/><br/>Click to resume<br/></center>");
 
     if (gui.patch()) gui.patch().stopFlowVis();
     gui.corePatch().pause();
+    gui.emitEvent("uiIdleStart");
     CABLES.UI.idling = true;
     clearTimeout(CABLES.UI.idleTimeout);
     CABLES.UI.idleModeStart = Date.now();
@@ -45,6 +46,7 @@ CABLES.UI.stopIdleMode = function ()
     CABLES.UI.MODAL.hide();
     CABLES.UI.idling = false;
     clearTimeout(CABLES.UI.idleTimeout);
+    gui.emitEvent("uiIdleEnd");
 };
 
 CABLES.UI.visibilityChanged = function (e)
