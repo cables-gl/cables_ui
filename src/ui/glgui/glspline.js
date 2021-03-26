@@ -146,19 +146,20 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "void main()"
             .endl() + "{"
             .endl() + "    vec4 col=fcolor;"
-            .endl() + "    col.a=1.0;"
+            .endl() + "    float darken=1.0;"
 
-            .endl() + "    float minOpacity=0.6;"
+            .endl() + "    float minOpacity=0.7;"
 
-            .endl() + "    if(fspeed==0.0)col.a=minOpacity*0.5;"
-            .endl() + "    if(fspeed==1.0)col.a=1.0;"
+            .endl() + "    if(fspeed==0.0)darken=minOpacity;"
+            .endl() + "    if(fspeed==1.0)darken=1.0;"
             .endl() + "    if(fspeed>=2.0)"
             .endl() + "    {"
-            .endl() + "        col.a=step(0.5,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
-            .endl() + "        col.a*=clamp(fspeed,minOpacity,1.0);"
+            .endl() + "        darken=step(0.7,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
+            .endl() + "        darken=clamp(darken,0.3,1.0);"
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
+            .endl() + "    col.rgb*=darken;"
             .endl() + "    outColor = col;"
             .endl() + "}");
 
