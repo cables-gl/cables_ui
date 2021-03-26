@@ -59,8 +59,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
 
-
         this.setHover(false);
+        this.updateVisible();
     }
 
     get isDragging() { return this._glRectBg.isDragging; }
