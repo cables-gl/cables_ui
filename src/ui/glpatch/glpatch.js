@@ -873,7 +873,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     // make static util thing...
     setDrawableColorByType(e, t, darken)
     {
-        const diff = 1;
+        let diff = 1;
+        if (darken)diff = 0.7;
 
         let col = [0, 0, 0, 0];
 
@@ -885,14 +886,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
         else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
 
-        if (darken)
-        {
-            col[0] *= 0.7;
-            col[1] *= 0.7;
-            col[2] *= 0.7;
-        }
-
-        e.setColor(col);
+        e.setColor(col[0], col[1], col[2], col[3]);
     }
 
     isDraggingPort()
