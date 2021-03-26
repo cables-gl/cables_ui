@@ -1165,15 +1165,17 @@ CABLES.UI.Patch = function (_gui)
         {
             isLoading = true;
         };
-        scene.onLoadEnd = function ()
+
+        let patchLoadEndiD = scene.on("patchLoadEnd", () =>
         {
+            scene.off(patchLoadEndiD);
             isLoading = false;
             self.setCurrentSubPatch(currentSubPatch);
             self.showProjectParams();
             gui.setStateSaved();
 
             logStartup("Patch loaded");
-        };
+        });
 
         scene.addEventListener("subpatchCreated", function ()
         {
