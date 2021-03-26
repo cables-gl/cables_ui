@@ -389,11 +389,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
 
-    addOp(op)
+    addOp(op, fromDeserialize)
     {
         if (!op) console.error("no op at addop", op);
 
-        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
+        if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
         let glOp = this._glOpz[op.id];
         if (!glOp)
@@ -446,22 +446,26 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
             // glOp.sendNetPos();
         }
-        // glOp.updatePosition();
-        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
-        // glOp.updateVisible();
-        glOp.update();
-        this.unselectAll();
 
-        if (CABLES.UI.loaded)
+        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
+
+        glOp.update();
+
+        if (!fromDeserialize)
         {
-            this.selectOpId(op.id);
-            gui.opParams.show(op.id);
-            this.focusOp(op.id);
-        }
-        if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
-        {
-            glOp.sendNetPos();
-            glOp.updatePosition();
+            this.unselectAll();
+
+            if (CABLES.UI.loaded)
+            {
+                this.selectOpId(op.id);
+                gui.opParams.show(op.id);
+                this.focusOp(op.id);
+            }
+            if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
+            {
+                glOp.sendNetPos();
+                glOp.updatePosition();
+            }
         }
 
         delete op.uiAttribs.createdLocally;
