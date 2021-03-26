@@ -162,6 +162,8 @@ CABLES.UI.Patch = function (_gui)
         gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
             (ops, focusSubpatchop) =>
             {
+                isLoading = false;
+
                 self.setSelectedOp(null);
                 gui.patch().checkOpsInSync();
 
