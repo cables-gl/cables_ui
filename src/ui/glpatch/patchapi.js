@@ -97,7 +97,8 @@ CABLES.GLGUI.GlPatchAPI = class
                         if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
                     }
 
-                    this._glPatch.links[link.id].setFlowModeActivity(newClass);
+                    if (this._glPatch.links[link.id])
+                        this._glPatch.links[link.id].setFlowModeActivity(newClass);
                     link.activityCounter = 0;
                 }
             }

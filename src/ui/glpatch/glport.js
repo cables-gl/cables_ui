@@ -9,14 +9,16 @@ CABLES.GLGUI.GlPort = class
         this._name = p.name;
         this._id = p.id;
         this._glop = glop;
+        this._type = p.type;
         this._glPatch = glpatch;
         this._rect = new CABLES.GLGUI.GlRect(rectInstancer, { "parent": oprect, "interactive": true });
 
         this._posX = i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding);
-        glpatch.setDrawableColorByType(this._rect, p.type);
 
         oprect.addChild(this._rect);
 
+
+        this._updateColor(p.uiAttribs);
 
         this._rect.on("mousedown", this._onMouseDown.bind(this));
         this._rect.on("mouseup", this._onMouseUp.bind(this));
@@ -25,7 +27,17 @@ CABLES.GLGUI.GlPort = class
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
 
+        p.on("onUiAttrChange", (attribs) =>
+        {
+            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor(p.uiAttribs);
+        });
+
         this._updateSize();
+    }
+
+    _updateColor(attribs)
+    {
+        this._glPatch.setDrawableColorByType(this._rect, this._type, attribs.useVariable || attribs.isAnimated);
     }
 
     _updateSize()

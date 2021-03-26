@@ -565,7 +565,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
         if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
         {
-            this._glTitleExt.text = this.opUiAttribs.extendTitle;
+            this._glTitleExt.text = " " + this.opUiAttribs.extendTitle;
             doUpdateSize = true;
         }
 
