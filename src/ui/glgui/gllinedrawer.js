@@ -15,10 +15,10 @@ CABLES.GLGUI.Linedrawer = class
         this._num = options.initNum || 100;
         this._needsUpload = true;
 
-        this._positions = new Float32Array(3 *2* this._num);
-        this._colors = new Float32Array(4 * 2*this._num);
-        this._dists = new Float32Array(2*this._num);
-        this._speeds = new Float32Array(2*this._num);
+        this._positions = new Float32Array(3 * 2 * this._num);
+        this._colors = new Float32Array(4 * 2 * this._num);
+        this._dists = new Float32Array(2 * this._num);
+        this._speeds = new Float32Array(2 * this._num);
 
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.glPrimitive = cgl.gl.LINES;
@@ -137,11 +137,10 @@ CABLES.GLGUI.Linedrawer = class
 
     clear()
     {
-
-        for (let i = 0; i < 2*3 * this._num; i++) this._positions[i] = 0;// Math.random()*60;
-        for (let i = 0; i < 2*4 * this._num; i++) this._colors[i] = 1.0;
-        for (let i = 0; i < 2*1 * this._num; i++) this._dists[i] = 0;
-        for (let i = 0; i < 2*1 * this._num; i++) this._speeds[i] = 0;
+        for (let i = 0; i < 2 * 3 * this._num; i++) this._positions[i] = 0;// Math.random()*60;
+        for (let i = 0; i < 2 * 4 * this._num; i++) this._colors[i] = 1.0;
+        for (let i = 0; i < 2 * 1 * this._num; i++) this._dists[i] = 0;
+        for (let i = 0; i < 2 * 1 * this._num; i++) this._speeds[i] = 0;
     }
 
     rebuild()
@@ -170,10 +169,10 @@ CABLES.GLGUI.Linedrawer = class
         const oldAttrDists = this._dists;
         const oldAttrSpeeds = this._speeds;
 
-        this._positions = new Float32Array(2*3 * this._num);
-        this._colors = new Float32Array(2*4 * this._num);
-        this._dists = new Float32Array(2*this._num);
-        this._speeds = new Float32Array(2*this._num);
+        this._positions = new Float32Array(2 * 3 * this._num);
+        this._colors = new Float32Array(2 * 4 * this._num);
+        this._dists = new Float32Array(2 * this._num);
+        this._speeds = new Float32Array(2 * this._num);
         this.clear();
 
         if (oldAttrPositions) this._positions.set(oldAttrPositions);

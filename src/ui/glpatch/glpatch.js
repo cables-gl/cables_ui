@@ -389,11 +389,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
 
-    addOp(op)
+    addOp(op, fromDeserialize)
     {
         if (!op) console.error("no op at addop", op);
 
-        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
+        if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
         let glOp = this._glOpz[op.id];
         if (!glOp)
@@ -440,28 +440,28 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
             else
-            {
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
-            }
-
-            // glOp.sendNetPos();
         }
-        // glOp.updatePosition();
+
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
-        // glOp.updateVisible();
-        glOp.update();
-        this.unselectAll();
 
-        if (CABLES.UI.loaded)
+
+        if (!fromDeserialize)
         {
-            this.selectOpId(op.id);
-            gui.opParams.show(op.id);
-            this.focusOp(op.id);
-        }
-        if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
-        {
-            glOp.sendNetPos();
-            glOp.updatePosition();
+            glOp.update();
+            this.unselectAll();
+
+            if (CABLES.UI.loaded)
+            {
+                this.selectOpId(op.id);
+                gui.opParams.show(op.id);
+                this.focusOp(op.id);
+            }
+            if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
+            {
+                glOp.sendNetPos();
+                glOp.updatePosition();
+            }
         }
 
         delete op.uiAttribs.createdLocally;
@@ -871,16 +871,22 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     }
 
     // make static util thing...
-    setDrawableColorByType(e, t)
+    setDrawableColorByType(e, t, darken)
     {
-        const diff = 1;
+        let diff = 1;
+        if (darken)diff = 0.7;
+
+        let col = [0, 0, 0, 0];
+
         // p[ut colors into gluiconfig...]
-        if (t == CABLES.OP_PORT_TYPE_VALUE) e.setColor(92 / 255 * diff, 181 / 255 * diff, 158 / 255 * diff, 1);
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) e.setColor(240 / 255 * diff, 209 / 255 * diff, 101 / 255 * diff, 1);
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) e.setColor(171 / 255 * diff, 90 / 255 * diff, 148 / 255 * diff, 1);
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) e.setColor(128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1);
-        else if (t == CABLES.OP_PORT_TYPE_STRING) e.setColor(213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1);
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) e.setColor(1, 1, 1, 1);
+        if (t == CABLES.OP_PORT_TYPE_VALUE) col = [92 / 255 * diff, 181 / 255 * diff, 158 / 255 * diff, 1];
+        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) col = [240 / 255 * diff, 209 / 255 * diff, 101 / 255 * diff, 1];
+        else if (t == CABLES.OP_PORT_TYPE_OBJECT) col = [171 / 255 * diff, 90 / 255 * diff, 148 / 255 * diff, 1];
+        else if (t == CABLES.OP_PORT_TYPE_ARRAY) col = [128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1];
+        else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
+        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
+
+        e.setColor(col[0], col[1], col[2], col[3]);
     }
 
     isDraggingPort()

@@ -63,7 +63,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     _onUiAttrChangePort(attr)
     {
         if (!attr) return;
-        console.log("attr change", attr);
+        // console.log("attr change", attr);
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
     }
 
@@ -75,9 +75,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
 
         for (let i = 0; i < op.portsIn.length; i++)
-        {
             op.portsIn[i].off(this._eventPrefix);
-        }
     }
 
     _startListeners(op)

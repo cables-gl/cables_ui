@@ -59,8 +59,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
 
-
         this.setHover(false);
+        this.updateVisible();
     }
 
     get isDragging() { return this._glRectBg.isDragging; }
@@ -562,10 +562,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glComment.visible = this.visible;
         }
 
-        if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
+        if (this.opUiAttribs.comment_title) this.setTitle(this.opUiAttribs.comment_title);
+        else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
+
         if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
         {
-            this._glTitleExt.text = this.opUiAttribs.extendTitle;
+            this._glTitleExt.text = " " + this.opUiAttribs.extendTitle;
             doUpdateSize = true;
         }
 

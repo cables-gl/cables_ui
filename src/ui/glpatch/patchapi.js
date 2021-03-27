@@ -97,7 +97,8 @@ CABLES.GLGUI.GlPatchAPI = class
                         if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
                     }
 
-                    this._glPatch.links[link.id].setFlowModeActivity(newClass);
+                    if (this._glPatch.links[link.id])
+                        this._glPatch.links[link.id].setFlowModeActivity(newClass);
                     link.activityCounter = 0;
                 }
             }
@@ -110,7 +111,7 @@ CABLES.GLGUI.GlPatchAPI = class
         this._initPatch();
     }
 
-    _onLink(p1, p2, link)
+    _onLink(p1, p2, link, fromDeserialize)
     {
         if (p1.direction != 0)
         {
@@ -125,36 +126,37 @@ CABLES.GLGUI.GlPatchAPI = class
             return;
         }
 
-        const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+        if (!fromDeserialize)
         {
-            CABLES.undo.add({
-                "title": "Link port",
-                undo()
-                {
-                    const op1 = patch.getOpById(op1Id);
-                    const op2 = patch.getOpById(op2Id);
-                    if (!op1 || !op2)
+            const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
+            {
+                CABLES.undo.add({
+                    "title": "Link port",
+                    undo()
                     {
-                        console.warn("undo: op not found");
-                        return;
+                        const op1 = patch.getOpById(op1Id);
+                        const op2 = patch.getOpById(op2Id);
+                        if (!op1 || !op2)
+                        {
+                            console.warn("undo: op not found");
+                            return;
+                        }
+                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+                    },
+                    redo()
+                    {
+                        patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
                     }
-                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                },
-                redo()
-                {
-                    patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
-                }
-            });
-        }(
-            link.portOut.parent.patch,
-            p1.name,
-            p2.name,
-            p1.parent.id,
-            p2.parent.id
-        ));
+                });
+            }(
+                link.portOut.parent.patch,
+                p1.name,
+                p2.name,
+                p1.parent.id,
+                p2.parent.id
+            ));
+        }
 
-
-        console.log("ONLINK!", link);
         const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,
@@ -196,11 +198,11 @@ CABLES.GLGUI.GlPatchAPI = class
         this._glPatch.deleteLink(link.id);
     }
 
-    _onAddOp(op)
+    _onAddOp(op, fromDeserialize)
     {
-        gui.patchView.testCollision(op);
+        if (!fromDeserialize) gui.patchView.testCollision(op);
 
-        this._glPatch.addOp(op);
+        this._glPatch.addOp(op, fromDeserialize);
 
 
         // this.fireEvent("onPortAdd", p);
