@@ -140,7 +140,7 @@ CABLES.UI.Profiler.prototype.update = function ()
         html += "<table>";
         for (let i = 0; i < cgl.profileData.heavyEvents.length; i++)
         {
-            html += "<tr><td>" + cgl.profileData.heavyEvents[i].event + "</td><td>" + cgl.profileData.heavyEvents[i].name + "</td><td>" + cgl.profileData.heavyEvents[i].info || "" + "</td></tr>";
+            html += "<tr><td>" + cgl.profileData.heavyEvents[i].event + "</td><td>" + cgl.profileData.heavyEvents[i].name + "</td><td>" + (cgl.profileData.heavyEvents[i].info || "") + "</td></tr>";
         }
         html += "</table>";
     }
