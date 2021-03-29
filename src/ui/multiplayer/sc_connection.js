@@ -13,8 +13,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._paco = null;
 
 
-        this._receivePaco = gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
-        this._sendPacoInitial = !gui.isRemoteClient;
+        this._receivePaco = false;// gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
+        this._sendPacoInitial = false;//! gui.isRemoteClient;
 
         console.log("this._receivePaco", this._receivePaco);
         console.log("this._sendPacoInitial", this._sendPacoInitial);
