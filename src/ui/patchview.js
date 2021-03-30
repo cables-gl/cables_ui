@@ -722,6 +722,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else ele.show(this._eleSubpatchNav);
 
         const names = this.getSubpatchPathArray(currentSubPatch);
+
+
+        if (names.length > 0)
+            console.log(names, names[names.length - 1].type);
+
+        if (names.length > 0 && names[names.length - 1].type == "blueprint_subpatch") this._patchRenderer.greyOut = true;
+        else this._patchRenderer.greyOut = false;
+
         let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
 
         for (let i = names.length - 1; i >= 0; i--)
