@@ -1163,10 +1163,10 @@ CABLES.UI.Patch = function (_gui)
 
     this.bindScene = function (scene)
     {
-        scene.onLoadStart = function ()
-        {
-            isLoading = true;
-        };
+        // scene.onLoadStart = function ()
+        // {
+        isLoading = true;
+        // };
 
         let patchLoadEndiD = scene.on("patchLoadEnd", () =>
         {
@@ -1377,9 +1377,8 @@ CABLES.UI.Patch = function (_gui)
 
         // console.log("onopadd 2");
         if (!isLoading)
-        // console.log("onop add event!", op.name);
-
             gui.setStateUnsaved();
+
         this._elPatch.focus();
         let width = CABLES.UI.uiConfig.opWidth;
         if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
@@ -1417,6 +1416,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.updateSubPatches = function ()
     {
+        console.log("updateSubPatches", isLoading);
         if (isLoading) return;
         for (let i = 0; i < self.ops.length; i++)
         {
