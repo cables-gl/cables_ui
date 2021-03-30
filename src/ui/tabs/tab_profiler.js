@@ -137,10 +137,12 @@ CABLES.UI.Profiler.prototype.update = function ()
 
     if (this._subTab == 4)
     {
+        html += "<table>";
         for (let i = 0; i < cgl.profileData.heavyEvents.length; i++)
         {
-            html += cgl.profileData.heavyEvents[i].event + " - " + cgl.profileData.heavyEvents[i].name + "<br/>";
+            html += "<tr><td>" + cgl.profileData.heavyEvents[i].event + "</td><td>" + cgl.profileData.heavyEvents[i].name + "</td><td>" + (cgl.profileData.heavyEvents[i].info || "") + "</td></tr>";
         }
+        html += "</table>";
     }
     if (this._subTab == 0 || this._subTab == 3)
     {

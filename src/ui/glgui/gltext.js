@@ -17,7 +17,7 @@ CABLES.GLGUI.Text = class
         this._height = 0;
         this._color = [1, 1, 1, 1];
         this._align = 0;
-        this._scale = 1;
+        this._scale = 0.9;
         this._parentRect = null;
 
 
@@ -67,7 +67,7 @@ CABLES.GLGUI.Text = class
 
     _map(x)
     {
-        return x * 0.12 * this._scale;
+        return x * 0.11 * this._scale;
     }
 
     setParentRect(r)
@@ -146,7 +146,7 @@ CABLES.GLGUI.Text = class
 
             // if (i == 3)
             // console.log(posX - this._map(ch.xoffset), posY - this._map(ch.yoffset));
-            rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 5.0); //
+            rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
             rect.setColor(this._color);
 
