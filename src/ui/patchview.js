@@ -723,13 +723,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         const names = this.getSubpatchPathArray(currentSubPatch);
 
-
-        if (names.length > 0)
-            console.log(names, names[names.length - 1].type);
-
-        if (names.length > 0 && names[names.length - 1].type == "blueprint_subpatch") this._patchRenderer.greyOut = true;
-        else this._patchRenderer.greyOut = false;
-
         let str = "<a onclick=\"gui.patchView.setCurrentSubPatch(0)\">Main</a> ";
 
         for (let i = names.length - 1; i >= 0; i--)
@@ -737,6 +730,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
         }
+
+        if (names.length > 0 && names[names.length - 1].type == "blueprint_subpatch")
+        {
+            this._patchRenderer.greyOut = true;
+            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a>";
+        }
+        else this._patchRenderer.greyOut = false;
+
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }
