@@ -31,6 +31,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._showRedrawFlash = 0;
         this.debugData = {};
 
+        this.greyOut = false;
+        this._greyOutRect = null;
+
         this.frameCount = 0;
 
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
@@ -254,6 +257,25 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             // when left while button down but re-entering button up...
             this._lastButton = 0;
             this._onCanvasMouseUp(e);
+        }
+    }
+
+    _updateGreyout()
+    {
+        if (this.greyOut && !this._greyOutRect)
+        {
+            this._greyOutRect = this._overLayRects.createRect();
+            this._greyOutRect.setColor(
+                CABLES.GLGUI.VISUALCONFIG.colors.background[0],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[1],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[2], 0.5);
+            this._greyOutRect.setSize(20000000, 20000000);
+            this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
+        }
+        else if (!this.greyOut && this._greyOutRect)
+        {
+            this._greyOutRect.dispose();
+            this._greyOutRect = null;
         }
     }
 
@@ -630,6 +652,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
 
+        this._updateGreyout();
         perf.finish();
     }
 

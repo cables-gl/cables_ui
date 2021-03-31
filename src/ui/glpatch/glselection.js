@@ -7,7 +7,6 @@ CABLES.GLGUI.GlSelectionArea = class
     {
         this._selectRect = rectinstancer.createRect();
         this._selectRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.patchSelectionArea);
-        this._selectRect.setPosition(0, 0, 1000);
         this._selectRect.setSize(0, 0);
         this._selectRect.setPosition(0, 0, 1000);
 
@@ -31,7 +30,7 @@ CABLES.GLGUI.GlSelectionArea = class
 
     setPos(x, y)
     {
-        this._selectRect.setPosition(x, y, 0.1);
+        this._selectRect.setPosition(x, y, -0.1);
     }
 
     setSize(w, h)
