@@ -1416,7 +1416,6 @@ CABLES.UI.Patch = function (_gui)
 
     this.updateSubPatches = function ()
     {
-        console.log("updateSubPatches", isLoading);
         if (isLoading) return;
         for (let i = 0; i < self.ops.length; i++)
         {

@@ -373,7 +373,7 @@ CABLES.GLGUI.ViewBox = class
 
         if (cy != cy)
         {
-            console.log("center coord NaN!");
+            // console.log("center coord NaN!");
             cy = 0;
         }
 

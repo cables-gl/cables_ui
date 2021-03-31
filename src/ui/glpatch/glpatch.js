@@ -1053,8 +1053,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setProject(proj)
     {
-        console.log("SET PROJECT GLPATCH!!!");
-
         this.viewBox.deSerialize(proj.ui);
     }
 
