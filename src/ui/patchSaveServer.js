@@ -48,16 +48,21 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                         {
                             let newCore = false;
                             let newUi = false;
+                            let newApi = false;
 
                             if (buildInfo.updateWarning)
                             {
-                                if (CABLES.build)
+                                if (CABLESUILOADER.buildInfo.core)
                                 {
-                                    newCore = buildInfo.core.timestamp > CABLES.build.timestamp;
+                                    newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
                                 }
-                                if (CABLES.UI.build)
+                                if (CABLESUILOADER.buildInfo.ui)
                                 {
-                                    newUi = buildInfo.ui.timestamp > CABLES.UI.build.timestamp;
+                                    newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
+                                }
+                                if (CABLESUILOADER.buildInfo.api)
+                                {
+                                    newApi = buildInfo.api.timestamp > CABLESUILOADER.buildInfo.api.timestamp;
                                 }
                             }
 

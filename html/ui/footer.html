@@ -1,4 +1,4 @@
-ook
+
         <a id="undev" class="icon-undev" target="_blank" href="http://www.undev.de"></a>
 
 </div>
@@ -38,12 +38,12 @@ ook
         CABLESUILOADER.startup.maxEvents=16-1;
         CABLESUILOADER.startup.numEvents=0;
 
+        CABLESUILOADER.buildInfo = {};
+
         function incrementStartup()
         {
             CABLESUILOADER.startup.numEvents++;
             document.getElementById("loadingstatusBar").style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
-
-            // console.log('startup',CABLESUILOADER.startup.numEvents);
         }
 
         function logStartup(title)
@@ -65,6 +65,16 @@ ook
             return url+'?nc='+(Date.now()+'').substr(-6);
         };
 
+        CABLESUILOADER.builtVersionUrl = function(component, url) {
+            let ncUrl = CABLESUILOADER.noCacheUrl(url);
+            if(CABLESUILOADER.buildInfo) {
+                if(CABLESUILOADER.buildInfo[component]) {
+                    ncUrl = url + '?nc=' + CABLESUILOADER.buildInfo[component].timestamp
+                }
+            }
+            return ncUrl;
+        }
+
         incrementStartup();
         logStartup("Start");
         const numRetries=5;
@@ -84,7 +94,7 @@ ook
             incrementStartup();
 
             loadjs([
-                CABLESUILOADER.noCacheUrl('js/libs.core.min.js'),
+                CABLESUILOADER.builtVersionUrl("core", 'js/libs.core.min.js'),
                 'js/ace/ace.js'
             ], 'libs');
 
@@ -102,7 +112,7 @@ ook
                 {
                     logStartup('loaded ace');
                     incrementStartup();
-                    loadjs([CABLESUILOADER.noCacheUrl('js/cables.'+jsType+'.js')],'cables_core');
+                    loadjs([CABLESUILOADER.builtVersionUrl("core", 'js/cables.'+jsType+'.js')],'cables_core');
 
                     loadjs.ready('cables_core', function()
                     {
@@ -111,7 +121,7 @@ ook
 
                         incrementStartup();
 
-                        loadjs([CABLESUILOADER.noCacheUrl('js/cablesui.'+jsType+'.js')], 'cablesui');
+                        loadjs([CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js')], 'cablesui');
 
                         loadjs.ready('cablesui', function()
                         {
@@ -120,7 +130,7 @@ ook
 
 
 
-            fetch(CABLESUILOADER.noCacheUrl(
+            fetch(CABLESUILOADER.builtVersionUrl("core",
                 cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
             .then(function (response)
             {
@@ -170,19 +180,23 @@ ook
                                 addJS(localOpCode);
 
 
-                                loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
+                                loadjs([CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
                                 loadjs.ready('cables_ops', function()
                                 {
                                     incrementStartup();
                                     logStartup('loaded cables ops');
-                                    const uiBuild = CABLES.UI.build;
-                                    const coreBuild = CABLES.build;
+                                    const uiBuild = CABLESUILOADER.buildInfo.ui;
+                                    const coreBuild = CABLESUILOADER.buildInfo.core;
+                                    const apiBuild = CABLESUILOADER.buildInfo.api;
                                     if(uiBuild && uiBuild.git) {
                                         logStartup("UI buildmessage: " + uiBuild.git.message);
                                     }
                                     if(coreBuild && coreBuild.git) {
                                         logStartup("CORE buildmessage: " + coreBuild.git.message);
+                                    }
+                                    if(apiBuild && apiBuild.git) {
+                                        logStartup("API buildmessage: " + coreBuild.git.message);
                                     }
                                     waitForAce();
 
@@ -216,14 +230,14 @@ ook
             }
         }
 
-
-
         document.addEventListener('DOMContentLoaded', function(event)
         {
             CABLESUILOADER.talkerAPI=new CABLESUILOADER.TalkerAPI(window.parent);
-
             CABLESUILOADER.talkerAPI.send("requestPatchData",{},function(response)
             {
+                if(response.buildInfo) {
+                    CABLESUILOADER.buildInfo = response.buildInfo;
+                }
                 CABLESUILOADER.loadAll(response);
             });
         });
