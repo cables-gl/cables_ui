@@ -27,6 +27,7 @@ CABLES.GLGUI.ViewBox = class
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
+        this._spaceDown = false;
 
         this._defaultEasing = CABLES.EASING_EXPO_OUT;
 
@@ -41,6 +42,9 @@ CABLES.GLGUI.ViewBox = class
         cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
+
+        this.glPatch.addEventListener("spacedown", this._onCanvasSpaceDown.bind(this));
+        this.glPatch.addEventListener("spaceup", this._onCanvasSpaceUp.bind(this));
 
         cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
 
@@ -84,6 +88,21 @@ CABLES.GLGUI.ViewBox = class
         this.setMousePos(e.offsetX, e.offsetY);
     }
 
+    _onCanvasSpaceUp(e)
+    {
+        this._spaceDown = false;
+    }
+
+    _onCanvasSpaceDown(e)
+    {
+        if (this._spaceDown) return;
+        this._spaceDown = true;
+        this._oldScrollX = this._scrollX;
+        this._oldScrollY = this._scrollY;
+        this._mouseRightDownStartX = this._mouseX;
+        this._mouseRightDownStartY = this._mouseY;
+    }
+
     _onCanvasMouseDown(e)
     {
         if (this.glPatch.mouseState.buttonRight || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
@@ -107,7 +126,7 @@ CABLES.GLGUI.ViewBox = class
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if ((this.glPatch.mouseState.buttonRight || ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && this.glPatch.mouseState.buttonLeft)) && this.glPatch.allowDragging)
+        if ((this.glPatch.mouseState.buttonRight || ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && this.glPatch.mouseState.buttonLeft)) && !this.glPatch.isDraggingPort()) // && this.glPatch.allowDragging
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
 
@@ -354,7 +373,7 @@ CABLES.GLGUI.ViewBox = class
 
         if (cy != cy)
         {
-            console.log("center coord NaN!");
+            // console.log("center coord NaN!");
             cy = 0;
         }
 

@@ -574,7 +574,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     _showOpParamsCbPortDelete(index, op)
     {
-        $("#portdelete_out_" + index).on("click", function (e)
+        $("#portdelete_out_" + index).on("click", (e) =>
         {
             op.portsOut[index].removeLinks();
             this.show(op);

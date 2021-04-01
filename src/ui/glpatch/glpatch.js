@@ -158,8 +158,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
-        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; });
-        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (e) => { this._spacePressed = false; });
+        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
@@ -176,6 +176,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
+        gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.patchView.tempUnlinkOp(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
@@ -1052,8 +1053,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     setProject(proj)
     {
-        console.log("SET PROJECT GLPATCH!!!");
-
         this.viewBox.deSerialize(proj.ui);
     }
 

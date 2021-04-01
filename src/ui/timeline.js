@@ -2166,10 +2166,10 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     setTimeout(() =>
     {
-        console.log("gui.scene().timer.isPlaying", gui.scene().timer.isPlaying());
+        // console.log("gui.scene().timer.isPlaying", gui.scene().timer.isPlaying());
         if (gui.scene().timer.isPlaying())
         {
-            console.log("playing!!!!!!!");
+            // console.log("playing!!!!!!!");
             this.updatePlayIcon();
             this.updateTime();
             updateTimeDisplay();
@@ -2178,7 +2178,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
         gui.scene().timer.on("playPause", () =>
         {
-            console.log("play pause!!!");
+            // console.log("play pause!!!");
             this.updatePlayIcon();
             this.updateTime();
             updateTimeDisplay();

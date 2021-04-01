@@ -13,7 +13,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._cachedSubpatchNames = {};
         this.isPasting = false;
         this._showingNavHelperEmpty = false;
-        this._lastTempOPs = [];
+        this._lastTempOP = null;
+
 
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
@@ -1501,6 +1502,22 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     tempUnlinkOp()
     {
+        if (this._lastTempOP)
+        {
+            this._lastTempOP.undoUnLinkTemporary();
+            this._lastTempOP.setEnabled(true);
+            this._lastTempOP = null;
+        }
+        else
+        {
+            const op = this.getSelectedOps()[0];
+            if (op)
+            {
+                op.setEnabled(false);
+                op.unLinkTemporary();
+                this._lastTempOP = op;
+            }
+        }
     }
 
 

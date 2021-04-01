@@ -153,9 +153,6 @@ CABLES.GLGUI.GlRectDragLine = class
         this._rect = p.rect;
         this._glPort = p;
 
-        console.log(p.type);
-        // this._lineDrawer.setColor(this._lineIdx0, 1, 1, 1, 1);
-
         this._patchDragWasAllowed = this._glPatch.allowDragging;
         this._glPatch.allowDragging = false;
 

@@ -1404,54 +1404,6 @@ CABLES.UI.GUI = function (cfg)
         }, false);
 
 
-        $(document).keydown(function (e)
-        {
-            if (CABLES.UI.suggestions && (e.keyCode > 64 && e.keyCode < 91))
-            {
-                if (CABLES.UI.suggestions)
-                {
-                    const suggs = CABLES.UI.suggestions;
-                    CABLES.UI.suggestions.close();
-                    suggs.showSelect();
-                }
-                return;
-            }
-
-            switch (e.which)
-            {
-            default:
-                break;
-
-            case 90: // z undo
-                if (e.metaKey || e.ctrlKey)
-                {
-                    if (e.shiftKey) CABLES.undo.redo();
-                    else CABLES.undo.undo();
-                }
-                break;
-
-
-            case 78: // n - new project
-                if (e.metaKey || e.ctrlKey)
-                {
-                    self.createProject();
-                }
-                break;
-
-            case 9:
-                if ($("#patch").is(":focus") && !e.metaKey && !e.ctrlKey)
-                {
-                    gui.opSelect().show({
-                        "x": 0,
-                        "y": 0
-                    });
-                    e.preventDefault();
-                }
-
-                break;
-            }
-        });
-
         // $("#patch").keydown(function (e)
         // {
         //     switch (e.which)
@@ -1494,15 +1446,15 @@ CABLES.UI.GUI = function (cfg)
         //     }
         // });
 
-        $("#timeline").keydown(function (e)
-        {
-            switch (e.which)
-            {
-            case 32: // space play
-                gui.timeLine().togglePlay();
-                break;
-            }
-        });
+        // $("#timeline").keydown(function (e)
+        // {
+        //     switch (e.which)
+        //     {
+        //     case 32: // space play
+        //         gui.timeLine().togglePlay();
+        //         break;
+        //     }
+        // });
 
         cb();
     };
@@ -1540,12 +1492,13 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        this.keys.key("Escape", "Open Op Create (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
+        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
 
-        this.keys.key(" ", "Play/Pause timeline", "down", null, {}, (e) => { console.log("space down!"); if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+        this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.undo.undo(); });
+        this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { CABLES.undo.redo(); });
 
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
@@ -1554,9 +1507,7 @@ CABLES.UI.GUI = function (cfg)
             else e.dontPreventDefault = true;
         });
 
-
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
-
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true, "ignoreInput": true }, (e) =>
         {
             if (this.patchView.hasFocus())
@@ -1575,13 +1526,9 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        //     case 69: // e - editor save/execute/build
-        //     if (e.metaKey || e.ctrlKey) {
-        //         if (showingEditor) {
-        //             self.editor().save();
-        //         }
-        //     }
-        // break;
+        this.keys.key(" ", "Play/Pause timeline", "down", null, {}, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+
+        this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); });
     };
 
     this.pressedEscape = function (e)
@@ -1709,11 +1656,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-
         gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
-
         gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
-
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 
@@ -2361,31 +2305,9 @@ CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
     this._eventListeners[name].push(cb);
 };
 
-// todo use eventtarget...
-// CABLES.UI.GUI.prototype.callEvent = function (name, params)
-// {
-//     console.warn("gui old callEvent / replace...", name, params);
-//     if (this._eventListeners.hasOwnProperty(name))
-//     {
-//         for (const i in this._eventListeners[name])
-//         {
-//             this._eventListeners[name][i](params);
-//         }
-//     }
-// };
-
 
 CABLES.UI.GUI.prototype.initCoreListeners = function ()
 {
-    // this._corePatch.on("onOpAdd",
-    // function(op)
-    // {
-    //     if(op.objName.indexOf("Ops.User")==0)
-    //     {
-    //         console.log("jo shit!");
-    //     }
-    // });
-
     this._corePatch.on("exception", function (ex, op)
     {
         CABLES.UI.MODAL.showException(ex, op);
