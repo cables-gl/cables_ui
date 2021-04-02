@@ -881,11 +881,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         }
                 }
             }
-            // set correct subpatch
+            // set correct subpatch and remove blueprint info
             const subpatchIds = [];
             const fixedSubPatches = [];
             for (let i = 0; i < json.ops.length; i++)
             {
+                if (json.ops[i].uiAttribs && json.ops[i].uiAttribs.blueprint)
+                {
+                    delete json.ops[i].uiAttribs.blueprint;
+                }
+
                 if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
                 {
                     for (const k in json.ops[i].portsIn)

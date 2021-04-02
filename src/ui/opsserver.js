@@ -200,7 +200,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
         CABLES.UI.MODAL.showLoading("executing...");
         const s = document.createElement("script");
-        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
+        s.setAttribute("src", CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = function ()
         {
             gui.corePatch().reloadOp(
