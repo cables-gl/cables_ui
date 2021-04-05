@@ -204,6 +204,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
 
         this.opUiAttribs = attr;
+
+        if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
+
         this._needsUpdate = true;
     }
 
@@ -431,7 +434,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         let visi = this._visible;
 
-        if (!this.isInCurrentSubPatch()) visi = false;
+        if (this.opUiAttribs.hidden || !this.isInCurrentSubPatch()) visi = false;
 
         for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
 
