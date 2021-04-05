@@ -10,6 +10,14 @@
         <script src="/ui/js/libs.ui.min.js"></script>
         <script src="/ui/js/talkerapi.js"></script>
 
+        <script>
+            if(parent !== window) {
+                window.addEventListener("hashchange", (event) => {
+                    parent.postMessage({"type": "hashchange", "data": window.location.hash}, "*");
+                }); 
+            }
+        </script>
+
         <script>if (window.module) module = window.module;</script><!-- electron module workaround/fix -->
 
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />

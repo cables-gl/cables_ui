@@ -1665,22 +1665,29 @@ CABLES.UI.GUI = function (cfg)
         console.groupCollapsed("welcome to cables!");
         console.log("build info:");
         const buildInfoTable = [];
-        if (CABLES.build && CABLES.UI.build)
+        const displayInfo = {
+            "title": "cables",
+            "host": null,
+            "core": undefined,
+            "ui": undefined,
+            "core_branch": undefined,
+            "core_git": undefined,
+            "ui_branch": undefined,
+            "ui_git": undefined
+        };
+        if (CABLESUILOADER.buildInfo.core)
         {
-            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": CABLES.UI.build.created, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+            displayInfo.core = CABLESUILOADER.buildInfo.core.created;
+            displayInfo.core_branch = CABLESUILOADER.buildInfo.core.git.branch;
+            displayInfo.core_git = CABLESUILOADER.buildInfo.core.git.commit;
         }
-        else if (CABLES.UI.build)
+        if (CABLESUILOADER.buildInfo.ui)
         {
-            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": CABLES.UI.build.created, "core_branch": undefined, "core_git": undefined, "ui_branch": CABLES.UI.build.git.branch, "ui_git": CABLES.UI.build.git.commit });
+            displayInfo.ui = CABLESUILOADER.buildInfo.ui.created;
+            displayInfo.ui_branch = CABLESUILOADER.buildInfo.ui.git.branch;
+            displayInfo.ui_git = CABLESUILOADER.buildInfo.ui.git.commit;
         }
-        else if (CABLES.build)
-        {
-            buildInfoTable.push({ "title": "cables", "host": null, "core": CABLES.build.created, "ui": undefined, "core_branch": CABLES.build.git.branch, "core_git": CABLES.build.git.commit, "ui_branch": undefined, "ui_git": undefined });
-        }
-        else
-        {
-            buildInfoTable.push({ "title": "cables", "host": null, "core": undefined, "ui": undefined, "core_branch": undefined, "core_git": undefined, "ui_branch": undefined, "ui_git": undefined });
-        }
+        buildInfoTable.push(displayInfo);
         if (buildInfo)
         {
             const infoRow = {
