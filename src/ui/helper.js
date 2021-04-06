@@ -205,7 +205,17 @@ CABLES.UI.initHandleBarsHelper = function ()
 {
     Handlebars.registerHelper("json", function (context)
     {
-        return JSON.stringify(context, true, 4);
+        let str = "";
+        try
+        {
+            str = JSON.stringify(context, true, 4);
+        }
+        catch (e)
+        {
+            console.error(e);
+        }
+
+        return str;
     });
 
     Handlebars.registerHelper("console", function (context)

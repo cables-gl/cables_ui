@@ -608,6 +608,52 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
     }
 
+
+    getSubPatchStructure()
+    {
+        const structured = [{ "name": "Main", "id": 0, "childs": [] }];
+        const subs = [];
+        const ops = this._p.ops;
+
+        function findSub(id, root)
+        {
+            if (id == 0) return structured[0];
+            for (let i = 0; i < root.childs.length; i++)
+            {
+                if (root[i].id == id) return root[i];
+            }
+        }
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId)
+            {
+                const id = ops[i].patchId.get();
+                subs.push({ "name": ops[i].name, "id": id, "parent": ops[i].uiAttribs.subpatchId, "childs": [] });
+            }
+        }
+
+        for (let i = 0; i < subs.length; i++)
+        {
+            findSub(subs[i], structured[0]);
+            // if (subs.parent == 0)struct.push(subs[i]);
+            // else
+            // {
+            //     for (let j = 0; j < subs.length; j++)
+            //     {
+            //         const parent = findSub(subs[j].parent, struct[0]);
+            //         if (!parent)console.warn("parent not found!");
+            //         else
+            //         {
+            //             parent.childs.push(subs[j]);
+            //         }
+            //     }
+            // }
+        }
+
+        console.log(subs);
+    }
+
     getSubpatchPathArray(subId, arr)
     {
         arr = arr || [];
@@ -629,6 +675,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
         }
+
         return arr;
     }
 

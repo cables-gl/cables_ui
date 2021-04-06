@@ -32,8 +32,11 @@ body
     overflow: hidden;
     font-family: $text-font;
     font-size: $font-size-default;
-    -webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+    // -webkit-font-smoothing: antialiased;
+    // -webkit-font-smoothing: subpixel-antialiased;
+    // font-smoothing: subpixel-antialiased;
+
+	// -moz-osx-font-smoothing: grayscale;
 }
 
 h1, h2, h3, h4, h5, h6 {
