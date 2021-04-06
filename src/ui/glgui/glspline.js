@@ -298,7 +298,7 @@ CABLES.GLGUI.SplineDrawer = class
                 isDifferent = false;
                 if (points.length != this._splines[idx].origPoints.length)
                 {
-                // length of spline changed, we need to rebuild the whole buffer....
+                    // length of spline changed, we need to rebuild the whole buffer....
                     isDifferent = true;
                     isDifferentLength = true;
                     this._rebuildLater = true;
