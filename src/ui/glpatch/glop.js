@@ -390,8 +390,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _getTitleWidth()
     {
         let w = 0;
-        if (this._glTitleExt)w += this._glTitleExt.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingExtTitle;
-        if (this._glTitle)w += this._glTitle.width;
+        if (this._glTitleExt) w += this._glTitleExt.width + CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingExtTitle;
+        if (this._glTitle) w += this._glTitle.width;
 
         w += CABLES.GLGUI.VISUALCONFIG.OpTitlePaddingLeftRight * 2.0;
 
@@ -539,7 +539,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
-
         if (this.opUiAttribs.extendTitle && !this._glTitleExt)
         {
             this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " | " + this.opUiAttribs.extendTitle);
@@ -622,10 +621,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
             this._glRectBg.setDecoration(this._rectDecoration);
             if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-            else
-            {
-                this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
-            }
+            else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
         }
         if (!this._op.enabled)
         {

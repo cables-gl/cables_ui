@@ -238,6 +238,11 @@ CABLES.CMD.UI.toggleIntroCompleted = function ()
     if (!CABLES.UI.userSettings.get("introCompleted")) gui.introduction().showIntroduction();
 };
 
+CABLES.CMD.UI.showAutomaton = function ()
+{
+    new CABLES.UI.AutomatonTab(gui.mainTabs);
+};
+
 CABLES.CMD.UI.showPreferences = function ()
 {
     if (gui.showGuestWarning()) return;
@@ -518,5 +523,13 @@ CABLES.CMD.commands.push(
         "icon": "align-justify",
         "infotext": "cmd_watchvars"
     },
+    {
+        "cmd": "test automaton",
+        "category": "ui",
+        "func": CABLES.CMD.UI.showAutomaton,
+        "icon": "align-justify",
+        "infotext": "cmd_watchvars"
+    },
+
 
 );
