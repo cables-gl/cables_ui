@@ -92,7 +92,7 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
         {
             const k = this._keys[i];
 
-            if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
+            if (k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
             if (k.key != (e.key + "").toLowerCase() || k.event != "down") continue;
             if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
             if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
