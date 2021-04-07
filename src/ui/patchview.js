@@ -702,7 +702,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 if (ops[i].uiAttribs.blueprint)
                 {
-                    foundBlueprints[ops[i].uiAttribs.blueprint.id] = ops[i].uiAttribs.blueprint;
+                    foundBlueprints[ops[i].uiAttribs.blueprint.id + "-" + ops[i].uiAttribs.blueprint.blueprintOpId] = ops[i].uiAttribs.blueprint;
                 }
                 else if (ops[i].uiAttribs.subPatch)
                 {
@@ -754,7 +754,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const blueprintName = blueprint.name || "unnamed";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
-                "id": blueprint.subpatchId,
+                "id": blueprint.subpatchInstance,
                 "type": "blueprint"
             });
         });
