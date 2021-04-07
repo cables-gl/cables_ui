@@ -1526,7 +1526,7 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        this.keys.key(" ", "Play/Pause timeline", "down", null, {}, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+        this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
 
         this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); });
     };
