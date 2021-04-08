@@ -1508,7 +1508,7 @@ CABLES.UI.GUI = function (cfg)
         });
 
         this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
-        this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true, "ignoreInput": true }, (e) =>
+        this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (this.patchView.hasFocus())
             {
@@ -1526,7 +1526,7 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        this.keys.key(" ", "Play/Pause timeline", "down", null, {}, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+        this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
 
         this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); });
     };

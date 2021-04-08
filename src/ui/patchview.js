@@ -702,7 +702,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 if (ops[i].uiAttribs.blueprint)
                 {
-                    foundBlueprints[ops[i].uiAttribs.blueprint.id] = ops[i].uiAttribs.blueprint;
+                    foundBlueprints[ops[i].uiAttribs.blueprint.id + "-" + ops[i].uiAttribs.blueprint.blueprintOpId] = ops[i].uiAttribs.blueprint;
                 }
                 else if (ops[i].uiAttribs.subPatch)
                 {
@@ -754,7 +754,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const blueprintName = blueprint.name || "unnamed";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
-                "id": blueprint.subpatchId,
+                "id": blueprint.subpatchInstance,
                 "type": "blueprint"
             });
         });
@@ -1187,39 +1187,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const op = gui.corePatch().getOpById(opid);
         const p = op.getPortById(portid);
 
+        if (!p)
+        {
+            console.warn("[unlinkport] portnot found ");
+            return;
+        }
+
         const undoGroup = CABLES.undo.startGroup();
-
-        // for (let i = 0; i < p.links.length; i++)
-        // {
-        //     const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
-        //     {
-        //         CABLES.undo.add({
-        //             "title": "Unlink port",
-        //             undo()
-        //             {
-        //                 patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
-        //             },
-        //             redo()
-        //             {
-        //                 const op1 = patch.getOpById(op1Id);
-        //                 const op2 = patch.getOpById(op2Id);
-        //                 if (!op1 || !op2)
-        //                 {
-        //                     console.warn("undo: op not found");
-        //                     return;
-        //                 }
-        //                 op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-        //             }
-        //         });
-        //     }(
-        //         this._p,
-        //         p.links[i].portIn.getName(),
-        //         p.links[i].portOut.getName(),
-        //         p.links[i].portIn.parent.id,
-        //         p.links[i].portOut.parent.id
-        //     ));
-        // }
-
 
         p.removeLinks();
         CABLES.undo.endGroup(undoGroup, "Unlink Port");
