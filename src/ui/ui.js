@@ -138,10 +138,11 @@ CABLES.UI.GUI = function (cfg)
         {
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
-                this.patchView.focusOp(opid);
-                this.patchView.centerView(x, y);
-                this.patchView.setSelectedOpById(opid);
                 this.patchView.focus();
+                this.patchView.focusOp(opid);
+
+                this.patchView.setSelectedOpById(opid);
+                this.patchView.centerView();
             });
         }
 
