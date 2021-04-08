@@ -408,7 +408,6 @@ CABLES.UI.GUI = function (cfg)
 
         const patchLeft = iconBarWidth;
 
-
         if (this.maintabPanel.isVisible())
         {
             const editorbarHeight = 767;
@@ -1464,10 +1463,7 @@ CABLES.UI.GUI = function (cfg)
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
         {
-            if (gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
-            {
-                return;
-            }
+            if (gui.patchView.getSelectedOps().length !== 1 || !gui.patchView.getSelectedOps()[0].portsIn.length) return;
 
             const selectedOp = gui.patchView.getSelectedOps();
             const selectedOpId = selectedOp[0].id;

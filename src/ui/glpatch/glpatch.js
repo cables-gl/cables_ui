@@ -39,10 +39,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
         this._overlaySplines.zPos = 0.5;
 
-        // this.performanceGraph = new CABLES.GLGUI.GlGraph(this._overlaySplines);
-
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
-
 
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
@@ -149,6 +146,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
+
+        // cgl.canvas.addEventListener("click", () => { if (!this.mouseState.isDragging && this._hoverOps.length == 0)gui.patchView.showDefaultPanel(); });
+
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
@@ -301,7 +301,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.interactive = true;
         this._hoverCable.visible = false;
 
-        if (Object.keys(this._selectedGlOps).length == 0) gui.patchView.showDefaultPanel();
+        if (!this.mouseState.isDragging && this._hoverOps.length == 0)gui.patchView.showDefaultPanel();
     }
 
     _onKeyDelete(e)
