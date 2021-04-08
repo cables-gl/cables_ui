@@ -26,6 +26,7 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
             this._mouseDownX = e.offsetX;
             this._mouseDownY = e.offsetY;
             this._isDragging = false;
+            this.draggingDistance = 0;
 
             this._setButton(e.buttons, true);
         });
@@ -45,7 +46,13 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
         {
             this._mouseOverCanvas = true;
 
-            if (this.buttonAny) this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
+            if (this.buttonAny)
+            {
+                this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
+                this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
+
+                // console.log("draggingDistance", this.draggingDistance);
+            }
 
             if (e.buttons) this._setButton(e.buttons, true);
             else this._setButtonsUp();

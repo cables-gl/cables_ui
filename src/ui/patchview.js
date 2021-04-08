@@ -404,17 +404,17 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
         html += gui.bookmarks.getHtml();
 
-        const views = document.getElementById("patchviews");
-        if (views.children.length > 1)
-        {
-            html += "<h3>Patchviews</h3>";
-            for (let i = 0; i < views.children.length; i++)
-            {
-                html += "<div class=\"list\" onclick=\"gui.patchView.switch('" + views.children[i].id + "')\"><div>" + views.children[i].id + "</div></div>";
-            }
-        }
+        // const views = document.getElementById("patchviews");
+        // if (views.children.length > 1)
+        // {
+        //     html += "<h3>Patchviews</h3>";
+        //     for (let i = 0; i < views.children.length; i++)
+        //     {
+        //         html += "<div class=\"list\" onclick=\"gui.patchView.switch('" + views.children[i].id + "')\"><div>" + views.children[i].id + "</div></div>";
+        //     }
+        // }
 
-        html += "</div>";
+        // html += "</div>";
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }

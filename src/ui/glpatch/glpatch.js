@@ -301,7 +301,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._rectInstancer.interactive = true;
         this._hoverCable.visible = false;
 
-        if (!this.mouseState.isDragging && this._hoverOps.length == 0)gui.patchView.showDefaultPanel();
+        if (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0) gui.patchView.showDefaultPanel();
     }
 
     _onKeyDelete(e)
