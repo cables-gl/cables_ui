@@ -138,10 +138,11 @@ CABLES.UI.GUI = function (cfg)
         {
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
-                this.patchView.focusOp(opid);
-                this.patchView.centerView(x, y);
-                this.patchView.setSelectedOpById(opid);
                 this.patchView.focus();
+                this.patchView.focusOp(opid);
+
+                this.patchView.setSelectedOpById(opid);
+                this.patchView.centerView();
             });
         }
 
@@ -407,7 +408,6 @@ CABLES.UI.GUI = function (cfg)
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
-
 
         if (this.maintabPanel.isVisible())
         {
@@ -1464,10 +1464,7 @@ CABLES.UI.GUI = function (cfg)
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
         {
-            if (gui.patch().getSelectedOps().length !== 1 || !gui.patch().getSelectedOps()[0].portsIn.length)
-            {
-                return;
-            }
+            if (gui.patchView.getSelectedOps().length !== 1 || !gui.patchView.getSelectedOps()[0].portsIn.length) return;
 
             const selectedOp = gui.patchView.getSelectedOps();
             const selectedOpId = selectedOp[0].id;
