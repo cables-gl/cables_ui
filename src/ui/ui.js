@@ -1462,7 +1462,7 @@ CABLES.UI.GUI = function (cfg)
     this.bindKeys = function ()
     {
         // opens editor for 1st string port found on an op with shift+e
-        this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
+        this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
         {
             if (gui.patchView.getSelectedOps().length !== 1 || !gui.patchView.getSelectedOps()[0].portsIn.length) return;
 
