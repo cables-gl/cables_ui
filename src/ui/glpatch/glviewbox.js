@@ -246,12 +246,10 @@ CABLES.GLGUI.ViewBox = class
         if (!this._animScrollX.isFinished(time)) this._scrollX = this._animScrollX.getValue(time);
         if (!this._animScrollY.isFinished(time)) this._scrollY = this._animScrollY.getValue(time);
 
-
         if (this._zoom != this._zoom)
         {
             this._zoom = 400;
         }
-
 
         this.setMousePos(this._mouseX, this._mouseY);
 
@@ -263,7 +261,6 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.setSize(1000, 1000);
             this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
         }
-
 
         const bounds = this.glPatch.rectDrawer.bounds;
         this._boundingRect.visible = bounds.changed;
@@ -291,7 +288,7 @@ CABLES.GLGUI.ViewBox = class
         if (p != p)p = 0;
         // console.log("offset", p);
 
-        dur = dur || 0.25;
+        dur = dur || 0.2;
 
         this._animScrollX.clear();
         this._animScrollX.setValue(this.glPatch.time, this._scrollX);
@@ -357,7 +354,6 @@ CABLES.GLGUI.ViewBox = class
 
         bb.size[0] *= padding;
         bb.size[1] *= padding;
-
 
         const zx = bb.size[0] / 2; // zoom on x
         const zy = (bb.size[1]) / 2 * (this._viewResX / this._viewResY);
