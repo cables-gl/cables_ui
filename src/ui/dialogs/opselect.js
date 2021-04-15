@@ -699,6 +699,9 @@ CABLES.UI.OpSelect = class
                     {
                         if (this._forceShowOldOps) hidden = false;
                         if (opname.indexOf("Ops.Admin") == 0 && gui.user.isAdmin) hidden = false;
+
+                        if (opname.indexOf("Ops.Dev") == 0 && CABLES.sandbox.isDevEnv()) hidden = false;
+                        else hidden = true;
                     }
 
                     parts.length -= 1;
