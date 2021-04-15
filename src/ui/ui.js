@@ -1531,7 +1531,7 @@ CABLES.UI.GUI = function (cfg)
     {
         this.showCanvasModal(false);
         this.emitEvent("pressedEscape");
-        console.log("esc!!");
+
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;

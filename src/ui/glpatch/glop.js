@@ -265,8 +265,19 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     updateSize()
     {
+        let portsWidthIn = 0;
+        let portsWidthOut = 0;
+        for (let i = 0; i < this._glPorts.length; i++)
+        {
+            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN)portsWidthIn += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
+            else portsWidthOut += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
+        }
+
+        if (portsWidthIn != 0)portsWidthIn -= CABLES.GLGUI.VISUALCONFIG.portPadding;
+        if (portsWidthOut != 0)portsWidthOut -= CABLES.GLGUI.VISUALCONFIG.portPadding;
+
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
-        this._width = Math.max(this._width, Math.max(this._op.portsIn.length, this._op.portsOut.length) * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding));
+        this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         this._glRectBg.setSize(this._width, this._height);
@@ -649,6 +660,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     getPortPos(id)
     {
+        // for cable position
         let count = 0;
         for (let i = 0; i < this._op.portsIn.length; i++)
         {
