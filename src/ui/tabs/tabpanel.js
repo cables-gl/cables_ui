@@ -396,7 +396,7 @@ CABLES.UI.TabPanel.prototype.addIframeTab = function (title, url, options)
     const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
     const id = CABLES.uuid();
 
-    const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:35%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
+    const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
     iframeTab.contentEle.innerHTML = html;
     iframeTab.contentEle.style.padding = "0px";
     iframeTab.toolbarEle.innerHTML = "<a href=\"" + url + "\" target=\"_blank\">open this in a new browser window</a>";

@@ -96,6 +96,7 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
             if (k.options.cmdCtrl) if (!e.ctrlKey && !e.metaKey) continue;
             if (!k.options.cmdCtrl) if (e.ctrlKey || e.metaKey) continue;
             if (k.options.shiftKey && !e.shiftKey) continue;
+            if (k.options.altKey && !e.altKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
 
             if (!k.target || k.target == e.target.id)

@@ -8,6 +8,10 @@ CABLES.GLGUI.GlPort = class
         this._port = p;
         this._name = p.name;
         this._id = p.id;
+
+        this._direction = p.direction;
+
+
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
@@ -16,7 +20,6 @@ CABLES.GLGUI.GlPort = class
         this._posX = i * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding);
 
         oprect.addChild(this._rect);
-
 
         this._updateColor(p.uiAttribs);
 
@@ -38,6 +41,16 @@ CABLES.GLGUI.GlPort = class
     _updateColor(attribs)
     {
         this._glPatch.setDrawableColorByType(this._rect, this._type, attribs.useVariable || attribs.isAnimated);
+    }
+
+    get direction()
+    {
+        return this._direction;
+    }
+
+    get width()
+    {
+        return this._rect.w;
     }
 
     _updateSize()
