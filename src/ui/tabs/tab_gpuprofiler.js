@@ -30,13 +30,20 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
     if (glQueryData)
     {
         let arr = [];
+        let allTimes = 0;
 
         for (let i in glQueryData)
         {
             arr.push(glQueryData[i]);
+            allTimes += glQueryData[i].time;
         }
 
         arr.sort((a, b) => b.time - a.time);
+
+        for (let i = 0; i < arr.length; i++)
+        {
+            arr[i].perc = arr[i].time / allTimes;
+        }
 
 
         html += "<div class=\"editor_spreadsheet\">";
@@ -50,8 +57,8 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
         for (let i = 0; i < arr.length; i++)
         {
             html += "<tr>";
-            html += "<td><span>" + Math.round(arr[i].time || 0 * 100) / 100 + "ms</span></td>";
-            html += "<td><span>" + Math.round(arr[i].perc || 0 * 100) / 100 + "%</span></td>";
+            html += "<td><span>" + Math.round(arr[i].time || 0 * 1000) / 1000 + "ms</span></td>";
+            html += "<td><span>" + Math.round(arr[i].perc || 0 * 1000) / 1000 + "%</span></td>";
             html += "<td><span>" + arr[i].id + "</span></td>";
             html += "</tr>";
         }
