@@ -701,6 +701,8 @@ CABLES.UI.OpSelect = class
                         if (opname.indexOf("Ops.Admin") == 0 && gui.user.isAdmin) hidden = false;
                     }
 
+                    if (opname.indexOf("Ops.Dev") == 0 && CABLES.sandbox.isDevEnv()) hidden = false;
+
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
 

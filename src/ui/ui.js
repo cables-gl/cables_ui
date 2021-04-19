@@ -237,7 +237,6 @@ CABLES.UI.GUI = function (cfg)
             console.log("port not found:", which);
         }
 
-
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
     };
 
@@ -1463,7 +1462,7 @@ CABLES.UI.GUI = function (cfg)
     this.bindKeys = function ()
     {
         // opens editor for 1st string port found on an op with shift+e
-        this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "ignoreInput": true, "shiftKey": true }, (e) =>
+        this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
         {
             if (gui.patchView.getSelectedOps().length !== 1 || !gui.patchView.getSelectedOps()[0].portsIn.length) return;
 
@@ -1491,13 +1490,14 @@ CABLES.UI.GUI = function (cfg)
         });
 
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
+        this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(); this.setLayout(); });
+
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
 
         this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.undo.undo(); });
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { CABLES.undo.redo(); });
-
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
@@ -1515,7 +1515,6 @@ CABLES.UI.GUI = function (cfg)
             else
             if (gui.mainTabs.getSaveButton())
             {
-                // console.log("found savebutton",gui.mainTabs.getSaveButton());
                 gui.mainTabs.getSaveButton().cb();
             }
             else
@@ -1536,13 +1535,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.fileManager) this.fileManager.setFilePort(null);
 
-        if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey))
-        {
-            this.maintabPanel.toggle();
-            this.setLayout();
-            return;
-        }
-        // this.metaTexturePreviewer.pressedEscape();
+        if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
+
         $(".tooltip").hide();
 
         if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
