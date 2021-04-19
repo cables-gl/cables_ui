@@ -1383,6 +1383,7 @@ CABLES.UI.GUI = function (cfg)
             new CABLES.UI.Profiler(gui.mainTabs);
             gui.maintabPanel.show();
         });
+
         $(".nav_editor").bind("click", function (event)
         {
             CABLES.CMD.UI.toggleEditor();

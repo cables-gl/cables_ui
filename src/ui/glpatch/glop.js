@@ -101,6 +101,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         const undoAdd = (function (scope, oldUiAttribs)
         {
+            if (!scope._op) return;
+
             const newUiAttr = JSON.stringify(scope._op.uiAttribs);
             CABLES.undo.add({
                 "title": "Move op",
