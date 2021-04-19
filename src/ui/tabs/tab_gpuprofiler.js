@@ -23,28 +23,41 @@ CABLES.UI.GpuProfiler = function (tabs)
 
 CABLES.UI.GpuProfiler.prototype.update = function ()
 {
-    let html = "<h2>GPU Shader and Mesh Drawcalls</h2><table>";
+    let html = "<h2>GPU Shader and Mesh Drawcalls</h2>";
 
     const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
     let currentTimeGPU = 0;
     if (glQueryData)
     {
-        let count = 0;
+        let arr = [];
+
         for (let i in glQueryData)
         {
-            html += "<tr>";
-            html += "<td>" + Math.round(glQueryData[i].time * 100) / 100 + "ms</td>";
-            html += "<td>" + Math.round(glQueryData[i].perc * 100) / 100 + "ms</td>";
-            html += "<td>" + glQueryData[i].id + "</td>";
-            html += "</tr>";
-
-            // count++;
-            // if (glQueryData[i].time) currentTimeGPU += glQueryData[i].time;
+            arr.push(glQueryData[i]);
         }
-        // console.log("glquery count",currentTimeGPU)
-    }
 
-    html += "</table>";
+        arr.sort((a, b) => b.time - a.time);
+
+
+        html += "<div class=\"editor_spreadsheet\">";
+        html += "<table class=\"spreadsheet\">";
+        html += "<tr>";
+        html += "<td class=\"colname\">Milliseconds</td>";
+        html += "<td class=\"colname\">Percent</td>";
+        html += "<td class=\"colname\">ID</td>";
+        html += "</tr>";
+
+        for (let i = 0; i < arr.length; i++)
+        {
+            html += "<tr>";
+            html += "<td><span>" + Math.round(arr[i].time || 0 * 100) / 100 + "ms</span></td>";
+            html += "<td><span>" + Math.round(arr[i].perc || 0 * 100) / 100 + "%</span></td>";
+            html += "<td><span>" + arr[i].id + "</span></td>";
+            html += "</tr>";
+        }
+        html += "</table>";
+        html += "</div>";
+    }
 
     this._tab.html(html);
 };
