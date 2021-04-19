@@ -31,8 +31,6 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
 
     const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
 
-
-    let currentTimeGPU = 0;
     if (glQueryData)
     {
         let arr = [];
@@ -50,9 +48,6 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
         {
             arr[i].perc = arr[i].time / allTimes;
         }
-
-        console.log(arr);
-
 
         html += "<div class=\"editor_spreadsheet\">";
         html += "<table class=\"spreadsheet\">";
