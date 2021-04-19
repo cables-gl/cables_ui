@@ -16,7 +16,11 @@ CABLES.UI.GpuProfiler = function (tabs)
     const glQueryExt = gui.corePatch().cgl.gl.getExtension("EXT_disjoint_timer_query_webgl2");
     if (glQueryExt)gui.corePatch().cgl.profileData.doProfileGlQuery = true;
 
-    if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 500);
+    // if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 500);
+    gui.corePatch().on("performance", this.update.bind(this));
+
+    // this.emitEvent("performance", this._perf);
+
     this.update();
 };
 
@@ -26,6 +30,8 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
     let html = "<h2>GPU Shader and Mesh Drawcalls</h2>";
 
     const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
+
+
     let currentTimeGPU = 0;
     if (glQueryData)
     {
@@ -45,6 +51,8 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
             arr[i].perc = arr[i].time / allTimes;
         }
 
+        console.log(arr);
+
 
         html += "<div class=\"editor_spreadsheet\">";
         html += "<table class=\"spreadsheet\">";
@@ -57,8 +65,8 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
         for (let i = 0; i < arr.length; i++)
         {
             html += "<tr>";
-            html += "<td><span>" + Math.round(arr[i].time || 0 * 1000) / 1000 + "ms</span></td>";
-            html += "<td><span>" + Math.round(arr[i].perc || 0 * 1000) / 1000 + "%</span></td>";
+            html += "<td><span>" + Math.round((arr[i].time || 0) * 1000) / 1000 + "ms</span></td>";
+            html += "<td><span>" + Math.round((arr[i].perc || 0) * 100) + "%</span></td>";
             html += "<td><span>" + arr[i].id + "</span></td>";
             html += "</tr>";
         }
