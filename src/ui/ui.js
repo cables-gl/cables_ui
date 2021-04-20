@@ -33,7 +33,7 @@ CABLES.UI.GUI = function (cfg)
         // "prefixAssetPath": CABLES.sandbox.getAssetPrefix(),
         "canvas":
         {
-            "forceWebGl1": cfg.usersettings.settings.forceWebGl1 == "true",
+            "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
             "alpha": true,
             "premultipliedAlpha": true,
         },
@@ -1382,6 +1382,7 @@ CABLES.UI.GUI = function (cfg)
             new CABLES.UI.Profiler(gui.mainTabs);
             gui.maintabPanel.show();
         });
+
         $(".nav_editor").bind("click", function (event)
         {
             CABLES.CMD.UI.toggleEditor();

@@ -256,6 +256,13 @@ CABLES.CMD.UI.toggleTheme = function ()
     gui.updateTheme();
 };
 
+CABLES.CMD.UI.profileGPU = function ()
+{
+    new CABLES.UI.GpuProfiler(gui.mainTabs);
+    gui.maintabPanel.show();
+};
+
+
 CABLES.CMD.UI.profileUI = function ()
 {
     console.log("CABLES.CMD.UI.profileUI");
@@ -523,13 +530,20 @@ CABLES.CMD.commands.push(
         "icon": "align-justify",
         "infotext": "cmd_watchvars"
     },
+    // {
+    //     "cmd": "test automaton",
+    //     "category": "ui",
+    //     "func": CABLES.CMD.UI.showAutomaton,
+    //     "icon": "align-justify",
+    //     "infotext": "cmd_watchvars"
+    // },
     {
-        "cmd": "test automaton",
+        "cmd": "GPU Profiler",
         "category": "ui",
-        "func": CABLES.CMD.UI.showAutomaton,
+        "func": CABLES.CMD.UI.profileGPU,
         "icon": "align-justify",
-        "infotext": "cmd_watchvars"
-    },
+        "infotext": ""
+    }
 
 
 );
