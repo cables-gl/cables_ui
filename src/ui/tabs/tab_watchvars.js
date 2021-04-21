@@ -79,7 +79,7 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         {
             const theVar = vars[y];
 
-            if (!filter || y.indexOf(filter) > -1 || theVar._v.indexOf(filter) > -1)
+            if (!filter || y.indexOf(filter) > -1 || String(theVar._v).indexOf(filter) > -1)
             {
                 const tr = ele.create("tr");
                 table.appendChild(tr);
