@@ -41,6 +41,7 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
 
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
+        this._eleInfo.innerHTML = "<h2>Variables</h2><input id=\"varfilter\" class=\"medium info\" type=\"search\"/><br/><br/>";
 
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
@@ -68,7 +69,7 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         }
         table.appendChild(trHead);
 
-        console.log("vars!", vars.length, vars);
+        // console.log("vars!", vars.length, vars);
         for (let y in vars)
         {
             const tr = ele.create("tr");

@@ -377,6 +377,16 @@ input[type=search] {
     border-radius: 4px;
 }
 
+input[type=search]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    color: red;
+    width:20px;
+    height:20px;
+    background-image: url("data:image/svg+xml;charset=utf8, %3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M18 6L6 18M6 6l12 12'/%3E%3C/svg%3E");
+    cursor: pointer;
+}
+
+
 input[type=text], input[type=search] {
   background-color: $text-input-background-color;
   color: $text-input-color;
