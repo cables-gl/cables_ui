@@ -455,25 +455,25 @@ CABLES.GLGUI.ViewBox = class
         this._storeCurrentSubPatch();
 
         const zoomFactor = 0.03;
-        const _timeVisibleagain = this.glPatch.time + timeVisibleAgain + dur * 2;
+        // const _timeVisibleagain = this.glPatch.time + timeVisibleAgain + dur * 2;
 
         this._animZoom.clear();
         this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
         this._animZoom.setValue(this.glPatch.time, this._zoom);
         this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
 
-        setTimeout(
-            () =>
-            {
-                this._animZoom.defaultEasing = this._defaultEasing;
-                this._restoreSubPatch(sub);
+        // setTimeout(
+        // () =>
+        // {
+        this._animZoom.defaultEasing = this._defaultEasing;
+        this._restoreSubPatch(sub);
 
-                this._animZoom.clear();
-                this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
-                this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
+        this._animZoom.clear();
+        this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
+        this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
 
-                if (next)next();
-            }, timeGrey * 1000 + 10);
+        if (next)next();
+        // }, timeGrey * 1000 + 10);
     }
 
     zoomStep(s)

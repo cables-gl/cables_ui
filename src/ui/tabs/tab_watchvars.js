@@ -41,11 +41,15 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
 
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
+        this._eleInfo.innerHTML = "<h2>Variables</h2><input id=\"varfilter\" class=\"medium info\" type=\"search\"/><br/><br/>";
 
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
 
         this._html();
+
+        ele.byId("varfilter").addEventListener("input", this._html.bind(this));
+        ele.byId("varfilter").focus();
     }
 
 
@@ -68,27 +72,34 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
         }
         table.appendChild(trHead);
 
-        console.log("vars!", vars.length, vars);
+
+        const filter = ele.byId("varfilter").value;
+
         for (let y in vars)
         {
-            const tr = ele.create("tr");
-            table.appendChild(tr);
+            const theVar = vars[y];
 
-            const tdName = ele.create("td");
-            tdName.innerHTML = "#" + y;
-            tdName.classList.add("rownumleft");
-            tr.appendChild(tdName);
+            if (!filter || y.indexOf(filter) > -1 || String(theVar._v).indexOf(filter) > -1)
+            {
+                const tr = ele.create("tr");
+                table.appendChild(tr);
 
-            const tdVal = ele.create("td");
-            tdVal.innerHTML = "<span id=\"var" + y + "\">" + vars[y]._v + "</span>";
-            tr.appendChild(tdVal);
+                const tdName = ele.create("td");
+                tdName.innerHTML = "#" + y;
+                tdName.classList.add("rownumleft");
+                tr.appendChild(tdName);
 
-            const tdType = ele.create("td");
-            tdType.innerHTML = vars[y].type;
-            tdType.classList.add("rownumleft");
-            tr.appendChild(tdType);
+                const tdVal = ele.create("td");
+                tdVal.innerHTML = "<span id=\"var" + y + "\">" + theVar._v + "</span>";
+                tr.appendChild(tdVal);
 
-            vars[y].addListener(this._updateVar.bind(this));
+                const tdType = ele.create("td");
+                tdType.innerHTML = theVar.type;
+                tdType.classList.add("rownumleft");
+                tr.appendChild(tdType);
+
+                theVar.addListener(this._updateVar.bind(this));
+            }
         }
     }
 

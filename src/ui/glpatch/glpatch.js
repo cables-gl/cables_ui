@@ -622,7 +622,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
-
+        this._cgl.printError("render");
         this.needsRedraw = false;
 
         if (performance.now() - this._fpsStartTime > 1000)
