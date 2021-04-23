@@ -16,12 +16,12 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
         this._mouseDownX = 0;
         this._mouseDownY = 0;
 
-        canvas.addEventListener("mouseenter", (e) =>
+        canvas.addEventListener("pointerenter", (e) =>
         {
             this._mouseOverCanvas = true;
         });
 
-        canvas.addEventListener("mousedown", (e) =>
+        canvas.addEventListener("pointerdown", (e) =>
         {
             this._mouseDownX = e.offsetX;
             this._mouseDownY = e.offsetY;
@@ -31,18 +31,18 @@ CABLES.GLGUI.MouseState = class extends CABLES.EventTarget
             this._setButton(e.buttons, true);
         });
 
-        canvas.addEventListener("mouseup", (e) =>
+        canvas.addEventListener("pointerup", (e) =>
         {
             this._isDragging = false;
             this._setButtonsUp();
         });
 
-        canvas.addEventListener("mouseleave", (e) =>
+        canvas.addEventListener("pointerleave", (e) =>
         {
             this._mouseOverCanvas = false;
         });
 
-        canvas.addEventListener("mousemove", (e) =>
+        canvas.addEventListener("pointermove", (e) =>
         {
             this._mouseOverCanvas = true;
 

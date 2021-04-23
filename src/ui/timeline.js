@@ -1362,9 +1362,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             const s = Math.abs(maxv) + Math.abs(minv);
             self.setValueScale($("#timeline svg").height() / 2.3 / (s - Math.abs(s) * 0.2));
 
-            console.log("before", viewBox.y);
             viewBox.y = -maxv * 1.1 * CABLES.ANIM.VALUESCALE;
-            console.log("after", viewBox.y);
             self.updateViewBox();
             self.updateOverviewLine();
         }

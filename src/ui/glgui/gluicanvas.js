@@ -119,7 +119,7 @@ CABLES.GLGUI.GlUiCanvas = class
             this.patch.resume();
         });
 
-        this.canvas.addEventListener("mousemove", (e) =>
+        this.canvas.addEventListener("pointermove", (e) =>
         {
             this.activityHigh();
 
@@ -128,27 +128,24 @@ CABLES.GLGUI.GlUiCanvas = class
             this.glPatch.needsRedraw = true;
         });
 
-        this.canvas.addEventListener("mousedown", (e) =>
-        {
-            this.activityHigh();
-
-            this.glPatch.needsRedraw = true;
-            // this._mouseButton = e.buttons;
-        });
-
-        this.canvas.addEventListener("mouseup", (e) =>
+        this.canvas.addEventListener("pointerdown", (e) =>
         {
             this.activityHigh();
             this.glPatch.needsRedraw = true;
-            // this._mouseButton = -1;
         });
 
-        this.canvas.addEventListener("mouseleave", (e) =>
+        this.canvas.addEventListener("pointerup", (e) =>
+        {
+            this.activityHigh();
+            this.glPatch.needsRedraw = true;
+        });
+
+        this.canvas.addEventListener("pointerleave", (e) =>
         {
             this.activityMedium();
         });
 
-        this.canvas.addEventListener("mouseenter", (e) =>
+        this.canvas.addEventListener("pointerenter", (e) =>
         {
             this.activityHigh();
         });
