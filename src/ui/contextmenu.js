@@ -38,7 +38,16 @@ CABLES.ContextMenu.prototype.show = function (obj, parent)
         document.body.appendChild(this._element);
     }
 
-    this._element.style.left = rect.left + 5 + "px";
+    if (rect.left > window.innerWidth - 200)
+    {
+        this._element.style.right = window.innerWidth - rect.left + "px";
+        this._element.style.left = "initial";
+    }
+    else
+    {
+        this._element.style.right = "initial";
+        this._element.style.left = rect.left + 5 + "px";
+    }
     this._element.style.top = rect.top + 5 + "px";
 
     if (obj && obj.items && obj.items.length > 0)

@@ -35,11 +35,11 @@ CABLES.GLGUI.ViewBox = class
         this._animScrollY = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
         this._animZoom = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
 
-        cgl.canvas.addEventListener("mouseenter", this._onCanvasMouseEnter.bind(this));
-        cgl.canvas.addEventListener("mouseleave", this._onCanvasMouseLeave.bind(this));
-        cgl.canvas.addEventListener("mousedown", this._onCanvasMouseDown.bind(this));
-        cgl.canvas.addEventListener("mousemove", this._onCanvasMouseMove.bind(this));
-        cgl.canvas.addEventListener("mouseup", this._onCanvasMouseUp.bind(this));
+        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
+        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this));
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this));
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this));
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
 

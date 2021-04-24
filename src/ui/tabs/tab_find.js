@@ -200,23 +200,14 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
     return str;
 };
 
-CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
+CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results)
 {
-    const startTime = performance.now();
+    console.log("_doSearch", str);
     this._lastSearch = str;
-    let html = "";
-    this._eleResults.innerHTML = "";
-
-    if (str.length < 2)
-    {
-        this._eleResults.innerHTML = "Type some more!";
-        return;
-    }
 
     str = str.toLowerCase();
 
-    let foundNum = 0;
-    const results = [];
+    results = results || [];
 
     gui.log.userInteraction("searches " + str);
 
@@ -224,15 +215,11 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
     {
         if (str == ":outdated")
         {
-            const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
             {
                 const doc = gui.opDocs.getOpDocByName(ops[i].objName);
                 if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("Deprecated") > -1)
-                {
                     results.push({ "op": ops[i], "score": 1 });
-                    foundNum++;
-                }
             }
         }
 
@@ -244,90 +231,71 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
             {
                 const op = gui.corePatch().getOpById(history[i].id);
                 results.push({ op, "score": 1 });
-                foundNum++;
             }
         }
 
         if (str == ":error")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
 
                 if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                     for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
-                    {
                         results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
-                        foundNum++;
-                    }
             }
         }
         else
         if (str == ":warning")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
 
                 if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                     for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 1)
-                    {
                         results.push({ op, "score": 1 });
-                        foundNum++;
-                    }
             }
         }
         else
         if (str == ":hint")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
                 if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
-                {
                     results.push({ op, "score": 1 });
-                    foundNum++;
-                }
             }
         }
         else
         if (str == ":commented")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
 
                 if (op.uiAttribs && op.uiAttribs.comment && op.uiAttribs.comment.length > 0)
-                {
                     results.push({ op, "score": 1, "where": op.uiAttribs.comment });
-                    foundNum++;
-                }
             }
         }
         else if (str == ":user")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
                 if (op.objName.indexOf("Ops.User") == 0)
-                {
                     results.push({ op, "score": 1, "where": op.objName });
-                    foundNum++;
-                }
             }
         }
         else if (str.indexOf(":color=") == 0)
         {
             const col = str.substr(7).toLowerCase();
 
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
                 if (op.uiAttribs.color && op.uiAttribs.color.toLowerCase() == col)
-                {
                     results.push({ op, "score": 1 });
-                    foundNum++;
-                }
             }
         }
         else if (str == ":bookmarked")
@@ -338,22 +306,18 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
             {
                 const op = gui.corePatch().getOpById(bms[i]);
                 results.push({ op, "score": 1 });
-                foundNum++;
             }
         }
         else if (str == ":unconnected")
         {
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
-                const op = gui.corePatch().ops[i];
+                const op = ops[i];
                 let count = 0;
                 for (let j = 0; j < op.portsIn.length; j++)
-                {
                     if (op.portsIn[j].isLinked())
-                    {
                         count++;
-                    }
-                }
+
                 if (count == 0)
                 {
                     for (let j = 0; j < op.portsOut.length; j++)
@@ -362,17 +326,14 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
                 }
 
                 if (count == 0)
-                {
                     results.push({ op, "score": 1 });
-                    foundNum++;
-                }
             }
         }
     }
     else
     {
         let where = "";
-        const ops = gui.corePatch().ops;
+
         for (let i = 0; i < ops.length; i++)
         {
             let score = 0;
@@ -423,13 +384,49 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
             }
 
             if (score > 0 && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
-            if (score > 0)
-            {
-                results.push({ "op": ops[i], score, where });
-                foundNum++;
-            }
+            if (score > 0) results.push({ "op": ops[i], score, where });
         }
     }
+    return results;
+};
+
+CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
+{
+    this._maxIdx = -1;
+    this.setSelectedOp(null);
+    this.setClicked(-1);
+
+    const strs = str.split(" ");
+
+    const startTime = performance.now();
+
+    let html = "";
+    this._eleResults.innerHTML = "";
+
+    if (str.length < 2)
+    {
+        this._eleResults.innerHTML = "Type some more!";
+        return;
+    }
+
+    let results = this._doSearch(strs[0] || "", userInvoked, gui.corePatch().ops) || [];
+
+    if (strs.length > 1)
+    {
+        for (let i = 1; i < strs.length; i++)
+        {
+            if (!strs[i]) continue;
+
+            const ops = [];
+            for (let j = 0; j < results.length; j++) ops.push(results[j].op);
+
+            const newResults = this._doSearch(strs[i] || "", userInvoked, ops) || [];
+
+            results = newResults;
+        }
+    }
+
+    let foundNum = results.length;
 
     if (foundNum === 0)
     {
@@ -454,21 +451,10 @@ CABLES.UI.FindTab.prototype.doSearch = function (str, userInvoked)
 
     this._eleResults.innerHTML = html;
     gui.patchView.checkPatchErrors();
-    const timeUsed = performance.now() - startTime;
 
     if (!userInvoked) this.focus();
-};
 
-CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
-{
-    this._maxIdx = -1;
-    this.setSelectedOp(null);
-    this.setClicked(-1);
-
-    const strs = str.split(" ");
-
-
-    this.doSearch(strs[0] || "", userInvoked);
+    const timeUsed = performance.now() - startTime;
 };
 
 CABLES.UI.FindTab.prototype.setClicked = function (num)
