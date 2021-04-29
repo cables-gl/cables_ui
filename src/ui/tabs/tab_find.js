@@ -224,7 +224,6 @@ CABLES.UI.FindTab.prototype._addResultTrigger = function (v)
     return html;
 };
 
-
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
     if (!op || !op.uiAttribs || !op.uiAttribs.translate) return;
@@ -291,7 +290,7 @@ CABLES.UI.FindTab.prototype._doSearchTriggers = function (str, userInvoked, ops,
 
     for (let i in triggers)
     {
-        if (i.indexOf(str) > -1)
+        if (i.toLowerCase().indexOf(str) > -1)
         {
             foundtriggers.push(i);
         }
@@ -307,7 +306,7 @@ CABLES.UI.FindTab.prototype._doSearchVars = function (str, userInvoked, ops, res
 
     for (let i in vars)
     {
-        if (i.indexOf(str) > -1)
+        if (i.toLowerCase().indexOf(str) > -1)
         {
             foundVars.push(vars[i]);
         }
