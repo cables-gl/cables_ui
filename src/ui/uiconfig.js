@@ -74,6 +74,15 @@ CABLES.UI.uiConfig = {
         if (type == CABLES.OP_PORT_TYPE_DYNAMIC) return "link_color_dynamic";
         return "link_color_unknown";
     },
+    getVarClass(type)
+    {
+        if (type == "number") return "port_text_color_value";
+        if (type == "trigger") return "link_color_function";
+        if (type == "object") return "port_text_color_object";
+        if (type == "array") return "port_text_color_array";
+        if (type == "string") return "port_text_color_string";
+        else return "link_color_dynamic";
+    },
     getNamespaceClassName(opName)
     {
         if (!opName) return "default";

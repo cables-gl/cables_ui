@@ -16,6 +16,9 @@ CABLES.UI.FindTab = function (tabs, str)
     this._inputId = "tabFindInput" + CABLES.uuid();
     this._closed = false;
     this._eleInput = null;
+    this._resultsTriggersTimes = {};
+
+    this._resultsVars = [];
 
     let colors = [];
     const warnOps = [];
@@ -103,12 +106,63 @@ CABLES.UI.FindTab = function (tabs, str)
         this.updateHistory();
     }, 100);
 
+    this._onTrigger = gui.corePatch().on("namedTriggerSent", this._updateTriggers.bind(this));
+
+
+    this._updateVarsInterval = setInterval(() =>
+    {
+        if (this._closed)clearInterval(this._updateVarsInterval);
+
+        if (this._resultsTriggers)
+        {
+            for (let i = 0; i < this._resultsTriggers.length; i++)
+            {
+                const t = this._resultsTriggersTimes[this._resultsTriggers[i]];
+
+                if (t)
+                {
+                    const timediff = performance.now() - t;
+                    const ele = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
+
+                    if (ele)ele.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
+                }
+            }
+        }
+
+        for (let i = 0; i < this._resultsVars.length; i++)
+        {
+            const ele = document.getElementById("varresult_" + this._resultsVars[i].getName());
+
+            let val = String(this._resultsVars[i].getValue());
+            if (val.length > 30)
+            {
+                val = val.substr(0, 30);
+                val += "...";
+            }
+
+            if (ele)ele.innerHTML = val;
+        }
+    }, 100);
+
     if (str)
     {
         this._eleInput.value = str;
         this.search(str);
     }
     this.focus();
+};
+
+CABLES.UI.FindTab.prototype._updateTriggers = function (n)
+{
+    if (!this._resultsTriggers) return;
+    this._resultsTriggersTimes = this._resultsTriggersTimes || {};
+    for (let i = 0; i < this._resultsTriggers.length; i++)
+    {
+        if (this._resultsTriggers[i] == n)
+        {
+            this._resultsTriggersTimes[n] = performance.now();
+        }
+    }
 };
 
 CABLES.UI.FindTab.prototype.focus = function ()
@@ -141,6 +195,33 @@ CABLES.UI.FindTab.prototype.isVisible = function ()
 {
     return this._tab.isVisible();
 };
+
+CABLES.UI.FindTab.prototype._addResultVar = function (v)
+{
+    let html = "";
+
+    const colorClass = "" + CABLES.UI.uiConfig.getVarClass(v.type);
+
+    html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v.getName() + "\" > ";
+    html += "<span class=\"" + colorClass + "\">#" + v.getName() + "</span> <span class=\"monospace\" id=\"varresult_" + v.getName() + "\">/span>";
+    html += "</div>";
+
+    return html;
+};
+
+CABLES.UI.FindTab.prototype._addResultTrigger = function (v)
+{
+    let html = "";
+
+    const colorClass = "" + CABLES.UI.uiConfig.getVarClass("trigger");
+
+    html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v + "\" > ";
+    html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
+    html += "</div>";
+
+    return html;
+};
+
 
 CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
 {
@@ -198,6 +279,38 @@ CABLES.UI.FindTab.prototype.highlightWord = function (word, str)
     }
 
     return str;
+};
+
+
+CABLES.UI.FindTab.prototype._doSearchTriggers = function (str, userInvoked, ops, results)
+{
+    const triggers = gui.corePatch().namedTriggers;
+    const foundtriggers = [];
+
+    for (let i in triggers)
+    {
+        if (i.indexOf(str) > -1)
+        {
+            foundtriggers.push(i);
+        }
+    }
+    return foundtriggers;
+};
+
+
+CABLES.UI.FindTab.prototype._doSearchVars = function (str, userInvoked, ops, results)
+{
+    const vars = gui.corePatch().getVars();
+    const foundVars = [];
+
+    for (let i in vars)
+    {
+        if (i.indexOf(str) > -1)
+        {
+            foundVars.push(vars[i]);
+        }
+    }
+    return foundVars;
 };
 
 CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results)
@@ -411,6 +524,10 @@ CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
 
     let results = this._doSearch(strs[0] || "", userInvoked, gui.corePatch().ops) || [];
 
+    let resultsTriggers = this._doSearchTriggers(strs[0]);
+    let resultsVars = this._doSearchVars(strs[0]);
+
+
     if (strs.length > 1)
     {
         for (let i = 1; i < strs.length; i++)
@@ -426,7 +543,7 @@ CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
         }
     }
 
-    let foundNum = results.length;
+    let foundNum = results.length + resultsVars.length;
 
     if (foundNum === 0)
     {
@@ -437,6 +554,13 @@ CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
     }
     else
     {
+        this._resultsVars = resultsVars;
+        for (let i = 0; i < resultsVars.length; i++) html += this._addResultVar(resultsVars[i]);
+
+        this._resultsTriggers = resultsTriggers;
+        for (let i = 0; i < resultsTriggers.length; i++) html += this._addResultTrigger(resultsTriggers[i]);
+
+
         results.sort(function (a, b) { return b.score - a.score; });
 
         for (let i = 0; i < results.length; i++)
