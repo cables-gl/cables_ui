@@ -187,6 +187,11 @@ CABLES.GLGUI.GlCable = class
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
+            if (this._glPatch.cablesHoverText)
+            {
+                this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
+            }
+
             return true;
         }
         else
@@ -195,6 +200,14 @@ CABLES.GLGUI.GlCable = class
             this._buttonRect.visible = false;
             this._buttonRect._hovering = false;
             return false;
+        }
+    }
+
+    setText(t)
+    {
+        if (this._buttonRect._hovering && this._glPatch.cablesHoverText)
+        {
+            this._glPatch.cablesHoverText.text = t || "???";
         }
     }
 

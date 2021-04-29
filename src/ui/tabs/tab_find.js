@@ -119,13 +119,15 @@ CABLES.UI.FindTab = function (tabs, str)
             {
                 const t = this._resultsTriggersTimes[this._resultsTriggers[i]];
 
+                const ele = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
+
                 if (t)
                 {
                     const timediff = performance.now() - t;
-                    const ele = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
 
-                    if (ele)ele.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
+                    if (ele) ele.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
                 }
+                else if (ele) ele.style.opacity = 0.1;
             }
         }
 
@@ -216,7 +218,7 @@ CABLES.UI.FindTab.prototype._addResultTrigger = function (v)
     const colorClass = "" + CABLES.UI.uiConfig.getVarClass("trigger");
 
     html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v + "\" > ";
-    html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
+    html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"opacity:0.1;background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
     html += "</div>";
 
     return html;

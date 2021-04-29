@@ -61,7 +61,8 @@ CABLES.GLGUI.GlPatchAPI = class
                 for (let il = 0; il < op.portsIn[ip].links.length; il++)
                 {
                     const link = op.portsIn[ip].links[il];
-                    this._glPatch.links[link.id].setFlowModeActivity(1);
+
+                    this._glPatch.links[link.id].setFlowModeActivity(1, op.portsIn[ip].get());
                 }
             }
         }
@@ -98,7 +99,7 @@ CABLES.GLGUI.GlPatchAPI = class
                     }
 
                     if (this._glPatch.links[link.id])
-                        this._glPatch.links[link.id].setFlowModeActivity(newClass);
+                        this._glPatch.links[link.id].setFlowModeActivity(newClass, op.portsIn[ip].get());
                     link.activityCounter = 0;
                 }
             }
