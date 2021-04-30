@@ -152,7 +152,7 @@ CABLES.GLGUI.GlLink = class
     {
         if (this._visible)
         {
-            // if (!this._opOut) this._opOut = this._glPatch.getOp(this._opIdOutput);
+            if (!this._opOut) this.update();
 
             if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
             {
