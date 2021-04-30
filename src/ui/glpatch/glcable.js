@@ -114,23 +114,28 @@ CABLES.GLGUI.GlCable = class
 
     setColor(r, g, b, a)
     {
-        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        this._r = r;
-        this._g = g;
-        this._b = b;
-        // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
-        // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
-        // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
+        if (r === undefined)
+        {
+            r = this._r * 1.1;
+            g = this._g * 1.1;
+            b = this._b * 1.1;
+            a = this._a;
+        }
+        else
+        {
+            this._r = r;
+            this._g = g;
+            this._b = b;
+            this._a = a;
+        }
 
+        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
         this._buttonRect.setColor(r, g, b, a);
     }
 
     setSpeed(speed)
     {
         this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx0, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx1, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx2, speed);
     }
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
@@ -179,7 +184,8 @@ CABLES.GLGUI.GlCable = class
         {
             // this._glPatch._hoverCable.visible = true;
             this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
-            this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
+            // this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
+            this.setColor();
             this._glPatch._hoverCable.visible = true;
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
