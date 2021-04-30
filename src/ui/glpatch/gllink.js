@@ -217,14 +217,38 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect = null;
     }
 
+    _singleValueToString(v)
+    {
+        let r = null;
+        if (typeof v == "number") r = String(Math.round(v * 1000) / 1000);
+        else if (typeof v == "string") r = "\"" + v + "\"";
+        return r;
+    }
+
     setFlowModeActivity(act, v)
     {
-        if (typeof v == "number") v = Math.round(v * 100) / 100;
+        let r = "";
+        if (typeof v == "number") r = this._singleValueToString(v);// v = Math.round(v * 1000) / 1000;
+        else if (typeof v == "string") r = this._singleValueToString(v);// v = "\"" + v + "\"";
+        else if (Array.isArray(v))
+        {
+            r = "[";
 
-        v = String(v);
-        if (v.length > 10)v = v.substr(0, 10) + "...";
+            for (let i = 0; i < Math.min(v.length, 3); i++)
+            {
+                r += this._singleValueToString(v[i]);
+                r += ", ";
+            }
 
-        this._cable.setText(v);
+            if (v.length > 3)r += "...";
+            r += "]";
+            r += " (" + v.length + ")";
+        }
+
+
+        if (r.length > 10)r = r.substr(0, 43) + "...";
+
+        this._cable.setText(r);
         this._cable.setSpeed(act);
     }
 
