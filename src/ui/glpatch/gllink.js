@@ -215,8 +215,14 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect = null;
     }
 
-    setFlowModeActivity(act)
+    setFlowModeActivity(act, v)
     {
+        if (typeof v == "number") v = Math.round(v * 100) / 100;
+
+        v = String(v);
+        if (v.length > 10)v = v.substr(0, 10) + "...";
+
+        this._cable.setText(v);
         this._cable.setSpeed(act);
     }
 

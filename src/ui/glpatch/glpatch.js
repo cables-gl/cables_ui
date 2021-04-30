@@ -53,6 +53,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
 
+
+        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this.cablesHoverText.setPosition(0, 0);
+        this.cablesHoverText.setColor(1, 1, 1, 1);
+
         this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         this._hoverCable.setPosition(0, 0, 100, 100);
         this._hoverCable.setColor(1, 1, 1, 0.5);
