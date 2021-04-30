@@ -56,17 +56,81 @@ CABLES.GLGUI.GlCable = class
         else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.9; // magic number...?!
     }
 
+    _subdivivde(inPoints)
+    {
+        const arr = [];
+        const subd = 6;
+        let newLen = (inPoints.length - 4) * (subd - 1);
+
+        if (newLen != arr.length) arr.length = Math.floor(Math.abs(newLen));
+        let count = 0;
+
+        function ip(x0, x1, x2, t)// Bezier
+        {
+            const r = (x0 * (1 - t) * (1 - t) + 2 * x1 * (1 - t) * t + x2 * t * t);
+            return r;
+        }
+
+        for (let i = 3; i < inPoints.length - 3; i += 3)
+        {
+            for (let j = 0; j < subd; j++)
+            {
+                for (let k = 0; k < 3; k++)
+                {
+                    const p = ip(
+                        (inPoints[i + k - 3] + inPoints[i + k]) / 2,
+                        inPoints[i + k + 0],
+                        (inPoints[i + k + 3] + inPoints[i + k + 0]) / 2,
+                        j / subd
+                    );
+                    arr[count] = p;
+                    count++;
+                }
+            }
+        }
+
+        return arr;
+    }
+
     _updateLinePos()
     {
         this._updateDistFromPort();
 
+        // this._splineDrawer.setSpline(this._splineIdx,
+        //     [
+        //         this._x, this._y, 0,
+        //         this._x, this._y - this._distFromPort, 0,
+        //         this._x2, this._y2 + this._distFromPort, 0,
+        //         this._x2, this._y2, 0
+        //     ]);
+
+        // "hanging" cables
+        // this._splineDrawer.setSpline(this._splineIdx,
+        //     this._subdivivde(
+        //         [
+        //             this._x, this._y, 0,
+        //             this._x, this._y, 0,
+        //             this._x, this._y - this._distFromPort * 2.0, 0,
+        //             this._x2, this._y2 + Math.abs((this._y2 - this._y)) * 1.7, 0,
+        //             this._x2, this._y2, 0,
+        //             this._x2, this._y2, 0,
+        //         ]));
+
+
+        const distY = (this._y + this._y2);
         this._splineDrawer.setSpline(this._splineIdx,
-            [
-                this._x, this._y, 0,
-                this._x, this._y - this._distFromPort, 0,
-                this._x2, this._y2 + this._distFromPort, 0,
-                this._x2, this._y2, 0,
-            ]);
+            this._subdivivde(
+                [
+                    this._x, this._y, 0,
+                    this._x, this._y, 0,
+                    this._x, this._y - (Math.abs(distY) * 0.002) - 15, 0,
+
+                    (this._x + this._x2) * 0.5, (this._y + this._y2) * 0.5 - (0.005 * distY), 0,
+
+                    this._x2, this._y2 + (Math.abs(distY) * 0.002) + 15, 0,
+                    this._x2, this._y2, 0,
+                    this._x2, this._y2, 0,
+                ]));
 
         if (this._visible)
         {

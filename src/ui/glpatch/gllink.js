@@ -245,8 +245,7 @@ CABLES.GLGUI.GlLink = class
             r += " (" + v.length + ")";
         }
 
-
-        if (r.length > 10)r = r.substr(0, 43) + "...";
+        if (r.length > 10) r = r.substr(0, 43) + "...";
 
         this._cable.setText(r);
         this._cable.setSpeed(act);
