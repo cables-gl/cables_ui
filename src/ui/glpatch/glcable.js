@@ -64,7 +64,7 @@ CABLES.GLGUI.GlCable = class
     _subdivivde(inPoints)
     {
         const arr = [];
-        const subd = 5;
+        const subd = 10;
         let newLen = (inPoints.length - 4) * (subd - 1);
 
         if (newLen != arr.length) arr.length = Math.floor(Math.abs(newLen));

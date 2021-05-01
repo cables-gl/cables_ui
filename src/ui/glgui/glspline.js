@@ -35,6 +35,8 @@ CABLES.GLGUI.SplineDrawer = class
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.setSource(""
             .endl() + "{{MODULES_HEAD}}"
+
+
             .endl() + "IN vec3 vPosition;"
             .endl() + "IN float attrVertIndex;"
             .endl() + "IN vec4 vcolor;"
@@ -87,10 +89,10 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    fspeed=speed;"
 
             .endl() + "    texCoord=vPosition.xy;"
-            // .endl() + "    texCoord.y=texCoord.y*0.5+0.5;"
-            // .endl() + "    texCoord.x+=texOffset;"
-            .endl() + "    texCoord.x=splineProgress;"
-            .endl() + "    texCoord.y=0.0;"
+        // .endl() + "    texCoord.y=texCoord.y*0.5+0.5;"
+        // .endl() + "    texCoord.x+=texOffset;"
+        // .endl() + "    texCoord.x=splineProgress;"
+        // .endl() + "    texCoord.y=0.0;"
 
 
             .endl() + "    vec4 pos=vec4(vPosition, 1.0);"
@@ -164,7 +166,9 @@ CABLES.GLGUI.SplineDrawer = class
 
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    col.rgb*=darken;"
-        // .endl() + "    col.rgb=vec3(fProgress*0.01,0.0,0.0);"
+
+            .endl() + "    if(abs(texCoord.y)>0.7) col.rgb*=0.7;"
+
 
             .endl() + "    outColor = col;"
             .endl() + "}");
