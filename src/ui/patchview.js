@@ -1550,8 +1550,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     insertOpInLink(oldLink, op, x, y)
     {
         if (!op.portsIn[0] || !op.portsOut[0]) return;
-        if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
-
+        // if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
 
         let portIn = oldLink.portIn;
         let portOut = oldLink.portOut;
@@ -1573,9 +1572,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             oldLink.remove();
         }
 
-        if (portIn && portOut && op.portsOut[0] && !op.portsIn[0].isLinked())
+        if (portIn && portOut && op.portsOut[0]) // && !op.portsIn[0].isLinked()
         {
-            if (!portOut.isLinked() && CABLES.Link.canLink(op.portsIn[0], portOut))
+            if (CABLES.Link.canLink(op.portsIn[0], portOut)) //! portOut.isLinked() &&
             {
                 gui.corePatch().link(
                     op,
@@ -1591,7 +1590,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
             else
             {
-                // console.log(oldLink, portIn, portOut);
                 gui.corePatch().link(
                     portIn.parent, portIn.getName(),
                     portOut.parent, portOut.getName());

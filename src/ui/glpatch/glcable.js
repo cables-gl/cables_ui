@@ -23,6 +23,11 @@ CABLES.GLGUI.GlCable = class
         this._x2 = 0;
         this._y2 = 0;
 
+        this._oldx = 0;
+        this._oldy = 0;
+        this._oldx2 = 0;
+        this._oldy2 = 0;
+
         this._distFromPort = 0;
         this._updateDistFromPort();
 
@@ -56,18 +61,108 @@ CABLES.GLGUI.GlCable = class
         else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.9; // magic number...?!
     }
 
+    _subdivivde(inPoints)
+    {
+        const arr = [];
+        const subd = 4;
+        let newLen = (inPoints.length - 4) * (subd - 1);
+
+        if (newLen != arr.length) arr.length = Math.floor(Math.abs(newLen));
+        let count = 0;
+
+        function ip(x0, x1, x2, t)// Bezier
+        {
+            const r = (x0 * (1 - t) * (1 - t) + 2 * x1 * (1 - t) * t + x2 * t * t);
+            return r;
+        }
+
+        for (let i = 3; i < inPoints.length - 3; i += 3)
+        {
+            for (let j = 0; j < subd; j++)
+            {
+                for (let k = 0; k < 3; k++)
+                {
+                    const p = ip(
+                        (inPoints[i + k - 3] + inPoints[i + k]) / 2,
+                        inPoints[i + k + 0],
+                        (inPoints[i + k + 3] + inPoints[i + k + 0]) / 2,
+                        j / subd
+                    );
+                    arr[count] = p;
+                    count++;
+                }
+            }
+        }
+
+        return arr;
+    }
+
     _updateLinePos()
     {
         this._updateDistFromPort();
 
-        this._splineDrawer.setSpline(this._splineIdx,
-            [
-                this._x, this._y, 0,
-                this._x, this._y - this._distFromPort, 0,
-                this._x2, this._y2 + this._distFromPort, 0,
-                this._x2, this._y2, 0,
-            ]);
 
+        // "hanging" cables
+        // this._splineDrawer.setSpline(this._splineIdx,
+        //     this._subdivivde(
+        //         [
+        //             this._x, this._y, 0,
+        //             this._x, this._y, 0,
+        //             this._x, this._y - this._distFromPort * 2.0, 0,
+        //             this._x2, this._y2 + Math.abs((this._y2 - this._y)) * 1.7, 0,
+        //             this._x2, this._y2, 0,
+        //             this._x2, this._y2, 0,
+        //         ]));
+
+
+        if (this._oldx != this._x || this._oldy != this._y || this._oldx2 != this._x2 || this._oldy2 != this._y2)
+        {
+            this._oldx = this._x;
+            this._oldy = this._y;
+            this._oldx2 = this._x2;
+            this._oldy2 = this._y2;
+
+            console.log("draw line");
+
+            if (!CABLES.UI.userSettings.get("straightLines"))
+            {
+                if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
+                {
+                    this._splineDrawer.setSpline(this._splineIdx,
+                        [
+                            this._x, this._y, 0,
+                            this._x2, this._y2, 0
+                        ]);
+                }
+                else
+                {
+                    const distY = (this._y + this._y2);
+                    this._splineDrawer.setSpline(this._splineIdx,
+                        this._subdivivde(
+                            [
+                                this._x, this._y, 0,
+                                this._x, this._y, 0,
+                                this._x, this._y - (Math.abs(distY) * 0.002) - 15, 0,
+
+                                (this._x + this._x2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
+
+                                this._x2, this._y2 + (Math.abs(distY) * 0.002) + 15, 0,
+                                this._x2, this._y2, 0,
+                                this._x2, this._y2, 0,
+                            ]));
+                }
+            }
+            else
+            {
+                this._splineDrawer.setSpline(this._splineIdx,
+                    [
+                        this._x, this._y, 0,
+                        this._x, this._y - this._distFromPort, 0,
+                        this._x2, this._y2 + this._distFromPort, 0,
+                        this._x2, this._y2, 0
+                    ]);
+            }
+        }
         if (this._visible)
         {
             // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._distFromPort);
@@ -114,23 +209,28 @@ CABLES.GLGUI.GlCable = class
 
     setColor(r, g, b, a)
     {
-        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        this._r = r;
-        this._g = g;
-        this._b = b;
-        // this._lineDrawer.setColor(this._lineIdx0, r, g, b, a);
-        // this._lineDrawer.setColor(this._lineIdx1, r, g, b, a);
-        // this._lineDrawer.setColor(this._lineIdx2, r, g, b, a);
+        if (r === undefined)
+        {
+            r = this._r * 1.1;
+            g = this._g * 1.1;
+            b = this._b * 1.1;
+            a = this._a;
+        }
+        else
+        {
+            this._r = r;
+            this._g = g;
+            this._b = b;
+            this._a = a;
+        }
 
+        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
         this._buttonRect.setColor(r, g, b, a);
     }
 
     setSpeed(speed)
     {
         this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx0, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx1, speed);
-        // this._lineDrawer.setSpeed(this._lineIdx2, speed);
     }
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
@@ -179,7 +279,8 @@ CABLES.GLGUI.GlCable = class
         {
             // this._glPatch._hoverCable.visible = true;
             this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
-            this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
+            // this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
+            this.setColor();
             this._glPatch._hoverCable.visible = true;
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
