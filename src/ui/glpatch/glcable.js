@@ -64,7 +64,7 @@ CABLES.GLGUI.GlCable = class
     _subdivivde(inPoints)
     {
         const arr = [];
-        const subd = 4;
+        const subd = 5;
         let newLen = (inPoints.length - 4) * (subd - 1);
 
         if (newLen != arr.length) arr.length = Math.floor(Math.abs(newLen));
@@ -131,6 +131,8 @@ CABLES.GLGUI.GlCable = class
                     this._splineDrawer.setSpline(this._splineIdx,
                         [
                             this._x, this._y, 0,
+                            this._x, this._y, 0,
+                            this._x2, this._y2, 0,
                             this._x2, this._y2, 0
                         ]);
                 }
@@ -142,11 +144,11 @@ CABLES.GLGUI.GlCable = class
                             [
                                 this._x, this._y, 0,
                                 this._x, this._y, 0,
-                                this._x, this._y - (Math.abs(distY) * 0.002) - 15, 0,
+                                this._x, this._y - (Math.abs(distY) * 0.002) - 17, 0,
 
                                 (this._x + this._x2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
 
-                                this._x2, this._y2 + (Math.abs(distY) * 0.002) + 15, 0,
+                                this._x2, this._y2 + (Math.abs(distY) * 0.002) + 17, 0,
                                 this._x2, this._y2, 0,
                                 this._x2, this._y2, 0,
                             ]));
