@@ -443,14 +443,23 @@ CABLES.GLGUI.SplineDrawer = class
             this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
             this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
 
+            const idx3 = i * 3;
+            const idx31 = (i + 1) * 3;
+
             if (
-                points[i * 3 + 0] != undefined &&
-                points[i * 3 + 1] != undefined &&
-                points[(i + 1) * 3 + 0] != undefined &&
-                points[(i + 1) * 3 + 1] != undefined)
+            // points[idx3 + 0] != undefined &&
+            // points[idx3 + 1] != undefined &&
+            // points[idx31 + 0] != undefined &&
+            // points[idx31 + 1] != undefined &&
+
+                !isNaN(points[idx3 + 0]) &&
+                !isNaN(points[idx3 + 1]) &&
+                !isNaN(points[idx31 + 0]) &&
+                !isNaN(points[idx31 + 1])
+            )
             {
-                const d = dist(points[i * 3 + 0], points[i * 3 + 1], points[(i + 1) * 3 + 0], points[(i + 1) * 3 + 1]);
-                if (d != d)console.log(points[i * 3 + 0], points[i * 3 + 1], points[(i + 1) * 3 + 0], points[(i + 1) * 3 + 1]);
+                const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
                 if (d)totalDistance += d;
             }
 
@@ -459,12 +468,8 @@ CABLES.GLGUI.SplineDrawer = class
             this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
 
             for (let j = 0; j < 6; j++)
-            {
                 for (let k = 0; k < 3; k++)
-                {
                     count++;
-                }
-            }
         }
 
 
@@ -623,10 +628,6 @@ CABLES.GLGUI.SplineDrawer = class
                     this._splines[i].startOffset / 3,
                     this._splines[i].points.length / 3]);
         }
-
-        // console.table(rows);
-        // console.log("this._points.length", this._points.length / 3 / 6);
-
 
         this._rebuildLater = false;
     }
