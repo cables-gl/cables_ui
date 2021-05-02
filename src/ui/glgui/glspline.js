@@ -35,6 +35,8 @@ CABLES.GLGUI.SplineDrawer = class
         this._shader = new CGL.Shader(cgl, "Linedrawer");
         this._shader.setSource(""
             .endl() + "{{MODULES_HEAD}}"
+
+
             .endl() + "IN vec3 vPosition;"
             .endl() + "IN float attrVertIndex;"
             .endl() + "IN vec4 vcolor;"
@@ -87,8 +89,10 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    fspeed=speed;"
 
             .endl() + "    texCoord=vPosition.xy;"
-            .endl() + "    texCoord.y=texCoord.y*0.5+0.5;"
-            .endl() + "    texCoord.x+=texOffset;"
+        // .endl() + "    texCoord.y=texCoord.y*0.5+0.5;"
+        // .endl() + "    texCoord.x+=texOffset;"
+        // .endl() + "    texCoord.x=splineProgress;"
+        // .endl() + "    texCoord.y=0.0;"
 
 
             .endl() + "    vec4 pos=vec4(vPosition, 1.0);"
@@ -116,7 +120,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 offset = vec4( mix(normal,normal2,m) * (pos.y), 0.0, 1.0 );"
 
             .endl() + "    finalPosition = mix(finalPosition,finalPosition2,pos.x);"
-            .endl() + "    fProgress=distance(finalPosition.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect,finalPosition2.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect);"
+            .endl() + "    fProgress=splineProgress;"// distance(finalPosition.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect,finalPosition2.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect);"
 
             .endl() + "    finalPosition.xy += offset.xy;"
 
@@ -154,12 +158,18 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    if(fspeed==1.0)darken=1.0;"
             .endl() + "    if(fspeed>=2.0)"
             .endl() + "    {"
-            .endl() + "        darken=step(0.7,mod((-time*fspeed/2.0)+fProgress*0.1*(fspeed*0.1),1.0))+minOpacity; "
+            .endl() + "        darken=step(0.7,mod((time*fspeed/2.0)+fProgress*0.2*(fspeed*0.1),1.0))+minOpacity; "
+            // .endl() + "        darken=step(0.7,mod((-time*fspeed)+texCoord.x*(fspeed*22.1),1.0))+minOpacity; "
             .endl() + "        darken=clamp(darken,0.3,1.0);"
+
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    col.rgb*=darken;"
+
+            .endl() + "    if(abs(texCoord.y)>0.7) col.rgb*=0.7;"
+
+
             .endl() + "    outColor = col;"
             .endl() + "}");
 
@@ -322,6 +332,8 @@ CABLES.GLGUI.SplineDrawer = class
         // if (points.length == 6)points.push(points[3], points[4], points[5]);
 
         this._splines[idx].origPoints = points;
+
+
         this._splines[idx].points = this.tessEdges(points);
 
         if (!isDifferentLength) // length is the same, update vertices only
@@ -414,11 +426,54 @@ CABLES.GLGUI.SplineDrawer = class
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
 
-
-        // if (!off)console.log(idx, this._splines[idx]);
-        // console.log(points.length, off);
         if (!points) return;
 
+        function dist(x1, y1, x2, y2)
+        {
+            const xd = x2 - x1;
+            const yd = y2 - y1;
+            return Math.sqrt(xd * xd + yd * yd);
+        }
+
+        let totalDistance = 0;
+        let countDist = 0;
+        for (let i = 0; i < (points.length - 3) / 3; i++)
+        {
+            this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
+            this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
+            this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
+
+            const idx3 = i * 3;
+            const idx31 = (i + 1) * 3;
+
+            if (
+            // points[idx3 + 0] != undefined &&
+            // points[idx3 + 1] != undefined &&
+            // points[idx31 + 0] != undefined &&
+            // points[idx31 + 1] != undefined &&
+
+                !isNaN(points[idx3 + 0]) &&
+                !isNaN(points[idx3 + 1]) &&
+                !isNaN(points[idx31 + 0]) &&
+                !isNaN(points[idx31 + 1])
+            )
+            {
+                const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                if (d)totalDistance += d;
+            }
+
+            this._pointsProgress[(off + count) / 3 + 0] = totalDistance;
+            this._pointsProgress[(off + count) / 3 + 2] = totalDistance;
+            this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
+
+            for (let j = 0; j < 6; j++)
+                for (let k = 0; k < 3; k++)
+                    count++;
+        }
+
+
+        count = 0;
         for (let i = 0; i < points.length / 3; i++)
         {
             for (let j = 0; j < 6; j++)
@@ -427,6 +482,7 @@ CABLES.GLGUI.SplineDrawer = class
                 this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
                 this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
                 this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
+
 
                 for (let k = 0; k < 3; k++)
                 {
@@ -442,13 +498,13 @@ CABLES.GLGUI.SplineDrawer = class
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+        this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
     }
 
     rebuild()
     {
         if (this._splines.length == 0) return;
 
-        // console.log("rebuild!");
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
@@ -492,8 +548,6 @@ CABLES.GLGUI.SplineDrawer = class
             this._doDraw = new Float32Array(newLength / 3);
             this._pointsProgress = new Float32Array(newLength / 3);
             this._speeds = new Float32Array(newLength / 3);
-
-            for (let i = 0; i < newLength / 3; i++) this._pointsProgress[i] = i / (newLength / 3);
         }
 
 
@@ -550,6 +604,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._mesh.setAttribute("spline3", this._points3, 3);
         this._mesh.setAttribute("splineProgress", this._pointsProgress, 1);
 
+
         for (const i in this._splines)
         {
             // console.log("spl ", i);
@@ -574,10 +629,6 @@ CABLES.GLGUI.SplineDrawer = class
                     this._splines[i].points.length / 3]);
         }
 
-        // console.table(rows);
-        // console.log("this._points.length", this._points.length / 3 / 6);
-
-
         this._rebuildLater = false;
     }
 
@@ -590,7 +641,9 @@ CABLES.GLGUI.SplineDrawer = class
     {
         if (!oldArr) return;
         let count = 0;
-        const step = 0.003;
+
+        let step = 0.001;
+        if (!CABLES.UI.userSettings.get("straightLines")) step = 0.01;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 

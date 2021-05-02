@@ -122,8 +122,6 @@ CABLES.GLGUI.GlCable = class
             this._oldx2 = this._x2;
             this._oldy2 = this._y2;
 
-            console.log("draw line");
-
             if (!CABLES.UI.userSettings.get("straightLines"))
             {
                 if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
@@ -131,22 +129,24 @@ CABLES.GLGUI.GlCable = class
                     this._splineDrawer.setSpline(this._splineIdx,
                         [
                             this._x, this._y, 0,
+                            this._x, this._y, 0,
+                            this._x2, this._y2, 0,
                             this._x2, this._y2, 0
                         ]);
                 }
                 else
                 {
-                    const distY = (this._y + this._y2);
+                    const distY = Math.abs(this._y - this._y2);
                     this._splineDrawer.setSpline(this._splineIdx,
                         this._subdivivde(
                             [
                                 this._x, this._y, 0,
                                 this._x, this._y, 0,
-                                this._x, this._y - (Math.abs(distY) * 0.002) - 15, 0,
+                                this._x, this._y - (distY * 0.002) - 17, 0,
 
                                 (this._x + this._x2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
 
-                                this._x2, this._y2 + (Math.abs(distY) * 0.002) + 15, 0,
+                                this._x2, this._y2 + (distY * 0.002) + 17, 0,
                                 this._x2, this._y2, 0,
                                 this._x2, this._y2, 0,
                             ]));
@@ -154,6 +154,7 @@ CABLES.GLGUI.GlCable = class
             }
             else
             {
+                // straight lines...
                 this._splineDrawer.setSpline(this._splineIdx,
                     [
                         this._x, this._y, 0,
