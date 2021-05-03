@@ -665,6 +665,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._updateGreyout();
         perf.finish();
+
+        this._cgl.profileData.clearGlQuery();
     }
 
     mouseMove(x, y)
