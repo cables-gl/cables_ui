@@ -246,7 +246,7 @@ CABLES.GLGUI.SplineDrawer = class
             "index": this._count
         };
 
-        console.log("get new spline");
+        // console.log("get new spline");
         this._rebuildLater = true;
 
         return this._count;
@@ -326,7 +326,7 @@ CABLES.GLGUI.SplineDrawer = class
                     isDifferent = true;
                     isDifferentLength = true;
 
-                    console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
+                    // console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
                 }
                 else
