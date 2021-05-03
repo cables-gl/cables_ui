@@ -246,6 +246,7 @@ CABLES.GLGUI.SplineDrawer = class
             "index": this._count
         };
 
+        console.log("get new spline");
         this._rebuildLater = true;
 
         return this._count;
@@ -306,11 +307,26 @@ CABLES.GLGUI.SplineDrawer = class
             if (this._splines[idx] && this._splines[idx].origPoints)
             {
                 isDifferent = false;
-                if (points.length != this._splines[idx].origPoints.length)
+
+                if (points.length - 1 < this._splines[idx].origPoints.length)
+                {
+                    // if new num of points is smaller than last one just draw last point multiple times and do not rebuild everything...
+                    isDifferent = true;
+                    for (let i = points.length / 3; i < this._splines[idx].origPoints.length / 3; i++)
+                    {
+                        points[i * 3] = points[i * 3];
+                        points[i * 3 + 1] = points[i * 3] + 1;
+                        points[i * 3 + 2] = points[i * 3 + 2];
+                    }
+                }
+                else
+                if (points.length > this._splines[idx].origPoints.length)
                 {
                     // length of spline changed, we need to rebuild the whole buffer....
                     isDifferent = true;
                     isDifferentLength = true;
+
+                    console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
                 }
                 else
@@ -415,6 +431,8 @@ CABLES.GLGUI.SplineDrawer = class
 
     _updateAttribsCoordinates(idx)
     {
+        if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
+
         if (!this._mesh || !this._colors)
         {
             this._rebuildLater = true;
@@ -447,11 +465,6 @@ CABLES.GLGUI.SplineDrawer = class
             const idx31 = (i + 1) * 3;
 
             if (
-            // points[idx3 + 0] != undefined &&
-            // points[idx3 + 1] != undefined &&
-            // points[idx31 + 0] != undefined &&
-            // points[idx31 + 1] != undefined &&
-
                 !isNaN(points[idx3 + 0]) &&
                 !isNaN(points[idx3 + 1]) &&
                 !isNaN(points[idx31 + 0]) &&
@@ -504,7 +517,7 @@ CABLES.GLGUI.SplineDrawer = class
     rebuild()
     {
         if (this._splines.length == 0) return;
-
+        console.log("spline complete rebuild...");
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
