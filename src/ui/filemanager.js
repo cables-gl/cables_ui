@@ -371,16 +371,19 @@ CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
     console.log("passed filetitle", fileTitle);
     const fileInfoJSONS = [{
         "fileTitle": "WorkSans-Regular.ttf.png",
+        "originalUrl": "www.google.com",
+        "license": "MIT"
     },
     {
         "fileTitle": "Chevel-Stranded.mp3",
-
+        "type": "audio",
         "title": "Stranded",
         "album": "Malleschlager 4",
         "artist": "Chevel",
         "artistLink": "www.chevel.com",
         "license": "Creative Commons",
         "originalUrl": "www.russianmp3s.de",
+        "isAudio": true
     }
     ];
     const res = fileInfoJSONS.filter(json => json.fileTitle === fileTitle)[0];
