@@ -541,6 +541,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.error("BROKEN");
         }
 
+        this.debugData.splineUpdate = 0;
+
         for (const i in this._glOpz)
         {
             this._glOpz[i].updateIfNeeded();
@@ -665,6 +667,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._updateGreyout();
         perf.finish();
+
+        this._cgl.profileData.clearGlQuery();
     }
 
     mouseMove(x, y)

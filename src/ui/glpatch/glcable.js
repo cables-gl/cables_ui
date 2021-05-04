@@ -126,13 +126,26 @@ CABLES.GLGUI.GlCable = class
             {
                 if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
                 {
+                    // this._splineDrawer.setSpline(this._splineIdx,
+                    //     [
+                    //         this._x, this._y, 0,
+                    //         this._x, this._y, 0,
+                    //         this._x2, this._y2, 0,
+                    //         this._x2, this._y2, 0
+                    //     ]);
+
                     this._splineDrawer.setSpline(this._splineIdx,
-                        [
-                            this._x, this._y, 0,
-                            this._x, this._y, 0,
-                            this._x2, this._y2, 0,
-                            this._x2, this._y2, 0
-                        ]);
+                        this._subdivivde(
+                            [
+                                this._x, this._y, 0,
+                                this._x, this._y, 0,
+                                this._x, this._y, 0,
+
+                                this._x2, this._y2, 0,
+                                this._x2, this._y2, 0,
+                                this._x2, this._y2, 0,
+                                this._x2, this._y2, 0
+                            ]));
                 }
                 else
                 {
