@@ -368,6 +368,7 @@ CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
 };
 CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
 {
+    // * call API here?
     console.log("passed filetitle", fileTitle);
     const fileInfoJSONS = [{
         "fileTitle": "WorkSans-Regular.ttf.png",
@@ -383,7 +384,10 @@ CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
         "artistLink": "www.chevel.com",
         "license": "Creative Commons",
         "originalUrl": "www.russianmp3s.de",
-        "isAudio": true
+        "isAudio": true,
+        "bitrate": "320 kbps",
+        "audioType": "song",
+        "length": 3.20
     }
     ];
     const res = fileInfoJSONS.filter(json => json.fileTitle === fileTitle)[0];
@@ -394,7 +398,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 {
     let html = "";
     document.getElementById("item_details").innerHTML = "";
-
+    console.log("detilaitems", detailItems);
     if (detailItems.length == 1)
     {
         const itemId = detailItems[0].id;
@@ -417,11 +421,16 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         "source": this._fileSource,
                     });
                 }
-                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
-                    "filename": detailItems[0].p,
-                    "file": detailItems[0],
-                    "infoJSON": this.getInfoJSON(detailItems[0].title)
-                });
+                else
+                {
+                    // * it's a library file
+                    const item = detailItems[0];
+                    html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                        "filename": item.p,
+                        "file": item,
+                        "infoJSON": this.getInfoJSON(item.title)
+                    });
+                }
 
                 if (document.getElementById("item_details"))
                     document.getElementById("item_details").innerHTML = html;
