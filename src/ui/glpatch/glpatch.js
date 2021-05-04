@@ -122,6 +122,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectedGlOps = {};
 
         this.links = {};
+        this.zIndex = 0;
 
         // for (let i = -5000; i < 5000; i += 100)
         // {
@@ -203,6 +204,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
         });
+    }
+
+    zIndex()
+    {
+        return this.zIndex++;
     }
 
     setCursor(c)

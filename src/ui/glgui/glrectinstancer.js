@@ -102,8 +102,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    pos.x+=scrollX;"
             .endl() + "    pos.y+=scrollY;"
 
-            .endl() + "    zz=instPos.z;"
-
+            .endl() + "    pos.z=zz=instPos.z;"
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
@@ -209,7 +208,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
-        // .endl() + "   outColor.a+=0.5;"
+            // .endl() + "   outColor.rgb=vec3(zz);"
             .endl() + "outColor.a*=col.a;"
             .endl() + "}");
 
