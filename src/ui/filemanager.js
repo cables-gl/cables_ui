@@ -366,7 +366,27 @@ CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
         );
     }
 };
+CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
+{
+    console.log("passed filetitle", fileTitle);
+    const fileInfoJSONS = [{
+        "fileTitle": "WorkSans-Regular.ttf.png",
+    },
+    {
+        "fileTitle": "Chevel-Stranded.mp3",
 
+        "title": "Stranded",
+        "album": "Malleschlager 4",
+        "artist": "Chevel",
+        "artistLink": "www.chevel.com",
+        "license": "Creative Commons",
+        "originalUrl": "www.russianmp3s.de",
+    }
+    ];
+    const res = fileInfoJSONS.filter(json => json.fileTitle === fileTitle)[0];
+    console.log("filtered result", res);
+    return res;
+};
 CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 {
     let html = "";
@@ -394,7 +414,11 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         "source": this._fileSource,
                     });
                 }
-                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
+                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                    "filename": detailItems[0].p,
+                    "file": detailItems[0],
+                    "infoJSON": this.getInfoJSON(detailItems[0].title)
+                });
 
                 if (document.getElementById("item_details"))
                     document.getElementById("item_details").innerHTML = html;
