@@ -141,8 +141,6 @@
 
 
 
-
-
 <script id="filemanager_details_lib" type="text/x-handlebars-template">
 
     <div class="filemanager-detail-element">
@@ -163,24 +161,48 @@
 
         <div class="filemanager-detail-element">
         <div style="padding:10px;">
-
-            {{#if infoJSON.isAudio}}
-                <div class=""><b>Artist:</b> {{infoJSON.artist}}</div>
-                <div class=""><b>Title:</b> {{infoJSON.title}}</div>
-                <div class=""><b>Artist Page:</b> {{infoJSON.artistLink}}</div>
-                {{else}}
-                <div class=""><b>Author:</b> {{infoJSON.author}}</div>
-            {{/if}}
+            <div class=""><b>Author:</b> {{infoJSON.author}}</div>
             <div class=""><b>License:</b> {{infoJSON.license}}</div>
             <div class=""><b>Original URL:</b> {{infoJSON.originalUrl}}</div>
-            {{#if infoJSON.isAudio}}
-                <div class=""><b>Length:</b> {{infoJSON.length}}</div>
-                <div class=""><b>Bitrate:</b> {{infoJSON.bitrate}}</div>
-                <div class=""><b>Type:</b> {{infoJSON.audioType}}</div>
-            {{/if}}
         </div>
     </div>
 </script>
+
+<script id="filemanager_details_lib_audio" type="text/x-handlebars-template">
+
+    <div class="filemanager-detail-element">
+        <div style="padding:10px;">
+
+            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="{{filename}}">
+                <span class="icon icon-1x icon-download" ></span>
+            </a>
+            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="{{filename}}">
+                <span class="icon icon-1x icon-external"></span>
+            </a>
+            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find('{{filename}}')">
+                <a class="icon icon-1x icon-search"></a>
+            </span>
+
+        </div>
+    </div>
+
+        <div class="filemanager-detail-element">
+        <div style="padding:10px;">
+            <div class=""><b>Artist:</b> {{infoJSON.artist}}</div>
+            <div class=""><b>Title:</b> {{infoJSON.title}}</div>
+            <div class=""><b>Artist Page:</b> {{infoJSON.artistLink}}</div>
+            <div class=""><b>License:</b> {{infoJSON.license}}</div>
+            <div class=""><b>Original URL:</b> {{infoJSON.originalUrl}}</div>
+
+            <div class=""><b>Length:</b> {{infoJSON.length}}</div>
+            <div class=""><b>Bitrate:</b> {{infoJSON.bitrate}}</div>
+            <div class=""><b>Type:</b> {{infoJSON.audioType}}</div>
+        </div>
+    </div>
+</script>
+
+
+
 
 
 

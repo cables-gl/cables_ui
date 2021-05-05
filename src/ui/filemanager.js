@@ -392,7 +392,8 @@ CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
     ];
     const res = fileInfoJSONS.filter(json => json.fileTitle === fileTitle)[0];
     console.log("filtered result", res);
-    return res;
+    if (res) return res;
+    else return { "type": "" };
 };
 CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 {
@@ -425,11 +426,23 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 {
                     // * it's a library file
                     const item = detailItems[0];
-                    html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
-                        "filename": item.p,
-                        "file": item,
-                        "infoJSON": this.getInfoJSON(item.title)
-                    });
+                    const itemInfo = this.getInfoJSON(item.title);
+                    if (itemInfo.type !== "audio")
+                    {
+                        html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                            "filename": item.p,
+                            "file": item,
+                            "infoJSON": itemInfo
+                        });
+                    }
+                    else
+                    {
+                        html = CABLES.UI.getHandleBarHtml("filemanager_details_lib_audio", {
+                            "filename": item.p,
+                            "file": item,
+                            "infoJSON": itemInfo
+                        });
+                    }
                 }
 
                 if (document.getElementById("item_details"))
