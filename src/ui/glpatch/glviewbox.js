@@ -287,7 +287,7 @@ CABLES.GLGUI.ViewBox = class
         // console.log(x, y, dur);
 
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
-        // if (userInteraction)p = 0;
+        if (userInteraction)p = 0;
         if (p != p)p = 0;
         // console.log("offset", p);
 
@@ -317,8 +317,8 @@ CABLES.GLGUI.ViewBox = class
         this._animScrollX.clear();
         this._animScrollY.clear();
 
-        this._animScrollX.setValue(this.glPatch.time, this._scrollX);
-        this._animScrollY.setValue(this.glPatch.time, this._scrollY);
+        this._animScrollX.setValue(this.glPatch.time, x);
+        this._animScrollY.setValue(this.glPatch.time, y);
 
         // this._scrollX = x;
         // this._scrollY = y;
