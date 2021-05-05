@@ -107,6 +107,7 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
 
             this._firstTimeOpening = false;
             this._files = files;
+            console.log("files after ",);
             this._buildHtml();
 
             if (cb) cb();
@@ -425,24 +426,40 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 else
                 {
                     // * it's a library file
+
                     const item = detailItems[0];
-                    const itemInfo = this.getInfoJSON(item.title);
-                    if (itemInfo.type !== "audio")
-                    {
-                        html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
-                            "filename": item.p,
-                            "file": item,
-                            "infoJSON": itemInfo
-                        });
-                    }
-                    else
-                    {
-                        html = CABLES.UI.getHandleBarHtml("filemanager_details_lib_audio", {
-                            "filename": item.p,
-                            "file": item,
-                            "infoJSON": itemInfo
-                        });
-                    }
+                    const fileInfoPath = item.p.substring("/assets/library/".length);
+
+                    CABLESUILOADER.talkerAPI.send(
+                        "getLibraryFileInfo",
+                        {
+                            "filename": fileInfoPath,
+                        },
+                        (err, r) =>
+                        {
+                            const itemInfo = r;
+                            console.log("response", itemInfo);
+                            if (itemInfo.type !== "audio")
+                            {
+                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "infoJSON": itemInfo
+                                });
+                            }
+                            else
+                            {
+                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib_audio", {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "infoJSON": itemInfo
+                                });
+                            }
+
+                            if (document.getElementById("item_details"))
+                                document.getElementById("item_details").innerHTML = html;
+                        }
+                    );
                 }
 
                 if (document.getElementById("item_details"))
