@@ -133,8 +133,9 @@ CABLES.GLGUI.ViewBox = class
             const pixelMulX = (this._cgl.canvas.width / this._zoom) * 0.5 / this._cgl.pixelDensity;
             const pixelMulY = (this._cgl.canvas.height / this._zoom) * 0.5 / this._cgl.pixelDensity;
 
-            this._scrollX = this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX;
-            this._scrollY = this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY;
+            this.scrollTo(
+                this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY);
         }
     }
 
@@ -173,7 +174,7 @@ CABLES.GLGUI.ViewBox = class
         if (event.deltaY < 0)delta *= -1;
 
         if (event.altKey) this._scrollY -= delta;
-        else if (event.shiftKey) this._scrollX -= delta;
+        else if (event.shiftKey) this.scrollTo(this._scrollX - delta, this._scrollY);
 
         this.wheelZoom(delta);
         this.setMousePos(this._mouseX, this._mouseY);
@@ -243,8 +244,10 @@ CABLES.GLGUI.ViewBox = class
     {
         const time = this.glPatch.time;
         if (!this._animZoom.isFinished(time)) this._zoom = this._animZoom.getValue(time);
-        if (!this._animScrollX.isFinished(time)) this._scrollX = this._animScrollX.getValue(time);
-        if (!this._animScrollY.isFinished(time)) this._scrollY = this._animScrollY.getValue(time);
+        // if (!this._animScrollX.isFinished(time))
+        this._scrollX = this._animScrollX.getValue(time);
+        // if (!this._animScrollY.isFinished(time))
+        this._scrollY = this._animScrollY.getValue(time);
 
         if (this._zoom != this._zoom)
         {
@@ -284,18 +287,21 @@ CABLES.GLGUI.ViewBox = class
         // console.log(x, y, dur);
 
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
-        if (userInteraction)p = 0;
+        // if (userInteraction)p = 0;
         if (p != p)p = 0;
         // console.log("offset", p);
 
         dur = dur || 0.2;
 
-        this._animScrollX.clear();
-        this._animScrollX.setValue(this.glPatch.time, this._scrollX);
+        console.log("animscrollto", x, y);
+
+
+        this._animScrollX.clear(this.glPatch.time);
+        // this._animScrollX.setValue(this.glPatch.time, this._scrollX);
         this._animScrollX.setValue(this.glPatch.time + dur, x - p);
 
-        this._animScrollY.clear();
-        this._animScrollY.setValue(this.glPatch.time, this._scrollY);
+        this._animScrollY.clear(this.glPatch.time);
+        // this._animScrollY.setValue(this.glPatch.time, this._scrollY);
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
@@ -306,8 +312,16 @@ CABLES.GLGUI.ViewBox = class
         // if (p != p)p = 0;
         // console.log("offset", p);
 
-        this._scrollX = x;
-        this._scrollY = y;
+        console.log("scrollto", x, y);
+
+        this._animScrollX.clear();
+        this._animScrollY.clear();
+
+        this._animScrollX.setValue(this.glPatch.time, this._scrollX);
+        this._animScrollY.setValue(this.glPatch.time, this._scrollY);
+
+        // this._scrollX = x;
+        // this._scrollY = y;
 
         gui.patchView.emitEvent("viewBoxChange");
     }
@@ -319,8 +333,9 @@ CABLES.GLGUI.ViewBox = class
         if (ops.length == 0)
         {
             this._zoom = 400;
-            this._scrollX = 0;
-            this._scrollY = 0;
+            this.scrollTo(0, 0);
+            // this._scrollX = 0;
+            // this._scrollY = 0;
             return;
         }
 
@@ -344,6 +359,9 @@ CABLES.GLGUI.ViewBox = class
                     0);
             }
         }
+
+
+        console.log("-----", ops.length);
 
         bb.calcCenterSize();
         const padding = 1.05;
@@ -373,6 +391,7 @@ CABLES.GLGUI.ViewBox = class
             cy = 0;
         }
 
+        console.log(bb.center[0], cy);
 
         this.animateScrollTo(bb.center[0], cy);
 
