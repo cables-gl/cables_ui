@@ -40,15 +40,16 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            for (const i in this._glPatch.selectedGlOps)
-            {
-                if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
+            if (this._cable.isHoveredButtonRect())
+                for (const i in this._glPatch.selectedGlOps)
                 {
-                    const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
-                    gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
-                    return;
+                    if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
+                    {
+                        const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
+                        gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
+                        return;
+                    }
                 }
-            }
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {

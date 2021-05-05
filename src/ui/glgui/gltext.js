@@ -12,6 +12,7 @@ CABLES.GLGUI.Text = class
         this._string = string;
         this._x = 0;
         this._y = 0;
+        this._z = 0;
         this._rects = [];
         this._width = 0;
         this._height = 0;
@@ -37,6 +38,8 @@ CABLES.GLGUI.Text = class
 
     set y(y) { this._y = y; this.rebuild(); }
 
+    set z(z) { this._z = z; this.rebuild(); }
+
     set text(t) { this._string = t; this.rebuild(); }
 
     get text() { return this._string; }
@@ -45,10 +48,13 @@ CABLES.GLGUI.Text = class
 
     get height() { return this._height; }
 
-    setPosition(x, y)
+    setPosition(x, y, z)
     {
         this._x = x;
         this._y = y;
+        this._z = z;
+
+        // console.log(x, y, z);
         this.rebuild();
     }
 
@@ -77,6 +83,7 @@ CABLES.GLGUI.Text = class
         this._parentRect = r;
         // this._parentRect.on("positionChanged",this.rebuild.bind(this));
         this._parentRect.on("positionChanged", this.rebuild.bind(this));
+        this.rebuild();
     }
 
     setOpacity(a)
@@ -113,7 +120,7 @@ CABLES.GLGUI.Text = class
         const lineHeight = this._map(this._font.info.size / 2) + 13;
         let posX = this._x;
 
-
+        let posZ = this._z;
         let posY = this._y + lineHeight;
         let countLines = 1;
 
@@ -121,6 +128,7 @@ CABLES.GLGUI.Text = class
         {
             posX += this._parentRect.x;
             posY += this._parentRect.y;
+            posZ += this._parentRect.z;
         }
 
         if (this._align == 1) posX -= this._width / 2;
@@ -146,7 +154,7 @@ CABLES.GLGUI.Text = class
 
             // if (i == 3)
             // console.log(posX - this._map(ch.xoffset), posY - this._map(ch.yoffset));
-            rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0); //
+            rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0, posZ); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
             rect.setColor(this._color);
 

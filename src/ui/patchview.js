@@ -1552,6 +1552,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (!op.portsIn[0] || !op.portsOut[0]) return;
         // if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
 
+        console.log("insert into link?!");
+
+
         let portIn = oldLink.portIn;
         let portOut = oldLink.portOut;
 
