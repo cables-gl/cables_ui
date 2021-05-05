@@ -274,7 +274,7 @@ CABLES.GLGUI.ViewBox = class
     animateZoom(z, dur)
     {
         dur = dur || 0.25;
-        // console.log(this.glPatch.time, this._zoom, z);
+
         this._animZoom.clear();
         this._animZoom.setValue(this.glPatch.time, this._zoom);
         this._animZoom.setValue(this.glPatch.time + dur, z);
@@ -282,42 +282,30 @@ CABLES.GLGUI.ViewBox = class
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        // if (x != x)x = 0;
-        // if (y != y)y = 0;
-        // console.log(x, y, dur);
-
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;
         if (p != p)p = 0;
-        // console.log("offset", p);
 
         dur = dur || 0.2;
 
-        console.log("animscrollto", x, y);
-
 
         this._animScrollX.clear(this.glPatch.time);
-        // this._animScrollX.setValue(this.glPatch.time, this._scrollX);
         this._animScrollX.setValue(this.glPatch.time + dur, x - p);
-
         this._animScrollY.clear(this.glPatch.time);
-        // this._animScrollY.setValue(this.glPatch.time, this._scrollY);
         this._animScrollY.setValue(this.glPatch.time + dur, y);
     }
 
     scrollTo(x, y, userInteraction)
     {
-        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._zoom;
-        // if (userInteraction)p = 0;
-        // if (p != p)p = 0;
-        // console.log("offset", p);
+        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        if (userInteraction)p = 0;
+        if (p != p)p = 0;
 
-        console.log("scrollto", x, y);
 
         this._animScrollX.clear();
         this._animScrollY.clear();
 
-        this._animScrollX.setValue(this.glPatch.time, x);
+        this._animScrollX.setValue(this.glPatch.time, x - p);
         this._animScrollY.setValue(this.glPatch.time, y);
 
         // this._scrollX = x;
@@ -361,14 +349,11 @@ CABLES.GLGUI.ViewBox = class
         }
 
 
-        console.log("-----", ops.length);
-
         bb.calcCenterSize();
         const padding = 1.05;
-        // console.log("bb size", bb.size[0], bb.size[1]);
 
-        bb.size[0] = Math.max(bb.size[0], 200);
-        bb.size[1] = Math.max(bb.size[1], 200);
+        bb.size[0] = Math.max(bb.size[0], 250);
+        bb.size[1] = Math.max(bb.size[1], 250);
 
         bb.size[0] *= padding;
         bb.size[1] *= padding;
@@ -383,33 +368,10 @@ CABLES.GLGUI.ViewBox = class
 
         let cy = bb.center[1] * (this._viewResX / this._viewResY);
 
-        // this.scrollTo(bb.center[0], cy);
-
-        if (cy != cy)
-        {
-            // console.log("center coord NaN!");
-            cy = 0;
-        }
-
-        console.log(bb.center[0], cy);
+        if (cy != cy) cy = 0;
 
         this.animateScrollTo(bb.center[0], cy);
-
-
-        // if (glop.x + glop.w >= x && // glop. right edge past r2 left
-        //     glop.x <= x2 && // glop. left edge past r2 right
-        //     glop.y + glop.h >= y && // glop. top edge past r2 bottom
-        //     glop.y <= y2) // r1 bottom edge past r2 top
-
-
-        // this._boundingRect2.setPosition(
-        //     bb.center[0] - (bb.size[0] / 2),
-        //     bb.center[1] - (bb.size[1] / 2),
-        //     0.1);
-        // this._boundingRect2.setSize(bb.size[0], bb.size[1]);
-        // this._boundingRect2.setDecoration(4);
     }
-
 
     screenToPatchCoord(x, y, aspect)
     {

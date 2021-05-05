@@ -1304,8 +1304,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.setSelectedOpById(opid);
         this.focus();
 
-        if (op && op.uiAttribs && op.uiAttribs.translate)
-            this.centerView(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        // if (op && op.uiAttribs && op.uiAttribs.translate)
+        this.centerView(); // op.uiAttribs.translate.x, op.uiAttribs.translate.y
     }
 
     setSelectedOpById(opid)

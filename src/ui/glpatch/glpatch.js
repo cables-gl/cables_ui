@@ -358,7 +358,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     center(x, y)
     {
         if (x == undefined) this.viewBox.center();
-        else this.viewBox.animateScrollTo(x, y);
+        else this.viewBox.animateScrollTo(x, y, 0, false);
     }
 
     get lineDrawer()
