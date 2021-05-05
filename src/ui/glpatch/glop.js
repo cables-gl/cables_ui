@@ -30,6 +30,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._hidePorts = false;
         this._hideBgRect = false;
 
+        this._posZ = Math.random() * -0.3;
+        // glPatch.zIndex();
+
 
         this._glPorts = [];
         this.opUiAttribs = {};
@@ -261,8 +264,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _updateCommentPosition()
     {
         if (this._glComment)
-            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, 0.8);
-            else this._glComment.setPosition(0, this._height + 20);
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this._posZ);
+            else this._glComment.setPosition(0, this._height + 20, this._posZ);
     }
 
     updateSize()
@@ -387,10 +390,10 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
-        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, 0.8);
+        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this._posZ);
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0.8);
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0.8);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this._posZ);
+        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this._posZ);
         this._updateCommentPosition();
         this._updateErrorDots();
     }

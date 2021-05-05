@@ -140,9 +140,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 this.patchView.focus();
                 this.patchView.focusOp(opid);
-
-                this.patchView.setSelectedOpById(opid);
-                this.patchView.centerView();
+                this.patchView.centerSelectOp(opid);
             });
         }
 

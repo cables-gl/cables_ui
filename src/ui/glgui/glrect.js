@@ -21,6 +21,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
         this._z = 0;
         this._absX = 0;
         this._absY = 0;
+        this._absZ = 0;
         this._w = 110;
         this._h = 110;
         this._rectInstancer.setSize(this._attrIndex, this._w, this._h);
@@ -159,14 +160,16 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
         this._absX = this._x;
         this._absY = this._y;
+        this._absZ = this._z;
 
         if (this._parent)
         {
             this._absX += this._parent.x;
             this._absY += this._parent.y;
+            this._absZ += this._parent.z;
         }
 
-        this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY, this._z);
+        this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY, this._absZ);
 
         for (let i = 0; i < this.childs.length; i++) this.childs[i].setPosition(this.childs[i].x, this.childs[i].y);
         this.emitEvent("positionChanged");
