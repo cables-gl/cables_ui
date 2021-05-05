@@ -135,7 +135,7 @@ CABLES.GLGUI.ViewBox = class
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
-                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY);
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY, true);
         }
     }
 
