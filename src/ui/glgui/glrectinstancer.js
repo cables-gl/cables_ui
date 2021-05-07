@@ -16,7 +16,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         this._name = options.name || "unknown";
         this._counter = 0;
-        this._num = options.initNum || 1000;
+        this._num = options.initNum || 5000;
         this._needsRebuild = true;
         this._needsRebuildReason = "";
         this._rects = [];
@@ -485,7 +485,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         // console.log("inst counter",this._counter);
         if (this._counter > this._num - 100)
         {
-            this._num += 1000;
+            this._num += 5000;
             console.log("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
