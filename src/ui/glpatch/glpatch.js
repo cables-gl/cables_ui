@@ -53,6 +53,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
 
+
+        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this.cablesHoverText.setPosition(0, 0);
+        this.cablesHoverText.setColor(1, 1, 1, 1);
+
         this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         this._hoverCable.setPosition(0, 0, 100, 100);
         this._hoverCable.setColor(1, 1, 1, 0.5);
@@ -117,6 +122,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._selectedGlOps = {};
 
         this.links = {};
+        this.zIndex = 0;
 
         // for (let i = -5000; i < 5000; i += 100)
         // {
@@ -198,6 +204,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
         });
+    }
+
+    zIndex()
+    {
+        return this.zIndex++;
     }
 
     setCursor(c)
@@ -347,7 +358,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     center(x, y)
     {
         if (x == undefined) this.viewBox.center();
-        else this.viewBox.animateScrollTo(x, y);
+        else this.viewBox.animateScrollTo(x, y, 0, false);
     }
 
     get lineDrawer()
@@ -536,6 +547,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             console.error("BROKEN");
         }
 
+        this.debugData.splineUpdate = 0;
+
         for (const i in this._glOpz)
         {
             this._glOpz[i].updateIfNeeded();
@@ -622,7 +635,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
-        this._cgl.printError("render");
+
         this.needsRedraw = false;
 
         if (performance.now() - this._fpsStartTime > 1000)
@@ -660,6 +673,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._updateGreyout();
         perf.finish();
+
+        this._cgl.profileData.clearGlQuery();
     }
 
     mouseMove(x, y)

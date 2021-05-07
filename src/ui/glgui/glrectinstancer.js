@@ -102,8 +102,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    pos.x+=scrollX;"
             .endl() + "    pos.y+=scrollY;"
 
-            .endl() + "    zz=instPos.z;"
-
+            .endl() + "    pos.z=zz=instPos.z;"
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
@@ -209,7 +208,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
-        // .endl() + "   outColor.a+=0.5;"
+            // .endl() + "   outColor.rgb=vec3(zz);"
             .endl() + "outColor.a*=col.a;"
             .endl() + "}");
 
@@ -420,7 +419,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     rebuild()
     {
-        // console.log("rebuild!", this._needsRebuildReason);
+        console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
         this._needsRebuildReason = "";
         // todo only update whats needed
 
@@ -506,8 +505,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
         const i = idx * 3;
         if (this._float32Diff(this._attrBuffPos[i + 0], x) || this._float32Diff(this._attrBuffPos[i + 1], y) || this._float32Diff(this._attrBuffPos[i + 2], z))
         {
-            this._needsRebuild = true;
-            this._needsRebuildReason = "pos change";
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "pos change";
             // this._setAttrRange(this.ATTR_POS, i, i + 3);
         }
         else return;
@@ -550,8 +549,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
     {
         if (this._float32Diff(this._attrBuffSizes[idx * 2 + 0], x) || this._float32Diff(this._attrBuffSizes[idx * 2 + 1], y))
         {
-            this._needsRebuild = true;
-            this._needsRebuildReason = "size change";
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "size change";
             // this._setAttrRange(this.ATTR_SIZE, idx * 2, (idx + 1) * 2);
         }
         else return;
@@ -569,8 +568,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._float32Diff(this._attrTexRect[idx * 4 + 2], w) ||
             this._float32Diff(this._attrTexRect[idx * 4 + 3], h))
         {
-            this._needsRebuild = true;
-            this._needsRebuildReason = "texrect";
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "texrect";
             // this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
         }
         else return;
@@ -597,8 +596,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             this._float32Diff(this._attrBuffCol[idx * 4 + 2], b) ||
             this._float32Diff(this._attrBuffCol[idx * 4 + 3], a))
         {
-            this._needsRebuild = true;
-            this._needsRebuildReason = "setcolor";
+            // this._needsRebuild = true;
+            // this._needsRebuildReason = "setcolor";
             // this._setAttrRange(this._meshAttrCol, idx * 4, idx * 4 + 4);
         }
         else return;

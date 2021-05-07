@@ -40,15 +40,16 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            for (const i in this._glPatch.selectedGlOps)
-            {
-                if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
+            if (this._cable.isHoveredButtonRect())
+                for (const i in this._glPatch.selectedGlOps)
                 {
-                    const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
-                    gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
-                    return;
+                    if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
+                    {
+                        const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
+                        gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
+                        return;
+                    }
                 }
-            }
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
@@ -152,6 +153,8 @@ CABLES.GLGUI.GlLink = class
     {
         if (this._visible)
         {
+            if (!this._opOut) this.update();
+
             if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
             {
                 const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
@@ -215,8 +218,37 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect = null;
     }
 
-    setFlowModeActivity(act)
+    _singleValueToString(v)
     {
+        let r = null;
+        if (typeof v == "number") r = String(Math.round(v * 1000) / 1000);
+        else if (typeof v == "string") r = "\"" + v + "\"";
+        return r;
+    }
+
+    setFlowModeActivity(act, v)
+    {
+        let r = "";
+        if (typeof v == "number") r = this._singleValueToString(v);// v = Math.round(v * 1000) / 1000;
+        else if (typeof v == "string") r = this._singleValueToString(v);// v = "\"" + v + "\"";
+        else if (Array.isArray(v))
+        {
+            r = "[";
+
+            for (let i = 0; i < Math.min(v.length, 3); i++)
+            {
+                r += this._singleValueToString(v[i]);
+                r += ", ";
+            }
+
+            if (v.length > 3)r += "...";
+            r += "]";
+            r += " (" + v.length + ")";
+        }
+
+        if (r.length > 10) r = r.substr(0, 43) + "...";
+
+        this._cable.setText(r);
         this._cable.setSpeed(act);
     }
 

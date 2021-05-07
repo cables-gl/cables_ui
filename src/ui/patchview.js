@@ -1304,8 +1304,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.setSelectedOpById(opid);
         this.focus();
 
-        if (op && op.uiAttribs && op.uiAttribs.translate)
-            this.centerView(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        // if (op && op.uiAttribs && op.uiAttribs.translate)
+        this.centerView(); // op.uiAttribs.translate.x, op.uiAttribs.translate.y
     }
 
     setSelectedOpById(opid)
@@ -1550,7 +1550,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     insertOpInLink(oldLink, op, x, y)
     {
         if (!op.portsIn[0] || !op.portsOut[0]) return;
-        if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
+        // if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
+
+        console.log("insert into link?!");
 
 
         let portIn = oldLink.portIn;
@@ -1573,9 +1575,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             oldLink.remove();
         }
 
-        if (portIn && portOut && op.portsOut[0] && !op.portsIn[0].isLinked())
+        if (portIn && portOut && op.portsOut[0]) // && !op.portsIn[0].isLinked()
         {
-            if (!portOut.isLinked() && CABLES.Link.canLink(op.portsIn[0], portOut))
+            if (CABLES.Link.canLink(op.portsIn[0], portOut)) //! portOut.isLinked() &&
             {
                 gui.corePatch().link(
                     op,
@@ -1591,7 +1593,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
             else
             {
-                // console.log(oldLink, portIn, portOut);
                 gui.corePatch().link(
                     portIn.parent, portIn.getName(),
                     portOut.parent, portOut.getName());
