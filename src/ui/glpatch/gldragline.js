@@ -20,14 +20,33 @@ CABLES.GLGUI.GlRectDragLine = class
         this._lineIndices = [];
         this._clearSpline();
 
+
+        console.log("new glrectdragline...");
+
+        document.body.addEventListener("pointerup", (e) =>
+        {
+            console.log("up", e);
+        });
+
         glpatch.on("mouseup", (e) =>
         {
             if (!this.isActive) return;
 
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
-                console.log("undo rightclick...");
+                // console.log("undo rightclick...");
             }
+
+            const ele = document.elementFromPoint(e.x, e.y);
+            if (ele.dataset.opid && ele.dataset.portname)
+            {
+                // glpatch.on("mouseUpOverOp", (e, opid) =>
+
+                console.log("ele over", ele.dataset.opid, ele.dataset.portname);
+
+                this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
+            }
+
 
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT && this._glPort && this._glPort.port)
             {
