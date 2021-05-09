@@ -122,10 +122,12 @@
 .paramsPortTitleClickable
 {
     cursor:pointer;
+    user-select:none;
 
     &:hover
     {
-        text-decoration: underline;
+        // text-decoration: underline;
+        background-color: #444;
     }
 }
 
