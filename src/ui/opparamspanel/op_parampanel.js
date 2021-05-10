@@ -17,9 +17,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._templateHead = Handlebars.compile(this._sourceHead);
 
         this._currentOp = null;
-
         this._eventPrefix = CABLES.uuid();
-
 
         this._updateWatchPorts();
     }
@@ -365,6 +363,23 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     $("#portFileVal_" + i + "_preview").html("");
                 }
             }
+
+
+            document.getElementById("portTitle_in_" + i).addEventListener("drop", (e) =>
+            {
+                console.log("pointer up!");
+            });
+
+            document.getElementById("portTitle_in_" + i).addEventListener("pointerdown", (e) =>
+            {
+                if (gui.patchView._patchRenderer.getOp)
+                {
+                    const glOp = gui.patchView._patchRenderer.getOp(op.id);
+                    const glPort = glOp.getGlPort(op.portsIn[i].name);
+
+                    gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsIn[i].name, e);
+                }
+            });
         }
 
         for (const ipo in op.portsOut)

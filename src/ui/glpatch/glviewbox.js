@@ -28,6 +28,7 @@ CABLES.GLGUI.ViewBox = class
         this._mouseRightDownStartY = 0;
         this._zoom = CABLES.GLGUI.VISUALCONFIG.zoomDefault;
         this._spaceDown = false;
+        this._touchpadMode = false;
 
         this._defaultEasing = CABLES.EASING_EXPO_OUT;
 
@@ -135,7 +136,7 @@ CABLES.GLGUI.ViewBox = class
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
-                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY);
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY, true);
         }
     }
 
@@ -171,13 +172,34 @@ CABLES.GLGUI.ViewBox = class
         this.setMousePos(event.offsetX, event.offsetY);
 
         let delta = 5;
+
+        if (!this._touchpadMode)
+            if (event.deltaX && event.deltaX > 1)
+            {
+                this._touchpadMode = true;
+                console.log("touchpad mode!");
+            }
+
         if (event.deltaY < 0)delta *= -1;
 
-        if (event.altKey) this._scrollY -= delta;
-        else if (event.shiftKey) this.scrollTo(this._scrollX - delta, this._scrollY);
+        if (!this._touchpadMode)
+        {
+            if (event.altKey) this._scrollY -= delta;
+            else if (event.shiftKey) this.scrollTo(this._scrollX - delta, this._scrollY);
 
-        this.wheelZoom(delta);
+            this.wheelZoom(delta);
+        }
+        else
+        {
+            this.scrollTo(
+                this._scrollX - event.deltaX * 4.0,
+                this._scrollY - event.deltaY * 4.0);
+        }
+
+
         this.setMousePos(this._mouseX, this._mouseY);
+
+        if (this._touchpadMode && event.metaKey) this.wheelZoom(delta);
     }
 
     wheelZoom(delta)
