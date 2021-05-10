@@ -107,7 +107,7 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
 
             this._firstTimeOpening = false;
             this._files = files;
-            console.log("files after ",);
+
             this._buildHtml();
 
             if (cb) cb();
@@ -367,40 +367,12 @@ CABLES.UI.FileManager.prototype.updateHeader = function (detailItems)
         );
     }
 };
-CABLES.UI.FileManager.prototype.getInfoJSON = function (fileTitle)
-{
-    // * call API here?
-    console.log("passed filetitle", fileTitle);
-    const fileInfoJSONS = [{
-        "fileTitle": "WorkSans-Regular.ttf.png",
-        "originalUrl": "www.google.com",
-        "license": "MIT"
-    },
-    {
-        "fileTitle": "Chevel-Stranded.mp3",
-        "type": "audio",
-        "title": "Stranded",
-        "album": "Malleschlager 4",
-        "artist": "Chevel",
-        "artistLink": "www.chevel.com",
-        "license": "Creative Commons",
-        "originalUrl": "www.russianmp3s.de",
-        "isAudio": true,
-        "bitrate": "320 kbps",
-        "audioType": "song",
-        "length": 3.20
-    }
-    ];
-    const res = fileInfoJSONS.filter(json => json.fileTitle === fileTitle)[0];
-    console.log("filtered result", res);
-    if (res) return res;
-    else return { "type": "" };
-};
+
 CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 {
     let html = "";
     document.getElementById("item_details").innerHTML = "";
-    console.log("detilaitems", detailItems);
+
     if (detailItems.length == 1)
     {
         const itemId = detailItems[0].id;
@@ -438,7 +410,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         (err, r) =>
                         {
                             const itemInfo = r;
-                            console.log("response", itemInfo);
+
                             if (itemInfo.type !== "audio")
                             {
                                 html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
