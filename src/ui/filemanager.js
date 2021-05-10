@@ -376,7 +376,6 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
     if (detailItems.length == 1)
     {
         const itemId = detailItems[0].id;
-
         CABLESUILOADER.talkerAPI.send(
             "getFileDetails",
             {
@@ -398,7 +397,6 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 else
                 {
                     // * it's a library file
-
                     const item = detailItems[0];
                     const fileInfoPath = item.p.substring("/assets/library/".length);
 
