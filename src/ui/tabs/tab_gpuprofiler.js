@@ -39,7 +39,7 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
         for (let i in glQueryData)
         {
             arr.push(glQueryData[i]);
-            allTimes += glQueryData[i].time;
+            allTimes += (glQueryData[i].time || 0);
         }
 
         arr.sort((a, b) => b.time - a.time);
