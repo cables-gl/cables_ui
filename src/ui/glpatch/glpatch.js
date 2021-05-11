@@ -54,7 +54,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
 
 
-        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 1);
 

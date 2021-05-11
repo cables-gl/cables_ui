@@ -23,10 +23,10 @@ CABLES.GLGUI.GlRectDragLine = class
 
         console.log("new glrectdragline...");
 
-        document.body.addEventListener("pointerup", (e) =>
-        {
-            console.log("up", e);
-        });
+        // document.body.addEventListener("pointerup", (e) =>
+        // {
+        //     console.log("up", e);
+        // });
 
         glpatch.on("mouseup", (e) =>
         {
@@ -40,10 +40,6 @@ CABLES.GLGUI.GlRectDragLine = class
             const ele = document.elementFromPoint(e.x, e.y);
             if (ele.dataset.opid && ele.dataset.portname)
             {
-                // glpatch.on("mouseUpOverOp", (e, opid) =>
-
-                console.log("ele over", ele.dataset.opid, ele.dataset.portname);
-
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
             }
 

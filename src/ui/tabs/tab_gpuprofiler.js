@@ -39,15 +39,17 @@ CABLES.UI.GpuProfiler.prototype.update = function ()
         for (let i in glQueryData)
         {
             arr.push(glQueryData[i]);
-            allTimes += glQueryData[i].time;
+            allTimes += (glQueryData[i].time || 0);
         }
 
-        arr.sort((a, b) => b.time - a.time);
 
         for (let i = 0; i < arr.length; i++)
         {
             arr[i].perc = arr[i].time / allTimes;
         }
+
+        arr.sort((a, b) => b.perc - a.perc);
+
 
         html += "<div class=\"editor_spreadsheet\">";
         html += "<table class=\"spreadsheet\">";
