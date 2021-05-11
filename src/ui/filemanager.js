@@ -415,7 +415,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                             html = CABLES.UI.getHandleBarHtml(templateName, {
                                 "filename": item.p,
                                 "file": item,
-                                "infoJSON": itemInfo
+                                "fileInfo": itemInfo
                             });
 
 
