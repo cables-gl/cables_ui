@@ -409,23 +409,15 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         (err, r) =>
                         {
                             const itemInfo = r;
+                            let templateName = "filemanager_details_lib_" + itemInfo.type;
+                            if (!itemInfo.type) templateName = "filemanager_details_lib";
 
-                            if (itemInfo.type !== "audio")
-                            {
-                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
-                                    "filename": item.p,
-                                    "file": item,
-                                    "infoJSON": itemInfo
-                                });
-                            }
-                            else
-                            {
-                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib_audio", {
-                                    "filename": item.p,
-                                    "file": item,
-                                    "infoJSON": itemInfo
-                                });
-                            }
+                            html = CABLES.UI.getHandleBarHtml(templateName, {
+                                "filename": item.p,
+                                "file": item,
+                                "infoJSON": itemInfo
+                            });
+
 
                             if (document.getElementById("item_details"))
                                 document.getElementById("item_details").innerHTML = html;
