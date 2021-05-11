@@ -401,22 +401,37 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 
                     const fileInfoPath = item.p.substring("/assets/library/".length);
 
+                    const fileCategory = fileInfoPath.split("/")[0];
+                    const fileName = fileInfoPath.split("/")[1];
                     CABLESUILOADER.talkerAPI.send(
                         "getLibraryFileInfo",
                         {
+                            "filename": fileName,
+                            "fileCategory": fileCategory,
                             "filepath": fileInfoPath
                         },
                         (err, r) =>
                         {
                             const itemInfo = r;
-                            let templateName = "filemanager_details_lib_" + itemInfo.type;
-                            if (!itemInfo.type) templateName = "filemanager_details_lib";
+                            const templateName = "filemanager_details_lib_" + itemInfo.type;
 
-                            html = CABLES.UI.getHandleBarHtml(templateName, {
-                                "filename": item.p,
-                                "file": item,
-                                "fileInfo": itemInfo
-                            });
+                            try
+                            {
+                                html = CABLES.UI.getHandleBarHtml(templateName, {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                });
+                            }
+                            catch (e)
+                            {
+                                console.log("in catch");
+                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                });
+                            }
 
 
                             if (document.getElementById("item_details"))
