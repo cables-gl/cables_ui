@@ -60,15 +60,23 @@ CABLES.GLGUI.GlLink = class
                     pOut = opOut.getPortById(this._portIdOutput),
                     llink = pOut.getLinkTo(pIn);
 
-                console.log("this._glPatch.subPatch", this._glPatch.subPatch);
+                // console.log("this._glPatch.subPatch", this._glPatch.subPatch);
                 gui.opSelect().show(
                     { "x": 0,
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
+                            const distOut = Math.sqrt(Math.pow(opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+                            const distIn = Math.sqrt(Math.pow(opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+
+                            let x = opOut.uiAttribs.translate.x;
+                            if (distIn < distOut)x = opIn.uiAttribs.translate.x;
+
+                            console.log(distIn, distOut);
+
                             op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
                                 "translate": {
-                                    "x": gui.patchView.snapOpPosX(opOut.uiAttribs.translate.x),
+                                    "x": gui.patchView.snapOpPosX(x),
                                     "y": gui.patchView.snapOpPosY(this._glPatch.viewBox.mousePatchY)
                                 } });
                         } }, null, null, llink);
