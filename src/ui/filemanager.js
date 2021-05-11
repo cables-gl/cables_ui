@@ -417,6 +417,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
 
                             try
                             {
+                                // * use file-type specific template
                                 html = CABLES.UI.getHandleBarHtml(templateName, {
                                     "filename": item.p,
                                     "file": item,
@@ -425,7 +426,7 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                             }
                             catch (e)
                             {
-                                console.log("in catch");
+                                // * use default template
                                 html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
                                     "filename": item.p,
                                     "file": item,
