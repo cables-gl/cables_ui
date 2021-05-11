@@ -398,15 +398,13 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                 {
                     // * it's a library file
                     const item = detailItems[0];
+
                     const fileInfoPath = item.p.substring("/assets/library/".length);
-                    const fileCategory = fileInfoPath.split("/")[0];
-                    const filename = fileInfoPath.split("/")[1];
 
                     CABLESUILOADER.talkerAPI.send(
                         "getLibraryFileInfo",
                         {
-                            "filename": filename,
-                            "filecategory": fileCategory
+                            "filepath": fileInfoPath
                         },
                         (err, r) =>
                         {
