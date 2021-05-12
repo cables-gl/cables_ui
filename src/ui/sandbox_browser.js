@@ -238,12 +238,19 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
 CABLES.SandboxBrowser.prototype.createBackup = function ()
 {
-    CABLESUILOADER.talkerAPI.send("patchCreateBackup", {}, (r) =>
-    {
-        console.log("backup finished", r);
-        if (r.success)
-            CABLES.UI.notify("Backup created!");
-    });
+    CABLES.UI.MODAL.prompt(
+        "New Backup",
+        "Enter a name for the backup",
+        "Manual Backup",
+        function (name)
+        {
+            CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
+            {
+                console.log("backup finished", result);
+                if (result.success)
+                    CABLES.UI.notify("Backup created!");
+            });
+        });
 };
 
 CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
