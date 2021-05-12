@@ -173,12 +173,13 @@ CABLES.GLGUI.ViewBox = class
 
         let delta = 5;
 
-        if (!this._touchpadMode)
-            if (event.deltaX && event.deltaX > 1)
-            {
-                this._touchpadMode = true;
-                console.log("touchpad mode!");
-            }
+        // auto detect - it's crap
+        // if (!this._touchpadMode)
+        //     if (event.deltaX && event.deltaX > 1)
+        //     {
+        //         this._touchpadMode = true;
+        //         console.log("touchpad mode!");
+        //     }
 
         if (event.deltaY < 0)delta *= -1;
 
