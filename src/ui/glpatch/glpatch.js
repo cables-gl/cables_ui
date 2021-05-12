@@ -161,7 +161,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
-            console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
+            // console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -377,7 +377,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
         else
         {
-            console.log("this.links", this.links);
+            // console.log("this.links", this.links);
             console.log("could not find link to remove!!", linkId);
         }
     }
@@ -849,7 +849,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     getZoomForAllOps()
     {
-        console.log(this.getOpBounds());
+        // console.log(this.getOpBounds());
         return 1200;
     }
 
@@ -1036,7 +1036,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.unselectAll();
 
         this._currentSubpatch = sub;
-        console.log("set subpatch", sub);
+        // console.log("set subpatch", sub);
 
         const dur = 0.0;
         const timeGrey = dur * 1.5;

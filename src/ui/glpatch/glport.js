@@ -23,10 +23,13 @@ CABLES.GLGUI.GlPort = class
 
         this._updateColor(p.uiAttribs);
 
-        this._rect.on("mousedown", this._onMouseDown.bind(this));
-        this._rect.on("mouseup", this._onMouseUp.bind(this));
-        this._rect.on("hover", this._onHover.bind(this));
-        this._rect.on("unhover", this._onUnhover.bind(this));
+
+        this._mouseEvents = [];
+
+        this._mouseEvents.push(this._rect.on("mousedown", this._onMouseDown.bind(this)));
+        this._mouseEvents.push(this._rect.on("mouseup", this._onMouseUp.bind(this)));
+        this._mouseEvents.push(this._rect.on("hover", this._onHover.bind(this)));
+        this._mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
 
@@ -126,6 +129,12 @@ CABLES.GLGUI.GlPort = class
 
     dispose()
     {
+        for (let i = 0; i < this._mouseEvents.length; i++)
+        {
+            this._rect.off(this._mouseEvents[i]);
+        }
+        this._mouseEvents.length = 0;
+
         this._rect.dispose();
     }
 };
