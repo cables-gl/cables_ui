@@ -72,8 +72,6 @@ CABLES.GLGUI.GlLink = class
                             let x = opOut.uiAttribs.translate.x;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
 
-                            console.log(distIn, distOut);
-
                             op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
                                 "translate": {
                                     "x": gui.patchView.snapOpPosX(x),

@@ -419,7 +419,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     rebuild()
     {
-        console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
+        // console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
         this._needsRebuildReason = "";
         // todo only update whats needed
 

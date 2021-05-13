@@ -113,11 +113,11 @@ CABLES.GLGUI.GlRectDragLine = class
 
         glpatch.on("mouseUpOverPort", (opid, portName) =>
         {
-            console.log("mouseUpOverPort",
-                this._startPortOpId,
-                this._startPortName,
-                opid,
-                portName);
+            // console.log("mouseUpOverPort",
+            //     this._startPortOpId,
+            //     this._startPortName,
+            //     opid,
+            //     portName);
 
             if (this._startGlPorts.length === 0)
             {
