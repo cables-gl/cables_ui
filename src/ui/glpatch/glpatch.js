@@ -36,10 +36,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.frameCount = 0;
 
-        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
 
-        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl, "patchCableSplines");
 
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
