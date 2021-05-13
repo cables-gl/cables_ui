@@ -83,6 +83,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
+        this.opShakeDetector = new CABLES.ShakeDetector();
+        this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length == 1)gui.patchView.unlinkSelectedOps(); });
+
         this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
 
         // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
