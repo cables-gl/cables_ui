@@ -227,6 +227,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
 
+
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }
 
