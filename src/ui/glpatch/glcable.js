@@ -216,7 +216,7 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
             (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2,
-            0.96
+            CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect
         );
     }
 
@@ -304,7 +304,7 @@ CABLES.GLGUI.GlCable = class
             this.setColor();
             this._glPatch._hoverCable.visible = true;
 
-            this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2);
+            this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect);
             this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
