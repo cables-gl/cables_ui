@@ -36,10 +36,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.frameCount = 0;
 
-        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
 
-        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl, "patchCableSplines");
 
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
@@ -82,6 +82,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._localGlCursor = new CABLES.GLGUI.GlCursor(this, this._overLayRects);
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
+
+        this.opShakeDetector = new CABLES.ShakeDetector();
+        this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length == 1)gui.patchView.unlinkSelectedOps(); });
 
         this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
 
@@ -226,6 +229,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
+
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }

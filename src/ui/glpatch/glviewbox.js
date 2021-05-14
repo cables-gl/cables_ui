@@ -127,7 +127,11 @@ CABLES.GLGUI.ViewBox = class
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if ((this.glPatch.mouseState.buttonRight || ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && this.glPatch.mouseState.buttonLeft)) && !this.glPatch.isDraggingPort()) // && this.glPatch.allowDragging
+        if (
+            (this.glPatch.mouseState.buttonRight && !this.glPatch.isDraggingPort()) ||
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight)))
+        // && this.glPatch.allowDragging
+        // && !this.glPatch.isDraggingPort()
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
 

@@ -85,7 +85,8 @@ CABLES.GLGUI.GlUiCanvas = class
             {
                 "glCanvasId": this.canvas.id,
                 "glCanvasResizeToParent": false,
-                "glCanvasResizeToWindow": false
+                "glCanvasResizeToWindow": false,
+                "canvas": {}
             });
 
         this.glPatch = new CABLES.GLGUI.GlPatch(this.patch.cgl);

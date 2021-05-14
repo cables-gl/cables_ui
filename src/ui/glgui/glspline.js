@@ -3,8 +3,9 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.SplineDrawer = class
 {
-    constructor(cgl, options)
+    constructor(cgl, name)
     {
+        this.name = name;
         this._cgl = cgl;
         this._count = -1;
 
@@ -22,6 +23,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._thePoints = [];
 
         this._splineIndex = null;
+        this._rebuildReason = "";
 
         this._splineColors = [];
         this._splines =
@@ -329,6 +331,7 @@ CABLES.GLGUI.SplineDrawer = class
 
                     // console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
+                    this._rebuildReason = "length of spline changed " + points.length + " vs " + this._splines[idx].origPoints.length;
                 }
                 else
                 {
@@ -417,6 +420,8 @@ CABLES.GLGUI.SplineDrawer = class
         if (!this._mesh)
         {
             this._rebuildLater = true;
+            this._rebuildReason = "update speed";
+
             return;
         }
 
@@ -425,6 +430,8 @@ CABLES.GLGUI.SplineDrawer = class
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
         if (!points) return;
+
+        this._splines[idx].speed = this._splines[idx].speed;
 
         for (let i = 0; i < points.length / 3; i++)
         {
@@ -506,7 +513,7 @@ CABLES.GLGUI.SplineDrawer = class
         {
             for (let j = 0; j < 6; j++)
             {
-                this._speeds[(off + count) / 3 + 0] = 0;
+                this._speeds[(off + count) / 3 + 0] = this._splines[idx].speed;
 
                 this._colors[(off + count) / 3 * 4 + 0] = this._splines[idx].color[0];
                 this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
@@ -535,7 +542,10 @@ CABLES.GLGUI.SplineDrawer = class
     rebuild()
     {
         if (this._splines.length == 0) return;
-        console.log("spline complete rebuild...");
+
+        if (this._thePoints.length > 1000)
+            console.log("spline complete rebuild...", this.name, this._rebuildReason);
+        this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;

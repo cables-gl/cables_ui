@@ -87,6 +87,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         for (const i in glOps)
             glOps[i].setPassiveDragOffset(offX, offY);
+
+        this._glPatch.opShakeDetector.move(offX);
     }
 
     sendNetPos()
@@ -134,6 +136,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _onMouseDown(e)
     {
+        this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
         if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
 
         if (e.altKey || e.metaKey)
@@ -155,6 +158,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     _onMouseUp(e)
     {
+        this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
         if (this.isPassiveDrag()) return;
@@ -303,6 +307,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
+
         // const wasHovering=this._isHovering;
         // this.setHover(this._glRectBg.isPointInside(x,y));
 
