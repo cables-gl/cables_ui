@@ -17,6 +17,8 @@
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':error';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">With Errors</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':warning';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">With Warnings</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':hint';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Any Hint</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':dupassets';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Duplicate Assets</a>
+
 
         {{#each colors}}
         &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>

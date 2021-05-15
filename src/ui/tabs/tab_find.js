@@ -401,6 +401,37 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
                     results.push({ op, "score": 1, "where": op.objName });
             }
         }
+        else if (str == ":dupassets")
+        {
+            const assetOps = {};
+            console.log(1);
+            for (let i = 0; i < ops.length; i++)
+            {
+                for (let k = 0; k < ops[i].portsIn.length; k++)
+                {
+                    console.log(ops[i].portsIn[k].uiAttribs.display);
+                    if (ops[i].portsIn[k].uiAttribs.display === "file")
+                    {
+                        if (ops[i].portsIn[k].get())
+                        {
+                            assetOps[ops[i].portsIn[k].get()] = assetOps[ops[i].portsIn[k].get()] || { "ops": [] };
+                            assetOps[ops[i].portsIn[k].get()].ops.push(ops[i]);
+                        }
+                    }
+                }
+            }
+
+            console.log(assetOps);
+
+            for (let i in assetOps)
+            {
+                if (assetOps[i].ops.length > 1)
+                {
+                    for (let j = 0; j < assetOps[i].ops.length; j++)
+                        results.push({ "op": assetOps[i].ops[j], "score": 1 });
+                }
+            }
+        }
         else if (str.indexOf(":color=") == 0)
         {
             const col = str.substr(7).toLowerCase();
@@ -409,7 +440,7 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
             {
                 const op = ops[i];
                 if (op.uiAttribs.color && op.uiAttribs.color.toLowerCase() == col)
-                    results.push({ op, "score": 1 });
+                    results.push({ "op": op, "score": 1 });
             }
         }
         else if (str == ":bookmarked")
