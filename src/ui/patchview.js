@@ -665,7 +665,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 if (ops[i].patchId.get() == subId)
                 {
                     let type = "subpatch";
-                    if (ops[i].uiAttribs && ops[i].uiAttribs.blueprint) type = "blueprint_subpatch";
+                    if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
                     arr.push({
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
@@ -700,17 +700,20 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             if (ops[i].uiAttribs)
             {
-                if (ops[i].uiAttribs.blueprint)
-                {
-                    foundBlueprints[ops[i].uiAttribs.blueprint.id + "-" + ops[i].uiAttribs.blueprint.blueprintOpId] = ops[i].uiAttribs.blueprint;
-                }
-                else if (ops[i].uiAttribs.subPatch)
+                if (ops[i].uiAttribs.subPatch && !(ops[i].storage && ops[i].storage.blueprint))
                 {
                     // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
                     {
                         foundPatchIds.push(ops[i].uiAttribs.subPatch);
                     }
+                }
+            }
+            if (ops[i].storage)
+            {
+                if (ops[i].storage.blueprint)
+                {
+                    foundBlueprints[ops[i].storage.blueprint.id + "-" + ops[i].storage.blueprint.blueprintOpId] = ops[i].storage.blueprint;
                 }
             }
         }
@@ -724,7 +727,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
-                    if (ops[j].uiAttribs && ops[j].uiAttribs.blueprint)
+                    if (ops[j].storage && ops[j].storage.blueprint)
                     {
                         found = true;
                     }
@@ -933,9 +936,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             const fixedSubPatches = [];
             for (let i = 0; i < json.ops.length; i++)
             {
-                if (json.ops[i].uiAttribs && json.ops[i].uiAttribs.blueprint)
+                if (json.ops[i].storage && json.ops[i].storage.blueprint)
                 {
-                    delete json.ops[i].uiAttribs.blueprint;
+                    delete json.ops[i].storage.blueprint;
                 }
 
                 if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
