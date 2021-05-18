@@ -210,12 +210,11 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
 
         // circle button
-
         this._buttonRect.setDecoration(1);
         this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
-            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2,
+            (y + this._buttonSize) + (((y2 - this._buttonSize) - (y + this._buttonSize)) / 2) - this._buttonSize / 2,
             CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect
         );
     }
