@@ -28,7 +28,7 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
-        this._buttonRect.on("mouseup", (e) =>
+        this._buttonRect.on("pointerup", (e) =>
         {
             const pressTime = performance.now() - this._buttonDownTime;
 
@@ -54,7 +54,6 @@ CABLES.GLGUI.GlLink = class
                 }
             }
 
-
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
                 const
@@ -66,7 +65,8 @@ CABLES.GLGUI.GlLink = class
 
                 // console.log("this._glPatch.subPatch", this._glPatch.subPatch);
                 gui.opSelect().show(
-                    { "x": 0,
+                    {
+                        "x": 0,
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
@@ -87,7 +87,7 @@ CABLES.GLGUI.GlLink = class
             this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;
         });
 
-        this._buttonRect.on("mousedown", (e) =>
+        this._buttonRect.on("pointerdown", (e) =>
         {
             this._mouseDownX = e.offsetX;
             this._mouseDownY = e.offsetY;
@@ -109,44 +109,23 @@ CABLES.GLGUI.GlLink = class
         this.update();
     }
 
-    get opIn()
-    {
-        return this._opIn;
-    }
+    get opIn() { return this._opIn; }
 
-    get opOut()
-    {
-        return this._opOut;
-    }
+    get opOut() { return this._opOut; }
 
-    get id()
-    {
-        return this._id;
-    }
+    get id() { return this._id; }
 
-    get nameInput()
-    {
-        return this._portNameInput;
-    }
+    get nameInput() { return this._portNameInput; }
 
-    get nameOutput()
-    {
-        return this._portNameOutput;
-    }
+    get nameOutput() { return this._portNameOutput; }
 
     get opIdOutput() { return this._opIdOutput; }
 
     get opIdInput() { return this._opIdInput; }
 
-    get portIdIn()
-    {
-        return this._portIdInput;
-    }
+    get portIdIn() { return this._portIdInput; }
 
-    get portIdOut()
-    {
-        return this._portIdOutput;
-    }
+    get portIdOut() { return this._portIdOutput; }
 
     updateVisible()
     {

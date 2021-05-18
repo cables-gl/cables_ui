@@ -549,9 +549,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._time = (performance.now() - this._timeStart) / 1000;
 
         for (const i in this._glCursors)
-        {
             this._glCursors[i].updateAnim();
-        }
 
         this.snapLines.render();
 
@@ -596,11 +594,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI.updateFlowModeActivity();
 
         this.viewBox.setSize(resX, resY);
-        // console.log(this.viewBox.scrollX, this.viewBox.scrollY);
 
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-
 
         this._drawCursor();
 
@@ -614,8 +610,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-
-        // this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
