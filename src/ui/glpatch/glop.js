@@ -30,7 +30,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._hidePorts = false;
         this._hideBgRect = false;
 
-        this._posZ = Math.random() * -0.3;
+        this._posZ = Math.random() * -0.3 + -0.1;
         // glPatch.zIndex();
 
 
