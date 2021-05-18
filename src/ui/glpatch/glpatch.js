@@ -30,6 +30,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
+        this.activeButtonRect = null;
 
         this.greyOut = false;
         this._greyOutRect = null;
@@ -87,21 +88,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length == 1)gui.patchView.unlinkSelectedOps(); });
 
         this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
-
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // for (let i = 0; i < this._glCursors.length; i++)
-        // {
-        //     this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
-        // }
-
-        // this._cursorUnPredicted = this._overLayRects.createRect();
-        // this._cursorUnPredicted.setSize(5, 5);
-        // this._cursorUnPredicted.setDecoration(5);
-        // this._cursorUnPredicted.setColor(1, 1, 1, 1);
 
         this._redrawFlash = this._overLayRects.createRect();
         this._redrawFlash.setSize(50, 5);
@@ -622,9 +608,10 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
+        this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
+
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 

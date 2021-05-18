@@ -52,6 +52,7 @@ CABLES.GLGUI.Linedrawer = class
 
             .endl() + "    pos.x+=scrollX;"
             .endl() + "    pos.y+=scrollY;"
+            .endl() + "    pos.z=0.9;"
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",

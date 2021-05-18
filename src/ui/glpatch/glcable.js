@@ -244,8 +244,6 @@ CABLES.GLGUI.GlCable = class
     isHoveredButtonRect()
     {
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
-
-        // return this._buttonRect._hovering;
     }
 
     setSpeed(speed)

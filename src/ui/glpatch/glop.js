@@ -89,6 +89,14 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             glOps[i].setPassiveDragOffset(offX, offY);
 
         this._glPatch.opShakeDetector.move(offX);
+
+        if (gui.patchView.getSelectedOps().length == 1)
+        {
+            this._glRectBg.setOpacity(0.7);
+            this._preDragPosZ = this._glRectBg.z;
+            this._posZ = -0.5;
+            this.updatePosition();
+        }
     }
 
     sendNetPos()
@@ -103,6 +111,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps) glOps[i].endPassiveDrag();
+
+        if (this._preDragPosZ != this._glRectBg.z) this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
 
         const undoAdd = (function (scope, oldUiAttribs)
         {
