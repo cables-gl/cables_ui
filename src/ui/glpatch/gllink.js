@@ -41,7 +41,7 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
             {
                 for (const i in this._glPatch.selectedGlOps)
                 {
