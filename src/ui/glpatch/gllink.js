@@ -28,7 +28,7 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
-        this._buttonRect.on("pointerup", (e) =>
+        this._buttonRect.on("mouseup", (e) =>
         {
             const pressTime = performance.now() - this._buttonDownTime;
 
@@ -87,7 +87,7 @@ CABLES.GLGUI.GlLink = class
             this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;
         });
 
-        this._buttonRect.on("pointerdown", (e) =>
+        this._buttonRect.on("mousedown", (e) =>
         {
             this._mouseDownX = e.offsetX;
             this._mouseDownY = e.offsetY;
