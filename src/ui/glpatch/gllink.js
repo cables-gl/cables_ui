@@ -24,6 +24,7 @@ CABLES.GLGUI.GlLink = class
         this._buttonDownTime = 0;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
