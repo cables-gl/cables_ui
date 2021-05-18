@@ -40,7 +40,8 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            if (this._cable.isHoveredButtonRect())
+            if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            {
                 for (const i in this._glPatch.selectedGlOps)
                 {
                     if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
@@ -50,6 +51,8 @@ CABLES.GLGUI.GlLink = class
                         return;
                     }
                 }
+            }
+
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {

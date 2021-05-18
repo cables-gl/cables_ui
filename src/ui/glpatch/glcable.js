@@ -253,6 +253,8 @@ CABLES.GLGUI.GlCable = class
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
+        if (gui.patchView.getSelectedOps().length > 1) return false;
+
         if (this._disposed)
         {
             console.log("disposed already!!!?!");
