@@ -24,6 +24,7 @@ CABLES.GLGUI.GlLink = class
         this._buttonDownTime = 0;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
@@ -40,7 +41,8 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            if (this._cable.isHoveredButtonRect())
+            // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            {
                 for (const i in this._glPatch.selectedGlOps)
                 {
                     if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
@@ -50,6 +52,7 @@ CABLES.GLGUI.GlLink = class
                         return;
                     }
                 }
+            }
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
@@ -62,7 +65,8 @@ CABLES.GLGUI.GlLink = class
 
                 // console.log("this._glPatch.subPatch", this._glPatch.subPatch);
                 gui.opSelect().show(
-                    { "x": 0,
+                    {
+                        "x": 0,
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
@@ -105,44 +109,23 @@ CABLES.GLGUI.GlLink = class
         this.update();
     }
 
-    get opIn()
-    {
-        return this._opIn;
-    }
+    get opIn() { return this._opIn; }
 
-    get opOut()
-    {
-        return this._opOut;
-    }
+    get opOut() { return this._opOut; }
 
-    get id()
-    {
-        return this._id;
-    }
+    get id() { return this._id; }
 
-    get nameInput()
-    {
-        return this._portNameInput;
-    }
+    get nameInput() { return this._portNameInput; }
 
-    get nameOutput()
-    {
-        return this._portNameOutput;
-    }
+    get nameOutput() { return this._portNameOutput; }
 
     get opIdOutput() { return this._opIdOutput; }
 
     get opIdInput() { return this._opIdInput; }
 
-    get portIdIn()
-    {
-        return this._portIdInput;
-    }
+    get portIdIn() { return this._portIdInput; }
 
-    get portIdOut()
-    {
-        return this._portIdOutput;
-    }
+    get portIdOut() { return this._portIdOutput; }
 
     updateVisible()
     {

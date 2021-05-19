@@ -283,19 +283,22 @@ CABLES.GLGUI.ViewBox = class
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (!this._boundingRect)
+        if (CABLES.GLGUI.VISUALCONFIG.drawBoundingRect)
         {
-            this._boundingRect = this.glPatch.rectDrawer.createRect();
-            this._boundingRect.interactive = false;
-            this._boundingRect.setPosition(-500, -500, 1);
-            this._boundingRect.setSize(1000, 1000);
-            this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
-        }
+            if (!this._boundingRect)
+            {
+                this._boundingRect = this.glPatch.rectDrawer.createRect();
+                this._boundingRect.interactive = false;
+                this._boundingRect.setPosition(-500, -500, 1);
+                this._boundingRect.setSize(1000, 1000);
+                this._boundingRect.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect);
+            }
 
-        const bounds = this.glPatch.rectDrawer.bounds;
-        this._boundingRect.visible = bounds.changed;
-        this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
-        this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+            const bounds = this.glPatch.rectDrawer.bounds;
+            this._boundingRect.visible = bounds.changed;
+            this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
+            this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+        }
     }
 
     animateZoom(z, dur)

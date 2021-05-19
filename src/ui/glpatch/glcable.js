@@ -210,12 +210,11 @@ CABLES.GLGUI.GlCable = class
         this._updateLinePos();
 
         // circle button
-
         this._buttonRect.setDecoration(1);
         this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
-            (y + this._h) + (((y2 - this._h) - (y + this._h)) / 2) - this._buttonSize / 2,
+            (y + this._buttonSize) + (((y2 - this._buttonSize) - (y + this._buttonSize)) / 2) - this._buttonSize / 2,
             CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect
         );
     }
@@ -245,8 +244,6 @@ CABLES.GLGUI.GlCable = class
     isHoveredButtonRect()
     {
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
-
-        // return this._buttonRect._hovering;
     }
 
     setSpeed(speed)
@@ -256,6 +253,8 @@ CABLES.GLGUI.GlCable = class
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
+        // if (gui.patchView.getSelectedOps().length > 1) return false;
+
         if (this._disposed)
         {
             console.log("disposed already!!!?!");
