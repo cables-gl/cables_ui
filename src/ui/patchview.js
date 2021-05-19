@@ -1622,4 +1622,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         this._patchRenderer.zoomStep(step);
     }
+
+
+    setOpColor(col)
+    {
+        const selectedOps = this.getSelectedOps();
+        for (let i = 0; i < selectedOps.length; i++)
+            selectedOps[i].setUiAttrib({ "color": col });
+    }
 };
