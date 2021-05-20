@@ -50,6 +50,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glDotWarning = null;
         this._glDotHint = null;
 
+        this._glRectRightHandle = null;
+
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
         this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
@@ -303,6 +305,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.setSize(this._width, this._height);
 
         this._updateCommentPosition();
+        this._updateSizeRightHandle();
     }
 
     addLink(l)
@@ -640,6 +643,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glPatch.needsRedraw = true;
     }
 
+    _updateSizeRightHandle()
+    {
+        if (!this._glRectRightHandle) return;
+        this._glRectRightHandle.setPosition(this.w, 0);
+        this._glRectRightHandle.setSize(5, this.h);
+    }
+
     _updateColors()
     {
         if (!this._glRectBg || !this._glTitle) return;
@@ -653,7 +663,26 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
             this._glRectBg.setDecoration(this._rectDecoration);
             if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-            else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+            else
+            {
+                if (this.opUiAttribs.color)
+                {
+                    // chroma.hex("#ff0000").gl();
+                    this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
+
+                    if (!this._glRectRightHandle)
+                    {
+                        this._glRectRightHandle = this._instancer.createRect();
+                        this._glRectRightHandle.setParent(this._glRectBg);
+                        this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                        this._updateSizeRightHandle();
+                    }
+                }
+                else
+                {
+                    this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+                }
+            }
         }
         if (!this._op.enabled)
         {

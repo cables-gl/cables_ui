@@ -42,6 +42,7 @@ CABLES.GLGUI.GlLink = class
             }
 
             // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            if (gui.patchView.getSelectedOps().length == 1)
             {
                 for (const i in this._glPatch.selectedGlOps)
                 {

@@ -1553,7 +1553,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     insertOpInLink(oldLink, op, x, y)
     {
         if (!op.portsIn[0] || !op.portsOut[0]) return;
-        // if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
+        if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
 
         console.log("insert into link?!");
 
@@ -1621,5 +1621,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     zoomStep(step)
     {
         this._patchRenderer.zoomStep(step);
+    }
+
+
+    setOpColor(col)
+    {
+        const selectedOps = this.getSelectedOps();
+        for (let i = 0; i < selectedOps.length; i++)
+            selectedOps[i].setUiAttrib({ "color": col });
     }
 };
