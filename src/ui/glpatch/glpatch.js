@@ -833,8 +833,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     getOnlySelectedOp()
     {
-        console.log("numselected: ", this._cachedNumSelectedOps);
-
         if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
     }
 

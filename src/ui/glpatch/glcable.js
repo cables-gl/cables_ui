@@ -53,7 +53,7 @@ CABLES.GLGUI.GlCable = class
         // if (selOps[0] && r)
         // console.log(selOps[0].portsIn[0].type, selOps[0].portsOut[0].type, this._type);
 
-        console.log(this._glPatch.getOnlySelectedOp());
+        // console.log(this._glPatch.getOnlySelectedOp());
 
         if (this._glPatch.getOnlySelectedOp() &&
             this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
