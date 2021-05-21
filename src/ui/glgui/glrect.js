@@ -142,6 +142,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     {
         this._parent = p;
         p.addChild(this);
+        this._visible = p.visible;
         this.setPosition(this._x, this._y, this._z);
     }
 
