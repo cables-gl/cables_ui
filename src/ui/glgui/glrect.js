@@ -88,11 +88,16 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
 
     set visible(v)
     {
+        const changed = this._visible != v;
         this._visible = v;
-        this._updateSize();
 
-        if (!this.visible) this._hovering = false;
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].visible = v;
+        if (changed)
+        {
+            this._updateSize();
+
+            if (!this.visible) this._hovering = false;
+            for (let i = 0; i < this.childs.length; i++) this.childs[i].visible = v;
+        }
     }
 
     _updateSize()
@@ -218,6 +223,7 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     {
         if (!this.interactive) return;
         if (!this._visible) return;
+
 
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
