@@ -188,6 +188,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor = c;
     }
 
+    _removeDropInRect()
+    {
+        this._dropInOpBorder.visible = false;
+    }
+
+
     _onCanvasMouseMove(e)
     {
         this._hoverCable.visible = false;
@@ -211,6 +217,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
+                        this._dropInOpBorder.setOpacity(0.5);
                     }
                 }
             }
@@ -293,6 +300,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseDown(e)
     {
+        this._removeDropInRect();
+
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { console.log(er); }
 
@@ -302,6 +311,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this._removeDropInRect();
+
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
