@@ -42,8 +42,22 @@ CABLES.GLGUI.GlCable = class
 
     _checkCollide(e)
     {
-        if (this._visible)
-            this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        if (!this._visible) return false;
+
+        const selOps = gui.patchView.getSelectedOps();
+
+        if (selOps.length > 1) return false;
+
+        // if (selOps[0] && r)
+        // console.log(selOps[0].portsIn[0].type, selOps[0].portsOut[0].type, this._type);
+
+        if (selOps.length == 1 && selOps[0].portsIn.length > 0 && selOps[0].portsOut.length > 0)
+        {
+            // if (r)console.log(selOps[0].portsIn[0].type == this._type && selOps[0].portsOut[0].type == this._type, selOps[0].portsIn[0].type, selOps[0].portsOut[0].type, this._type);
+            if (!(selOps[0].portsIn[0].type == this._type && selOps[0].portsOut[0].type == this._type)) return false;
+        }
+
+        const r = this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
@@ -255,6 +269,9 @@ CABLES.GLGUI.GlCable = class
     {
         // if (gui.patchView.getSelectedOps().length > 1) return false;
 
+        // canlink ???
+
+
         if (this._disposed)
         {
             console.log("disposed already!!!?!");
@@ -302,6 +319,7 @@ CABLES.GLGUI.GlCable = class
             // this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
             this.setColor();
             this._glPatch._hoverCable.visible = true;
+
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect);
             this._buttonRect.visible = true;

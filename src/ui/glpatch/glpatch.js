@@ -110,7 +110,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._dropInOpBorder = this._overLayRects.createRect();
         this._dropInOpBorder.setSize(100, 100);
-        this._dropInOpBorder.setDecoration(4);
+        // this._dropInOpBorder.setDecoration(4);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 
@@ -207,7 +207,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                     {
                         visible = true;
 
-                        const border = 1;
+                        const border = 3;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
