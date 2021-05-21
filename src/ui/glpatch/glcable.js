@@ -308,6 +308,8 @@ CABLES.GLGUI.GlCable = class
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
+            this._glPatch._dropInCircleRect = this._buttonRect;
+
             if (this._glPatch.cablesHoverText)
             {
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
@@ -328,7 +330,7 @@ CABLES.GLGUI.GlCable = class
     {
         if (this._buttonRect._hovering && this._glPatch.cablesHoverText)
         {
-            this._glPatch.cablesHoverText.text = t || "???";
+            this._glPatch.cablesHoverText.text = t || "";
         }
     }
 

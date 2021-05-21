@@ -1,5 +1,3 @@
-
-
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
@@ -14,7 +12,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.logEvents(false, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
-
 
         this.paused = false;
 
@@ -39,7 +36,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
-
         this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl, "patchCableSplines");
 
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
@@ -54,7 +50,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
 
-
         this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 1);
@@ -62,7 +57,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         this._hoverCable.setPosition(0, 0, 100, 100);
         this._hoverCable.setColor(1, 1, 1, 0.5);
-
 
         this._fpsStartTime = 0;
 
@@ -93,7 +87,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-
         this._fadeOutRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
@@ -113,23 +106,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.links = {};
         this.zIndex = 0;
 
-        // for (let i = -5000; i < 5000; i += 100)
-        // {
-        //     let idx = this._lines.getIndex();
-        //     this._lines.setLine(idx, -1000, i, 1000, i);
-        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
+        this._dropInCircleRect = null;
 
-        //     idx = this._lines.getIndex();
-        //     this._lines.setLine(idx, i, -1000, i, 1000);
-        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
-        // }
-
-
-        // ele.byId("patch").addEventListener("keyup", (e) =>
-        // {
-        //     if (e.which == 32) this._spacePressed = false;
-        // });
-
+        this._dropInOpBorder = this._overLayRects.createRect();
+        this._dropInOpBorder.setSize(100, 100);
+        this._dropInOpBorder.setDecoration(4);
+        this._dropInOpBorder.setColor(1, 0, 0, 1);
+        this._dropInOpBorder.visible = false;
 
         cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
@@ -141,8 +124,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
-
-        // cgl.canvas.addEventListener("click", () => { if (!this.mouseState.isDragging && this._hoverOps.length == 0)gui.patchView.showDefaultPanel(); });
 
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
@@ -193,6 +174,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
         });
+
+        new CABLES.GLGUI.GlPreviewLayer(this);
     }
 
     zIndex()
@@ -209,13 +192,40 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         this._hoverCable.visible = false;
 
+        this._dropInCircleRect = null;
+
         this.emitEvent("mousemove", e);
+
+        if (this._dropInCircleRect)
+        {
+            let visible = false;
+            if (gui.patchView.getSelectedOps().length == 1)
+            {
+                for (const i in this.selectedGlOps)
+                {
+                    if (this.selectedGlOps[i].isHovering() && this.selectedGlOps[i].isDragging)
+                    {
+                        visible = true;
+
+                        const border = 1;
+                        this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
+                        this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
+                        this._dropInOpBorder.setColor(this._dropInCircleRect.color);
+                    }
+                }
+            }
+            else visible = false;
+
+            this._dropInOpBorder.visible = visible;
+        }
+        else this._dropInOpBorder.visible = false;
+
+
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
 
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
-
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
     }

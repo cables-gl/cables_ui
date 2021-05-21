@@ -191,6 +191,7 @@ CABLES.GLGUI.GlUiCanvas = class
     {
         this.setSize(this._parentEle.clientWidth, this._parentEle.clientHeight);
         this.glPatch.needsRedraw = true;
+        this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
     setSize(w, h)
@@ -204,6 +205,7 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.height = this.height;
 
         if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width, this.height);
+        this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
     }
 
     dispose()
