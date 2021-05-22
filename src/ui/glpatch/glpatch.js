@@ -110,9 +110,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._dropInOpBorder = this._overLayRects.createRect();
         this._dropInOpBorder.setSize(100, 100);
-        this._dropInOpBorder.setDecoration(4);
+        // this._dropInOpBorder.setDecoration(4);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
+
+
+        this._cachedNumSelectedOps = 0;
+        this._cachedFirstSelectedOp = null;
+
 
         cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
@@ -188,6 +193,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor = c;
     }
 
+    _removeDropInRect()
+    {
+        this._dropInOpBorder.visible = false;
+    }
+
+
     _onCanvasMouseMove(e)
     {
         this._hoverCable.visible = false;
@@ -207,10 +218,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                     {
                         visible = true;
 
-                        const border = 1;
+                        const border = 3;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
+                        this._dropInOpBorder.setOpacity(0.5);
                     }
                 }
             }
@@ -293,6 +305,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseDown(e)
     {
+        this._removeDropInRect();
+
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { console.log(er); }
 
@@ -302,6 +316,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this._dropInCircleRect = null;
+
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -660,6 +676,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
 
+
+            for (let i in this._cgl.profileData.profileSingleMeshAttribute)
+            {
+                this.debugData["glUpdateAttribs " + i] = this._cgl.profileData.profileSingleMeshAttribute[i];
+            }
+
+
             this._cgl.profileData.clear();
         }
 
@@ -786,6 +809,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         for (const i in this._glOpz) this._glOpz[i].selected = false;
         this._selectedGlOps = {};// .length=0;
+        this._cachedNumSelectedOps = 0;
+        this._cachedFirstSelectedOp = null;
     }
 
     getGlOp(op)
@@ -801,11 +826,24 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (this._glOpz[id] && !this._glOpz[id].isInCurrentSubPatch()) this.setCurrentSubPatch(this._glOpz[id].getSubPatch());
     }
 
+    getNumSelectedOps()
+    {
+        return this._cachedNumSelectedOps;
+    }
+
+    getOnlySelectedOp()
+    {
+        if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
+    }
+
     selectOpId(id)
     {
-        if (this._glOpz[id])
+        if (this._glOpz[id] && !this._selectedGlOps[id])
         {
             this._selectedGlOps[id] = this._glOpz[id];
+            this._cachedNumSelectedOps++;
+            if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
+
             this._glOpz[id].selected = true;
         }
     }
@@ -838,7 +876,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             ops[i].selected = true;
-            this._selectedGlOps[ops[i].id] = ops[i];
+
+            this.selectOpId(ops[i].id);
+            // this._selectedGlOps[ops[i].id] = ops[i];
         }
     }
 

@@ -42,8 +42,31 @@ CABLES.GLGUI.GlCable = class
 
     _checkCollide(e)
     {
-        if (this._visible)
-            this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        if (!this._visible) return false;
+
+        if (this._glPatch.getNumSelectedOps() > 1) return false;
+        // const selOps = gui.patchView.getSelectedOps();
+
+        // if (selOps.length > 1) return false;
+
+
+        // if (selOps[0] && r)
+        // console.log(selOps[0].portsIn[0].type, selOps[0].portsOut[0].type, this._type);
+
+        // console.log(this._glPatch.getOnlySelectedOp());
+
+        if (this._glPatch.getOnlySelectedOp() &&
+            this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
+            this._glPatch.getOnlySelectedOp().portsOut.length > 0)
+        {
+            // if (r)console.log(this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type && this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type, this._glPatch.getOnlySelectedOp().portsIn[0].type, this._glPatch.getOnlySelectedOp().portsOut[0].type, this._type);
+            if (!(
+                this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
+                this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
+                return false;
+        }
+
+        const r = this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
@@ -150,7 +173,8 @@ CABLES.GLGUI.GlCable = class
                 else
                 {
                     const distY = Math.abs(this._y - this._y2);
-                    this._splineDrawer.setSpline(this._splineIdx,
+                    this._splineDrawer.setSpline(
+                        this._splineIdx,
                         this._subdivivde(
                             [
                                 this._x, this._y, 0,
@@ -255,17 +279,24 @@ CABLES.GLGUI.GlCable = class
     {
         // if (gui.patchView.getSelectedOps().length > 1) return false;
 
+        // canlink ???
+
         if (this._disposed)
         {
             console.log("disposed already!!!?!");
-            return;
         }
+
+        const perf = CABLES.uiperf.start("glcable collideMouse");
 
         // is either end INSIDE the circle?
         // if so, return true immediately
         const inside1 = this._collidePointCircle(x1, y1, cx, cy, r);
         const inside2 = this._collidePointCircle(x2, y2, cx, cy, r);
-        if (inside1 || inside2) return true;
+        if (inside1 || inside2)
+        {
+            perf.finish();
+            return true;
+        }
 
         // get length of the line
         let distX = x1 - x2;
@@ -282,18 +313,17 @@ CABLES.GLGUI.GlCable = class
         // is this point actually on the line segment?
         // if so keep going, but if not, return false
         const onSegment = this._collideLinePoint(x1, y1, x2, y2, closestX, closestY);
-        if (!onSegment) return false;
-
-        // optionally, draw a circle at the closest
-        // point on the line
-        // fill(255, 0, 0);
-        // noStroke();
-        // ellipse(closestX, closestY, 20, 20);
+        if (!onSegment)
+        {
+            perf.finish();
+            return false;
+        }
 
         // get distance to closest point
         distX = closestX - cx;
         distY = closestY - cy;
         const distance = Math.sqrt((distX * distX) + (distY * distY));
+
 
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
@@ -311,10 +341,9 @@ CABLES.GLGUI.GlCable = class
             this._glPatch._dropInCircleRect = this._buttonRect;
 
             if (this._glPatch.cablesHoverText)
-            {
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
-            }
 
+            perf.finish();
             return true;
         }
         else
@@ -322,6 +351,7 @@ CABLES.GLGUI.GlCable = class
             this._buttonRect.interactive = false;
             this._buttonRect.visible = false;
             this._buttonRect._hovering = false;
+            perf.finish();
             return false;
         }
     }
