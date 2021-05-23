@@ -163,7 +163,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
 
-        gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
+        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
 
 
         gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, {}, (e) =>

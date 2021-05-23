@@ -401,6 +401,27 @@ CABLES.GLGUI.ViewBox = class
         this.animateScrollTo(bb.center[0], cy);
     }
 
+    patchToScreenConv(_x, _y)
+    {
+        let x = _x;
+        let y = _y;
+
+        const asp = this._viewResY / this._viewResX;
+        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        let zy = zx;
+
+        // x -= this._scrollX;
+        // y -= this._scrollY * asp;
+
+        x /= zx;
+        y /= zy;
+
+        // x += (this._viewResX / 2);
+        // y += (this._viewResY / 2);
+
+        return [x, y];
+    }
+
     patchToScreenCoords(_x, _y)
     {
         let x = _x;

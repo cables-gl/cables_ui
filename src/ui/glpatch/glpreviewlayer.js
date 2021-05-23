@@ -10,6 +10,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
         super();
 
         this._items = [];
+        this._itemsLookup = {};
 
         this._glPatch = glPatch;
 
@@ -39,6 +40,8 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
         this.drawCanvas();
+
+        setInterval(this.updateViewPort.bind(this), 500);
     }
 
     _updateSize()
@@ -64,14 +67,14 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._items.length; i++)
         {
-            const pos = this._glPatch.viewBox.patchToScreenCoords(
-                this._items[i].posX,
-                this._items[i].posY);
-                // this._items[i].op.uiAttribs.translate.x,
-                // this._items[i].op.uiAttribs.translate.y);
+            // const pos = this._glPatch.viewBox.patchToScreenCoords(
+            // this._items[i].posX,
+            // this._items[i].posY);
+            // this._items[i].op.uiAttribs.translate.x,
+            // this._items[i].op.uiAttribs.translate.y);
 
-            this._canvasCtx.fillRect(pos[0], pos[1], 100, 1);
-            this._canvasCtx.fillText(this._items[i].port.name + ": " + this._items[i].port.get(), pos[0], pos[1]);
+            // this._canvasCtx.fillRect(this._items[i].posX,this._items[i].posY, 100, 100);
+            // this._canvasCtx.fillText(this._items[i].port.name + ": " + this._items[i].port.get(), pos[0], pos[1]);
         }
     }
 
@@ -81,37 +84,65 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
         for (let i = 0; i < this._items.length; i++)
         {
-            this._items[i].renderer.render(this._canvasCtx);
+            this._items[i].posX = this._items[i].op.uiAttribs.translate.x;
+            this._items[i].posY = this._items[i].op.uiAttribs.translate.y;
+
+            this._items[i].renderer.render(this._canvasCtx, this._eleCanvas.width, this._eleCanvas.height);
+        }
+    }
+
+    updateViewPort()
+    {
+        const ops = gui.corePatch().getOpsByObjName("Ops.Admin.PreviewTexture");
+
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            let item = this._itemsLookup[ops[i].id];
+            if (!item)
+            {
+                item = {
+                    "op": ops[i],
+                    "port": ops[i].portsIn[0],
+                    "posX": ops[i].uiAttribs.translate.x,
+                    "posY": ops[i].uiAttribs.translate.y,
+                };
+
+                this._itemsLookup[ops[i].id] = item;
+                this._items.push(item);
+
+                item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
+            }
         }
     }
 
 
-    addCurrentPort()
-    {
-        if (!this._glPatch._dropInCircleRect) return;
-        if (!this._glPatch.hoverLink) return;
-        const ops = gui.patchView.getSelectedOps();
+    // addCurrentPort()
+    // {
+    //     if (!this._glPatch._dropInCircleRect) return;
+    //     if (!this._glPatch.hoverLink) return;
+    //     const ops = gui.patchView.getSelectedOps();
 
-        const op = gui.corePatch().getOpById(this._glPatch.hoverLink.opIdOutput);
+    //     const op = gui.corePatch().getOpById(this._glPatch.hoverLink.opIdOutput);
 
-        if (!op) return;
+    //     if (!op) return;
 
-        const port = op.getPort(this._glPatch.hoverLink.nameOutput);
+    //     const port = op.getPort(this._glPatch.hoverLink.nameOutput);
 
-        if (!port) return;
+    //     if (!port) return;
 
-        // for (let i = 0; i < ops.length; i++)
-        const item = {
-            "op": op,
-            "port": port,
-            "posX": this._glPatch._dropInCircleRect.x,
-            "posY": this._glPatch._dropInCircleRect.y,
-        };
-        this._items.push(item);
+    //     // for (let i = 0; i < ops.length; i++)
+    //     const item = {
+    //         "op": op,
+    //         "port": port,
+    //         "posX": this._glPatch._dropInCircleRect.x,
+    //         "posY": this._glPatch._dropInCircleRect.y,
+    //     };
+    //     this._items.push(item);
 
-        item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
+    //     item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
 
 
-        // console.log("this._items.length", this._items.length);
-    }
+    //     // console.log("this._items.length", this._items.length);
+    // }
 };

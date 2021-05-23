@@ -303,6 +303,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
+
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
 
         this._glRectBg.setSize(this._width, this._height);

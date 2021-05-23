@@ -29,8 +29,8 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         // .endl() + "}"
             .endl() + "float LinearizeDepth(float d,float zNear,float zFar)"
             .endl() + "{"
-            .endl() + "float z_n = 2.0 * d - 1.0;"
-            .endl() + "return 2.0 * zNear / (zFar + zNear - z_n * (zFar - zNear));"
+            .endl() + "    float z_n = 2.0 * d - 1.0;"
+            .endl() + "    return 2.0 * zNear / (zFar + zNear - z_n * (zFar - zNear));"
             .endl() + "}"
 
             .endl() + "void main()"
@@ -119,7 +119,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
 
             .endl() + "void main()"
             .endl() + "{"
-            .endl() + "    texCoord=attrTexCoord;"
+            .endl() + "    texCoord=vec2(attrTexCoord.x,1.0-attrTexCoord.y);"
             .endl() + "    vec4 pos = vec4( vPosition, 1. );"
             .endl() + "    mat4 mvMatrix=viewMatrix * modelMatrix;"
             .endl() + "    gl_Position = projMatrix * mvMatrix * pos;"
@@ -127,28 +127,15 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
     }
 
 
-    render(ctx)
+    render(ctx, w, h)
     {
-        // let port = tp.port;
-        // if (!tp.port)port = tp;
-        // const port=tp;
+        const pos = this._previewLayer._glPatch.viewBox.patchToScreenCoords(this._item.posX, this._item.posY);
+
+        if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > w || (pos[1] + 100) > h) return;
+
         const port = this._item.port;
-        // const id = tp.id;
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
-
-
-        let meta = true;
-        if (ele)meta = false;
-
-        // const previewCanvasEle = ele || document.getElementById("preview_img_" + id);
-
-        // if (!previewCanvasEle)
-        // {
-        //     // console.log("no previewCanvasEle");
-        //     return;
-        // }
-        // const previewCanvas = previewCanvasEle.getContext("2d");
 
         if (port && port.get())
         {
@@ -222,24 +209,23 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
             // const h=w*(port.get().height/port.get().width);
 
 
-            const s = this._getCanvasSize(port, port.get(), meta);
-            // if (s[0] == 0 || s[1] == 0) return;
+            const s = this._getCanvasSize(port, port.get());
+            if (s[0] == 0 || s[1] == 0) return;
 
 
-            // if (texType == 1)s[0] *= 1.33;
-            // previewCanvasEle.width = s[0];
-            // previewCanvasEle.height = s[1];
+            const glop = this._previewLayer._glPatch.getGlOp(this._item.op);
 
-            // previewCanvas.clearRect(0, 0, previewCanvasEle.width, previewCanvasEle.height);
-            // previewCanvas.drawImage(cgl.canvas, 0, 0, previewCanvasEle.width, previewCanvasEle.height);
+            const size = this._previewLayer._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
 
+            size[1] = size[0] * port.get().height / port.get().width;
 
-            const pos = this._previewLayer._glPatch.viewBox.patchToScreenCoords(
-                this._item.posX,
-                this._item.posY);
+            // console.log(s, size);
 
-            // console.log(s);
-            ctx.drawImage(cgl.canvas, 0, 0, s[0], s[1], pos[0], pos[1], 100, 100);
+            ctx.drawImage(cgl.canvas,
+                0, 0,
+                s[0], s[1],
+                pos[0], pos[1],
+                size[0], size[1]);
 
             cgl.gl.clearColor(0, 0, 0, 0);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -252,22 +238,19 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         }
     }
 
-    _getCanvasSize(port, tex, meta)
+    _getCanvasSize(port, tex)
     {
         let maxWidth = 300;
         let maxHeight = 200;
 
-        // if (!meta)
-        // {
-        //     const patchRect = gui.patchView.element.getBoundingClientRect();
-        //     maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-        //     maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
-        // }
+        const patchRect = gui.patchView.element.getBoundingClientRect();
+        maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
+        maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
 
         const aspect = tex.height / tex.width;
         let w = tex.width;
 
-        if (w > maxWidth)w = maxWidth;
+        if (w > maxWidth) w = maxWidth;
         let h = w * aspect;
 
         if (h > maxHeight)
@@ -276,6 +259,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
             h = maxHeight;
         }
 
+        // console.log("w,h", w, h);
         return [w, h];
     }
 };
