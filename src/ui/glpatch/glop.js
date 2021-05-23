@@ -289,6 +289,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let portsWidthIn = 0;
         let portsWidthOut = 0;
+
+        const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
             if (this._glPorts[i].direction == CABLES.PORT_DIR_IN)portsWidthIn += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
@@ -301,8 +303,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
+        if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
 
         this._glRectBg.setSize(this._width, this._height);
+
+        if (oldHeight != this._height)
+            for (let i = 0; i < this._glPorts.length; i++)
+                this._glPorts[i].updateSize();
 
         this._updateCommentPosition();
         this._updateSizeRightHandle();

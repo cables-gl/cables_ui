@@ -38,7 +38,7 @@ CABLES.GLGUI.GlPort = class
             if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor(p.uiAttribs);
         });
 
-        this._updateSize();
+        this.updateSize();
     }
 
     _updateColor(attribs)
@@ -56,13 +56,13 @@ CABLES.GLGUI.GlPort = class
         return this._rect.w;
     }
 
-    _updateSize()
+    updateSize()
     {
         let h = CABLES.GLGUI.VISUALCONFIG.portHeight;
         if (this._port.isLinked()) h *= 1.5;
 
         let y = 0;
-        if (this._port.direction == 1) y = CABLES.UI.uiConfig.opHeight - CABLES.GLGUI.VISUALCONFIG.portHeight;
+        if (this._port.direction == 1) y = this._glop.h - CABLES.GLGUI.VISUALCONFIG.portHeight;
         else if (this._port.isLinked()) y -= CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
         this._rect.setPosition(this._posX, y);
@@ -71,7 +71,7 @@ CABLES.GLGUI.GlPort = class
 
     _onLinkChanged()
     {
-        this._updateSize();
+        this.updateSize();
     }
 
     _onMouseDown(e, rect)

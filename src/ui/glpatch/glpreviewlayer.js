@@ -31,29 +31,32 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
         console.log("glui overlay preview");
 
-        this._glPatch.on("mouseOverCablePort", (opid, portname) =>
-        {
-            this._hoverPort = portname;
-            this._hoverOpid = opid;
-        });
+        // this._glPatch.on("mouseOverCablePort", (opid, portname) =>
+        // {
+        //     this._hoverPort = portname;
+        //     this._hoverOpid = opid;
+        // });
+
+        gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
+        this.drawCanvas();
     }
 
     _updateSize()
     {
         this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
         this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
-        this.drawCanvas();
+        // this.drawCanvas();
     }
 
     render()
     {
     // check if needed...
-        this.drawCanvas();
+
     }
 
     drawCanvas()
     {
-        this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
+        // this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
         this._canvasCtx.font = "13px Arial";
         this._canvasCtx.fillStyle = "#ffffff";
@@ -72,17 +75,41 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
         }
     }
 
+    renderGl()
+    {
+        this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
+
+        for (let i = 0; i < this._items.length; i++)
+        {
+            this._items[i].renderer.render(this._canvasCtx);
+        }
+    }
+
+
     addCurrentPort()
     {
+        if (!this._glPatch._dropInCircleRect) return;
+        if (!this._glPatch.hoverLink) return;
         const ops = gui.patchView.getSelectedOps();
 
         const op = gui.corePatch().getOpById(this._glPatch.hoverLink.opIdOutput);
-        // this._hoverPort = portname;
-        // this._hoverOpid = opid;
+
+        if (!op) return;
+
         const port = op.getPort(this._glPatch.hoverLink.nameOutput);
 
+        if (!port) return;
+
         // for (let i = 0; i < ops.length; i++)
-        this._items.push({ "op": op, "port": port, "posX": this._glPatch._dropInCircleRect.x, "posY": this._glPatch._dropInCircleRect.y });
+        const item = {
+            "op": op,
+            "port": port,
+            "posX": this._glPatch._dropInCircleRect.x,
+            "posY": this._glPatch._dropInCircleRect.y,
+        };
+        this._items.push(item);
+
+        item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
 
 
         // console.log("this._items.length", this._items.length);

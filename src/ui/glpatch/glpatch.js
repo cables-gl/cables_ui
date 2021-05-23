@@ -697,7 +697,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._cgl.profileData.clearGlQuery();
 
-        this.previewLayer.render();
+        // this.previewLayer.render();
     }
 
     mouseMove(x, y)

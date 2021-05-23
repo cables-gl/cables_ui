@@ -151,7 +151,7 @@ CABLES.GLGUI.GlLink = class
                 const pos1y = this._opIn.getUiAttribs().translate.y;
 
                 const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
-                const pos2y = this._opOut.getUiAttribs().translate.y + CABLES.UI.uiConfig.opHeight;
+                const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
 
                 this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
             }
