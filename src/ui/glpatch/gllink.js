@@ -48,7 +48,7 @@ CABLES.GLGUI.GlLink = class
                 {
                     if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
                     {
-                        const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
+                        const coord = this._glPatch.screenToPatchCoord(e.offsetX, e.offsetY);
                         gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
                         return;
                     }
@@ -97,7 +97,7 @@ CABLES.GLGUI.GlLink = class
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type);
+        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type, this);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;

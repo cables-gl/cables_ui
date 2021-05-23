@@ -352,8 +352,6 @@ CABLES.GLGUI.ViewBox = class
         {
             this._zoom = 400;
             this.scrollTo(0, 0);
-            // this._scrollX = 0;
-            // this._scrollY = 0;
             return;
         }
 
@@ -403,17 +401,38 @@ CABLES.GLGUI.ViewBox = class
         this.animateScrollTo(bb.center[0], cy);
     }
 
+    patchToScreenCoords(_x, _y)
+    {
+        let x = _x;
+        let y = _y;
+
+        const asp = this._viewResY / this._viewResX;
+        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        let zy = zx;
+
+        x -= this._scrollX;
+        y -= this._scrollY * asp;
+
+        x /= zx;
+        y /= zy;
+
+        x += (this._viewResX / 2);
+        y += (this._viewResY / 2);
+
+        return [x, y];
+    }
+
     screenToPatchCoord(x, y, aspect)
     {
         if (this._scrollY != this._scrollY) this._scrollY = 0;
-        const z = 1 / ((this._viewResX / 2) / this.zoom);
-        let zy = z;
+        const zx = 1 / ((this._viewResX / 2) / this.zoom);
+        let zy = zx;
         if (aspect)zy = 1 / (this._viewResY / 2 / this.zoom);
         const asp = this._viewResY / this._viewResX;
 
         if (this._scrollX != this._scrollX) this._scrollX = 0;
 
-        const mouseAbsX = (x - (this._viewResX / 2)) * z - (this.scrollX);
+        const mouseAbsX = (x - (this._viewResX / 2)) * zx - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
         if (mouseAbsY != mouseAbsY) this.center(true);

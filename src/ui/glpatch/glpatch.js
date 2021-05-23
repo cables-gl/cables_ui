@@ -163,6 +163,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
 
+        gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
+
+
         gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, {}, (e) =>
         {
             const timeused = Date.now() - gui.spaceBarStart;
@@ -180,7 +183,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             });
         });
 
-        new CABLES.GLGUI.GlPreviewLayer(this);
+        this.previewLayer = new CABLES.GLGUI.GlPreviewLayer(this);
     }
 
     zIndex()
@@ -693,6 +696,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         perf.finish();
 
         this._cgl.profileData.clearGlQuery();
+
+        this.previewLayer.render();
     }
 
     mouseMove(x, y)
@@ -1096,10 +1101,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
     }
 
-    mouseToPatchCoords(x, y)
-    {
-        return this.viewBox.screenToPatchCoord(x, y);
-    }
 
     serialize(dataUi)
     {

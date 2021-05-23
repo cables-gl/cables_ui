@@ -98,6 +98,8 @@ CABLES.GLGUI.GlPort = class
             "clientY": this._glPatch.viewBox.mouseY - 25
         };
 
+        this._glPatch.emitEvent("mouseOverPort", this._glop.id, this._port.name);
+
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);

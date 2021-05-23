@@ -3,7 +3,7 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 
 CABLES.GLGUI.GlCable = class
 {
-    constructor(glPatch, splineDrawer, buttonRect, type)
+    constructor(glPatch, splineDrawer, buttonRect, type, link)
     {
         this._buttonSize = 12;
 
@@ -11,6 +11,8 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect = buttonRect;
         this._type = type;
         this._disposed = false;
+
+        this._link = link;
 
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
@@ -338,6 +340,7 @@ CABLES.GLGUI.GlCable = class
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
+            this._glPatch.hoverLink = this._link;
             this._glPatch._dropInCircleRect = this._buttonRect;
 
             if (this._glPatch.cablesHoverText)
