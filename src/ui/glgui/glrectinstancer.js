@@ -103,6 +103,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "    pos.y+=scrollY;"
 
             .endl() + "    pos.z=zz=instPos.z;"
+        // .endl() + "    pos.z=zz=0.0;"
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
@@ -159,7 +160,9 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer) * 1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner);"
+            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "   if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)outColor.rgb=vec3(" + CABLES.GLGUI.VISUALCONFIG.colors.opBoundsRect[0] + ");"
+
             .endl() + "   if(outColor.a==0.0)discard;"
             .endl() + "}"
 
@@ -208,8 +211,8 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
-            // .endl() + "   outColor.rgb=vec3(zz);"
-            .endl() + "outColor.a*=col.a;"
+            .endl() + "   outColor.a*=col.a;"
+            // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
             .endl() + "}");
 
 
@@ -419,7 +422,7 @@ CABLES.GLGUI.RectInstancer = class extends CABLES.EventTarget
 
     rebuild()
     {
-        console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
+        // console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
         this._needsRebuildReason = "";
         // todo only update whats needed
 

@@ -23,6 +23,10 @@ CABLES.GLGUI.VISUALCONFIG =
     "zoomSmooth": 2,
     "zoomDefault": 500,
 
+    "zPosCableButtonRect": -0.9, // -0.02,
+
+    "drawBoundingRect": true,
+
     "clickMaxDuration": 300,
 
     "namespaceColors":

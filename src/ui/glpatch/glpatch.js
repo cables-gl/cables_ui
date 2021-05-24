@@ -1,5 +1,3 @@
-
-
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
@@ -15,7 +13,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.logEvents(false, "glpatch");
         if (!cgl) console.error("[glpatch] need cgl");
 
-
         this.paused = false;
 
         this._cgl = cgl;
@@ -30,16 +27,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
+        this.activeButtonRect = null;
 
         this.greyOut = false;
         this._greyOutRect = null;
 
         this.frameCount = 0;
 
-        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._overlaySplines = new CABLES.GLGUI.SplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
-
-        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl);
+        this._splineDrawer = new CABLES.GLGUI.SplineDrawer(cgl, "patchCableSplines");
 
         this.viewBox = new CABLES.GLGUI.ViewBox(cgl, this);
 
@@ -53,15 +50,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
 
-
-        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "hello");
+        this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 1);
 
         this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         this._hoverCable.setPosition(0, 0, 100, 100);
         this._hoverCable.setColor(1, 1, 1, 0.5);
-
 
         this._fpsStartTime = 0;
 
@@ -83,27 +78,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
+        this.opShakeDetector = new CABLES.ShakeDetector();
+        this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length == 1)gui.patchView.unlinkSelectedOps(); });
+
         this.snapLines = new CABLES.GLGUI.SnapLines(cgl, this, this._rectInstancer);
-
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // this._glCursors.push(new CABLES.GLGUI.GlCursor(this, this._overLayRects));
-        // for (let i = 0; i < this._glCursors.length; i++)
-        // {
-        //     this._glCursors[i].setPosition(Math.random() * 30, Math.random() * 30);
-        // }
-
-        // this._cursorUnPredicted = this._overLayRects.createRect();
-        // this._cursorUnPredicted.setSize(5, 5);
-        // this._cursorUnPredicted.setDecoration(5);
-        // this._cursorUnPredicted.setColor(1, 1, 1, 1);
 
         this._redrawFlash = this._overLayRects.createRect();
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
-
 
         this._fadeOutRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._fadeOutRect = this._overLayRects.createRect();
@@ -124,22 +106,17 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.links = {};
         this.zIndex = 0;
 
-        // for (let i = -5000; i < 5000; i += 100)
-        // {
-        //     let idx = this._lines.getIndex();
-        //     this._lines.setLine(idx, -1000, i, 1000, i);
-        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
+        this._dropInCircleRect = null;
 
-        //     idx = this._lines.getIndex();
-        //     this._lines.setLine(idx, i, -1000, i, 1000);
-        //     this._lines.setColor(idx, 0.1, 0.1, 0.1, 1);
-        // }
+        this._dropInOpBorder = this._overLayRects.createRect();
+        this._dropInOpBorder.setSize(100, 100);
+        // this._dropInOpBorder.setDecoration(4);
+        this._dropInOpBorder.setColor(1, 0, 0, 1);
+        this._dropInOpBorder.visible = false;
 
 
-        // ele.byId("patch").addEventListener("keyup", (e) =>
-        // {
-        //     if (e.which == 32) this._spacePressed = false;
-        // });
+        this._cachedNumSelectedOps = 0;
+        this._cachedFirstSelectedOp = null;
 
 
         cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
@@ -153,15 +130,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
-        // cgl.canvas.addEventListener("click", () => { if (!this.mouseState.isDragging && this._hoverOps.length == 0)gui.patchView.showDefaultPanel(); });
-
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
-            console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
+            // console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -188,6 +163,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
 
+        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
+
+
         gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, {}, (e) =>
         {
             const timeused = Date.now() - gui.spaceBarStart;
@@ -204,6 +182,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
         });
+
+        this.previewLayer = new CABLES.GLGUI.GlPreviewLayer(this);
     }
 
     zIndex()
@@ -216,11 +196,46 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._cursor = c;
     }
 
+    _removeDropInRect()
+    {
+        this._dropInOpBorder.visible = false;
+    }
+
+
     _onCanvasMouseMove(e)
     {
         this._hoverCable.visible = false;
 
+        this._dropInCircleRect = null;
+
         this.emitEvent("mousemove", e);
+
+        if (this._dropInCircleRect)
+        {
+            let visible = false;
+            if (gui.patchView.getSelectedOps().length == 1)
+            {
+                for (const i in this.selectedGlOps)
+                {
+                    if (this.selectedGlOps[i].isHovering() && this.selectedGlOps[i].isDragging)
+                    {
+                        visible = true;
+
+                        const border = 3;
+                        this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
+                        this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
+                        this._dropInOpBorder.setColor(this._dropInCircleRect.color);
+                        this._dropInOpBorder.setOpacity(0.5);
+                    }
+                }
+            }
+            else visible = false;
+
+            this._dropInOpBorder.visible = visible;
+        }
+        else this._dropInOpBorder.visible = false;
+
+
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
 
@@ -293,6 +308,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseDown(e)
     {
+        this._removeDropInRect();
+
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { console.log(er); }
 
@@ -302,6 +319,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this._dropInCircleRect = null;
+
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -377,7 +396,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
         else
         {
-            console.log("this.links", this.links);
+            // console.log("this.links", this.links);
             console.log("could not find link to remove!!", linkId);
         }
     }
@@ -559,9 +578,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._time = (performance.now() - this._timeStart) / 1000;
 
         for (const i in this._glCursors)
-        {
             this._glCursors[i].updateAnim();
-        }
 
         this.snapLines.render();
 
@@ -606,11 +623,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._patchAPI.updateFlowModeActivity();
 
         this.viewBox.setSize(resX, resY);
-        // console.log(this.viewBox.scrollX, this.viewBox.scrollY);
 
         const starttime = performance.now();
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-
 
         this._drawCursor();
 
@@ -618,13 +633,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         const perf = CABLES.uiperf.start("[glpatch] render");
 
-        this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-
         this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
-        this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+        this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
-        // this._lines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
+        this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -665,6 +679,13 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
 
+
+            for (let i in this._cgl.profileData.profileSingleMeshAttribute)
+            {
+                this.debugData["glUpdateAttribs " + i] = this._cgl.profileData.profileSingleMeshAttribute[i];
+            }
+
+
             this._cgl.profileData.clear();
         }
 
@@ -675,6 +696,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         perf.finish();
 
         this._cgl.profileData.clearGlQuery();
+
+        // this.previewLayer.render();
     }
 
     mouseMove(x, y)
@@ -791,6 +814,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         for (const i in this._glOpz) this._glOpz[i].selected = false;
         this._selectedGlOps = {};// .length=0;
+        this._cachedNumSelectedOps = 0;
+        this._cachedFirstSelectedOp = null;
     }
 
     getGlOp(op)
@@ -806,11 +831,24 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (this._glOpz[id] && !this._glOpz[id].isInCurrentSubPatch()) this.setCurrentSubPatch(this._glOpz[id].getSubPatch());
     }
 
+    getNumSelectedOps()
+    {
+        return this._cachedNumSelectedOps;
+    }
+
+    getOnlySelectedOp()
+    {
+        if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
+    }
+
     selectOpId(id)
     {
-        if (this._glOpz[id])
+        if (this._glOpz[id] && !this._selectedGlOps[id])
         {
             this._selectedGlOps[id] = this._glOpz[id];
+            this._cachedNumSelectedOps++;
+            if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
+
             this._glOpz[id].selected = true;
         }
     }
@@ -843,13 +881,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             ops[i].selected = true;
-            this._selectedGlOps[ops[i].id] = ops[i];
+
+            this.selectOpId(ops[i].id);
+            // this._selectedGlOps[ops[i].id] = ops[i];
         }
     }
 
     getZoomForAllOps()
     {
-        console.log(this.getOpBounds());
+        // console.log(this.getOpBounds());
         return 1200;
     }
 
@@ -1036,7 +1076,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.unselectAll();
 
         this._currentSubpatch = sub;
-        console.log("set subpatch", sub);
+        // console.log("set subpatch", sub);
 
         const dur = 0.0;
         const timeGrey = dur * 1.5;
@@ -1061,10 +1101,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
     }
 
-    mouseToPatchCoords(x, y)
-    {
-        return this.viewBox.screenToPatchCoord(x, y);
-    }
 
     serialize(dataUi)
     {

@@ -23,10 +23,13 @@ CABLES.GLGUI.GlPort = class
 
         this._updateColor(p.uiAttribs);
 
-        this._rect.on("mousedown", this._onMouseDown.bind(this));
-        this._rect.on("mouseup", this._onMouseUp.bind(this));
-        this._rect.on("hover", this._onHover.bind(this));
-        this._rect.on("unhover", this._onUnhover.bind(this));
+
+        this._mouseEvents = [];
+
+        this._mouseEvents.push(this._rect.on("mousedown", this._onMouseDown.bind(this)));
+        this._mouseEvents.push(this._rect.on("mouseup", this._onMouseUp.bind(this)));
+        this._mouseEvents.push(this._rect.on("hover", this._onHover.bind(this)));
+        this._mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
 
@@ -35,7 +38,7 @@ CABLES.GLGUI.GlPort = class
             if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor(p.uiAttribs);
         });
 
-        this._updateSize();
+        this.updateSize();
     }
 
     _updateColor(attribs)
@@ -53,13 +56,13 @@ CABLES.GLGUI.GlPort = class
         return this._rect.w;
     }
 
-    _updateSize()
+    updateSize()
     {
         let h = CABLES.GLGUI.VISUALCONFIG.portHeight;
         if (this._port.isLinked()) h *= 1.5;
 
         let y = 0;
-        if (this._port.direction == 1) y = CABLES.UI.uiConfig.opHeight - CABLES.GLGUI.VISUALCONFIG.portHeight;
+        if (this._port.direction == 1) y = this._glop.h - CABLES.GLGUI.VISUALCONFIG.portHeight;
         else if (this._port.isLinked()) y -= CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
 
         this._rect.setPosition(this._posX, y);
@@ -68,7 +71,7 @@ CABLES.GLGUI.GlPort = class
 
     _onLinkChanged()
     {
-        this._updateSize();
+        this.updateSize();
     }
 
     _onMouseDown(e, rect)
@@ -94,6 +97,8 @@ CABLES.GLGUI.GlPort = class
             "clientX": this._glPatch.viewBox.mouseX,
             "clientY": this._glPatch.viewBox.mouseY - 25
         };
+
+        this._glPatch.emitEvent("mouseOverPort", this._glop.id, this._port.name);
 
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
@@ -126,6 +131,12 @@ CABLES.GLGUI.GlPort = class
 
     dispose()
     {
+        for (let i = 0; i < this._mouseEvents.length; i++)
+        {
+            this._rect.off(this._mouseEvents[i]);
+        }
+        this._mouseEvents.length = 0;
+
         this._rect.dispose();
     }
 };

@@ -153,6 +153,17 @@
 
 
 
+    .colorbutton
+    {
+        width:20px;
+        height:20px;
+        display:block;
+        border:3px solid black;
+        color:black;
+        float:left;
+        display: block;
+    }
+
     div
     {
 
@@ -382,17 +393,6 @@ select
     td
     {
         vertical-align:top;
-    }
-
-    .colorbutton
-    {
-        width:20px;
-        height:20px;
-        display:block;
-        border:3px solid black;
-        color:black;
-        float:left;
-        display: block;
     }
 
 }
