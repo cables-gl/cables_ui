@@ -476,10 +476,14 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     getSelectedOps()
     {
+        const perf = CABLES.uiperf.start("patchview getSelectedOps");
+
         const ops = [];
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i].uiAttribs.selected)
                 ops.push(this._p.ops[i]);
+
+        perf.finish();
 
         return ops;
     }
