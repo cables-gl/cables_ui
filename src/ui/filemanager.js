@@ -107,6 +107,7 @@ CABLES.UI.FileManager.prototype.reload = function (cb)
 
             this._firstTimeOpening = false;
             this._files = files;
+
             this._buildHtml();
 
             if (cb) cb();
@@ -375,7 +376,6 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
     if (detailItems.length == 1)
     {
         const itemId = detailItems[0].id;
-
         CABLESUILOADER.talkerAPI.send(
             "getFileDetails",
             {
@@ -394,7 +394,52 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                         "source": this._fileSource,
                     });
                 }
-                else html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", { "filename": detailItems[0].p });
+                else
+                {
+                    // * it's a library file
+                    const item = detailItems[0];
+
+                    const fileInfoPath = item.p.substring("/assets/library/".length);
+
+                    const fileCategory = fileInfoPath.split("/")[0];
+                    const fileName = fileInfoPath.split("/")[1];
+                    CABLESUILOADER.talkerAPI.send(
+                        "getLibraryFileInfo",
+                        {
+                            "filename": fileName,
+                            "fileCategory": fileCategory,
+                            "filepath": fileInfoPath
+                        },
+                        (err, r) =>
+                        {
+                            const itemInfo = r;
+                            const templateName = "filemanager_details_lib_" + itemInfo.type;
+
+                            try
+                            {
+                                // * use file-type specific template
+                                html = CABLES.UI.getHandleBarHtml(templateName, {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                });
+                            }
+                            catch (e)
+                            {
+                                // * use default template
+                                html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                });
+                            }
+
+
+                            if (document.getElementById("item_details"))
+                                document.getElementById("item_details").innerHTML = html;
+                        }
+                    );
+                }
 
                 if (document.getElementById("item_details"))
                     document.getElementById("item_details").innerHTML = html;

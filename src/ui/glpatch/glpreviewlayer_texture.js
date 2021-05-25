@@ -1,5 +1,3 @@
-
-
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
@@ -139,7 +137,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
 
         if (port && port.get())
         {
-            const perf = CABLES.uiperf.start("texpreview");
+            const perf = CABLES.uiperf.start("previewlayer texture");
             const cgl = port.parent.patch.cgl;
 
             if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);

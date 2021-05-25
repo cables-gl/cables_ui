@@ -1,5 +1,3 @@
-
-
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
@@ -28,7 +26,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
 
         this._canvasCtx = this._eleCanvas.getContext("2d");
-        this.drawCanvas();
+        // this.drawCanvas();
 
         console.log("glui overlay preview");
 
@@ -39,7 +37,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
         // });
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
-        this.drawCanvas();
+        // this.drawCanvas();
 
         setInterval(this.updateViewPort.bind(this), 500);
     }
@@ -57,26 +55,26 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
     }
 
-    drawCanvas()
-    {
-        // this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
+    // drawCanvas()
+    // {
+    //     // this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
-        this._canvasCtx.font = "13px Arial";
-        this._canvasCtx.fillStyle = "#ffffff";
-        // this._canvasCtx.fillText("Hello overlay preview", 10, 100);
+    //     this._canvasCtx.font = "13px Arial";
+    //     this._canvasCtx.fillStyle = "#ffffff";
+    //     this._canvasCtx.fillText("num viz " + this._items.length, 10, 100);
 
-        for (let i = 0; i < this._items.length; i++)
-        {
-            // const pos = this._glPatch.viewBox.patchToScreenCoords(
-            // this._items[i].posX,
-            // this._items[i].posY);
-            // this._items[i].op.uiAttribs.translate.x,
-            // this._items[i].op.uiAttribs.translate.y);
+    //     for (let i = 0; i < this._items.length; i++)
+    //     {
+    //         // const pos = this._glPatch.viewBox.patchToScreenCoords(
+    //         // this._items[i].posX,
+    //         // this._items[i].posY);
+    //         // this._items[i].op.uiAttribs.translate.x,
+    //         // this._items[i].op.uiAttribs.translate.y);
 
-            // this._canvasCtx.fillRect(this._items[i].posX,this._items[i].posY, 100, 100);
-            // this._canvasCtx.fillText(this._items[i].port.name + ": " + this._items[i].port.get(), pos[0], pos[1]);
-        }
-    }
+    //         // this._canvasCtx.fillRect(this._items[i].posX,this._items[i].posY, 100, 100);
+    //         // this._canvasCtx.fillText(this._items[i].port.name + ": " + this._items[i].port.get(), pos[0], pos[1]);
+    //     }
+    // }
 
     renderGl()
     {
@@ -89,12 +87,17 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
             this._items[i].renderer.render(this._canvasCtx, this._eleCanvas.width, this._eleCanvas.height);
         }
+
+        this._canvasCtx.font = "13px Arial";
+        this._canvasCtx.fillStyle = "#ffffff";
+        this._canvasCtx.fillText("num viz " + this._items.length, 10, 100);
     }
 
     updateViewPort()
     {
         const ops = gui.corePatch().getOpsByObjName("Ops.Admin.PreviewTexture");
-
+        const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizNumber");
+        ops.push(...ops2);
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -111,7 +114,8 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
                 this._itemsLookup[ops[i].id] = item;
                 this._items.push(item);
 
-                item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Admin.PreviewTexture") item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new CABLES.GLGUI.GlPreviewLayerNumber(this, item);
             }
         }
     }
