@@ -95,7 +95,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
     updateViewPort()
     {
-        const ops = gui.corePatch().getOpsByObjName("Ops.Admin.PreviewTexture");
+        const ops = gui.corePatch().getOpsByObjName("Ops.Dev.VizTexture");
         const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizNumber");
         ops.push(...ops2);
 
@@ -114,7 +114,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
                 this._itemsLookup[ops[i].id] = item;
                 this._items.push(item);
 
-                if (ops[i].objName == "Ops.Admin.PreviewTexture") item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Dev.VizTexture") item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
                 if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new CABLES.GLGUI.GlPreviewLayerNumber(this, item);
             }
         }
