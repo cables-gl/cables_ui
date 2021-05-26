@@ -14,13 +14,19 @@ CABLES.UI.UserSettings = function ()
     this.init();
 };
 
+CABLES.UI.UserSettings.prototype.reset = function ()
+{
+    this._settings = {};
+    this.init();
+    this.save();
+};
+
 CABLES.UI.UserSettings.prototype.init = function ()
 {
     if (this.get("snapToGrid") === null) this.set("snapToGrid", true);
     if (this.get("bgpreview") === null) this.set("bgpreview", true);
     if (this.get("showTipps") === null) this.set("showTipps", true);
     if (this.get("svgpatchview") === null) this.set("svgpatchview", false);
-
 
     if (this.get("toggleHelperCurrent") === null) this.set("toggleHelperCurrent", true);
     if (this.get("toggleHelperCurrentTransforms") === null) this.set("toggleHelperCurrentTransforms", true);
@@ -48,6 +54,12 @@ CABLES.UI.UserSettings.prototype.getLS = function (key)
     return this._lsSettings[key];
 };
 
+
+CABLES.UI.UserSettings.prototype.save = function ()
+{
+    CABLESUILOADER.talkerAPI.send("saveUserSettings", { "settings": this._settings });
+};
+
 CABLES.UI.UserSettings.prototype.set = function (key, value)
 {
     if (value === "true") value = true;
@@ -71,7 +83,7 @@ CABLES.UI.UserSettings.prototype.set = function (key, value)
             clearTimeout(this._serverDelay);
             this._serverDelay = setTimeout(() =>
             {
-                CABLESUILOADER.talkerAPI.send("saveUserSettings", { "settings": this._settings });
+                this.save();
             }, delay);
         }
         if (wasChanged) this.emitEvent("onChange", key, value);
