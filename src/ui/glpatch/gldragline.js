@@ -38,6 +38,7 @@ CABLES.GLGUI.GlRectDragLine = class
             }
 
             const ele = document.elementFromPoint(e.x, e.y);
+            if (!ele) return;
             if (ele.dataset.opid && ele.dataset.portname)
             {
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);

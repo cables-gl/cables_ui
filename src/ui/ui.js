@@ -1624,7 +1624,7 @@ CABLES.UI.GUI = function (cfg)
         if (this.isRemoteClient)
             new CABLES.UI.NoPatchEditor();
         else
-        if (CABLES.UI.userSettings.get("glpatchview") == true || document.location.href.indexOf("glui") > -1) CABLES.CMD.DEBUG.glguiFull();
+        if (!CABLES.UI.userSettings.get("svgpatchview") == true) CABLES.CMD.DEBUG.glguiFull();
 
 
         this._elGlCanvas.hover(function (e)
