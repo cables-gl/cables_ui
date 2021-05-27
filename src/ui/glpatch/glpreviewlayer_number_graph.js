@@ -12,7 +12,7 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
         this._buff = [];
     }
 
-    render(ctx, w, h)
+    render(ctx, pos, size)
     {
         const port = this._item.port;
         if (!port || !port.get()) return;
@@ -22,11 +22,11 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
         this._buff.push(this._item.port.get());
         if (this._buff.length > 60) this._buff.shift();
 
-        const glop = this._previewLayer._glPatch.getGlOp(this._item.op);
-        const size = this._previewLayer._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
-        const pos = this._previewLayer._glPatch.viewBox.patchToScreenCoords(this._item.posX, this._item.posY);
+        // const glop = this._previewLayer._glPatch.getGlOp(this._item.op);
+        // const size = this._previewLayer._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
+        // const pos = this._previewLayer._glPatch.viewBox.patchToScreenCoords(this._item.posX, this._item.posY);
 
-        if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > w || (pos[1] + 100) > h) return;
+        // if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > w || (pos[1] + 100) > h) return;
 
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
@@ -34,8 +34,11 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#ffffff";
 
+
         ctx.beginPath();
         ctx.moveTo(pos[0], pos[1]);
+
+        // console.log(size);
 
         const mul = size[1];
         const mulX = size[0] / 60;
@@ -46,6 +49,7 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
         }
 
         ctx.stroke();
+
 
         perf.finish();
     }

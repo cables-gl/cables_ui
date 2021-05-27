@@ -125,115 +125,100 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
     }
 
 
-    render(ctx, w, h)
+    render(ctx, pos, size)
     {
-        const pos = this._previewLayer._glPatch.viewBox.patchToScreenCoords(this._item.posX, this._item.posY);
-
-        if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > w || (pos[1] + 100) > h) return;
-
         const port = this._item.port;
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
 
-        if (port && port.get())
+        const perf = CABLES.uiperf.start("previewlayer texture");
+        const cgl = port.parent.patch.cgl;
+
+        if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
+        port.parent.patch.cgl.profileData.profileTexPreviews++;
+
+        if (!this._mesh)
         {
-            const perf = CABLES.uiperf.start("previewlayer texture");
-            const cgl = port.parent.patch.cgl;
-
-            if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
-            port.parent.patch.cgl.profileData.profileTexPreviews++;
-
-            if (!this._mesh)
-            {
-                const geom = new CGL.Geometry("preview op rect");
-                geom.vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
-                geom.texCoords = [
-                    1.0, 1.0,
-                    0.0, 1.0,
-                    1.0, 0.0,
-                    0.0, 0.0];
-                geom.verticesIndices = [0, 1, 2, 3, 1, 2];
-                this._mesh = new CGL.Mesh(cgl, geom);
-            }
-            if (!this._shader)
-            {
-                this._shader = new CGL.Shader(cgl, "MinimalMaterial");
-                this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
-                this._shader.setSource(this._srcVert, this._srcFrag);
-                this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
-                this._shaderTexCubemapUniform = new CGL.Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
-
-                this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
-                this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
-                this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
-            }
-
-            cgl.pushPMatrix();
-
-            mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
-            // if(port.get().oldTexFlip) mat4.ortho(cgl.pMatrix,-1,1,-1,1,0.001,11);
-
-            const oldTex = cgl.getTexture(texSlot);
-            const oldTexCubemap = cgl.getTexture(texSlotCubemap);
-
-            let texType = 0;
-            if (port.get().cubemap) texType = 1;
-            if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
-
-            if (texType == 0 || texType == 2)
-            {
-                cgl.setTexture(texSlot, port.get().tex);
-                cgl.setTexture(texSlotCubemap, this._emptyCubemap.cubemap, cgl.gl.TEXTURE_CUBE_MAP);
-            }
-            else if (texType == 1)
-            {
-                cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
-            }
-
-
-            // this._shader.toggleDefine("CUBEMAP", true);
-
-            this._shaderTypeUniform.setValue(texType);
-
-            this._mesh.render(this._shader);
-            if (texType == 0) cgl.setTexture(texSlot, oldTex);
-            if (texType == 1) cgl.setTexture(texSlotCubemap, oldTexCubemap);
-
-            cgl.popPMatrix();
-            cgl.resetViewPort();
-
-            // const containerEle=document.getElementById("preview_img_container"+id);
-            // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
-            // const h=w*(port.get().height/port.get().width);
-
-
-            const s = this._getCanvasSize(port, port.get());
-            if (s[0] == 0 || s[1] == 0) return;
-
-
-            const glop = this._previewLayer._glPatch.getGlOp(this._item.op);
-
-            const size = this._previewLayer._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
-
-            size[1] = size[0] * port.get().height / port.get().width;
-
-            // console.log(s, size);
-
-            ctx.drawImage(cgl.canvas,
-                0, 0,
-                s[0], s[1],
-                pos[0], pos[1],
-                size[0], size[1]);
-
-            cgl.gl.clearColor(0, 0, 0, 0);
-            cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-
-            perf.finish();
+            const geom = new CGL.Geometry("preview op rect");
+            geom.vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
+            geom.texCoords = [
+                1.0, 1.0,
+                0.0, 1.0,
+                1.0, 0.0,
+                0.0, 0.0];
+            geom.verticesIndices = [0, 1, 2, 3, 1, 2];
+            this._mesh = new CGL.Mesh(cgl, geom);
         }
-        else
+        if (!this._shader)
         {
-            // console.log("NOPE ", previewCanvas, port, port.get());
+            this._shader = new CGL.Shader(cgl, "MinimalMaterial");
+            this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
+            this._shader.setSource(this._srcVert, this._srcFrag);
+            this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
+            this._shaderTexCubemapUniform = new CGL.Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
+
+            this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
+            this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
+            this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
         }
+
+        cgl.pushPMatrix();
+
+        mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
+
+        const oldTex = cgl.getTexture(texSlot);
+        const oldTexCubemap = cgl.getTexture(texSlotCubemap);
+
+        let texType = 0;
+        if (port.get().cubemap) texType = 1;
+        if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
+
+        if (texType == 0 || texType == 2)
+        {
+            cgl.setTexture(texSlot, port.get().tex);
+            cgl.setTexture(texSlotCubemap, this._emptyCubemap.cubemap, cgl.gl.TEXTURE_CUBE_MAP);
+        }
+        else if (texType == 1)
+        {
+            cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
+        }
+
+
+        // this._shader.toggleDefine("CUBEMAP", true);
+
+        this._shaderTypeUniform.setValue(texType);
+
+        this._mesh.render(this._shader);
+        if (texType == 0) cgl.setTexture(texSlot, oldTex);
+        if (texType == 1) cgl.setTexture(texSlotCubemap, oldTexCubemap);
+
+        cgl.popPMatrix();
+        cgl.resetViewPort();
+
+        // const containerEle=document.getElementById("preview_img_container"+id);
+        // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
+        // const h=w*(port.get().height/port.get().width);
+
+
+        const s = this._getCanvasSize(port, port.get());
+        if (s[0] == 0 || s[1] == 0) return;
+
+
+        const sizeTex = size;
+        sizeTex[1] = size[0] * port.get().height / port.get().width;
+
+        // console.log(s, size);
+
+        ctx.drawImage(cgl.canvas,
+            0, 0,
+            s[0], s[1],
+            pos[0], pos[1],
+            size[0], size[1]);
+
+        cgl.gl.clearColor(0, 0, 0, 0);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+        perf.finish();
     }
 
     _getCanvasSize(port, tex)

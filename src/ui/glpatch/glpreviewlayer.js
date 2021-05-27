@@ -80,12 +80,32 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
     {
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
+
+        const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
+        // console.log(padding);
+
         for (let i = 0; i < this._items.length; i++)
         {
-            this._items[i].posX = this._items[i].op.uiAttribs.translate.x;
-            this._items[i].posY = this._items[i].op.uiAttribs.translate.y;
+            const item = this._items[i];
+            const port = item.port;
+            if (!port) continue;
 
-            this._items[i].renderer.render(this._canvasCtx, this._eleCanvas.width, this._eleCanvas.height);
+            item.posX = item.op.uiAttribs.translate.x;
+            item.posY = item.op.uiAttribs.translate.y;
+
+            const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
+            pos[1] += paddingY;
+
+            const glop = this._glPatch.getGlOp(item.op);
+            const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
+            const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
+
+            if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > this._eleCanvas.width || (pos[1] + 100) > this._eleCanvas.height) continue;
+
+            this._canvasCtx.fillStyle = "#222222";
+            this._canvasCtx.fillRect(pos[0], pos[1], size[0], size[1]);
+
+            this._items[i].renderer.render(this._canvasCtx, pos, size);
         }
 
         this._canvasCtx.font = "13px Arial";
