@@ -128,6 +128,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
     render(ctx, pos, size)
     {
         const port = this._item.port;
+        if (!port.get()) return;
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
 
@@ -170,6 +171,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         const oldTexCubemap = cgl.getTexture(texSlotCubemap);
 
         let texType = 0;
+        if (!port.get()) return;
         if (port.get().cubemap) texType = 1;
         if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
 
@@ -200,8 +202,9 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         // const h=w*(port.get().height/port.get().width);
 
 
-        const s = this._getCanvasSize(port, port.get());
-        if (s[0] == 0 || s[1] == 0) return;
+        // const s = this._getCanvasSize(port, port.get());
+        // if (s[0] == 0 || s[1] == 0) return;
+        const s = [port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight];
 
 
         const sizeTex = size;
@@ -213,7 +216,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
             0, 0,
             s[0], s[1],
             pos[0], pos[1],
-            size[0], size[1]);
+            sizeTex[0], sizeTex[1]);
 
         cgl.gl.clearColor(0, 0, 0, 0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -221,28 +224,28 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         perf.finish();
     }
 
-    _getCanvasSize(port, tex)
-    {
-        let maxWidth = 300;
-        let maxHeight = 200;
+    // _getCanvasSize(port, tex)
+    // {
+    //     let maxWidth = 300;
+    //     let maxHeight = 200;
 
-        const patchRect = gui.patchView.element.getBoundingClientRect();
-        maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-        maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
+    //     const patchRect = gui.patchView.element.getBoundingClientRect();
+    //     maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
+    //     maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
 
-        const aspect = tex.height / tex.width;
-        let w = tex.width;
+    //     const aspect = tex.height / tex.width;
+    //     let w = tex.width;
 
-        if (w > maxWidth) w = maxWidth;
-        let h = w * aspect;
+    //     if (w > maxWidth) w = maxWidth;
+    //     let h = w * aspect;
 
-        if (h > maxHeight)
-        {
-            w = maxHeight / aspect;
-            h = maxHeight;
-        }
+    //     if (h > maxHeight)
+    //     {
+    //         w = maxHeight / aspect;
+    //         h = maxHeight;
+    //     }
 
-        // console.log("w,h", w, h);
-        return [w, h];
-    }
+    //     // console.log("w,h", w, h);
+    //     return [w, h];
+    // }
 };

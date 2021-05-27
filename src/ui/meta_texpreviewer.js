@@ -214,6 +214,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
         const oldTexCubemap = cgl.getTexture(texSlotCubemap);
 
         let texType = 0;
+        if (!port.get()) return;
         if (port.get().cubemap) texType = 1;
         if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
 
