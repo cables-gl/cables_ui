@@ -80,10 +80,11 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
     {
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
+        const startTime = performance.now();
 
         const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
         // console.log(padding);
-
+        let count = 0;
         for (let i = 0; i < this._items.length; i++)
         {
             const item = this._items[i];
@@ -107,11 +108,15 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
             this._canvasCtx.fillRect(pos[0], pos[1], size[0], size[1]);
 
             this._items[i].renderer.render(this._canvasCtx, pos, size);
+            count++;
         }
 
         this._canvasCtx.font = "13px Arial";
         this._canvasCtx.fillStyle = "#ffffff";
-        this._canvasCtx.fillText("num viz " + this._items.length, 10, 100);
+
+        const timeUsed = performance.now() - startTime;
+
+        this._canvasCtx.fillText("num viz " + count + " / " + this._items.length + " " + Math.round(timeUsed * 100) / 100 + "ms", 10, 100);
     }
 
     updateViewPort()

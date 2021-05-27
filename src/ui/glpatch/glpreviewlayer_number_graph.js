@@ -33,15 +33,20 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
 
         ctx.lineWidth = 2;
         ctx.strokeStyle = "#ffffff";
+        ctx.fillStyle = "#ff0000";
 
+
+        const mul = size[1];
+        const mulX = size[0] / 60;
+
+
+        ctx.fillRect(pos[0], pos[1], size[0], 1);
 
         ctx.beginPath();
         ctx.moveTo(pos[0], pos[1]);
 
         // console.log(size);
 
-        const mul = size[1];
-        const mulX = size[0] / 60;
 
         for (let i = 0; i < this._buff.length; i++)
         {

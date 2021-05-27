@@ -197,28 +197,23 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         cgl.popPMatrix();
         cgl.resetViewPort();
 
-        // const containerEle=document.getElementById("preview_img_container"+id);
-        // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
-        // const h=w*(port.get().height/port.get().width);
-
-
-        // const s = this._getCanvasSize(port, port.get());
-        // if (s[0] == 0 || s[1] == 0) return;
         const s = [port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight];
 
+        const sizeTex = [size[0], size[1]];
 
-        const sizeTex = size;
-        sizeTex[1] = size[0] * port.get().height / port.get().width;
+        const stretch = false;
+
+        if (!stretch) sizeTex[1] = size[0] * port.get().height / port.get().width;
 
         // console.log(s, size);
 
         ctx.drawImage(cgl.canvas,
             0, 0,
             s[0], s[1],
-            pos[0], pos[1],
+            pos[0], pos[1] + (size[1] - sizeTex[1]) / 2,
             sizeTex[0], sizeTex[1]);
 
-        cgl.gl.clearColor(0, 0, 0, 0);
+        cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         perf.finish();
