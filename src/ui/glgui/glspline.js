@@ -311,7 +311,7 @@ CABLES.GLGUI.SplineDrawer = class
             {
                 isDifferent = false;
 
-                if (points.length - 1 < this._splines[idx].origPoints.length)
+                if (points.length < this._splines[idx].origPoints.length)
                 {
                     // if new num of points is smaller than last one just draw last point multiple times and do not rebuild everything...
                     isDifferent = true;
