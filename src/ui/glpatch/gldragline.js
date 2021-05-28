@@ -20,9 +20,6 @@ CABLES.GLGUI.GlRectDragLine = class
         this._lineIndices = [];
         this._clearSpline();
 
-
-        console.log("new glrectdragline...");
-
         // document.body.addEventListener("pointerup", (e) =>
         // {
         //     console.log("up", e);

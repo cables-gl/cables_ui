@@ -158,13 +158,7 @@ CABLES.GLGUI.GlPatchAPI = class
             ));
         }
 
-        let visible = true;
-
-        if (p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch() || p2.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch())
-        {
-            visible = false;
-            console.log("invisible subpatchlink...");
-        }
+        let visible = p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
 
         const l = new CABLES.GLGUI.GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,

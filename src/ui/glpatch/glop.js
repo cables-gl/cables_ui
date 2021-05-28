@@ -221,7 +221,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
         if (attr && !this.opUiAttribs.selected && attr.selected)
         {
-            console.log("selected op!");
             this._glPatch.selectOpId(this._id);
         }
 
