@@ -25,6 +25,7 @@ CABLES.GLGUI.SplineDrawer = class
         this._splineIndex = null;
         this._rebuildReason = "";
 
+        this._splineHidden = [];
         this._splineColors = [];
         this._splines =
             [
@@ -246,7 +247,8 @@ CABLES.GLGUI.SplineDrawer = class
             "points": [],
             "color": [1, 1, 1, 1],
             "speed": 1,
-            "index": this._count
+            "index": this._count,
+            "hidden": false
         };
 
         // console.log("get new spline");
@@ -300,6 +302,15 @@ CABLES.GLGUI.SplineDrawer = class
         this.setSpline(idx, this._splines[idx].origPoints);
     }
 
+    hideSpline(idx)
+    {
+        for (let i = 0; i < this._splines[idx].points.length; i++)
+        {
+            this._splines[idx].points[i] = 0;
+            this._splines[idx].hidden = true;
+        }
+    }
+
     setSpline(idx, points)
     {
         let isDifferent = true;
@@ -311,6 +322,12 @@ CABLES.GLGUI.SplineDrawer = class
             {
                 isDifferent = false;
 
+                if (this._splines[idx].hidden)
+                {
+                    isDifferent = true;
+                    this._splines[idx].hidden = false;
+                }
+                else
                 if (points.length < this._splines[idx].origPoints.length)
                 {
                     // if new num of points is smaller than last one just draw last point multiple times and do not rebuild everything...

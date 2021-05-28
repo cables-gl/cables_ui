@@ -11,6 +11,8 @@ CABLES.GLGUI.GlCable = class
         this._buttonRect = buttonRect;
         this._type = type;
         this._disposed = false;
+        this._visible = true;
+        if (link) this._visible = link.visible;
 
         this._link = link;
 
@@ -38,6 +40,7 @@ CABLES.GLGUI.GlCable = class
 
     set visible(v)
     {
+        if (this._visible != v) this._oldx = null;
         this._visible = v;
         this._updateLinePos();
     }
@@ -211,13 +214,15 @@ CABLES.GLGUI.GlCable = class
         }
         else
         {
-            this._splineDrawer.setSpline(this._splineIdx,
-                [
-                    0, 0, 0,
-                    0, 0, 0,
-                    0, 0, 0,
-                    0, 0, 0
-                ]);
+            this._splineDrawer.hideSpline(this._splineIdx);
+
+            // this._splineDrawer.setSpline(this._splineIdx,
+            //     [
+            //         0, 0, 0,
+            //         0, 0, 0,
+            //         0, 0, 0,
+            //         0, 0, 0
+            //     ]);
 
 
             // this._lineDrawer.setLine(this._lineIdx0, 0, 0, 0, 0);

@@ -6,11 +6,12 @@ CABLES.GLGUI.GlLink = class
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
-        portNameOut, portIdInput, portIdOutput, type)
+        portNameOut, portIdInput, portIdOutput, type, visible = true)
     {
         this._id = id;
         this._link = link;
-        this._visible = true;
+        this._visible = visible;
+
         this._glPatch = glpatch;
         this._type = type;
         this._portNameInput = portNameIn;
