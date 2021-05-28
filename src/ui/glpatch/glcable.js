@@ -80,7 +80,7 @@ CABLES.GLGUI.GlCable = class
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
         this._glPatch.removeEventListener(this._listenerMousemove);
-        this._glPatch._hoverCable.visible = false;
+        // this._glPatch._hoverCable.visible = false;
     }
 
     _updateDistFromPort()
@@ -335,10 +335,10 @@ CABLES.GLGUI.GlCable = class
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
             // this._glPatch._hoverCable.visible = true;
-            this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
+            // this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
             // this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
             this.setColor();
-            this._glPatch._hoverCable.visible = true;
+            // this._glPatch._hoverCable.visible = true;
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect);
             this._buttonRect.visible = true;

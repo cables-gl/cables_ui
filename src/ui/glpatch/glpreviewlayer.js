@@ -68,6 +68,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
     renderGl()
     {
+        if (this._items.length == 0) return;
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
         const startTime = performance.now();
