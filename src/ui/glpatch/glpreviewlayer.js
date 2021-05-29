@@ -26,18 +26,8 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
 
         this._canvasCtx = this._eleCanvas.getContext("2d");
-        // this.drawCanvas();
-
-        console.log("glui overlay preview");
-
-        // this._glPatch.on("mouseOverCablePort", (opid, portname) =>
-        // {
-        //     this._hoverPort = portname;
-        //     this._hoverOpid = opid;
-        // });
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
-        // this.drawCanvas();
 
         setInterval(this.updateViewPort.bind(this), 500);
     }
@@ -78,6 +68,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
     renderGl()
     {
+        if (this._items.length == 0) return;
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
         const startTime = performance.now();
