@@ -131,7 +131,7 @@ CABLES.GLGUI.GlPatchAPI = class
         {
             const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
             {
-                CABLES.undo.add({
+                CABLES.UI.undo.add({
                     "title": "Link port",
                     undo()
                     {
@@ -172,7 +172,7 @@ CABLES.GLGUI.GlPatchAPI = class
 
         const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
         {
-            CABLES.undo.add({
+            CABLES.UI.undo.add({
                 "title": "Unlink port",
                 undo()
                 {

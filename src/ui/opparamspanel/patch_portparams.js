@@ -380,7 +380,7 @@ CABLES.UI.initPortInputListener = function (op, index)
             const undoAdd = (function (oldv, newv, opid, portname)
             {
                 if (oldv != newv)
-                    CABLES.undo.add({
+                    CABLES.UI.undo.add({
                         "title": "Value change " + oldv + " to " + newv,
                         undo()
                         {

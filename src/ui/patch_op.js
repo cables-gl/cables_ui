@@ -1408,7 +1408,7 @@ const OpUi = function (paper, op, x, y, w, h, txt)
         {
             const newUiAttr = JSON.stringify(self.op.uiAttribs);
             const oldUiAttr = oldUiAttribs + " ";
-            CABLES.undo.add({
+            CABLES.UI.undo.add({
                 "title": "Move op",
                 undo()
                 {

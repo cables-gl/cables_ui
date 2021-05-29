@@ -9,7 +9,7 @@ CABLES.UI.MetaHistory = class
         this._tab = new CABLES.UI.Tab("doc", { "icon": "list", "infotext": "tab_history", "showTitle": false, "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
 
-        CABLES.undo.setCallback(this.update.bind(this));
+        CABLES.UI.undo.setCallback(this.update.bind(this));
 
         this.update();
     }
@@ -20,12 +20,12 @@ CABLES.UI.MetaHistory = class
 
         this.html = "<h3>History</h3>";
 
-        this.html += "<span onclick=\"CABLES.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
-        this.html += "<span onclick=\"CABLES.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";
+        this.html += "<span onclick=\"CABLES.UI.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
+        this.html += "<span onclick=\"CABLES.UI.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";
 
-        const commands = CABLES.undo.getCommands();
+        const commands = CABLES.UI.undo.getCommands();
 
-        this.html += "&nbsp;&nbsp;&nbsp;" + (CABLES.undo.getIndex() + 1) + " / " + (commands.length) + "<br/><br/>";
+        this.html += "&nbsp;&nbsp;&nbsp;" + (CABLES.UI.undo.getIndex() + 1) + " / " + (commands.length) + "<br/><br/>";
 
         let groupSummary = [];
         let lastGroup = null;
@@ -40,8 +40,8 @@ CABLES.UI.MetaHistory = class
             let style = "";
             if (!cmd.group || i == 0 || (i > 0 && lastGroup && lastGroup != cmd.group)) style += "margin-top:4px;";
 
-            if (CABLES.undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
-            else if (CABLES.undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
+            if (CABLES.UI.undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
+            else if (CABLES.UI.undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
             else style += "border-left:4px solid var(--color-08);background-color:var(--color-03);";
 
             groupSummary.push(cmd.title);

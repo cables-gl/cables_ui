@@ -115,36 +115,40 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps) glOps[i].endPassiveDrag();
 
+        let changed = this._glRectBg.dragOffsetX != 0 || this._glRectBg.dragOffsetY != 0;
+
+
         if (this._preDragPosZ != this._glRectBg.z) this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
 
-        const undoAdd = (function (scope, oldUiAttribs)
+        if (changed)
         {
-            if (!scope._op) return;
+            const undoAdd = (function (scope, oldUiAttribs)
+            {
+                if (!scope._op) return;
 
-            const newUiAttr = JSON.stringify(scope._op.uiAttribs);
-            CABLES.undo.add({
-                "title": "Move op",
-                undo()
-                {
-                    try
+                const newUiAttr = JSON.stringify(scope._op.uiAttribs);
+                CABLES.UI.undo.add({
+                    "title": "Move op",
+                    undo()
                     {
-                        const u = JSON.parse(oldUiAttribs);
-                        // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
-
-
+                        try
+                        {
+                            const u = JSON.parse(oldUiAttribs);
+                            // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                        }
+                        catch (e) {}
+                    },
+                    redo()
+                    {
+                        const u = JSON.parse(newUiAttr);
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
-                    }
-                    catch (e) {}
-                },
-                redo()
-                {
-                    const u = JSON.parse(newUiAttr);
-                    scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
                     // scope.op.uiAttribs.translate = { "x": u.translate.x, "y": u.translate.y };
                     // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
-                }
-            });
-        }(this, this._dragOldUiAttribs + ""));
+                    }
+                });
+            }(this, this._dragOldUiAttribs + ""));
+        }
     }
 
     _onMouseDown(e)
