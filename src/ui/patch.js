@@ -1248,7 +1248,7 @@ CABLES.UI.Patch = function (_gui)
         {
             if (this.disabled)
             {
-                console.log("wont delete, patch is disabled");
+                // console.log("wont delete, patch is disabled");
                 return;
             }
             const undofunc = (function (opname, opid)
@@ -1287,7 +1287,7 @@ CABLES.UI.Patch = function (_gui)
 
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
-        });
+        }.bind(this));
     };
 
     this.onLinkEvent = function (p1, p2)

@@ -219,6 +219,10 @@ https://github.com/ArthurClemens/Javascript-Undo-Manager
             {
                 paused = true;
             },
+            "paused": function ()
+            {
+                return paused;
+            },
             "resume": function ()
             {
                 paused = false;

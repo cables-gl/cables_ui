@@ -213,6 +213,8 @@ CABLES.GLGUI.GlPatchAPI = class
 
     _onDeleteOp(op)
     {
+        if (!CABLES.UI.undo.paused()) gui.setStateUnsaved();
+
         this._glPatch.deleteOp(op.id);
     }
 
