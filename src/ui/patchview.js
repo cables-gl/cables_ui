@@ -70,7 +70,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.serverOps.loadProjectLibs(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
-            CABLES.undo.clear();
+            CABLES.UI.undo.clear();
             CABLES.UI.MODAL.hideLoading();
             gui.patch().updateSubPatches();
             gui.patch().updateBounds();
@@ -490,15 +490,15 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     unlinkSelectedOps()
     {
-        const undoGroup = CABLES.undo.startGroup();
+        const undoGroup = CABLES.UI.undo.startGroup();
         const ops = this.getSelectedOps();
         for (const i in ops) ops[i].unLinkTemporary();
-        CABLES.undo.endGroup(undoGroup, "Unlink selected Ops");
+        CABLES.UI.undo.endGroup(undoGroup, "Unlink selected Ops");
     }
 
     deleteSelectedOps()
     {
-        const undoGroup = CABLES.undo.startGroup();
+        const undoGroup = CABLES.UI.undo.startGroup();
         const ids = [];
         const ops = this.getSelectedOps();
 
@@ -507,7 +507,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
 
-        CABLES.undo.endGroup(undoGroup, "Delete selected ops");
+        CABLES.UI.undo.endGroup(undoGroup, "Delete selected ops");
 
         console.log("deleted ops ", ids.length);
     }
@@ -895,7 +895,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             console.log(exp);
         }
 
-        const undoGroup = CABLES.undo.startGroup();
+        const undoGroup = CABLES.UI.undo.startGroup();
 
         if (!json || !json.ops) return;
 
@@ -1030,7 +1030,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                     const undofunc = (function (opid)
                     {
-                        CABLES.undo.add({
+                        CABLES.UI.undo.add({
                             "title": "paste op",
                             undo()
                             {
@@ -1051,7 +1051,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             this.isPasting = false;
             next(json.ops, focusSubpatchop);
         });
-        CABLES.undo.endGroup(undoGroup, "Paste");
+        CABLES.UI.undo.endGroup(undoGroup, "Paste");
     }
 
 
@@ -1139,7 +1139,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             opPositions.push(obj);
         }
 
-        CABLES.undo.add({
+        CABLES.UI.undo.add({
             "title": "save op positions",
             undo()
             {
@@ -1200,10 +1200,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             return;
         }
 
-        const undoGroup = CABLES.undo.startGroup();
+        const undoGroup = CABLES.UI.undo.startGroup();
 
         p.removeLinks();
-        CABLES.undo.endGroup(undoGroup, "Unlink Port");
+        CABLES.UI.undo.endGroup(undoGroup, "Unlink Port");
     }
 
     linkPortToOp(e, opid, pid, op2id)

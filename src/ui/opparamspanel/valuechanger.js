@@ -233,7 +233,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             const undofunc = (function (_portName, opId, oldVal, newVal)
             {
                 if (oldVal != newVal)
-                    CABLES.undo.add({
+                    CABLES.UI.undo.add({
                         "title": "Value mousedrag " + oldVal + " to " + newVal,
                         undo()
                         {
