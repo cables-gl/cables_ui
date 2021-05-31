@@ -392,6 +392,27 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
                     results.push({ op, "score": 1, "where": op.uiAttribs.comment });
             }
         }
+        else
+        if (str == ":textures")
+        {
+            for (let i = 0; i < ops.length; i++)
+            {
+                const op = ops[i];
+                for (let j = 0; j < op.portsOut.length; j++)
+                {
+                    if (op.portsOut[j].get() && op.portsOut[j].uiAttribs.objType === "texture")
+                    {
+                        const texInfo = op.portsOut[j].get().getInfo();
+                        const strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
+
+                        results.push({ op, "score": 1, "where": strtex });
+                    }
+                }
+
+                // if (op.uiAttribs && op.uiAttribs.comment && op.uiAttribs.comment.length > 0)
+                //     results.push({ op, "score": 1, "where": op.uiAttribs.comment });
+            }
+        }
         else if (str == ":user")
         {
             for (let i = 0; i < ops.length; i++)
