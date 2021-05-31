@@ -6,11 +6,12 @@ CABLES.GLGUI.GlLink = class
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
-        portNameOut, portIdInput, portIdOutput, type)
+        portNameOut, portIdInput, portIdOutput, type, visible = true)
     {
         this._id = id;
         this._link = link;
-        this._visible = true;
+        this._visible = visible;
+
         this._glPatch = glpatch;
         this._type = type;
         this._portNameInput = portNameIn;
@@ -24,6 +25,7 @@ CABLES.GLGUI.GlLink = class
         this._buttonDownTime = 0;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
+        this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
@@ -40,16 +42,19 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
-            if (this._cable.isHoveredButtonRect())
+            // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            if (gui.patchView.getSelectedOps().length == 1)
+            {
                 for (const i in this._glPatch.selectedGlOps)
                 {
                     if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
                     {
-                        const coord = this._glPatch.mouseToPatchCoords(e.offsetX, e.offsetY);
+                        const coord = this._glPatch.screenToPatchCoord(e.offsetX, e.offsetY);
                         gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
                         return;
                     }
                 }
+            }
 
             if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < CABLES.GLGUI.VISUALCONFIG.clickMaxDuration)
             {
@@ -62,7 +67,8 @@ CABLES.GLGUI.GlLink = class
 
                 // console.log("this._glPatch.subPatch", this._glPatch.subPatch);
                 gui.opSelect().show(
-                    { "x": 0,
+                    {
+                        "x": 0,
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
@@ -92,7 +98,7 @@ CABLES.GLGUI.GlLink = class
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type);
+        this._cable = new CABLES.GLGUI.GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type, this);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
@@ -105,44 +111,23 @@ CABLES.GLGUI.GlLink = class
         this.update();
     }
 
-    get opIn()
-    {
-        return this._opIn;
-    }
+    get opIn() { return this._opIn; }
 
-    get opOut()
-    {
-        return this._opOut;
-    }
+    get opOut() { return this._opOut; }
 
-    get id()
-    {
-        return this._id;
-    }
+    get id() { return this._id; }
 
-    get nameInput()
-    {
-        return this._portNameInput;
-    }
+    get nameInput() { return this._portNameInput; }
 
-    get nameOutput()
-    {
-        return this._portNameOutput;
-    }
+    get nameOutput() { return this._portNameOutput; }
 
     get opIdOutput() { return this._opIdOutput; }
 
     get opIdInput() { return this._opIdInput; }
 
-    get portIdIn()
-    {
-        return this._portIdInput;
-    }
+    get portIdIn() { return this._portIdInput; }
 
-    get portIdOut()
-    {
-        return this._portIdOutput;
-    }
+    get portIdOut() { return this._portIdOutput; }
 
     updateVisible()
     {
@@ -167,7 +152,7 @@ CABLES.GLGUI.GlLink = class
                 const pos1y = this._opIn.getUiAttribs().translate.y;
 
                 const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
-                const pos2y = this._opOut.getUiAttribs().translate.y + CABLES.UI.uiConfig.opHeight;
+                const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
 
                 this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
             }

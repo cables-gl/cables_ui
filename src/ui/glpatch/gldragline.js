@@ -20,9 +20,6 @@ CABLES.GLGUI.GlRectDragLine = class
         this._lineIndices = [];
         this._clearSpline();
 
-
-        console.log("new glrectdragline...");
-
         // document.body.addEventListener("pointerup", (e) =>
         // {
         //     console.log("up", e);
@@ -38,6 +35,7 @@ CABLES.GLGUI.GlRectDragLine = class
             }
 
             const ele = document.elementFromPoint(e.x, e.y);
+            if (!ele) return;
             if (ele.dataset.opid && ele.dataset.portname)
             {
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);

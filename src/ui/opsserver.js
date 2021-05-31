@@ -728,7 +728,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         {
             new CABLES.CoreLibLoader(coreLibsToLoad, function ()
             {
-                console.log("all op libs loaded!");
                 if (_next)_next();
             });
         });
@@ -736,9 +735,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
     this.isLibLoaded = function (libName)
     {
-        // console.log(this._loadedLibs);
         const isloaded = this._loadedLibs.indexOf(libName) != -1;
-        // console.log(libName,isloaded);
         return isloaded;
     };
 

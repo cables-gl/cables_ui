@@ -10,7 +10,7 @@ CABLES.UI.Patch = function (_gui)
     const self = this;
     this.ops = [];
     this.scene = null;
-    this.disabled = (CABLES.UI.userSettings.get("glpatchview") || document.location.href.indexOf("glui") > -1);
+    this.disabled = (!CABLES.UI.userSettings.get("svgpatchview"));
     const gui = _gui;
     this._svgEle = null;
 
@@ -1044,7 +1044,7 @@ CABLES.UI.Patch = function (_gui)
         {
             const undofunc = (function (opid, objName)
             {
-                CABLES.undo.add({
+                CABLES.UI.undo.add({
                     "title": "Add op",
                     undo()
                     {
@@ -1203,7 +1203,7 @@ CABLES.UI.Patch = function (_gui)
                     {
                         const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
                         {
-                            CABLES.undo.add({
+                            CABLES.UI.undo.add({
                                 "title": "Unlink port",
                                 undo()
                                 {
@@ -1248,7 +1248,7 @@ CABLES.UI.Patch = function (_gui)
         {
             if (this.disabled)
             {
-                console.log("wont delete, patch is disabled");
+                // console.log("wont delete, patch is disabled");
                 return;
             }
             const undofunc = (function (opname, opid)
@@ -1256,7 +1256,7 @@ CABLES.UI.Patch = function (_gui)
                 const oldValues = {};
                 for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
 
-                CABLES.undo.add({
+                CABLES.UI.undo.add({
                     "title": "delete op",
                     undo()
                     {
@@ -1287,7 +1287,7 @@ CABLES.UI.Patch = function (_gui)
 
             gui.setStateUnsaved();
             self.checkLinkTimeWarnings();
-        });
+        }.bind(this));
     };
 
     this.onLinkEvent = function (p1, p2)
@@ -1347,7 +1347,7 @@ CABLES.UI.Patch = function (_gui)
 
             const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
             {
-                CABLES.undo.add({
+                CABLES.UI.undo.add({
                     "title": "link",
                     undo()
                     {
@@ -1402,11 +1402,6 @@ CABLES.UI.Patch = function (_gui)
         // },10);
     };
 
-    this.setOpColor = function (col)
-    {
-        for (let i = 0; i < selectedOps.length; i++)
-            selectedOps[i].op.uiAttr({ "color": col });
-    };
 
     this.setOpTitle = function (uiop, t)
     {
@@ -1856,12 +1851,12 @@ CABLES.UI.Patch = function (_gui)
     this.moveSelectedOpsFinished = function ()
     {
         let i = 0;
-        const undoGroup = CABLES.undo.startGroup();
+        const undoGroup = CABLES.UI.undo.startGroup();
 
         if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
         for (i in selectedOps) selectedOps[i].doMoveFinished();
 
-        CABLES.undo.endGroup(undoGroup, "Move selected ops");
+        CABLES.UI.undo.endGroup(undoGroup, "Move selected ops");
     };
 
     this.prepareMovingOps = function ()

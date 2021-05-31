@@ -30,7 +30,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._hidePorts = false;
         this._hideBgRect = false;
 
-        this._posZ = Math.random() * -0.3;
+        this._posZ = Math.random() * -0.3 + -0.1;
         // glPatch.zIndex();
 
 
@@ -49,6 +49,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glDotError = null;
         this._glDotWarning = null;
         this._glDotHint = null;
+
+        this._glRectRightHandle = null;
 
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(CABLES.GLGUI.VISUALCONFIG.opWidth, CABLES.GLGUI.VISUALCONFIG.opHeight);
@@ -89,6 +91,15 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             glOps[i].setPassiveDragOffset(offX, offY);
 
         this._glPatch.opShakeDetector.move(offX);
+
+        if (gui.patchView.getSelectedOps().length == 1)
+        {
+            this._glTitle.setOpacity(0.5);
+            this._glRectBg.setOpacity(0.8);
+            this._preDragPosZ = this._glRectBg.z;
+            this._posZ = -0.5;
+            this.updatePosition();
+        }
     }
 
     sendNetPos()
@@ -104,34 +115,40 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps) glOps[i].endPassiveDrag();
 
-        const undoAdd = (function (scope, oldUiAttribs)
+        let changed = this._glRectBg.dragOffsetX != 0 || this._glRectBg.dragOffsetY != 0;
+
+
+        if (this._preDragPosZ != this._glRectBg.z) this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
+
+        if (changed)
         {
-            if (!scope._op) return;
+            const undoAdd = (function (scope, oldUiAttribs)
+            {
+                if (!scope._op) return;
 
-            const newUiAttr = JSON.stringify(scope._op.uiAttribs);
-            CABLES.undo.add({
-                "title": "Move op",
-                undo()
-                {
-                    try
+                const newUiAttr = JSON.stringify(scope._op.uiAttribs);
+                CABLES.UI.undo.add({
+                    "title": "Move op",
+                    undo()
                     {
-                        const u = JSON.parse(oldUiAttribs);
-                        // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
-
-
+                        try
+                        {
+                            const u = JSON.parse(oldUiAttribs);
+                            // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
+                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
+                        }
+                        catch (e) {}
+                    },
+                    redo()
+                    {
+                        const u = JSON.parse(newUiAttr);
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
-                    }
-                    catch (e) {}
-                },
-                redo()
-                {
-                    const u = JSON.parse(newUiAttr);
-                    scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": u.translate.x, "y": u.translate.y });
                     // scope.op.uiAttribs.translate = { "x": u.translate.x, "y": u.translate.y };
                     // scope._glRectBg.setPosition(u.translate.x, u.translate.y);
-                }
-            });
-        }(this, this._dragOldUiAttribs + ""));
+                    }
+                });
+            }(this, this._dragOldUiAttribs + ""));
+        }
     }
 
     _onMouseDown(e)
@@ -208,7 +225,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         }
         if (attr && !this.opUiAttribs.selected && attr.selected)
         {
-            console.log("selected op!");
             this._glPatch.selectOpId(this._id);
         }
 
@@ -276,6 +292,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let portsWidthIn = 0;
         let portsWidthOut = 0;
+
+        const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
             if (this._glPorts[i].direction == CABLES.PORT_DIR_IN)portsWidthIn += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
@@ -289,9 +307,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
+        if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
+
         this._glRectBg.setSize(this._width, this._height);
 
+        if (oldHeight != this._height)
+            for (let i = 0; i < this._glPorts.length; i++)
+                this._glPorts[i].updateSize();
+
         this._updateCommentPosition();
+        this._updateSizeRightHandle();
     }
 
     addLink(l)
@@ -629,6 +654,13 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glPatch.needsRedraw = true;
     }
 
+    _updateSizeRightHandle()
+    {
+        if (!this._glRectRightHandle) return;
+        this._glRectRightHandle.setPosition(this.w, 0);
+        this._glRectRightHandle.setSize(5, this.h);
+    }
+
     _updateColors()
     {
         if (!this._glRectBg || !this._glTitle) return;
@@ -642,7 +674,26 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
             this._glRectBg.setDecoration(this._rectDecoration);
             if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-            else this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+            else
+            {
+                if (this.opUiAttribs.color)
+                {
+                    // chroma.hex("#ff0000").gl();
+                    this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
+
+                    if (!this._glRectRightHandle)
+                    {
+                        this._glRectRightHandle = this._instancer.createRect();
+                        this._glRectRightHandle.setParent(this._glRectBg);
+                        this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                        this._updateSizeRightHandle();
+                    }
+                }
+                else
+                {
+                    this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+                }
+            }
         }
         if (!this._op.enabled)
         {
