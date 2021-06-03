@@ -54,9 +54,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 1);
 
-        this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
-        this._hoverCable.setPosition(0, 0, 100, 100);
-        this._hoverCable.setColor(1, 1, 1, 0.5);
+        // this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
+        // this._hoverCable.setPosition(0, 0, 100, 100);
+        // this._hoverCable.setColor(1, 1, 1, 0.5);
 
         this._fpsStartTime = 0;
 
@@ -204,7 +204,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
-        this._hoverCable.visible = false;
+        // this._hoverCable.visible = false;
 
         this._dropInCircleRect = null;
 
@@ -329,7 +329,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
-        this._hoverCable.visible = false;
+        // this._hoverCable.visible = false;
 
         if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
         {
