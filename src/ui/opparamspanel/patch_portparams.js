@@ -386,7 +386,11 @@ CABLES.UI.initPortInputListener = function (op, index)
                         {
                             try
                             {
-                                gui.corePatch().getOpById(opid).getPort(portname).set(oldv);
+                                const uop = gui.corePatch().getOpById(opid);
+                                const p = uop.getPort(portname);
+                                gui.patch().showProjectParams();
+                                p.set(oldv);
+                                gui.opParams.show(uop);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         },
@@ -394,7 +398,11 @@ CABLES.UI.initPortInputListener = function (op, index)
                         {
                             try
                             {
-                                gui.corePatch().getOpById(opid).getPort(portname).set(newv);
+                                const rop = gui.corePatch().getOpById(opid);
+                                const p = rop.getPort(portname);
+                                gui.patch().showProjectParams();
+                                p.set(newv);
+                                gui.opParams.show(rop);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         }
@@ -403,6 +411,7 @@ CABLES.UI.initPortInputListener = function (op, index)
         }
 
         op.portsIn[index].set(v);
+
         gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
             "op": op.id,
             "port": op.portsIn[index].name,

@@ -382,6 +382,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                         mathParsed = elem.val();
                     }
                     elem.val(mathParsed);
+
                     p.set(mathParsed);
                     CABLES.UI.hideToolTip();
                 }
