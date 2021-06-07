@@ -297,6 +297,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                         mathParsed = e.target.value;
                     }
                     e.target.value = mathParsed;
+                    console.log(mathParsed, typeof mathParsed);
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
                 }

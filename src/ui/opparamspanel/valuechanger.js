@@ -252,7 +252,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                             gui.opParams.show(op);
                         }
                     });
-            }(portName, opid, startVal, elem.val()));
+            }(portName, opid, parseFloat(startVal), parseFloat(elem.val())));
         }
 
         gui.setStateUnsaved();
