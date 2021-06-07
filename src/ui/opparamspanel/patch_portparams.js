@@ -392,6 +392,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                                 gui.patch().showProjectParams();
                                 p.set(oldv);
                                 gui.opParams.show(uop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         },
@@ -404,6 +407,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                                 gui.patch().showProjectParams();
                                 p.set(newv);
                                 gui.opParams.show(rop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         }
