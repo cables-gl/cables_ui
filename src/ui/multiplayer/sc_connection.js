@@ -234,7 +234,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
             if (!this._paco)
             {
-                console.log(msg);
+                // console.log(msg);
 
                 if (msg.data.event != CABLES.PACO_LOAD)
                 {
