@@ -115,10 +115,21 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps) glOps[i].endPassiveDrag();
 
-        let changed = this._glRectBg.dragOffsetX != 0 || this._glRectBg.dragOffsetY != 0;
+
+        const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
+
+        if (!oldUiAttribs) return;
+        let changed =
+            oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
+            oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
+        // let changed = this._glRectBg.dragOffsetX != 0 || this._glRectBg.dragOffsetY != 0;
 
 
-        if (this._preDragPosZ != this._glRectBg.z) this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
+        if (this._preDragPosZ != this._glRectBg.z)
+        {
+            this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
+        }
+
 
         if (changed)
         {

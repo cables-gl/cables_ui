@@ -242,6 +242,9 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                             gui.patch().showProjectParams();
                             p.set(oldVal);
                             gui.opParams.show(op);
+                            gui.patchView.focusOp(null);
+                            gui.patchView.focusOp(op.id);
+                            gui.patchView.centerSelectOp(op.id);
                         },
                         redo()
                         {
@@ -250,9 +253,12 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                             gui.patch().showProjectParams();
                             p.set(newVal);
                             gui.opParams.show(op);
+                            gui.patchView.focusOp(null);
+                            gui.patchView.focusOp(op.id);
+                            gui.patchView.centerSelectOp(op.id);
                         }
                     });
-            }(portName, opid, startVal, elem.val()));
+            }(portName, opid, parseFloat(startVal), parseFloat(elem.val())));
         }
 
         gui.setStateUnsaved();

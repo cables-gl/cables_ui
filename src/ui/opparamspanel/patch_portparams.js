@@ -297,6 +297,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                         mathParsed = e.target.value;
                     }
                     e.target.value = mathParsed;
+                    console.log(mathParsed, typeof mathParsed);
                     op.portsIn[index].set(mathParsed);
                     CABLES.UI.hideToolTip();
                 }
@@ -391,6 +392,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                                 gui.patch().showProjectParams();
                                 p.set(oldv);
                                 gui.opParams.show(uop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         },
@@ -403,6 +407,9 @@ CABLES.UI.initPortInputListener = function (op, index)
                                 gui.patch().showProjectParams();
                                 p.set(newv);
                                 gui.opParams.show(rop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
                             }
                             catch (ex) { console.warn("undo failed"); }
                         }
