@@ -215,6 +215,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
 
+            if (!op) return;
+
             if (this._showingNavHelperEmpty)
             {
                 document.getElementById("patchnavhelperEmpty").style.display = "none";
@@ -298,6 +300,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     );
                 }
             }
+
+            console.log("new op!!");
 
             if (options.onOpAdd) options.onOpAdd(op);
         });
