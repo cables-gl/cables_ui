@@ -69,7 +69,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         if (userlistChanged)
         {
-            console.log("list changed REMOVED!");
+            // console.log("list changed REMOVED!");
             this.emitEvent("userListChanged");
         }
     }
