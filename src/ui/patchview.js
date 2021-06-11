@@ -26,6 +26,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
+
+        corepatch.addEventListener("onOpDelete", this._onDeleteOpUndo.bind(this));
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -38,6 +40,28 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     get rendererName()
     {
         return this._patchRenderer.name;
+    }
+
+    _onDeleteOpUndo(op)
+    {
+        const undofunc = (function (opname, _opid)
+        {
+            const oldValues = {};
+            for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+
+            CABLES.UI.undo.add({
+                "title": "delete op",
+                undo()
+                {
+                    const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
+                    for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                },
+                redo()
+                {
+                    gui.corePatch().deleteOp(_opid, false);
+                }
+            });
+        }(op.objName, op.id));
     }
 
     setProject(proj, cb)
@@ -506,9 +530,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const ids = [];
         const ops = this.getSelectedOps();
 
-        for (let i = 0; i < ops.length; i++)
-            ids.push(ops[i].id);
-
+        for (let i = 0; i < ops.length; i++) ids.push(ops[i].id);
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
 
         CABLES.UI.undo.endGroup(undoGroup, "Delete selected ops");
