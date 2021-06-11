@@ -73,7 +73,7 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         {
             const data = {
                 "numClients": this._connection.state.getNumClients(),
-                "apiUrl": CABLES.sandbox.getUrlApiPrefix(),
+                "apiUrl": CABLES.sandbox.getCablesUrl(),
                 "clients": this._connection.state.clients,
                 "connected": this._connection.isConnected()
             };
