@@ -129,20 +129,19 @@
                             logStartup('loaded ui');
 
 
-
-            fetch(CABLESUILOADER.builtVersionUrl("core",
-                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
-            .then(function (response)
-            {
-                response.json().then(function (_data)
-                {
-                    CABLESUILOADER.preload.opDocsAll=_data;
-                });
-            })
-            .catch(function (response)
-            {
-                console.error("preloading error",response);
-            });
+                            fetch(CABLESUILOADER.builtVersionUrl("core",
+                                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
+                            .then(function (response)
+                            {
+                                response.json().then(function (_data)
+                                {
+                                    CABLESUILOADER.preload.opDocsAll=_data;
+                                });
+                            })
+                            .catch(function (response)
+                            {
+                                console.error("preloading error",response);
+                            });
 
 
                             // try

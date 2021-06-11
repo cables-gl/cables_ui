@@ -14,8 +14,10 @@
 <script id="socket_userlist" type="text/x-handlebars-template">
 
     {{#each clients}}
-        <div style="color:black;text-align:center;display:inline-block;width:24px;height:24px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});border-radius:100px;overflow: hidden;">{{shortname}}</div>
+        <div style="color:black;text-align:center;display:inline-block;width:24px;height:24px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});border-radius:100px;overflow: hidden;background-image:url({{apiUrl}}/api/avatar/{{userid}});">{{shortname}}</div>
     {{/each}}
+
+
 
 </script>
 

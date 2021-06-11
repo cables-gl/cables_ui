@@ -267,6 +267,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             this.sendControl("pingAnswer", {
                 "username": gui.user.usernameLowercase,
+                "userid": gui.user.id,
             });
         }
         if (msg.name === "pingAnswer")
