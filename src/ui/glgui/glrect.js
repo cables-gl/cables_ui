@@ -190,6 +190,8 @@ CABLES.GLGUI.GlRect = class extends CABLES.EventTarget
     {
         if (this._hovering) this.emitEvent("mouseup", e, this);
         for (let i = 0; i < this.childs.length; i++) this.childs[i].mouseUp(e);
+
+        if (this._isDragging) this.mouseDragEnd();
     }
 
     mouseDown(e)
