@@ -405,6 +405,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     {
         const glop = this._glOpz[opid];
 
+
         if (!glop)
         {
             console.log("could not find op to delete", opid);

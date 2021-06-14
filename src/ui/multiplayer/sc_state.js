@@ -24,6 +24,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         this._clients[payload.clientId] = {
             "username": payload.username,
+            "userid": payload.userid,
             "shortname": payload.username.substr(0, 2).toUpperCase(),
             "clientId": payload.clientId,
             "lastSeen": payload.lastSeen,
@@ -69,7 +70,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         if (userlistChanged)
         {
-            console.log("list changed REMOVED!");
+            // console.log("list changed REMOVED!");
             this.emitEvent("userListChanged");
         }
     }

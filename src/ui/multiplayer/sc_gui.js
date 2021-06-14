@@ -23,7 +23,7 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {
-                console.log(msg);
+                // console.log(msg);
                 op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
             }
             else
@@ -74,16 +74,31 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
             const data = {
                 "numClients": this._connection.state.getNumClients(),
                 "clients": this._connection.state.clients,
+                "cablesurl": CABLES.sandbox.getCablesUrl(),
                 "connected": this._connection.isConnected()
             };
 
-            document.getElementById("nav-clientlist").innerHTML = CABLES.UI.getHandleBarHtml("socket_userlist", data);
+            let clientnames = "";
+            for (let i in this._connection.state.clients)
+            {
+                clientnames += this._connection.state.clients.username;
+            }
+
+            if (clientnames != this._clientnames)
+            {
+                this._clientnames = clientnames;
+                const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
+
+                document.getElementById("nav-clientlist").innerHTML = html;
+                console.log("update clientlisrt!");
+            }
             document.getElementById("multiplayerbar").style.display = "block";
         }
         else
         {
+            // this._clientnames = "";
             document.getElementById("multiplayerbar").style.display = "none";
-            document.getElementById("nav-clientlist").innerHTML = "";
+            // document.getElementById("nav-clientlist").innerHTML = "";
         }
     }
 
@@ -91,6 +106,7 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
     {
         const data = {
             "numClients": this._connection.state.getNumClients(),
+            "apiUrl": CABLES.sandbox.getCablesUrl(),
             "clients": this._connection.state.clients,
             "connected": this._connection.isConnected(),
         };

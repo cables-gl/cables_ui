@@ -234,7 +234,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
             if (!this._paco)
             {
-                console.log(msg);
+                // console.log(msg);
 
                 if (msg.data.event != CABLES.PACO_LOAD)
                 {
@@ -267,6 +267,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             this.sendControl("pingAnswer", {
                 "username": gui.user.usernameLowercase,
+                "userid": gui.user.id,
             });
         }
         if (msg.name === "pingAnswer")
