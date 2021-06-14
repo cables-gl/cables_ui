@@ -341,7 +341,11 @@ CABLES.GLGUI.GlCable = class
             // this._glPatch._hoverCable.visible = true;
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect);
+            
+            if(this._glPatch._cablesHoverButtonRect)this._glPatch._cablesHoverButtonRect.visible=false;
+            this._glPatch._cablesHoverButtonRect=this._buttonRect;
             this._buttonRect.visible = true;
+
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
