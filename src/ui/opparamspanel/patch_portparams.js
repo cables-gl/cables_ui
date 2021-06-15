@@ -419,6 +419,15 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         op.portsIn[index].set(v);
 
+        // update history on change
+        if (!op.uiAttribs) op.uiAttribs = {};
+        if (!op.uiAttribs.history) op.uiAttribs.history = {};
+        op.uiAttribs.history.lastInteractionAt = Date.now();
+        op.uiAttribs.history.lastInteractionBy = {
+            "id": gui.user.id,
+            "name": gui.user.usernameLowercase
+        };
+
         gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
             "op": op.id,
             "port": op.portsIn[index].name,
