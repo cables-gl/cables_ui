@@ -52,7 +52,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
-        this.cablesHoverText.setColor(1, 1, 1, 1);
+        this.cablesHoverText.setColor(1, 1, 1, 0);
 
         // this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         // this._hoverCable.setPosition(0, 0, 100, 100);
