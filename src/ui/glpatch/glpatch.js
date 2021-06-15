@@ -643,7 +643,11 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
+        this._cgl.pushDepthTest(false);
+
         this._overLayRects.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
+
+        this._cgl.pushDepthTest(true);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
