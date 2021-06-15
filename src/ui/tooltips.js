@@ -109,9 +109,6 @@ Array.from(document.querySelectorAll(".info")).forEach((tt) =>
 
 
 
-
-
-
 CABLES.UI.ttObserver = new MutationObserver(function(mutations)
 {
     mutations.forEach(function(mutation)
@@ -122,12 +119,12 @@ CABLES.UI.ttObserver = new MutationObserver(function(mutations)
 
             if(mutation.addedNodes[i].classList.contains("tt"))
             {
-                console.log("found tt!!",mutation.addedNodes[i]);
+                // console.log("found tt!!",mutation.addedNodes[i]);
                 CABLES.UI.addToolTipListener(mutation.addedNodes[i]);
             }
             if(mutation.addedNodes[i].classList.contains("info"))
             {
-                console.log("found info!!",mutation.addedNodes[i]);
+                // console.log("found info!!",mutation.addedNodes[i]);
                 CABLES.UI.addInfoListener(mutation.addedNodes[i]);
             }
         }
