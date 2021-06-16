@@ -216,6 +216,10 @@ CABLES.GLGUI.GlPatchAPI = class
         if (!CABLES.UI.undo.paused()) gui.setStateUnsaved();
 
         this._glPatch.deleteOp(op.id);
+
+        clearInterval(CABLES.UI.hoverInterval);
+        CABLES.UI.hoverInterval = -1;
+        CABLES.UI.hideToolTip();
     }
 
     showOpParams(opid)
