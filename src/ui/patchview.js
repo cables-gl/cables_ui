@@ -51,12 +51,10 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (!op.uiAttribs.history) op.uiAttribs.history = {};
             op.uiAttribs.history.createdAt = Date.now();
             op.uiAttribs.history.createdBy = {
-                "id": gui.user.id,
                 "name": gui.user.usernameLowercase
             };
             op.uiAttribs.history.lastInteractionAt = Date.now();
             op.uiAttribs.history.lastInteractionBy = {
-                "id": gui.user.id,
                 "name": gui.user.usernameLowercase
             };
         }
