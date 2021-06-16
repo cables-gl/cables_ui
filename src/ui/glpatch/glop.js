@@ -343,7 +343,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
-
         // const wasHovering=this._isHovering;
         // this.setHover(this._glRectBg.isPointInside(x,y));
 
@@ -403,8 +402,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         this._setupPorts(this._op.portsIn);
         this._setupPorts(this._op.portsOut);
-
-        // console.log("refresh ports");
     }
 
     _setupPorts(ports)
@@ -689,7 +686,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             {
                 if (this.opUiAttribs.color)
                 {
-                    // chroma.hex("#ff0000").gl();
                     this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
 
                     if (!this._glRectRightHandle)
