@@ -60,7 +60,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         }
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
-        this._socket.channelName = "patchchannel_" + CABLES.sandbox.getPatchId();
+        this._socket.channelName = this._scConfig.channel;
         this.channelName = this._socket.channelName;
 
         (async () =>

@@ -2192,6 +2192,9 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
+            if(this._elCanvasInfoFps)this._elCanvasInfoFps.style.opacity=0.3;
+            if(this._elCanvasInfoMs)this._elCanvasInfoMs.style.opacity=0.3;
+
             ele.hide(this._elCanvasIconbarContainer);
             ele.hide(this._elCanvasModalDarkener);
         }
@@ -2339,11 +2342,17 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
         }
         else ele.hide(document.getElementById("canvasInfoVersion"));
 
-        this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
-        this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+        if(this.isCanvasFocussed)
+        {
+            this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
+            this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+    
+            this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+            this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
 
-        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
-        this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
+            this._elCanvasInfoFps.style.opacity=1;
+            this._elCanvasInfoMs.style.opacity=1;
+        }
     });
 };
 

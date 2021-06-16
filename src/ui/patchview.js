@@ -27,6 +27,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
         corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
 
+        corepatch.addEventListener("onOpAdd", this._onAddOpHistory.bind(this));
         corepatch.addEventListener("onOpDelete", this._onDeleteOpUndo.bind(this));
     }
 
@@ -40,6 +41,25 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     get rendererName()
     {
         return this._patchRenderer.name;
+    }
+
+    _onAddOpHistory(op, fromDeserialize)
+    {
+        if (!fromDeserialize)
+        {
+            if (!op.uiAttribs) op.uiAttribs = {};
+            if (!op.uiAttribs.history) op.uiAttribs.history = {};
+            op.uiAttribs.history.createdAt = Date.now();
+            op.uiAttribs.history.createdBy = {
+                "id": gui.user.id,
+                "name": gui.user.usernameLowercase
+            };
+            op.uiAttribs.history.lastInteractionAt = Date.now();
+            op.uiAttribs.history.lastInteractionBy = {
+                "id": gui.user.id,
+                "name": gui.user.usernameLowercase
+            };
+        }
     }
 
     _onDeleteOpUndo(op)
