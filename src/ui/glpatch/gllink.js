@@ -42,12 +42,13 @@ CABLES.GLGUI.GlLink = class
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
 
+
             // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
             if (gui.patchView.getSelectedOps().length == 1)
             {
                 for (const i in this._glPatch.selectedGlOps)
                 {
-                    if (this._glPatch.selectedGlOps[i].isHovering() && this._glPatch.selectedGlOps[i].isDragging)
+                    if (this._glPatch.selectedGlOps[i].isHovering()) // && this._glPatch.selectedGlOps[i].isDragging
                     {
                         const coord = this._glPatch.screenToPatchCoord(e.offsetX, e.offsetY);
                         gui.patchView.insertOpInLink(this._link, this._glPatch.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));

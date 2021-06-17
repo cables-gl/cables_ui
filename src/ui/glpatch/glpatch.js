@@ -319,8 +319,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        this._dropInCircleRect = null;
-
+        this._removeDropInRect();
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -336,6 +335,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             this.unselectAll();
             gui.patchView.showDefaultPanel();
         }
+
+        this._dropInCircleRect = null;
     }
 
     _onKeyDelete(e)

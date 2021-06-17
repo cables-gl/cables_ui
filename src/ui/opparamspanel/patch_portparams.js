@@ -424,7 +424,6 @@ CABLES.UI.initPortInputListener = function (op, index)
         if (!op.uiAttribs.history) op.uiAttribs.history = {};
         op.uiAttribs.history.lastInteractionAt = Date.now();
         op.uiAttribs.history.lastInteractionBy = {
-            "id": gui.user.id,
             "name": gui.user.usernameLowercase
         };
 

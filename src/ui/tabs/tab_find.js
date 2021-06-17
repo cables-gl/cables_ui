@@ -248,6 +248,7 @@ CABLES.UI.FindTab.prototype._addResultOp = function (op, result, idx)
     html += "</h3>";
 
     if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
+    if (result.history) html += "<span class=\"search-history-item\">" + result.history + "</span><br/>";
     if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
     // html += "" + op.objName + "<br/>";
     html += result.where || "";
@@ -425,7 +426,6 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
         else if (str == ":dupassets")
         {
             const assetOps = {};
-            console.log(1);
             for (let i = 0; i < ops.length; i++)
             {
                 for (let k = 0; k < ops[i].portsIn.length; k++)
@@ -441,8 +441,6 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
                     }
                 }
             }
-
-            console.log(assetOps);
 
             for (let i in assetOps)
             {
@@ -493,6 +491,26 @@ CABLES.UI.FindTab.prototype._doSearch = function (str, userInvoked, ops, results
 
                 if (count == 0)
                     results.push({ op, "score": 1 });
+            }
+        }
+        else if (str == ":history")
+        {
+            for (let i = 0; i < ops.length; i++)
+            {
+                const op = ops[i];
+                let score = 0;
+                let dateString = null;
+                let userName = null;
+                if (op.uiAttribs.history && op.uiAttribs.history.lastInteractionAt)
+                {
+                    score = op.uiAttribs.history.lastInteractionAt;
+                    userName = op.uiAttribs.history.lastInteractionBy.name;
+                    dateString = moment(op.uiAttribs.history.lastInteractionAt).fromNow();
+                }
+                if (score > 0)
+                {
+                    results.push({ op, "score": score, "history": dateString + " - changed by " + userName });
+                }
             }
         }
     }
@@ -615,7 +633,13 @@ CABLES.UI.FindTab.prototype.search = function (str, userInvoked)
 
 
         results.sort(function (a, b) { return b.score - a.score; });
-
+        const numResults = results.length;
+        const limitResults = 200;
+        if (numResults > limitResults)
+        {
+            html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " results</div>";
+            results = results.slice(0, limitResults);
+        }
         for (let i = 0; i < results.length; i++)
             html += this._addResultOp(results[i].op, results[i], i);
 
