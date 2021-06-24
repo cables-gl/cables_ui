@@ -118,7 +118,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
 
-        if (!oldUiAttribs) return;
+        if (!oldUiAttribs || !oldUiAttribs.translate) return;
         let changed =
             oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
