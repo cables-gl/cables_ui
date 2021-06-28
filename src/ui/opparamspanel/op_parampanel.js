@@ -317,7 +317,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     startGroup,
                     "portnum": i2,
                     "isInput": false,
-                    op,
+                    op
                 });
             }
 
@@ -329,7 +329,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "opserialized": op.getSerialized(),
             "user": gui.user,
         });
-
 
         const ele = document.getElementById(gui.getParamPanelEleId());
 
