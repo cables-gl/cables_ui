@@ -41,55 +41,55 @@ function ()
     function defineIntroSteps()
     {
         defineIntroStep(
-            "#patch",
+            "#glpatch2",
             "Hi and welcome to cables! <br />This is the the patch panel. Here you can connect ops (operators) to create a patch.<br />Now press <code>Enter</code> to move on with the introduction.",
             "right"
         );
         defineIntroStep(
-            "#glcanvas",
+            "#cablescanvas",
             "This is the WebGL canvas where the visual output will be rendered to.",
             "bottom"
         );
         defineIntroStep(
-            "#infoAreaContainer",
+            "#metatabpanel",
             "In the info area you get help. Hover over any element on the page to receive information about it.",
             "left"
         );
+        // defineIntroStep(
+        //    "#metatabpanel",
+        //    "When you select an op in the patch panel its parameters will be shown here.",
+        //    "left"
+        // );
         defineIntroStep(
-            "#options",
-            "When you select an op in the patch panel its parameters will be shown here.",
+            "#metatabpanel .tabpanel",
+            "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
             "left"
         );
+        defineIntroStep(
+            "#patchname",
+            "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
+            "bottom"
+        );
+        defineIntroStep(
+            "#iconbar_sidebar_left",
+            "In the sidebar you can access often used features.",
+            "right"
+        );
         // defineIntroStep(
-        //     "#metatabpanel",
-        //     "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
-        //     "left"
-        // );
-        // defineIntroStep(
-        //     ".nav-item-project",
-        //     "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
-        //     "bottom"
+        //     "#icon-bar .icon-three-dots",
+        //     "Feel free to customize it by pressing the <i>…</i> icon.",
+        //     "top"
         // );
         defineIntroStep(
             ".nav-item-help",
             "Make sure to check out the video tutorials and documentation, these will help you get started in a blink!",
             "bottom"
         );
-        // defineIntroStep(
-        //     "#icon-bar",
-        //     "In the sidebar you can access often used features.",
-        //     "right"
-        // );
-        // defineIntroStep(
-        //     "#icon-bar .icon-three-dots",
-        //     "Feel free to customize it by pressing the <i>…</i> icon.",
-        //     "top"
-        // );
-        // defineIntroStep(
-        //     "#icon-bar li[data-cmd=\"add op\"]",
-        //     "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
-        //     "right"
-        // );
+        defineIntroStep(
+            "#iconbar_sidebar_left div[data-infotext=\"cmd_addop\"]",
+            "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
+            "right"
+        );
     }
 
     let introStepsDefined = false;
