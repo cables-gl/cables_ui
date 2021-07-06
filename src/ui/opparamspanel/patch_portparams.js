@@ -42,15 +42,6 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
 
 CABLES.UI.bindInputListeners = function ()
 {
-    // setTimeout(function(){
-    //     var perf = CABLES.uiperf.start('bindInputListeners');
-
-    //     $("#options input").keydown(CABLES.UI.inputListenerCursorKeys);
-    //     $("#options input").bind("mousewheel", CABLES.UI.inputListenerMousewheel);
-
-    //     perf.finish();
-
-    // },20);
 };
 
 

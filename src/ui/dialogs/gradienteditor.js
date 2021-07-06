@@ -34,7 +34,13 @@ CABLES.GradientEditor.prototype.updateCanvas = function ()
     }
 
     const imageData = this._ctx.createImageData(500, 1);
-    const keys = [{ "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
+    let keys = [];
+    if (this._keys.length == 0)
+    {
+        keys.push({ "pos": 0, "r": 0, "g": 0, "b": 0 });
+    }
+    else keys = [{ "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
+
     const last = keys[keys.length - 1];
     keys.push({ "pos": 1, "r": last.r, "g": last.g, "b": last.b });
 
@@ -101,9 +107,7 @@ CABLES.GradientEditor.prototype.setCurrentKey = function (key)
 {
     CABLES.currentKey = key;
 
-    $("#gradientColorInput").unbind();
-    $("#gradientColorInput").val("rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")");
-    this._bindColorPicker();
+    document.getElementById("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
 };
 
 
@@ -243,61 +247,46 @@ CABLES.GradientEditor.prototype.show = function (cb)
         op.getPort(this._portName).set(this._previousContent);
         CABLES.UI.MODAL.hide();
     }.bind(this));
-};
 
-CABLES.GradientEditor.prototype._bindColorPicker = function ()
-{
-    window.cppp = $("#gradientColorInput").colorPicker({
-        "opacity": true,
-        "animationSpeed": 0,
-        // dark: '#0f0',
-        // light: '#f00',
 
-        // margin: '-80px -40px 0',
-        // doRender: 'div div',
-        renderCallback(res, toggled)
-        {
-            console.log("rendercallback?");
-            const ignoreColorChanges = !toggled;
-            // if (toggled === false)
-            // {
-            //     ignoreColorChanges = true;
-            // }
-            // if (toggled === true)
-            // {
-            //     // updateColorPickerButton(id);
-            //     // colors = this.color.colors;
-            //     ignoreColorChanges = false;
-            // }
+    const colEle = document.getElementById("gradientColorInput");
 
-            if (CABLES.currentKey) // !ignoreColorChanges &&
+    colEle.addEventListener("click", (e) =>
+    {
+        const cr = new ColorRick({
+            "ele": colEle,
+            "color": [parseInt(CABLES.currentKey.r * 255), parseInt(CABLES.currentKey.g * 255), parseInt(CABLES.currentKey.b * 255)], // "#ffffff",
+            "onChange": (col) =>
             {
-                // console.log(this.color.colors.rgb);
-                CABLES.currentKey.r = this.color.colors.rgb.r;
-                CABLES.currentKey.g = this.color.colors.rgb.g;
-                CABLES.currentKey.b = this.color.colors.rgb.b;
+                if (CABLES.currentKey)
+                {
+                    CABLES.currentKey.r = col.gl()[0];
+                    CABLES.currentKey.g = col.gl()[1];
+                    CABLES.currentKey.b = col.gl()[2];
 
-                // console.log(CABLES.currentKey);
-                // console.log(editor._keys.length);
-                CABLES.GradientEditor.editor._ctx = null;
-                CABLES.GradientEditor.editor.onChange();
-                CABLES.GradientEditor.editor.updateCanvas();
-                //     $('#portval_' + portNum + '_range').val(colors.rgb.r).trigger('input');
-                //     $('#portval_' + (portNum + 1) + '_range').val(colors.rgb.g).trigger('input');
-                //     $('#portval_' + (portNum + 2) + '_range').val(colors.rgb.b).trigger('input');
-                // } else {
-                //     updateColorPickerButton(id);
+                    CABLES.GradientEditor.editor._ctx = null;
+                    CABLES.GradientEditor.editor.onChange();
+                    CABLES.GradientEditor.editor.updateCanvas();
 
-                // $('#gradientColorInput').css({"color":"transparent !important"});;
+                    colEle.style.backgroundColor = col.hex();
+                }
+                // updateColorBox();
+                // const glRgb = col.gl();
+
+                // document.getElementById("numberinputDisplay_in_" + portNum).innerHTML =
+                // inputElements[0].value = glRgb[0];
+
+                // document.getElementById("numberinputDisplay_in_" + (portNum + 1)).innerHTML =
+                // inputElements[1].value = glRgb[1];
+
+                // document.getElementById("numberinputDisplay_in_" + (portNum + 2)).innerHTML =
+                // inputElements[2].value = glRgb[2];
+
+                // inputElements[0].dispatchEvent(new Event("input"));
+                // inputElements[1].dispatchEvent(new Event("input"));
+                // inputElements[2].dispatchEvent(new Event("input"));
             }
-            else
-            {
-                console.log("no key selected...");
-            }
-        },
-        buildCallback($elm)
-        {
-        }
+        });
     });
 };
 
