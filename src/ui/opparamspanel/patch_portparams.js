@@ -165,105 +165,162 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 
 CABLES.UI.watchColorPickerPort = function (thePort)
 {
-    let ignoreColorChanges = true;
-    let colors;
+    const id = "watchcolorpick_" + thePort.watchId;
+    const splits = id.split("_");
+    const portNum = parseInt(splits[splits.length - 1]);
 
-    function updateColorPickerButton(id)
+    const updateColorBox = () =>
     {
-        const splits = id.split("_");
-        const portNum = parseInt(splits[splits.length - 1]);
+        colEle.style.backgroundColor = chroma(getCurrentColor()).hex();
+    };
 
-        const c1 = Math.round(255 * $("#portval_" + portNum).val());
-        const c2 = Math.round(255 * $("#portval_" + (portNum + 1)).val());
-        const c3 = Math.round(255 * $("#portval_" + (portNum + 2)).val());
+    const inputElements =
+    [
+        document.getElementById("portval_" + portNum),
+        document.getElementById("portval_" + (portNum + 1)),
+        document.getElementById("portval_" + (portNum + 2))
+    ];
 
-        $(id).css("background-color", "rgb(" + c1 + "," + c2 + "," + c3 + ")");
-    }
+    if (!inputElements[0] || !inputElements[1] || !inputElements[2]) return;
 
-    const id = "#watchcolorpick_" + thePort.watchId;
-    updateColorPickerButton(id);
+    const getCurrentColor = () =>
+        [
+            Math.round(255 * parseFloat(inputElements[0].value)),
+            Math.round(255 * parseFloat(inputElements[1].value)),
+            Math.round(255 * parseFloat(inputElements[2].value))];
 
-    $(id).colorPicker({
-        "opacity": true,
-        "animationSpeed": 0,
-        "margin": "-80px -40px 0",
-        "doRender": "div div",
-        renderCallback(res, toggled)
-        {
-            const rid = res[0].id;
-            const splits = rid.split("_");
-            const portNum = parseInt(splits[splits.length - 1]);
+    const colEle = document.getElementById(id);
 
-            if (toggled === false)
+    inputElements[0].addEventListener("input", updateColorBox);
+    inputElements[1].addEventListener("input", updateColorBox);
+    inputElements[2].addEventListener("input", updateColorBox);
+
+    updateColorBox();
+
+    colEle.addEventListener("click", (e) =>
+    {
+        const cr = new ColorRick({
+            "ele": colEle,
+            "color": getCurrentColor(), // "#ffffff",
+            "onChange": (col) =>
             {
-                ignoreColorChanges = true;
+                updateColorBox();
+                const glRgb = col.gl();
+
+                document.getElementById("numberinputDisplay_in_" + portNum).innerHTML =
+                inputElements[0].value = glRgb[0];
+
+                document.getElementById("numberinputDisplay_in_" + (portNum + 1)).innerHTML =
+                inputElements[1].value = glRgb[1];
+
+                document.getElementById("numberinputDisplay_in_" + (portNum + 2)).innerHTML =
+                inputElements[2].value = glRgb[2];
+
+                inputElements[0].dispatchEvent(new Event("input"));
+                inputElements[1].dispatchEvent(new Event("input"));
+                inputElements[2].dispatchEvent(new Event("input"));
             }
-            if (toggled === true)
-            {
-                updateColorPickerButton(rid);
-                colors = this.color.colors;
-                ignoreColorChanges = false;
-            }
-
-            if (!ignoreColorChanges)
-            {
-                $("#portval_" + portNum + "").val(colors.rgb.r).trigger("input");
-                $("#portval_" + (portNum + 1) + "").val(colors.rgb.g).trigger("input");
-                $("#portval_" + (portNum + 2) + "").val(colors.rgb.b).trigger("input");
-            }
-            else
-            {
-                updateColorPickerButton(rid);
-            }
-
-            const modes = {
-                "r": Math.round(colors.rgb.r * 255),
-                "g": Math.round(colors.rgb.g * 255),
-                "b": Math.round(colors.rgb.b * 255),
-                "h": colors.hsv.h,
-                "s": colors.hsv.s,
-                "v": colors.hsv.v,
-                "HEX": this.color.colors.HEX
-            };
-
-            $("input", ".cp-panel").each(function ()
-            {
-                this.value = modes[this.className.substr(3)];
-            });
-        },
-        buildCallback($elm)
-        {
-            const colorInstance = this.color;
-            const colorPicker = this;
-
-            function change(e)
-            {
-                let value = this.value,
-                    className = this.className,
-                    type = className.split("-")[1],
-                    color = {};
-
-                color[type] = value;
-                colorInstance.setColor(type === "HEX" ? value : color,
-                    type === "HEX" ? "HEX" : /(?:r|g|b)/.test(type) ? "rgb" : "hsv");
-                colorPicker.render();
-                this.blur();
-            }
-
-            $elm.prepend("<div class=\"cp-panel\">" +
-                "R <input type=\"text\" class=\"cp-r\" /><br>" +
-                "G <input type=\"text\" class=\"cp-g\" /><br>" +
-                "B <input type=\"text\" class=\"cp-b\" /><hr>" +
-                "H <input type=\"text\" class=\"cp-h\" /><br>" +
-                "S <input type=\"text\" class=\"cp-s\" /><br>" +
-                "B <input type=\"text\" class=\"cp-v\" /><hr>" +
-                "<input id=\"inputhex\" type=\"text\" class=\"cp-HEX\" />" +
-                "</div>")
-                .on("change", "input",
-                    change);
-            document.getElementById("inputhex").addEventListener("input", function (e) { if (this.value.length == 6)change.bind(this)(e); });
-        }
+        });
     });
+    // let ignoreColorChanges = true;
+    // let colors;
+
+    // function updateColorPickerButton(id)
+    // {
+    //     const splits = id.split("_");
+    //     const portNum = parseInt(splits[splits.length - 1]);
+
+    //     const c1 = Math.round(255 * $("#portval_" + portNum).val());
+    //     const c2 = Math.round(255 * $("#portval_" + (portNum + 1)).val());
+    //     const c3 = Math.round(255 * $("#portval_" + (portNum + 2)).val());
+
+    //     $(id).css("background-color", "rgb(" + c1 + "," + c2 + "," + c3 + ")");
+    // }
+
+    // const id = "#watchcolorpick_" + thePort.watchId;
+    // updateColorPickerButton(id);
+
+    // $(id).colorPicker({
+    //     "opacity": true,
+    //     "animationSpeed": 0,
+    //     "margin": "-80px -40px 0",
+    //     "doRender": "div div",
+    //     renderCallback(res, toggled)
+    //     {
+    //         const rid = res[0].id;
+    //         const splits = rid.split("_");
+    //         const portNum = parseInt(splits[splits.length - 1]);
+
+    //         if (toggled === false)
+    //         {
+    //             ignoreColorChanges = true;
+    //         }
+    //         if (toggled === true)
+    //         {
+    //             updateColorPickerButton(rid);
+    //             colors = this.color.colors;
+    //             ignoreColorChanges = false;
+    //         }
+
+    //         if (!ignoreColorChanges)
+    //         {
+    //             $("#portval_" + portNum + "").val(colors.rgb.r).trigger("input");
+    //             $("#portval_" + (portNum + 1) + "").val(colors.rgb.g).trigger("input");
+    //             $("#portval_" + (portNum + 2) + "").val(colors.rgb.b).trigger("input");
+    //         }
+    //         else
+    //         {
+    //             updateColorPickerButton(rid);
+    //         }
+
+    //         const modes = {
+    //             "r": Math.round(colors.rgb.r * 255),
+    //             "g": Math.round(colors.rgb.g * 255),
+    //             "b": Math.round(colors.rgb.b * 255),
+    //             "h": colors.hsv.h,
+    //             "s": colors.hsv.s,
+    //             "v": colors.hsv.v,
+    //             "HEX": this.color.colors.HEX
+    //         };
+
+    //         $("input", ".cp-panel").each(function ()
+    //         {
+    //             this.value = modes[this.className.substr(3)];
+    //         });
+    //     },
+    //     buildCallback($elm)
+    //     {
+    //         const colorInstance = this.color;
+    //         const colorPicker = this;
+
+    //         function change(e)
+    //         {
+    //             let value = this.value,
+    //                 className = this.className,
+    //                 type = className.split("-")[1],
+    //                 color = {};
+
+    //             color[type] = value;
+    //             colorInstance.setColor(type === "HEX" ? value : color,
+    //                 type === "HEX" ? "HEX" : /(?:r|g|b)/.test(type) ? "rgb" : "hsv");
+    //             colorPicker.render();
+    //             this.blur();
+    //         }
+
+    //         $elm.prepend("<div class=\"cp-panel\">" +
+    //             "R <input type=\"text\" class=\"cp-r\" /><br>" +
+    //             "G <input type=\"text\" class=\"cp-g\" /><br>" +
+    //             "B <input type=\"text\" class=\"cp-b\" /><hr>" +
+    //             "H <input type=\"text\" class=\"cp-h\" /><br>" +
+    //             "S <input type=\"text\" class=\"cp-s\" /><br>" +
+    //             "B <input type=\"text\" class=\"cp-v\" /><hr>" +
+    //             "<input id=\"inputhex\" type=\"text\" class=\"cp-HEX\" />" +
+    //             "</div>")
+    //             .on("change", "input",
+    //                 change);
+    //         document.getElementById("inputhex").addEventListener("input", function (e) { if (this.value.length == 6)change.bind(this)(e); });
+    //     }
+    // });
 };
 
 

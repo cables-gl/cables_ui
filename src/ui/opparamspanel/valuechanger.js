@@ -100,6 +100,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 {
     CABLES.UI.showInputFieldInfo();
 
+    const elemDom = document.getElementById(ele);
     const elem = $("#" + ele);
     const elemContainer = $("#" + ele + "-container");
     const eleNumInputDisplay = $("#" + ele + "-container .numberinput-display");
@@ -338,9 +339,10 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
         if (thePort.uiAttribs.min != undefined)
             v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
-        elem.val(v);
+        elemDom.value = v;
         eleNumInputDisplay.html(v);
         elem.trigger("input");
+        elemDom.dispatchEvent(new Event("input"));
     }
 
     function lockError(e)
@@ -361,6 +363,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             elem.val(startVal);
             eleNumInputDisplay.html(startVal);
             elem.trigger("input");
+            elemDom.dispatchEvent(new Event("input"));
             up();
         }
     }
