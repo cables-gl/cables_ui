@@ -35,19 +35,15 @@ CABLES.UI.WatchPortVisualizer = class
         this.canvas.height = this._canvasHeight;
         this.canvas.style.display = "none";
         this.canvas.style.position = "absolute";
-        // this.canvas.style.border = "4px solid #000";
         this.canvas.style["z-index"] = 9999999;
         const body = document.getElementsByTagName("body")[0];
         body.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
         this.update();
 
-
         $(document).on("mouseenter", ".watchPort", (e) =>
         {
             this._visible = true;
-            // this.canvas.style.display = "block";
-
             this._ele = e.target;
             const offset = e.target.getBoundingClientRect();
             this.canvas.style.left = offset.left + "px";
@@ -91,13 +87,12 @@ CABLES.UI.WatchPortVisualizer = class
 
     update(classname, id, value)
     {
-        let i = 0;
         if (!this._visible) return;
         if (!this._ele.classList.contains(classname)) return;
         if (this._lastId != classname)
         {
             // console.log('reset',this._lastId,id);
-            for (i = 0; i < this._buff.length; i++) this._buff[i] = Number.MAX_VALUE;
+            for (let i = 0; i < this._buff.length; i++) this._buff[i] = Number.MAX_VALUE;
             this._position = 0;
             this._lastId = classname;
 
@@ -142,8 +137,7 @@ CABLES.UI.WatchPortVisualizer = class
         this.ctx.beginPath();
 
         this.ctx.lineWidth = 2;
-        // for(var i=position;i<this._buff.length;i++)
-        for (i = 0; i < this._num; i++)
+        for (let i = 0; i < this._num; i++)
         {
             const v = this._buff[(this._position + i) % this._num];
             if (this._buff[(this._position + i) % this._num] != Number.MAX_VALUE)
@@ -152,7 +146,6 @@ CABLES.UI.WatchPortVisualizer = class
 
                 if (first)
                 {
-                    // this.ctx.moveTo(i*2,pos);
                     this.ctx.moveTo(0, pos);
                     first = false;
                 }
