@@ -201,12 +201,13 @@ CABLES.GradientEditor.prototype.show = function (cb)
 
     this._paper = Raphael("gradienteditorbar", 0, 0);
 
-    $("#gradienteditorbar svg").click(function (e)
+
+    document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
     {
         if (this._movingkey) return;
         this.addKey(e.offsetX / this._width);
         this.onChange();
-    }.bind(this));
+    });
 
     if (this._opId && this._portName)
     {
@@ -236,18 +237,17 @@ CABLES.GradientEditor.prototype.show = function (cb)
     this.onChange();
     CABLES.GradientEditor.editor = this;
 
-    $("#gradientSaveButton").click(function ()
+    document.getElementById("gradientSaveButton").addEventListener("click", () =>
     {
-        console.log("save!");
         CABLES.UI.MODAL.hide();
     });
-    $("#gradientCancelButton").click(function ()
+
+    document.getElementById("gradientCancelButton").addEventListener("click", () =>
     {
         const op = gui.corePatch().getOpById(this._opId);
         op.getPort(this._portName).set(this._previousContent);
         CABLES.UI.MODAL.hide();
-    }.bind(this));
-
+    });
 
     const colEle = document.getElementById("gradientColorInput");
 

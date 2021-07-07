@@ -44,8 +44,6 @@ CABLES.uploadDragOver = function (event)
 
 CABLES.uploadDragLeave = function (event)
 {
-    $(this).removeClass("dragging");
-
     event.preventDefault();
     event.stopPropagation();
 };
@@ -103,16 +101,16 @@ CABLES.uploadDrop = function (event)
 
 CABLES.bindUploadDragNDrop = function ()
 {
-    $("body").on("drop", CABLES.uploadDrop);
-    $("body").on("dragover", CABLES.uploadDragOver);
-    $("body").on("dragleave", CABLES.uploadDragLeave);
+    document.body.addEventListener("drop", CABLES.uploadDrop);
+    document.body.addEventListener("dragover", CABLES.uploadDragOver);
+    document.body.addEventListener("dragleave", CABLES.uploadDragLeave);
 };
 
 CABLES.unBindUploadDragNDrop = function ()
 {
-    $("body").off("drop", CABLES.uploadDrop);
-    $("body").off("dragover", CABLES.uploadDragOver);
-    $("body").off("dragleave", CABLES.uploadDragLeave);
+    document.body.removeEventListener("drop", CABLES.uploadDrop);
+    document.body.removeEventListener("dragover", CABLES.uploadDragOver);
+    document.body.removeEventListener("dragleave", CABLES.uploadDragLeave);
 };
 
 CABLES.bindUploadDragNDrop();
