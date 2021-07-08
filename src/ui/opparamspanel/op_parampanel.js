@@ -678,6 +678,13 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     }
                 }
 
+                for (const iwcp in this._watchColorPicker)
+                {
+                    const thePort2 = this._watchColorPicker[iwcp];
+                    CABLES.UI.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
+                }
+
+
                 gui.watchPortVisualizer.update(id, thePort.watchId, thePort.get());
             }
 

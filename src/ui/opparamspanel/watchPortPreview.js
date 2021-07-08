@@ -42,6 +42,7 @@ CABLES.UI.WatchPortVisualizer = class
         this.ctx = this.canvas.getContext("2d");
         this.update();
 
+
         $(document).on("mouseenter", ".watchPort", (e) =>
         {
             this._visible = true;
@@ -60,27 +61,32 @@ CABLES.UI.WatchPortVisualizer = class
             this._lastId = "xxx";
         });
 
-        $(document).on("click", ".linkedValue", (e) =>
-        {
-            if (!navigator.clipboard)
+        document.addEventListener("click",
+            (e) =>
             {
-                console.log("no clipbopard found...");
-                return;
-            }
+                if (!e.target.classList.contains("linkedValue")) return;
 
-            navigator.clipboard
-                .writeText(this.innerHTML)
-                .then(() =>
+                if (!navigator.clipboard)
                 {
-                    CABLES.UI.notify("Copied value to clipboard");
-                })
-                .catch((err) =>
-                {
-                    console.log("copy failed", err);
-                });
+                    console.log("no clipbopard found...");
+                    return;
+                }
 
-            e.preventDefault();
-        });
+                console.log("this.innerHTML", e.target.innerHTML);
+
+                navigator.clipboard
+                    .writeText(e.target.innerHTML)
+                    .then(() =>
+                    {
+                        CABLES.UI.notify("Copied value to clipboard");
+                    })
+                    .catch((err) =>
+                    {
+                        console.log("copy failed", err);
+                    });
+
+                e.preventDefault();
+            });
     }
 
     update(classname, id, value)
@@ -114,7 +120,7 @@ CABLES.UI.WatchPortVisualizer = class
         this._buff[this._position % this._num] = value;
         this._position++;
 
-        this.ctx.fillStyle = "#1b1b1b";
+        this.ctx.fillStyle = "#111";
         this.ctx.fillRect(0, 0, this._canvasWidth, this._canvasHeight);
         this.ctx.strokeStyle = "#aaa";
         this.ctx.font = "12px monospace";

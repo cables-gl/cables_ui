@@ -153,6 +153,33 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     else gui.maintabPanel.show();
 };
 
+CABLES.UI.updateLinkedColorBoxes = function (thePort, thePort1, thePort2)
+{
+    const id = "watchcolorpick_" + thePort.watchId;
+    const splits = id.split("_");
+    const portNum = parseInt(splits[splits.length - 1]);
+
+    const colEle = document.getElementById(id);
+
+    if (colEle && thePort1 && thePort && thePort2)
+    {
+        const inputElements =
+        [
+            document.getElementById("portval_" + portNum),
+            document.getElementById("portval_" + (portNum + 1)),
+            document.getElementById("portval_" + (portNum + 2))
+        ];
+
+        if (!inputElements[0] || !inputElements[1] || !inputElements[2])
+        {
+            colEle.style.backgroundColor = chroma(
+                Math.round(255 * thePort.get()),
+                Math.round(255 * thePort1.get()),
+                Math.round(255 * thePort2.get()),
+            ).hex();
+        }
+    }
+};
 
 CABLES.UI.watchColorPickerPort = function (thePort)
 {
@@ -172,15 +199,21 @@ CABLES.UI.watchColorPickerPort = function (thePort)
         document.getElementById("portval_" + (portNum + 2))
     ];
 
-    if (!inputElements[0] || !inputElements[1] || !inputElements[2]) return;
+    const colEle = document.getElementById(id);
+
+
+    if (!inputElements[0] || !inputElements[1] || !inputElements[2])
+    {
+        // if (colEle)colEle.remove();
+
+        return;
+    }
 
     const getCurrentColor = () =>
         [
             Math.round(255 * parseFloat(inputElements[0].value)),
             Math.round(255 * parseFloat(inputElements[1].value)),
             Math.round(255 * parseFloat(inputElements[2].value))];
-
-    const colEle = document.getElementById(id);
 
     inputElements[0].addEventListener("input", updateColorBox);
     inputElements[1].addEventListener("input", updateColorBox);
