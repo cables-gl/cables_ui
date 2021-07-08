@@ -308,20 +308,20 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
 
             const origSize = Math.round(data.length / 1024);
 
-            data = LZString.compress(data);
+            // data = LZString.compress(data);
+            const uint8data = pako.deflate(data);
 
             document.getElementById("patchname").innerHTML = "Saving Patch";
             document.getElementById("patchname").classList.add("blinking");
 
-            console.log("saving data ", Math.round(data.length / 1024) + " / " + origSize + "kb");
-            // console.log(compressed);
+            console.log("saving data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
 
             CABLES.sandbox.savePatch(
                 {
                     "id": id,
                     "name": name,
                     "namespace": currentProject.namespace,
-                    "data": data,
+                    "data": uint8data,
                     "buildInfo": {
                         "core": CABLES.build,
                         "ui": CABLES.UI.build
