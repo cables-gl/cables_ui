@@ -22,7 +22,7 @@ CABLES.UI.inputListenerCursorKeys = function (e)
 
 CABLES.UI.inputListenerMousewheel = function (event, delta)
 {
-    if ($(this).is(":focus"))
+    if (ele.hasFocus(event.target))
     {
         if (delta > 0)
         {
@@ -36,6 +36,8 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
         }
 
         $(this).trigger("input");
+        event.target.dispatchEvent(new Event("input"));
+
         return false;
     }
 };
@@ -49,10 +51,8 @@ CABLES.UI.checkDefaultValue = function (op, index)
 {
     if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
     {
-        const titleEl = $("#portTitle_in_" + index);
-        if (op.portsIn[index].val != op.portsIn[index].defaultValue)
-            if (!titleEl.hasClass("nonDefaultValue")) titleEl.addClass("nonDefaultValue");
-            else if (titleEl.hasClass("nonDefaultValue")) titleEl.removeClass("nonDefaultValue");
+        const titleEl = document.getElementById("portTitle_in_" + index);
+        titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
     }
 };
 
@@ -246,105 +246,6 @@ CABLES.UI.watchColorPickerPort = function (thePort)
             }
         });
     });
-    // let ignoreColorChanges = true;
-    // let colors;
-
-    // function updateColorPickerButton(id)
-    // {
-    //     const splits = id.split("_");
-    //     const portNum = parseInt(splits[splits.length - 1]);
-
-    //     const c1 = Math.round(255 * $("#portval_" + portNum).val());
-    //     const c2 = Math.round(255 * $("#portval_" + (portNum + 1)).val());
-    //     const c3 = Math.round(255 * $("#portval_" + (portNum + 2)).val());
-
-    //     $(id).css("background-color", "rgb(" + c1 + "," + c2 + "," + c3 + ")");
-    // }
-
-    // const id = "#watchcolorpick_" + thePort.watchId;
-    // updateColorPickerButton(id);
-
-    // $(id).colorPicker({
-    //     "opacity": true,
-    //     "animationSpeed": 0,
-    //     "margin": "-80px -40px 0",
-    //     "doRender": "div div",
-    //     renderCallback(res, toggled)
-    //     {
-    //         const rid = res[0].id;
-    //         const splits = rid.split("_");
-    //         const portNum = parseInt(splits[splits.length - 1]);
-
-    //         if (toggled === false)
-    //         {
-    //             ignoreColorChanges = true;
-    //         }
-    //         if (toggled === true)
-    //         {
-    //             updateColorPickerButton(rid);
-    //             colors = this.color.colors;
-    //             ignoreColorChanges = false;
-    //         }
-
-    //         if (!ignoreColorChanges)
-    //         {
-    //             $("#portval_" + portNum + "").val(colors.rgb.r).trigger("input");
-    //             $("#portval_" + (portNum + 1) + "").val(colors.rgb.g).trigger("input");
-    //             $("#portval_" + (portNum + 2) + "").val(colors.rgb.b).trigger("input");
-    //         }
-    //         else
-    //         {
-    //             updateColorPickerButton(rid);
-    //         }
-
-    //         const modes = {
-    //             "r": Math.round(colors.rgb.r * 255),
-    //             "g": Math.round(colors.rgb.g * 255),
-    //             "b": Math.round(colors.rgb.b * 255),
-    //             "h": colors.hsv.h,
-    //             "s": colors.hsv.s,
-    //             "v": colors.hsv.v,
-    //             "HEX": this.color.colors.HEX
-    //         };
-
-    //         $("input", ".cp-panel").each(function ()
-    //         {
-    //             this.value = modes[this.className.substr(3)];
-    //         });
-    //     },
-    //     buildCallback($elm)
-    //     {
-    //         const colorInstance = this.color;
-    //         const colorPicker = this;
-
-    //         function change(e)
-    //         {
-    //             let value = this.value,
-    //                 className = this.className,
-    //                 type = className.split("-")[1],
-    //                 color = {};
-
-    //             color[type] = value;
-    //             colorInstance.setColor(type === "HEX" ? value : color,
-    //                 type === "HEX" ? "HEX" : /(?:r|g|b)/.test(type) ? "rgb" : "hsv");
-    //             colorPicker.render();
-    //             this.blur();
-    //         }
-
-    //         $elm.prepend("<div class=\"cp-panel\">" +
-    //             "R <input type=\"text\" class=\"cp-r\" /><br>" +
-    //             "G <input type=\"text\" class=\"cp-g\" /><br>" +
-    //             "B <input type=\"text\" class=\"cp-b\" /><hr>" +
-    //             "H <input type=\"text\" class=\"cp-h\" /><br>" +
-    //             "S <input type=\"text\" class=\"cp-s\" /><br>" +
-    //             "B <input type=\"text\" class=\"cp-v\" /><hr>" +
-    //             "<input id=\"inputhex\" type=\"text\" class=\"cp-HEX\" />" +
-    //             "</div>")
-    //             .on("change", "input",
-    //                 change);
-    //         document.getElementById("inputhex").addEventListener("input", function (e) { if (this.value.length == 6)change.bind(this)(e); });
-    //     }
-    // });
 };
 
 
