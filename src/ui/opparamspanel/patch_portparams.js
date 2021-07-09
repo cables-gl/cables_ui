@@ -7,11 +7,13 @@ CABLES.UI.inputListenerCursorKeys = function (e)
     {
     case 38: // up
         this.value = CABLES.UI.inputIncrement(this.value, 1, e);
+        console.log("up");
         this.dispatchEvent(new Event("input"));
         return false;
 
     case 40: // down
         this.value = CABLES.UI.inputIncrement(this.value, -1, e);
+        console.log("down");
         this.dispatchEvent(new Event("input"));
         return false;
 
@@ -34,6 +36,7 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
             if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
             else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
         }
+        console.log("wheel");
         this.dispatchEvent(new Event("input"));
         event.target.dispatchEvent(new Event("input"));
 
