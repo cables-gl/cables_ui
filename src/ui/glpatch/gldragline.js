@@ -251,6 +251,7 @@ CABLES.GLGUI.GlRectDragLine = class
 
     stop()
     {
+        if (!this.isActive) return;
         this._startGlPorts.length = 0;
         this.setPort(null);
         this._glPatch.allowDragging = this._patchDragWasAllowed;
