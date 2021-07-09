@@ -381,6 +381,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glTitle) this._glTitle.dispose();
         if (this._glComment) this._glComment.dispose();
         if (this._glTitleExt) this._glTitleExt.dispose();
+        if (this._glRectRightHandle) this._glRectRightHandle.dispose();
+
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 
         this._op = null;
@@ -682,7 +684,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
         else
         {
-            if (this.opUiAttribs.color)
+            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
                 this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
 
@@ -698,6 +700,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             else
             {
                 this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+                if (this._glRectRightHandle && this.opUiAttribs.color == null)
+                {
+                    this._glRectRightHandle.dispose();
+                    this._glRectRightHandle = null;
+                }
             }
         }
 
