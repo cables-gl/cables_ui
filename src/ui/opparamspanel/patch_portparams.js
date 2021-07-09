@@ -7,12 +7,12 @@ CABLES.UI.inputListenerCursorKeys = function (e)
     {
     case 38: // up
         this.value = CABLES.UI.inputIncrement(this.value, 1, e);
-        $(this).trigger("input");
+        this.dispatchEvent(new Event("input"));
         return false;
 
     case 40: // down
         this.value = CABLES.UI.inputIncrement(this.value, -1, e);
-        $(this).trigger("input");
+        this.dispatchEvent(new Event("input"));
         return false;
 
     default: // exit this handler for other keys
@@ -34,8 +34,7 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
             if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
             else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
         }
-
-        $(this).trigger("input");
+        this.dispatchEvent(new Event("input"));
         event.target.dispatchEvent(new Event("input"));
 
         return false;

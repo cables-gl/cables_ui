@@ -150,7 +150,7 @@
 
                         {{#compare port.uiAttribs.display '==' 'dropdown' }}
                             </td><td >
-                                <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
+                                <select oninput="document.getElementById('portval_{{ portnum }}').value = this.value;document.getElementById('portval_{{ portnum }}').dispatchEvent(new Event('input'));">
                                     {{#compare '' '==' port.val }}
                                         <option value="">...</option>
                                     {{/compare}}
@@ -166,7 +166,7 @@
                                 <input class="value hide" type="hidden" id="portval_{{ portnum }}" style="width:40px;" value="{{port.val}}"/>
                                 <div class="radioToggle">
                                     {{#each port.uiAttribs.values}}
-                                        <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="$('#portval_{{ ../portnum }}').val(this.value);$('#portval_{{ ../portnum }}').trigger('input');" {{#compare this '==' ../port.val }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
+                                        <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="document.getElementById('portval_{{ ../portnum }}').value = this.value;document.getElementById('portval_{{ ../portnum }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.val }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
                                     {{/each}}
                                 </div>
                         {{/compare}}
