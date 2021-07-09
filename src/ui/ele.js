@@ -31,6 +31,11 @@ CABLES.Ele = class
     {
         return document.createElement(n);
     }
+
+    hasFocus(el)
+    {
+        return document.activeElement == el;
+    }
 };
 
 window.ele = new CABLES.Ele();

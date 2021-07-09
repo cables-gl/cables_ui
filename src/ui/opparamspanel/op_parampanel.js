@@ -786,7 +786,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 "iconClass": "fa fa-lock",
                 func()
                 {
-                    window.open(CABLES.sandbox.getCablesUrl() + "/admin/op/rename?op=" + opname + "&new=" + opname, "_blank");
+                    window.open(CABLES.sandbox.getCablesUrl() + "/op/rename?op=" + opname + "&new=" + opname, "_blank");
                 },
             });
         }
