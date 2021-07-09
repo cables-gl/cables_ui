@@ -1675,6 +1675,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setOpColor(col)
     {
         const selectedOps = this.getSelectedOps();
+
+        console.log(selectedOps);
+
         for (let i = 0; i < selectedOps.length; i++)
             selectedOps[i].setUiAttrib({ "color": col });
     }
