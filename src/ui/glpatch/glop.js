@@ -244,6 +244,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
 
         if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
 
+        if (attr.color) this._updateColors();
+
+
         this._needsUpdate = true;
     }
 
@@ -378,6 +381,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glTitle) this._glTitle.dispose();
         if (this._glComment) this._glComment.dispose();
         if (this._glTitleExt) this._glTitleExt.dispose();
+        if (this._glRectRightHandle) this._glRectRightHandle.dispose();
+
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 
         this._op = null;
@@ -673,36 +678,42 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     _updateColors()
     {
         if (!this._glRectBg || !this._glTitle) return;
+
+        this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+        this._glRectBg.setDecoration(this._rectDecoration);
+        if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
+        else
+        {
+            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
+            {
+                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
+
+                if (!this._glRectRightHandle)
+                {
+                    this._glRectRightHandle = this._instancer.createRect();
+                    this._glRectRightHandle.setParent(this._glRectBg);
+                    this._updateSizeRightHandle();
+                }
+
+                this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+            }
+            else
+            {
+                this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
+                if (this._glRectRightHandle && this.opUiAttribs.color == null)
+                {
+                    this._glRectRightHandle.dispose();
+                    this._glRectRightHandle = null;
+                }
+            }
+        }
+
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setDecoration(3);
             this._glTitle.setColor(1, 1, 1);
         }
-        else
-        {
-            this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
-            this._glRectBg.setDecoration(this._rectDecoration);
-            if (this._transparent) this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.transparent);
-            else
-            {
-                if (this.opUiAttribs.color)
-                {
-                    this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
 
-                    if (!this._glRectRightHandle)
-                    {
-                        this._glRectRightHandle = this._instancer.createRect();
-                        this._glRectRightHandle.setParent(this._glRectBg);
-                        this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
-                        this._updateSizeRightHandle();
-                    }
-                }
-                else
-                {
-                    this._glRectBg.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opBgRect);
-                }
-            }
-        }
         if (!this._op.enabled)
         {
             this._glRectBg.setOpacity(0.2);

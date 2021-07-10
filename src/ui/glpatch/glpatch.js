@@ -524,6 +524,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         }
 
         delete op.uiAttribs.createdLocally;
+        this._portDragLine.stop();
     }
 
     screenToPatchCoord(x, y)
