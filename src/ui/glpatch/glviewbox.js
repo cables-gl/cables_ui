@@ -283,7 +283,8 @@ CABLES.GLGUI.ViewBox = class
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (CABLES.GLGUI.VISUALCONFIG.drawBoundingRect)
+
+        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && CABLES.GLGUI.VISUALCONFIG.drawBoundingRect)
         {
             if (!this._boundingRect)
             {
@@ -298,6 +299,10 @@ CABLES.GLGUI.ViewBox = class
             this._boundingRect.visible = bounds.changed;
             this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
             this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+        }
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._boundingRect)
+        {
+            this._boundingRect.visible = false;
         }
     }
 

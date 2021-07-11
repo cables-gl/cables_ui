@@ -20,10 +20,10 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-    this._CANVASMODE_NORMAL = 0;
-    this._CANVASMODE_FULLSCREEN = 2;
-    this._CANVASMODE_PATCHBG = 1;
-    this._canvasMode = this._CANVASMODE_NORMAL;
+    this.CANVASMODE_NORMAL = 0;
+    this.CANVASMODE_FULLSCREEN = 2;
+    this.CANVASMODE_PATCHBG = 1;
+    this._canvasMode = this.CANVASMODE_NORMAL;
 
     if (!cfg) cfg = {};
     if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -310,7 +310,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.isRemoteClient)
         {
-            this._canvasMode = this._CANVASMODE_FULLSCREEN;
+            this._canvasMode = this.CANVASMODE_FULLSCREEN;
             this._elGlCanvas.addClass("maximized");
             this.rendererWidth = 0;
             showingEditor = false;
@@ -321,7 +321,7 @@ CABLES.UI.GUI = function (cfg)
             this.rendererWidth = window.innerWidth * 0.4;
             this.rendererHeight = window.innerHeight * 0.25;
         }
-        if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
             this.rendererWidth = window.innerWidth;
             this.rendererHeight = window.innerHeight;
@@ -335,7 +335,7 @@ CABLES.UI.GUI = function (cfg)
         this.rendererHeight = Math.floor(this.rendererHeight);
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this._CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
+        if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
 
         this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
@@ -470,7 +470,7 @@ CABLES.UI.GUI = function (cfg)
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
         this.rightPanelWidth = this.rendererWidthScaled;
-        if (this._canvasMode == this._CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
+        if (this._canvasMode == this.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
 
         this._elSplitterPatch.css("left", window.innerWidth - this.rightPanelWidth - 4);
         this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
@@ -644,7 +644,7 @@ CABLES.UI.GUI = function (cfg)
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - timelineHeight - 50);
 
 
-        if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
             this._elCablesCanvas.style.left = 0 + "px";
             this._elCablesCanvas.style.right = "initial";
@@ -657,7 +657,7 @@ CABLES.UI.GUI = function (cfg)
 
             this._elCablesCanvas.style["z-index"] = 40;
         }
-        else if (this._canvasMode == this._CANVASMODE_PATCHBG)
+        else if (this._canvasMode == this.CANVASMODE_PATCHBG)
         {
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
@@ -669,7 +669,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style.height = this._elGlCanvasDom.style.height;
             this._elCablesCanvas.style["z-index"] = 1;
         }
-        if (this._canvasMode == this._CANVASMODE_NORMAL)
+        if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
             const density = this._corePatch.cgl.pixelDensity;
 
@@ -728,22 +728,27 @@ CABLES.UI.GUI = function (cfg)
 
     this._switchCanvasSizeNormal = function ()
     {
-        this._canvasMode = this._CANVASMODE_NORMAL;
+        this._canvasMode = this.CANVASMODE_NORMAL;
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
     };
 
+    this.getCanvasMode = function ()
+    {
+        return this._canvasMode;
+    };
+
     this.cyclePatchBg = function ()
     {
-        if (this._canvasMode == this._CANVASMODE_FULLSCREEN) this.cycleFullscreen();
+        if (this._canvasMode == this.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
 
-        if (this._canvasMode == this._CANVASMODE_NORMAL)
+        if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
 
-            this._canvasMode = this._CANVASMODE_PATCHBG;
+            this._canvasMode = this.CANVASMODE_PATCHBG;
             this.rendererHeight = 100;
             this.rightPanelWidth = this._oldCanvasWidth;
         }
@@ -758,9 +763,9 @@ CABLES.UI.GUI = function (cfg)
 
     this.cycleFullscreen = function ()
     {
-        if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
-            this._canvasMode = this._CANVASMODE_NORMAL;
+            this._canvasMode = this.CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
             console.log("normal mode!");
@@ -771,7 +776,7 @@ CABLES.UI.GUI = function (cfg)
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this._canvasMode = this._CANVASMODE_FULLSCREEN;
+            this._canvasMode = this.CANVASMODE_FULLSCREEN;
 
             if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
             this.notifiedFullscreen = true;
@@ -1539,7 +1544,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
-            if (this._canvasMode == this._CANVASMODE_FULLSCREEN)
+            if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
             {
                 this.cycleFullscreen();
             }
@@ -2115,7 +2120,7 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasIconbarContainer.style.width = document.body.getBoundingClientRect().width - this._elSplitterPatch.get()[0].getBoundingClientRect().width + "px";
         this._elCanvasIconbarContainer.style.left = this._elSplitterPatch.get()[0].getBoundingClientRect().left + 4 + "px";
 
-        if (this._canvasMode == this._CANVASMODE_PATCHBG)
+        if (this._canvasMode == this.CANVASMODE_PATCHBG)
             this._elCanvasIconbarContainer.style.top = 0;
         else
             this._elCanvasIconbarContainer.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
@@ -2164,7 +2169,7 @@ CABLES.UI.GUI = function (cfg)
     {
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
-        if (this._canvasMode == this._CANVASMODE_PATCHBG)
+        if (this._canvasMode == this.CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
             this.isCanvasFocussed = false;
@@ -2192,8 +2197,8 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
-            if(this._elCanvasInfoFps)this._elCanvasInfoFps.style.opacity=0.3;
-            if(this._elCanvasInfoMs)this._elCanvasInfoMs.style.opacity=0.3;
+            if (this._elCanvasInfoFps) this._elCanvasInfoFps.style.opacity = 0.3;
+            if (this._elCanvasInfoMs) this._elCanvasInfoMs.style.opacity = 0.3;
 
             ele.hide(this._elCanvasIconbarContainer);
             ele.hide(this._elCanvasModalDarkener);
@@ -2342,16 +2347,16 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
         }
         else ele.hide(document.getElementById("canvasInfoVersion"));
 
-        if(this.isCanvasFocussed)
+        if (this.isCanvasFocussed)
         {
             this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
             this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
-    
+
             this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
             this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
 
-            this._elCanvasInfoFps.style.opacity=1;
-            this._elCanvasInfoMs.style.opacity=1;
+            this._elCanvasInfoFps.style.opacity = 1;
+            this._elCanvasInfoMs.style.opacity = 1;
         }
     });
 };
