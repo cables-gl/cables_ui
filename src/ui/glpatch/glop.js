@@ -599,14 +599,15 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
-        if (this.opUiAttribs.extendTitle && !this._glTitleExt)
+        if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._glTitleExt)
         {
-            this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " | " + this.opUiAttribs.extendTitle);
+            this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " ???");
             this._glTitleExt.setParentRect(this._glRectBg);
             this._glTitleExt.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleExt);
         }
-        else if (!this.opUiAttribs.extendTitle && this._glTitleExt)
+        if ((!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) && this._glTitleExt)
         {
+            this._glTitleExt.dispose();
             this._glTitleExt = null;
         }
 
@@ -627,9 +628,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.comment_title) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
-        if (this._glTitleExt && this.opUiAttribs.extendTitle != this._glTitleExt.text)
+        if (this._glTitleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._glTitleExt.text)
         {
-            this._glTitleExt.text = " " + this.opUiAttribs.extendTitle;
+            this._glTitleExt.text = " " + this.opUiAttribs.extendTitle || "!?!?!";
             doUpdateSize = true;
         }
 

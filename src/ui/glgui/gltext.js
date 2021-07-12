@@ -183,6 +183,16 @@ CABLES.GLGUI.Text = class
 
     dispose()
     {
-        for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].dispose();
+        console.log("gltext dispose", this._rects.length, this._rects);
+
+        for (let i = 0; i < this._rects.length; i++)
+            if (this._rects[i])
+            {
+                console.log("disp!!");
+                this._rects[i].dispose();
+            }
+
+        this._rects.length = 0;
+        this._string = "";
     }
 };
