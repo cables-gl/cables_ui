@@ -118,8 +118,7 @@
 .menubar
 {
     display:block;
-    // z-index: $zindex_superlow; FIXME: quickfix for disappeared menubar
-    z-index: 11;
+    z-index: $zindex_superlow;
     margin-top:10px;
     border:5px solid $color-menubar-background;
     left:10px;
