@@ -108,6 +108,8 @@ CABLES.UI.initSplitPanes = function ()
 
     function resizeRenderer(ev)
     {
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) return;
+
         if (ev.shiftKey)
         {
             if (!CABLES.SPLITPANE.rendererAspect) CABLES.SPLITPANE.rendererAspect = gui.rendererWidth / gui.rendererHeight;

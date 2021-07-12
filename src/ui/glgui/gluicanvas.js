@@ -69,6 +69,9 @@ CABLES.GLGUI.GlUiCanvas = class
         // this.canvas.style.position='absolute';
         this.canvas.style.border = "0px solid white";
         this.canvas.style.outline = "0";
+        this.canvas.style.position = "absolute";
+        this.canvas.style.zIndex = "11";
+
 
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
@@ -86,7 +89,7 @@ CABLES.GLGUI.GlUiCanvas = class
                 "glCanvasId": this.canvas.id,
                 "glCanvasResizeToParent": false,
                 "glCanvasResizeToWindow": false,
-                "canvas": {}
+                "canvas": { "alpha": true }
             });
 
         this.glPatch = new CABLES.GLGUI.GlPatch(this.patch.cgl);
@@ -246,7 +249,9 @@ CABLES.GLGUI.GlUiCanvas = class
 
         const cgl = this.patch.cgl;
 
-        cgl.gl.clearColor(0, 0, 0, 1);
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
+        else cgl.gl.clearColor(0, 0, 0, 1);
+
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
 
@@ -270,11 +275,12 @@ CABLES.GLGUI.GlUiCanvas = class
             this._firstTime = false;
         }
 
-        cgl.gl.clearColor(
-            CABLES.GLGUI.VISUALCONFIG.colors.background[0],
-            CABLES.GLGUI.VISUALCONFIG.colors.background[1],
-            CABLES.GLGUI.VISUALCONFIG.colors.background[2],
-            CABLES.GLGUI.VISUALCONFIG.colors.background[3]);
+        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG)
+            cgl.gl.clearColor(
+                CABLES.GLGUI.VISUALCONFIG.colors.background[0],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[1],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[2],
+                CABLES.GLGUI.VISUALCONFIG.colors.background[3]);
 
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 

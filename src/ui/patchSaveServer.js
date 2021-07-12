@@ -374,7 +374,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         catch (e)
         {
             console.log(e);
-            CABLES.UI.notifyError("error saving patch - try to delete disables ops");
+            CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
         }
         finally {}
     }
