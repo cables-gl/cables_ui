@@ -435,7 +435,7 @@
 #subpatch_nav
 {
 	position: relative;
-	z-index: $zindex_superlow;
+	z-index: $zindex_superlow + 1;
 
 	#subpatch_breadcrumb
 	{
