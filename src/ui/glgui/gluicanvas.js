@@ -70,7 +70,8 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.style.border = "0px solid white";
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
-        this.canvas.style.zIndex = "11";
+
+        this.canvas.classList.add("gluiPatchBg");
 
 
         // this.canvas.style.cursor='none';
