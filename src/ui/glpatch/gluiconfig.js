@@ -1,6 +1,7 @@
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
+
 CABLES.GLGUI.VISUALCONFIG =
 {
     "OpTitlePaddingLeftRight": 10,
@@ -22,6 +23,8 @@ CABLES.GLGUI.VISUALCONFIG =
     "minZoom": 15,
     "zoomSmooth": 2,
     "zoomDefault": 500,
+
+    "newOpDistanceY": 50,
 
     "zPosCableButtonRect": -0.9, // -0.02,
 

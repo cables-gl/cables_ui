@@ -163,7 +163,9 @@
         <div style="padding:10px;">
             <div class=""><b>Author:</b> {{fileInfo.author}}</div>
             <div class=""><b>License:</b> {{fileInfo.license}}</div>
-            <div class=""><b>Original URL:</b> {{fileInfo.originalUrl}}</div>
+            {{#if fileInfo.originalUrl}}
+            <div class=""><b>Original URL:</b> <a href="{{fileInfo.originalUrl}}" target="_blank">{{fileInfo.originalUrl}}</a></div>
+            {{/if}}
         </div>
     </div>
 </script>

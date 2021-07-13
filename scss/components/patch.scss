@@ -1,4 +1,10 @@
 
+.gluiPatchBg
+{
+    z-index :$zindex_superlow;
+}
+
+
 
 .cursor_pointer{ cursor:pointer; }
 .cursor_grab{ cursor:url(/ui/img/grab.png) 0 0, auto; }
@@ -429,7 +435,7 @@
 #subpatch_nav
 {
 	position: relative;
-	z-index: $zindex_superlow;
+	z-index: $zindex_superlow + 1;
 
 	#subpatch_breadcrumb
 	{

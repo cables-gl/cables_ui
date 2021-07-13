@@ -373,8 +373,51 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         }
         catch (e)
         {
+            let found = false;
+
+            for (let i = 0; i < gui.corePatch().ops.length; i++)
+            {
+                try
+                {
+                    JSON.stringify(gui.corePatch().ops[i].getSerialized());
+                }
+                catch (e)
+                {
+                    found = true;
+                    // console.log(e);
+                    // this is the op!
+
+                    iziToast.error({
+                        "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                        "theme": "dark",
+                        "title": "update",
+                        "message": "Error saving patch! ",
+                        "progressBar": false,
+                        "animateInside": false,
+                        "close": true,
+                        "timeout": false,
+                        "buttons": [
+                            [
+                                "<button>Go to op</button>",
+                                function (instance, toast)
+                                {
+                                    gui.patchView.focusOp(gui.corePatch().ops[i].id);
+                                    gui.patchView.centerSelectOp(gui.corePatch().ops[i].id);
+
+                                    iziToast.hide({}, toast);
+                                }
+                            ]
+                        ]
+                    });
+
+
+                    break;
+                }
+            }
+
             console.log(e);
-            CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
+            if (!found)
+                CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
         }
         finally {}
     }
