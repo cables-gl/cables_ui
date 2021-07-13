@@ -249,7 +249,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (op.portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(op.portsIn[i]);
                 if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) this._watchPorts.push(op.portsIn[i]);
 
-                console.log("jojo vars...");
                 html += this._templatePort({
                     "port": op.portsIn[i],
                     startGroup,
