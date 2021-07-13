@@ -181,6 +181,15 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
+
+            // remove client on connection lost
+            gui.socket.on("netClientRemoved", (msg) =>
+            {
+                if (this._glCursors[msg.clientId])
+                {
+                    this._glCursors[msg.clientId].visible = false;
+                }
+            });
         });
 
         this.previewLayer = new CABLES.GLGUI.GlPreviewLayer(this);

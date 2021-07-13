@@ -7,7 +7,6 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         super();
         this._clients = {};
         this._connection = connection;
-        this.updateIntervalSeconds = 2;
         this._colors = {};
 
         connection.addEventListener("onPingAnswer", this.onPingAnswer.bind(this));
@@ -32,8 +31,6 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
             "color": this.getClientColor(payload.clientId)
         };
 
-
-        this._updateClientTimeouts();
         this._cleanUpUserList();
         if (userListChanged) this.emitEvent("userListChanged");
     }
@@ -53,7 +50,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
     _cleanUpUserList()
     {
-        const timeOutSeconds = this.updateIntervalSeconds * 2;
+        const timeOutSeconds = this._connection.PING_INTERVAL * this._connection.PINGS_TO_TIMEOUT;
 
         let userlistChanged = false;
 
@@ -61,8 +58,9 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         {
             const client = this._clients[clientId];
 
-            if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds * 1000)
+            if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds)
             {
+                this.emitEvent("clientRemoved", this._clients[client.clientId]);
                 delete this._clients[client.clientId];
                 userlistChanged = true;
             }
@@ -70,25 +68,9 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         if (userlistChanged)
         {
-            // console.log("list changed REMOVED!");
             this.emitEvent("userListChanged");
         }
     }
-
-    _updateClientTimeouts()
-    {
-        for (const i in this._clients)
-        {
-            const client = this._clients[i];
-            if (!client) continue;
-
-            client.timeout = (Date.now() - client.lastSeen);
-            client.lost = client.timeout > 10000;
-
-            if (client.clientId == this._connection.clientId) client.isMe = true;
-        }
-    }
-
 
     _HSVtoRGB(h, s, v)
     {

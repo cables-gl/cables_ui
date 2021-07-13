@@ -13,6 +13,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
+        this._connection.state.on("clientRemoved", (msg) =>
+        {
+            this._connection.sendUi("netClientRemoved", msg, true);
+        });
 
 
         gui.on("netOpPos", (payload) => { this._connection.sendUi("netOpPos", payload); });
@@ -90,7 +94,6 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
                 const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
 
                 document.getElementById("nav-clientlist").innerHTML = html;
-                console.log("update clientlisrt!");
             }
             document.getElementById("multiplayerbar").style.display = "block";
         }
