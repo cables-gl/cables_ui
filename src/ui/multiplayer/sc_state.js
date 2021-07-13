@@ -10,6 +10,14 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         this._colors = {};
 
         connection.addEventListener("onPingAnswer", this.onPingAnswer.bind(this));
+        connection.addEventListener("netCursorPos", (msg) =>
+        {
+            if (this._clients[msg.clientId])
+            {
+                this._clients[msg.clientId].x = msg.x;
+                this._clients[msg.clientId].y = msg.y;
+            }
+        });
     }
 
     get clients() { return this._clients; }
@@ -21,15 +29,29 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
 
         if (!client) userListChanged = true;
 
-        this._clients[payload.clientId] = {
-            "username": payload.username,
-            "userid": payload.userid,
-            "shortname": payload.username.substr(0, 2).toUpperCase(),
-            "clientId": payload.clientId,
-            "lastSeen": payload.lastSeen,
-            "isMe": payload.clientId == this._connection.clientId,
-            "color": this.getClientColor(payload.clientId)
-        };
+        if (this._clients[payload.clientId])
+        {
+            this._clients[payload.clientId].username = payload.username;
+            this._clients[payload.clientId].userid = payload.userid;
+            this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
+            this._clients[payload.clientId].clientId = payload.clientId;
+            this._clients[payload.clientId].lastSeen = payload.lastSeen;
+            this._clients[payload.clientId].isMe = payload.clientId == this._connection.clientId;
+            this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
+        }
+        else
+        {
+            this._clients[payload.clientId] = {
+                "username": payload.username,
+                "userid": payload.userid,
+                "shortname": payload.username.substr(0, 2).toUpperCase(),
+                "clientId": payload.clientId,
+                "lastSeen": payload.lastSeen,
+                "isMe": payload.clientId == this._connection.clientId,
+                "color": this.getClientColor(payload.clientId)
+            };
+        }
+
 
         this._cleanUpUserList();
         if (userListChanged) this.emitEvent("userListChanged");

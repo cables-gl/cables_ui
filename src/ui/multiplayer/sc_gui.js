@@ -85,15 +85,24 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
             let clientnames = "";
             for (let i in this._connection.state.clients)
             {
-                clientnames += this._connection.state.clients.username;
+                clientnames += this._connection.state.clients[i].username;
             }
 
             if (clientnames != this._clientnames)
             {
                 this._clientnames = clientnames;
                 const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
-
-                document.getElementById("nav-clientlist").innerHTML = html;
+                const userList = document.getElementById("nav-clientlist");
+                userList.innerHTML = html;
+                const userListItems = userList.querySelectorAll(".socket_userlist_item");
+                userListItems.forEach((ele) =>
+                {
+                    ele.addEventListener("pointerdown", () =>
+                    {
+                        const client = this._connection.state.clients[ele.dataset.clientId];
+                        console.log("socket nav click", client);
+                    });
+                });
             }
             document.getElementById("multiplayerbar").style.display = "block";
         }
