@@ -182,6 +182,14 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
 
+            gui.on("netGotoPos", (msg) =>
+            {
+                if (typeof msg.x !== "undefined" && typeof msg.y !== "undefined")
+                {
+                    this.center(msg.x, msg.y);
+                }
+            });
+
             // remove client on connection lost
             gui.socket.on("netClientRemoved", (msg) =>
             {

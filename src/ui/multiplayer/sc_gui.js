@@ -57,9 +57,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         if (this._mouseTimeout) return;
 
+        const subPatch = gui.patchView.getCurrentSubPatch();
         this._mouseTimeout = setTimeout(() =>
         {
-            this._connection.sendUi("netCursorPos", { "x": this._lastMouseX, "y": this._lastMouseY });
+            this._connection.sendUi("netCursorPos", { "x": this._lastMouseX, "y": this._lastMouseY, "subpatch": subPatch, "zoom": gui.patch().getViewBox().getZoom() });
             this._mouseTimeout = null;
         }, this.netMouseCursorDelay);
     }
@@ -97,10 +98,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
                 const userListItems = userList.querySelectorAll(".socket_userlist_item");
                 userListItems.forEach((ele) =>
                 {
-                    ele.addEventListener("pointerdown", () =>
+                    ele.addEventListener("contextmenu", () =>
                     {
                         const client = this._connection.state.clients[ele.dataset.clientId];
-                        console.log("socket nav click", client);
+                        gui.emitEvent("netGotoPos", { "x": client.x, "y": client.y });
                     });
                 });
             }
