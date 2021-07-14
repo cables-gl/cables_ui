@@ -13,7 +13,7 @@
 
 <script id="socket_userlist" type="text/x-handlebars-template">
     {{#each clients}}
-        <div data-tt="{{username}}" style="color:black;text-align:center;display:inline-block;width:24px;height:24px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});border-radius:100px;overflow: hidden;background-image:url({{../cablesurl}}/api/avatar/{{userid}});background-size:contain;" class="tt"></div>
+        <div data-tt="{{username}}" data-client-id="{{clientId}}" style="color:black;text-align:center;display:inline-block;width:24px;height:24px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});border-radius:100px;overflow: hidden;background-image:url({{../cablesurl}}/api/avatar/{{userid}});background-size:contain;" class="tt socket_userlist_item"></div>
     {{/each}}
 </script>
 
