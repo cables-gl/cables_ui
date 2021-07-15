@@ -310,7 +310,7 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.isRemoteClient)
         {
-            this._canvasMode = this.CANVASMODE_FULLSCREEN;
+            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
             this._elGlCanvas.addClass("maximized");
             this.rendererWidth = 0;
             showingEditor = false;
@@ -725,10 +725,15 @@ CABLES.UI.GUI = function (cfg)
         $("#serialized").val(self.patch().scene.serialize());
     };
 
+    this._setCanvasMode = function (m)
+    {
+        this._canvasMode = m;
+        this.emitEvent("canvasModeChange", m);
+    };
 
     this._switchCanvasSizeNormal = function ()
     {
-        this._canvasMode = this.CANVASMODE_NORMAL;
+        this._setCanvasMode(this.CANVASMODE_NORMAL);
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
     };
@@ -748,7 +753,7 @@ CABLES.UI.GUI = function (cfg)
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
 
-            this._canvasMode = this.CANVASMODE_PATCHBG;
+            this._setCanvasMode(this.CANVASMODE_PATCHBG);
             this.rendererHeight = 100;
             this.rightPanelWidth = this._oldCanvasWidth;
         }
@@ -765,7 +770,7 @@ CABLES.UI.GUI = function (cfg)
     {
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
-            this._canvasMode = this.CANVASMODE_NORMAL;
+            this._setCanvasMode(this.CANVASMODE_NORMAL);
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
             console.log("normal mode!");
@@ -776,7 +781,7 @@ CABLES.UI.GUI = function (cfg)
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this._canvasMode = this.CANVASMODE_FULLSCREEN;
+            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
 
             if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
             this.notifiedFullscreen = true;
