@@ -355,6 +355,10 @@ CABLES.UI.PatchViewBox.prototype.zoom = function (delta, event)
     gui.patchView.emitEvent("viewBoxChange");
 };
 
+CABLES.UI.PatchViewBox.prototype.getZoom = function ()
+{
+    return this._zoom;
+};
 
 CABLES.UI.PatchViewBox.prototype.zoomStep = function (dir)
 {

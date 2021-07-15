@@ -5,6 +5,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     constructor(cfg)
     {
         super();
+        this.PING_INTERVAL = 5000;
+        this.PINGS_TO_TIMEOUT = 2;
         this.channelName = null;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._socket = null;
@@ -168,9 +170,9 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     }
 
 
-    sendUi(name, payload)
+    sendUi(name, payload, sendOnEmptyClientList = false)
     {
-        if (this.state.getNumClients() > 1)
+        if (sendOnEmptyClientList || this.state.getNumClients() > 1)
         {
             payload = payload || {};
             payload.name = name;
@@ -197,7 +199,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         setTimeout(() =>
         {
             this.updateMembers();
-        }, 10000);
+        }, this.PING_INTERVAL);
     }
 
     _send(topic, payload)

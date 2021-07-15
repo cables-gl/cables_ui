@@ -13,6 +13,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
+        this._connection.state.on("clientRemoved", (msg) =>
+        {
+            this._connection.sendUi("netClientRemoved", msg, true);
+        });
 
 
         gui.on("netOpPos", (payload) => { this._connection.sendUi("netOpPos", payload); });
@@ -53,9 +57,10 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
 
         if (this._mouseTimeout) return;
 
+        const subPatch = gui.patchView.getCurrentSubPatch();
         this._mouseTimeout = setTimeout(() =>
         {
-            this._connection.sendUi("netCursorPos", { "x": this._lastMouseX, "y": this._lastMouseY });
+            this._connection.sendUi("netCursorPos", { "x": this._lastMouseX, "y": this._lastMouseY, "subpatch": subPatch, "zoom": gui.patch().getViewBox().getZoom() });
             this._mouseTimeout = null;
         }, this.netMouseCursorDelay);
     }
@@ -81,16 +86,24 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
             let clientnames = "";
             for (let i in this._connection.state.clients)
             {
-                clientnames += this._connection.state.clients.username;
+                clientnames += this._connection.state.clients[i].username;
             }
 
             if (clientnames != this._clientnames)
             {
                 this._clientnames = clientnames;
                 const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
-
-                document.getElementById("nav-clientlist").innerHTML = html;
-                console.log("update clientlisrt!");
+                const userList = document.getElementById("nav-clientlist");
+                userList.innerHTML = html;
+                const userListItems = userList.querySelectorAll(".socket_userlist_item");
+                userListItems.forEach((ele) =>
+                {
+                    ele.addEventListener("contextmenu", () =>
+                    {
+                        const client = this._connection.state.clients[ele.dataset.clientId];
+                        gui.emitEvent("netGotoPos", { "x": client.x, "y": client.y });
+                    });
+                });
             }
             document.getElementById("multiplayerbar").style.display = "block";
         }
