@@ -59,4 +59,9 @@ CABLES.GLGUI.GlCursor = class extends CABLES.EventTarget
             this.updateAnim();
         }
     }
+
+    dispose()
+    {
+        this._cursor2.dispose();
+    }
 };

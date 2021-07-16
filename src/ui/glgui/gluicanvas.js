@@ -71,8 +71,6 @@ CABLES.GLGUI.GlUiCanvas = class
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
 
-        this.canvas.classList.add("gluiPatchBg");
-
 
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
@@ -102,6 +100,11 @@ CABLES.GLGUI.GlUiCanvas = class
         this.patch.cgl.updateSize();
 
         this.setSize(100, 100);
+
+        gui.on("canvasModeChange", (mode) =>
+        {
+            this.canvas.classList.toggle("gluiPatchBg", mode == gui.CANVASMODE_PATCHBG);
+        });
 
         gui.on("uiIdleStart", () =>
         {
