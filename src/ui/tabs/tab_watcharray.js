@@ -11,6 +11,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         this._numCols = 1;
         if (op.name.indexOf("Array3") > -1 || op.name.indexOf("Points") > -1) this._numCols = 3;
+        if (op.name.indexOf("glArray") > -1 || port.type == CABLES.OP_PORT_TYPE_TEXTURE) this._numCols = 4;
 
         this._rows = 40;
 
@@ -22,7 +23,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         this.port = port;
         this.data = null;
 
-        this.data = port.get();
+        this.data = this._getData();
 
 
         this.portListenerId = this.port.on("change", this._updatePortValue.bind(this));
@@ -54,18 +55,22 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         this._eleInfo = ele.create("div");
         this._ele.appendChild(this._eleInfo);
 
-        this._eleIconMinus = ele.create("a");
-        this._eleIconMinus.innerHTML = "-";
-        this._eleIconMinus.classList.add("button");
-        this._eleIconMinus.addEventListener("click", () => { this._changeColumns(-1); });
-        this._eleIconbar.appendChild(this._eleIconMinus);
+
+        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        {
+            this._eleIconMinus = ele.create("a");
+            this._eleIconMinus.innerHTML = "-";
+            this._eleIconMinus.classList.add("button");
+            this._eleIconMinus.addEventListener("click", () => { this._changeColumns(-1); });
+            this._eleIconbar.appendChild(this._eleIconMinus);
 
 
-        this._eleIconPlus = ele.create("a");
-        this._eleIconPlus.innerHTML = "+";
-        this._eleIconPlus.classList.add("button");
-        this._eleIconPlus.addEventListener("click", () => { this._changeColumns(1); });
-        this._eleIconbar.appendChild(this._eleIconPlus);
+            this._eleIconPlus = ele.create("a");
+            this._eleIconPlus.innerHTML = "+";
+            this._eleIconPlus.classList.add("button");
+            this._eleIconPlus.addEventListener("click", () => { this._changeColumns(1); });
+            this._eleIconbar.appendChild(this._eleIconPlus);
+        }
 
 
         // this._eleIconbar.innerHTML='<a href="http://localhost:5711/op/Ops.Array.RandomNumbersArray3_v2" class="button ">+</a>';
@@ -100,7 +105,8 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         while (c >= 0)
         {
-            str = "abcdefghijklmnopqrstuvwxyz"[c % 26] + str;
+            if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE) str = "RGBAabcdefghijklmnopqrstuvwxyz"[c % 26] + str;
+            else str = "abcdefghijklmnopqrstuvwxyz"[c % 26] + str;
             c = Math.floor(c / 26) - 1;
         }
 
@@ -108,6 +114,78 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         this.colNames[_c] = str;
 
         return str;
+    }
+
+    _getData()
+    {
+        console.log("ye", this.port);
+
+        if (!this.port) return [];
+        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        {
+            console.log("port type", this.port.type);
+            return this.port.get();
+        }
+
+        if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
+        {
+            const realTexture = this.port.get(),
+                gl = this.port.parent.patch.cgl.gl;
+
+            console.log("ye", realTexture);
+
+            if (!realTexture) return [];
+            if (!this._fb) this._fb = gl.createFramebuffer();
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._fb);
+
+            let channels = gl.RGBA;
+            let numChannels = 4;
+
+            let texChanged = true;
+            let channelType = gl.UNSIGNED_BYTE;
+
+            if (texChanged)
+            {
+                gl.framebufferTexture2D(
+                    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+                    gl.TEXTURE_2D, realTexture.tex, 0
+                );
+
+                let isFloatingPoint = realTexture.textureType == CGL.Texture.TYPE_FLOAT;
+                if (isFloatingPoint) channelType = gl.FLOAT;
+
+                if (
+                    this._lastFloatingPoint != isFloatingPoint ||
+                    this._lastWidth != realTexture.width ||
+                    this._lastHeight != realTexture.height)
+                {
+                    const size = realTexture.width * realTexture.height * numChannels;
+                    if (isFloatingPoint) this._pixelData = new Float32Array(size);
+                    else this._pixelData = new Uint8Array(size);
+
+                    this._lastFloatingPoint = isFloatingPoint;
+                    this._lastWidth = realTexture.width;
+                    this._lastHeight = realTexture.height;
+                }
+
+                texChanged = false;
+            }
+
+            gl.bindFramebuffer(gl.FRAMEBUFFER, this._fb);
+
+            gl.readPixels(
+                0, 0,
+                Math.min(90, realTexture.width),
+                1,
+                channels,
+                channelType,
+                this._pixelData
+            );
+
+            // console.log(this._pixelData);
+            return this._pixelData;
+        }
     }
 
 
@@ -120,8 +198,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
     _updatePortValue()
     {
         if (!this.port || !this.port.get()) return;
-        this.data = this.port.get();
-
+        this.data = this._getData();
         this._eleTable.remove();
         this._eleTable = ele.create("table");
         this._ele.appendChild(this._eleTable);
@@ -182,7 +259,15 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
             }
         }
 
-        this._eleInfo.innerHTML = "showing " + this._rows * this._numCols + " / " + this.data.length + " values ";
+
+        if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
+        {
+            this._eleInfo.innerHTML = "showing " + this._rows * this._numCols + " / " + this.data.length + " values ";
+        }
+        if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
+        {
+            this._eleInfo.innerHTML = this.port.get().width + "x" + this.port.get().height + " - " + (this.port.get().height * this.port.get().width) + " Pixels";
+        }
     }
 
 

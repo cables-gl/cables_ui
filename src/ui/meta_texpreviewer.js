@@ -302,6 +302,8 @@ CABLES.UI.TexturePreviewer.prototype.setSize = function (size)
 
 CABLES.UI.TexturePreviewer.prototype._showInfoToolTip = function (e)
 {
+    if (!this._lastClicked || !this._lastClicked.port) return;
+
     const t = this._lastClicked.port.get();
     let txt = "original size: " + t.width + "x" + t.height;
     if (t.textureType === CGL.Texture.TYPE_FLOAT) txt += " HDR";
