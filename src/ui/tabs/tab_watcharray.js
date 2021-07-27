@@ -25,16 +25,9 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         this.data = this._getData();
 
-
         this.portListenerId = this.port.on("change", this._updatePortValue.bind(this));
 
-
-        // else
-        // {
-        //     for (let i = 0; i < this._numCols; i++) this.getColName(i);
-        // }
-
-        this._tab = new CABLES.UI.Tab(options.title || "watch " + port.name, { "icon": "spreadsheet", "infotext": "tab_spreadsheet", "padding": true, "singleton": "false", });
+        this._tab = new CABLES.UI.Tab(options.title || "watch " + port.name + port.id, { "icon": "spreadsheet", "infotext": "tab_spreadsheet", "padding": true, "singleton": "true", });
 
         this._tab.on("close", () =>
         {
@@ -46,7 +39,11 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
+
         this._ele = document.getElementById(this._id);
+
+        console.log(this._id, this._ele);
+
         this._ele.classList.add("editor_spreadsheet");
 
         this._eleIconbar = ele.create("div");
@@ -213,7 +210,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         this._inputs.length = 0;
         const table = this._eleTable;
 
-        const tr = ele.create("tr");
+        const tr1 = ele.create("tr");
         for (let x = -1; x < this._numCols; x++)
         {
             const tdr = ele.create("td");
@@ -222,9 +219,9 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
                 tdr.innerHTML = "&nbsp;" + this.getColName(x);
                 tdr.classList.add("colnum");
             }
-            tr.appendChild(tdr);
+            tr1.appendChild(tdr);
         }
-        table.appendChild(tr);
+        table.appendChild(tr1);
 
 
         for (let y = 0; y < this._rows; y++)
