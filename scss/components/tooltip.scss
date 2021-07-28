@@ -72,11 +72,17 @@
     position: absolute;
     pointer-events: none;
     z-index: $zindex_highest;
-    background-color: var(--color-01);
+    background-color: var(--color-03);
+    border-radius: 5px;;
+
     color: var(--color-13);
-    padding: 7px;
-    border-radius: 0px;
-    opacity: 0.96;
+    padding: 5px;
+    padding-bottom: 7px;
+    padding-left: 14px;
+    padding-right: 14px;
+    // border-radius: 0px;
+    // opacity: 0.96;
+    border-radius: $iconbar-borderradius;
     display: none;
 
     &:hover {
@@ -95,6 +101,7 @@
     .code {
         font-family: monospace;
         color: var(--color-13);
+        background-color: transparent;
     }
     .multiline-string-port {
         display: block;

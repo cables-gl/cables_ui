@@ -25,7 +25,7 @@ CABLES.UI.TexturePreviewer = function (tabs)
     this.setSize();
     this._ele.addEventListener("click", function ()
     {
-        if (window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
+        if (this._lastClicked && window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
     }.bind(this));
 
     CABLES.UI.userSettings.addEventListener("onChange", (key, v) =>
@@ -282,6 +282,33 @@ CABLES.UI.TexturePreviewer.prototype.setSize = function (size)
     this._ele.classList.add("bgpreviewScale" + size);
 
     CABLES.UI.userSettings.set("texpreviewSize", size);
+
+
+    document.getElementById("bgpreviewButtons").addEventListener("pointerenter", (e) =>
+    {
+        this._showInfoToolTip(e);
+    });
+
+    this._ele.addEventListener("pointerenter", (e) =>
+    {
+        this._showInfoToolTip(e);
+    });
+
+    this._ele.addEventListener("pointerleave", (e) =>
+    {
+        CABLES.UI.hideToolTip();
+    });
+};
+
+CABLES.UI.TexturePreviewer.prototype._showInfoToolTip = function (e)
+{
+    if (!this._lastClicked || !this._lastClicked.port) return;
+
+    const t = this._lastClicked.port.get();
+    let txt = "original size: " + t.width + "x" + t.height;
+    if (t.textureType === CGL.Texture.TYPE_FLOAT) txt += " HDR";
+
+    CABLES.UI.showToolTip(e, txt);
 };
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)

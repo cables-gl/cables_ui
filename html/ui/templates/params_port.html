@@ -51,11 +51,13 @@
         {{#if port.links}}
             {{#compare port.type '==' '2' }}
 
-                {{#if port.uiAttribs.preview}}
+                <!-- {{#if port.uiAttribs.preview}}
                     <div class="fright" >
                         <span class="button-small fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>
                     </div>
-                {{/if}}
+                    {{else}}
+                    no preview?!
+                {{/if}} -->
             {{/compare}}
         {{/if}}
     </td>
@@ -280,10 +282,15 @@
                 {{/if}}
 
 
+
                     {{#if port.uiAttribs.objType}}
-                    <span class="fleft" >
-                        [<i>{{port.uiAttribs.objType}}</i>]
-                    </span>
+                        <span class="fleft" >
+                            [<i>{{port.uiAttribs.objType}}</i>]
+                        </span>
+
+                        {{#compare port.uiAttribs.objType '==' 'texture' }}
+                            &nbsp;<span class="button-small fa fa-align-justify info" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"></span>
+                        {{/compare}}
                     {{/if}}
 
 

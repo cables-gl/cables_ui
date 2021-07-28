@@ -235,6 +235,9 @@ CABLES.UI.GUI = function (cfg)
             console.log("port not found:", which);
         }
 
+        // if (port.type == 2)
+        // new CABLES.UI.WatchTextureSpreadsheetTab(gui.mainTabs, op, port, {});
+        // else
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
     };
 
