@@ -95,7 +95,6 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         let str = "";
 
-
         let c = parseFloat(_c);
 
         if (c < 0) throw new Error("col invalid");
