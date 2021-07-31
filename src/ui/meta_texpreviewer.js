@@ -389,6 +389,7 @@ CABLES.UI.TexturePreviewer.prototype.hide = function ()
 {
     ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
     this._paused = true;
+    CABLES.UI.hideToolTip();
 };
 
 CABLES.UI.TexturePreviewer.prototype.showActivity = function ()
@@ -518,6 +519,7 @@ CABLES.UI.TexturePreviewer.prototype.hoverEnd = function ()
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 {
     ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+    CABLES.UI.hideToolTip();
 
     if (!this._listeningFrame && p)
     {
