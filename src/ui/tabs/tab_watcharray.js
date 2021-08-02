@@ -31,7 +31,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         this._tab.on("close", () =>
         {
-            console.log("tab close");
+            // console.log("tab close");
             this.port.off(this.portListenerId);
         });
 
@@ -42,7 +42,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         this._ele = document.getElementById(this._id);
 
-        console.log(this._id, this._ele);
+        // console.log(this._id, this._ele);
 
         this._ele.classList.add("editor_spreadsheet");
 
@@ -106,7 +106,7 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
             c = Math.floor(c / 26) - 1;
         }
 
-        console.log("colname", c, str);
+        // console.log("colname", c, str);
         this.colNames[_c] = str;
 
         return str;
@@ -114,12 +114,10 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
     _getData()
     {
-        console.log("ye", this.port);
-
         if (!this.port) return [];
         if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
-            console.log("port type", this.port.type);
+            // console.log("port type", this.port.type);
             return this.port.get();
         }
 
@@ -127,8 +125,6 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
         {
             const realTexture = this.port.get(),
                 gl = this.port.parent.patch.cgl.gl;
-
-            console.log("ye", realTexture);
 
             if (!realTexture) return [];
             if (!this._fb) this._fb = gl.createFramebuffer();
