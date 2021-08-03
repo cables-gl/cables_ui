@@ -958,10 +958,12 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
-        document.getElementById("patchname").innerHTML = name;
-        document.getElementById("patchname").dataset.patchname = name;
-
-        gui.corePatch().name = name;
+        if (name && name !== "undefined")
+        {
+            document.getElementById("patchname").innerHTML = name;
+            document.getElementById("patchname").dataset.patchname = name;
+            gui.corePatch().name = name;
+        }
     };
 
     this.createProject = function ()

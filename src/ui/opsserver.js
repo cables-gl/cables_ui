@@ -135,6 +135,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                     "name": op.portsIn[i].name
                 };
 
+            if (op.portsIn[i].uiAttribs.hidePort) continue;
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
@@ -158,6 +159,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 "name": op.portsOut[i].name,
             };
 
+            if (op.portsIn[i].uiAttribs.hidePort) continue;
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if (op.portsOut[i].uiAttribs.display == "bool") l.subType = "boolean";
@@ -166,8 +168,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 else if (op.portsOut[i].uiAttribs.display == "file") l.subType = "url";
                 else l.subType = "number";
             }
-            if (op.portsOut[i].uiAttribs.objType) l.objType = op.portsOut[i].uiAttribs.objType;
 
+            if (op.portsOut[i].uiAttribs.objType) l.objType = op.portsOut[i].uiAttribs.objType;
             opObj.portsOut.push(l);
         }
 
