@@ -205,7 +205,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         CABLES.UI.userSettings.on("onChange", (key, value) =>
         {
-            console.log("linetype changed!", value);
+            // console.log("linetype changed!", value);
             for (let i in this.links)
             {
                 this.links[i].updateLineStyle();

@@ -10,6 +10,7 @@ CABLES.GLGUI.GlCable = class
         this.LINETYPE_SIMPLE = 2;
 
         this._buttonSize = 12;
+        this._linetype = this.LINETYPE_CURVED;
 
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
@@ -50,9 +51,11 @@ CABLES.GLGUI.GlCable = class
 
         // this.visible = false;
 
-        this._linetype = this.LINETYPE_SIMPLE;
+
+        this._linetype = this.LINETYPE_CURVED;
+
+        if (CABLES.UI.userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
         if (CABLES.UI.userSettings.get("linetype") == "straight") this._linetype = this.LINETYPE_STRAIGHT;
-        if (CABLES.UI.userSettings.get("linetype") == "curved") this._linetype = this.LINETYPE_CURVED;
 
         // this.visible = true;
 
