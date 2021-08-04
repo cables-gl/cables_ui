@@ -40,9 +40,7 @@ CABLES.IconBar = class
             CABLES.UI.userSettings.set(this._id, itemObj);
 
             for (const i in itemObj)
-            {
                 if (itemObj[i]) items.push(i);
-            }
         }
 
 

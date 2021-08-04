@@ -627,6 +627,23 @@ CABLES.UI.OpSelect = class
             break;
 
         case 13:
+
+            if (e.shiftKey)
+            {
+                this.addSelectedOp();
+
+                setTimeout(() =>
+                {
+                    gui.opSelect().show({
+                        "subPatch": gui.patchView.getCurrentSubPatch(),
+                        "x": 0,
+                        "y": 0
+                    });
+                }, 50);
+
+                return;
+            }
+
             if (this._searching)
             {
                 this._enterPressedEarly = true;

@@ -148,7 +148,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
             if (op.portsIn[i].uiAttribs.objType) l.objType = op.portsIn[i].uiAttribs.objType;
 
-
             opObj.portsIn.push(l);
         }
 

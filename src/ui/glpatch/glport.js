@@ -11,7 +11,6 @@ CABLES.GLGUI.GlPort = class
 
         this._direction = p.direction;
 
-
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
@@ -22,7 +21,6 @@ CABLES.GLGUI.GlPort = class
         oprect.addChild(this._rect);
 
         this._updateColor(p.uiAttribs);
-
 
         this._mouseEvents = [];
 

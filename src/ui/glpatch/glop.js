@@ -382,6 +382,9 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glComment) this._glComment.dispose();
         if (this._glTitleExt) this._glTitleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
+        if (this._glDotError) this._glDotError.dispose();
+        if (this._glDotWarning) this._glDotWarning.dispose();
+        if (this._glDotHint) this._glDotHint.dispose();
 
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 
@@ -790,8 +793,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         {
             x = this._glPatch.snapLines.snapX(x);
             y = this._glPatch.snapLines.snapY(y);
-            // x = gui.patchView.snapOpPosX(x);
-            // y = gui.patchView.snapOpPosY(y);
         }
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
