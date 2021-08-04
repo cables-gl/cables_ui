@@ -201,6 +201,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         });
 
         this.previewLayer = new CABLES.GLGUI.GlPreviewLayer(this);
+
+
+        CABLES.UI.userSettings.on("onChange", (key, value) =>
+        {
+            console.log("linetype changed!", value);
+            for (let i in this.links)
+            {
+                this.links[i].updateLineStyle();
+            }
+        });
     }
 
     zIndex()

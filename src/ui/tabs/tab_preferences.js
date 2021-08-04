@@ -57,7 +57,7 @@ CABLES.UI.Preferences.prototype.updateValues = function ()
     this.setSwitchValue("theme-bright", CABLES.UI.userSettings.get("theme-bright"));
     this.setSwitchValue("bgpreview", CABLES.UI.userSettings.get("bgpreview"));
     this.setSwitchValue("texpreviewSize", CABLES.UI.userSettings.get("texpreviewSize"));
-    this.setSwitchValue("straightLines", CABLES.UI.userSettings.get("straightLines"));
+    this.setSwitchValue("linetype", CABLES.UI.userSettings.get("linetype") || "curved");
     this.setSwitchValue("touchpadmode", CABLES.UI.userSettings.get("touchpadmode"));
     this.setSwitchValue("presentationmode", CABLES.UI.userSettings.get("presentationmode"));
     this.setSwitchValue("nobrowserWarning", CABLES.UI.userSettings.get("nobrowserWarning"));
