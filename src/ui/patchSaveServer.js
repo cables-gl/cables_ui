@@ -209,7 +209,9 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
     finishAnimations()
     {
         document.getElementById("patchname").classList.remove("blinking");
-        document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
+
+        if (document.getElementById("patchname").dataset.patchname != "undefined")
+            document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
 
 
         setTimeout(() =>

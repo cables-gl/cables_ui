@@ -26,19 +26,24 @@ CABLES.EventTarget = function ()
 
     this.hasEventListener = function (which, cb)
     {
-        console.warn("old eventtarget function haseventlistener!");
-        if (which && cb)
+        if (which && !cb)
         {
-            if (this._eventCallbacks[which])
-            {
-                const idx = this._eventCallbacks[which].indexOf(cb);
-                if (idx == -1) return false;
-                return true;
-            }
+            // check by id
+            if (this._listeners[which]) return true;
+            else return false;
         }
         else
         {
-            console.log.warn("hasListener: missing parameters");
+            console.warn("old eventtarget function haseventlistener!");
+            if (which && cb)
+            {
+                if (this._eventCallbacks[which])
+                {
+                    const idx = this._eventCallbacks[which].indexOf(cb);
+                    if (idx == -1) return false;
+                    return true;
+                }
+            }
         }
     };
 

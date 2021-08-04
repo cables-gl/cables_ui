@@ -293,7 +293,6 @@ CABLES.UI.TexturePreviewer.prototype.setSize = function (size)
     {
         this._showInfoToolTip(e);
     });
-
     this._ele.addEventListener("pointerleave", (e) =>
     {
         CABLES.UI.hideToolTip();
@@ -305,10 +304,7 @@ CABLES.UI.TexturePreviewer.prototype._showInfoToolTip = function (e)
     if (!this._lastClicked || !this._lastClicked.port) return;
 
     const t = this._lastClicked.port.get();
-    let txt = "original size: " + t.width + "x" + t.height;
-    if (t.textureType === CGL.Texture.TYPE_FLOAT) txt += " HDR";
-
-    CABLES.UI.showToolTip(e, txt);
+    CABLES.UI.showToolTip(e, t.getInfoOneLine());
 };
 
 CABLES.UI.TexturePreviewer.prototype._getCanvasSize = function (port, tex, meta)
