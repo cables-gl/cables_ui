@@ -15,7 +15,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._showingNavHelperEmpty = false;
         this._lastTempOP = null;
 
-
         this.boundingRect = null;
         this.store = new CABLES.UI.PatchServer();
         this._initListeners();
@@ -127,7 +126,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         });
     }
 
-
     _initListeners()
     {
         document.addEventListener("copy", (e) =>
@@ -167,7 +165,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         gui.setLayout();
     }
 
-
     updateBoundingRect()
     {
         this.boundingRect = CABLES.UI.PatchView.getElement().getBoundingClientRect();
@@ -186,7 +183,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (b.deleted || b == op) continue;
 
             if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
-                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + 40 } });
+                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLGUI.VISUALCONFIG.newOpDistanceY } });
         }
     }
 

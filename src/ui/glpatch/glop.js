@@ -790,8 +790,6 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         {
             x = this._glPatch.snapLines.snapX(x);
             y = this._glPatch.snapLines.snapY(y);
-            // x = gui.patchView.snapOpPosX(x);
-            // y = gui.patchView.snapOpPosY(y);
         }
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });

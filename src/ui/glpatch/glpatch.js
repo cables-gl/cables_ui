@@ -465,6 +465,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
 
+
     addOp(op, fromDeserialize)
     {
         if (!op) console.error("no op at addop", op);
@@ -510,7 +511,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 }
             });
 
-
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
         {
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
@@ -518,6 +518,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             else
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
         }
+
 
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
 
