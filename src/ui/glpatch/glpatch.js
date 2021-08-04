@@ -48,7 +48,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
-        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
+        this._portDragLine = new CABLES.GLGUI.GlDragLine(this._overlaySplines, this);
 
         this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
