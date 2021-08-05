@@ -5,6 +5,20 @@ CABLES.GLGUI.MSDF_FONT_WORKSANS =
     ],
     "chars": [
         {
+            "id": 32,
+            "index": 1,
+            "char": " ",
+            "width": 0,
+            "height": 0,
+            "xoffset": -2,
+            "yoffset": 123,
+            "xadvance": 44,
+            "chnl": 15,
+            "x": 39,
+            "y": 498,
+            "page": 0
+        },
+        {
             "id": 253,
             "index": 276,
             "char": "ý",
