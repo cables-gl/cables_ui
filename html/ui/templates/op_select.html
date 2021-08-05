@@ -44,6 +44,7 @@
 
                 {{oldState}}
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
+                {{#if devOp }}<i class="fa fa-wrench" style="color:white;"></i>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                 - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
                 </span>{{isFunction}}

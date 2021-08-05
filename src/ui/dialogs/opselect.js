@@ -736,6 +736,7 @@ CABLES.UI.OpSelect = class
                             "isOp": isOp,
                             "name": opname,
                             "userOp": opname.startsWith("Ops.User"),
+                            "devOp": opname.startsWith("Ops.Dev"),
                             "shortName": shortName,
                             "nameSpace": nameSpace,
                             "oldState": oldState,
