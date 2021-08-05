@@ -5,7 +5,12 @@ CABLES.GLGUI.GlCable = class
 {
     constructor(glPatch, splineDrawer, buttonRect, type, link)
     {
+        this.LINETYPE_CURVED = 0;
+        this.LINETYPE_STRAIGHT = 1;
+        this.LINETYPE_SIMPLE = 2;
+
         this._buttonSize = 12;
+        this._linetype = this.LINETYPE_CURVED;
 
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
@@ -27,15 +32,35 @@ CABLES.GLGUI.GlCable = class
         this._x2 = 0;
         this._y2 = 0;
 
+        this._distFromPort = 0;
+        this._updateDistFromPort();
+
+        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+
+        this.updateLineStyle();
+    }
+
+    updateLineStyle()
+    {
         this._oldx = 0;
         this._oldy = 0;
         this._oldx2 = 0;
         this._oldy2 = 0;
 
-        this._distFromPort = 0;
-        this._updateDistFromPort();
+        this._curvedSimple = false;
 
-        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        // this.visible = false;
+
+
+        this._linetype = this.LINETYPE_CURVED;
+
+        if (CABLES.UI.userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
+        if (CABLES.UI.userSettings.get("linetype") == "straight") this._linetype = this.LINETYPE_STRAIGHT;
+
+        // this.visible = true;
+
+        this._updateDistFromPort();
+        this._updateLinePos();
     }
 
     set visible(v)
@@ -44,6 +69,7 @@ CABLES.GLGUI.GlCable = class
         this._visible = v;
         this._updateLinePos();
     }
+
 
     _checkCollide(e)
     {
@@ -80,11 +106,15 @@ CABLES.GLGUI.GlCable = class
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
         this._glPatch.removeEventListener(this._listenerMousemove);
-        // this._glPatch._hoverCable.visible = false;
     }
 
     _updateDistFromPort()
     {
+        if (this._linetype == this.LINETYPE_SIMPLE || this._curvedSimple)
+        {
+            this._distFromPort = 0;
+            return;
+        }
         if (Math.abs(this._y - this._y2) < CABLES.GLGUI.VISUALCONFIG.portHeight * 2) this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 0.5;
         else this._distFromPort = CABLES.GLGUI.VISUALCONFIG.portHeight * 2.9; // magic number...?!
     }
@@ -150,26 +180,20 @@ CABLES.GLGUI.GlCable = class
             this._oldx2 = this._x2;
             this._oldy2 = this._y2;
 
-            if (!CABLES.UI.userSettings.get("straightLines"))
+
+            // console.log(this._linetype);
+            if (this._linetype == this.LINETYPE_CURVED)
             {
                 if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
                 {
-                    // this._splineDrawer.setSpline(this._splineIdx,
-                    //     [
-                    //         this._x, this._y, 0,
-                    //         this._x, this._y, 0,
-                    //         this._x2, this._y2, 0,
-                    //         this._x2, this._y2, 0
-                    //     ]);
-
+                    this._curvedSimple = true;
+                    this._updateDistFromPort();
                     this._splineDrawer.setSpline(this._splineIdx,
                         this._subdivivde(
                             [
                                 this._x, this._y, 0,
                                 this._x, this._y, 0,
                                 this._x, this._y, 0,
-
-                                this._x2, this._y2, 0,
                                 this._x2, this._y2, 0,
                                 this._x2, this._y2, 0,
                                 this._x2, this._y2, 0
@@ -177,6 +201,12 @@ CABLES.GLGUI.GlCable = class
                 }
                 else
                 {
+                    if (this._curvedSimple)
+                    {
+                        this._curvedSimple = false;
+                        this._updateDistFromPort();
+                    }
+
                     const distY = Math.abs(this._y - this._y2);
                     this._splineDrawer.setSpline(
                         this._splineIdx,
@@ -184,17 +214,17 @@ CABLES.GLGUI.GlCable = class
                             [
                                 this._x, this._y, 0,
                                 this._x, this._y, 0,
-                                this._x, this._y - (distY * 0.002) - 17, 0,
+                                this._x, this._y - (distY * 0.002) - this._distFromPort, 0,
 
                                 (this._x + this._x2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
 
-                                this._x2, this._y2 + (distY * 0.002) + 17, 0,
+                                this._x2, this._y2 + (distY * 0.002) + this._distFromPort, 0,
                                 this._x2, this._y2, 0,
                                 this._x2, this._y2, 0,
                             ]));
                 }
             }
-            else
+            if (this._linetype == this.LINETYPE_STRAIGHT)
             {
                 // straight lines...
                 this._splineDrawer.setSpline(this._splineIdx,
@@ -202,6 +232,16 @@ CABLES.GLGUI.GlCable = class
                         this._x, this._y, 0,
                         this._x, this._y - this._distFromPort, 0,
                         this._x2, this._y2 + this._distFromPort, 0,
+                        this._x2, this._y2, 0
+                    ]);
+            }
+            if (this._linetype == this.LINETYPE_SIMPLE)
+            {
+                this._splineDrawer.setSpline(this._splineIdx,
+                    [
+                        this._x, this._y, 0,
+                        this._x, this._y, 0,
+                        this._x2, this._y2, 0,
                         this._x2, this._y2, 0
                     ]);
             }

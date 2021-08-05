@@ -162,7 +162,8 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    if(fspeed==1.0)darken=1.0;"
             .endl() + "    if(fspeed>=2.0)"
             .endl() + "    {"
-            .endl() + "        darken=step(0.7,mod((time*fspeed/2.0)+fProgress*0.2*(fspeed*0.1),1.0))+minOpacity; "
+            .endl() + "        float ffspeed=clamp(fspeed,0.,25.0);"
+            .endl() + "        darken=step(0.7,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0))+minOpacity; "
             // .endl() + "        darken=step(0.7,mod((-time*fspeed)+texCoord.x*(fspeed*22.1),1.0))+minOpacity; "
             .endl() + "        darken=clamp(darken,0.3,1.0);"
 

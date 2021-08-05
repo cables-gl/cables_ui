@@ -48,7 +48,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._currentSubpatch = 0;
         this._selectionArea = new CABLES.GLGUI.GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
-        this._portDragLine = new CABLES.GLGUI.GlRectDragLine(this._overlaySplines, this);
+        this._portDragLine = new CABLES.GLGUI.GlDragLine(this._overlaySplines, this);
 
         this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -201,6 +201,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         });
 
         this.previewLayer = new CABLES.GLGUI.GlPreviewLayer(this);
+
+
+        CABLES.UI.userSettings.on("onChange", (key, value) =>
+        {
+            // console.log("linetype changed!", value);
+            for (let i in this.links)
+            {
+                this.links[i].updateLineStyle();
+            }
+        });
     }
 
     zIndex()
@@ -465,6 +475,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._focusRectAnim.setValue(this._time + 0.5, 1);
     }
 
+
     addOp(op, fromDeserialize)
     {
         if (!op) console.error("no op at addop", op);
@@ -510,7 +521,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
                 }
             });
 
-
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
         {
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
@@ -518,6 +528,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             else
                 op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
         }
+
 
         glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
 

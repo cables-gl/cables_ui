@@ -130,6 +130,11 @@ CABLES.GLGUI.GlLink = class
 
     get portIdOut() { return this._portIdOutput; }
 
+    updateLineStyle()
+    {
+        this._cable.updateLineStyle();
+    }
+
     updateVisible()
     {
     }

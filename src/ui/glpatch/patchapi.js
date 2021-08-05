@@ -203,12 +203,9 @@ CABLES.GLGUI.GlPatchAPI = class
 
     _onAddOp(op, fromDeserialize)
     {
-        if (!fromDeserialize) gui.patchView.testCollision(op);
-
         this._glPatch.addOp(op, fromDeserialize);
-
-
-        // this.fireEvent("onPortAdd", p);
+        // console.log(fromDeserialize, op.uiAttribs);
+        if (!fromDeserialize) gui.patchView.testCollision(op);
     }
 
     _onDeleteOp(op)

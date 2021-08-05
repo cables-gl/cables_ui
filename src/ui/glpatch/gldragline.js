@@ -1,7 +1,7 @@
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
-CABLES.GLGUI.GlRectDragLine = class
+CABLES.GLGUI.GlDragLine = class
 {
     constructor(splineDrawer, glpatch)
     {

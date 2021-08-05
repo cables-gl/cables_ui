@@ -18,27 +18,29 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
             this._connection.sendUi("netClientRemoved", msg, true);
         });
 
-
-        gui.on("netOpPos", (payload) => { this._connection.sendUi("netOpPos", payload); });
-
-
-        this._connection.on("netOpPos", (msg) =>
+        if (CABLES.sandbox.isDevEnv())
         {
-            const op = gui.corePatch().getOpById(msg.opId);
-            if (op)
+            gui.on("netOpPos", (payload) => { this._connection.sendUi("netOpPos", payload); });
+
+
+            this._connection.on("netOpPos", (msg) =>
             {
-                // console.log(msg);
-                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
-            }
-            else
-            {
-                setTimeout(
-                    () =>
-                    {
-                        this._connection.emitEvent("netOpPos", msg);
-                    }, 100);
-            }
-        });
+                const op = gui.corePatch().getOpById(msg.opId);
+                if (op)
+                {
+                    // console.log(msg);
+                    op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+                }
+                else
+                {
+                    setTimeout(
+                        () =>
+                        {
+                            this._connection.emitEvent("netOpPos", msg);
+                        }, 100);
+                }
+            });
+        }
     }
 
     get netMouseCursorDelay()
