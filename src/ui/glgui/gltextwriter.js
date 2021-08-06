@@ -22,7 +22,7 @@ CABLES.GLGUI.TextWriter = class
     {
         if (!this._fontTex)
         {
-            this._fontTex = CGL.Texture.load(this._cgl, "/ui/img/WorkSans-Regular.ttf.png", // sdf_font_arial.png
+            this._fontTex = CGL.Texture.load(this._cgl, "/ui/img/worksans-regular_int.png", // sdf_font_arial.png
                 () =>
                 {
                     // console.log(this._fontTex);

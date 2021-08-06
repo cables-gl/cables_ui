@@ -365,7 +365,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             }
 
 
-            document.getElementById("portTitle_in_" + i).addEventListener("pointerdown", (e) =>
+            const f = (e) =>
             {
                 if (gui.patchView._patchRenderer.getOp)
                 {
@@ -374,7 +374,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                     gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsIn[i].name, e);
                 }
-            });
+            };
+
+            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", f);
         }
 
         for (const ipo in op.portsOut)
@@ -399,7 +401,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 });
             }(ipo));
 
-            document.getElementById("portTitle_out_" + ipo).addEventListener("pointerdown", (e) =>
+            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", (e) =>
             {
                 if (gui.patchView._patchRenderer.getOp)
                 {

@@ -18,7 +18,7 @@ CABLES.GLGUI.Text = class
         this._height = 0;
         this._color = [1, 1, 1, 1];
         this._align = 0;
-        this._scale = 0.9;
+        this._scale = 1.2;
         this._parentRect = null;
 
 
