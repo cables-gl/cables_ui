@@ -177,6 +177,55 @@ CABLES.CMD.UI.showChangelog = function (since)
     CABLES.CHANGELOG.show(since);
 };
 
+
+CABLES.CMD.UI.showBuildInfo = function ()
+{
+    let infoHtml = "no info available";
+    if (CABLESUILOADER.buildInfo)
+    {
+        infoHtml = "";
+        const uiBuild = CABLESUILOADER.buildInfo.ui;
+        const coreBuild = CABLESUILOADER.buildInfo.core;
+        const apiBuild = CABLESUILOADER.buildInfo.api;
+
+        if (coreBuild)
+        {
+            infoHtml += "<h3>Core</h3>";
+            infoHtml += "created: " + coreBuild.relative + " (" + coreBuild.created + ")<br/>";
+            if (coreBuild.git)
+            {
+                infoHtml += "branch: " + coreBuild.git.branch + "<br/>";
+                infoHtml += "message: " + coreBuild.git.message + "<br/>";
+            }
+        }
+
+        if (uiBuild)
+        {
+            infoHtml += "<h3>UI</h3>";
+            infoHtml += "created: " + uiBuild.relative + " (" + uiBuild.created + ")<br/>";
+            if (uiBuild.git)
+            {
+                infoHtml += "branch: " + uiBuild.git.branch + "<br/>";
+                infoHtml += "message: " + uiBuild.git.message + "<br/>";
+            }
+        }
+
+        if (apiBuild)
+        {
+            infoHtml += "<h3>API</h3>";
+            infoHtml += "created: " + apiBuild.relative + " (" + apiBuild.created + ")<br/>";
+            if (apiBuild.git)
+            {
+                infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
+                infoHtml += "message: " + apiBuild.git.message + "<br/>";
+            }
+        }
+    }
+
+    CABLES.UI.MODAL.show(infoHtml, { "title": "build info" });
+};
+
+
 // CABLES.CMD.UI.updateCanvasIcons=function()
 // {
 //     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
@@ -412,6 +461,12 @@ CABLES.CMD.commands.push(
         "cmd": "show changelog",
         "category": "cables",
         "func": CABLES.CMD.UI.showChangelog,
+        "icon": "info",
+    },
+    {
+        "cmd": "show buildinfo",
+        "category": "cables",
+        "func": CABLES.CMD.UI.showBuildInfo,
         "icon": "info",
     },
     {
