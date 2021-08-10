@@ -381,7 +381,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
-            document.getElementById("glpatch2").addEventListener("pointerenter", f);
+            if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
 
         for (const ipo in op.portsOut)
@@ -408,7 +408,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
             document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
-            document.getElementById("glpatch2").addEventListener("pointerenter", (e) =>
+            if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", (e) =>
             {
                 if (!this._isPortLineDragDown) return;
                 if (gui.patchView._patchRenderer.getOp)
