@@ -370,8 +370,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             {
                 if (!this._isPortLineDragDown) return;
 
-
-                console.log(e.target);
                 if (gui.patchView._patchRenderer.getOp)
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
