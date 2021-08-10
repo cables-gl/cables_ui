@@ -37,15 +37,6 @@ CABLES.CMD.DEBUG.debugGlUi = function ()
     gui.maintabPanel.show();
 };
 
-CABLES.CMD.DEBUG.buildInfo = function ()
-{
-    // const uiBuild = CABLESUILOADER.buildInfo.ui;
-    // const coreBuild = CABLESUILOADER.buildInfo.core;
-    // const apiBuild = CABLESUILOADER.buildInfo.api;
-
-    CABLES.UI.MODAL.show("<pre><code>" + JSON.stringify(CABLESUILOADER.buildInfo, false, 4) + "</code></pre>");
-};
-
 
 CABLES.CMD.commands.push(
     {
@@ -76,12 +67,6 @@ CABLES.CMD.commands.push(
         "cmd": "glgui tab",
         "category": "debug",
         "func": CABLES.CMD.DEBUG.glguiTab,
-        "icon": "command"
-    },
-    {
-        "cmd": "build info",
-        "category": "debug",
-        "func": CABLES.CMD.DEBUG.buildInfo,
         "icon": "command"
     }
 
