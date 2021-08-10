@@ -158,7 +158,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 "name": op.portsOut[i].name,
             };
 
-            if (op.portsIn[i].uiAttribs.hidePort) continue;
+            if (op.portsOut[i].uiAttribs.hidePort) continue;
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if (op.portsOut[i].uiAttribs.display == "bool") l.subType = "boolean";
