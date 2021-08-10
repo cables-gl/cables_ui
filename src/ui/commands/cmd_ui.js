@@ -155,12 +155,12 @@ CABLES.CMD.UI.showCommandPallet = function ()
 CABLES.CMD.UI.centerPatchOps = function ()
 {
     gui.patchView.centerView();
-    // gui.patch().centerViewBoxOps();
 };
 
 CABLES.CMD.UI.flowVis = function ()
 {
-    gui.patch().toggleFlowVis();
+    if (CABLES.UI.userSettings.get("svgpatchview")) gui.patch().toggleFlowVis();
+    else CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 };
 
 CABLES.CMD.UI.startPresentationMode = function ()
