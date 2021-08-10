@@ -384,7 +384,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
         if (this._glDotError) this._glDotError.dispose();
         if (this._glDotWarning) this._glDotWarning.dispose();
-        if (this._glDotHint) this._glDotHint.dispose();
+        if (this._glDotError) this._glDotError.dispose();
 
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 

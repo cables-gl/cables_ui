@@ -18,6 +18,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
+        this._isPortLineDragDown = false;
 
         this._updateWatchPorts();
     }
@@ -367,6 +368,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
             const f = (e) =>
             {
+                if (!this._isPortLineDragDown) return;
+
+
+                console.log(e.target);
                 if (gui.patchView._patchRenderer.getOp)
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
@@ -376,7 +381,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
             };
 
-            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", f);
+            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
+            document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
+            document.getElementById("glpatch2").addEventListener("pointerenter", f);
         }
 
         for (const ipo in op.portsOut)
@@ -401,8 +408,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 });
             }(ipo));
 
-            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", (e) =>
+            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
+            document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
+            document.getElementById("glpatch2").addEventListener("pointerenter", (e) =>
             {
+                if (!this._isPortLineDragDown) return;
                 if (gui.patchView._patchRenderer.getOp)
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
