@@ -43,7 +43,7 @@ CABLES.CMD.DEBUG.buildInfo = function ()
     // const coreBuild = CABLESUILOADER.buildInfo.core;
     // const apiBuild = CABLESUILOADER.buildInfo.api;
 
-    CABLES.UI.MODAL.show("<code>" + JSON.stringify(CABLESUILOADER.buildInfo, false, 4) + "</code>");
+    CABLES.UI.MODAL.show("<pre><code>" + JSON.stringify(CABLESUILOADER.buildInfo, false, 4) + "</code></pre>");
 };
 
 
