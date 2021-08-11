@@ -60,7 +60,7 @@ CABLES.CMD.RENDERER.aspect = function (a)
             gui.corePatch().cgl.canvasScale,
             function (r)
             {
-                if (r.indexOf(":"))
+                if (r.indexOf(":") >= 0)
                 {
                     const parts = r.split(":");
                     const s = parseInt(parts[0]) / parseInt(parts[1]);
@@ -69,6 +69,7 @@ CABLES.CMD.RENDERER.aspect = function (a)
                 else
                 {
                     const s = parseFloat(r);
+                    console.log("set to", r);
                     CABLES.CMD.RENDERER.aspect(s);
                 }
             });

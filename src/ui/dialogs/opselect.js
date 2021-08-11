@@ -718,7 +718,7 @@ CABLES.UI.OpSelect = class
                         if (opname.indexOf("Ops.Admin") == 0 && !gui.user.isAdmin) hidden = true;
                     }
 
-                    if (opname.indexOf("Ops.Dev") == 0 && !CABLES.sandbox.isDevEnv()) hidden = true;
+                    if (opname.indexOf("Ops.Dev.") == 0 && !CABLES.sandbox.isDevEnv()) hidden = true;
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
@@ -736,7 +736,7 @@ CABLES.UI.OpSelect = class
                             "isOp": isOp,
                             "name": opname,
                             "userOp": opname.startsWith("Ops.User"),
-                            "devOp": opname.startsWith("Ops.Dev"),
+                            "devOp": opname.startsWith("Ops.Dev."),
                             "shortName": shortName,
                             "nameSpace": nameSpace,
                             "oldState": oldState,
