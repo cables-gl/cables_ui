@@ -876,6 +876,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
     }
 
+    isDraggingOps()
+    {
+        if (this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.isDragging;
+        else return false;
+    }
+
     selectOpId(id)
     {
         if (this._glOpz[id] && !this._selectedGlOps[id])
