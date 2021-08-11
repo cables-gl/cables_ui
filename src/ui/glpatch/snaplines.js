@@ -11,32 +11,32 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
         this._xCoords = [];
         this._instancer = instancer;
 
-        this._rects = [];
-        this._root = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-        this._root.setSize(1, 1);
+        // this._rects = [];
+        // this._root = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
+        // this._root.setSize(1, 1);
 
 
-        const size = 100000;
-        const hsize = size / 2;
+        // const size = 100000;
+        // const hsize = size / 2;
 
-        const drawRaster = false;
-        if (drawRaster)
-        {
-            for (let i = -300; i < 300; i++)
-            {
-                const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-                r.setSize(1, size);
-                r.setPosition(i * CABLES.UI.uiConfig.snapX, -hsize, 0.19);
-                r.setColor(0, 0, 0, 0.06);
-            }
-            for (let i = -300; i < 300; i++)
-            {
-                const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-                r.setSize(size, 1);
-                r.setPosition(-hsize, i * CABLES.UI.uiConfig.snapY, 0.19);
-                r.setColor(0, 0, 0, 0.06);
-            }
-        }
+        // const drawRaster = true;
+        // if (drawRaster)
+        // {
+        //     for (let i = -300; i < 300; i++)
+        //     {
+        //         const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
+        //         r.setSize(1, size);
+        //         r.setPosition(i * CABLES.UI.uiConfig.snapX, -hsize, 0.19);
+        //         r.setColor(0, 0, 0, 0.06);
+        //     }
+        //     for (let i = -300; i < 300; i++)
+        //     {
+        //         const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
+        //         r.setSize(size, 1);
+        //         r.setPosition(-hsize, i * CABLES.UI.uiConfig.snapY, 0.19);
+        //         r.setColor(0, 0, 0, 0.06);
+        //     }
+        // }
     }
 
     update()
@@ -81,14 +81,14 @@ CABLES.GLGUI.SnapLines = class extends CABLES.EventTarget
     snapX(_x)
     {
         const x = gui.patchView.snapOpPosX(_x);
-        let found = -1;
+        // let found = -1;
 
-        for (let i = 0; i < this._rects.length; i++)
-        {
-            if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3) found = i;
-        }
+        // for (let i = 0; i < this._rects.length; i++)
+        // {
+        //     if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3) found = i;
+        // }
 
-        if (found > -1) this._rects[found].setSize(1, 600000);
+        // if (found > -1) this._rects[found].setSize(1, 600000);
         return x;
     }
 

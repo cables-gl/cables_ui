@@ -68,7 +68,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this.updateVisible();
     }
 
-    get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; }
+    get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; else return false; }
 
     _onBgRectDrag(rect)
     {
