@@ -534,7 +534,9 @@ CABLES.GLGUI.ViewBox = class
 
     zoomStep(s)
     {
-        const z = this._zoom + 200 * s;
+        let z = this._zoom + 200 * s;
+        z = Math.max(50, z);
+        console.log("z", z);
         this.animateZoom(z);
     }
 };
