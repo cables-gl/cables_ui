@@ -191,7 +191,7 @@ CABLES.CMD.UI.showBuildInfo = function ()
         if (coreBuild)
         {
             infoHtml += "<h3>Core</h3>";
-            infoHtml += "created: " + coreBuild.relative + " (" + coreBuild.created + ")<br/>";
+            infoHtml += "created: " + moment(coreBuild.created).fromNow() + " (" + coreBuild.created + ")<br/>";
             if (coreBuild.git)
             {
                 infoHtml += "branch: " + coreBuild.git.branch + "<br/>";
@@ -202,7 +202,7 @@ CABLES.CMD.UI.showBuildInfo = function ()
         if (uiBuild)
         {
             infoHtml += "<h3>UI</h3>";
-            infoHtml += "created: " + uiBuild.relative + " (" + uiBuild.created + ")<br/>";
+            infoHtml += "created: " + moment(uiBuild.created).fromNow() + " (" + uiBuild.created + ")<br/>";
             if (uiBuild.git)
             {
                 infoHtml += "branch: " + uiBuild.git.branch + "<br/>";
@@ -213,7 +213,7 @@ CABLES.CMD.UI.showBuildInfo = function ()
         if (apiBuild)
         {
             infoHtml += "<h3>API</h3>";
-            infoHtml += "created: " + apiBuild.relative + " (" + apiBuild.created + ")<br/>";
+            infoHtml += "created: " + moment(apiBuild.created).fromNow() + " (" + apiBuild.created + ")<br/>";
             if (apiBuild.git)
             {
                 infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
