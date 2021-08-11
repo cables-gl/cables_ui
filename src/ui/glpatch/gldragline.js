@@ -59,6 +59,24 @@ CABLES.GLGUI.GlDragLine = class
             this.stop();
         });
 
+
+        glpatch.on("mouseDragLink", (glport, opid, portName, e) =>
+        {
+            // this._button = e.buttons;
+
+            this.setPort(glport, opid, portName);
+            // }
+            // else if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            // {
+            //     this.setPort(glport, opid, portName);
+            //     const glports = this._glPatch.getConnectedGlPorts(opid, portName);
+
+            //     if (!e.altKey) gui.patchView.unlinkPort(opid, glport.id);
+
+            //     this._startGlPorts = glports;
+            // }
+        });
+
         glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
         {
             this._button = e.buttons;

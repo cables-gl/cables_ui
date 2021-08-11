@@ -76,7 +76,7 @@ CABLES.GLGUI.GlCable = class
         if (!this._visible) return false;
 
 
-        if (this._glPatch.isDraggingOps())
+        if (this._glPatch.isDraggingOps)
         {
             if (this._glPatch.getNumSelectedOps() > 1) return;
             if (this._glPatch.getNumSelectedOps() == 1)
@@ -313,6 +313,7 @@ CABLES.GLGUI.GlCable = class
 
     isHoveredButtonRect()
     {
+        if (this._glPatch.isDraggingPort()) return false;
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
@@ -323,6 +324,7 @@ CABLES.GLGUI.GlCable = class
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
+        if (this._glPatch.isDraggingPort()) return;
         // canlink ???
 
         if (this._disposed)
