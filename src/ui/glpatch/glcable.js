@@ -76,9 +76,9 @@ CABLES.GLGUI.GlCable = class
         if (!this._visible) return false;
 
 
-        if (this._glPatch.isDraggingOps)
+        if (this._glPatch.isDraggingOps())
         {
-            if (this._glPatch.getNumSelectedOps() > 1) return;
+            // if (this._glPatch.getNumSelectedOps() > 1) return;
             if (this._glPatch.getNumSelectedOps() == 1)
             {
                 if (this._glPatch.getNumSelectedOps() > 1) return false;
