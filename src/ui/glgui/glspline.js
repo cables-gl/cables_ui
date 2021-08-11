@@ -133,7 +133,7 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
-            .endl() + "    finalPosition.z=zpos;"
+            .endl() + "    finalPosition.z=spline.z;"
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
