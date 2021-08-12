@@ -29,8 +29,11 @@ CABLES.GLGUI.GlLink = class
         this._buttonRect.setDecoration(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
+
         this._buttonRect.on("mouseup", (e) =>
         {
+            if (this._glPatch.isDraggingPort()) return;
+
             const pressTime = performance.now() - this._buttonDownTime;
 
             if (
@@ -92,6 +95,35 @@ CABLES.GLGUI.GlLink = class
 
         this._buttonRect.on("mousedown", (e) =>
         {
+            if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && e.altKey)
+            {
+                const
+                    opIn = gui.corePatch().getOpById(this._opIdInput),
+                    pIn = opIn.getPortById(this._portIdInput),
+                    opOut = gui.corePatch().getOpById(this._opIdOutput),
+                    pOut = opOut.getPortById(this._portIdOutput);
+
+                const distOut = Math.sqrt(Math.pow(opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+                const distIn = Math.sqrt(Math.pow(opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+
+                if (distIn < distOut)
+                {
+                    const glop = this._glPatch.getGlOp(opOut);
+                    const glport = glop.getGlPort(pOut.name);
+                    this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, e);
+                }
+                else
+                {
+                    const glop = this._glPatch.getGlOp(opIn);
+                    const glport = glop.getGlPort(pIn.name);
+                    this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, e);
+                }
+
+                if (e.shiftKey) pIn.removeLinkTo(pOut);
+
+                return;
+            }
+
             this._mouseDownX = e.offsetX;
             this._mouseDownY = e.offsetY;
 

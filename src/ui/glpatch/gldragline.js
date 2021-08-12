@@ -20,6 +20,10 @@ CABLES.GLGUI.GlDragLine = class
         this._lineIndices = [];
         this._clearSpline();
 
+        this._x = 0;
+        this._y = 0;
+        this._z = -1.0;
+
         // document.body.addEventListener("pointerup", (e) =>
         // {
         //     console.log("up", e);
@@ -41,7 +45,6 @@ CABLES.GLGUI.GlDragLine = class
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
             }
 
-
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT && this._glPort && this._glPort.port)
             {
                 let x = this._glPatch.viewBox.mousePatchX;
@@ -57,6 +60,26 @@ CABLES.GLGUI.GlDragLine = class
             }
 
             this.stop();
+
+            this._glPatch.showOpCursor(false);
+        });
+
+
+        glpatch.on("mouseDragLink", (glport, opid, portName, e) =>
+        {
+            // this._button = e.buttons;
+
+            this.setPort(glport, opid, portName);
+            // }
+            // else if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            // {
+            //     this.setPort(glport, opid, portName);
+            //     const glports = this._glPatch.getConnectedGlPorts(opid, portName);
+
+            //     if (!e.altKey) gui.patchView.unlinkPort(opid, glport.id);
+
+            //     this._startGlPorts = glports;
+            // }
         });
 
         glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
@@ -169,6 +192,7 @@ CABLES.GLGUI.GlDragLine = class
         this._patchDragWasAllowed = this._glPatch.allowDragging;
         this._glPatch.allowDragging = false;
 
+
         this._update();
     }
 
@@ -185,18 +209,22 @@ CABLES.GLGUI.GlDragLine = class
 
     _update()
     {
+        if (!this.isActive) this._glPatch.showOpCursor(false);
+
+
         if (!this.isActive) return;
 
-        // if (!this._glPort && !this._startGlPorts.length)
-        // {
+        if (!this._glPatch.isMouseOverOp()) this._glPatch.showOpCursor(true);
+        else this._glPatch.showOpCursor(false);
+
         this._clearSpline();
-        // }
 
 
         if (this._glPort)
         {
             this._glPatch.setDrawableColorByType(this, this._glPort.type);
         }
+
 
         if (this._startGlPorts.length)
         {
@@ -210,10 +238,10 @@ CABLES.GLGUI.GlDragLine = class
                     [
                         this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
                         this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + CABLES.GLGUI.VISUALCONFIG.portHeight / 2,
-                        0,
+                        this._z,
                         this._x,
                         this._y,
-                        0
+                        this._z
                     ]);
 
                 // this._lineDrawer.setLine(this._lineIndices[i],
@@ -234,10 +262,10 @@ CABLES.GLGUI.GlDragLine = class
                     [
                         this._glPort.glOp.x + this._rect.x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2,
                         this._glPort.glOp.y + this._rect.y + CABLES.GLGUI.VISUALCONFIG.portHeight / 2,
-                        0,
+                        this._z,
                         this._x,
                         this._y,
-                        0]);
+                        this._z]);
 
                 this._splineDrawer.setSplineColor(this._splineIdx, [1, 1, 1, 1]);
             }

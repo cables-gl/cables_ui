@@ -103,6 +103,7 @@ CABLES.GLGUI.GlPort = class
                 this._glop._links[i].highlight(true);
 
         CABLES.UI.updateHoverToolTip(event, this._port);
+        // this._glPatch.showOpCursor(false);
     }
 
     _onUnhover(rect)

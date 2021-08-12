@@ -75,26 +75,25 @@ CABLES.GLGUI.GlCable = class
     {
         if (!this._visible) return false;
 
-        if (this._glPatch.getNumSelectedOps() > 1) return false;
-        // const selOps = gui.patchView.getSelectedOps();
 
-        // if (selOps.length > 1) return false;
-
-
-        // if (selOps[0] && r)
-        // console.log(selOps[0].portsIn[0].type, selOps[0].portsOut[0].type, this._type);
-
-        // console.log(this._glPatch.getOnlySelectedOp());
-
-        if (this._glPatch.getOnlySelectedOp() &&
-            this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
-            this._glPatch.getOnlySelectedOp().portsOut.length > 0)
+        if (this._glPatch.isDraggingOps())
         {
-            // if (r)console.log(this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type && this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type, this._glPatch.getOnlySelectedOp().portsIn[0].type, this._glPatch.getOnlySelectedOp().portsOut[0].type, this._type);
-            if (!(
-                this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
-                this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
-                return false;
+            // if (this._glPatch.getNumSelectedOps() > 1) return;
+            if (this._glPatch.getNumSelectedOps() == 1)
+            {
+                if (this._glPatch.getNumSelectedOps() > 1) return false;
+
+                if (this._glPatch.getOnlySelectedOp() &&
+                    this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
+                    this._glPatch.getOnlySelectedOp().portsOut.length > 0)
+                {
+                // if (r)console.log(this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type && this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type, this._glPatch.getOnlySelectedOp().portsIn[0].type, this._glPatch.getOnlySelectedOp().portsOut[0].type, this._type);
+                    if (!(
+                        this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
+                    this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
+                        return false;
+                }
+            }
         }
 
         const r = this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
@@ -314,6 +313,7 @@ CABLES.GLGUI.GlCable = class
 
     isHoveredButtonRect()
     {
+        if (this._glPatch.isDraggingPort()) return false;
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
@@ -324,6 +324,7 @@ CABLES.GLGUI.GlCable = class
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
+        if (this._glPatch.isDraggingPort()) return;
         // canlink ???
 
         if (this._disposed)

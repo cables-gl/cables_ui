@@ -57,6 +57,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         // this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         // this._hoverCable.setPosition(0, 0, 100, 100);
         // this._hoverCable.setColor(1, 1, 1, 0.5);
+        this._showingOpCursor = false;
+        this._eleDropOp = ele.byId("drop-op-cursor");
 
         this._fpsStartTime = 0;
 
@@ -685,6 +687,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
 
+        if (this._showingOpCursor)
+        {
+            this._eleDropOp.style.top = this.viewBox.mouseY - 12 + "px";
+            this._eleDropOp.style.left = this.viewBox.mouseX - 37 + "px";
+        }
+
         this.needsRedraw = false;
 
         if (performance.now() - this._fpsStartTime > 1000)
@@ -746,7 +754,9 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         if (this._rectInstancer.isDragging()) return;
 
-        if (!this.mouseState.isDragging) this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        // if (!this.mouseState.isDragging)
+        // else this._hoverOps = [];
+        this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
         if (this.mouseState.isButtonDown())
         {
@@ -874,6 +884,12 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     getOnlySelectedOp()
     {
         if (this._cachedNumSelectedOps == 1 && this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.op;
+    }
+
+    isDraggingOps()
+    {
+        if (this._cachedFirstSelectedOp) return this._cachedFirstSelectedOp.isDragging;
+        else return false;
     }
 
     selectOpId(id)
@@ -1172,5 +1188,16 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
     zoomStep(s)
     {
         this.viewBox.zoomStep(s);
+    }
+
+
+    showOpCursor(show)
+    {
+        if (this._showingOpCursor != show)
+        {
+            this._showingOpCursor = show;
+            if (show) ele.show(this._eleDropOp);
+            else ele.hide(this._eleDropOp);
+        }
     }
 };
