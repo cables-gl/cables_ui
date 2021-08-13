@@ -217,44 +217,35 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         cgl.resetViewPort();
 
         const sizeImg = [size[0], size[1]];
-        const stretch = false;
-        if (!stretch) sizeImg[1] = size[0] * port.get().height / port.get().width;
 
-        ctx.imageSmoothingEnabled = !small;
+        const stretch = false;
+        if (!stretch)
+        {
+            if (port.get().width > port.get().height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
+            else sizeImg[0] = size[0] * port.get().width / port.get().height;
+        }
+
+        const scaledDown = sizeImg[0] > sizeTex[0] && sizeImg[1] > sizeTex[1];
+
+        ctx.imageSmoothingEnabled = !small || !scaledDown;
+
+
+        // if (ctx.imageSmoothingEnabled)
+        // {
+        //     ctx.fillStyle = "#ff0000";
+        //     ctx.fillRect(pos[0], pos[1], 20, 3);
+        // }
+
         ctx.drawImage(cgl.canvas,
             0, 0,
             s[0], s[1],
-            pos[0], pos[1] + (size[1] - sizeImg[1]) / 2,
+            pos[0] + (size[0] - sizeImg[0]) / 2, pos[1] + (size[1] - sizeImg[1]) / 2,
             sizeImg[0], sizeImg[1]);
+
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         perf.finish();
     }
-
-    // _getCanvasSize(port, tex)
-    // {
-    //     let maxWidth = 300;
-    //     let maxHeight = 200;
-
-    //     const patchRect = gui.patchView.element.getBoundingClientRect();
-    //     maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-    //     maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
-
-    //     const aspect = tex.height / tex.width;
-    //     let w = tex.width;
-
-    //     if (w > maxWidth) w = maxWidth;
-    //     let h = w * aspect;
-
-    //     if (h > maxHeight)
-    //     {
-    //         w = maxHeight / aspect;
-    //         h = maxHeight;
-    //     }
-
-    //     // console.log("w,h", w, h);
-    //     return [w, h];
-    // }
 };
