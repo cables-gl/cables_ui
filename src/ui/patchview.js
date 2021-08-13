@@ -44,6 +44,12 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     _onAddOpHistory(op, fromDeserialize)
     {
+        if (this._showingNavHelperEmpty)
+        {
+            this._showingNavHelperEmpty = false;
+            ele.hide(ele.byId("patchnavhelperEmpty"));
+        }
+
         if (!fromDeserialize)
         {
             if (!op.uiAttribs) op.uiAttribs = {};
@@ -119,7 +125,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
             {
                 this._showingNavHelperEmpty = true;
-                document.getElementById("patchnavhelperEmpty").style.display = "block";
+                ele.show(ele.byId("patchnavhelperEmpty"));
+                // document.getElementById("patchnavhelperEmpty").style.display = "block";
             }
 
             if (cb)cb();
@@ -177,13 +184,21 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     testCollision(op)
     {
-        for (let j = 0; j < gui.corePatch().ops.length; j++)
+        let found = true;
+        while (found)
         {
-            const b = gui.corePatch().ops[j];
-            if (b.deleted || b == op) continue;
+            found = false;
+            for (let j = 0; j < gui.corePatch().ops.length; j++)
+            {
+                const b = gui.corePatch().ops[j];
+                if (b.deleted || b == op) continue;
 
-            if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
-                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLGUI.VISUALCONFIG.newOpDistanceY } });
+                if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+                {
+                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLGUI.VISUALCONFIG.newOpDistanceY } });
+                    found = true;
+                }
+            }
         }
     }
 
@@ -351,7 +366,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
             "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - 100
+            "y": oldOp.uiAttribs.translate.y - CABLES.GLGUI.VISUALCONFIG.newOpDistanceY
         };
 
         gui.patchView.addOp(opname, {
@@ -364,6 +379,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     "translate": trans,
                     "subPatch": this.getCurrentSubPatch()
                 });
+
+                console.log(newOp.uiAttribs.translate);
+                this.testCollision(newOp);
             } });
     }
 
@@ -1104,12 +1122,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
 
-        let y = ops[0].uiAttribs.translate.y;
+        let y = this.snapOpPosY(ops[0].uiAttribs.translate.y);
 
         for (let j = 0; j < ops.length; j++)
         {
             if (j > 0) y += (ops[j].uiAttribs.height || CABLES.UI.uiConfig.opHeight) + 10;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(y));
+            this.testCollision(ops[j]);
         }
     }
 

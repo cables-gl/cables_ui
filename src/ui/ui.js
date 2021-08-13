@@ -2371,6 +2371,7 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
     });
 };
 
+
 function startUi(cfg)
 {
     logStartup("Init UI");

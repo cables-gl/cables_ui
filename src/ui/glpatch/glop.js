@@ -375,6 +375,16 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._isHovering = h;
     }
 
+    _disposeDots()
+    {
+        if (this._glDotError) this._glDotError.dispose();
+        if (this._glDotWarning) this._glDotWarning.dispose();
+        if (this._glDotHint) this._glDotHint.dispose();
+        this._glDotError = null;
+        this._glDotWarning = null;
+        this._glDotHint = null;
+    }
+
     dispose()
     {
         if (this._glRectBg) this._glRectBg.dispose();
@@ -382,9 +392,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glComment) this._glComment.dispose();
         if (this._glTitleExt) this._glTitleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
-        if (this._glDotError) this._glDotError.dispose();
-        if (this._glDotWarning) this._glDotWarning.dispose();
-        if (this._glDotError) this._glDotError.dispose();
+        this._disposeDots();
 
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
 
@@ -588,12 +596,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             (!this.opUiAttribs.uierrors || this.opUiAttribs.uierrors.length == 0) &&
             (this._glDotError || this._glDotWarning || this._glDotHint))
         {
-            if (this._glDotError) this._glDotError.dispose();
-            if (this._glDotWarning) this._glDotWarning.dispose();
-            if (this._glDotHint) this._glDotHint.dispose();
-            this._glDotError = null;
-            this._glDotWarning = null;
-            this._glDotHint = null;
+            this._disposeDots();
             console.log("remove all errordots");
         }
     }
