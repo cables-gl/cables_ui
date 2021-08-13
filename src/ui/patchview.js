@@ -387,17 +387,25 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     showSelectedOpsPanel()
     {
-        const html = CABLES.UI.getHandleBarHtml(
-            "params_ops", {
-                "numOps": this.getSelectedOps().length,
-            });
+        const numops = this.getSelectedOps().length;
 
-        gui.opParams.clear();
+        if (numops > 0)
+        {
+            const html = CABLES.UI.getHandleBarHtml(
+                "params_ops", {
+                    "numOps": numops,
+                });
 
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
-        gui.setTransformGizmo(null);
+            gui.opParams.clear();
 
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+            ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+            gui.setTransformGizmo(null);
+            CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+        }
+        else
+        {
+            this.showDefaultPanel();
+        }
     }
 
     showDefaultPanel()

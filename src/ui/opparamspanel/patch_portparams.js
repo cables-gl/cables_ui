@@ -52,7 +52,7 @@ CABLES.UI.checkDefaultValue = function (op, index)
     if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
     {
         const titleEl = document.getElementById("portTitle_in_" + index);
-        titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
+        if (titleEl) titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
     }
 };
 
