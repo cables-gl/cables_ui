@@ -230,11 +230,14 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         ctx.imageSmoothingEnabled = !small || !scaledDown;
 
 
-        // if (ctx.imageSmoothingEnabled)
-        // {
-        //     ctx.fillStyle = "#ff0000";
-        //     ctx.fillRect(pos[0], pos[1], 20, 3);
-        // }
+        if (!ctx.imageSmoothingEnabled)
+        {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pos[0], pos[1] - 10, 10, 10);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(pos[0], pos[1] - 10, 5, 5);
+            ctx.fillRect(pos[0] + 5, pos[1] - 10 + 5, 5, 5);
+        }
 
         ctx.drawImage(cgl.canvas,
             0, 0,
