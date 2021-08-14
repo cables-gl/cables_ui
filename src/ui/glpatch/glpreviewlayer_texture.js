@@ -152,7 +152,7 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         }
         if (!this._shader)
         {
-            this._shader = new CGL.Shader(cgl, "MinimalMaterial");
+            this._shader = new CGL.Shader(cgl, "glpreviewtex");
             this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
             this._shader.setSource(this._srcVert, this._srcFrag);
             this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
@@ -164,8 +164,14 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
         }
 
         cgl.pushPMatrix();
+        const sizeTex = [port.get().width, port.get().height];
+        const small = port.parent.patch.cgl.canvasWidth > sizeTex[0] && port.parent.patch.cgl.canvasHeight > sizeTex[1];
 
-        mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
+        if (small)
+        {
+            mat4.ortho(cgl.pMatrix, 0, port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight, 0, 0.001, 11);
+        }
+        else mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
 
         const oldTex = cgl.getTexture(texSlot);
         const oldTexCubemap = cgl.getTexture(texSlotCubemap);
@@ -185,62 +191,64 @@ CABLES.GLGUI.GlPreviewLayerTexture = class extends CABLES.EventTarget
             cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
         }
 
-
         // this._shader.toggleDefine("CUBEMAP", true);
 
         this._shaderTypeUniform.setValue(texType);
+        let s = [port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight];
 
+        cgl.gl.clearColor(1, 0, 0, 1);
+        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+
+
+        cgl.pushModelMatrix();
+        if (small)
+        {
+            s = sizeTex;
+            mat4.translate(cgl.mMatrix, cgl.mMatrix, [sizeTex[0] / 2, sizeTex[1] / 2, 0]);
+            mat4.scale(cgl.mMatrix, cgl.mMatrix, [sizeTex[0] / 2, sizeTex[1] / 2, 0]);
+        }
         this._mesh.render(this._shader);
+        cgl.popModelMatrix();
+
         if (texType == 0) cgl.setTexture(texSlot, oldTex);
         if (texType == 1) cgl.setTexture(texSlotCubemap, oldTexCubemap);
 
         cgl.popPMatrix();
         cgl.resetViewPort();
 
-        const s = [port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight];
-
-        const sizeTex = [size[0], size[1]];
+        const sizeImg = [size[0], size[1]];
 
         const stretch = false;
+        if (!stretch)
+        {
+            if (port.get().width > port.get().height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
+            else sizeImg[0] = size[0] * port.get().width / port.get().height;
+        }
 
-        if (!stretch) sizeTex[1] = size[0] * port.get().height / port.get().width;
+        const scaledDown = sizeImg[0] > sizeTex[0] && sizeImg[1] > sizeTex[1];
 
-        // console.log(s, size);
+        ctx.imageSmoothingEnabled = !small || !scaledDown;
+
+
+        if (!ctx.imageSmoothingEnabled)
+        {
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(pos[0], pos[1] - 10, 10, 10);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(pos[0], pos[1] - 10, 5, 5);
+            ctx.fillRect(pos[0] + 5, pos[1] - 10 + 5, 5, 5);
+        }
 
         ctx.drawImage(cgl.canvas,
             0, 0,
             s[0], s[1],
-            pos[0], pos[1] + (size[1] - sizeTex[1]) / 2,
-            sizeTex[0], sizeTex[1]);
+            pos[0] + (size[0] - sizeImg[0]) / 2, pos[1] + (size[1] - sizeImg[1]) / 2,
+            sizeImg[0], sizeImg[1]);
+
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
         perf.finish();
     }
-
-    // _getCanvasSize(port, tex)
-    // {
-    //     let maxWidth = 300;
-    //     let maxHeight = 200;
-
-    //     const patchRect = gui.patchView.element.getBoundingClientRect();
-    //     maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-    //     maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
-
-    //     const aspect = tex.height / tex.width;
-    //     let w = tex.width;
-
-    //     if (w > maxWidth) w = maxWidth;
-    //     let h = w * aspect;
-
-    //     if (h > maxHeight)
-    //     {
-    //         w = maxHeight / aspect;
-    //         h = maxHeight;
-    //     }
-
-    //     // console.log("w,h", w, h);
-    //     return [w, h];
-    // }
 };

@@ -12,13 +12,17 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
         this._glPatch = glPatch;
 
+        gui.on("uiloaded", () =>
+        {
+            this._updateSize();
+        });
         this._glPatch.on("resize", this._updateSize.bind(this));
 
         this._eleCanvas = document.createElement("canvas");
 
         this._eleCanvas.id = "gluiPreviewLayer";
         this._eleCanvas.classList.add("gluiPreviewLayer");
-        this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 10;
+        this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
         this._eleCanvas.style.position = "absolute";
         this._eleCanvas.style.pointerEvents = "none";
 
@@ -36,7 +40,6 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
     {
         this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
         this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
-        // this.drawCanvas();
     }
 
     render()
@@ -93,7 +96,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
 
-            if (pos[0] < 0 || pos[1] < 0 || (pos[0] + 100) > this._eleCanvas.width || (pos[1] + 100) > this._eleCanvas.height) continue;
+            if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
             this._canvasCtx.fillStyle = "#222222";
             this._canvasCtx.fillRect(pos[0], pos[1], size[0], size[1]);

@@ -24,7 +24,7 @@ CABLES.GLGUI.VISUALCONFIG =
     "zoomSmooth": 2,
     "zoomDefault": 500,
 
-    "newOpDistanceY": 50,
+    "newOpDistanceY": 40,
 
     "zPosCableButtonRect": -0.9, // -0.02,
 

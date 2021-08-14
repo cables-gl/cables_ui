@@ -803,7 +803,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
 
-            if (this._numSelectedGlOps > 0 && this._numSelectedGlOps != numSelectedOps) gui.patchView.showSelectedOpsPanel(Object.keys(this._selectedGlOps));
+            gui.patchView.showSelectedOpsPanel();
             this._numSelectedGlOps = numSelectedOps;
         }
         else
