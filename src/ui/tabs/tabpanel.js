@@ -399,7 +399,14 @@ CABLES.UI.TabPanel.prototype.addIframeTab = function (title, url, options)
     const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
     iframeTab.contentEle.innerHTML = html;
     iframeTab.contentEle.style.padding = "0px";
-    iframeTab.toolbarEle.innerHTML = "<a href=\"" + url + "\" target=\"_blank\">open this in a new browser window</a>";
+    if (options.gotoUrl)
+    {
+        iframeTab.toolbarEle.innerHTML = "<a href=\"" + options.gotoUrl + "\" target=\"_blank\">open this in a new browser window</a>";
+    }
+    else
+    {
+        iframeTab.toolbarEle.innerHTML = "<a href=\"" + url + "\" target=\"_blank\">open this in a new browser window</a>";
+    }
 
     const frame = document.getElementById("iframe" + id);
     const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);

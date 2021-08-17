@@ -1216,7 +1216,7 @@ CABLES.UI.GUI = function (cfg)
 
         $(".nav_viewBackups").bind("click", function (event)
         {
-            gui.mainTabs.addIframeTab("Patch Backups", CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe#t=versions", { "icon": "settings", "closable": true, "singleton": true });
+            gui.mainTabs.addIframeTab("Patch Backups", CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe#t=versions", { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings#t=versions" });
         });
 
         $(".nav_cablesweb").bind("click", function (event)
@@ -1876,7 +1876,7 @@ CABLES.UI.GUI = function (cfg)
         }.bind(this);
 
         const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true });
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" });
     };
 
     // this.showOpDoc = function(opname) {
