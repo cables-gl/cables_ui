@@ -6,7 +6,7 @@ CABLES.SerializeOps = function (root, prefix)
 
     for (const i in root)
     {
-        if (i != "Deprecated" && i != "Admin")
+        if (i != "Deprecated" && i != "Admin" && i != "Dev")
             items.push(
                 {
                     "name": i,
@@ -55,7 +55,7 @@ CABLES.OpTree.prototype.itemHtml = function (item, html, level)
 
     const style = CABLES.UI.uiConfig.getNamespaceClassName(item.fullname);
 
-    html += "<a class=\"op_color_" + style + "\" onclick=\"gui.opSelect().tree.searchFor('" + item.fullname + "')\">";
+    html += "<a class=\"op_color_" + style + "\" onclick=\"gui.opSelect().tree.searchFor('" + item.fullname + ".')\">";
     html += "" + item.name;
     html += "</a>";
 
