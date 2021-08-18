@@ -11,7 +11,7 @@ CABLES.UI.GUI = function (cfg)
     this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
-    let showMiniMap = false;
+    // let showMiniMap = false;
 
     this.keys = new CABLES.UI.KeyManager();
     this.opParams = new CABLES.UI.OpParampanel();
@@ -281,8 +281,8 @@ CABLES.UI.GUI = function (cfg)
         this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
 
-        this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
-        this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
+        // this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
+        // this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
         this._elTLoverviewtimeline = this._elTLoverviewtimeline || document.getElementById("overviewtimeline");
         this._elTLtimelineTitle = this._elTLtimelineTitle || document.getElementById("timelineTitle");
         this._elTLkeycontrols = this._elTLkeycontrols || document.getElementById("keycontrols");
@@ -488,22 +488,22 @@ CABLES.UI.GUI = function (cfg)
         this._elPatch.style.left = patchLeft + "px";
 
 
-        if (showMiniMap)
-        {
-            this._elMiniMapContainer.style.display = "block";
-            this._elMiniMap.style.display = "block";
+        // if (showMiniMap)
+        // {
+        //     this._elMiniMapContainer.style.display = "block";
+        //     this._elMiniMap.style.display = "block";
 
-            this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4 + "px";
-            this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24 + "px";
+        //     this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4 + "px";
+        //     this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24 + "px";
 
-            $("#minimapContainer .title_closed").hide();
-            $("#minimapContainer .title_opened").show();
-        }
-        else
-        {
-            this._elMiniMapContainer.style.display = "none";
-            this._elMiniMap.style.display = "none";
-        }
+        //     $("#minimapContainer .title_closed").hide();
+        //     $("#minimapContainer .title_opened").show();
+        // }
+        // else
+        // {
+        //     this._elMiniMapContainer.style.display = "none";
+        //     this._elMiniMap.style.display = "none";
+        // }
 
         this._elLibrary.style.left = iconBarWidth + "px";
         this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
@@ -808,17 +808,17 @@ CABLES.UI.GUI = function (cfg)
         }
     }
 
-    this.showMiniMap = function ()
-    {
-        showMiniMap = true;
-        self.setLayout();
-    };
+    // this.showMiniMap = function ()
+    // {
+    //     showMiniMap = true;
+    //     self.setLayout();
+    // };
 
-    this.hideMiniMap = function ()
-    {
-        showMiniMap = false;
-        self.setLayout();
-    };
+    // this.hideMiniMap = function ()
+    // {
+    //     showMiniMap = false;
+    //     self.setLayout();
+    // };
 
     this.isShowingTiming = function ()
     {
@@ -1633,7 +1633,7 @@ CABLES.UI.GUI = function (cfg)
 
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.uiperf.show();
-        if (CABLES.UI.userSettings.get("showMinimap") == true) CABLES.CMD.UI.showMinimap();
+
         self.patch().getViewBox().update();
 
         if (this.isRemoteClient)
@@ -2262,13 +2262,13 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.UI.hideInfo();
         });
-        $("#minimapContainer").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.minimapContainer);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
+        // $("#minimapContainer").hover(function (e)
+        // {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.minimapContainer);
+        // }, function ()
+        // {
+        // CABLES.UI.hideInfo();
+        // });
         $("#project_settings_btn").hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.project_settings_btn);

@@ -34,21 +34,21 @@ CABLES.UI.PatchViewBox = function (patch, paper)
 
 CABLES.UI.PatchViewBox.prototype._init = function ()
 {
-    if (CABLES.UI.userSettings.get("showMinimap"))
-    {
-        this._paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
-        this._paperMap.setViewBox(-500, -500, 4000, 4000);
+    // if (CABLES.UI.userSettings.get("showMinimap"))
+    // {
+    //     this._paperMap = Raphael("minimap", CABLES.UI.uiConfig.miniMapWidth, CABLES.UI.uiConfig.miniMapHeight);
+    //     this._paperMap.setViewBox(-500, -500, 4000, 4000);
 
-        this._miniMapRect = this._paperMap.rect(0, 0, 10, 10).attr({
-            "stroke": "#666",
-            "fill": "#1a1a1a",
-            "stroke-width": 1
-        });
+    //     // this._miniMapRect = this._paperMap.rect(0, 0, 10, 10).attr({
+    //     //     "stroke": "#666",
+    //     //     "fill": "#1a1a1a",
+    //     //     "stroke-width": 1
+    //     // });
 
-        document.querySelector("#minimap svg").addEventListener("mousemove", this._dragMiniMap.bind(this));
-        document.querySelector("#minimap svg").addEventListener("touchmove", this._dragMiniMap.bind(this));
-        document.querySelector("#minimap svg").addEventListener("mousedown", this._dragMiniMap.bind(this));
-    }
+    //     // document.querySelector("#minimap svg").addEventListener("mousemove", this._dragMiniMap.bind(this));
+    //     // document.querySelector("#minimap svg").addEventListener("touchmove", this._dragMiniMap.bind(this));
+    //     // document.querySelector("#minimap svg").addEventListener("mousedown", this._dragMiniMap.bind(this));
+    // }
 };
 
 CABLES.UI.PatchViewBox.prototype.getX = function ()
@@ -139,6 +139,8 @@ CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
         else if (this._viewBox.y > gui.patch().currentPatchBounds.y + gui.patch().currentPatchBounds.h) showHelper = true;
         else if (this._viewBox.y < gui.patch().currentPatchBounds.y - this._viewBox.h) showHelper = true;
 
+        if (!this._eleNavHelper) return;
+
         if (!gui.isRemoteClient)
             if (showHelper || this._viewBox.w > 20000 || this._viewBox.w < 30)
             {
@@ -171,13 +173,13 @@ CABLES.UI.PatchViewBox.prototype._update = function ()
 
         this._updateNavHelper();
 
-        if (this._miniMapRect)
-        {
-            this._miniMapRect.attr("x", this._viewBox.x);
-            this._miniMapRect.attr("y", this._viewBox.y);
-            this._miniMapRect.attr("width", this._viewBox.w);
-            this._miniMapRect.attr("height", this._viewBox.h);
-        }
+        // if (this._miniMapRect)
+        // {
+        //     this._miniMapRect.attr("x", this._viewBox.x);
+        //     this._miniMapRect.attr("y", this._viewBox.y);
+        //     this._miniMapRect.attr("width", this._viewBox.w);
+        //     this._miniMapRect.attr("height", this._viewBox.h);
+        // }
 
         this._lastUpdate = performance.now();
         this._updateTimeout = null;

@@ -829,19 +829,19 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         }
 
 
-        const mmPaper = gui.patch().getViewBox().getMiniMapPaper();
-        if (mmPaper)
-        {
-            miniRect = mmPaper.rect(x, y, w, h);
-            miniRect.attr({
-                "width": w,
-                "height": 32,
-                "fill-opacity": 1
-            });
+        // const mmPaper = gui.patch().getViewBox().getMiniMapPaper();
+        // if (mmPaper)
+        // {
+        //     miniRect = mmPaper.rect(x, y, w, h);
+        //     miniRect.attr({
+        //         "width": w,
+        //         "height": 32,
+        //         "fill-opacity": 1
+        //     });
 
-            miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
-            CABLES.UI.cleanRaphael(miniRect);
-        }
+        //     miniRect.node.classList.add(CABLES.UI.uiConfig.getOpMiniRectClassName(opui.op.objName));
+        //     CABLES.UI.cleanRaphael(miniRect);
+        // }
 
         background = gui.patch().getPaper().rect(0, 3, w, h - 6);
         CABLES.UI.cleanRaphael(background);

@@ -114,11 +114,7 @@ CABLES.CMD.UI.hideMinimap = function ()
     gui.hideMiniMap();
 };
 
-CABLES.CMD.UI.showMinimap = function ()
-{
-    CABLES.UI.userSettings.set("showMinimap", true);
-    gui.showMiniMap();
-};
+
 CABLES.CMD.UI.toggleMinimap = function ()
 {
     CABLES.UI.userSettings.set("showMinimap", !CABLES.UI.userSettings.get("showMinimap"));
@@ -415,11 +411,6 @@ CABLES.CMD.commands.push(
         "cmd": "hide minimap",
         "category": "ui",
         "func": CABLES.CMD.UI.hideMinimap,
-    },
-    {
-        "cmd": "show minimap",
-        "category": "ui",
-        "func": CABLES.CMD.UI.showMinimap,
     },
     {
         "cmd": "search",
