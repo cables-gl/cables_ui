@@ -139,17 +139,17 @@ CABLES.CMD.commands.push({
     "cmd": "change canvas size",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.changeSize,
-    "icon": "canvas_resize"
+    "icon": "canvas_max"
 }, {
     "cmd": "reset canvas size",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.resetSize,
-    "icon": "canvas_resize"
+    "icon": "canvas_max"
 }, {
     "cmd": "set canvas aspect ratio",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.aspect,
-    "icon": "canvas_resize"
+    "icon": "canvas_max"
 }, {
     "cmd": "animation renderer",
     "category": "renderer",
@@ -164,7 +164,7 @@ CABLES.CMD.commands.push({
     "cmd": "scale canvas",
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.scaleCanvas,
-    "icon": "canvas_resize"
+    "icon": "canvas_max"
 }
 
 

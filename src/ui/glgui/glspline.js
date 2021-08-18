@@ -109,8 +109,8 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec2 screenPos3=fix( vec4(spline3,1.0));"
 
             .endl() + "    float wid=width*10.0;"
-            .endl() + "    if(sizeAtt>0.0) //todo as define"
-            .endl() + "        wid=width*finalPosition.w*0.5;"
+        // .endl() + "    if(sizeAtt>0.0) //todo as define"
+        // .endl() + "        wid=width*finalPosition.w*0.5;"
 
             .endl() + "    vec2 dir1 = normalize( screenPos2 - screenPos );"
             .endl() + "    vec2 dir2 = normalize( screenPos3 - screenPos2 );"
@@ -172,7 +172,9 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    col.rgb*=darken;"
 
+            // .endl() + "#ifdef LINE_OUTLINE"
             .endl() + "    if(abs(texCoord.y)>0.7) col.rgb*=0.7;"
+        // .endl() + "#endif"
 
 
             .endl() + "    outColor = col;"
