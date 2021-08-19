@@ -174,13 +174,16 @@ CABLES.GLGUI.GlCable = class
 
         if (this._oldx != this._x || this._oldy != this._y || this._oldx2 != this._x2 || this._oldy2 != this._y2)
         {
-            this._oldx = this._x;
-            this._oldy = this._y;
+            let posX = this._oldx = this._x;
+            let posX2 = this._oldy = this._y;
             this._oldx2 = this._x2;
             this._oldy2 = this._y2;
 
-            const posX = this._x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2 - 5;
-            const posX2 = this._x2 + CABLES.GLGUI.VISUALCONFIG.portWidth / 2 - 5;
+            if (this._x !== this._x2 !== 0)
+            {
+                posX = this._x + CABLES.GLGUI.VISUALCONFIG.portWidth / 2 - 5;
+                posX2 = this._x2 + CABLES.GLGUI.VISUALCONFIG.portWidth / 2 - 5;
+            }
 
             // console.log(this._linetype);
             if (this._linetype == this.LINETYPE_CURVED)
