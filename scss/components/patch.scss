@@ -40,50 +40,6 @@
 	stroke-width:0;
 }
 
-#minimapContainer
-{
-    // border:1px solid red;
-    border:2px solid var(--color-01);
-    position: absolute;
-    display: none;
-    // z-index: $zindex_over;
-
-    .title
-    {
-        cursor:pointer;
-        background-color: var(--color-08);
-    }
-}
-
-#minimap
-{
-    display: none;
-
-    &:focus
-    {
-        outline: none;
-    }
-
-    svg
-    {
-        background-color: var(--color-01);
-        cursor: pointer;
-    }
-
-    rect
-    {
-        vector-effect:non-scaling-stroke;
-        pointer-events: none;
-    }
-
-    .op_minirect_default { fill:var(--color_op_handle_default);}
-    .op_minirect_gl { fill:var(--color_op_handle_gl); }
-    .op_minirect_audio { fill:var(--color_op_handle_audio); }
-    .op_minirect_devices { fill:var(--color_op_handle_devices); }
-    .op_minirect_html { fill:var(--color_op_handle_html); }
-	.op_minirect_math { fill:var(--color_op_handle_math); }
-}
-
 
 .port_text_color_trigger, .port_text_color_function { color::var(--color_port_function);}
 .port_text_color_value,.port_text_color_number { color::var(--color_port_value); }

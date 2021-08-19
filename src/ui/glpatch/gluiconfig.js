@@ -9,13 +9,9 @@ CABLES.GLGUI.VISUALCONFIG =
 
     "OpErrorDotSize": 8,
 
-
     "portWidth": 10,
     "portHeight": 5,
     "portPadding": 2,
-
-    // "snapX": 12,
-    // "snapY": 20,
 
     "opHeight": 31,
     "opWidth": 20,
@@ -42,6 +38,7 @@ CABLES.GLGUI.VISUALCONFIG =
         "Ops.Math": [68 / 255, 212 / 255, 200 / 255], // #44d4c8';
         "Ops.User": [1, 1, 1]// '#ffffff';
     },
+
     "colors":
     {
         "transparent": [0, 0, 0, 0],
@@ -49,10 +46,28 @@ CABLES.GLGUI.VISUALCONFIG =
         "opBgRectSelected": [73 / 255, 73 / 255, 73 / 255, 1],
         "patchComment": [0.8, 0.8, 0.8, 1],
         "opTitleExt": [0.8, 0.8, 0.8, 1.0],
-        "patchSelectionArea": [0, 0.5, 0.7, 0.25],
+        "patchSelectionArea": [0, 0.75, 0.7, 0.25],
 
         "opBoundsRect": [0.26, 0.26, 0.26, 1],
         "background": [0.24, 0.24, 0.24, 1],
+
+        "opError": [1.0, 0.24, 0.1, 1],
+        "opErrorWarning": [1.0, 0.7, 0.1, 1],
+        "opErrorHint": [0.5, 0.5, 0.5, 1]
+
+    },
+    "colors_bright":
+    {
+        "transparent": [0, 0, 0, 0],
+        "opBgRect": [0, 0, 0, 1],
+        "opBgRectSelected": [0.5, 0.5, 0.5, 1],
+        "patchComment": [0, 0, 0, 1],
+        "opTitleExt": [0.8, 0.8, 0.8, 1.0],
+        "patchSelectionArea": [0, 0.75, 0.7, 0.25],
+
+        "opBoundsRect": [0.8, 0.8, 0.8, 1],
+        "background": [0.8, 0.8, 0.8, 1],
+
         "opError": [1.0, 0.24, 0.1, 1],
         "opErrorWarning": [1.0, 0.7, 0.1, 1],
         "opErrorHint": [0.5, 0.5, 0.5, 1]
