@@ -315,8 +315,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             else portsWidthOut += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
         }
 
-        if (portsWidthIn != 0)portsWidthIn -= CABLES.GLGUI.VISUALCONFIG.portPadding;
-        if (portsWidthOut != 0)portsWidthOut -= CABLES.GLGUI.VISUALCONFIG.portPadding;
+        if (portsWidthIn != 0) portsWidthIn -= CABLES.GLGUI.VISUALCONFIG.portPadding;
+        if (portsWidthOut != 0) portsWidthOut -= CABLES.GLGUI.VISUALCONFIG.portPadding;
 
         this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
@@ -451,6 +451,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this._posZ);
         this._updateCommentPosition();
         this._updateErrorDots();
+        for (const i in this._links) if (this._links[i]) this._links[i].update();
     }
 
     getUiAttribs()

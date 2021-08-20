@@ -205,6 +205,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
+            "optitle": op.getTitle(),
+
             ownsOp,
             "oldVersion": oldversion,
             "newestVersion": newestVersion,
@@ -271,7 +273,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             html += CABLES.UI.getHandleBarHtml("params_ports_head", {
                 "dirStr": "out",
                 "title": "Output",
-                op,
+                "op": op,
                 "texts": CABLES.UI.TEXTS,
             });
 
