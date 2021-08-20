@@ -403,7 +403,6 @@ CABLES.UI.Patch = function (_gui)
     gui.keys.key("=", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
     gui.keys.key("+", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
 
-
     $("#patch").keydown(function (e)
     {
         switch (e.which)

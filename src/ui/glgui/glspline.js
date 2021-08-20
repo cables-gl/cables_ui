@@ -40,7 +40,6 @@ CABLES.GLGUI.SplineDrawer = class
         this._shader.setSource(""
             .endl() + "{{MODULES_HEAD}}"
 
-
             .endl() + "IN vec3 vPosition;"
             .endl() + "IN float attrVertIndex;"
             .endl() + "IN vec4 vcolor;"
@@ -104,6 +103,12 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    vec4 finalPosition  =  (vec4(spline2,1.0));"
             .endl() + "    vec4 finalPosition2 =  (vec4(spline3,1.0));"
 
+            .endl() + "    if(finalPosition.x==0.0 && finalPosition.y==0.0 && finalPosition.z==0.0)"
+            .endl() + "    {"
+            .endl() + "    finalPosition=vec4(10000.0);"
+            .endl() + "    finalPosition2=vec4(10000.0);"
+            .endl() + "    }"
+
             .endl() + "    vec2 screenPos =fix( vec4(spline,1.0));"
             .endl() + "    vec2 screenPos2=fix( vec4(spline2,1.0));"
             .endl() + "    vec2 screenPos3=fix( vec4(spline3,1.0));"
@@ -126,14 +131,17 @@ CABLES.GLGUI.SplineDrawer = class
             .endl() + "    finalPosition = mix(finalPosition,finalPosition2,pos.x);"
             .endl() + "    fProgress=splineProgress;"// distance(finalPosition.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect,finalPosition2.xy+offset.xy+vec2(0.0,pos.y)+vec2(scrollX,scrollY)*-aspect);"
 
+
             .endl() + "    finalPosition.xy += offset.xy;"
 
             .endl() + "    finalPosition.y*=-aspect;"
+
 
             .endl() + "    finalPosition.xy*=zoom;"
             .endl() + "    finalPosition.x+=scrollX;"
             .endl() + "    finalPosition.y+=scrollY;"
             .endl() + "    finalPosition.z=spline.z;"
+
 
             .endl() + "    gl_Position = finalPosition;"
             .endl() + "}"
@@ -307,11 +315,9 @@ CABLES.GLGUI.SplineDrawer = class
 
     hideSpline(idx)
     {
-        for (let i = 0; i < this._splines[idx].points.length; i++)
-        {
-            this._splines[idx].points[i] = 0;
-            this._splines[idx].hidden = true;
-        }
+        this._splines[idx].hidden = true;
+        for (let i = 0; i < this._splines[idx].points.length; i++) this._splines[idx].points[i] = 0;
+        this._updateAttribsCoordinates(idx);
     }
 
     setSpline(idx, points)
