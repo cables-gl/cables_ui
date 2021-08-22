@@ -4,25 +4,42 @@
     z-index: $zindex_highest;
     position: absolute;
     // top: 12% !important;
-    left: 50%;
+    left: 40%;
+    // background-color: var(--color-02);
     display: none;
     transform: translate(-34%,0.0);
     padding:0;
+
 }
+
+
+
 
 .opsearch
 {
-    width:1024px;
-    height:630px;
-    // overflow: hidden;
+    background-color: $background-color-dark;
+
+    border-radius: $border-radius-popups;
+
+    width:875px;
+    height:580px;
+    overflow: hidden;
+
+    .opselectclose
+    {
+        position: absolute;
+        right: 20px;
+        top: 20px;
+    }
+
 
     header
     {
-        width:420px;
-        border-top-left-radius: $border-radius-popups;
-        border-top-right-radius: $border-radius-popups;
-        background-color: $color-searchInputContainer;
-        padding: 30px;
+        width:440px;
+        // border-top-left-radius: $border-radius-popups;
+        // border-top-right-radius: $border-radius-popups;
+        background-color: var(--color-03);
+        padding: 20px;
 
         input
         {
@@ -69,14 +86,14 @@
 
     .opOptions
     {
-        background-color: $background-color-brighter;
+        // background-color: $background-color-brighter;
         padding:5px;
         padding-left: 15px;
         text-align: center;
 
         border-bottom-left-radius: $border-radius-popups;
         border-bottom-right-radius: $border-radius-popups;
-        background-color: $color-searchInputContainer;
+        // background-color: $color-searchInputContainer;
 
         .warning
         {
@@ -112,7 +129,7 @@
     .searchresult //,.searchresult_cmd
     {
         font-size: 16px;
-        padding: 20px 30px;
+        padding: 15px 20px;
 		border-bottom: 1px solid var(--color-07);
         background-color: $background-color-brighter;
 
@@ -125,38 +142,38 @@
 
     .searchbrowser
     {
-        height:520px;
+        height:465px;
         overflow:auto;
     }
 
-    .optree
-    {
-        position: absolute;
-        margin-left:-190px;
-        width:130px;
-        overflow-y: scroll;
-        height: 460px;
-        // left:0;
-        background-color: $background-color-dark;
-		border-bottom:30px solid $background-color-dark;
-		border-top:30px solid $background-color-dark;
-        border-top-left-radius: $border-radius-popups;
-        border-bottom-left-radius: $border-radius-popups;
-        padding: 0 30px;
-        margin-top: 109px;
-    }
+    // .optree
+    // {
+    //     position: absolute;
+    //     margin-left:-190px;
+    //     width:130px;
+    //     overflow-y: scroll;
+    //     height: 460px;
+    //     // left:0;
+    //     background-color: $background-color-dark;
+	// 	border-bottom:30px solid $background-color-dark;
+	// 	border-top:30px solid $background-color-dark;
+    //     border-top-left-radius: $border-radius-popups;
+    //     border-bottom-left-radius: $border-radius-popups;
+    //     padding: 0 30px;
+    //     margin-top: 109px;
+    // }
 
     .searchinfo
     {
-        margin-top: 109px;
-        background-color: $background-color-dark;
+        margin-top: 60px;
+        // background-color: $background-color-dark;
 		border-bottom:30px solid $background-color-dark;
 		border-top:30px solid $background-color-dark;
         margin-left: 480px;
         position: absolute;
-        width:480px;
+        width:350px;
         // padding: 20px;
-        padding: 0 30px;
+        padding: 0 15px;
         overflow-x: hidden;
         overflow-y: auto;
         height:460px;
@@ -377,10 +394,10 @@
         padding: 5px 10px;
     }
 
-    .optree
-    {
-        visibility: hidden;
-    }
+    // .optree
+    // {
+    //     visibility: hidden;
+    // }
 
 
 }

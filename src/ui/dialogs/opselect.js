@@ -62,7 +62,6 @@ CABLES.UI.OpSelect = class
         if (query.length == 1) ele.show(eleTypeMore);// .classList.remove("hidden");
         else ele.hide(eleTypeMore);// .classList.add("hidden");
 
-
         if (num == 0 && query.length > 1)
         {
             ele.show(eleNoResults);// .classList.remove("hidden");
@@ -322,6 +321,8 @@ CABLES.UI.OpSelect = class
         const opname = $(".selected").data("opname");
         const htmlFoot = "";
 
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
         // setTimeout(function()
         // {
         this.updateOptions(opname);
@@ -331,7 +332,7 @@ CABLES.UI.OpSelect = class
         {
             const perf = CABLES.uiperf.start("opselect.updateInfo");
 
-            this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
             this._eleSearchinfo.innerHTML = "";
             const opDoc = gui.opDocs.get2(opname);
 
@@ -351,6 +352,10 @@ CABLES.UI.OpSelect = class
             }, 50);
 
             perf.finish();
+        }
+        if (this._getQuery() == "")
+        {
+            this._eleSearchinfo.innerHTML = this.tree.html();
         }
         this._currentSearchInfo = opname;
     }
@@ -478,7 +483,8 @@ CABLES.UI.OpSelect = class
 
             this._html = CABLES.UI.getHandleBarHtml("op_select_ops", { "ops": this._list });
             $("#searchbrowserContainer").html(this._html);
-            $("#opsearch").on("input", this.onInput.bind(this));
+            // $("#opsearch").on("input", this.onInput.bind(this));
+            document.getElementById("opsearch").addEventListener("input", this.onInput.bind(this));
         }
     }
 
@@ -566,7 +572,6 @@ CABLES.UI.OpSelect = class
             this.updateInfo();
         };
 
-        $("#optree").html(this.tree.html());
 
         this.updateOptions();
 
