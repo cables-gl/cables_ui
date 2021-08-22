@@ -45,8 +45,6 @@ CABLES.UI.OpSelect = class
     {
         const perf = CABLES.uiperf.start("opselect.udpateOptions");
         const num = $(".searchbrowser .searchable:visible").length;
-
-        console.log("num", num);
         const query = this._getQuery();
 
         const eleTypeStart = ele.byId("search_startType");
