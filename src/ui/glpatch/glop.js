@@ -313,7 +313,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
-            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN)portsWidthIn += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
+            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN) portsWidthIn += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
             else portsWidthOut += this._glPorts[i].width + CABLES.GLGUI.VISUALCONFIG.portPadding;
         }
 
@@ -331,6 +331,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
                 this._glPorts[i].updateSize();
+
 
         this._updateCommentPosition();
         this._updateSizeRightHandle();
@@ -764,11 +765,11 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         for (let i = 0; i < this._op.portsIn.length; i++)
         {
             if (this._op.portsIn[i].id == id) return count * (CABLES.GLGUI.VISUALCONFIG.portWidth + CABLES.GLGUI.VISUALCONFIG.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
-            if (
-                this._op.portsIn[i].isHidden() ||
+            if (this._op.portsIn[i].isHidden() ||
                 this._op.portsIn[i].uiAttribs.display == "dropdown" ||
                 this._op.portsIn[i].uiAttribs.display == "readonly" ||
                 this._op.portsIn[i].uiAttribs.hidePort) continue;
+
             count++;
         }
 
