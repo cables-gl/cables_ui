@@ -349,7 +349,7 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         if (op.portsIn[index].uiAttribs.display == "bool")
         {
-            ele.val(v + " !!!");
+            ele.val(v);
 
             // if (v != "true" && v != "false")
             // {
