@@ -2297,11 +2297,6 @@ CABLES.UI.GUI = function (cfg)
 CABLES.UI.GUI.prototype.setUser = function (u)
 {
     gui.user = u;
-    if (!this.user.isPro)
-    {
-        document.getElementById("nav_createBackup").remove();
-        document.getElementById("nav_viewBackups").remove();
-    }
 };
 
 CABLES.UI.GUI.prototype.updateTheme = function ()

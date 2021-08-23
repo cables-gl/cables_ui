@@ -416,9 +416,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (gui.patchView._patchRenderer.getOp)
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
-                    const glPort = glOp.getGlPort(op.portsOut[ipo].name);
-
-                    gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsOut[ipo].name, e);
+                    if (glOp)
+                    {
+                        const glPort = glOp.getGlPort(op.portsOut[ipo].name);
+                        gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsOut[ipo].name, e);
+                    }
                 }
             });
         }

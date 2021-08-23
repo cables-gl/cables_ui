@@ -133,7 +133,7 @@ CABLES.CMD.PATCH.opsCompress = function ()
 
 CABLES.CMD.PATCH.export = function ()
 {
-    const exporter = new CABLES.UI.Exporter();
+    const exporter = new CABLES.UI.Exporter(gui.patch().getCurrentProject(), CABLES.sandbox.getPatchVersion());
     exporter.show();
 };
 

@@ -30,7 +30,9 @@ CABLES.UI.OpSelect = class
 
     close()
     {
-        $("body").off("keydown", this.keyDown);
+        // if (this.keyDown)
+        // ele.byId("opsearch").removeEventListener("keydown", this.keyDown);
+
         gui.patchView.focus();
     }
 
@@ -62,14 +64,13 @@ CABLES.UI.OpSelect = class
         if (query.length == 1) ele.show(eleTypeMore);// .classList.remove("hidden");
         else ele.hide(eleTypeMore);// .classList.add("hidden");
 
-
         if (num == 0 && query.length > 1)
         {
             ele.show(eleNoResults);// .classList.remove("hidden");
             ele.byId("searchinfo").innerHMTL = "";
             const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
-            $(".userCreateOpName").html(userOpName);
-            $("#createuserop").attr("onclick", `gui.serverOps.create('${userOpName}');`);
+            document.getElementById("userCreateOpName").innerHTML = userOpName;
+            document.getElementById("createuserop").addEventListener("click", () => { gui.serverOps.create(userOpName); });
         }
         else
         {
@@ -97,7 +98,7 @@ CABLES.UI.OpSelect = class
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");// .data('scoreDebug')
-        // var score=Math.round(100*$('.selected').data('score'))/100;
+
         if (selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
 
         if (score && score == score)
@@ -111,7 +112,7 @@ CABLES.UI.OpSelect = class
             optionsHtml += "</span>";
         }
 
-        $("#opOptions").html(optionsHtml);
+        document.getElementById("opOptions").innerHTML = optionsHtml;
         perf.finish();
     }
 
@@ -290,11 +291,11 @@ CABLES.UI.OpSelect = class
                 let nquery = queryParts.join(" ");
                 nquery += ` ${q}`;
 
-                if (nquery != query) $("#realsearch").html(`Searching for: <b>${nquery}</b>`);
+                if (nquery != query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
 
                 query = nquery;
             }
-            else $("#realsearch").html("");
+            else document.getElementById("realsearch").innerHTML = "";
         }
 
         if (query.length > 1)
@@ -322,16 +323,15 @@ CABLES.UI.OpSelect = class
         const opname = $(".selected").data("opname");
         const htmlFoot = "";
 
-        // setTimeout(function()
-        // {
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
         this.updateOptions(opname);
-        // }.bind(this),50);
 
         if (opname && this._currentSearchInfo != opname)
         {
             const perf = CABLES.uiperf.start("opselect.updateInfo");
 
-            this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
             this._eleSearchinfo.innerHTML = "";
             const opDoc = gui.opDocs.get2(opname);
 
@@ -351,6 +351,10 @@ CABLES.UI.OpSelect = class
             }, 50);
 
             perf.finish();
+        }
+        if (this._getQuery() == "")
+        {
+            this._eleSearchinfo.innerHTML = this.tree.html();
         }
         this._currentSearchInfo = opname;
     }
@@ -478,7 +482,8 @@ CABLES.UI.OpSelect = class
 
             this._html = CABLES.UI.getHandleBarHtml("op_select_ops", { "ops": this._list });
             $("#searchbrowserContainer").html(this._html);
-            $("#opsearch").on("input", this.onInput.bind(this));
+
+            document.getElementById("opsearch").addEventListener("input", this.onInput.bind(this));
         }
     }
 
@@ -530,9 +535,13 @@ CABLES.UI.OpSelect = class
         if (link && link.p1 && (link.p1.thePort.type == CABLES.OP_PORT_TYPE_VALUE || link.p1.thePort.type == CABLES.OP_PORT_TYPE_STRING)) $("#opselect_replaceVar").show();
         else $("#opselect_replaceVar").hide();
 
-        $("#opsearch").select();
-        $("#opsearch").focus();
-        $("body").on("keydown", this.keyDown.bind(this));
+        const eleOpsearch = ele.byId("opsearch");
+        eleOpsearch.select();
+        eleOpsearch.focus();
+
+        eleOpsearch.removeEventListener("keydown", this._boundKeydown);
+        this._boundKeydown = this.keyDown.bind(this);
+        eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
         if (this.itemHeight === 0) this.itemHeight = $(".searchresult:first").outerHeight();
 
@@ -548,12 +557,12 @@ CABLES.UI.OpSelect = class
 
                 if (v == "Ops") v = "";
 
-                $("#opsearch").val(v);
+                eleOpsearch.value = v;
                 this.search();
             }
             else
             {
-                $("#opsearch").val("");
+                eleOpsearch.value = "";
                 this.search();
             }
         };
@@ -566,16 +575,15 @@ CABLES.UI.OpSelect = class
             this.updateInfo();
         };
 
-        $("#optree").html(this.tree.html());
 
         this.updateOptions();
 
-        setTimeout(() => { $("#opsearch").focus(); }, 50);
+        setTimeout(() => { eleOpsearch.focus(); }, 50);
     }
 
     searchFor(what)
     {
-        $("#opsearch").val(what);
+        ele.byId("opsearch").value = what;
         this.onInput();
     }
 
