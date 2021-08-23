@@ -17,6 +17,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._height = CABLES.GLGUI.VISUALCONFIG.opHeight;
         this._needsUpdate = true;
         this._textWriter = null;
+        this._resizableArea = null;
 
         this._glTitleExt = null;
         this._glRectNames.push("_glTitleExt");
@@ -63,6 +64,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+
 
         this.setHover(false);
         this.updateVisible();
@@ -392,6 +394,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this._glComment) this._glComment.dispose();
         if (this._glTitleExt) this._glTitleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
+        if (this._resizableArea) this._resizableArea.dispose();
         this._disposeDots();
 
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
@@ -606,6 +609,14 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
+        if (this.opUiAttribs.hasOwnProperty("hasArea"))
+        {
+            if (this.opUiAttribs.hasArea && !this._resizableArea)
+            {
+                this._resizableArea = new CABLES.GLGUI.GlArea(this._instancer, this);
+            }
+        }
+
         if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._glTitleExt)
         {
             this._glTitleExt = new CABLES.GLGUI.Text(this._textWriter, " ???");
@@ -798,6 +809,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             x = this._glPatch.snapLines.snapX(x);
             y = this._glPatch.snapLines.snapY(y);
         }
+
+        this.emitEvent("drag");
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.updatePosition();
