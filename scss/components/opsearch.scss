@@ -4,21 +4,18 @@
     z-index: $zindex_highest;
     position: absolute;
     // top: 12% !important;
-    left: 40%;
+    left: calc(30% - 430px);
+
     // background-color: var(--color-02);
     display: none;
     // transform: translate(-34%,0.0);
     padding:0;
-
 }
-
-
 
 
 .opsearch
 {
     background-color: $background-color-dark;
-
     border-radius: $border-radius-popups;
 
     width:875px;
