@@ -183,7 +183,7 @@ CABLES.API = class
 
             let html = "";
             html += "<center>";
-            html += "<img src=\"/img/bug.gif\"/><br/><br/>";
+            html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/img/bug.gif\"/><br/><br/>";
             html += "<h2>thank you</h2>";
             html += "we will look into it<br/>";
             html += "<br/>";

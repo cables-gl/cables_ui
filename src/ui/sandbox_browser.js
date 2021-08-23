@@ -75,6 +75,11 @@ CABLES.SandboxBrowser.prototype.getPatchId = function ()
     return this._cfg.patchId;
 };
 
+CABLES.SandboxBrowser.prototype.getPatchVersion = function ()
+{
+    return this._cfg.patchVersion;
+};
+
 CABLES.SandboxBrowser.prototype.getSocketclusterConfig = function ()
 {
     return this._cfg.socketcluster;
