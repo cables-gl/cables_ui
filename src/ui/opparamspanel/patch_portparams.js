@@ -349,13 +349,15 @@ CABLES.UI.initPortInputListener = function (op, index)
 
         if (op.portsIn[index].uiAttribs.display == "bool")
         {
-            if (v != "true" && v != "false")
-            {
-                v = false;
-                ele.val("false");
-            }
-            if (v == "true") v = true;
-            else v = false;
+            ele.val(v + " !!!");
+
+            // if (v != "true" && v != "false")
+            // {
+            //     v = false;
+            //     ele.val("false");
+            // }
+            // if (v == "true") v = true;
+            // else v = false;
         }
 
         if (!CABLES.mouseDraggingValue)
