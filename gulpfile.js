@@ -1,6 +1,7 @@
 const gulp = require("gulp");
 const jshint = require("gulp-jshint");
-const sass = require("gulp-sass");
+const sass = require("gulp-sass-no-nodesass");
+sass.compiler = require("sass");
 const concat = require("gulp-concat");
 const uglify = require("gulp-uglify-es").default;
 const rename = require("gulp-rename");
