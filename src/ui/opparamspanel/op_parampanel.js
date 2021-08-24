@@ -647,8 +647,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                     if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                         if (parseFloat(el.val()) != parseFloat(thePort.getValueForDisplay())) el.val(thePort.getValueForDisplay());
-                        else
-                        if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
+                        else if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {

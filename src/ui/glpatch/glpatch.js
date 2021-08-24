@@ -50,6 +50,7 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new CABLES.GLGUI.GlDragLine(this._overlaySplines, this);
 
+
         this.cablesHoverText = new CABLES.GLGUI.Text(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 0);
@@ -727,7 +728,6 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
             {
                 this.debugData["glUpdateAttribs " + i] = this._cgl.profileData.profileSingleMeshAttribute[i];
             }
-
 
             this._cgl.profileData.clear();
         }

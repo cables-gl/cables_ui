@@ -46,7 +46,7 @@ CABLES.GLGUI.Text = class
 
     get width() { return this._width; }
 
-    get height() { return this._height; }
+    get height() { return this._height * 0.5 * this._scale; }
 
     setPosition(x, y, z)
     {
@@ -119,9 +119,8 @@ CABLES.GLGUI.Text = class
 
         const lineHeight = this._map(this._font.info.size / 2) + 13;
         let posX = this._x;
-
-        let posZ = this._z;
         let posY = this._y + lineHeight;
+        let posZ = this._z;
         let countLines = 1;
 
         if (this._parentRect)
