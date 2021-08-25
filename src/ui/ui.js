@@ -2010,23 +2010,6 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    // this.setMetaTab = function(which) {
-    //     CABLES.UI.userSettings.set("metatab", which);
-
-    //     $('.meta_content').hide();
-    //     $('#metatabs a').removeClass('active');
-    //     $('#metatabs .tab_' + which).addClass('active');
-    //     $('#meta_content_' + which).show();
-
-    //     // if (which == 'code') self.showMetaCode();
-    //     if (which == 'keyframes') self.metaKeyframes.show();
-    //     if (which == 'paco') self.showMetaPaco();
-    //     // if (which == 'profiler') self.showProfiler();
-    //     // if (which == 'variables') self.variables.show();
-    //     if (which == 'preview') this.metaTexturePreviewer.show();
-    //     else if (this.metaTexturePreviewer) this.metaTexturePreviewer.hide();
-    // };
-
     this.startPacoSender = function ()
     {
         this.patchConnection.connectors.push(new CABLES.PatchConnectorSocketIO());
@@ -2056,7 +2039,7 @@ CABLES.UI.GUI = function (cfg)
             favIconLink.href = "/favicon/favicon_orange.ico";
             savedState = false;
 
-            $("#patchname").addClass("warning");
+            document.getElementById("patchname").classList.add("warning");
 
             window.onbeforeunload = function (event)
             {
@@ -2079,7 +2062,7 @@ CABLES.UI.GUI = function (cfg)
     {
         savedState = true;
         favIconLink.href = "/favicon/favicon.ico";
-        $("#patchname").removeClass("warning");
+        document.getElementById("patchname").classList.remove("warning");
 
         let title = "";
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
@@ -2505,29 +2488,10 @@ function startUi(cfg)
     //     if(!isFocused) $('#glcanvas').focus();
     // });
 
-    $("#glcanvas").on("focus",
-        function ()
-        {
-            gui.showCanvasModal(true);
-        });
-
-    // $(document).on("click", '.panelhead',
-    //     function(e)
-    //     {
-    //         var panelselector = $(this).data("panelselector");
-    //         if (panelselector) {
-    //             $(panelselector).toggle();
-
-    //             if ($(panelselector).is(":visible")) {
-    //                 $(this).addClass("opened");
-    //                 $(this).removeClass("closed");
-    //             } else {
-    //                 $(this).addClass("closed");
-    //                 $(this).removeClass("opened");
-    //             }
-    //         }
-    //     });
-
+    document.getElementById("glcanvas").addEventListener("focus", function ()
+    {
+        gui.showCanvasModal(true);
+    });
 
     logStartup("Init UI done");
 }

@@ -1211,21 +1211,21 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         if (CABLES.ANIM.MoveMode > 2)CABLES.ANIM.MoveMode = 0;
         if (CABLES.ANIM.MoveMode === 0)
         {
-            $("#keymovemode").addClass("fa-arrows-h");
-            $("#keymovemode").removeClass("fa-arrows-v");
-            $("#keymovemode").removeClass("fa-arrows");
+            document.getElementById("keymovemode").classList.add("fa-arrows-h");
+            document.getElementById("keymovemode").classList.remove("fa-arrows-v");
+            document.getElementById("keymovemode").classList.remove("fa-arrows");
         }
         if (CABLES.ANIM.MoveMode == 1)
         {
-            $("#keymovemode").addClass("fa-arrows-v");
-            $("#keymovemode").removeClass("fa-arrows-h");
-            $("#keymovemode").removeClass("fa-arrows");
+            document.getElementById("keymovemode").classList.add("fa-arrows-v");
+            document.getElementById("keymovemode").classList.remove("fa-arrows-h");
+            document.getElementById("keymovemode").classList.remove("fa-arrows");
         }
         if (CABLES.ANIM.MoveMode == 2)
         {
-            $("#keymovemode").addClass("fa-arrows");
-            $("#keymovemode").removeClass("fa-arrows-v");
-            $("#keymovemode").removeClass("fa-arrows-h");
+            document.getElementById("keymovemode").classList.add("fa-arrows");
+            document.getElementById("keymovemode").classList.remove("fa-arrows-v");
+            document.getElementById("keymovemode").classList.remove("fa-arrows-h");
         }
     }
 
@@ -1874,13 +1874,13 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     {
         if (!gui.scene().timer.isPlaying())
         {
-            $("#timelineplay").removeClass("fa-pause");
-            $("#timelineplay").addClass("fa-play");
+            document.getElementById("timelineplay").classList.remove("fa-pause");
+            document.getElementById("timelineplay").classList.add("fa-play");
         }
         else
         {
-            $("#timelineplay").removeClass("fa-play");
-            $("#timelineplay").addClass("fa-pause");
+            document.getElementById("timelineplay").classList.remove("fa-play");
+            document.getElementById("timelineplay").classList.add("fa-pause");
         }
     };
 

@@ -6,25 +6,25 @@ CABLES.UI.pointerLockFirstTime = true;
 CABLES.UI.togglePortValBool = function (which, checkbox)
 {
     gui.setStateUnsaved();
-    const inputEle = $("#" + which);
-    const checkBoxEle = $("#" + checkbox);
+    const inputEle = document.getElementById(which);
+    const checkBoxEle = document.getElementById(checkbox);
 
-    let bool_value = inputEle.val() == "true";
+    let bool_value = inputEle.value == "true";
     bool_value = !bool_value;
 
     if (bool_value)
     {
-        checkBoxEle.addClass("fa-check-square");
-        checkBoxEle.removeClass("fa-square");
+        checkBoxEle.classList.add("fa-check-square");
+        checkBoxEle.classList.remove("fa-square");
     }
     else
     {
-        checkBoxEle.addClass("fa-square");
-        checkBoxEle.removeClass("fa-check-square");
+        checkBoxEle.classList.add("fa-square");
+        checkBoxEle.classList.remove("fa-check-square");
     }
 
-    inputEle.val(bool_value);
-    inputEle.trigger("input");
+    inputEle.value = bool_value;
+    inputEle.dispatchEvent(new Event("input"));
 };
 
 
@@ -61,8 +61,6 @@ CABLES.valueChangerInitSliders = function ()
     {
         const v = $(this).val();
         CABLES.valueChangerSetSliderCSS(v, $(this).parent());
-        // const grad = CABLES.valueChangerGetSliderCss(v);
-        // $(this).parent().css({ "background": grad });
     });
 };
 
@@ -139,7 +137,6 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             const i = (portNum + dir) + count * dir;
             const pEle = document.getElementById("portval_" + i + "-container");
 
-            // if($('#portval_'+i+'-container').length)
             if (pEle)
             {
                 const portname = pEle.dataset.portname;
