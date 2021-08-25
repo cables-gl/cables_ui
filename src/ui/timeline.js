@@ -596,15 +596,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         for (const j in anims)
         {
             anims[j].removeUi();
-
-            // for(var i in anims[j].keys)
-            // {
-            //     if(anims[j].keys[i].circle)
-            //     {
-            //         // $('#timeline svg circle').hide();
-            //         anims[j].keys[i].removeUi();
-            //     }
-            // }
         }
 
         if ($("#timeline svg circle").length > 0)
@@ -1521,21 +1512,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         isScrollingOverview = false;
     });
 
-    // function scrollTimeOverview(e)
-    // {
-    //     isScrollingOverview=true;
-    //     var time=e.offsetX/$('#timeline').width();
-    //     time=projectLength*time;
-
-    //     gui.scene().timer.setTime(time);
-    //     clearTimeout(centerCursorTimeout);
-    //     centerCursorTimeout=setTimeout(function()
-    //     {
-    //         self.centerCursor();
-    //     },10);
-
-    // }
-
     function scrollTime(e)
     {
         if (e.buttons == 1 || e.buttons == 2)
@@ -1606,13 +1582,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             return;
         }
 
-        // else
-        // {
-        //     // $(document).bind("mousemove",mousemoveOverview);
-        //     $('#timeline').focus();
-        //     e=mouseEvent(e);
-        // }
-        // scrollTimeOverview(e);
         e.preventDefault();
         e.stopPropagation();
     });
@@ -1652,7 +1621,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
 
         const oldTime = self.getTimeLeft();
-        // CABLES.ANIM.TIMESCALE=$('#timeline').width()/(time-oldStartSeconds);
         CABLES.ANIM.TIMESCALE += CABLES.ANIM.TIMESCALE * delta * 0.01;
         viewBox.x = oldTime * CABLES.ANIM.TIMESCALE;
 
@@ -1785,35 +1753,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         updateKeyLine();
         updateTimeDisplay();
     };
-
-    // this.setTimeScale=function(v)
-    // {
-    //     cursorLine.hide();
-
-    //     var oldx=viewBox.x;
-
-    //     var offsetLeftTime=this.getTimeFromPaper(viewBox.x);
-    //     var oldCursor=(this.getPaperXFromTime(cursorTime)-viewBox.x);
-
-    //     var leftToCursorDiff=this.getPaperXFromTime(cursorTime-offsetLeftTime);
-
-    //     CABLES.ANIM.TIMESCALE=v;
-
-    //     var leftToCursorDiffAfter=this.getPaperXFromTime(cursorTime-offsetLeftTime);
-    //     leftToCursorDiff=leftToCursorDiffAfter-leftToCursorDiff;
-
-    //     this.centerCursor();
-    //     viewBox.x-=leftToCursorDiff;
-
-    //     updateKeyLine();
-
-    //     self.updateViewBox();
-    //     updateTimeDisplay();
-
-    //     $('#timeline').focus();
-    //     cursorLine.show();
-    //     setCursor(this.getTime());
-    // };
 
     this.getTimeFromMouse = function (e)
     {
@@ -1978,9 +1917,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         for (const j in anims)
             for (const i in anims[j].keys)
                 if (anims[j].keys[i].selected) count++;
-
-        // if (count > 0) $(".easingselect").show();
-        // else $(".easingselect").hide();
     };
 
     // ---------------------------------

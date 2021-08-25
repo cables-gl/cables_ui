@@ -381,29 +381,6 @@ CABLES.UI.GUI = function (cfg)
             patchHeight -= timelineUiHeight;
         }
 
-        // if (patchWidth < 600)
-        // {
-        //     $("#username").hide();
-        //     // $(".projectname").hide();
-        //     $(".naventry").hide();
-        // }
-        // else
-        // {
-        //     $("#username").show();
-        //     // $(".projectname").show();
-        //     $(".naventry").show();
-        // }
-
-        const subPatchNavPosY = 100;
-
-
-        // $("#subpatch_nav").css(
-        //     {
-        //         "width": patchWidth + "px",
-        //         "left": iconBarWidth + "px",
-        //         "top": menubarHeight + 1
-        //     });
-
         let editorWidth = self.editorWidth;
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
@@ -435,8 +412,6 @@ CABLES.UI.GUI = function (cfg)
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
             // this._elEditorMaximized.style.top = subPatchNavPosY + "px";
 
-
-            // $("#subpatch_nav").css("left", editorWidth + iconBarWidth + 15);
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
 
             gui.mainTabs.updateSize();
@@ -451,7 +426,6 @@ CABLES.UI.GUI = function (cfg)
             this._elSplitterMaintabs.style.display = "none";
             // this._elEditorMinimized.style.top = 80 + "px";
 
-            // $("#subpatch_nav").css("left", iconBarWidth + 25);
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
         }
 
@@ -1282,11 +1256,6 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.CMD.PATCH.uploadFileDialog();
         });
-        // $('.nav_patch_export_ignoreAssets').bind("click", function(event) {
-        //     gui.patch().exportStatic(true);
-        // });
-
-
         $(".nav_patch_browse_examples").bind("click", function (event)
         {
             const win = window.open("https://cables.gl/examples", "_blank");
@@ -1302,22 +1271,8 @@ CABLES.UI.GUI = function (cfg)
             const win = window.open("https://cables.gl/projects", "_blank");
             win.focus();
         });
-        // $('.nav_patch_resolve_subpatch').bind("click", function(event) {
-        //     self.patch().resolveSubpatch();
-        // });
-
         $(".nav_patch_contributors").bind("click", CABLES.CMD.UI.settingsContributors);
         $(".nav_changelog").bind("click", CABLES.CMD.UI.showChangelog);
-        // $('#username').bind("click", CABLES.CMD.UI.userSettings);
-
-        // $(".cables-logo").hover(function (e)
-        // {
-        //     gui.jobs().updateJobListing();
-        //     $("#jobs").show();
-        // }, function ()
-        // {
-        //     $("#jobs").hide();
-        // });
 
         // --- Help menu
         // Documentation
@@ -1325,7 +1280,6 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.CMD.UI.showKeys();
         });
-
 
         $(".nav_help_about").bind("click", function (event)
         {
@@ -1401,12 +1355,6 @@ CABLES.UI.GUI = function (cfg)
             CABLES.CMD.UI.toggleEditor();
         });
 
-        // $("#button_subPatchBack").bind("click", function (event)
-        // {
-        //     self.patch().subpatchBack();
-        // });
-        // $('#button_editor').bind("click", function (event) { showingEditor=!showingEditor;self.setLayout(); });
-
         window.addEventListener("resize", () =>
         {
             this.showCanvasModal(false);
@@ -1415,59 +1363,6 @@ CABLES.UI.GUI = function (cfg)
             this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
         }, false);
-
-
-        // $("#patch").keydown(function (e)
-        // {
-        //     switch (e.which)
-        //     {
-        //     // case 32: // space play
-        //     //     if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now();
-        //     //     break;
-
-        //     case 74: // j
-        //         gui.timeLine().jumpKey(-1);
-        //         break;
-        //     case 75: // k
-        //         gui.timeLine().jumpKey(1);
-        //         break;
-        //     }
-        // });
-
-
-        // $("#patchviews canvas").keyup(function (e)
-        // {
-        //     switch (e.which)
-        //     {
-        //     case 32: // space play
-        //         const timeused = Date.now() - gui.spaceBarStart;
-        //         if (timeused < 500) gui.timeLine().togglePlay();
-        //         gui.spaceBarStart = 0;
-        //         break;
-        //     }
-        // });
-
-        // $("#patch").keyup(function (e)
-        // {
-        //     switch (e.which)
-        //     {
-        //     case 32: // space play
-        //         const timeused = Date.now() - gui.spaceBarStart;
-        //         if (timeused < 500) gui.timeLine().togglePlay();
-        //         gui.spaceBarStart = 0;
-        //         break;
-        //     }
-        // });
-
-        // $("#timeline").keydown(function (e)
-        // {
-        //     switch (e.which)
-        //     {
-        //     case 32: // space play
-        //         gui.timeLine().togglePlay();
-        //         break;
-        //     }
-        // });
 
         cb();
     };
@@ -1765,92 +1660,10 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
     };
 
-
-    // this.importJson3D = function(id) {
-    //     CABLES.api.get('json3dimport/' + id,
-    //         function(data) {
-    //             console.log('data', data);
-    //         }
-    //     );
-    // };
-    // var infoTimeout = -1;
-
-    // this.editOpDoc = function(objName) {
-    //     CABLES.api.clearCache();
-
-    //     this.showEditor();
-
-    //     CABLES.api.get(
-    //         'doc/ops/md/' + objName,
-    //         function(res) {
-    //             var content = res.content || '';
-
-    //             self.editor().addTab({
-    //                 content: content,
-    //                 title: objName,
-    //                 syntax: 'Markdown',
-    //                 onSave: function(setStatus, content) {
-    //                     CABLES.api.post(
-    //                         'doc/ops/edit/' + objName, {
-    //                             content: content
-    //                         },
-    //                         function(res) {
-    //                             setStatus('saved');
-    //                             // console.log('res',res);
-    //                         },
-    //                         function(res) {
-    //                             setStatus('error: not saved');
-    //                             console.log('err res', res);
-    //                         }
-    //                     );
-    //                 }
-    //             });
-    //         });
-    // };
-
     this.getOpDoc = function (opname, html, cb)
     {
         cb(this.opDocs.get2(opname));
     };
-
-
-    // this.liveRecord = function() {
-    //     $('#glcanvas').attr('width', parseFloat($('#render_width').val()));
-    //     $('#glcanvas').attr('height', parseFloat($('#render_height').val()));
-
-    //     if (!CABLES.UI.capturer) {
-    //         $('#liveRecordButton').html("Stop Live Recording");
-    //         CABLES.UI.capturer = new CCapture({
-    //             format: 'gif',
-    //             // format: 'webm',
-    //             // quality:77,
-    //             workersPath: '/ui/js/gifjs/',
-    //             framerate: parseFloat($('#render_fps').val()),
-    //             display: true,
-    //             verbose: true
-    //         });
-
-    //         CABLES.UI.capturer.start(this._corePatch.cgl.canvas);
-    //     } else {
-    //         $('#liveRecordButton').html("Start Live Recording");
-    //         CABLES.UI.capturer.stop();
-    //         CABLES.UI.capturer.save();
-    //         var oldCap = CABLES.UI.capturer;
-    //         CABLES.UI.capturer = null;
-    //     }
-
-    // };
-
-
-    // this.showProfiler = function() {
-    //     if (!self.profiler) self.profiler = new CABLES.UI.Profiler();
-    //     self.profiler.show();
-    // };
-
-    // this.showMetaPaco = function ()
-    // {
-    //     this.metaPaco.show();
-    // };
 
     this.metaCode = function ()
     {
@@ -1878,14 +1691,6 @@ CABLES.UI.GUI = function (cfg)
         const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" });
     };
-
-    // this.showOpDoc = function(opname) {
-    //     this.getOpDoc(opname, true, function(html)
-    //     {
-    //         var doclink = '<div><a href="/op/' + opname + '" class="button ">view documentation</a>&nbsp;<br/><br/>';
-    //         $('#meta_content_doc').html(html+doclink);
-    //     });
-    // };
 
     this.setWorking = function (active, where)
     {
@@ -1971,26 +1776,6 @@ CABLES.UI.GUI = function (cfg)
 
         ele.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
     };
-
-    // this.updateProjectFiles=function(proj)
-    // {
-    //     if(!proj)proj=self.project();
-    //     if(!proj)return;
-    //     $('#meta_content_files').html('');
-    //
-    //     CABLES.api.get(
-    //         'project/'+proj._id+'/files',
-    //         function(files)
-    //         {
-    //             proj.files=files;
-    //             var html='';
-    //             html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_list',proj);
-    //             html+=CABLES.UI.getHandleBarHtml('tmpl_projectfiles_upload',proj);
-    //
-    //             $('#meta_content_files').html(html);
-    //         });
-    // };
-
 
     this.notIdling = function ()
     {
@@ -2479,14 +2264,6 @@ function startUi(cfg)
             });
         });
     });
-
-
-    // $('#cablescanvas').on("click", function(e)
-    // {
-    //     var isFocused = (document.activeElement === document.getElementById("#cablescanvas"));
-    //     console.log("isFocused???!",isFocused);
-    //     if(!isFocused) $('#glcanvas').focus();
-    // });
 
     document.getElementById("glcanvas").addEventListener("focus", function ()
     {

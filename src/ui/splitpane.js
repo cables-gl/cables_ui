@@ -5,7 +5,6 @@ CABLES.SPLITPANE.listeners = [];
 
 
 CABLES.UI.initSplitPanes = function ()
-// $(document).ready(function ()
 {
     document.getElementById("splitterPatch").addEventListener("mousedown", function (ev)
     {
