@@ -284,8 +284,7 @@
                         [<i>{{port.uiAttribs.objType}}</i>]
 
                     {{#compare port.uiAttribs.objType '==' 'texture' }}
-                    {{port.val.shortInfoString}}
-
+                    {{port.get().shortInfoString}}
                         &nbsp;<span class="button-small fa fa-align-justify info" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"></span>
                     {{/compare}}
 
