@@ -426,8 +426,8 @@ CABLES.UI.initPortInputListener = function (op, index)
 
 CABLES.UI.initPortClickListener = function (op, index)
 {
-    if (op.portsIn[index].isAnimated()) $("#portanim_in_" + index).addClass("timingbutton_active");
-    if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) $("#portgraph_in_" + index).addClass("timingbutton_active");
+    if (op.portsIn[index].isAnimated()) document.getElementById("portanim_in_" + index).classList.add("timingbutton_active");
+    if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) document.getElementById("portgraph_in_" + index).classList.add("timingbutton_active");
 
     $("#portTitle_in_" + index).on("click", function (e)
     {
@@ -563,7 +563,7 @@ CABLES.UI.initPortClickListener = function (op, index)
             op.portsIn[index].setAnimated(false);
 
             gui.patch().timeLine.setAnim(null);
-            $("#portanim_in_" + index).removeClass("timingbutton_active");
+            document.getElementById("portanim_in_" + index).classList.remove("timingbutton_active");
             $("#portval_" + index).val(val);
             $("#portval_" + index).trigger("input");
             $("#portval_" + index).focus();
@@ -571,7 +571,7 @@ CABLES.UI.initPortClickListener = function (op, index)
             return;
         }
 
-        $("#portanim_in_" + index).addClass("timingbutton_active");
+        document.getElementById("portanim_in_" + index).classList.add("timingbutton_active");
 
         op.portsIn[index].toggleAnim();
         gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
