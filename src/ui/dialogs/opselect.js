@@ -387,35 +387,11 @@ CABLES.UI.OpSelect = class
             }
         }
 
-        // sort html elements
-        // var $wrapper = $('.searchbrowser');
-
-        // // sorting takes long time. so do it asynchronous
-        // // clearTimeout(this._sortTimeout);
-        // // this._sortTimeout=setTimeout(function()
-        //     // {
-        //         $wrapper.find('.searchresult').sort(
-        //             function (a, b)
-        //             {
-        //                 var diff=parseFloat(b.dataset.score) - parseFloat(a.dataset.score);
-        //                 return diff;
-        //             }).appendTo( $wrapper );
-        //         this.Navigate(0);
-        //     // }.bind(this),50);
-
         tinysort.defaults.order = "desc";
 
-        // clearTimeout(this._sortTimeout);
-        // this._sortTimeout = setTimeout(
-        //     () =>
-        //     {
         tinysort(".searchresult", { "data": "score" });
         this.Navigate(0);
         this.updateOptions();
-        // }, 150,
-        // );
-
-
         perf.finish();
     }
 
