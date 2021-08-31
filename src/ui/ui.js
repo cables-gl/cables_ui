@@ -1904,17 +1904,26 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarContainer.style.top = this.rendererHeight * this._corePatch.cgl.canvasScale + 1 + "px";
 
 
-        if (this.rendererWidth < 600)
+        const w = this.rendererWidth * gui.corePatch().cgl.canvasScale;
+
+        if (w < 400)
         {
+            this._elCanvasIconbar.style.display = "none";
+        }
+        else
+        if (w < 600)
+        {
+            this._elCanvasIconbar.style.display = "inline-block";
             this._elCanvasIconbar.style["margin-left"] = 0;
-            this._elCanvasIconbar.style.right = this.rendererWidth + "px";
+            this._elCanvasIconbar.style.right = w + "px";
             this._elCanvasIconbar.style.transform = "initial";
         }
         else
         {
+            this._elCanvasIconbar.style.display = "inline-block";
             this._elCanvasIconbar.style.right = 0;
             this._elCanvasIconbar.style.transform = "translate(-50%)";
-            this._elCanvasIconbar.style["margin-left"] = this.rendererWidth / 2 + "px";
+            this._elCanvasIconbar.style["margin-left"] = w / 2 + "px";
         }
     };
 
