@@ -6,10 +6,13 @@ CABLES.UI.Keypresenter = function ()
     this.counter = 0;
     this._lastTextElement = null;
     this._lastKeyEvent = 0;
-    // this.lines=[];
     this._lastWheel = 0;
     this._lineCounter = 0;
-    $("body").append("<div id=\"keypresenter\"></div>");
+    const body = document.getElementsByTagName("body")[0];
+    const keypresenter = document.createElement("div");
+    keypresenter.id = "keypresenter";
+    body.appendChild(keypresenter);
+    this._container = keypresenter;
 };
 
 CABLES.UI.Keypresenter.prototype.addLine = function (title)
@@ -18,13 +21,14 @@ CABLES.UI.Keypresenter.prototype.addLine = function (title)
     {
         setTimeout(function ()
         {
-            $(id).fadeOut(400, function ()
+            const el = document.querySelector(id);
+            ele.fadeOut(el, 30, function ()
             {
-                $(id).css("opacity", 0.01);
-                $(id).show();
-                $(id).slideUp(400, function ()
+                el.style.opacity = 0.01;
+                el.style.display = "block";
+                ele.slideUp(el, 400, function ()
                 {
-                    $(id).remove();
+                    el.remove();
                 });
             });
         }, 2000);
@@ -32,16 +36,26 @@ CABLES.UI.Keypresenter.prototype.addLine = function (title)
 
     if (Date.now() - this._lastKeyEvent > 500)
     {
-        setUpDeath("#kp-line" + this._lineCounter);
+        const elId = "#kp-line" + this._lineCounter;
+        setUpDeath(elId);
         this._lineCounter++;
-        $("#keypresenter").append("<div class=\"kp-line\" id=\"kp-line" + this._lineCounter + "\"></div>");
+
+        const newEl = document.createElement("div");
+        newEl.id = "kp-line" + this._lineCounter;
+        newEl.classList.add("kp-line");
+        this._container.appendChild(newEl);
     }
 };
 
 CABLES.UI.Keypresenter.prototype.showAction = function (title)
 {
     const id = "kp-ele-" + this.counter;
-    $("#kp-line" + this._lineCounter).append("<span id=\"" + id + "\" class=\"kp-ele\">" + title + "</span>");
+    const actionEl = document.createElement("span");
+    actionEl.id = id;
+    actionEl.classList.add("kp-ele");
+    actionEl.innerHTML = title;
+    const line = document.getElementById("kp-line" + this._lineCounter);
+    if (line) line.appendChild(actionEl);
     this.counter++;
     return id;
 };
@@ -51,7 +65,7 @@ CABLES.UI.Keypresenter.prototype.start = function ()
 {
     setInterval(this.addLine.bind(this), 250);
 
-    $(document).keydown(function (e)
+    document.addEventListener("keydown", function (e)
     {
         let str = e.key;
 
@@ -62,12 +76,12 @@ CABLES.UI.Keypresenter.prototype.start = function ()
 
             if (this._lastTextElement !== null && Date.now() - this._lastKeyEvent < 300)
             {
-                str = this._lastTextElement.html() + str;
+                str = this._lastTextElement.innerHTML + str;
                 this._lastTextElement.remove();
             }
 
             const id = this.showAction(str);
-            this._lastTextElement = $("#" + id);
+            this._lastTextElement = document.getElementById(id);
         }
         else
         {
@@ -86,7 +100,7 @@ CABLES.UI.Keypresenter.prototype.start = function ()
         // console.log(e);
     }.bind(this));
 
-    $(document).on("mousedown", function (e)
+    document.addEventListener("mousedown", function (e)
     {
         let which = "left";
         if (e.buttons == 4)which = "middle";
