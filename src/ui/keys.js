@@ -16,7 +16,7 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
 
     show()
     {
-        this._tab = new CABLES.UI.Tab("keyboard shortcuts", { "icon": "help", "infotext": "tab_keys", "padding": true });
+        this._tab = new CABLES.UI.Tab("keyboard shortcuts", { "icon": "help", "infotext": "tab_keys", "padding": true, "singleton": true });
         gui.mainTabs.addTab(this._tab, true);
 
         const k = JSON.parse(JSON.stringify(this._keys));
