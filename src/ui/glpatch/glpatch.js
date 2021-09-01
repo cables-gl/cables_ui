@@ -134,42 +134,41 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
 
-        gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
-        gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
+        gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", "patch", {}, this._onKeyDelete.bind(this));
+        gui.keys.key("f", "Toggle flow visualization", "down", "patch", {}, (e) =>
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
             // console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
-        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, {}, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
-        gui.keys.key(" ", "", "up", cgl.canvas.id, {}, (e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
+        gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
+        gui.keys.key(" ", "", "up", "patch", {}, (e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
-        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, {}, (e) => { CABLES.CMD.PATCH.editOp(); });
-        gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { }, (e) => { this.viewBox.center(); });
-        gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, {}, (e) => { gui.patchView.unlinkSelectedOps(); });
+        gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
+        gui.keys.key("c", "Center Selected Ops", "down", "patch", { }, (e) => { this.viewBox.center(); });
+        gui.keys.key("x", "Unlink selected ops", "down", "patch", {}, (e) => { gui.patchView.unlinkSelectedOps(); });
 
-        gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
-        gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, {}, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
-        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
+        gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
+        gui.keys.key("a", "Align selected ops", "down", "patch", {}, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
+        gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
-        gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, {}, (e) => { gui.opHistory.back(); });
-        gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, {}, (e) => { gui.opHistory.forward(); });
+        gui.keys.key("j", "Navigate op history back", "down", "patch", {}, (e) => { gui.opHistory.back(); });
+        gui.keys.key("k", "Navigate op history forward", "down", "patch", {}, (e) => { gui.opHistory.forward(); });
 
-        gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.back(); });
-        gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
+        gui.keys.key("j", "Navigate op history back", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.back(); });
+        gui.keys.key("k", "Navigate op history forward", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
-        gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, {}, (e) => { this.toggleOpsEnable(); });
-        gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true }, (e) => { gui.patchView.tempUnlinkOp(); });
+        gui.keys.key("d", "Disable Op", "down", "patch", {}, (e) => { this.toggleOpsEnable(); });
+        gui.keys.key("d", "Temporary unlink op", "down", "patch", { "shiftKey": true }, (e) => { gui.patchView.tempUnlinkOp(); });
 
-        gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
-        gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(-1); });
-        gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, {}, (e) => { this.zoomStep(1); });
+        gui.keys.key("+", "Zoom In", "down", "patch", {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("=", "Zoom In", "down", "patch", {}, (e) => { this.zoomStep(-1); });
+        gui.keys.key("-", "Zoom Out", "down", "patch", {}, (e) => { this.zoomStep(1); });
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
 
-
-        gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, {}, (e) =>
+        gui.keys.key(" ", "Play/Pause timeline", "up", "patch", {}, (e) =>
         {
             const timeused = Date.now() - gui.spaceBarStart;
             if (timeused < 500) gui.timeLine().togglePlay();
