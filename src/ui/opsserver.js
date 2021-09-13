@@ -258,7 +258,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
     this.addOpLib = function (opName, libName)
     {
-        console.log("opaddlib");
         CABLESUILOADER.talkerAPI.send(
             "opAddLib",
             {
@@ -284,9 +283,43 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         );
     };
 
+    this.removeOpLib = function (opName, libName)
+    {
+        if (confirm("really remove library '" + libName + "' from op?"))
+        {
+            CABLESUILOADER.talkerAPI.send(
+                "opRemoveLib",
+                {
+                    "opname": opName,
+                    "name": libName,
+                },
+                function (err, res)
+                {
+                    if (err)
+                    {
+                        CABLES.UI.MODAL.showError("ERROR", "unable to remove library: " + err.msg);
+                    }
+                    else
+                    {
+                        gui.reloadDocs(function ()
+                        {
+                            gui.metaTabs.activateTabByName("code");
+                            let html = "";
+                            html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
+                            html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+
+                            CABLES.UI.MODAL.show(html, {
+                                "title": "library removed",
+                            });
+                        });
+                    }
+                },
+            );
+        }
+    };
+
     this.addCoreLib = function (opName, libName)
     {
-        console.log("opaddcorelib");
         CABLESUILOADER.talkerAPI.send(
             "opAddCoreLib",
             {
@@ -295,10 +328,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             },
             function (err, res)
             {
-                console.log("core lib added!");
                 gui.reloadDocs(function ()
                 {
-                    console.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
                     let html = "";
                     html += "to initialize the new library, you should reload the patch.<br/><br/>";
@@ -310,6 +341,41 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 });
             },
         );
+    };
+
+    this.removeCoreLib = function (opName, libName)
+    {
+        if (confirm("really remove corelib '" + libName + "' from op?"))
+        {
+            CABLESUILOADER.talkerAPI.send(
+                "opRemoveCoreLib",
+                {
+                    "opname": opName,
+                    "name": libName,
+                },
+                function (err, res)
+                {
+                    if (err)
+                    {
+                        CABLES.UI.MODAL.showError("ERROR", "unable to remove corelib: " + err.msg);
+                    }
+                    else
+                    {
+                        gui.reloadDocs(function ()
+                        {
+                            gui.metaTabs.activateTabByName("code");
+                            let html = "";
+                            html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
+                            html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+
+                            CABLES.UI.MODAL.show(html, {
+                                "title": "corelib removed",
+                            });
+                        });
+                    }
+                },
+            );
+        }
     };
 
     this.deleteAttachment = function (opName, attName)
@@ -324,7 +390,14 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                 },
                 function (err, res)
                 {
-                    gui.metaTabs.activateTabByName("code");
+                    if (err)
+                    {
+                        CABLES.UI.MODAL.showError("ERROR", "unable to remove attachment: " + err.msg);
+                    }
+                    else
+                    {
+                        gui.metaTabs.activateTabByName("code");
+                    }
                 },
             );
         }
@@ -523,7 +596,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
             (err) =>
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
-                console.erroror("error opening attachment " + attachmentName);
+                console.error("error opening attachment " + attachmentName);
                 console.log(err);
                 if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
             }

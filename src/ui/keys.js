@@ -36,7 +36,11 @@ CABLES.UI.KeyManager = class extends CABLES.EventTarget
         let lastTarget = "";
         for (let i = 0; i < k.length; i++)
         {
-            if (k[i].target != lastTarget) k[i].group = k[i].target;
+            if (k[i].target != lastTarget)
+            {
+                const group = k[i].options.displayGroup ? k[i].options.displayGroup : k[i].target;
+                k[i].group = group;
+            }
             lastTarget = k[i].target;
 
             if (k[i].key == " ")k[i].key = "Space";
