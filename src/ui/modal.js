@@ -695,8 +695,12 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
 
     setTimeout(function ()
     {
-        document.getElementById("modalpromptinput").focus();
-        document.getElementById("modalpromptinput").select();
+        const e = ele.byId("modalpromptinput");
+        if (e)
+        {
+            e.focus();
+            e.select();
+        }
     }, 100);
 
     document.getElementById("modalpromptinput").addEventListener("keydown",
