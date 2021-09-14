@@ -378,27 +378,22 @@ CABLES.GLGUI.GlCable = class
 
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
-            if (gui.patchView.getSelectedOps().length == 1 &&
+            if (this._glPatch.isDraggingOps())
+                if (gui.patchView.getSelectedOps().length == 1 &&
             (
                 this._link._opIn.id == gui.patchView.getSelectedOps()[0].id ||
                 this._link._opOut.id == gui.patchView.getSelectedOps()[0].id)
-            )
-            {
-                // no self hovering/linking
-                this._buttonRect.visible =
-                this._buttonRect.interactive =
-                this._buttonRect._hovering = false;
+                )
+                {
+                    // no self hovering/linking
+                    this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
 
-                return false;
-            }
+                    return false;
+                }
 
-
-            // this._glPatch._hoverCable.visible = true;
-            // this._glPatch._hoverCable.setPosition(this._x, this._y, this._x2, this._y2);
-            // this._glPatch._hoverCable.setColor(this._r * 1.1, this._g * 1.1, this._b * 1.1, 0.15);
             this.setColor();
-            // this._glPatch._hoverCable.visible = true;
-
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, CABLES.GLGUI.VISUALCONFIG.zPosCableButtonRect);
 

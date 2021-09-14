@@ -222,6 +222,11 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
             {
                 tdr.innerHTML = "&nbsp;" + this.getColName(x);
                 tdr.classList.add("colnum");
+                tdr.style.width = (90 / this._numCols) + "%";
+            }
+            else
+            {
+                tdr.style.width = "10%";
             }
             tr1.appendChild(tdr);
         }

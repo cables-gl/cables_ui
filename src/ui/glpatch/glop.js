@@ -643,6 +643,12 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
             if (comment != this._glComment.text) this._glComment.text = comment;
             this._glComment.visible = this.visible;
         }
+        else
+        {
+            if (this._glComment)
+                this._glComment.visible = false;
+        }
+
 
         if (this.opUiAttribs.comment_title) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
