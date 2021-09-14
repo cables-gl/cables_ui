@@ -738,7 +738,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setDecoration(3);
-            this._glTitle.setColor(1, 1, 1);
+            this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleSelected);
         }
 
         if (!this._op.enabled)

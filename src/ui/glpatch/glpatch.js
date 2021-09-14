@@ -1001,8 +1001,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const parts = ns.split(".");
         const nss = parts[0] + "." + parts[1];
 
-        if (CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss];
-        else return CABLES.GLGUI.VISUALCONFIG.namespaceColors.unknown;
+        if (CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors[nss];
+        else return CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors.unknown;
     }
 
     // make static util thing...

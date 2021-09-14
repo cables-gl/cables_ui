@@ -63,6 +63,13 @@ CABLES.GLGUI.GlUiCanvas = class
         // this._smoothedZoom = new CABLES.UI.ValueSmoother(this._zoom, CABLES.GLGUI.VISUALCONFIG.zoomSmooth);
 
 
+        this.updateTheme();
+        CABLES.UI.userSettings.on("onchange", (key, value) =>
+        {
+            this.updateTheme();
+        });
+
+
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
         // this.canvas.style.display='block';
@@ -306,5 +313,11 @@ CABLES.GLGUI.GlUiCanvas = class
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
+    }
+
+    updateTheme()
+    {
+        if (CABLES.UI.userSettings.get("theme-bright") == true) CABLES.GLGUI.VISUALCONFIG.colors = CABLES.GLGUI.VISUALCONFIG.colors_bright;
+        else CABLES.GLGUI.VISUALCONFIG.colors = CABLES.GLGUI.VISUALCONFIG.colors_dark;
     }
 };
