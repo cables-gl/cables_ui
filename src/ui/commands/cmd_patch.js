@@ -149,7 +149,7 @@ CABLES.CMD.PATCH.addOp = function (x, y)
 
 CABLES.CMD.PATCH.patchWebsite = function ()
 {
-    window.open(CABLES.SandboxBrowser.prototype.getCablesUrl + "/p/" + gui.patch().getCurrentProject()._id);
+    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.patch().getCurrentProject()._id);
 };
 
 CABLES.CMD.PATCH.analyzePatch = function ()
