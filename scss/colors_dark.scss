@@ -128,7 +128,7 @@ $button-border-color-hover: $background-color-dark;
 // Button with icon only (no text)
 // normal
 $icon-button-color: var(--color-13);
-$icon-button-background-color: $background-color-dark;
+$icon-button-background-color: $button-background-color;
 $icon-button-border-color: $icon-button-background-color;
 // hover / active
 $icon-button-color-hover: $highlight-color;
@@ -164,7 +164,7 @@ body.bright
 
     --text-color: var(--color-13);
     --color_op_bg: var(--color-13);
-    --color_op_bg_active: var(--color-12);
+    --color_op_bg_active: var(--color-06);
     --color_op_text: var(--color-01);
     --color_op_text_active: var(--color-01);
     --color_port_function:#8a7f00;
