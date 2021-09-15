@@ -345,10 +345,20 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
 
         this.emitEvent("mousedown", e);
         this._rectInstancer.mouseDown(e);
+
+        console.log("canvas mousedown!");
+        this._canvasMouseDown = true;
     }
 
     _onCanvasMouseUp(e)
     {
+        if (!this._canvasMouseDown)
+        {
+            console.log("cancel mouse up!");
+            return;
+        }
+        this._canvasMouseDown = false;
+
         this._removeDropInRect();
         this._rectInstancer.mouseUp(e);
 
@@ -1001,8 +1011,8 @@ CABLES.GLGUI.GlPatch = class extends CABLES.EventTarget
         const parts = ns.split(".");
         const nss = parts[0] + "." + parts[1];
 
-        if (CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.namespaceColors[nss];
-        else return CABLES.GLGUI.VISUALCONFIG.namespaceColors.unknown;
+        if (CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors[nss]) return CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors[nss];
+        else return CABLES.GLGUI.VISUALCONFIG.colors.namespaceColors.unknown;
     }
 
     // make static util thing...

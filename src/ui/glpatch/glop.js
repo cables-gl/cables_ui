@@ -320,7 +320,8 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (portsWidthIn != 0) portsWidthIn -= CABLES.GLGUI.VISUALCONFIG.portPadding;
         if (portsWidthOut != 0) portsWidthOut -= CABLES.GLGUI.VISUALCONFIG.portPadding;
 
-        this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
+        // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
+        this._width = this._getTitleWidth();
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
@@ -737,7 +738,7 @@ CABLES.GLGUI.GlOp = class extends CABLES.EventTarget
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setDecoration(3);
-            this._glTitle.setColor(1, 1, 1);
+            this._glTitle.setColor(CABLES.GLGUI.VISUALCONFIG.colors.opTitleSelected);
         }
 
         if (!this._op.enabled)

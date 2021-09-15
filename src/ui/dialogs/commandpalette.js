@@ -168,7 +168,10 @@ CABLES.UI.CommandPallet = function ()
 
 
         $(".result").removeClass("selected");
-        document.getElementById("result" + self._cursorIndex).classList.add("selected");
+
+
+        const e = ele.byId("result" + self._cursorIndex);
+        if (e) e.classList.add("selected");
 
         if ($("#result" + self._cursorIndex)[0]) $("#result" + self._cursorIndex)[0].scrollIntoView({ "block": "end" });
     };
