@@ -510,12 +510,12 @@ CABLES.CMD.commands.push(
         "func": CABLES.CMD.UI.toggleSnapToGrid,
         "icon": "command",
     },
-    {
-        "cmd": "toggle mini map",
-        "category": "ui",
-        "func": CABLES.CMD.UI.toggleMinimap,
-        "icon": "command",
-    },
+    // {
+    //     "cmd": "toggle mini map",
+    //     "category": "ui",
+    //     "func": CABLES.CMD.UI.toggleMinimap,
+    //     "icon": "command",
+    // },
     {
         "cmd": "toggle texture preview",
         "category": "ui",
