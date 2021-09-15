@@ -5,6 +5,7 @@ CABLES.UI.eleTooltip = null;
 
 CABLES.UI.showToolTip = function (e, txt)
 {
+    console.log("toolstip", txt);
     CABLES.UI.eleTooltip = CABLES.UI.eleTooltip || document.getElementById("cbltooltip");
     if (!CABLES.UI.eleTooltip) return;
 
@@ -50,12 +51,12 @@ CABLES.UI.addToolTipListener = function (ele)
     ele.addEventListener("mouseover", over);
     ele.addEventListener("mouseleave", out);
     ele.addEventListener("mouseout", out);
-
-}
+};
 
 
 Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
 {
+    console.log("tt", tt);
     CABLES.UI.addToolTipListener(tt);
 });
 
@@ -99,36 +100,37 @@ CABLES.UI.addInfoListener = function (ele)
     ele.addEventListener("mouseover", over);
     ele.addEventListener("mousemove", over);
     ele.addEventListener("mouseout", out);
-
-}
+};
 
 Array.from(document.querySelectorAll(".info")).forEach((tt) =>
 {
     CABLES.UI.addInfoListener(tt);
 });
 
-//test
+// test
 
-CABLES.UI.ttObserver = new MutationObserver(function(mutations)
+CABLES.UI.ttObserver = new MutationObserver(function (mutations)
 {
-    mutations.forEach(function(mutation)
+    mutations.forEach(function (mutation)
     {
-        for(let i=0;i<mutation.addedNodes.length;i++)
+        for (let i = 0; i < mutation.addedNodes.length; i++)
         {
-            if(!mutation.addedNodes[i].tagName)continue;
+            if (!mutation.addedNodes[i].tagName) continue;
 
-            if(mutation.addedNodes[i].classList.contains("tt"))
+
+            if (mutation.addedNodes[i].classList.contains("tt"))
             {
-                // console.log("found tt!!",mutation.addedNodes[i]);
+                console.log("added", mutation.addedNodes[i]);
+
+
                 CABLES.UI.addToolTipListener(mutation.addedNodes[i]);
             }
-            if(mutation.addedNodes[i].classList.contains("info"))
+            if (mutation.addedNodes[i].classList.contains("info"))
             {
-                // console.log("found info!!",mutation.addedNodes[i]);
                 CABLES.UI.addInfoListener(mutation.addedNodes[i]);
             }
         }
     });
 });
 
-CABLES.UI.ttObserver.observe(document.body, { attributes: false, childList: true, characterData: false,subtree: true   });
+CABLES.UI.ttObserver.observe(document.body, { "attributes": false, "childList": true, "characterData": false, "subtree": true });

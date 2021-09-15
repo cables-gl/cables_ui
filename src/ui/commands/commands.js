@@ -10,8 +10,15 @@ CABLES.CMD.exec = function (cmd)
     {
         if (CABLES.CMD.commands[i].cmd == cmd)
         {
-            CABLES.CMD.commands[i].func();
-            found = true;
+            if (CABLES.CMD.commands[i].func)
+            {
+                CABLES.CMD.commands[i].func();
+                found = true;
+            }
+            else
+            {
+                console.log("cmd has no func", cmd, CABLES.CMD.commands[i]);
+            }
         }
     }
     if (!found)console.log("command not found:" + cmd);
