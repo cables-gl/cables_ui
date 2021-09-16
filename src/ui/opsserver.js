@@ -66,7 +66,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     {
         // console.log('show server op error message modal');
 
-        gui.patch().loadingError = true;
+        // gui.patch().loadingError = true;
 
         let msg = "<h2><span class=\"fa fa-exclamation-triangle\"></span> cablefail :/</h2>";
         msg += "error creating op: " + name;
@@ -213,12 +213,12 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
                     for (let i = 0; i < newOps.length; i++)
                     {
                         // gui.patchView.testCollision(newOps[i])
-                        gui.patch().opCollisionTest(gui.patch().getUiOp(newOps[i]));
+                        if (gui.patch()) gui.patch().opCollisionTest(gui.patch().getUiOp(newOps[i]));
                         delete newOps[i].uiAttribs.uierrors;
                     }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
-                    gui.patch().checkCollisionsEdge();
+                    if (gui.patch()) gui.patch().checkCollisionsEdge();
                     if (next)next();
                 }.bind(this),
             );

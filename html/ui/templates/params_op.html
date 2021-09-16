@@ -116,12 +116,6 @@
                 </div>
             {{/if}}
 
-            <!-- {{#if op.uiAttribs.notWorkingMsg }}
-                <div class="warning" id="options_warning" >
-                    {{op.uiAttribs.notWorkingMsg}}
-                </div>
-            {{/if}} -->
-
         </div>
     </div>
 
@@ -138,46 +132,6 @@
     <div class="info " id="options_info" style="padding:0px;">
         {{{op.uiAttribs.info}}}
     </div>
-
-    <!-- <div class="panelhead" data-panelselector="#opcode">Code</div>
-    <div id="opcode" class="panel" style="padding:0px;">
-        <div class="panel">
-            {{#if op.isServerOp }}
-                {{#if user.isAdmin}}
-                <span class="button fa fa-lock" onclick="gui.serverOps.edit('{{op.objName}}');">edit code</span>
-                <span class="button fa fa-lock" onclick="CABLES.UI.MetaCode.rename('{{op.objName}}');">rename</span>
-                <br/><br/>
-
-                <a onclick="CABLES.contextMenu.show({items:[{title:'hund'},{title:'elefant'},{title:'katze'},{title:'maus'}]},this);" class="button">test...</a>
-                <br/><br/>
-
-                {{/if}}
-                <span class="button fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}edit{{else}}view{{/if}} code</span>
-                <span class="button fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">clone op code</span>
-            {{/if}}
-        </div>
-    </div> -->
-
-
-<!--
-    <div class="panelhead " data-panelselector="#optools">Tools</div>
-    <div id="optools" class="panel" >
-
-        <br/><br/><br/><br/>
-        <span class="button  fa fa-remove" onclick="gui.patch().deleteChilds('{{op.id}}');">delete all children </span>
-    </div> -->
-
-<!--
-    <div class="panelhead " data-panelselector="#opdebug">Debug</div>
-        <div id="opdebug" class="panel selectable" style="overflow:auto">
-            op id: {{{op.opIid}}}<br />
-            op instance id:{{{op.id}}}<br />
-            <pre>{{{ json opserialized }}}</pre>
-    </div> -->
-
-    <!-- <div class="panel" >
-        <a onclick="gui.patch().resetOpValues('{{{op.id}}}');" class="button-small">reset input parameters</a>
-    </div> -->
 
     <br/>
     <div class="groupSpacer"><h3>Misc</h3></div>
