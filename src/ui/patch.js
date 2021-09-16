@@ -775,7 +775,7 @@ CABLES.UI.Patch = function (_gui)
     {
         this.scene = _scene;
 
-
+        $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
         $("#meta").append();
 
         this.paper = Raphael("patch", 0, 0);
@@ -951,10 +951,11 @@ CABLES.UI.Patch = function (_gui)
             self.lastMouseMoveEvent = e;
         }.bind(this));
 
-        // this.timeLine = new CABLES.TL.UI.TimeLineUI();
+        this.timeLine = new CABLES.TL.UI.TimeLineUI();
 
         gui.setLayout();
     };
+
 
     function doLink() {}
 
