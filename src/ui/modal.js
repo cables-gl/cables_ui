@@ -706,6 +706,7 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
     document.getElementById("modalpromptinput").addEventListener("keydown",
         function (e)
         {
+            console.log(e);
             if (e.which == 13)
             {
                 CABLES.UI.MODAL.promptCallbackExec();

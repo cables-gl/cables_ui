@@ -68,9 +68,9 @@ CABLES.UI.OpSelect = class
         {
             ele.show(eleNoResults);// .classList.remove("hidden");
             ele.byId("searchinfo").innerHMTL = "";
-            const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
-            document.getElementById("userCreateOpName").innerHTML = userOpName;
-            document.getElementById("createuserop").addEventListener("click", () => { gui.serverOps.create(userOpName); });
+            // const userOpName = "Ops.User." + gui.user.usernameLowercase + "." + this._getQuery();
+            // document.getElementById("userCreateOpName").innerHTML = userOpName;
+            // document.getElementById("createuserop").addEventListener("click", () => { gui.serverOps.create(userOpName); });
         }
         else
         {

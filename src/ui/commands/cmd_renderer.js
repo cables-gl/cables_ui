@@ -18,30 +18,6 @@ CABLES.CMD.RENDERER.animRenderer = function ()
     CABLES.animRenderer.show();
 };
 
-CABLES.CMD.RENDERER.screenshotUpload = function ()
-{
-    gui.corePatch().cgl.saveScreenshot(null,
-        function (blob)
-        {
-            const file = new File([blob], "screenshot.png", { "type": "image/png" });
-            const fd = new FormData();
-
-            fd.append(0, file);
-            $.ajax({
-                "type": "POST",
-                "url": "/api/project/" + gui.project()._id + "/file",
-                "data": fd,
-                "processData": false,
-                "contentType": false
-            }).done(
-                function (data)
-                {
-                    console.log("upload DONE!");
-                    console.log(data);
-                });
-            gui.corePatch().resume();
-        }, 0, 0, true);
-};
 
 CABLES.CMD.RENDERER.resetSize = function ()
 {
@@ -155,11 +131,6 @@ CABLES.CMD.commands.push({
     "category": "renderer",
     "func": CABLES.CMD.RENDERER.animRenderer,
     "icon": "monitor"
-}, {
-    "cmd": "upload screenshot file",
-    "category": "renderer",
-    "func": CABLES.CMD.RENDERER.screenshotUpload,
-    "icon": "image"
 }, {
     "cmd": "scale canvas",
     "category": "renderer",

@@ -474,7 +474,7 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         });
     };
 
-    this.createDialog = function ()
+    this.createDialog = function (name)
     {
         this.opNameDialog("Create operator", name, function (newname)
         {
