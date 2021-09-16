@@ -104,7 +104,7 @@ CABLES.SandboxElectron.prototype.initRouting = function (cb)
         return;
     }
 
-    gui.patch().setProject(
+    gui.setProject(
         {
             "users": [],
             "tags": [],

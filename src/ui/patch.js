@@ -464,11 +464,6 @@ CABLES.UI.Patch = function (_gui)
         else
         {
             $("#meta_content_files").show();
-
-            // CABLES.UI.fileSelect.load();
-            // gui.showFileManager();
-
-            $(".viewProjectLink").attr("href", CABLES.sandbox.getCablesUrl() + "/p/" + proj._id);
         }
         $("#meta_content_files").hover(function (e)
         {

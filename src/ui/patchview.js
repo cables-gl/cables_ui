@@ -16,7 +16,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._lastTempOP = null;
 
         this.boundingRect = null;
-        this.store = new CABLES.UI.PatchServer();
+        this.store = new CABLES.UI.PatchServer(); // this should probably be somewhere else need only one storage, even when opening multiple patchviews ?
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
@@ -110,6 +110,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
+        gui.setProject(proj);
         this._patchRenderer.setProject(proj);
 
         this.store.setServerDate(proj.updated);

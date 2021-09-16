@@ -438,6 +438,8 @@ CABLES.UI.TabPanel.prototype.addIframeTab = function (title, url, options)
     talkerAPI.addEventListener("updatePatchName", (opts, next) =>
     {
         gui.setProjectName(opts.name);
+
+        CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
     });
 
     this.activateTab(iframeTab.id);
