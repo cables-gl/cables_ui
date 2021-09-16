@@ -28,7 +28,7 @@ CABLES.UI.TransformsIcon = class
             const op = gui.corePatch().getOpById(id);
             if (!op) return;
             gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch || 0);
-            gui.patch().focusOp(id);
+            gui.patchView.centerSelectOp(id);
             gui.patch().getViewBox().center(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
             gui.patch().setSelectedOpById(id);
 

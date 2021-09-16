@@ -619,7 +619,7 @@ CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, 
     const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
     newop.getPort("Path").set(path);
     op.patch.link(op, portName, newop, inputDataType);
-    gui.patch().focusOp(newop.id, true);
+    gui.patchView.centerSelectOp(newop.id, true);
     gui.patchView.centerSelectOp(newop.id);
     CABLES.UI.MODAL.hide();
 };
@@ -633,7 +633,7 @@ CABLES.UI.MODAL.showPortStructureHelpers.exposeArray = function (opId, portName,
 
     newop.getPort("Path").set(path);
     op.patch.link(op, portName, newop, inputDataType);
-    gui.patch().focusOp(newop.id, true);
+    gui.patchView.centerSelectOp(newop.id, true);
     gui.patchView.centerSelectOp(newop.id);
     CABLES.UI.MODAL.hide();
 };
