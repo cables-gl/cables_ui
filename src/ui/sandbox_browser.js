@@ -205,12 +205,12 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
     {
         console.log("file Updated: " + options.filename);
 
-        for (let j = 0; j < gui.patch().ops.length; j++)
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
-            if (gui.patch().ops[j].op)
+            if (gui.corePatch().ops[j])
             {
-                if (gui.patch().ops[j].op.onFileChanged) gui.patch().ops[j].op.onFileChanged(options.filename);
-                else if (gui.patch().ops[j].op.onFileUploaded) gui.patch().ops[j].op.onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+                if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.filename);
+                else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
             }
         }
     });
