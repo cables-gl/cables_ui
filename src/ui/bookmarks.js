@@ -123,10 +123,6 @@ CABLES.UI.Bookmarks = function ()
         else
         {
             gui.patchView.centerSelectOp(id);
-            // gui.patchView.focusOp(id);
-            // gui.patch().setSelectedOpById(id);
-            // gui.patch().centerViewBoxOps();
-            // gui.patchView.centerSelectOp(id);
         }
     };
 

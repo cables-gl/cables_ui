@@ -46,7 +46,6 @@ CABLES.API.Connection = function (ui)
             // if(message.data.data.cmd && message.data.data.cmd=='filesprocessed')
             // {
             //     ui.jobs().finish('processingfiles');
-            //     gui.patch().updateProjectFiles();
             // }
             // else
             if (message.data.data.cmd == "pong")

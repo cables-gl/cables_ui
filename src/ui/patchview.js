@@ -1705,4 +1705,64 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         for (let i = 0; i < selectedOps.length; i++)
             selectedOps[i].setUiAttrib({ "color": col });
     }
+
+    resetOpValues(opid)
+    {
+        const op = this._p.getOpById(opid);
+        if (!op)
+        {
+            console.error("reset op values: op not found...", opid);
+            return;
+        }
+        for (let i = 0; i < op.portsIn.length; i++)
+            if (op.portsIn[i].defaultValue != null)
+                op.portsIn[i].set(op.portsIn[i].defaultValue);
+
+        gui.opParams.show(op);
+    }
+
+    warnLargestPort()
+    {
+        let max = 0;
+        let maxName = "unknown";
+        let ser = "";
+        let maxValue = "";
+
+        try
+        {
+            for (const i in this._p.ops)
+            {
+                for (let j in this._p.ops[i].portsIn)
+                {
+                    ser = JSON.stringify(this._p.ops[i].portsIn[j].getSerialized());
+                    if (ser.length > max)
+                    {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this._p.ops[i].name + " - in: " + this._p.ops[i].portsIn[j].name;
+                    }
+                }
+                for (let j in this._p.ops[i].portsOut)
+                {
+                    ser = JSON.stringify(this._p.ops[i].portsOut[j].getSerialized());
+                    if (ser.length > max)
+                    {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this._p.ops[i].name + " - out: " + this._p.ops[i].portsOut[j].name;
+                    }
+                }
+            }
+
+            if (max > 10000) CABLES.UI.notify("warning big port: " + maxName + " / " + max + " chars");
+        }
+        catch (e)
+        {
+            console.error(e);
+        }
+        finally
+        {
+
+        }
+    }
 };

@@ -76,51 +76,6 @@ CABLES.UI.Patch = function (_gui)
         return gui.opParams.isCurrentOpId(opid);
     };
 
-    this.getLargestPort = function ()
-    {
-        let max = 0;
-        let maxName = "unknown";
-        let j = 0;
-        let ser = "";
-        let maxValue = "";
-
-        try
-        {
-            for (const i in this.ops)
-            {
-                for (j in this.ops[i].op.portsIn)
-                {
-                    ser = JSON.stringify(this.ops[i].op.portsIn[j].getSerialized());
-                    if (ser.length > max)
-                    {
-                        max = ser.length;
-                        maxValue = ser;
-                        maxName = this.ops[i].op.name + " - in: " + this.ops[i].op.portsIn[j].name;
-                    }
-                }
-                for (j in this.ops[i].op.portsOut)
-                {
-                    ser = JSON.stringify(this.ops[i].op.portsOut[j].getSerialized());
-                    if (ser.length > max)
-                    {
-                        max = ser.length;
-                        maxValue = ser;
-                        maxName = this.ops[i].op.name + " - out: " + this.ops[i].op.portsOut[j].name;
-                    }
-                }
-            }
-
-            if (max > 10000) CABLES.UI.notify("warning big port: " + maxName + " / " + max + " chars");
-        }
-        catch (e)
-        {
-            console.error(e);
-        }
-        finally
-        {
-
-        }
-    };
 
     this.focus = function ()
     {
@@ -1950,20 +1905,6 @@ CABLES.UI.Patch = function (_gui)
         this._svgEle.style.height = h + "px";
     };
 
-    this.resetOpValues = function (opid)
-    {
-        const op = this.scene.getOpById(opid);
-        if (!op)
-        {
-            console.error("reset op values: op not found...", opid);
-            return;
-        }
-        for (let i = 0; i < op.portsIn.length; i++)
-            if (op.portsIn[i].defaultValue != null)
-                op.portsIn[i].set(op.portsIn[i].defaultValue);
-
-        gui.opParams.show(op);
-    };
 
     this._showOpParams = function (op)
     {

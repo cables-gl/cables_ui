@@ -62,11 +62,8 @@ CABLES.UI.MetaKeyframes.prototype.showAnim = function (opid, portname)
     gui.patchView.centerSelectOp(opid, true);
     const op = gui.corePatch().getOpById(opid);
     const p = op.getPort(portname);
-    console.log(p);
-    if (p.anim)
-    {
-        gui.patch().timeLine.setAnim(p.anim);
-    }
+
+    if (p.anim) gui.patch().timeLine.setAnim(p.anim);
 };
 
 
