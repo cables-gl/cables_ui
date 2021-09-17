@@ -353,24 +353,6 @@ CABLES.UI.GUI = function (cfg)
         if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
 
-        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
-        if (this._elCanvasIconbarBottom)
-        {
-            this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
-            this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
-        }
-
-
-        this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
-        if (this._elCanvasIconbarTimeline)
-        {
-            this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
-            this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + "px";
-
-            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
-            else this._elCanvasIconbarTimeline.style.display = "inline-block";
-        }
-
         const cgl = this._corePatch.cgl;
         this.getCanvasSizeString(cgl);
 
@@ -562,6 +544,26 @@ CABLES.UI.GUI = function (cfg)
         }
 
         if (this.timeLine()) this.timeLine().updateViewBox();
+
+
+        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
+        if (this._elCanvasIconbarBottom)
+        {
+            this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+            this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
+        }
+
+
+        this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
+        if (this._elCanvasIconbarTimeline)
+        {
+            this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
+            this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + "px";
+
+            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
+            else this._elCanvasIconbarTimeline.style.display = "inline-block";
+        }
+
 
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
