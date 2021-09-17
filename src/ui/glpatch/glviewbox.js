@@ -411,11 +411,17 @@ CABLES.GLGUI.ViewBox = class
         let x = _x;
         let y = _y;
 
+        // x += this._scrollX;
+        // y += this._scrollY;
+
+        // x += this._subPatchViewBoxes[this._currentSubPatchId].x;
+        // y -= this._subPatchViewBoxes[this._currentSubPatchId].y;
+
         const asp = this._viewResY / this._viewResX;
         const zx = 1 / ((this._viewResX / 2) / this.zoom);
         let zy = zx;
 
-        // x -= this._scrollX;
+
         // y -= this._scrollY * asp;
 
         x /= zx;
@@ -423,6 +429,7 @@ CABLES.GLGUI.ViewBox = class
 
         // x += (this._viewResX / 2);
         // y += (this._viewResY / 2);
+
 
         return [x, y];
     }

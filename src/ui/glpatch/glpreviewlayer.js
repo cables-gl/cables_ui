@@ -69,7 +69,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
             pos[1] += paddingY;
 
             const glop = this._glPatch.getGlOp(item.op);
-            if (!glop) continue;
+            if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
 

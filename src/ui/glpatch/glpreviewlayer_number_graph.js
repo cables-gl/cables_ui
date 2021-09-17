@@ -40,6 +40,16 @@ CABLES.GLGUI.GlPreviewLayerNumber = class extends CABLES.EventTarget
         const mulX = size[0] / 60;
 
 
+        ctx.beginPath();
+        ctx.moveTo(2, 2);
+        // ctx.lineTo(0, 0);
+        ctx.lineTo(size[0], 0);
+        ctx.lineTo(size[0], size[1]);
+        ctx.lineTo(0, size[1]);
+        ctx.lineTo(0, 0);
+        ctx.stroke();
+
+
         ctx.fillRect(pos[0], pos[1], size[0], 1);
 
         ctx.beginPath();
