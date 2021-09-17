@@ -41,6 +41,10 @@
                 display: block;
             }
         }
+        &:active {
+            background-color: $button-background-color-active !important;
+        }
+
 
         &.textButton
         {

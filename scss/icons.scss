@@ -19,6 +19,7 @@
 	margin-right:4px;
 	cursor:pointer;
 
+
 	&:hover
 	{
 		background-color:$button-background-color-hover;
@@ -27,6 +28,11 @@
 			background-color:var(--color-special) !important;
 		}
 	}
+
+    &:active {
+        background-color: $button-background-color-active !important;
+    }
+
 }
 
 .icon
