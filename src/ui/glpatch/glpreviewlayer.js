@@ -23,8 +23,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
         this._eleCanvas.id = "gluiPreviewLayer";
         this._eleCanvas.classList.add("gluiPreviewLayer");
         this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
-        this._eleCanvas.style.position = "absolute";
-        this._eleCanvas.style.pointerEvents = "none";
+
 
         document.body.appendChild(this._eleCanvas);
 
@@ -82,11 +81,24 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
             count++;
         }
 
+
+        // this._canvasCtx.strokeStyle = "#ffffff";
+        // this._canvasCtx.beginPath();
+        // this._canvasCtx.moveTo(2, 0);
+        // // this._canvasCtx.lineTo(0, 0);
+        // this._canvasCtx.lineTo(this._eleCanvas.width, 0);
+        // this._canvasCtx.lineTo(this._eleCanvas.width, this._eleCanvas.height);
+        // this._canvasCtx.lineTo(0, this._eleCanvas.height);
+        // this._canvasCtx.lineTo(0, 0);
+        // this._canvasCtx.stroke();
+
+
         perf.finish();
     }
 
     updateViewPort()
     {
+        this._updateSize();
         const ops = gui.corePatch().getOpsByObjName("Ops.Dev.VizTexture");
         const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizNumber");
         ops.push(...ops2);

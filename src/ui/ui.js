@@ -302,6 +302,8 @@ CABLES.UI.GUI = function (cfg)
 
         this._elCablesCanvas = this._elCablesCanvas || document.getElementById("cablescanvas");
 
+        this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
+
 
         // const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
