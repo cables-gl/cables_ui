@@ -16,7 +16,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._lastTempOP = null;
 
         this.boundingRect = null;
-        this.store = new CABLES.UI.PatchServer();
+        this.store = new CABLES.UI.PatchServer(); // this should probably be somewhere else need only one storage, even when opening multiple patchviews ?
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
@@ -110,6 +110,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
+        gui.setProject(proj);
         this._patchRenderer.setProject(proj);
 
         this.store.setServerDate(proj.updated);
@@ -1704,5 +1705,65 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         for (let i = 0; i < selectedOps.length; i++)
             selectedOps[i].setUiAttrib({ "color": col });
+    }
+
+    resetOpValues(opid)
+    {
+        const op = this._p.getOpById(opid);
+        if (!op)
+        {
+            console.error("reset op values: op not found...", opid);
+            return;
+        }
+        for (let i = 0; i < op.portsIn.length; i++)
+            if (op.portsIn[i].defaultValue != null)
+                op.portsIn[i].set(op.portsIn[i].defaultValue);
+
+        gui.opParams.show(op);
+    }
+
+    warnLargestPort()
+    {
+        let max = 0;
+        let maxName = "unknown";
+        let ser = "";
+        let maxValue = "";
+
+        try
+        {
+            for (const i in this._p.ops)
+            {
+                for (let j in this._p.ops[i].portsIn)
+                {
+                    ser = JSON.stringify(this._p.ops[i].portsIn[j].getSerialized());
+                    if (ser.length > max)
+                    {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this._p.ops[i].name + " - in: " + this._p.ops[i].portsIn[j].name;
+                    }
+                }
+                for (let j in this._p.ops[i].portsOut)
+                {
+                    ser = JSON.stringify(this._p.ops[i].portsOut[j].getSerialized());
+                    if (ser.length > max)
+                    {
+                        max = ser.length;
+                        maxValue = ser;
+                        maxName = this._p.ops[i].name + " - out: " + this._p.ops[i].portsOut[j].name;
+                    }
+                }
+            }
+
+            if (max > 10000) CABLES.UI.notify("warning big port: " + maxName + " / " + max + " chars");
+        }
+        catch (e)
+        {
+            console.error(e);
+        }
+        finally
+        {
+
+        }
     }
 };

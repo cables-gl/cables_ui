@@ -756,7 +756,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "title": "set default values",
             func()
             {
-                gui.patch().resetOpValues(opid);
+                gui.patchView.resetOpValues(opid);
             },
         });
 

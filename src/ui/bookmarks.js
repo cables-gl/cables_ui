@@ -78,12 +78,6 @@ CABLES.UI.Bookmarks = function ()
 
     this.add = function (id)
     {
-        const ops = gui.patch().getSelectedOps();
-        if (!id && ops.length > 0)
-        {
-            id = ops[0].op.id;
-        }
-
         if (id)
         {
             for (const i in bookmarks)
@@ -129,10 +123,6 @@ CABLES.UI.Bookmarks = function ()
         else
         {
             gui.patchView.centerSelectOp(id);
-            // gui.patchView.focusOp(id);
-            // gui.patch().setSelectedOpById(id);
-            // gui.patch().centerViewBoxOps();
-            // gui.patch().focusOp(id);
         }
     };
 

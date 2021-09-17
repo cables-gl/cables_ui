@@ -122,8 +122,8 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
                 function (filePath)
                 {
                     this.nativeWritePatchToFile(data, filePath);
-                    gui.patch().filename = filePath; // store the path so we don't have to ask on next save
-                    console.log("gui.patch().filename saved: ", gui.patch().filename);
+                    this.filename = filePath; // store the path so we don't have to ask on next save
+                    console.log("this.filename saved: ", this.filename);
                     const projectName = self.getProjectnameFromFilename(filePath);
                     gui.setProjectName(projectName);
                 }
@@ -188,11 +188,11 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
     {
         if (gui.showGuestWarning()) return;
 
-        if (this.loadingError)
-        {
-            CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
-            return;
-        }
+        // if (this.loadingError)
+        // {
+        //     CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
+        //     return;
+        // }
 
         if (_force)
         {
@@ -306,7 +306,7 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         try
         {
             data = JSON.stringify(data);
-            gui.patch().getLargestPort();
+            gui.patchView.warnLargestPort();
 
             const origSize = Math.round(data.length / 1024);
 

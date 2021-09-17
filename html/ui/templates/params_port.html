@@ -73,7 +73,7 @@
                     <tr>
                         <td>
                             <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.parent.id}}',true);gui.patch().setSelectedOpById('{{portIn.parent.id}}');">{{{ portIn.parent.name }}}</span><br/>
+                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.parent.id}}',true);">{{{ portIn.parent.name }}}</span><br/>
                         </td>
                     </tr>
                 {{/each}}
@@ -83,7 +83,7 @@
                 {{#each port.links}}
 
                         <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.parent.id}}',true);gui.patch().setSelectedOpById('{{portOut.parent.id}}');">{{{ portOut.parent.name }}}</span><br/>
+                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.parent.id}}',true);">{{{ portOut.parent.name }}}</span><br/>
                 {{/each}}
             {{/if}}
         {{/if}}
@@ -293,7 +293,7 @@
                 {{/if}}
 
                 {{#if port.uiAttribs.preview}}
-                    <!-- <span class="button fa fa-eye" onclick="gui.setMetaTab('preview');gui.patch().updateOpParams('{{op.id}}');">preview</span> -->
+
                 {{else}}
                     <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >
                     </span>

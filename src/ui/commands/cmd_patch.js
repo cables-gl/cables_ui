@@ -115,7 +115,7 @@ CABLES.CMD.PATCH.uploadFileDialog = function ()
 
     if (!fileElem)
     {
-        const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.patch().getCurrentProject()._id });
+        const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.project._id });
         CABLES.UI.MODAL.show(html, { "title": "" });
     }
 };
@@ -133,7 +133,7 @@ CABLES.CMD.PATCH.opsCompress = function ()
 
 CABLES.CMD.PATCH.export = function ()
 {
-    const exporter = new CABLES.UI.Exporter(gui.patch().getCurrentProject(), CABLES.sandbox.getPatchVersion());
+    const exporter = new CABLES.UI.Exporter(gui.project, CABLES.sandbox.getPatchVersion());
     exporter.show();
 };
 
@@ -149,7 +149,7 @@ CABLES.CMD.PATCH.addOp = function (x, y)
 
 CABLES.CMD.PATCH.patchWebsite = function ()
 {
-    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.patch().getCurrentProject()._id);
+    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project._id);
 };
 
 CABLES.CMD.PATCH.analyzePatch = function ()

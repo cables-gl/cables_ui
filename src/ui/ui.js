@@ -98,9 +98,18 @@ CABLES.UI.GUI = function (cfg)
     this._oldShowingEditor = false;
     this._eventListeners = {};
 
+    this._currentProject = null;
+
     this.project = function ()
     {
-        return this.patch().getCurrentProject();
+        return this._currentProject;
+        // return this.project;
+    };
+
+    this.setProject = function (p)
+    {
+        this._currentProject = p;
+        $(".viewProjectLink").attr("href", CABLES.sandbox.getCablesUrl() + "/p/" + p._id);
     };
 
     this.opSelect = function ()
@@ -1818,7 +1827,7 @@ CABLES.UI.GUI = function (cfg)
         {
             let title = "";
             if (CABLES.sandbox.isDevEnv())title = "DEV ";
-            title += gui.patch().getCurrentProject().name + " *";
+            title += gui.project.name + " *";
             document.title = title;
 
             favIconLink.href = "/favicon/favicon_orange.ico";
@@ -1851,7 +1860,7 @@ CABLES.UI.GUI = function (cfg)
 
         let title = "";
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
-        title += gui.patch().getCurrentProject().name;
+        title += gui.project.name;
         document.title = title;
         window.onbeforeunload = null;
     };

@@ -176,8 +176,6 @@ CABLES.UI.OpDocs = function ()
 	                    portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
 	                }
 
-                // label = gui.patch().getPaper().text();
-
                 const visualYOffset = 2;
                 const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, opDocs[i].shortNameDisplay);
                 label.node.classList.add("op_handle_" + CABLES.UI.uiConfig.getNamespaceClassName(opname));

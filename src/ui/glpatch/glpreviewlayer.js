@@ -44,40 +44,17 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
 
     render()
     {
-    // check if needed...
 
     }
-
-    // drawCanvas()
-    // {
-    //     // this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
-
-    //     this._canvasCtx.font = "13px Arial";
-    //     this._canvasCtx.fillStyle = "#ffffff";
-    //     this._canvasCtx.fillText("num viz " + this._items.length, 10, 100);
-
-    //     for (let i = 0; i < this._items.length; i++)
-    //     {
-    //         // const pos = this._glPatch.viewBox.patchToScreenCoords(
-    //         // this._items[i].posX,
-    //         // this._items[i].posY);
-    //         // this._items[i].op.uiAttribs.translate.x,
-    //         // this._items[i].op.uiAttribs.translate.y);
-
-    //         // this._canvasCtx.fillRect(this._items[i].posX,this._items[i].posY, 100, 100);
-    //         // this._canvasCtx.fillText(this._items[i].port.name + ": " + this._items[i].port.get(), pos[0], pos[1]);
-    //     }
-    // }
 
     renderGl()
     {
         if (this._items.length == 0) return;
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
-        const startTime = performance.now();
-
+        const perf = CABLES.uiperf.start("glVizPreviewLayer.renderGl");
         const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
-        // console.log(padding);
+
         let count = 0;
         for (let i = 0; i < this._items.length; i++)
         {
@@ -105,12 +82,7 @@ CABLES.GLGUI.GlPreviewLayer = class extends CABLES.EventTarget
             count++;
         }
 
-        this._canvasCtx.font = "13px Arial";
-        this._canvasCtx.fillStyle = "#ffffff";
-
-        const timeUsed = performance.now() - startTime;
-
-        this._canvasCtx.fillText("num viz " + count + " / " + this._items.length + " " + Math.round(timeUsed * 100) / 100 + "ms", 10, 100);
+        perf.finish();
     }
 
     updateViewPort()
