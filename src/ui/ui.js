@@ -305,6 +305,7 @@ CABLES.UI.GUI = function (cfg)
 
         // const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
+        let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
 
@@ -351,8 +352,22 @@ CABLES.UI.GUI = function (cfg)
 
 
         this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
-        if (this._elCanvasIconbarBottom) this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+        if (this._elCanvasIconbarBottom)
+        {
+            this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+            this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
+        }
 
+
+        this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
+        if (this._elCanvasIconbarTimeline)
+        {
+            this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
+            this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + "px";
+
+            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
+            else this._elCanvasIconbarTimeline.style.display = "inline-block";
+        }
 
         const cgl = this._corePatch.cgl;
         this.getCanvasSizeString(cgl);
@@ -494,7 +509,6 @@ CABLES.UI.GUI = function (cfg)
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
-        let timelineHeight = this.timingHeight;
 
         if (this._elTLoverviewtimeline)
         {
@@ -1567,6 +1581,8 @@ CABLES.UI.GUI = function (cfg)
 
         gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
         gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
+        gui.iconBarTimeline = new CABLES.IconBar("sidebar_timeline");
+
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 

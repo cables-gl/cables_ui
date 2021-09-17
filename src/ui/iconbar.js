@@ -43,6 +43,13 @@ CABLES.IconBar = class
                 if (itemObj[i]) items.push(i);
         }
 
+        if (this._id == "sidebar_timeline")
+        {
+            this.vertical = false;
+
+            items.push("timeline rewind to 0", "timeline rewind", "timeline play", "timeline pause", "timeline forward");
+        }
+
 
         for (let i = 0; i < items.length; i++)
             for (let j = 0; j < CABLES.CMD.commands.length; j++)
