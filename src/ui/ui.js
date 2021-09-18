@@ -302,9 +302,12 @@ CABLES.UI.GUI = function (cfg)
 
         this._elCablesCanvas = this._elCablesCanvas || document.getElementById("cablescanvas");
 
+        this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
+
 
         // const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
+        let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
 
@@ -348,10 +351,6 @@ CABLES.UI.GUI = function (cfg)
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
         if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
-
-
-        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
-        if (this._elCanvasIconbarBottom) this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
 
 
         const cgl = this._corePatch.cgl;
@@ -494,7 +493,6 @@ CABLES.UI.GUI = function (cfg)
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
 
-        let timelineHeight = this.timingHeight;
 
         if (this._elTLoverviewtimeline)
         {
@@ -546,6 +544,26 @@ CABLES.UI.GUI = function (cfg)
         }
 
         if (this.timeLine()) this.timeLine().updateViewBox();
+
+
+        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
+        if (this._elCanvasIconbarBottom)
+        {
+            this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+            this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
+        }
+
+
+        this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
+        if (this._elCanvasIconbarTimeline)
+        {
+            this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
+            this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + "px";
+
+            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
+            else this._elCanvasIconbarTimeline.style.display = "inline-block";
+        }
+
 
         $("#splitterTimeline").css("width", timelineWidth);
         $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
@@ -1567,6 +1585,8 @@ CABLES.UI.GUI = function (cfg)
 
         gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
         gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
+        gui.iconBarTimeline = new CABLES.IconBar("sidebar_timeline");
+
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
 

@@ -268,7 +268,15 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
 
         if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
-            this._eleInfo.innerHTML = "showing " + this._rows * this._numCols + " / " + this.data.length + " values ";
+            let showNum = 0;
+            let showLength = 0;
+            if (this.data && this.data.length)
+            {
+                showNum = this._rows * this._numCols;
+                showLength = this.data.length;
+            }
+
+            this._eleInfo.innerHTML = "showing " + showNum + " of " + showLength + " values ";
         }
         if (this.port.type == CABLES.OP_PORT_TYPE_TEXTURE)
         {

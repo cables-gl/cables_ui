@@ -22,6 +22,7 @@
     background-color:$color-bar-bg;
     color:white;
     padding:4px;
+    user-select: none;
 
     .item
     {
@@ -40,6 +41,10 @@
                 display: block;
             }
         }
+        &:active {
+            background-color: $button-background-color-active !important;
+        }
+
 
         &.textButton
         {
@@ -89,4 +94,11 @@
 {
     bottom:10px;
     right:300px;
+}
+
+#iconbar_sidebar_timeline
+{
+    bottom:10px;
+    left:100px;
+    transform:translate(-50%);
 }

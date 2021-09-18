@@ -1,6 +1,6 @@
 CABLES = CABLES || {};
 CABLES.CMD = CABLES.CMD || {};
-CABLES.CMD.UI = {};
+CABLES.CMD.UI = CABLES.CMD.UI || {};
 CABLES.CMD.commands = CABLES.CMD.commands || [];
 
 CABLES.CMD.UI.settings = function ()
@@ -66,36 +66,6 @@ CABLES.CMD.UI.toggleMute = function ()
 //     console.log("todo: add showeditor for maintabs");
 // };
 
-CABLES.CMD.UI.TimelinePlay = function ()
-{
-    gui.corePatch().timer.play();
-};
-
-
-CABLES.CMD.UI.TimelinePause = function ()
-{
-    gui.corePatch().timer.pause();
-};
-
-CABLES.CMD.UI.TimelineRewind = function ()
-{
-    gui.corePatch().timer.setTime(0);
-};
-
-CABLES.CMD.UI.toggleTimeline = function ()
-{
-    gui.toggleTiming();
-};
-
-CABLES.CMD.UI.hideTimeline = function ()
-{
-    gui.hideTiming();
-};
-
-CABLES.CMD.UI.showTimeline = function ()
-{
-    gui.showTiming();
-};
 
 CABLES.CMD.UI.showChat = function ()
 {
@@ -372,41 +342,6 @@ CABLES.CMD.commands.push(
     },
 
 
-    {
-        "cmd": "timeline play",
-        "category": "ui",
-        "func": CABLES.CMD.UI.TimelinePlay,
-    },
-    {
-        "cmd": "timeline pause",
-        "category": "ui",
-        "func": CABLES.CMD.UI.TimelinePause,
-    },
-    {
-        "cmd": "timeline rewind",
-        "category": "ui",
-        "func": CABLES.CMD.UI.TimelineRewind,
-    },
-
-
-    {
-        "cmd": "toggle timeline",
-        "category": "ui",
-        "func": CABLES.CMD.UI.toggleTimeline,
-        "icon": "timeline"
-    },
-    {
-        "cmd": "hide timeline",
-        "category": "ui",
-        "func": CABLES.CMD.UI.hideTimeline,
-        "icon": "timeline"
-    },
-    {
-        "cmd": "show timeline",
-        "category": "ui",
-        "func": CABLES.CMD.UI.showTimeline,
-        "icon": "timeline"
-    },
     {
         "cmd": "hide minimap",
         "category": "ui",

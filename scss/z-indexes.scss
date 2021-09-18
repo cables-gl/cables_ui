@@ -1,5 +1,6 @@
 
 
+
 $zindex_superlow :9;     // patchfield menu iconbar and subpatchnav
 $zindex_lowest :10;     // patch / canvas / params etc
 $zindex_low :20;
@@ -7,3 +8,8 @@ $zindex_over :30;       // menu / subpatchnav / tabs / timeline etc
 $zindex_high :40;       // color picker / splitter
 $zindex_highest :50;    // modal / splitter etc
 
+
+#meta,#options
+{
+    z-index: $zindex_low;
+}

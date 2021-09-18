@@ -231,6 +231,10 @@ input[type="text"]
     {
         margin-right: 5px;
     }
+
+    &:active {
+        background-color: $button-background-color-active !important;
+    }
 }
 
 .button,.bluebutton,.greybutton,.smallbutton
@@ -274,6 +278,10 @@ input[type="text"]
     {
         background-color: var(--color-warning);
     }
+
+    &:active {
+        background-color: $button-background-color-active !important;
+    }
 }
 
 .button--with-icon {
@@ -290,6 +298,10 @@ input[type="text"]
         .icon {
             background-color: var(--color-10);
         }
+    }
+
+    &:active {
+        background-color: $button-background-color-active !important;
     }
 }
 
@@ -308,7 +320,9 @@ input[type="text"]
     //     position: relative;
     //     top: 1px;
     // }
-
+    &:active {
+        background-color: $button-background-color-active !important;
+    }
 }
 
 
