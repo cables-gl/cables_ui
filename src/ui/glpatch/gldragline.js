@@ -38,6 +38,8 @@ CABLES.GLGUI.GlDragLine = class
                 // console.log("undo rightclick...");
             }
 
+            console.log("mouse up!!!", this._glPort, this._glPort.port);
+
             const ele = document.elementFromPoint(e.x, e.y);
             if (!ele) return;
             if (ele.dataset.opid && ele.dataset.portname)

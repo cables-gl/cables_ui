@@ -5,7 +5,7 @@ CABLES.UI.eleTooltip = null;
 
 CABLES.UI.showToolTip = function (e, txt)
 {
-    console.log("toolstip", txt);
+    // console.log("toolstip", txt);
     CABLES.UI.eleTooltip = CABLES.UI.eleTooltip || document.getElementById("cbltooltip");
     if (!CABLES.UI.eleTooltip) return;
 
