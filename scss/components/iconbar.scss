@@ -42,7 +42,7 @@
             }
         }
         &:active {
-            background-color: $button-background-color-active !important;
+            background-color: var(--color-button-bg-active) !important;
         }
 
 
