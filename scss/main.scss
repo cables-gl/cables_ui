@@ -264,7 +264,7 @@ input[type="text"]
     {
         cursor:pointer !important;
         background-color:var(--color-button-bg-hover) !important;
-        color:$button-text-color-hover;
+        color:var(--color-button-text-hover);
     }
 
     &.warn

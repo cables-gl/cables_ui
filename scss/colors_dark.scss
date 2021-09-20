@@ -116,7 +116,7 @@ $color-searchInputContainer: var(--color-02);
     --color_link_string: var(--color_port_string);
     --color-splitter:var(--color-01);
 
-
+    --color-button-text:var(--color_op_text);
     --color-button-bg:var(--color_op_bg_active);
     --color-button-bg-active: var(--color-07);
 
@@ -124,6 +124,7 @@ $color-searchInputContainer: var(--color-02);
     --color-button-bg-hover: var(--color-06);
 
 }
+
 
 $button-border-color: $background-color-dark;
 $button-border-color-hover: $background-color-dark;
