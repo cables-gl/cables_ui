@@ -14,6 +14,9 @@ const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
 const getRepoInfo = require("git-repo-info");
 const footer = require("gulp-footer");
+const env = require("gulp-util").env;
+
+const isLiveBuild = env.live || false;
 
 let buildInfo = getBuildInfo();
 
@@ -27,28 +30,20 @@ function _lint()
 
 function _scripts_libs_ui()
 {
-    return gulp
-        .src(["libs/ui/*.js"])
-        .pipe(sourcemaps.init())
-        .pipe(concat("libs.ui.js"))
-        .pipe(gulp.dest("dist/js"))
-        .pipe(rename("libs.ui.min.js"))
-        .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js"));
+    let task = gulp.src(["libs/ui/*.js"]);
+    if (isLiveBuild) task = task.pipe(sourcemaps.init());
+    task = task.pipe(concat("libs.ui.js")).pipe(gulp.dest("dist/js")).pipe(rename("libs.ui.min.js"));
+    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
+    return task.pipe(gulp.dest("dist/js"));
 }
 
 function _scripts_talkerapi()
 {
-    return gulp
-        .src(["src-talkerapi/*.js"])
-        .pipe(sourcemaps.init())
-        .pipe(concat("talkerapi.js"))
-        .pipe(gulp.dest("dist/js"))
-        .pipe(rename("talkerapi.js"))
-        .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js"));
+    let task = gulp.src(["src-talkerapi/*.js"]);
+    if (isLiveBuild) task = task.pipe(sourcemaps.init());
+    task = task.pipe(concat("talkerapi.js")).pipe(gulp.dest("dist/js")).pipe(rename("talkerapi.js"));
+    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
+    return task.pipe(gulp.dest("dist/js"));
 }
 
 function _scripts_core()
@@ -60,33 +55,25 @@ function _scripts_core()
 
 function _scripts_ops()
 {
-    return gulp
-        .src(["src/ops/*.js"])
-        .pipe(sourcemaps.init())
-        .pipe(concat("cables.ops.max.js"))
-        .pipe(gulp.dest("dist/js"))
-        .pipe(rename("cables.ops.min.js"))
-        .pipe(uglify())
-        .on("error", () =>
-        {
-            console.log("error.....");
-        })
-
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js"));
+    let task = gulp.src(["src/ops/*.js"]);
+    if (isLiveBuild) task = task.pipe(sourcemaps.init());
+    task = task.pipe(concat("cables.ops.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cables.ops.min.js"));
+    if (isLiveBuild) task = task.pipe(uglify());
+    task = task.on("error", () =>
+    {
+        console.log("error.....");
+    });
+    if (isLiveBuild) task = task.pipe(sourcemaps.write("./"));
+    return task.pipe(gulp.dest("dist/js"));
 }
 
 function _scripts_ui()
 {
-    return gulp
-        .src(["src/ui/**/*.js"])
-        .pipe(sourcemaps.init())
-        .pipe(concat("cablesui.max.js"))
-        .pipe(gulp.dest("dist/js"))
-        .pipe(rename("cablesui.min.js"))
-        .pipe(uglify())
-        .pipe(sourcemaps.write("./"))
-        .pipe(gulp.dest("dist/js"));
+    let task = gulp.src(["src/ui/**/*.js"]);
+    if (isLiveBuild) task = task.pipe(sourcemaps.init());
+    task = task.pipe(concat("cablesui.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesui.min.js"));
+    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
+    return task.pipe(gulp.dest("dist/js"));
 }
 
 function _append_build_info()
