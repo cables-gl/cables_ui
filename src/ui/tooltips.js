@@ -5,7 +5,7 @@ CABLES.UI.eleTooltip = null;
 
 CABLES.UI.showToolTip = function (e, txt)
 {
-    console.log("toolstip", txt);
+    // console.log("toolstip", txt);
     CABLES.UI.eleTooltip = CABLES.UI.eleTooltip || document.getElementById("cbltooltip");
     if (!CABLES.UI.eleTooltip) return;
 
@@ -56,7 +56,7 @@ CABLES.UI.addToolTipListener = function (ele)
 
 Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
 {
-    console.log("tt", tt);
+    // console.log("tt", tt);
     CABLES.UI.addToolTipListener(tt);
 });
 
@@ -117,12 +117,8 @@ CABLES.UI.ttObserver = new MutationObserver(function (mutations)
         {
             if (!mutation.addedNodes[i].tagName) continue;
 
-
             if (mutation.addedNodes[i].classList.contains("tt"))
             {
-                console.log("added", mutation.addedNodes[i]);
-
-
                 CABLES.UI.addToolTipListener(mutation.addedNodes[i]);
             }
             if (mutation.addedNodes[i].classList.contains("info"))

@@ -445,7 +445,7 @@ CABLES.UI.initPortClickListener = function (op, index)
         const thePort = op.portsIn[index];
         if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
         {
-            gui.corePatch().addOp("Ops.Gl.Texture", {}, function (newop)
+            gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
             {
                 gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
             });

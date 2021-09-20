@@ -217,7 +217,7 @@ input[type="text"]
 
     &:hover
     {
-        background-color:$button-background-color-hover !important;
+        background-color:var(--color-button-bg-hover) !important;
 
         // background-color: var(--color-05);
         color:var(--color-special) !important;
@@ -233,7 +233,7 @@ input[type="text"]
     }
 
     &:active {
-        background-color: $button-background-color-active !important;
+        background-color: var(--color-button-bg-active) !important;
     }
 }
 
@@ -249,7 +249,7 @@ input[type="text"]
     background-color: var(--color-04) !important;;
     border-radius: 5px;
 
-    // border:2px solid $button-background-color;
+    // border:2px solid var(--color-button-bg);
 
 	padding: 5px 16px;
     cursor:pointer !important;
@@ -263,15 +263,8 @@ input[type="text"]
     &:hover
     {
         cursor:pointer !important;
-
-        // background-color: var(--color_op_bg_active);
-        // background-color: var(--color-08);
-        background-color:$button-background-color-hover !important;
-
-        // background-color: $button-background-color-hover !important;
-
-        color:$button-text-color-hover;
-        // border:2px solid var(--color-special);
+        background-color:var(--color-button-bg-hover) !important;
+        color:var(--color-button-text-hover);
     }
 
     &.warn
@@ -280,7 +273,7 @@ input[type="text"]
     }
 
     &:active {
-        background-color: $button-background-color-active !important;
+        background-color: var(--color-button-bg-active) !important;
     }
 }
 
@@ -301,7 +294,7 @@ input[type="text"]
     }
 
     &:active {
-        background-color: $button-background-color-active !important;
+        background-color: var(--color-button-bg-active) !important;
     }
 }
 
@@ -321,7 +314,7 @@ input[type="text"]
     //     top: 1px;
     // }
     &:active {
-        background-color: $button-background-color-active !important;
+        background-color: var(--color-button-bg-active) !important;
     }
 }
 
@@ -329,7 +322,7 @@ input[type="text"]
 
 .button.fa {
   font: normal normal normal 14px/1 FontAwesome, arial;
-//   background-color: $button-background-color;
+//   background-color: var(--color-button-bg);
 }
 
 a.button.fa-times:before {
