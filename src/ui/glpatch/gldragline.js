@@ -63,6 +63,7 @@ CABLES.GLGUI.GlDragLine = class
                     }, this._glPort.port.parent, this._glPort.port);
             }
 
+
             this.stop();
 
             this._glPatch.showOpCursor(false);
