@@ -122,7 +122,10 @@
 
                         incrementStartup();
 
-                        loadjs([CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js')], 'cablesui');
+                        loadjs([
+                        CABLESUILOADER.builtVersionUrl("ui", 'js/cablesuiold.'+jsType+'.js'),
+                        CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js'),
+                        ], 'cablesui');
 
                         loadjs.ready('cablesui', function()
                         {
