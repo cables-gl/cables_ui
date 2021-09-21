@@ -115,13 +115,16 @@ $color-searchInputContainer: var(--color-02);
     --color_link_dynamic: var(--color_port_dynamic);
     --color_link_string: var(--color_port_string);
     --color-splitter:var(--color-01);
+
+    --color-button-text:var(--color_op_text);
+    --color-button-bg:var(--color_op_bg_active);
+    --color-button-bg-active: var(--color-07);
+
+    --color-button-text-hover: var(--color_op_text_active);
+    --color-button-bg-hover: var(--color-06);
+
 }
 
-$button-text-color: var(--color_op_text);
-$button-background-color: var(--color_op_bg_active);
-$button-text-color-hover: var(--color_op_text_active);
-$button-background-color-hover: var(--color-06);
-$button-background-color-active: var(--color-07);
 
 $button-border-color: $background-color-dark;
 $button-border-color-hover: $background-color-dark;
@@ -129,7 +132,7 @@ $button-border-color-hover: $background-color-dark;
 // Button with icon only (no text)
 // normal
 $icon-button-color: var(--color-13);
-$icon-button-background-color: $button-background-color;
+$icon-button-background-color: var(--color-button-bg);
 $icon-button-border-color: $icon-button-background-color;
 // hover / active
 $icon-button-color-hover: $highlight-color;

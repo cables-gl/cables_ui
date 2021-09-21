@@ -11,7 +11,7 @@
 .iconbutton
 {
 	padding:3px;
-	background-color: $button-background-color;
+	background-color: var(--color-button-bg);
 	border-radius: 8px;
 	padding-left:8px;
 	padding-right:7px;
@@ -22,15 +22,15 @@
 
 	&:hover
 	{
-		background-color:$button-background-color-hover;
+		background-color: var( --color-button-bg-hover);
 		.icon
 		{
-			background-color:var(--color-special) !important;
+			background-color: var(--color-special) !important;
 		}
 	}
 
     &:active {
-        background-color: $button-background-color-active !important;
+        background-color: var(--color-button-bg-active) !important;
     }
 
 }

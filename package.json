@@ -44,7 +44,8 @@
     },
     "scripts": {
         "start": "gulp",
-        "build": "gulp build"
+        "build": "gulp build",
+        "build:live": "gulp build --live"
     },
     "repository": {
         "type": "git",

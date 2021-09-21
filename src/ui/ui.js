@@ -1816,7 +1816,6 @@ CABLES.UI.GUI = function (cfg)
         const idling = (CABLES.now() - self.lastNotIdle) / 1000;
         if (idling > 30 * 60)
         {
-            console.log("idle mode simpleio disconnected!");
         }
         else
         {

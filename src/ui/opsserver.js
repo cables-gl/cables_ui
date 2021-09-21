@@ -422,8 +422,8 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
     this.opNameDialog = function (title, name, cb)
     {
-        let newName = name;
-        if (name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
+        let newName = name || "";
+        if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
 
         const usernamespace = "Ops.User." + gui.user.usernameLowercase;
 
