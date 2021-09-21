@@ -85,8 +85,6 @@ export default class ContextMenu
                         }, 100);
 
                         console.log("refreshing...");
-                        // ctx.show(obj,parent);
-                        // return;
                     }
                     else CABLES.contextMenu.close();
 
