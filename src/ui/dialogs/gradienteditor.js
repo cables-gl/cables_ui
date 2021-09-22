@@ -110,7 +110,6 @@ export default class GradientEditor
         document.getElementById("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
 
-
     addKey(pos, r, g, b)
     {
         const rect = this._paper.rect(pos * this._width, 0, this._keyWidth, this._keyHeight).attr({ "stroke": "#000" });
@@ -201,7 +200,6 @@ export default class GradientEditor
 
         this._paper = Raphael("gradienteditorbar", 0, 0);
 
-
         document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
         {
             if (this._movingkey) return;
@@ -270,33 +268,8 @@ export default class GradientEditor
 
                         colEle.style.backgroundColor = col.hex();
                     }
-                    // updateColorBox();
-                    // const glRgb = col.gl();
-
-                    // document.getElementById("numberinputDisplay_in_" + portNum).innerHTML =
-                    // inputElements[0].value = glRgb[0];
-
-                    // document.getElementById("numberinputDisplay_in_" + (portNum + 1)).innerHTML =
-                    // inputElements[1].value = glRgb[1];
-
-                    // document.getElementById("numberinputDisplay_in_" + (portNum + 2)).innerHTML =
-                    // inputElements[2].value = glRgb[2];
-
-                    // inputElements[0].dispatchEvent(new Event("input"));
-                    // inputElements[1].dispatchEvent(new Event("input"));
-                    // inputElements[2].dispatchEvent(new Event("input"));
                 }
             });
         });
     }
 }
-
-// function rgbToHex(R, G, B) { return toHex(R) + toHex(G) + toHex(B); }
-
-// function toHex(n)
-// {
-//     n = parseInt(n, 10);
-//     if (isNaN(n)) return "00";
-//     n = Math.max(0, Math.min(n, 255));
-//     return "0123456789ABCDEF".charAt((n - (n % 16)) / 16) + "0123456789ABCDEF".charAt(n % 16);
-// }

@@ -1264,7 +1264,8 @@ CABLES.UI.GUI = function (cfg)
         window.addEventListener("resize", () =>
         {
             this.showCanvasModal(false);
-            ele.byId("#glcanvas").blur();
+            const eleCanvas = ele.byId("glcanvas");
+            if (eleCanvas)eleCanvas.blur();
             this.setLayout();
             this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
