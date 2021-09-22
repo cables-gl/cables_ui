@@ -281,7 +281,7 @@ CABLES.CMD.UI.profileGPU = function ()
 CABLES.CMD.UI.profileUI = function ()
 {
     console.log("CABLES.CMD.UI.profileUI");
-    CABLES.uiperf.show();
+    CABLES.UI.uiProfiler.show();
 };
 
 CABLES.CMD.UI.toggleTouchpadMode = function ()

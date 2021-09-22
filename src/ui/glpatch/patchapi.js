@@ -76,7 +76,7 @@ export default class GlPatchAPI
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 6 != 0) return;
 
-        const perf = CABLES.uiperf.start("[glpatch] update flow mode");
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
         for (let i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];

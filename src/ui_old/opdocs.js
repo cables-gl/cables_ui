@@ -284,7 +284,7 @@ CABLES.UI.OpDocs = function ()
 
     this.showPortDoc = function (opname, portname)
     {
-        const perf = CABLES.uiperf.start("opdocs.portdoc");
+        const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
 
         for (let i = 0; i < opDocs.length; i++)
         {

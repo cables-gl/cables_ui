@@ -741,7 +741,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
     {
         if (!background) return;
 
-        const perf = CABLES.uiperf.start("_updateElementOrder");
+        const perf = CABLES.UI.uiProfiler.start("_updateElementOrder");
 
         if (reverse)
         {
@@ -820,7 +820,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
     {
         if (this.isVisible()) return;
 
-        const perf = CABLES.uiperf.start("patchOpaddUi");
+        const perf = CABLES.UI.uiProfiler.start("patchOpaddUi");
 
         if (opui.op.uiAttribs.size)
         {
@@ -1084,7 +1084,7 @@ const OpRect = function (_opui, _x, _y, _w, _h, _text, objName)
         let suffix = "";
         if (opui.op.uiAttribs.hasOwnProperty("extendTitle") && opui.op.uiAttribs.extendTitle) suffix += " | " + opui.op.uiAttribs.extendTitle;
 
-        const perf = CABLES.uiperf.start("op.setTitle");
+        const perf = CABLES.UI.uiProfiler.start("op.setTitle");
 
         if (!label) return;
         if (title != t || label.attr("text") != t)

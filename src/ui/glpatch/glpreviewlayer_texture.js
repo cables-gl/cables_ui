@@ -130,7 +130,7 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
 
-        const perf = CABLES.uiperf.start("previewlayer texture");
+        const perf = CABLES.UI.uiProfiler.start("previewlayer texture");
         const cgl = port.parent.patch.cgl;
 
         if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);

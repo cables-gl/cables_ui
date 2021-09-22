@@ -408,7 +408,7 @@ CABLES.UI.Patch = function (_gui)
         clearTimeout(this._timeoutLinkWarnings);
         this._timeoutLinkWarnings = setTimeout(function ()
         {
-            const perf = CABLES.uiperf.start("checkLinkTimeWarnings");
+            const perf = CABLES.UI.uiProfiler.start("checkLinkTimeWarnings");
 
             self._checkLinkCounter++;
             if (self._checkLinkCounter >= self.ops.length)
@@ -520,7 +520,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.getSubPatchBounds = function (subPatch)
     {
-        const perf = CABLES.uiperf.start("patch.getSubPatchBounds");
+        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
 
         if (subPatch === undefined) subPatch = currentSubPatch;
 
@@ -1496,7 +1496,7 @@ CABLES.UI.Patch = function (_gui)
     this.opCollisionTest = function (uiOp)
     {
         if (!uiOp) return;
-        const perf = CABLES.uiperf.start("opCollisionTest");
+        const perf = CABLES.UI.uiProfiler.start("opCollisionTest");
         let found = false;
         let count = 1;
 
@@ -1554,7 +1554,7 @@ CABLES.UI.Patch = function (_gui)
 
     this.checkCollisionsEdge = function ()
     {
-        const perf = CABLES.uiperf.start("checkCollisionsEdge");
+        const perf = CABLES.UI.uiProfiler.start("checkCollisionsEdge");
 
         for (let i = 0; i < this.ops.length; i++)
         {
@@ -1854,7 +1854,7 @@ CABLES.UI.Patch = function (_gui)
     {
         gui.opParams.dispose();
         if (gui.fileManager)gui.fileManager.setFilePort(null);
-        const perf = CABLES.uiperf.start("showProjectParams");
+        const perf = CABLES.UI.uiProfiler.start("showProjectParams");
 
         const s = {};
         if (currentOp && currentOp)currentOp = null;

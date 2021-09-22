@@ -253,7 +253,7 @@ CABLES.UI.GUI = function (cfg)
     this.setLayout = function ()
     {
         this.pauseProfiling();
-        const perf = CABLES.uiperf.start("gui.setlayout");
+        const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
         this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
@@ -1554,7 +1554,7 @@ CABLES.UI.GUI = function (cfg)
         document.getElementById("menubar").classList.remove("hidden");
 
 
-        if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
         self.patch().getViewBox().update();
 

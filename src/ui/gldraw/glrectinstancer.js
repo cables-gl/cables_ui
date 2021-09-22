@@ -254,7 +254,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
     {
         if (this._needsBoundsRecalc)
         {
-            const perf = CABLES.uiperf.start("[glRectInstancer] recalcBounds");
+            const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] recalcBounds");
 
             const defaultMin = 999999;
             const defaultMax = -999999;
@@ -434,7 +434,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         if (this._reUploadAttribs)
         {
-            const perf = CABLES.uiperf.start("[glRectInstancer] _reUploadAttribs");
+            const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
             // console.log("reupload all attribs");
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
@@ -672,7 +672,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     mouseMove(x, y, button, event)
     {
-        const perf = CABLES.uiperf.start("glrectinstancer mousemove");
+        const perf = CABLES.UI.uiProfiler.start("glrectinstancer mousemove");
         if (!this._interactive) return;
         if (this.allowDragging && this._draggingRect)
         {

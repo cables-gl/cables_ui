@@ -10,6 +10,7 @@ import Keypresenter from "./components/keypresenter";
 import analyzePatch from "./components/analyze_patch";
 import gluiconfig from "./glpatch/gluiconfig";
 import OpTreeList from "./components/opselect_treelist";
+import UiProfiler from "./components/uiperformance";
 
 
 CABLES = CABLES || {};
@@ -32,6 +33,7 @@ CABLES.UI.IconBar = IconBar;
 CABLES.UI.Keypresenter = Keypresenter;
 CABLES.UI.OpTreeList = OpTreeList;
 CABLES.UI.analyzePatch = analyzePatch;
+CABLES.UI.UiProfiler = UiProfiler;
 
 // CONSTANTS
 

@@ -395,7 +395,7 @@ export default class GlSplineDrawer
 
     buildMesh()
     {
-        const perf = CABLES.uiperf.start("glspline buildMesh");
+        const perf = CABLES.UI.uiProfiler.start("glspline buildMesh");
 
 
         const num = this._thePoints.length / 3;
@@ -493,7 +493,7 @@ export default class GlSplineDrawer
 
         if (!points) return;
 
-        const perf = CABLES.uiperf.start("glspline _updateAttribsCoordinates");
+        const perf = CABLES.UI.uiProfiler.start("glspline _updateAttribsCoordinates");
 
         function dist(x1, y1, x2, y2)
         {
@@ -729,7 +729,7 @@ export default class GlSplineDrawer
 
         if (!l || l < 0) return;
 
-        const perf = CABLES.uiperf.start("glspline tessEdges");
+        const perf = CABLES.UI.uiProfiler.start("glspline tessEdges");
 
 
         this._arrEdges = [];

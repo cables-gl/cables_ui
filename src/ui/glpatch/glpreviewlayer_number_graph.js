@@ -15,7 +15,7 @@ export default class GlPreviewLayerNumber extends CABLES.EventTarget
         const port = this._item.port;
         if (!port || !port.get()) return;
 
-        const perf = CABLES.uiperf.start("previewlayer number");
+        const perf = CABLES.UI.uiProfiler.start("previewlayer number");
 
         this._buff.push(this._item.port.get());
         if (this._buff.length > 60) this._buff.shift();

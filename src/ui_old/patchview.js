@@ -491,7 +491,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     getSubPatchBounds(subPatch)
     {
-        const perf = CABLES.uiperf.start("patch.getSubPatchBounds");
+        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
 
         const bounds = {
             "minx": 9999999,
@@ -546,7 +546,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
     getSelectedOps()
     {
-        const perf = CABLES.uiperf.start("patchview getSelectedOps");
+        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
 
         const ops = [];
         for (let i = 0; i < this._p.ops.length; i++)

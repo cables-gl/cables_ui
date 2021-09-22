@@ -681,7 +681,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._portDragLine.setPosition(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
-        const perf = CABLES.uiperf.start("[glpatch] render");
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] render");
 
         this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -838,7 +838,7 @@ export default class GlPatch extends CABLES.EventTarget
         if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
             return this.cacheOIRops;
 
-        const perf = CABLES.uiperf.start("[glpatch] ops in rect");
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] ops in rect");
 
         const x = Math.min(xa, xb);
         const y = Math.min(ya, yb);

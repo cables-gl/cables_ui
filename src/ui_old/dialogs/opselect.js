@@ -43,7 +43,7 @@ CABLES.UI.OpSelect = class
 
     updateOptions(opname)
     {
-        const perf = CABLES.uiperf.start("opselect.udpateOptions");
+        const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
         const num = $(".searchbrowser .searchable:visible").length;
         const query = this._getQuery();
 
@@ -120,7 +120,7 @@ CABLES.UI.OpSelect = class
     {
         if (!query || query == " " || query == "") return;
 
-        const perf = CABLES.uiperf.start("opselect._searchWord");
+        const perf = CABLES.UI.uiProfiler.start("opselect._searchWord");
 
         for (let i = 0; i < list.length; i++)
         {
@@ -329,7 +329,7 @@ CABLES.UI.OpSelect = class
 
         if (opname && this._currentSearchInfo != opname)
         {
-            const perf = CABLES.uiperf.start("opselect.updateInfo");
+            const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
 
             this._eleSearchinfo.innerHTML = "";
@@ -367,7 +367,7 @@ CABLES.UI.OpSelect = class
         this._search(q);
         let i = 0;
 
-        const perf = CABLES.uiperf.start("opselect.searchLoop");
+        const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
         for (i = 0; i < this._list.length; i++)
         {

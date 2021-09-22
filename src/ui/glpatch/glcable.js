@@ -336,7 +336,7 @@ export default class GlCable
             console.log("disposed already!!!?!");
         }
 
-        const perf = CABLES.uiperf.start("glcable collideMouse");
+        const perf = CABLES.UI.uiProfiler.start("glcable collideMouse");
 
         // is either end INSIDE the circle?
         // if so, return true immediately
