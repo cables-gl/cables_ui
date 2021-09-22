@@ -1,4 +1,7 @@
 
+import GlPreviewLayerTexture from "./glpreviewlayer_texture";
+import GlPreviewLayerNumber from "./glpreviewlayer_number_graph";
+
 export default class GlPreviewLayer extends CABLES.EventTarget
 {
     constructor(glPatch)
@@ -79,18 +82,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
             count++;
         }
 
-
-        // this._canvasCtx.strokeStyle = "#ffffff";
-        // this._canvasCtx.beginPath();
-        // this._canvasCtx.moveTo(2, 0);
-        // // this._canvasCtx.lineTo(0, 0);
-        // this._canvasCtx.lineTo(this._eleCanvas.width, 0);
-        // this._canvasCtx.lineTo(this._eleCanvas.width, this._eleCanvas.height);
-        // this._canvasCtx.lineTo(0, this._eleCanvas.height);
-        // this._canvasCtx.lineTo(0, 0);
-        // this._canvasCtx.stroke();
-
-
         perf.finish();
     }
 
@@ -116,39 +107,9 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 this._itemsLookup[ops[i].id] = item;
                 this._items.push(item);
 
-                if (ops[i].objName == "Ops.Dev.VizTexture") item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
-                if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new CABLES.GLGUI.GlPreviewLayerNumber(this, item);
+                if (ops[i].objName == "Ops.Dev.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new GlPreviewLayerNumber(this, item);
             }
         }
     }
-
-
-    // addCurrentPort()
-    // {
-    //     if (!this._glPatch._dropInCircleRect) return;
-    //     if (!this._glPatch.hoverLink) return;
-    //     const ops = gui.patchView.getSelectedOps();
-
-    //     const op = gui.corePatch().getOpById(this._glPatch.hoverLink.opIdOutput);
-
-    //     if (!op) return;
-
-    //     const port = op.getPort(this._glPatch.hoverLink.nameOutput);
-
-    //     if (!port) return;
-
-    //     // for (let i = 0; i < ops.length; i++)
-    //     const item = {
-    //         "op": op,
-    //         "port": port,
-    //         "posX": this._glPatch._dropInCircleRect.x,
-    //         "posY": this._glPatch._dropInCircleRect.y,
-    //     };
-    //     this._items.push(item);
-
-    //     item.renderer = new CABLES.GLGUI.GlPreviewLayerTexture(this, item);
-
-
-    //     // console.log("this._items.length", this._items.length);
-    // }
 }

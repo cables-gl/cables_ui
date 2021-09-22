@@ -1,5 +1,5 @@
 
-CABLES.IconBar = class
+export default class IconBar
 {
     constructor(which)
     {
@@ -85,4 +85,4 @@ CABLES.IconBar = class
     {
         this._items.push(item);
     }
-};
+}

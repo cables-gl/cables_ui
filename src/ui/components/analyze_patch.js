@@ -1,7 +1,6 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.AnalyzePatch = function ()
+
+export default function analyzePatch()
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
@@ -58,4 +57,4 @@ CABLES.UI.AnalyzePatch = function ()
     html += "<br/><br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
 
     CABLES.UI.MODAL.show(html);
-};
+}

@@ -1,4 +1,3 @@
-
 import GlLinedrawer from "../gldraw/gllinedrawer";
 
 export default class QuickLinkSuggestion extends CABLES.EventTarget

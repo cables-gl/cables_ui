@@ -1583,9 +1583,9 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
-        gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
-        gui.iconBarTimeline = new CABLES.IconBar("sidebar_timeline");
+        gui.iconBarLeft = new CABLES.UI.IconBar("sidebar_left");
+        gui.iconBarPatchNav = new CABLES.UI.IconBar("sidebar_bottom");
+        gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
 
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
