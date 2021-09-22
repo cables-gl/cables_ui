@@ -7,7 +7,7 @@ export default class Ele
         return document.getElementById(id);
     }
 
-    loopByClassName(name, cb)
+    forEachClass(name, cb)
     {
         const eles = document.getElementsByClassName(name);
 

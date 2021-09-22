@@ -44,8 +44,9 @@ CABLES.UI.CommandPallet = function ()
     this.onBookmarkIconClick = function (ev)
     {
         ev.stopPropagation();
-        const el = $(ev.target);
-        const cmd = el.closest(".result").data("cmd");
+
+        const el = ev.target;
+        const cmd = el.closest(".result").dataset.cmd;
 
         const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
 
@@ -53,15 +54,15 @@ CABLES.UI.CommandPallet = function ()
         const addToSidebar = !isCmdInSidebar(cmd);
         if (addToSidebar)
         {
-            el.removeClass(self._bookmarkInactiveIcon);
-            el.addClass(self._bookmarkActiveIcon);
+            el.classList.remove(self._bookmarkInactiveIcon);
+            el.classList.add(self._bookmarkActiveIcon);
 
             itemObj[cmd] = true;
         }
         else
         { // remove from sidebar
-            el.removeClass(self._bookmarkActiveIcon);
-            el.addClass(self._bookmarkInactiveIcon);
+            el.classList.remove(self._bookmarkActiveIcon);
+            el.classList.add(self._bookmarkInactiveIcon);
 
             itemObj[cmd] = false;
         }
@@ -73,8 +74,8 @@ CABLES.UI.CommandPallet = function ()
 
     this.onResultClick = function (ev)
     {
-        const el = $(ev.target);
-        const cmd = el.data("cmd");
+        const el = ev.target;
+        const cmd = el.dataset.cmd;
         gui.cmdPallet.close();
         CABLES.CMD.exec(cmd);
     };
@@ -91,10 +92,7 @@ CABLES.UI.CommandPallet = function ()
      */
     function getBookmarkIconForCmd(cmdName)
     {
-        if (isCmdInSidebar(cmdName))
-        {
-            return self._bookmarkActiveIcon;
-        }
+        if (isCmdInSidebar(cmdName)) return self._bookmarkActiveIcon;
         return self._bookmarkInactiveIcon;
     }
 
@@ -102,7 +100,7 @@ CABLES.UI.CommandPallet = function ()
     {
         let html = "";
         html += "<div class=\"result\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
-        html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"/>";
+        html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
 
@@ -114,18 +112,16 @@ CABLES.UI.CommandPallet = function ()
         }
         html += "</div>";
 
-        setTimeout(
-            function ()
-            {
-                $("#searchresult_cmd").append(html);
-            }, 1);
+        return html;
     }
 
 
     this.doSearch = function (str, searchId)
     {
         lastSearch = str;
-        $("#searchresult_cmd").html("");
+
+        let html = "";
+        ele.byId("searchresult_cmd").innerHTML = html;
 
         str = str.toLowerCase();
 
@@ -136,12 +132,14 @@ CABLES.UI.CommandPallet = function ()
             const cmd = CABLES.CMD.commands[i].cmd;
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
-                addResult(CABLES.CMD.commands[i], count);
+                html += addResult(CABLES.CMD.commands[i], count);
                 count++;
             }
         }
 
         this._numResults = count;
+        ele.byId("searchresult_cmd").innerHTML = html;
+
 
         setTimeout(function ()
         {
@@ -156,12 +154,14 @@ CABLES.UI.CommandPallet = function ()
         if (self._cursorIndex < 0)self._cursorIndex = this._numResults - 1;
         if (self._cursorIndex >= this._numResults)self._cursorIndex = 0;
 
-        $(".result").removeClass("selected");
+        ele.forEachClass("result", (e) => { e.classList.remove("selected"); });
 
         const e = ele.byId("result" + self._cursorIndex);
-        if (e) e.classList.add("selected");
-
-        if ($("#result" + self._cursorIndex)[0]) $("#result" + self._cursorIndex)[0].scrollIntoView({ "block": "end" });
+        if (e)
+        {
+            e.classList.add("selected");
+            e.scrollIntoView({ "block": "end" });
+        }
     };
 
 
@@ -170,7 +170,7 @@ CABLES.UI.CommandPallet = function ()
         switch (e.which)
         {
         case 13:
-            $("#result" + self._cursorIndex).click();
+            ele.byId("result" + self._cursorIndex).click();
             break;
 
         case 38: // up
