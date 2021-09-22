@@ -8,11 +8,14 @@ import HtmlInspector from "./components/htmlinspect";
 import IconBar from "./elements/iconbar";
 import Keypresenter from "./components/keypresenter";
 import analyzePatch from "./components/analyze_patch";
+import gluiconfig from "./glpatch/gluiconfig";
+import OpTreeList from "./components/opselect_treelist";
 
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
+CABLES.GLUI = CABLES.GLUI || {};
 
 CABLES.contextMenu = new ContextMenu();
 
@@ -20,13 +23,14 @@ CABLES.contextMenu = new ContextMenu();
 
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
+CABLES.GLUI.glUiConfig = gluiconfig;
 
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;
 CABLES.UI.IconBar = IconBar;
 CABLES.UI.Keypresenter = Keypresenter;
-
+CABLES.UI.OpTreeList = OpTreeList;
 CABLES.UI.analyzePatch = analyzePatch;
 
 // CONSTANTS

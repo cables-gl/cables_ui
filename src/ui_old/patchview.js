@@ -367,7 +367,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
             "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - GlUiConfig.newOpDistanceY
+            "y": oldOp.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY
         };
 
         gui.patchView.addOp(opname, {
