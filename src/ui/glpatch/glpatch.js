@@ -67,7 +67,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.cablesHoverText.setPosition(0, 0);
         this.cablesHoverText.setColor(1, 1, 1, 0);
 
-        // this._hoverCable = new CABLES.GLGUI.GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
+        // this._hoverCable = new GlCable(this, this._overlaySplines, this.rectDrawer.createRect({}), 10);
         // this._hoverCable.setPosition(0, 0, 100, 100);
         // this._hoverCable.setColor(1, 1, 1, 0.5);
         this._showingOpCursor = false;
@@ -112,7 +112,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
         this.quickLinkSuggestion = new QuickLinkSuggestion(this);
-        // this._debugtext = new CABLES.GLGUI.Text(this._textWriterOverlay, "hello");
+        // this._debugtext = new Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
         this.needsRedraw = false;
@@ -192,7 +192,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             gui.socket.on("netCursorPos", (msg) =>
             {
-                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new CABLES.GLGUI.GlCursor(this, this._overLayRects, msg.clientId);
+                if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
 
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });

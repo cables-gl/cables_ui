@@ -616,7 +616,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (this.opUiAttribs.hasArea && !this._resizableArea)
             {
-                this._resizableArea = new CABLES.GLGUI.GlArea(this._instancer, this);
+                this._resizableArea = new GlArea(this._instancer, this);
             }
         }
 
