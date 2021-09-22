@@ -14,7 +14,7 @@
             if(parent !== window) {
                 window.addEventListener("hashchange", (event) => {
                     parent.postMessage({"type": "hashchange", "data": window.location.hash}, "*");
-                }); 
+                });
             }
         </script>
 
@@ -100,7 +100,7 @@
 
     <div id="mainContainer">
 
-    <div id="cmdpalette">
+    <div id="cmdpalette" class="hidden">
 		<div class="input-container">
         	<input class="medium info" id="cmdinput" autocomplete="off" oninput="gui.cmdPallet.doSearch(this.value);" placeholder="search" style="width:85%;float:left;"/>
 			<div style="width:10%;float:left">

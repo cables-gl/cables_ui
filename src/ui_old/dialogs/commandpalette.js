@@ -15,21 +15,20 @@ CABLES.UI.CommandPallet = function ()
     const canceledSearch = 0;
     const idSearch = 1;
 
-
     this.isVisible = function ()
     {
-        return $("#cmdpalette").is(":visible");
+        return ele.isVisible(ele.byId("cmdpalette"));
     };
 
     this.show = function ()
     {
         this._cursorIndex = 0;
         CABLES.UI.MODAL.hide(true);
-        $("#modalbg").show();
-        $("#cmdpalette").show();
-        $("#cmdinput").focus();
-
-        $("#cmdinput").val(lastSearch);
+        // ele.show(ele.byId("modalbg"));
+        document.getElementById("modalbg").style.display = "block";
+        ele.show(ele.byId("cmdpalette"));
+        ele.byId("cmdinput").focus();
+        ele.byId("cmdinput").value = lastSearch;
         document.getElementById("cmdinput").setSelectionRange(0, lastSearch.length);
 
         clearTimeout(findTimeoutId);
@@ -38,7 +37,7 @@ CABLES.UI.CommandPallet = function ()
             self.doSearch(lastSearch);
         }, 100);
 
-        $("body").on("keydown", this.keyDown);
+        document.addEventListener("keydown", this.keyDown);
     };
 
     this.onBookmarkIconClick = function (ev)
@@ -172,6 +171,9 @@ CABLES.UI.CommandPallet = function ()
         case 13:
             ele.byId("result" + self._cursorIndex).click();
             break;
+        case 27:
+            self.close();
+            break;
 
         case 38: // up
             self.navigate(-1);
@@ -189,9 +191,11 @@ CABLES.UI.CommandPallet = function ()
 
     this.close = function ()
     {
-        $("body").off("keydown", this.keyDown);
-        $("#searchresult_cmd").html("");
-        $("#cmdpalette").hide();
-        $("#modalbg").hide();
+        // $("body").off("keydown", this.keyDown);
+        document.removeEventListener("keydown", this.keyDown);
+
+        ele.byId("searchresult_cmd").innerHTML = "";
+        document.getElementById("modalbg").style.display = "none";
+        ele.hide(ele.byId("cmdpalette"));
     };
 };

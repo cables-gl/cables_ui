@@ -42,6 +42,12 @@ export default class Ele
         return document.activeElement == el;
     }
 
+    isVisible(el)
+    {
+        let style = window.getComputedStyle(el);
+        return !(style.display === "none");
+    }
+
     fadeOut(el, duration, completeCallback)
     {
         if (!el) return;
