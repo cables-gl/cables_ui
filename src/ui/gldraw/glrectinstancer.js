@@ -488,7 +488,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
     getIndex()
     {
         this._counter++;
-        // console.log("inst counter",this._counter);
         if (this._counter > this._num - 100)
         {
             this._num += 5000;

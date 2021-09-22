@@ -4,10 +4,7 @@ export default class Bookmarks
     constructor()
     {
         this._bookmarks = [];
-
-        console.log("BOOOL MARK");
     }
-
 
     hasBookmarkWithId(id)
     {
@@ -22,12 +19,9 @@ export default class Bookmarks
         return false;
     }
 
-
     cleanUp()
     {
-        let i;
-
-        for (i in this._bookmarks)
+        for (let i in this._bookmarks)
         {
             const op = gui.corePatch().getOpById(this._bookmarks[i]);
             if (!op) this._bookmarks[i] = null;

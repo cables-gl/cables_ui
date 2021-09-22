@@ -52,10 +52,10 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.viewBox = new GlViewBox(cgl, this);
 
-        this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": gui.corePatch().ops.length * 12 });
-        this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": gui.corePatch().ops.length * 1 });
+        this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
+        this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
-        this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": gui.corePatch().ops.length * 15 });
+        this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
         this._selectionArea = new GlSelectionArea(this._overLayRects, this);

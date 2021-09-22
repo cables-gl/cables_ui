@@ -15,6 +15,7 @@ import UserSettings from "./components/usersettings";
 import Api from "./api/api";
 import Introduction from "./components/introduction";
 import Tipps from "./dialogs/tipps";
+import KeyBindingsManager from "./components/keybindingsmanager";
 
 
 CABLES = CABLES || {};
@@ -41,12 +42,13 @@ CABLES.UI.OpTreeList = OpTreeList;
 CABLES.UI.UiProfiler = UiProfiler;
 CABLES.UI.Introduction = Introduction;
 CABLES.UI.Tipps = Tipps;
-
+CABLES.UI.KeyBindingsManager = KeyBindingsManager;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.UI.userSettings = new UserSettings();
+
 
 // expose global functions
 CABLES.UI.analyzePatch = analyzePatch;

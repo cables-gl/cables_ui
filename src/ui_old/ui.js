@@ -13,7 +13,7 @@ CABLES.UI.GUI = function (cfg)
     let showingEditor = false;
     // let showMiniMap = false;
 
-    this.keys = new CABLES.UI.KeyManager();
+    this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
     this.socket = null;
     this.watchPortVisualizer = null;
