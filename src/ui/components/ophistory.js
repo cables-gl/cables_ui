@@ -1,6 +1,5 @@
-CABLES = CABLES || {};
 
-CABLES.UI.OpHistory = class extends CABLES.EventTarget
+export default class OpHistory extends CABLES.EventTarget
 {
     constructor()
     {
@@ -68,4 +67,4 @@ CABLES.UI.OpHistory = class extends CABLES.EventTarget
         }
         return h;
     }
-};
+}

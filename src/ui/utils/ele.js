@@ -1,15 +1,20 @@
 
 
-CABLES.Ele = class
+export default class Ele
 {
-    constructor()
-    {
-
-    }
-
     byId(id)
     {
         return document.getElementById(id);
+    }
+
+    loopByClassName(name, cb)
+    {
+        const eles = document.getElementsByClassName(name);
+
+        for (let i = 0; i < eles.length; i++)
+        {
+            cb(eles[i]);
+        }
     }
 
     getSelectValue(el)
@@ -84,6 +89,4 @@ CABLES.Ele = class
             if (typeof completeCallback === "function") completeCallback(el);
         }, duration);
     }
-};
-
-window.ele = new CABLES.Ele();
+}

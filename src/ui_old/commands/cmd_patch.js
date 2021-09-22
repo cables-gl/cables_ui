@@ -131,6 +131,19 @@ CABLES.CMD.PATCH.opsCompress = function ()
     gui.patch().compressSelectedOps();
 };
 
+CABLES.CMD.PATCH.showBackups = () =>
+{
+    gui.mainTabs.addIframeTab(
+        "Patch Backups",
+        CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settingsiframe#t=versions",
+        {
+            "icon": "settings",
+            "closable": true,
+            "singleton": true,
+            "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#t=versions"
+        });
+};
+
 CABLES.CMD.PATCH.export = function ()
 {
     const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.sandbox.getPatchVersion());
@@ -647,6 +660,12 @@ CABLES.CMD.commands.push(
         "category": "patch",
         "func": CABLES.CMD.PATCH.export,
         "icon": "download"
+    },
+    {
+        "cmd": "show backups",
+        "category": "patch",
+        "func": CABLES.CMD.PATCH.showBackups,
+        "icon": "file"
     },
     {
         "cmd": "create new patch",

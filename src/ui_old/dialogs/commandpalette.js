@@ -101,15 +101,8 @@ CABLES.UI.CommandPallet = function ()
     function addResult(cmd, num)
     {
         let html = "";
-
-
         html += "<div class=\"result\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
-        // html+='<div class="result" id="result'+num+'" >';
-
-        // <a class="icon-x icon icon-2x" onclick="$('#searchbox').hide();"></a>
-
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"/>";
-
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
 
@@ -133,8 +126,6 @@ CABLES.UI.CommandPallet = function ()
     {
         lastSearch = str;
         $("#searchresult_cmd").html("");
-        // if(str.length<2)return;
-
 
         str = str.toLowerCase();
 
@@ -142,7 +133,6 @@ CABLES.UI.CommandPallet = function ()
 
         for (let i = 0; i < CABLES.CMD.commands.length; i++)
         {
-            // .log('.');
             const cmd = CABLES.CMD.commands[i].cmd;
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
@@ -166,9 +156,7 @@ CABLES.UI.CommandPallet = function ()
         if (self._cursorIndex < 0)self._cursorIndex = this._numResults - 1;
         if (self._cursorIndex >= this._numResults)self._cursorIndex = 0;
 
-
         $(".result").removeClass("selected");
-
 
         const e = ele.byId("result" + self._cursorIndex);
         if (e) e.classList.add("selected");

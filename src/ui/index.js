@@ -16,6 +16,9 @@ import Api from "./api/api";
 import Introduction from "./components/introduction";
 import Tipps from "./dialogs/tipps";
 import KeyBindingsManager from "./components/keybindingsmanager";
+import OpHistory from "./components/ophistory";
+import Exporter from "./dialogs/exporter";
+import Ele from "./utils/ele";
 
 
 CABLES = CABLES || {};
@@ -24,6 +27,8 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
 
 // CONSTANTS
+
+window.ele = new Ele();
 
 CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
@@ -43,12 +48,13 @@ CABLES.UI.UiProfiler = UiProfiler;
 CABLES.UI.Introduction = Introduction;
 CABLES.UI.Tipps = Tipps;
 CABLES.UI.KeyBindingsManager = KeyBindingsManager;
+CABLES.UI.OpHistory = OpHistory;
+CABLES.UI.Exporter = Exporter;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.UI.userSettings = new UserSettings();
-
 
 // expose global functions
 CABLES.UI.analyzePatch = analyzePatch;

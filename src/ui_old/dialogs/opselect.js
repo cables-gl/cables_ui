@@ -30,9 +30,6 @@ CABLES.UI.OpSelect = class
 
     close()
     {
-        // if (this.keyDown)
-        // ele.byId("opsearch").removeEventListener("keydown", this.keyDown);
-
         gui.patchView.focus();
     }
 
@@ -57,7 +54,7 @@ CABLES.UI.OpSelect = class
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
-                    this._list[i].element[0].style.display = "none";
+                    this._list[i].element.style.display = "none";
         }
         else ele.hide(eleTypeStart);// .classList.add("hidden");
 
@@ -371,19 +368,19 @@ CABLES.UI.OpSelect = class
 
         for (i = 0; i < this._list.length; i++)
         {
-            this._list[i].element = this._list[i].element || $(`#result_${this._list[i].id}`);
+            this._list[i].element = this._list[i].element || ele.byId("result_" + this._list[i].id);
 
             if (this._list[i].score > 0)
             {
-                this._list[i].element[0].style.display = "block";
-                this._list[i].element[0].dataset.score = this._list[i].score;
-                this._list[i].element[0].dataset.scoreDebug = this._list[i].scoreDebug;
+                this._list[i].element.style.display = "block";
+                this._list[i].element.dataset.score = this._list[i].score;
+                this._list[i].element.dataset.scoreDebug = this._list[i].scoreDebug;
             }
             else
             {
-                this._list[i].element[0].dataset.score = 0.0;
-                this._list[i].element[0].dataset.scoreDebug = "???";
-                this._list[i].element[0].style.display = "none";
+                this._list[i].element.dataset.score = 0.0;
+                this._list[i].element.dataset.scoreDebug = "???";
+                this._list[i].element.style.display = "none";
             }
         }
 
@@ -731,7 +728,7 @@ CABLES.UI.OpSelect = class
                         ops.push(op);
                     }
 
-                    ops = this._getop(ops, ns, val[propertyName], `${parentname + propertyName}.`);
+                    ops = this._getop(ops, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
         }

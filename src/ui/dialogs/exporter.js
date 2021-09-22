@@ -1,9 +1,13 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.Exporter = function (project, versionId)
+export default class Exporter
 {
-    this.show = function ()
+    constructor(project, versionId)
+    {
+        this._versionId = versionId;
+        this._project = project;
+    }
+
+    show()
     {
         if (!gui.getSavedState())
         {
@@ -11,14 +15,14 @@ CABLES.UI.Exporter = function (project, versionId)
             return;
         }
 
-        let url = CABLES.sandbox.getCablesUrl() + "/export/" + project._id;
-        if (versionId)
+        let url = CABLES.sandbox.getCablesUrl() + "/export/" + this._project._id;
+        if (this._versionId)
         {
-            url += "?version=" + versionId;
+            url += "?version=" + this._versionId;
         }
         console.log("GUI EXPORT", url);
         const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
 
         CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });
-    };
-};
+    }
+}
