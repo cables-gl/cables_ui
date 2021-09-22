@@ -14,6 +14,7 @@ import UiProfiler from "./components/uiperformance";
 import UserSettings from "./components/usersettings";
 import Api from "./api/api";
 import Introduction from "./components/introduction";
+import Tipps from "./dialogs/tipps";
 
 
 CABLES = CABLES || {};
@@ -21,12 +22,12 @@ CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
 
-CABLES.contextMenu = new ContextMenu();
-CABLES.UI.userSettings = new UserSettings();
+// CONSTANTS
 
-// expose global things
-CABLES.api = new Api();
+CABLES.GLGUI.CURSOR_NORMAL = 0;
+CABLES.GLGUI.CURSOR_HAND = 1;
 
+// expose global classes
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLUI.glUiConfig = gluiconfig;
@@ -37,11 +38,15 @@ CABLES.UI.HtmlInspector = HtmlInspector;
 CABLES.UI.IconBar = IconBar;
 CABLES.UI.Keypresenter = Keypresenter;
 CABLES.UI.OpTreeList = OpTreeList;
-CABLES.UI.analyzePatch = analyzePatch;
 CABLES.UI.UiProfiler = UiProfiler;
 CABLES.UI.Introduction = Introduction;
+CABLES.UI.Tipps = Tipps;
 
-// CONSTANTS
 
-CABLES.GLGUI.CURSOR_NORMAL = 0;
-CABLES.GLGUI.CURSOR_HAND = 1;
+// expose global objects
+CABLES.api = new Api();
+CABLES.contextMenu = new ContextMenu();
+CABLES.UI.userSettings = new UserSettings();
+
+// expose global functions
+CABLES.UI.analyzePatch = analyzePatch;

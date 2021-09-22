@@ -100,6 +100,8 @@ CABLES.UI.GUI = function (cfg)
 
     this._currentProject = null;
 
+    this.tipps = new CABLES.UI.Tipps();
+
     this.project = function ()
     {
         return this._currentProject;
@@ -1330,7 +1332,7 @@ CABLES.UI.GUI = function (cfg)
 
         $(".nav_help_tipps").bind("click", function (event)
         {
-            CABLES.UI.tipps.show();
+            gui.tipps.show();
         });
 
         // Introduction
@@ -1584,7 +1586,7 @@ CABLES.UI.GUI = function (cfg)
         gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
 
 
-        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
+        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
 
         const buildInfo = this.project().buildInfo;
         console.groupCollapsed("welcome to cables!");

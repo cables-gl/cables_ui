@@ -1,36 +1,37 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.Tipps = function ()
+export default class Tipps
 {
-    this._index = 0;
-    this._wasShown = false;
-
-    let index = Math.round(CABLES.UI.TIPS.length * Math.random());
-
-    this.next = function ()
+    constructor()
     {
-        index++;
-        this.show();
-    };
+        this._index = 0;
+        this._wasShown = false;
+        this._index = Math.round(CABLES.UI.TIPS.length * Math.random());
+    }
 
-    this.neverShow = function ()
+    next()
+    {
+        this._index++;
+        this.show();
+    }
+
+    neverShow()
     {
         CABLES.UI.userSettings.set("showTipps", false);
         this.show();
-    };
-    this.showAlways = function ()
+    }
+
+    showAlways()
     {
         CABLES.UI.userSettings.set("showTipps", true);
         this.show();
-    };
+    }
 
-    this.show = function ()
+    show()
     {
-        if (index >= CABLES.UI.TIPS.length) index = 0;
+        if (this._index >= CABLES.UI.TIPS.length) this._index = 0;
         let html = "";// '<h2>Tipps</h2>';
 
-        const tip = CABLES.UI.TIPS[index];
+        const tip = CABLES.UI.TIPS[this._index];
 
         html += "<div>";
         html += "</div>";
@@ -43,31 +44,29 @@ CABLES.UI.Tipps = function ()
         html += "    <h3>" + (tip.title || "Did you know...") + "</h3>";
         html += mmd(tip.descr);
         // html += '    <br/>';
-        html += "    " + (index + 1) + "/" + CABLES.UI.TIPS.length;
+        html += "    " + (this._index + 1) + "/" + CABLES.UI.TIPS.length;
         html += "  </div>";
         html += "<div style=\"clear:both;\"></div>";
         html += "</div>";
 
         html += "<div style=\"clear:both;padding:20px;\">";
         html += "  <a onclick=\"CABLES.UI.MODAL.hide();\" class=\"bluebutton\">close</a>";
-        html += "  <a onclick=\"CABLES.UI.tipps.next();\" class=\"greybutton\">next tip</a>";
+        html += "  <a onclick=\"gui.tipps.next();\" class=\"greybutton\">next tip</a>";
 
         html += "  <div style=\"float:right;\"><br/>";
-        if (CABLES.UI.userSettings.get("showTipps")) html += "<a onclick=\"CABLES.UI.tipps.neverShow();\" class=\"\">do not show this on startup</a>";
-        else html += "<a onclick=\"CABLES.UI.tipps.showAlways();\" class=\"\">show on startup again</a>";
+        if (CABLES.UI.userSettings.get("showTipps")) html += "<a onclick=\"gui.tipps.neverShow();\" class=\"button-small\">do not show this on startup</a>";
+        else html += "<a onclick=\"gui.tipps.showAlways();\" class=\"button-small\">show on startup again</a>";
         html += "  </div\">";
 
         html += "</div>";
 
         CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });
-    };
+    }
 
-    this.showOnce = function ()
+    showOnce()
     {
         if (this._wasShown) return;
         this._wasShown = true;
         this.show();
-    };
-};
-
-CABLES.UI.tipps = new CABLES.UI.Tipps();
+    }
+}
