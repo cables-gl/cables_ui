@@ -196,7 +196,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                 if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
-                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLGUI.VISUALCONFIG.newOpDistanceY } });
+                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
                     found = true;
                 }
             }
@@ -367,7 +367,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const oldOp = gui.corePatch().getOpById(opid);
         const trans = {
             "x": oldOp.uiAttribs.translate.x,
-            "y": oldOp.uiAttribs.translate.y - CABLES.GLGUI.VISUALCONFIG.newOpDistanceY
+            "y": oldOp.uiAttribs.translate.y - GlUiConfig.newOpDistanceY
         };
 
         gui.patchView.addOp(opname, {

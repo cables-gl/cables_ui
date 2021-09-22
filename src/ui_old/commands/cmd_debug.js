@@ -4,12 +4,6 @@ CABLES.CMD.commands = CABLES.CMD.commands || [];
 
 CABLES.CMD.DEBUG = {};
 
-CABLES.CMD.DEBUG.testAllOps = function ()
-{
-    const tester = new CABLES.UI.OpTester();
-
-    tester.run();
-};
 
 CABLES.CMD.DEBUG.showUiDebug = function ()
 {

@@ -1323,7 +1323,7 @@ CABLES.UI.GUI = function (cfg)
             else
             {
                 // Broswer has blocked it
-                alert("Please allow popups for this site");
+                // alert("Please allow popups for this site");
             }
         });
 

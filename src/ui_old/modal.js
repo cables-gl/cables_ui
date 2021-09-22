@@ -629,7 +629,7 @@ CABLES.UI.MODAL.showPortStructureHelpers.exposeArray = function (opId, portName,
     const op = gui.corePatch().getOpById(opId);
     const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "GetArrayValuesByPath");
 
-    newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + CABLES.GLGUI.VISUALCONFIG.newOpDistanceY } });
+    newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
 
     newop.getPort("Path").set(path);
     op.patch.link(op, portName, newop, inputDataType);
