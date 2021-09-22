@@ -1,26 +1,49 @@
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-
-CABLES.UI.CommandPallet = function ()
+export default class CommandPallete
 {
-    let lastSearch = "";
-    let findTimeoutId = 0;
-    this._cursorIndex = 0;
-    this._numResults = 0;
-    this._bookmarkActiveIcon = "icon-pin-filled";
-    this._bookmarkInactiveIcon = "icon-pin-outline";
-    this._defaultIcon = "square";
-    const self = this;
-    const canceledSearch = 0;
-    const idSearch = 1;
+    constructor()
+    {
+        this._lastSearch = "";
+        this._findTimeoutId = 0;
+        this._cursorIndex = 0;
+        this._numResults = 0;
+        this._bookmarkActiveIcon = "icon-pin-filled";
+        this._bookmarkInactiveIcon = "icon-pin-outline";
+        this._defaultIcon = "square";
+        const canceledSearch = 0;
+        const idSearch = 1;
 
-    this.isVisible = function ()
+        this.keyDown = (e) =>
+        {
+            switch (e.which)
+            {
+            case 13:
+                ele.byId("result" + this._cursorIndex).click();
+                break;
+            case 27:
+                this.close();
+                break;
+
+            case 38: // up
+                this.navigate(-1);
+                break;
+
+            case 40: // down
+                this.navigate(1);
+                break;
+
+            default: return;
+            }
+            e.preventDefault();
+        };
+    }
+
+    isVisible()
     {
         return ele.isVisible(ele.byId("cmdpalette"));
-    };
+    }
 
-    this.show = function ()
+    show()
     {
         this._cursorIndex = 0;
         CABLES.UI.MODAL.hide(true);
@@ -28,19 +51,19 @@ CABLES.UI.CommandPallet = function ()
         document.getElementById("modalbg").style.display = "block";
         ele.show(ele.byId("cmdpalette"));
         ele.byId("cmdinput").focus();
-        ele.byId("cmdinput").value = lastSearch;
-        document.getElementById("cmdinput").setSelectionRange(0, lastSearch.length);
+        ele.byId("cmdinput").value = this._lastSearch;
+        document.getElementById("cmdinput").setSelectionRange(0, this._lastSearch.length);
 
-        clearTimeout(findTimeoutId);
-        findTimeoutId = setTimeout(function ()
+        clearTimeout(this._findTimeoutId);
+        this._findTimeoutId = setTimeout(() =>
         {
-            self.doSearch(lastSearch);
+            this.doSearch(this._lastSearch);
         }, 100);
 
         document.addEventListener("keydown", this.keyDown);
-    };
+    }
 
-    this.onBookmarkIconClick = function (ev)
+    onBookmarkIconClick(ev)
     {
         ev.stopPropagation();
 
@@ -50,18 +73,18 @@ CABLES.UI.CommandPallet = function ()
         const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
 
         // replace the pin-icon / set / remove icon from sidebar
-        const addToSidebar = !isCmdInSidebar(cmd);
+        const addToSidebar = !this.isCmdInSidebar(cmd);
         if (addToSidebar)
         {
-            el.classList.remove(self._bookmarkInactiveIcon);
-            el.classList.add(self._bookmarkActiveIcon);
+            el.classList.remove(this._bookmarkInactiveIcon);
+            el.classList.add(this._bookmarkActiveIcon);
 
             itemObj[cmd] = true;
         }
         else
         { // remove from sidebar
-            el.classList.remove(self._bookmarkActiveIcon);
-            el.classList.add(self._bookmarkInactiveIcon);
+            el.classList.remove(this._bookmarkActiveIcon);
+            el.classList.add(this._bookmarkInactiveIcon);
 
             itemObj[cmd] = false;
         }
@@ -69,17 +92,17 @@ CABLES.UI.CommandPallet = function ()
         CABLES.UI.userSettings.set("sidebar_left", JSON.parse(JSON.stringify(itemObj)));
 
         gui.iconBarLeft.refresh();
-    };
+    }
 
-    this.onResultClick = function (ev)
+    onResultClick(ev)
     {
         const el = ev.target;
         const cmd = el.dataset.cmd;
         gui.cmdPallet.close();
         CABLES.CMD.exec(cmd);
-    };
+    }
 
-    function isCmdInSidebar(cmdName)
+    isCmdInSidebar(cmdName)
     {
         const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
         return itemObj.hasOwnProperty(cmdName) && itemObj[cmdName];
@@ -89,13 +112,13 @@ CABLES.UI.CommandPallet = function ()
      * Checks if a commad is currently in the sidebar and returns the fitting icon (class name)
      * (filled pin or outline pin)
      */
-    function getBookmarkIconForCmd(cmdName)
+    getBookmarkIconForCmd(cmdName)
     {
-        if (isCmdInSidebar(cmdName)) return self._bookmarkActiveIcon;
-        return self._bookmarkInactiveIcon;
+        if (this.isCmdInSidebar(cmdName)) return this._bookmarkActiveIcon;
+        return this._bookmarkInactiveIcon;
     }
 
-    function addResult(cmd, num)
+    addResult(cmd, num)
     {
         let html = "";
         html += "<div class=\"result\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
@@ -103,7 +126,7 @@ CABLES.UI.CommandPallet = function ()
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
 
-        const bookmarkIcon = getBookmarkIconForCmd(cmd.cmd);
+        const bookmarkIcon = this.getBookmarkIconForCmd(cmd.cmd);
         html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>";
         if (cmd.hotkey)
         {
@@ -115,9 +138,9 @@ CABLES.UI.CommandPallet = function ()
     }
 
 
-    this.doSearch = function (str, searchId)
+    doSearch(str, searchId)
     {
-        lastSearch = str;
+        this._lastSearch = str;
 
         let html = "";
         ele.byId("searchresult_cmd").innerHTML = html;
@@ -131,7 +154,7 @@ CABLES.UI.CommandPallet = function ()
             const cmd = CABLES.CMD.commands[i].cmd;
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
-                html += addResult(CABLES.CMD.commands[i], count);
+                html += this.addResult(CABLES.CMD.commands[i], count);
                 count++;
             }
         }
@@ -145,57 +168,30 @@ CABLES.UI.CommandPallet = function ()
             this._cursorIndex = 0;
             this.navigate();
         }.bind(this), 10);
-    };
+    }
 
-    this.navigate = function (dir)
+    navigate(dir)
     {
-        if (dir) self._cursorIndex += dir;
-        if (self._cursorIndex < 0)self._cursorIndex = this._numResults - 1;
-        if (self._cursorIndex >= this._numResults)self._cursorIndex = 0;
+        if (dir) this._cursorIndex += dir;
+        if (this._cursorIndex < 0) this._cursorIndex = this._numResults - 1;
+        if (this._cursorIndex >= this._numResults) this._cursorIndex = 0;
 
         ele.forEachClass("result", (e) => { e.classList.remove("selected"); });
 
-        const e = ele.byId("result" + self._cursorIndex);
+        const e = ele.byId("result" + this._cursorIndex);
         if (e)
         {
             e.classList.add("selected");
             e.scrollIntoView({ "block": "end" });
         }
-    };
+    }
 
 
-    this.keyDown = function (e)
+    close()
     {
-        switch (e.which)
-        {
-        case 13:
-            ele.byId("result" + self._cursorIndex).click();
-            break;
-        case 27:
-            self.close();
-            break;
-
-        case 38: // up
-            self.navigate(-1);
-            break;
-
-        case 40: // down
-            self.navigate(1);
-            break;
-
-        default: return;
-        }
-        e.preventDefault();
-    };
-
-
-    this.close = function ()
-    {
-        // $("body").off("keydown", this.keyDown);
         document.removeEventListener("keydown", this.keyDown);
-
         ele.byId("searchresult_cmd").innerHTML = "";
         document.getElementById("modalbg").style.display = "none";
         ele.hide(ele.byId("cmdpalette"));
-    };
-};
+    }
+}

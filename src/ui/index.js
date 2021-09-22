@@ -20,6 +20,7 @@ import OpHistory from "./components/ophistory";
 import Exporter from "./dialogs/exporter";
 import Ele from "./utils/ele";
 import GradientEditor from "./dialogs/gradienteditor";
+import CommandPallete from "./dialogs/commandpalette";
 
 
 CABLES = CABLES || {};
@@ -51,6 +52,7 @@ CABLES.UI.Tipps = Tipps;
 CABLES.UI.KeyBindingsManager = KeyBindingsManager;
 CABLES.UI.OpHistory = OpHistory;
 CABLES.UI.Exporter = Exporter;
+CABLES.UI.CommandPallete = CommandPallete;
 
 CABLES.GradientEditor = GradientEditor;
 
@@ -59,6 +61,7 @@ CABLES.GradientEditor = GradientEditor;
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.UI.userSettings = new UserSettings();
+
 
 // expose global functions
 CABLES.UI.analyzePatch = analyzePatch;

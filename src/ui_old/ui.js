@@ -51,7 +51,7 @@ CABLES.UI.GUI = function (cfg)
     let _patch = null;
 
     const _jobs = new CABLES.UI.Jobs();
-    this.cmdPallet = new CABLES.UI.CommandPallet();
+    this.cmdPallet = new CABLES.UI.CommandPallete();
     const _opselect = new CABLES.UI.OpSelect();
     this.introduction = new CABLES.UI.Introduction();
     this._gizmo = null;
