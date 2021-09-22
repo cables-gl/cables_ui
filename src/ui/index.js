@@ -19,6 +19,7 @@ import KeyBindingsManager from "./components/keybindingsmanager";
 import OpHistory from "./components/ophistory";
 import Exporter from "./dialogs/exporter";
 import Ele from "./utils/ele";
+import GradientEditor from "./dialogs/gradienteditor";
 
 
 CABLES = CABLES || {};
@@ -50,6 +51,9 @@ CABLES.UI.Tipps = Tipps;
 CABLES.UI.KeyBindingsManager = KeyBindingsManager;
 CABLES.UI.OpHistory = OpHistory;
 CABLES.UI.Exporter = Exporter;
+
+CABLES.GradientEditor = GradientEditor;
+
 
 // expose global objects
 CABLES.api = new Api();

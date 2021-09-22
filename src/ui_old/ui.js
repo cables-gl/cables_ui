@@ -11,7 +11,6 @@ CABLES.UI.GUI = function (cfg)
     this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
-    // let showMiniMap = false;
 
     this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
@@ -30,7 +29,6 @@ CABLES.UI.GUI = function (cfg)
 
     this._corePatch = CABLES.patch = new CABLES.Patch({
         "editorMode": true,
-        // "prefixAssetPath": CABLES.sandbox.getAssetPrefix(),
         "canvas":
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
@@ -1263,11 +1261,10 @@ CABLES.UI.GUI = function (cfg)
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(); });
 
-
         window.addEventListener("resize", () =>
         {
             this.showCanvasModal(false);
-            ele.byId("glcanvas").blur();
+            ele.byId("#glcanvas").blur();
             this.setLayout();
             this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
