@@ -19,3 +19,7 @@ CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;
+
+
+CABLES.GLGUI.CURSOR_NORMAL = 0;
+CABLES.GLGUI.CURSOR_HAND = 1;

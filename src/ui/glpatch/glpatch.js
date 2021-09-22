@@ -1217,7 +1217,3 @@ export default class GlPatch extends CABLES.EventTarget
         }
     }
 }
-
-
-GlPatch.CURSOR_NORMAL = 0;
-GlPatch.CURSOR_HAND = 1;
