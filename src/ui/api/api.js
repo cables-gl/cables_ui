@@ -1,8 +1,5 @@
-CABLES = CABLES || {};
 
-CABLES.lastError = null;
-
-CABLES.API = class
+export default class Api
 {
     constructor()
     {
@@ -194,6 +191,4 @@ CABLES.API = class
             CABLES.lastError = null;
         });
     }
-};
-
-if (!CABLES.api) CABLES.api = new CABLES.API();
+}

@@ -250,7 +250,7 @@ CABLES.CMD.UI.toggleIntroCompleted = function ()
 {
     CABLES.UI.userSettings.set("introCompleted", !CABLES.UI.userSettings.get("introCompleted"));
 
-    if (!CABLES.UI.userSettings.get("introCompleted")) gui.introduction().showIntroduction();
+    if (!CABLES.UI.userSettings.get("introCompleted")) gui.introduction.showIntroduction();
 };
 
 CABLES.CMD.UI.showAutomaton = function ()

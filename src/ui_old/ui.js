@@ -55,7 +55,7 @@ CABLES.UI.GUI = function (cfg)
     const _jobs = new CABLES.UI.Jobs();
     this.cmdPallet = new CABLES.UI.CommandPallet();
     const _opselect = new CABLES.UI.OpSelect();
-    const _introduction = new CABLES.UI.Introduction();
+    this.introduction = new CABLES.UI.Introduction();
     this._gizmo = null;
     this._transformOverlay = new CABLES.UI.TransformsOverlay();
 
@@ -178,10 +178,6 @@ CABLES.UI.GUI = function (cfg)
         return this.metaTexturePreviewer;
     };
 
-    this.introduction = function ()
-    {
-        return _introduction;
-    };
 
     this.showGuestWarning = function ()
     {
@@ -1340,7 +1336,7 @@ CABLES.UI.GUI = function (cfg)
         // Introduction
         $(".nav_help_introduction").bind("click", function (event)
         {
-            self.introduction().showIntroduction();
+            gui.introduction.showIntroduction();
         });
 
         $(".nav_help_video").bind("click", function (event)
@@ -2252,7 +2248,7 @@ function startUi(cfg)
                     }
                 });
 
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 CABLES.editorSession.open();
                 gui.bindKeys();

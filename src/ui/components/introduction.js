@@ -1,16 +1,16 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-CABLES.UI.Introduction = CABLES.UI.Introduction ||
-
-function ()
+export default class Introduction
 {
+    constructor()
+    {
+        this._stepTmp = 1; /* the introjs position when it is explained */
+        this._introStepsDefined = false;
+    }
+
     /* Disables intro.js for the current logged-in user */
-    function disableIntroForUser()
+    disableIntroForUser()
     {
         CABLES.UI.userSettings.set("introCompleted", true);
     }
-
-    let stepTmp = 1; /* the introjs position when it is explained */
 
     /**
    * Defines a intro step, performs check if element exists
@@ -18,7 +18,7 @@ function ()
    * @param {string} text - The text to show for the element
    * @param {string} position - Where to show the intro for the element, either 'left', 'right', 'top' or 'bottom'
    */
-    function defineIntroStep(selector, text, position)
+    defineIntroStep(selector, text, position)
     {
         if (!selector || !text || !position)
         {
@@ -28,9 +28,9 @@ function ()
         const el = document.querySelector(selector);
         if (el)
         { /* if element exists */
-            el.setAttribute("data-step", stepTmp);
+            el.setAttribute("data-step", this._stepTmp);
             el.setAttribute("data-intro", text);
-            stepTmp++;
+            this._stepTmp++;
         }
         else
         {
@@ -38,19 +38,19 @@ function ()
         }
     }
 
-    function defineIntroSteps()
+    defineIntroSteps()
     {
-        defineIntroStep(
+        this.defineIntroStep(
             "#glpatch2",
             "Hi and welcome to cables! <br />This is the the patch panel. Here you can connect ops (operators) to create a patch.<br />Now press <code>Enter</code> to move on with the introduction.",
             "right"
         );
-        defineIntroStep(
+        this.defineIntroStep(
             "#cablescanvas",
             "This is the WebGL canvas where the visual output will be rendered to.",
             "bottom"
         );
-        defineIntroStep(
+        this.defineIntroStep(
             "#metatabpanel",
             "In the info area you get help. Hover over any element on the page to receive information about it.",
             "left"
@@ -60,17 +60,17 @@ function ()
         //    "When you select an op in the patch panel its parameters will be shown here.",
         //    "left"
         // );
-        defineIntroStep(
+        this.defineIntroStep(
             "#metatabpanel .tabpanel",
             "In these tabs you can access additional features, e.g. the documentation for the currently selected op.",
             "left"
         );
-        defineIntroStep(
+        this.defineIntroStep(
             "#patchname",
             "Click on the patch name to access the settings, here you can e.g. publish a patch or invite collaborators.",
             "bottom"
         );
-        defineIntroStep(
+        this.defineIntroStep(
             "#iconbar_sidebar_left",
             "In the sidebar you can access often used features.",
             "right"
@@ -80,38 +80,37 @@ function ()
         //     "Feel free to customize it by pressing the <i>…</i> icon.",
         //     "top"
         // );
-        defineIntroStep(
+        this.defineIntroStep(
             ".nav-item-help",
             "Make sure to check out the video tutorials and documentation, these will help you get started in a blink!",
             "bottom"
         );
-        defineIntroStep(
+        this.defineIntroStep(
             "#iconbar_sidebar_left div[data-infotext=\"cmd_addop\"]",
             "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
             "right"
         );
     }
 
-    let introStepsDefined = false;
 
-    this.showIntroduction = function ()
+    showIntroduction()
     {
         console.log("Introduction started");
-        if (!introStepsDefined)
+        if (!this._introStepsDefined)
         {
-            defineIntroSteps();
-            introStepsDefined = true;
+            this.defineIntroSteps();
+            this._introStepsDefined = true;
         }
         introJs()
-            .oncomplete(function ()
+            .oncomplete(() =>
             {
                 // console.log('intro completed');
-                disableIntroForUser();
+                this.disableIntroForUser();
             })
-            .onskip(function ()
+            .onskip(() =>
             { /* needed because of introjs 2.9.0 bug: https://github.com/usablica/intro.js/issues/848 */
                 // console.log('intro skipped');
-                disableIntroForUser();
+                this.disableIntroForUser();
             })
             .setOptions({
                 "showBullets": false,
@@ -120,5 +119,5 @@ function ()
                 "tooltipPosition": "left"
             })
             .start();
-    };
-};
+    }
+}
