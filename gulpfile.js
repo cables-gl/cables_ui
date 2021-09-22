@@ -15,6 +15,9 @@ const merge = require("merge-stream");
 const getRepoInfo = require("git-repo-info");
 const footer = require("gulp-footer");
 const env = require("gulp-util").env;
+const webpack = require("webpack-stream");
+const compiler = require("webpack");
+const webpackConfig = require("./webpack.config");
 
 const isLiveBuild = env.live || false;
 
@@ -67,11 +70,41 @@ function _scripts_ops()
     return task.pipe(gulp.dest("dist/js"));
 }
 
+function _scripts_ui_webpack()
+{
+    return new Promise((resolve, reject) =>
+    {
+        gulp.src(["src/ui/index.js"])
+            .pipe(
+                webpack(
+                    {
+                        "config": webpackConfig(isLiveBuild, false),
+                    },
+                    compiler,
+                    (err, stats) =>
+                    {
+                        if (err) throw err;
+                        if (stats.hasErrors())
+                        {
+                            return reject(new Error(stats.compilation.errors.join("\n")));
+                        }
+                        resolve();
+                    }
+                )
+            )
+            .pipe(gulp.dest("dist/js"))
+            .on("error", (err) =>
+            {
+                console.error("WEBPACK ERROR", err);
+            });
+    });
+}
+
 function _scripts_ui()
 {
-    let task = gulp.src(["src/ui/**/*.js"]);
+    let task = gulp.src(["src/ui_old/**/*.js"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("cablesui.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesui.min.js"));
+    task = task.pipe(concat("cablesuiold.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesuiold.min.js"));
     if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
     return task.pipe(gulp.dest("dist/js"));
 }
@@ -79,7 +112,7 @@ function _scripts_ui()
 function _append_build_info()
 {
     return gulp
-        .src(["dist/js/cablesui.max.js", "dist/js/cablesui.min.js"])
+        .src(["dist/js/cablesuiold.max.js", "dist/js/cablesuiold.min.js"])
         .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
         .pipe(gulp.dest("dist/js/"));
 }
@@ -162,7 +195,8 @@ function _watch(cb)
 {
     gulp.watch("../cables/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
     gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch("src/ui_old/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
     gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
@@ -174,7 +208,8 @@ function _electron_watch(cb)
 {
     gulp.watch("../cables/src/core/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
     gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info, _electronapp));
+    gulp.watch("src/ui_old/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info, _electronapp));
+    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
     gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info, _electronapp));
     gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
     gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
@@ -195,6 +230,7 @@ function _electron_watch(cb)
 gulp.task("default", gulp.series(
     _update_buildInfo,
     _scripts_ui,
+    _scripts_ui_webpack,
     _append_build_info,
     _html_ui,
     _scripts_core,
@@ -219,6 +255,7 @@ gulp.task("build", gulp.series(
     _scripts_ops,
     _scripts_core,
     _scripts_ui,
+    _scripts_ui_webpack,
     _append_build_info,
     _scripts_talkerapi,
     _sass,
@@ -232,6 +269,7 @@ gulp.task("electron", gulp.series(
     _update_buildInfo,
     _svgcss,
     _scripts_ui,
+    _scripts_ui_webpack,
     _append_build_info,
     _lint,
     _html_ui,

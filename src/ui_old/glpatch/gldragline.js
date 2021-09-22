@@ -42,14 +42,12 @@ CABLES.GLGUI.GlDragLine = class
             const ele = document.elementFromPoint(e.x, e.y);
             if (!ele) return;
 
-            console.log("mouse up!!!", this._glPort, this._glPort.port);
-
             if (ele.dataset.opid && ele.dataset.portname)
             {
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
             }
 
-            if (this._glPort && this._glPort.port) // this._button == CABLES.UI.MOUSE_BUTTON_LEFT &&
+            if ((this._button == CABLES.UI.MOUSE_BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == CABLES.UI.MOUSE_BUTTON_LEFT &&
             {
                 let x = this._glPatch.viewBox.mousePatchX;
 

@@ -1,48 +1,52 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.Bookmarks = function ()
+export default class Bookmarks
 {
-    let bookmarks = [];
-
-    this.hasBookmarkWithId = function (id)
+    constructor()
     {
-        for (let i = 0; i < bookmarks.length; i++)
+        this._bookmarks = [];
+
+        console.log("BOOOL MARK");
+    }
+
+
+    hasBookmarkWithId(id)
+    {
+        for (let i = 0; i < this._bookmarks.length; i++)
         {
-            const bm = bookmarks[i];
+            const bm = this._bookmarks[i];
             if (bm === id)
             {
                 return true;
             }
         }
         return false;
-    };
+    }
 
 
-    this.cleanUp = function ()
+    cleanUp()
     {
         let i;
 
-        for (i in bookmarks)
+        for (i in this._bookmarks)
         {
-            const op = gui.corePatch().getOpById(bookmarks[i]);
-            if (!op) bookmarks[i] = null;
+            const op = gui.corePatch().getOpById(this._bookmarks[i]);
+            if (!op) this._bookmarks[i] = null;
         }
-    };
+    }
 
-    this.getHtml = function ()
+    getHtml()
     {
         const subs = gui.patchView.getSubPatches(true);
 
         const bm = [];
-        for (const i in bookmarks)
+        for (const i in this._bookmarks)
         {
-            const op = gui.corePatch().getOpById(bookmarks[i]);
+            const op = gui.corePatch().getOpById(this._bookmarks[i]);
 
             if (op)
             {
                 bm.push({
-                    "id": bookmarks[i],
+                    "id": this._bookmarks[i],
                     "name": op.name,
                     "objName": op.objName,
                     "class": CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
@@ -56,33 +60,33 @@ CABLES.UI.Bookmarks = function ()
 
         const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         return html;
-    };
+    }
 
-    this.set = function (arr)
+    set(arr)
     {
-        if (arr) bookmarks = arr;
-    };
+        if (arr) this._bookmarks = arr;
+    }
 
-    this.remove = function (id)
+    remove(id)
     {
         if (id)
         {
-            for (const i in bookmarks)
+            for (const i in this._bookmarks)
             {
-                if (bookmarks[i] == id) bookmarks[i] = null;
+                if (this._bookmarks[i] == id) this._bookmarks[i] = null;
             }
         }
 
-        while (bookmarks.indexOf(null) >= 0) bookmarks.splice(bookmarks.indexOf(null), 1);
-    };
+        while (this._bookmarks.indexOf(null) >= 0) this._bookmarks.splice(this._bookmarks.indexOf(null), 1);
+    }
 
-    this.add = function (id)
+    add(id)
     {
         if (id)
         {
-            for (const i in bookmarks)
+            for (const i in this._bookmarks)
             {
-                if (bookmarks[i] == id)
+                if (this._bookmarks[i] == id)
                 {
                     this.remove(id);
 
@@ -98,7 +102,7 @@ CABLES.UI.Bookmarks = function ()
                 }
             }
 
-            bookmarks.push(id);
+            this._bookmarks.push(id);
 
             const elements = document.getElementsByClassName("toggle-bookmark-button");
             for (let eli = 0; eli < elements.length; eli++)
@@ -111,9 +115,9 @@ CABLES.UI.Bookmarks = function ()
             gui.patchView.centerSelectOp(id);
             CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
         }
-    };
+    }
 
-    this.goto = function (id)
+    goto(id)
     {
         if (gui.keys.shiftKey)
         {
@@ -124,16 +128,16 @@ CABLES.UI.Bookmarks = function ()
         {
             gui.patchView.centerSelectOp(id);
         }
-    };
+    }
 
-    this.getBookmarks = function ()
+    getBookmarks()
     {
         const bm = [];
-        for (let i = 0; i < bookmarks.length; i++)
+        for (let i = 0; i < this._bookmarks.length; i++)
         {
-            if (bookmarks[i] != null) bm.push(bookmarks[i]);
+            if (this._bookmarks[i] != null) bm.push(this._bookmarks[i]);
         }
 
         return bm;
-    };
-};
+    }
+}
