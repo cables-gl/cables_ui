@@ -47,10 +47,11 @@ CABLES.UI.FileManager.prototype.refresh = function ()
     }, 200);
 };
 
-CABLES.UI.FileManager.prototype.setFilePort = function (portEle, op)
+CABLES.UI.FileManager.prototype.setFilePort = function (portEle, op, previewEle)
 {
     if (!portEle)
     {
+        this._filePortElePreview = null;
         this._filePortEle = null;
         this._filePortOp = null;
 
@@ -62,6 +63,7 @@ CABLES.UI.FileManager.prototype.setFilePort = function (portEle, op)
     }
     else
     {
+        this._filePortElePreview = previewEle;
         this._filePortEle = portEle;
         this._filePortOp = op;
     }
@@ -470,6 +472,10 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             const event = document.createEvent("Event");
             event.initEvent("input", true, true);
             this._filePortEle.dispatchEvent(event);
+
+            if (this._filePortElePreview) this._filePortElePreview.innerHTML =
+                "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
+
             gui.opParams.show(this._filePortOp);
         }
     }

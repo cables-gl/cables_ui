@@ -935,7 +935,7 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    this.showFileSelect = function (inputId, filterType, opid)
+    this.showFileSelect = function (inputId, filterType, opid, previewId)
     {
         this.showFileManager(function ()
         {
@@ -948,7 +948,7 @@ CABLES.UI.GUI = function (cfg)
             const fn = portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
-            this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid));
+            this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
         }.bind(this));
     };

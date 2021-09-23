@@ -143,7 +143,6 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
     //     return;
     // }
 
-
     const html = CABLES.UI.getHandleBarHtml("suggestions", { suggestions, showSelect });
     $("#suggestionDialog").html(html);
     $("#modalbg").show();
@@ -154,13 +153,13 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
             "top": mouseEvent.clientY,
         });
 
-
     $(".opSelect").css({
         "width": 5,
         "height": 5,
         "margin-left": 2.5,
         "margin-top": -2.5
     });
+
     $(".opSelect").animate(
         {
             "width": 30,
@@ -185,7 +184,6 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
         suggestions[i].id = i;
     }
-
 
     $("#modalbg").on("click", function ()
     {
