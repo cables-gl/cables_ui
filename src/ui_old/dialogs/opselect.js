@@ -16,7 +16,7 @@ CABLES.UI.OpSelect = class
         this.displayBoxIndex = 0;
         this.itemHeight = 0;
         this.firstTime = true;
-        this.tree = new CABLES.OpTree();
+        this.tree = new CABLES.UI.OpTreeList();
         this._sortTimeout = 0;
         this._backspaceDelay = -1;
         this._wordsDb = null;
@@ -30,9 +30,6 @@ CABLES.UI.OpSelect = class
 
     close()
     {
-        // if (this.keyDown)
-        // ele.byId("opsearch").removeEventListener("keydown", this.keyDown);
-
         gui.patchView.focus();
     }
 
@@ -43,7 +40,7 @@ CABLES.UI.OpSelect = class
 
     updateOptions(opname)
     {
-        const perf = CABLES.uiperf.start("opselect.udpateOptions");
+        const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
         const num = $(".searchbrowser .searchable:visible").length;
         const query = this._getQuery();
 
@@ -57,7 +54,7 @@ CABLES.UI.OpSelect = class
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
-                    this._list[i].element[0].style.display = "none";
+                    this._list[i].element.style.display = "none";
         }
         else ele.hide(eleTypeStart);// .classList.add("hidden");
 
@@ -120,7 +117,7 @@ CABLES.UI.OpSelect = class
     {
         if (!query || query == " " || query == "") return;
 
-        const perf = CABLES.uiperf.start("opselect._searchWord");
+        const perf = CABLES.UI.uiProfiler.start("opselect._searchWord");
 
         for (let i = 0; i < list.length; i++)
         {
@@ -329,7 +326,7 @@ CABLES.UI.OpSelect = class
 
         if (opname && this._currentSearchInfo != opname)
         {
-            const perf = CABLES.uiperf.start("opselect.updateInfo");
+            const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
 
             this._eleSearchinfo.innerHTML = "";
@@ -367,23 +364,23 @@ CABLES.UI.OpSelect = class
         this._search(q);
         let i = 0;
 
-        const perf = CABLES.uiperf.start("opselect.searchLoop");
+        const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
         for (i = 0; i < this._list.length; i++)
         {
-            this._list[i].element = this._list[i].element || $(`#result_${this._list[i].id}`);
+            this._list[i].element = this._list[i].element || ele.byId("result_" + this._list[i].id);
 
             if (this._list[i].score > 0)
             {
-                this._list[i].element[0].style.display = "block";
-                this._list[i].element[0].dataset.score = this._list[i].score;
-                this._list[i].element[0].dataset.scoreDebug = this._list[i].scoreDebug;
+                this._list[i].element.style.display = "block";
+                this._list[i].element.dataset.score = this._list[i].score;
+                this._list[i].element.dataset.scoreDebug = this._list[i].scoreDebug;
             }
             else
             {
-                this._list[i].element[0].dataset.score = 0.0;
-                this._list[i].element[0].dataset.scoreDebug = "???";
-                this._list[i].element[0].style.display = "none";
+                this._list[i].element.dataset.score = 0.0;
+                this._list[i].element.dataset.scoreDebug = "???";
+                this._list[i].element.style.display = "none";
             }
         }
 
@@ -731,7 +728,7 @@ CABLES.UI.OpSelect = class
                         ops.push(op);
                     }
 
-                    ops = this._getop(ops, ns, val[propertyName], `${parentname + propertyName}.`);
+                    ops = this._getop(ops, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
         }

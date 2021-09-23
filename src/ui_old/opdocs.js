@@ -78,12 +78,12 @@ CABLES.UI.OpDocs = function ()
      * Adds some properties to each doc in the op docs array
      * @param {array} opDocs - The array of op docs
      */
-    function extendOpDocs(opDocs)
+    function extendOpDocs(_opDocs)
     {
-        if (!opDocs) { console.error("No op docs found!"); return; }
-        for (let i = 0; i < opDocs.length; i++)
+        if (!_opDocs) { console.error("No op docs found!"); return; }
+        for (let i = 0; i < _opDocs.length; i++)
         {
-            const opDoc = opDocs[i];
+            const opDoc = _opDocs[i];
             opDoc.category = CABLES.Op.getNamespaceClassName(opDoc.name);
             if (opDoc.layout)
             {
@@ -163,18 +163,18 @@ CABLES.UI.OpDocs = function ()
                 let j = 0;
 
                 if (opDocs[i].layout.portsIn)
-	                for (j = 0; j < opDocs[i].layout.portsIn.length; j++)
-	                {
-	                    const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-	                    portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
-	                }
+                    for (j = 0; j < opDocs[i].layout.portsIn.length; j++)
+                    {
+                        const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
+                        portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
+                    }
 
                 if (opDocs[i].layout.portsOut)
-	                for (j = 0; j < opDocs[i].layout.portsOut.length; j++)
-	                {
-	                    const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-	                    portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
-	                }
+                    for (j = 0; j < opDocs[i].layout.portsOut.length; j++)
+                    {
+                        const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
+                        portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
+                    }
 
                 const visualYOffset = 2;
                 const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, opDocs[i].shortNameDisplay);
@@ -284,7 +284,7 @@ CABLES.UI.OpDocs = function ()
 
     this.showPortDoc = function (opname, portname)
     {
-        const perf = CABLES.uiperf.start("opdocs.portdoc");
+        const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
 
         for (let i = 0; i < opDocs.length; i++)
         {

@@ -6,7 +6,7 @@ CABLES.UTILS = CABLES.UTILS || {};
 CABLES.UI.handleBarsPrecompiled = {};
 CABLES.UI.getHandleBarHtml = function (name, obj)
 {
-    const perf = CABLES.uiperf.start("getHandleBarHtml");
+    const perf = CABLES.UI.uiProfiler.start("getHandleBarHtml");
 
     let template = CABLES.UI.handleBarsPrecompiled[name];
     if (!template && document.getElementById(name))

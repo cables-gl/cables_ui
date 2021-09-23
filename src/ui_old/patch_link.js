@@ -133,7 +133,7 @@ function UiLink(port1, port2)
         if (!this.linkLine) return;
         // if(!this.isVisible())return;
 
-        const perf = CABLES.uiperf.start("link showadd");
+        const perf = CABLES.UI.uiProfiler.start("link showadd");
 
         this.linkLine.node.classList.remove("link-thin");
         // const llWidth=1.5;
@@ -193,7 +193,7 @@ function UiLink(port1, port2)
 
     this.getPath = function ()
     {
-        const perf = CABLES.uiperf.start("link getpath");
+        const perf = CABLES.UI.uiProfiler.start("link getpath");
         // if(!port2.rect)return '';
         // if(!port1.rect)return '';
 
@@ -331,7 +331,7 @@ function UiLink(port1, port2)
 
     this.redraw = function ()
     {
-        const perf = CABLES.uiperf.start("link redraw");
+        const perf = CABLES.UI.uiProfiler.start("link redraw");
 
         if (!this.linkLine)
         {

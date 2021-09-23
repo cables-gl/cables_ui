@@ -131,8 +131,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         }
 
         // var ops=gui.corePatch().ops;
-        const perf = CABLES.uiperf.start("_showOpParams");
-        const perfHtml = CABLES.uiperf.start("_showOpParamsHTML");
+        const perf = CABLES.UI.uiProfiler.start("_showOpParams");
+        const perfHtml = CABLES.UI.uiProfiler.start("_showOpParamsHTML");
 
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
@@ -225,7 +225,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             });
 
             let lastGroup = null;
-            const perfLoop = CABLES.uiperf.start("_showOpParamsLOOP");
+            const perfLoop = CABLES.UI.uiProfiler.start("_showOpParamsLOOP");
 
             for (let i = 0; i < op.portsIn.length; i++)
             {
@@ -277,7 +277,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 "texts": CABLES.UI.TEXTS,
             });
 
-            const perfLoopOut = CABLES.uiperf.start("_showOpParamsLOOP OUT");
+            const perfLoopOut = CABLES.UI.uiProfiler.start("_showOpParamsLOOP OUT");
 
             let foundPreview = false;
             let lastGroup = null;
@@ -552,7 +552,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             // console.log((new Error()).stack);
         }
 
-        const perf = CABLES.uiperf.start("updateUiAttribs");
+        const perf = CABLES.UI.uiProfiler.start("updateUiAttribs");
         let el = null;
 
         // this.setCurrentOpTitle(this._currentOp.name);
@@ -627,7 +627,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     {
         if (this._watchPorts.length)
         {
-            const perf = CABLES.uiperf.start("watch ports");
+            const perf = CABLES.UI.uiProfiler.start("watch ports");
 
             for (let i = 0; i < this._watchPorts.length; i++)
             {

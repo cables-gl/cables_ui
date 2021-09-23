@@ -64,7 +64,7 @@ CABLES.UI.MetaCode = function (tabs)
                 "op/" + op.objName + "/info",
                 function (res)
                 {
-                    const perf = CABLES.uiperf.start("showOpCodeMetaPanel");
+                    const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
                     const doc = {};
                     let summary = "";
 

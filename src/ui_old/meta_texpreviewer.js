@@ -174,7 +174,7 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
 
     if (previewCanvas && port && port.get())
     {
-        const perf = CABLES.uiperf.start("texpreview");
+        const perf = CABLES.UI.uiProfiler.start("texpreview");
         const cgl = port.parent.patch.cgl;
 
         if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);

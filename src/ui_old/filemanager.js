@@ -408,9 +408,9 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
                             "fileCategory": fileCategory,
                             "filepath": fileInfoPath
                         },
-                        (err, r) =>
+                        (_err, _r) =>
                         {
-                            const itemInfo = r;
+                            const itemInfo = _r;
                             const templateName = "filemanager_details_lib_" + itemInfo.type;
 
                             try

@@ -11,9 +11,8 @@ CABLES.UI.GUI = function (cfg)
     this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
-    // let showMiniMap = false;
 
-    this.keys = new CABLES.UI.KeyManager();
+    this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
     this.socket = null;
     this.watchPortVisualizer = null;
@@ -30,7 +29,6 @@ CABLES.UI.GUI = function (cfg)
 
     this._corePatch = CABLES.patch = new CABLES.Patch({
         "editorMode": true,
-        // "prefixAssetPath": CABLES.sandbox.getAssetPrefix(),
         "canvas":
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
@@ -53,9 +51,9 @@ CABLES.UI.GUI = function (cfg)
     let _patch = null;
 
     const _jobs = new CABLES.UI.Jobs();
-    this.cmdPallet = new CABLES.UI.CommandPallet();
+    this.cmdPallet = new CABLES.UI.CommandPallete();
     const _opselect = new CABLES.UI.OpSelect();
-    const _introduction = new CABLES.UI.Introduction();
+    this.introduction = new CABLES.UI.Introduction();
     this._gizmo = null;
     this._transformOverlay = new CABLES.UI.TransformsOverlay();
 
@@ -99,6 +97,8 @@ CABLES.UI.GUI = function (cfg)
     this._eventListeners = {};
 
     this._currentProject = null;
+
+    this.tipps = new CABLES.UI.Tipps();
 
     this.project = function ()
     {
@@ -178,10 +178,6 @@ CABLES.UI.GUI = function (cfg)
         return this.metaTexturePreviewer;
     };
 
-    this.introduction = function ()
-    {
-        return _introduction;
-    };
 
     this.showGuestWarning = function ()
     {
@@ -253,7 +249,7 @@ CABLES.UI.GUI = function (cfg)
     this.setLayout = function ()
     {
         this.pauseProfiling();
-        const perf = CABLES.uiperf.start("gui.setlayout");
+        const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
         this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
@@ -1200,31 +1196,12 @@ CABLES.UI.GUI = function (cfg)
     {
         $("#glcanvas").attr("tabindex", "3");
 
-        document.getElementsByClassName("nav_cmdplt")[0].addEventListener("click", () =>
-        {
-            this.cmdPallet.show();
-        });
+        ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
+        ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
 
-        document.getElementsByClassName("nav_search")[0].addEventListener("click", () =>
-        {
-            gui.find("");
-        });
-
-        $(".nav_createBackup").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.createBackup();
-        });
-
-        $(".nav_viewBackups").bind("click", function (event)
-        {
-            gui.mainTabs.addIframeTab("Patch Backups", CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe#t=versions", { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings#t=versions" });
-        });
-
-        $(".nav_cablesweb").bind("click", function (event)
-        {
-            const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank");
-            win.focus();
-        });
+        ele.byId("nav_createBackup").addEventListener("click", (event) => { CABLES.CMD.PATCH.createBackup(); });
+        ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
+        ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
         document.querySelectorAll(".nav_create_from_template").forEach((el) =>
         {
@@ -1236,22 +1213,9 @@ CABLES.UI.GUI = function (cfg)
             });
         });
 
-        $(".nav_preferences").bind("click", function (event)
-        {
-            CABLES.CMD.UI.showPreferences();
-        });
-
-        $("#button_toggleTiming").bind("click", function (event)
-        {
-            self.toggleTiming();
-        });
-
-        $("#button_cycleRenderSize").bind("click", function (event)
-        {
-            self.cycleFullscreen();
-        });
-
-        $(".nav_viewProjectLink").bind("click", function (event)
+        ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
+        ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
+        ele.byId("nav_viewProjectLink").addEventListener("click", () =>
         {
             const url = $(".viewProjectLink").attr("href");
             console.log("url", url);
@@ -1259,133 +1223,49 @@ CABLES.UI.GUI = function (cfg)
             win.focus();
         });
 
-        $(".nav_patch_save").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.save();
-        });
-        $(".nav_patch_saveas").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.saveAs();
-        });
-        $(".nav_patch_new").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.newPatch();
-        });
-        $(".nav_patch_clear").bind("click", function (event)
-        {
-            if (confirm("really?")) CABLES.CMD.PATCH.clear();
-        });
-        $(".nav_patch_export").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.export();
-        });
-        $(".nav_uploadfile").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.uploadFileDialog();
-        });
-        $(".nav_patch_browse_examples").bind("click", function (event)
-        {
-            const win = window.open("https://cables.gl/examples", "_blank");
-            win.focus();
-        });
-        $(".nav_patch_browse_favourites").bind("click", function (event)
-        {
-            const win = window.open("https://cables.gl/myfavs", "_blank");
-            win.focus();
-        });
-        $(".nav_patch_browse_public").bind("click", function (event)
-        {
-            const win = window.open("https://cables.gl/projects", "_blank");
-            win.focus();
-        });
-        $(".nav_patch_contributors").bind("click", CABLES.CMD.UI.settingsContributors);
-        $(".nav_changelog").bind("click", CABLES.CMD.UI.showChangelog);
+        ele.byId("nav_patch_save").addEventListener("click", (event) => { CABLES.CMD.PATCH.save(); });
+        ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });
+        ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
+
+
+        ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
+        ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+        ele.byId("nav_changelog").addEventListener("click", CABLES.CMD.UI.showChangelog);
 
         // --- Help menu
         // Documentation
-        $(".nav_help_keys").bind("click", function (event)
-        {
-            CABLES.CMD.UI.showKeys();
-        });
 
-        $(".nav_help_about").bind("click", function (event)
-        {
-            // TODO: Show popup which explains what cables is and who develops it
-        });
-        $(".nav_help_documentation").bind("click", function (event)
-        {
-            const win = window.open("https://docs.cables.gl", "_blank");
-            if (win)
-            {
-                // Browser has allowed it to be opened
-                win.focus();
-            }
-            else
-            {
-                // Broswer has blocked it
-                alert("Please allow popups for this site");
-            }
-        });
-
-        $(".nav_help_forum").bind("click", function (event)
-        {
-            const win = window.open("https://forum.cables.gl", "_blank");
-        });
-
-        $(".nav_help_tipps").bind("click", function (event)
-        {
-            CABLES.UI.tipps.show();
-        });
+        ele.byId("nav_help_keys").addEventListener("click", (event) => { CABLES.CMD.UI.showKeys(); });
+        ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open("https://docs.cables.gl", "_blank"); });
+        ele.byId("nav_help_forum").addEventListener("click", (event) => { window.open("https://forum.cables.gl", "_blank"); });
+        ele.byId("nav_help_tipps").addEventListener("click", (event) => { gui.tipps.show(); });
 
         // Introduction
-        $(".nav_help_introduction").bind("click", function (event)
-        {
-            self.introduction().showIntroduction();
-        });
+        ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
+        ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
 
-        $(".nav_help_video").bind("click", function (event)
-        {
-            const win = window.open("https://www.youtube.com/cablesgl", "_blank");
-            win.focus();
-        });
 
         $(".nav_op_addOp").bind("click", function (event)
         {
             CABLES.CMD.PATCH.addOp();
         });
-        $(".nav_op_createOp").bind("click", function (event)
-        {
-            self.serverOps.createDialog();
-        });
 
-        $(".nav_files").bind("click", function (event)
-        {
-            CABLES.CMD.UI.toggleFiles();
-        });
-        $(".nav_filemanager").bind("click", function (event)
-        {
-            // CABLES.CMD.UI.toggleFiles();
-            gui.showFileManager();
-        });
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
+        ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(); });
+
+
         $(".nav_timeline").bind("click", function (event)
         {
             CABLES.CMD.UI.toggleTimeline();
         });
-        $(".nav_profiler").bind("click", function (event)
-        {
-            new CABLES.UI.Profiler(gui.mainTabs);
-            gui.maintabPanel.show();
-        });
 
-        $(".nav_editor").bind("click", function (event)
-        {
-            CABLES.CMD.UI.toggleEditor();
-        });
+        ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(); });
 
         window.addEventListener("resize", () =>
         {
             this.showCanvasModal(false);
-            $("#glcanvas").blur();
+            const eleCanvas = ele.byId("glcanvas");
+            if (eleCanvas)eleCanvas.blur();
             this.setLayout();
             this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
@@ -1554,7 +1434,7 @@ CABLES.UI.GUI = function (cfg)
         document.getElementById("menubar").classList.remove("hidden");
 
 
-        if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.uiperf.show();
+        if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
         self.patch().getViewBox().update();
 
@@ -1583,12 +1463,12 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.iconBarLeft = new CABLES.IconBar("sidebar_left");
-        gui.iconBarPatchNav = new CABLES.IconBar("sidebar_bottom");
-        gui.iconBarTimeline = new CABLES.IconBar("sidebar_timeline");
+        gui.iconBarLeft = new CABLES.UI.IconBar("sidebar_left");
+        gui.iconBarPatchNav = new CABLES.UI.IconBar("sidebar_bottom");
+        gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
 
 
-        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) CABLES.UI.tipps.show();
+        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
 
         const buildInfo = this.project().buildInfo;
         console.groupCollapsed("welcome to cables!");
@@ -2252,7 +2132,7 @@ function startUi(cfg)
                     }
                 });
 
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction().showIntroduction();
+                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 CABLES.editorSession.open();
                 gui.bindKeys();

@@ -435,7 +435,7 @@ CABLES.UI.Port = function (thePort)
         if (!self.rect) return;
 
 
-        const perf = CABLES.uiperf.start("port updateUI");
+        const perf = CABLES.UI.uiProfiler.start("port updateUI");
 
 
         let offY = 0;

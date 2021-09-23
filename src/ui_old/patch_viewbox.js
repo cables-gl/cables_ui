@@ -110,7 +110,7 @@ CABLES.UI.PatchViewBox.prototype._setDefaultViewbox = function ()
 
 CABLES.UI.PatchViewBox.prototype._updateNavHelper = function ()
 {
-    const perf = CABLES.uiperf.start("PatchViewBox._updateNavHelper");
+    const perf = CABLES.UI.uiProfiler.start("PatchViewBox._updateNavHelper");
 
     if (this._patch.getNumOps() == 0)
     {
@@ -162,7 +162,7 @@ CABLES.UI.PatchViewBox.prototype._update = function ()
     this._isUpdating = true;
     setTimeout(() =>
     {
-        const perf = CABLES.uiperf.start("PatchViewBox.update");
+        const perf = CABLES.UI.uiProfiler.start("PatchViewBox.update");
 
         if (isNaN(this._viewBox.x)) console.warn("viewbox x NaN");
         if (isNaN(this._viewBox.y)) console.warn("viewbox y NaN");

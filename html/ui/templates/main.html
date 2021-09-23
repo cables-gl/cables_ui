@@ -20,7 +20,6 @@
 
 
 <div id="subpatch_nav">
-    <!-- <div id="button_subPatchBack" ><i class="icon icon-arrow-left icon-2x"></i></div> -->
     <div id="subpatch_breadcrumb"></div>
 </div>
 
@@ -30,7 +29,6 @@
 <div id="modalbg" class="modal-bg-look" onclick="gui.pressedEscape();" style="display:none;"></div>
 <div id="modalcontainer" style="display:none;">
 	<div id="modalclose" class="modalclose">
-		<!-- <a class=" fa fa-times" onclick="CABLES.UI.MODAL.hide(true);"></a> -->
 		<a class="icon-x icon icon-1_5x" onclick="gui.pressedEscape();"></a>
 	</div>
 
@@ -60,22 +58,14 @@
         <span class="item nonInteractive info" data-infotext="canvas_version" id="canvasInfoVersion"></span>
         <span class="item nonInteractive info" data-infotext="canvas_fps" id="canvasInfoFPS"></span>
         <span class="item nonInteractive info" data-infotext="canvas_ms" id="canvasInfoMS"></span>
-
     </div>
 </div>
-
 
 <div id="notify"></div>
 <div id="delayed"><i class="fa fa-clock-o" aria-hidden="true"></i></div>
 
-
 <div id="maintabs"></div>
 
-<!-- <div id="editor">
-    <div id="editorbar"></div>
-    <div id="ace_editors" style="padding:0;height:300px;"></div>
-    <div id="editorfoot"><pre></pre></div>
-</div> -->
 <div id="editormaximized" class="info" onclick="gui.maintabPanel.toggle();gui.setLayout();" data-info="minimize_tabpanel">
     <span class="icon icon-chevron-left"></span>
 </div>
@@ -98,29 +88,20 @@
     <div id="patch" tabindex="1" class="visible"></div>
 </div>
 
-
 <div id="timing"></div>
 <div id="splitterPatch" class="splitter"></div>
 <div id="splitterRenderer" class="splitter"></div>
 <div id="splitterTimeline" class="splitter"></div>
-<!-- <div id="splitterEditor" class="splitter"></div> -->
 <div id="splitterMaintabs" class="splitter"></div>
-
-
-<!-- <div class="cables-logo cables" onclick="CABLES.CMD.UI.showChat();">
-    <div class="icon icon-cables"></div>
-</div> -->
 
 
 <div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
-    <!-- <a class="button" href="/" target="_blankk">cables</a> -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
             <li class="nav_logo main" onmouseover="gui.socketUi.updateHtml();" >
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
-                <!-- <span id="nav-logo" class="icon icon-1_25x icon-cables"></span> -->
                 <span id="nav-logo" class="icon-empty icon">
                     <div id="nav-logo_idle"></div>
                     <div id="nav-loading"></div>
@@ -130,7 +111,7 @@
                 </div>
 
                 <ul class="nav-submenu">
-                    <li class="nav_cablesweb">Open cables.gl</span></li>
+                    <li id="nav_cablesweb">Open cables.gl</span></li>
                     <li class="divide"></li>
                     <li class="nav_jobs" style="background-color: var(--color-02);">
                         <div id="jobs"></div>
@@ -142,21 +123,20 @@
                 </ul>
             </li>
 
-
             <li class="main">
                 <div id="patchname" onclick="CABLES.CMD.UI.settings();"></div>
                 <ul class="nav-submenu">
                     <li class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings</li>
-                    <li class="nav_viewProjectLink viewProjectLink">Open in new window</li>
+                    <li id="nav_viewProjectLink" class="viewProjectLink">Open in new window</li>
 
                     <li class="divide"></li>
-                    <li id="nav_createBackup" class="nav_createBackup viewProjectLink">Create Backup</li>
-                    <li id="nav_viewBackups" class="nav_viewBackups viewProjectLink">Backups</li>
+                    <li id="nav_createBackup" class="viewProjectLink">Create Backup</li>
+                    <li id="nav_viewBackups" class="viewProjectLink">Backups</li>
 
                     <li class="divide"></li>
-                    <li class="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
-                    <li class="nav_patch_saveas">Save As<span class="shortcut">[cmd + shift + s]</span></li>
-                    <li class="nav_patch_export">Export</li>
+                    <li id="nav_patch_save">Save <span class="shortcut">[cmd + s]</span></li>
+                    <li id="nav_patch_saveas">Save As<span class="shortcut">[cmd + shift + s]</span></li>
+                    <li id="nav_patch_export">Export</li>
                     <li class="divide"></li>
 
                     <li class="nav-sub-submenu devOnly">
@@ -175,32 +155,18 @@
                 </ul>
             </li>
 
-            <!-- <li>
-                Op
-                <ul class="nav-submenu">
-                    <li class="nav_op_addOp">Add<span class="shortcut">[esc]</span></li>
-                    <li class="divide"></li>
-                    <li class="nav_op_copy inactive">Copy <span class="shortcut">[mod + c]</span></li>
-                    <li class="nav_op_paste inactive">Paste <span class="shortcut">[mod + v]</span></li>
-                    <li class="nav_op_delete inactive">Delete <span class="shortcut">[backspace]</span></li>
-                    <li class="divide"></li>
-
-                </ul>
-            </li> -->
-
             <li class="nav_cables main" >
                 <span class="icon icon-1_25x icon-user"></span>
                 <ul class="nav-submenu">
-                    <li class="nav_preferences">My Editor Preferences</span></li>
-                    <!-- <li class="xxx">Account Settings</span></li> -->
-                    <li class="nav_op_createOp">Code an new op</li>
+                    <li id="nav_preferences">My Editor Preferences</span></li>
+                    <li id="nav_op_createOp">Code an new op</li>
 
                     <li class="divide"></li>
                     <li class="nav-sub-submenu">
                         New Patch
                         <span class="icon icon-chevron-right"></span>
                         <ul>
-                            <li><a class="nav_patch_new">Empty</a></li>
+                            <li><a id="nav_patch_new">Empty</a></li>
                             <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cef9b2ec9ab5683a94e7">2D Template</a></li>
                             <li><a class="nav_create_from_template" data-href="/api/clone_edit/5970cab6eda3049368b0089f/">3D Template</a></li>
                             <li><a class="nav_create_from_template" data-href="/api/clone_edit/5d11db7709e2d354aa33d8f8/">Simple particles</a></li>
@@ -209,18 +175,16 @@
                 </ul>
             </li>
 
-
             <li class="main">
                 <span class="icon icon-1_25x icon-cables_editor"></span>
 
                 <ul class="nav-submenu">
-                    <!-- <li class="nav_files">Files</li> -->
-                    <li class="nav_filemanager">Files</li>
-                    <li class="nav_timeline">Timeline</li>
-                    <li class="nav_profiler">Profiler</li>
-                    <li class="nav_uploadfile">Upload file</li>
-                    <li class="nav_search">Search <span class="shortcut">[cmd + f]</span></li>
-                    <li class="nav_cmdplt">Command Palette <span class="shortcut">[cmd + p]</span></li>
+                    <li id="nav_filemanager">Files</li>
+                    <li id="nav_timeline">Timeline</li>
+                    <li id="nav_profiler">Profiler</li>
+                    <li id="nav_uploadfile">Upload file</li>
+                    <li id="nav_search">Search <span class="shortcut">[cmd + f]</span></li>
+                    <li id="nav_cmdplt">Command Palette <span class="shortcut">[cmd + p]</span></li>
                 </ul>
             </li>
 
@@ -228,71 +192,29 @@
                 <span class="icon icon-1_25x icon-help"></span>
 
                 <ul class="nav-submenu">
-                    <li class="nav_help_documentation">Documentation</li>
-                    <li class="nav_help_introduction">Introduction</li>
-                    <li class="nav_help_video">Video Tutorials</li>
-                    <li class="nav_help_tipps">Tips</li>
-                    <li class="nav_help_keys">Keyboard shortcuts</li>
-
+                    <li id="nav_help_documentation">Documentation</li>
+                    <li id="nav_help_introduction">Introduction</li>
+                    <li id="nav_help_video">Video Tutorials</li>
+                    <li id="nav_help_tipps">Tips</li>
+                    <li id="nav_help_keys">Keyboard shortcuts</li>
 
                     <li class="divide"></li>
-                    <li class="nav_help_forum">Forum</li>
-                    <li class="nav_changelog">View Changelog</li>
+                    <li id="nav_help_forum">Forum</li>
+                    <li id="nav_changelog">View Changelog</li>
                 </ul>
             </li>
 
-            <li class="nav-item-error hidden"  id="nav-item-error" onclick="gui.find(':error');gui.patchView.checkPatchErrors();" style="">
+            <li class="nav-item-error hidden"  id="nav-item-error" onclick="gui.find(':error');gui.patchView.checkPatchErrors();" >
                 <span class="icon-alert-triangle icon" style="background-color: red;display:inherit;margin:-3px;"></span>&nbsp;
             </li>
-
         </ul>
-
-
     </nav>
-
 </div>
 
 
 <div id="multiplayerbar" class="menubar" style="cursor:pointer;">
-    <div class="nav-clientlist"  id="nav-clientlist" style="" onclick="CABLES.CMD.UI.showChat()"></div>
+    <div class="nav-clientlist"  id="nav-clientlist" onclick="CABLES.CMD.UI.showChat()"></div>
 </div>
-
-
-    <!-- <a id="button_openprojects" class="button fa fa-folder-open" ></a> -->
-
-    <!-- <a class="button_addOp button fa fa-plus-square-o tt" data-tt="create new op"></a> -->
-
-
-    <!-- <a id="help" href="/doc" target="_blankkk" class="button fa fa-question-circle"></a> -->
-
-    <!-- <a id="button_editor" class="button fa fa-pencil-square"></a> -->
-
-
-    <!-- <a id="button_settings" class="button fa fa-cog"></a> -->
-    <!-- <a id="button_chat" class="button fa fa-users" style="display: none">
-        <span class="badge"></span>
-    </a> -->
-
-
-    <!-- <div id="assetsloadingindicator" style="display:none;float:left;margin-top:6px;margin-left:10px;padding-top:2px;"><i class="fa fa-spinner fa-pulse"></i></div> -->
-
-
-
-
-
-    <!-- <div id="serverproject" style="float:right;display:none;">
-        <a  class="button_saveCurrentProject button">save project "<span id="serverprojectname"></span>"</a>
-    </div> -->
-
-
-    <!-- <div id="loggedin"> -->
-        <!-- <div class="info button projectname fa fa-cog" onclick="gui.showSettings();" data-infotext="settings"></div> -->
-        <!-- <a target="_blank" class="info viewProjectLink button fa fa-external-link" style="padding-left:0px;margin-right:20px;" data-infotext="open_new_window"></a> -->
-    <!-- </div> -->
-
-    <!-- <div id="loggedout"> -->
-        <!-- <div id="button username">not logged in</div> <a class="button fa fa-sign-out " href="/"></a> -->
-    <!-- </div> -->
 
 
 <div id="meta">
@@ -315,7 +237,6 @@
     <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.handleFileInputUpload(this.files)"/>
 </form>
 
-<!-- <div class="hide" id="hoverPreviewer"></div> -->
 
 <div class="tooltip" id="cbltooltip"></div>
 <div id="uiperf" ></div>
