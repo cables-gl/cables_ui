@@ -152,7 +152,7 @@
 
                         {{#compare port.uiAttribs.display '==' 'dropdown' }}
                             </td><td>
-                                <select oninput="ele.byId('portval_{{ portnum }}').value=this.value;ele.byId('portval_{{ portnum }}').dispatchEvent(new Event('input'));"></select>
+                                <select oninput="ele.byId('portval_{{ portnum }}').value=this.value;ele.byId('portval_{{ portnum }}').dispatchEvent(new Event('input'));">
                                     {{#compare '' '==' port.value }}
                                         <option value="">...</option>
                                     {{/compare}}
