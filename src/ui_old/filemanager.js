@@ -473,7 +473,8 @@ CABLES.UI.FileManager.prototype.setDetail = function (detailItems)
             event.initEvent("input", true, true);
             this._filePortEle.dispatchEvent(event);
 
-            if (this._filePortElePreview) this._filePortElePreview.innerHTML =
+            if (detailItems[0].t == "image")
+                if (this._filePortElePreview) this._filePortElePreview.innerHTML =
                 "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
 
             gui.opParams.show(this._filePortOp);
