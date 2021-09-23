@@ -18,9 +18,10 @@ import Tipps from "./dialogs/tipps";
 import KeyBindingsManager from "./components/keybindingsmanager";
 import OpHistory from "./components/ophistory";
 import Exporter from "./dialogs/exporter";
-import Ele from "./utils/ele";
+import ele from "./utils/ele";
 import GradientEditor from "./dialogs/gradienteditor";
 import CommandPallete from "./dialogs/commandpalette";
+import OpSelect from "./dialogs/opselect";
 
 
 CABLES = CABLES || {};
@@ -30,7 +31,7 @@ CABLES.GLUI = CABLES.GLUI || {};
 
 // CONSTANTS
 
-window.ele = new Ele();
+window.ele = ele;
 
 CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
@@ -53,7 +54,7 @@ CABLES.UI.KeyBindingsManager = KeyBindingsManager;
 CABLES.UI.OpHistory = OpHistory;
 CABLES.UI.Exporter = Exporter;
 CABLES.UI.CommandPallete = CommandPallete;
-
+CABLES.UI.OpSelect = OpSelect;
 CABLES.GradientEditor = GradientEditor;
 
 

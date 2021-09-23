@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -8,7 +9,7 @@ CABLES.UI.OPSELECT.linkNewOpToPort = null;
 CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
 CABLES.UI.OPSELECT.maxPop = 0;
 
-CABLES.UI.OpSelect = class
+export default class OpSelect
 {
     constructor()
     {
@@ -35,13 +36,13 @@ CABLES.UI.OpSelect = class
 
     _getQuery()
     {
-        return document.getElementById("opsearch").value;
+        return ele.byId("opsearch").value;
     }
 
     updateOptions(opname)
     {
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
-        const num = $(".searchbrowser .searchable:visible").length;
+        const num = document.querySelectorAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
 
         const eleTypeStart = ele.byId("search_startType");
@@ -54,7 +55,7 @@ CABLES.UI.OpSelect = class
 
             for (let i = 0; i < this._list.length; i++)
                 if (this._list[i].element)
-                    this._list[i].element.style.display = "none";
+                    ele.hide(this._list[i].element);
         }
         else ele.hide(eleTypeStart);// .classList.add("hidden");
 
@@ -81,7 +82,7 @@ CABLES.UI.OpSelect = class
             optionsHtml += "<span class=\"warning\">your user ops are hidden, you are not a collaborator of patch </span><br/>";
         }
 
-        optionsHtml += `&nbsp;found ${num} ops.`;// in '+(Math.round(this._timeUsed)||0)+'ms ';
+        optionsHtml += "&nbsp;found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
         if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
         {
@@ -317,17 +318,19 @@ CABLES.UI.OpSelect = class
 
     updateInfo()
     {
-        const opname = $(".selected").data("opname");
         const htmlFoot = "";
 
-        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+        let opname = "";
+        const selectedEle = ele.byClassSingle("selected");
 
+        if (selectedEle)opname = selectedEle.dataset.opname;
+
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opname);
 
         if (opname && this._currentSearchInfo != opname)
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
-
 
             this._eleSearchinfo.innerHTML = "";
             const opDoc = gui.opDocs.get2(opname);
@@ -338,7 +341,6 @@ CABLES.UI.OpSelect = class
             html += `<a target="_blank" href="${CABLES.sandbox.getCablesUrl()}/op/${opname || ""}" class="button-small">View Documentation</a>`;
 
             html += opDoc;
-
             html += htmlFoot;
 
             this._eleSearchinfo.innerHTML = html;
@@ -372,15 +374,17 @@ CABLES.UI.OpSelect = class
 
             if (this._list[i].score > 0)
             {
-                this._list[i].element.style.display = "block";
                 this._list[i].element.dataset.score = this._list[i].score;
                 this._list[i].element.dataset.scoreDebug = this._list[i].scoreDebug;
+                // this._list[i].element.style.display = "block";
+                ele.show(this._list[i].element);
             }
             else
             {
                 this._list[i].element.dataset.score = 0.0;
                 this._list[i].element.dataset.scoreDebug = "???";
-                this._list[i].element.style.display = "none";
+                // this._list[i].element.style.display = "none";
+                ele.hide(this._list[i].element);
             }
         }
 
@@ -388,6 +392,10 @@ CABLES.UI.OpSelect = class
 
         tinysort(".searchresult", { "data": "score" });
         this.Navigate(0);
+
+        if (this.itemHeight === 0)
+            this.itemHeight = ele.byClassSingle("searchresult").getBoundingClientRect().height;
+
         this.updateOptions();
         perf.finish();
     }
@@ -397,18 +405,23 @@ CABLES.UI.OpSelect = class
         this.displayBoxIndex += diff;
 
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
-        const oBoxCollection = $(".searchresult:visible");
-        const oBoxCollectionAll = $(".searchresult");
+
+        const oBoxCollection = document.querySelectorAll(".searchresult:not(.hidden)");
+        const oBoxCollectionAll = ele.byClassSingle("searchresult");
+
         if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length - 1;
         if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
 
         const cssClass = "selected";
 
-        oBoxCollectionAll.removeClass(cssClass);
-        oBoxCollection.removeClass(cssClass).eq(this.displayBoxIndex).addClass(cssClass);
+        oBoxCollectionAll.classList.remove(cssClass);
 
-        if (this.displayBoxIndex > 5) $(".searchbrowser").scrollTop((this.displayBoxIndex - 5) * (this.itemHeight + 1));
-        else $(".searchbrowser").scrollTop(1);
+        for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
+
+        if (oBoxCollection[this.displayBoxIndex]) oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
+
+        if (this.displayBoxIndex > 5) ele.byClassSingle("searchbrowser").scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
+        else ele.byClassSingle("searchbrowser").scrollTop = 1;
 
         this.updateInfo();
     }
@@ -451,12 +464,11 @@ CABLES.UI.OpSelect = class
         {
             const head = CABLES.UI.getHandleBarHtml("op_select");
 
-            $("#opsearchmodal").html(head);
+            ele.byId("opsearchmodal").innerHTML = head;
 
             this._html = CABLES.UI.getHandleBarHtml("op_select_ops", { "ops": this._list });
-            $("#searchbrowserContainer").html(this._html);
-
-            document.getElementById("opsearch").addEventListener("input", this.onInput.bind(this));
+            ele.byId("searchbrowserContainer").innerHTML = this._html;
+            ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
         }
     }
 
@@ -477,7 +489,7 @@ CABLES.UI.OpSelect = class
         };
 
         this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
-        this._searchInputEle = document.getElementById("opsearch");
+        this._searchInputEle = ele.byId("opsearch");
 
         if (options.search)
         {
@@ -502,11 +514,12 @@ CABLES.UI.OpSelect = class
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING)) $("#opselect_createVar").show();
-        else $("#opselect_createVar").hide();
 
-        if (link && link.p1 && (link.p1.thePort.type == CABLES.OP_PORT_TYPE_VALUE || link.p1.thePort.type == CABLES.OP_PORT_TYPE_STRING)) $("#opselect_replaceVar").show();
-        else $("#opselect_replaceVar").hide();
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_createVar"));
+        else ele.hide(ele.byId("opselect_createVar"));
+
+        if (link && link.p1 && (link.p1.thePort.type == CABLES.OP_PORT_TYPE_VALUE || link.p1.thePort.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_replaceVar"));
+        else ele.hide(ele.byId("opselect_replaceVar"));
 
         const eleOpsearch = ele.byId("opsearch");
         eleOpsearch.select();
@@ -516,7 +529,6 @@ CABLES.UI.OpSelect = class
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
-        if (this.itemHeight === 0) this.itemHeight = $(".searchresult:first").outerHeight();
 
         this.clear = function ()
         {
@@ -542,12 +554,13 @@ CABLES.UI.OpSelect = class
 
         this.selectOp = function (name)
         {
-            const oBoxCollectionAll = $(".searchresult");
-            oBoxCollectionAll.removeClass("selected");
-            $(`.searchresult[data-opname="${name}"]`).addClass("selected");
+            ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
+
+            const el = document.querySelector(".searchresult[data-opname=\"" + name + "\"]");
+            el.classList.add("selected");
+
             this.updateInfo();
         };
-
 
         this.updateOptions();
 
@@ -594,12 +607,14 @@ CABLES.UI.OpSelect = class
 
     addSelectedOp()
     {
-        const opname = $(".selected").data("opname");
+        const opname = ele.byClassSingle("selected").dataset.opname;
         this.addOp(opname);
     }
 
     keyDown(e)
     {
+        const eleSelected = ele.byClassSingle("selected");
+
         switch (e.which)
         {
         case 27:
@@ -649,13 +664,14 @@ CABLES.UI.OpSelect = class
 
             return true;
         case 38: // up
-            $(".selected").removeClass("selected");
+            if (eleSelected) eleSelected.classList.remove("selected");
             e.preventDefault();
             this.Navigate(-1);
             break;
 
         case 40: // down
-            $(".selected").removeClass("selected");
+
+            if (eleSelected) eleSelected.classList.remove("selected");
             e.preventDefault();
             this.Navigate(1);
             break;
@@ -747,4 +763,4 @@ CABLES.UI.OpSelect = class
 
         return ops;
     }
-};
+}

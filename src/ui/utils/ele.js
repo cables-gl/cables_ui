@@ -1,20 +1,29 @@
 
-
-export default class Ele
+class Ele
 {
     byId(id)
     {
         return document.getElementById(id);
     }
 
+    byClassSingle(name)
+    {
+        const els = document.getElementsByClassName(name);
+        if (els.length > 0) return els[0];
+        return null;
+    }
+
+    byClass(name)
+    {
+        const els = document.getElementsByClassName(name);
+        if (!els) return [];
+        return els;
+    }
+
     forEachClass(name, cb)
     {
         const eles = document.getElementsByClassName(name);
-
-        for (let i = 0; i < eles.length; i++)
-        {
-            cb(eles[i]);
-        }
+        for (let i = 0; i < eles.length; i++) cb(eles[i]);
     }
 
     getSelectValue(el)
@@ -69,6 +78,7 @@ export default class Ele
         }, duration);
     }
 
+
     slideUp(el, duration, completeCallback)
     {
         el.style.transitionProperty = "height, margin, padding";
@@ -96,3 +106,5 @@ export default class Ele
         }, duration);
     }
 }
+
+export default new Ele();
