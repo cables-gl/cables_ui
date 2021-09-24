@@ -359,8 +359,12 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                 if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".webp"))
                 {
-                    ele.byId("portFileVal_" + i + "_preview").style["max-width"] = "100%";
-                    ele.byId("portFileVal_" + i + "_preview").innerHTML = "<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>";
+                    const previewEle = ele.byId("portFileVal_" + i + "_preview");
+                    if (previewEle)
+                    {
+                        previewEle.style["max-width"] = "100%";
+                        previewEle.innerHTML = "<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>";
+                    }
                 }
                 else
                 {
