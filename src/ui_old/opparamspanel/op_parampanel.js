@@ -334,9 +334,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             "user": gui.user,
         });
 
-        const ele = document.getElementById(gui.getParamPanelEleId());
+        const el = document.getElementById(gui.getParamPanelEleId());
 
-        if (ele) ele.innerHTML = html;
+        if (el) el.innerHTML = html;
         else return;
 
         // gui.showOpDoc(op.objName);
@@ -354,16 +354,17 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 let shortName = String(op.portsIn[i].get() || "none");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
-                $("#portFilename_" + i).html("<span class=\"button fa fa-folder-open-o monospace\" style=\"text-transform:none;font-family:monospace;font-size: 13px;\">" + shortName + "</span>");
+                if (ele.byId("portFilename_" + i))
+                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button fa fa-folder-open-o monospace\" style=\"text-transform:none;font-family:monospace;font-size: 13px;\">" + shortName + "</span>";
 
                 if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".webp"))
                 {
-                    $("#portFileVal_" + i + "_preview").css("max-width", "100%");
-                    $("#portFileVal_" + i + "_preview").html("<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>");
+                    ele.byId("portFileVal_" + i + "_preview").style["max-width"] = "100%";
+                    ele.byId("portFileVal_" + i + "_preview").innerHTML = "<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>";
                 }
                 else
                 {
-                    $("#portFileVal_" + i + "_preview").html("");
+                    ele.byId("portFileVal_" + i + "_preview").innerHTML = "";
                 }
             }
 

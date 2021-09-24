@@ -30,9 +30,9 @@ CABLES.UI.initSplitPanes = function ()
 
     document.getElementById("splitterMaintabs").addEventListener("mouseup", function (e)
     {
-        $("iframe").each(function () { $("iframe").css("pointer-events", "initial"); });
+        const iframes = document.getElementsByTagName("iframe");
+        for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
     });
-
 
     function resizeTabs(ev)
     {
@@ -41,7 +41,9 @@ CABLES.UI.initSplitPanes = function ()
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
-            $("iframe").each(function () { $("iframe").css("pointer-events", "none"); });
+            const iframes = document.getElementsByTagName("iframe");
+            for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
+
             e.preventDefault();
             gui.editorWidth = e.clientX;
             if (gui.editorWidth < 30)gui.editorWidth = 30;

@@ -10,8 +10,6 @@ export default class CommandPallete
         this._bookmarkActiveIcon = "icon-pin-filled";
         this._bookmarkInactiveIcon = "icon-pin-outline";
         this._defaultIcon = "square";
-        const canceledSearch = 0;
-        const idSearch = 1;
 
         this.keyDown = (e) =>
         {
@@ -69,7 +67,6 @@ export default class CommandPallete
 
         const el = ev.target;
         const cmd = el.closest(".result").dataset.cmd;
-
         const itemObj = CABLES.UI.userSettings.get("sidebar_left") || {};
 
         // replace the pin-icon / set / remove icon from sidebar
@@ -162,7 +159,6 @@ export default class CommandPallete
         this._numResults = count;
         ele.byId("searchresult_cmd").innerHTML = html;
 
-
         setTimeout(function ()
         {
             this._cursorIndex = 0;
@@ -185,7 +181,6 @@ export default class CommandPallete
             e.scrollIntoView({ "block": "end" });
         }
     }
-
 
     close()
     {

@@ -152,7 +152,7 @@
 
                         {{#compare port.uiAttribs.display '==' 'dropdown' }}
                             </td><td>
-                                <select oninput="$('#portval_{{ portnum }}').val(this.value);$('#portval_{{ portnum }}').trigger('input');">
+                                <select oninput="ele.byId('portval_{{ portnum }}').value=this.value;ele.byId('portval_{{ portnum }}').dispatchEvent(new Event('input'));">
                                     {{#compare '' '==' port.value }}
                                         <option value="">...</option>
                                     {{/compare}}
@@ -168,7 +168,7 @@
                                 <input class="value hide" type="hidden" id="portval_{{ portnum }}" style="width:40px;" value="{{port.value}}"/>
                                 <div class="radioToggle">
                                     {{#each port.uiAttribs.values}}
-                                        <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="$('#portval_{{ ../portnum }}').val(this.value);$('#portval_{{ ../portnum }}').trigger('input');" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
+                                        <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="ele.byId('portval_{{ ../portnum }}').value=this.value;ele.byId('portval_{{ ../portnum }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
                                     {{/each}}
                                 </div>
                         {{/compare}}
@@ -196,8 +196,8 @@
                                     <input autocomplete="off" class="value filevalue portFileVal_{{ portnum }} watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.value }}" style="width:95%;display:block;"/>
                                     <br/><br/>
                                 </div>
-                                <div id="portFilename_{{ portnum }}" onclick="document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');gui.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ ../port.parent.id }}');" style="cursor:pointer;">[???]</div>
-                                <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ ../port.parent.id }}');" style="padding:0px;"></div>
+                                <div id="portFilename_{{ portnum }}" onclick="document.getElementById('fileInputContainer_{{ portnum }}').classList.remove('hidden');this.classList.add('hidden');gui.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ ../port.parent.id }}','portFileVal_{{ portnum }}_preview');" style="cursor:pointer;">[???]</div>
+                                <div id="portFileVal_{{ portnum }}_preview" onclick="gui.showFileSelect('.portFileVal_{{ portnum }}',{{#if port.uiAttribs.filter}}{{json port.uiAttribs.filter}}{{else}}null{{/if}},'{{ ../port.parent.id }}','portFileVal_{{ portnum }}_preview');" style="padding:0px;"></div>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'text' }}
                             </td><td>
