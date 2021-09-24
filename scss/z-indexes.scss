@@ -11,5 +11,5 @@ $zindex_highest :50;    // modal / splitter etc
 
 #meta,#options
 {
-    z-index: $zindex_low;
+    z-index: $zindex_lowest - 2;
 }
