@@ -1,40 +1,47 @@
-CABLES = CABLES || {};
-CABLES.CMD = CABLES.CMD || {};
-CABLES.CMD.UI = CABLES.CMD.UI || {};
-CABLES.CMD.commands = CABLES.CMD.commands || [];
 
-CABLES.CMD.UI.settings = function ()
+const CABLES_CMD_UI = {};
+const CMD_UI_COMMANDS = [];
+
+const uiCommands =
+{
+    "commands": CMD_UI_COMMANDS,
+    "functions": CABLES_CMD_UI
+};
+
+export default uiCommands;
+
+CABLES_CMD_UI.settings = function ()
 {
     if (gui.showGuestWarning()) return;
     gui.showSettings();
 };
 
-CABLES.CMD.UI.openRemoteViewer = function ()
+CABLES_CMD_UI.openRemoteViewer = function ()
 {
     window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId);
 };
 
-CABLES.CMD.UI.files = function ()
+CABLES_CMD_UI.files = function ()
 {
     gui.showFileManager();
 };
 
-CABLES.CMD.UI.toggleFiles = function ()
+CABLES_CMD_UI.toggleFiles = function ()
 {
     gui.showFileManager();
 };
 
-CABLES.CMD.UI.downloadSVG = function ()
+CABLES_CMD_UI.downloadSVG = function ()
 {
     gui.patch().downloadSVG();
 };
 
-CABLES.CMD.UI.windowFullscreen = function ()
+CABLES_CMD_UI.windowFullscreen = function ()
 {
     document.documentElement.webkitRequestFullScreen();
 };
 
-CABLES.CMD.UI.toggleMute = function ()
+CABLES_CMD_UI.toggleMute = function ()
 {
     if (gui.corePatch().config.masterVolume > 0.0)
     {
@@ -50,86 +57,86 @@ CABLES.CMD.UI.toggleMute = function ()
     }
 };
 
-// CABLES.CMD.UI.toggleEditor = function ()
+// CABLES_CMD_UI.toggleEditor = function ()
 // {
 //     gui.toggleEditor();
 // };
 
-// CABLES.CMD.UI.hideEditor = function ()
+// CABLES_CMD_UI.hideEditor = function ()
 // {
 //     gui.closeEditor();
 // };
 
-// CABLES.CMD.UI.showEditor = function ()
+// CABLES_CMD_UI.showEditor = function ()
 // {
 //     // gui.showEditor();
 //     console.log("todo: add showeditor for maintabs");
 // };
 
 
-CABLES.CMD.UI.showChat = function ()
+CABLES_CMD_UI.showChat = function ()
 {
     gui.chat.show();
 };
 
 
-CABLES.CMD.UI.toggleBgTexturePreview = function ()
+CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
     CABLES.UI.userSettings.set("bgpreview", !CABLES.UI.userSettings.get("bgpreview"));
 };
 
-CABLES.CMD.UI.hideMinimap = function ()
+CABLES_CMD_UI.hideMinimap = function ()
 {
     CABLES.UI.userSettings.set("showMinimap", false);
     gui.hideMiniMap();
 };
 
 
-CABLES.CMD.UI.toggleMinimap = function ()
+CABLES_CMD_UI.toggleMinimap = function ()
 {
     CABLES.UI.userSettings.set("showMinimap", !CABLES.UI.userSettings.get("showMinimap"));
     if (CABLES.UI.userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
-    else CABLES.CMD.UI.hideMinimap();
+    else CABLES_CMD_UI.hideMinimap();
 };
 
-CABLES.CMD.UI.showSearch = function (str)
+CABLES_CMD_UI.showSearch = function (str)
 {
     // new CABLES.UI.FindTab(gui.mainTabs);
     gui.find(str || "");
 };
 
-CABLES.CMD.UI.toggleMaxRenderer = function ()
+CABLES_CMD_UI.toggleMaxRenderer = function ()
 {
     gui.cycleFullscreen();
 };
 
-CABLES.CMD.UI.togglePatchBgRenderer = function ()
+CABLES_CMD_UI.togglePatchBgRenderer = function ()
 {
     gui.cyclePatchBg();
 };
 
-CABLES.CMD.UI.showKeys = function ()
+CABLES_CMD_UI.showKeys = function ()
 {
     gui.keys.show();
 };
 
-CABLES.CMD.UI.showCommandPallet = function ()
+CABLES_CMD_UI.showCommandPallet = function ()
 {
     gui.cmdPallet.show();
 };
 
-CABLES.CMD.UI.centerPatchOps = function ()
+CABLES_CMD_UI.centerPatchOps = function ()
 {
     gui.patchView.centerView();
 };
 
-CABLES.CMD.UI.flowVis = function ()
+CABLES_CMD_UI.flowVis = function ()
 {
     if (CABLES.UI.userSettings.get("svgpatchview")) gui.patch().toggleFlowVis();
     else CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 };
 
-CABLES.CMD.UI.startPresentationMode = function ()
+CABLES_CMD_UI.startPresentationMode = function ()
 {
     if (!CABLES.UI.keyPresenter)
     {
@@ -138,13 +145,13 @@ CABLES.CMD.UI.startPresentationMode = function ()
     }
 };
 
-CABLES.CMD.UI.showChangelog = function (since)
+CABLES_CMD_UI.showChangelog = function (since)
 {
     CABLES.CHANGELOG.show(since);
 };
 
 
-CABLES.CMD.UI.showBuildInfo = function ()
+CABLES_CMD_UI.showBuildInfo = function ()
 {
     let infoHtml = "no info available";
     if (CABLESUILOADER.buildInfo)
@@ -192,7 +199,7 @@ CABLES.CMD.UI.showBuildInfo = function ()
 };
 
 
-// CABLES.CMD.UI.updateCanvasIcons=function()
+// CABLES_CMD_UI.updateCanvasIcons=function()
 // {
 //     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
 //     else document.getElementById("canvasIconTransforms").classList.remove("iconToggleActive");
@@ -202,89 +209,89 @@ CABLES.CMD.UI.showBuildInfo = function ()
 // }
 
 
-CABLES.CMD.UI.toggleHelperCurrentTransform = function ()
+CABLES_CMD_UI.toggleHelperCurrentTransform = function ()
 {
     const mode = !CABLES.UI.userSettings.get("toggleHelperCurrentTransforms");
     CABLES.UI.userSettings.set("toggleHelperCurrentTransforms", mode);
 };
 
-CABLES.CMD.UI.toggleHelperCurrent = function ()
+CABLES_CMD_UI.toggleHelperCurrent = function ()
 {
     const mode = !CABLES.UI.userSettings.get("helperModeCurrentOp");
     CABLES.UI.userSettings.set("helperModeCurrentOp", mode);
 };
 
-CABLES.CMD.UI.toggleHelper = function ()
+CABLES_CMD_UI.toggleHelper = function ()
 {
     const mode = !CABLES.UI.userSettings.get("helperMode");
     CABLES.UI.userSettings.set("helperMode", mode);
 };
 
 
-// CABLES.CMD.UI.toggleFloorGrid = function ()
+// CABLES_CMD_UI.toggleFloorGrid = function ()
 // {
 //     const mode=!CABLES.UI.userSettings.get("floorGrid");
 //     CABLES.UI.userSettings.set("floorGrid", mode);
-//     // CABLES.CMD.UI.updateCanvasIcons();
+//     // CABLES_CMD_UI.updateCanvasIcons();
 // };
 
-CABLES.CMD.UI.toggleTransformOverlay = function ()
+CABLES_CMD_UI.toggleTransformOverlay = function ()
 {
     CABLES.UI.showCanvasTransforms = !CABLES.UI.showCanvasTransforms;
     gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
-    // CABLES.CMD.UI.updateCanvasIcons();
+    // CABLES_CMD_UI.updateCanvasIcons();
 };
 
-CABLES.CMD.UI.gradientTest = function ()
+CABLES_CMD_UI.gradientTest = function ()
 {
     const ge = new CABLES.GradientEditor();
     ge.show();
 };
 
-CABLES.CMD.UI.toggleSnapToGrid = function ()
+CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
     CABLES.UI.userSettings.set("snapToGrid", !CABLES.UI.userSettings.get("snapToGrid"));
 };
 
-CABLES.CMD.UI.toggleIntroCompleted = function ()
+CABLES_CMD_UI.toggleIntroCompleted = function ()
 {
     CABLES.UI.userSettings.set("introCompleted", !CABLES.UI.userSettings.get("introCompleted"));
 
     if (!CABLES.UI.userSettings.get("introCompleted")) gui.introduction.showIntroduction();
 };
 
-CABLES.CMD.UI.showAutomaton = function ()
+CABLES_CMD_UI.showAutomaton = function ()
 {
     new CABLES.UI.AutomatonTab(gui.mainTabs);
 };
 
-CABLES.CMD.UI.showPreferences = function ()
+CABLES_CMD_UI.showPreferences = function ()
 {
     if (gui.showGuestWarning()) return;
     new CABLES.UI.Preferences(gui.mainTabs);
     gui.maintabPanel.show();
 };
 
-CABLES.CMD.UI.toggleTheme = function ()
+CABLES_CMD_UI.toggleTheme = function ()
 {
     CABLES.UI.userSettings.set("theme-bright", !CABLES.UI.userSettings.get("theme-bright"));
     gui.updateTheme();
 };
 
-CABLES.CMD.UI.profileGPU = function ()
+CABLES_CMD_UI.profileGPU = function ()
 {
     new CABLES.UI.GpuProfiler(gui.mainTabs);
     gui.maintabPanel.show();
 };
 
 
-CABLES.CMD.UI.profileUI = function ()
+CABLES_CMD_UI.profileUI = function ()
 {
-    console.log("CABLES.CMD.UI.profileUI");
+    console.log("CABLES_CMD_UI.profileUI");
     CABLES.UI.uiProfiler.show();
 };
 
-CABLES.CMD.UI.toggleTouchpadMode = function ()
+CABLES_CMD_UI.toggleTouchpadMode = function ()
 {
     gui.patch().modeTouchPad = !CABLES.UI.userSettings.get("touchpadmode");
     CABLES.UI.userSettings.set("touchpadmode", gui.patch().modeTouchPad);
@@ -293,78 +300,78 @@ CABLES.CMD.UI.toggleTouchpadMode = function ()
     else CABLES.UI.notify("Touchpad Mode disabled");
 };
 
-CABLES.CMD.UI.zoomOut = function ()
+CABLES_CMD_UI.zoomOut = function ()
 {
     gui.patchView.zoomStep(1);
 };
-CABLES.CMD.UI.zoomIn = function ()
+CABLES_CMD_UI.zoomIn = function ()
 {
     gui.patchView.zoomStep(-1);
 };
 
-CABLES.CMD.UI.watchVars = function ()
+CABLES_CMD_UI.watchVars = function ()
 {
     new CABLES.UI.WatchVarTab(gui.mainTabs);
 
     // gui.patchView.zoomStep(-1);
 };
 
-CABLES.CMD.commands.push(
+CMD_UI_COMMANDS.push(
     {
         "cmd": "show settings",
         "category": "ui",
-        "func": CABLES.CMD.UI.settings,
+        "func": CABLES_CMD_UI.settings,
         "icon": "settings",
         "infotext": "cmd_patchsettings"
     },
     // {
     //     cmd: "manage patch contributors",
     //     category: "ui",
-    //     func: CABLES.CMD.UI.settingsContributors,
+    //     func: CABLES_CMD_UI.settingsContributors,
     //     icon: 'settings'
     // },
     {
         "cmd": "show files",
         "category": "ui",
-        "func": CABLES.CMD.UI.files,
+        "func": CABLES_CMD_UI.files,
         "icon": "file",
     },
     {
         "cmd": "toggle files",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleFiles,
+        "func": CABLES_CMD_UI.toggleFiles,
         "icon": "file",
     },
     {
         "cmd": "toggle mute",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleMute,
+        "func": CABLES_CMD_UI.toggleMute,
     },
 
 
     {
         "cmd": "hide minimap",
         "category": "ui",
-        "func": CABLES.CMD.UI.hideMinimap,
+        "func": CABLES_CMD_UI.hideMinimap,
     },
     {
         "cmd": "search",
         "category": "ui",
-        "func": CABLES.CMD.UI.showSearch,
+        "func": CABLES_CMD_UI.showSearch,
         "icon": "search",
         "hotkey": "CMD + f",
     },
     {
         "cmd": "maximize renderer [CMD+ENTER]",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleMaxRenderer,
+        "func": CABLES_CMD_UI.toggleMaxRenderer,
         "icon": "canvas_max",
         "hotkey": "CMD + ENTER",
     },
     {
         "cmd": "patch background renderer [CMD+SHIFT+ENTER]",
         "category": "ui",
-        "func": CABLES.CMD.UI.togglePatchBgRenderer,
+        "func": CABLES_CMD_UI.togglePatchBgRenderer,
         "icon": "canvas_patchbg",
         "hotkey": "CMD + ENTER",
     },
@@ -372,33 +379,33 @@ CABLES.CMD.commands.push(
     {
         "cmd": "show keyboard shortcutds",
         "category": "ui",
-        "func": CABLES.CMD.UI.showKeys,
+        "func": CABLES_CMD_UI.showKeys,
         "icon": "command"
     },
 
     {
         "cmd": "show command pallet",
         "category": "ui",
-        "func": CABLES.CMD.UI.showCommandPallet,
+        "func": CABLES_CMD_UI.showCommandPallet,
         "icon": "search",
         "hotkey": "CMD + P",
     },
     {
         "cmd": "show changelog",
         "category": "cables",
-        "func": CABLES.CMD.UI.showChangelog,
+        "func": CABLES_CMD_UI.showChangelog,
         "icon": "info",
     },
     {
         "cmd": "show buildinfo",
         "category": "cables",
-        "func": CABLES.CMD.UI.showBuildInfo,
+        "func": CABLES_CMD_UI.showBuildInfo,
         "icon": "info",
     },
     {
         "cmd": "center patch",
         "category": "patch",
-        "func": CABLES.CMD.UI.centerPatchOps,
+        "func": CABLES_CMD_UI.centerPatchOps,
         "hotkey": "c",
         "icon": "patch_center",
         "infotext": "cmd_centerpatch"
@@ -406,92 +413,92 @@ CABLES.CMD.commands.push(
     {
         "cmd": "start presentation mode",
         "category": "ui",
-        "func": CABLES.CMD.UI.startPresentationMode,
+        "func": CABLES_CMD_UI.startPresentationMode,
     },
     {
         "cmd": "toggle flow visualization",
         "category": "ui",
-        "func": CABLES.CMD.UI.flowVis,
+        "func": CABLES_CMD_UI.flowVis,
         "icon": "cables",
         "hotkey": "f",
     },
     {
         "cmd": "download patch svg",
         "category": "ui",
-        "func": CABLES.CMD.UI.downloadSVG,
+        "func": CABLES_CMD_UI.downloadSVG,
         "icon": "cables",
     },
     {
         "cmd": "toggle window fullscreen",
         "category": "ui",
-        "func": CABLES.CMD.UI.windowFullscreen,
+        "func": CABLES_CMD_UI.windowFullscreen,
         "icon": "cables",
     },
     {
         "cmd": "toggle helper",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleHelper,
+        "func": CABLES_CMD_UI.toggleHelper,
         "icon": "command",
     },
     {
         "cmd": "gradient test",
         "category": "ui",
-        "func": CABLES.CMD.UI.gradientTest,
+        "func": CABLES_CMD_UI.gradientTest,
         "icon": "command",
     },
     {
         "cmd": "toggle snap to grid",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleSnapToGrid,
+        "func": CABLES_CMD_UI.toggleSnapToGrid,
         "icon": "command",
     },
     // {
     //     "cmd": "toggle mini map",
     //     "category": "ui",
-    //     "func": CABLES.CMD.UI.toggleMinimap,
+    //     "func": CABLES_CMD_UI.toggleMinimap,
     //     "icon": "command",
     // },
     {
         "cmd": "toggle texture preview",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleBgTexturePreview,
+        "func": CABLES_CMD_UI.toggleBgTexturePreview,
         "icon": "monitor",
     },
     {
         "cmd": "ui profiler",
         "category": "ui",
-        "func": CABLES.CMD.UI.profileUI,
+        "func": CABLES_CMD_UI.profileUI,
         "icon": "command",
     },
     {
         "cmd": "toggle touchpad mode",
         "category": "ui",
-        "func": CABLES.CMD.UI.toggleTouchpadMode,
+        "func": CABLES_CMD_UI.toggleTouchpadMode,
         "icon": "command",
     },
     {
         "cmd": "Preferences",
         "category": "ui",
-        "func": CABLES.CMD.UI.showPreferences,
+        "func": CABLES_CMD_UI.showPreferences,
         "icon": "cables_editor",
     },
     {
         "cmd": "chat",
         "category": "ui",
-        "func": CABLES.CMD.UI.showChat,
+        "func": CABLES_CMD_UI.showChat,
         "icon": "command",
     },
     {
         "cmd": "open remote viewer",
         "category": "ui",
-        "func": CABLES.CMD.UI.openRemoteViewer,
+        "func": CABLES_CMD_UI.openRemoteViewer,
         "icon": "command",
     },
 
     {
         "cmd": "zoom in",
         "category": "ui",
-        "func": CABLES.CMD.UI.zoomIn,
+        "func": CABLES_CMD_UI.zoomIn,
         "icon": "plus",
         "hotkey": "+",
         "infotext": "cmd_zoomin"
@@ -499,7 +506,7 @@ CABLES.CMD.commands.push(
     {
         "cmd": "zoom out",
         "category": "ui",
-        "func": CABLES.CMD.UI.zoomOut,
+        "func": CABLES_CMD_UI.zoomOut,
         "icon": "minus",
         "hotkey": "-",
         "infotext": "cmd_zoomout"
@@ -507,21 +514,21 @@ CABLES.CMD.commands.push(
     {
         "cmd": "watch variables",
         "category": "ui",
-        "func": CABLES.CMD.UI.watchVars,
+        "func": CABLES_CMD_UI.watchVars,
         "icon": "align-justify",
         "infotext": "cmd_watchvars"
     },
     // {
     //     "cmd": "test automaton",
     //     "category": "ui",
-    //     "func": CABLES.CMD.UI.showAutomaton,
+    //     "func": CABLES_CMD_UI.showAutomaton,
     //     "icon": "align-justify",
     //     "infotext": "cmd_watchvars"
     // },
     {
         "cmd": "GPU Profiler",
         "category": "ui",
-        "func": CABLES.CMD.UI.profileGPU,
+        "func": CABLES_CMD_UI.profileGPU,
         "icon": "align-justify",
         "infotext": ""
     }

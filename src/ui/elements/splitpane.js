@@ -3,8 +3,9 @@ CABLES.SPLITPANE = {};
 
 CABLES.SPLITPANE.listeners = [];
 
+export default initSplitPanes;
 
-CABLES.UI.initSplitPanes = function ()
+function initSplitPanes()
 {
     document.getElementById("splitterPatch").addEventListener("mousedown", function (ev)
     {
@@ -169,4 +170,4 @@ CABLES.UI.initSplitPanes = function ()
 
     document.addEventListener("mouseup", stopSplit);
     document.addEventListener("touchend", stopSplit);
-};
+}

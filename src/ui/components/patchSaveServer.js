@@ -1,7 +1,5 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.PatchServer = class extends CABLES.EventTarget
+export default class PatchSaveServer extends CABLES.EventTarget
 {
     constructor()
     {
@@ -81,46 +79,46 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
     {
         if (gui.showGuestWarning()) return;
 
-        if (window.process && window.process.versions.electron)
-        {
-            const electron = require("electron");
-            const remote = electron.remote;
-            const dialog = remote.dialog;
-            const data = gui.corePatch().serialize(true);
+        // if (window.process && window.process.versions.electron)
+        // {
+        //     const electron = require("electron");
+        //     const remote = electron.remote;
+        //     const dialog = remote.dialog;
+        //     const data = gui.corePatch().serialize(true);
 
-            data.ui = {
-                "viewBox": {},
-                "timeLineLength": gui.timeLine().getTimeLineLength()
-            };
+        //     data.ui = {
+        //         "viewBox": {},
+        //         "timeLineLength": gui.timeLine().getTimeLineLength()
+        //     };
 
-            gui.bookmarks.cleanUp();
-            data.ui.bookmarks = gui.bookmarks.getBookmarks();
-            // data.ui.viewBox = this._viewBox.serialize();
-            data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
-            data.ui.renderer = {};
-            data.ui.renderer.w = gui.rendererWidth;
-            data.ui.renderer.h = gui.rendererHeight;
-            data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
+        //     gui.bookmarks.cleanUp();
+        //     data.ui.bookmarks = gui.bookmarks.getBookmarks();
+        //     // data.ui.viewBox = this._viewBox.serialize();
+        //     data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
+        //     data.ui.renderer = {};
+        //     data.ui.renderer.w = gui.rendererWidth;
+        //     data.ui.renderer.h = gui.rendererHeight;
+        //     data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
 
-            dialog.showSaveDialog(
-                {
-                    // file filters, only display files with these extensions
-                    "filters": [{
-                        "name": "cables",
-                        "extensions": ["cables"]
-                    }]
-                },
-                function (filePath)
-                {
-                    this.nativeWritePatchToFile(data, filePath);
-                    this.filename = filePath; // store the path so we don't have to ask on next save
-                    console.log("this.filename saved: ", this.filename);
-                    const projectName = self.getProjectnameFromFilename(filePath);
-                    gui.setProjectName(projectName);
-                }
-            );
-            return;
-        }
+        //     dialog.showSaveDialog(
+        //         {
+        //             // file filters, only display files with these extensions
+        //             "filters": [{
+        //                 "name": "cables",
+        //                 "extensions": ["cables"]
+        //             }]
+        //         },
+        //         function (filePath)
+        //         {
+        //             this.nativeWritePatchToFile(data, filePath);
+        //             this.filename = filePath; // store the path so we don't have to ask on next save
+        //             console.log("this.filename saved: ", this.filename);
+        //             const projectName = self.getProjectnameFromFilename(filePath);
+        //             gui.setProjectName(projectName);
+        //         }
+        //     );
+        //     return;
+        // }
 
         const project = gui.project();
 
@@ -255,42 +253,42 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         data.ui.renderer.s = data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
 
         // electron
-        if (window.process && window.process.versions.electron)
-        {
-            const electron = require("electron");
-            const ipcRenderer = electron.ipcRenderer;
-            const remote = electron.remote;
-            const dialog = remote.dialog;
+        // if (window.process && window.process.versions.electron)
+        // {
+        //     const electron = require("electron");
+        //     const ipcRenderer = electron.ipcRenderer;
+        //     const remote = electron.remote;
+        //     const dialog = remote.dialog;
 
-            console.log("gui.patch().filename before check: ", gui.patch().filename);
-            // patch has been saved before, overwrite the patch
-            if (gui.patch().filename)
-            {
-                this.nativeWritePatchToFile(data, gui.patch().filename);
-            }
-            else
-            {
-                dialog.showSaveDialog(
-                    {
-                        // file filters, only display files with these extensions
-                        "filters": [{
-                            "name": "cables",
-                            "extensions": ["cables"]
-                        }]
-                    },
-                    function (filePath)
-                    {
-                        this.nativeWritePatchToFile(data, filePath);
-                        gui.patch().filename = filePath; // store the path so we don't have to ask on next save
-                        console.log("gui.patch().filename saved: ", gui.patch().filename);
-                        const projectName = this.getProjectnameFromFilename(filePath);
-                        gui.setProjectName(projectName);
-                    }
-                );
-            }
+        //     console.log("gui.patch().filename before check: ", gui.patch().filename);
+        //     // patch has been saved before, overwrite the patch
+        //     if (gui.patch().filename)
+        //     {
+        //         this.nativeWritePatchToFile(data, gui.patch().filename);
+        //     }
+        //     else
+        //     {
+        //         dialog.showSaveDialog(
+        //             {
+        //                 // file filters, only display files with these extensions
+        //                 "filters": [{
+        //                     "name": "cables",
+        //                     "extensions": ["cables"]
+        //                 }]
+        //             },
+        //             function (filePath)
+        //             {
+        //                 this.nativeWritePatchToFile(data, filePath);
+        //                 gui.patch().filename = filePath; // store the path so we don't have to ask on next save
+        //                 console.log("gui.patch().filename saved: ", gui.patch().filename);
+        //                 const projectName = this.getProjectnameFromFilename(filePath);
+        //                 gui.setProjectName(projectName);
+        //             }
+        //         );
+        //     }
 
-            return;
-        }
+        //     return;
+        // }
 
         CABLES.patch.namespace = currentProject.namespace;
 
@@ -422,26 +420,26 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
      * @param {object} patchData The data-object to be saved
      * @param string} path The file-path to store the patch, e.g. '/Users/ulf/myPatch.cables'
      */
-    nativeWritePatchToFile(patchData, path)
-    {
-        console.log("Saving patch to: ", path);
-        const fs = require("fs");
-        if (path)
-        {
-            fs.writeFile(path, JSON.stringify(patchData, null, 2), function (err)
-            {
-                if (err)
-                {
-                    CABLES.UI.notifyError("Error saving patch");
-                    return console.log(err);
-                }
-                console.log("Patch successfully saved");
-                CABLES.UI.notify("patch saved");
-                gui.jobs().finish("projectsave");
-                gui.setStateSaved();
-            });
-        }
-    }
+    // nativeWritePatchToFile(patchData, path)
+    // {
+    //     console.log("Saving patch to: ", path);
+    //     const fs = require("fs");
+    //     if (path)
+    //     {
+    //         fs.writeFile(path, JSON.stringify(patchData, null, 2), function (err)
+    //         {
+    //             if (err)
+    //             {
+    //                 CABLES.UI.notifyError("Error saving patch");
+    //                 return console.log(err);
+    //             }
+    //             console.log("Patch successfully saved");
+    //             CABLES.UI.notify("patch saved");
+    //             gui.jobs().finish("projectsave");
+    //             gui.setStateSaved();
+    //         });
+    //     }
+    // }
 
     /**
      * Extracts the postfix-filename from a full filename
@@ -541,4 +539,4 @@ CABLES.UI.PatchServer = class extends CABLES.EventTarget
         });
         // }, false, "image/webp", 80);
     }
-};
+}
