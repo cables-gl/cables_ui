@@ -1,32 +1,40 @@
-CABLES = CABLES || {};
-CABLES.CMD = CABLES.CMD || {};
-CABLES.CMD.RENDERER = {};
 
-CABLES.CMD.RENDERER.screenshot = function ()
+
+const CABLES_CMD_RENDERER = {};
+
+
+const rendererCommands =
+{
+    "commands": [],
+    "functions": CABLES_CMD_RENDERER
+};
+
+export default rendererCommands;
+
+CABLES_CMD_RENDERER.screenshot = function ()
 {
     gui.corePatch().cgl.saveScreenshot();
     gui.corePatch().resume();
 };
 
-CABLES.CMD.RENDERER.fullscreen = function ()
+CABLES_CMD_RENDERER.fullscreen = function ()
 {
     gui.cycleFullscreen();
 };
 
-CABLES.CMD.RENDERER.animRenderer = function ()
+CABLES_CMD_RENDERER.animRenderer = function ()
 {
     CABLES.animRenderer.show();
 };
 
-
-CABLES.CMD.RENDERER.resetSize = function ()
+CABLES_CMD_RENDERER.resetSize = function ()
 {
     gui.rendererWidth = 640;
     gui.rendererHeight = 360;
     gui.setLayout();
 };
 
-CABLES.CMD.RENDERER.aspect = function (a)
+CABLES_CMD_RENDERER.aspect = function (a)
 {
     if (!a)
     {
@@ -40,13 +48,13 @@ CABLES.CMD.RENDERER.aspect = function (a)
                 {
                     const parts = r.split(":");
                     const s = parseInt(parts[0]) / parseInt(parts[1]);
-                    CABLES.CMD.RENDERER.aspect(s);
+                    CABLES_CMD_RENDERER.aspect(s);
                 }
                 else
                 {
                     const s = parseFloat(r);
                     console.log("set to", r);
-                    CABLES.CMD.RENDERER.aspect(s);
+                    CABLES_CMD_RENDERER.aspect(s);
                 }
             });
         return;
@@ -67,7 +75,7 @@ CABLES.CMD.RENDERER.aspect = function (a)
     gui.updateCanvasIconBar();
 };
 
-CABLES.CMD.RENDERER.scaleCanvas = function ()
+CABLES_CMD_RENDERER.scaleCanvas = function ()
 {
     CABLES.UI.MODAL.prompt(
         "Change Scale of Renderer ",
@@ -81,7 +89,7 @@ CABLES.CMD.RENDERER.scaleCanvas = function ()
         });
 };
 
-CABLES.CMD.RENDERER.changeSize = function ()
+CABLES_CMD_RENDERER.changeSize = function ()
 {
     CABLES.UI.MODAL.prompt(
         "Change Canvas size",
@@ -99,44 +107,41 @@ CABLES.CMD.RENDERER.changeSize = function ()
         });
 };
 
-
-CABLES.CMD.commands.push({
+rendererCommands.commands.push({
     "cmd": "save screenshot",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.screenshot,
+    "func": CABLES_CMD_RENDERER.screenshot,
     "icon": "image"
 }, {
     "cmd": "toggle fullscreen",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.fullscreen,
+    "func": CABLES_CMD_RENDERER.fullscreen,
     "icon": "canvas_max",
     "infotext": "renderer_maximize"
 }, {
     "cmd": "change canvas size",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.changeSize,
+    "func": CABLES_CMD_RENDERER.changeSize,
     "icon": "canvas_max"
 }, {
     "cmd": "reset canvas size",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.resetSize,
+    "func": CABLES_CMD_RENDERER.resetSize,
     "icon": "canvas_max"
 }, {
     "cmd": "set canvas aspect ratio",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.aspect,
+    "func": CABLES_CMD_RENDERER.aspect,
     "icon": "canvas_max"
 }, {
     "cmd": "animation renderer",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.animRenderer,
+    "func": CABLES_CMD_RENDERER.animRenderer,
     "icon": "monitor"
 }, {
     "cmd": "scale canvas",
     "category": "renderer",
-    "func": CABLES.CMD.RENDERER.scaleCanvas,
+    "func": CABLES_CMD_RENDERER.scaleCanvas,
     "icon": "canvas_max"
 }
-
-
 );

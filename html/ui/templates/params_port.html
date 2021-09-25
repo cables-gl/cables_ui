@@ -16,9 +16,9 @@
 {{/if}}
 
 {{#if groupSpacer}}
-<tr>
-    <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
-</tr>
+    <tr>
+        <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
+    </tr>
 {{/if}}
 
 <tr id="tr_{{ dirStr }}_{{ portnum }}" class="{{#if port.uiAttribs.hideParam}}hide {{/if}}{{#if port.uiAttribs.greyout }}greyedout{{/if}} {{#if port.uiAttribs.group}}op-port-group{{/if}} opportgroup_{{port.uiAttribs.group}} opports_{{ dirStr }}" data-portname="{{port.name}}"   onmouseover="gui.opDocs.showPortDoc('{{op.objName}}','{{port.name}}');">
@@ -50,7 +50,6 @@
 
         {{#if port.links}}
             {{#compare port.type '==' '2' }}
-
                 <!-- {{#if port.uiAttribs.preview}}
                     <div class="fright" >
                         <span class="button-small fa fa-eye port2previewbutton" onclick="gui.texturePreview().selectTexturePortId('{{op.id}}','{{port.id}}');" ></span>

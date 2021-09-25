@@ -1,4 +1,3 @@
-
 import ContextMenu from "./elements/contextmenu";
 import Bookmarks from "./components/bookmarks";
 import GlUiCanvas from "./glpatch/gluicanvas";
@@ -22,12 +21,16 @@ import ele from "./utils/ele";
 import GradientEditor from "./dialogs/gradienteditor";
 import CommandPallete from "./dialogs/commandpalette";
 import OpSelect from "./dialogs/opselect";
+import initSplitPanes from "./elements/splitpane";
+import PatchSaveServer from "./components/patchSaveServer";
+import CMD from "./commands/commands";
 
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
+
 
 // CONSTANTS
 
@@ -55,8 +58,8 @@ CABLES.UI.OpHistory = OpHistory;
 CABLES.UI.Exporter = Exporter;
 CABLES.UI.CommandPallete = CommandPallete;
 CABLES.UI.OpSelect = OpSelect;
+CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
-
 
 // expose global objects
 CABLES.api = new Api();
@@ -66,3 +69,6 @@ CABLES.UI.userSettings = new UserSettings();
 
 // expose global functions
 CABLES.UI.analyzePatch = analyzePatch;
+CABLES.UI.initSplitPanes = initSplitPanes;
+
+CABLES.CMD = CMD;

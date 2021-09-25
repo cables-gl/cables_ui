@@ -1,26 +1,31 @@
-CABLES = CABLES || {};
-CABLES.CMD = CABLES.CMD || {};
-CABLES.CMD.PATCH = {};
-CABLES.CMD.TIMELINE = {};
-CABLES.CMD.commands = CABLES.CMD.commands || [];
 
-CABLES.CMD.PATCH.selectAllOps = function ()
+const CABLES_CMD_PATCH = {};
+const CMD_PATCH_COMMANDS = [];
+
+const patchCommands =
+{
+    "commands": CMD_PATCH_COMMANDS,
+    "functions": CABLES_CMD_PATCH
+};
+
+export default patchCommands;
+
+CABLES_CMD_PATCH.selectAllOps = function ()
 {
     gui.patch().selectAllOps();
 };
 
-CABLES.CMD.PATCH.deleteSelectedOps = function ()
+CABLES_CMD_PATCH.deleteSelectedOps = function ()
 {
-    // gui.patch().deleteSelectedOps();
     gui.patchView.deleteSelectedOps();
 };
 
-CABLES.CMD.PATCH.reload = function ()
+CABLES_CMD_PATCH.reload = function ()
 {
     CABLESUILOADER.talkerAPI.send("reload");
 };
 
-CABLES.CMD.PATCH.save = function (force)
+CABLES_CMD_PATCH.save = function (force)
 {
     let dosave = true;
 
@@ -34,8 +39,8 @@ CABLES.CMD.PATCH.save = function (force)
                 dosave = false;
 
                 CABLES.UI.MODAL.showError("Not Collaborator", "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>");
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.sandbox.addMeUserlist(null,()=>{CABLES_CMD_PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES_CMD_PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
                 CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;";
             }
         }
@@ -51,48 +56,48 @@ CABLES.CMD.PATCH.save = function (force)
     }
 };
 
-CABLES.CMD.PATCH.saveAs = function ()
+CABLES_CMD_PATCH.saveAs = function ()
 {
     gui.patch().saveCurrentProjectAs();
 };
 
-CABLES.CMD.PATCH.createBackup = function ()
+CABLES_CMD_PATCH.createBackup = function ()
 {
     CABLES.sandbox.createBackup();
 };
 
-CABLES.CMD.PATCH.clear = function ()
+CABLES_CMD_PATCH.clear = function ()
 {
     gui.corePatch().clear();
 };
 
-CABLES.CMD.PATCH.selectChilds = function ()
+CABLES_CMD_PATCH.selectChilds = function ()
 {
     gui.patch().selectChilds();
 };
 
-CABLES.CMD.PATCH.createSubPatchFromSelection = function ()
+CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
 {
     gui.patchView.createSubPatchFromSelection();
 };
 
-CABLES.CMD.PATCH.findCommentedOps = function ()
+CABLES_CMD_PATCH.findCommentedOps = function ()
 {
     gui.find(":commented");
 };
 
-CABLES.CMD.PATCH.findUnconnectedOps = function ()
+CABLES_CMD_PATCH.findUnconnectedOps = function ()
 {
     gui.find(":unconnected");
 };
 
-CABLES.CMD.PATCH.findUserOps = function ()
+CABLES_CMD_PATCH.findUserOps = function ()
 {
     gui.find(":user");
 };
 
 
-CABLES.CMD.PATCH.createFile = function ()
+CABLES_CMD_PATCH.createFile = function ()
 {
     gui.showFileManager(function ()
     {
@@ -100,14 +105,14 @@ CABLES.CMD.PATCH.createFile = function ()
     });
 };
 
-CABLES.CMD.PATCH.uploadFile = function ()
+CABLES_CMD_PATCH.uploadFile = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("hiddenfileElem");
     if (fileElem) fileElem.click();
 };
 
-CABLES.CMD.PATCH.uploadFileDialog = function ()
+CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
@@ -121,17 +126,17 @@ CABLES.CMD.PATCH.uploadFileDialog = function ()
 };
 
 
-CABLES.CMD.PATCH.opsAlignHorizontal = function ()
+CABLES_CMD_PATCH.opsAlignHorizontal = function ()
 {
     gui.patch().alignSelectedOps();
 };
 
-CABLES.CMD.PATCH.opsCompress = function ()
+CABLES_CMD_PATCH.opsCompress = function ()
 {
     gui.patch().compressSelectedOps();
 };
 
-CABLES.CMD.PATCH.showBackups = () =>
+CABLES_CMD_PATCH.showBackups = () =>
 {
     gui.mainTabs.addIframeTab(
         "Patch Backups",
@@ -144,33 +149,33 @@ CABLES.CMD.PATCH.showBackups = () =>
         });
 };
 
-CABLES.CMD.PATCH.export = function ()
+CABLES_CMD_PATCH.export = function ()
 {
     const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.sandbox.getPatchVersion());
     exporter.show();
 };
 
-CABLES.CMD.PATCH.newPatch = function ()
+CABLES_CMD_PATCH.newPatch = function ()
 {
     gui.createProject();
 };
 
-CABLES.CMD.PATCH.addOp = function (x, y)
+CABLES_CMD_PATCH.addOp = function (x, y)
 {
     gui.opSelect().show({ "x": 0, "y": 0 });
 };
 
-CABLES.CMD.PATCH.patchWebsite = function ()
+CABLES_CMD_PATCH.patchWebsite = function ()
 {
     window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project()._id);
 };
 
-CABLES.CMD.PATCH.analyzePatch = function ()
+CABLES_CMD_PATCH.analyzePatch = function ()
 {
     CABLES.UI.AnalyzePatch();
 };
 
-CABLES.CMD.PATCH.renameVariable = function (oldname)
+CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
     CABLES.UI.MODAL.prompt("Rename Variable", "enter a new name for the variable " + oldname, oldname,
         function (newname)
@@ -180,7 +185,7 @@ CABLES.CMD.PATCH.renameVariable = function (oldname)
         });
 };
 
-CABLES.CMD.PATCH.createVariable = function (op)
+CABLES_CMD_PATCH.createVariable = function (op)
 {
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
         function (str)
@@ -194,7 +199,7 @@ CABLES.CMD.PATCH.createVariable = function (op)
         });
 };
 
-CABLES.CMD.PATCH.createVarNumber = function (next)
+CABLES_CMD_PATCH.createVarNumber = function (next)
 {
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
         function (str)
@@ -207,7 +212,7 @@ CABLES.CMD.PATCH.createVarNumber = function (next)
         });
 };
 
-CABLES.CMD.PATCH.stats = function (force)
+CABLES_CMD_PATCH.stats = function (force)
 {
     let report = "";
     const patch = gui.corePatch();
@@ -248,7 +253,7 @@ CABLES.CMD.PATCH.stats = function (force)
 };
 
 
-CABLES.CMD.PATCH._createVariable = function (name, p, p2, value, next)
+CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
     let portName = "Value";
     let opSetterName;
@@ -317,7 +322,7 @@ CABLES.CMD.PATCH._createVariable = function (name, p, p2, value, next)
 };
 
 
-CABLES.CMD.PATCH.replaceLinkVariableExist = function ()
+CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 {
     const link = CABLES.UI.OPSELECT.linkNewLink;
     console.log(link);
@@ -352,7 +357,7 @@ CABLES.CMD.PATCH.replaceLinkVariableExist = function ()
     CABLES.UI.MODAL.hide(true);
 };
 
-CABLES.CMD.PATCH.replaceLinkVariable = function ()
+CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
         function (str)
@@ -368,7 +373,7 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
 
             link.remove();
 
-            CABLES.CMD.PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
+            CABLES_CMD_PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
             {
                 let uiop = gui.patch().getUiOp(getter);
                 uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
@@ -379,14 +384,14 @@ CABLES.CMD.PATCH.replaceLinkVariable = function ()
         });
 };
 
-CABLES.CMD.PATCH.createAutoVariable = function ()
+CABLES_CMD_PATCH.createAutoVariable = function ()
 {
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
         function (str)
         {
-            CABLES.CMD.PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
+            CABLES_CMD_PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
             {
                 if (!setter.uiAttribs.translate)
                     setter.uiAttr({ "translate": {
@@ -406,7 +411,7 @@ CABLES.CMD.PATCH.createAutoVariable = function ()
         });
 };
 
-CABLES.CMD.PATCH.editOp = function ()
+CABLES_CMD_PATCH.editOp = function ()
 {
     const selops = gui.patchView.getSelectedOps();
 
@@ -427,7 +432,7 @@ CABLES.CMD.PATCH.editOp = function ()
 };
 
 
-CABLES.CMD.PATCH.setOpTitle = function ()
+CABLES_CMD_PATCH.setOpTitle = function ()
 {
     const ops = gui.patchView.getSelectedOps();
     if (ops.length != 1)
@@ -447,7 +452,7 @@ CABLES.CMD.PATCH.setOpTitle = function ()
 };
 
 
-CABLES.CMD.PATCH.tidyChildOps = function ()
+CABLES_CMD_PATCH.tidyChildOps = function ()
 {
     const selops = gui.patch().getSelectedOps();
     const opWidth = 150;
@@ -514,22 +519,17 @@ CABLES.CMD.PATCH.tidyChildOps = function ()
     gui.patch().updateSubPatches();
 };
 
-CABLES.CMD.TIMELINE.setLength = function ()
-{
-    gui.timeLine().setProjectLength();
-};
-
-CABLES.CMD.PATCH.resume = function ()
+CABLES_CMD_PATCH.resume = function ()
 {
     gui.patchView.resume();
 };
 
-CABLES.CMD.PATCH.pause = function ()
+CABLES_CMD_PATCH.pause = function ()
 {
     gui.patchView.pause();
 };
 
-CABLES.CMD.PATCH.replaceFilePath = function ()
+CABLES_CMD_PATCH.replaceFilePath = function ()
 {
     CABLES.UI.MODAL.prompt(
         "Replace String Values",
@@ -571,35 +571,35 @@ CABLES.CMD.PATCH.replaceFilePath = function ()
 };
 
 
-CABLES.CMD.commands.push(
+CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.selectAllOps,
+        "func": CABLES_CMD_PATCH.selectAllOps,
         "hotkey": "CMD + a"
     },
     {
         "cmd": "delete selected ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.deleteSelectedOps,
+        "func": CABLES_CMD_PATCH.deleteSelectedOps,
         "icon": "trash",
         "hotkey": "DEL"
     },
     {
         "cmd": "rename op",
         "category": "op",
-        "func": CABLES.CMD.PATCH.renameOp,
+        "func": CABLES_CMD_PATCH.renameOp,
         "icon": "edit"
     },
     {
         "cmd": "reload patch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.reload
+        "func": CABLES_CMD_PATCH.reload
     },
     {
         "cmd": "save patch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.save,
+        "func": CABLES_CMD_PATCH.save,
         "icon": "save",
         "hotkey": "CTRL/CMD + s",
         "infotext": "cmd_savepatch"
@@ -608,160 +608,155 @@ CABLES.CMD.commands.push(
     {
         "cmd": "save patch as...",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.saveAs,
+        "func": CABLES_CMD_PATCH.saveAs,
         "icon": "save",
         "hotkey": "CTRL/CMD + SHIFT + s",
     },
     {
         "cmd": "upload file dialog",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.uploadFileDialog,
+        "func": CABLES_CMD_PATCH.uploadFileDialog,
         "icon": "file"
     },
     {
         "cmd": "upload file",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.uploadFile,
+        "func": CABLES_CMD_PATCH.uploadFile,
         "icon": "file"
     },
     {
         "cmd": "create new file",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.createFile,
+        "func": CABLES_CMD_PATCH.createFile,
         "icon": "file"
     },
     {
         "cmd": "select child ops",
         "category": "op",
-        "func": CABLES.CMD.PATCH.selectChilds
+        "func": CABLES_CMD_PATCH.selectChilds
     },
     {
         "cmd": "align selected ops",
         "category": "op",
-        "func": CABLES.CMD.PATCH.opsAlignHorizontal,
+        "func": CABLES_CMD_PATCH.opsAlignHorizontal,
         "hotkey": "a",
         "icon": "align-left"
     },
     {
         "cmd": "compress selected ops",
         "category": "op",
-        "func": CABLES.CMD.PATCH.opsCompress,
+        "func": CABLES_CMD_PATCH.opsCompress,
         "hotkey": "SHIFT + a",
         "icon": "align-justify"
     },
     {
         "cmd": "create subpatch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.createSubPatchFromSelection,
+        "func": CABLES_CMD_PATCH.createSubPatchFromSelection,
         "icon": "subpatch"
     },
     {
         "cmd": "export static html",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.export,
+        "func": CABLES_CMD_PATCH.export,
         "icon": "download"
     },
     {
         "cmd": "show backups",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.showBackups,
+        "func": CABLES_CMD_PATCH.showBackups,
         "icon": "file"
     },
     {
         "cmd": "create new patch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.newPatch,
+        "func": CABLES_CMD_PATCH.newPatch,
         "icon": "file"
     },
     {
         "cmd": "add op",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.addOp,
+        "func": CABLES_CMD_PATCH.addOp,
         "icon": "op",
         "infotext": "cmd_addop"
     },
     {
         "cmd": "edit op",
         "category": "op",
-        "func": CABLES.CMD.PATCH.editOp,
+        "func": CABLES_CMD_PATCH.editOp,
         "icon": "edit"
     },
     {
         "cmd": "set title",
         "category": "op",
-        "func": CABLES.CMD.PATCH.setOpTitle,
+        "func": CABLES_CMD_PATCH.setOpTitle,
         "icon": "edit"
     },
     {
         "cmd": "clear patch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.clear
+        "func": CABLES_CMD_PATCH.clear
     },
     {
         "cmd": "open patch website",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.patchWebsite,
+        "func": CABLES_CMD_PATCH.patchWebsite,
         "icon": "link"
     },
     {
         "cmd": "tidy selected ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.tidyChildOps
-    },
-    {
-        "cmd": "set timeline length",
-        "category": "timeline",
-        "func": CABLES.CMD.TIMELINE.setLength
+        "func": CABLES_CMD_PATCH.tidyChildOps
     },
     {
         "cmd": "pause patch execution",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.pause
+        "func": CABLES_CMD_PATCH.pause
     },
     {
         "cmd": "resume patch execution",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.resume
+        "func": CABLES_CMD_PATCH.resume
     },
     {
         "cmd": "replace file path",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.replaceFilePath
+        "func": CABLES_CMD_PATCH.replaceFilePath
     },
     {
         "cmd": "find unconnected ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.findUnconnectedOps
+        "func": CABLES_CMD_PATCH.findUnconnectedOps
     },
     {
         "cmd": "find user ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.findUserOps
+        "func": CABLES_CMD_PATCH.findUserOps
     },
     {
         "cmd": "find commented ops",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.findCommentedOps
+        "func": CABLES_CMD_PATCH.findCommentedOps
     },
     {
         "cmd": "patch statistics",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.stats
+        "func": CABLES_CMD_PATCH.stats
     },
     {
         "cmd": "analyze patch",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.analyzePatch
+        "func": CABLES_CMD_PATCH.analyzePatch
     },
     {
         "cmd": "create number variable",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.createVarNumber
+        "func": CABLES_CMD_PATCH.createVarNumber
     },
     {
         "cmd": "create backup",
         "category": "patch",
-        "func": CABLES.CMD.PATCH.createBackup
+        "func": CABLES_CMD_PATCH.createBackup
     }
 
 
