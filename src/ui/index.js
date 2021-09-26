@@ -35,6 +35,8 @@ import WatchVarTab from "./components/tabs/tab_watchvars";
 import FileManager from "./components/filemanager";
 import Preferences from "./components/tabs/tab_preferences";
 import Profiler from "./components/tabs/tab_profiler";
+import GlDebugTab from "./components/tabs/tab_debugglui";
+import GpuProfiler from "./components/tabs/tab_gpuprofiler";
 
 
 CABLES = CABLES || {};
@@ -85,6 +87,8 @@ CABLES.UI.WatchVarTab = WatchVarTab;
 CABLES.UI.FileManager = FileManager;
 CABLES.UI.Preferences = Preferences;
 CABLES.UI.Profiler = Profiler;
+CABLES.UI.GlDebugTab = GlDebugTab;
+CABLES.UI.GpuProfiler = GpuProfiler;
 
 
 // expose global objects

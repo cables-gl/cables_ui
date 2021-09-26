@@ -1,7 +1,5 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.GlDebugTab = class
+export default class GlDebugTab
 {
     constructor(tabs)
     {
@@ -40,4 +38,4 @@ CABLES.UI.GlDebugTab = class
         this._tab.html(html);
         setTimeout(this.show.bind(this), 100);
     }
-};
+}
