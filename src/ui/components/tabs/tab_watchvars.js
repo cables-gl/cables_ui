@@ -1,8 +1,5 @@
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-
-CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
+export default class WatchVarTab extends CABLES.EventTarget
 {
     constructor(tabs, patch)
     {
@@ -115,4 +112,4 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
     show()
     {
     }
-};
+}

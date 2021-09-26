@@ -1,5 +1,4 @@
 
-
 export default class UserSettings extends CABLES.EventTarget
 {
     constructor()

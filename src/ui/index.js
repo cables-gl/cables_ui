@@ -25,12 +25,22 @@ import initSplitPanes from "./elements/splitpane";
 import PatchSaveServer from "./components/patchSaveServer";
 import CMD from "./commands/commands";
 
+import TabPanel from "./elements/tabpanel/tabpanel";
+import Tab from "./elements/tabpanel/tab";
+import MainTabPanel from "./elements/tabpanel/maintabpanel";
+import FindTab from "./components/tabs/tab_find";
+import SpreadSheetTab from "./components/tabs/tab_spreadsheet";
+import WatchArrayTab from "./components/tabs/tab_watcharray";
+import WatchVarTab from "./components/tabs/tab_watchvars";
+
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
 
+
+CABLES.UI.userSettings = new UserSettings();
 
 // CONSTANTS
 
@@ -61,10 +71,20 @@ CABLES.UI.OpSelect = OpSelect;
 CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
 
+CABLES.UI.TabPanel = TabPanel;
+CABLES.UI.Tab = Tab;
+CABLES.UI.MainTabPanel = MainTabPanel;
+
+CABLES.UI.FindTab = FindTab;
+CABLES.UI.SpreadSheetTab = SpreadSheetTab;
+CABLES.UI.WatchArrayTab = WatchArrayTab;
+CABLES.UI.WatchVarTab = WatchVarTab;
+
 // expose global objects
+
+
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
-CABLES.UI.userSettings = new UserSettings();
 
 
 // expose global functions
