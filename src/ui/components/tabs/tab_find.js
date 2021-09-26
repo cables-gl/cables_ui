@@ -1,3 +1,5 @@
+import ele from "../../utils/ele";
+
 export default class FindTab
 {
     constructor(tabs, str)
@@ -118,21 +120,21 @@ export default class FindTab
                 {
                     const t = this._resultsTriggersTimes[this._resultsTriggers[i]];
 
-                    const ele = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
+                    const el = document.getElementById("triggerresult_" + this._resultsTriggers[i]);
 
                     if (t)
                     {
                         const timediff = performance.now() - t;
 
-                        if (ele) ele.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
+                        if (el) el.style.opacity = Math.max(0.1, 500 / (timediff * 6.0));
                     }
-                    else if (ele) ele.style.opacity = 0.1;
+                    else if (el) el.style.opacity = 0.1;
                 }
             }
 
             for (let i = 0; i < this._resultsVars.length; i++)
             {
-                const ele = document.getElementById("varresult_" + this._resultsVars[i].getName());
+                const el = document.getElementById("varresult_" + this._resultsVars[i].getName());
 
                 let val = String(this._resultsVars[i].getValue());
                 if (val.length > 30)
@@ -141,7 +143,7 @@ export default class FindTab
                     val += "...";
                 }
 
-                if (ele)ele.innerHTML = val;
+                if (el)el.innerHTML = val;
             }
         }, 100);
 

@@ -1,3 +1,4 @@
+import ele from "../../utils/ele";
 
 export default class SpreadSheetTab extends CABLES.EventTarget
 {
@@ -56,7 +57,6 @@ export default class SpreadSheetTab extends CABLES.EventTarget
 
         this._html();
     }
-
 
     getColName(_c)
     {

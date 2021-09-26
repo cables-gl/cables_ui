@@ -32,6 +32,9 @@ import FindTab from "./components/tabs/tab_find";
 import SpreadSheetTab from "./components/tabs/tab_spreadsheet";
 import WatchArrayTab from "./components/tabs/tab_watcharray";
 import WatchVarTab from "./components/tabs/tab_watchvars";
+import FileManager from "./components/filemanager";
+import Preferences from "./components/tabs/tab_preferences";
+import Profiler from "./components/tabs/tab_profiler";
 
 
 CABLES = CABLES || {};
@@ -79,10 +82,12 @@ CABLES.UI.FindTab = FindTab;
 CABLES.UI.SpreadSheetTab = SpreadSheetTab;
 CABLES.UI.WatchArrayTab = WatchArrayTab;
 CABLES.UI.WatchVarTab = WatchVarTab;
+CABLES.UI.FileManager = FileManager;
+CABLES.UI.Preferences = Preferences;
+CABLES.UI.Profiler = Profiler;
+
 
 // expose global objects
-
-
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 
