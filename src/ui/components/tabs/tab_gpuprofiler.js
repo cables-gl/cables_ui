@@ -73,4 +73,3 @@ export default class GpuProfiler
         this._tab.html(html);
     }
 }
-

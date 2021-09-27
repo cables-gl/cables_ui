@@ -37,6 +37,8 @@ import Preferences from "./components/tabs/tab_preferences";
 import Profiler from "./components/tabs/tab_profiler";
 import GlDebugTab from "./components/tabs/tab_debugglui";
 import GpuProfiler from "./components/tabs/tab_gpuprofiler";
+import FileUploader from "./dialogs/upload";
+import ItemManager from "./components/tabs/tab_item_manager";
 
 
 CABLES = CABLES || {};
@@ -89,12 +91,12 @@ CABLES.UI.Preferences = Preferences;
 CABLES.UI.Profiler = Profiler;
 CABLES.UI.GlDebugTab = GlDebugTab;
 CABLES.UI.GpuProfiler = GpuProfiler;
-
+CABLES.UI.ItemManager = ItemManager;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
-
+CABLES.fileUploader = new FileUploader();
 
 // expose global functions
 CABLES.UI.analyzePatch = analyzePatch;
