@@ -1342,6 +1342,16 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         else console.warn("patchRenderer has no function focusOp");
     }
 
+    unselectAllOps()
+    {
+        this._patchRenderer.unselectAll();
+    }
+
+    selectOpId(id)
+    {
+        this._patchRenderer.selectOpId(id);
+    }
+
     centerSelectOp(opid)
     {
         const op = this._p.getOpById(opid);
