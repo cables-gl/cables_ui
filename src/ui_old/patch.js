@@ -546,7 +546,7 @@ CABLES.UI.Patch = function (_gui)
             if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
                 gui.patch().setSelectedOp(null);
-                self.showProjectParams();
+                // self.showProjectParams();
             }
         }.bind(this);
 
@@ -846,7 +846,7 @@ CABLES.UI.Patch = function (_gui)
             scene.off(patchLoadEndiD);
             isLoading = false;
             // self.setCurrentSubPatch(currentSubPatch);
-            self.showProjectParams();
+            // self.showProjectParams();
             gui.setStateSaved();
 
             logStartup("Patch loaded");
@@ -917,50 +917,50 @@ CABLES.UI.Patch = function (_gui)
         // scene.addEventListener("onLink", this.onLinkEvent.bind(this));
         // scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
 
-        scene.addEventListener("onOpDelete", function (op)
-        {
-            if (this.disabled)
-            {
-                // console.log("wont delete, patch is disabled");
-                return;
-            }
-            const undofunc = (function (opname, opid)
-            {
-                const oldValues = {};
-                for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
+        // scene.addEventListener("onOpDelete", function (op)
+        // {
+        //     if (this.disabled)
+        //     {
+        //         // console.log("wont delete, patch is disabled");
+        //         return;
+        //     }
+        //     const undofunc = (function (opname, opid)
+        //     {
+        //         const oldValues = {};
+        //         for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
 
-                CABLES.UI.undo.add({
-                    "title": "delete op",
-                    undo()
-                    {
-                        const newop = gui.corePatch().addOp(opname, op.uiAttribs, opid);
+        //         CABLES.UI.undo.add({
+        //             "title": "delete op",
+        //             undo()
+        //             {
+        //                 const newop = gui.corePatch().addOp(opname, op.uiAttribs, opid);
 
-                        for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
-                    },
-                    redo()
-                    {
-                        gui.corePatch().deleteOp(opid, false);
-                    }
-                });
-            }(op.objName, op.id));
+        //                 for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+        //             },
+        //             redo()
+        //             {
+        //                 gui.corePatch().deleteOp(opid, false);
+        //             }
+        //         });
+        //     }(op.objName, op.id));
 
-            let found = false;
-            for (const i in self.ops)
-            {
-                if (self.ops[i].op == op)
-                {
-                    const theUi = self.ops[i];
-                    found = true;
+        //     let found = false;
+        //     for (const i in self.ops)
+        //     {
+        //         if (self.ops[i].op == op)
+        //         {
+        //             const theUi = self.ops[i];
+        //             found = true;
 
-                    theUi.hideAddButtons();
-                    theUi.remove();
-                    self.ops.splice(i, 1);
-                }
-            }
+        //             theUi.hideAddButtons();
+        //             theUi.remove();
+        //             self.ops.splice(i, 1);
+        //         }
+        //     }
 
-            gui.setStateUnsaved();
-            self.checkLinkTimeWarnings();
-        }.bind(this));
+        //     gui.setStateUnsaved();
+        //     self.checkLinkTimeWarnings();
+        // }.bind(this));
     };
 
     // this.onLinkEvent = function (p1, p2)
@@ -1082,16 +1082,16 @@ CABLES.UI.Patch = function (_gui)
     //     uiop.oprect.setTitle(t);
     // };
 
-    this.updateSubPatches = function ()
-    {
-        if (isLoading) return;
-        for (let i = 0; i < self.ops.length; i++)
-        {
-            if (!self.ops[i].op.uiAttribs.subPatch) self.ops[i].op.uiAttribs.subPatch = 0;
-            if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch) self.ops[i].show();
-            else self.ops[i].hide();
-        }
-    };
+    // this.updateSubPatches = function ()
+    // {
+    //     if (isLoading) return;
+    //     for (let i = 0; i < self.ops.length; i++)
+    //     {
+    //         if (!self.ops[i].op.uiAttribs.subPatch) self.ops[i].op.uiAttribs.subPatch = 0;
+    //         if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch) self.ops[i].show();
+    //         else self.ops[i].hide();
+    //     }
+    // };
 
     this.getCurrentSubPatch = function ()
     {
@@ -1216,438 +1216,435 @@ CABLES.UI.Patch = function (_gui)
         if (!doShow) gui.timeLine().clear();
     };
 
-    this.opCollisionTest = function (uiOp)
-    {
-        if (!uiOp) return;
-        const perf = CABLES.UI.uiProfiler.start("opCollisionTest");
-        let found = false;
-        let count = 1;
+    // this.opCollisionTest = function (uiOp)
+    // {
+    //     if (!uiOp) return;
+    //     const perf = CABLES.UI.uiProfiler.start("opCollisionTest");
+    //     let found = false;
+    //     let count = 1;
 
-        do
-        {
-            found = false;
-            for (let i = 0; i < this.ops.length; i++)
-            {
-                const testOp = this.ops[i];
-                if (testOp.op.objName.indexOf("Ui.Comment") != -1) continue;
+    //     do
+    //     {
+    //         found = false;
+    //         for (let i = 0; i < this.ops.length; i++)
+    //         {
+    //             const testOp = this.ops[i];
+    //             if (testOp.op.objName.indexOf("Ui.Comment") != -1) continue;
 
-                if (!testOp.op.deleted &&
-                    (uiOp.op.objName.indexOf("Comment") == -1) &&
-                    uiOp.op.id != testOp.op.id &&
-                    uiOp.getSubPatch() == testOp.getSubPatch())
-                {
-                    const spacing = 8;
+    //             if (!testOp.op.deleted &&
+    //                 (uiOp.op.objName.indexOf("Comment") == -1) &&
+    //                 uiOp.op.id != testOp.op.id &&
+    //                 uiOp.getSubPatch() == testOp.getSubPatch())
+    //             {
+    //                 const spacing = 8;
 
-                    if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
-                            uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth())
-                    )
-                    {
-                        let fixPos = false;
-                        if (uiOp.op.uiAttribs.translate.y >= testOp.op.uiAttribs.translate.y &&
-                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight())
-                        {
-                            fixPos = true;
-                            uiOp.setPos(
-                                testOp.op.uiAttribs.translate.x,
-                                testOp.op.uiAttribs.translate.y + (count * testOp.getHeight()) + spacing);
-                            found = true;
-                            break;
-                        }
+    //                 if ((uiOp.op.uiAttribs.translate.x >= testOp.op.uiAttribs.translate.x &&
+    //                         uiOp.op.uiAttribs.translate.x <= testOp.op.uiAttribs.translate.x + testOp.getWidth())
+    //                 )
+    //                 {
+    //                     let fixPos = false;
+    //                     if (uiOp.op.uiAttribs.translate.y >= testOp.op.uiAttribs.translate.y &&
+    //                         uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight())
+    //                     {
+    //                         fixPos = true;
+    //                         uiOp.setPos(
+    //                             testOp.op.uiAttribs.translate.x,
+    //                             testOp.op.uiAttribs.translate.y + (count * testOp.getHeight()) + spacing);
+    //                         found = true;
+    //                         break;
+    //                     }
 
-                        if (uiOp.op.uiAttribs.translate.y + testOp.getHeight() >= testOp.op.uiAttribs.translate.y &&
-                            uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight())
-                        {
-                            fixPos = true;
-                            uiOp.setPos(
-                                testOp.op.uiAttribs.translate.x,
-                                testOp.op.uiAttribs.translate.y - (count * testOp.getHeight()) - spacing);
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-            }
-            count++;
-        }
-        while (found);
+    //                     if (uiOp.op.uiAttribs.translate.y + testOp.getHeight() >= testOp.op.uiAttribs.translate.y &&
+    //                         uiOp.op.uiAttribs.translate.y <= testOp.op.uiAttribs.translate.y + testOp.getHeight())
+    //                     {
+    //                         fixPos = true;
+    //                         uiOp.setPos(
+    //                             testOp.op.uiAttribs.translate.x,
+    //                             testOp.op.uiAttribs.translate.y - (count * testOp.getHeight()) - spacing);
+    //                         found = true;
+    //                         break;
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //         count++;
+    //     }
+    //     while (found);
 
-        this._viewBox.setMinimapBounds();
-        perf.finish();
-    };
+    //     this._viewBox.setMinimapBounds();
+    //     perf.finish();
+    // };
 
-    this.checkCollisionsEdge = function ()
-    {
-        const perf = CABLES.UI.uiProfiler.start("checkCollisionsEdge");
+    // this.checkCollisionsEdge = function ()
+    // {
+    //     const perf = CABLES.UI.uiProfiler.start("checkCollisionsEdge");
 
-        for (let i = 0; i < this.ops.length; i++)
-        {
-            for (let j = 0; j < this.ops.length; j++)
-            {
-                if (i == j) continue;
+    //     for (let i = 0; i < this.ops.length; i++)
+    //     {
+    //         for (let j = 0; j < this.ops.length; j++)
+    //         {
+    //             if (i == j) continue;
 
-                const a = this.ops[i].op;
-                const b = this.ops[j].op;
+    //             const a = this.ops[i].op;
+    //             const b = this.ops[j].op;
 
-                if (a.uiAttribs.translate.x == b.uiAttribs.translate.x &&
-                    a.uiAttribs.translate.y == b.uiAttribs.translate.y)
-                {
-                    console.log("colliding!");
-                    this.ops[j].setPos(
-                        a.uiAttribs.translate.x,
-                        a.uiAttribs.translate.y + 50
-                    );
-                }
-            }
-        }
-        perf.finish();
-    };
+    //             if (a.uiAttribs.translate.x == b.uiAttribs.translate.x &&
+    //                 a.uiAttribs.translate.y == b.uiAttribs.translate.y)
+    //             {
+    //                 console.log("colliding!");
+    //                 this.ops[j].setPos(
+    //                     a.uiAttribs.translate.x,
+    //                     a.uiAttribs.translate.y + 50
+    //                 );
+    //             }
+    //         }
+    //     }
+    //     perf.finish();
+    // };
 
-    this.testCollisionOpPosition = function (x, y, opid)
-    {
-        return false;
-    };
+    // this.testCollisionOpPosition = function (x, y, opid)
+    // {
+    //     return false;
+    // };
 
-    this.findNonCollidingPosition = function (x, y, opid, dir)
-    {
-        const pos = { "x": x, "y": y };
-        return pos;
-    };
+    // this.findNonCollidingPosition = function (x, y, opid, dir)
+    // {
+    //     const pos = { "x": x, "y": y };
+    //     return pos;
+    // };
 
-    this.snapToNextOp = function (dir)
-    {
-        if (!selectedOps || selectedOps.length === 0) return;
+    // this.snapToNextOp = function (dir)
+    // {
+    //     if (!selectedOps || selectedOps.length === 0) return;
 
-        for (let j = 0; j < selectedOps.length; j++)
-        {
-            const uiop = selectedOps[j];
-            let startPort = uiop.op.portsIn[0];
-            let otherport = null;
+    //     for (let j = 0; j < selectedOps.length; j++)
+    //     {
+    //         const uiop = selectedOps[j];
+    //         let startPort = uiop.op.portsIn[0];
+    //         let otherport = null;
 
-            if (dir > 0) startPort = uiop.op.portsOut[0];
+    //         if (dir > 0) startPort = uiop.op.portsOut[0];
 
-            if (startPort.links.length > 0)
-            {
-                otherport = startPort.links[0].getOtherPort(startPort);
-                if (startPort.isLinked())
-                {
-                    const transNextOp = otherport.parent.uiAttribs.translate;
+    //         if (startPort.links.length > 0)
+    //         {
+    //             otherport = startPort.links[0].getOtherPort(startPort);
+    //             if (startPort.isLinked())
+    //             {
+    //                 const transNextOp = otherport.parent.uiAttribs.translate;
 
-                    let y = transNextOp.y;
-                    if (dir > 0) y -= (uiop.getHeight() + 10);
-                    else y += (uiop.getHeight() + 10);
-                    uiop.setPos(transNextOp.x, y);
-                    this.opCollisionTest(uiop);
-                }
-            }
-        }
-    };
+    //                 let y = transNextOp.y;
+    //                 if (dir > 0) y -= (uiop.getHeight() + 10);
+    //                 else y += (uiop.getHeight() + 10);
+    //                 uiop.setPos(transNextOp.x, y);
+    //                 this.opCollisionTest(uiop);
+    //             }
+    //         }
+    //     }
+    // };
 
-    this.compressSelectedOps = function ()
-    {
-        gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
-        this.updateSelectedOpPositions();
-    };
+    // this.compressSelectedOps = function ()
+    // {
+    //     gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
+    //     this.updateSelectedOpPositions();
+    // };
 
-    this.alignSelectedOps = function ()
-    {
-        gui.patchView.alignOps(gui.patchView.getSelectedOps());
-        this.updateSelectedOpPositions();
-    };
+    // this.alignSelectedOps = function ()
+    // {
+    //     gui.patchView.alignOps(gui.patchView.getSelectedOps());
+    //     this.updateSelectedOpPositions();
+    // };
 
-    this.updatedOpPositionsFromUiAttribs = function (ops)
-    {
-        self.checkOpsInSync();
-        for (let i = 0; i < ops.length; i++)
-        {
-            if (ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x, ops[i].op.uiAttribs.translate.y);
-            else
-            {
-                const uiop = gui.patch().getUiOp(ops[i]);
-                if (!uiop) console.log("NO UIOP", ops[i], uiop);
-                else uiop.setPos(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
-            }
-        }
-    };
+    // this.updatedOpPositionsFromUiAttribs = function (ops)
+    // {
+    //     self.checkOpsInSync();
+    //     for (let i = 0; i < ops.length; i++)
+    //     {
+    //         if (ops[i].op) ops[i].setPos(ops[i].op.uiAttribs.translate.x, ops[i].op.uiAttribs.translate.y);
+    //         else
+    //         {
+    //             const uiop = gui.patch().getUiOp(ops[i]);
+    //             if (!uiop) console.log("NO UIOP", ops[i], uiop);
+    //             else uiop.setPos(ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
+    //         }
+    //     }
+    // };
 
-    this.updateSelectedOpPositions = function ()
-    {
-        this.updatedOpPositionsFromUiAttribs(selectedOps);
-    };
+    // this.updateSelectedOpPositions = function ()
+    // {
+    //     this.updatedOpPositionsFromUiAttribs(selectedOps);
+    // };
 
-    this.selectChilds = function (id)
-    {
-        if (!id)
-        {
-            if (selectedOps.length === 0) return;
-            id = selectedOps[0].op.id;
-        }
-        const op = gui.corePatch().getOpById(id);
-        gui.jobs().start({
-            "id": "selectchilds",
-            "title": "selecting child ops"
-        },
-        function ()
-        {
-            let i = 0;
-            for (i in self.ops) self.ops[i].op.marked = false;
+    // this.selectChilds = function (id)
+    // {
+    //     if (!id)
+    //     {
+    //         if (selectedOps.length === 0) return;
+    //         id = selectedOps[0].op.id;
+    //     }
+    //     const op = gui.corePatch().getOpById(id);
+    //     gui.jobs().start({
+    //         "id": "selectchilds",
+    //         "title": "selecting child ops"
+    //     },
+    //     function ()
+    //     {
+    //         let i = 0;
+    //         for (i in self.ops) self.ops[i].op.marked = false;
 
-            op.markChilds();
-            op.marked = false;
+    //         op.markChilds();
+    //         op.marked = false;
 
-            for (i in self.ops)
-            {
-                if (self.ops[i].op.marked)
-                {
-                    self.addSelectedOp(self.ops[i]);
-                    self.ops[i].setSelected(true);
-                }
-                else
-                {
-                    self.removeSelectedOp(self.ops[i]);
-                    self.ops[i].setSelected(false);
-                }
-            }
-            setStatusSelectedOps();
+    //         for (i in self.ops)
+    //         {
+    //             if (self.ops[i].op.marked)
+    //             {
+    //                 self.addSelectedOp(self.ops[i]);
+    //                 self.ops[i].setSelected(true);
+    //             }
+    //             else
+    //             {
+    //                 self.removeSelectedOp(self.ops[i]);
+    //                 self.ops[i].setSelected(false);
+    //             }
+    //         }
+    //         setStatusSelectedOps();
 
-            gui.jobs().finish("selectchilds");
-        }
-        );
-    };
+    //         gui.jobs().finish("selectchilds");
+    //     }
+    //     );
+    // };
 
-    this.deleteChilds = function (id)
-    {
-        const op = gui.corePatch().getOpById(id);
-        gui.jobs().start({
-            "id": "deletechilds",
-            "title": "deleting ops"
-        },
-        function ()
-        {
-            op.deleteChilds();
-            gui.jobs().finish("deletechilds");
-        }
-        );
-    };
+    // this.deleteChilds = function (id)
+    // {
+    //     const op = gui.corePatch().getOpById(id);
+    //     gui.jobs().start({
+    //         "id": "deletechilds",
+    //         "title": "deleting ops"
+    //     },
+    //     function ()
+    //     {
+    //         op.deleteChilds();
+    //         gui.jobs().finish("deletechilds");
+    //     }
+    //     );
+    // };
 
-    this.deleteSelectedOps = function ()
-    {
-        gui.patchView.deleteSelectedOps();
-        this.updateBounds();
-    };
+    // this.deleteSelectedOps = function ()
+    // {
+    //     gui.patchView.deleteSelectedOps();
+    //     this.updateBounds();
+    // };
 
-    this.removeSelectedOp = function (uiop)
-    {
-        for (const i in selectedOps)
-        {
-            if (selectedOps[i] == uiop)
-            {
-                uiop.op.setUiAttrib({ "selected": false });
-                selectedOps.splice(i, 1);
-                return;
-            }
-        }
-        self.updateBounds();
-    };
+    // this.removeSelectedOp = function (uiop)
+    // {
+    //     for (const i in selectedOps)
+    //     {
+    //         if (selectedOps[i] == uiop)
+    //         {
+    //             uiop.op.setUiAttrib({ "selected": false });
+    //             selectedOps.splice(i, 1);
+    //             return;
+    //         }
+    //     }
+    //     self.updateBounds();
+    // };
 
-    this.focusOp = function (id, center)
-    {
-        for (let i = 0; i < gui.patch().ops.length; i++)
-        {
-            if (gui.patch().ops[i].op.id == id)
-            {
-                gui.patch().ops[i].oprect.showFocus();
+    // this.focusOp = function (id, center)
+    // {
+    //     for (let i = 0; i < gui.patch().ops.length; i++)
+    //     {
+    //         if (gui.patch().ops[i].op.id == id)
+    //         {
+    //             gui.patch().ops[i].oprect.showFocus();
 
-                if (center)
-                    self._viewBox.center(
-                        gui.patch().ops[i].op.uiAttribs.translate.x,
-                        gui.patch().ops[i].op.uiAttribs.translate.y);
-            }
-        }
-    };
+    //             if (center)
+    //                 self._viewBox.center(
+    //                     gui.patch().ops[i].op.uiAttribs.translate.x,
+    //                     gui.patch().ops[i].op.uiAttribs.translate.y);
+    //         }
+    //     }
+    // };
 
-    this.setSelectedOpById = function (id)
-    {
-        // for (const i in gui.patch().ops)
-        // {
-        //     if (gui.patch().ops[i].op.id == id)
-        //     {
-        //         self.setCurrentSubPatch(gui.patch().ops[i].getSubPatch());
+    // this.setSelectedOpById = function (id)
+    // {
+    //     // for (const i in gui.patch().ops)
+    //     // {
+    //     //     if (gui.patch().ops[i].op.id == id)
+    //     //     {
+    //     //         self.setCurrentSubPatch(gui.patch().ops[i].getSubPatch());
 
-        //         gui.patch().setSelectedOp(null);
-        //         gui.patch().setSelectedOp(gui.patch().ops[i]);
-        //         gui.opParams.show(gui.patch().ops[i].op);
-        //         return;
-        //     }
-        // }
-    };
+    //     //         gui.patch().setSelectedOp(null);
+    //     //         gui.patch().setSelectedOp(gui.patch().ops[i]);
+    //     //         gui.opParams.show(gui.patch().ops[i].op);
+    //     //         return;
+    //     //     }
+    //     // }
+    // };
 
-    this.addSelectedOpById = function (id)
-    {
-        for (const i in gui.patch().ops)
-        {
-            if (gui.patch().ops[i].op.id == id)
-            {
-                self.addSelectedOp(gui.patch().ops[i]);
-                return gui.patch().ops[i];
-            }
-        }
-    };
+    // this.addSelectedOpById = function (id)
+    // {
+    //     for (const i in gui.patch().ops)
+    //     {
+    //         if (gui.patch().ops[i].op.id == id)
+    //         {
+    //             self.addSelectedOp(gui.patch().ops[i]);
+    //             return gui.patch().ops[i];
+    //         }
+    //     }
+    // };
 
-    this.setSelectedOp = function (uiop)
-    {
-        if (uiop === null)
-        {
-            selectedOps.length = 0;
-            for (const i in gui.patch().ops)
-            {
-                gui.patch().ops[i].op.setUiAttrib({ "selected": false });
-                gui.patch().ops[i].setSelected(false);
-                gui.patch().ops[i].hideAddButtons();
-            }
-            return;
-        }
+    // this.setSelectedOp = function (uiop)
+    // {
+    //     if (uiop === null)
+    //     {
+    //         selectedOps.length = 0;
+    //         for (const i in gui.patch().ops)
+    //         {
+    //             gui.patch().ops[i].op.setUiAttrib({ "selected": false });
+    //             gui.patch().ops[i].setSelected(false);
+    //             gui.patch().ops[i].hideAddButtons();
+    //         }
+    //         return;
+    //     }
 
-        self.addSelectedOp(uiop);
-        uiop.setSelected(true);
-    };
+    //     self.addSelectedOp(uiop);
+    //     uiop.setSelected(true);
+    // };
 
-    this.addSelectedOp = function (uiop)
-    {
-        uiop.op.setUiAttrib({ "selected": true });
-        uiop.oprect.setSelected(true);
-        uiop.setSelected(true);
-        for (const i in selectedOps)
-            if (selectedOps[i] == uiop) return;
-        selectedOps.push(uiop);
-    };
+    // this.addSelectedOp = function (uiop)
+    // {
+    //     uiop.op.setUiAttrib({ "selected": true });
+    //     uiop.oprect.setSelected(true);
+    //     uiop.setSelected(true);
+    //     for (const i in selectedOps)
+    //         if (selectedOps[i] == uiop) return;
+    //     selectedOps.push(uiop);
+    // };
 
-    this.moveSelectedOpsFinished = function ()
-    {
-        let i = 0;
-        const undoGroup = CABLES.UI.undo.startGroup();
+    // this.moveSelectedOpsFinished = function ()
+    // {
+    //     let i = 0;
+    //     const undoGroup = CABLES.UI.undo.startGroup();
 
-        if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
-        for (i in selectedOps) selectedOps[i].doMoveFinished();
+    //     if (selectedOps.length == 1) this.opCollisionTest(selectedOps[0]);
+    //     for (i in selectedOps) selectedOps[i].doMoveFinished();
 
-        CABLES.UI.undo.endGroup(undoGroup, "Move selected ops");
-    };
+    //     CABLES.UI.undo.endGroup(undoGroup, "Move selected ops");
+    // };
 
-    this.prepareMovingOps = function ()
-    {
-        let i = 0;
-        if (selectedOps.length == 1)
-            for (i = 0; i < self.ops.length; i++)
-                if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
-                    for (let j = 0; j < self.ops[i].links.length; j++)
-                        self.ops[i].links[j].setElementOrder();
-    };
+    // this.prepareMovingOps = function ()
+    // {
+    //     let i = 0;
+    //     if (selectedOps.length == 1)
+    //         for (i = 0; i < self.ops.length; i++)
+    //             if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
+    //                 for (let j = 0; j < self.ops[i].links.length; j++)
+    //                     self.ops[i].links[j].setElementOrder();
+    // };
 
-    this.moveSelectedOps = function (dx, dy, a, b, e)
-    {
-        let i = 0;
-        if (selectedOps.length == 1)
-            for (i = 0; i < self.ops.length; i++)
-                if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
-                    for (let j = 0; j < self.ops[i].links.length; j++)
-                        self.ops[i].links[j].showAddButton();
+    // this.moveSelectedOps = function (dx, dy, a, b, e)
+    // {
+    //     let i = 0;
+    //     if (selectedOps.length == 1)
+    //         for (i = 0; i < self.ops.length; i++)
+    //             if (self.ops[i].op.uiAttribs.subPatch == currentSubPatch)
+    //                 for (let j = 0; j < self.ops[i].links.length; j++)
+    //                     self.ops[i].links[j].showAddButton();
 
-        for (i = 0; i < selectedOps.length; i++)
-            selectedOps[i].doMove(dx, dy, a, b, e);
-    };
+    //     for (i = 0; i < selectedOps.length; i++)
+    //         selectedOps[i].doMove(dx, dy, a, b, e);
+    // };
 
-    this.getUiOp = function (op)
-    {
-        for (let i = 0; i < self.ops.length; i++)
-            if (self.ops[i].op == op) return self.ops[i];
-        return null;
-    };
+    // this.getUiOp = function (op)
+    // {
+    //     for (let i = 0; i < self.ops.length; i++)
+    //         if (self.ops[i].op == op) return self.ops[i];
+    //     return null;
+    // };
 
-    this.updateOpParams = function (id)
-    {
-        if (CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
-        if (selectedOps.length != 1) return;
-        if (selectedOps[0].op.id != id) return;
-        gui.setTransformGizmo(null);
-        const op = gui.corePatch().getOpById(id);
-        self.showOpParams(op);
-        return true;
-    };
+    // this.updateOpParams = function (id)
+    // {
+    //     if (CABLES.UI.DRAGGINGOPS || CABLES.UI.selectedEndOp || CABLES.UI.selectedStartOp) return false;
+    //     if (selectedOps.length != 1) return;
+    //     if (selectedOps[0].op.id != id) return;
+    //     gui.setTransformGizmo(null);
+    //     const op = gui.corePatch().getOpById(id);
+    //     self.showOpParams(op);
+    //     return true;
+    // };
 
-    this.showProjectParams = function ()
-    {
-        gui.opParams.dispose();
-        if (gui.fileManager)gui.fileManager.setFilePort(null);
-        const perf = CABLES.UI.uiProfiler.start("showProjectParams");
+    // this.showProjectParams = function ()
+    // {
+    //     gui.opParams.dispose();
+    //     if (gui.fileManager)gui.fileManager.setFilePort(null);
+    //     const perf = CABLES.UI.uiProfiler.start("showProjectParams");
 
-        const s = {};
-        if (currentOp && currentOp)currentOp = null;
+    //     const s = {};
+    //     if (currentOp && currentOp)currentOp = null;
 
-        s.name = currentProject.name;
-        s.settings = gui.corePatch().settings;
+    //     s.name = currentProject.name;
+    //     s.settings = gui.corePatch().settings;
 
-        gui.patchView.showDefaultPanel();
+    //     gui.patchView.showDefaultPanel();
 
-        perf.finish();
-    };
+    //     perf.finish();
+    // };
 
-    this.updateCurrentOpParams = function ()
-    {
-        if (currentOp) self.showOpParams(currentOp.op);
-    };
+    // this.updateCurrentOpParams = function ()
+    // {
+    //     if (currentOp) self.showOpParams(currentOp.op);
+    // };
 
-    this.refreshOpParams = function (op)
-    {
-        if (currentOp && currentOp.op == op) this.showOpParams(op);
-    };
+    // this.refreshOpParams = function (op)
+    // {
+    //     if (currentOp && currentOp.op == op) this.showOpParams(op);
+    // };
 
-    let delayedShowOpParams = 0;
-    this.showOpParams = function (op)
-    {
-        gui.setTransformGizmo(null);
+    // let delayedShowOpParams = 0;
+    // this.showOpParams = function (op)
+    // {
+    //     gui.setTransformGizmo(null);
 
-        if (op)
-        {
-            if (gui.find() && gui.find().isVisible()) gui.find().setSelectedOp(op.id);
-            clearTimeout(delayedShowOpParams);
-            delayedShowOpParams = setTimeout(function ()
-            {
-                self._showOpParams(op);
-            }, 10);
-        }
-    };
+    //     if (op)
+    //     {
+    //         if (gui.find() && gui.find().isVisible()) gui.find().setSelectedOp(op.id);
+    //         clearTimeout(delayedShowOpParams);
+    //         delayedShowOpParams = setTimeout(function ()
+    //         {
+    //             self._showOpParams(op);
+    //         }, 10);
+    //     }
+    // };
 
     this.setSize = function (x, y, w, h)
     {
-        this._svgEle = this._svgEle || document.querySelector("#patch svg");
-        this._svgEle.style.width = w + "px";
-        this._svgEle.style.height = h + "px";
     };
 
 
-    this._showOpParams = function (op)
-    {
-        gui.opParams.show(op);
-    };
+    // this._showOpParams = function (op)
+    // {
+    //     gui.opParams.show(op);
+    // };
 
-    let uupos = null;
-    let ctm;
+    // let uupos = null;
+    // let ctm;
 
-    this.getCanvasCoordsMouse = function (evt)
-    {
-        ctm = this._elPatchSvg[0].getScreenCTM();
-        ctm = ctm.inverse();
+    // this.getCanvasCoordsMouse = function (evt)
+    // {
+    //     ctm = this._elPatchSvg[0].getScreenCTM();
+    //     ctm = ctm.inverse();
 
-        uupos = this._elPatchSvg[0].createSVGPoint();
-        uupos.x = evt.clientX || 0;
-        uupos.y = evt.clientY || 0;
-        uupos = uupos.matrixTransform(ctm);
-        return uupos;
-    };
+    //     uupos = this._elPatchSvg[0].createSVGPoint();
+    //     uupos.x = evt.clientX || 0;
+    //     uupos.y = evt.clientY || 0;
+    //     uupos = uupos.matrixTransform(ctm);
+    //     return uupos;
+    // };
 
-    this.addAssetOpAuto = function (filename, event)
-    {
-        gui.patchView.addAssetOpAuto(filename, event);
-    };
+    // this.addAssetOpAuto = function (filename, event)
+    // {
+    //     gui.patchView.addAssetOpAuto(filename, event);
+    // };
     // {
     //     if (!event) return;
 
@@ -1725,105 +1722,105 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
-    this.downloadSVG = function ()
-    {
-        const element = document.createElement("a");
-        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent($("#patch").html()));
-        element.setAttribute("download", "patch.svg");
-        element.style.display = "none";
-        document.body.appendChild(element);
-        element.click();
-        document.body.removeChild(element);
-    };
+    // this.downloadSVG = function ()
+    // {
+    //     const element = document.createElement("a");
+    //     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent($("#patch").html()));
+    //     element.setAttribute("download", "patch.svg");
+    //     element.style.display = "none";
+    //     document.body.appendChild(element);
+    //     element.click();
+    //     document.body.removeChild(element);
+    // };
 
-    this.getSubPatches = function (sort)
-    {
-        return gui.patchView.getSubPatches(sort);
-    };
+    // this.getSubPatches = function (sort)
+    // {
+    //     return gui.patchView.getSubPatches(sort);
+    // };
 
-    this.linkTwoOps = function (op1, op2)
-    {
-        this.removeQuickLinkLine();
-        const suggestions = [];
-        if (!op1 || !op2) return;
+    // this.linkTwoOps = function (op1, op2)
+    // {
+    //     this.removeQuickLinkLine();
+    //     const suggestions = [];
+    //     if (!op1 || !op2) return;
 
-        for (let j = 0; j < op1.portsOut.length; j++)
-        {
-            const p = op1.portsOut[j].thePort;
-            const numFitting = op2.op.countFittingPorts(p);
-            let addText = "...";
+    //     for (let j = 0; j < op1.portsOut.length; j++)
+    //     {
+    //         const p = op1.portsOut[j].thePort;
+    //         const numFitting = op2.op.countFittingPorts(p);
+    //         let addText = "...";
 
-            if (numFitting > 0)
-            {
-                if (numFitting == 1)
-                {
-                    const p2 = op2.op.findFittingPort(p);
-                    addText = p2.name;
-                }
+    //         if (numFitting > 0)
+    //         {
+    //             if (numFitting == 1)
+    //             {
+    //                 const p2 = op2.op.findFittingPort(p);
+    //                 addText = p2.name;
+    //             }
 
-                suggestions.push({
-                    p,
-                    "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
-                    "classname": "port_text_color_" + p.getTypeString().toLowerCase()
-                });
-            }
-        }
+    //             suggestions.push({
+    //                 p,
+    //                 "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
+    //                 "classname": "port_text_color_" + p.getTypeString().toLowerCase()
+    //             });
+    //         }
+    //     }
 
-        if (suggestions.length === 0)
-        {
-            CABLES.UI.notify("can not link!");
-            return;
-        }
-        if (suggestions.length > 1) op1.oprect.showFocus();
+    //     if (suggestions.length === 0)
+    //     {
+    //         CABLES.UI.notify("can not link!");
+    //         return;
+    //     }
+    //     if (suggestions.length > 1) op1.oprect.showFocus();
 
-        const fakeMouseEvent = {
-            "clientX": self.lastMouseMoveEvent.clientX,
-            "clientY": self.lastMouseMoveEvent.clientY
-        };
+    //     const fakeMouseEvent = {
+    //         "clientX": self.lastMouseMoveEvent.clientX,
+    //         "clientY": self.lastMouseMoveEvent.clientY
+    //     };
 
-        function showSuggestions2(id)
-        {
-            const p = suggestions[id].p;
-            const sugIn = [];
+    //     function showSuggestions2(id)
+    //     {
+    //         const p = suggestions[id].p;
+    //         const sugIn = [];
 
-            for (let i = 0; i < op2.portsIn.length; i++)
-            {
-                if (CABLES.Link.canLink(op2.portsIn[i].thePort, p))
-                {
-                    sugIn.push({
-                        "p": op2.portsIn[i].thePort,
-                        "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].thePort.name,
-                        "classname": "port_text_color_" + op2.portsIn[i].thePort.getTypeString().toLowerCase()
-                    });
-                }
-            }
+    //         for (let i = 0; i < op2.portsIn.length; i++)
+    //         {
+    //             if (CABLES.Link.canLink(op2.portsIn[i].thePort, p))
+    //             {
+    //                 sugIn.push({
+    //                     "p": op2.portsIn[i].thePort,
+    //                     "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].thePort.name,
+    //                     "classname": "port_text_color_" + op2.portsIn[i].thePort.getTypeString().toLowerCase()
+    //                 });
+    //             }
+    //         }
 
-            if (sugIn.length == 1)
-            {
-                gui.corePatch().link(
-                    p.parent,
-                    p.name,
-                    sugIn[0].p.parent,
-                    sugIn[0].p.name);
-                return;
-            }
+    //         if (sugIn.length == 1)
+    //         {
+    //             gui.corePatch().link(
+    //                 p.parent,
+    //                 p.name,
+    //                 sugIn[0].p.parent,
+    //                 sugIn[0].p.name);
+    //             return;
+    //         }
 
-            op2.oprect.showFocus();
+    //         op2.oprect.showFocus();
 
-            new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
-                function (sugId)
-                {
-                    gui.corePatch().link(
-                        p.parent,
-                        p.name,
-                        sugIn[sugId].p.parent,
-                        sugIn[sugId].p.name);
-                });
-        }
+    //         new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
+    //             function (sugId)
+    //             {
+    //                 gui.corePatch().link(
+    //                     p.parent,
+    //                     p.name,
+    //                     sugIn[sugId].p.parent,
+    //                     sugIn[sugId].p.name);
+    //             });
+    //     }
 
-        if (suggestions.length == 1) showSuggestions2(0);
-        else new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null, showSuggestions2, false);
-    };
+    //     if (suggestions.length == 1) showSuggestions2(0);
+    //     else new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null, showSuggestions2, false);
+    // };
 };
 
 // CABLES.UI.Patch.prototype.getViewBox = function ()
@@ -1844,118 +1841,118 @@ CABLES.UI.Patch = function (_gui)
 
 // ---------------------
 
-CABLES.UI.Patch.prototype.flowvis = false;
-CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-CABLES.UI.speedCycle = true;
+// CABLES.UI.Patch.prototype.flowvis = false;
+// CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
+// CABLES.UI.speedCycle = true;
 
-CABLES.UI.Patch.prototype.toggleFlowVis = function ()
-{
-    if (!this.flowvis)
-    {
-        CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-        this.startflowVis();
-        this.flowvis = true;
-    }
-    else
-    {
-        this.stopFlowVis();
-    }
-};
+// CABLES.UI.Patch.prototype.toggleFlowVis = function ()
+// {
+//     if (!this.flowvis)
+//     {
+//         CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
+//         this.startflowVis();
+//         this.flowvis = true;
+//     }
+//     else
+//     {
+//         this.stopFlowVis();
+//     }
+// };
 
-CABLES.UI.Patch.prototype.stopFlowVis = function ()
-{
-    this.scene.removeOnAnimCallback(this.updateFlowVis);
+// CABLES.UI.Patch.prototype.stopFlowVis = function ()
+// {
+//     this.scene.removeOnAnimCallback(this.updateFlowVis);
 
-    this.flowvis = false;
+//     this.flowvis = false;
 
-    for (let i = 0; i < this.ops.length; i++)
-    {
-        for (let j = 0; j < this.ops[i].links.length; j++)
-        {
-            if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-            {
-                let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-                if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
+//     for (let i = 0; i < this.ops.length; i++)
+//     {
+//         for (let j = 0; j < this.ops[i].links.length; j++)
+//         {
+//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
+//             {
+//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
+//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
 
-                if (link)
-                {
-                    this.ops[i].links[j].linkLine.node.classList.remove(this.ops[i].links[j].linkLine.speedClass);
-                    this.ops[i].links[j].linkLine.speedClass = "nospeed";
-                }
-            }
-        }
-    }
-};
+//                 if (link)
+//                 {
+//                     this.ops[i].links[j].linkLine.node.classList.remove(this.ops[i].links[j].linkLine.speedClass);
+//                     this.ops[i].links[j].linkLine.speedClass = "nospeed";
+//                 }
+//             }
+//         }
+//     }
+// };
 
-CABLES.UI.Patch.prototype.updateFlowVis = function (time, frame)
-{
-    if (CABLES.UI.Patch.prototype.flowvisStartFrame == 0)CABLES.UI.Patch.prototype.flowvisStartFrame = frame;
-    if (frame - CABLES.UI.Patch.prototype.flowvisStartFrame < 5) return;
-    if (frame % 5 != 0) return;
+// CABLES.UI.Patch.prototype.updateFlowVis = function (time, frame)
+// {
+//     if (CABLES.UI.Patch.prototype.flowvisStartFrame == 0)CABLES.UI.Patch.prototype.flowvisStartFrame = frame;
+//     if (frame - CABLES.UI.Patch.prototype.flowvisStartFrame < 5) return;
+//     if (frame % 5 != 0) return;
 
-    CABLES.UI.speedCycle = !CABLES.UI.speedCycle;
+//     CABLES.UI.speedCycle = !CABLES.UI.speedCycle;
 
-    let count = 0;
-    // var countInvalid=0;
-    const patch = gui.patch();
+//     let count = 0;
+//     // var countInvalid=0;
+//     const patch = gui.patch();
 
-    for (let i = 0; i < patch.ops.length; i++)
-    {
-        for (let j = 0; j < patch.ops[i].links.length; j++)
-        {
-            if (patch.ops[i].links[j] && patch.ops[i].links[j].linkLine)
-            {
-                let link = patch.ops[i].links[j].p2.thePort.getLinkTo(patch.ops[i].links[j].p1.thePort);
-                if (!link) link = patch.ops[i].links[j].p1.thePort.getLinkTo(patch.ops[i].links[j].p2.thePort);
+//     for (let i = 0; i < patch.ops.length; i++)
+//     {
+//         for (let j = 0; j < patch.ops[i].links.length; j++)
+//         {
+//             if (patch.ops[i].links[j] && patch.ops[i].links[j].linkLine)
+//             {
+//                 let link = patch.ops[i].links[j].p2.thePort.getLinkTo(patch.ops[i].links[j].p1.thePort);
+//                 if (!link) link = patch.ops[i].links[j].p1.thePort.getLinkTo(patch.ops[i].links[j].p2.thePort);
 
-                if (link)
-                {
-                    if (link.speedCycle != CABLES.UI.speedCycle)
-                    {
-                        count++;
+//                 if (link)
+//                 {
+//                     if (link.speedCycle != CABLES.UI.speedCycle)
+//                     {
+//                         count++;
 
-                        link.speedCycle = CABLES.UI.speedCycle;
+//                         link.speedCycle = CABLES.UI.speedCycle;
 
-                        let newClass = "pathSpeed0";
-                        if (link.activityCounter >= 1)
-                        {
-                            newClass = "pathSpeed1";
-                        }
-                        if (link.activityCounter >= 5) newClass = "pathSpeed2";
-                        if (link.activityCounter >= 10) newClass = "pathSpeed3";
-                        if (link.activityCounter >= 20) newClass = "pathSpeed4";
+//                         let newClass = "pathSpeed0";
+//                         if (link.activityCounter >= 1)
+//                         {
+//                             newClass = "pathSpeed1";
+//                         }
+//                         if (link.activityCounter >= 5) newClass = "pathSpeed2";
+//                         if (link.activityCounter >= 10) newClass = "pathSpeed3";
+//                         if (link.activityCounter >= 20) newClass = "pathSpeed4";
 
-                        if (patch.ops[i].links[j].linkLine.speedClass != newClass)
-                        {
-                            patch.ops[i].links[j].linkLine.node.classList.remove(patch.ops[i].links[j].linkLine.speedClass);
-                            patch.ops[i].links[j].linkLine.speedClass = newClass;
-                            patch.ops[i].links[j].linkLine.node.classList.add(newClass);
-                        }
-                        // link.activityCount=link.activityCounter;
-                        link.activityCounter = 0;
-                        // link.emitEvent("activity",link,link.activityCount);
-                    }
-                }
-            }
-        }
-    }
-};
+//                         if (patch.ops[i].links[j].linkLine.speedClass != newClass)
+//                         {
+//                             patch.ops[i].links[j].linkLine.node.classList.remove(patch.ops[i].links[j].linkLine.speedClass);
+//                             patch.ops[i].links[j].linkLine.speedClass = newClass;
+//                             patch.ops[i].links[j].linkLine.node.classList.add(newClass);
+//                         }
+//                         // link.activityCount=link.activityCounter;
+//                         link.activityCounter = 0;
+//                         // link.emitEvent("activity",link,link.activityCount);
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// };
 
-CABLES.UI.Patch.prototype.startflowVis = function ()
-{
-    for (let i = 0; i < this.ops.length; i++)
-    {
-        for (let j = 0; j < this.ops[i].links.length; j++)
-        {
-            if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-            {
-                let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-                if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
-                if (link) link.activityCounter = 0;
-            }
-        }
-    }
+// CABLES.UI.Patch.prototype.startflowVis = function ()
+// {
+//     for (let i = 0; i < this.ops.length; i++)
+//     {
+//         for (let j = 0; j < this.ops[i].links.length; j++)
+//         {
+//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
+//             {
+//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
+//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
+//                 if (link) link.activityCounter = 0;
+//             }
+//         }
+//     }
 
-    this.scene.removeOnAnimCallback(this.updateFlowVis);
-    this.scene.addOnAnimFrameCallback(this.updateFlowVis);
-};
+//     this.scene.removeOnAnimCallback(this.updateFlowVis);
+//     this.scene.addOnAnimFrameCallback(this.updateFlowVis);
+// };
