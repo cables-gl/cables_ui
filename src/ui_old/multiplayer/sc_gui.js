@@ -62,7 +62,12 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         const subPatch = gui.patchView.getCurrentSubPatch();
         this._mouseTimeout = setTimeout(() =>
         {
-            this._connection.sendUi("netCursorPos", { "x": this._lastMouseX, "y": this._lastMouseY, "subpatch": subPatch, "zoom": gui.patch().getViewBox().getZoom() });
+            this._connection.sendUi("netCursorPos", {
+                "x": this._lastMouseX,
+                "y": this._lastMouseY,
+                "subpatch": subPatch,
+                // "zoom": gui.patch().getViewBox().getZoom()
+            });
             this._mouseTimeout = null;
         }, this.netMouseCursorDelay);
     }
