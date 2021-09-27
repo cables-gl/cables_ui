@@ -234,9 +234,8 @@
 
 
 <form id="hiddenupload" class="hide">
-    <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.handleFileInputUpload(this.files)"/>
+    <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputUpload(this.files)"/>
 </form>
-
 
 <div class="tooltip" id="cbltooltip"></div>
 <div id="uiperf" ></div>
