@@ -702,7 +702,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             //     for (let j = 0; j < subs.length; j++)
             //     {
             //         const parent = findSub(subs[j].parent, struct[0]);
-            //         if (!parent)this.)_log.warn("parent not found!");
+            //         if (!parent)this._log.warn("parent not found!");
             //         else
             //         {
             //             parent.childs.push(subs[j]);
