@@ -147,7 +147,7 @@ CABLES_CMD_UI.startPresentationMode = function ()
 
 CABLES_CMD_UI.showChangelog = function (since)
 {
-    CABLES.CHANGELOG.show(since);
+    (new CABLES.UI.ChangelogToast()).show(since);
 };
 
 

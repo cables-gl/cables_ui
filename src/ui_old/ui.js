@@ -1436,7 +1436,6 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
-        self.patch().getViewBox().update();
 
         if (this.isRemoteClient)
             new CABLES.UI.NoPatchEditor();
@@ -1905,12 +1904,9 @@ CABLES.UI.GUI = function (cfg)
         gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         if (this.isRemoteClient)
-        {
             document.getElementById("undev").style.display = "none";
-        }
 
         CABLES.UI.initSplitPanes();
-
 
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
@@ -2101,7 +2097,7 @@ function startUi(cfg)
                 incrementStartup();
                 gui.showUiElements();
                 gui.setLayout();
-                gui.patch().fixTitlePositions();
+                // gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();

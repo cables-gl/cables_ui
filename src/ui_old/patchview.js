@@ -120,8 +120,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             gui.corePatch().deSerialize(proj);
             CABLES.UI.undo.clear();
             CABLES.UI.MODAL.hideLoading();
-            gui.patch().updateSubPatches();
-            gui.patch().updateBounds();
+            // gui.patch().updateSubPatches();
+            // gui.patch().updateBounds();
 
             if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
             {

@@ -94,8 +94,9 @@ CABLES.SandboxBrowser.prototype.isDevEnv = function ()
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
     const lastView = CABLES.UI.userSettings.get("changelogLastView");
+    const cl = new CABLES.UI.ChangelogToast();
 
-    CABLES.CHANGELOG.getHtml((clhtml) =>
+    cl.getHtml((clhtml) =>
     {
         if (clhtml !== null)
         {

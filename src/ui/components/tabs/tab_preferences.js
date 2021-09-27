@@ -103,7 +103,6 @@ export default class Preferences
                 if (e.target.classList.contains("numberinput")) v = parseFloat(v);
                 if (v == v)
                 {
-                    console.log(e.target.dataset.setting, v);
                     CABLES.UI.userSettings.set(e.target.dataset.setting, v);
                 }
             });

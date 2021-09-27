@@ -43,6 +43,7 @@ import MetaCode from "./components/tabs/meta_code";
 import MetaHistory from "./components/tabs/meta_history";
 import MetaKeyframes from "./components/tabs/meta_keyframes";
 import MetaDoc from "./components/tabs/meta_doc";
+import ChangelogToast from "./dialogs/changelog";
 
 
 CABLES = CABLES || {};
@@ -81,11 +82,9 @@ CABLES.UI.CommandPallete = CommandPallete;
 CABLES.UI.OpSelect = OpSelect;
 CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
-
 CABLES.UI.TabPanel = TabPanel;
 CABLES.UI.Tab = Tab;
 CABLES.UI.MainTabPanel = MainTabPanel;
-
 CABLES.UI.FindTab = FindTab;
 CABLES.UI.SpreadSheetTab = SpreadSheetTab;
 CABLES.UI.WatchArrayTab = WatchArrayTab;
@@ -100,6 +99,7 @@ CABLES.UI.MetaCode = MetaCode;
 CABLES.UI.MetaHistory = MetaHistory;
 CABLES.UI.MetaKeyframes = MetaKeyframes;
 CABLES.UI.MetaDoc = MetaDoc;
+CABLES.UI.ChangelogToast = ChangelogToast;
 
 // expose global objects
 CABLES.api = new Api();

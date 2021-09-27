@@ -49,32 +49,32 @@ CABLES.UI.Patch = function (_gui)
 
     const pastedupdateTimeout = null;
 
-    CABLES.editorSession.addListener("param",
-        function (name, data)
-        {
-            const lastTab = CABLES.UI.userSettings.get("editortab");
+    // CABLES.editorSession.addListener("param",
+    //     function (name, data)
+    //     {
+    //         const lastTab = CABLES.UI.userSettings.get("editortab");
 
-            if (data && data.opid && data.portname) CABLES.UI.openParamStringEditor(data.opid, data.portname,
-                function ()
-                {
-                    gui.mainTabs.activateTabByName(lastTab);
-                    CABLES.UI.userSettings.set("editortab", lastTab);
-                });
-        });
+    //         if (data && data.opid && data.portname) CABLES.UI.openParamStringEditor(data.opid, data.portname,
+    //             function ()
+    //             {
+    //                 gui.mainTabs.activateTabByName(lastTab);
+    //                 CABLES.UI.userSettings.set("editortab", lastTab);
+    //             });
+    //     });
 
     this.isLoading = function () { return isLoading; };
-    this.getPaper = function () { return self.paper; };
+    // this.getPaper = function () { return self.paper; };
 
-    this.isCurrentOp = function (op)
-    {
-        if (op.op) return gui.patchView.isCurrentOp(op.op); // if is uiop
-        return gui.patchView.isCurrentOp(op);
-    };
+    // this.isCurrentOp = function (op)
+    // {
+    //     if (op.op) return gui.patchView.isCurrentOp(op.op); // if is uiop
+    //     return gui.patchView.isCurrentOp(op);
+    // };
 
-    this.isCurrentOpId = function (opid)
-    {
-        return gui.opParams.isCurrentOpId(opid);
-    };
+    // this.isCurrentOpId = function (opid)
+    // {
+    //     return gui.opParams.isCurrentOpId(opid);
+    // };
 
 
     this.focus = function ()
@@ -87,309 +87,309 @@ CABLES.UI.Patch = function (_gui)
         return $("#patch").is(":focus");
     };
 
-    this.serialize = function (dataUi)
-    {
-        dataUi.viewBox = this._viewBox.serialize();
-    };
+    // this.serialize = function (dataUi)
+    // {
+    //     dataUi.viewBox = this._viewBox.serialize();
+    // };
 
 
-    this.cut = function (e)
-    {
-        gui.patchView.clipboardCutOps(e);
-    };
+    // this.cut = function (e)
+    // {
+    //     gui.patchView.clipboardCutOps(e);
+    // };
 
-    this.copy = function (e)
-    {
-        for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
-        gui.patchView.clipboardCopyOps(e);
-    };
+    // this.copy = function (e)
+    // {
+    //     for (const i in selectedOps) selectedOps[i].oprect.showCopyAnim();
+    //     gui.patchView.clipboardCopyOps(e);
+    // };
 
-    this.paste = function (e)
-    {
-        let mouseX = 0;
-        let mouseY = 0;
-        if (self.lastMouseMoveEvent)
-        {
-            mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
-            mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
-        }
+    // this.paste = function (e)
+    // {
+    //     let mouseX = 0;
+    //     let mouseY = 0;
+    //     if (self.lastMouseMoveEvent)
+    //     {
+    //         mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
+    //         mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
+    //     }
 
-        gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
-            (ops, focusSubpatchop) =>
-            {
-                isLoading = false;
+    //     gui.patchView.clipboardPaste(e, currentSubPatch, mouseX, mouseY,
+    //         (ops, focusSubpatchop) =>
+    //         {
+    //             isLoading = false;
 
-                self.setSelectedOp(null);
-                gui.patch().checkOpsInSync();
+    //             self.setSelectedOp(null);
+    //             gui.patch().checkOpsInSync();
 
-                // setTimeout(function ()
-                // {
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const uiop = self.addSelectedOpById(ops[i].id);
+    //             // setTimeout(function ()
+    //             // {
+    //             for (let i = 0; i < ops.length; i++)
+    //             {
+    //                 const uiop = self.addSelectedOpById(ops[i].id);
 
-                    if (uiop)
-                    {
-                        uiop.setSelected(false);
-                        uiop.setSelected(true);
-                    }
-                    else console.log("paste: cant find uiop", ops[i].id);
+    //                 if (uiop)
+    //                 {
+    //                     uiop.setSelected(false);
+    //                     uiop.setSelected(true);
+    //                 }
+    //                 else console.log("paste: cant find uiop", ops[i].id);
 
-                    gui.setStateUnsaved();
-                }
+    //                 gui.setStateUnsaved();
+    //             }
 
-                gui.patch().setCurrentSubPatch(currentSubPatch);
+    //             gui.patch().setCurrentSubPatch(currentSubPatch);
 
-                if (focusSubpatchop)
-                {
-                    console.log(focusSubpatchop, mouseX, mouseY);
-                    const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                    // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
+    //             if (focusSubpatchop)
+    //             {
+    //                 console.log(focusSubpatchop, mouseX, mouseY);
+    //                 const op = gui.corePatch().getOpById(focusSubpatchop.id);
+    //                 // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
 
-                    const uiop = gui.patch().getUiOp(op);
-                    // uiop.setPos(mouseX, mouseY);
+    //                 const uiop = gui.patch().getUiOp(op);
+    //                 // uiop.setPos(mouseX, mouseY);
 
-                    // gui.patch().focusOp(op.id,true);
-                    // console.log(op);
-                    // gui.patch().centerViewBoxOps();
-                }
-                // }, 100);
-            });
-    };
+    //                 // gui.patch().focusOp(op.id,true);
+    //                 // console.log(op);
+    //                 // gui.patch().centerViewBoxOps();
+    //             }
+    //             // }, 100);
+    //         });
+    // };
 
-    this.createCommentFromSelection = function ()
-    {
-        const bounds = this.getSelectionBounds();
-        const padding = 100;
+    // this.createCommentFromSelection = function ()
+    // {
+    //     const bounds = this.getSelectionBounds();
+    //     const padding = 100;
 
-        gui.corePatch().addOp("Ops.Ui.Comment", {
-            "size": [
-                (bounds.maxx - bounds.minx) + padding * 3,
-                (bounds.maxy - bounds.miny) + padding * 2
-            ],
-            "translate": {
-                "x": bounds.minx - padding,
-                "y": bounds.miny - padding
-            }
-        });
-    };
+    //     gui.corePatch().addOp("Ops.Ui.Comment", {
+    //         "size": [
+    //             (bounds.maxx - bounds.minx) + padding * 3,
+    //             (bounds.maxy - bounds.miny) + padding * 2
+    //         ],
+    //         "translate": {
+    //             "x": bounds.minx - padding,
+    //             "y": bounds.miny - padding
+    //         }
+    //     });
+    // };
 
-    this.highlightNamespace = function (ns)
-    {
-        for (let i = 0; i < self.ops.length; i++)
-            if (self.ops[i].op.objName.startsWith(ns)) self.ops[i].highlight(true);
-            else self.ops[i].highlight(false);
-    };
+    // this.highlightNamespace = function (ns)
+    // {
+    //     for (let i = 0; i < self.ops.length; i++)
+    //         if (self.ops[i].op.objName.startsWith(ns)) self.ops[i].highlight(true);
+    //         else self.ops[i].highlight(false);
+    // };
 
-    this.highlightOpNamespace = function (op)
-    {
-        const parts = op.objName.split(".");
-        parts.length -= 1;
-        const ns = parts.join(".");
-        self.highlightNamespace(ns);
-    };
+    // this.highlightOpNamespace = function (op)
+    // {
+    //     const parts = op.objName.split(".");
+    //     parts.length -= 1;
+    //     const ns = parts.join(".");
+    //     self.highlightNamespace(ns);
+    // };
 
-    this.unPatchSubPatch = function (patchId)
-    {
-        const toSelect = [];
-        for (const i in this.ops)
-        {
-            if (this.ops[i].op.uiAttribs.subPatch == patchId)
-            {
-                this.ops[i].op.uiAttribs.subPatch = currentSubPatch;
-                toSelect.push(this.ops[i]);
-            }
-        }
+    // this.unPatchSubPatch = function (patchId)
+    // {
+    //     const toSelect = [];
+    //     for (const i in this.ops)
+    //     {
+    //         if (this.ops[i].op.uiAttribs.subPatch == patchId)
+    //         {
+    //             this.ops[i].op.uiAttribs.subPatch = currentSubPatch;
+    //             toSelect.push(this.ops[i]);
+    //         }
+    //     }
 
-        this.setCurrentSubPatch(currentSubPatch);
+    //     this.setCurrentSubPatch(currentSubPatch);
 
-        for (const j in toSelect) this.addSelectedOp(toSelect[j]);
-    };
+    //     for (const j in toSelect) this.addSelectedOp(toSelect[j]);
+    // };
 
-    this._distance2dDir = function (x1, y1, x2, y2)
-    {
-        const xd = x2 - x1;
-        const yd = y2 - y1;
-        const d = Math.sqrt(xd * xd + yd * yd);
-        if (xd < 0) return 0 - d;
-        return d;
-    };
+    // this._distance2dDir = function (x1, y1, x2, y2)
+    // {
+    //     const xd = x2 - x1;
+    //     const yd = y2 - y1;
+    //     const d = Math.sqrt(xd * xd + yd * yd);
+    //     if (xd < 0) return 0 - d;
+    //     return d;
+    // };
 
-    this.cursorNavigateHor = function (dir)
-    {
-        if (selectedOps.length == 0) return;
+    // this.cursorNavigateHor = function (dir)
+    // {
+    //     if (selectedOps.length == 0) return;
 
-        let nextOp = null;
-        let nextOpDist = 999999;
+    //     let nextOp = null;
+    //     let nextOpDist = 999999;
 
-        for (let i = 0; i < this.ops.length; i++)
-        {
-            let startx = selectedOps[0].getPosX();
-            if (dir == 1) startx += selectedOps[0].getWidth();
-            const starty = selectedOps[0].getPosY();
+    //     for (let i = 0; i < this.ops.length; i++)
+    //     {
+    //         let startx = selectedOps[0].getPosX();
+    //         if (dir == 1) startx += selectedOps[0].getWidth();
+    //         const starty = selectedOps[0].getPosY();
 
-            let endx = this.ops[i].getPosX();
-            if (dir == 0) endx += this.ops[i].getWidth();
+    //         let endx = this.ops[i].getPosX();
+    //         if (dir == 0) endx += this.ops[i].getWidth();
 
-            let dist = this._distance2dDir(
-                startx,
-                starty,
-                endx,
-                this.ops[i].getPosY()
-            );
+    //         let dist = this._distance2dDir(
+    //             startx,
+    //             starty,
+    //             endx,
+    //             this.ops[i].getPosY()
+    //         );
 
-            if (selectedOps[0].getPosX() == this.ops[i].getPosX()) continue;
+    //         if (selectedOps[0].getPosX() == this.ops[i].getPosX()) continue;
 
-            if ((dir == 0 && dist < 0) || (dir == 1 && dist > 0))
-            {
-                dist = Math.abs(dist);
-                if (dist < nextOpDist)
-                {
-                    nextOpDist = dist;
-                    nextOp = this.ops[i];
-                }
-            }
-        }
+    //         if ((dir == 0 && dist < 0) || (dir == 1 && dist > 0))
+    //         {
+    //             dist = Math.abs(dist);
+    //             if (dist < nextOpDist)
+    //             {
+    //                 nextOpDist = dist;
+    //                 nextOp = this.ops[i];
+    //             }
+    //         }
+    //     }
 
-        if (nextOp)
-        {
-            this.setSelectedOp(null);
-            this.setSelectedOp(nextOp);
-            self._viewBox.centerIfNotVisible(selectedOps[0]);
-        }
-    };
+    //     if (nextOp)
+    //     {
+    //         this.setSelectedOp(null);
+    //         this.setSelectedOp(nextOp);
+    //         self._viewBox.centerIfNotVisible(selectedOps[0]);
+    //     }
+    // };
 
-    this.zoomStep = function (step)
-    {
-        this._viewBox.zoomStep(step);
-    };
+    // this.zoomStep = function (step)
+    // {
+    //     this._viewBox.zoomStep(step);
+    // };
 
-    this.cursorNavigate = function (dir)
-    {
-        if (selectedOps.length == 0) return;
+    // this.cursorNavigate = function (dir)
+    // {
+    //     if (selectedOps.length == 0) return;
 
-        let ports = selectedOps[0].op.portsIn;
-        if (dir == 0)ports = selectedOps[0].op.portsOut;
+    //     let ports = selectedOps[0].op.portsIn;
+    //     if (dir == 0)ports = selectedOps[0].op.portsOut;
 
-        for (let i = 0; i < ports.length; i++)
-        {
-            if (ports[i].isLinked())
-            {
-                const otherPort = ports[i].links[0].getOtherPort(ports[i]);
-                this.setSelectedOpById(otherPort.parent.id);
-                self._viewBox.centerIfNotVisible(selectedOps[0]);
+    //     for (let i = 0; i < ports.length; i++)
+    //     {
+    //         if (ports[i].isLinked())
+    //         {
+    //             const otherPort = ports[i].links[0].getOtherPort(ports[i]);
+    //             this.setSelectedOpById(otherPort.parent.id);
+    //             self._viewBox.centerIfNotVisible(selectedOps[0]);
 
-                break;
-            }
-        }
-    };
+    //             break;
+    //         }
+    //     }
+    // };
 
-    $("#patch").hover(
-        function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
-        },
-        function ()
-        {
-            CABLES.UI.hideInfo();
-        });
+    // $("#patch").hover(
+    //     function (e)
+    //     {
+    //         CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
+    //     },
+    //     function ()
+    //     {
+    //         CABLES.UI.hideInfo();
+    //     });
 
 
-    ele.byId("patch").addEventListener("keyup", (e) =>
-    {
-        switch (e.which)
-        {
-        case 32:
-            spacePressed = false;
-            gui.setCursor();
-            break;
-        }
-    });
+    // ele.byId("patch").addEventListener("keyup", (e) =>
+    // {
+    //     switch (e.which)
+    //     {
+    //     case 32:
+    //         spacePressed = false;
+    //         gui.setCursor();
+    //         break;
+    //     }
+    // });
 
-    gui.keys.key("c", "Center/Zoom to all or selected ops", "down", "patch", {}, (e) =>
-    {
-        if (self.getSelectedOps().length > 0) self.centerViewBoxOps();
-        else self.toggleCenterZoom();
-    });
+    // gui.keys.key("c", "Center/Zoom to all or selected ops", "down", "patch", {}, (e) =>
+    // {
+    //     if (self.getSelectedOps().length > 0) self.centerViewBoxOps();
+    //     else self.toggleCenterZoom();
+    // });
 
-    gui.keys.key("x", "Unlink selected ops", "down", "patch", {}, (e) => { gui.patchView.unlinkSelectedOps(); });
-    gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
-    gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
+    // gui.keys.key("x", "Unlink selected ops", "down", "patch", {}, (e) => { gui.patchView.unlinkSelectedOps(); });
+    // gui.keys.key("f", "Toggle data flow visualization", "down", "patch", {}, (e) => { console.log(this); this.toggleFlowVis(); });
+    // gui.keys.key("e", "Edit op code", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.editOp(); });
 
-    gui.keys.key("a", "Align selected ops vertical or horizontal", "down", "patch", {}, (e) => { this.alignSelectedOps(); });
-    gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
-    gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("COMPRESS!"); this.compressSelectedOps(); });
+    // gui.keys.key("a", "Align selected ops vertical or horizontal", "down", "patch", {}, (e) => { this.alignSelectedOps(); });
+    // gui.keys.key("a", "Select all ops in current subpatch", "down", "patch", { "cmdCtrl": true }, (e) => { this.selectAllOps(); });
+    // gui.keys.key("a", "Compress selected ops vertically", "down", "patch", { "shiftKey": true }, (e) => { console.log("COMPRESS!"); this.compressSelectedOps(); });
 
-    gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { spacePressed = true; gui.setCursor("grab"); });
+    // gui.keys.key(" ", "Drag left mouse button to pan patch", "down", "patch", {}, (e) => { spacePressed = true; gui.setCursor("grab"); });
 
-    gui.keys.key("/", "Go to root subpatch", "down", "patch", {}, (e) => { this.setCurrentSubPatch(0); });
+    // gui.keys.key("/", "Go to root subpatch", "down", "patch", {}, (e) => { this.setCurrentSubPatch(0); });
 
-    gui.keys.key("t", "Change current op title", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
+    // gui.keys.key("t", "Change current op title", "down", "patch", {}, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
-    gui.keys.key("PageUp", "Snap op below previous op", "down", "patch", {}, (e) => { this.snapToNextOp(-1); });
-    gui.keys.key("PageDown", "Snap op above next op", "down", "patch", {}, (e) => { this.snapToNextOp(1); });
+    // gui.keys.key("PageUp", "Snap op below previous op", "down", "patch", {}, (e) => { this.snapToNextOp(-1); });
+    // gui.keys.key("PageDown", "Snap op above next op", "down", "patch", {}, (e) => { this.snapToNextOp(1); });
 
-    gui.keys.key("d", "Temporary unlink op", "down", "patch", { "shiftKey": true }, (e) => { this.tempUnlinkOp(); });
-    gui.keys.key("d", "Disable op and all childs", "down", "patch", {}, (e) => { self.disableEnableOps(); });
+    // gui.keys.key("d", "Temporary unlink op", "down", "patch", { "shiftKey": true }, (e) => { this.tempUnlinkOp(); });
+    // gui.keys.key("d", "Disable op and all childs", "down", "patch", {}, (e) => { self.disableEnableOps(); });
 
-    gui.keys.key("j", "Navigate op history back", "down", "patch", {}, (e) => { gui.opHistory.back(); });
-    gui.keys.key("k", "Navigate op history forward", "down", "patch", {}, (e) => { gui.opHistory.forward(); });
+    // gui.keys.key("j", "Navigate op history back", "down", "patch", {}, (e) => { gui.opHistory.back(); });
+    // gui.keys.key("k", "Navigate op history forward", "down", "patch", {}, (e) => { gui.opHistory.forward(); });
 
-    gui.keys.key("j", "Navigate op history back", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.back(); });
-    gui.keys.key("k", "Navigate op history forward", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
+    // gui.keys.key("j", "Navigate op history back", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.back(); });
+    // gui.keys.key("k", "Navigate op history forward", "down", "patch", { "shiftKey": true }, (e) => { gui.opHistory.forward(); });
 
-    gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", "patch", {}, (e) =>
-    {
-        self.deleteSelectedOps();
-        if (e.stopPropagation) e.stopPropagation();
-        if (e.preventDefault) e.preventDefault();
-        self.showProjectParams();
-    });
+    // gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", "patch", {}, (e) =>
+    // {
+    //     self.deleteSelectedOps();
+    //     if (e.stopPropagation) e.stopPropagation();
+    //     if (e.preventDefault) e.preventDefault();
+    //     self.showProjectParams();
+    // });
 
-    gui.keys.key(" ", "Play/Pause timeline", "up", "patch", {}, (e) =>
-    {
-        console.log("space!!!", gui.spaceBarStart);
-        const timeused = Date.now() - gui.spaceBarStart;
-        if (timeused < 500) gui.timeLine().togglePlay();
-        gui.spaceBarStart = 0;
-    });
+    // gui.keys.key(" ", "Play/Pause timeline", "up", "patch", {}, (e) =>
+    // {
+    //     console.log("space!!!", gui.spaceBarStart);
+    //     const timeused = Date.now() - gui.spaceBarStart;
+    //     if (timeused < 500) gui.timeLine().togglePlay();
+    //     gui.spaceBarStart = 0;
+    // });
 
-    gui.keys.key("-", "Zoom out", "down", "patch", {}, (e) => { this._viewBox.zoomStep(1); });
-    gui.keys.key("=", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
-    gui.keys.key("+", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
+    // gui.keys.key("-", "Zoom out", "down", "patch", {}, (e) => { this._viewBox.zoomStep(1); });
+    // gui.keys.key("=", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
+    // gui.keys.key("+", "Zoom in", "down", "patch", {}, (e) => { this._viewBox.zoomStep(-1); });
 
-    $("#patch").keydown(function (e)
-    {
-        switch (e.which)
-        {
-        case 38: // up
-            this.cursorNavigate(1);
-            break;
-        case 40: // down
-            this.cursorNavigate(0);
-            break;
-        case 37: // left
-            this.cursorNavigateHor(0);
-            break;
-        case 39: // right
-            this.cursorNavigateHor(1);
-            break;
-        case 27:
-            gui.setCursor();
-            break;
-        case 71: // g show graphs
-            self.showSelectedOpsGraphs();
-            break;
-        default:
-            // console.log('key ',e.which,e.key);
-            break;
-        }
-    }.bind(this));
+    // $("#patch").keydown(function (e)
+    // {
+    //     switch (e.which)
+    //     {
+    //     case 38: // up
+    //         this.cursorNavigate(1);
+    //         break;
+    //     case 40: // down
+    //         this.cursorNavigate(0);
+    //         break;
+    //     case 37: // left
+    //         this.cursorNavigateHor(0);
+    //         break;
+    //     case 39: // right
+    //         this.cursorNavigateHor(1);
+    //         break;
+    //     case 27:
+    //         gui.setCursor();
+    //         break;
+    //     case 71: // g show graphs
+    //         self.showSelectedOpsGraphs();
+    //         break;
+    //     default:
+    //         // console.log('key ',e.which,e.key);
+    //         break;
+    //     }
+    // }.bind(this));
 
-    this.getSubPatchViewBoxes = function ()
-    {
-        return subPatchViewBoxes;
-    };
+    // this.getSubPatchViewBoxes = function ()
+    // {
+    //     return subPatchViewBoxes;
+    // };
 
     this.saveCurrentProjectAs = function (cb, _id, _name)
     {
@@ -474,233 +474,6 @@ CABLES.UI.Patch = function (_gui)
         });
     };
 
-    this.fixTitlePositions = function ()
-    {
-        for (const i in this.ops) this.ops[i].fixTitle();
-    };
-
-    this.center = function (x, y)
-    {
-        if (x === undefined) this.centerViewBoxOps();
-        else this.getViewBox().center(x, y);
-    };
-
-    this.centerViewBoxOps = function ()
-    {
-        if (selectedOps.length > 0) this._viewBox.centerSelectedOps();
-        else this._viewBox.centerAllOps();
-    };
-
-    this.centerViewBoxOp = function (opid)
-    {
-        this._viewBox.center(
-            this.scene.getOpById(opid).uiAttribs.translate.x,
-            this.scene.getOpById(opid).uiAttribs.translate.y);
-    };
-
-    this._setBoundsXYWH = function (bounds)
-    {
-        bounds.x = bounds.minx - 100;
-        bounds.y = bounds.miny - 100;
-        bounds.w = Math.abs(bounds.maxx - bounds.minx);
-        bounds.h = Math.abs(bounds.maxy - bounds.miny);
-
-        if (bounds.h > bounds.w) bounds.x -= Math.abs(bounds.maxx - bounds.minx) / 2;
-
-        bounds.w += 200;
-        bounds.h += 200;
-    };
-
-    this.getSelectionBounds = function ()
-    {
-        const bounds = gui.patchView.getSelectionBounds();
-        this._setBoundsXYWH(bounds);
-        return bounds;
-    };
-
-    this.getSubPatchBounds = function (subPatch)
-    {
-        const perf = CABLES.UI.uiProfiler.start("patch.getSubPatchBounds");
-
-        if (subPatch === undefined) subPatch = currentSubPatch;
-
-        const bounds = {
-            "minx": 9999999,
-            "maxx": -9999999,
-            "miny": 9999999,
-            "maxy": -9999999,
-        };
-
-        for (let j = 0; j < self.ops.length; j++)
-            if (self.ops[j].op.objName.indexOf("Ops.Ui.") == -1)
-            {
-                if (self.ops[j].op.uiAttribs && self.ops[j].op.uiAttribs.translate)
-                    if (!self.ops[j].op.uiAttribs.subPatch || self.ops[j].op.uiAttribs.subPatch == subPatch)
-                    {
-                        bounds.minx = Math.min(bounds.minx, self.ops[j].op.uiAttribs.translate.x);
-                        bounds.maxx = Math.max(bounds.maxx, self.ops[j].op.uiAttribs.translate.x);
-                        bounds.miny = Math.min(bounds.miny, self.ops[j].op.uiAttribs.translate.y);
-                        bounds.maxy = Math.max(bounds.maxy, self.ops[j].op.uiAttribs.translate.y);
-                    }
-            }
-
-        this._setBoundsXYWH(bounds);
-
-        perf.finish();
-
-        return bounds;
-    };
-
-    this.updateViewBox = function ()
-    {
-        if (!this.disabled) this._viewBox.update();
-    };
-
-    function rubberBandHide()
-    {
-        mouseRubberBandStartPos = null;
-        mouseRubberBandPos = null;
-        if (rubberBandRect) rubberBandRect.hide();
-    }
-
-    function setStatusSelectedOps()
-    {
-        gui.patchView.showSelectedOpsPanel(selectedOps);
-    }
-
-    this.setStatusSelectedOps = setStatusSelectedOps;
-
-    this.selectAllOpsSubPatch = function (subPatch)
-    {
-        gui.patchView.selectAllOpsSubPatch(subPatch);
-        // for (const i in self.ops)
-        // {
-        //     if (self.ops[i].getSubPatch() == subPatch)
-        //     {
-        //         self.addSelectedOp(self.ops[i]);
-        //         self.ops[i].setSelected(true);
-        //     }
-        // }
-        // setStatusSelectedOps();
-    };
-
-    this.selectAllOps = function ()
-    {
-        this.selectAllOpsSubPatch(currentSubPatch);
-    };
-
-    function rubberBandMove(e)
-    {
-        gui.pauseProfiling();
-
-        if (CABLES.SPLITPANE.bound) return;
-
-        if (e.altKey || e.metaKey)
-        {
-            // zoom in for tablets ?
-            let delta = e.originalEvent.movementY;
-
-            if (delta == 0) return;
-            if (delta < 0) delta = 0.95;
-            else delta = 1.05;
-
-            self._viewBox.zoom(delta);
-        }
-
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed && !e.altKey && !e.metaKey)
-        {
-            gui.setTransformGizmo(null);
-
-            if (!mouseRubberBandStartPos && !e.shiftKey) gui.patch().setSelectedOp(null);
-            if (!mouseRubberBandStartPos) mouseRubberBandStartPos = gui.patch().getCanvasCoordsMouse(e); // e.offsetX,e.offsetY);
-
-            mouseRubberBandPos = gui.patch().getCanvasCoordsMouse(e); // e.offsetX,e.offsetY);
-
-            if (!rubberBandRect)
-            {
-                rubberBandRect = self.paper.rect(0, 0, 10, 10).attr({});
-                rubberBandRect.node.classList.add("rubberband");
-            }
-            rubberBandRect.show();
-            const start = {
-                "x": mouseRubberBandStartPos.x,
-                "y": mouseRubberBandStartPos.y
-            };
-            const end = {
-                "x": mouseRubberBandPos.x,
-                "y": mouseRubberBandPos.y
-            };
-
-            if (end.x - start.x < 0)
-            {
-                const tempx = start.x;
-                start.x = end.x;
-                end.x = tempx;
-            }
-
-            if (end.y - start.y < 0)
-            {
-                const tempy = start.y;
-                start.y = end.y;
-                end.y = tempy;
-            }
-
-            rubberBandRect.attr({
-                "x": start.x,
-                "y": start.y,
-                "width": end.x - start.x,
-                "height": end.y - start.y
-            });
-
-            rubberBandRect.toFront();
-
-            if (timeoutRubberBand == -1)
-                timeoutRubberBand = setTimeout(function ()
-                {
-                    for (const i in self.ops)
-                    {
-                        if (!self.ops[i].isHidden())
-                        {
-                            const rect = self.ops[i].oprect.getRect();
-                            if (rect && rect.matrix)
-                            {
-                                const opX = rect.matrix.e;
-                                const opY = rect.matrix.f;
-                                const opW = rect.attr("width");
-                                const opH = rect.attr("height");
-
-                                if (opX + opW >= start.x && // glop. right edge past r2 left
-                                    opX <= end.x && // glop. left edge past r2 right
-                                    opY + opH >= start.y && // glop. top edge past r2 bottom
-                                    opY <= end.y) // r1 bottom edge past r2 top
-                                {
-                                    self.addSelectedOp(self.ops[i]);
-                                    self.ops[i].setSelected(true);
-                                }
-                                else
-                                {
-                                    self.removeSelectedOp(self.ops[i]);
-                                    self.ops[i].setSelected(false);
-                                }
-                            }
-                        }
-                    }
-
-                    for (let i = 0; i < mouseRubberBandSelectedBefore.length; i++)
-                    {
-                        const o = mouseRubberBandSelectedBefore[i];
-                        self.addSelectedOp(o);
-                        o.setSelected(true);
-                    }
-
-                    if (selectedOps.length !== 0) setStatusSelectedOps();
-                    timeoutRubberBand = -1;
-                }, 10);
-        }
-    }
-
-    // ---------------------------------------------
-
     this.loadingError = false;
 
     this.setProject = function (proj)
@@ -712,13 +485,13 @@ CABLES.UI.Patch = function (_gui)
             if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
         }
 
-        self.updateViewBox();
+        // self.updateViewBox();
         currentSubPatch = 0;
         gui.setProjectName(proj.name);
         self.setCurrentProject(proj);
 
         gui.corePatch().clear();
-        gui.patch().updateBounds();
+        // gui.patch().updateBounds();
     };
 
     this.show = function (_scene)
@@ -729,7 +502,7 @@ CABLES.UI.Patch = function (_gui)
         $("#meta").append();
 
         this.paper = Raphael("patch", 0, 0);
-        this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
+        // this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
         this._elPatchSvg = this._elPatchSvg || $("#patch svg");
@@ -741,7 +514,7 @@ CABLES.UI.Patch = function (_gui)
         this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
         document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
 
-        this._viewBox.bindWheel(this._elPatchSvg);
+        // this._viewBox.bindWheel(this._elPatchSvg);
 
         this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
             "fill": CABLES.UI.uiConfig.colorBackground,
@@ -780,7 +553,7 @@ CABLES.UI.Patch = function (_gui)
 
         this.toggleCenterZoom = function (e)
         {
-            this._viewBox.centerAllOps();
+            // this._viewBox.centerAllOps();
         };
 
         this.background.node.ondblclick = function (e)
@@ -850,56 +623,6 @@ CABLES.UI.Patch = function (_gui)
             this.lastMouseMoveEvent = null;
         });
 
-        this._elPatchSvg.bind("touchmove", (e) =>
-        {
-            e = CABLES.mouseEvent(e);
-
-            if (this.lastMouseMoveEvent && selectedOps.length == 0)
-            {
-                const lastMouseCoord = gui.patch().getCanvasCoordsMouse(this.lastMouseMoveEvent);
-                this._viewBox.setXY(
-                    this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
-                    this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
-                self.emitEvent("patch_pan");
-            }
-            this.lastMouseMoveEvent = e;
-            e.preventDefault();
-        });
-
-
-        this._elPatchSvg.bind("mousemove", function (e)
-        {
-            e = CABLES.mouseEvent(e);
-
-            if (CABLES.UI.MOUSEOVERPORT) return;
-
-            if ((CABLES.UI.MOUSEDRAGGINGPORT && !spacePressed) || (mouseRubberBandStartPos && e.buttons != CABLES.UI.MOUSE_BUTTON_LEFT))
-            {
-                rubberBandHide();
-                self.lastMouseMoveEvent = e;
-                return;
-            }
-
-            // panning
-            if (self.lastMouseMoveEvent &&
-                (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT || (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && spacePressed)))
-            { // && !CABLES.UI.MOUSEDRAGGINGPORT
-                gui.pauseProfiling();
-
-                gui.setCursor("grab");
-                this._elPatch.focus();
-                const lastMouseCoord = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent);
-
-                this._viewBox.setXY(
-                    this._viewBox.getX() + lastMouseCoord.x - gui.patch().getCanvasCoordsMouse(e).x,
-                    this._viewBox.getY() + lastMouseCoord.y - gui.patch().getCanvasCoordsMouse(e).y);
-
-                self.emitEvent("patch_pan");
-                gui.patchView.emitEvent("viewBoxChange");
-            }
-
-            self.lastMouseMoveEvent = e;
-        }.bind(this));
 
         this.timeLine = new CABLES.TL.UI.TimeLineUI();
 
@@ -1077,7 +800,7 @@ CABLES.UI.Patch = function (_gui)
                 gui.patch().setSelectedOp(null);
                 gui.patch().setSelectedOp(uiOp);
                 gui.opParams.show(op);
-                gui.patch().updateBounds();
+                // gui.patch().updateBounds();
                 gui.patch().getViewBox().update();
                 uiOp.oprect.showFocus();
             }, 30);
@@ -1094,7 +817,7 @@ CABLES.UI.Patch = function (_gui)
             setStatusSelectedOps();
             self.updateSubPatches();
             uiOp.oprect.showFocus();
-            gui.patch().updateBounds();
+            // gui.patch().updateBounds();
 
             // setTimeout(function ()
             // {
@@ -1400,20 +1123,20 @@ CABLES.UI.Patch = function (_gui)
         for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
 
         currentSubPatch = which;
-        self.updateSubPatches();
+        // self.updateSubPatches();
 
-        if (subPatchViewBoxes[which])
-        {
-            // viewBox = subPatchViewBoxes[which];
-            this._viewBox.deSerialize(subPatchViewBoxes[which]);
-            this.updateViewBox();
-        }
+        // if (subPatchViewBoxes[which])
+        // {
+        //     // viewBox = subPatchViewBoxes[which];
+        //     this._viewBox.deSerialize(subPatchViewBoxes[which]);
+        //     this.updateViewBox();
+        // }
 
         this._elPatch.focus();
 
         gui.setWorking(false, "patch");
 
-        this.currentPatchBounds = this.getSubPatchBounds();
+        // this.currentPatchBounds = this.getSubPatchBounds();
         // }.bind(this), 10);
 
         if (next) next();
@@ -2103,20 +1826,20 @@ CABLES.UI.Patch = function (_gui)
     };
 };
 
-CABLES.UI.Patch.prototype.getViewBox = function ()
-{
-    return this._viewBox;
-};
+// CABLES.UI.Patch.prototype.getViewBox = function ()
+// {
+//     return this._viewBox;
+// };
 
-CABLES.UI.Patch.prototype.updateBounds = function ()
-{
-    this.currentPatchBounds = this.getSubPatchBounds();
-};
+// CABLES.UI.Patch.prototype.updateBounds = function ()
+// {
+//     // this.currentPatchBounds = this.getSubPatchBounds();
+// };
 
-CABLES.UI.Patch.prototype.getNumOps = function ()
-{
-    return this.ops.length;
-};
+// CABLES.UI.Patch.prototype.getNumOps = function ()
+// {
+//     return this.ops.length;
+// };
 
 
 // ---------------------
