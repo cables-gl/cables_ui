@@ -1,7 +1,6 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
+import ele from "../../utils/ele";
 
-CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
+export default class SpreadSheetTab extends CABLES.EventTarget
 {
     constructor(tabs, port, data, options)
     {
@@ -58,7 +57,6 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
 
         this._html();
     }
-
 
     getColName(_c)
     {
@@ -283,4 +281,4 @@ CABLES.UI.SpreadSheetTab = class extends CABLES.EventTarget
     show()
     {
     }
-};
+}

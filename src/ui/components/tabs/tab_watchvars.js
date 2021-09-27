@@ -1,8 +1,6 @@
+import ele from "../../utils/ele";
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-
-CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
+export default class WatchVarTab extends CABLES.EventTarget
 {
     constructor(tabs, patch)
     {
@@ -106,13 +104,13 @@ CABLES.UI.WatchVarTab = class extends CABLES.EventTarget
     _updateVar(v, vrbl)
     {
         if (!vrbl) return console.log("[varwatcher] no variable");
-        const ele = document.getElementById("var" + vrbl._name);
+        const el = document.getElementById("var" + vrbl._name);
 
-        if (!ele) return console.log("[varwatcher] var element not found!");
-        ele.innerHTML = v;
+        if (!el) return console.log("[varwatcher] var element not found!");
+        el.innerHTML = v;
     }
 
     show()
     {
     }
-};
+}

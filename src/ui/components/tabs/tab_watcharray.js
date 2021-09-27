@@ -1,8 +1,6 @@
+import ele from "../../utils/ele";
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-
-CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
+export default class WatchArrayTab extends CABLES.EventTarget
 {
     constructor(tabs, op, port, options)
     {
@@ -312,4 +310,4 @@ CABLES.UI.WatchArrayTab = class extends CABLES.EventTarget
     show()
     {
     }
-};
+}
