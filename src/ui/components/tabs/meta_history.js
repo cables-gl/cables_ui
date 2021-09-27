@@ -1,7 +1,5 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.MetaHistory = class
+export default class MetaHistory
 {
     constructor(tabs)
     {
@@ -18,7 +16,7 @@ CABLES.UI.MetaHistory = class
     {
         if (!this._tab.isVisible()) return;
 
-        this.html = "<h3>History</h3>";
+        this.html = "<h3>Undo History</h3>";
 
         this.html += "<span onclick=\"CABLES.UI.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
         this.html += "<span onclick=\"CABLES.UI.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";
@@ -76,4 +74,4 @@ CABLES.UI.MetaHistory = class
     {
         this.update();
     }
-};
+}

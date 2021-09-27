@@ -40,6 +40,9 @@ import GpuProfiler from "./components/tabs/tab_gpuprofiler";
 import FileUploader from "./dialogs/upload";
 import ItemManager from "./components/tabs/tab_item_manager";
 import MetaCode from "./components/tabs/meta_code";
+import MetaHistory from "./components/tabs/meta_history";
+import MetaKeyframes from "./components/tabs/meta_keyframes";
+import MetaDoc from "./components/tabs/meta_doc";
 
 
 CABLES = CABLES || {};
@@ -94,6 +97,9 @@ CABLES.UI.GlDebugTab = GlDebugTab;
 CABLES.UI.GpuProfiler = GpuProfiler;
 CABLES.UI.ItemManager = ItemManager;
 CABLES.UI.MetaCode = MetaCode;
+CABLES.UI.MetaHistory = MetaHistory;
+CABLES.UI.MetaKeyframes = MetaKeyframes;
+CABLES.UI.MetaDoc = MetaDoc;
 
 // expose global objects
 CABLES.api = new Api();
