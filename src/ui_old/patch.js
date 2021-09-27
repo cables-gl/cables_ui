@@ -1573,22 +1573,22 @@ CABLES.UI.Patch = function (_gui)
     //     return true;
     // };
 
-    // this.showProjectParams = function ()
-    // {
-    //     gui.opParams.dispose();
-    //     if (gui.fileManager)gui.fileManager.setFilePort(null);
-    //     const perf = CABLES.UI.uiProfiler.start("showProjectParams");
+    this.showProjectParams = function ()
+    {
+        // gui.opParams.dispose();
+        // if (gui.fileManager)gui.fileManager.setFilePort(null);
+        // const perf = CABLES.UI.uiProfiler.start("showProjectParams");
 
-    //     const s = {};
-    //     if (currentOp && currentOp)currentOp = null;
+        // const s = {};
+        // if (currentOp && currentOp)currentOp = null;
 
-    //     s.name = currentProject.name;
-    //     s.settings = gui.corePatch().settings;
+        // s.name = currentProject.name;
+        // s.settings = gui.corePatch().settings;
 
-    //     gui.patchView.showDefaultPanel();
+        gui.patchView.showDefaultPanel();
 
-    //     perf.finish();
-    // };
+        // perf.finish();
+    };
 
     // this.updateCurrentOpParams = function ()
     // {

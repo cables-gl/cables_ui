@@ -6,7 +6,6 @@ import CanvasLens from "./components/canvaslens";
 import HtmlInspector from "./components/htmlinspect";
 import IconBar from "./elements/iconbar";
 import Keypresenter from "./components/keypresenter";
-import analyzePatch from "./components/analyze_patch";
 import gluiconfig from "./glpatch/gluiconfig";
 import OpTreeList from "./components/opselect_treelist";
 import UiProfiler from "./components/uiperformance";
@@ -109,7 +108,6 @@ CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
 
 // expose global functions
-CABLES.UI.analyzePatch = analyzePatch;
 CABLES.UI.initSplitPanes = initSplitPanes;
 
 CABLES.CMD = CMD;

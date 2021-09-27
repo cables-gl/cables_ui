@@ -242,11 +242,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
         };
 
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
-        // data.ui.viewBox = gui.patch()._viewBox.serialize();
-
 
         gui.patchView.serialize(data.ui);
-        // data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
 
         data.ui.renderer = {};
         data.ui.renderer.w = gui.rendererWidth;

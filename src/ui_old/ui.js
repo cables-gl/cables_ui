@@ -1248,9 +1248,9 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(); });
 
 
-        $(".nav_timeline").bind("click", function (event)
+        ele.byId("nav_timeline").addEventListener("click", (event) =>
         {
-            CABLES.CMD.UI.toggleTimeline();
+            CABLES.CMD.TIMELINE.toggleTimeline();
         });
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(); });
@@ -1261,7 +1261,7 @@ CABLES.UI.GUI = function (cfg)
             const eleCanvas = ele.byId("glcanvas");
             if (eleCanvas)eleCanvas.blur();
             this.setLayout();
-            this.patch().getViewBox().update();
+            // this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
         }, false);
 
@@ -2106,11 +2106,6 @@ function startUi(cfg)
                     if (key == "theme-bright")
                     {
                         gui.updateTheme();
-                    }
-
-                    if (key == "straightLines")
-                    {
-                        gui.patch().updateSubPatches();
                     }
 
                     if (key == "hideSizeBar")

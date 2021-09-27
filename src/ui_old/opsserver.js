@@ -212,13 +212,10 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
 
                     for (let i = 0; i < newOps.length; i++)
                     {
-                        // gui.patchView.testCollision(newOps[i])
-                        if (gui.patch()) gui.patch().opCollisionTest(gui.patch().getUiOp(newOps[i]));
                         delete newOps[i].uiAttribs.uierrors;
                     }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
-                    if (gui.patch()) gui.patch().checkCollisionsEdge();
                     if (next)next();
                 }.bind(this),
             );

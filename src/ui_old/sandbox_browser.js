@@ -273,8 +273,6 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
             gui.bookmarks.set(proj.ui.bookmarks);
             document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
         }
-
-        // gui.patch().showProjectParams();
     });
 
     loadjs(userOpsUrls, lid);

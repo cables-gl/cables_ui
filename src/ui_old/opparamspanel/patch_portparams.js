@@ -373,7 +373,8 @@ CABLES.UI.initPortInputListener = function (op, index)
                             {
                                 const uop = gui.corePatch().getOpById(opid);
                                 const p = uop.getPort(portname);
-                                gui.patch().showProjectParams();
+                                gui.patchView.showDefaultPanel();
+
                                 p.set(oldv);
                                 gui.opParams.show(uop);
                                 gui.patchView.focusOp(null);
@@ -388,7 +389,8 @@ CABLES.UI.initPortInputListener = function (op, index)
                             {
                                 const rop = gui.corePatch().getOpById(opid);
                                 const p = rop.getPort(portname);
-                                gui.patch().showProjectParams();
+                                gui.patchView.showDefaultPanel();
+
                                 p.set(newv);
                                 gui.opParams.show(rop);
                                 gui.patchView.focusOp(null);

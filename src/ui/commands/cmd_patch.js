@@ -71,10 +71,10 @@ CABLES_CMD_PATCH.clear = function ()
     gui.corePatch().clear();
 };
 
-CABLES_CMD_PATCH.selectChilds = function ()
-{
-    gui.patch().selectChilds();
-};
+// CABLES_CMD_PATCH.selectChilds = function ()
+// {
+//     gui.patch().selectChilds();
+// };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
 {
@@ -116,7 +116,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
-    jQuery.event.props.push("dataTransfer");
+    // jQuery.event.props.push("dataTransfer");
 
     if (!fileElem)
     {
@@ -170,10 +170,10 @@ CABLES_CMD_PATCH.patchWebsite = function ()
     window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project()._id);
 };
 
-CABLES_CMD_PATCH.analyzePatch = function ()
-{
-    CABLES.UI.AnalyzePatch();
-};
+// CABLES_CMD_PATCH.analyzePatch = function ()
+// {
+//     CABLES.UI.analyzePatch();
+// };
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
@@ -743,11 +743,11 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.stats
     },
-    {
-        "cmd": "analyze patch",
-        "category": "patch",
-        "func": CABLES_CMD_PATCH.analyzePatch
-    },
+    // {
+    //     "cmd": "analyze patch",
+    //     "category": "patch",
+    //     "func": CABLES_CMD_PATCH.analyzePatch
+    // },
     {
         "cmd": "create number variable",
         "category": "patch",
