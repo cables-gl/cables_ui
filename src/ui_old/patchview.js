@@ -7,6 +7,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         super();
         this._p = corepatch;
+        this._log = new CABLES.UI.Logger("patchview");
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
@@ -254,9 +255,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             if (!hadCallback)
             {
-                console.error("HAD NO loadOpLibs CALLBACK!!!!");
+                this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
             }
-            // else console.log("had loadoplibs callback...");
+
         }, 500);
         gui.serverOps.loadOpLibs(opname, () =>
         {
@@ -267,7 +268,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
 
-            console.log("adding op. uiAttribs: ", uiAttribs);
             const op = this._p.addOp(opname, uiAttribs);
 
             if (!op) return;
@@ -287,7 +287,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 const foundPort = op.findFittingPort(options.linkNewOpToPort);
                 if (foundPort)
                 {
-                    // console.log(op.objName,'op.objName');
                     if (op.objName == CABLES.UI.DEFAULTOPNAMES.number)
                     {
                         const oldValue = options.linkNewOpToPort.get();
@@ -304,8 +303,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
             if (options.linkNewLink)
             {
-                console.log("new op into link!");
-
                 let op1 = null;
                 let op2 = null;
                 let port1 = null;
@@ -356,8 +353,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
 
-            console.log("new op!!");
-
             if (options.onOpAdd) options.onOpAdd(op);
         });
     }
@@ -381,7 +376,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     "subPatch": this.getCurrentSubPatch()
                 });
 
-                console.log(newOp.uiAttribs.translate);
                 this.testCollision(newOp);
             } });
     }
@@ -576,15 +570,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
 
         CABLES.UI.undo.endGroup(undoGroup, "Delete selected ops");
-
-        console.log("deleted ops ", ids.length);
     }
-
 
     createSubPatchFromSelection()
     {
         const selectedOps = this.getSelectedOps();
-        console.log("getSelectionBounds", this.getSelectionBounds());
         const bounds = this.getSelectionBounds();
         const trans = {
             "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
@@ -646,7 +636,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                             const otherOpOut = otherPortOut.parent;
                             if (otherOpOut.uiAttribs.subPatch != patchId)
                             {
-                                console.log("found outside connection!! ", otherPortOut.name);
                                 theOp.portsOut[j].links[k].remove();
                                 this._p.link(
                                     otherPortOut.parent,
@@ -714,7 +703,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             //     for (let j = 0; j < subs.length; j++)
             //     {
             //         const parent = findSub(subs[j].parent, struct[0]);
-            //         if (!parent)console.warn("parent not found!");
+            //         if (!parent)this.)_log.warn("parent not found!");
             //         else
             //         {
             //             parent.childs.push(subs[j]);
@@ -722,8 +711,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             //     }
             // }
         }
-
-        console.log(subs);
     }
 
     getSubpatchPathArray(subId, arr)
@@ -882,10 +869,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             if (selectedOps[i].objName == CABLES.UI.OPNAME_SUBPATCH)
             {
-                console.log("selecting subpatch", selectedOps[i].patchId.get());
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
-                // if (this._patchRenderer.selectAllOpsSubPatch) this.selectAllOpsSubPatch(selectedOps[i].patchId.get());
-                // else console.log("this._patchRenderer.selectAllOpsSubPatch missin!");
             }
         }
 
@@ -893,10 +877,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            console.log(selectedOps[i].objName);
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
-            // selectedOps[i].oprect.showCopyAnim();
         }
 
         // remove links that are not fully copied...
@@ -913,7 +895,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                         {
                             if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
                             {
-                                // console.log(ops[i].portsIn[j].links[k]);
                                 const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
                                 ops[i].portsIn[j].links[k] = null;
                                 if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
@@ -941,7 +922,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
-            console.error("clipboard not type text");
+            this._log.error("clipboard not type text");
             CABLES.UI.notifyError("Paste failed");
             return;
         }
@@ -959,8 +940,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         catch (exp)
         {
             CABLES.UI.notifyError("Paste failed");
-            console.log(str);
-            console.log(exp);
+            console.error(str);
+            console.error(exp);
         }
 
         const undoGroup = CABLES.UI.undo.startGroup();
@@ -1022,8 +1003,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                             const oldSubPatchId = json.ops[i].portsIn[k].value;
                             const newSubPatchId = json.ops[i].portsIn[k].value = CABLES.generateUUID();
 
-                            console.log("oldSubPatchId", oldSubPatchId);
-                            console.log("newSubPatchId", newSubPatchId);
                             subpatchIds.push(newSubPatchId);
 
                             focusSubpatchop = json.ops[i];
@@ -1032,8 +1011,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                             {
                                 if (json.ops[j].uiAttribs.subPatch == oldSubPatchId)
                                 {
-                                    console.log("found child patch");
-
                                     json.ops[j].uiAttribs.subPatch = newSubPatchId;
                                     fixedSubPatches.push(json.ops[j].id);
                                 }
@@ -1113,9 +1090,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
             CABLES.UI.notify("Pasted " + json.ops.length + " ops");
-            console.log("deserialize. now...");
             gui.corePatch().deSerialize(json, false);
-            console.log("finish deserialize...");
             this.isPasting = false;
             next(json.ops, focusSubpatchop);
         });
@@ -1265,7 +1240,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         if (!p)
         {
-            console.warn("[unlinkport] portnot found ");
+            this.)_log.warn("[unlinkport] portnot found ");
             return;
         }
 
@@ -1339,7 +1314,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     centerView(x, y)
     {
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
-        else console.log("patchRenderer has no function center");
+        else console.warn("patchRenderer has no function center");
     }
 
     getCurrentSubPatch()
@@ -1363,13 +1338,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 if (next) next();
             });
         }
-        else console.log("patchRenderer has no function setCurrentSubPatch");
+        else console.warn("patchRenderer has no function setCurrentSubPatch");
     }
 
     focusOp(opid)
     {
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
-        else console.log("patchRenderer has no function focusOp");
+        else console.warn("patchRenderer has no function focusOp");
     }
 
     centerSelectOp(opid)
@@ -1388,7 +1363,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
         // else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
-        else console.log("patchRenderer has no function setSelectedOpById");
+        else console.warn("patchRenderer has no function setSelectedOpById");
     }
 
     selectChilds(id)
@@ -1477,7 +1452,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         {
             for (let j = 0; j < newOp.portsIn.length; j++)
             {
-                // console.log("new ", newOp.portsIn[j].name);
                 if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
                     newOp.portsIn[j].set(origOp.portsIn[i].get());
             }
@@ -1569,9 +1543,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 {
                     const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
 
-                    console.log("link", otherPort.name.toLowerCase(), origOp.portsIn[i].name.toLowerCase());
-
-
                     this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
                 }
             }
@@ -1592,7 +1563,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 for (const i in oldUiAttribs)
                 {
-                    console.log(i, oldUiAttribs[i]);
                     const a = {};
                     a[i] = oldUiAttribs[i];
                     newOp.setUiAttrib(a);
@@ -1627,9 +1597,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (!op.portsIn[0] || !op.portsOut[0]) return;
         if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
-
-        console.log("insert into link?!");
-
 
         let portIn = oldLink.portIn;
         let portOut = oldLink.portOut;
@@ -1701,8 +1668,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         const selectedOps = this.getSelectedOps();
 
-        console.log(selectedOps);
-
         for (let i = 0; i < selectedOps.length; i++)
             selectedOps[i].setUiAttrib({ "color": col });
     }
@@ -1712,7 +1677,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const op = this._p.getOpById(opid);
         if (!op)
         {
-            console.error("reset op values: op not found...", opid);
+            this._log.error("reset op values: op not found...", opid);
             return;
         }
         for (let i = 0; i < op.portsIn.length; i++)
@@ -1759,7 +1724,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
         catch (e)
         {
-            console.error(e);
+            this._log.error(e);
         }
         finally
         {

@@ -44,6 +44,7 @@ import MetaHistory from "./components/tabs/meta_history";
 import MetaKeyframes from "./components/tabs/meta_keyframes";
 import MetaDoc from "./components/tabs/meta_doc";
 import ChangelogToast from "./dialogs/changelog";
+import Logger from "./utils/logger";
 
 
 CABLES = CABLES || {};
@@ -66,6 +67,7 @@ CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLUI.glUiConfig = gluiconfig;
 
+CABLES.UI.Logger = Logger;
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;

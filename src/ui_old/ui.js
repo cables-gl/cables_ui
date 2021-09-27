@@ -6,7 +6,7 @@ CABLES.UI.GUI = function (cfg)
     CABLES.EventTarget.apply(this);
 
     const self = this;
-    this.log = new CABLES.UI.Logger();
+    // this.log = new CABLES.UI.Logger();
 
     this.patchId = cfg.patchId;
     let showTiming = false;
