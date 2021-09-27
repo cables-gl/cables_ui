@@ -257,7 +257,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             {
                 this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
             }
-
         }, 500);
         gui.serverOps.loadOpLibs(opname, () =>
         {
@@ -1240,7 +1239,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         if (!p)
         {
-            this.)_log.warn("[unlinkport] portnot found ");
+            this._log.warn("[unlinkport] portnot found ");
             return;
         }
 
