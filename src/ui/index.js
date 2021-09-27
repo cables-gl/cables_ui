@@ -39,6 +39,7 @@ import GlDebugTab from "./components/tabs/tab_debugglui";
 import GpuProfiler from "./components/tabs/tab_gpuprofiler";
 import FileUploader from "./dialogs/upload";
 import ItemManager from "./components/tabs/tab_item_manager";
+import MetaCode from "./components/tabs/meta_code";
 
 
 CABLES = CABLES || {};
@@ -92,6 +93,7 @@ CABLES.UI.Profiler = Profiler;
 CABLES.UI.GlDebugTab = GlDebugTab;
 CABLES.UI.GpuProfiler = GpuProfiler;
 CABLES.UI.ItemManager = ItemManager;
+CABLES.UI.MetaCode = MetaCode;
 
 // expose global objects
 CABLES.api = new Api();
