@@ -3,8 +3,6 @@ export default class Preferences
 {
     constructor(tabs)
     {
-        this.setSwitchValue("svgpatchview", CABLES.UI.userSettings.get("svgpatchview") || false);
-
         this._tab = new CABLES.UI.Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
         tabs.addTab(this._tab, true);
 
@@ -64,10 +62,7 @@ export default class Preferences
         this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
 
         this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
-        this.setSwitchValue("svgpatchview", CABLES.UI.userSettings.get("svgpatchview") || false);
 
-        // this.setSwitchValue("glpatchview", CABLES.UI.userSettings.get("glpatchview"));
-        // this.setSwitchValue("svgpatchviewdisable", CABLES.UI.userSettings.get("svgpatchviewdisable"));
         this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
         this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
         this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);

@@ -26,7 +26,6 @@ export default class UserSettings extends CABLES.EventTarget
         if (this.get("snapToGrid") === null) this.set("snapToGrid", true);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
-        if (this.get("svgpatchview") === null) this.set("svgpatchview", false);
 
         if (this.get("toggleHelperCurrent") === null) this.set("toggleHelperCurrent", true);
         if (this.get("toggleHelperCurrentTransforms") === null) this.set("toggleHelperCurrentTransforms", true);

@@ -10,7 +10,7 @@ CABLES.UI.Patch = function (_gui)
     const self = this;
     this.ops = [];
     this.scene = null;
-    this.disabled = (!CABLES.UI.userSettings.get("svgpatchview"));
+    this.disabled = true;
     const gui = _gui;
     this._svgEle = null;
 

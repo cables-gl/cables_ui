@@ -183,9 +183,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 {
     gui.setUser(this._cfg.user);
 
-    console.log("INIT ROUTING!");
-
-
     CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
     {
         CABLES.UI.notify(options.msg);
@@ -204,8 +201,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
     CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
     {
-        console.log("file Updated: " + options.filename);
-
         for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
             if (gui.corePatch().ops[j])
@@ -252,7 +247,6 @@ CABLES.SandboxBrowser.prototype.createBackup = function ()
         {
             CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
             {
-                console.log("backup finished", result);
                 if (result.success)
                     CABLES.UI.notify("Backup created!");
             });

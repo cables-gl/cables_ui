@@ -8,6 +8,22 @@ export default class Logger extends CABLES.EventTarget
         this.initiator = initiator;
     }
 
+
+    groupCollapsed(t)
+    {
+        console.groupCollapsed("[" + this.initiator + "] " + t);
+    }
+
+    table(t)
+    {
+        console.table(t);
+    }
+
+    groupEnd()
+    {
+        console.groupEnd();
+    }
+
     error(args)
     {
         console.error("[" + this.initiator + "] ", ...arguments);
