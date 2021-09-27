@@ -196,7 +196,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
                 if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
-                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
+                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY } });
                     found = true;
                 }
             }

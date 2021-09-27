@@ -27,10 +27,6 @@
 //     return objname.indexOf("Ops.Ui.Comment") == 0;
 // };
 
-// CABLES.UI.isMultilineString = function (str)
-// {
-//     return ((str.match(/\n/g) || []).length > 0);
-// };
 
 // CABLES.UI.updateHoverToolTip = function (event, port)
 // {

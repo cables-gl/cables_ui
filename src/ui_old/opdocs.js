@@ -180,7 +180,7 @@ CABLES.UI.OpDocs = function ()
                 const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, opDocs[i].shortNameDisplay);
                 label.node.classList.add("op_handle_" + CABLES.UI.uiConfig.getNamespaceClassName(opname));
                 label.node.classList.add("op-svg-shortname");
-                CABLES.UI.cleanRaphael(label);
+                // CABLES.UI.cleanRaphael(label);
                 this.layoutPaper = p;
                 return;
             }

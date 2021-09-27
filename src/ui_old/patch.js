@@ -441,8 +441,8 @@ CABLES.UI.Patch = function (_gui)
 
     this.saveCurrentProject = function (cb, _id, _name, _force)
     {
-        for (let i = 0; i < this.ops.length; i++)
-            this.ops[i].removeDeadLinks();
+        // for (let i = 0; i < this.ops.length; i++)
+        //     this.ops[i].removeDeadLinks();
 
         gui.patchView.store.saveCurrentProject(cb, _id, _name, _force);
     };
@@ -657,181 +657,181 @@ CABLES.UI.Patch = function (_gui)
         }
     };
 
-    this.removeQuickLinkLine = function ()
-    {
-        if (self.quickLinkLine)
-        {
-            self.quickLinkLine.remove();
-            self.quickLinkLine = null;
-        }
-    };
+    // this.removeQuickLinkLine = function ()
+    // {
+    //     if (self.quickLinkLine)
+    //     {
+    //         self.quickLinkLine.remove();
+    //         self.quickLinkLine = null;
+    //     }
+    // };
 
-    this.removeDeadLinks = function ()
-    {
-        setTimeout(function ()
-        {
-            for (const i in self.ops)
-                self.ops[i].removeDeadLinks();
-            console.log("removeDeadLinks");
-        }, 10);
-    };
+    // this.removeDeadLinks = function ()
+    // {
+    //     setTimeout(function ()
+    //     {
+    //         for (const i in self.ops)
+    //             self.ops[i].removeDeadLinks();
+    //         console.log("removeDeadLinks");
+    //     }, 10);
+    // };
 
-    function doAddOp(uiOp)
-    {
-        function checkDuplicatePorts(op)
-        {
-            let objName = null;
-            let portName = null;
+    // function doAddOp(uiOp)
+    // {
+    //     function checkDuplicatePorts(op)
+    //     {
+    //         let objName = null;
+    //         let portName = null;
 
-            for (let k = 0; k < op.portsOut.length; k++)
-            {
-                for (let j = 0; j < op.portsIn.length; j++)
-                {
-                    if (op.portsIn[j].name == op.portsOut[k].name)
-                    {
-                        objName = op.objName;
-                        portName = op.portsIn[j].name;
-                    }
-                    for (let i = 0; i < op.portsIn.length; i++)
-                    {
-                        if ((i != j && op.portsIn[i].name == op.portsIn[j].name))
-                        {
-                            objName = op.objName;
-                            portName = op.portsIn[j].name;
-                        }
-                    }
-                }
-            }
+    //         for (let k = 0; k < op.portsOut.length; k++)
+    //         {
+    //             for (let j = 0; j < op.portsIn.length; j++)
+    //             {
+    //                 if (op.portsIn[j].name == op.portsOut[k].name)
+    //                 {
+    //                     objName = op.objName;
+    //                     portName = op.portsIn[j].name;
+    //                 }
+    //                 for (let i = 0; i < op.portsIn.length; i++)
+    //                 {
+    //                     if ((i != j && op.portsIn[i].name == op.portsIn[j].name))
+    //                     {
+    //                         objName = op.objName;
+    //                         portName = op.portsIn[j].name;
+    //                     }
+    //                 }
+    //             }
+    //         }
 
-            if (portName)
-            {
-                console.error("op " + objName + " has duplicate port names (" + portName + "), they must be unique. ");
-                CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
-            }
-        }
+    //         if (portName)
+    //         {
+    //             console.error("op " + objName + " has duplicate port names (" + portName + "), they must be unique. ");
+    //             CABLES.UI.notifyError("Warning! Op has duplicate port name they must be unique. ");
+    //         }
+    //     }
 
-        const op = uiOp.op;
+    //     const op = uiOp.op;
 
 
-        if (!isLoading)
-        {
-            const undofunc = (function (opid, objName)
-            {
-                CABLES.UI.undo.add({
-                    "title": "Add op",
-                    undo()
-                    {
-                        gui.corePatch().deleteOp(opid, true);
-                    },
-                    redo()
-                    {
-                        gui.corePatch().addOp(objName, op.uiAttribs, opid);
-                    }
-                });
-            }(op.id, op.objName));
-        }
+    //     if (!isLoading)
+    //     {
+    //         const undofunc = (function (opid, objName)
+    //         {
+    //             CABLES.UI.undo.add({
+    //                 "title": "Add op",
+    //                 undo()
+    //                 {
+    //                     gui.corePatch().deleteOp(opid, true);
+    //                 },
+    //                 redo()
+    //                 {
+    //                     gui.corePatch().addOp(objName, op.uiAttribs, opid);
+    //                 }
+    //             });
+    //         }(op.id, op.objName));
+    //     }
 
-        op.on("onPortAdd", (p) =>
-        {
-            uiOp.addPort(p.direction, p);
-            uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        });
-        // op.onAddPort = function (p)
-        // {
-        //     uiOp.addPort(p.direction, p);
-        //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        // };
+    //     op.on("onPortAdd", (p) =>
+    //     {
+    //         uiOp.addPort(p.direction, p);
+    //         uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+    //     });
+    //     // op.onAddPort = function (p)
+    //     // {
+    //     //     uiOp.addPort(p.direction, p);
+    //     //     uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+    //     // };
 
-        if (op.uiAttribs && op.uiAttribs.subPatch)
-        {
-            if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
-        }
+    //     if (op.uiAttribs && op.uiAttribs.subPatch)
+    //     {
+    //         if (op.uiAttribs.subPatch != currentSubPatch) uiOp.hide();
+    //     }
 
-        uiOp.initPorts();
+    //     uiOp.initPorts();
 
-        checkDuplicatePorts(op);
+    //     checkDuplicatePorts(op);
 
-        if (!op.uiAttribs) op.uiAttribs = {};
+    //     if (!op.uiAttribs) op.uiAttribs = {};
 
-        if (!op.uiAttribs.translate)
-        {
-            if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": self._viewBox.getCenterX(), "y": self._viewBox.getCenterY() };
-            else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
-        }
+    //     if (!op.uiAttribs.translate)
+    //     {
+    //         if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0) op.uiAttribs.translate = { "x": self._viewBox.getCenterX(), "y": self._viewBox.getCenterY() };
+    //         else op.uiAttribs.translate = { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y };
+    //     }
 
-        if (op.uiAttribs.hasOwnProperty("translate"))
-        {
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = gui.patchView.snapOpPosX(op.uiAttribs.translate.x);
-            if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = gui.patchView.snapOpPosY(op.uiAttribs.translate.y);
-            uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-        }
+    //     if (op.uiAttribs.hasOwnProperty("translate"))
+    //     {
+    //         if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.x = gui.patchView.snapOpPosX(op.uiAttribs.translate.x);
+    //         if (CABLES.UI.userSettings.get("snapToGrid")) op.uiAttribs.translate.y = gui.patchView.snapOpPosY(op.uiAttribs.translate.y);
+    //         uiOp.setPos(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+    //     }
 
-        if (op.uiAttribs.hasOwnProperty("title")) gui.patch().setOpTitle(uiOp, op.uiAttribs.title);
+    //     if (op.uiAttribs.hasOwnProperty("title")) gui.patch().setOpTitle(uiOp, op.uiAttribs.title);
 
-        if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = currentSubPatch;
+    //     if (!op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = currentSubPatch;
 
-        if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort)
-        {
-            console.log("CABLES.UI.OPSELECT.linkNewOpToSuggestedPort");
-            const link = gui.corePatch().link(
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
-                op,
-                CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName);
-        }
+    //     if (CABLES.UI.OPSELECT.linkNewOpToSuggestedPort)
+    //     {
+    //         console.log("CABLES.UI.OPSELECT.linkNewOpToSuggestedPort");
+    //         const link = gui.corePatch().link(
+    //             CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op,
+    //             CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName,
+    //             op,
+    //             CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName);
+    //     }
 
-        CABLES.UI.OPSELECT.linkNewLink = null;
-        CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
-        CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = null;
-        CABLES.UI.OPSELECT.linkNewOpToPort = null;
+    //     CABLES.UI.OPSELECT.linkNewLink = null;
+    //     CABLES.UI.OPSELECT.newOpPos = { "x": 0, "y": 0 };
+    //     CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = null;
+    //     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
-        uiOp.setPos();
-        uiOp.setPos(uiOp.getPosX(), uiOp.getPosY());
+    //     uiOp.setPos();
+    //     uiOp.setPos(uiOp.getPosX(), uiOp.getPosY());
 
-        if (!isLoading)
-        {
-            // setTimeout(function ()
-            // {
-            if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
+    //     if (!isLoading)
+    //     {
+    //         // setTimeout(function ()
+    //         // {
+    //         if (currentSubPatch == uiOp.getSubPatch()) uiOp.show();
 
-            if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
-            showAddedOpTimeout = setTimeout(function ()
-            {
-                gui.patch().setSelectedOp(null);
-                gui.patch().setSelectedOp(uiOp);
-                gui.opParams.show(op);
-                // gui.patch().updateBounds();
-                gui.patch().getViewBox().update();
-                uiOp.oprect.showFocus();
-            }, 30);
-            // }, 30);
-        }
+    //         if (showAddedOpTimeout != -1) clearTimeout(showAddedOpTimeout);
+    //         showAddedOpTimeout = setTimeout(function ()
+    //         {
+    //             gui.patch().setSelectedOp(null);
+    //             gui.patch().setSelectedOp(uiOp);
+    //             gui.opParams.show(op);
+    //             // gui.patch().updateBounds();
+    //             gui.patch().getViewBox().update();
+    //             uiOp.oprect.showFocus();
+    //         }, 30);
+    //         // }, 30);
+    //     }
 
-        // select ops after pasting...
-        if (uiOp.op.uiAttribs.pasted)
-        {
-            delete uiOp.op.uiAttribs.pasted;
-            gui.patch().addSelectedOpById(uiOp.op.id);
-            uiOp.setSelected(true);
-            uiOp.show();
-            setStatusSelectedOps();
-            self.updateSubPatches();
-            uiOp.oprect.showFocus();
-            // gui.patch().updateBounds();
+    //     // select ops after pasting...
+    //     if (uiOp.op.uiAttribs.pasted)
+    //     {
+    //         delete uiOp.op.uiAttribs.pasted;
+    //         gui.patch().addSelectedOpById(uiOp.op.id);
+    //         uiOp.setSelected(true);
+    //         uiOp.show();
+    //         setStatusSelectedOps();
+    //         self.updateSubPatches();
+    //         uiOp.oprect.showFocus();
+    //         // gui.patch().updateBounds();
 
-            // setTimeout(function ()
-            // {
-            // this fixes links not showing up after pasting
-            uiOp.setPos();
-            // gui.patch().getViewBox().update();
-            // }, 30);
-        }
+    //         // setTimeout(function ()
+    //         // {
+    //         // this fixes links not showing up after pasting
+    //         uiOp.setPos();
+    //         // gui.patch().getViewBox().update();
+    //         // }, 30);
+    //     }
 
-        if (uiOp.op.objName.startsWith("Ops.Deprecated.")) uiOp.op.uiAttr({ "error": "Op is deprecated" });
-        uiOp.wasAdded = true;
-    }
+    //     if (uiOp.op.objName.startsWith("Ops.Deprecated.")) uiOp.op.uiAttr({ "error": "Op is deprecated" });
+    //     uiOp.wasAdded = true;
+    // }
 
-    let showAddedOpTimeout = -1;
+    // let showAddedOpTimeout = -1;
 
 
     this.bindScene = function (scene)
@@ -845,7 +845,7 @@ CABLES.UI.Patch = function (_gui)
         {
             scene.off(patchLoadEndiD);
             isLoading = false;
-            self.setCurrentSubPatch(currentSubPatch);
+            // self.setCurrentSubPatch(currentSubPatch);
             self.showProjectParams();
             gui.setStateSaved();
 
@@ -909,13 +909,13 @@ CABLES.UI.Patch = function (_gui)
                         this.ops[i].links[j].remove();
                     }
                 }
-                this.ops[i].removeDeadLinks();
+                // this.ops[i].removeDeadLinks();
             }
             this.checkLinkTimeWarnings();
         }.bind(this));
 
-        scene.addEventListener("onLink", this.onLinkEvent.bind(this));
-        scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
+        // scene.addEventListener("onLink", this.onLinkEvent.bind(this));
+        // scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
 
         scene.addEventListener("onOpDelete", function (op)
         {
@@ -963,124 +963,124 @@ CABLES.UI.Patch = function (_gui)
         }.bind(this));
     };
 
-    this.onLinkEvent = function (p1, p2)
-    {
-        if (this.disabled) return;
+    // this.onLinkEvent = function (p1, p2)
+    // {
+    //     if (this.disabled) return;
 
-        if (!isLoading)
-            console.log("onlink event!", p1.parent.name, p1.name);
+    //     if (!isLoading)
+    //         console.log("onlink event!", p1.parent.name, p1.name);
 
-        gui.setStateUnsaved();
+    //     gui.setStateUnsaved();
 
-        let uiPort1 = null;
-        let uiPort2 = null;
-        for (let i = 0; i < self.ops.length; i++)
-        {
-            for (let j = 0; j < self.ops[i].portsIn.length; j++)
-            {
-                if (this.ops[i].portsIn[j].thePort == p1)
-                {
-                    uiPort1 = this.ops[i].portsIn[j];
-                    break;
-                }
-                if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
-            }
-            // for (var jo in this.ops[i].portsOut) {
-            for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
-            {
-                if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
-                if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
-            }
-        }
+    //     let uiPort1 = null;
+    //     let uiPort2 = null;
+    //     for (let i = 0; i < self.ops.length; i++)
+    //     {
+    //         for (let j = 0; j < self.ops[i].portsIn.length; j++)
+    //         {
+    //             if (this.ops[i].portsIn[j].thePort == p1)
+    //             {
+    //                 uiPort1 = this.ops[i].portsIn[j];
+    //                 break;
+    //             }
+    //             if (this.ops[i].portsIn[j].thePort == p2) uiPort2 = this.ops[i].portsIn[j];
+    //         }
+    //         // for (var jo in this.ops[i].portsOut) {
+    //         for (let jo = 0; jo < this.ops[i].portsOut.length; jo++)
+    //         {
+    //             if (this.ops[i].portsOut[jo].thePort == p1) uiPort1 = this.ops[i].portsOut[jo];
+    //             if (this.ops[i].portsOut[jo].thePort == p2) uiPort2 = this.ops[i].portsOut[jo];
+    //         }
+    //     }
 
-        if (!uiPort1 || !uiPort2)
-        {
-            if (!isLoading)
-                console.warn("no uiport found");
+    //     if (!uiPort1 || !uiPort2)
+    //     {
+    //         if (!isLoading)
+    //             console.warn("no uiport found");
 
-            gui.patch().checkOpsInSync();
+    //         gui.patch().checkOpsInSync();
 
-            this.onLinkEvent(p1, p2);
-            return;
-        }
+    //         this.onLinkEvent(p1, p2);
+    //         return;
+    //     }
 
-        const thelink = new UiLink(uiPort1, uiPort2);
+    //     const thelink = new UiLink(uiPort1, uiPort2);
 
-        uiPort1.opUi.links.push(thelink);
-        uiPort2.opUi.links.push(thelink);
+    //     uiPort1.opUi.links.push(thelink);
+    //     uiPort2.opUi.links.push(thelink);
 
-        if (!isLoading)
-        {
-            uiPort1.opUi.redrawLinks();
-            uiPort2.opUi.redrawLinks();
+    //     if (!isLoading)
+    //     {
+    //         uiPort1.opUi.redrawLinks();
+    //         uiPort2.opUi.redrawLinks();
 
-            if (!uiPort1.opUi.isHidden()) thelink.show();
+    //         if (!uiPort1.opUi.isHidden()) thelink.show();
 
-            // todo: update is too often ?? check if current op is linked else do not update!!!
+    //         // todo: update is too often ?? check if current op is linked else do not update!!!
 
-            const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
-            {
-                CABLES.UI.undo.add({
-                    "title": "link",
-                    undo()
-                    {
-                        const op1 = scene.getOpById(op1Id);
-                        const op2 = scene.getOpById(op2Id);
-                        if (!op1 || !op2)
-                        {
-                            console.warn("undo: op not found");
-                            return;
-                        }
-                        op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                    },
-                    redo()
-                    {
-                        scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                    }
-                });
-            }(this.scene, p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
-        }
-        this.checkLinkTimeWarnings();
-    };
+    //         const undofunc = (function (scene, p1Name, p2Name, op1Id, op2Id)
+    //         {
+    //             CABLES.UI.undo.add({
+    //                 "title": "link",
+    //                 undo()
+    //                 {
+    //                     const op1 = scene.getOpById(op1Id);
+    //                     const op2 = scene.getOpById(op2Id);
+    //                     if (!op1 || !op2)
+    //                     {
+    //                         console.warn("undo: op not found");
+    //                         return;
+    //                     }
+    //                     op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+    //                 },
+    //                 redo()
+    //                 {
+    //                     scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+    //                 }
+    //             });
+    //         }(this.scene, p1.getName(), p2.getName(), p1.parent.id, p2.parent.id));
+    //     }
+    //     this.checkLinkTimeWarnings();
+    // };
 
-    this.initUiOp = function (op, norandom)
-    {
-        // if (!norandom && Math.random() > 0.9) return;
-        if (this.disabled) return;
+    // this.initUiOp = function (op, norandom)
+    // {
+    //     // if (!norandom && Math.random() > 0.9) return;
+    //     if (this.disabled) return;
 
-        // console.log("onopadd 2");
-        if (!isLoading)
-            gui.setStateUnsaved();
+    //     // console.log("onopadd 2");
+    //     if (!isLoading)
+    //         gui.setStateUnsaved();
 
-        this._elPatch.focus();
-        let width = CABLES.UI.uiConfig.opWidth;
-        if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
+    //     this._elPatch.focus();
+    //     let width = CABLES.UI.uiConfig.opWidth;
+    //     if (op.name.length == 1) width = CABLES.UI.uiConfig.opWidthSmall;
 
-        // console.log("onopadd 3");
+    //     // console.log("onopadd 3");
 
-        const x = CABLES.UI.OPSELECT.newOpPos.x;
-        const y = CABLES.UI.OPSELECT.newOpPos.y;
-        const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
+    //     const x = CABLES.UI.OPSELECT.newOpPos.x;
+    //     const y = CABLES.UI.OPSELECT.newOpPos.y;
+    //     const uiOp = new OpUi(self.paper, op, x, y, width, CABLES.UI.uiConfig.opHeight, op.name);
 
-        self.ops.push(uiOp);
+    //     self.ops.push(uiOp);
 
-        uiOp.wasAdded = false;
+    //     uiOp.wasAdded = false;
 
-        // setTimeout(
-        // ()=>{
-        doAddOp(uiOp);
-        this.opCollisionTest(uiOp);
-        self.checkLinkTimeWarnings();
+    //     // setTimeout(
+    //     // ()=>{
+    //     doAddOp(uiOp);
+    //     this.opCollisionTest(uiOp);
+    //     self.checkLinkTimeWarnings();
 
-        // },10);
-    };
+    //     // },10);
+    // };
 
 
-    this.setOpTitle = function (uiop, t)
-    {
-        uiop.op.setTitle(t);
-        uiop.oprect.setTitle(t);
-    };
+    // this.setOpTitle = function (uiop, t)
+    // {
+    //     uiop.op.setTitle(t);
+    //     uiop.oprect.setTitle(t);
+    // };
 
     this.updateSubPatches = function ()
     {
@@ -1103,68 +1103,68 @@ CABLES.UI.Patch = function (_gui)
         return op.uiAttribs.subPatch == currentSubPatch;
     };
 
-    this.setCurrentSubPatch = function (which, next)
-    {
-        if (currentSubPatch == which)
-        {
-            if (next)next();
-            return;
-        }
+    // this.setCurrentSubPatch = function (which, next)
+    // {
+    //     if (currentSubPatch == which)
+    //     {
+    //         if (next)next();
+    //         return;
+    //     }
 
-        // console.log("switch subpatch:", which);
-        gui.log.userInteraction("switch subpatch " + which);
+    //     // console.log("switch subpatch:", which);
+    //     gui.log.userInteraction("switch subpatch " + which);
 
-        gui.setWorking(true, "patch");
+    //     gui.setWorking(true, "patch");
 
-        // setTimeout(function ()
-        // {
-        subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
+    //     // setTimeout(function ()
+    //     // {
+    //     subPatchViewBoxes[currentSubPatch] = this._viewBox.serialize();
 
-        for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
+    //     for (let i = 0; i < self.ops.length; i++) self.ops[i].isDragging = self.ops[i].isMouseOver = false;
 
-        currentSubPatch = which;
-        // self.updateSubPatches();
+    //     currentSubPatch = which;
+    //     // self.updateSubPatches();
 
-        // if (subPatchViewBoxes[which])
-        // {
-        //     // viewBox = subPatchViewBoxes[which];
-        //     this._viewBox.deSerialize(subPatchViewBoxes[which]);
-        //     this.updateViewBox();
-        // }
+    //     // if (subPatchViewBoxes[which])
+    //     // {
+    //     //     // viewBox = subPatchViewBoxes[which];
+    //     //     this._viewBox.deSerialize(subPatchViewBoxes[which]);
+    //     //     this.updateViewBox();
+    //     // }
 
-        this._elPatch.focus();
+    //     this._elPatch.focus();
 
-        gui.setWorking(false, "patch");
+    //     gui.setWorking(false, "patch");
 
-        // this.currentPatchBounds = this.getSubPatchBounds();
-        // }.bind(this), 10);
+    //     // this.currentPatchBounds = this.getSubPatchBounds();
+    //     // }.bind(this), 10);
 
-        if (next) next();
-    };
+    //     if (next) next();
+    // };
 
 
-    this.findSubpatchOp = function (subId, arr)
-    {
-        arr = arr || [];
-        for (let i = 0; i < self.ops.length; i++)
-        {
-            if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId)
-            {
-                if (self.ops[i].op.patchId.get() == subId)
-                {
-                    arr.push({
-                        "name": self.ops[i].op.name,
-                        "id": self.ops[i].op.patchId.get()
-                    });
-                    if (self.ops[i].op.uiAttribs.subPatch !== 0)
-                    {
-                        self.findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
-                    }
-                }
-            }
-        }
-        return arr;
-    };
+    // this.findSubpatchOp = function (subId, arr)
+    // {
+    //     arr = arr || [];
+    //     for (let i = 0; i < self.ops.length; i++)
+    //     {
+    //         if (self.ops[i].op.objName == CABLES.UI.OPNAME_SUBPATCH && self.ops[i].op.patchId)
+    //         {
+    //             if (self.ops[i].op.patchId.get() == subId)
+    //             {
+    //                 arr.push({
+    //                     "name": self.ops[i].op.name,
+    //                     "id": self.ops[i].op.patchId.get()
+    //                 });
+    //                 if (self.ops[i].op.uiAttribs.subPatch !== 0)
+    //                 {
+    //                     self.findSubpatchOp(self.ops[i].op.uiAttribs.subPatch, arr);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //     return arr;
+    // };
 
     this.getSubPatchPathString = function (subId)
     {
@@ -1467,18 +1467,18 @@ CABLES.UI.Patch = function (_gui)
 
     this.setSelectedOpById = function (id)
     {
-        for (const i in gui.patch().ops)
-        {
-            if (gui.patch().ops[i].op.id == id)
-            {
-                self.setCurrentSubPatch(gui.patch().ops[i].getSubPatch());
+        // for (const i in gui.patch().ops)
+        // {
+        //     if (gui.patch().ops[i].op.id == id)
+        //     {
+        //         self.setCurrentSubPatch(gui.patch().ops[i].getSubPatch());
 
-                gui.patch().setSelectedOp(null);
-                gui.patch().setSelectedOp(gui.patch().ops[i]);
-                gui.opParams.show(gui.patch().ops[i].op);
-                return;
-            }
-        }
+        //         gui.patch().setSelectedOp(null);
+        //         gui.patch().setSelectedOp(gui.patch().ops[i]);
+        //         gui.opParams.show(gui.patch().ops[i].op);
+        //         return;
+        //     }
+        // }
     };
 
     this.addSelectedOpById = function (id)

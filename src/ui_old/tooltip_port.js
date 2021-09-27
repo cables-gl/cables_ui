@@ -1,3 +1,8 @@
+CABLES.UI.isMultilineString = function (str)
+{
+    return ((str.match(/\n/g) || []).length > 0);
+};
+
 CABLES.UI.getPortDescription = function (thePort)
 {
     let str = "";
