@@ -899,7 +899,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     function updateKeyLine()
     {
-        // if (gui.patch().isLoading()) return;
         if (!gui.finishedLoading) return;
 
         for (const anii in anims)
@@ -1252,7 +1251,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     this.scaleWidth = function ()
     {
-        // if (gui.patch().isLoading()) return;
         if (!gui.finishedLoading) return;
 
         let maxt = -99999;

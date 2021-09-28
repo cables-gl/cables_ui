@@ -1901,6 +1901,16 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
+        document.body.addEventListener("contextmenu", (e) =>
+        {
+            // console.log(e);
+
+            if (e.target && e.target.currentSrc) return;
+            if (e.target.classList.contains("selectable")) return;
+
+            e.preventDefault();
+        });
+
         $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
         this._timeLine = new CABLES.TL.UI.TimeLineUI();
 

@@ -77,15 +77,15 @@ CABLES.UI.Patch = function (_gui)
     // };
 
 
-    this.focus = function ()
-    {
-        $("#patch").focus();
-    };
+    // this.focus = function ()
+    // {
+    //     $("#patch").focus();
+    // };
 
-    this.isFocussed = function ()
-    {
-        return $("#patch").is(":focus");
-    };
+    // this.isFocussed = function ()
+    // {
+    //     return $("#patch").is(":focus");
+    // };
 
     // this.serialize = function (dataUi)
     // {
@@ -498,132 +498,42 @@ CABLES.UI.Patch = function (_gui)
     {
         this.scene = _scene;
 
-        $("#meta").append();
+        // $("#meta").append();
 
-        this.paper = Raphael("patch", 0, 0);
+        // this.paper = Raphael("patch", 0, 0);
         // this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
-        this._elPatchSvg = this._elPatchSvg || $("#patch svg");
-        this._elPatch = this._elPatch || $("#patch");
-        this._elBody = this._elBody || $("body");
+        // this._elPatchSvg = this._elPatchSvg || $("#patch svg");
+        // this._elPatch = this._elPatch || $("#patch");
+        // this._elBody = this._elBody || $("body");
 
-        this._elBody.oncontextmenu =
-        this._elPatchSvg.oncontextmenu =
-        this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
+
+        // this._elPatchSvg.oncontextmenu =
+        // this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
+        // document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
 
         // this._viewBox.bindWheel(this._elPatchSvg);
 
-        this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
-            "fill": CABLES.UI.uiConfig.colorBackground,
-            "opacity": 0.01,
-            "stroke-width": 0
-        });
 
-        this.background.toBack();
+        // this._elPatchSvg.bind("mouseup", function (event)
+        // {
+        //     rubberBandHide();
+        //     mouseRubberBandSelectedBefore.length = 0;
+        //     gui.setCursor();
+        // });
 
-        this.background.node.onmousemove = function (ev)
-        {
-            CABLES.UI.selectedEndOp = null;
-        };
+        // this._elPatchSvg.bind("mouseenter", function (event) { gui.setCursor(); });
+        // this._elPatchSvg.bind("mouseleave", function (event) { gui.setCursor(); });
 
-        this.background.node.onmousedown = function (ev)
-        {
-            gui.pauseProfiling();
-
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
-            this._elPatch.focus();
-            CABLES.UI.OPSELECT.linkNewOpToPort = null;
-
-            if (ev.shiftKey)
-            {
-                mouseRubberBandSelectedBefore.length = 0;
-                for (let i = 0; i < selectedOps.length; i++)
-                    mouseRubberBandSelectedBefore.push(selectedOps[i]);
-            }
-            if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
-            {
-                gui.patch().setSelectedOp(null);
-                // self.showProjectParams();
-            }
-        }.bind(this);
+        // this._elPatchSvg.bind("touchstart", (e) =>
+        // {
+        //     e = CABLES.mouseEvent(e);
+        //     this.lastMouseMoveEvent = null;
+        // });
 
 
-        this.toggleCenterZoom = function (e)
-        {
-            // this._viewBox.centerAllOps();
-        };
-
-        this.background.node.ondblclick = function (e)
-        {
-            e = CABLES.mouseEvent(e);
-            self.toggleCenterZoom(e);
-        };
-
-        $("#patch").on("mousemove", function (e)
-        {
-            if (CABLES.SPLITPANE.bound) return;
-
-            e = CABLES.mouseEvent(e);
-
-            if (CABLES.UI.MOUSEOVERPORT) return;
-            gui.notIdling();
-
-            if (e.metaKey || e.altKey || e.buttons === CABLES.UI.MOUSE_BUTTON_WHEEL)
-            {
-                if (CABLES.UI.quickAddOpStart)
-                {
-                    gui.setCursor("copy");
-
-                    if (!self.quickLinkLine)
-                    {
-                        self.quickLinkLine = new CABLES.UI.SVGLine(
-                            gui.patch().getCanvasCoordsMouse(e).x, // CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
-                            CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 28);
-                    }
-                    self.quickLinkLine.updateEnd(
-                        gui.patch().getCanvasCoordsMouse(e).x,
-                        gui.patch().getCanvasCoordsMouse(e).y
-                    );
-
-                    return;
-                }
-            }
-            else if (self.quickLinkLine)
-            {
-                self.removeQuickLinkLine();
-                gui.setCursor();
-            }
-
-            if (CABLES.UI.MOUSEDRAGGINGPORT) return; // cancel when dragging port...
-
-            if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed)
-            {
-                for (const i in self.ops)
-                    if (!self.ops[i].isHidden() && (self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
-                rubberBandMove(e);
-            }
-        });
-
-        this._elPatchSvg.bind("mouseup", function (event)
-        {
-            rubberBandHide();
-            mouseRubberBandSelectedBefore.length = 0;
-            gui.setCursor();
-        });
-
-        this._elPatchSvg.bind("mouseenter", function (event) { gui.setCursor(); });
-        this._elPatchSvg.bind("mouseleave", function (event) { gui.setCursor(); });
-
-        this._elPatchSvg.bind("touchstart", (e) =>
-        {
-            e = CABLES.mouseEvent(e);
-            this.lastMouseMoveEvent = null;
-        });
-
-
-        gui.setLayout();
+        // gui.setLayout();
     };
 
 
