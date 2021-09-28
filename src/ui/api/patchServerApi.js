@@ -303,6 +303,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
             document.getElementById("patchname").innerHTML = "Saving Patch";
             document.getElementById("patchname").classList.add("blinking");
 
+            gui.corePatch.emitEvent("uiSavePatch");
+
             console.log("saving data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
 
             CABLES.sandbox.savePatch(
