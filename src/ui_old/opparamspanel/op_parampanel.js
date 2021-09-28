@@ -368,7 +368,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
                 else
                 {
-                    ele.byId("portFileVal_" + i + "_preview").innerHTML = "";
+                    if (ele.byId("portFileVal_" + i + "_preview"))
+                        ele.byId("portFileVal_" + i + "_preview").innerHTML = "";
                 }
             }
 
