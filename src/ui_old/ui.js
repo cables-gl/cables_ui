@@ -1903,10 +1903,9 @@ CABLES.UI.GUI = function (cfg)
     {
         document.body.addEventListener("contextmenu", (e) =>
         {
-            // console.log(e);
-
             if (e.target && e.target.currentSrc) return;
             if (e.target.classList.contains("selectable")) return;
+            if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
 
             e.preventDefault();
         });
