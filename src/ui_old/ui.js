@@ -1903,14 +1903,14 @@ CABLES.UI.GUI = function (cfg)
     {
         document.body.addEventListener("contextmenu", (e) =>
         {
-            if (e.target && e.target.currentSrc) return;
+            if (e.target.currentSrc) return;
             if (e.target.classList.contains("selectable")) return;
             if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
 
             e.preventDefault();
         });
 
-        $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
+        ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
         this._timeLine = new CABLES.TL.UI.TimeLineUI();
 
         gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
@@ -1923,7 +1923,6 @@ CABLES.UI.GUI = function (cfg)
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
             {
-                gui.patch().lastMouseMoveEvent = null;
                 gui.showCanvasModal(false);
                 gui.patchView.focus();
                 e.preventDefault();
@@ -2110,7 +2109,6 @@ function startUi(cfg)
                 incrementStartup();
                 gui.showUiElements();
                 gui.setLayout();
-                // gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();

@@ -1080,47 +1080,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     paste(e)
     {
-        // let mouseX = 0;
-        // let mouseY = 0;
-        // if (self.lastMouseMoveEvent)
-        // {
-        //     mouseX = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).x;
-        //     mouseY = gui.patch().getCanvasCoordsMouse(self.lastMouseMoveEvent).y;
-        // }
-
         gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY,
             (ops, focusSubpatchop) =>
             {
-                // self.setSelectedOp(null);
                 this.unselectAll();
                 for (let i = 0; i < ops.length; i++)
                 {
                     this.selectOpId(ops[i].id);
-                    // const uiop = self.addSelectedOpById(ops[i].id);
-
-                    // uiop.setSelected(false);
-                    // uiop.setSelected(true);
-                    // gui.setStateUnsaved();
                 }
-
-                // setTimeout(() => // todo timeout still needed in glrenderer?
-                // {
-                //     gui.patch().setCurrentSubPatch(this._currentSubpatch);
-
-                //     if (focusSubpatchop)
-                //     {
-                //         console.log(focusSubpatchop, this.viewBox.mousePatchX, this.viewBox.mousePatchY);
-                //         const op = gui.corePatch().getOpById(focusSubpatchop.id);
-                //         // op.setUiAttrib({ "translate" : {"x":mouseX,"y":mouseY}});
-
-                //         const uiop = gui.patch().getUiOp(op);
-                //         uiop.setPos(this.viewBox.mouseX, this.viewBox.mouseY);
-
-                //         // gui.patch().focusOp(op.id,true);
-                //         // console.log(op);
-                //         // gui.patch().centerViewBoxOps();
-                //     }
-                // }, 100);
             });
     }
 

@@ -103,14 +103,6 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
             CABLES.UI.notify("can not link!");
             return;
         }
-        // if (suggestions.length > 1)
-        //     op1.oprect.showFocus();
-
-        // var fakeMouseEvent = {
-        //     clientX: self.lastMouseMoveEvent.clientX,
-        //     clientY: self.lastMouseMoveEvent.clientY
-        // };
-
 
         function showSuggestions2(id)
         {

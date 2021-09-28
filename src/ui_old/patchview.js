@@ -234,7 +234,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX, event.clientY);
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
-            else coord = gui.patch().getCanvasCoordsMouse(event);
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
@@ -1033,7 +1032,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             }
 
             for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
-            // gui.patch().setCurrentSubPatch(subpatchIds[i]);
+
 
             { // change position of ops to paste
                 let minx = Number.MAX_VALUE;
@@ -1190,9 +1189,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     gui.patchView.setOpPos(op, obj.x, obj.y);
                     changedOps.push(op);
                 }
-
-                // update svg patch...
-                gui.patch().updatedOpPositionsFromUiAttribs(changedOps);
             },
             redo()
             {

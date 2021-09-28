@@ -20,7 +20,6 @@ CABLES.UI.Patch = function (_gui)
     const selectedOps = [];
     let currentSubPatch = 0;
 
-    this.lastMouseMoveEvent = null;
 
     let mouseRubberBandStartPos = null;
     let mouseRubberBandPos = null;
@@ -454,24 +453,24 @@ CABLES.UI.Patch = function (_gui)
 
     this.setCurrentProject = function (proj)
     {
-        if (self.timeLine) self.timeLine.clear();
+        // if (self.timeLine) self.timeLine.clear();
 
         currentProject = proj;
-        if (currentProject === null)
-        {
-            $("#meta_content_files").hide();
-        }
-        else
-        {
-            $("#meta_content_files").show();
-        }
-        $("#meta_content_files").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
+        // if (currentProject === null)
+        // {
+        //     $("#meta_content_files").hide();
+        // }
+        // else
+        // {
+        //     $("#meta_content_files").show();
+        // }
+        // $("#meta_content_files").hover(function (e)
+        // {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
+        // }, function ()
+        // {
+        //     CABLES.UI.hideInfo();
+        // });
     };
 
     this.loadingError = false;
@@ -1620,238 +1619,4 @@ CABLES.UI.Patch = function (_gui)
             }
         }
     };
-
-    // this.downloadSVG = function ()
-    // {
-    //     const element = document.createElement("a");
-    //     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent($("#patch").html()));
-    //     element.setAttribute("download", "patch.svg");
-    //     element.style.display = "none";
-    //     document.body.appendChild(element);
-    //     element.click();
-    //     document.body.removeChild(element);
-    // };
-
-    // this.getSubPatches = function (sort)
-    // {
-    //     return gui.patchView.getSubPatches(sort);
-    // };
-
-    // this.linkTwoOps = function (op1, op2)
-    // {
-    //     this.removeQuickLinkLine();
-    //     const suggestions = [];
-    //     if (!op1 || !op2) return;
-
-    //     for (let j = 0; j < op1.portsOut.length; j++)
-    //     {
-    //         const p = op1.portsOut[j].thePort;
-    //         const numFitting = op2.op.countFittingPorts(p);
-    //         let addText = "...";
-
-    //         if (numFitting > 0)
-    //         {
-    //             if (numFitting == 1)
-    //             {
-    //                 const p2 = op2.op.findFittingPort(p);
-    //                 addText = p2.name;
-    //             }
-
-    //             suggestions.push({
-    //                 p,
-    //                 "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
-    //                 "classname": "port_text_color_" + p.getTypeString().toLowerCase()
-    //             });
-    //         }
-    //     }
-
-    //     if (suggestions.length === 0)
-    //     {
-    //         CABLES.UI.notify("can not link!");
-    //         return;
-    //     }
-    //     if (suggestions.length > 1) op1.oprect.showFocus();
-
-    //     const fakeMouseEvent = {
-    //         "clientX": self.lastMouseMoveEvent.clientX,
-    //         "clientY": self.lastMouseMoveEvent.clientY
-    //     };
-
-    //     function showSuggestions2(id)
-    //     {
-    //         const p = suggestions[id].p;
-    //         const sugIn = [];
-
-    //         for (let i = 0; i < op2.portsIn.length; i++)
-    //         {
-    //             if (CABLES.Link.canLink(op2.portsIn[i].thePort, p))
-    //             {
-    //                 sugIn.push({
-    //                     "p": op2.portsIn[i].thePort,
-    //                     "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].thePort.name,
-    //                     "classname": "port_text_color_" + op2.portsIn[i].thePort.getTypeString().toLowerCase()
-    //                 });
-    //             }
-    //         }
-
-    //         if (sugIn.length == 1)
-    //         {
-    //             gui.corePatch().link(
-    //                 p.parent,
-    //                 p.name,
-    //                 sugIn[0].p.parent,
-    //                 sugIn[0].p.name);
-    //             return;
-    //         }
-
-    //         op2.oprect.showFocus();
-
-    //         new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
-    //             function (sugId)
-    //             {
-    //                 gui.corePatch().link(
-    //                     p.parent,
-    //                     p.name,
-    //                     sugIn[sugId].p.parent,
-    //                     sugIn[sugId].p.name);
-    //             });
-    //     }
-
-    //     if (suggestions.length == 1) showSuggestions2(0);
-    //     else new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null, showSuggestions2, false);
-    // };
 };
-
-// CABLES.UI.Patch.prototype.getViewBox = function ()
-// {
-//     return this._viewBox;
-// };
-
-// CABLES.UI.Patch.prototype.updateBounds = function ()
-// {
-//     // this.currentPatchBounds = this.getSubPatchBounds();
-// };
-
-// CABLES.UI.Patch.prototype.getNumOps = function ()
-// {
-//     return this.ops.length;
-// };
-
-
-// ---------------------
-
-// CABLES.UI.Patch.prototype.flowvis = false;
-// CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-// CABLES.UI.speedCycle = true;
-
-// CABLES.UI.Patch.prototype.toggleFlowVis = function ()
-// {
-//     if (!this.flowvis)
-//     {
-//         CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-//         this.startflowVis();
-//         this.flowvis = true;
-//     }
-//     else
-//     {
-//         this.stopFlowVis();
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.stopFlowVis = function ()
-// {
-//     this.scene.removeOnAnimCallback(this.updateFlowVis);
-
-//     this.flowvis = false;
-
-//     for (let i = 0; i < this.ops.length; i++)
-//     {
-//         for (let j = 0; j < this.ops[i].links.length; j++)
-//         {
-//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-//             {
-//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
-
-//                 if (link)
-//                 {
-//                     this.ops[i].links[j].linkLine.node.classList.remove(this.ops[i].links[j].linkLine.speedClass);
-//                     this.ops[i].links[j].linkLine.speedClass = "nospeed";
-//                 }
-//             }
-//         }
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.updateFlowVis = function (time, frame)
-// {
-//     if (CABLES.UI.Patch.prototype.flowvisStartFrame == 0)CABLES.UI.Patch.prototype.flowvisStartFrame = frame;
-//     if (frame - CABLES.UI.Patch.prototype.flowvisStartFrame < 5) return;
-//     if (frame % 5 != 0) return;
-
-//     CABLES.UI.speedCycle = !CABLES.UI.speedCycle;
-
-//     let count = 0;
-//     // var countInvalid=0;
-//     const patch = gui.patch();
-
-//     for (let i = 0; i < patch.ops.length; i++)
-//     {
-//         for (let j = 0; j < patch.ops[i].links.length; j++)
-//         {
-//             if (patch.ops[i].links[j] && patch.ops[i].links[j].linkLine)
-//             {
-//                 let link = patch.ops[i].links[j].p2.thePort.getLinkTo(patch.ops[i].links[j].p1.thePort);
-//                 if (!link) link = patch.ops[i].links[j].p1.thePort.getLinkTo(patch.ops[i].links[j].p2.thePort);
-
-//                 if (link)
-//                 {
-//                     if (link.speedCycle != CABLES.UI.speedCycle)
-//                     {
-//                         count++;
-
-//                         link.speedCycle = CABLES.UI.speedCycle;
-
-//                         let newClass = "pathSpeed0";
-//                         if (link.activityCounter >= 1)
-//                         {
-//                             newClass = "pathSpeed1";
-//                         }
-//                         if (link.activityCounter >= 5) newClass = "pathSpeed2";
-//                         if (link.activityCounter >= 10) newClass = "pathSpeed3";
-//                         if (link.activityCounter >= 20) newClass = "pathSpeed4";
-
-//                         if (patch.ops[i].links[j].linkLine.speedClass != newClass)
-//                         {
-//                             patch.ops[i].links[j].linkLine.node.classList.remove(patch.ops[i].links[j].linkLine.speedClass);
-//                             patch.ops[i].links[j].linkLine.speedClass = newClass;
-//                             patch.ops[i].links[j].linkLine.node.classList.add(newClass);
-//                         }
-//                         // link.activityCount=link.activityCounter;
-//                         link.activityCounter = 0;
-//                         // link.emitEvent("activity",link,link.activityCount);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.startflowVis = function ()
-// {
-//     for (let i = 0; i < this.ops.length; i++)
-//     {
-//         for (let j = 0; j < this.ops[i].links.length; j++)
-//         {
-//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-//             {
-//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
-//                 if (link) link.activityCounter = 0;
-//             }
-//         }
-//     }
-
-//     this.scene.removeOnAnimCallback(this.updateFlowVis);
-//     this.scene.addOnAnimFrameCallback(this.updateFlowVis);
-// };
