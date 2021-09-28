@@ -596,7 +596,7 @@ export default class OpSelect
     {
         if (opname && opname.length > 2)
         {
-            gui.log.userInteraction("adds op " + opname);
+            // gui.log.userInteraction("adds op " + opname);
 
             this._newOpOptions.createdLocally = true;
 

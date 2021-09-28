@@ -94,8 +94,9 @@ CABLES.SandboxBrowser.prototype.isDevEnv = function ()
 CABLES.SandboxBrowser.prototype.showStartupChangelog = function ()
 {
     const lastView = CABLES.UI.userSettings.get("changelogLastView");
+    const cl = new CABLES.UI.ChangelogToast();
 
-    CABLES.CHANGELOG.getHtml((clhtml) =>
+    cl.getHtml((clhtml) =>
     {
         if (clhtml !== null)
         {
@@ -182,9 +183,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 {
     gui.setUser(this._cfg.user);
 
-    console.log("INIT ROUTING!");
-
-
     CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
     {
         CABLES.UI.notify(options.msg);
@@ -203,8 +201,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
     CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
     {
-        console.log("file Updated: " + options.filename);
-
         for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
             if (gui.corePatch().ops[j])
@@ -251,7 +247,6 @@ CABLES.SandboxBrowser.prototype.createBackup = function ()
         {
             CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
             {
-                console.log("backup finished", result);
                 if (result.success)
                     CABLES.UI.notify("Backup created!");
             });
@@ -278,8 +273,6 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
             gui.bookmarks.set(proj.ui.bookmarks);
             document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
         }
-
-        // gui.patch().showProjectParams();
     });
 
     loadjs(userOpsUrls, lid);

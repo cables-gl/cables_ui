@@ -6,7 +6,6 @@ import CanvasLens from "./components/canvaslens";
 import HtmlInspector from "./components/htmlinspect";
 import IconBar from "./elements/iconbar";
 import Keypresenter from "./components/keypresenter";
-import analyzePatch from "./components/analyze_patch";
 import gluiconfig from "./glpatch/gluiconfig";
 import OpTreeList from "./components/opselect_treelist";
 import UiProfiler from "./components/uiperformance";
@@ -37,6 +36,14 @@ import Preferences from "./components/tabs/tab_preferences";
 import Profiler from "./components/tabs/tab_profiler";
 import GlDebugTab from "./components/tabs/tab_debugglui";
 import GpuProfiler from "./components/tabs/tab_gpuprofiler";
+import FileUploader from "./dialogs/upload";
+import ItemManager from "./components/tabs/tab_item_manager";
+import MetaCode from "./components/tabs/meta_code";
+import MetaHistory from "./components/tabs/meta_history";
+import MetaKeyframes from "./components/tabs/meta_keyframes";
+import MetaDoc from "./components/tabs/meta_doc";
+import ChangelogToast from "./dialogs/changelog";
+import Logger from "./utils/logger";
 
 
 CABLES = CABLES || {};
@@ -59,6 +66,7 @@ CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLUI.glUiConfig = gluiconfig;
 
+CABLES.UI.Logger = Logger;
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;
@@ -75,11 +83,9 @@ CABLES.UI.CommandPallete = CommandPallete;
 CABLES.UI.OpSelect = OpSelect;
 CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
-
 CABLES.UI.TabPanel = TabPanel;
 CABLES.UI.Tab = Tab;
 CABLES.UI.MainTabPanel = MainTabPanel;
-
 CABLES.UI.FindTab = FindTab;
 CABLES.UI.SpreadSheetTab = SpreadSheetTab;
 CABLES.UI.WatchArrayTab = WatchArrayTab;
@@ -89,15 +95,19 @@ CABLES.UI.Preferences = Preferences;
 CABLES.UI.Profiler = Profiler;
 CABLES.UI.GlDebugTab = GlDebugTab;
 CABLES.UI.GpuProfiler = GpuProfiler;
-
+CABLES.UI.ItemManager = ItemManager;
+CABLES.UI.MetaCode = MetaCode;
+CABLES.UI.MetaHistory = MetaHistory;
+CABLES.UI.MetaKeyframes = MetaKeyframes;
+CABLES.UI.MetaDoc = MetaDoc;
+CABLES.UI.ChangelogToast = ChangelogToast;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
-
+CABLES.fileUploader = new FileUploader();
 
 // expose global functions
-CABLES.UI.analyzePatch = analyzePatch;
 CABLES.UI.initSplitPanes = initSplitPanes;
 
 CABLES.CMD = CMD;

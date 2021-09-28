@@ -6,8 +6,9 @@ CABLES.UI.GUI = function (cfg)
     CABLES.EventTarget.apply(this);
 
     const self = this;
-    this.log = new CABLES.UI.Logger();
+    // this.log = new CABLES.UI.Logger();
 
+    this._log = new CABLES.UI.Logger("gui");
     this.patchId = cfg.patchId;
     let showTiming = false;
     let showingEditor = false;
@@ -231,13 +232,13 @@ CABLES.UI.GUI = function (cfg)
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            console.log("opid not found:", opid);
+            this._warn("opid not found:", opid);
             return;
         }
         const port = op.getPort(which);
         if (!port)
         {
-            console.log("port not found:", which);
+            this._warn("port not found:", which);
         }
 
         // if (port.type == 2)
@@ -773,11 +774,9 @@ CABLES.UI.GUI = function (cfg)
             this._setCanvasMode(this.CANVASMODE_NORMAL);
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
-            console.log("normal mode!");
         }
         else
         {
-            console.log("FS mode!");
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
@@ -937,12 +936,12 @@ CABLES.UI.GUI = function (cfg)
 
     this.showFileSelect = function (inputId, filterType, opid, previewId)
     {
-        this.showFileManager(function ()
+        this.showFileManager(() =>
         {
             const portInputEle = document.querySelector(inputId);
             if (!portInputEle)
             {
-                console.log("[showfileselect] no portInputEle");
+                this._log.warn("[showfileselect] no portInputEle");
                 return;
             }
             const fn = portInputEle.value;
@@ -950,7 +949,7 @@ CABLES.UI.GUI = function (cfg)
             this.fileManager.setFilterType(filterType);
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
-        }.bind(this));
+        });
     };
 
     this.setProjectName = function (name)
@@ -976,7 +975,6 @@ CABLES.UI.GUI = function (cfg)
                 if (name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
-                        console.log("newpatch", d);
                         CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
                     });
             });
@@ -1024,7 +1022,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.showFile = function (fileId, file)
     {
-        console.log(file);
         const html = CABLES.UI.getHandleBarHtml(
             "params_file", {
                 file,
@@ -1071,8 +1068,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.helperContextMenu = function (ele)
     {
-        console.log("CABLES.UI.showCanvasTransforms", CABLES.UI.showCanvasTransforms);
-
         let iconTransforms = "fa fa-check fa-hide";
         if (CABLES.UI.showCanvasTransforms) iconTransforms = "fa fa-check";
 
@@ -1218,7 +1213,6 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_viewProjectLink").addEventListener("click", () =>
         {
             const url = $(".viewProjectLink").attr("href");
-            console.log("url", url);
             const win = window.open(url, "_blank");
             win.focus();
         });
@@ -1254,9 +1248,9 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(); });
 
 
-        $(".nav_timeline").bind("click", function (event)
+        ele.byId("nav_timeline").addEventListener("click", (event) =>
         {
-            CABLES.CMD.UI.toggleTimeline();
+            CABLES.CMD.TIMELINE.toggleTimeline();
         });
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(); });
@@ -1267,7 +1261,7 @@ CABLES.UI.GUI = function (cfg)
             const eleCanvas = ele.byId("glcanvas");
             if (eleCanvas)eleCanvas.blur();
             this.setLayout();
-            this.patch().getViewBox().update();
+            // this.patch().getViewBox().update();
             this.mainTabs.emitEvent("resize");
         }, false);
 
@@ -1373,7 +1367,6 @@ CABLES.UI.GUI = function (cfg)
         }
         else if (CABLES.UI.suggestions)
         {
-            console.log(CABLES.UI.suggestions);
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         }
@@ -1388,7 +1381,6 @@ CABLES.UI.GUI = function (cfg)
             CABLES.UI.MODAL.hide();
             if (showingEditor)
             {
-                console.log("focus editor ");
                 self.editor().focus();
             }
         }
@@ -1436,12 +1428,11 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
-        self.patch().getViewBox().update();
 
         if (this.isRemoteClient)
             new CABLES.UI.NoPatchEditor();
         else
-        if (!CABLES.UI.userSettings.get("svgpatchview") == true) CABLES.CMD.DEBUG.glguiFull();
+            CABLES.CMD.DEBUG.glguiFull();
 
 
         this._elGlCanvas.hover(function (e)
@@ -1456,7 +1447,6 @@ CABLES.UI.GUI = function (cfg)
 
         if (this._corePatch.cgl.aborted)
         {
-            console.log("errror...");
             CABLES.UI.MODAL.showError("no webgl", "your browser does not support webgl");
             return;
         }
@@ -1471,7 +1461,7 @@ CABLES.UI.GUI = function (cfg)
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
 
         const buildInfo = this.project().buildInfo;
-        console.groupCollapsed("welcome to cables!");
+        this._log.groupCollapsed("welcome to cables!");
         console.log("build info:");
         const buildInfoTable = [];
         const displayInfo = {
@@ -1905,12 +1895,9 @@ CABLES.UI.GUI = function (cfg)
         gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         if (this.isRemoteClient)
-        {
             document.getElementById("undev").style.display = "none";
-        }
 
         CABLES.UI.initSplitPanes();
-
 
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
@@ -1994,7 +1981,7 @@ CABLES.UI.GUI.prototype.updateTheme = function ()
 // todo use eventtarget...
 CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
 {
-    console.warn("deprecated eventlistener:", name);
+    this._log.warn("deprecated eventlistener:", name);
     console.log((new Error()).stack);
     this._eventListeners[name] = this._eventListeners[name] || [];
     this._eventListeners[name].push(cb);
@@ -2101,7 +2088,7 @@ function startUi(cfg)
                 incrementStartup();
                 gui.showUiElements();
                 gui.setLayout();
-                gui.patch().fixTitlePositions();
+                // gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();
@@ -2119,11 +2106,6 @@ function startUi(cfg)
                     if (key == "theme-bright")
                     {
                         gui.updateTheme();
-                    }
-
-                    if (key == "straightLines")
-                    {
-                        gui.patch().updateSubPatches();
                     }
 
                     if (key == "hideSizeBar")

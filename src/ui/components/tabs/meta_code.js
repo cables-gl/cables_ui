@@ -1,68 +1,62 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-
-
-CABLES.UI.OpShowMetaCode = 0;
-
-CABLES.UI.MetaCode = function (tabs)
+export default class MetaCode
 {
-    this._tab = new CABLES.UI.Tab("code", { "icon": "code", "infotext": "tab_code", "showTitle": false, "hideToolbar": true, "padding": true });
-    tabs.addTab(this._tab);
-    this._tab.addEventListener("onActivate", function ()
+    constructor(tabs)
     {
-        this.show();
-    }.bind(this));
+        this._initialized = false;
+        this._op = null;
+        this._lastSelectedOp = null;
+        this._currentName = null;
 
-    let initialized = false;
-    let op = null;
-    this._lastSelectedOp = null;
-    this._currentName = null;
+        this._tab = new CABLES.UI.Tab("code", { "icon": "code", "infotext": "tab_code", "showTitle": false, "hideToolbar": true, "padding": true });
+        tabs.addTab(this._tab);
+        this._tab.addEventListener("onActivate", function ()
+        {
+            this.show();
+        }.bind(this));
+    }
 
-    this.init = function ()
+    init()
     {
-        if (initialized) return;
-        initialized = true;
+        if (this._initialized) return;
+        this._initialized = true;
 
         gui.opParams.addEventListener("opSelected", this.onOpSelected.bind(this));
-    };
+    }
 
-    this.onOpSelected = function (_op)
+    onOpSelected(_op)
     {
         this._lastSelectedOp = _op;
 
         if (!this._tab.isVisible()) return;
 
-        clearTimeout(CABLES.UI.OpShowMetaCode);
-        CABLES.UI.OpShowMetaCode = setTimeout(function ()
+        clearTimeout(CABLES.UI.OpShowMetaCodeDelay);
+        CABLES.UI.OpShowMetaCodeDelay = setTimeout(function ()
         {
-            op = this._lastSelectedOp;
+            this._op = this._lastSelectedOp;
             this.show();
         }.bind(this), 100);
-    };
+    }
 
-    this.show = function ()
+    show()
     {
-        if (this._lastSelectedOp != op) this.onOpSelected(this._lastSelectedOp);
-        // this._tab.activate();
-        if (!op)
+        if (this._lastSelectedOp != this._op) this.onOpSelected(this._lastSelectedOp);
+
+        if (!this._op)
         {
             this._currentName = null;
             this._tab.html("<h3>Code</h3>Select any Op");
             return;
         }
 
-        // if (this._currentName == op.objName) return;
-
-        this._currentName = op.objName;
+        this._currentName = this._op.objName;
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
-
         if (window.process && window.process.versions.electron) return;
-        if (op)
+        if (this._op)
         {
             CABLES.api.get(
-                "op/" + op.objName + "/info",
-                function (res)
+                "op/" + this._op.objName + "/info",
+                (res) =>
                 {
                     const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
                     const doc = {};
@@ -82,31 +76,32 @@ CABLES.UI.MetaCode = function (tabs)
                         doc.attachmentFiles = attachmentFiles;
                     }
 
-                    doc.libs = gui.serverOps.getOpLibs(op.objName, false);
-                    doc.coreLibs = gui.serverOps.getCoreLibs(op.objName, false);
-                    summary = gui.opDocs.getSummary(op.objName);
+                    doc.libs = gui.serverOps.getOpLibs(this._op.objName, false);
+                    doc.coreLibs = gui.serverOps.getCoreLibs(this._op.objName, false);
+                    summary = gui.opDocs.getSummary(this._op.objName);
 
-                    if (op.objName.indexOf("User.") == -1)
-                        op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + op.objName;
+                    if (this._op.objName.indexOf("User.") == -1)
+                        this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + this._op.objName;
 
                     const html = CABLES.UI.getHandleBarHtml("meta_code",
                         {
-                            op,
-                            doc,
-                            summary,
-                            "ownsOp": gui.serverOps.ownsOp(op.objName),
+                            "op": this._op,
+                            "doc": doc,
+                            "summary": summary,
+                            "ownsOp": gui.serverOps.ownsOp(this._op.objName),
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
-                            "opserialized": op.getSerialized()
+                            "opserialized": this._op.getSerialized()
                         });
                     this._tab.html(html);
 
                     perf.finish();
-                }.bind(this), function ()
+                },
+                () =>
                 {
                     console.log("error api?");
                 });
         }
-    };
-};
+    }
+}

@@ -31,10 +31,6 @@ CABLES_CMD_UI.toggleFiles = function ()
     gui.showFileManager();
 };
 
-CABLES_CMD_UI.downloadSVG = function ()
-{
-    gui.patch().downloadSVG();
-};
 
 CABLES_CMD_UI.windowFullscreen = function ()
 {
@@ -132,8 +128,7 @@ CABLES_CMD_UI.centerPatchOps = function ()
 
 CABLES_CMD_UI.flowVis = function ()
 {
-    if (CABLES.UI.userSettings.get("svgpatchview")) gui.patch().toggleFlowVis();
-    else CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
+    CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 };
 
 CABLES_CMD_UI.startPresentationMode = function ()
@@ -147,7 +142,7 @@ CABLES_CMD_UI.startPresentationMode = function ()
 
 CABLES_CMD_UI.showChangelog = function (since)
 {
-    CABLES.CHANGELOG.show(since);
+    (new CABLES.UI.ChangelogToast()).show(since);
 };
 
 
@@ -291,14 +286,6 @@ CABLES_CMD_UI.profileUI = function ()
     CABLES.UI.uiProfiler.show();
 };
 
-CABLES_CMD_UI.toggleTouchpadMode = function ()
-{
-    gui.patch().modeTouchPad = !CABLES.UI.userSettings.get("touchpadmode");
-    CABLES.UI.userSettings.set("touchpadmode", gui.patch().modeTouchPad);
-
-    if (gui.patch().modeTouchPad) CABLES.UI.notify("Touchpad Mode enabled");
-    else CABLES.UI.notify("Touchpad Mode disabled");
-};
 
 CABLES_CMD_UI.zoomOut = function ()
 {
@@ -422,12 +409,12 @@ CMD_UI_COMMANDS.push(
         "icon": "cables",
         "hotkey": "f",
     },
-    {
-        "cmd": "download patch svg",
-        "category": "ui",
-        "func": CABLES_CMD_UI.downloadSVG,
-        "icon": "cables",
-    },
+    // {
+    //     "cmd": "download patch svg",
+    //     "category": "ui",
+    //     "func": CABLES_CMD_UI.downloadSVG,
+    //     "icon": "cables",
+    // },
     {
         "cmd": "toggle window fullscreen",
         "category": "ui",
@@ -468,12 +455,6 @@ CMD_UI_COMMANDS.push(
         "cmd": "ui profiler",
         "category": "ui",
         "func": CABLES_CMD_UI.profileUI,
-        "icon": "command",
-    },
-    {
-        "cmd": "toggle touchpad mode",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleTouchpadMode,
         "icon": "command",
     },
     {

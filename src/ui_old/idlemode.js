@@ -6,7 +6,7 @@ CABLES.UI.idling = false;
 CABLES.UI.idleTimeout = null;
 CABLES.UI.idleModeStart = 0;
 CABLES.UI.idleFocus = false;
-
+const logger = new CABLES.UI.Logger("idlemode");
 CABLES.UI.startIdleMode = function ()
 {
     if (!CABLES.UI.loaded || !window.gui) return;
@@ -15,7 +15,6 @@ CABLES.UI.startIdleMode = function ()
 
     CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/><br/>Click to resume<br/></center>");
 
-    if (gui.patch()) gui.patch().stopFlowVis();
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart");
     CABLES.UI.idling = true;
@@ -40,7 +39,8 @@ CABLES.UI.stopIdleMode = function ()
     if (!CABLES.UI.loaded || !window.gui) return;
     if (!CABLES.UI.idling) return;
 
-    console.log("idled for ", Math.round((Date.now() - CABLES.UI.idleModeStart) / 1000) + " seconds");
+    logger.log("idled for ", Math.round((Date.now() - CABLES.UI.idleModeStart) / 1000) + " seconds");
+
 
     gui.corePatch().resume();
     CABLES.UI.MODAL.hide();
@@ -59,7 +59,7 @@ CABLES.UI.visibilityChanged = function (e)
 CABLES.UI.startIdleListeners = function ()
 {
     if (gui.isRemoteClient) return;
-    console.log("idle listeners started!");
+    logger.log("idle listeners started!");
 
     window.addEventListener("focus", (event) =>
     {

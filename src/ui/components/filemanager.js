@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 
 export default class FileManager
 {

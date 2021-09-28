@@ -104,7 +104,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
             {
                 if (k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
 
-                gui.log.userInteraction("pressed " + e.key);
+                // gui.log.userInteraction("pressed " + e.key);
 
                 if (k.cb) k.cb(e);
                 else console.warn("[keys] key event has no callback", k);

@@ -237,7 +237,8 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                         {
                             const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
-                            gui.patch().showProjectParams();
+                            gui.patchView.showDefaultPanel();
+
                             p.set(oldVal);
                             gui.opParams.show(op);
                             gui.patchView.focusOp(null);
@@ -248,7 +249,8 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
                         {
                             const op = gui.corePatch().getOpById(opid);
                             const p = op.getPort(_portName);
-                            gui.patch().showProjectParams();
+                            gui.patchView.showDefaultPanel();
+
                             p.set(newVal);
                             gui.opParams.show(op);
                             gui.patchView.focusOp(null);

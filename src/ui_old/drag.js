@@ -21,12 +21,12 @@ CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
 
     _event.dataTransfer.setDragImage(CABLES.dragImage, 10, 10);
 
-    CABLES.unBindUploadDragNDrop();
+    CABLES.fileUploader.unBindUploadDragNDrop();
 
     function dragover(event)
     {
         self.internal = true;
-        CABLES.unBindUploadDragNDrop();
+        CABLES.fileUploader.unBindUploadDragNDrop();
 
         event.preventDefault();
         event.stopPropagation();
@@ -35,7 +35,7 @@ CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
     function dragleave(event)
     {
         self.internal = false;
-        CABLES.unBindUploadDragNDrop();
+        CABLES.fileUploader.unBindUploadDragNDrop();
 
         event.preventDefault();
         event.stopPropagation();
@@ -62,8 +62,8 @@ CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
         document.getElementById("patchviews").removeEventListener("dragleave", dragleave);
         document.getElementById("patchviews").removeEventListener("dragend", dragleave);
 
-        CABLES.unBindUploadDragNDrop();
-        CABLES.bindUploadDragNDrop();
+        CABLES.fileUploader.unBindUploadDragNDrop();
+        CABLES.fileUploader.bindUploadDragNDrop();
         self.internal = false;
     }
 

@@ -325,7 +325,7 @@ export default class FindTab
 
         results = results || [];
 
-        gui.log.userInteraction("searches " + str);
+        // gui.log.userInteraction("searches " + str);
 
         if (str.indexOf(":") == 0)
         {
@@ -644,10 +644,10 @@ export default class FindTab
             for (let i = 0; i < results.length; i++)
                 html += this._addResultOp(results[i].op, results[i], i);
 
-            let onclickResults = "gui.log.userInteraction('searchresult click');gui.patch().setSelectedOp(null);";
+            let onclickResults = "gui.patchView.unselectAllOps();";
             for (let i = 0; i < results.length; i++)
-                onclickResults += "gui.patch().addSelectedOpById('" + results[i].op.id + "');";
-            onclickResults += "gui.patch().setStatusSelectedOps();";
+                onclickResults += "gui.patchView.selectOpId('" + results[i].op.id + "');";
+            onclickResults += "gui.patchView.showSelectedOpsPanel();";
             html += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
         }
 

@@ -15,7 +15,6 @@ CABLES.SandboxElectron = function ()
     {
         console.log("patchContentAsString: ", message.patchAsString);
         const patch = JSON.parse(message.patchAsString);
-        // gui.patch().setProject(patch);
 
         gui.patchView.setProject(patch);
 

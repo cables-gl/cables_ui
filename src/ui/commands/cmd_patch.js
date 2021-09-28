@@ -12,7 +12,7 @@ export default patchCommands;
 
 CABLES_CMD_PATCH.selectAllOps = function ()
 {
-    gui.patch().selectAllOps();
+    gui.patchView.selectAllOpsSubPatch(gui.patchView.getCurrentSubPatch());
 };
 
 CABLES_CMD_PATCH.deleteSelectedOps = function ()
@@ -28,7 +28,6 @@ CABLES_CMD_PATCH.reload = function ()
 CABLES_CMD_PATCH.save = function (force)
 {
     let dosave = true;
-
 
     if (!force)
     {
@@ -71,10 +70,6 @@ CABLES_CMD_PATCH.clear = function ()
     gui.corePatch().clear();
 };
 
-CABLES_CMD_PATCH.selectChilds = function ()
-{
-    gui.patch().selectChilds();
-};
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
 {
@@ -116,7 +111,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
-    jQuery.event.props.push("dataTransfer");
+    // jQuery.event.props.push("dataTransfer");
 
     if (!fileElem)
     {
@@ -170,10 +165,10 @@ CABLES_CMD_PATCH.patchWebsite = function ()
     window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project()._id);
 };
 
-CABLES_CMD_PATCH.analyzePatch = function ()
-{
-    CABLES.UI.AnalyzePatch();
-};
+// CABLES_CMD_PATCH.analyzePatch = function ()
+// {
+//     CABLES.UI.analyzePatch();
+// };
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
@@ -325,7 +320,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 {
     const link = CABLES.UI.OPSELECT.linkNewLink;
-    console.log(link);
     const p = link.p1.thePort;
     const p2 = link.p2.thePort;
     CABLES.UI.OPSELECT.linkNewLink = null;
@@ -350,7 +344,6 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
     if (otherPort.parent.objName.indexOf("Ops.Vars.VarGet") == 0)
     {
-        console.log("otherPort.parent.varName.get()", otherPort.parent.varName.get());
         opGetter.varName.set(otherPort.parent.varName.get());
     }
 
@@ -743,11 +736,11 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.stats
     },
-    {
-        "cmd": "analyze patch",
-        "category": "patch",
-        "func": CABLES_CMD_PATCH.analyzePatch
-    },
+    // {
+    //     "cmd": "analyze patch",
+    //     "category": "patch",
+    //     "func": CABLES_CMD_PATCH.analyzePatch
+    // },
     {
         "cmd": "create number variable",
         "category": "patch",
