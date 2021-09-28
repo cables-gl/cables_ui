@@ -101,6 +101,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.tipps = new CABLES.UI.Tipps();
 
+
     this.project = function ()
     {
         return this._currentProject;
@@ -120,7 +121,10 @@ CABLES.UI.GUI = function (cfg)
 
     this.timeLine = function ()
     {
-        if (_patch) return _patch.timeLine;
+        // if (!this._timeline) this._timeLine = new CABLES.TL.UI.TimeLineUI();
+        return this._timeLine;
+
+        // if (_patch) return _patch.timeLine;
     };
 
     this.corePatch = this.scene = function ()
@@ -136,6 +140,11 @@ CABLES.UI.GUI = function (cfg)
     this.jobs = function ()
     {
         return _jobs;
+    };
+
+    this.finishedLoading = function ()
+    {
+        return CABLES.UI.loaded;
     };
 
     this.focusFindResult = (idx, opid, subpatch, x, y) =>
@@ -1892,6 +1901,9 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
+        $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
+        this._timeLine = new CABLES.TL.UI.TimeLineUI();
+
         gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         if (this.isRemoteClient)
@@ -2057,6 +2069,7 @@ function startUi(cfg)
         gui.init();
         gui.checkIdle();
         gui.initCoreListeners();
+
 
         gui.bind(() =>
         {

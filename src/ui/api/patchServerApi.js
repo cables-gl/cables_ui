@@ -258,11 +258,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     const remote = electron.remote;
         //     const dialog = remote.dialog;
 
-        //     console.log("gui.patch().filename before check: ", gui.patch().filename);
+        //     console.log("filename before check: ", filename);
         //     // patch has been saved before, overwrite the patch
-        //     if (gui.patch().filename)
+        //     if (filename)
         //     {
-        //         this.nativeWritePatchToFile(data, gui.patch().filename);
+        //         this.nativeWritePatchToFile(data, filename);
         //     }
         //     else
         //     {
@@ -277,8 +277,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //             function (filePath)
         //             {
         //                 this.nativeWritePatchToFile(data, filePath);
-        //                 gui.patch().filename = filePath; // store the path so we don't have to ask on next save
-        //                 console.log("gui.patch().filename saved: ", gui.patch().filename);
+        //                 filename = filePath; // store the path so we don't have to ask on next save
+        //                 console.log("filename saved: ", filename);
         //                 const projectName = this.getProjectnameFromFilename(filePath);
         //                 gui.setProjectName(projectName);
         //             }

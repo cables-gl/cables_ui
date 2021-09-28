@@ -507,7 +507,7 @@ CABLES.UI.initPortClickListener = function (op, index)
         {
             op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
             $("#portgraph_in_" + index).toggleClass("timingbutton_active");
-            gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
+            gui.timeLine().setAnim(op.portsIn[index].anim, {
                 "name": op.getTitle() + ": " + op.portsIn[index].name,
                 "opid": op.id,
                 "defaultValue": parseFloat($("#portval_" + index).val())
@@ -561,10 +561,10 @@ CABLES.UI.initPortClickListener = function (op, index)
     {
         if ($("#portanim_in_" + index).hasClass("timingbutton_active"))
         {
-            const val = gui.patch().timeLine.removeAnim(op.portsIn[index].anim);
+            const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 
-            gui.patch().timeLine.setAnim(null);
+            gui.timeLine().setAnim(null);
             document.getElementById("portanim_in_" + index).classList.remove("timingbutton_active");
             $("#portval_" + index).val(val);
             $("#portval_" + index).trigger("input");
@@ -576,7 +576,7 @@ CABLES.UI.initPortClickListener = function (op, index)
         document.getElementById("portanim_in_" + index).classList.add("timingbutton_active");
 
         op.portsIn[index].toggleAnim();
-        gui.patch().timeLine.setAnim(op.portsIn[index].anim, {
+        gui.timeLine().setAnim(op.portsIn[index].anim, {
             "opid": op.id,
             "name": op.getTitle() + ": " + op.portsIn[index].name,
             "defaultValue": parseFloat($("#portval_" + index).val())

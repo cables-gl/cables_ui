@@ -498,7 +498,6 @@ CABLES.UI.Patch = function (_gui)
     {
         this.scene = _scene;
 
-        $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
         $("#meta").append();
 
         this.paper = Raphael("patch", 0, 0);
@@ -623,8 +622,6 @@ CABLES.UI.Patch = function (_gui)
             this.lastMouseMoveEvent = null;
         });
 
-
-        this.timeLine = new CABLES.TL.UI.TimeLineUI();
 
         gui.setLayout();
     };
@@ -845,74 +842,66 @@ CABLES.UI.Patch = function (_gui)
         {
             scene.off(patchLoadEndiD);
             isLoading = false;
-            // self.setCurrentSubPatch(currentSubPatch);
-            // self.showProjectParams();
             gui.setStateSaved();
 
             logStartup("Patch loaded");
         });
 
-        scene.addEventListener("subpatchCreated", function ()
-        {
-            if (this.disabled) return;
-            self.updateSubPatches();
-        });
+        // scene.addEventListener("onUnLink", function (p1, p2)
+        // {
+        //     if (this.disabled) return;
+        //     gui.setStateUnsaved();
 
-        scene.addEventListener("onUnLink", function (p1, p2)
-        {
-            if (this.disabled) return;
-            gui.setStateUnsaved();
+        //     // todo: check if needs to be updated ?
+        //     self.updateCurrentOpParams();
 
-            // todo: check if needs to be updated ?
-            self.updateCurrentOpParams();
+        //     for (const i in this.ops)
+        //     {
+        //         for (const j in this.ops[i].links)
+        //         {
+        //             if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
+        //                 ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
+        //                     (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1)))
+        //             {
+        //                 const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
+        //                 {
+        //                     CABLES.UI.undo.add({
+        //                         "title": "Unlink port",
+        //                         undo()
+        //                         {
+        //                             scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+        //                         },
+        //                         redo()
+        //                         {
+        //                             const op1 = scene.getOpById(op1Id);
+        //                             const op2 = scene.getOpById(op2Id);
+        //                             if (!op1 || !op2)
+        //                             {
+        //                                 console.warn("undo: op not found");
+        //                                 return;
+        //                             }
+        //                             op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+        //                         }
+        //                     });
+        //                 }(this.ops[i].links[j].p1.thePort.getName(),
+        //                     this.ops[i].links[j].p2.thePort.getName(),
+        //                     this.ops[i].links[j].p1.thePort.parent.id,
+        //                     this.ops[i].links[j].p2.thePort.parent.id
+        //                 ));
 
-            for (const i in this.ops)
-            {
-                for (const j in this.ops[i].links)
-                {
-                    if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
-                        ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
-                            (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1)))
-                    {
-                        const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
-                        {
-                            CABLES.UI.undo.add({
-                                "title": "Unlink port",
-                                undo()
-                                {
-                                    scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                                },
-                                redo()
-                                {
-                                    const op1 = scene.getOpById(op1Id);
-                                    const op2 = scene.getOpById(op2Id);
-                                    if (!op1 || !op2)
-                                    {
-                                        console.warn("undo: op not found");
-                                        return;
-                                    }
-                                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                                }
-                            });
-                        }(this.ops[i].links[j].p1.thePort.getName(),
-                            this.ops[i].links[j].p2.thePort.getName(),
-                            this.ops[i].links[j].p1.thePort.parent.id,
-                            this.ops[i].links[j].p2.thePort.parent.id
-                        ));
+        //                 this.ops[i].links[j].hideAddButton();
 
-                        this.ops[i].links[j].hideAddButton();
-
-                        this.ops[i].links[j].p1.updateUI();
-                        this.ops[i].links[j].p2.updateUI();
-                        this.ops[i].links[j].p1 = null;
-                        this.ops[i].links[j].p2 = null;
-                        this.ops[i].links[j].remove();
-                    }
-                }
-                // this.ops[i].removeDeadLinks();
-            }
-            this.checkLinkTimeWarnings();
-        }.bind(this));
+        //                 this.ops[i].links[j].p1.updateUI();
+        //                 this.ops[i].links[j].p2.updateUI();
+        //                 this.ops[i].links[j].p1 = null;
+        //                 this.ops[i].links[j].p2 = null;
+        //                 this.ops[i].links[j].remove();
+        //             }
+        //         }
+        //         // this.ops[i].removeDeadLinks();
+        //     }
+        //     this.checkLinkTimeWarnings();
+        // }.bind(this));
 
         // scene.addEventListener("onLink", this.onLinkEvent.bind(this));
         // scene.addEventListener("onOpAdd", this.initUiOp.bind(this));

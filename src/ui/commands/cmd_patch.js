@@ -294,7 +294,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
                 if (p2)
                 {
                     p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
-                    console.log(p2);
                 }
             }
             else
@@ -304,7 +303,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
                 if (p2)
                 {
                     p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
-                    console.log(p2);
                 }
             }
 
@@ -444,73 +442,6 @@ CABLES_CMD_PATCH.setOpTitle = function ()
         });
 };
 
-
-CABLES_CMD_PATCH.tidyChildOps = function ()
-{
-    const selops = gui.patch().getSelectedOps();
-    const opWidth = 150;
-    const opHeight = 40;
-
-    function getChildColumns(op, depth)
-    {
-        depth = depth || 0;
-        const childs = op.getOutChilds();
-        for (let i = 0; i < childs.length; i++)
-        {
-            depth = getChildColumns(childs[i], depth);
-            if (i > 0)depth++;
-        }
-
-        return depth;
-    }
-
-
-    function tidyChilds(op, parentX, parentY)
-    {
-        const childs = op.getOutChilds();
-        let addY = 0;
-        if (childs.length > 1) addY = opHeight * 0.5;
-
-        let i = 0;
-        let childWidth = 0;
-        for (i = 0; i < childs.length; i++)
-        {
-            if (i > 0)childWidth += getChildColumns(childs[i - 1]) * opWidth;
-
-            childs[i].uiAttr({
-                "translate": {
-                    "x": parentX + childWidth + (i * opWidth),
-                    "y": parentY + opHeight + addY
-                }
-            });
-        }
-
-        for (i = 0; i < childs.length; i++)
-        {
-            tidyChilds(childs[i], childs[i].uiAttribs.translate.x, childs[i].uiAttribs.translate.y);
-        }
-    }
-
-    if (selops && selops.length > 0)
-    {
-        console.log("tidy!");
-
-        for (let i = 0; i < selops.length; i++)
-        {
-            const op = selops[i].op;
-            const y = op.uiAttribs.translate.y;
-            const x = op.uiAttribs.translate.x;
-
-            tidyChilds(op, x, y);
-        }
-    }
-
-    for (let i = 0; i < gui.patch().ops.length; i++)
-    {
-        gui.patch().ops[i].setPosFromUiAttr();
-    }
-    gui.patch().updateSubPatches();
-};
 
 CABLES_CMD_PATCH.resume = function ()
 {
@@ -695,11 +626,6 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.patchWebsite,
         "icon": "link"
-    },
-    {
-        "cmd": "tidy selected ops",
-        "category": "patch",
-        "func": CABLES_CMD_PATCH.tidyChildOps
     },
     {
         "cmd": "pause patch execution",
