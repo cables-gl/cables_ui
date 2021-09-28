@@ -478,11 +478,11 @@ CABLES.UI.Patch = function (_gui)
     this.setProject = function (proj)
     {
         this.loadingError = false;
-        if (proj.ui)
-        {
-            if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
-            if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
-        }
+        // if (proj.ui)
+        // {
+        // if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
+        // if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
+        // }
 
         // self.updateViewBox();
         currentSubPatch = 0;
