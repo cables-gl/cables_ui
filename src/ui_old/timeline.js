@@ -1391,6 +1391,28 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateEasingsSelect();
     };
 
+    this.mouseEvent = function (event)
+    {
+        if (!event) return event;
+        if (event.buttons === undefined) // safari
+        {
+            event.buttons = event.which;
+
+            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
+            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
+        }
+
+        if (event.type == "touchmove" && event.originalEvent)
+        {
+            event.buttons = 3;
+            event.clientX = event.originalEvent.touches[0].pageX;
+            event.clientY = event.originalEvent.touches[0].pageY;
+        }
+
+        return event;
+    };
+
+
     this.setSelectedKeysEasing = function (e)
     {
         for (const anii in anims)
@@ -1560,7 +1582,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         }
     });
 
-    $("#timetimeline").bind("mousedown", function (e)
+    $("#timetimeline").bind("mousedown", (e) =>
     {
         $(document).bind("mousemove", mousemoveTime);
         $("#timeline").focus();
@@ -1629,7 +1651,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateOverviewLine();
     });
 
-    $("#timeline").bind("mousemove", function (e)
+    $("#timeline").bind("mousemove", (e) =>
     {
         if (isScrollingTime) return;
         e = this.mouseEvent(e);
@@ -2095,27 +2117,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         if (l === null) return;
         projectLength = Math.floor((parseFloat(l)) / gui.timeLine().getFPS());
         self.redraw();
-    };
-
-    this.mouseEvent = function (event)
-    {
-        if (!event) return event;
-        if (event.buttons === undefined) // safari
-        {
-            event.buttons = event.which;
-
-            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
-            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
-        }
-
-        if (event.type == "touchmove" && event.originalEvent)
-        {
-            event.buttons = 3;
-            event.clientX = event.originalEvent.touches[0].pageX;
-            event.clientY = event.originalEvent.touches[0].pageY;
-        }
-
-        return event;
     };
 
 
