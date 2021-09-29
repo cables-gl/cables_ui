@@ -373,10 +373,11 @@ export default class GlViewBox
                     ops[i].uiAttribs.translate.y,
                     0);
 
-                bb.applyPos(
-                    ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
-                    ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
-                    0);
+                if (this.glPatch.getGlOp(ops[i]))
+                    bb.applyPos(
+                        ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
+                        ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
+                        0);
             }
         }
 

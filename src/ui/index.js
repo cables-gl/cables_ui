@@ -60,6 +60,7 @@ import Jobs from "./components/jobs";
 import defaultops from "./defaultops";
 import { arrayContains, uniqueArray } from "./utils/helper";
 import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
+import GlPatchAPI from "./glpatch/patchapi";
 
 
 CABLES = CABLES || {};
@@ -87,6 +88,7 @@ CABLES.GLGUI.CURSOR_HAND = 1;
 // expose global classes
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
+CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
 
 
