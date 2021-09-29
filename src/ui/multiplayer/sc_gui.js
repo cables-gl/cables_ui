@@ -1,6 +1,5 @@
-CABLES = CABLES || {};
 
-CABLES.UI.ScGui = class extends CABLES.EventTarget
+export default class ScGui extends EventTarget
 {
     constructor(connection)
     {
@@ -135,4 +134,4 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
         const html = CABLES.UI.getHandleBarHtml("socketinfo", data);
         return html;
     }
-};
+}

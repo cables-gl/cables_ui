@@ -1,6 +1,6 @@
 CABLES = CABLES || {};
 
-CABLES.UI.ScState = class extends CABLES.EventTarget
+export default class ScState extends EventTarget
 {
     constructor(connection)
     {
@@ -126,4 +126,4 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
             "bb": Math.round(255 * b)
         };
     }
-};
+}

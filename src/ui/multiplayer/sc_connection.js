@@ -1,10 +1,15 @@
-CABLES = CABLES || {};
 
-CABLES.UI.ScConnection = class extends CABLES.EventTarget
+import ScState from "./sc_state";
+import PacoConnector from "./sc_paconnector";
+import Logger from "../utils/logger";
+
+export default class ScConnection extends EventTarget
 {
     constructor(cfg)
     {
         super();
+
+        this._log = new Logger("scconnection");
         this.PING_INTERVAL = 5000;
         this.PINGS_TO_TIMEOUT = 2;
         this.channelName = null;
@@ -18,8 +23,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         this._receivePaco = false;// gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
         this._sendPacoInitial = false;//! gui.isRemoteClient;
 
-        console.log("this._receivePaco", this._receivePaco);
-        console.log("this._sendPacoInitial", this._sendPacoInitial);
+        this._log.log("this._receivePaco", this._receivePaco);
+        this._log.log("this._sendPacoInitial", this._sendPacoInitial);
 
 
         if (cfg) this._init();
@@ -31,7 +36,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (!this._paco)
         {
-            this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
+            this._paco = new PacoConnector(this, gui.patchConnection);
             gui.patchConnection.connectors.push(this._paco);
         }
 
@@ -57,7 +62,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (!this._active)
         {
-            console.info("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
+            this._log.info("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
             return;
         }
         this._token = this._scConfig.token;
@@ -69,7 +74,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             for await (const { error } of this._socket.listener("error"))
             {
-                console.error(error);
+                this._log.error(error);
                 this._connected = false;
 
                 this.emitEvent("connectionChanged");
@@ -81,8 +86,8 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 this.emitEvent("netActivityIn");
-                // console.info("cables-socketcluster clientId", this._socket.clientId);
-                console.log("sc connected!");
+                // this._log.info("cables-socketcluster clientId", this._socket.clientId);
+                this._log.log("sc connected!");
                 this._connected = true;
 
                 this.emitEvent("connectionChanged");
@@ -148,7 +153,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         })();
 
 
-        this._state = new CABLES.UI.ScState(this);
+        this._state = new ScState(this);
     }
 
     isConnected()
@@ -232,11 +237,11 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
 
         if (msg.name == "paco")
         {
-            console.log("paco message !");
+            this._log.log("paco message !");
 
             if (!this._paco)
             {
-                // console.log(msg);
+                // this._log.log(msg);
 
                 if (msg.data.event != CABLES.PACO_LOAD)
                 {
@@ -244,9 +249,9 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
                 }
                 // debugger;
 
-                console.log("first paco message !");
+                this._log.log("first paco message !");
                 gui.corePatch().clear();
-                this._paco = new CABLES.UI.PacoConnector(this, gui.patchConnection);
+                this._paco = new PacoConnector(this, gui.patchConnection);
                 gui.patchConnection.connectors.push(this._paco);
             }
             else if (msg.data.event == CABLES.PACO_LOAD) return;
@@ -262,7 +267,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
         {
             if (msg.clientId == this._socket.clientId) return;
 
-            console.log("RESYNC sending paco patch....");
+            this._log.log("RESYNC sending paco patch....");
             this.startPacoSend();
         }
         if (msg.name === "pingMembers")
@@ -283,7 +288,7 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
     {
         if (msg.clientId == this._socket.clientId) return;
 
-        // console.log("msg", msg);
+        // this._log.log("msg", msg);
         this.emitEvent(msg.name, msg);
     }
 
@@ -294,4 +299,4 @@ CABLES.UI.ScConnection = class extends CABLES.EventTarget
             this.emitEvent("onInfoMessage", msg);
         }
     }
-};
+}

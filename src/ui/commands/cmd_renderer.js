@@ -53,7 +53,6 @@ CABLES_CMD_RENDERER.aspect = function (a)
                 else
                 {
                     const s = parseFloat(r);
-                    console.log("set to", r);
                     CABLES_CMD_RENDERER.aspect(s);
                 }
             });

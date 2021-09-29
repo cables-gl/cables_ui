@@ -48,7 +48,6 @@ export default class Bookmarks
             }
             else
             {
-                // console.log("op not found",bookmarks[i]);
             }
         }
 
@@ -87,7 +86,6 @@ export default class Bookmarks
                     const elements = document.getElementsByClassName("toggle-bookmark-button");
                     for (let eli = 0; eli < elements.length; eli++)
                     {
-                        console.log(eli, elements[eli].classList);
                         elements[eli].classList.remove("icon-bookmark-filled");
                         elements[eli].classList.add("icon-bookmark");
                     }
@@ -101,7 +99,6 @@ export default class Bookmarks
             const elements = document.getElementsByClassName("toggle-bookmark-button");
             for (let eli = 0; eli < elements.length; eli++)
             {
-                console.log(eli, elements[eli].classList);
                 elements[eli].classList.add("icon-bookmark-filled");
                 elements[eli].classList.remove("icon-bookmark");
             }

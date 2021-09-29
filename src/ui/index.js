@@ -47,6 +47,9 @@ import Logger from "./utils/logger";
 import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
 import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import OpDocs from "./components/opdocs";
+import ScConnection from "./multiplayer/sc_connection";
+import ScGui from "./multiplayer/sc_gui";
+import PacoConnector from "./multiplayer/sc_paconnector";
 
 
 CABLES = CABLES || {};
@@ -68,6 +71,10 @@ CABLES.GLGUI.CURSOR_HAND = 1;
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLUI.glUiConfig = gluiconfig;
+
+
+CABLES.UI.ScConnection = ScConnection;
+CABLES.UI.ScGui = ScGui;
 
 CABLES.UI.Logger = Logger;
 CABLES.UI.Bookmarks = Bookmarks;
@@ -107,6 +114,7 @@ CABLES.UI.ChangelogToast = ChangelogToast;
 CABLES.UI.TransformsOverlay = TransformsOverlay;
 CABLES.UI.Gizmo = Gizmo;
 CABLES.UI.OpDocs = OpDocs;
+
 
 // expose global objects
 CABLES.api = new Api();

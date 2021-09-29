@@ -284,7 +284,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-            console.log(p, p.type, CABLES.OP_PORT_TYPE_VALUE, opGetter, opSetter);
             opSetter.getPort(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
