@@ -98,7 +98,6 @@ export default class Keypresenter
             }
 
             this._lastKeyEvent = Date.now();
-            // console.log(e);
         }.bind(this));
 
         document.addEventListener("mousedown", function (e)

@@ -1,5 +1,6 @@
 import GlUiConfig from "../glpatch/gluiconfig";
 import GlRect from "./glrect";
+import Logger from "../utils/logger";
 
 
 export default class GlRectInstancer extends CABLES.EventTarget
@@ -8,10 +9,11 @@ export default class GlRectInstancer extends CABLES.EventTarget
     {
         super();
         options = options || {};
+        this._log = new Logger("glrectinstancer");
 
         if (!cgl)
         {
-            console.log("[RectInstancer] no cgl");
+            this._log.warn("[RectInstancer] no cgl");
             throw new Error("[RectInstancer] no cgl");
         }
 
@@ -376,9 +378,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         }
 
         this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
-
-        // console.log(this._attrBuffTextures);
-        // console.log("this._textures.length",this._textures.length);
     }
 
 
@@ -388,17 +387,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         {
             if (this._textures[0])
                 this._cgl.setTexture(i, this._textures[0].texture.tex);
-            // if (this._textures[i])
-                // this._cgl.setTexture(this._textures[i].num, this._textures[i].texture.tex);
-            // else
-            // if (this._textures[0]) this._cgl.setTexture(i, this._textures[0].texture.tex);
-
-
-            // CGL.Texture.getEmptyTexture(this._cgl).tex
-
-
-            // this._cgl.setTexture(this._textures[0].num, this._textures[0].texture.tex);
-            // console.log("bind",i,this._textures[i].texture.width);
         }
 
         if (this._textures[0]) this._cgl.setTexture(0, this._textures[0].texture.tex);
@@ -426,7 +414,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     rebuild()
     {
-        // console.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
+        // this._log.log("rebuild!", this._name, this._attrBuffPos.length / 3, this._needsRebuildReason);
         this._needsRebuildReason = "";
         // todo only update whats needed
 
@@ -435,7 +423,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (this._reUploadAttribs)
         {
             const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
-            // console.log("reupload all attribs");
+            // this._log.log("reupload all attribs");
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
@@ -491,7 +479,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (this._counter > this._num - 100)
         {
             this._num += 5000;
-            console.log("rectinstancer " + this._name + " resize to", this._num);
+            this._log.log("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
             this._needsRebuildReason = "resize";

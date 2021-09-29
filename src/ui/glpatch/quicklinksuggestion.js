@@ -78,8 +78,6 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
         {
             const p = op1.portsOut[j];
 
-            console.log(p.name, "num:", op2.countFittingPorts(p));
-
             const numFitting = op2.countFittingPorts(p);
             let addText = "...";
             if (numFitting > 0)

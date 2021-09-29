@@ -116,8 +116,8 @@ export default class GlViewBox
 
     _onCanvasTouchMove(e)
     {
-        console.log(e);
-        console.log(e.touches.length);
+        // console.log(e);
+        // console.log(e.touches.length);
     }
 
     _onCanvasMouseMove(e)

@@ -241,10 +241,7 @@ export default class GlSplineDrawer
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
-            // console.log("yay");
-
             this.rebuild();
-            // this._mesh.unBind();
         }
     }
 

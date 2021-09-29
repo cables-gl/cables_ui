@@ -49,8 +49,6 @@ export default class WatchArrayTab extends CABLES.EventTarget
             return;
         }
 
-        // console.log(this._id, this._ele);
-
         this._ele.classList.add("editor_spreadsheet");
 
         this._eleIconbar = ele.create("div");
@@ -113,7 +111,6 @@ export default class WatchArrayTab extends CABLES.EventTarget
             c = Math.floor(c / 26) - 1;
         }
 
-        // console.log("colname", c, str);
         this.colNames[_c] = str;
 
         return str;
@@ -124,7 +121,6 @@ export default class WatchArrayTab extends CABLES.EventTarget
         if (!this.port) return [];
         if (this.port.type == CABLES.OP_PORT_TYPE_ARRAY)
         {
-            // console.log("port type", this.port.type);
             return this.port.get();
         }
 
@@ -182,7 +178,6 @@ export default class WatchArrayTab extends CABLES.EventTarget
                 this._pixelData
             );
 
-            // console.log(this._pixelData);
             return this._pixelData;
         }
     }

@@ -20,7 +20,7 @@ export default class Exporter
         {
             url += "?version=" + this._versionId;
         }
-        console.log("GUI EXPORT", url);
+
         const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
 
         CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });

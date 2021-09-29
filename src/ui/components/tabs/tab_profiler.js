@@ -127,7 +127,6 @@ export default class Profiler
         {
             clearInterval(this.intervalId);
             this.intervalId = null;
-            console.log("stopping interval...");
             return;
         }
         ele.byId("profilerdata").innerHTML = htmlData;

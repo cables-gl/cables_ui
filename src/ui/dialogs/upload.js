@@ -1,10 +1,12 @@
 // http://html5doctor.com/drag-and-drop-to-server/
+import Logger from "../utils/logger";
 
 
 export default class FileUploader
 {
     constructor()
     {
+        this._log = new Logger("fileuploader");
         this._uploadDropEvent = null;
         this._uploadDropListener = this.uploadDrop.bind(this);
         this._uploadDragOverListener = this.uploadDragOver.bind(this);
@@ -33,7 +35,7 @@ export default class FileUploader
 
         if (CABLES.DragNDrop.internal)
         {
-            console.log("cancel because internal");
+            this._log.error("cancel because internal");
             return;
         }
 
@@ -76,7 +78,7 @@ export default class FileUploader
                     },
                     (err, res) =>
                     {
-                        console.log("file uploaded!");
+                        this._log.error("file uploaded!");
                     });
             }, false);
         reader.readAsDataURL(file);
@@ -103,7 +105,7 @@ export default class FileUploader
 
         if (event.dataTransfer.files.length === 0)
         {
-            console.log("no files to upload...");
+            this._log.warn("no files to upload...");
             return;
         }
         const files = event.dataTransfer.files;

@@ -2,7 +2,6 @@ export default class Gizmo
 {
     constructor(cgl)
     {
-        console.log("GIZMNOOO!!!");
         this._cgl = cgl;
         this._eleCenter = null;
         this._eleX = null;

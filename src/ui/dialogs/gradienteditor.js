@@ -1,7 +1,10 @@
+import Logger from "../utils/logger";
+
 export default class GradientEditor
 {
     constructor(opid, portname)
     {
+        this._log = new Logger("gradienteditor");
         this._opId = opid;
         this._portName = portname;
 
@@ -27,7 +30,7 @@ export default class GradientEditor
             const canvas = document.getElementById("gradientEditorCanvas");
             if (!canvas)
             {
-                console.log("[gradienteditor] no canvas found");
+                this._log.error("[gradienteditor] no canvas found");
                 return;
             }
             this._ctx = canvas.getContext("2d");
@@ -139,7 +142,6 @@ export default class GradientEditor
 
             if (e.target.tagName == "svg") // e.target == key.rect.node ||
             {
-                // console.log(e.target);
                 attribs.x = e.offsetX - (this._keyWidth / 2);
                 key.pos = (attribs.x + this._keyWidth / 2) / this._width;
             }
@@ -180,7 +182,6 @@ export default class GradientEditor
             {
                 key.rect.remove();
                 this.deleteKey(key);
-                console.log("key should be deleted!");
             }
         }
 
@@ -222,7 +223,7 @@ export default class GradientEditor
             }
             catch (e)
             {
-                console.log(e);
+                this._log.error(e);
             }
         }
 

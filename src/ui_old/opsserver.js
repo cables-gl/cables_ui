@@ -6,6 +6,8 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.ServerOps = function (gui, patchId, next)
 {
     let ops = [];
+    this._loadedLibs = [];
+    this._loadedCoreLibs = [];
 
     const self = this;
 
@@ -707,8 +709,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
         );
     };
 
-    this._loadedLibs = [];
-    this._loadedCoreLibs = [];
 
     this.getOpLibs = function (opname, checkLoaded)
     {

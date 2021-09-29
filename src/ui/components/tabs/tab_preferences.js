@@ -26,7 +26,6 @@ export default class Preferences
 
     setSwitchValue(name, value)
     {
-        // console.log("setSwitchValue",name,value);
         if (value === null)value = false;
         const elements = document.getElementsByClassName("prefswitch");
         for (let i = 0; i < elements.length; i++)
@@ -105,7 +104,6 @@ export default class Preferences
 
         CABLES.UI.userSettings.addEventListener("onChange", () =>
         {
-            // console.log("settings changed!!!");
             this.updateValues();
         });
     }

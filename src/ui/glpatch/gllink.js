@@ -1,5 +1,6 @@
 import GlUiConfig from "./gluiconfig";
 import GlCable from "./glcable";
+import Logger from "../utils/logger";
 
 export default class GlLink
 {
@@ -8,6 +9,7 @@ export default class GlLink
         portNameIn,
         portNameOut, portIdInput, portIdOutput, type, visible = true)
     {
+        this._log = new Logger("gllink");
         this._id = id;
         this._link = link;
         this._visible = visible;
@@ -69,7 +71,6 @@ export default class GlLink
                     pOut = opOut.getPortById(this._portIdOutput),
                     llink = pOut.getLinkTo(pIn);
 
-                // console.log("this._glPatch.subPatch", this._glPatch.subPatch);
                 gui.opSelect().show(
                     {
                         "x": 0,
@@ -196,7 +197,7 @@ export default class GlLink
             }
             else
             {
-                console.log("gllink no op in/out");
+                this._log.warn("no op in/out");
             }
         }
         else this._cable.setPosition(0, 0, 0, 0);
@@ -227,7 +228,7 @@ export default class GlLink
 
         if (!this._opIn || !this._opOut)
         {
-            console.log("[glLink] unknown ops...");
+            this._log.warn("[glLink] unknown ops...");
             return;
         }
 

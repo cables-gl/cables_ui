@@ -282,7 +282,6 @@ CABLES_CMD_UI.profileGPU = function ()
 
 CABLES_CMD_UI.profileUI = function ()
 {
-    console.log("CABLES_CMD_UI.profileUI");
     CABLES.UI.uiProfiler.show();
 };
 

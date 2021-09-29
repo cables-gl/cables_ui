@@ -83,8 +83,6 @@ export default class ContextMenu
                             CABLES.contextMenu.close();
                             obj.refresh(parent);
                         }, 100);
-
-                        console.log("refreshing...");
                     }
                     else CABLES.contextMenu.close();
 

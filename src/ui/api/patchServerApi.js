@@ -1,9 +1,12 @@
 
+import Logger from "../utils/logger";
+
 export default class PatchSaveServer extends CABLES.EventTarget
 {
     constructor()
     {
         super();
+        this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
     }
 
@@ -112,7 +115,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //         {
         //             this.nativeWritePatchToFile(data, filePath);
         //             this.filename = filePath; // store the path so we don't have to ask on next save
-        //             console.log("this.filename saved: ", this.filename);
+        //             this._log.log("this.filename saved: ", this.filename);
         //             const projectName = self.getProjectnameFromFilename(filePath);
         //             gui.setProjectName(projectName);
         //         }
@@ -121,9 +124,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // }
 
         const project = gui.project();
-
         const copyCollaborators = (project.settings.opExample.length == 0 && !project.settings.isPublic); // dont do this for example and public patches
-        console.log("collabsen", project.settings, copyCollaborators);
+
         let prompt = "Enter a name for the copy of this Project.";
 
         if (copyCollaborators)
@@ -221,7 +223,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            // console.log(ops[i]);
+            // this._log.log(ops[i]);
             if (ops[i].uiAttribs.error) delete ops[i].uiAttribs.error;
             if (ops[i].uiAttribs.warning) delete ops[i].uiAttribs.warning;
             if (ops[i].uiAttribs.hint) delete ops[i].uiAttribs.hint;
@@ -260,7 +262,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     const remote = electron.remote;
         //     const dialog = remote.dialog;
 
-        //     console.log("filename before check: ", filename);
+        //     this._log.log("filename before check: ", filename);
         //     // patch has been saved before, overwrite the patch
         //     if (filename)
         //     {
@@ -280,7 +282,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //             {
         //                 this.nativeWritePatchToFile(data, filePath);
         //                 filename = filePath; // store the path so we don't have to ask on next save
-        //                 console.log("filename saved: ", filename);
+        //                 this._log.log("filename saved: ", filename);
         //                 const projectName = this.getProjectnameFromFilename(filePath);
         //                 gui.setProjectName(projectName);
         //             }
@@ -306,7 +308,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             document.getElementById("patchname").classList.add("blinking");
 
 
-            console.log("saving data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
+            this._log.log("saving data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
 
             CABLES.sandbox.savePatch(
                 {
@@ -323,7 +325,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     if (err)
                     {
-                        console.warn("[save patch error]", err);
+                        this._log.warn("[save patch error]", err);
                     }
 
                     gui.jobs().finish("projectsave");
@@ -339,7 +341,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                         CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
 
-                        console.log(r);
+                        this._log.log(r);
                         return;
                     }
                     else CABLES.UI.notify("Patch saved");
@@ -349,7 +351,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     const cgl = thePatch.cgl;
                     const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                    if (CABLES.sandbox.manualScreenshot())console.log("not sending screenshot...");
+                    if (CABLES.sandbox.manualScreenshot()) this._log.log("not sending screenshot...");
 
                     if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot())
                     {
@@ -376,7 +378,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 catch (e)
                 {
                     found = true;
-                    // console.log(e);
+                    // this._log.log(e);
                     // this is the op!
 
                     iziToast.error({
@@ -407,7 +409,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 }
             }
 
-            console.log(e);
+            this._log.log(e);
             if (!found)
                 CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
         }
@@ -423,7 +425,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
      */
     // nativeWritePatchToFile(patchData, path)
     // {
-    //     console.log("Saving patch to: ", path);
+    //     this._log.log("Saving patch to: ", path);
     //     const fs = require("fs");
     //     if (path)
     //     {
@@ -432,9 +434,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
     //             if (err)
     //             {
     //                 CABLES.UI.notifyError("Error saving patch");
-    //                 return console.log(err);
+    //                 return this._log.log(err);
     //             }
-    //             console.log("Patch successfully saved");
+    //             this._log.log("Patch successfully saved");
     //             CABLES.UI.notify("patch saved");
     //             gui.jobs().finish("projectsave");
     //             gui.setStateSaved();
@@ -507,7 +509,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
             reader.onload = (event) =>
             {
-                console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
+                this._log.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
                 CABLESUILOADER.talkerAPI.send(
                     "saveScreenshot",
                     {
@@ -518,9 +520,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     {
                         if (error)
                         {
-                            console.warn("[screenshot save error]", error);
+                            this._log.warn("[screenshot save error]", error);
                         }
-                        // console.log("screenshot saved!");
+                        // this._log.log("screenshot saved!");
                         gui.jobs().finish("screenshotsave");
                         if (gui.onSaveProject) gui.onSaveProject();
                         if (cb)cb();
@@ -535,7 +537,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
             catch (e)
             {
-                console.log(e);
+                this._log.log(e);
             }
         });
         // }, false, "image/webp", 80);

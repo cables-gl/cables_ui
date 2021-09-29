@@ -67,7 +67,6 @@ export default class UiProfiler
                     "last": lastTime,
                     avg
                 });
-            // console.log(i, this._measures[i].highlight);
         }
 
         data.sort(function (a, b)
@@ -126,7 +125,6 @@ export default class UiProfiler
             {
                 if (ignorethis) return;
                 const time = performance.now() - this.start;
-                // console.log(name,time);
 
                 perf._measures[name] = perf._measures[name] || {};
                 perf._measures[name].count = perf._measures[name].count || 0;

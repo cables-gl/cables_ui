@@ -1,4 +1,5 @@
 import GlUiConfig from "./gluiconfig";
+import Logger from "../utils/logger";
 
 export default class GlCable
 {
@@ -7,6 +8,8 @@ export default class GlCable
         this.LINETYPE_CURVED = 0;
         this.LINETYPE_STRAIGHT = 1;
         this.LINETYPE_SIMPLE = 2;
+
+        this._log = new Logger("glcable");
 
         this._buttonSize = 12;
         this._linetype = this.LINETYPE_CURVED;
@@ -86,7 +89,6 @@ export default class GlCable
                     this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
                     this._glPatch.getOnlySelectedOp().portsOut.length > 0)
                 {
-                // if (r)console.log(this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type && this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type, this._glPatch.getOnlySelectedOp().portsIn[0].type, this._glPatch.getOnlySelectedOp().portsOut[0].type, this._type);
                     if (!(
                         this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
                     this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
@@ -184,7 +186,6 @@ export default class GlCable
                 posX2 = this._x2 + GlUiConfig.portWidth / 2 - 5;
             }
 
-            // console.log(this._linetype);
             if (this._linetype == this.LINETYPE_CURVED)
             {
                 if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
@@ -333,7 +334,7 @@ export default class GlCable
 
         if (this._disposed)
         {
-            console.log("disposed already!!!?!");
+            this._log.warn("disposed already!!!?!");
         }
 
         const perf = CABLES.UI.uiProfiler.start("glcable collideMouse");

@@ -318,7 +318,6 @@ export default class FindTab
 
     _doSearch(str, userInvoked, ops, results)
     {
-        console.log("_doSearch", str);
         this._lastSearch = str;
 
         str = str.toLowerCase();
@@ -431,7 +430,6 @@ export default class FindTab
                 {
                     for (let k = 0; k < ops[i].portsIn.length; k++)
                     {
-                        console.log(ops[i].portsIn[k].uiAttribs.display);
                         if (ops[i].portsIn[k].uiAttribs.display === "file")
                         {
                             if (ops[i].portsIn[k].get())

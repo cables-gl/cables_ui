@@ -1,5 +1,12 @@
+import Logger from "../utils/logger";
+
 export default class ChangelogToast
 {
+    constructor()
+    {
+        this._log = new Logger("changelog");
+    }
+
     getHtml(cb, since)
     {
         CABLES.api.get("changelog?num=1", (obj) =>
@@ -16,7 +23,7 @@ export default class ChangelogToast
             if (!CABLES.UI.userSettings.get("changelogLastView"))
             {
                 firstTime = true;
-                console.log("first time changelog!");
+                this._log.log("first time changelog!");
             }
 
             CABLES.UI.userSettings.set("changelogLastView", obj.ts);
