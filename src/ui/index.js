@@ -53,6 +53,8 @@ import PacoConnector from "./multiplayer/sc_paconnector";
 import EditorTab from "./components/tabs/tab_editor";
 import Chat from "./components/tabs/tab_chat";
 import MetaOpParams from "./components/tabs/meta_opparams";
+import ServerOps from "./api/opsserver";
+import text from "./text.json";
 
 
 CABLES = CABLES || {};
@@ -120,11 +122,15 @@ CABLES.UI.OpDocs = OpDocs;
 CABLES.UI.EditorTab = EditorTab;
 CABLES.UI.Chat = Chat;
 CABLES.UI.MetaOpParams = MetaOpParams;
+CABLES.UI.ServerOps = ServerOps;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
+
+CABLES.UI.TIPS = text.tips;
+CABLES.UI.TEXTS = text.text;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
