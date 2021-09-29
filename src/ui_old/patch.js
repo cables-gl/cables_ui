@@ -52,12 +52,11 @@ CABLES.UI.Patch = function (_gui)
     this.isLoading = function () { return isLoading; };
 
 
-    this.saveCurrentProjectAs = function (cb, _id, _name)
-    {
-        gui.patchView.store.saveAs(cb, _id, _name);
-    };
+    // this.saveCurrentProjectAs = function (cb, _id, _name)
+    // {
+    //     gui.patchView.store.saveAs(cb, _id, _name);
+    // };
 
-    // -----------------------------------------------
 
     this._timeoutLinkWarnings = null;
     this._checkLinkCounter = -1;
@@ -93,20 +92,14 @@ CABLES.UI.Patch = function (_gui)
         }, 2);
     };
 
-    this.checkUpdatedSaveForce = function (updated)
-    {
-        this._serverDate = updated;
-        CABLES.UI.MODAL.hide(true);
-        CABLES.CMD.PATCH.save(true);
-    };
 
-    this.saveCurrentProject = function (cb, _id, _name, _force)
-    {
-        // for (let i = 0; i < this.ops.length; i++)
-        //     this.ops[i].removeDeadLinks();
+    // this.saveCurrentProject = function (cb, _id, _name, _force)
+    // {
+    //     // for (let i = 0; i < this.ops.length; i++)
+    //     //     this.ops[i].removeDeadLinks();
 
-        gui.patchView.store.saveCurrentProject(cb, _id, _name, _force);
-    };
+    //     gui.patchView.store.saveCurrentProject(cb, _id, _name, _force);
+    // };
 
     this.getCurrentProject = function ()
     {

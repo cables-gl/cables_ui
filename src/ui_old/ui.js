@@ -68,7 +68,7 @@ CABLES.UI.GUI = function (cfg)
     this.chat = null;
 
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
-    let savedState = true;
+    this._savedState = true;
 
 
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
@@ -1323,7 +1323,7 @@ CABLES.UI.GUI = function (cfg)
             else e.dontPreventDefault = true;
         });
 
-        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
+        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patchView.store.saveAs(); });
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (this.patchView.hasFocus())
@@ -1644,7 +1644,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.getSavedState = function ()
     {
-        return savedState;
+        return this._savedState;
     };
 
     this.setTransformGizmo = function (params)
@@ -1721,7 +1721,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setStateUnsaved = function ()
     {
-        if (savedState)
+        if (this._savedState)
         {
             let title = "";
             if (CABLES.sandbox.isDevEnv())title = "DEV ";
@@ -1729,7 +1729,7 @@ CABLES.UI.GUI = function (cfg)
             document.title = title;
 
             favIconLink.href = "/favicon/favicon_orange.ico";
-            savedState = false;
+            this._savedState = false;
 
             document.getElementById("patchname").classList.add("warning");
 
@@ -1752,7 +1752,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setStateSaved = function ()
     {
-        savedState = true;
+        this._savedState = true;
         favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 

@@ -29,6 +29,11 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         corepatch.addEventListener("onOpAdd", this._onAddOpHistory.bind(this));
         corepatch.addEventListener("onOpDelete", this._onDeleteOpUndo.bind(this));
+
+        corepatch.addEventListener("onOpAdd", this.setUnsaved.bind(this));
+        corepatch.addEventListener("onOpDelete", this.setUnsaved.bind(this));
+        corepatch.addEventListener("onLink", this.setUnsaved.bind(this));
+        corepatch.addEventListener("onUnLink", this.setUnsaved.bind(this));
     }
 
     get element() { return this._element || CABLES.UI.PatchView.getElement(); }
@@ -934,8 +939,8 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         catch (exp)
         {
             CABLES.UI.notifyError("Paste failed");
-            console.error(str);
-            console.error(exp);
+            this._log.error(str);
+            this._log.error(exp);
         }
 
         const undoGroup = CABLES.UI.undo.startGroup();
@@ -1077,7 +1082,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                             },
                             redo()
                             {
-                                gui.patch().paste(e);
+                                gui.patchView.clipboardPaste(e);
                             }
                         });
                     }(json.ops[i].id));
@@ -1305,7 +1310,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     centerView(x, y)
     {
         if (this._patchRenderer.center) this._patchRenderer.center(x, y);
-        else console.warn("patchRenderer has no function center");
+        else this._log.warn("patchRenderer has no function center");
     }
 
     getCurrentSubPatch()
@@ -1329,13 +1334,13 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 if (next) next();
             });
         }
-        else console.warn("patchRenderer has no function setCurrentSubPatch");
+        else this._log.warn("patchRenderer has no function setCurrentSubPatch");
     }
 
     focusOp(opid)
     {
         if (this._patchRenderer.focusOp) this._patchRenderer.focusOp(opid);
-        else console.warn("patchRenderer has no function focusOp");
+        else this._log.warn("patchRenderer has no function focusOp");
     }
 
     unselectAllOps()
@@ -1364,13 +1369,18 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (this._patchRenderer.setSelectedOpById) this._patchRenderer.setSelectedOpById(opid);
         // else if (this._patchRenderer.selectOpId) this._patchRenderer.selectOpId(opid);
-        else console.warn("patchRenderer has no function setSelectedOpById");
+        else this._log.warn("patchRenderer has no function setSelectedOpById");
     }
 
     selectChilds(id)
     {
         const op = gui.corePatch().getOpById(id);
         op.selectChilds();
+    }
+
+    setUnsaved()
+    {
+        gui.setStateUnsaved();
     }
 
 

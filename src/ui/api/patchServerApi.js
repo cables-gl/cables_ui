@@ -15,6 +15,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
         this._serverDate = d;
     }
 
+    checkUpdatedSaveForce(updated)
+    {
+        this._serverDate = updated;
+        CABLES.UI.MODAL.hide(true);
+        CABLES.CMD.PATCH.save(true);
+    }
+
+
     checkUpdated(cb)
     {
         if (!gui.project()) return;
@@ -38,7 +46,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     CABLES.UI.MODAL.showError("meanwhile...", "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>");
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
-                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                     gui.jobs().finish("checkupdated");
                 }
@@ -62,7 +70,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             {
                                 CABLES.UI.MODAL.showError("meanwhile...", "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>");
                                 CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
-                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patch().checkUpdatedSaveForce('" + data.updated + "');\">save progress</a>&nbsp;&nbsp;";
+                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs('" + data.updated + "');\">save progress</a>&nbsp;&nbsp;";
                                 CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                                 gui.jobs().finish("checkupdated");
                             }
@@ -97,7 +105,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     gui.bookmarks.cleanUp();
         //     data.ui.bookmarks = gui.bookmarks.getBookmarks();
         //     // data.ui.viewBox = this._viewBox.serialize();
-        //     data.ui.subPatchViewBoxes = gui.patch().getSubPatchViewBoxes();
+        //     data.ui.subPatchViewBoxes = gui.patch.getSubPatchViewBoxes();
         //     data.ui.renderer = {};
         //     data.ui.renderer.w = gui.rendererWidth;
         //     data.ui.renderer.h = gui.rendererHeight;
