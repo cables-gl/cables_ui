@@ -20,7 +20,6 @@ CABLES.UI.Patch = function (_gui)
     const selectedOps = [];
     let currentSubPatch = 0;
 
-    this.lastMouseMoveEvent = null;
 
     let mouseRubberBandStartPos = null;
     let mouseRubberBandPos = null;
@@ -77,15 +76,15 @@ CABLES.UI.Patch = function (_gui)
     // };
 
 
-    this.focus = function ()
-    {
-        $("#patch").focus();
-    };
+    // this.focus = function ()
+    // {
+    //     $("#patch").focus();
+    // };
 
-    this.isFocussed = function ()
-    {
-        return $("#patch").is(":focus");
-    };
+    // this.isFocussed = function ()
+    // {
+    //     return $("#patch").is(":focus");
+    // };
 
     // this.serialize = function (dataUi)
     // {
@@ -454,24 +453,24 @@ CABLES.UI.Patch = function (_gui)
 
     this.setCurrentProject = function (proj)
     {
-        if (self.timeLine) self.timeLine.clear();
+        // if (self.timeLine) self.timeLine.clear();
 
         currentProject = proj;
-        if (currentProject === null)
-        {
-            $("#meta_content_files").hide();
-        }
-        else
-        {
-            $("#meta_content_files").show();
-        }
-        $("#meta_content_files").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
+        // if (currentProject === null)
+        // {
+        //     $("#meta_content_files").hide();
+        // }
+        // else
+        // {
+        //     $("#meta_content_files").show();
+        // }
+        // $("#meta_content_files").hover(function (e)
+        // {
+        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
+        // }, function ()
+        // {
+        //     CABLES.UI.hideInfo();
+        // });
     };
 
     this.loadingError = false;
@@ -479,11 +478,11 @@ CABLES.UI.Patch = function (_gui)
     this.setProject = function (proj)
     {
         this.loadingError = false;
-        if (proj.ui)
-        {
-            if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
-            if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
-        }
+        // if (proj.ui)
+        // {
+        // if (proj.ui.subPatchViewBoxes) subPatchViewBoxes = proj.ui.subPatchViewBoxes;
+        // if (proj.ui.viewBox) this._viewBox.deSerialize(proj.ui.viewBox);
+        // }
 
         // self.updateViewBox();
         currentSubPatch = 0;
@@ -498,135 +497,42 @@ CABLES.UI.Patch = function (_gui)
     {
         this.scene = _scene;
 
-        $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
-        $("#meta").append();
+        // $("#meta").append();
 
-        this.paper = Raphael("patch", 0, 0);
+        // this.paper = Raphael("patch", 0, 0);
         // this._viewBox = new CABLES.UI.PatchViewBox(this, this.paper);
         this.bindScene(self.scene);
 
-        this._elPatchSvg = this._elPatchSvg || $("#patch svg");
-        this._elPatch = this._elPatch || $("#patch");
-        this._elBody = this._elBody || $("body");
+        // this._elPatchSvg = this._elPatchSvg || $("#patch svg");
+        // this._elPatch = this._elPatch || $("#patch");
+        // this._elBody = this._elBody || $("body");
 
-        this._elBody.oncontextmenu =
-        this._elPatchSvg.oncontextmenu =
-        this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
-        document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
+
+        // this._elPatchSvg.oncontextmenu =
+        // this._elPatch.oncontextmenu = function (e) { e.preventDefault(); };
+        // document.addEventListener("contextmenu", function (e) { e.preventDefault(); }, false);
 
         // this._viewBox.bindWheel(this._elPatchSvg);
 
-        this.background = this.paper.rect(-99999, -99999, 2 * 99999, 2 * 99999).attr({
-            "fill": CABLES.UI.uiConfig.colorBackground,
-            "opacity": 0.01,
-            "stroke-width": 0
-        });
 
-        this.background.toBack();
+        // this._elPatchSvg.bind("mouseup", function (event)
+        // {
+        //     rubberBandHide();
+        //     mouseRubberBandSelectedBefore.length = 0;
+        //     gui.setCursor();
+        // });
 
-        this.background.node.onmousemove = function (ev)
-        {
-            CABLES.UI.selectedEndOp = null;
-        };
+        // this._elPatchSvg.bind("mouseenter", function (event) { gui.setCursor(); });
+        // this._elPatchSvg.bind("mouseleave", function (event) { gui.setCursor(); });
 
-        this.background.node.onmousedown = function (ev)
-        {
-            gui.pauseProfiling();
-
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.patch);
-            this._elPatch.focus();
-            CABLES.UI.OPSELECT.linkNewOpToPort = null;
-
-            if (ev.shiftKey)
-            {
-                mouseRubberBandSelectedBefore.length = 0;
-                for (let i = 0; i < selectedOps.length; i++)
-                    mouseRubberBandSelectedBefore.push(selectedOps[i]);
-            }
-            if (!ev.shiftKey && !spacePressed && ev.buttons == CABLES.UI.MOUSE_BUTTON_LEFT)
-            {
-                gui.patch().setSelectedOp(null);
-                // self.showProjectParams();
-            }
-        }.bind(this);
+        // this._elPatchSvg.bind("touchstart", (e) =>
+        // {
+        //     e = CABLES.mouseEvent(e);
+        //     this.lastMouseMoveEvent = null;
+        // });
 
 
-        this.toggleCenterZoom = function (e)
-        {
-            // this._viewBox.centerAllOps();
-        };
-
-        this.background.node.ondblclick = function (e)
-        {
-            e = CABLES.mouseEvent(e);
-            self.toggleCenterZoom(e);
-        };
-
-        $("#patch").on("mousemove", function (e)
-        {
-            if (CABLES.SPLITPANE.bound) return;
-
-            e = CABLES.mouseEvent(e);
-
-            if (CABLES.UI.MOUSEOVERPORT) return;
-            gui.notIdling();
-
-            if (e.metaKey || e.altKey || e.buttons === CABLES.UI.MOUSE_BUTTON_WHEEL)
-            {
-                if (CABLES.UI.quickAddOpStart)
-                {
-                    gui.setCursor("copy");
-
-                    if (!self.quickLinkLine)
-                    {
-                        self.quickLinkLine = new CABLES.UI.SVGLine(
-                            gui.patch().getCanvasCoordsMouse(e).x, // CABLES.UI.quickAddOpStart.op.uiAttribs.translate.x + 30,
-                            CABLES.UI.quickAddOpStart.op.uiAttribs.translate.y + 28);
-                    }
-                    self.quickLinkLine.updateEnd(
-                        gui.patch().getCanvasCoordsMouse(e).x,
-                        gui.patch().getCanvasCoordsMouse(e).y
-                    );
-
-                    return;
-                }
-            }
-            else if (self.quickLinkLine)
-            {
-                self.removeQuickLinkLine();
-                gui.setCursor();
-            }
-
-            if (CABLES.UI.MOUSEDRAGGINGPORT) return; // cancel when dragging port...
-
-            if (e.buttons == CABLES.UI.MOUSE_BUTTON_LEFT && !spacePressed)
-            {
-                for (const i in self.ops)
-                    if (!self.ops[i].isHidden() && (self.ops[i].isDragging || self.ops[i].isMouseOver)) return;
-                rubberBandMove(e);
-            }
-        });
-
-        this._elPatchSvg.bind("mouseup", function (event)
-        {
-            rubberBandHide();
-            mouseRubberBandSelectedBefore.length = 0;
-            gui.setCursor();
-        });
-
-        this._elPatchSvg.bind("mouseenter", function (event) { gui.setCursor(); });
-        this._elPatchSvg.bind("mouseleave", function (event) { gui.setCursor(); });
-
-        this._elPatchSvg.bind("touchstart", (e) =>
-        {
-            e = CABLES.mouseEvent(e);
-            this.lastMouseMoveEvent = null;
-        });
-
-
-        this.timeLine = new CABLES.TL.UI.TimeLineUI();
-
-        gui.setLayout();
+        // gui.setLayout();
     };
 
 
@@ -845,74 +751,66 @@ CABLES.UI.Patch = function (_gui)
         {
             scene.off(patchLoadEndiD);
             isLoading = false;
-            // self.setCurrentSubPatch(currentSubPatch);
-            // self.showProjectParams();
             gui.setStateSaved();
 
             logStartup("Patch loaded");
         });
 
-        scene.addEventListener("subpatchCreated", function ()
-        {
-            if (this.disabled) return;
-            self.updateSubPatches();
-        });
+        // scene.addEventListener("onUnLink", function (p1, p2)
+        // {
+        //     if (this.disabled) return;
+        //     gui.setStateUnsaved();
 
-        scene.addEventListener("onUnLink", function (p1, p2)
-        {
-            if (this.disabled) return;
-            gui.setStateUnsaved();
+        //     // todo: check if needs to be updated ?
+        //     self.updateCurrentOpParams();
 
-            // todo: check if needs to be updated ?
-            self.updateCurrentOpParams();
+        //     for (const i in this.ops)
+        //     {
+        //         for (const j in this.ops[i].links)
+        //         {
+        //             if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
+        //                 ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
+        //                     (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1)))
+        //             {
+        //                 const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
+        //                 {
+        //                     CABLES.UI.undo.add({
+        //                         "title": "Unlink port",
+        //                         undo()
+        //                         {
+        //                             scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
+        //                         },
+        //                         redo()
+        //                         {
+        //                             const op1 = scene.getOpById(op1Id);
+        //                             const op2 = scene.getOpById(op2Id);
+        //                             if (!op1 || !op2)
+        //                             {
+        //                                 console.warn("undo: op not found");
+        //                                 return;
+        //                             }
+        //                             op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
+        //                         }
+        //                     });
+        //                 }(this.ops[i].links[j].p1.thePort.getName(),
+        //                     this.ops[i].links[j].p2.thePort.getName(),
+        //                     this.ops[i].links[j].p1.thePort.parent.id,
+        //                     this.ops[i].links[j].p2.thePort.parent.id
+        //                 ));
 
-            for (const i in this.ops)
-            {
-                for (const j in this.ops[i].links)
-                {
-                    if (this.ops[i].links[j].p1 && this.ops[i].links[j].p2 &&
-                        ((this.ops[i].links[j].p1.thePort == p1 && this.ops[i].links[j].p2.thePort == p2) ||
-                            (this.ops[i].links[j].p1.thePort == p2 && this.ops[i].links[j].p2.thePort == p1)))
-                    {
-                        const undofunc = (function (p1Name, p2Name, op1Id, op2Id)
-                        {
-                            CABLES.UI.undo.add({
-                                "title": "Unlink port",
-                                undo()
-                                {
-                                    scene.link(scene.getOpById(op1Id), p1Name, scene.getOpById(op2Id), p2Name);
-                                },
-                                redo()
-                                {
-                                    const op1 = scene.getOpById(op1Id);
-                                    const op2 = scene.getOpById(op2Id);
-                                    if (!op1 || !op2)
-                                    {
-                                        console.warn("undo: op not found");
-                                        return;
-                                    }
-                                    op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
-                                }
-                            });
-                        }(this.ops[i].links[j].p1.thePort.getName(),
-                            this.ops[i].links[j].p2.thePort.getName(),
-                            this.ops[i].links[j].p1.thePort.parent.id,
-                            this.ops[i].links[j].p2.thePort.parent.id
-                        ));
+        //                 this.ops[i].links[j].hideAddButton();
 
-                        this.ops[i].links[j].hideAddButton();
-
-                        this.ops[i].links[j].p1.updateUI();
-                        this.ops[i].links[j].p2.updateUI();
-                        this.ops[i].links[j].p1 = null;
-                        this.ops[i].links[j].p2 = null;
-                        this.ops[i].links[j].remove();
-                    }
-                }
-                // this.ops[i].removeDeadLinks();
-            }
-            this.checkLinkTimeWarnings();
-        }.bind(this));
+        //                 this.ops[i].links[j].p1.updateUI();
+        //                 this.ops[i].links[j].p2.updateUI();
+        //                 this.ops[i].links[j].p1 = null;
+        //                 this.ops[i].links[j].p2 = null;
+        //                 this.ops[i].links[j].remove();
+        //             }
+        //         }
+        //         // this.ops[i].removeDeadLinks();
+        //     }
+        //     this.checkLinkTimeWarnings();
+        // }.bind(this));
 
         // scene.addEventListener("onLink", this.onLinkEvent.bind(this));
         // scene.addEventListener("onOpAdd", this.initUiOp.bind(this));
@@ -1721,238 +1619,4 @@ CABLES.UI.Patch = function (_gui)
             }
         }
     };
-
-    // this.downloadSVG = function ()
-    // {
-    //     const element = document.createElement("a");
-    //     element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent($("#patch").html()));
-    //     element.setAttribute("download", "patch.svg");
-    //     element.style.display = "none";
-    //     document.body.appendChild(element);
-    //     element.click();
-    //     document.body.removeChild(element);
-    // };
-
-    // this.getSubPatches = function (sort)
-    // {
-    //     return gui.patchView.getSubPatches(sort);
-    // };
-
-    // this.linkTwoOps = function (op1, op2)
-    // {
-    //     this.removeQuickLinkLine();
-    //     const suggestions = [];
-    //     if (!op1 || !op2) return;
-
-    //     for (let j = 0; j < op1.portsOut.length; j++)
-    //     {
-    //         const p = op1.portsOut[j].thePort;
-    //         const numFitting = op2.op.countFittingPorts(p);
-    //         let addText = "...";
-
-    //         if (numFitting > 0)
-    //         {
-    //             if (numFitting == 1)
-    //             {
-    //                 const p2 = op2.op.findFittingPort(p);
-    //                 addText = p2.name;
-    //             }
-
-    //             suggestions.push({
-    //                 p,
-    //                 "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
-    //                 "classname": "port_text_color_" + p.getTypeString().toLowerCase()
-    //             });
-    //         }
-    //     }
-
-    //     if (suggestions.length === 0)
-    //     {
-    //         CABLES.UI.notify("can not link!");
-    //         return;
-    //     }
-    //     if (suggestions.length > 1) op1.oprect.showFocus();
-
-    //     const fakeMouseEvent = {
-    //         "clientX": self.lastMouseMoveEvent.clientX,
-    //         "clientY": self.lastMouseMoveEvent.clientY
-    //     };
-
-    //     function showSuggestions2(id)
-    //     {
-    //         const p = suggestions[id].p;
-    //         const sugIn = [];
-
-    //         for (let i = 0; i < op2.portsIn.length; i++)
-    //         {
-    //             if (CABLES.Link.canLink(op2.portsIn[i].thePort, p))
-    //             {
-    //                 sugIn.push({
-    //                     "p": op2.portsIn[i].thePort,
-    //                     "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].thePort.name,
-    //                     "classname": "port_text_color_" + op2.portsIn[i].thePort.getTypeString().toLowerCase()
-    //                 });
-    //             }
-    //         }
-
-    //         if (sugIn.length == 1)
-    //         {
-    //             gui.corePatch().link(
-    //                 p.parent,
-    //                 p.name,
-    //                 sugIn[0].p.parent,
-    //                 sugIn[0].p.name);
-    //             return;
-    //         }
-
-    //         op2.oprect.showFocus();
-
-    //         new CABLES.UI.SuggestionDialog(sugIn, op2, fakeMouseEvent, null,
-    //             function (sugId)
-    //             {
-    //                 gui.corePatch().link(
-    //                     p.parent,
-    //                     p.name,
-    //                     sugIn[sugId].p.parent,
-    //                     sugIn[sugId].p.name);
-    //             });
-    //     }
-
-    //     if (suggestions.length == 1) showSuggestions2(0);
-    //     else new CABLES.UI.SuggestionDialog(suggestions, op1, fakeMouseEvent, null, showSuggestions2, false);
-    // };
 };
-
-// CABLES.UI.Patch.prototype.getViewBox = function ()
-// {
-//     return this._viewBox;
-// };
-
-// CABLES.UI.Patch.prototype.updateBounds = function ()
-// {
-//     // this.currentPatchBounds = this.getSubPatchBounds();
-// };
-
-// CABLES.UI.Patch.prototype.getNumOps = function ()
-// {
-//     return this.ops.length;
-// };
-
-
-// ---------------------
-
-// CABLES.UI.Patch.prototype.flowvis = false;
-// CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-// CABLES.UI.speedCycle = true;
-
-// CABLES.UI.Patch.prototype.toggleFlowVis = function ()
-// {
-//     if (!this.flowvis)
-//     {
-//         CABLES.UI.Patch.prototype.flowvisStartFrame = 0;
-//         this.startflowVis();
-//         this.flowvis = true;
-//     }
-//     else
-//     {
-//         this.stopFlowVis();
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.stopFlowVis = function ()
-// {
-//     this.scene.removeOnAnimCallback(this.updateFlowVis);
-
-//     this.flowvis = false;
-
-//     for (let i = 0; i < this.ops.length; i++)
-//     {
-//         for (let j = 0; j < this.ops[i].links.length; j++)
-//         {
-//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-//             {
-//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
-
-//                 if (link)
-//                 {
-//                     this.ops[i].links[j].linkLine.node.classList.remove(this.ops[i].links[j].linkLine.speedClass);
-//                     this.ops[i].links[j].linkLine.speedClass = "nospeed";
-//                 }
-//             }
-//         }
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.updateFlowVis = function (time, frame)
-// {
-//     if (CABLES.UI.Patch.prototype.flowvisStartFrame == 0)CABLES.UI.Patch.prototype.flowvisStartFrame = frame;
-//     if (frame - CABLES.UI.Patch.prototype.flowvisStartFrame < 5) return;
-//     if (frame % 5 != 0) return;
-
-//     CABLES.UI.speedCycle = !CABLES.UI.speedCycle;
-
-//     let count = 0;
-//     // var countInvalid=0;
-//     const patch = gui.patch();
-
-//     for (let i = 0; i < patch.ops.length; i++)
-//     {
-//         for (let j = 0; j < patch.ops[i].links.length; j++)
-//         {
-//             if (patch.ops[i].links[j] && patch.ops[i].links[j].linkLine)
-//             {
-//                 let link = patch.ops[i].links[j].p2.thePort.getLinkTo(patch.ops[i].links[j].p1.thePort);
-//                 if (!link) link = patch.ops[i].links[j].p1.thePort.getLinkTo(patch.ops[i].links[j].p2.thePort);
-
-//                 if (link)
-//                 {
-//                     if (link.speedCycle != CABLES.UI.speedCycle)
-//                     {
-//                         count++;
-
-//                         link.speedCycle = CABLES.UI.speedCycle;
-
-//                         let newClass = "pathSpeed0";
-//                         if (link.activityCounter >= 1)
-//                         {
-//                             newClass = "pathSpeed1";
-//                         }
-//                         if (link.activityCounter >= 5) newClass = "pathSpeed2";
-//                         if (link.activityCounter >= 10) newClass = "pathSpeed3";
-//                         if (link.activityCounter >= 20) newClass = "pathSpeed4";
-
-//                         if (patch.ops[i].links[j].linkLine.speedClass != newClass)
-//                         {
-//                             patch.ops[i].links[j].linkLine.node.classList.remove(patch.ops[i].links[j].linkLine.speedClass);
-//                             patch.ops[i].links[j].linkLine.speedClass = newClass;
-//                             patch.ops[i].links[j].linkLine.node.classList.add(newClass);
-//                         }
-//                         // link.activityCount=link.activityCounter;
-//                         link.activityCounter = 0;
-//                         // link.emitEvent("activity",link,link.activityCount);
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// };
-
-// CABLES.UI.Patch.prototype.startflowVis = function ()
-// {
-//     for (let i = 0; i < this.ops.length; i++)
-//     {
-//         for (let j = 0; j < this.ops[i].links.length; j++)
-//         {
-//             if (this.ops[i].links[j] && this.ops[i].links[j].linkLine)
-//             {
-//                 let link = this.ops[i].links[j].p2.thePort.getLinkTo(this.ops[i].links[j].p1.thePort);
-//                 if (!link) link = this.ops[i].links[j].p1.thePort.getLinkTo(this.ops[i].links[j].p2.thePort);
-//                 if (link) link.activityCounter = 0;
-//             }
-//         }
-//     }
-
-//     this.scene.removeOnAnimCallback(this.updateFlowVis);
-//     this.scene.addOnAnimFrameCallback(this.updateFlowVis);
-// };

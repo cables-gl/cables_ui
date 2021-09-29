@@ -258,6 +258,12 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
     const userOpsUrls = [];
     const proj = this._cfg.patch;
 
+    $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
+
+    console.log(document.getElementById("timing"));
+    console.log(document.getElementById("timeline"));
+
+
     for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
 
     const lid = "userops" + proj._id + CABLES.generateUUID();
@@ -265,6 +271,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
     {
         incrementStartup();
         logStartup("User Ops loaded");
+
 
         gui.patchView.setProject(proj, cb);
 

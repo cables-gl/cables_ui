@@ -69,7 +69,7 @@ export default class MetaKeyframes
         const op = gui.corePatch().getOpById(opid);
         const p = op.getPort(portname);
 
-        if (p.anim) gui.patch().timeLine.setAnim(p.anim);
+        if (p.anim) gui.timeLine().setAnim(p.anim);
     }
 
 

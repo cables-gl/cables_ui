@@ -21,7 +21,7 @@ import GradientEditor from "./dialogs/gradienteditor";
 import CommandPallete from "./dialogs/commandpalette";
 import OpSelect from "./dialogs/opselect";
 import initSplitPanes from "./elements/splitpane";
-import PatchSaveServer from "./components/patchSaveServer";
+import PatchSaveServer from "./api/patchServerApi";
 import CMD from "./commands/commands";
 
 import TabPanel from "./elements/tabpanel/tabpanel";

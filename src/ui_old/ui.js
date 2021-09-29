@@ -101,6 +101,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.tipps = new CABLES.UI.Tipps();
 
+
     this.project = function ()
     {
         return this._currentProject;
@@ -120,7 +121,10 @@ CABLES.UI.GUI = function (cfg)
 
     this.timeLine = function ()
     {
-        if (_patch) return _patch.timeLine;
+        // if (!this._timeline) this._timeLine = new CABLES.TL.UI.TimeLineUI();
+        return this._timeLine;
+
+        // if (_patch) return _patch.timeLine;
     };
 
     this.corePatch = this.scene = function ()
@@ -136,6 +140,11 @@ CABLES.UI.GUI = function (cfg)
     this.jobs = function ()
     {
         return _jobs;
+    };
+
+    this.finishedLoading = function ()
+    {
+        return CABLES.UI.loaded;
     };
 
     this.focusFindResult = (idx, opid, subpatch, x, y) =>
@@ -1892,6 +1901,18 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
+        document.body.addEventListener("contextmenu", (e) =>
+        {
+            if (e.target.currentSrc) return;
+            if (e.target.classList.contains("selectable")) return;
+            if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
+
+            e.preventDefault();
+        });
+
+        ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
+        this._timeLine = new CABLES.TL.UI.TimeLineUI();
+
         gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         if (this.isRemoteClient)
@@ -1902,7 +1923,6 @@ CABLES.UI.GUI = function (cfg)
         document.getElementById("canvasmodal").addEventListener("mousedown",
             (e) =>
             {
-                gui.patch().lastMouseMoveEvent = null;
                 gui.showCanvasModal(false);
                 gui.patchView.focus();
                 e.preventDefault();
@@ -2058,6 +2078,7 @@ function startUi(cfg)
         gui.checkIdle();
         gui.initCoreListeners();
 
+
         gui.bind(() =>
         {
             incrementStartup();
@@ -2088,7 +2109,6 @@ function startUi(cfg)
                 incrementStartup();
                 gui.showUiElements();
                 gui.setLayout();
-                // gui.patch().fixTitlePositions();
                 gui.opSelect().prepare();
                 incrementStartup();
                 gui.opSelect().search();

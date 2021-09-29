@@ -66,7 +66,7 @@ CABLES.UI.ScGui = class extends CABLES.EventTarget
                 "x": this._lastMouseX,
                 "y": this._lastMouseY,
                 "subpatch": subPatch,
-                // "zoom": gui.patch().getViewBox().getZoom()
+                // "zoom": gui.patch.getViewBox().getZoom()
             });
             this._mouseTimeout = null;
         }, this.netMouseCursorDelay);

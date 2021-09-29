@@ -18,8 +18,8 @@ CABLES.SandboxElectron = function ()
 
         gui.patchView.setProject(patch);
 
-        gui.patch().filename = message.path; // store the path, so we can oversave it without a select-file prompt later
-        const projectName = gui.patch().getProjectnameFromFilename(message.path);
+        // gui.patch.filename = message.path; // store the path, so we can oversave it without a select-file prompt later
+        // const projectName = gui.patch.getProjectnameFromFilename(message.path);
         gui.setProjectName(projectName);
     });
 };

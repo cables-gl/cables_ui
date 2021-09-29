@@ -66,8 +66,6 @@ CABLES.UI.ServerOps = function (gui, patchId, next)
     {
         // console.log('show server op error message modal');
 
-        // gui.patch().loadingError = true;
-
         let msg = "<h2><span class=\"fa fa-exclamation-triangle\"></span> cablefail :/</h2>";
         msg += "error creating op: " + name;
         msg += "<br/><pre>" + e + "</pre><br/>";
