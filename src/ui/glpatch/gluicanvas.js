@@ -128,7 +128,6 @@ export default class GlUiCanvas
             // const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
 
             // let delta = CGL.getWheelSpeed(event);
-            // event = CABLES.mouseEvent(event);
             // delta *= wheelMultiplier;
 
             // if (event.altKey) this._scrollY -= delta;

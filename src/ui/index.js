@@ -58,13 +58,19 @@ import text from "./text.json";
 import EditorSession from "./elements/tabpanel/editor_session";
 import Jobs from "./components/jobs";
 import defaultops from "./defaultops";
-import { uniqueArray } from "./utils/helper";
+import { arrayContains, uniqueArray } from "./utils/helper";
+import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
 
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
+
+CABLES.UI.MOUSE_BUTTON_NONE = 0;
+CABLES.UI.MOUSE_BUTTON_LEFT = 1;
+CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
+CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 
 CABLES.UI.userSettings = new UserSettings();
@@ -144,6 +150,9 @@ CABLES.UI.TEXTS = text.text;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
+CABLES.UI.getHandleBarHtml = getHandleBarHtml;
+CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
+CABLES.UTILS.arrayContains = arrayContains;
 
 CABLES.CMD = CMD;
 

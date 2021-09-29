@@ -1041,6 +1041,17 @@ CABLES.UI.GUI = function (cfg)
         $("#options").html(html);
     };
 
+
+    this.serializeForm = function (selector)
+    {
+        const json = {};
+        Array.from(document.querySelector(selector).elements).forEach((e) =>
+        {
+            json[e.getAttribute("name")] = e.value;
+        });
+        return json;
+    };
+
     this.converterStart = function (projectId, fileId, converterId)
     {
         $("#converterprogress").show();
@@ -1050,7 +1061,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 "fileId": fileId,
                 "converterId": converterId,
-                "options": CABLES.serializeForm("#converterform")
+                "options": this.serializeForm("#converterform")
             },
             function (err, res)
             {

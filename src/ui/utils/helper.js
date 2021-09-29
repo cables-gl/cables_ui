@@ -18,3 +18,16 @@ export function uniqueArray(arr)
     }
     return a;
 }
+
+export function arrayContains(arr, obj)
+{
+    let i = arr.length;
+    while (i--)
+    {
+        if (arr[i] === obj)
+        {
+            return true;
+        }
+    }
+    return false;
+}

@@ -172,7 +172,7 @@ CABLES.SandboxBrowser.prototype.savePatch = function (options, cb)
     // const cansave=proj.userList.indexOf(this._cfg.user.username);
     // console.log("can save",cansave,proj.userList);
 
-    // for (var i in proj.userList) //userOpsUrls.push(this.getablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    // for (var i in proj.userList) //userOpsUrls.push(this.getablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i]));
     // console.log(proj.userList[i]1)
 
 
@@ -253,6 +253,17 @@ CABLES.SandboxBrowser.prototype.createBackup = function ()
         });
 };
 
+
+CABLES.SandboxBrowser.prototype.sanitizeUsername = function (name)
+{
+    name = name.toLowerCase();
+    name = name.split(" ").join("_");
+    name = name.replace(/\./g, "_");
+    if (name.match(/^\d/))name = "u_" + name;
+    return name;
+};
+
+
 CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 {
     const userOpsUrls = [];
@@ -260,7 +271,7 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
 
     $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
 
-    for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + CABLES.UI.sanitizeUsername(proj.userList[i]));
+    for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i]));
 
     const lid = "userops" + proj._id + CABLES.generateUUID();
     loadjs.ready(lid, () =>
