@@ -3,7 +3,7 @@ import Bookmarks from "./components/bookmarks";
 import GlUiCanvas from "./glpatch/gluicanvas";
 import GlPatch from "./glpatch/glpatch";
 import CanvasLens from "./components/canvaslens";
-import HtmlInspector from "./components/htmlinspect";
+import HtmlInspector from "./elements/canvasoverlays/htmlinspect";
 import IconBar from "./elements/iconbar";
 import Keypresenter from "./components/keypresenter";
 import gluiconfig from "./glpatch/gluiconfig";
