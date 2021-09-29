@@ -58,6 +58,7 @@ import text from "./text.json";
 import EditorSession from "./elements/tabpanel/editor_session";
 import Jobs from "./components/jobs";
 import defaultops from "./defaultops";
+import { uniqueArray } from "./utils/helper";
 
 
 CABLES = CABLES || {};
@@ -145,3 +146,6 @@ CABLES.UI.TEXTS = text.text;
 CABLES.UI.initSplitPanes = initSplitPanes;
 
 CABLES.CMD = CMD;
+
+
+CABLES.uniqueArray = uniqueArray;

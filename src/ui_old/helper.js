@@ -7,46 +7,6 @@ CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
 
-CABLES.UI.DEFAULTOPNAMES =
-{
-    "number": "Ops.Value.Number",
-    "defaultOpImage": "Ops.Gl.Texture_v2",
-    "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
-    "defaultOpJson3d": "Ops.Json3d.Mesh3d",
-    "defaultOpVideo": "Ops.Gl.Textures.VideoTexture",
-    "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v3",
-    "defaultOpJson": "Ops.Json.AjaxRequest_v2",
-    "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
-    "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
-    "VarSetObject": "Ops.Vars.VarSetObject_v2",
-    "VarGetObject": "Ops.Vars.VarGetObject_v2",
-    "VarSetArray": "Ops.Vars.VarSetArray_v2",
-    "VarGetArray": "Ops.Vars.VarGetArray_v2",
-    "VarSetString": "Ops.Vars.VarSetString_v2",
-    "VarGetString": "Ops.Vars.VarGetString",
-    "defaultFont": "Ops.Html.FontFile_v2"
-};
-
-CABLES.UI.getOpsForFilename = function (filename)
-{
-    const ops = [];
-
-    if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
-    else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
-    else if (filename.endsWith(".3d.json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d);
-    else if (filename.endsWith(".mp4" || ".m4a" || ".mpg" || ".webm")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpVideo);
-    else if (filename.endsWith(".glb")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpGltf);
-    else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
-    else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
-
-    return ops;
-};
-
-String.prototype.endl = function ()
-{
-    return this + "\n";
-};
-
 CABLES.UI.sanitizeUsername = function (name)
 {
     name = name.toLowerCase();
@@ -56,19 +16,6 @@ CABLES.UI.sanitizeUsername = function (name)
     return name;
 };
 
-CABLES.uniqueArray = function (arr)
-{
-    const u = {}, a = [];
-    for (let i = 0, l = arr.length; i < l; ++i)
-    {
-        if (!u.hasOwnProperty(arr[i]))
-        {
-            a.push(arr[i]);
-            u[arr[i]] = 1;
-        }
-    }
-    return a;
-};
 
 CABLES.serializeForm = function (selector)
 {
@@ -96,22 +43,7 @@ CABLES.UI.showJson = function (opid, which)
         return;
     }
 
-
-    // CABLES.UI.MODAL.show( '<pre><code>'+ +'</code></pre>');
-
-
     CABLES.UI.MODAL.showPortValue(port.name, port);
-
-    // gui.showEditor();
-    // gui.editor().addTab(
-    // {
-    //     content:JSON.stringify(port.get() ,null, 4),
-    //     title:'content: '+port.name,
-    //     syntax:'JSON',
-    //     onSave:function(setStatus,content)
-    //     {
-    //     }
-    // });
 };
 
 CABLES.UI.showJsonStructure = function (opid, which)
