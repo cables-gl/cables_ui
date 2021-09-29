@@ -1,5 +1,7 @@
+import Logger from "../../utils/logger";
+
+
 export default class MetaCode
-import Logger from '../../utils/logger';
 {
     constructor(tabs)
     {

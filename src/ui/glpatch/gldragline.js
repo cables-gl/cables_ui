@@ -1,4 +1,5 @@
 import glUiConfig from "./gluiconfig";
+import Logger from "../utils/logger";
 
 
 export default class GlDragLine
