@@ -53,7 +53,6 @@ CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
         event.stopPropagation();
 
         const filepath = event.dataTransfer.getData("filepath");
-        console.log(filepath);
 
         gui.patchView.addAssetOpAuto(filepath, event);
 

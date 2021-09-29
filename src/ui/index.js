@@ -50,6 +50,9 @@ import OpDocs from "./components/opdocs";
 import ScConnection from "./multiplayer/sc_connection";
 import ScGui from "./multiplayer/sc_gui";
 import PacoConnector from "./multiplayer/sc_paconnector";
+import EditorTab from "./components/tabs/tab_editor";
+import Chat from "./components/tabs/tab_chat";
+import MetaOpParams from "./components/tabs/meta_opparams";
 
 
 CABLES = CABLES || {};
@@ -114,7 +117,9 @@ CABLES.UI.ChangelogToast = ChangelogToast;
 CABLES.UI.TransformsOverlay = TransformsOverlay;
 CABLES.UI.Gizmo = Gizmo;
 CABLES.UI.OpDocs = OpDocs;
-
+CABLES.UI.EditorTab = EditorTab;
+CABLES.UI.Chat = Chat;
+CABLES.UI.MetaOpParams = MetaOpParams;
 
 // expose global objects
 CABLES.api = new Api();

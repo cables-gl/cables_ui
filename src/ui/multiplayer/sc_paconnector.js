@@ -17,7 +17,6 @@ export default class PacoConnector extends CABLES.EventTarget
             return;
         }
 
-
         const data = { "event": event, "vars": vars };
         this._sccon.sendPaco({ "data": data });
     }

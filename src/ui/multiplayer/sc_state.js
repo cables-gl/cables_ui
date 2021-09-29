@@ -96,6 +96,7 @@ export default class ScState extends CABLES.EventTarget
         }
     }
 
+    // todo: use chroma...
     _HSVtoRGB(h, s, v)
     {
         let r, g, b, i, f, p, q, t;
