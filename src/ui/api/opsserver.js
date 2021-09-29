@@ -559,12 +559,12 @@ export default class ServerOps
                         editorObj,
                         "allowEdit": this.canEditAttachment(gui.user, opname),
                         "inactive": inactive,
-                        onClose(which)
+                        "onClose": (which) =>
                         {
                             this._log.log("close!!! missing infos...");
                             if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                         },
-                        onSave(_setStatus, _content)
+                        "onSave": (_setStatus, _content) =>
                         {
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
@@ -697,7 +697,7 @@ export default class ServerOps
                         "allowEdit": this.canEditOp(gui.user, editorObj.name),
                         "onSave": save,
                         editorObj,
-                        onClose(which)
+                        "onClose": (which) =>
                         {
                             if (which.editorObj) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                         },

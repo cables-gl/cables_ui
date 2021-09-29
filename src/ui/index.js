@@ -130,7 +130,7 @@ CABLES.UI.ServerOps = ServerOps;
 CABLES.UI.Jobs = Jobs;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
-CABLES.UI.defaultOpNames = defaultops.defaultOpNames;
+CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
 
 // expose global objects
 CABLES.api = new Api();
