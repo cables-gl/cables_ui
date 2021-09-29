@@ -49,6 +49,8 @@ export default class GlViewBox
         cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
 
         this._eleTabs = document.getElementById("splitterMaintabs");
+
+        this._drawBoundingRect = !CABLES.UI.userSettings.get("glpatch_hideboundings");
     }
 
     setSize(w, h)
@@ -283,7 +285,7 @@ export default class GlViewBox
         this.setMousePos(this._mouseX, this._mouseY);
 
 
-        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && GlUiConfig.drawBoundingRect)
+        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
             if (!this._boundingRect)
             {

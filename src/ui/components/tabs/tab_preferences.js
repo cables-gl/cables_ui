@@ -64,6 +64,8 @@ export default class Preferences
 
         this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
         this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
+        this.setSwitchValue("glpatch_hideboundings", CABLES.UI.userSettings.get("glpatch_hideboundings"));
+
         this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
 
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
