@@ -31,7 +31,7 @@ function initSplitPanes()
 
     document.getElementById("splitterMaintabs").addEventListener("mouseup", function (e)
     {
-        const iframes = document.getElementsByTagName("iframe");
+        const iframes = document.querySelectorAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
     });
 
@@ -42,7 +42,7 @@ function initSplitPanes()
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
-            const iframes = document.getElementsByTagName("iframe");
+            const iframes = document.querySelectorAll("iframe,canvas");
             for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
 
             e.preventDefault();
