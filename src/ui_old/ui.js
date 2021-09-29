@@ -1649,7 +1649,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setTransformGizmo = function (params)
     {
-        if (!this._gizmo) this._gizmo = new CABLES.Gizmo(this.scene().cgl);
+        if (!this._gizmo) this._gizmo = new CABLES.UI.Gizmo(this.scene().cgl);
         if (!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
         {
             this._gizmo.set(null);

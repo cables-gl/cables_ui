@@ -1,8 +1,44 @@
+export default class TransformsOverlay
+{
+    constructor()
+    {
+        this._transforms = {};
+        this._lastCheck = 0;
+    }
 
-var CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
+    add(cgl, id, x, y, z)
+    {
+        this._transforms[id] = this._transforms[id] || new CABLES.UI.TransformsIcon(cgl, id);
+        this._transforms[id].setPos(x, y, z);
 
-CABLES.UI.TransformsIcon = class
+        if (performance.now() - this._lastCheck > 50)
+        {
+            for (const i in this._transforms)
+            {
+                if (performance.now() - this._transforms[i].lastUpdate > 100)
+                {
+                    this._transforms[i].dispose();
+                    delete this._transforms[i];
+                }
+            }
+
+            this._lastCheck = performance.now();
+        }
+    }
+
+    setVisible(b)
+    {
+        if (!b)
+            for (const i in this._transforms)
+            {
+                this._transforms[i].dispose();
+                delete this._transforms[i];
+            }
+    }
+}
+
+
+class TransformsIcon
 {
     constructor(cgl, id)
     {
@@ -13,12 +49,7 @@ CABLES.UI.TransformsIcon = class
         this.lastUpdate = performance.now();
 
         const container = cgl.canvas.parentElement;
-
         this._eleCenter = document.createElement("div");
-
-        // this._eleCenter.style.background = "#f00";
-        // this._eleCenter.style.opacity = "0.9";
-        // this._eleCenter.innerHTML="X";
 
         this._eleCenter.classList.add("transformSpot");
         container.appendChild(this._eleCenter);
@@ -27,11 +58,8 @@ CABLES.UI.TransformsIcon = class
         {
             const op = gui.corePatch().getOpById(id);
             if (!op) return;
-            gui.patch().setCurrentSubPatch(op.uiAttribs.subPatch || 0);
+            gui.patchView.setCurrentSubPatch(op.uiAttribs.subPatch || 0);
             gui.patchView.centerSelectOp(id);
-            gui.patch().getViewBox().center(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
-            gui.patchView.centerSelectOp(id);
-
             gui.patchView.focus();
         });
     }
@@ -86,43 +114,4 @@ CABLES.UI.TransformsIcon = class
     {
         this._eleCenter.remove();
     }
-};
-
-CABLES.UI.TransformsOverlay = class
-{
-    constructor()
-    {
-        this._transforms = {};
-        this._lastCheck = 0;
-    }
-
-    add(cgl, id, x, y, z)
-    {
-        this._transforms[id] = this._transforms[id] || new CABLES.UI.TransformsIcon(cgl, id);
-        this._transforms[id].setPos(x, y, z);
-
-        if (performance.now() - this._lastCheck > 50)
-        {
-            for (const i in this._transforms)
-            {
-                if (performance.now() - this._transforms[i].lastUpdate > 100)
-                {
-                    this._transforms[i].dispose();
-                    delete this._transforms[i];
-                }
-            }
-
-            this._lastCheck = performance.now();
-        }
-    }
-
-    setVisible(b)
-    {
-        if (!b)
-            for (const i in this._transforms)
-            {
-                this._transforms[i].dispose();
-                delete this._transforms[i];
-            }
-    }
-};
+}

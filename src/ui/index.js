@@ -44,6 +44,8 @@ import MetaKeyframes from "./components/tabs/meta_keyframes";
 import MetaDoc from "./components/tabs/meta_doc";
 import ChangelogToast from "./dialogs/changelog";
 import Logger from "./utils/logger";
+import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
+import Gizmo from "./elements/canvasoverlays/transformgizmo";
 
 
 CABLES = CABLES || {};
@@ -101,6 +103,8 @@ CABLES.UI.MetaHistory = MetaHistory;
 CABLES.UI.MetaKeyframes = MetaKeyframes;
 CABLES.UI.MetaDoc = MetaDoc;
 CABLES.UI.ChangelogToast = ChangelogToast;
+CABLES.UI.TransformsOverlay = TransformsOverlay;
+CABLES.UI.Gizmo = Gizmo;
 
 // expose global objects
 CABLES.api = new Api();
