@@ -6,8 +6,16 @@ export default class PatchSaveServer extends CABLES.EventTarget
     constructor()
     {
         super();
+        this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
+    }
+
+    setProject(proj)
+    {
+        console.log("proj.name", proj.name);
+        gui.setProjectName(proj.name);
+        this._currentProject = proj;
     }
 
     setServerDate(d)
@@ -21,7 +29,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         CABLES.UI.MODAL.hide(true);
         CABLES.CMD.PATCH.save(true);
     }
-
 
     checkUpdated(cb)
     {
@@ -46,7 +53,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     CABLES.UI.MODAL.showError("meanwhile...", "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>");
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
-                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
+                    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\">save anyway</a>&nbsp;&nbsp;";
                     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                     gui.jobs().finish("checkupdated");
                 }
@@ -70,7 +77,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             {
                                 CABLES.UI.MODAL.showError("meanwhile...", "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>");
                                 CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">close</a>&nbsp;&nbsp;";
-                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs('" + data.updated + "');\">save progress</a>&nbsp;&nbsp;";
+                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\">save progress</a>&nbsp;&nbsp;";
                                 CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                                 gui.jobs().finish("checkupdated");
                             }

@@ -111,7 +111,6 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
-    // jQuery.event.props.push("dataTransfer");
 
     if (!fileElem)
     {
@@ -120,16 +119,6 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     }
 };
 
-
-CABLES_CMD_PATCH.opsAlignHorizontal = function ()
-{
-    gui.patch().alignSelectedOps();
-};
-
-CABLES_CMD_PATCH.opsCompress = function ()
-{
-    gui.patch().compressSelectedOps();
-};
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
@@ -557,20 +546,6 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "select child ops",
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
-    },
-    {
-        "cmd": "align selected ops",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.opsAlignHorizontal,
-        "hotkey": "a",
-        "icon": "align-left"
-    },
-    {
-        "cmd": "compress selected ops",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.opsCompress,
-        "hotkey": "SHIFT + a",
-        "icon": "align-justify"
     },
     {
         "cmd": "create subpatch",

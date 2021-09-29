@@ -97,7 +97,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     {
         if (proj && proj.ui)
         {
-            this._projUI = proj.ui;
+            this.store.setProject(proj);
 
             if (proj.ui.renderer)
             {
@@ -214,7 +214,6 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
-        pr.setProject({ "ui": this._projUI });
         if (!this._patchRenderer) this._patchRenderer = pr;
     }
 

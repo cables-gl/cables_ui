@@ -475,6 +475,7 @@ export default class GlSplineDrawer
 
     _updateAttribsCoordinates(idx, updateWhat)
     {
+        if (!gui.patchView._patchRenderer) return;
         if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
 
         if (!this._mesh || !this._colors)

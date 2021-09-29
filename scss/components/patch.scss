@@ -4,6 +4,10 @@
     z-index :$zindex_superlow - 1;
 }
 
+.op-svg-shortname
+{
+    font-size: 15px !important;  // needed for op search doc preview
+}
 
 
 .cursor_pointer{ cursor:pointer; }

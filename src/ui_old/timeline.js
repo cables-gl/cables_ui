@@ -1010,28 +1010,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     };
 
 
-    this.mouseEvent = function (event)
-    {
-        if (!event) return event;
-        if (event.buttons === undefined) // safari
-        {
-            event.buttons = event.which;
-
-            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
-            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
-        }
-
-        if (event.type == "touchmove" && event.originalEvent)
-        {
-            event.buttons = 3;
-            event.clientX = event.originalEvent.touches[0].pageX;
-            event.clientY = event.originalEvent.touches[0].pageY;
-        }
-
-        return event;
-    };
-
-
     this.getCanvasCoordsSVG = function (id, evt)
     {
         let ctm = $(id)[0].getScreenCTM();
@@ -2117,6 +2095,27 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         if (l === null) return;
         projectLength = Math.floor((parseFloat(l)) / gui.timeLine().getFPS());
         self.redraw();
+    };
+
+    this.mouseEvent = function (event)
+    {
+        if (!event) return event;
+        if (event.buttons === undefined) // safari
+        {
+            event.buttons = event.which;
+
+            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
+            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
+        }
+
+        if (event.type == "touchmove" && event.originalEvent)
+        {
+            event.buttons = 3;
+            event.clientX = event.originalEvent.touches[0].pageX;
+            event.clientY = event.originalEvent.touches[0].pageY;
+        }
+
+        return event;
     };
 
 

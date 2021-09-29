@@ -1,7 +1,6 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.OPNAME_SUBPATCH = "Ops.Ui.SubPatch";
 
 CABLES.UI.Patch = function (_gui)
 {
@@ -51,13 +50,6 @@ CABLES.UI.Patch = function (_gui)
 
     this.isLoading = function () { return isLoading; };
 
-
-    // this.saveCurrentProjectAs = function (cb, _id, _name)
-    // {
-    //     gui.patchView.store.saveAs(cb, _id, _name);
-    // };
-
-
     this._timeoutLinkWarnings = null;
     this._checkLinkCounter = -1;
 
@@ -93,63 +85,55 @@ CABLES.UI.Patch = function (_gui)
     };
 
 
-    // this.saveCurrentProject = function (cb, _id, _name, _force)
-    // {
-    //     // for (let i = 0; i < this.ops.length; i++)
-    //     //     this.ops[i].removeDeadLinks();
-
-    //     gui.patchView.store.saveCurrentProject(cb, _id, _name, _force);
-    // };
-
     this.getCurrentProject = function ()
     {
         return currentProject;
     };
 
-    this.setCurrentProject = function (proj)
-    {
-        // if (self.timeLine) self.timeLine.clear();
+    // this.setCurrentProject = function (proj)
+    // {
+    //     // if (self.timeLine) self.timeLine.clear();
 
-        currentProject = proj;
-        // if (currentProject === null)
-        // {
-        //     $("#meta_content_files").hide();
-        // }
-        // else
-        // {
-        //     $("#meta_content_files").show();
-        // }
-        // $("#meta_content_files").hover(function (e)
-        // {
-        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
-        // }, function ()
-        // {
-        //     CABLES.UI.hideInfo();
-        // });
-    };
+    //     currentProject = proj;
+    //     // if (currentProject === null)
+    //     // {
+    //     //     $("#meta_content_files").hide();
+    //     // }
+    //     // else
+    //     // {
+    //     //     $("#meta_content_files").show();
+    //     // }
+    //     // $("#meta_content_files").hover(function (e)
+    //     // {
+    //     //     CABLES.UI.showInfo(CABLES.UI.TEXTS.projectFiles);
+    //     // }, function ()
+    //     // {
+    //     //     CABLES.UI.hideInfo();
+    //     // });
+    // };
 
-    this.loadingError = false;
+    // this.loadingError = false;
 
-    this.setProject = function (proj)
-    {
-        this.loadingError = false;
+    // this.setProject = function (proj)
+    // {
+    //     this.loadingError = false;
 
-        currentSubPatch = 0;
-        gui.setProjectName(proj.name);
-        self.setCurrentProject(proj);
+    //     currentSubPatch = 0;
+    //     gui.setProjectName(proj.name);
+    //     self.setCurrentProject(proj);
 
-        gui.corePatch().clear();
-    };
+    //     gui.corePatch().clear();
+    // };
 
-    this.show = function (_scene)
-    {
-        this.scene = _scene;
+    // this.show = function (_scene)
+    // {
+    //     this.scene = _scene;
 
-        this.bindScene(self.scene);
-    };
+    //     this.bindScene(self.scene);
+    // };
 
 
-    function doLink() {}
+    // function doLink() {}
 
     this.checkOpsInSync = function ()
     {
@@ -177,22 +161,22 @@ CABLES.UI.Patch = function (_gui)
     };
 
 
-    this.bindScene = function (scene)
-    {
-        // scene.onLoadStart = function ()
-        // {
-        isLoading = true;
-        // };
+    // this.bindScene = function (scene)
+    // {
+    //     // scene.onLoadStart = function ()
+    //     // {
+    //     isLoading = true;
+    //     // };
 
-        let patchLoadEndiD = scene.on("patchLoadEnd", () =>
-        {
-            scene.off(patchLoadEndiD);
-            isLoading = false;
-            gui.setStateSaved();
+    //     let patchLoadEndiD = scene.on("patchLoadEnd", () =>
+    //     {
+    //         scene.off(patchLoadEndiD);
+    //         isLoading = false;
+    //         gui.setStateSaved();
 
-            logStartup("Patch loaded");
-        });
-    };
+    //         logStartup("Patch loaded");
+    //     });
+    // };
 
     this.getCurrentSubPatch = function ()
     {
