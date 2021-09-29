@@ -55,6 +55,9 @@ import Chat from "./components/tabs/tab_chat";
 import MetaOpParams from "./components/tabs/meta_opparams";
 import ServerOps from "./api/opsserver";
 import text from "./text.json";
+import EditorSession from "./elements/tabpanel/editor_session";
+import Jobs from "./components/jobs";
+import defaultops from "./defaultops";
 
 
 CABLES = CABLES || {};
@@ -123,11 +126,17 @@ CABLES.UI.EditorTab = EditorTab;
 CABLES.UI.Chat = Chat;
 CABLES.UI.MetaOpParams = MetaOpParams;
 CABLES.UI.ServerOps = ServerOps;
+CABLES.UI.Jobs = Jobs;
+
+CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
+CABLES.UI.defaultOpNames = defaultops.defaultOpNames;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
+CABLES.editorSession = new EditorSession();
+
 
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;

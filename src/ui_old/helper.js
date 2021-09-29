@@ -25,8 +25,6 @@ CABLES.UI.DEFAULTOPNAMES =
     "VarSetString": "Ops.Vars.VarSetString_v2",
     "VarGetString": "Ops.Vars.VarGetString",
     "defaultFont": "Ops.Html.FontFile_v2"
-
-
 };
 
 CABLES.UI.getOpsForFilename = function (filename)
