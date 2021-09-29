@@ -1,5 +1,5 @@
 
-export default class PacoConnector extends EventTarget
+export default class PacoConnector extends CABLES.EventTarget
 {
     constructor(sccon, paco)
     {

@@ -1,6 +1,6 @@
 CABLES = CABLES || {};
 
-export default class ScState extends EventTarget
+export default class ScState extends CABLES.EventTarget
 {
     constructor(connection)
     {

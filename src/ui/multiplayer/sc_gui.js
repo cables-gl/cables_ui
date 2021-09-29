@@ -1,5 +1,5 @@
 
-export default class ScGui extends EventTarget
+export default class ScGui extends CABLES.EventTarget
 {
     constructor(connection)
     {

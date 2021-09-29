@@ -3,7 +3,7 @@ import ScState from "./sc_state";
 import PacoConnector from "./sc_paconnector";
 import Logger from "../utils/logger";
 
-export default class ScConnection extends EventTarget
+export default class ScConnection extends CABLES.EventTarget
 {
     constructor(cfg)
     {
