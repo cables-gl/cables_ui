@@ -185,5 +185,6 @@ CABLES.DragNDrop = DragNDrop;
 CABLES.CMD = CMD;
 
 CABLES.uniqueArray = uniqueArray;
+CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
 setHtmlDefaultListeners();
