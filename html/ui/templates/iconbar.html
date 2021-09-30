@@ -5,7 +5,7 @@
         {{#each items}}
             <div class="item tt info" data-infotext="{{infotext}}" data-tt="{{cmd}}" onmouseover="CABLES.UI.showInfo(CABLES.UI.TEXTS['{{infotext}}'])" onclick="CABLES.CMD.exec('{{cmd}}');">
                 {{#if vertical}}<span class="icontext">{{cmd}}</span>{{/if}}
-                <span class="icon  icon-{{#if icon}}{{icon}}{{else}}square{{/if}} icon-1_25x " ></span>
+                <span class="icon tt icon-{{#if icon}}{{icon}}{{else}}square{{/if}} icon-1_25x " data-tt="{{cmd}}"></span>
             </div>
         {{/each}}
     </div>

@@ -66,6 +66,7 @@ import PatchView from "./components/patchview";
 import { notify, notifyError } from "./elements/notification";
 import DragNDrop from "./components/filemananager_dragdrop";
 import startIdleListeners from "./components/idlemode";
+import { hideInfo, hideToolTip, showInfo, showToolTip } from "./elements/tooltips";
 
 
 CABLES = CABLES || {};
@@ -163,6 +164,11 @@ CABLES.UI.getHandleBarHtml = getHandleBarHtml;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
 CABLES.UI.startIdleListeners = startIdleListeners;
+
+CABLES.UI.hideToolTip = hideToolTip;
+CABLES.UI.showToolTip = showToolTip;
+CABLES.UI.showInfo = showInfo;
+CABLES.UI.hideInfo = hideInfo;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;
