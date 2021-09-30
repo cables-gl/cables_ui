@@ -419,6 +419,8 @@ CABLES.Anim.prototype.deleteSelectedKeys = function ()
 CABLES.ANIM.UI.TimeLineUI = function ()
 {
     const self = this;
+
+    console.log("new timelineui");
     let projectLength = 20;
     const tlEmpty = new CABLES.Anim();
     let anim = null;// tlEmpty;//new CABLES.Anim();
@@ -816,6 +818,8 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     this.updateOverviewLine = function ()
     {
+        if (!gui.isShowingTiming()) return;
+
         const start = (viewBox.x / CABLES.ANIM.TIMESCALE) / projectLength;
         const width = (viewBox.w / CABLES.ANIM.TIMESCALE) / projectLength;
         overviewRect.attr(
