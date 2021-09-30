@@ -1,4 +1,6 @@
+
 CABLES.UI = CABLES.UI || {};
+
 CABLES.UI.tooltipTimeout = null;
 CABLES.UI.eleInfoArea = null;
 CABLES.UI.eleTooltip = null;
@@ -116,7 +118,8 @@ CABLES.UI.ttObserver = new MutationObserver(function (mutations)
         {
             if (!mutation.addedNodes[i].tagName) continue;
 
-
+            const perf = CABLES.UI.uiProfiler.start("html ele change");
+            perf.finish();
             // console.log(mutation.addedNodes[i].classList);
 
             if (mutation.addedNodes[i].classList.contains("tt"))
@@ -132,4 +135,19 @@ CABLES.UI.ttObserver = new MutationObserver(function (mutations)
     });
 });
 
-CABLES.UI.ttObserver.observe(document.body, { "attributes": false, "childList": true, "characterData": false, "subtree": true });
+CABLES.UI.ttObserver.observe(document.body, { "attributes": true, "childList": true, "characterData": false, "subtree": true });
+
+
+document.querySelector("body").addEventListener("mouseover", function (evt)
+{
+    // Do some check on target
+
+    if (evt.target.classList.contains("tt"))
+    {
+        // DO CODE
+    }
+    console.log("tt hover!!!");
+    // if ( evt.target.classList.contains('some-class') ) {
+    //     // DO CODE
+    // }
+}, true); // Use Capturing
