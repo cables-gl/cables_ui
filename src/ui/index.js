@@ -67,6 +67,9 @@ import { notify, notifyError } from "./elements/notification";
 import DragNDrop from "./components/filemananager_dragdrop";
 import startIdleListeners from "./components/idlemode";
 import { hideInfo, hideToolTip, showInfo, showToolTip, updateHoverToolTip } from "./elements/tooltips";
+import NoPatchEditor from "./components/nopatcheditor";
+import CoreLibLoader from "./api/corelibloader";
+import LibLoader from "./api/libloader";
 
 
 CABLES = CABLES || {};
@@ -145,6 +148,10 @@ CABLES.UI.MetaOpParams = MetaOpParams;
 CABLES.UI.ServerOps = ServerOps;
 CABLES.UI.Jobs = Jobs;
 CABLES.UI.PatchView = PatchView;
+CABLES.UI.NoPatchEditor = NoPatchEditor;
+CABLES.CoreLibLoader = CoreLibLoader;
+CABLES.LibLoader = LibLoader;
+
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
@@ -169,7 +176,7 @@ CABLES.UI.hideToolTip = hideToolTip;
 CABLES.UI.showToolTip = showToolTip;
 CABLES.UI.showInfo = showInfo;
 CABLES.UI.hideInfo = hideInfo;
-CABLES.UI.hideInfo = updateHoverToolTip;
+CABLES.UI.updateHoverToolTip = updateHoverToolTip;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;

@@ -1,5 +1,8 @@
-CABLES.UI.loadedLibs = [];
-class LibLoader
+const loadedLibs = [];
+CABLES.onLoadedLib = {};
+
+
+export default class LibLoader
 {
     constructor(libnames, cb)
     {
@@ -34,7 +37,7 @@ class LibLoader
 
     loadLib(name)
     {
-        if (CABLES.UI.loadedLibs.indexOf(name) === -1)
+        if (loadedLibs.indexOf(name) === -1)
         {
             CABLES.onLoadedLib[name] = function (libName)
             {
@@ -43,7 +46,7 @@ class LibLoader
                 const i = this.libsToLoad.indexOf(libName);
                 this.libsToLoad.splice(i, 1);
                 // console.log("finished loading lib: " + libName);
-                CABLES.UI.loadedLibs.push(libName);
+                loadedLibs.push(libName);
                 this.checkAllLoaded();
             }.bind(this);
 
@@ -66,7 +69,6 @@ class LibLoader
     }
 }
 
-CABLES.onLoadedLib = {};
 
 CABLES.loadedLib = function (name)
 {
@@ -75,5 +77,3 @@ CABLES.loadedLib = function (name)
         CABLES.onLoadedLib[name](name);
     }
 };
-
-CABLES.LibLoader = LibLoader;

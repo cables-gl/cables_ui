@@ -184,6 +184,6 @@ export function updateHoverToolTip(event, port)
     if (CABLES.UI.hoverInterval == -1)
         CABLES.UI.hoverInterval = setInterval(function ()
         {
-            CABLES.UI.updateHoverToolTip(event, port);
+            updateHoverToolTip(event, port);
         }, 50);
 }
