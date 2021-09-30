@@ -25,23 +25,12 @@ export default class GlTextWriter
             this._fontTex = CGL.Texture.load(this._cgl, "/ui/img/worksans-regular_int.png", // sdf_font_arial.png
                 () =>
                 {
-                    // console.log(this._fontTex);
-                    // this.glPatch.setFont(this._fontTex);
-                    // this.glPatch.needsRedraw = true;
-                    // this.loaded = true;
-                    // this._rectDrawer
                     this._rectDrawer.setAllTexture(this._fontTex, true);
                 }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
         }
 
         this._rectDrawer.render(resX, resY, scrollX, scrollY, zoom);
     }
-
-    // setFont(tex)
-    // {
-    //     this._rectDrawer.setAllTexture(tex, true);
-    //     this._fontTex = tex;
-    // }
 
     getFontTexture()
     {

@@ -1,6 +1,6 @@
 CABLES = CABLES || {};
 
-CABLES.UI.ScState = class extends CABLES.EventTarget
+export default class ScState extends CABLES.EventTarget
 {
     constructor(connection)
     {
@@ -96,6 +96,7 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
         }
     }
 
+    // todo: use chroma...
     _HSVtoRGB(h, s, v)
     {
         let r, g, b, i, f, p, q, t;
@@ -126,4 +127,4 @@ CABLES.UI.ScState = class extends CABLES.EventTarget
             "bb": Math.round(255 * b)
         };
     }
-};
+}

@@ -188,15 +188,9 @@ export default class GlLinedrawer
         if (this._counter > this._num - 100)
         {
             this._num += 1000;
-            console.log("linedrawer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsUpload = true;
-            // this._needsRebuild = true;
-            // this._needsRebuildReason = "resize";
-            // this._needsTextureUpdate = true;
-            // this._reUploadAttribs = true;
         }
-
 
         return this._counter;
     }

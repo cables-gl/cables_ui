@@ -14,6 +14,7 @@ import ShakeDetector from "./shakedetect";
 import SnapLines from "./snaplines";
 import QuickLinkSuggestion from "./quicklinksuggestion";
 import GlPreviewLayer from "./glpreviewlayer";
+import Logger from "../utils/logger";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -23,8 +24,9 @@ export default class GlPatch extends CABLES.EventTarget
         super();
 
         this.logEvents(false, "glpatch");
-        if (!cgl) console.error("[glpatch] need cgl");
+        if (!cgl) this._logonsole.error("[glpatch] need cgl");
 
+        this._log = new Logger("glpatch");
         this.paused = false;
 
         this._cgl = cgl;
@@ -151,7 +153,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
 
-            // console.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
+            // this._log.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -163,7 +165,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
-        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { console.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
+        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { this._log.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.opHistory.forward(); });
@@ -220,7 +222,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         CABLES.UI.userSettings.on("onChange", (key, value) =>
         {
-            // console.log("linetype changed!", value);
+            // this._log.log("linetype changed!", value);
             for (let i in this.links)
             {
                 this.links[i].updateLineStyle();
@@ -353,7 +355,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._removeDropInRect();
 
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
-        catch (er) { console.log(er); }
+        catch (er) { this._log.log(er); }
 
         this.emitEvent("mousedown", e);
         this._rectInstancer.mouseDown(e);
@@ -369,7 +371,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
-        catch (er) { console.log(er); }
+        catch (er) { this._log.log(er); }
 
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
@@ -443,8 +445,7 @@ export default class GlPatch extends CABLES.EventTarget
         }
         else
         {
-            // console.log("this.links", this.links);
-            console.log("could not find link to remove!!", linkId);
+            this._log.log("could not find link to remove!!", linkId);
         }
     }
 
@@ -455,7 +456,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (!glop)
         {
-            console.log("could not find op to delete", opid);
+            this._log.log("could not find op to delete", opid);
             return;
         }
 
@@ -497,7 +498,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     addOp(op, fromDeserialize)
     {
-        if (!op) console.error("no op at addop", op);
+        if (!op) this._log.error("no op at addop", op);
 
         if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
@@ -610,10 +611,10 @@ export default class GlPatch extends CABLES.EventTarget
 
     render(resX, resY)
     {
-        // console.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
+        // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
         {
-            console.error("BROKEN");
+            this._logonsole.error("BROKEN");
         }
 
         this.debugData.splineUpdate = 0;
@@ -659,7 +660,7 @@ export default class GlPatch extends CABLES.EventTarget
                 this._focusRect.setSize(this._focusRectOp.w + v * 2 * dist, this._focusRectOp.h + v * 2 * dist);
                 this._focusRect.setColor(1, 1, 1, v);
             }
-            else console.log("no focusrectop");
+            else this._log.log("no focusrectop");
         }
 
 
@@ -779,7 +780,7 @@ export default class GlPatch extends CABLES.EventTarget
             // remmeber start coordinates when start dragging hovered op
             // if(hoverops.length>0 && !this._hoverDragOp)
             // {
-            //     console.log("START drag coords!!!");
+            //     this._log.log("START drag coords!!!");
             //     this._dragOpStartX=x;
             //     this._dragOpStartY=y;
             //     this._dragOpOffsetX=x-hoverops[0].x;
@@ -792,7 +793,7 @@ export default class GlPatch extends CABLES.EventTarget
             // drag hoverered op
             // if(this._hoverDragOp)
             // {
-            //     console.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
+            //     this._log.log('this._dragOpStartX',this._dragOpStartX,this._dragOpStartY);
             //     if(this._dragOpStartX)
             //         this._patchAPI.setOpUiAttribs(this._hoverDragOp.id,
             //             "translate",
@@ -956,7 +957,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     getZoomForAllOps()
     {
-        // console.log(this.getOpBounds());
+        // this._log.log(this.getOpBounds());
         return 1200;
     }
 
@@ -1110,7 +1111,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.unselectAll();
 
         this._currentSubpatch = sub;
-        // console.log("set subpatch", sub);
+        // this._log.log("set subpatch", sub);
 
         const dur = 0.0;
         const timeGrey = dur * 1.5;

@@ -1,9 +1,11 @@
 import ele from "../utils/ele";
+import Logger from "../utils/logger";
 
 export default class FileManager
 {
     constructor(cb)
     {
+        this._log = new Logger("filemanager");
         this._filterType = null;
         this._manager = new CABLES.UI.ItemManager("Files", gui.mainTabs);
         this._filePortEle = null;
@@ -94,7 +96,7 @@ export default class FileManager
             {
                 if (err)
                 {
-                    console.error(err);
+                    this._log.error(err);
                     return;
                 }
 
@@ -525,14 +527,14 @@ export default class FileManager
                                     else
                                     {
                                         CABLES.UI.notifyError("error: could not delete file", err);
-                                        console.log(err);
+                                        this._log.warn(err);
                                     }
 
                                     this._manager.unselectAll();
                                 },
                                 function (r)
                                 {
-                                    console.log("api err", r);
+                                    this._log.warn("api err", r);
                                 },
                             );
                         }
@@ -551,7 +553,7 @@ export default class FileManager
                 if (err)
                 {
                     CABLES.UI.notifyError("Error: " + err.msg);
-                    console.log("[createfile]", res);
+                    this._log.log("[createfile]", res);
                     gui.refreshFileManager();
                     return;
                 }

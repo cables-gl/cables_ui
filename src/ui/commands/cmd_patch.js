@@ -49,7 +49,7 @@ CABLES_CMD_PATCH.save = function (force)
     {
         if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
         {
-            gui.patch().saveCurrentProject(undefined, undefined, undefined, force);
+            gui.patchView.store.saveCurrentProject(undefined, undefined, undefined, force);
             CABLES.UI.lastSave = Date.now();
         }
     }
@@ -57,7 +57,7 @@ CABLES_CMD_PATCH.save = function (force)
 
 CABLES_CMD_PATCH.saveAs = function ()
 {
-    gui.patch().saveCurrentProjectAs();
+    gui.patchView.store.saveAs();
 };
 
 CABLES_CMD_PATCH.createBackup = function ()
@@ -111,7 +111,6 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
     if (!window.gui) return;
     const fileElem = document.getElementById("uploaddialog");
-    // jQuery.event.props.push("dataTransfer");
 
     if (!fileElem)
     {
@@ -120,16 +119,6 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     }
 };
 
-
-CABLES_CMD_PATCH.opsAlignHorizontal = function ()
-{
-    gui.patch().alignSelectedOps();
-};
-
-CABLES_CMD_PATCH.opsCompress = function ()
-{
-    gui.patch().compressSelectedOps();
-};
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
@@ -284,7 +273,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-            console.log(p, p.type, CABLES.OP_PORT_TYPE_VALUE, opGetter, opSetter);
             opSetter.getPort(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
@@ -467,24 +455,24 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
                 "/assets/" + gui.project()._id,
                 function (rplc)
                 {
-                    const ops = gui.patch().ops;
+                    const ops = gui.corePatch().ops;
                     for (let i = 0; i < ops.length; i++)
                     {
                         for (let j = 0; j < ops[i].portsIn.length; j++)
                         {
-                            if (ops[i].portsIn[j].thePort.uiAttribs && ops[i].portsIn[j].thePort.uiAttribs.display && ops[i].portsIn[j].thePort.uiAttribs.display == "file")
+                            if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
                             {
-                                console.log("filename:", ops[i].portsIn[j].thePort.get());
+                                console.log("filename:", ops[i].portsIn[j].get());
                                 // console.log("srch", srch);
                                 // console.log("rplc", rplc);
-                                let v = ops[i].portsIn[j].thePort.get();
+                                let v = ops[i].portsIn[j].get();
 
                                 if (v) console.log("srch index", v.indexOf(srch));
                                 if (v && v.indexOf(srch) == 0)
                                 {
                                     console.log("found str!");
                                     v = rplc + v.substring(srch.length);
-                                    ops[i].portsIn[j].thePort.set(v);
+                                    ops[i].portsIn[j].set(v);
                                     console.log("result filename:", v);
                                 }
                             }
@@ -558,20 +546,6 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "select child ops",
         "category": "op",
         "func": CABLES_CMD_PATCH.selectChilds
-    },
-    {
-        "cmd": "align selected ops",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.opsAlignHorizontal,
-        "hotkey": "a",
-        "icon": "align-left"
-    },
-    {
-        "cmd": "compress selected ops",
-        "category": "op",
-        "func": CABLES_CMD_PATCH.opsCompress,
-        "hotkey": "SHIFT + a",
-        "icon": "align-justify"
     },
     {
         "cmd": "create subpatch",

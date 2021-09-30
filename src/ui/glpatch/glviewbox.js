@@ -49,6 +49,8 @@ export default class GlViewBox
         cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
 
         this._eleTabs = document.getElementById("splitterMaintabs");
+
+        this._drawBoundingRect = !CABLES.UI.userSettings.get("glpatch_hideboundings");
     }
 
     setSize(w, h)
@@ -69,7 +71,7 @@ export default class GlViewBox
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
 
 
-        gui.socketUi.sendCursorPos(this._mousePatchX, this._mousePatchY);
+        if (gui.socketUi) gui.socketUi.sendCursorPos(this._mousePatchX, this._mousePatchY);
         gui.patchView.emitEvent("viewBoxChange");
 
         this._mousePatchX = coord[0];
@@ -116,8 +118,8 @@ export default class GlViewBox
 
     _onCanvasTouchMove(e)
     {
-        console.log(e);
-        console.log(e.touches.length);
+        // console.log(e);
+        // console.log(e.touches.length);
     }
 
     _onCanvasMouseMove(e)
@@ -283,7 +285,7 @@ export default class GlViewBox
         this.setMousePos(this._mouseX, this._mouseY);
 
 
-        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && GlUiConfig.drawBoundingRect)
+        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
             if (!this._boundingRect)
             {
@@ -373,10 +375,11 @@ export default class GlViewBox
                     ops[i].uiAttribs.translate.y,
                     0);
 
-                bb.applyPos(
-                    ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
-                    ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
-                    0);
+                if (this.glPatch.getGlOp(ops[i]))
+                    bb.applyPos(
+                        ops[i].uiAttribs.translate.x + this.glPatch.getGlOp(ops[i]).w,
+                        ops[i].uiAttribs.translate.y + this.glPatch.getGlOp(ops[i]).h,
+                        0);
             }
         }
 

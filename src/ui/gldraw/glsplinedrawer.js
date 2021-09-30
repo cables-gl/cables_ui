@@ -241,10 +241,7 @@ export default class GlSplineDrawer
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
-            // console.log("yay");
-
             this.rebuild();
-            // this._mesh.unBind();
         }
     }
 
@@ -478,6 +475,7 @@ export default class GlSplineDrawer
 
     _updateAttribsCoordinates(idx, updateWhat)
     {
+        if (!gui.patchView._patchRenderer) return;
         if (gui.patchView._patchRenderer.debugData)gui.patchView._patchRenderer.debugData.splineUpdate++;
 
         if (!this._mesh || !this._colors)

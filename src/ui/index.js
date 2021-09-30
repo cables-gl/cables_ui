@@ -3,7 +3,7 @@ import Bookmarks from "./components/bookmarks";
 import GlUiCanvas from "./glpatch/gluicanvas";
 import GlPatch from "./glpatch/glpatch";
 import CanvasLens from "./components/canvaslens";
-import HtmlInspector from "./components/htmlinspect";
+import HtmlInspector from "./elements/canvasoverlays/htmlinspect";
 import IconBar from "./elements/iconbar";
 import Keypresenter from "./components/keypresenter";
 import gluiconfig from "./glpatch/gluiconfig";
@@ -44,12 +44,36 @@ import MetaKeyframes from "./components/tabs/meta_keyframes";
 import MetaDoc from "./components/tabs/meta_doc";
 import ChangelogToast from "./dialogs/changelog";
 import Logger from "./utils/logger";
+import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
+import Gizmo from "./elements/canvasoverlays/transformgizmo";
+import OpDocs from "./components/opdocs";
+import ScConnection from "./multiplayer/sc_connection";
+import ScGui from "./multiplayer/sc_gui";
+import PacoConnector from "./multiplayer/sc_paconnector";
+import EditorTab from "./components/tabs/tab_editor";
+import Chat from "./components/tabs/tab_chat";
+import MetaOpParams from "./components/tabs/meta_opparams";
+import ServerOps from "./api/opsserver";
+import text from "./text.json";
+import EditorSession from "./elements/tabpanel/editor_session";
+import Jobs from "./components/jobs";
+import defaultops from "./defaultops";
+import { arrayContains, uniqueArray } from "./utils/helper";
+import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
+import GlPatchAPI from "./glpatch/patchapi";
 
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
+
+CABLES.UI.MOUSE_BUTTON_NONE = 0;
+CABLES.UI.MOUSE_BUTTON_LEFT = 1;
+CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
+CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
+
+CABLES.UI.OPNAME_SUBPATCH = "Ops.Ui.SubPatch";
 
 
 CABLES.UI.userSettings = new UserSettings();
@@ -64,7 +88,12 @@ CABLES.GLGUI.CURSOR_HAND = 1;
 // expose global classes
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
+CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
+
+
+CABLES.UI.ScConnection = ScConnection;
+CABLES.UI.ScGui = ScGui;
 
 CABLES.UI.Logger = Logger;
 CABLES.UI.Bookmarks = Bookmarks;
@@ -101,13 +130,35 @@ CABLES.UI.MetaHistory = MetaHistory;
 CABLES.UI.MetaKeyframes = MetaKeyframes;
 CABLES.UI.MetaDoc = MetaDoc;
 CABLES.UI.ChangelogToast = ChangelogToast;
+CABLES.UI.TransformsOverlay = TransformsOverlay;
+CABLES.UI.Gizmo = Gizmo;
+CABLES.UI.OpDocs = OpDocs;
+CABLES.UI.EditorTab = EditorTab;
+CABLES.UI.Chat = Chat;
+CABLES.UI.MetaOpParams = MetaOpParams;
+CABLES.UI.ServerOps = ServerOps;
+CABLES.UI.Jobs = Jobs;
+
+CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
+CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
 
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
+CABLES.editorSession = new EditorSession();
+
+
+CABLES.UI.TIPS = text.tips;
+CABLES.UI.TEXTS = text.text;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
+CABLES.UI.getHandleBarHtml = getHandleBarHtml;
+CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
+CABLES.UTILS.arrayContains = arrayContains;
 
 CABLES.CMD = CMD;
+
+
+CABLES.uniqueArray = uniqueArray;

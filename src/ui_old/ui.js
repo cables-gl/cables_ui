@@ -41,6 +41,15 @@ CABLES.UI.GUI = function (cfg)
         }
     });
 
+    let patchLoadEndiD = this._corePatch.on("patchLoadEnd",
+        () =>
+        {
+            this._corePatch.off(patchLoadEndiD);
+            this.setStateSaved();
+
+            logStartup("Patch loaded");
+        });
+
     this._corePatch.on("opcrash", (portTriggered) =>
     {
         this.showOpCrash(portTriggered.parent);
@@ -68,7 +77,7 @@ CABLES.UI.GUI = function (cfg)
     this.chat = null;
 
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
-    let savedState = true;
+    this._savedState = true;
 
 
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
@@ -123,8 +132,6 @@ CABLES.UI.GUI = function (cfg)
     {
         // if (!this._timeline) this._timeLine = new CABLES.TL.UI.TimeLineUI();
         return this._timeLine;
-
-        // if (_patch) return _patch.timeLine;
     };
 
     this.corePatch = this.scene = function ()
@@ -963,6 +970,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
+        console.log("setProjectName", name);
         if (name && name !== "undefined")
         {
             document.getElementById("patchname").innerHTML = name;
@@ -1041,6 +1049,17 @@ CABLES.UI.GUI = function (cfg)
         $("#options").html(html);
     };
 
+
+    this.serializeForm = function (selector)
+    {
+        const json = {};
+        Array.from(document.querySelector(selector).elements).forEach((e) =>
+        {
+            json[e.getAttribute("name")] = e.value;
+        });
+        return json;
+    };
+
     this.converterStart = function (projectId, fileId, converterId)
     {
         $("#converterprogress").show();
@@ -1050,7 +1069,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 "fileId": fileId,
                 "converterId": converterId,
-                "options": CABLES.serializeForm("#converterform")
+                "options": this.serializeForm("#converterform")
             },
             function (err, res)
             {
@@ -1323,7 +1342,7 @@ CABLES.UI.GUI = function (cfg)
             else e.dontPreventDefault = true;
         });
 
-        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patch().saveCurrentProjectAs(); });
+        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patchView.store.saveAs(); });
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (this.patchView.hasFocus())
@@ -1436,12 +1455,6 @@ CABLES.UI.GUI = function (cfg)
 
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
-
-
-        if (this.isRemoteClient)
-            new CABLES.UI.NoPatchEditor();
-        else
-            CABLES.CMD.DEBUG.glguiFull();
 
 
         this._elGlCanvas.hover(function (e)
@@ -1644,12 +1657,12 @@ CABLES.UI.GUI = function (cfg)
 
     this.getSavedState = function ()
     {
-        return savedState;
+        return this._savedState;
     };
 
     this.setTransformGizmo = function (params)
     {
-        if (!this._gizmo) this._gizmo = new CABLES.Gizmo(this.scene().cgl);
+        if (!this._gizmo) this._gizmo = new CABLES.UI.Gizmo(this.scene().cgl);
         if (!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
         {
             this._gizmo.set(null);
@@ -1721,7 +1734,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setStateUnsaved = function ()
     {
-        if (savedState)
+        if (this._savedState)
         {
             let title = "";
             if (CABLES.sandbox.isDevEnv())title = "DEV ";
@@ -1729,7 +1742,7 @@ CABLES.UI.GUI = function (cfg)
             document.title = title;
 
             favIconLink.href = "/favicon/favicon_orange.ico";
-            savedState = false;
+            this._savedState = false;
 
             document.getElementById("patchname").classList.add("warning");
 
@@ -1752,7 +1765,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setStateSaved = function ()
     {
-        savedState = true;
+        this._savedState = true;
         favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 
@@ -1928,9 +1941,12 @@ CABLES.UI.GUI = function (cfg)
                 e.preventDefault();
             });
 
-        _patch = new CABLES.UI.Patch(this);
-        _patch.show(this._corePatch);
-        this.patchView.setPatchRenderer("patch", _patch);
+        // _patch = new CABLES.UI.Patch(this);
+        // _patch.show(this._corePatch);
+        // this.patchView.store.setPatch(this._corePatch);
+
+
+        // this.patchView.setPatchRenderer("patch", _patch);
 
         $("#undev").hover(function (e)
         {
@@ -2064,20 +2080,27 @@ function startUi(cfg)
     logStartup("Init UI");
     CABLES.UI.initHandleBarsHelper();
 
+
     window.gui = new CABLES.UI.GUI(cfg);
+
+    if (gui.isRemoteClient)
+        new CABLES.UI.NoPatchEditor();
+    else
+        CABLES.CMD.DEBUG.glguiFull();
 
     incrementStartup();
     gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId, () =>
     {
-        $("#patch").bind("contextmenu", function (e)
-        {
-            if (e.preventDefault) e.preventDefault();
-        });
+        // $("#patch").bind("contextmenu", function (e)
+        // {
+        //     if (e.preventDefault) e.preventDefault();
+        // });
 
         gui.init();
         gui.checkIdle();
         gui.initCoreListeners();
 
+        gui.corePatch().timer.setTime(0);
 
         gui.bind(() =>
         {
@@ -2101,7 +2124,9 @@ function startUi(cfg)
                 $("#username").html(gui.user.usernameLowercase);
                 $("#delayed").hide();
 
+
                 gui.metaCode().init();
+
                 gui.metaDoc.init();
                 gui.opSelect().reload();
                 // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
@@ -2179,7 +2204,11 @@ function startUi(cfg)
 
 
                 CABLES.UI.loaded = true;
-                setTimeout(() => { window.gui.emitEvent("uiloaded"); }, 100);
+                setTimeout(() =>
+                {
+                    window.gui.emitEvent("uiloaded");
+                    gui.corePatch().timer.setTime(0);
+                }, 100);
             });
         });
     });

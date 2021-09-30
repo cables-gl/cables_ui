@@ -1,7 +1,5 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.Chat = class extends CABLES.EventTarget
+export default class Chat extends CABLES.EventTarget
 {
     constructor(tabs, socket)
     {
@@ -103,4 +101,4 @@ CABLES.UI.Chat = class extends CABLES.EventTarget
     {
         this._connection.sendChat(text);
     }
-};
+}

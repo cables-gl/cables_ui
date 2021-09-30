@@ -29,6 +29,11 @@ export default class Logger extends CABLES.EventTarget
         console.error("[" + this.initiator + "] ", ...arguments);
     }
 
+    info(args)
+    {
+        console.error("[" + this.initiator + "] ", ...arguments);
+    }
+
     warn(args)
     {
         console.warn("[" + this.initiator + "] ", ...arguments);

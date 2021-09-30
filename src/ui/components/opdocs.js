@@ -1,21 +1,33 @@
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-CABLES.UI.OpDocs = function ()
+import Logger from "../utils/logger";
+
+export default class OpDocs
 {
-    const self = this;
-    let opDocs = [];
-    this.layoutPaper = null;
-    this.libs = [];
-    this.coreLibs = [];
+    constructor()
+    {
+        this._log = new Logger();
+        const self = this;
+        this._opDocs = [];
+        this.layoutPaper = null;
+        this.libs = [];
+        this.coreLibs = [];
+
+        logStartup("Op docs loaded");
+        const res = CABLESUILOADER.preload.opDocsAll;
+
+        this._opDocs = res.opDocs;
+        this.extendOpDocs(this._opDocs); /* add attributes to the docs / parse markdown, ... */
+        self.libs = res.libs;
+        self.coreLibs = res.coreLibs;
+    }
 
     /**
      * Creates a "typeString" attribute for each port-object in the array (e.g. "Value")
      * @param {array} ports - Array of port objects with a "type" attribute
      */
-    function addTypeStringToPorts(ports)
+    addTypeStringToPorts(ports)
     {
-        if (!ports) { console.warn("addTypeStringToPorts(): ports is not defined"); return; }
+        if (!ports) { this._log.warn("addTypeStringToPorts(): ports is not defined"); return; }
         for (let i = 0; i < ports.length; i++)
         {
             const port = ports[i];
@@ -32,7 +44,7 @@ CABLES.UI.OpDocs = function ()
      * @param {object} opDoc - The doc object of the op
      * @returns {string} - The documeentation for the port as html (markdown parsed)
      */
-    function getPortDocText(port, opDoc)
+    getPortDocText(port, opDoc)
     {
         if (!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
         for (let i = 0; i < opDoc.docs.ports.length; i++)
@@ -50,13 +62,13 @@ CABLES.UI.OpDocs = function ()
      * @param {object} ports - Array-like object with ports
      * @param {object} opDoc - The op doc
      */
-    function setPortDocTexts(ports, opDoc)
+    setPortDocTexts(ports, opDoc)
     {
-        if (!ports) { console.warn("getPortDocText called with empty argument!"); return; }
+        if (!ports) { this._log.warn("getPortDocText called with empty argument!"); return; }
         for (let i = 0; i < ports.length; i++)
         {
             const port = ports[i];
-            const portDocText = getPortDocText(port, opDoc);
+            const portDocText = this.getPortDocText(port, opDoc);
             if (portDocText)
             {
                 port.text = portDocText;
@@ -68,7 +80,7 @@ CABLES.UI.OpDocs = function ()
         }
     }
 
-    function parseMarkdown(mdText)
+    parseMarkdown(mdText)
     {
         if (!mdText) { return ""; }
         return mmd(mdText);
@@ -78,9 +90,9 @@ CABLES.UI.OpDocs = function ()
      * Adds some properties to each doc in the op docs array
      * @param {array} opDocs - The array of op docs
      */
-    function extendOpDocs(_opDocs)
+    extendOpDocs(_opDocs)
     {
-        if (!_opDocs) { console.error("No op docs found!"); return; }
+        if (!_opDocs) { this._log.error("No op docs found!"); return; }
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
@@ -89,67 +101,44 @@ CABLES.UI.OpDocs = function ()
             {
                 if (opDoc.layout.portsIn)
                 {
-                    addTypeStringToPorts(opDoc.layout.portsIn);
-                    setPortDocTexts(opDoc.layout.portsIn, opDoc);
-                    opDoc.summaryHtml = parseMarkdown(opDoc.summary);
+                    this.addTypeStringToPorts(opDoc.layout.portsIn);
+                    this.setPortDocTexts(opDoc.layout.portsIn, opDoc);
+                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
                 }
                 if (opDoc.layout.portsOut)
                 {
-                    addTypeStringToPorts(opDoc.layout.portsOut);
-                    setPortDocTexts(opDoc.layout.portsOut, opDoc);
-                    opDoc.summaryHtml = parseMarkdown(opDoc.summary);
+                    this.addTypeStringToPorts(opDoc.layout.portsOut);
+                    this.setPortDocTexts(opDoc.layout.portsOut, opDoc);
+                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
                 }
             }
         }
     }
 
 
-    // return "doc/ops/all";
-
-
-    // CABLES.api.get(
-    //     CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlDocOpsAll()),
-    //     function (res)
-    // {
-    logStartup("Op docs loaded");
-    const res = CABLESUILOADER.preload.opDocsAll;
-    // console.log(res);
-    // if (window.process && window.process.versions.electron) res = JSON.parse(res);
-
-    opDocs = res.opDocs;
-    extendOpDocs(opDocs); /* add attributes to the docs / parse markdown, ... */
-    self.libs = res.libs;
-    self.coreLibs = res.coreLibs;
-
-
-    // },
-    // function (res, e) { console.error("err", res, e); if (cb)cb(); }
-    // );
-
-
-    this.getSummary = function (opname)
+    getSummary(opname)
     {
-        for (let i = 0; i < opDocs.length; i++)
-            if (opDocs[i].name == opname)
-                return opDocs[i].summary || "";
+        for (let i = 0; i < this._opDocs.length; i++)
+            if (this._opDocs[i].name == opname)
+                return this._opDocs[i].summary || "";
 
         return 0;
-    };
+    }
 
-    this.getAll = function ()
+    getAll()
     {
-        return opDocs;
-    };
+        return this._opDocs;
+    }
 
-    this.opLayoutSVG = function (opname, elementId)
+    opLayoutSVG(opname, elementId)
     {
         if (this.layoutPaper) this.layoutPaper.clear();
 
-        for (let i = 0; i < opDocs.length; i++)
+        for (let i = 0; i < this._opDocs.length; i++)
         {
-            if (opDocs[i].name == opname)
+            if (this._opDocs[i].name == opname)
             {
-                if (!opDocs[i].layout) return;
+                if (!this._opDocs[i].layout) return;
 
                 const opHeight = 40;
                 const opWidth = 250;
@@ -162,22 +151,22 @@ CABLES.UI.OpDocs = function ()
                 bg.attr("fill", "#333");
                 let j = 0;
 
-                if (opDocs[i].layout.portsIn)
-                    for (j = 0; j < opDocs[i].layout.portsIn.length; j++)
+                if (this._opDocs[i].layout.portsIn)
+                    for (j = 0; j < this._opDocs[i].layout.portsIn.length; j++)
                     {
                         const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsIn[j].type));
+                        portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(this._opDocs[i].layout.portsIn[j].type));
                     }
 
-                if (opDocs[i].layout.portsOut)
-                    for (j = 0; j < opDocs[i].layout.portsOut.length; j++)
+                if (this._opDocs[i].layout.portsOut)
+                    for (j = 0; j < this._opDocs[i].layout.portsOut.length; j++)
                     {
                         const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(opDocs[i].layout.portsOut[j].type));
+                        portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(this._opDocs[i].layout.portsOut[j].type));
                     }
 
                 const visualYOffset = 2;
-                const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, opDocs[i].shortNameDisplay);
+                const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, this._opDocs[i].shortNameDisplay);
                 label.node.classList.add("op_handle_" + CABLES.UI.uiConfig.getNamespaceClassName(opname));
                 label.node.classList.add("op-svg-shortname");
                 // CABLES.UI.cleanRaphael(label);
@@ -185,27 +174,27 @@ CABLES.UI.OpDocs = function ()
                 return;
             }
         }
-    };
+    }
 
-    this.getPopularity = function (opname)
+    getPopularity(opname)
     {
-        for (let i = 0; i < opDocs.length; i++)
-            if (opDocs[i].name == opname)
-                return opDocs[i].pop;
+        for (let i = 0; i < this._opDocs.length; i++)
+            if (this._opDocs[i].name == opname)
+                return this._opDocs[i].pop;
 
         return 0;
-    };
+    }
 
-    this.getAttachmentFiles = function (opname)
+    getAttachmentFiles(opname)
     {
-        for (let i = 0; i < opDocs.length; i++)
-            if (opDocs[i].name == opname)
-                return opDocs[i].attachmentFiles || [];
+        for (let i = 0; i < this._opDocs.length; i++)
+            if (this._opDocs[i].name == opname)
+                return this._opDocs[i].attachmentFiles || [];
         return [];
-    };
+    }
 
 
-    this.getPortDoc = function (op_docs, portname, type)
+    getPortDoc(op_docs, portname, type)
     {
         let html = "";
         const className = CABLES.UI.uiConfig.getPortTypeClassHtml(type);
@@ -222,29 +211,29 @@ CABLES.UI.OpDocs = function ()
         html += "</li>";
 
         return html;
-    };
+    }
 
     /**
      * Returns the op documentation object for an op
      * @param {string} opName - Complete op name (long form), e.g. "Ops.Value"
      */
-    this.getOpDocByName = function (opName)
+    getOpDocByName(opName)
     {
-        for (let i = 0; i < opDocs.length; i++)
+        for (let i = 0; i < this._opDocs.length; i++)
         {
-            if (opDocs[i].name === opName)
+            if (this._opDocs[i].name === opName)
             {
-                return opDocs[i];
+                return this._opDocs[i];
             }
         }
-    };
+    }
 
     /**
      * Returns the documentation for an op as Html
      * Does not render the op-svg (layout).
      * @param {string} opName - The name of the op to get the documantation as Html for
      */
-    this.get2 = function (opName)
+    get2(opName)
     {
         let opDoc = this.getOpDocByName(opName);
 
@@ -264,51 +253,51 @@ CABLES.UI.OpDocs = function ()
         });
 
         return html;
-    };
+    }
 
 
-    this.getSuggestions = function (objName, portName)
+    getSuggestions(objName, portName)
     {
-        for (let i = 0; i < opDocs.length; i++)
+        for (let i = 0; i < this._opDocs.length; i++)
         {
-            if (opDocs[i].name == objName)
+            if (this._opDocs[i].name == objName)
             {
-                if (opDocs[i].portSuggestions && opDocs[i].portSuggestions[portName])
+                if (this._opDocs[i].portSuggestions && this._opDocs[i].portSuggestions[portName])
                 {
-                    const suggestions = opDocs[i].portSuggestions[portName].ops;
+                    const suggestions = this._opDocs[i].portSuggestions[portName].ops;
                     return suggestions;
                 }
             }
         }
-    };
+    }
 
-    this.showPortDoc = function (opname, portname)
+    showPortDoc(opname, portname)
     {
         const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
 
-        for (let i = 0; i < opDocs.length; i++)
+        for (let i = 0; i < this._opDocs.length; i++)
         {
-            if (opDocs[i].name == opname && opDocs[i].layout)
+            if (this._opDocs[i].name == opname && this._opDocs[i].layout)
             {
-                if (!opDocs[i].layout) return;
+                if (!this._opDocs[i].layout) return;
 
                 let group = null;
 
-                if (opDocs[i].layout.portsIn)
-                    for (let k = 0; k < opDocs[i].layout.portsIn.length; k++)
-                        if (opDocs[i].layout.portsIn[k].name == portname)
-                            group = opDocs[i].layout.portsIn[k].group;
+                if (this._opDocs[i].layout.portsIn)
+                    for (let k = 0; k < this._opDocs[i].layout.portsIn.length; k++)
+                        if (this._opDocs[i].layout.portsIn[k].name == portname)
+                            group = this._opDocs[i].layout.portsIn[k].group;
 
                 if (group) group += " - ";
                 else group = "";
 
-                if (opDocs[i].docs)
+                if (this._opDocs[i].docs)
                 {
-                    for (let j = 0; j < opDocs[i].docs.ports.length; j++)
+                    for (let j = 0; j < this._opDocs[i].docs.ports.length; j++)
                     {
-                        if (opDocs[i].docs.ports[j].name == portname)
+                        if (this._opDocs[i].docs.ports[j].name == portname)
                         {
-                            CABLES.UI.showInfo("<b>" + group + portname + "</b>:<br/>" + opDocs[i].docs.ports[j].text);
+                            CABLES.UI.showInfo("<b>" + group + portname + "</b>:<br/>" + this._opDocs[i].docs.ports[j].text);
                             perf.finish();
                             return;
                         }
@@ -322,5 +311,5 @@ CABLES.UI.OpDocs = function ()
         }
 
         perf.finish();
-    };
-};
+    }
+}

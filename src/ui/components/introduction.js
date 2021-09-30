@@ -95,7 +95,6 @@ export default class Introduction
 
     showIntroduction()
     {
-        console.log("Introduction started");
         if (!this._introStepsDefined)
         {
             this.defineIntroSteps();
@@ -104,12 +103,10 @@ export default class Introduction
         introJs()
             .oncomplete(() =>
             {
-                // console.log('intro completed');
                 this.disableIntroForUser();
             })
             .onskip(() =>
             { /* needed because of introjs 2.9.0 bug: https://github.com/usablica/intro.js/issues/848 */
-                // console.log('intro skipped');
                 this.disableIntroForUser();
             })
             .setOptions({

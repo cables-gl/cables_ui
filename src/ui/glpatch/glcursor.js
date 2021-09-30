@@ -18,8 +18,6 @@ export default class GlCursor extends CABLES.EventTarget
         this._cursor2.setSize(10, 10);
         this._cursor2.setDecoration(5);
 
-
-        // const col = this.HSVtoRGB(Math.random(), 0.75, 1.0);
         let col = null;
         if (gui.socketUi)col = gui.socketUi.getClientColor(clientId);
         if (col) this._cursor2.setColor(col.r, col.g, col.b, 1);
@@ -30,7 +28,6 @@ export default class GlCursor extends CABLES.EventTarget
     {
         if (this.isAnimated)
         {
-            // console.log(this._animX.getValue(this._glPatch.time), this._glPatch.time);
             this._cursor2.setPosition(
                 this._animX.getValue(this._glPatch.time),
                 this._animY.getValue(this._glPatch.time));

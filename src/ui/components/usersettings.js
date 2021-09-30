@@ -71,8 +71,6 @@ export default class UserSettings extends CABLES.EventTarget
 
         this._settings[key] = value || false;
 
-        // if (wasChanged)console.log("usersetting changed", key, value);
-
         if (this._wasLoaded)
         {
             let delay = 250;

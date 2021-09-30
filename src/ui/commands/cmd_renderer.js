@@ -22,11 +22,6 @@ CABLES_CMD_RENDERER.fullscreen = function ()
     gui.cycleFullscreen();
 };
 
-CABLES_CMD_RENDERER.animRenderer = function ()
-{
-    CABLES.animRenderer.show();
-};
-
 CABLES_CMD_RENDERER.resetSize = function ()
 {
     gui.rendererWidth = 640;
@@ -53,7 +48,6 @@ CABLES_CMD_RENDERER.aspect = function (a)
                 else
                 {
                     const s = parseFloat(r);
-                    console.log("set to", r);
                     CABLES_CMD_RENDERER.aspect(s);
                 }
             });
@@ -133,11 +127,6 @@ rendererCommands.commands.push({
     "category": "renderer",
     "func": CABLES_CMD_RENDERER.aspect,
     "icon": "canvas_max"
-}, {
-    "cmd": "animation renderer",
-    "category": "renderer",
-    "func": CABLES_CMD_RENDERER.animRenderer,
-    "icon": "monitor"
 }, {
     "cmd": "scale canvas",
     "category": "renderer",

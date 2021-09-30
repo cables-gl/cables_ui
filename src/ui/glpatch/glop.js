@@ -1,6 +1,7 @@
 import GlUiConfig from "./gluiconfig";
 import GlPort from "./glport";
 import GlText from "../gldraw/gltext";
+import GlArea from "./glarea";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -220,20 +221,6 @@ export default class GlOp extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        // let foundChange = false;
-        // // console.log("attr", attr);
-        // for (let i in attr)
-        // {
-        //     // console.log("i", i);
-        //     if (!this.opUiAttribs.hasOwnProperty(i) || this.opUiAttribs[i] !== attr[i])
-        //     {
-        //         foundChange = true;
-        //         break;
-        //     }
-        // }
-        // if (!foundChange) return;
-
-
         if (attr.selected)
         {
             this._glPatch.selectOpId(this._id);
@@ -604,7 +591,6 @@ export default class GlOp extends CABLES.EventTarget
             (this._glDotError || this._glDotWarning || this._glDotHint))
         {
             this._disposeDots();
-            console.log("remove all errordots");
         }
     }
 

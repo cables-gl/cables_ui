@@ -1009,6 +1009,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.centerCursor();
     };
 
+
     this.getCanvasCoordsSVG = function (id, evt)
     {
         let ctm = $(id)[0].getScreenCTM();
@@ -1390,6 +1391,28 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateEasingsSelect();
     };
 
+    this.mouseEvent = function (event)
+    {
+        if (!event) return event;
+        if (event.buttons === undefined) // safari
+        {
+            event.buttons = event.which;
+
+            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
+            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
+        }
+
+        if (event.type == "touchmove" && event.originalEvent)
+        {
+            event.buttons = 3;
+            event.clientX = event.originalEvent.touches[0].pageX;
+            event.clientY = event.originalEvent.touches[0].pageY;
+        }
+
+        return event;
+    };
+
+
     this.setSelectedKeysEasing = function (e)
     {
         for (const anii in anims)
@@ -1559,11 +1582,11 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         }
     });
 
-    $("#timetimeline").bind("mousedown", function (e)
+    $("#timetimeline").bind("mousedown", (e) =>
     {
         $(document).bind("mousemove", mousemoveTime);
         $("#timeline").focus();
-        e = CABLES.mouseEvent(e);
+        e = this.mouseEvent(e);
         scrollTime(e);
     });
 
@@ -1628,10 +1651,10 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateOverviewLine();
     });
 
-    $("#timeline").bind("mousemove", function (e)
+    $("#timeline").bind("mousemove", (e) =>
     {
         if (isScrollingTime) return;
-        e = CABLES.mouseEvent(e);
+        e = this.mouseEvent(e);
 
         if (e.buttons == 2 || e.buttons == 3 || (e.buttons == 1 && spacePressed))
         {

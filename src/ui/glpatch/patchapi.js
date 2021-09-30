@@ -1,10 +1,13 @@
 
 import GlLink from "./gllink";
+import Logger from "../utils/logger";
 
 export default class GlPatchAPI
 {
     constructor(patch, glpatch)
     {
+        this._log = new Logger("glpatch");
+
         this._patch = patch;
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
@@ -123,7 +126,7 @@ export default class GlPatchAPI
 
         if (!link.portOut)
         {
-            console.log("link has no portout!");
+            this._log.warn("link has no portout!");
             return;
         }
 
@@ -139,7 +142,7 @@ export default class GlPatchAPI
                         const op2 = patch.getOpById(op2Id);
                         if (!op1 || !op2)
                         {
-                            console.warn("undo: op not found");
+                            this._log.warn("undo: op not found");
                             return;
                         }
                         op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
@@ -184,7 +187,7 @@ export default class GlPatchAPI
                     const op2 = patch.getOpById(op2Id);
                     if (!op1 || !op2)
                     {
-                        console.warn("undo: op not found");
+                        this._log.warn("undo: op not found");
                         return;
                     }
                     op1.getPortByName(p1Name).removeLinkTo(op2.getPortByName(p2Name));
@@ -204,7 +207,6 @@ export default class GlPatchAPI
     _onAddOp(op, fromDeserialize)
     {
         this._glPatch.addOp(op, fromDeserialize);
-        // console.log(fromDeserialize, op.uiAttribs);
         if (!fromDeserialize) gui.patchView.testCollision(op);
 
         if (!fromDeserialize) op.on("onPortAdd", (p) =>
@@ -233,8 +235,6 @@ export default class GlPatchAPI
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
     {
-        console.log("patchapi removeLink!");
-
         const opIn = gui.corePatch().getOpById(opIdIn);
         const pIn = opIn.getPortById(portIdIn);
         const opOut = gui.corePatch().getOpById(opIdOut);
@@ -242,7 +242,7 @@ export default class GlPatchAPI
         const l = pOut.getLinkTo(pIn);
 
         if (l) l.remove();
-        else console.error("could not remove link");
+        else this._log.error("could not remove link");
     }
 
 
@@ -273,7 +273,7 @@ export default class GlPatchAPI
         const op = gui.corePatch().getOpById(opid);
         if (!op)
         {
-            console.log("[setOpUiAttribs] op not found");
+            this._log.warn("[setOpUiAttribs] op not found");
             return;
         }
 

@@ -21,8 +21,6 @@ export default class ShakeDetector extends CABLES.EventTarget
 
     move(a)
     {
-        // console.log(this.shakeCountP, this.shakeCountN);
-
         if (this.shakeLastX != -1)
         {
             if (this.shakeLastX - a > 30 && this.lastShakeDir)

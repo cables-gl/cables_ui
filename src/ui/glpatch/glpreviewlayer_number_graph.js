@@ -43,9 +43,6 @@ export default class GlPreviewLayerNumber extends CABLES.EventTarget
         ctx.beginPath();
         ctx.moveTo(pos[0], pos[1]);
 
-        // console.log(size);
-
-
         for (let i = 0; i < this._buff.length; i++)
         {
             ctx.lineTo(pos[0] + i * mulX, this._buff[i] * mul + pos[1]);

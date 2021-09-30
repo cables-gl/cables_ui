@@ -1,164 +1,167 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.EditorTab = function (options)
+export default class EditorTab
 {
-    this._editor = null;
-    if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
-
-    this._options = options;
-
-    gui.maintabPanel.show();
-
-    this._tab = new CABLES.UI.Tab(options.title,
-        {
-            "icon": null,
-            "type": options.syntax,
-            "name": options.name,
-            "dataId": options.dataId,
-            "infotext": "a code editor",
-            "singleton": options.singleton,
-        });
-
-    const existing = gui.mainTabs.getTabByTitle(options.title);
-    if (existing)
+    constructor(options)
     {
-        gui.mainTabs.activateTab(existing.id);
-        return;
-    }
+        this._editor = null;
+        if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
 
-    this._tab.editorObj = options.editorObj;
-    gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
+        this._options = options;
 
-    const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
-    this._tab.html(html);
+        gui.maintabPanel.show();
 
-    this._editor = CABLES.UI.createEditor("editorcontent" + this._tab.id, options.content || "");
-
-    if (options.allowEdit)
-    {
-        if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
-        if (!options.hideFormatButton)
-        {
-            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
-        }
-    }
-    else
-    {
-        this._editor.setOptions({ "readOnly": "true" });
-    }
-
-    this._editor.resize();
-
-    const undoManager = this._editor.session.getUndoManager();
-    undoManager.reset();
-    this._editor.session.setUndoManager(undoManager);
-
-    this._editor.on(
-        "change",
-        function (e)
-        {
-            gui.mainTabs.setChanged(this._tab.id, true);
-            if (options.onChange) options.onChange();
-        }.bind(this),
-    );
-
-    this._editor.getSession().setUseWorker(true);
-
-    if (options.syntax == "md") this._editor.session.setMode("ace/mode/Markdown");
-    else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
-    else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
-    else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
-    else if (options.syntax == "json") this._editor.session.setMode("ace/mode/json");
-    else
-    {
-        this._editor.session.setMode("ace/mode/plain_text");
-        this._editor.getSession().setUseWorker(false);
-    }
-
-    this._tab.addEventListener("onClose", options.onClose);
-    this._tab.addEventListener(
-        "onActivate",
-        function ()
-        {
-            this._editor.resize(true);
-            this._editor.focus();
-            CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
-        }.bind(this),
-    );
-
-    setTimeout(() =>
-    {
-        if (!options.inactive)
-        {
-            CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
-            gui.mainTabs.activateTab(this._tab.id);
-        }
-    }, 100);
-};
-
-CABLES.UI.EditorTab.prototype.format = function ()
-{
-    CABLESUILOADER.talkerAPI.send(
-        "formatOpCode",
-        {
-            "code": this._editor.getValue(),
-        },
-        (err, res) =>
-        {
-            if (!res || !res.success)
+        this._tab = new CABLES.UI.Tab(options.title,
             {
-                CABLES.UI.notifyError("failed to format code, keeping old version");
-                console.log("code formating error", err);
-            }
-            else
-            {
-                this._editor.setValue(res.opFullCode, 1);
-                this._editor.focus();
-            }
-        },
-        (result) =>
+                "icon": null,
+                "type": options.syntax,
+                "name": options.name,
+                "dataId": options.dataId,
+                "infotext": "a code editor",
+                "singleton": options.singleton,
+            });
+
+        const existing = gui.mainTabs.getTabByTitle(options.title);
+        if (existing)
         {
-            CABLES.UI.notifyError("failed to format code, keeping old version");
-            console.log("code formating http error", result);
-        },
-    );
-};
+            gui.mainTabs.activateTab(existing.id);
+            return;
+        }
 
-CABLES.UI.EditorTab.prototype.save = function ()
-{
-    function onSaveCb(txt)
-    {
-        gui.jobs().finish("saveeditorcontent");
+        this._tab.editorObj = options.editorObj;
+        gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
 
-        if (txt.toLowerCase().indexOf("error") == 0) CABLES.UI.notifyError(txt);
+        const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
+        this._tab.html(html);
+
+        this._editor = createEditor("editorcontent" + this._tab.id, options.content || "");
+
+        if (options.allowEdit)
+        {
+            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+            if (!options.hideFormatButton)
+            {
+                if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+            }
+        }
         else
         {
-            CABLES.UI.notify(txt);
-            gui.mainTabs.setChanged(this._tab.id, false);
+            this._editor.setOptions({ "readOnly": "true" });
         }
 
-        this._editor.focus();
-        setTimeout(
+        this._editor.resize();
+
+        const undoManager = this._editor.session.getUndoManager();
+        undoManager.reset();
+        this._editor.session.setUndoManager(undoManager);
+
+        this._editor.on(
+            "change",
+            function (e)
+            {
+                gui.mainTabs.setChanged(this._tab.id, true);
+                if (options.onChange) options.onChange();
+            }.bind(this),
+        );
+
+        this._editor.getSession().setUseWorker(true);
+
+        if (options.syntax == "md") this._editor.session.setMode("ace/mode/Markdown");
+        else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
+        else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
+        else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
+        else if (options.syntax == "json") this._editor.session.setMode("ace/mode/json");
+        else
+        {
+            this._editor.session.setMode("ace/mode/plain_text");
+            this._editor.getSession().setUseWorker(false);
+        }
+
+        this._tab.addEventListener("onClose", options.onClose);
+        this._tab.addEventListener(
+            "onActivate",
             function ()
             {
+                this._editor.resize(true);
                 this._editor.focus();
+                CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
             }.bind(this),
-            200,
+        );
+
+        setTimeout(() =>
+        {
+            if (!options.inactive)
+            {
+                CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+                gui.mainTabs.activateTab(this._tab.id);
+            }
+        }, 100);
+    }
+
+
+    format()
+    {
+        CABLESUILOADER.talkerAPI.send(
+            "formatOpCode",
+            {
+                "code": this._editor.getValue(),
+            },
+            (err, res) =>
+            {
+                if (!res || !res.success)
+                {
+                    CABLES.UI.notifyError("failed to format code, keeping old version");
+                    console.log("code formating error", err);
+                }
+                else
+                {
+                    this._editor.setValue(res.opFullCode, 1);
+                    this._editor.focus();
+                }
+            },
+            (result) =>
+            {
+                CABLES.UI.notifyError("failed to format code, keeping old version");
+                console.log("code formating http error", result);
+            },
         );
     }
 
-    const anns = this._editor.getSession().getAnnotations();
-    console.log("annotations", anns);
-
-    if (this._options.onSave)
+    save()
     {
-        gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
-        this._options.onSave(onSaveCb.bind(this), this._editor.getValue(), this._editor);
-    }
-};
+        function onSaveCb(txt)
+        {
+            gui.jobs().finish("saveeditorcontent");
 
-CABLES.UI.createEditor = function (id, val)
+            if (txt.toLowerCase().indexOf("error") == 0) CABLES.UI.notifyError(txt);
+            else
+            {
+                CABLES.UI.notify(txt);
+                gui.mainTabs.setChanged(this._tab.id, false);
+            }
+
+            this._editor.focus();
+            setTimeout(
+                function ()
+                {
+                    this._editor.focus();
+                }.bind(this),
+                200,
+            );
+        }
+
+        const anns = this._editor.getSession().getAnnotations();
+        console.log("annotations", anns);
+
+        if (this._options.onSave)
+        {
+            gui.jobs().start({ "id": "saveeditorcontent", "title": "saving editor content" });
+            this._options.onSave(onSaveCb.bind(this), this._editor.getValue(), this._editor);
+        }
+    }
+}
+
+
+function createEditor(id, val)
 {
     const editor = ace.edit(id);
     editor.setValue(""); // need to do this
@@ -353,4 +356,4 @@ CABLES.UI.createEditor = function (id, val)
 
 
     return editor;
-};
+}

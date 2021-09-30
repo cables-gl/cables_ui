@@ -29,7 +29,6 @@ export default class MetaKeyframes
             const ops = gui.corePatch().ops;
             for (i = 0; i < ops.length; i++)
             {
-                // console.log(gui.corePatch().ops[i].name);
                 for (let j = 0; j < ops[i].portsIn.length; j++)
                 {
                     const p = ops[i].portsIn[j];

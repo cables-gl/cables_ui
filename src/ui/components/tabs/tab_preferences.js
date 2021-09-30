@@ -26,7 +26,6 @@ export default class Preferences
 
     setSwitchValue(name, value)
     {
-        // console.log("setSwitchValue",name,value);
         if (value === null)value = false;
         const elements = document.getElementsByClassName("prefswitch");
         for (let i = 0; i < elements.length; i++)
@@ -65,6 +64,8 @@ export default class Preferences
 
         this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
         this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
+        this.setSwitchValue("glpatch_hideboundings", CABLES.UI.userSettings.get("glpatch_hideboundings"));
+
         this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
 
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
@@ -105,7 +106,6 @@ export default class Preferences
 
         CABLES.UI.userSettings.addEventListener("onChange", () =>
         {
-            // console.log("settings changed!!!");
             this.updateValues();
         });
     }

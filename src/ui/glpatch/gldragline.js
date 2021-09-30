@@ -1,10 +1,12 @@
 import glUiConfig from "./gluiconfig";
+import Logger from "../utils/logger";
 
 
 export default class GlDragLine
 {
     constructor(splineDrawer, glpatch)
     {
+        this._log = new Logger("gldragline");
         this._rect = null;
 
         this._splineDrawer = splineDrawer;
@@ -24,18 +26,12 @@ export default class GlDragLine
         this._y = 0;
         this._z = -1.0;
 
-        // document.body.addEventListener("pointerup", (e) =>
-        // {
-        //     console.log("up", e);
-        // });
-
         glpatch.on("mouseup", (e) =>
         {
             if (!this.isActive) return;
 
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
-                // console.log("undo rightclick...");
             }
 
 
@@ -137,7 +133,7 @@ export default class GlDragLine
 
         glpatch.on("mouseUpOverPort", (opid, portName) =>
         {
-            // console.log("mouseUpOverPort",
+            // this._log.log("mouseUpOverPort",
             //     this._startPortOpId,
             //     this._startPortName,
             //     opid,
@@ -155,7 +151,7 @@ export default class GlDragLine
                 {
                     if (!this._startGlPorts[i].glOp)
                     {
-                        console.log("glop unknown?", this._startGlPorts, this._startGlPorts[i]);
+                        this._log.warn("glop unknown?", this._startGlPorts, this._startGlPorts[i]);
                         return;
                     }
                     gui.patchView.linkPorts(opid,
@@ -304,6 +300,6 @@ export default class GlDragLine
         }
 
         this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        // console.log("set color dragline", r, g, b, a);
+        // this._log.log("set color dragline", r, g, b, a);
     }
 }

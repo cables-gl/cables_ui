@@ -1,15 +1,14 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
-CABLES.UI.Jobs = CABLES.UI.Jobs ||
-
-function ()
+export default class Jobs
 {
-    const jobs = [];
-    let lastIndicator = null;
-    this._jobsEle = document.getElementById("jobs");
-    this._listenerStarted = false;
+    constructor()
+    {
+        this._jobs = [];
+        this._lastIndicator = null;
+        this._jobsEle = document.getElementById("jobs");
+        this._listenerStarted = false;
+    }
 
-    this.startListener = function ()
+    startListener()
     {
         this._listenerStarted = true;
 
@@ -17,9 +16,9 @@ function ()
         {
             if (this._jobsEle.style.display == "block") this.updateJobListing();
         });
-    };
+    }
 
-    this.updateJobListing = function ()
+    updateJobListing()
     {
         if (!window.gui || !gui.chat) return;
 
@@ -28,15 +27,15 @@ function ()
 
         if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
 
-        for (const i in jobs)
+        for (const i in this._jobs)
         {
-            if (jobs[i].indicator)indicator = jobs[i].indicator;
-            str += "<div><i class=\"fa fa-circle-o-notch fa-spin\"></i>&nbsp;&nbsp;" + jobs[i].title + "";
-            str += "<div id=\"jobprogress" + jobs[i].id + "\" style=\"width:" + (jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
+            if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
+            str += "<div><i class=\"fa fa-circle-o-notch fa-spin\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
+            str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
             str += "</div>";
         }
 
-        if (jobs.length == 0)
+        if (this._jobs.length == 0)
         {
             str += "All server jobs finished...";
             // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
@@ -46,38 +45,38 @@ function ()
         if (indicator)
         {
             gui.setWorking(true, indicator);
-            lastIndicator = indicator;
+            this._lastIndicator = indicator;
         }
         else
         {
-            if (lastIndicator) gui.setWorking(false, lastIndicator);
+            if (this._lastIndicator) gui.setWorking(false, this._lastIndicator);
         }
 
 
         document.getElementById("jobs").innerHTML = str;
         if (!this._listenerStarted) this.startListener();
-    };
+    }
 
-    this.update = function (job, func)
+    update(job, func)
     {
-        for (const i in jobs)
+        for (const i in this._jobs)
         {
-            if (jobs[i].id == job.id)
+            if (this._jobs[i].id == job.id)
             {
-                jobs[i].title = job.title;
+                this._jobs[i].title = job.title;
                 break;
             }
         }
         this.updateJobListing();
-    };
+    }
 
-    this.start = function (job, func)
+    start(job, func)
     {
-        for (const i in jobs)
+        for (const i in this._jobs)
         {
-            if (jobs[i].id == job.id)
+            if (this._jobs[i].id == job.id)
             {
-                jobs.splice(i, 1);
+                this._jobs.splice(i, 1);
                 break;
             }
         }
@@ -89,38 +88,33 @@ function ()
             this.updateJobListing();
         });
 
-        jobs.push(job);
+        this._jobs.push(job);
         this.updateJobListing();
 
         if (func)
         {
             setTimeout(func, 30);
         }
-    };
+    }
 
-    // this.updateProgressMainBar = function (prog)
-    // {
 
-    // };
-
-    this.setProgress = function (jobId, progress)
+    setProgress(jobId, progress)
     {
-        console.log("upl progress", progress);
         if (progress != 100)document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
-        for (const i in jobs)
+        for (const i in this._jobs)
         {
-            if (jobs[i].id == jobId)
+            if (this._jobs[i].id == jobId)
             {
-                jobs[i].progress = progress;
-                document.getElementById("jobprogress" + jobs[i].id).style.width = progress + "%";
+                this._jobs[i].progress = progress;
+                document.getElementById("jobprogress" + this._jobs[i].id).style.width = progress + "%";
             }
 
-            if (jobs[i].progress)
+            if (this._jobs[i].progress)
             {
                 avgCount++;
-                avg += jobs[i].progress;
+                avg += this._jobs[i].progress;
             }
         }
         if (avgCount)
@@ -131,29 +125,29 @@ function ()
             if (prog === 100) document.getElementById("uploadprogresscontainer").classList.add("hidden");
             else document.getElementById("uploadprogresscontainer").classList.remove("hidden");
         }
-    };
+    }
 
-    this.finish = function (jobId)
+    finish(jobId)
     {
         setTimeout(() =>
         {
-            for (const i in jobs)
+            for (const i in this._jobs)
             {
-                if (jobs[i].id == jobId)
+                if (this._jobs[i].id == jobId)
                 {
-                    if (jobs[i].title.indexOf("file") >= 0)
+                    if (this._jobs[i].title.indexOf("file") >= 0)
                     {
                         // gui.updateProjectFiles();
                         // CABLES.UI.fileSelect.load();
                         gui.showFileManager();
                     }
-                    jobs.splice(i, 1);
+                    this._jobs.splice(i, 1);
                     break;
                 }
             }
 
 
-            if (jobs.length === 0)
+            if (this._jobs.length === 0)
             {
                 const logo = document.querySelector(".cables .logo");
                 if (logo)
@@ -165,6 +159,6 @@ function ()
                 }
             }
             this.updateJobListing();
-        }, 250);
-    };
-};
+        }, 150);
+    }
+}

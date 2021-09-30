@@ -1,8 +1,11 @@
 
+import Logger from "../utils/logger";
+
 export default class Api
 {
     constructor()
     {
+        this._log = new Logger("api");
         this.cache = [];
         this.lastErrorReport = 0;
         this.pingTime = 0;
@@ -49,7 +52,7 @@ export default class Api
 
                     if (cbSuccess) cbSuccess(_data);
                 });
-                else console.error("[cables_ui] api fetch err", response);
+                else this._log.error("[cables_ui] api fetch err", response);
             })
             .catch(function (response)
             {
@@ -65,20 +68,20 @@ export default class Api
                             else
                             if (_data.statusText == "Multiple Choices")
                             {
-                                console.warn("Fetch unknown file response...");
-                                console.log(url);
+                                this._log.warn("Fetch unknown file response...");
+                                this._log.log(url);
                             }
                             else
                             {
                                 if (!cbError) CABLES.UI.MODAL.show("Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
-                                console.log(_data);
+                                this._log.log(_data);
                             }
                         }
 
                         if (cbError)cbError(_data.responseJSON, _data);
                     });
                 else
-                    console.error("[cables_ui] api fetch err", response);
+                    this._log.error("[cables_ui] api fetch err", response);
             });
     }
 
@@ -158,7 +161,7 @@ export default class Api
             }
             catch (e)
             {
-                console.log(e);
+                this._log.log(e);
             }
         }
 
@@ -170,8 +173,8 @@ export default class Api
         report.opName = err.opName;
         report.errorLine = err.errorLine;
 
-        console.log("error report sent.");
-        console.log(report);
+        this._log.log("error report sent.");
+        this._log.log(report);
 
         CABLES.api.post("errorReport", report, function (d)
         {

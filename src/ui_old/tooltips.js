@@ -56,7 +56,6 @@ CABLES.UI.addToolTipListener = function (ele)
 
 Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
 {
-    // console.log("tt", tt);
     CABLES.UI.addToolTipListener(tt);
 });
 

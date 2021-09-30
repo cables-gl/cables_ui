@@ -55,7 +55,6 @@ export default class GlText
         this._y = y;
         this._z = z;
 
-        // console.log(x, y, z);
         this.rebuild();
     }
 
@@ -104,15 +103,10 @@ export default class GlText
 
     rebuild()
     {
-        // if(this._string===undefined || this._string===null)return;
-
         let w = 0;
         for (let i = 0; i < this._string.length; i++)
         {
-            // const ch = this.getChar(font, font.characters[this._string[i]]);
-
             const ch = this._font.characters[this._string[i]] || this._font.characters["?"];
-            // if(!font.characters[ch]) ch="?";
             w += ch.xadvance;
         }
 
@@ -152,15 +146,11 @@ export default class GlText
             rect.visible = this._visible;
             this._rects[rectCount] = rect;
 
-            // if (i == 3)
-            // console.log(posX - this._map(ch.xoffset), posY - this._map(ch.yoffset));
             rect.setPosition(posX + this._map(ch.xoffset), this._map(ch.yoffset) - -posY - lineHeight + 6.0, posZ); //
             rect.setSize(this._map(ch.width), this._map(ch.height));
             rect.setColor(this._color);
 
-            // console.log(ch.x / this._font.info.size, ch.y / this._font.info.size);
             rect.setTexRect(
-                // ch.x / this._font.width, ch.y / this._font.height,
                 ch.x / 1024, ch.y / 1024,
 
                 ch.width / 1024, ch.height / 1024);

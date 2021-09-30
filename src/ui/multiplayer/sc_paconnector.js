@@ -1,6 +1,5 @@
-CABLES = CABLES || {};
 
-CABLES.UI.PacoConnector = class extends CABLES.EventTarget
+export default class PacoConnector extends CABLES.EventTarget
 {
     constructor(sccon, paco)
     {
@@ -18,7 +17,6 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
             return;
         }
 
-
         const data = { "event": event, "vars": vars };
         this._sccon.sendPaco({ "data": data });
     }
@@ -34,7 +32,7 @@ CABLES.UI.PacoConnector = class extends CABLES.EventTarget
         this._receiver._receive(pacoMsg);
         // this.receiving = false;
     }
-};
+}
 
 // const PatchConnectorBroadcastChannel = function ()
 // {

@@ -1,7 +1,11 @@
+import Logger from "../../utils/logger";
+
+
 export default class MetaCode
 {
     constructor(tabs)
     {
+        this._log = new Logger("MetaCode");
         this._initialized = false;
         this._op = null;
         this._lastSelectedOp = null;
@@ -100,7 +104,7 @@ export default class MetaCode
                 },
                 () =>
                 {
-                    console.log("error api?");
+                    this._log.warn("error api?");
                 });
         }
     }

@@ -22,8 +22,6 @@ export default class WatchVarTab extends CABLES.EventTarget
             const vars = this._patch.getVars();
             for (const y in vars)
                 vars[y].removeListener(this._updateVar.bind(this));
-
-            console.log("tab close");
         });
 
         this._tabs.addTab(this._tab, true);
