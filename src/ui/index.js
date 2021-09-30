@@ -65,6 +65,7 @@ import setHtmlDefaultListeners from "./utils/htmldefaults";
 import PatchView from "./components/patchview";
 import { notify, notifyError } from "./elements/notification";
 import DragNDrop from "./components/filemananager_dragdrop";
+import startIdleListeners from "./components/idlemode";
 
 
 CABLES = CABLES || {};
@@ -161,13 +162,13 @@ CABLES.UI.initSplitPanes = initSplitPanes;
 CABLES.UI.getHandleBarHtml = getHandleBarHtml;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
+CABLES.UI.startIdleListeners = startIdleListeners;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;
 CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
-
 
 CABLES.uniqueArray = uniqueArray;
 
