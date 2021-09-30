@@ -266,10 +266,10 @@ export default class ServerOps
                 "opname": opName,
                 "name": libName,
             },
-            function (err, res)
+            (err, res) =>
             {
                 this._log.log("lib added!");
-                gui.reloadDocs(function ()
+                gui.reloadDocs(() =>
                 {
                     this._log.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
@@ -295,7 +295,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": libName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -303,7 +303,7 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(function ()
+                        gui.reloadDocs(() =>
                         {
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
@@ -328,9 +328,9 @@ export default class ServerOps
                 "opname": opName,
                 "name": libName,
             },
-            function (err, res)
+            (err, res) =>
             {
-                gui.reloadDocs(function ()
+                gui.reloadDocs(() =>
                 {
                     gui.metaTabs.activateTabByName("code");
                     let html = "";
@@ -355,7 +355,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": libName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -363,7 +363,7 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(function ()
+                        gui.reloadDocs(() =>
                         {
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
@@ -390,7 +390,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": attName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -415,7 +415,7 @@ export default class ServerOps
                 opname,
                 "name": attName,
             },
-            function (err, res)
+            (err, res) =>
             {
                 gui.metaTabs.activateTabByName("code");
             },
@@ -445,7 +445,6 @@ export default class ServerOps
         document.getElementById("opNameDialogInput").addEventListener("input", () =>
         {
             const v = document.getElementById("opNameDialogInput").value;
-            this._log.log("INPUT!", v);
             CABLES.api.get("op/checkname/" + usernamespace + "." + v, (res) =>
             {
                 this._log.log(res);
@@ -491,7 +490,7 @@ export default class ServerOps
     {
         if (gui.showGuestWarning()) return;
 
-        this.opNameDialog("Clone operator", name, function (newname)
+        this.opNameDialog("Clone operator", name, (newname) =>
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
             gui.serverOps.clone(oldName, opname);

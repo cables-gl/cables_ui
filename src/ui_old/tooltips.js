@@ -36,24 +36,39 @@ CABLES.UI.hideToolTip = function ()
 
 CABLES.UI.addToolTipListener = function (ele)
 {
-    const over = function (e)
-    {
-        clearTimeout(CABLES.UI.tooltipTimeout);
-        const txt = e.target.dataset.tt;
-        CABLES.UI.tooltipTimeout = setTimeout(() =>
-        {
-            CABLES.UI.showToolTip(e, txt);
-        }, 300);
-    };
-    const out = function (e)
-    {
-        clearTimeout(CABLES.UI.tooltipTimeout);
-        CABLES.UI.hideToolTip();
-    };
-    ele.addEventListener("mouseover", over);
-    ele.addEventListener("mouseleave", out);
-    ele.addEventListener("mouseout", out);
+    // const over = function (e)
+    // {
+    //     clearTimeout(CABLES.UI.tooltipTimeout);
+    //     const txt = e.target.dataset.tt;
+    //     CABLES.UI.tooltipTimeout = setTimeout(() =>
+    //     {
+    //         CABLES.UI.showToolTip(e, txt);
+    //     }, 300);
+    // };
+    // const out = function (e)
+    // {
+    //     clearTimeout(CABLES.UI.tooltipTimeout);
+    //     CABLES.UI.hideToolTip();
+    // };
+    // ele.addEventListener("mouseover", over);
+    // ele.addEventListener("mouseleave", out);
+    // ele.addEventListener("mouseout", out);
 };
+function eleTtOver(e)
+{
+    clearTimeout(CABLES.UI.tooltipTimeout);
+    const txt = e.target.dataset.tt;
+    CABLES.UI.tooltipTimeout = setTimeout(() =>
+    {
+        CABLES.UI.showToolTip(e, txt);
+    }, 300);
+}
+
+function eleTtOut(e)
+{
+    clearTimeout(CABLES.UI.tooltipTimeout);
+    CABLES.UI.hideToolTip();
+}
 
 
 Array.from(document.querySelectorAll(".tt")).forEach((tt) =>
@@ -79,28 +94,37 @@ CABLES.UI.hideInfo = function ()
     CABLES.UI.eleInfoArea.innerHTML = "";
 };
 
+function eleInfoOver(e)
+{
+    // const over = function (e)
+    // {
+    let txt = e.target.dataset.info;
+    if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
+    if (!txt)
+    {
+        txt = document.getElementById("infoArea").dataset.info;
+    }
+    CABLES.UI.showInfo(txt);
+    // };
+}
+
+function eleInfoOut(e)
+{
+    clearTimeout(CABLES.UI.tooltipTimeout);
+    CABLES.UI.hideInfo();
+}
+
 CABLES.UI.addInfoListener = function (ele)
 {
-    const over = function (e)
-    {
-        let txt = e.target.dataset.info;
-        if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
-        if (!txt)
-        {
-            txt = document.getElementById("infoArea").dataset.info;
-        }
-        CABLES.UI.showInfo(txt);
-    };
+//     const out = function (e)
+//     {
+//         clearTimeout(CABLES.UI.tooltipTimeout);
+//         CABLES.UI.hideInfo();
+//     };
 
-    const out = function (e)
-    {
-        clearTimeout(CABLES.UI.tooltipTimeout);
-        CABLES.UI.hideInfo();
-    };
-
-    ele.addEventListener("mouseover", over);
-    ele.addEventListener("mousemove", over);
-    ele.addEventListener("mouseout", out);
+//     ele.addEventListener("mouseover", over);
+//     ele.addEventListener("mousemove", over);
+//     ele.addEventListener("mouseout", out);
 };
 
 Array.from(document.querySelectorAll(".info")).forEach((tt) =>
@@ -108,46 +132,23 @@ Array.from(document.querySelectorAll(".info")).forEach((tt) =>
     CABLES.UI.addInfoListener(tt);
 });
 
-// test
-
-CABLES.UI.ttObserver = new MutationObserver(function (mutations)
-{
-    mutations.forEach(function (mutation)
-    {
-        for (let i = 0; i < mutation.addedNodes.length; i++)
-        {
-            if (!mutation.addedNodes[i].tagName) continue;
-
-            const perf = CABLES.UI.uiProfiler.start("html ele change");
-            perf.finish();
-            // console.log(mutation.addedNodes[i].classList);
-
-            if (mutation.addedNodes[i].classList.contains("tt"))
-            {
-                CABLES.UI.addToolTipListener(mutation.addedNodes[i]);
-                console.log(mutation.addedNodes[i].dataset.tt);
-            }
-            if (mutation.addedNodes[i].classList.contains("info"))
-            {
-                CABLES.UI.addInfoListener(mutation.addedNodes[i]);
-            }
-        }
-    });
-});
-
-CABLES.UI.ttObserver.observe(document.body, { "attributes": true, "childList": true, "characterData": false, "subtree": true });
-
 
 document.querySelector("body").addEventListener("mouseover", function (evt)
 {
-    // Do some check on target
+    if (evt.target.classList.contains("tt")) eleTtOver(evt);
+}, true);
 
-    if (evt.target.classList.contains("tt"))
-    {
-        // DO CODE
-    }
-    console.log("tt hover!!!");
-    // if ( evt.target.classList.contains('some-class') ) {
-    //     // DO CODE
-    // }
-}, true); // Use Capturing
+document.querySelector("body").addEventListener("mouseout", function (evt)
+{
+    if (evt.target.classList.contains("tt")) eleTtOut(evt);
+}, true);
+
+document.querySelector("body").addEventListener("mouseover", function (evt)
+{
+    if (evt.target.classList.contains("info")) eleInfoOver(evt);
+}, true);
+
+document.querySelector("body").addEventListener("mouseout", function (evt)
+{
+    if (evt.target.classList.contains("info")) eleInfoOut(evt);
+}, true);
