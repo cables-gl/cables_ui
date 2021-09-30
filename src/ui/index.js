@@ -62,6 +62,9 @@ import { arrayContains, uniqueArray } from "./utils/helper";
 import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
 import GlPatchAPI from "./glpatch/patchapi";
 import setHtmlDefaultListeners from "./utils/htmldefaults";
+import PatchView from "./components/patchview";
+import { notify, notifyError } from "./elements/notification";
+import DragNDrop from "./components/filemananager_dragdrop";
 
 
 CABLES = CABLES || {};
@@ -139,6 +142,7 @@ CABLES.UI.Chat = Chat;
 CABLES.UI.MetaOpParams = MetaOpParams;
 CABLES.UI.ServerOps = ServerOps;
 CABLES.UI.Jobs = Jobs;
+CABLES.UI.PatchView = PatchView;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
@@ -157,6 +161,10 @@ CABLES.UI.initSplitPanes = initSplitPanes;
 CABLES.UI.getHandleBarHtml = getHandleBarHtml;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
+
+CABLES.UI.notify = notify;
+CABLES.UI.notifyError = notifyError;
+CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
 

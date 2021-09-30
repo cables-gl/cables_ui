@@ -1,11 +1,11 @@
-CABLES = CABLES || {};
 
-CABLES.DragNDrop = function ()
+
+export default function DragNDrop()
 {
     this.internal = false;
-};
+}
 
-CABLES.DragNDrop.loadImage = function (_event, p)
+DragNDrop.loadImage = function (_event, p)
 {
     if (!CABLES.dragImage)
     {
@@ -14,7 +14,7 @@ CABLES.DragNDrop.loadImage = function (_event, p)
     }
 };
 
-CABLES.DragNDrop.startDragLibraryFile = function (_event, p)
+DragNDrop.startDragLibraryFile = function (_event, p)
 {
     _event.dataTransfer.setData("filepath", p);
     const self = this;

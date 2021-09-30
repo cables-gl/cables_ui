@@ -604,6 +604,12 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         }
     }
 
+
+    this.isFocussed = function ()
+    {
+        return $("#timeline").is(":focus");
+    };
+
     this.addAnim = function (newanim)
     {
         if (newanim === null) return;

@@ -1,13 +1,15 @@
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
+import ele from "../utils/ele";
+import Logger from "../utils/logger";
+import PatchSaveServer from "../api/patchServerApi";
+import { notify, notifyError } from "../elements/notification";
 
-CABLES.UI.PatchView = class extends CABLES.EventTarget
+export default class PatchView extends CABLES.EventTarget
 {
     constructor(corepatch)
     {
         super();
         this._p = corepatch;
-        this._log = new CABLES.UI.Logger("patchview");
+        this._log = new Logger("patchview");
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
@@ -17,7 +19,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         this._lastTempOP = null;
 
         this.boundingRect = null;
-        this.store = new CABLES.UI.PatchServer(); // this should probably be somewhere else need only one storage, even when opening multiple patchviews ?
+        this.store = new PatchSaveServer(); // this should probably be somewhere else need only one storage, even when opening multiple patchviews ?
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
@@ -142,19 +144,19 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         document.addEventListener("copy", (e) =>
         {
             if (this._patchRenderer.isFocussed()) this._patchRenderer.copy(e);
-            if ($("#timeline").is(":focus")) gui.timeLine().copy(e);
+            else if (gui.timeLine().isFocussed()) gui.timeLine().copy(e);
         });
 
         document.addEventListener("paste", (e) =>
         {
             if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
-            if ($("#timeline").is(":focus")) gui.timeLine().paste(e);
+            else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
         });
 
         document.addEventListener("cut", (e) =>
         {
             if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
-            if ($("#timeline").is(":focus")) gui.timeLine().cut(e);
+            else if (gui.timeLine().isFocussed()) gui.timeLine().cut(e);
         });
     }
 
@@ -168,9 +170,9 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
             views.children[i].classList.remove("visible");
         }
 
-        const ele = document.getElementById(id);
-        ele.classList.add("visible");
-        ele.style.display = "block";
+        const el = document.getElementById(id);
+        el.classList.add("visible");
+        el.style.display = "block";
 
         this._patchRenderer = this._pvRenderers[id];
         gui.setLayout();
@@ -223,7 +225,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         if (ops.length == 0)
         {
-            CABLES.UI.notify("no known operator found");
+            notify("no known operator found");
             return;
         }
 
@@ -909,7 +911,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         const objStr = JSON.stringify({
             "ops": ops
         });
-        CABLES.UI.notify("Copied " + selectedOps.length + " ops");
+        notify("Copied " + selectedOps.length + " ops");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();
@@ -921,7 +923,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
             this._log.error("clipboard not type text");
-            CABLES.UI.notifyError("Paste failed");
+            notifyError("Paste failed");
             return;
         }
         let str = e.clipboardData.getData("text/plain");
@@ -937,7 +939,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
         }
         catch (exp)
         {
-            CABLES.UI.notifyError("Paste failed");
+            notifyError("Paste failed");
             this._log.error(str);
             this._log.error(exp);
         }
@@ -1087,7 +1089,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                     }(json.ops[i].id));
                 }
             }
-            CABLES.UI.notify("Pasted " + json.ops.length + " ops");
+            notify("Pasted " + json.ops.length + " ops");
             gui.corePatch().deSerialize(json, false);
             this.isPasting = false;
             next(json.ops, focusSubpatchop);
@@ -1730,7 +1732,7 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
                 }
             }
 
-            if (max > 10000) CABLES.UI.notify("warning big port: " + maxName + " / " + max + " chars");
+            if (max > 10000) notify("warning big port: " + maxName + " / " + max + " chars");
         }
         catch (e)
         {
@@ -1741,4 +1743,4 @@ CABLES.UI.PatchView = class extends CABLES.EventTarget
 
         }
     }
-};
+}

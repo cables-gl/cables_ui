@@ -15,6 +15,7 @@ import SnapLines from "./snaplines";
 import QuickLinkSuggestion from "./quicklinksuggestion";
 import GlPreviewLayer from "./glpreviewlayer";
 import Logger from "../utils/logger";
+import ele from "../utils/ele";
 
 
 export default class GlPatch extends CABLES.EventTarget

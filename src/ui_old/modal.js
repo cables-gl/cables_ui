@@ -313,54 +313,6 @@ CABLES.UI.MODAL.showException = function (ex, op)
     document.getElementById("modalbg").style.display = "block";
 };
 
-
-CABLES.UI.notifyError = function (title, text)
-{
-    iziToast.error(
-        {
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            "theme": "dark",
-            title,
-            "message": text || "",
-            "progressBar": false,
-            "animateInside": false,
-            "close": false,
-            "timeout": 2000
-        });
-};
-
-CABLES.UI.lastNotify = "";
-CABLES.UI.lastText = "";
-
-
-CABLES.UI.notify = function (title, text)
-{
-    if (title == CABLES.UI.lastNotify && text == CABLES.UI.lastText)
-    {
-        setTimeout(function ()
-        {
-            CABLES.UI.lastNotify = "";
-            CABLES.UI.lastText = "";
-        }, 1000);
-        return;
-    }
-
-    CABLES.UI.lastNotify = title;
-    CABLES.UI.lastText = text;
-
-    iziToast.show(
-        {
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            "theme": "dark",
-            title,
-            "message": text || "",
-            "progressBar": false,
-            "animateInside": false,
-            "close": false,
-            "timeout": 2000
-        });
-};
-
 CABLES.UI.MODAL.updatePortValuePreview = function (title)
 {
     CABLES.UI.MODAL.showPortValue(title, CABLES.UI.MODAL.PORTPREVIEW);
