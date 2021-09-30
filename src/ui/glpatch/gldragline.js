@@ -13,7 +13,6 @@ export default class GlDragLine
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
         this._glPatch = glpatch;
-        this._patchDragWasAllowed = this._glPatch.allowDragging;
 
         this._startPortOpId = null;
         this._startPortName = null;
@@ -33,7 +32,6 @@ export default class GlDragLine
             if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
             {
             }
-
 
             const ele = document.elementFromPoint(e.x, e.y);
             if (!ele) return;
@@ -188,9 +186,7 @@ export default class GlDragLine
         this._rect = p.rect;
         this._glPort = p;
 
-        this._patchDragWasAllowed = this._glPatch.allowDragging;
         this._glPatch.allowDragging = false;
-
 
         this._update();
     }
@@ -281,7 +277,8 @@ export default class GlDragLine
         if (!this.isActive) return;
         this._startGlPorts.length = 0;
         this.setPort(null);
-        this._glPatch.allowDragging = this._patchDragWasAllowed;
+
+        this._glPatch.allowDragging = true;// this._patchDragWasAllowed;
         this._clearSpline();
     }
 
