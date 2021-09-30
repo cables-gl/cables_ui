@@ -790,6 +790,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     function setCursor(time)
     {
+        if (!gui.isShowingTiming()) return;
         if (gui.scene().timer.isPlaying() && ((time > self._loopEnd && self._loopBegin != -1) || (time < self._loopBegin && self._loopBegin != -1)))
         {
             gui.scene().timer.setTime(self._loopBegin);
@@ -1821,6 +1822,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     let lastTime = -1;
     this.updateTime = function ()
     {
+        if (!gui.isShowingTiming()) return;
         if (!this.hidden)
         {
             const time = gui.scene().timer.getTime();

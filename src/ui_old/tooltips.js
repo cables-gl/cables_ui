@@ -117,7 +117,7 @@ CABLES.UI.ttObserver = new MutationObserver(function (mutations)
             if (!mutation.addedNodes[i].tagName) continue;
 
 
-            // console.log(mutation.addedNodes[i].classList);
+            console.log(mutation.addedNodes[i].classList);
 
             if (mutation.addedNodes[i].classList.contains("tt"))
             {
