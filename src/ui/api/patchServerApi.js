@@ -497,7 +497,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         cgl.canvas.style.width = screenshotWidth + "px";
         cgl.canvas.style.height = screenshotHeight + "px";
 
-        const screenshotTimeout = setTimeout(function ()
+        const screenshotTimeout = setTimeout(() =>
         {
             cgl.setSize(w, h);
             thePatch.resume();

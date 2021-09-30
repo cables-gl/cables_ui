@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 
 export default class Keypresenter
 {
@@ -23,11 +24,11 @@ export default class Keypresenter
             setTimeout(function ()
             {
                 const el = document.querySelector(id);
-                ele.fadeOut(el, 30, function ()
+                ele.fadeOut(el, 30, () =>
                 {
                     el.style.opacity = 0.01;
                     el.style.display = "block";
-                    ele.slideUp(el, 400, function ()
+                    ele.slideUp(el, 400, () =>
                     {
                         el.remove();
                     });
@@ -100,22 +101,22 @@ export default class Keypresenter
             this._lastKeyEvent = Date.now();
         }.bind(this));
 
-        document.addEventListener("mousedown", function (e)
+        document.addEventListener("mousedown", (e) =>
         {
             let which = "left";
             if (e.buttons == 4)which = "middle";
             if (e.buttons == 2)which = "right";
             this.showAction("[click " + which + "]");
             this._lastKeyEvent = Date.now();
-        }.bind(this));
+        });
 
-        document.addEventListener("wheel", function ()
+        document.addEventListener("wheel", () =>
         {
             if (Date.now() - this._lastWheel > 1000)
             {
                 this.showAction("[mousewheel]");
                 this._lastWheel = Date.now();
             }
-        }.bind(this));
+        });
     }
 }

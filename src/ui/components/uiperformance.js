@@ -82,7 +82,7 @@ export default class UiProfiler
         this._ignore = false;
 
         clearTimeout(this._timeout);
-        this._timeout = setTimeout(function ()
+        this._timeout = setTimeout(() =>
         {
             if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.UI.uiProfiler.update();
         }, 500);

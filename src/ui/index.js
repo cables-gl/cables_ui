@@ -66,7 +66,7 @@ import PatchView from "./components/patchview";
 import { notify, notifyError } from "./elements/notification";
 import DragNDrop from "./components/filemananager_dragdrop";
 import startIdleListeners from "./components/idlemode";
-import { hideInfo, hideToolTip, showInfo, showToolTip } from "./elements/tooltips";
+import { hideInfo, hideToolTip, showInfo, showToolTip, updateHoverToolTip } from "./elements/tooltips";
 
 
 CABLES = CABLES || {};
@@ -169,6 +169,7 @@ CABLES.UI.hideToolTip = hideToolTip;
 CABLES.UI.showToolTip = showToolTip;
 CABLES.UI.showInfo = showInfo;
 CABLES.UI.hideInfo = hideInfo;
+CABLES.UI.hideInfo = updateHoverToolTip;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;

@@ -304,10 +304,10 @@ export default class FileManager
             {
                 this.setSource(
                     "patch",
-                    function ()
+                    () =>
                     {
                         this._selectFile(filename);
-                    }.bind(this),
+                    },
                 );
             }
         }
@@ -363,12 +363,12 @@ export default class FileManager
         {
             elSwitchList.addEventListener(
                 "click",
-                function ()
+                () =>
                 {
                 // elSwitchList.classList.add("switch-active");
                 // elSwitchIcons.classList.remove("switch-active");
                     this.setDisplay("list");
-                }.bind(this),
+                },
             );
         }
     }
