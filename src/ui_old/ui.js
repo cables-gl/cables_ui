@@ -6,12 +6,11 @@ CABLES.UI.GUI = function (cfg)
     CABLES.EventTarget.apply(this);
 
     const self = this;
-    // this.log = new CABLES.UI.Logger();
 
     this._log = new CABLES.UI.Logger("gui");
     this.patchId = cfg.patchId;
     let showTiming = false;
-    let showingEditor = false;
+    this._showingEditor = false;
 
     this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
@@ -341,7 +340,7 @@ CABLES.UI.GUI = function (cfg)
             this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
             this._elGlCanvas.addClass("maximized");
             this.rendererWidth = 0;
-            showingEditor = false;
+            this._showingEditor = false;
         }
 
         if (this.rendererWidth === undefined || this.rendererHeight === undefined)
@@ -820,18 +819,6 @@ CABLES.UI.GUI = function (cfg)
         }
     }
 
-    // this.showMiniMap = function ()
-    // {
-    //     showMiniMap = true;
-    //     self.setLayout();
-    // };
-
-    // this.hideMiniMap = function ()
-    // {
-    //     showMiniMap = false;
-    //     self.setLayout();
-    // };
-
     this.isShowingTiming = function ()
     {
         return showTiming;
@@ -970,7 +957,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
-        console.log("setProjectName", name);
         if (name && name !== "undefined")
         {
             document.getElementById("patchname").innerHTML = name;
@@ -1388,7 +1374,7 @@ CABLES.UI.GUI = function (cfg)
                 this.rendererHeight = window.innerHeight * 0.25;
             }
 
-            showingEditor = this._oldShowingEditor;
+            this._showingEditor = this._oldShowingEditor;
             this._elGlCanvas.removeClass("maximized");
             self.setLayout();
             this.showCanvasModal(true);
@@ -1407,13 +1393,13 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.UI.MODAL.hide(true);
             CABLES.UI.MODAL.hide();
-            if (showingEditor)
+            if (this._showingEditor)
             {
                 self.editor().focus();
             }
         }
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
-        else if (showingEditor) this.closeEditor();
+        else if (this._showingEditor) this.closeEditor();
         else
         {
             if (e) gui.opSelect().show({
@@ -1914,15 +1900,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.init = function (next)
     {
-        document.body.addEventListener("contextmenu", (e) =>
-        {
-            if (e.target.currentSrc) return;
-            if (e.target.classList.contains("selectable")) return;
-            if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
-
-            e.preventDefault();
-        });
-
         ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
         this._timeLine = new CABLES.TL.UI.TimeLineUI();
 

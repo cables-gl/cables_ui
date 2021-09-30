@@ -378,14 +378,11 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                         "y": p.parent.uiAttribs.translate.y + 40
                     } });
 
-
                 getter.uiAttr({ "translate": {
 
                     "x": setter.uiAttribs.translate.x,
                     "y": setter.uiAttribs.translate.y + 40
                 } });
-                // const uiop = gui.patch().getUiOp(getter);
-                // uiop.setPos(setter.uiAttribs.translate.x, setter.uiAttribs.translate.y + 40);
             });
         });
 };

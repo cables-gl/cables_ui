@@ -61,6 +61,7 @@ import defaultops from "./defaultops";
 import { arrayContains, uniqueArray } from "./utils/helper";
 import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
 import GlPatchAPI from "./glpatch/patchapi";
+import setHtmlDefaultListeners from "./utils/htmldefaults";
 
 
 CABLES = CABLES || {};
@@ -148,7 +149,6 @@ CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
 CABLES.editorSession = new EditorSession();
 
-
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
 
@@ -162,3 +162,5 @@ CABLES.CMD = CMD;
 
 
 CABLES.uniqueArray = uniqueArray;
+
+setHtmlDefaultListeners();

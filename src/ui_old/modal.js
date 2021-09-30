@@ -280,7 +280,11 @@ CABLES.UI.MODAL.showException = function (ex, op)
         return;
     }
 
-    console.log(ex.stack);
+    console.log(ex, ex.stack);
+    // console.log(ex);
+    // console.log(op);
+
+    // console.log((new Error()).stack);
 
     if (!CABLES.UI.loaded)
     {
@@ -713,18 +717,6 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
                 e.preventDefault();
             }
         });
-};
-
-
-window.onerror = function (err, file, row)
-{
-    setTimeout(function ()
-    {
-        if (!CABLES.lastError)
-        {
-            CABLES.UI.MODAL.showException({ "message": err, "stack": "file:" + file + " / row:" + row });
-        }
-    }, 100);
 };
 
 

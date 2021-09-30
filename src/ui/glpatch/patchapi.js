@@ -28,6 +28,7 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             this._glPatch.addOp(op);
         }
+
         for (i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];
