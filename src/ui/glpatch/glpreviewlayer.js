@@ -112,4 +112,15 @@ export default class GlPreviewLayer extends CABLES.EventTarget
             }
         }
     }
+
+
+    pauseInteraction()
+    {
+        this._eleCanvas.style["pointer-events"] = "none";
+    }
+
+    resumeInteraction()
+    {
+        this._eleCanvas.style["pointer-events"] = "none";
+    }
 }

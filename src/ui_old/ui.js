@@ -262,6 +262,20 @@ CABLES.UI.GUI = function (cfg)
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
     };
 
+    this.pauseInteractionSplitpanes = function ()
+    {
+        const iframes = document.querySelectorAll("iframe,canvas");
+        for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
+        this.patchView.pauseInteraction();
+    };
+
+    this.resumeInteractionSplitpanes = function ()
+    {
+        const iframes = document.querySelectorAll("iframe,canvas");
+        for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
+        this.patchView.resumeInteraction();
+    };
+
     this.setLayout = function ()
     {
         this.pauseProfiling();
