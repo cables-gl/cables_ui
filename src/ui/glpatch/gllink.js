@@ -228,7 +228,7 @@ export default class GlLink
 
         if (!this._opIn || !this._opOut)
         {
-            this._log.warn("[glLink] unknown ops...");
+            this._log.warn("unknown ops...", this._opIdInput, this._opIdOutput, this._opIn, this._opOut);
             return;
         }
 

@@ -17,7 +17,7 @@ export default class ServerOps
             (name, data) =>
             {
                 const lastTab = CABLES.UI.userSettings.get("editortab");
-                this.edit(name, false, function ()
+                this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
                     CABLES.UI.userSettings.set("editortab", lastTab);
@@ -27,7 +27,7 @@ export default class ServerOps
 
         CABLES.editorSession.addListener(
             "attachment",
-            function (name, data)
+            (name, data) =>
             {
                 // usersettings stores editortab as basename/att_example.inc
                 // editAttachment demands att_example.inc plus the opname to then store
@@ -37,13 +37,13 @@ export default class ServerOps
                 if (name.includes("att_") && data && data.opname)
                 {
                     const lastTab = CABLES.UI.userSettings.get("editortab");
-                    this.editAttachment(data.opname, attName, false, function ()
+                    this.editAttachment(data.opname, attName, false, () =>
                     {
                         gui.mainTabs.activateTabByName(lastTab);
                         CABLES.UI.userSettings.set("editortab", lastTab);
                     }, true);
                 }
-            }.bind(this),
+            },
         );
 
         this.loaded = false;
@@ -183,7 +183,7 @@ export default class ServerOps
                 "opname": op.objName,
                 "layout": opObj,
             },
-            function (err, res)
+            (err, res) =>
             {
                 if (err) this._log.error(err);
             },
@@ -207,11 +207,11 @@ export default class ServerOps
         CABLES.UI.MODAL.showLoading("executing...");
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
-        s.onload = function ()
+        s.onload = () =>
         {
             gui.corePatch().reloadOp(
                 name,
-                function (num, newOps)
+                (num, newOps) =>
                 {
                     CABLES.UI.notify(num + " ops reloaded");
 
@@ -222,11 +222,11 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     if (next)next();
-                }.bind(this),
+                },
             );
 
             CABLES.UI.MODAL.hideLoading();
-        }.bind(this);
+        };
         document.body.appendChild(s);
     }
 
@@ -266,10 +266,10 @@ export default class ServerOps
                 "opname": opName,
                 "name": libName,
             },
-            function (err, res)
+            (err, res) =>
             {
                 this._log.log("lib added!");
-                gui.reloadDocs(function ()
+                gui.reloadDocs(() =>
                 {
                     this._log.log("docs reloaded");
                     gui.metaTabs.activateTabByName("code");
@@ -295,7 +295,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": libName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -303,7 +303,7 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(function ()
+                        gui.reloadDocs(() =>
                         {
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
@@ -328,9 +328,9 @@ export default class ServerOps
                 "opname": opName,
                 "name": libName,
             },
-            function (err, res)
+            (err, res) =>
             {
-                gui.reloadDocs(function ()
+                gui.reloadDocs(() =>
                 {
                     gui.metaTabs.activateTabByName("code");
                     let html = "";
@@ -355,7 +355,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": libName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -363,7 +363,7 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(function ()
+                        gui.reloadDocs(() =>
                         {
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
@@ -390,7 +390,7 @@ export default class ServerOps
                     "opname": opName,
                     "name": attName,
                 },
-                function (err, res)
+                (err, res) =>
                 {
                     if (err)
                     {
@@ -415,7 +415,7 @@ export default class ServerOps
                 opname,
                 "name": attName,
             },
-            function (err, res)
+            (err, res) =>
             {
                 gui.metaTabs.activateTabByName("code");
             },
@@ -442,11 +442,10 @@ export default class ServerOps
         CABLES.UI.MODAL.show(html);
 
         document.getElementById("opNameDialogInput").focus();
-        document.getElementById("opNameDialogInput").addEventListener("input", function ()
+        document.getElementById("opNameDialogInput").addEventListener("input", () =>
         {
             const v = document.getElementById("opNameDialogInput").value;
-            this._log.log("INPUT!", v);
-            CABLES.api.get("op/checkname/" + usernamespace + "." + v, function (res)
+            CABLES.api.get("op/checkname/" + usernamespace + "." + v, (res) =>
             {
                 this._log.log(res);
                 if (res.problems.length > 0)
@@ -465,7 +464,7 @@ export default class ServerOps
             });
         });
 
-        document.getElementById("opNameDialogSubmit").addEventListener("click", function (event)
+        document.getElementById("opNameDialogSubmit").addEventListener("click", (event) =>
         {
             if (document.getElementById("opNameDialogInput").value == "")
             {
@@ -480,7 +479,7 @@ export default class ServerOps
     {
         this.opNameDialog("Create operator", name, (newname) =>
         {
-            this.create("Ops.User." + gui.user.usernameLowercase + "." + newname, function ()
+            this.create("Ops.User." + gui.user.usernameLowercase + "." + newname, () =>
             {
                 CABLES.UI.MODAL.hide();
             });
@@ -491,7 +490,7 @@ export default class ServerOps
     {
         if (gui.showGuestWarning()) return;
 
-        this.opNameDialog("Clone operator", name, function (newname)
+        this.opNameDialog("Clone operator", name, (newname) =>
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
             gui.serverOps.clone(oldName, opname);
@@ -573,7 +572,7 @@ export default class ServerOps
                                     "name": attachmentName,
                                     "content": _content,
                                 },
-                                function (errr, re)
+                                (errr, re) =>
                                 {
                                     if (errr)
                                     {
@@ -644,7 +643,7 @@ export default class ServerOps
                 let save = null;
                 if (!readOnly)
                 {
-                    save = function (setStatus, content, editor)
+                    save = (setStatus, content, editor) =>
                     {
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
@@ -652,7 +651,7 @@ export default class ServerOps
                                 opname,
                                 "code": content,
                             },
-                            function (err, res)
+                            (err, res) =>
                             {
                                 if (!res || !res.success)
                                 {
@@ -665,7 +664,7 @@ export default class ServerOps
                                         gui.opSelect().reload();
 
                                     // exec ???
-                                    gui.serverOps.execute(opname, function ()
+                                    gui.serverOps.execute(opname, () =>
                                     {
                                         setStatus("saved " + opname);
                                         editor.focus();
@@ -673,7 +672,7 @@ export default class ServerOps
                                     });
                                 }
                             },
-                            function (result)
+                            (result) =>
                             {
                                 setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
@@ -798,9 +797,9 @@ export default class ServerOps
             return;
         }
 
-        new CABLES.LibLoader(libsToLoad, function ()
+        new CABLES.LibLoader(libsToLoad, () =>
         {
-            new CABLES.CoreLibLoader(coreLibsToLoad, function ()
+            new CABLES.CoreLibLoader(coreLibsToLoad, () =>
             {
                 if (_next)_next();
             });
@@ -852,9 +851,9 @@ export default class ServerOps
             return;
         }
 
-        new CABLES.LibLoader(libsToLoad, function ()
+        new CABLES.LibLoader(libsToLoad, () =>
         {
-            new CABLES.CoreLibLoader(coreLibsToLoad, function ()
+            new CABLES.CoreLibLoader(coreLibsToLoad, () =>
             {
                 finishedCb();
             });

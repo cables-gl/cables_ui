@@ -14,10 +14,10 @@ export default class ItemManager
 
         this._tab.addEventListener(
             "onClose",
-            function ()
+            () =>
             {
                 this.emitEvent("onClose");
-            }.bind(this),
+            },
         );
 
         this._items = [];

@@ -387,6 +387,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
             };
 
+            // document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);

@@ -127,8 +127,6 @@ export default class GlOp extends CABLES.EventTarget
         let changed =
             oldUiAttribs.translate.x != this._op.uiAttribs.translate.x ||
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
-        // let changed = this._glRectBg.dragOffsetX != 0 || this._glRectBg.dragOffsetY != 0;
-
 
         if (this._preDragPosZ != this._glRectBg.z)
         {

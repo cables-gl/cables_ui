@@ -1,5 +1,7 @@
 CABLES.UI.loadedCoreLibs = [];
-class CoreLibLoader
+CABLES.onLoadedCoreLib = {};
+
+export default class CoreLibLoader
 {
     constructor(libnames, cb)
     {
@@ -59,11 +61,8 @@ class CoreLibLoader
     }
 }
 
-CABLES.onLoadedCoreLib = {};
 
-CABLES.loadedCoreLib = function (name)
+CABLES.loadedCoreLib = function (name) // this will be called from loaded lib files (api inject the call into js files...)
 {
     if (CABLES.onLoadedCoreLib[name]) CABLES.onLoadedCoreLib[name](name);
 };
-
-CABLES.CoreLibLoader = CoreLibLoader;

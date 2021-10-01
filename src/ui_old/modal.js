@@ -280,7 +280,11 @@ CABLES.UI.MODAL.showException = function (ex, op)
         return;
     }
 
-    console.log(ex.stack);
+    console.log(ex, ex.stack);
+    // console.log(ex);
+    // console.log(op);
+
+    // console.log((new Error()).stack);
 
     if (!CABLES.UI.loaded)
     {
@@ -307,54 +311,6 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL._setVisible(true);
 
     document.getElementById("modalbg").style.display = "block";
-};
-
-
-CABLES.UI.notifyError = function (title, text)
-{
-    iziToast.error(
-        {
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            "theme": "dark",
-            title,
-            "message": text || "",
-            "progressBar": false,
-            "animateInside": false,
-            "close": false,
-            "timeout": 2000
-        });
-};
-
-CABLES.UI.lastNotify = "";
-CABLES.UI.lastText = "";
-
-
-CABLES.UI.notify = function (title, text)
-{
-    if (title == CABLES.UI.lastNotify && text == CABLES.UI.lastText)
-    {
-        setTimeout(function ()
-        {
-            CABLES.UI.lastNotify = "";
-            CABLES.UI.lastText = "";
-        }, 1000);
-        return;
-    }
-
-    CABLES.UI.lastNotify = title;
-    CABLES.UI.lastText = text;
-
-    iziToast.show(
-        {
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-            "theme": "dark",
-            title,
-            "message": text || "",
-            "progressBar": false,
-            "animateInside": false,
-            "close": false,
-            "timeout": 2000
-        });
 };
 
 CABLES.UI.MODAL.updatePortValuePreview = function (title)
@@ -713,18 +669,6 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
                 e.preventDefault();
             }
         });
-};
-
-
-window.onerror = function (err, file, row)
-{
-    setTimeout(function ()
-    {
-        if (!CABLES.lastError)
-        {
-            CABLES.UI.MODAL.showException({ "message": err, "stack": "file:" + file + " / row:" + row });
-        }
-    }, 100);
 };
 
 

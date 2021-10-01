@@ -194,7 +194,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
 };
 
 
-// CABLES_CMD_UI.updateCanvasIcons=function()
+// CABLES_CMD_UI.updateCanvasIcons=()=>
 // {
 //     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
 //     else document.getElementById("canvasIconTransforms").classList.remove("iconToggleActive");
