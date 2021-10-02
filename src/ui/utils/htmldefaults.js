@@ -34,18 +34,18 @@ export default function setHtmlDefaultListeners()
     });
 
 
-    const ttObserver = new MutationObserver(function (mutations)
-    {
-        mutations.forEach(function (mutation)
-        {
-            for (let i = 0; i < mutation.addedNodes.length; i++)
-            {
-                if (!mutation.addedNodes[i].tagName) continue;
+    // const ttObserver = new MutationObserver(function (mutations)
+    // {
+    //     mutations.forEach(function (mutation)
+    //     {
+    //         for (let i = 0; i < mutation.addedNodes.length; i++)
+    //         {
+    //             if (!mutation.addedNodes[i].tagName) continue;
 
-                const perf = CABLES.UI.uiProfiler.start("html ele change");
-                perf.finish();
-            }
-        });
-    });
-    ttObserver.observe(document.body, { "attributes": true, "childList": true, "characterData": false, "subtree": true });
+    //             const perf = CABLES.UI.uiProfiler.start("html ele change");
+    //             perf.finish();
+    //         }
+    //     });
+    // });
+    // ttObserver.observe(document.body, { "attributes": true, "childList": true, "characterData": false, "subtree": true });
 }

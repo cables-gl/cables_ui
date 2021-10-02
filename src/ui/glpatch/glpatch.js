@@ -1185,4 +1185,16 @@ export default class GlPatch extends CABLES.EventTarget
             else ele.hide(this._eleDropOp);
         }
     }
+
+    pauseInteraction()
+    {
+        this._cgl.canvas.style["pointer-events"] = "none";
+        this.previewLayer.pauseInteraction();
+    }
+
+    resumeInteraction()
+    {
+        this._cgl.canvas.style["pointer-events"] = "initial";
+        this.previewLayer.resumeInteraction();
+    }
 }

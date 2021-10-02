@@ -1314,6 +1314,17 @@ export default class PatchView extends CABLES.EventTarget
         else this._log.warn("patchRenderer has no function center");
     }
 
+    pauseInteraction()
+    {
+        this._patchRenderer.pauseInteraction();
+    }
+
+    resumeInteraction()
+    {
+        this._patchRenderer.resumeInteraction();
+    }
+
+
     getCurrentSubPatch()
     {
         return this._patchRenderer.getCurrentSubPatch();
