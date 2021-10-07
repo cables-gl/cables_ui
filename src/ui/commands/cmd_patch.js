@@ -430,12 +430,12 @@ CABLES_CMD_PATCH.setOpTitle = function ()
 
 CABLES_CMD_PATCH.resume = function ()
 {
-    gui.patchView.resume();
+    gui.corePatch.resume();
 };
 
 CABLES_CMD_PATCH.pause = function ()
 {
-    gui.patchView.pause();
+    gui.corePatch.pause();
 };
 
 CABLES_CMD_PATCH.replaceFilePath = function ()
