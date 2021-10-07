@@ -43,9 +43,9 @@ export default class Api
         }
 
         fetch(url, options)
-            .then(function (response)
+            .then((response) =>
             {
-                if (response.json) response.json().then(function (_data)
+                if (response.json) response.json().then((_data) =>
                 {
                     if (doCache)
                         this.cache.push({ url, method, _data });
@@ -54,10 +54,10 @@ export default class Api
                 });
                 else this._log.error("[cables_ui] api fetch err", response);
             })
-            .catch(function (response)
+            .catch((response) =>
             {
                 if (response.json)
-                    response.json().then(function (_data)
+                    response.json().then((_data) =>
                     {
                         if (CABLES && CABLES.UI && CABLES.UI.MODAL)
                         {
@@ -176,7 +176,7 @@ export default class Api
         this._log.log("error report sent.");
         this._log.log(report);
 
-        CABLES.api.post("errorReport", report, function (d)
+        CABLES.api.post("errorReport", report, (d) =>
         {
             CABLES.UI.MODAL.showClose();
             CABLES.UI.MODAL.init();
