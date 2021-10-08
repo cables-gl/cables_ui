@@ -79,12 +79,12 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.globalVarDump,
         "icon": "command"
     },
-    {
-        "cmd": "glgui patchfield",
-        "category": "debug",
-        "func": CABLES_CMD_DEBUG.glguiFull,
-        "icon": "command"
-    },
+    // {
+    //     "cmd": "glgui patchfield",
+    //     "category": "debug",
+    //     "func": CABLES_CMD_DEBUG.glguiFull,
+    //     "icon": "command"
+    // },
     {
         "cmd": "glgui tab",
         "category": "debug",
