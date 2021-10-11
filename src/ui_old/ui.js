@@ -1,3 +1,4 @@
+
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
@@ -119,7 +120,9 @@ CABLES.UI.GUI = function (cfg)
     this.setProject = function (p)
     {
         this._currentProject = p;
-        $(".viewProjectLink").attr("href", CABLES.sandbox.getCablesUrl() + "/p/" + p._id);
+        gui.setProjectName(p.name || "unknown");
+
+        ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p._id);
     };
 
     this.opSelect = function ()
@@ -971,6 +974,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
+        console.log("setting p name", name);
         if (name && name !== "undefined")
         {
             document.getElementById("patchname").innerHTML = name;
@@ -1238,9 +1242,9 @@ CABLES.UI.GUI = function (cfg)
 
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
-        ele.byId("nav_viewProjectLink").addEventListener("click", () =>
+        ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {
-            const url = $(".viewProjectLink").attr("href");
+            const url = e.target.getAttribute("href");
             const win = window.open(url, "_blank");
             win.focus();
         });

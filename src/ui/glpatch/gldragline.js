@@ -92,7 +92,7 @@ export default class GlDragLine
                 this.setPort(glport, opid, portName);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
 
-                if (!e.altKey) gui.patchView.unlinkPort(opid, glport.id);
+                if (!e.altKey && glport) gui.patchView.unlinkPort(opid, glport.id);
 
                 this._startGlPorts = glports;
             }
