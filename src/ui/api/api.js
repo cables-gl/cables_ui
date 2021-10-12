@@ -42,6 +42,8 @@ export default class Api
             if (data) options.body = JSON.stringify(data);
         }
 
+        const startTime = performance.now();
+
         fetch(url, options)
             .then((response) =>
             {
@@ -49,6 +51,12 @@ export default class Api
                 {
                     if (doCache)
                         this.cache.push({ url, method, _data });
+
+                    const tooktime = (performance.now() - startTime) / 1000;
+                    if (tooktime > 2.0)
+                    {
+                        this._log.warn("request took " + tooktime + "s: ", url);
+                    }
 
                     if (cbSuccess) cbSuccess(_data);
                 });

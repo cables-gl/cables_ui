@@ -183,8 +183,11 @@ export default class GlOp extends CABLES.EventTarget
             this._glPatch.selectOpId(this.id);
         }
 
-        this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
-        this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
+        if (this._op && this._op.uiAttribs)
+        {
+            this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
+            this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
+        }
     }
 
     _onMouseUp(e)
