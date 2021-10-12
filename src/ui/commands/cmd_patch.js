@@ -343,8 +343,8 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
         {
             const link = CABLES.UI.OPSELECT.linkNewLink;
 
-            const p1 = link.p1.thePort;
-            const p2 = link.p2.thePort;
+            const p1 = link.portIn;
+            const p2 = link.portOut;
             CABLES.UI.OPSELECT.linkNewLink = null;
 
             if (p1.direction == CABLES.PORT_DIR_IN)p1.removeLinks();
@@ -354,11 +354,20 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
 
             CABLES_CMD_PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
             {
-                let uiop = gui.patch().getUiOp(getter);
-                uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
+                getter.uiAttr({ "translate": {
+                    "x": p1.parent.uiAttribs.translate.x,
+                    "y": p1.parent.uiAttribs.translate.y - 40
+                } });
 
-                uiop = gui.patch().getUiOp(setter);
-                uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
+                setter.uiAttr({ "translate": {
+                    "x": p2.parent.uiAttribs.translate.x,
+                    "y": p2.parent.uiAttribs.translate.y + 40
+                } });
+                // let uiop = gui.patch().getUiOp(getter);
+                // uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
+
+                // uiop = gui.patch().getUiOp(setter);
+                // uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
             });
         });
 };

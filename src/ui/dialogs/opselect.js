@@ -518,7 +518,9 @@ export default class OpSelect
         if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_createVar"));
         else ele.hide(ele.byId("opselect_createVar"));
 
-        if (link && link.p1 && (link.p1.thePort.type == CABLES.OP_PORT_TYPE_VALUE || link.p1.thePort.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_replaceVar"));
+        console.log("YOYOLINK", link);
+
+        if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_replaceVar"));
         else ele.hide(ele.byId("opselect_replaceVar"));
 
         const eleOpsearch = ele.byId("opsearch");
@@ -607,8 +609,12 @@ export default class OpSelect
 
     addSelectedOp()
     {
-        const opname = ele.byClassSingle("selected").dataset.opname;
-        this.addOp(opname);
+        const selEle = ele.byClassSingle("selected");
+        if (selEle)
+        {
+            const opname = selEle.dataset.opname;
+            this.addOp(opname);
+        }
     }
 
     keyDown(e)
