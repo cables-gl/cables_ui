@@ -71,6 +71,8 @@ export default class GlLink
                     pOut = opOut.getPortById(this._portIdOutput),
                     llink = pOut.getLinkTo(pIn);
 
+                this._log.log("llink", llink);
+
                 gui.opSelect().show(
                     {
                         "x": 0,

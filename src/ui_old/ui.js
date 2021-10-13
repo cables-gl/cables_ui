@@ -122,7 +122,7 @@ CABLES.UI.GUI = function (cfg)
         this._currentProject = p;
         gui.setProjectName(p.name || "unknown");
 
-        ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p._id);
+        ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id);
     };
 
     this.opSelect = function ()
@@ -974,7 +974,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.setProjectName = function (name)
     {
-        console.log("setting p name", name);
         if (name && name !== "undefined")
         {
             document.getElementById("patchname").innerHTML = name;

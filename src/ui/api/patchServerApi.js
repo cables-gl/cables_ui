@@ -316,13 +316,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
             const origSize = Math.round(data.length / 1024);
 
             // data = LZString.compress(data);
-            const uint8data = pako.deflate(data);
+            let uint8data = pako.deflate(data);
+            this._log.log("saving compressed data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
+
 
             document.getElementById("patchname").innerHTML = "Saving Patch";
             document.getElementById("patchname").classList.add("blinking");
 
-
-            this._log.log("saving data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
 
             CABLES.sandbox.savePatch(
                 {
