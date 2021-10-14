@@ -55,6 +55,11 @@ export default class TabPanel extends CABLES.EventTarget
         this._eleTabPanel.innerHTML = html;
 
         const editortabList = document.getElementById("editortabList" + this.id);
+        if (!editortabList)
+        {
+            console.log("no editortabList?!?");
+            return;
+        }
         if (!this.showTabListButton)
         {
             editortabList.style.display = "none";
