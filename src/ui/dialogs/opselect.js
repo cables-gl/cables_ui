@@ -514,11 +514,8 @@ export default class OpSelect
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
-
         if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_createVar"));
         else ele.hide(ele.byId("opselect_createVar"));
-
-        console.log("YOYOLINK", link);
 
         if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING)) ele.show(ele.byId("opselect_replaceVar"));
         else ele.hide(ele.byId("opselect_replaceVar"));
@@ -530,7 +527,6 @@ export default class OpSelect
         eleOpsearch.removeEventListener("keydown", this._boundKeydown);
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
-
 
         this.clear = function ()
         {

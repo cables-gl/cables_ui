@@ -83,11 +83,12 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 };
 CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 {
+    CABLES.editorSession.startLoadingTab();
     const op = gui.corePatch().getOpById(opid);
-    if (!op) return console.log("paramedit op not found");
+    if (!op) return console.log("paramedit op not found", opid);
 
     const port = op.getPortByName(portname);
-    if (!port) return console.log("paramedit port not found");
+    if (!port) return console.log("paramedit port not found", portname);
 
     let name = op.name + " " + port.name;
 
@@ -103,7 +104,6 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     // if (count > 0)
     //     name = name + " (" + count + ")";
 
-
     const dataId = opid + portname;
     const existingTab = gui.mainTabs.getTabByDataId(dataId);
     if (existingTab)
@@ -114,7 +114,6 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     }
 
     const editorObj = CABLES.editorSession.rememberOpenEditor("param", name, { "opid": opid, "portname": portname });
-
 
     if (editorObj)
     {
@@ -133,7 +132,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
                 },
                 "onSave": function (setStatus, content)
                 {
-                    setStatus("saved");
+                    setStatus("updated " + port.name);
                     gui.setStateUnsaved();
                     gui.jobs().finish("saveeditorcontent");
                     port.set(content);
@@ -151,6 +150,7 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 
     if (cb)cb();
     else gui.maintabPanel.show();
+    CABLES.editorSession.finishLoadingTab();
 };
 
 CABLES.UI.updateLinkedColorBoxes = function (thePort, thePort1, thePort2)

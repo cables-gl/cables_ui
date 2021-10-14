@@ -2133,6 +2133,7 @@ function startUi(cfg)
                 gui.opSelect().search();
                 gui.setElementBgPattern(ele.byId("cablescanvas"));
 
+                CABLES.editorSession.open();
 
                 CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                 {
@@ -2155,7 +2156,6 @@ function startUi(cfg)
 
                 if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
-                CABLES.editorSession.open();
                 gui.bindKeys();
 
                 gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
@@ -2171,6 +2171,11 @@ function startUi(cfg)
                 if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
 
                 if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
+
+                gui.maintabPanel.init();
+
+                // console.log(CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId, this._tabs[i].title);
+
 
                 logStartup("finished loading cables");
 
@@ -2195,7 +2200,6 @@ function startUi(cfg)
                     "colorLight": "#ffffff",
                     "correctLevel": QRCode.CorrectLevel.H
                 });
-
 
                 CABLES.UI.loaded = true;
                 setTimeout(() =>

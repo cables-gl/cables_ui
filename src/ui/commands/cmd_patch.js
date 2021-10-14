@@ -363,11 +363,6 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
                     "x": p2.parent.uiAttribs.translate.x,
                     "y": p2.parent.uiAttribs.translate.y + 40
                 } });
-                // let uiop = gui.patch().getUiOp(getter);
-                // uiop.setPos(p1.parent.uiAttribs.translate.x, p1.parent.uiAttribs.translate.y - 40);
-
-                // uiop = gui.patch().getUiOp(setter);
-                // uiop.setPos(p2.parent.uiAttribs.translate.x, p2.parent.uiAttribs.translate.y + 40);
             });
         });
 };

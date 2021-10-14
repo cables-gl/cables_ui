@@ -36,6 +36,10 @@ export default class MainTabPanel extends CABLES.EventTarget
 
     init()
     {
+        const showMainTabs = CABLES.UI.userSettings.get("maintabsVisible");
+        if (showMainTabs) this.show(true);
+
+        // this._tabs.loadCurrentTabUsersettings();
     }
 
     isVisible()

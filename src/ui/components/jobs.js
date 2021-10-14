@@ -81,6 +81,12 @@ export default class Jobs
             }
         }
 
+        if (!job.id)
+        {
+            console.error("job undefined", job);
+            console.error((new Error()).stack);
+        }
+
         gui.showLoadingProgress(true);
 
         gui.on("uiloaded", () =>
