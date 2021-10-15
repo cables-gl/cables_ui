@@ -87,14 +87,14 @@ export default class EditorTab
             }.bind(this),
         );
 
-        setTimeout(() =>
-        {
-            if (!options.inactive)
-            {
-                CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
-                gui.mainTabs.activateTab(this._tab.id);
-            }
-        }, 100);
+        // setTimeout(() =>
+        // {
+        //     if (!options.inactive)
+        //     {
+        //         CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+        //         gui.mainTabs.activateTab(this._tab.id);
+        //     }
+        // }, 100);
     }
 
 

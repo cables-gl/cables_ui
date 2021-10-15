@@ -16,11 +16,15 @@ export default class ServerOps
         CABLES.editorSession.addListener("op",
             (name, data) =>
             {
+                // gui.jobs().start("open op editor" + name);
+                CABLES.editorSession.startLoadingTab();
                 const lastTab = CABLES.UI.userSettings.get("editortab");
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
                     CABLES.UI.userSettings.set("editortab", lastTab);
+                    CABLES.editorSession.finishLoadingTab();
+                    // gui.jobs().finish("open op editor" + name);
                 });
             }
         );
@@ -29,11 +33,16 @@ export default class ServerOps
             "attachment",
             (name, data) =>
             {
+                CABLES.editorSession.startLoadingTab();
+
                 // usersettings stores editortab as basename/att_example.inc
                 // editAttachment demands att_example.inc plus the opname to then store
                 // stuff in session
                 const opBasename = data.opname.substr(data.opname.lastIndexOf(".") + 1);
                 const attName = name.replace(opBasename + "/", "");
+
+                // gui.jobs().start("open att editor" + attName);
+
                 if (name.includes("att_") && data && data.opname)
                 {
                     const lastTab = CABLES.UI.userSettings.get("editortab");
@@ -41,6 +50,8 @@ export default class ServerOps
                     {
                         gui.mainTabs.activateTabByName(lastTab);
                         CABLES.UI.userSettings.set("editortab", lastTab);
+                        CABLES.editorSession.finishLoadingTab();
+                        // gui.jobs().finish("open att editor" + attName);
                     }, true);
                 }
             },

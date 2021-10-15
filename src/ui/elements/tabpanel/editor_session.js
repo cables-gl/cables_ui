@@ -10,6 +10,14 @@ export default class EditorSession
     {
         this._openEditors = [];
         this._listeners = {};
+        this._loadingCount = 0;
+        this._loadedCurrentTab = false;
+
+        this.addListener("param", (name, data) =>
+        {
+            console.log("opening param !!!!");
+            CABLES.UI.openParamStringEditor(data.opid, data.portname);
+        });
     }
 
     store()
@@ -17,10 +25,39 @@ export default class EditorSession
         CABLES.UI.userSettings.set("openEditors", this._openEditors);
     }
 
+    loaded()
+    {
+        // console.log("editor session loaded", this._loadingCount == 0);
+        return this._loadingCount == 0;
+    }
+
     openEditors()
     {
         return this._openEditors;
     }
+
+    startLoadingTab()
+    {
+        this._loadingCount++;
+        // console.log("load tab!!", this._loadingCount);
+    }
+
+    finishLoadingTab()
+    {
+        this._loadingCount--;
+        // console.log("loading editors...", this._loadingCount);
+
+        setTimeout(() =>
+        {
+            if (this._loadingCount == 0 && !this._loadedCurrentTab)
+            {
+                console.log("yes show current tab!!");
+                gui.mainTabs.loadCurrentTabUsersettings();
+                this._loadedCurrentTab = true;
+            }
+        }, 100);
+    }
+
 
     /**
      * remove a editor session
@@ -89,13 +126,7 @@ export default class EditorSession
             for (let i = 0; i < sessions.length; i++)
                 if (this._listeners[sessions[i].type])
                     this._listeners[sessions[i].type](sessions[i].name, sessions[i].data || {});
-
-            if (sessions.length > 0)
-                if (!CABLES.UI.loaded)
-                {
-                    const showMainTabs = CABLES.UI.userSettings.get("maintabsVisible");
-                    if (showMainTabs) gui.maintabPanel.show(true);
-                }
+                else console.log("no editorsession listener for " + sessions[i].type + " (" + sessions[i].name + ")");
         }
     }
 
