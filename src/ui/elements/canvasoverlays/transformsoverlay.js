@@ -8,7 +8,7 @@ export default class TransformsOverlay
 
     add(cgl, id, x, y, z)
     {
-        this._transforms[id] = this._transforms[id] || new CABLES.UI.TransformsIcon(cgl, id);
+        this._transforms[id] = this._transforms[id] || new TransformsIcon(cgl, id);
         this._transforms[id].setPos(x, y, z);
 
         if (performance.now() - this._lastCheck > 50)
