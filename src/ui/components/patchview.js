@@ -232,6 +232,7 @@ export default class PatchView extends CABLES.EventTarget
         const opname = ops[0];
         const uiAttr = {};
 
+
         if (event)
         {
             let coord = {};
@@ -243,11 +244,15 @@ export default class PatchView extends CABLES.EventTarget
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
-        const op = gui.corePatch().addOp(opname, uiAttr);
 
-        for (let i = 0; i < op.portsIn.length; i++)
-            if (op.portsIn[i].uiAttribs.display == "file")
-                op.portsIn[i].set(filename);
+        gui.serverOps.loadOpLibs(opname, function ()
+        {
+            const op = gui.corePatch().addOp(opname, uiAttr);
+
+            for (let i = 0; i < op.portsIn.length; i++)
+                if (op.portsIn[i].uiAttribs.display == "file")
+                    op.portsIn[i].set(filename);
+        });
     }
 
     addOp(opname, options)
