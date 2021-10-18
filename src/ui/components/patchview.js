@@ -1721,6 +1721,7 @@ export default class PatchView extends CABLES.EventTarget
         let maxName = "unknown";
         let ser = "";
         let maxValue = "";
+        let maxId = "";
 
         try
         {
@@ -1734,6 +1735,7 @@ export default class PatchView extends CABLES.EventTarget
                         max = ser.length;
                         maxValue = ser;
                         maxName = this._p.ops[i].name + " - in: " + this._p.ops[i].portsIn[j].name;
+                        maxId = this._p.ops[i].id;
                     }
                 }
                 for (let j in this._p.ops[i].portsOut)
@@ -1744,11 +1746,18 @@ export default class PatchView extends CABLES.EventTarget
                         max = ser.length;
                         maxValue = ser;
                         maxName = this._p.ops[i].name + " - out: " + this._p.ops[i].portsOut[j].name;
+                        maxId = this._p.ops[i].id;
                     }
                 }
             }
 
-            if (max > 10000) notify("warning big port: " + maxName + " / " + max + " chars");
+            if (max > 10000)
+            {
+                const txt = "warning big port: " + maxName + " / " + max + " chars";
+                notify(txt);
+                console.log(txt);
+                console.log(maxId);
+            }
         }
         catch (e)
         {
