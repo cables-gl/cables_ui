@@ -618,7 +618,7 @@ export default class GlPatch extends CABLES.EventTarget
         // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
         {
-            this._logonsole.error("BROKEN");
+            this._log.error("BROKEN");
         }
 
         this.debugData.splineUpdate = 0;
