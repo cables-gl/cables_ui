@@ -57,11 +57,6 @@ CABLES.UI.checkDefaultValue = function (op, index)
 };
 
 
-CABLES.UI.openParamSpreadSheetEditor = function ()
-{
-
-};
-
 CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 {
     const op = gui.corePatch().getOpById(opid);
@@ -83,9 +78,9 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 };
 CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 {
-    CABLES.editorSession.startLoadingTab();
     const op = gui.corePatch().getOpById(opid);
     if (!op) return console.log("paramedit op not found", opid);
+    CABLES.editorSession.startLoadingTab();
 
     const port = op.getPortByName(portname);
     if (!port) return console.log("paramedit port not found", portname);

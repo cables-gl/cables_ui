@@ -49,7 +49,7 @@ export default class MainTabPanel extends CABLES.EventTarget
 
     show(force)
     {
-        if (!force && this._tabs.getNumTabs() == 0)
+        if (this._tabs.getNumTabs() == 0)
         {
             this.hide(true);
             return;
