@@ -299,6 +299,8 @@ export default class GlOp extends CABLES.EventTarget
         let portsWidthIn = 0;
         let portsWidthOut = 0;
 
+        if (!this._glRectBg) return;
+
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
