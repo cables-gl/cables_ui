@@ -413,8 +413,8 @@ export default class GlOp extends CABLES.EventTarget
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
         this._glPorts.length = 0;
 
-        this._setupPorts(this._op.portsIn);
-        this._setupPorts(this._op.portsOut);
+        if (this._op) this._setupPorts(this._op.portsIn);
+        if (this._op) this._setupPorts(this._op.portsOut);
     }
 
     _setupPorts(ports)
