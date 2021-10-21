@@ -15,7 +15,6 @@ export default class EditorSession
 
         this.addListener("param", (name, data) =>
         {
-            console.log("opening param !!!!");
             CABLES.UI.openParamStringEditor(data.opid, data.portname);
         });
     }
