@@ -116,6 +116,5 @@ export default class FileUploader
     handleFileInputUpload(files)
     {
         this.uploadFiles(files);
-        gui.showFileManager();
     }
 }

@@ -145,7 +145,7 @@ export default class Jobs
                     {
                         // gui.updateProjectFiles();
                         // CABLES.UI.fileSelect.load();
-                        gui.showFileManager();
+                        // gui.showFileManager();
                     }
                     this._jobs.splice(i, 1);
                     break;
