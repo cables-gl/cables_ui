@@ -1117,22 +1117,22 @@ CABLES.UI.GUI = function (cfg)
                 "items":
                 [
                     {
-                        "title": "show selected op helper",
+                        "title": "Show selected op helper",
                         "func": CABLES.CMD.UI.toggleHelperCurrent,
                         "iconClass": iconShowCurrentOpHelper,
                     },
                     {
-                        "title": "show all helper",
+                        "title": "Show all helpers",
                         "func": CABLES.CMD.UI.toggleHelper,
                         "iconClass": iconShowAllHelpers,
                     },
                     {
-                        "title": "show selected op transform gizmo",
+                        "title": "Show selected op transform gizmo",
                         "func": CABLES.CMD.UI.toggleHelperCurrentTransform,
                         "iconClass": iconCurrentOpTransform,
                     },
                     {
-                        "title": "show all transforms",
+                        "title": "Show all transforms",
                         "func": CABLES.CMD.UI.toggleTransformOverlay,
                         "iconClass": iconTransforms,
                     }
