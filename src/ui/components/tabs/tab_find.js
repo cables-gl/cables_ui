@@ -536,6 +536,15 @@ export default class FindTab
                     score += 1;
                 }
 
+
+                if (
+                    ops[i].uiAttribs.extendTitle &&
+                    ops[i].uiAttribs.extendTitle.toLowerCase().indexOf(str) > -1)
+                {
+                    where = "title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
+                    score += 1;
+                }
+
                 if (
                     ops[i].uiAttribs.comment &&
                     ops[i].uiAttribs.comment.toLowerCase().indexOf(str) > -1)
