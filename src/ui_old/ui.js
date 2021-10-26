@@ -1078,7 +1078,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 $("#converterprogress").hide();
                 // $("#converteroutput").show();
-                ele.show(ele.byId("converteroutput  "));
+                ele.show(ele.byId("converteroutput"));
 
                 if (err)
                 {
