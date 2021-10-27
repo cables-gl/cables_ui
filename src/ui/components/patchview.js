@@ -730,7 +730,6 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     let type = "subpatch";
                     if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
-                    console.log(ops[i], ops[i].storage);
                     arr.push({
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
@@ -852,7 +851,16 @@ export default class PatchView extends CABLES.EventTarget
             this._patchRenderer.greyOut = true;
 
 
-            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" href=\"\">open patch</a>";
+            // console.log(names[names.length - 1]);
+
+            // const ops = gui.corePatch().getOpsByObjName("CABLES.UI.DEFAULTOPNAMES.blueprint");
+            // for (let i = 0; i < ops.length; i++)
+            // {
+            //     ops[i].getPort("ExternalPatchId");
+            // }
+
+            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a>";
+            str += "<a style=\"margin:0;\" href=\"\">open patch</a>";
         }
         else this._patchRenderer.greyOut = false;
 

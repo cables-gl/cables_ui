@@ -26,7 +26,6 @@ export default class EditorSession
 
     loaded()
     {
-        // console.log("editor session loaded", this._loadingCount == 0);
         return this._loadingCount == 0;
     }
 
@@ -38,19 +37,16 @@ export default class EditorSession
     startLoadingTab()
     {
         this._loadingCount++;
-        // console.log("load tab!!", this._loadingCount);
     }
 
     finishLoadingTab()
     {
         this._loadingCount--;
-        // console.log("loading editors...", this._loadingCount);
 
         setTimeout(() =>
         {
             if (this._loadingCount == 0 && !this._loadedCurrentTab)
             {
-                console.log("yes show current tab!!");
                 gui.mainTabs.loadCurrentTabUsersettings();
                 this._loadedCurrentTab = true;
             }

@@ -420,7 +420,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 {
     const self = this;
 
-    console.log("new timelineui");
     let projectLength = 20;
     const tlEmpty = new CABLES.Anim();
     let anim = null;// tlEmpty;//new CABLES.Anim();

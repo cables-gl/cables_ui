@@ -23,8 +23,8 @@ export default class ScConnection extends CABLES.EventTarget
         this._receivePaco = false;// gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
         this._sendPacoInitial = false;//! gui.isRemoteClient;
 
-        this._log.log("this._receivePaco", this._receivePaco);
-        this._log.log("this._sendPacoInitial", this._sendPacoInitial);
+        // this._log.log("this._receivePaco", this._receivePaco);
+        // this._log.log("this._sendPacoInitial", this._sendPacoInitial);
 
 
         if (cfg) this._init();

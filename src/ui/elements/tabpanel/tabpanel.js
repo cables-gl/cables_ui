@@ -80,7 +80,7 @@ export default class TabPanel extends CABLES.EventTarget
                         const tab = this._tabs[i];
                         items.push({
                             "title": tab.options.name,
-                            "func": () => { console.log(tab); this.activateTab(tab.id); }
+                            "func": () => { this.activateTab(tab.id); }
                         });
                     }
                     CABLES.contextMenu.show(
@@ -194,7 +194,7 @@ export default class TabPanel extends CABLES.EventTarget
 
     loadCurrentTabUsersettings()
     {
-        console.log("load current tab", CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId));
+        // console.log("load current tab", CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId));
 
         for (let i = 0; i < this._tabs.length; i++)
         {
@@ -210,7 +210,6 @@ export default class TabPanel extends CABLES.EventTarget
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;
-        console.log("save current tab" + this._eleId, activeTab.title);
         CABLES.UI.userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
     }
 
