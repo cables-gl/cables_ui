@@ -730,11 +730,18 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     let type = "subpatch";
                     if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
+<<<<<<< HEAD
                     arr.push({
+=======
+                    console.log(ops[i], ops[i].storage);
+                    const patchInfo = {
+>>>>>>> 6f47c3354dcfb30a20150b3a99696b5d49f926c9
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
                         "type": type
-                    });
+                    };
+                    if (ops[i].storage && ops[i].storage.blueprint)patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
+                    arr.push(patchInfo);
                     if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
             }
@@ -849,18 +856,7 @@ export default class PatchView extends CABLES.EventTarget
         if (names.length > 0 && names[names.length - 1].type == "blueprint_subpatch")
         {
             this._patchRenderer.greyOut = true;
-
-
-            // console.log(names[names.length - 1]);
-
-            // const ops = gui.corePatch().getOpsByObjName("CABLES.UI.DEFAULTOPNAMES.blueprint");
-            // for (let i = 0; i < ops.length; i++)
-            // {
-            //     ops[i].getPort("ExternalPatchId");
-            // }
-
-            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a>";
-            str += "<a style=\"margin:0;\" href=\"\">open patch</a>";
+            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + names[names.length - 1].blueprintPatchId + "\">open patch</a>";
         }
         else this._patchRenderer.greyOut = false;
 
