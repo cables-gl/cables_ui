@@ -730,12 +730,8 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     let type = "subpatch";
                     if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
-<<<<<<< HEAD
-                    arr.push({
-=======
-                    console.log(ops[i], ops[i].storage);
+
                     const patchInfo = {
->>>>>>> 6f47c3354dcfb30a20150b3a99696b5d49f926c9
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
                         "type": type
