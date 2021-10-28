@@ -1931,8 +1931,6 @@ CABLES.UI.GUI = function (cfg)
         document.body.addEventListener("mousedown",
             (e) =>
             {
-                console.log(e.target, e.target.classList);
-
                 if (this.isCanvasFocussed &&
                     !e.target.classList.contains("item") &&
                     !e.target.classList.contains("icon")
@@ -1943,7 +1941,6 @@ CABLES.UI.GUI = function (cfg)
         // _patch = new CABLES.UI.Patch(this);
         // _patch.show(this._corePatch);
         // this.patchView.store.setPatch(this._corePatch);
-
 
         // this.patchView.setPatchRenderer("patch", _patch);
 
