@@ -1109,8 +1109,6 @@ export default class GlPatch extends CABLES.EventTarget
 
     setCurrentSubPatch(sub, next)
     {
-        console.log(this._splineDrawers);
-
         if (this._currentSubpatch == sub)
         {
             for (const i in this._glOpz)

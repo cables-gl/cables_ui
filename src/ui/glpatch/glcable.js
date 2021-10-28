@@ -23,7 +23,6 @@ export default class GlCable
 
         this._link = link;
 
-        console.log("splineDrawer", splineDrawer);
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
