@@ -1931,8 +1931,12 @@ CABLES.UI.GUI = function (cfg)
         document.body.addEventListener("mousedown",
             (e) =>
             {
-                if (this.isCanvasFocussed)
-                    gui.showCanvasModal(false);
+                console.log(e.target, e.target.classList);
+
+                if (this.isCanvasFocussed &&
+                    !e.target.classList.contains("item") &&
+                    !e.target.classList.contains("icon")
+                ) gui.showCanvasModal(false);
             }, true);
 
 
