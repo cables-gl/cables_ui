@@ -1928,6 +1928,13 @@ CABLES.UI.GUI = function (cfg)
 
         CABLES.UI.initSplitPanes();
 
+        document.body.addEventListener("mousedown",
+            (e) =>
+            {
+                if (this.isCanvasFocussed)
+                    gui.showCanvasModal(false);
+            }, true);
+
 
         // _patch = new CABLES.UI.Patch(this);
         // _patch.show(this._corePatch);
