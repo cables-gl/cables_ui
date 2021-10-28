@@ -20,7 +20,7 @@ $border-radius-popups:12px;
 
 html,body { // ipad overscroll fix...
   position: fixed;
-  overflow: hidden;
+//   overflow: hidden;
   width:100vw;
   height:100vh;
   overscroll-behavior:none;
