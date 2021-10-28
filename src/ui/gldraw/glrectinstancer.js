@@ -478,7 +478,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._counter++;
         if (this._counter > this._num - 100)
         {
-            this._num += 5000;
+            this._num += Math.ceil(this._num / 2);
             this._log.log("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
