@@ -237,7 +237,11 @@ export default class FindTab
         if (op.op)op = op.op;
 
         const colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
-        html += "<div id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + "\" data-info=\"" + info + "\" ";
+
+        let hiddenClass = "";
+        if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
+
+        html += "<div id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
         html += "onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
 
         let colorHandle = "";

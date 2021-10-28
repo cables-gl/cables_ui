@@ -17,6 +17,8 @@ export default class GlPort
         this._glPatch = glpatch;
         this._rect = new GlRect(rectInstancer, { "parent": oprect, "interactive": true });
 
+        this._mouseButtonRightTimeDown = 0;
+
         this._posX = i * (GlUiConfig.portWidth + GlUiConfig.portPadding);
 
         oprect.addChild(this._rect);
@@ -75,18 +77,24 @@ export default class GlPort
 
     _onMouseDown(e, rect)
     {
-        // if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT)
-        // {
-        //     this._glPatch.emitEvent("mouseDownRightOverPort", this, this._glop.id, this._port.name);
-        // }
-        // else
-        // {
+        console.log(e.buttons);
+        if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
+
         this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
-        // }
     }
 
     _onMouseUp(e, rect)
     {
+        if (this._mouseButtonRightTimeDown)
+        {
+            console.log(performance.now() - this._mouseButtonRightTimeDown);
+            if (performance.now() - this._mouseButtonRightTimeDown < GlUiConfig.clickMaxDuration)
+            {
+                this._port.removeLinks();
+                this._mouseButtonRightTimeDown = 0;
+                return;
+            }
+        }
         this._glPatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
     }
 

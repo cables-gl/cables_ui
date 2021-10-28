@@ -18,7 +18,8 @@ export default
         "VarGetArray": "Ops.Vars.VarGetArray_v2",
         "VarSetString": "Ops.Vars.VarSetString_v2",
         "VarGetString": "Ops.Vars.VarGetString",
-        "defaultFont": "Ops.Html.FontFile_v2"
+        "defaultFont": "Ops.Html.FontFile_v2",
+        "blueprint": "Ops.Dev.Blueprint"
     },
 
     "getOpsForFilename": (filename) =>
