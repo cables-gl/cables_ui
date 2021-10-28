@@ -11,7 +11,7 @@ export default class GlSplineDrawer
         this._mesh = null;
         this._verts = new Float32Array();
 
-        this._geom = new CGL.Geometry("splinemesh2");
+        this._geom = new CGL.Geometry("GlSplineDrawer_" + name);
         this._pointsProgress = new Float32Array();
         this._points = new Float32Array();
         this._points2 = new Float32Array();
@@ -398,9 +398,7 @@ export default class GlSplineDrawer
         const num = this._thePoints.length / 3;
 
         // console.log(this._verts.length / 3, num, this._thePoints.length / 3);
-
         // console.log("verlen", this._verts.length, num * 18);
-
 
         if (this._verts.length != num * 18)
         {
@@ -555,7 +553,6 @@ export default class GlSplineDrawer
                 }
             }
         }
-
 
         if (updateWhat == undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
