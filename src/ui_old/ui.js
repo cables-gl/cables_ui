@@ -1928,18 +1928,19 @@ CABLES.UI.GUI = function (cfg)
 
         CABLES.UI.initSplitPanes();
 
-        document.getElementById("canvasmodal").addEventListener("mousedown",
+        document.body.addEventListener("mousedown",
             (e) =>
             {
-                gui.showCanvasModal(false);
-                gui.patchView.focus();
-                e.preventDefault();
-            });
+                if (this.isCanvasFocussed &&
+                    !e.target.classList.contains("item") &&
+                    !e.target.classList.contains("icon")
+                ) gui.showCanvasModal(false);
+            }, true);
+
 
         // _patch = new CABLES.UI.Patch(this);
         // _patch.show(this._corePatch);
         // this.patchView.store.setPatch(this._corePatch);
-
 
         // this.patchView.setPatchRenderer("patch", _patch);
 

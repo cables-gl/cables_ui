@@ -4,15 +4,21 @@ CABLES.onLoadedLib = {};
 
 export default class LibLoader
 {
-    constructor(libnames, cb)
+    constructor(libnames, cb, options = {})
     {
         this.libsToLoad = libnames.slice(0);
         this._cb = cb;
+        this.id = options.id || "loadlibs";
+        this.title = options.title || "loading libs";
+        this.list = options.list || loadedLibs;
+        this.callbacks = options.callbacks || CABLES.onLoadedLib;
+        this.basePath = options.basePath || CABLES.sandbox.getCablesUrl() + "/api/lib/";
+
         if (libnames.length > 0)
         {
             gui.jobs().start({
-                "id": "loadlibs",
-                "title": "loading libs"
+                "id": this.id,
+                "title": this.title
             });
 
             for (const i in libnames)
@@ -31,34 +37,42 @@ export default class LibLoader
         if (this.libsToLoad.length == 0)
         {
             if (this._cb) this._cb();
-            gui.jobs().finish("loadlibs");
+            gui.jobs().finish(this.id);
         }
     }
 
     loadLib(name)
     {
-        if (loadedLibs.indexOf(name) === -1)
+        if (this.list.indexOf(name) === -1)
         {
-            CABLES.onLoadedLib[name] = function (libName)
-            {
-                if (window.module) module = window.module; // electron module workaround/fix
+            this.callbacks[name] = this.callbacks[name] || [];
 
-                const i = this.libsToLoad.indexOf(libName);
-                this.libsToLoad.splice(i, 1);
-                // console.log("finished loading lib: " + libName);
-                loadedLibs.push(libName);
-                this.checkAllLoaded();
-            }.bind(this);
+            this.callbacks[name].push({
+                "executed": false,
+                "cb": (libName) =>
+                {
+                    if (window.module) module = window.module; // electron module workaround/fix
 
+                    const i = this.libsToLoad.indexOf(libName);
+                    this.libsToLoad.splice(i, 1);
+                    this.list.push(libName);
+                    this.checkAllLoaded();
+                }
+            }
+            );
 
             if (typeof module === "object") { window.module = module; module = undefined; } // electron module workaround/fix
 
-
-            const newscript = document.createElement("script");
-            newscript.type = "text/javascript";
-            newscript.async = true;
-            newscript.src = CABLES.sandbox.getCablesUrl() + "/api/lib/" + name;
-            (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newscript);
+            const elRef = this.id + "_" + name;
+            if (!document.querySelector("[data-libname=\"" + elRef + "\"]"))
+            {
+                const newScript = document.createElement("script");
+                newScript.dataset.libname = elRef;
+                newScript.type = "text/javascript";
+                newScript.async = true;
+                newScript.src = this.basePath + name;
+                (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newScript);
+            }
         }
         else
         {
@@ -69,11 +83,18 @@ export default class LibLoader
     }
 }
 
-
+// this will be called from loaded lib files (api inject the call into js files...)
 CABLES.loadedLib = function (name)
 {
     if (CABLES.onLoadedLib[name])
     {
-        CABLES.onLoadedLib[name](name);
+        for (let i = 0; i < CABLES.onLoadedLib[name].length; i++)
+        {
+            if (!CABLES.onLoadedLib[name][i].executed)
+            {
+                CABLES.onLoadedLib[name][i].cb(name);
+                CABLES.onLoadedLib[name][i].executed = true;
+            }
+        }
     }
 };

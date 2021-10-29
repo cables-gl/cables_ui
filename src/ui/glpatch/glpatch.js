@@ -51,7 +51,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._overlaySplines = new GlSplineDrawer(cgl, "overlaysplines");
         this._overlaySplines.zPos = 0.5;
-        this._splineDrawer = new GlSplineDrawer(cgl, "patchCableSplines");
+        // this._splineDrawer = new GlSplineDrawer(cgl, "patchCableSplines");
+        this._splineDrawers = { "0": new GlSplineDrawer(cgl, "patchCableSplines_0") };
 
         this.viewBox = new GlViewBox(cgl, this);
 
@@ -688,7 +689,9 @@ export default class GlPatch extends CABLES.EventTarget
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] render");
 
-        this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
+        // this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
+
+        this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
@@ -1202,5 +1205,15 @@ export default class GlPatch extends CABLES.EventTarget
     {
         this._cgl.canvas.style["pointer-events"] = "initial";
         this.previewLayer.resumeInteraction();
+    }
+
+    getSplineDrawer(subpatchId)
+    {
+        if (this._splineDrawers.hasOwnProperty(subpatchId)) return this._splineDrawers[subpatchId];
+        else
+        {
+            this._splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
+            return this._splineDrawers[subpatchId];
+        }
     }
 }

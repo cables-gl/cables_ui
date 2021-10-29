@@ -7,7 +7,7 @@ export default class GlLink
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
-        portNameOut, portIdInput, portIdOutput, type, visible = true)
+        portNameOut, portIdInput, portIdOutput, type, visible = true, subpatch)
     {
         this._log = new Logger("gllink");
         this._id = id;
@@ -134,7 +134,7 @@ export default class GlLink
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new GlCable(this._glPatch, this._glPatch._splineDrawer, this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(subpatch), this._buttonRect, this._type, this);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
