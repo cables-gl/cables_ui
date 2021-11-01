@@ -36,7 +36,7 @@
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
         border-color: var(--color-warning);
-        font-size: $font-size-default+2;
+        font-size: var(--font-size-bigger);
 	}
 
 
@@ -44,7 +44,7 @@
 	{
         text-align: left;
         border-color: transparent;
-        font-size: $font-size-default+2;
+        font-size: var(--font-size-bigger);
         border-radius: 5px;
         margin-bottom: 3px;;
 	}
@@ -83,7 +83,7 @@
 
 		.summary
 		{
-			font-size: $font-size-default+2;
+			font-size: var(--font-size-bigger);
 			padding:5px;
 			margin: 10px 0;
 		}

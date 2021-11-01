@@ -1,18 +1,15 @@
-//$text-font: "SourceSansPro";
 $text-font: "SourceSansPro", sans-serif;
 $headline-font: "SourceSansPro";
 
-$font-size-default: 13px;
-$line-height-text: 18px;
+:root
+{
+    --font-size-off: 0px;
+    --font-size-small: calc(12px + var(--font-size-off));
+    --font-size-default: calc(14px + var(--font-size-off));
+    --font-size-bigger: calc(16px + var(--font-size-off));
+    --font-size-big: calc(18px + var(--font-size-off));
+}
 
-$font-weight-headline: 400;
-
-$text-input-font-size: 12px;
-
-$timeline-font-size: 14px;
-
-$panelhead-font-size: 22px;
-$panelhead-font-weight: 400;
 
 
 @font-face {

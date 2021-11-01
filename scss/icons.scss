@@ -38,8 +38,8 @@
 .icon
 {
 	display: inline-block;
-	width: 16px;
-	height: 16px;
+	width: calc(16px + var(--font-size-off));
+	height: calc(16px + var(--font-size-off));
 
 	mask-repeat: no-repeat;
 	-webkit-mask-repeat: no-repeat;
@@ -76,26 +76,26 @@
 
 .icon-2x
 {
-	width: 32px;
-	height: 32px;
+	width: calc(32px + 2.0 * var(font-size-off));
+	height: calc(32px + 2.0 * var(font-size-off));
 }
 
 .icon-4x
 {
-	width: 64px;
-	height: 64px;
+	width: calc(64px + 4.0 * var(font-size-off));
+	height: calc(64px + 4.0 * var(font-size-off));
 }
 
 .icon-1_5x
 {
-	width: 24px;
-	height: 24px;
+	width: calc(24px + 1.5 * var(font-size-off));
+	height: calc(24px + 1.5 * var(font-size-off));
 }
 
 .icon-1_25x
 {
-	width: 20px;
-	height: 20px;
+	width: calc(20px + 1.25 * var(font-size-off));
+	height: calc(20px + 1.25 * var(font-size-off));
 }
 
 

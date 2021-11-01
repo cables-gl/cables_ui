@@ -20,7 +20,7 @@ $border-radius-popups:12px;
 
 html,body { // ipad overscroll fix...
   position: fixed;
-//   overflow: hidden;
+  overflow: hidden;
   width:100vw;
   height:100vh;
   overscroll-behavior:none;
@@ -33,7 +33,7 @@ body
     background-color: $background-color-dark;
     overflow: hidden;
     font-family: $text-font;
-    font-size: $font-size-default;
+    font-size: var(--font-size-default);
     // -webkit-font-smoothing: antialiased;
     // -webkit-font-smoothing: subpixel-antialiased;
     // font-smoothing: subpixel-antialiased;
@@ -46,13 +46,12 @@ body
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-weight: $font-weight-headline;
+  font-weight: 400;
   font-family: $headline-font, arial;
   font-style: normal;
   color: $highlight-color;
 //   text-transform: capitalize;
 }
-
 
 h2
 {
@@ -62,7 +61,6 @@ h2
 
 p {
   font-style: normal;
-  line-height: $line-height-text;
   font-weight: 400;
 }
 
@@ -141,7 +139,7 @@ input[type="text"]
     padding: 10px 12px;
     height: 18px;
     outline: none;
-    font-size: $text-input-font-size;
+    font-size: var(--font-size-default);
     border-radius: 0;
 }
 
@@ -211,7 +209,7 @@ input[type="text"]
     border-radius: 4px;
     margin-top: 3px;
     cursor:pointer;
-    font-size: 13px;
+    font-size: var(--font-size-default);
     background-color: var(--color-04);
 
 
@@ -304,7 +302,7 @@ input[type="text"]
     padding:1px 4px !important;
     // width: 16px;
     border-radius:3px;
-    font-size:12px;
+    font-size:--font-size-small;
     border-width: 2px;
     // height: 16px;
     // &.fa:before
@@ -553,7 +551,7 @@ body,div
                 font-weight: normal;
                 padding-top: 13px;
                 padding-bottom: 13px;
-                font-size: 13px;
+                font-size: var(--font-size-default);
             }
         }
     }
@@ -626,7 +624,7 @@ body,div
     width:500px;
     padding:0px;
     padding-left: 10px;
-    font-size: 13px;
+    font-size: var(--font-size-default);
     color: var(--color-10);
     height:38px;
     line-height: 40px;
@@ -639,7 +637,7 @@ body,div
 
     input
     {
-        font-size: 13px;
+        font-size: var(--font-size-default);
         padding:10px;
         padding-left:5px;
         height:100%;
@@ -940,12 +938,6 @@ input
 
 
 
-@import 'libs/jcolorpicker-custom.scss';
-.cp-panel input
-{
-    padding:1px !important;
-    font-size:11px !important;
-}
 
 
 

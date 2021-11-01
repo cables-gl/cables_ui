@@ -2139,6 +2139,11 @@ function startUi(cfg)
 
                 CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                 {
+                    if (key == "fontSizeOff")
+                    {
+                        document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
+                    }
+
                     if (key == "bgpattern")
                     {
                         gui.setElementBgPattern(ele.byId("cablescanvas"));

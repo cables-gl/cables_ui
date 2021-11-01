@@ -69,6 +69,8 @@ export default class Preferences
         this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
 
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
+
+        this.setSwitchValue("fontSizeOff", CABLES.UI.userSettings.get("fontSizeOff") || 0);
     }
 
     show()
