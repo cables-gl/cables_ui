@@ -1998,6 +1998,12 @@ CABLES.UI.GUI = function (cfg)
     };
 };
 
+
+CABLES.UI.GUI.prototype.setFontSize = function (v)
+{
+    document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
+};
+
 CABLES.UI.GUI.prototype.setUser = function (u)
 {
     gui.user = u;
@@ -2137,11 +2143,13 @@ function startUi(cfg)
 
                 CABLES.editorSession.open();
 
+                gui.setFontSize(CABLES.UI.userSettings.get("fontSizeOff"));
+
                 CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
                 {
                     if (key == "fontSizeOff")
                     {
-                        document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
+                        gui.setFontSize(v);
                     }
 
                     if (key == "bgpattern")
