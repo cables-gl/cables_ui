@@ -75,7 +75,7 @@ export default class Preferences
 
     show()
     {
-        const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user });
+        const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
         this._tab.html(html);
         this.updateValues();
 
