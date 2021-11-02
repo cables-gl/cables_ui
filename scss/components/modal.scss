@@ -78,7 +78,7 @@
 
 #modalcontent {
     padding: 15px;
-    font-size: $font-size-default + 3;
+    font-size: var(--font-size-bigger);
     user-select: text;
     -webkit-user-select: text; /* Chrome all / Safari all */
     -moz-user-select: text; /* Firefox all */

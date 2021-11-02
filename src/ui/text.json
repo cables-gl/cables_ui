@@ -120,7 +120,67 @@
         "cmd_patchsettings": "## Open Patch settings",
 
 
-        "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!"
+        "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!",
+
+        "preferences":
+        {
+            "title":"Preferences",
+
+            "subtitle_glpatch_cursor":"use native cursor",
+            "subtitle_glpatch_hideboundings":"draw patch bounding",
+            "subtitle_glpatch_linetype":"cables style",
+
+            "head_glpatch":"Patch Editor",
+
+            "title_snapToGrid":"Snap To Grid",
+            "subtitle_snapToGrid":"Ops snap to an invisible grid, makes patches look much cleaner",
+
+            "title_nobrowserWarning":"Hide Warning",
+            "subtitle_nobrowserWarning":"Hide that red \"unsupported browser\" warning notification",
+
+            "title_introCompleted":"Intro Tour",
+            "subtitle_introCompleted":"Show Intro tour again (needs reload)",
+
+            "title_helperMode":"Show Helper Meshes",
+            "subtitle_helperMode":"Show helper, directions/boundaries etc, as in e.g. randomCluster",
+
+            "title_forceWebGl1":"Force WebGL v1",
+            "subtitle_forceWebGl1":"",
+
+            "title_miniopselect":"Op Select Dialog Layout",
+            "subtitle_miniopselect":"",
+
+            "title_theme":"Theme",
+            "subtitle_theme":"Bright theme is better when you work outside.",
+
+            "title_hideSizeBar":"Icon Side Bar",
+            "subtitle_hideSizeBar":"Shows a sidebar with icons of commands from command palette",
+
+            "title_texpreviewSize":"Texture Preview",
+            "subtitle_texpreviewSize":"After clicking an op that outputs an image/texture, it will be shown next to the canvas.",
+
+            "title_bgpattern":"Background Pattern",
+            "subtitle_bgpattern":"Background Pattern for transparent canvas/textures.",
+
+            "title_wheelmultiplier":"Wheel Speed",
+            "subtitle_wheelmultiplier":"Mouse/Touchpad scrollwheel speed higher number - faster zooming, default is 1",
+
+            "title_wheelmode":"Wheel Mode",
+            "subtitle_wheelmode":" Set this to mousewheel if you can't zoom in using your mousewheel",
+
+            "title_noidlemode":"Idle Mode",
+            "subtitle_noidlemode":"go into idle mode after some time (to save energy and less fan acitvity)",
+
+            "title_tipps":"Tips",
+            "subtitle_tipps":"Show tips when opening editor (needs reload)",
+
+            "title_presentationmode":"Presentation Mode",
+            "subtitle_presentationmode":"Show all key presses on the screen",
+
+            "title_fontsize":"Text Size",
+            "subtitle_fontsize":"Size Of Text and Icons in cables"
+        }
+
     },
     "tips":
     [

@@ -69,11 +69,13 @@ export default class Preferences
         this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
 
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
+
+        this.setSwitchValue("fontSizeOff", CABLES.UI.userSettings.get("fontSizeOff") || 0);
     }
 
     show()
     {
-        const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user });
+        const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
         this._tab.html(html);
         this.updateValues();
 

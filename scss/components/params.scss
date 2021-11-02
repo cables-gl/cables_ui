@@ -36,7 +36,7 @@
 	.warning ,.warning-experimental, .warning a, .warning-experimental a
 	{
         border-color: var(--color-warning);
-        font-size: $font-size-default+2;
+        font-size: var(--font-size-bigger);
 	}
 
 
@@ -44,7 +44,7 @@
 	{
         text-align: left;
         border-color: transparent;
-        font-size: $font-size-default+2;
+        font-size: var(--font-size-bigger);
         border-radius: 5px;
         margin-bottom: 3px;;
 	}
@@ -83,7 +83,7 @@
 
 		.summary
 		{
-			font-size: $font-size-default+2;
+			font-size: var(--font-size-bigger);
 			padding:5px;
 			margin: 10px 0;
 		}
@@ -247,7 +247,7 @@
         border: 1px solid $background-color-brighter;
         float:left;
         font-family: SourceCodePro,monospace;
-        font-size: 13px;
+        font-size: var(--font-size-default);
         &:focus
         {
             background-color: $color-background-input-focussed;
@@ -556,7 +556,7 @@ td.head
         padding-left:6px;
         padding-right:6px;
         text-align:center;
-        font-size: 13px;
+        // font-size: 13px;
         display:block;
         border-radius: 0px;
     }

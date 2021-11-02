@@ -116,7 +116,7 @@
     .timelineprogress
     {
         display: block;
-        font-size: $timeline-font-size;
+        font-size: var(--font-size-default);
         line-height: 14px;
         float:left;
         padding:4px;
@@ -131,7 +131,7 @@
     .timelinetime
     {
         display: block;
-        font-size: $timeline-font-size;
+        font-size: var(--font-size-default);
         line-height: 14px;
         float:left;
         padding:4px;
