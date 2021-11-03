@@ -7,6 +7,50 @@
         <i id="converterprogress" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
 
         <form id="converterform">
+
+            {{#compare converterId '==' 'gltf2draco' }}
+
+            <table>
+                <tr>
+                    <td>Compression Level [0-10]<br/><br/></td>
+                    <td><input name="compressionLevel" value="6"></td>
+                </tr>
+
+                <tr>
+                    <td>Quantize Position Bits</td>
+                    <td><input name="quantizePositionBits" value="14"></td>
+                </tr>
+                <tr>
+                    <td>Quantize Normal Bits</td>
+                    <td><input name="quantizeNormalBits" value="10"></td>
+                </tr>
+                <tr>
+                    <td>Quantize Texcoord Bits</td>
+                    <td><input name="quantizeTexcoordBits" value="12"></td>
+                </tr>
+                <tr>
+                    <td>Quantize Color Bits</td>
+                    <td><input name="quantizeColorBits" value="8"></td>
+                </tr>
+                <tr>
+                    <td>Quantize Generic Bits</td>
+                    <td><input name="quantizeGenericBits" value="12"></td>
+                </tr>
+                <tr>
+                    <td>Unified Quantization</td>
+                    <td>
+                        <select name="unifiedQuantization">
+                            <option value="false">false</option>
+                            <option value="true">true</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+
+            <br/>
+
+            {{/compare}}
+
             {{#compare converterId '==' 'pcconv' }}
 
                 <div>
@@ -67,7 +111,7 @@
 
     </div>
     <div class="modalScrollContent hidden" id="converteroutput">
-            
+
     </div>
-            
+
 </script>

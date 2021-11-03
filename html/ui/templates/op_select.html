@@ -44,7 +44,7 @@
       {{#each ops}}
 
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">
-            <div class="button fright " style="margin-top:10px;" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">{texts.opselect_addop}}</div>
+            <div class="button fright " style="margin-top:10px;" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">{{{texts.opselect_addop}}}</div>
             <a>
                 {{oldState}}
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
