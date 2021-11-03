@@ -303,7 +303,7 @@ export default class GlViewBox
             this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
 
-            if (gui.corePatch().ops.length > 0)
+            if (gui.corePatch().ops.length > 1)
             {
                 const min = this.patchToScreenCoords(bounds.minX, bounds.minY);
                 const max = this.patchToScreenCoords(bounds.maxX, bounds.maxY);

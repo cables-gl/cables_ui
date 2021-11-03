@@ -1,4 +1,3 @@
-
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
@@ -1953,6 +1952,7 @@ CABLES.UI.GUI = function (cfg)
 
         // this.patchView.setPatchRenderer("patch", _patch);
 
+
         $("#undev").hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
@@ -2213,6 +2213,9 @@ function startUi(cfg)
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);
+
+                ele.byId("patchnavhelperEmpty").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 

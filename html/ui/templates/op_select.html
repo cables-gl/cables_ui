@@ -38,13 +38,13 @@
 
         <div style="text-align:center;padding-bottom:10px;background-color:var(--color-02)" id="opselect_replaceVar">
             Replace link with:
-            <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">new variable</a>
-            <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">existing variable</a>
+            <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">New variable</a>
+            <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a>
         </div>
       {{#each ops}}
 
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">
-            <div class="button fright " style="margin-top:10px;" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">add</div>
+            <div class="button fright " style="margin-top:10px;" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">{texts.opselect_addop}}</div>
             <a>
                 {{oldState}}
                 {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
@@ -54,7 +54,6 @@
                 </span>{{isFunction}}
 
                 <div class="summary">{{summary}}&nbsp;</div>
-
             </a>
 
         </div>
@@ -65,40 +64,22 @@
 
       <div id="search_startType" class="hidden">
           <div class="padded text-center">
-                <br/>
-                <h2>&nbsp;Start typing!</h2>
-                <br/>
-
-                You can search for multiple words at once, e.g.: "interpolate array"
-
-                <br/><br/>
-
-                Add spaces between words for better search results
-
-                <br/><br/>
-
-                Press <span class="icon icon-arrow-up"></span> and <span class="icon icon-arrow-down"></span> to navigate.
-                <br/><br/>
-                Finally press <span class="icon icon-corner-down-left"></span> to create the selected op
-
-
+              <br/>
+              {{{texts.opselect_intro}}}
           </div>
       </div>
 
       <div id="search_startTypeMore" class="hidden">
           <div class="padded text-center">
               <br/>
-              <h2>&nbsp;type some more!</h2>
+              {{{texts.opselect_typemore}}}
           </div>
       </div>
 
       <div id="search_noresults" class="hidden">
           <div class="padded text-center">
               <br/>
-              <h2>&nbsp;404 - op not found</h2>
-              <br/><br/>
-
-              <a class="bluebutton"  onclick="gui.serverOps.createDialog(document.getElementById('opsearch').value);">create your own op</a>
+              {{{texts.opselect_notfound}}}
           </div>
       </div>
     </div>
