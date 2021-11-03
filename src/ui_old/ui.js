@@ -1330,7 +1330,15 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
+        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
+            (e) =>
+            {
+                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")))
+                {
+                    this.pressedEscape(e);
+                }
+            });
+
         this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
