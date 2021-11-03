@@ -1336,6 +1336,7 @@ CABLES.UI.GUI = function (cfg)
                 if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")))
                 {
                     this.pressedEscape(e);
+                    this.patchView.focus();
                 }
             });
 
