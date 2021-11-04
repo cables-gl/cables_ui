@@ -102,7 +102,7 @@ function _scripts_ui_webpack()
 
 function _scripts_ui()
 {
-    let task = gulp.src(["src/ui_old/**/*.js"]);
+    let task = gulp.src(["src/ui_old/**/*.js", "src/ui_old/**/*.json"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
     task = task.pipe(concat("cablesuiold.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesuiold.min.js"));
     if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));

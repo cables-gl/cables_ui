@@ -1,4 +1,3 @@
-
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
@@ -1330,7 +1329,16 @@ CABLES.UI.GUI = function (cfg)
             }
         });
 
-        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, { "ignoreInput": true }, (e) => { this.pressedEscape(e); });
+        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
+            (e) =>
+            {
+                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")))
+                {
+                    this.pressedEscape(e);
+                    this.patchView.focus();
+                }
+            });
+
         this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(); this.setLayout(); });
 
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
@@ -1944,6 +1952,7 @@ CABLES.UI.GUI = function (cfg)
 
         // this.patchView.setPatchRenderer("patch", _patch);
 
+
         $("#undev").hover(function (e)
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
@@ -2204,6 +2213,9 @@ function startUi(cfg)
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);
+
+                ele.byId("patchnavhelperEmpty").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 

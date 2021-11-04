@@ -1,13 +1,14 @@
 
+
 .gluiPatchBg
 {
     z-index :$zindex_superlow - 1;
 }
 
-.op-svg-shortname
-{
-    font-size: 15px !important;  // needed for op search doc preview
-}
+// .op-svg-shortname
+// {
+//     font-size: 15px !important;  // needed for op search doc preview
+// }
 
 
 .cursor_pointer{ cursor:pointer; }
@@ -301,9 +302,11 @@
 //     tap-highlight-color:rgba(0,0,0,0);
 // }
 
-#patchnavhelper,#patchnavhelperEmpty
+
+#patchnavhelper,#patchnavhelperEmpty,#patchnavhelperBounds
 {
-    z-index: $zindex_over;
+    z-index: $zindex_superlow;
+
     color:var(--text-color);
     background-color: var(--color-04);
     padding:20px;

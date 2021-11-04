@@ -119,8 +119,15 @@
         "cmd_addop": "`esc` Add Operator",
         "cmd_patchsettings": "## Open Patch settings",
 
+        "patch_hint_overlay_empty":"This patch is empty. press <code>escape</code> to add operators",
+        "patch_hint_overlay_outofbounds":"<i>got lost ?</i>&nbsp;&nbsp;press <code>[C]</code>to center the whole patch again",
 
         "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!",
+
+        "opselect_intro":"<br/><h2>&nbsp;Start typing!</h2><br/>You can search for multiple words at once, e.g.: \"interpolate array\"<br/><br/>Add spaces between words for better search results<br/><br/>Press <span class=\"icon icon-arrow-up\"></span> and <span class=\"icon icon-arrow-down\"></span> to navigate.<br/><br/>Finally press <span class=\"icon icon-corner-down-left\"></span> to create the selected op",
+        "opselect_typemore":"<h2>&nbsp;type some more!</h2>",
+        "opselect_notfound":"<h2>&nbsp;404 - op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui.serverOps.createDialog(document.getElementById('opsearch').value);\">create your own op</a>",
+        "opselect_addop":"Add",
 
         "preferences":
         {

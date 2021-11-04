@@ -22,12 +22,13 @@ export default class GlViewBox
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
-        this._boundingRect = null;
+        this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = GlUiConfig.zoomDefault;
         this._spaceDown = false;
         this._touchpadMode = false;
+        this._outOfBounds = false;
 
         this._defaultEasing = CABLES.EASING_EXPO_OUT;
 
@@ -287,23 +288,56 @@ export default class GlViewBox
 
         if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
-            if (!this._boundingRect)
+            if (!this._opsBoundingRect)
             {
-                this._boundingRect = this.glPatch.rectDrawer.createRect();
-                this._boundingRect.interactive = false;
-                this._boundingRect.setPosition(-500, -500, 1);
-                this._boundingRect.setSize(1000, 1000);
-                this._boundingRect.setColor(GlUiConfig.colors.opBoundsRect);
+                this._opsBoundingRect = this.glPatch.rectDrawer.createRect();
+                this._opsBoundingRect.interactive = false;
+                this._opsBoundingRect.setPosition(-500, -500, 1);
+                this._opsBoundingRect.setSize(1000, 1000);
+                this._opsBoundingRect.setColor(GlUiConfig.colors.opBoundsRect);
             }
 
             const bounds = this.glPatch.rectDrawer.bounds;
-            this._boundingRect.visible = bounds.changed;
-            this._boundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
-            this._boundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+            this._opsBoundingRect.visible = bounds.changed;
+            this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
+            this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+
+
+            if (gui.corePatch().ops.length > 1)
+            {
+                const min = this.patchToScreenCoords(bounds.minX, bounds.minY);
+                const max = this.patchToScreenCoords(bounds.maxX, bounds.maxY);
+
+                let outOfBounds = false;
+                if (max[0] >= 0 && // min[ ]right edge past r2 left
+                    min[0] <= this._viewResX && // min[ ]left edge past r2 right
+                    max[1] >= 0 && // min[ ]top edge past r2 bottom
+                    min[1] <= this._viewResY) // r1 bottom edge past r2 top
+                {
+                    outOfBounds = true;
+                }
+
+                if (this._outOfBounds != outOfBounds)
+                {
+                    this._outOfBounds = outOfBounds;
+
+                    if (this._outOfBounds) ele.hide(ele.byId("patchnavhelperBounds"));
+                    else ele.show(ele.byId("patchnavhelperBounds"));
+                }
+            }
+
+
+            // console.log(
+            //     this.scrollX, scMax[0], (this._viewResX / 2)
+            //     // this.scrollX - (this._viewResX / 2) < scMax[0],
+
+            //     // this.scrollY + (this._viewResY / 2) > sc[1],
+            //     // this.scrollY - (this._viewResY / 2) < scMax[1],
+            // );
         }
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._boundingRect)
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
-            this._boundingRect.visible = false;
+            this._opsBoundingRect.visible = false;
         }
     }
 
@@ -337,15 +371,11 @@ export default class GlViewBox
         if (userInteraction)p = 0;
         if (p != p)p = 0;
 
-
         this._animScrollX.clear();
         this._animScrollY.clear();
 
         this._animScrollX.setValue(this.glPatch.time, x - p);
         this._animScrollY.setValue(this.glPatch.time, y);
-
-        // this._scrollX = x;
-        // this._scrollY = y;
 
         gui.patchView.emitEvent("viewBoxChange");
     }
