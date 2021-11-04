@@ -68,8 +68,6 @@ CABLES.UI.WatchPortVisualizer = class
                     return;
                 }
 
-                console.log("this.innerHTML", e.target.innerHTML);
-
                 navigator.clipboard
                     .writeText(e.target.innerHTML)
                     .then(() =>
