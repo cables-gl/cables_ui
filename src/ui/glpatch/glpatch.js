@@ -30,6 +30,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._log = new Logger("glpatch");
         this.paused = false;
 
+
         this._cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
 
@@ -315,6 +316,11 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseLeave(e)
     {
+        if (this._pauseMouseUntilButtonUp)
+        {
+            this._pauseMouseUntilButtonUp = false;
+            return;
+        }
         if (this._selectionArea.active)
         {
             this._selectionArea.hideArea();
@@ -326,6 +332,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseEnter(e)
     {
+        if (this._mouseLeaveButtons != e.buttons)
+        {
+            // reentering with mouse down already - basically block all interaction
+            this._pauseMouseUntilButtonUp = true;
+            console.log("REENTER WITH BUTTON DOWN!!!");
+            return;
+        }
+
         this.emitEvent("mouseenter", e);
 
         if (e.buttons == 0 && this._mouseLeaveButtons != e.buttons)
@@ -369,6 +383,12 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        if (this._pauseMouseUntilButtonUp)
+        {
+            this._pauseMouseUntilButtonUp = false;
+            return;
+        }
+
         if (!this._canvasMouseDown) return;
         this._canvasMouseDown = false;
 
@@ -772,6 +792,8 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
+        if (this._pauseMouseUntilButtonUp) return;
+
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;

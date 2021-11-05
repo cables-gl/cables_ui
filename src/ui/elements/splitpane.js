@@ -9,10 +9,13 @@ function initSplitPanes()
 {
     document.getElementById("splitterPatch").addEventListener("mousedown", function (ev)
     {
+        gui.pauseProfiling();
         ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
+            gui.pauseInteractionSplitpanes();
+
             gui.pauseProfiling();
             e.preventDefault();
 
@@ -28,6 +31,14 @@ function initSplitPanes()
         document.addEventListener("mousemove", mm);
         CABLES.SPLITPANE.listeners.push(mm);
     });
+
+    document.getElementById("splitterPatch").addEventListener("mouseup", function (e)
+    {
+        gui.resumeInteractionSplitpanes();
+    });
+
+    // ----------------
+
 
     document.getElementById("splitterMaintabs").addEventListener("mouseup", function (e)
     {
@@ -159,6 +170,7 @@ function initSplitPanes()
                 document.removeEventListener("mousemove", CABLES.SPLITPANE.listeners[i]);
                 document.removeEventListener("touchmove", CABLES.SPLITPANE.listeners[i]);
             }
+            gui.resumeInteractionSplitpanes();
 
             CABLES.SPLITPANE.listeners.length = 0;
             CABLES.SPLITPANE.bound = false;

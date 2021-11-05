@@ -15,9 +15,15 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseDownX = 0;
         this._mouseDownY = 0;
 
+
         canvas.addEventListener("pointerenter", (e) =>
         {
             this._mouseOverCanvas = true;
+        });
+
+        canvas.addEventListener("pointerleave", (e) =>
+        {
+            this._mouseOverCanvas = false;
         });
 
         canvas.addEventListener("pointerdown", (e) =>
@@ -34,11 +40,6 @@ export default class MouseState extends CABLES.EventTarget
         {
             this._isDragging = false;
             this._setButtonsUp();
-        });
-
-        canvas.addEventListener("pointerleave", (e) =>
-        {
-            this._mouseOverCanvas = false;
         });
 
         canvas.addEventListener("pointermove", (e) =>
