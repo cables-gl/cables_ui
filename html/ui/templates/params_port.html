@@ -25,7 +25,7 @@
     <td class="port portType_{{ port.type }}{{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}" id="portLineTitle_{{ dirStr }}_{{ portnum }}">
 
         {{#if port.uiAttribs.editableTitle}}
-            <a class="icon icon-edit iconhover" onclick="CABLES.UI.SetPortTitle('{{op.id}}','{{port.name}}');"></a>
+            <a class="icon icon-edit iconhover" onclick="gui.patchView.setPortTitle('{{op.id}}','{{port.name}}');"></a>
         {{/if}}
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">

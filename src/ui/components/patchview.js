@@ -1623,6 +1623,21 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
+    setPortTitle(opId, portId, oldtitle)
+    {
+        CABLES.UI.MODAL.prompt(
+            "Set Title",
+            "Enter a custom title for this port",
+            oldtitle,
+            function (name)
+            {
+                const op = gui.corePatch().getOpById(opId);
+                const p = op.getPort(portId);
+                p.setUiAttribs({ "title": name });
+
+                gui.opParams.show(opId);
+            });
+    }
 
     insertOpInLink(oldLink, op, x, y)
     {
