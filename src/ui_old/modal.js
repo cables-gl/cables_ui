@@ -313,6 +313,26 @@ CABLES.UI.MODAL.showException = function (ex, op)
     document.getElementById("modalbg").style.display = "block";
 };
 
+CABLES.UI.MODAL.copyPortValuePreview = function (e, title)
+{
+    navigator.clipboard
+        .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
+        .then(() =>
+        {
+            CABLES.UI.notify("Copied value to clipboard");
+        })
+        .catch((err) =>
+        {
+            console.log("copy failed", err);
+        });
+
+    // console.log(e);
+    // const objStr = JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get());
+    // CABLES.UI.notify("Copied title");
+    // e.clipboardData.setData("text/plain", objStr);
+};
+
+
 CABLES.UI.MODAL.updatePortValuePreview = function (title)
 {
     CABLES.UI.MODAL.showPortValue(title, CABLES.UI.MODAL.PORTPREVIEW);
@@ -345,10 +365,13 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         CABLES.UI.MODAL.PORTPREVIEW = port;
         CABLES.UI.MODAL.showClose();
         CABLES.UI.MODAL.init();
-        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;Inspect</h2>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">update</a>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">Update</a>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button fa fa-copy\" >Copy</a>";
+
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
         const thing = port.get();
 
@@ -356,8 +379,8 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         {
             CABLES.UI.MODAL.contentElement.innerHTML += "" + thing.constructor.name + " \n";
 
-            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length:" + thing.length + "\n";
-            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length:" + thing.length + "\n";
+            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
+            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
         }
 
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
@@ -368,6 +391,11 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         document.getElementById("modalbg").style.display = "block";
 
         hljs.highlightBlock(document.getElementById("portvalue"));
+
+        ele.byId("copybutton").addEventListener("click", (e) =>
+        {
+            CABLES.UI.MODAL.copyPortValuePreview(e, title);
+        });
     }
     catch (ex)
     {
