@@ -296,6 +296,36 @@
         {
             "descr": "use snap to grid for cleaner looking patches",
             "img": "snaptogrid.gif"
+        },
+        {
+            "descr": "Right click while holding alt-key and drag a cable from a port or the cable itself, to copy the connection.",
+            "img": "rightclickdrag.gif"
+        },
+
+        {
+            "descr": "To move a cable connection to another port, hold SHIFT+ALT keyboard keys and Right Mouse Button while over either end of the cable.",
+            "img": "right_shift_alt.gif"
+        },
+        {
+            "descr": "You can drag a cable from an operator port directly to a parameter name in a parameter panel of another op.",
+            "img": "dragtoport.gif"
+        },
+        {
+            "descr": " Press [CTRL/CMD]-F on your keyboard to Find operators in your project by name or by tag - for example, unconnected or bookmarked.",
+            "img": "ctrl_f.gif"
+        },
+        {
+            "descr": " Click on the patch preview and select the gizmo icon to enable or disable helpers and transforms. Show All transforms will show all moveable objects in your scene, click the circle to enable the object's gizmo.",
+            "img": "gizmo.gif"
+        },
+        {
+            "descr": " To select DIV elements directly from the patch preview, hover over your DIV elements while holding Control on your keyboard and left clicking on the DIV element.",
+            "img": "inspecthtml.gif"
+        },
+        {
+            "descr": " You can simply left click on an output field in any operator's parameter panel to copy it to your clipboard. Great for saving arrays or generated outputs.",
+            "img": "copyoutput.gif"
         }
+
     ]
 }
