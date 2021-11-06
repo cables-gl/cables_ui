@@ -151,7 +151,8 @@ CABLES_CMD_PATCH.addOp = function (x, y)
 
 CABLES_CMD_PATCH.patchWebsite = function ()
 {
-    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project()._id);
+    // CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id
+    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
 };
 
 // CABLES_CMD_PATCH.analyzePatch = function ()
