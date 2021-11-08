@@ -849,7 +849,7 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "')\">" + names[i].name + "</a>";
         }
 
-        if (names.length > 0 && names[names.length - 1].type == "blueprint_subpatch")
+        if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
             this._patchRenderer.greyOut = true;
             str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + names[names.length - 1].blueprintPatchId + "\">open patch</a>";
