@@ -338,7 +338,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
-            console.log("REENTER WITH BUTTON DOWN!!!");
+            this._log.log("reenter with different buttons!");
             return;
         }
 

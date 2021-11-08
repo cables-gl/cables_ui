@@ -87,7 +87,7 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 this.emitEvent("netActivityIn");
                 // this._log.info("cables-socketcluster clientId", this._socket.clientId);
-                this._log.log("sc connected!");
+                this._log.verbose("sc connected!");
                 this._connected = true;
 
                 this.emitEvent("connectionChanged");

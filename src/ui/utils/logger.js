@@ -39,6 +39,11 @@ export default class Logger extends CABLES.EventTarget
         console.warn("[" + this.initiator + "] ", ...arguments);
     }
 
+    verbose()
+    {
+        console.log("[" + this.initiator + "] ", ...arguments);
+    }
+
     log(args)
     {
         console.log("[" + this.initiator + "] ", ...arguments);
