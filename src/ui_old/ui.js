@@ -938,11 +938,11 @@ CABLES.UI.GUI = function (cfg)
         else this.showFileManager();
     };
 
-    this.showFileManager = function (cb)
+    this.showFileManager = function (cb, unserInteraction)
     {
         if (this.fileManager)
         {
-            this.fileManager.show();
+            this.fileManager.show(unserInteraction);
             gui.mainTabs.activateTabByName("Files");
 
             if (cb)cb();
@@ -1276,7 +1276,7 @@ CABLES.UI.GUI = function (cfg)
         });
 
         ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
-        ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(); });
+        ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(null, true); });
 
 
         ele.byId("nav_timeline").addEventListener("click", (event) =>
@@ -1284,7 +1284,7 @@ CABLES.UI.GUI = function (cfg)
             CABLES.CMD.TIMELINE.toggleTimeline();
         });
 
-        ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(); });
+        ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
         window.addEventListener("resize", () =>
         {
@@ -1604,7 +1604,7 @@ CABLES.UI.GUI = function (cfg)
     };
 
 
-    this.showSettings = function ()
+    this.showSettings = function (unserInteraction)
     {
         window.onmessage = function (e)
         {
@@ -1622,7 +1622,7 @@ CABLES.UI.GUI = function (cfg)
         }.bind(this);
 
         const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" });
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" }, true);
     };
 
     this.setWorking = function (active, where)

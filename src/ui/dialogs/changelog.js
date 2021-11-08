@@ -45,6 +45,6 @@ export default class ChangelogToast
 
     show()
     {
-        gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { "icon": "book-open", "closable": true });
+        gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { "icon": "book-open", "closable": true }, true);
     }
 }

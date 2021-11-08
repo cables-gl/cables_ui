@@ -130,7 +130,7 @@ CABLES_CMD_PATCH.showBackups = () =>
             "closable": true,
             "singleton": true,
             "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#t=versions"
-        });
+        }, true);
 };
 
 CABLES_CMD_PATCH.export = function ()
