@@ -315,6 +315,7 @@ export default class FileManager
         {
             this._selectFile(filename);
         }
+        gui.maintabPanel.show(true);
     }
 
     setDisplay(type)
