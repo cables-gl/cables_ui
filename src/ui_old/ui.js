@@ -935,7 +935,7 @@ CABLES.UI.GUI = function (cfg)
     this.refreshFileManager = function ()
     {
         if (this.fileManager) this.fileManager.refresh();
-        else this.showFileManager();
+        else this.showFileManager(null, true);
     };
 
     this.showFileManager = function (cb, unserInteraction)

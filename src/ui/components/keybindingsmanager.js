@@ -46,7 +46,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
         const html = CABLES.UI.getHandleBarHtml("tab_keys", { "keys": k });
         this._tab.html(html);
 
-        gui.maintabPanel.show();
+        gui.maintabPanel.show(true);
     }
 
     _onKeyUp(e)
