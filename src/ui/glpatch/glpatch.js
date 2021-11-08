@@ -38,6 +38,8 @@ export default class GlPatch extends CABLES.EventTarget
         this._timeStart = performance.now();
         this.isAnimated = false;
 
+        this._mouseLeaveButtons = 0;
+
         this._glOpz = {};
         this._hoverOps = [];
         this._patchAPI = null;
@@ -162,7 +164,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
         gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
-        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.editOp(); });
+        gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.editOp(true); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.viewBox.center(); });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(); });
 

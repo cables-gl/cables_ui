@@ -516,6 +516,8 @@ export default class ServerOps
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
 
+        const userInteraction = !fromListener;
+
         let editorObj = null;
         CABLES.api.clearCache();
 
@@ -571,7 +573,7 @@ export default class ServerOps
                         "inactive": inactive,
                         "onClose": (which) =>
                         {
-                            this._log.log("close!!! missing infos...");
+                            // this._log.log("close!!! missing infos...");
                             if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
                         },
                         "onSave": (_setStatus, _content) =>
@@ -603,7 +605,7 @@ export default class ServerOps
 
 
                 if (cb) cb();
-                else gui.maintabPanel.show();
+                else gui.maintabPanel.show(userInteraction);
             },
             (err) =>
             {
@@ -617,11 +619,12 @@ export default class ServerOps
         if (!editorObj)
         {
             gui.mainTabs.activateTabByName(title);
+            gui.maintabPanel.show(userInteraction);
         }
     }
 
     // Shows the editor and displays the code of an op in it
-    edit(opname, readOnly, cb)
+    edit(opname, readOnly, cb, userInteraction)
     {
         if (gui.isGuestEditor())
         {
@@ -640,7 +643,7 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send(
             "getOpCode",
             {
-                opname,
+                "opname": opname,
                 "projectId": this._patchId
             },
             (er, rslt) =>
@@ -659,7 +662,7 @@ export default class ServerOps
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
                             {
-                                opname,
+                                "opname": opname,
                                 "code": content,
                             },
                             (err, res) =>
@@ -706,7 +709,7 @@ export default class ServerOps
 
                         "allowEdit": this.canEditOp(gui.user, editorObj.name),
                         "onSave": save,
-                        editorObj,
+                        "editorObj": editorObj,
                         "onClose": (which) =>
                         {
                             if (which.editorObj) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
@@ -716,10 +719,12 @@ export default class ServerOps
                 else
                 {
                     gui.mainTabs.activateTabByName(opname);
+                    gui.maintabPanel.show(userInteraction);
                 }
 
 
                 if (cb) cb();
+                else gui.maintabPanel.show(userInteraction);
             },
         );
     }

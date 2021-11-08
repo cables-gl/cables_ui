@@ -15,8 +15,8 @@ export default class MainTabPanel extends CABLES.EventTarget
             const wasVisible = this._visible;
             if (!existedBefore) this.show();
 
-            document.getElementById("editorminimized").classList.add("editorminimized_changed");
-            setTimeout(() => { document.getElementById("editorminimized").classList.remove("editorminimized_changed"); }, 200);
+            // document.getElementById("editorminimized").classList.add("editorminimized_changed");
+            // setTimeout(() => { document.getElementById("editorminimized").classList.remove("editorminimized_changed"); }, 200);
 
             tabs.activateTab("");
             tabs.activateTab(tab.id);
@@ -37,7 +37,8 @@ export default class MainTabPanel extends CABLES.EventTarget
     init()
     {
         const showMainTabs = CABLES.UI.userSettings.get("maintabsVisible");
-        if (showMainTabs) this.show(true);
+        if (showMainTabs) this.show();
+        else this.hide(true);
 
         // this._tabs.loadCurrentTabUsersettings();
     }
@@ -47,7 +48,7 @@ export default class MainTabPanel extends CABLES.EventTarget
         return this._visible;
     }
 
-    show(force)
+    show(userInteraction)
     {
         if (this._tabs.getNumTabs() == 0)
         {
@@ -55,10 +56,24 @@ export default class MainTabPanel extends CABLES.EventTarget
             return;
         }
 
+        if (!userInteraction)
+        {
+            if (!CABLES.UI.userSettings.get("maintabsVisible"))
+            {
+                return;
+            }
+        }
+
+
         this._visible = true;
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
-        if (CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible", true);
+
+        if (CABLES.UI.loaded && userInteraction) CABLES.UI.userSettings.set("maintabsVisible", true);
+
+        // console.log("main tab show", CABLES.UI.loaded, CABLES.UI.userSettings.get("maintabsVisible"));
+        // console.log((new Error().stack));
+
         gui.setLayout();
 
         this._tabs.updateSize();
@@ -70,13 +85,14 @@ export default class MainTabPanel extends CABLES.EventTarget
         document.getElementById("editorminimized").style.display = "block";
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
+
         if (!donotsave && CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible", false);
     }
 
-    toggle()
+    toggle(userInteraction)
     {
         if (!CABLES.UI.loaded) return;
         if (this._visible) this.hide();
-        else this.show();
+        else this.show(userInteraction);
     }
 }

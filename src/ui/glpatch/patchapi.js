@@ -210,7 +210,7 @@ export default class GlPatchAPI
         this._glPatch.addOp(op, fromDeserialize);
         if (!fromDeserialize) gui.patchView.testCollision(op);
 
-        if (!fromDeserialize) op.on("onPortAdd", (p) =>
+        op.on("onPortAdd", (p) =>
         {
             const glop = this._glPatch.getGlOp(op);
             if (glop) glop.updateSize();

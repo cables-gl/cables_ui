@@ -143,7 +143,7 @@ export default class TabPanel extends CABLES.EventTarget
 
         if (!found)
         {
-            console.log("[activateTabByName] could not find tab", name);
+            // console.log("[activateTabByName] could not find tab", name);
             // console.log(new Error().stack);
         }
 
@@ -185,7 +185,7 @@ export default class TabPanel extends CABLES.EventTarget
 
         if (!found)
         {
-            console.log("could not find tab", id);
+            // console.log("could not find tab", id);
         }
 
         // console.log("CABLES.editorSession", CABLES.editorSession);

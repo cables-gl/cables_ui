@@ -6,7 +6,7 @@
  */
 export default class EditorSession
 {
-    constructor()
+    constructor(userInteraction)
     {
         this._openEditors = [];
         this._listeners = {};
@@ -15,7 +15,7 @@ export default class EditorSession
 
         this.addListener("param", (name, data) =>
         {
-            CABLES.UI.openParamStringEditor(data.opid, data.portname);
+            CABLES.UI.openParamStringEditor(data.opid, data.portname, null, userInteraction);
         });
     }
 
