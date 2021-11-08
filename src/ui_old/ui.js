@@ -179,7 +179,7 @@ CABLES.UI.GUI = function (cfg)
         if (this._find && this._find.isClosed()) this._find = null;
 
         if (str == undefined) return this._find;
-        gui.maintabPanel.show();
+        gui.maintabPanel.show(true);
 
         if (this._find)
         {
