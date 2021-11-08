@@ -87,6 +87,9 @@
     padding-top:10px;
     padding-bottom:4px;
     cursor:pointer;
+    user-select: none;
+    display: inline-block;
+    margin-bottom: 1px;
 }
 
 .switch-text

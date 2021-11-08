@@ -26,27 +26,28 @@ export default class Logger extends CABLES.EventTarget
 
     error(args)
     {
-        console.error("[" + this.initiator + "] ", ...arguments);
+        console.error("[" + this.initiator + "]", ...arguments);
     }
 
     info(args)
     {
-        console.error("[" + this.initiator + "] ", ...arguments);
+        console.error("[" + this.initiator + "]", ...arguments);
     }
 
     warn(args)
     {
-        console.warn("[" + this.initiator + "] ", ...arguments);
+        console.warn("[" + this.initiator + "]", ...arguments);
     }
 
     verbose()
     {
-        console.log("[" + this.initiator + "] ", ...arguments);
+        if (CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
+            console.log("[" + this.initiator + "]", ...arguments);
     }
 
     log(args)
     {
-        console.log("[" + this.initiator + "] ", ...arguments);
+        console.log("[" + this.initiator + "]", ...arguments);
 
         // if (this._logs.length > 0)
         // {

@@ -33,12 +33,13 @@ export default class UserSettings extends CABLES.EventTarget
 
     load(settings)
     {
-        this._wasLoaded = true;
-
         for (const i in settings)
         {
             this.set(i, settings[i]);
         }
+
+        if (!this._wasLoaded) this.emitEvent("loaded");
+        this._wasLoaded = true;
     }
 
     setLS(key, value)

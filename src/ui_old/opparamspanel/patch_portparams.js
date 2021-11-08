@@ -470,7 +470,6 @@ CABLES.UI.initPortClickListener = function (op, index)
     el = ele.byId("portbutton_" + index);
     if (el) el.addEventListener("click", function (e)
     {
-        console.log("triogger button!?!?!?!");
         op.portsIn[index]._onTriggered();
     });
 
