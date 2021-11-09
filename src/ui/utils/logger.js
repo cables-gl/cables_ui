@@ -41,36 +41,14 @@ export default class Logger extends CABLES.EventTarget
 
     verbose()
     {
-        if (CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
+        if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
             console.log("[" + this.initiator + "]", ...arguments);
     }
 
     log(args)
     {
-        if (CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
+        if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
             console.log("[" + this.initiator + "]", ...arguments);
-
-        // if (this._logs.length > 0)
-        // {
-        //     const lastLog = this._logs[this._logs.length - 1];
-        //     let equals = true;
-        //     for (const i in log)
-        //     {
-        //         if (lastLog[i] && lastLog[i] != log[i])
-        //         {
-        //             equals = false;
-        //             break;
-        //         }
-        //     }
-        //     if (equals)
-        //     {
-        //         lastLog.count++;
-        //         return;
-        //     }
-        // }
-
-        // log.count = 0;
-        // this._logs.push(log);
     }
 
     userInteraction(text)
