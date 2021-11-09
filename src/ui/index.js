@@ -28,6 +28,7 @@ import TabPanel from "./elements/tabpanel/tabpanel";
 import Tab from "./elements/tabpanel/tab";
 import MainTabPanel from "./elements/tabpanel/maintabpanel";
 import FindTab from "./components/tabs/tab_find";
+import LoggingTab from "./components/tabs/tab_logging";
 import SpreadSheetTab from "./components/tabs/tab_spreadsheet";
 import WatchArrayTab from "./components/tabs/tab_watcharray";
 import WatchVarTab from "./components/tabs/tab_watchvars";
@@ -70,6 +71,7 @@ import { hideInfo, hideToolTip, showInfo, showToolTip, updateHoverToolTip } from
 import NoPatchEditor from "./components/nopatcheditor";
 import CoreLibLoader from "./api/corelibloader";
 import LibLoader from "./api/libloader";
+import LogFilter from "./utils/loggerfilter";
 
 
 CABLES = CABLES || {};
@@ -151,7 +153,7 @@ CABLES.UI.PatchView = PatchView;
 CABLES.UI.NoPatchEditor = NoPatchEditor;
 CABLES.CoreLibLoader = CoreLibLoader;
 CABLES.LibLoader = LibLoader;
-
+CABLES.UI.LoggingTab = LoggingTab;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
@@ -186,5 +188,7 @@ CABLES.CMD = CMD;
 
 CABLES.uniqueArray = uniqueArray;
 CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
+
+CABLES.UI.logFilter = new LogFilter();
 
 setHtmlDefaultListeners();

@@ -33,7 +33,14 @@ CABLES_CMD_DEBUG.glguiFull = function ()
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
     new CABLES.UI.GlDebugTab(gui.mainTabs);
-    gui.maintabPanel.show();
+    gui.maintabPanel.show(true);
+};
+
+
+CABLES_CMD_DEBUG.logging = function ()
+{
+    new CABLES.UI.LoggingTab(gui.mainTabs);
+    gui.maintabPanel.show(true);
 };
 
 
@@ -79,12 +86,12 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.globalVarDump,
         "icon": "command"
     },
-    // {
-    //     "cmd": "glgui patchfield",
-    //     "category": "debug",
-    //     "func": CABLES_CMD_DEBUG.glguiFull,
-    //     "icon": "command"
-    // },
+    {
+        "cmd": "Logging",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.logging,
+        "icon": "command"
+    },
     {
         "cmd": "glgui tab",
         "category": "debug",

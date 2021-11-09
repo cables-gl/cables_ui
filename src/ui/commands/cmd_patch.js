@@ -130,7 +130,7 @@ CABLES_CMD_PATCH.showBackups = () =>
             "closable": true,
             "singleton": true,
             "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#t=versions"
-        });
+        }, true);
 };
 
 CABLES_CMD_PATCH.export = function ()
@@ -392,23 +392,18 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
         });
 };
 
-CABLES_CMD_PATCH.editOp = function ()
+CABLES_CMD_PATCH.editOp = function (userInteraction)
 {
     const selops = gui.patchView.getSelectedOps();
+
+    console.log(".editOp", userInteraction);
 
     if (selops && selops.length > 0)
     {
         for (let i = 0; i < selops.length; i++)
         {
-            gui.serverOps.edit(selops[i].objName, false, function ()
-            {
-                gui.maintabPanel.show();
-            });
+            gui.serverOps.edit(selops[i].objName, false, null, userInteraction);
         }
-    }
-    else
-    {
-        console.log("no ops selected");
     }
 };
 

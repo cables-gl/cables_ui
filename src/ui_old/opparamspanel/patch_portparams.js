@@ -1,3 +1,5 @@
+
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -76,7 +78,7 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
             }
         });
 };
-CABLES.UI.openParamStringEditor = function (opid, portname, cb)
+CABLES.UI.openParamStringEditor = function (opid, portname, cb, userInteraction)
 {
     const op = gui.corePatch().getOpById(opid);
     if (!op) return console.log("paramedit op not found", opid);
@@ -89,22 +91,12 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
 
     name = gui.mainTabs.getUniqueTitle(name);
 
-    // let existingTab = gui.mainTabs.getTabByTitle(name);
-    // let count = 0;
-    // while (existingTab)
-    // {
-    //     count++;
-    //     if (!gui.mainTabs.getTabByTitle(name + " (" + count + ")")) break;
-    // }
-    // if (count > 0)
-    //     name = name + " (" + count + ")";
-
     const dataId = opid + portname;
     const existingTab = gui.mainTabs.getTabByDataId(dataId);
     if (existingTab)
     {
         gui.mainTabs.activateTabByName(existingTab.title);
-
+        gui.maintabPanel.show(userInteraction);
         return;
     }
 
@@ -144,7 +136,9 @@ CABLES.UI.openParamStringEditor = function (opid, portname, cb)
     }
 
     if (cb)cb();
-    else gui.maintabPanel.show();
+    else gui.maintabPanel.show(userInteraction);
+
+
     CABLES.editorSession.finishLoadingTab();
 };
 
@@ -457,28 +451,24 @@ CABLES.UI.initPortClickListener = function (op, index)
     });
 
 
-    $("#portedit_in_" + index).on("click", function (e)
+    // /////////////////////
+    //
+    // input text editor tab
+    //
+
+    let el = ele.byId("portedit_in_" + index);
+    if (el) el.addEventListener("click", () =>
     {
         const thePort = op.portsIn[index];
-        // console.log('thePort.uiAttribs.editorSyntax',thePort.uiAttribs.editorSyntax);
-
-        CABLES.UI.openParamStringEditor(op.id, op.portsIn[index].name);
-
-        // gui.showEditor();
-        // gui.editor().addTab({
-        //     content: op.portsIn[index].get() + '',
-        //     title: '' + op.portsIn[index].name,
-        //     syntax: thePort.uiAttribs.editorSyntax,
-        //     onSave: function(setStatus, content) {
-        //         // console.log('setvalue...');
-        //         gui.setStateUnsaved();
-        //         gui.jobs().finish('saveeditorcontent');
-        //         thePort.set(content);
-        //     }
-        // });
+        CABLES.UI.openParamStringEditor(op.id, op.portsIn[index].name, null, true);
     });
 
-    $("#portbutton_" + index).on("click", function (e)
+    // /////////////////////
+    //
+    // input button click!!!!
+    //
+    el = ele.byId("portbutton_" + index);
+    if (el) el.addEventListener("click", function (e)
     {
         op.portsIn[index]._onTriggered();
     });
@@ -495,6 +485,9 @@ CABLES.UI.initPortClickListener = function (op, index)
             });
         }
     }
+
+
+    //
 
     $("#portgraph_in_" + index).on("click", function (e)
     {
@@ -513,7 +506,6 @@ CABLES.UI.initPortClickListener = function (op, index)
     $("#portsetvar_" + index).on("input", function (e)
     {
         const port = op.getPortById(e.target.dataset.portid);
-
 
         if (port) port.setVariable(e.target.value);
         else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);

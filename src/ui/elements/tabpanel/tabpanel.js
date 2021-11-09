@@ -185,7 +185,7 @@ export default class TabPanel extends CABLES.EventTarget
 
         if (!found)
         {
-            console.log("could not find tab", id);
+            // console.log("could not find tab", id);
         }
 
         // console.log("CABLES.editorSession", CABLES.editorSession);
@@ -320,7 +320,7 @@ export default class TabPanel extends CABLES.EventTarget
         return tab;
     }
 
-    addIframeTab(title, url, options)
+    addIframeTab(title, url, options, userInteraction)
     {
         const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
         const id = CABLES.uuid();
@@ -372,7 +372,7 @@ export default class TabPanel extends CABLES.EventTarget
         });
 
         this.activateTab(iframeTab.id);
-        gui.maintabPanel.show();
+        gui.maintabPanel.show(userInteraction);
         return iframeTab;
     }
 }

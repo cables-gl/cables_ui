@@ -264,7 +264,7 @@ CABLES_CMD_UI.showPreferences = function ()
 {
     if (gui.showGuestWarning()) return;
     new CABLES.UI.Preferences(gui.mainTabs);
-    gui.maintabPanel.show();
+    gui.maintabPanel.show(true);
 };
 
 CABLES_CMD_UI.toggleTheme = function ()

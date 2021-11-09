@@ -3,7 +3,7 @@ import Logger from "../utils/logger";
 
 export default class FileManager
 {
-    constructor(cb)
+    constructor(cb, unserInteraction)
     {
         this._log = new Logger("filemanager");
         this._filterType = null;
@@ -15,7 +15,7 @@ export default class FileManager
         this._order = CABLES.UI.userSettings.get("filemanager_order") || "name";
         this._files = [];
 
-        gui.maintabPanel.show();
+        gui.maintabPanel.show(unserInteraction);
         CABLES.UI.userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
@@ -36,9 +36,9 @@ export default class FileManager
         });
     }
 
-    show()
+    show(unserInteraction)
     {
-        gui.maintabPanel.show();
+        gui.maintabPanel.show(unserInteraction);
     }
 
     refresh()
@@ -315,6 +315,7 @@ export default class FileManager
         {
             this._selectFile(filename);
         }
+        gui.maintabPanel.show(true);
     }
 
     setDisplay(type)

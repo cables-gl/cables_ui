@@ -1,0 +1,46 @@
+<script id="tab_logging" type="text/x-handlebars-template">
+
+
+    <style>
+        .logShow
+        {
+            background-color: #006600;
+        }
+        .logHide
+        {
+            background-color: #660000;
+        }
+    </style>
+
+
+    <div class="tabContentScrollContainer">
+
+
+        <span class="button-small" onclick="CABLES.UI.logFilter.resetSettings()">Reset</span>
+
+        <br/><br/>
+
+        <table>
+            <tr>
+                <th></th>
+                <th>Initiator Component</th>
+                <th># </th>
+            </tr>
+            {{#each info}}
+                <tr>
+                    <td>
+                        <span class="button-small {{#if print}}logShow{{else}}logHide{{/if}}" onclick="CABLES.UI.logFilter.toggleInitiator('{{initiator}}')">{{#if print}}visible{{else}}hidden{{/if}}</span>
+                    </td>
+                    <td>{{initiator}}</td>
+                    <td>{{count}}</td>
+                </tr>
+            {{/each}}
+        </table>
+
+    </div>
+
+
+
+</script>
+
+
