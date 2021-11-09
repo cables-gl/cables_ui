@@ -949,7 +949,7 @@ CABLES.UI.GUI = function (cfg)
         }
         else
         {
-            this.fileManager = new CABLES.UI.FileManager(cb);
+            this.fileManager = new CABLES.UI.FileManager(cb, unserInteraction);
         }
     };
 

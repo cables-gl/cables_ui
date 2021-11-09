@@ -47,7 +47,8 @@ export default class Logger extends CABLES.EventTarget
 
     log(args)
     {
-        console.log("[" + this.initiator + "]", ...arguments);
+        if (CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
+            console.log("[" + this.initiator + "]", ...arguments);
 
         // if (this._logs.length > 0)
         // {

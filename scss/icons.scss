@@ -76,26 +76,26 @@
 
 .icon-2x
 {
-	width: calc(32px + 2.0 * var(font-size-off));
-	height: calc(32px + 2.0 * var(font-size-off));
+	width: calc(32px + 2.0 * var(--font-size-off));
+	height: calc(32px + 2.0 * var(--font-size-off));
 }
 
 .icon-4x
 {
-	width: calc(64px + 4.0 * var(font-size-off));
-	height: calc(64px + 4.0 * var(font-size-off));
+	width: calc(64px + 4.0 * var(--font-size-off));
+	height: calc(64px + 4.0 * var(--font-size-off));
 }
 
 .icon-1_5x
 {
-	width: calc(24px + 1.5 * var(font-size-off));
-	height: calc(24px + 1.5 * var(font-size-off));
+	width: calc(24px + 1.5 * var(--font-size-off));
+	height: calc(24px + 1.5 * var(--font-size-off));
 }
 
 .icon-1_25x
 {
-	width: calc(20px + 1.25 * var(font-size-off));
-	height: calc(20px + 1.25 * var(font-size-off));
+	width: calc(20px + 1.25 * var(--font-size-off));
+	height: calc(20px + 1.25 * var(--font-size-off));
 }
 
 
