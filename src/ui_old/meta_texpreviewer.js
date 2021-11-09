@@ -533,7 +533,6 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 
     if (!tp)
     {
-        console.log("no tp!");
         return;
     }
 
@@ -546,22 +545,13 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
     }
 };
 
-// CABLES.UI.TexturePreviewer.prototype.clear = function (tp)
-// {
-//     document.getElementById("meta_preview_textures").innerHTML = "";
-//     this._texturePorts.length = 0;
-//     this._updateHtml();
-// };
-
 CABLES.UI.TexturePreviewer.prototype.setMode = function (m)
 {
-    // this.clear();
     this._mode = m;
 };
 
 CABLES.UI.TexturePreviewer.prototype.updateTexturePort = function (port)
 {
-    // if(this._paused || port!=this._lastClicked)return;
     let doUpdateHtml = false;
     const p = port;
     let idx = -1;
@@ -595,7 +585,5 @@ CABLES.UI.TexturePreviewer.prototype.updateTexturePort = function (port)
         if (this._mode == CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow = true;
     }
 
-
-    // if (doUpdateHtml) if (!this._paused) this._updateHtml();
     return this._texturePorts[idx];
 };

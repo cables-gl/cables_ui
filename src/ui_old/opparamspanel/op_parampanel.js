@@ -6,6 +6,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     {
         super();
 
+        this._log = new CABLES.UI.Logger("OpParampanel");
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
@@ -62,7 +63,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     _onUiAttrChangePort(attr)
     {
         if (!attr) return;
-        // console.log("attr change", attr);
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
     }
 
@@ -98,7 +98,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this.refreshTimeout = setTimeout(() =>
         {
             this.show(this._currentOp);
-            console.log("show op from delay");
         }, 33);
     }
 
@@ -340,7 +339,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         else return;
 
         // gui.showOpDoc(op.objName);
-        CABLES.UI.bindInputListeners();
         perfHtml.finish();
 
         CABLES.valueChangerInitSliders();
@@ -499,7 +497,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         if (!el)
         {
-            console.log("no uiarrors html ele?!");
+            this._log.warn("no uiErrors html ele?!");
         }
         else
         {
@@ -523,7 +521,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     div.classList.add("warning-error");
                     div.classList.add("warning-error-level" + err.level);
                     el.appendChild(div);
-                    // console.log(err);
                 }
 
                 div.innerHTML = str;
@@ -557,9 +554,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         if (performance.now() - this._uiAttrFpsLast > 1000)
         {
             this._uiAttrFpsLast = performance.now();
-            if (this._uiAttrFpsCount >= 10) console.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
+            if (this._uiAttrFpsCount >= 10) this._log.warn("Too many ui attr updates! ", this._uiAttrFpsCount, this._currentOp.name);
             this._uiAttrFpsCount = 0;
-            // console.log((new Error()).stack);
         }
 
         const perf = CABLES.UI.uiProfiler.start("updateUiAttribs");
@@ -730,7 +726,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         }
         else
         {
-            console.log("no current op commenrt");
+            this._log.warn("no current op commenrt");
         }
     }
 
