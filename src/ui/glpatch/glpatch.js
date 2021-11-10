@@ -1143,9 +1143,8 @@ export default class GlPatch extends CABLES.EventTarget
         }
 
         this.unselectAll();
-        console.log("set subpatch: ", sub);
+        if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
-        // this._log.log("set subpatch", sub);
 
         const dur = 0.0;
         const timeGrey = dur * 1.5;
