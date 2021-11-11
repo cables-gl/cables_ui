@@ -37,11 +37,11 @@ CMD.exec = function (cmd)
             }
             else
             {
-                console.log("cmd has no func", cmd, CMD.commands[i]);
+                console.warn("cmd has no func", cmd, CMD.commands[i]);
             }
         }
     }
-    if (!found)console.log("command not found:" + cmd);
+    if (!found)console.warn("command not found:" + cmd);
 };
 
 /*

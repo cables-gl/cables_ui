@@ -78,7 +78,6 @@ export default class SpreadSheetTab extends CABLES.EventTarget
             c = Math.floor(c / 26) - 1;
         }
 
-        console.log("colname", c, str);
         this.colNames[_c] = str;
 
         return str;

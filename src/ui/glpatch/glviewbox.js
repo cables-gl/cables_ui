@@ -1,4 +1,5 @@
 import GlUiConfig from "./gluiconfig";
+import ele from "../utils/ele";
 
 export default class GlViewBox
 {
@@ -119,8 +120,6 @@ export default class GlViewBox
 
     _onCanvasTouchMove(e)
     {
-        // console.log(e);
-        // console.log(e.touches.length);
     }
 
     _onCanvasMouseMove(e)

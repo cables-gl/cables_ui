@@ -167,7 +167,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
 
     if (!previewCanvasEle)
     {
-        // console.log("no previewCanvasEle");
         return;
     }
     const previewCanvas = previewCanvasEle.getContext("2d");
@@ -262,7 +261,6 @@ CABLES.UI.TexturePreviewer.prototype._renderTexture = function (tp, ele)
     }
     else
     {
-        // console.log("NOPE ", previewCanvas, port, port.get());
     }
 };
 
@@ -533,7 +531,6 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 
     if (!tp)
     {
-        console.log("no tp!");
         return;
     }
 

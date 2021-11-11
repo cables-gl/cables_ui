@@ -1,8 +1,10 @@
+import Logger from "../../utils/logger";
 
 export default class EditorTab
 {
     constructor(options)
     {
+        this._log = new Logger("EditorTab");
         this._editor = null;
         if (typeof options.allowEdit === "undefined" || options.allowEdit === null) options.allowEdit = true;
 
@@ -110,7 +112,7 @@ export default class EditorTab
                 if (!res || !res.success)
                 {
                     CABLES.UI.notifyError("failed to format code, keeping old version");
-                    console.log("code formating error", err);
+                    this._log.warn("code formating error", err);
                 }
                 else
                 {
@@ -121,7 +123,7 @@ export default class EditorTab
             (result) =>
             {
                 CABLES.UI.notifyError("failed to format code, keeping old version");
-                console.log("code formating http error", result);
+                this._log.warn("code formating http error", result);
             },
         );
     }
@@ -150,7 +152,7 @@ export default class EditorTab
         }
 
         const anns = this._editor.getSession().getAnnotations();
-        // console.log("annotations", anns);
+        this._log.log("annotations", anns);
 
         if (this._options.onSave)
         {

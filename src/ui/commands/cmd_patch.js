@@ -396,8 +396,6 @@ CABLES_CMD_PATCH.editOp = function (userInteraction)
 {
     const selops = gui.patchView.getSelectedOps();
 
-    console.log(".editOp", userInteraction);
-
     if (selops && selops.length > 0)
     {
         for (let i = 0; i < selops.length; i++)
@@ -413,7 +411,7 @@ CABLES_CMD_PATCH.setOpTitle = function ()
     const ops = gui.patchView.getSelectedOps();
     if (ops.length != 1)
     {
-        console.log("rename canceled - select one op!");
+        console.warn("rename canceled - select one op!");
         return;
     }
 

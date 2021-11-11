@@ -53,10 +53,10 @@ CABLES.UI.checkDefaultValue = function (op, index)
 CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 {
     const op = gui.corePatch().getOpById(opid);
-    if (!op) return console.log("paramedit op not found");
+    if (!op) return console.warn("paramedit op not found");
 
     const port = op.getPortByName(portname);
-    if (!port) return console.log("paramedit port not found");
+    if (!port) return console.warn("paramedit port not found");
 
 
     new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(),
@@ -64,7 +64,7 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {
-                console.log(content);
+                console.warn(content);
                 port.set(content);
             }
         });
@@ -73,11 +73,11 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 CABLES.UI.openParamStringEditor = function (opid, portname, cb, userInteraction)
 {
     const op = gui.corePatch().getOpById(opid);
-    if (!op) return console.log("paramedit op not found", opid);
+    if (!op) return console.warn("paramedit op not found", opid);
     CABLES.editorSession.startLoadingTab();
 
     const port = op.getPortByName(portname);
-    if (!port) return console.log("paramedit port not found", portname);
+    if (!port) return console.warn("paramedit port not found", portname);
 
     let name = op.name + " " + port.name;
 
@@ -303,7 +303,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                     else
                     {
                         el.classList.add("invalid");
-                        console.log("invalid number", op.portsIn[index], mathParsed);
+                        // console.log("invalid number", op.portsIn[index], mathParsed);
                     }
                     return;
                 }
@@ -325,7 +325,7 @@ CABLES.UI.initPortInputListener = function (op, index)
                 {
                     el.classList.remove("invalid");
                     v = parseInt(v, 10);
-                    console.log("invalid int");
+                    // console.log("invalid int");
                 }
             }
 
@@ -518,7 +518,6 @@ CABLES.UI.initPortClickListener = function (op, index)
                         "func": () =>
                         {
                             port.setVariable("unknown");
-                            console.log("SET VARIABLE SOURCE!!");
                             port.parent.refreshParams();
                         }
                     },

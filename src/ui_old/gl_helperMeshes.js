@@ -7,7 +7,6 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
 {
     if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
     {
-        // console.log("CREATE FB!");
         CABLES.GL_MARKER.FB = {};
 
         if (cgl.glVersion == 1)
@@ -28,7 +27,6 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
                 "multisamplingSamples": 4,
             });
         }
-        // console.log("CREATE FB!",CABLES.GL_MARKER.FB.fb);
     }
 
     if (CABLES.GL_MARKER.FB.oldWidth != cgl.getViewPort()[2] || CABLES.GL_MARKER.FB.oldHeight != cgl.getViewPort()[3])
