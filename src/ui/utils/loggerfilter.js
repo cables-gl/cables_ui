@@ -69,7 +69,7 @@ export default class LogFilter extends CABLES.EventTarget
         if (should && !this._warned)
         {
             this._warned = true;
-            console.log("[logging] some console messages are not printed - [ctrl/cmd+p logging] to change logging settings");
+            console.log("[logging] some console messages are not printed - [ctrl/cmd+p logging] to change logging settings");// eslint-disable-line
         }
         return should;
     }
