@@ -66,7 +66,6 @@ CABLES_CMD_UI.toggleMute = function ()
 // CABLES_CMD_UI.showEditor = function ()
 // {
 //     // gui.showEditor();
-//     console.log("todo: add showeditor for maintabs");
 // };
 
 

@@ -45,7 +45,7 @@ DragNDrop.startDragLibraryFile = function (_event, p)
     {
         if (!self.internal)
         {
-            console.log("not internal!");
+            console.warn("not internal!");
             return;
         }
 

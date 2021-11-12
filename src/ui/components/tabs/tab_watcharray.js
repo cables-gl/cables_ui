@@ -44,8 +44,8 @@ export default class WatchArrayTab extends CABLES.EventTarget
         {
             if (this.port) this.port.off(this.portListenerId);
             this._tab.remove();
-            console.log("ele is null");
-            console.log(this);
+            console.warn("ele is null");
+            console.warn(this);
             return;
         }
 

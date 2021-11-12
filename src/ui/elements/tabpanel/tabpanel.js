@@ -57,7 +57,7 @@ export default class TabPanel extends CABLES.EventTarget
         const editortabList = document.getElementById("editortabList" + this.id);
         if (!editortabList)
         {
-            console.log("no editortabList?!?");
+            console.warn("no editortabList?!?");
             return;
         }
         if (!this.showTabListButton)
@@ -143,8 +143,7 @@ export default class TabPanel extends CABLES.EventTarget
 
         if (!found)
         {
-            console.log("[activateTabByName] could not find tab", name);
-            // console.log(new Error().stack);
+            console.warn("[activateTabByName] could not find tab", name);
         }
 
         this.updateHtml();

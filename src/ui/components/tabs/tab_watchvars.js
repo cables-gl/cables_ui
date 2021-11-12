@@ -101,10 +101,10 @@ export default class WatchVarTab extends CABLES.EventTarget
 
     _updateVar(v, vrbl)
     {
-        if (!vrbl) return console.log("[varwatcher] no variable");
+        if (!vrbl) return console.warn("[varwatcher] no variable");
         const el = document.getElementById("var" + vrbl._name);
 
-        if (!el) return console.log("[varwatcher] var element not found!");
+        if (!el) return console.warn("[varwatcher] var element not found!");
         el.innerHTML = v;
     }
 

@@ -71,9 +71,6 @@ export default class MainTabPanel extends CABLES.EventTarget
 
         if (CABLES.UI.loaded && userInteraction) CABLES.UI.userSettings.set("maintabsVisible", true);
 
-        // console.log("main tab show", CABLES.UI.loaded, CABLES.UI.userSettings.get("maintabsVisible"));
-        // console.log((new Error().stack));
-
         gui.setLayout();
 
         this._tabs.updateSize();

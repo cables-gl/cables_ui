@@ -1773,8 +1773,7 @@ export default class PatchView extends CABLES.EventTarget
             {
                 const txt = "warning big port: " + maxName + " / " + max + " chars";
                 notify(txt);
-                console.log(txt);
-                console.log(maxId);
+                this._log.log(txt);
             }
         }
         catch (e)

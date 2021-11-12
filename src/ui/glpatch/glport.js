@@ -77,7 +77,6 @@ export default class GlPort
 
     _onMouseDown(e, rect)
     {
-        console.log(e.buttons);
         if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
 
         this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
@@ -87,7 +86,6 @@ export default class GlPort
     {
         if (this._mouseButtonRightTimeDown)
         {
-            console.log(performance.now() - this._mouseButtonRightTimeDown);
             if (performance.now() - this._mouseButtonRightTimeDown < GlUiConfig.clickMaxDuration)
             {
                 this._port.removeLinks();

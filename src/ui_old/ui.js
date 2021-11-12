@@ -2198,9 +2198,6 @@ function startUi(cfg)
 
                 gui.maintabPanel.init();
 
-                // console.log(CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId, this._tabs[i].title);
-
-
                 logStartup("finished loading cables");
 
                 setTimeout(() =>

@@ -64,7 +64,6 @@ CABLES.UI.WatchPortVisualizer = class
 
                 if (!navigator.clipboard)
                 {
-                    console.log("no clipbopard found...");
                     return;
                 }
 
@@ -76,7 +75,7 @@ CABLES.UI.WatchPortVisualizer = class
                     })
                     .catch((err) =>
                     {
-                        console.log("copy failed", err);
+                        console.warn("copy to clipboard failed", err);
                     });
 
                 e.preventDefault();
@@ -89,7 +88,6 @@ CABLES.UI.WatchPortVisualizer = class
         if (!this._ele.classList.contains(classname)) return;
         if (this._lastId != classname)
         {
-            // console.log('reset',this._lastId,id);
             for (let i = 0; i < this._buff.length; i++) this._buff[i] = Number.MAX_VALUE;
             this._position = 0;
             this._lastId = classname;

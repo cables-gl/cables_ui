@@ -76,7 +76,7 @@ CABLES.UI.MODAL.hide = function (force)
 
     if (!force && document.querySelectorAll(".modalerror").length > 0)
     {
-        console.log("not forcing close");
+        // console.log("not forcing close");
         return;
     }
 
@@ -323,7 +323,7 @@ CABLES.UI.MODAL.copyPortValuePreview = function (e, title)
         })
         .catch((err) =>
         {
-            console.log("copy failed", err);
+            console.warn("copy to clipboard failed", err);
         });
 
     // console.log(e);
@@ -655,7 +655,7 @@ CABLES.UI.MODAL.promptCallbackExec = function ()
     }
     else
     {
-        console.log("no callback found for prompt");
+        console.warn("[promptCallbackExec] no callback found for prompt");
     }
 };
 
@@ -705,13 +705,13 @@ CABLES.UI.showJson = function (opid, which)
     const op = gui.corePatch().getOpById(opid);
     if (!op)
     {
-        console.log("opid not found:", opid);
+        console.warn("opid not found:", opid);
         return;
     }
     const port = op.getPort(which);
     if (!port)
     {
-        console.log("port not found:", which);
+        console.warn("port not found:", which);
         return;
     }
 
@@ -723,13 +723,13 @@ CABLES.UI.showJsonStructure = function (opid, which)
     const op = gui.corePatch().getOpById(opid);
     if (!op)
     {
-        console.log("opid not found:", opid);
+        console.warn("opid not found:", opid);
         return;
     }
     const port = op.getPort(which);
     if (!port)
     {
-        console.log("port not found:", which);
+        console.warn("port not found:", which);
         return;
     }
 

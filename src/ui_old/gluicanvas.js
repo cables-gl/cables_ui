@@ -1,7 +1,6 @@
 CABLES = CABLES || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 
-
 CABLES.GLGUI.GlGuiFull = function (tabs)
 {
     const views = document.getElementById("patchviews");
@@ -40,5 +39,3 @@ CABLES.GLGUI.GlGuiTab = function (tabs)
         a.parentResized();
     });
 };
-
-// ---------------------------------------------------------------------

@@ -27,7 +27,6 @@ export default class ScGui extends CABLES.EventTarget
                 const op = gui.corePatch().getOpById(msg.opId);
                 if (op)
                 {
-                    // console.log(msg);
                     op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
                 }
                 else

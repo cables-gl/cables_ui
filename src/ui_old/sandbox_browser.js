@@ -201,7 +201,6 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
     CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
     {
-        console.log("options.filename", options);
         for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
             if (gui.corePatch().ops[j])

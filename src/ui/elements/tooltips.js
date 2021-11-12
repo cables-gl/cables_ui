@@ -6,7 +6,6 @@ let eleTooltip = null;
 
 export function showToolTip(e, txt)
 {
-    // console.log("toolstip", txt);
     eleTooltip = eleTooltip || document.getElementById("cbltooltip");
     if (!eleTooltip) return;
 

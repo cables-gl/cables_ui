@@ -236,7 +236,6 @@ export default class GlRect extends CABLES.EventTarget
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
 
-        // if (hovering && !this._hovering) console.log(this);
         this._hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent("hover", this);
@@ -285,7 +284,6 @@ export default class GlRect extends CABLES.EventTarget
 
     dispose()
     {
-        // console.log("rect dispose!!!");
         if (this.parent) this.parent.removeChild(this);
         this.setDecoration(0);
         this.setSize(0, 0);
