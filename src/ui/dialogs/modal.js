@@ -90,6 +90,8 @@ export default class ModalDialog
 
         document.body.appendChild(this._ele);
 
+        if (!this._options.nopadding) this._eleContent.style.padding = "15px";
+
         this._eleContent.innerHTML = this.html();
 
         this._addListeners();
