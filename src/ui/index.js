@@ -72,6 +72,7 @@ import NoPatchEditor from "./components/nopatcheditor";
 import CoreLibLoader from "./api/corelibloader";
 import LibLoader from "./api/libloader";
 import LogFilter from "./utils/loggerfilter";
+import ModalDialog from "./dialogs/modal";
 
 
 CABLES = CABLES || {};
@@ -166,6 +167,8 @@ CABLES.editorSession = new EditorSession();
 
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
+
+CABLES.UI.ModalDialog = ModalDialog;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;

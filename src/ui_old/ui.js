@@ -985,18 +985,20 @@ CABLES.UI.GUI = function (cfg)
     {
         if (gui.showGuestWarning()) return;
 
-        CABLES.UI.MODAL.prompt(
-            "New Project",
-            "Enter a name for your new Project",
-            "My new Project",
-            function (name)
+        new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "New Project",
+            "text": "Enter a name for your new Project",
+            "promptValue": "My new Project",
+            "promptOk": (name) =>
             {
                 if (name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
                         CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
                     });
-            });
+            }
+        });
     };
 
 
@@ -1496,7 +1498,7 @@ CABLES.UI.GUI = function (cfg)
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
-        console.log("build info:");
+        this._log.log("build info:");
         const buildInfoTable = [];
         const displayInfo = {
             "title": "cables",

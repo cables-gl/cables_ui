@@ -127,7 +127,7 @@ export default class GlPatchAPI
 
         if (!link.portOut)
         {
-            this._log.warn("link has no portout!");
+            // this._log.warn("link has no portout!");
             return;
         }
 

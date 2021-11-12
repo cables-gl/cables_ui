@@ -33,11 +33,12 @@ CABLES_CMD_RENDERER.aspect = function (a)
 {
     if (!a)
     {
-        CABLES.UI.MODAL.prompt(
-            "Change Aspect Ratio of Renderer ",
-            "Enter an aspect ratio, e.g.: 16:9 or 0.22",
-            gui.corePatch().cgl.canvasScale,
-            function (r)
+        const p = new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "Change Aspect Ratio of Renderer",
+            "text": "Enter an aspect ratio, e.g.: 16:9 or 0.22",
+            "promptValue": gui.corePatch().cgl.canvasScale,
+            "promptOk": (r) =>
             {
                 if (r.indexOf(":") >= 0)
                 {
@@ -50,7 +51,9 @@ CABLES_CMD_RENDERER.aspect = function (a)
                     const s = parseFloat(r);
                     CABLES_CMD_RENDERER.aspect(s);
                 }
-            });
+            }
+        });
+
         return;
     }
     const nh = gui.rendererWidth * 1 / a;
@@ -71,25 +74,29 @@ CABLES_CMD_RENDERER.aspect = function (a)
 
 CABLES_CMD_RENDERER.scaleCanvas = function ()
 {
-    CABLES.UI.MODAL.prompt(
-        "Change Scale of Renderer ",
-        "Enter a new scale",
-        gui.corePatch().cgl.canvasScale,
-        function (r)
+    const p = new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "Change Scale of Renderer",
+        "text": "Enter a new scale",
+        "promptValue": gui.corePatch().cgl.canvasScale || 1,
+        "promptOk": (r) =>
         {
             const s = parseFloat(r);
             gui.corePatch().cgl.canvasScale = s;
             gui.setLayout();
-        });
+        }
+
+    });
 };
 
 CABLES_CMD_RENDERER.changeSize = function ()
 {
-    CABLES.UI.MODAL.prompt(
-        "Change Canvas size",
-        "Enter a new size",
-        Math.round(gui.rendererWidth) + " x " + Math.round(gui.rendererHeight),
-        function (r)
+    const p = new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "Change Canvas size",
+        "text": "Enter a new size",
+        "promptValue": Math.round(gui.rendererWidth) + " x " + Math.round(gui.rendererHeight),
+        "promptOk": (r) =>
         {
             const matches = r.match(/\d+/g);
             if (matches.length > 0)
@@ -98,7 +105,9 @@ CABLES_CMD_RENDERER.changeSize = function ()
                 gui.rendererHeight = matches[1];
                 gui.setLayout();
             }
-        });
+        }
+
+    });
 };
 
 rendererCommands.commands.push({

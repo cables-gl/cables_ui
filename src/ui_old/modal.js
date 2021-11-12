@@ -659,6 +659,8 @@ CABLES.UI.MODAL.promptCallbackExec = function ()
     }
 };
 
+
+// todo: use modaldialog and remove
 CABLES.UI.MODAL.prompt = function (title, text, value, callback)
 {
     CABLES.UI.MODAL.showClose();
@@ -690,7 +692,6 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
     document.getElementById("modalpromptinput").addEventListener("keydown",
         function (e)
         {
-            console.log(e);
             if (e.which == 13)
             {
                 CABLES.UI.MODAL.promptCallbackExec();

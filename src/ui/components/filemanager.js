@@ -550,20 +550,25 @@ export default class FileManager
 
     createFile()
     {
-        CABLES.UI.MODAL.prompt("Create new file", "Enter filename", "newfile.txt", function (fn)
-        {
-            CABLESUILOADER.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
+        new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "Create new file",
+            "text": "Enter filename",
+            "promptValue": "newfile.txt",
+            "promptOk": (fn) =>
             {
-                if (err)
+                CABLESUILOADER.talkerAPI.send("createFile", { "name": fn }, (err, res) =>
                 {
-                    CABLES.UI.notifyError("Error: " + err.msg);
-                    this._log.log("[createfile]", res);
+                    if (err)
+                    {
+                        CABLES.UI.notifyError("Error: " + err.msg);
+                        gui.refreshFileManager();
+                        return;
+                    }
+                    CABLES.UI.notify("file created");
                     gui.refreshFileManager();
-                    return;
-                }
-                CABLES.UI.notify("file created");
-                gui.refreshFileManager();
-            });
+                });
+            }
         });
     }
 }
