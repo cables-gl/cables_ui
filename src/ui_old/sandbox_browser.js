@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 
 CABLES.SandboxBrowser = function (cfg)
@@ -270,7 +271,6 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
     const userOpsUrls = [];
     const proj = this._cfg.patch;
 
-    $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
 
     for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i]));
 

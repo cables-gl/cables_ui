@@ -20,6 +20,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
         this._isPortLineDragDown = false;
+        this._watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         this._updateWatchPorts();
     }
@@ -476,6 +477,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             CABLES.UI.watchColorPickerPort(thePort2);
         }
 
+        this._watchPortVisualizer.bind();
+
         perf.finish();
     }
 
@@ -705,7 +708,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
 
 
-                gui.watchPortVisualizer.update(id, thePort.watchId, thePort.get());
+                this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());
             }
 
             perf.finish();
