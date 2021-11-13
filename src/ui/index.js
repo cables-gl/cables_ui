@@ -72,6 +72,8 @@ import NoPatchEditor from "./components/nopatcheditor";
 import CoreLibLoader from "./api/corelibloader";
 import LibLoader from "./api/libloader";
 import LogFilter from "./utils/loggerfilter";
+import ModalDialog from "./dialogs/modal";
+import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
 
 
 CABLES = CABLES || {};
@@ -166,6 +168,9 @@ CABLES.editorSession = new EditorSession();
 
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
+
+CABLES.UI.ModalDialog = ModalDialog;
+CABLES.UI.WatchPortVisualizer = WatchPortVisualizer;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;

@@ -57,24 +57,25 @@ CABLES.UI.inputIncrement = function (v, dir, e)
 
 CABLES.valueChangerInitSliders = function ()
 {
-    $(".valuesliderinput input").each(function (e)
+    const els = document.querySelectorAll(".valuesliderinput input");
+    for (let i = 0; i < els.length; i++)
     {
-        const v = $(this).val();
-        CABLES.valueChangerSetSliderCSS(v, $(this).parent());
-    });
+        const v = els[i].value;
+        CABLES.valueChangerSetSliderCSS(v, els[i].parentElement);
+    }
 };
 
 CABLES.valueChangerSetSliderCSS = function (v, el)
 {
-    if (el.data("min") || el.data("max"))
-        v = CABLES.map(v, parseFloat(el.data("min")), parseFloat(el.data("max")), 0, 1);
+    if (el.dataset.min || el.dataset.max)
+        v = CABLES.map(v, parseFloat(el.dataset.min), parseFloat(el.dataset.max), 0, 1);
 
     v = Math.max(0, v);
     v = Math.min(1, v);
     const cssv = v * 100;
-
     const grad = "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
-    el.css({ "background": grad });
+
+    el.style.background = grad;
 };
 
 // CABLES.valueChangerGetSliderCss = function (v, el)
@@ -94,21 +95,23 @@ CABLES.UI.showInputFieldInfo = function ()
 };
 
 
-CABLES.valueChanger = function (ele, focus, portName, opid)
+CABLES.valueChanger = function (eleId, focus, portName, opid)
 {
     CABLES.UI.showInputFieldInfo();
 
-    const elemDom = document.getElementById(ele);
-    const elem = $("#" + ele);
-    const elemContainer = $("#" + ele + "-container");
-    const eleNumInputDisplay = $("#" + ele + "-container .numberinput-display");
+    const elemDom = document.getElementById(eleId);
+    const elem = $("#" + eleId);
+    const elemContainerJQ = $("#" + eleId + "-container");
+    const eleContainer = ele.byId(eleId + "-container");
+
+    const eleNumInputDisplay = $("#" + eleId + "-container .numberinput-display");
 
     const theOp = gui.corePatch().getOpById(opid);
     const thePort = theOp.getPort(portName);
 
     let isDown = false;
     const startVal = elem.val();
-    const el = document.getElementById(ele);
+    const el = document.getElementById(eleId);
     let incMode = 0;
     let mouseDownTime = 0;
     const usePointerLock = true;
@@ -121,16 +124,16 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
     function onInput(e)
     {
-        if (elemContainer.hasClass("valuesliderinput"))
+        if (eleContainer.classList.contains("valuesliderinput"))
         {
-            CABLES.valueChangerSetSliderCSS(elem.val(), elemContainer);
+            CABLES.valueChangerSetSliderCSS(elem.val(), eleContainer);
         }
         return true;
     }
 
     function switchToNextInput(dir)
     {
-        const portNum = elemContainer.data("portnum");
+        const portNum = eleContainer.dataset.portnum;
         let count = 0;
         while (count < 10)
         {
@@ -168,7 +171,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
             elem.bind("input", onInput);
             eleNumInputDisplay.hide();
             $(".numberinput").removeClass("numberinputFocussed");
-            elemContainer.addClass("numberinputFocussed");
+            eleContainer.classList.add("numberinputFocussed");
             elem.show();
             elem.focus();
 
@@ -283,7 +286,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
     function setProgress(v)
     {
-        CABLES.valueChangerSetSliderCSS(elem.val(), elemContainer);
+        CABLES.valueChangerSetSliderCSS(elem.val(), eleContainer);
         return v;
     }
 
@@ -308,7 +311,7 @@ CABLES.valueChanger = function (ele, focus, portName, opid)
 
         if (Math.abs(e.movementX) > 5) mouseDownTime = 0;
 
-        if (elemContainer.hasClass("valuesliderinput"))
+        if (eleContainer.classList.contains("valuesliderinput"))
         {
             inc = e.movementX * 0.001;
             v += inc;

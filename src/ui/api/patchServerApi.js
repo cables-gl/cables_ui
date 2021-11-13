@@ -157,11 +157,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
         }
 
 
-        CABLES.UI.MODAL.prompt(
-            "Save As...",
-            prompt,
-            "copy of " + gui.corePatch().name,
-            (name) =>
+        const p = new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "Save As...",
+            "text": prompt,
+            "promptValue": "copy of " + gui.corePatch().name,
+            "promptOk": (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
                     {
@@ -185,19 +186,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
                             }, d._id, d.name, true);
                     });
-            });
+            }
+        });
     }
-
 
     saveCurrentProject(cb, _id, _name, _force)
     {
         if (gui.showGuestWarning()) return;
-
-        // if (this.loadingError)
-        // {
-        //     CABLES.UI.MODAL.showError("Project not saved", "Could not save project: had errors while loading!");
-        //     return;
-        // }
 
         if (_force)
         {

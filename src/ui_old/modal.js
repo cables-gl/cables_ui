@@ -645,58 +645,18 @@ CABLES.UI.MODAL.showCode = function (title, code, type)
     });
 };
 
-CABLES.UI.MODAL.promptCallbackExec = function ()
-{
-    if (CABLES.UI.MODAL.promptCallback)
-    {
-        const v = document.getElementById("modalpromptinput").value;
-        CABLES.UI.MODAL.hide();
-        CABLES.UI.MODAL.promptCallback(v);
-    }
-    else
-    {
-        console.warn("[promptCallbackExec] no callback found for prompt");
-    }
-};
 
+// todo: use modaldialog and remove
 CABLES.UI.MODAL.prompt = function (title, text, value, callback)
 {
-    CABLES.UI.MODAL.showClose();
-    CABLES.UI.MODAL.init();
-
-    CABLES.UI.MODAL.promptCallback = callback;
-
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2>" + title + "</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<b>" + text + "</b> ";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (value || "") + "\"/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"bluebutton\" onclick=\"CABLES.UI.MODAL.promptCallbackExec()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
-    CABLES.UI.MODAL._setVisible(true);
-
-    document.getElementById("modalbg").style.display = "block";
-
-    setTimeout(function ()
-    {
-        const e = ele.byId("modalpromptinput");
-        if (e)
-        {
-            e.focus();
-            e.select();
-        }
-    }, 100);
-
-    document.getElementById("modalpromptinput").addEventListener("keydown",
-        function (e)
-        {
-            console.log(e);
-            if (e.which == 13)
-            {
-                CABLES.UI.MODAL.promptCallbackExec();
-                e.preventDefault();
-            }
-        });
+    console.log("deprecated CABLES.UI.MODAL.prompt, use CABLES.UI.ModalDialog");
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": title,
+        "text": text,
+        "promptValue": value,
+        "promptOk": callback
+    });
 };
 
 

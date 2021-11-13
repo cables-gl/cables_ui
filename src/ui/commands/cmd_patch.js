@@ -162,18 +162,26 @@ CABLES_CMD_PATCH.patchWebsite = function ()
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
-    CABLES.UI.MODAL.prompt("Rename Variable", "enter a new name for the variable " + oldname, oldname,
-        function (newname)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "Rename Variable",
+        "text": "Enter a new name for the variable " + oldname,
+        "promptValue": oldname,
+        "promptOk": (newname) =>
         {
             gui.corePatch().emitEvent("variableRename", oldname, newname);
             gui.corePatch().deleteVar(oldname);
-        });
+        } });
 };
 
 CABLES_CMD_PATCH.createVariable = function (op)
 {
-    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
-        function (str)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Variable",
+        "text": "Enter a name for the new variable",
+        "promptValue": "",
+        "promptOk": (str) =>
         {
             if (op)
             {
@@ -181,20 +189,24 @@ CABLES_CMD_PATCH.createVariable = function (op)
                 op.varName.set(str);
                 gui.opParams.show(op);
             }
-        });
+        } });
 };
 
 CABLES_CMD_PATCH.createVarNumber = function (next)
 {
-    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "myNewVar",
-        function (str)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Variable",
+        "text": "Enter a name for the new variable",
+        "promptValue": "myNewVar",
+        "promptOk": (str) =>
         {
             const opSetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarSetNumber);
             const opGetter = gui.patchView.addOp(CABLES.UI.DEFAULTOPNAMES.VarGetNumber);
 
             opSetter.varName.set(str);
             opGetter.varName.set(str);
-        });
+        } });
 };
 
 CABLES_CMD_PATCH.stats = function (force)
@@ -339,8 +351,12 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
-    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", "",
-        function (str)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Variable",
+        "text": "Enter a name for the new variable",
+        "promptValue": "",
+        "promptOk": (str) =>
         {
             const link = CABLES.UI.OPSELECT.linkNewLink;
 
@@ -365,15 +381,19 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
                     "y": p2.parent.uiAttribs.translate.y + 40
                 } });
             });
-        });
+        } });
 };
 
 CABLES_CMD_PATCH.createAutoVariable = function ()
 {
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-    CABLES.UI.MODAL.prompt("New Variable", "enter a name for the new variable", p.name,
-        function (str)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Variable",
+        "text": "Enter a name for the new variable",
+        "promptValue": p.name,
+        "promptOk": (str) =>
         {
             CABLES_CMD_PATCH._createVariable(str, p, null, p.get(), (setter, getter) =>
             {
@@ -389,7 +409,7 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                     "y": setter.uiAttribs.translate.y + 40
                 } });
             });
-        });
+        } });
 };
 
 CABLES_CMD_PATCH.editOp = function (userInteraction)
@@ -415,14 +435,15 @@ CABLES_CMD_PATCH.setOpTitle = function ()
         return;
     }
 
-    CABLES.UI.MODAL.prompt(
-        "Set Title",
-        "Enter a title for this op",
-        ops[0].name,
-        function (name)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "Set Title",
+        "text": "Enter a title for this op",
+        "promptValue": ops[0].name,
+        "promptOk": (name) =>
         {
             gui.opParams.setCurrentOpTitle(name);
-        });
+        } });
 };
 
 
@@ -438,17 +459,19 @@ CABLES_CMD_PATCH.pause = function ()
 
 CABLES_CMD_PATCH.replaceFilePath = function ()
 {
-    CABLES.UI.MODAL.prompt(
-        "Replace String Values",
-        "Search for...",
-        "/assets/",
-        function (srch)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "Replace String Values",
+        "text": "Search for...",
+        "promptValue": "/assets/",
+        "promptOk": (srch) =>
         {
-            CABLES.UI.MODAL.prompt(
-                "Replace String Values",
-                "...replace with",
-                "/assets/" + gui.project()._id,
-                function (rplc)
+            new CABLES.UI.ModalDialog({
+                "prompt": true,
+                "title": "Replace String Values",
+                "text": "...replace with",
+                "promptValue": "/assets/" + gui.project()._id,
+                "promptOk": (rplc) =>
                 {
                     const ops = gui.corePatch().ops;
                     for (let i = 0; i < ops.length; i++)
@@ -473,8 +496,8 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
                             }
                         }
                     }
-                });
-        });
+                } });
+        } });
 };
 
 

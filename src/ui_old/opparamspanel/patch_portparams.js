@@ -1,3 +1,5 @@
+
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -32,7 +34,6 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
             else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
         }
 
-        $(this).trigger("input");
         event.target.dispatchEvent(new Event("input"));
 
         return false;
@@ -242,7 +243,8 @@ CABLES.UI.initPortInputListener = function (op, index)
 
     if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number" || op.portsIn[index].uiAttribs.type == "int")
     {
-        function parseMath(e)
+        const el = ele.byId(eleId);
+        if (el)el.addEventListener("keypress", (e) =>
         {
             const keyCode = e.keyCode || e.which;
             if (keyCode == 13 || keyCode == 8)
@@ -264,142 +266,138 @@ CABLES.UI.initPortInputListener = function (op, index)
                     CABLES.UI.hideToolTip();
                 }
             }
-        }
-
-        const ele = document.getElementById(eleId);
-        if (ele)ele.addEventListener("keypress", parseMath);
+        });
     }
 
     // const ele = $("#" + eleId);
     // ele.on("input", function (e)
     const el = ele.byId(eleId);
 
-    if (el)
-        el.addEventListener("input", (e) =>
-        {
-            let v = "" + el.value;
+    if (el) el.addEventListener("input", (e) =>
+    {
+        let v = "" + el.value;
 
-            if (
-                op.portsIn[index].uiAttribs.display != "bool" &&
-                (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number"))
+        if (
+            op.portsIn[index].uiAttribs.display != "bool" &&
+            (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number"))
+        {
+            if (isNaN(v) || v === "")
             {
-                if (isNaN(v) || v === "")
+                let mathParsed = v;
+                try
                 {
-                    let mathParsed = v;
-                    try
-                    {
-                        mathParsed = CABLES.UI.mathparser.parse(v);
-                    }
-                    catch (ex)
-                    {
+                    mathParsed = CABLES.UI.mathparser.parse(v);
+                }
+                catch (ex)
+                {
                     // failed to parse math, use unparsed value
-                        mathParsed = v;
-                    }
-                    if (!isNaN(mathParsed))
-                    {
-                        CABLES.UI.showToolTip(e.target, " = " + mathParsed);
-                        el.classList.remove("invalid");
-                    }
-                    else
-                    {
-                        el.classList.add("invalid");
-                        // console.log("invalid number", op.portsIn[index], mathParsed);
-                    }
-                    return;
+                    mathParsed = v;
+                }
+                if (!isNaN(mathParsed))
+                {
+                    CABLES.UI.showToolTip(e.target, " = " + mathParsed);
+                    el.classList.remove("invalid");
                 }
                 else
-                {
-                    el.classList.remove("invalid");
-                    v = parseFloat(v);
-                }
-            }
-
-            if (op.portsIn[index].uiAttribs.type == "int")
-            {
-                if (isNaN(v) || v === "")
                 {
                     el.classList.add("invalid");
-                    return;
+                    // console.log("invalid number", op.portsIn[index], mathParsed);
                 }
-                else
-                {
-                    el.classList.remove("invalid");
-                    v = parseInt(v, 10);
-                    // console.log("invalid int");
-                }
+                return;
             }
-
-            if (op.portsIn[index].uiAttribs.display == "bool")
+            else
             {
-                if (!v || v == "false" || v == "0" || v == 0) v = false;
-                else v = true;
-
-                el.value = v;
+                el.classList.remove("invalid");
+                v = parseFloat(v);
             }
+        }
 
-            if (!CABLES.mouseDraggingValue)
+        if (op.portsIn[index].uiAttribs.type == "int")
+        {
+            if (isNaN(v) || v === "")
             {
-                const undoAdd = (function (oldv, newv, opid, portname)
-                {
-                    if (oldv != newv)
-                        CABLES.UI.undo.add({
-                            "title": "Value change " + oldv + " to " + newv,
-                            undo()
-                            {
-                                try
-                                {
-                                    const uop = gui.corePatch().getOpById(opid);
-                                    const p = uop.getPort(portname);
-                                    gui.patchView.showDefaultPanel();
+                el.classList.add("invalid");
+                return;
+            }
+            else
+            {
+                el.classList.remove("invalid");
+                v = parseInt(v, 10);
+                // console.log("invalid int");
+            }
+        }
 
-                                    p.set(oldv);
-                                    gui.opParams.show(uop);
-                                    gui.patchView.focusOp(null);
-                                    gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
-                                }
-                                catch (ex) { console.warn("undo failed"); }
-                            },
-                            redo()
-                            {
-                                try
-                                {
-                                    const rop = gui.corePatch().getOpById(opid);
-                                    const p = rop.getPort(portname);
-                                    gui.patchView.showDefaultPanel();
+        if (op.portsIn[index].uiAttribs.display == "bool")
+        {
+            if (!v || v == "false" || v == "0" || v == 0) v = false;
+            else v = true;
 
-                                    p.set(newv);
-                                    gui.opParams.show(rop);
-                                    gui.patchView.focusOp(null);
-                                    gui.patchView.focusOp(opid);
-                                    gui.patchView.centerSelectOp(opid);
-                                }
-                                catch (ex) { console.warn("undo failed"); }
+            el.value = v;
+        }
+
+        if (!CABLES.mouseDraggingValue)
+        {
+            const undoAdd = (function (oldv, newv, opid, portname)
+            {
+                if (oldv != newv)
+                    CABLES.UI.undo.add({
+                        "title": "Value change " + oldv + " to " + newv,
+                        undo()
+                        {
+                            try
+                            {
+                                const uop = gui.corePatch().getOpById(opid);
+                                const p = uop.getPort(portname);
+                                gui.patchView.showDefaultPanel();
+
+                                p.set(oldv);
+                                gui.opParams.show(uop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
                             }
-                        });
-                }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
-            }
+                            catch (ex) { console.warn("undo failed"); }
+                        },
+                        redo()
+                        {
+                            try
+                            {
+                                const rop = gui.corePatch().getOpById(opid);
+                                const p = rop.getPort(portname);
+                                gui.patchView.showDefaultPanel();
 
-            op.portsIn[index].set(v);
+                                p.set(newv);
+                                gui.opParams.show(rop);
+                                gui.patchView.focusOp(null);
+                                gui.patchView.focusOp(opid);
+                                gui.patchView.centerSelectOp(opid);
+                            }
+                            catch (ex) { console.warn("undo failed"); }
+                        }
+                    });
+            }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
+        }
 
-            // update history on change
-            if (!op.uiAttribs) op.uiAttribs = {};
-            if (!op.uiAttribs.history) op.uiAttribs.history = {};
-            op.uiAttribs.history.lastInteractionAt = Date.now();
-            op.uiAttribs.history.lastInteractionBy = {
-                "name": gui.user.usernameLowercase
-            };
+        op.portsIn[index].set(v);
 
-            gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
-                "op": op.id,
-                "port": op.portsIn[index].name,
-                "v": v
-            });
+        // update history on change
+        if (!op.uiAttribs) op.uiAttribs = {};
+        if (!op.uiAttribs.history) op.uiAttribs.history = {};
+        op.uiAttribs.history.lastInteractionAt = Date.now();
+        op.uiAttribs.history.lastInteractionBy = {
+            "name": gui.user.usernameLowercase
+        };
 
-            CABLES.UI.checkDefaultValue(op, index);
-
-            if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+        gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
+            "op": op.id,
+            "port": op.portsIn[index].name,
+            "v": v
         });
+
+        CABLES.UI.checkDefaultValue(op, index);
+
+        if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+    });
 };
 
 
@@ -408,35 +406,38 @@ CABLES.UI.initPortClickListener = function (op, index)
     if (op.portsIn[index].isAnimated()) document.getElementById("portanim_in_" + index).classList.add("timingbutton_active");
     if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) document.getElementById("portgraph_in_" + index).classList.add("timingbutton_active");
 
-    $("#portTitle_in_" + index).on("click", function (e)
-    {
-        const p = op.portsIn[index];
-        if (!p.uiAttribs.hidePort)
-            gui.opSelect().show(
-                {
-                    "x": p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
-                    "y": p.parent.uiAttribs.translate.y - 50,
-                }, op, p);
-    });
-
-    $("#portCreateOp_in_" + index).on("click", function (e)
-    {
-        const thePort = op.portsIn[index];
-        if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
+    if (ele.byId("#portTitle_in_" + index))
+        ele.byId("#portTitle_in_" + index).addEventListener("click", function (e)
         {
-            gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
+            const p = op.portsIn[index];
+            if (!p.uiAttribs.hidePort)
+                gui.opSelect().show(
+                    {
+                        "x": p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                        "y": p.parent.uiAttribs.translate.y - 50,
+                    }, op, p);
+        });
+
+    if (ele.byId("portCreateOp_in_" + index))
+        ele.byId("portCreateOp_in_" + index).addEventListener("click", function (e)
+        {
+            const thePort = op.portsIn[index];
+            if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
             {
-                gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
-            });
-        }
-    });
+                gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
+                {
+                    gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+                });
+            }
+        });
 
-    $("#portspreadsheet_in_" + index).on("click", function (e)
-    {
-        const thePort = op.portsIn[index];
+    if (ele.byId("portspreadsheet_in_" + index))
+        ele.byId("portspreadsheet_in_" + index).addEventListener("click", function (e)
+        {
+            const thePort = op.portsIn[index];
 
-        CABLES.UI.openParamSpreadSheetEditor(op.id, op.portsIn[index].name);
-    });
+            CABLES.UI.openParamSpreadSheetEditor(op.id, op.portsIn[index].name);
+        });
 
 
     // /////////////////////
@@ -465,10 +466,10 @@ CABLES.UI.initPortClickListener = function (op, index)
     {
         for (let i = 0; i < op.portsIn[index].value.length; i++)
         {
-            $("#portbutton_" + index + "_" + i).on("click", function (e)
+            let eli = ele.byId("#portbutton_" + index + "_" + i);
+            if (eli)eli.addEventListener("click", function (e)
             {
                 const name = e.target.dataset.title;
-
                 op.portsIn[index]._onTriggered(name);
             });
         }
@@ -477,7 +478,8 @@ CABLES.UI.initPortClickListener = function (op, index)
 
     //
 
-    $("#portgraph_in_" + index).on("click", function (e)
+    el = ele.byId("portgraph_in_" + index);
+    if (el)el.addEventListener("click", function (e)
     {
         if (op.portsIn[index].isAnimated())
         {
@@ -506,7 +508,8 @@ CABLES.UI.initPortClickListener = function (op, index)
         port.parent.refreshParams();
     });
 
-    $("#port_contextmenu_in_" + index).on("click", function (e)
+    el = ele.byId("port_contextmenu_in_" + index);
+    if (el) el.addEventListener("click", function (e)
     {
         const port = op.getPortById(e.target.dataset.portid);
 

@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 
 CABLES.SandboxBrowser = function (cfg)
@@ -239,18 +240,19 @@ CABLES.SandboxBrowser.prototype.initRouting = function (cb)
 
 CABLES.SandboxBrowser.prototype.createBackup = function ()
 {
-    CABLES.UI.MODAL.prompt(
-        "New Backup",
-        "Enter a name for the backup",
-        "Manual Backup",
-        function (name)
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Backup",
+        "text": "Enter a name for the backup",
+        "promptValue": "Manual Backup",
+        "promptOk": function (name)
         {
             CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
             {
                 if (result.success)
                     CABLES.UI.notify("Backup created!");
             });
-        });
+        } });
 };
 
 
@@ -269,7 +271,6 @@ CABLES.SandboxBrowser.prototype.loadUserOps = function (cb)
     const userOpsUrls = [];
     const proj = this._cfg.patch;
 
-    $("#timing").append(CABLES.UI.getHandleBarHtml("timeline_controler"), {});
 
     for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i]));
 

@@ -15,7 +15,6 @@ CABLES.UI.GUI = function (cfg)
     this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
     this.socket = null;
-    this.watchPortVisualizer = null;
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
@@ -985,18 +984,20 @@ CABLES.UI.GUI = function (cfg)
     {
         if (gui.showGuestWarning()) return;
 
-        CABLES.UI.MODAL.prompt(
-            "New Project",
-            "Enter a name for your new Project",
-            "My new Project",
-            function (name)
+        new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "New Project",
+            "text": "Enter a name for your new Project",
+            "promptValue": "My new Project",
+            "promptOk": (name) =>
             {
                 if (name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
                         CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
                     });
-            });
+            }
+        });
     };
 
 
@@ -1027,30 +1028,31 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     this.replaceNavShortcuts = function ()
     {
         const osMod = gui.getModKeyForOs(gui.getUserOs());
-        $("nav ul li .shortcut").each(function ()
+
+        let els = document.getElementsByClassName("shortcut");
+
+        for (let i in els)
         {
-            const newShortcut = $(this).text().replace("mod", osMod);
-            $(this).text(newShortcut);
-        });
+            const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
+            els[i].innerHTML = newShortcut;
+        }
     };
 
-    this.showFile = function (fileId, file)
-    {
-        const html = CABLES.UI.getHandleBarHtml(
-            "params_file", {
-                file,
-                fileId,
-                "projectId": this.patchId
-            });
+    // this.showFile = function (fileId, file)
+    // {
+    //     const html = CABLES.UI.getHandleBarHtml(
+    //         "params_file", {
+    //             file,
+    //             fileId,
+    //             "projectId": this.patchId
+    //         });
 
-        $("#options").html(html);
-    };
-
+    //     $("#options").html(html);
+    // };
 
     this.serializeForm = function (selector)
     {
@@ -1496,7 +1498,7 @@ CABLES.UI.GUI = function (cfg)
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
-        console.log("build info:");
+        this._log.log("build info:");
         const buildInfoTable = [];
         const displayInfo = {
             "title": "cables",
@@ -1929,7 +1931,6 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
         this._timeLine = new CABLES.TL.UI.TimeLineUI();
 
-        gui.watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
 
         if (this.isRemoteClient)
             document.getElementById("undev").style.display = "none";
