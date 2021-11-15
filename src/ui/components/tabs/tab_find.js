@@ -18,6 +18,7 @@ export default class FindTab
         this._closed = false;
         this._eleInput = null;
         this._resultsTriggersTimes = {};
+        this._listenerids = [];
 
         this._resultsVars = [];
 
@@ -45,18 +46,23 @@ export default class FindTab
 
         gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
 
-        gui.corePatch().addEventListener("warningErrorIconChange", this._updateCb);
-        gui.corePatch().addEventListener("onOpDelete", this._updateCb);
-        gui.corePatch().addEventListener("onOpAdd", this._updateCb);
-        gui.corePatch().addEventListener("commentChanged", this._updateCb);
+        this._listenerids.push(gui.corePatch().addEventListener("warningErrorIconChange", this._updateCb));
+        this._listenerids.push(gui.corePatch().addEventListener("onOpDelete", this._updateCb));
+        this._listenerids.push(gui.corePatch().addEventListener("onOpAdd", this._updateCb));
+        this._listenerids.push(gui.corePatch().addEventListener("commentChanged", this._updateCb));
 
         this._tab.addEventListener("onClose", () =>
         {
             gui.opHistory.removeEventListener("changed", this.updateHistory.bind(this));
 
-            gui.corePatch().removeEventListener("onOpDelete", this._updateCb);
-            gui.corePatch().removeEventListener("onOpAdd", this._updateCb);
-            gui.corePatch().removeEventListener("commentChanged", this._updateCb);
+            for (let i = 0; i < this._listenerids.length; i++)
+            {
+                gui.corePatch().removeEventListener("onOpDelete", this._listenerids[i]);
+            }
+
+            // gui.corePatch().removeEventListener("onOpDelete", this._updateCb);
+            // gui.corePatch().removeEventListener("onOpAdd", this._updateCb);
+            // gui.corePatch().removeEventListener("commentChanged", this._updateCb);
             this._closed = true;
         });
 
