@@ -325,6 +325,8 @@ function createEditor(id, val)
         {
             const wordList = [
                 "op.log",
+                "op.logWarn",
+                "op.logError",
                 "onChange=",
                 "onTriggered=",
                 "onLinkChanged=",
