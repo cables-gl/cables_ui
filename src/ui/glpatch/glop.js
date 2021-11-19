@@ -269,6 +269,7 @@ export default class GlOp extends CABLES.EventTarget
                 this._rectDecoration = 2;
             }
 
+
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) // todo: better use uiattr comment_title
             {
                 this._hidePorts = true;
@@ -703,16 +704,16 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
-                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(2.5).desaturate(2).gl());
+                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(4).gl());
 
-                if (!this._glRectRightHandle)
+                if (!this._glRectRightHandle && !this.opUiAttribs.hasArea)
                 {
                     this._glRectRightHandle = this._instancer.createRect();
                     this._glRectRightHandle.setParent(this._glRectBg);
                     this._updateSizeRightHandle();
                 }
 
-                this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                if (this._glRectRightHandle) this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
             }
             else
             {
@@ -731,6 +732,12 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setColor(GlUiConfig.colors.opTitleSelected);
         }
 
+
+        if (this.opUiAttribs.hasArea)
+        {
+            this._glRectBg.setOpacity(0.2);
+        }
+        else
         if (!this._op.enabled)
         {
             this._glRectBg.setOpacity(0.2);
@@ -742,8 +749,10 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setOpacity(1.0);
         }
 
-        if (this._hideBgRect) this._glRectBg.setOpacity(0.1);
+        if (this._hideBgRect) this._glRectBg.setOpacity(0.0);
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
+
+        if (this._resizableArea) this._resizableArea._updateColor();
     }
 
     set selected(s)

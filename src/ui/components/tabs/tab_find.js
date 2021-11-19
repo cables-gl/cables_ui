@@ -57,7 +57,7 @@ export default class FindTab
 
             for (let i = 0; i < this._listenerids.length; i++)
             {
-                gui.corePatch().removeEventListener("onOpDelete", this._listenerids[i]);
+                gui.corePatch().removeEventListener(this._listenerids[i]);
             }
 
             // gui.corePatch().removeEventListener("onOpDelete", this._updateCb);

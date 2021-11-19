@@ -8,20 +8,22 @@ export default class GlArea
         this._glop = glop;
         this._id = CABLES.shortId();
 
+        this._w = 300;
+        this._h = 200;
+
+
         this._rectBg = this._instancer.createRect({ "draggable": false });
-        this._rectBg.setSize(200, 200);
-        this._rectBg.setColor([0, 0, 0, 0.05]);
-        // this._rectBg.setDecoration(6);
+        this._rectBg.setSize(this._w, this._h);
+        this._updateColor();
 
         this.resizeCornerSize = 20;
 
         this._rectResize = this._instancer.createRect({ "draggable": true });
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
-        this._rectResize.setColor([0, 0, 0, 0.1]);
+        this._rectResize.setColor([0, 0, 0, 0.2]);
+
         this._rectResize.setPosition(200 - this.resizeCornerSize, 200 - this.resizeCornerSize);
         this._rectResize.draggable = true;
-        // this._rectResize.setDecoration(6);
-
 
         this._rectResize.draggableMove = true;
 
@@ -30,8 +32,11 @@ export default class GlArea
             this._update();
         });
 
-        this._rectResize.on("drag", () =>
+        this._rectResize.on("drag", (e) =>
         {
+            this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
+            this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
+
             this._update();
         });
 
@@ -39,11 +44,10 @@ export default class GlArea
         if (this._glop.op.uiAttribs.area)
         {
             if (this._glop.op.uiAttribs.area.id) this._id = this._glop.op.uiAttribs.area.id;
-            this._rectResize.setPosition(
-                this._glop.x + this._glop.op.uiAttribs.area.w,
-                this._glop.y + this._glop.op.uiAttribs.area.h,
-            );
+            this._w = this._glop.op.uiAttribs.area.w;
+            this._h = this._glop.op.uiAttribs.area.h;
         }
+
 
         this._update();
     }
@@ -52,17 +56,33 @@ export default class GlArea
     {
         this._rectBg.setPosition(
             this._glop.x,
-            this._glop.y
+            this._glop.y);
+
+        // const w = this._rectResize.x - this.resizeCornerSize;
+        // const h = this._rectResize.y - this.resizeCornerSize;
+
+        this._rectBg.setSize(this._w, this._h);
+
+
+        this._rectResize.setPosition(
+            this._glop.x + this._w - this._rectResize.w,
+            this._glop.y + this._h - this._rectResize.h,
+
         );
 
+        this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });
+    }
 
-        const w = this._rectResize.x - this._glop.x + this.resizeCornerSize;
-        const h = this._rectResize.y - this._glop.y + this.resizeCornerSize;
-
-
-        this._rectBg.setSize(w, h);
-
-        this._glop.op.setUiAttrib({ "area": { "w": w, "h": h, "id": this._id } });
+    _updateColor()
+    {
+        if (this._glop.opUiAttribs.color)
+        {
+            const cols = chroma.hex(this._glop.opUiAttribs.color).gl();
+            cols[3] = 0.1;
+            this._rectBg.colorHoverMultiply = 1;
+            this._rectBg.setColor(cols);
+        }
+        else this._rectBg.setColor([0, 0, 0, 0.2]);
     }
 
     dispose()
