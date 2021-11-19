@@ -577,6 +577,23 @@ export default class PatchView extends CABLES.EventTarget
         CABLES.UI.undo.endGroup(undoGroup, "Delete selected ops");
     }
 
+    createAreaFromSelection()
+    {
+        const selectedOps = this.getSelectedOps();
+        const bounds = this.getSelectionBounds();
+        const padding = 80;
+        const trans = {
+            "x": gui.patchView.snapOpPosX(bounds.minx - 0.8 * padding),
+            "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding)
+        };
+
+        const patchOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
+            "area": {
+                "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
+                "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+    }
+
+
     createSubPatchFromSelection()
     {
         const selectedOps = this.getSelectedOps();
@@ -585,7 +602,7 @@ export default class PatchView extends CABLES.EventTarget
             "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
             "y": bounds.miny
         };
-        const patchOp = this._p.addOp(CABLES.UI.OPNAME_SUBPATCH, { "translate": trans });
+        const patchOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.subPatch, { "translate": trans });
         const patchId = patchOp.patchId.get();
 
         patchOp.uiAttr({ "translate": trans });
@@ -668,7 +685,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId)
+            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
                 this._cachedSubpatchNames[ops[i].patchId.get()] = ops[i].name;
 
         if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
@@ -692,7 +709,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId)
+            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
             {
                 const id = ops[i].patchId.get();
                 subs.push({ "name": ops[i].name, "id": id, "parent": ops[i].uiAttribs.subpatchId, "childs": [] });
@@ -724,7 +741,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].objName == CABLES.UI.OPNAME_SUBPATCH && ops[i].patchId)
+            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
             {
                 if (ops[i].patchId.get() == subId)
                 {
@@ -875,7 +892,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].objName == CABLES.UI.OPNAME_SUBPATCH)
+            if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
             {
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
