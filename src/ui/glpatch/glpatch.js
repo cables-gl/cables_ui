@@ -303,7 +303,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
-            if (CABLES.UI.OPNAME_SUBPATCH == ops[0].objName)
+            if (CABLES.UI.DEFAULTOPNAMES.subPatch == ops[0].objName)
             {
                 gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
                 gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());

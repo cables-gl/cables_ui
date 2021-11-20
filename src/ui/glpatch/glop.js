@@ -36,6 +36,12 @@ export default class GlOp extends CABLES.EventTarget
         this._posZ = Math.random() * -0.3 + -0.1;
         // glPatch.zIndex();
 
+        this._displayType = 0;
+        this.DISPLAY_COMMENT = 1;
+        this.DISPLAY_UI_AREA = 2;
+        this.DISPLAY_UI_AREA_INSTANCER = 3;
+        this.DISPLAY_SUBPATCH = 3;
+
 
         this._glPorts = [];
         this.opUiAttribs = {};
@@ -55,6 +61,11 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glRectRightHandle = null;
 
+
+        if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0) this._displayType = this.DISPLAY_SUBPATCH;
+        if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
+        if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
+
         this._glRectBg = instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(GlUiConfig.opWidth, GlUiConfig.opHeight);
         this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
@@ -71,6 +82,8 @@ export default class GlOp extends CABLES.EventTarget
         this.setHover(false);
         this.updateVisible();
     }
+
+    get glPatch() { return this._glPatch; }
 
     get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; else return false; }
 
@@ -272,6 +285,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) // todo: better use uiattr comment_title
             {
+                this._displayType = this.DISPLAY_COMMENT;
                 this._hidePorts = true;
                 this._hideBgRect = true;
                 this._glTitle.scale = 4;
@@ -319,12 +333,18 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
 
+        if (this._displayType == this.DISPLAY_UI_AREA)
+        {
+            this._width = this._height = 20;
+            // this._glTitle.text = "A";
+        }
+
+
         this._glRectBg.setSize(this._width, this._height);
 
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
                 this._glPorts[i].updateSize();
-
 
         this._updateCommentPosition();
         this._updateSizeRightHandle();
@@ -602,9 +622,9 @@ export default class GlOp extends CABLES.EventTarget
     {
         let doUpdateSize = false;
 
-        if (this.opUiAttribs.hasOwnProperty("hasArea"))
+        if (this._displayType == this.DISPLAY_UI_AREA)
         {
-            if (this.opUiAttribs.hasArea && !this._resizableArea)
+            if (!this._resizableArea)
             {
                 this._resizableArea = new GlArea(this._instancer, this);
             }
@@ -697,7 +717,18 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg || !this._glTitle) return;
 
-        this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+        if (this._displayType == this.DISPLAY_COMMENT)
+        {
+            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
+                this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+            else
+                this._glTitle.setColor(1, 1, 1);
+        }
+        else
+        {
+            this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+        }
+
         this._glRectBg.setDecoration(this._rectDecoration);
         if (this._transparent) this._glRectBg.setColor(GlUiConfig.colors.transparent);
         else
@@ -706,7 +737,8 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(4).gl());
 
-                if (!this._glRectRightHandle && !this.opUiAttribs.hasArea)
+
+                if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
                 {
                     this._glRectRightHandle = this._instancer.createRect();
                     this._glRectRightHandle.setParent(this._glRectBg);
@@ -733,9 +765,10 @@ export default class GlOp extends CABLES.EventTarget
         }
 
 
-        if (this.opUiAttribs.hasArea)
+        if (this._displayType === this.DISPLAY_UI_AREA)
         {
-            this._glRectBg.setOpacity(0.2);
+            this._glRectBg.setColor(0, 0, 0, 0.4);
+            this._glTitle.text = " ";
         }
         else
         if (!this._op.enabled)
@@ -751,6 +784,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._hideBgRect) this._glRectBg.setOpacity(0.0);
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
+
 
         if (this._resizableArea) this._resizableArea._updateColor();
     }

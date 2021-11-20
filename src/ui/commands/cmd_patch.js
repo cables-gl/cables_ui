@@ -70,6 +70,11 @@ CABLES_CMD_PATCH.clear = function ()
     gui.corePatch().clear();
 };
 
+CABLES_CMD_PATCH.createAreaFromSelection = function ()
+{
+    gui.patchView.createAreaFromSelection();
+};
+
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
 {

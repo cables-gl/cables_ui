@@ -37,6 +37,12 @@ export default class GlArea
             this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
             this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
 
+            if (CABLES.UI.userSettings.get("snapToGrid"))
+            {
+                this._w = this._glop.glPatch.snapLines.snapX(this._w);
+                this._h = this._glop.glPatch.snapLines.snapY(this._h);
+            }
+
             this._update();
         });
 
@@ -58,16 +64,11 @@ export default class GlArea
             this._glop.x,
             this._glop.y);
 
-        // const w = this._rectResize.x - this.resizeCornerSize;
-        // const h = this._rectResize.y - this.resizeCornerSize;
-
         this._rectBg.setSize(this._w, this._h);
-
 
         this._rectResize.setPosition(
             this._glop.x + this._w - this._rectResize.w,
             this._glop.y + this._h - this._rectResize.h,
-
         );
 
         this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });
@@ -75,14 +76,15 @@ export default class GlArea
 
     _updateColor()
     {
+        this._rectBg.colorHoverMultiply = 1;
+
         if (this._glop.opUiAttribs.color)
         {
             const cols = chroma.hex(this._glop.opUiAttribs.color).gl();
             cols[3] = 0.1;
-            this._rectBg.colorHoverMultiply = 1;
             this._rectBg.setColor(cols);
         }
-        else this._rectBg.setColor([0, 0, 0, 0.2]);
+        else this._rectBg.setColor([0, 0, 0, 0.1]);
     }
 
     dispose()
