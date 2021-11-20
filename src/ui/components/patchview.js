@@ -534,7 +534,7 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
                 bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x);
+                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + 100);
                 bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
                 bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
             }

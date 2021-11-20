@@ -165,7 +165,12 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key(" ", "", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = false; this.emitEvent("spaceup"); });
 
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.editOp(true); });
-        gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.viewBox.center(); });
+        gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            this.viewBox.center();
+            if (gui.patchView.getSelectedOps().length == 1)
+                this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
+        });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
@@ -512,14 +517,18 @@ export default class GlPatch extends CABLES.EventTarget
         this.links[l.id] = l;
     }
 
-    focusOp(opid)
+    focusOpAnim(opid)
     {
-        gui.opParams.show(opid);
-
         this._focusRectOp = this._glOpz[opid];
         this._focusRectAnim.clear();
         this._focusRectAnim.setValue(this._time, 0);
         this._focusRectAnim.setValue(this._time + 0.5, 1);
+    }
+
+    focusOp(opid)
+    {
+        gui.opParams.show(opid);
+        this.focusOpAnim(opid);
     }
 
 
