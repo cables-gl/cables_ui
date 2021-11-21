@@ -78,8 +78,9 @@ export default function startIdleListeners()
     });
 
     document.addEventListener("keydown", idleInteractivity, false);
-    document.addEventListener("mousemove", idleInteractivity);
+    document.addEventListener("pointermove", idleInteractivity);
     document.addEventListener("visibilitychange", visibilityChanged);
+    gui.on("userActivity", idleInteractivity);
 
     idleTimeout = setTimeout(startIdleMode, idleTime * 1000);
 }
