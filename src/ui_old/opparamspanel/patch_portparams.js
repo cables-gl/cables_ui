@@ -270,8 +270,6 @@ CABLES.UI.initPortInputListener = function (op, index)
         });
     }
 
-    // const ele = $("#" + eleId);
-    // ele.on("input", function (e)
     const el = ele.byId(eleId);
 
     if (el) el.addEventListener("input", (e) =>
@@ -485,24 +483,26 @@ CABLES.UI.initPortClickListener = function (op, index)
         if (op.portsIn[index].isAnimated())
         {
             op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
-            $("#portgraph_in_" + index).toggleClass("timingbutton_active");
+
             gui.timeLine().setAnim(op.portsIn[index].anim, {
                 "name": op.getTitle() + ": " + op.portsIn[index].name,
                 "opid": op.id,
-                "defaultValue": parseFloat($("#portval_" + index).val())
+                "defaultValue": parseFloat(ele.byId("portval_" + index).value)
             });
         }
     });
 
-    $("#portsetvar_" + index).on("input", function (e)
+    el = ele.byId("portsetvar_" + index);
+    if (el)el.addEventListener("input", (e) =>
     {
         const port = op.getPortById(e.target.dataset.portid);
 
         if (port) port.setVariable(e.target.value);
-        else console.log("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
+        else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
     });
 
-    $("#portremovevar_" + index).on("click", function (e)
+    el = ele.byId("portremovevar_" + index);
+    if (el)el.addEventListener("click", (e) =>
     {
         const port = op.getPortById(e.target.dataset.portid);
         if (port) port.setVariable(null);
@@ -510,7 +510,7 @@ CABLES.UI.initPortClickListener = function (op, index)
     });
 
     el = ele.byId("port_contextmenu_in_" + index);
-    if (el) el.addEventListener("click", function (e)
+    if (el) el.addEventListener("click", (e) =>
     {
         const port = op.getPortById(e.target.dataset.portid);
 
@@ -529,24 +529,32 @@ CABLES.UI.initPortClickListener = function (op, index)
                         "title": "Set animated",
                         "func": () =>
                         {
-                            $("#portanim_in_" + index).click();
+                            el = ele.byId("portanim_in_" + index);
+                            if (el)el.dispatchEvent(new Event("click"));
                         }
                     }
                 ] }, e.target);
     });
 
-    $("#portanim_in_" + index).on("click", function (e)
+    el = ele.byId("portanim_in_" + index);
+    if (el)el.addEventListener("click", (e) =>
     {
-        if ($("#portanim_in_" + index).hasClass("timingbutton_active"))
+        const elVal = ele.byId("portval_" + index);
+
+        if (el.classList.contains("timingbutton_active"))
         {
             const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
             op.portsIn[index].setAnimated(false);
 
             gui.timeLine().setAnim(null);
-            document.getElementById("portanim_in_" + index).classList.remove("timingbutton_active");
-            $("#portval_" + index).val(val);
-            $("#portval_" + index).trigger("input");
-            $("#portval_" + index).focus();
+
+            if (elVal)
+            {
+                elVal.value = val;
+                elVal.dispatchEvent(new Event("input"));
+                elVal.focus();
+            }
+
             op.portsIn[index].parent.refreshParams();
             return;
         }
@@ -557,7 +565,7 @@ CABLES.UI.initPortClickListener = function (op, index)
         gui.timeLine().setAnim(op.portsIn[index].anim, {
             "opid": op.id,
             "name": op.getTitle() + ": " + op.portsIn[index].name,
-            "defaultValue": parseFloat($("#portval_" + index).val())
+            "defaultValue": elVal.value
         });
         op.portsIn[index].parent.refreshParams();
     });
