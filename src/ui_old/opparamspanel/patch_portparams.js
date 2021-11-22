@@ -244,6 +244,7 @@ CABLES.UI.initPortInputListener = function (op, index)
     if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number" || op.portsIn[index].uiAttribs.type == "int")
     {
         const el = ele.byId(eleId);
+
         if (el)el.addEventListener("keypress", (e) =>
         {
             const keyCode = e.keyCode || e.which;
