@@ -261,6 +261,7 @@ CABLES.UI.GUI = function (cfg)
         // new CABLES.UI.WatchTextureSpreadsheetTab(gui.mainTabs, op, port, {});
         // else
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
+        gui.maintabPanel.show(true);
     };
 
     this.pauseInteractionSplitpanes = function ()

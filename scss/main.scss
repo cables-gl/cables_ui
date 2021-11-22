@@ -227,7 +227,6 @@ input[type="text"]
 
     &.fa:before
     {
-        margin-right: 5px;
     }
 
     &:active {
@@ -254,7 +253,8 @@ input[type="text"]
 
     &.fa:before
     {
-        margin-right: 5px;
+
+        margin-right: 0px !important;
         font-family: fontawesome;
     }
 
