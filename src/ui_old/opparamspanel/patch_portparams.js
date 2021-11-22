@@ -405,8 +405,8 @@ CABLES.UI.initPortClickListener = function (op, index)
     if (op.portsIn[index].isAnimated()) document.getElementById("portanim_in_" + index).classList.add("timingbutton_active");
     if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) document.getElementById("portgraph_in_" + index).classList.add("timingbutton_active");
 
-    if (ele.byId("#portTitle_in_" + index))
-        ele.byId("#portTitle_in_" + index).addEventListener("click", function (e)
+    if (ele.byId("portTitle_in_" + index))
+        ele.byId("portTitle_in_" + index).addEventListener("click", function (e)
         {
             const p = op.portsIn[index];
             if (!p.uiAttribs.hidePort)
