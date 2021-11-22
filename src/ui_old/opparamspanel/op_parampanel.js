@@ -1,3 +1,4 @@
+
 var CABLES = CABLES || {};
 
 CABLES.UI.OpParampanel = class extends CABLES.EventTarget
@@ -400,25 +401,19 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             this._showOpParamsCbPortDelete(ipo, op);
             (function (index)
             {
-                $("#portTitle_out_" + index).on("click", function (e)
+                const elem = ele.byId("portTitle_out_" + index);
+                if (elem)elem.addEventListener("click", (e) =>
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                    {
-                        gui.opSelect().show(
-                            {
-                                "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding),
-                                "y": p.parent.uiAttribs.translate.y + 50,
-                            },
-                            op,
-                            p,
-                        );
-                    }
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
                 });
-            }(ipo));
+                else this._log.warn("ele not found: portTitle_out_" + index);
+            }.bind(this)(ipo));
 
             document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_out_" + ipo).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
+
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", (e) =>
             {
                 if (!this._isPortLineDragDown) return;
@@ -440,10 +435,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             (function (index)
             {
-                $("#portdelete_in_" + index).on("click", (e) =>
+                const elm = ele.byId("portdelete_in_" + index);
+                if (elm)elm.addEventListener("click", (e) =>
                 {
                     op.portsIn[index].removeLinks();
-                    // gui.patchView.showOpParams(op);
                     gui.opParams.show(op);
                 });
             }(ipip));
@@ -456,9 +451,9 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             const thePort = this._watchAnimPorts[iwap];
             (function (_thePort)
             {
-                const id = ".watchPortValue_" + _thePort.watchId;
-
-                $(id).on("focusin", function ()
+                const id = "watchPortValue_" + _thePort.watchId;
+                const elm = ele.byClassSingle(id);
+                if (elm)elm.addEventListener("focus", () =>
                 {
                     if (_thePort.isAnimated())
                     {
@@ -618,7 +613,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
     _showOpParamsCbPortDelete(index, op)
     {
-        $("#portdelete_out_" + index).on("click", (e) =>
+        const el = ele.byId("portdelete_out_" + index);
+        if (el)el.addEventListener("click", (e) =>
         {
             op.portsOut[index].removeLinks();
             this.show(op);
@@ -646,17 +642,22 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                 let newValue = "";
                 const id = "watchPortValue_" + thePort.watchId;
-                let el = null;
 
                 if (thePort.isAnimated())
                 {
-                    el = $("." + id);
                     thePort._tempLastUiValue = thePort.get();
-
+                    const valDisp = thePort.getValueForDisplay();
 
                     if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
-                        if (parseFloat(el.val()) != parseFloat(thePort.getValueForDisplay())) el.val(thePort.getValueForDisplay());
-                        else if (el.val() != thePort.getValueForDisplay()) el.val(thePort.getValueForDisplay());
+                    {
+                        const elVal = ele.byClassSingle(id);
+                        if (elVal)
+                            if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;
+                            else if (elVal.value != valDisp) elVal.value = valDisp;
+
+                        const elDisp = ele.byId("numberinputDisplay_" + thePort.watchId);
+                        if (elDisp) elDisp.innerHTML = valDisp;
+                    }
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {

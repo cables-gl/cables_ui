@@ -101,7 +101,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     const elemDom = document.getElementById(eleId);
     const elem = $("#" + eleId);
-    const elemContainerJQ = $("#" + eleId + "-container");
     const eleContainer = ele.byId(eleId + "-container");
 
     const eleNumInputDisplay = $("#" + eleId + "-container .numberinput-display");
