@@ -1,3 +1,4 @@
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -101,9 +102,11 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     const elemDom = document.getElementById(eleId);
     const elem = $("#" + eleId);
+
     const eleContainer = ele.byId(eleId + "-container");
 
-    const eleNumInputDisplay = $("#" + eleId + "-container .numberinput-display");
+    const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
+
 
     const theOp = gui.corePatch().getOpById(opid);
     const thePort = theOp.getPort(portName);
@@ -171,7 +174,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         if (enabled)
         {
             elem.bind("input", onInput);
-            eleNumInputDisplay.hide();
+            ele.hide(eleNumInputDisplay);
+
             $(".numberinput").removeClass("numberinputFocussed");
             eleContainer.classList.add("numberinputFocussed");
             elem.show();
@@ -185,7 +189,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         {
             elem.unbind("input", onInput);
             $(".numberinput").removeClass("numberinputFocussed");
-            eleNumInputDisplay.show();
+
+            ele.show(eleNumInputDisplay);
             elem.hide();
             elem.blur();
             document.removeEventListener("mouseup", up);
@@ -344,7 +349,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
         elemDom.value = v;
-        eleNumInputDisplay.html(v);
+        eleNumInputDisplay.innerHTML = v;
+
+
         elem.trigger("input");
         elemDom.dispatchEvent(new Event("input"));
     }
@@ -365,7 +372,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         {
             // propably cancled by escape key / reset value
             elem.val(startVal);
-            eleNumInputDisplay.html(startVal);
+            eleNumInputDisplay.innerHTML = startVal;
             elem.trigger("input");
             elemDom.dispatchEvent(new Event("input"));
             up();
@@ -403,7 +410,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         }
 
         elem.unbind("blur");
-        eleNumInputDisplay.html(elem.val());
+        eleNumInputDisplay.innerHTML = elem.val();
         setTextEdit(false);
         if (elem.hasClass("valuesliderinput"))setProgress();
     }
