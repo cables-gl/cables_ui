@@ -242,7 +242,6 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
             pos[0] + (size[0] - sizeImg[0]) / 2, pos[1] + (size[1] - sizeImg[1]) / 2,
             sizeImg[0], sizeImg[1]);
 
-
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 

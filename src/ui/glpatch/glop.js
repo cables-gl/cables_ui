@@ -340,6 +340,7 @@ export default class GlOp extends CABLES.EventTarget
         }
 
 
+        if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
         this._glRectBg.setSize(this._width, this._height);
 
         if (oldHeight != this._height)
