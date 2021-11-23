@@ -332,15 +332,9 @@ export default class GlOp extends CABLES.EventTarget
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
-
-        if (this._displayType == this.DISPLAY_UI_AREA)
-        {
-            this._width = this._height = 20;
-            // this._glTitle.text = "A";
-        }
-
-
+        if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
+
         this._glRectBg.setSize(this._width, this._height);
 
         if (oldHeight != this._height)
@@ -406,7 +400,11 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (this._glRectBg) this._glRectBg.dispose();
         if (this._glTitle) this._glTitle.dispose();
-        if (this._glComment) this._glComment.dispose();
+        if (this._glComment)
+        {
+            this._glComment.dispose();
+            this._glComment = null;
+        }
         if (this._glTitleExt) this._glTitleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea.dispose();
@@ -644,6 +642,8 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
+
+        console.log(comment);
         if (comment)
         {
             if (!this._glComment)
@@ -659,7 +659,11 @@ export default class GlOp extends CABLES.EventTarget
         else
         {
             if (this._glComment)
-                this._glComment.visible = false;
+            {
+                this._glComment.dispose();
+                this._glComment = null;
+            }
+            // this._glComment.visible = false;
         }
 
 
