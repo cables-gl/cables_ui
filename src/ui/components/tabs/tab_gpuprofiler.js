@@ -5,7 +5,6 @@ export default class GpuProfiler
     {
         this._tab = new CABLES.UI.Tab("GPU Profiler", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
-        // this.show();
 
         this.colors = ["#7AC4E0", "#D183BF", "#9091D6", "#FFC395", "#F0D165", "#63A8E8", "#CF5D9D", "#66C984", "#D66AA6", "#515151"];
         this.intervalId = null;

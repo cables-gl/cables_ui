@@ -106,10 +106,10 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
     show(op)
     {
         clearTimeout(this.refreshTimeout);
-        if (typeof op == "string")
-        {
-            op = gui.corePatch().getOpById(op);
-        }
+
+        if (typeof op == "string") op = gui.corePatch().getOpById(op);
+
+        if (!op) this._log.stack("op undefined");
 
         if (this._currentOp != op)
         {
@@ -131,7 +131,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             self._oldOpParamsId = op.id;
         }
 
-        // var ops=gui.corePatch().ops;
         const perf = CABLES.UI.uiProfiler.start("_showOpParams");
         const perfHtml = CABLES.UI.uiProfiler.start("_showOpParamsHTML");
 
@@ -730,7 +729,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         }
         else
         {
-            this._log.warn("no current op commenrt");
+            this._log.warn("no current op comment");
         }
     }
 

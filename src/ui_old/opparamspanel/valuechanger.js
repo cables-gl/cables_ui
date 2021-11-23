@@ -294,7 +294,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         return parseFloat(eleInput.value);
     }
 
-
     function move(e)
     {
         if (CABLES.UI.pointerLockFirstTime)
@@ -348,7 +347,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         eleNumInputDisplay.innerHTML = v;
 
 
-        elem.trigger("input");
         eleInput.dispatchEvent(new Event("input"));
     }
 
@@ -367,10 +365,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         else
         {
             // propably cancled by escape key / reset value
-            // elem.val(startVal);
             eleInput.value = startVal;
             eleNumInputDisplay.innerHTML = startVal;
-            elem.trigger("input");
             eleInput.dispatchEvent(new Event("input"));
             up();
         }

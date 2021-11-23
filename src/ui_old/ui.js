@@ -966,6 +966,7 @@ CABLES.UI.GUI = function (cfg)
             const fn = portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
+            console.log("showfileselect", opid, gui.corePatch().getOpById(opid));
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
         });

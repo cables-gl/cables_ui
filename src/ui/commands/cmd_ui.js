@@ -275,7 +275,7 @@ CABLES_CMD_UI.toggleTheme = function ()
 CABLES_CMD_UI.profileGPU = function ()
 {
     new CABLES.UI.GpuProfiler(gui.mainTabs);
-    gui.maintabPanel.show();
+    gui.maintabPanel.show(true);
 };
 
 
