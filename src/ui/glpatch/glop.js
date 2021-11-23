@@ -643,7 +643,6 @@ export default class GlOp extends CABLES.EventTarget
 
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
 
-        console.log(comment);
         if (comment)
         {
             if (!this._glComment)
@@ -691,6 +690,7 @@ export default class GlOp extends CABLES.EventTarget
                 this._visPort.onChange = () =>
                 {
                     const t = this._visPort.get();
+
 
                     if (t)
                     {

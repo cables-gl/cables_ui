@@ -220,7 +220,17 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         if (!stretch)
         {
             if (port.get().width > port.get().height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
-            else sizeImg[0] = size[1] * (sizeTex[0] / sizeTex[1]);
+            else
+            {
+                sizeImg[1] = size[0] * (sizeTex[1] / sizeTex[0]);
+
+                if (sizeImg[1] > size[1])
+                {
+                    const r = size[1] / sizeImg[1];
+                    sizeImg[0] *= r;
+                    sizeImg[1] *= r;
+                }
+            }
         }
 
         const scaledDown = sizeImg[0] > sizeTex[0] && sizeImg[1] > sizeTex[1];
