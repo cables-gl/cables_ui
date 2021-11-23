@@ -101,7 +101,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     const elemDom = document.getElementById(eleId);
     const elem = $("#" + eleId);
-    const elemContainerJQ = $("#" + eleId + "-container");
     const eleContainer = ele.byId(eleId + "-container");
 
     const eleNumInputDisplay = $("#" + eleId + "-container .numberinput-display");
@@ -133,8 +132,10 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function switchToNextInput(dir)
     {
-        const portNum = eleContainer.dataset.portnum;
+        const portNum = parseInt(eleContainer.dataset.portnum);
         let count = 0;
+
+        dir = parseInt(dir);
         while (count < 10)
         {
             const i = (portNum + dir) + count * dir;
@@ -150,6 +151,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
                 return;
             }
+
             count++;
         }
     }
