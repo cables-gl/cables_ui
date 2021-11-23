@@ -121,14 +121,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         elem.keydown(CABLES.UI.inputListenerCursorKeys);
     }
 
-    function onInput(e)
-    {
-        if (eleContainer.classList.contains("valuesliderinput"))
-        {
-            CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer);
-        }
-        return true;
-    }
 
     function switchToNextInput(dir)
     {
@@ -172,14 +164,12 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
         if (enabled)
         {
-            elem.bind("input", onInput);
+            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
             ele.hide(eleNumInputDisplay);
 
             eleContainer.classList.add("numberinputFocussed");
-            // elem.show();
             ele.show(eleInput);
             eleInput.focus();
-            // elem.focus();
 
             const vv = eleInput.value;
             elem[0].setSelectionRange(0, vv.length);
@@ -187,10 +177,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         }
         else
         {
-            elem.unbind("input", onInput);
+            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
 
             ele.show(eleNumInputDisplay);
-            // elem.hide();
             ele.hide(eleInput);
             eleInput.blur();
 
