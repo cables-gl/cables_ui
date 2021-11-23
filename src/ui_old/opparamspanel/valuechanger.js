@@ -100,19 +100,16 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 {
     CABLES.UI.showInputFieldInfo();
 
-    const elemDom = document.getElementById(eleId);
     const elem = $("#" + eleId);
-
+    const eleInput = ele.byId(eleId);
     const eleContainer = ele.byId(eleId + "-container");
-
     const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
-
 
     const theOp = gui.corePatch().getOpById(opid);
     const thePort = theOp.getPort(portName);
 
     let isDown = false;
-    const startVal = elem.val();
+    const startVal = eleInput.value;
     const el = document.getElementById(eleId);
     let incMode = 0;
     let mouseDownTime = 0;
@@ -128,7 +125,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     {
         if (eleContainer.classList.contains("valuesliderinput"))
         {
-            CABLES.valueChangerSetSliderCSS(elem.val(), eleContainer);
+            CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer);
         }
         return true;
     }
@@ -171,28 +168,32 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function setTextEdit(enabled)
     {
+        ele.forEachClass("numberinput", (elm) => { elm.classList.remove("numberinputFocussed"); });
+
         if (enabled)
         {
             elem.bind("input", onInput);
             ele.hide(eleNumInputDisplay);
 
-            $(".numberinput").removeClass("numberinputFocussed");
             eleContainer.classList.add("numberinputFocussed");
-            elem.show();
-            elem.focus();
+            // elem.show();
+            ele.show(eleInput);
+            eleInput.focus();
+            // elem.focus();
 
-            const vv = elem.val();
+            const vv = eleInput.value;
             elem[0].setSelectionRange(0, vv.length);
             elem.bind("keydown", tabKeyListener);
         }
         else
         {
             elem.unbind("input", onInput);
-            $(".numberinput").removeClass("numberinputFocussed");
 
             ele.show(eleNumInputDisplay);
-            elem.hide();
-            elem.blur();
+            // elem.hide();
+            ele.hide(eleInput);
+            eleInput.blur();
+
             document.removeEventListener("mouseup", up);
             document.removeEventListener("mousedown", down);
         }
@@ -215,7 +216,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         if (!isString && usePointerLock)
         {
             document.addEventListener("pointerlockerror", lockError, false);
-
             document.addEventListener("pointerlockchange", lockChange, false);
             document.addEventListener("mozpointerlockchange", lockChange, false);
             document.addEventListener("webkitpointerlockchange", lockChange, false);
@@ -268,7 +268,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
                             gui.patchView.centerSelectOp(op.id);
                         }
                     });
-            }(portName, opid, parseFloat(startVal), parseFloat(elem.val())));
+            }(portName, opid, parseFloat(startVal), parseFloat(eleInput.value)));
         }
 
         gui.setStateUnsaved();
@@ -286,14 +286,14 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
         document.removeEventListener("mouseup", up);
         document.removeEventListener("mousedown", down);
-
         document.removeEventListener("mousemove", move, false);
+
         if (performance.now() - mouseDownTime < 200) setTextEdit(true);
     }
 
     function setProgress(v)
     {
-        CABLES.valueChangerSetSliderCSS(elem.val(), eleContainer);
+        CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer);
         return v;
     }
 
@@ -304,13 +304,10 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             CABLES.UI.pointerLockFirstTime = false;
             return;
         }
-        if (elem.is(":focus"))
-        {
-            return;
-        }
+        if (elem.is(":focus")) return;
 
         gui.setStateUnsaved();
-        let v = parseFloat(elem.val(), 10);
+        let v = parseFloat(eleInput.value, 10);
         let inc = 0;
 
         if (thePort.uiAttribs.min != undefined)
@@ -348,12 +345,12 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         if (thePort.uiAttribs.min != undefined)
             v = CABLES.map(v, 0, 1, thePort.uiAttribs.min, thePort.uiAttribs.max);
 
-        elemDom.value = v;
+        eleInput.value = v;
         eleNumInputDisplay.innerHTML = v;
 
 
         elem.trigger("input");
-        elemDom.dispatchEvent(new Event("input"));
+        eleInput.dispatchEvent(new Event("input"));
     }
 
     function lockError(e)
@@ -374,7 +371,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             elem.val(startVal);
             eleNumInputDisplay.innerHTML = startVal;
             elem.trigger("input");
-            elemDom.dispatchEvent(new Event("input"));
+            eleInput.dispatchEvent(new Event("input"));
             up();
         }
     }
@@ -382,24 +379,24 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     function blur(e)
     {
         // value changed after blur
-        if (startVal != elem.val())
+        if (startVal != eleInput.value)
         {
             if (opid && portName)
             {
-                if (isNaN(elem.val()))
+                if (isNaN(eleInput.value))
                 {
                     const op = gui.corePatch().getOpById(opid);
                     const p = op.getPort(portName);
 
-                    let mathParsed = elem.val();
+                    let mathParsed = eleInput.value;
                     try
                     {
-                        mathParsed = CABLES.UI.mathparser.parse(elem.val());
+                        mathParsed = CABLES.UI.mathparser.parse(eleInput.value);
                     }
                     catch (ex)
                     {
                         // failed to parse math, use unparsed value
-                        mathParsed = elem.val();
+                        mathParsed = eleInput.value;
                     }
                     elem.val(mathParsed);
 
@@ -410,7 +407,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         }
 
         elem.unbind("blur");
-        eleNumInputDisplay.innerHTML = elem.val();
+        eleNumInputDisplay.innerHTML = eleInput.value;
         setTextEdit(false);
         if (elem.hasClass("valuesliderinput"))setProgress();
     }

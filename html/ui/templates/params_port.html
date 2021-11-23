@@ -141,11 +141,11 @@
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'range' }}
                             </td><td>
-                            <!-- new value input -->
+                            <!-- new value input2 !!! -->
                             <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}"  data-portname="{{ port.name }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" ontouchstart="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInputFieldInfo();"
                             {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}">{{ port.value }}</span>
-                                <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
+                                <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
                             </div>
                         {{/compare}}
 
@@ -213,10 +213,10 @@
                         {{/compare}}
                         {{#compare port.type '==' 0 }}
                             </td><td>
-                            <!-- new value input -->
+                            <!-- new value input2 -->
                             <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"   data-portname="{{ port.name }}" id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');"  onmouseover="CABLES.UI.showInputFieldInfo();">
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}">{{ port.value }}</span>
-                                <input autocomplete="off" class="numberinput-value watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
+                                <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
                             </div>
                         {{/compare}}
                         {{#compare port.type '==' 4}}
