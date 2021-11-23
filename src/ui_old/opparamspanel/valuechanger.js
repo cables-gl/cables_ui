@@ -66,17 +66,17 @@ CABLES.valueChangerInitSliders = function ()
     }
 };
 
-CABLES.valueChangerSetSliderCSS = function (v, el)
+CABLES.valueChangerSetSliderCSS = function (v, eleInput)
 {
-    if (el.dataset.min || el.dataset.max)
-        v = CABLES.map(v, parseFloat(el.dataset.min), parseFloat(el.dataset.max), 0, 1);
+    if (eleInput.dataset.min || eleInput.dataset.max)
+        v = CABLES.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
 
     v = Math.max(0, v);
     v = Math.min(1, v);
     const cssv = v * 100;
     const grad = "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
 
-    el.style.background = grad;
+    eleInput.style.background = grad;
 };
 
 // CABLES.valueChangerGetSliderCss = function (v, el)
@@ -102,6 +102,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     const elem = $("#" + eleId);
     const eleInput = ele.byId(eleId);
+    // const el = document.getElementById(eleId);
+
     const eleContainer = ele.byId(eleId + "-container");
     const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
 
@@ -110,7 +112,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     let isDown = false;
     const startVal = eleInputValue();
-    const el = document.getElementById(eleId);
     let incMode = 0;
     let mouseDownTime = 0;
     const usePointerLock = true;
@@ -212,10 +213,10 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             document.addEventListener("mozpointerlockchange", lockChange, false);
             document.addEventListener("webkitpointerlockchange", lockChange, false);
 
-            if (el.classList.contains("inc_int")) incMode = 1;
+            if (eleInput.classList.contains("inc_int")) incMode = 1;
 
-            el.requestPointerLock = el.requestPointerLock || el.mozRequestPointerLock || el.webkitRequestPointerLock;
-            if (el.requestPointerLock) el.requestPointerLock();
+            eleInput.requestPointerLock = eleInput.requestPointerLock || eleInput.mozRequestPointerLock || eleInput.webkitRequestPointerLock;
+            if (eleInput.requestPointerLock) eleInput.requestPointerLock();
         }
 
         CABLES.mouseDraggingValue = true;
@@ -358,7 +359,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function lockChange(e)
     {
-        if (document.pointerLockElement === el || document.mozPointerLockElement === el || document.webkitPointerLockElement === el)
+        if (document.pointerLockElement === eleInput || document.mozPointerLockElement === eleInput || document.webkitPointerLockElement === eleInput)
         {
             CABLES.UI.pointerLockFirstTime = true;
             document.addEventListener("mousemove", move, false);
