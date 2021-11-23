@@ -109,18 +109,22 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     const thePort = theOp.getPort(portName);
 
     let isDown = false;
-    const startVal = eleInput.value;
+    const startVal = eleInputValue();
     const el = document.getElementById(eleId);
     let incMode = 0;
     let mouseDownTime = 0;
     const usePointerLock = true;
+
+
+    document.addEventListener("mouseup", up);
+    document.addEventListener("mousedown", down);
+    eleInput.addEventListener("focusout", blur);
 
     if (focus)
     {
         setTextEdit(true);
         elem.keydown(CABLES.UI.inputListenerCursorKeys);
     }
-
 
     function switchToNextInput(dir)
     {
@@ -190,7 +194,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function down(e)
     {
-        if (elem.is(":focus")) return;
+        if (ele.hasFocus(eleInput)) return;
 
         elem.unbind("mousewheel");
         elem.unbind("keydown");
@@ -219,7 +223,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function up(e)
     {
-        if (elem.is(":focus")) return;
+        if (ele.hasFocus(eleInput)) return;
 
         CABLES.mouseDraggingValue = false;
 
@@ -284,6 +288,12 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         return v;
     }
 
+    function eleInputValue()
+    {
+        return parseFloat(eleInput.value);
+    }
+
+
     function move(e)
     {
         if (CABLES.UI.pointerLockFirstTime)
@@ -291,10 +301,11 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             CABLES.UI.pointerLockFirstTime = false;
             return;
         }
-        if (elem.is(":focus")) return;
+
+        if (ele.hasFocus(eleInput)) return;
 
         gui.setStateUnsaved();
-        let v = parseFloat(eleInput.value, 10);
+        let v = eleInputValue();
         let inc = 0;
 
         if (thePort.uiAttribs.min != undefined)
@@ -355,7 +366,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         else
         {
             // propably cancled by escape key / reset value
-            elem.val(startVal);
+            // elem.val(startVal);
+            eleInput.value = startVal;
             eleNumInputDisplay.innerHTML = startVal;
             elem.trigger("input");
             eleInput.dispatchEvent(new Event("input"));
@@ -366,7 +378,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     function blur(e)
     {
         // value changed after blur
-        if (startVal != eleInput.value)
+        if (startVal != eleInputValue())
         {
             if (opid && portName)
             {
@@ -383,9 +395,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
                     catch (ex)
                     {
                         // failed to parse math, use unparsed value
-                        mathParsed = eleInput.value;
+                        mathParsed = eleInputValue();
                     }
-                    elem.val(mathParsed);
+                    eleInput.value = mathParsed;
 
                     p.set(mathParsed);
                     CABLES.UI.hideToolTip();
@@ -397,11 +409,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         eleNumInputDisplay.innerHTML = eleInput.value;
         setTextEdit(false);
 
-        if (elem.hasClass("valuesliderinput"))setProgress();
-        // if (eleInput.classList.contains("valuesliderinput"))setProgress();
+        if (eleInput.classList.contains("valuesliderinput"))setProgress();
     }
-
-    document.addEventListener("mouseup", up);
-    document.addEventListener("mousedown", down);
-    eleInput.addEventListener("focusout", blur);
 };
