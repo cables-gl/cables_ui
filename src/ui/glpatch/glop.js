@@ -180,6 +180,16 @@ export default class GlOp extends CABLES.EventTarget
 
     _onMouseDown(e)
     {
+        if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
+        {
+            this._glPatch._selectOpsInRect(
+                this.opUiAttribs.translate.x,
+                this.opUiAttribs.translate.y,
+                this.opUiAttribs.translate.x + this.opUiAttribs.area.w,
+                this.opUiAttribs.translate.y + this.opUiAttribs.area.h
+            );
+        }
+
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
         if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
 
@@ -192,7 +202,6 @@ export default class GlOp extends CABLES.EventTarget
         if (!this.selected)
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
-
             this._glPatch.selectOpId(this.id);
         }
 
