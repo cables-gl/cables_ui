@@ -200,9 +200,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         mouseDownTime = performance.now();
         isDown = true;
 
-        const isString = elem.data("valuetype") == "string";
 
-        if (!isString && usePointerLock)
+        if (usePointerLock)
         {
             document.addEventListener("pointerlockerror", lockError, false);
             document.addEventListener("pointerlockchange", lockChange, false);
@@ -221,7 +220,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     function up(e)
     {
         if (elem.is(":focus")) return;
-        const isString = elem.data("valuetype") == "string";
 
         CABLES.mouseDraggingValue = false;
 
@@ -395,13 +393,15 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             }
         }
 
-        elem.unbind("blur");
+        eleInput.removeEventListener("focusout", blur);
         eleNumInputDisplay.innerHTML = eleInput.value;
         setTextEdit(false);
+
         if (elem.hasClass("valuesliderinput"))setProgress();
+        // if (eleInput.classList.contains("valuesliderinput"))setProgress();
     }
 
     document.addEventListener("mouseup", up);
     document.addEventListener("mousedown", down);
-    elem.bind("blur", blur);
+    eleInput.addEventListener("focusout", blur);
 };
