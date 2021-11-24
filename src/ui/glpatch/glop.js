@@ -269,22 +269,19 @@ export default class GlOp extends CABLES.EventTarget
 
     setTitle(title, textWriter)
     {
-        if (title == "")title = " ";
+        if (title == "") title = " ";
         if (textWriter) this._textWriter = textWriter;
 
         if (!this._glTitle)
         {
             this._glTitle = new GlText(this._textWriter, title);
             this._glTitle.setParentRect(this._glRectBg);
-
             this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
-
 
             if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
             {
                 this._rectDecoration = 2;
             }
-
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
@@ -299,7 +296,6 @@ export default class GlOp extends CABLES.EventTarget
                 this._hidePorts = true;
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(GlUiConfig.colors.patchComment);
-                // this._displayType = this.DISPLAY_COMMENT;
             }
             this._updateColors();
         }
