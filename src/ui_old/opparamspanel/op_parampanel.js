@@ -403,7 +403,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -795,7 +795,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             items.push({
                 "title": "edit op ",
-                "iconClass": "fa fa-lock",
+                "iconClass": "icon icon-lock",
                 func()
                 {
                     gui.serverOps.edit(opname);
@@ -804,7 +804,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
             items.push({
                 "title": "rename op ",
-                "iconClass": "fa fa-lock",
+                "iconClass": "icon icon-lock",
                 func()
                 {
                     window.open(CABLES.sandbox.getCablesUrl() + "/op/rename?op=" + opname + "&new=" + opname, "_blank");
