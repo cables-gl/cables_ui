@@ -84,7 +84,7 @@ export default class GlArea
             cols[3] = 0.1;
             this._rectBg.setColor(cols);
         }
-        else this._rectBg.setColor([0, 0, 0, 0.1]);
+        else this._rectBg.setColor([0, 0, 0, 0.08]);
     }
 
     dispose()

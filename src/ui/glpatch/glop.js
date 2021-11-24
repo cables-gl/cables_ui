@@ -292,14 +292,20 @@ export default class GlOp extends CABLES.EventTarget
             }
 
 
-            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) // todo: better use uiattr comment_title
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
                 this._displayType = this.DISPLAY_COMMENT;
                 this._hidePorts = true;
                 this._hideBgRect = true;
+                this._transparent = true;
+            }
+
+            if (this.opUiAttribs.comment_title) // this._op.objName.indexOf("Ops.Ui.Comment") === 0
+            {
+                this._hidePorts = true;
                 this._glTitle.scale = 4;
                 this._glTitle.setColor(GlUiConfig.colors.patchComment);
-                this._transparent = true;
+                // this._displayType = this.DISPLAY_COMMENT;
             }
             this._updateColors();
         }
@@ -341,7 +347,7 @@ export default class GlOp extends CABLES.EventTarget
         this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
-        if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
+        // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
         this._glRectBg.setSize(this._width, this._height);
@@ -731,7 +737,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg || !this._glTitle) return;
 
-        if (this._displayType == this.DISPLAY_COMMENT)
+        if (this._glTitle)
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
                 this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
@@ -781,8 +787,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._displayType === this.DISPLAY_UI_AREA)
         {
-            this._glRectBg.setColor(0, 0, 0, 0.4);
-            this._glTitle.text = " ";
+            // this._glRectBg.setColor(0, 0, 0, 0.4);
+            // this._glTitle.setOpacity(0.8);
         }
         else
         if (!this._op.enabled)

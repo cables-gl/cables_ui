@@ -134,7 +134,7 @@
             "title":"Preferences",
 
             "subtitle_glpatch_cursor":"use native cursor",
-            "subtitle_glpatch_hideboundings":"draw patch bounding",
+            "subtitle_glpatch_showboundings":"draw patch bounding",
             "subtitle_glpatch_linetype":"cables style",
 
             "head_glpatch":"Patch Editor",

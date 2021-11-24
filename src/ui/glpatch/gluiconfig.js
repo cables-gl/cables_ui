@@ -47,8 +47,8 @@ class GlUiConfig
 
             "patchSelectionArea": [0, 0.75, 0.7, 0.25],
 
-            "opBoundsRect": [0.26, 0.26, 0.26, 1],
-            "background": [0.24, 0.24, 0.24, 1],
+            "opBoundsRect": [0.25, 0.25, 0.25, 1],
+            "background": [0.26, 0.26, 0.26, 1],
 
             "opError": [1.0, 0.24, 0.1, 1],
             "opErrorWarning": [1.0, 0.7, 0.1, 1],
