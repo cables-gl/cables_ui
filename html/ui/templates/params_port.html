@@ -109,7 +109,10 @@
 
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             </td><td>
-                            <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon {{#compare port.value '==' true }}icon-check-square{{/compare}}{{#compare port.value '==' false }}icon-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
+                                <span class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
+
+                                    <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
+                                </span>
                             <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                         {{/compare}}
 
