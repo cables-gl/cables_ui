@@ -417,6 +417,16 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
         } });
 };
 
+CABLES_CMD_PATCH.compressOps = () =>
+{
+    gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
+};
+
+CABLES_CMD_PATCH.alignOpsLeft = () =>
+{
+    gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
+};
+
 CABLES_CMD_PATCH.editOp = function (userInteraction)
 {
     const selops = gui.patchView.getSelectedOps();
@@ -673,7 +683,18 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "create backup",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createBackup
-    }
+    },
+    {
+        "cmd": "align ops left",
+        "func": CABLES_CMD_PATCH.alignOpsLeft,
+        "icon": "align-left"
+    },
+    {
 
+        "cmd": "compress ops vertically",
+        "func": CABLES_CMD_PATCH.compressOps,
+        "icon": "list"
+
+    }
 
 );

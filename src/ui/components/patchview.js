@@ -1179,7 +1179,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = CABLES.UI.snapOpPosY(avg);
+            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
