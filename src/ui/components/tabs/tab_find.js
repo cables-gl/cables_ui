@@ -44,7 +44,8 @@ export default class FindTab
 
         this._updateCb = this.searchAfterPatchUpdate.bind(this);
 
-        gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
+        const listenerChanged = gui.opHistory.addEventListener("changed", this.updateHistory.bind(this));
+        this._listenerids.push(listenerChanged);
 
         this._listenerids.push(gui.corePatch().addEventListener("warningErrorIconChange", this._updateCb));
         this._listenerids.push(gui.corePatch().addEventListener("onOpDelete", this._updateCb));
@@ -53,7 +54,7 @@ export default class FindTab
 
         this._tab.addEventListener("onClose", () =>
         {
-            gui.opHistory.removeEventListener("changed", this.updateHistory.bind(this));
+            gui.opHistory.removeEventListener(listenerChanged);
 
             for (let i = 0; i < this._listenerids.length; i++)
             {

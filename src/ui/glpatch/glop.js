@@ -8,6 +8,11 @@ export default class GlOp extends CABLES.EventTarget
     constructor(glPatch, instancer, op)
     {
         super();
+        this.DISPLAY_DEFAULT = 0;
+        this.DISPLAY_COMMENT = 1;
+        this.DISPLAY_UI_AREA = 2;
+        this.DISPLAY_UI_AREA_INSTANCER = 3;
+        this.DISPLAY_SUBPATCH = 3;
 
         this._id = op.id;
         this._visible = true;
@@ -20,6 +25,7 @@ export default class GlOp extends CABLES.EventTarget
         this._needsUpdate = true;
         this._textWriter = null;
         this._resizableArea = null;
+        this._glRectNames.push("_resizableArea");
 
         this._glTitleExt = null;
         this._glRectNames.push("_glTitleExt");
@@ -34,14 +40,8 @@ export default class GlOp extends CABLES.EventTarget
         this._hideBgRect = false;
 
         this._posZ = Math.random() * -0.3 + -0.1;
-        // glPatch.zIndex();
 
         this._displayType = 0;
-        this.DISPLAY_COMMENT = 1;
-        this.DISPLAY_UI_AREA = 2;
-        this.DISPLAY_UI_AREA_INSTANCER = 3;
-        this.DISPLAY_SUBPATCH = 3;
-
 
         this._glPorts = [];
         this.opUiAttribs = {};
@@ -58,9 +58,7 @@ export default class GlOp extends CABLES.EventTarget
         this._glDotError = null;
         this._glDotWarning = null;
         this._glDotHint = null;
-
         this._glRectRightHandle = null;
-
 
         if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0) this._displayType = this.DISPLAY_SUBPATCH;
         if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
@@ -78,7 +76,6 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
 
-
         this.setHover(false);
         this.updateVisible();
     }
@@ -86,6 +83,22 @@ export default class GlOp extends CABLES.EventTarget
     get glPatch() { return this._glPatch; }
 
     get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; else return false; }
+
+    get selected() { return this.opUiAttribs.selected; }
+
+    get x() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.x; else return 0; }
+
+    get y() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.y; else return 0; }
+
+    get w() { return this._width; }
+
+    get h() { return this._height; }
+
+    get id() { return this._id; }
+
+    get title() { return this.opUiAttribs.title; }
+
+    get op() { return this._op; }
 
     _onBgRectDrag(rect)
     {
@@ -221,26 +234,6 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e, this._op);
     }
 
-    get selected() { return this.opUiAttribs.selected; }
-
-    get x() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.x; else return 0; }
-
-    get y() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.y; else return 0; }
-
-    get w() { return this._width; }
-
-    get h() { return this._height; }
-
-    get id() { return this._id; }
-
-    get title() { return this.opUiAttribs.title; }
-
-    get glPatch() { return this._glPatch; }
-
-    get op()
-    {
-        return this._op;
-    }
 
     set uiAttribs(attr)
     {
@@ -539,7 +532,9 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this.opUiAttribs.hidden || !this.isInCurrentSubPatch()) visi = false;
 
-        for (let i = 0; i < this._glRectNames.length; i++) if (this[this._glRectNames[i]]) this[this._glRectNames[i]].visible = visi;
+        for (let i = 0; i < this._glRectNames.length; i++)
+            if (this[this._glRectNames[i]])
+                this[this._glRectNames[i]].visible = visi;
 
         this._updateErrorDots();
 
@@ -637,18 +632,16 @@ export default class GlOp extends CABLES.EventTarget
         let doUpdateSize = false;
 
         if (this._displayType == this.DISPLAY_UI_AREA)
-        {
             if (!this._resizableArea)
-            {
                 this._resizableArea = new GlArea(this._instancer, this);
-            }
-        }
+        this._glRectNames.push("_glTitle");
 
         if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._glTitleExt)
         {
             this._glTitleExt = new GlText(this._textWriter, " ???");
             this._glTitleExt.setParentRect(this._glRectBg);
             this._glTitleExt.setColor(GlUiConfig.colors.opTitleExt);
+            this._glTitleExt.visible = this.visible;
         }
         if ((!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) && this._glTitleExt)
         {
@@ -677,9 +670,7 @@ export default class GlOp extends CABLES.EventTarget
                 this._glComment.dispose();
                 this._glComment = null;
             }
-            // this._glComment.visible = false;
         }
-
 
         if (this.opUiAttribs.comment_title) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
@@ -705,7 +696,6 @@ export default class GlOp extends CABLES.EventTarget
                 this._visPort.onChange = () =>
                 {
                     const t = this._visPort.get();
-
 
                     if (t)
                     {
@@ -804,9 +794,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._hideBgRect) this._glRectBg.setOpacity(0.0);
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
-
-
         if (this._resizableArea) this._resizableArea._updateColor();
+        this._glRectNames.push("_glTitle");
     }
 
     set selected(s)
