@@ -270,16 +270,16 @@
 
     .ccheckbox
     {
-        padding-right:10px;
-        font-size:17px;
         cursor:pointer;
-        color:var(--color-06);
+    //     padding-right:10px;
+    //     font-size:17px;
+    //     color:var(--color-06);
     }
 
-    .fa-check-square:before
-    {
-        color:var(--color-11) !important;
-    }
+    // .fa-check-square:before
+    // {
+    //     color:var(--color-11) !important;
+    // }
 
     .value
     {

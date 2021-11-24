@@ -168,7 +168,9 @@ CABLES.UI.MODAL.showError = function (title, content)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"fa modalerror fa-exclamation-triangle\"></span>&nbsp;" + title + "</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML = "<span class=\"icon icon-2x icon-alert-triangle\"></span><h2>" + title + "</h2>";
+
+
     if (content)
     {
         CABLES.UI.MODAL.contentElement.innerHTML += content;
@@ -263,7 +265,7 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
     // TODO API?
     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 };
 
 CABLES.UI.MODAL.showException = function (ex, op)
@@ -368,7 +370,7 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;Inspect</h2>";
         CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\">Update</a>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
         CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
         CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button fa fa-copy\" >Copy</a>";
 
@@ -570,10 +572,10 @@ CABLES.UI.MODAL.showPortStructure = function (title, port)
         CABLES.UI.MODAL.hideLoading();
 
         let fullHTML = "";
-        fullHTML += "<h2><span class=\"fa fa-gear\"></span>&nbsp;structure</h2>";
+        fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
         fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
         fullHTML += "<br/><br/>";
-        fullHTML += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.UI.MODAL.updatePortStructurePreview('" + title + "')\">update</a>";
+        fullHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
         fullHTML += "<br/><br/>";
         fullHTML += "<br/><br/>";
         fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";

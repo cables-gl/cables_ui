@@ -214,7 +214,10 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   outColor.rg+=uv*0.3;"
+
+
             .endl() + "   outColor.a*=col.a;"
+            .endl() + "   if(outColor.a==0.0)discard;"
 
         // .endl() + "   outColor.a=0.1;"
 

@@ -109,7 +109,7 @@
 
                         {{#compare port.uiAttribs.display '==' 'bool' }}
                             </td><td>
-                            <span id="portcheckbox_{{ portnum }}" class="ccheckbox fa {{#compare port.value '==' true }}fa-check-square{{/compare}}{{#compare port.value '==' false }}fa-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
+                            <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon {{#compare port.value '==' true }}icon-check-square{{/compare}}{{#compare port.value '==' false }}icon-square{{/compare}}" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
                             <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                         {{/compare}}
 
@@ -129,11 +129,11 @@
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'editor' }}
                         </td><td>
-                            <a class="button fa fa-edit" id="portedit_{{ dirStr }}_{{ portnum }}" >edit</a>
+                            <a class="button-small" id="portedit_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-edit"></span>edit</a>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'spreadsheet' }}
                         </td><td>
-                            <a class="button fa fa-edit" id="portspreadsheet_{{ dirStr }}_{{ portnum }}" >edit</a>
+                            <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-edit"></span>edit</a>
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
                             </td><td>
@@ -253,7 +253,7 @@
 
             {{#compare port.type '==' 5 }}
                 <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}">{{port.port.getValueForDisplay}}</span>
-                <span class="button-small fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span><br />
+                <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
             {{/compare}}
 
             {{#compare port.type '==' 3 }}
@@ -265,8 +265,8 @@
 
                 <span class="button-small fa fa-align-justify info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"></span>
 
-                <span class="button-small fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span>
-                <span class="button-small fa fa-gear info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"></span><br/>
+                <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
             </td>
             <td>
 
@@ -296,8 +296,8 @@
                 {{else}}
                     <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >
                     </span>
-                    <span class="button-small fa fa-search info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"></span>
-                    <span class="button-small fa fa-gear info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"></span><br/>
+                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}

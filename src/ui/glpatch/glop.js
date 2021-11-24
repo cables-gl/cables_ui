@@ -269,6 +269,7 @@ export default class GlOp extends CABLES.EventTarget
 
     setTitle(title, textWriter)
     {
+        if (title == "")title = " ";
         if (textWriter) this._textWriter = textWriter;
 
         if (!this._glTitle)
@@ -672,8 +673,9 @@ export default class GlOp extends CABLES.EventTarget
             }
         }
 
-        if (this.opUiAttribs.comment_title) this.setTitle(this.opUiAttribs.comment_title);
+        if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
+
 
         if (this._glTitleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._glTitleExt.text)
         {
@@ -777,7 +779,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._displayType === this.DISPLAY_UI_AREA)
         {
-            // this._glRectBg.setColor(0, 0, 0, 0.4);
+            this._glRectBg.setColor(0, 0, 0, 0.15);
             // this._glTitle.setOpacity(0.8);
         }
         else
@@ -792,7 +794,10 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setOpacity(1.0);
         }
 
-        if (this._hideBgRect) this._glRectBg.setOpacity(0.0);
+        if (this._hideBgRect)
+        {
+            this._glRectBg.setOpacity(0.0);
+        }
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
         if (this._resizableArea) this._resizableArea._updateColor();
         this._glRectNames.push("_glTitle");

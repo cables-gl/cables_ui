@@ -208,7 +208,9 @@ export default class ServerOps
             let html = "";
             html += "<h1>can not execute op</h1>";
             html += "this op crashed before, you should reload the page.<br/><br/>";
-            html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
 
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
 
@@ -286,7 +288,9 @@ export default class ServerOps
                     gui.metaTabs.activateTabByName("code");
                     let html = "";
                     html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                    html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                    // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                    html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
 
                     CABLES.UI.MODAL.show(html, {
                         "title": "new library added",
@@ -319,7 +323,9 @@ export default class ServerOps
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
                             html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
 
                             CABLES.UI.MODAL.show(html, {
                                 "title": "library removed",
@@ -346,7 +352,9 @@ export default class ServerOps
                     gui.metaTabs.activateTabByName("code");
                     let html = "";
                     html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                    html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                    // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                    html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
 
                     CABLES.UI.MODAL.show(html, {
                         "title": "new library added",
@@ -379,7 +387,9 @@ export default class ServerOps
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
                             html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
+                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
 
                             CABLES.UI.MODAL.show(html, {
                                 "title": "corelib removed",
