@@ -484,6 +484,8 @@ export default class FileManager
                     "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
                 }
 
+                console.log(this._filePortOp);
+
                 gui.opParams.show(this._filePortOp);
             }
         }

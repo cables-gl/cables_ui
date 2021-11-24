@@ -220,13 +220,22 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         if (!stretch)
         {
             if (port.get().width > port.get().height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
-            else sizeImg[0] = size[0] * port.get().width / port.get().height;
+            else
+            {
+                sizeImg[1] = size[0] * (sizeTex[1] / sizeTex[0]);
+
+                if (sizeImg[1] > size[1])
+                {
+                    const r = size[1] / sizeImg[1];
+                    sizeImg[0] *= r;
+                    sizeImg[1] *= r;
+                }
+            }
         }
 
         const scaledDown = sizeImg[0] > sizeTex[0] && sizeImg[1] > sizeTex[1];
 
         ctx.imageSmoothingEnabled = !small || !scaledDown;
-
 
         if (!ctx.imageSmoothingEnabled)
         {
@@ -242,7 +251,6 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
             s[0], s[1],
             pos[0] + (size[0] - sizeImg[0]) / 2, pos[1] + (size[1] - sizeImg[1]) / 2,
             sizeImg[0], sizeImg[1]);
-
 
         cgl.gl.clearColor(0, 0, 0, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);

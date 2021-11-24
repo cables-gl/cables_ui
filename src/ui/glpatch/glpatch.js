@@ -175,7 +175,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
-        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { this._log.log("compress0r"); gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
+        gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.opHistory.back(); });
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.opHistory.forward(); });

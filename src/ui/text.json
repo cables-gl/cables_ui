@@ -323,6 +323,14 @@
             "img": "inspecthtml.gif"
         },
         {
+            "descr": " You can jump to a connected operator in the parameter panel by clicking its name next to the parameter it is connected to.",
+            "img": "jump_connected_op.gif"
+        },
+        {
+            "descr": " Quickly find your sidebar operators in a patch by clicking on a sidebar element while holding the CTRL key on your keyboard.",
+            "img": "inspect_sidebar.gif"
+        },
+        {
             "descr": " You can simply left click on an output field in any operator's parameter panel to copy it to your clipboard. Great for saving arrays or generated outputs.",
             "img": "copyoutput.gif"
         }

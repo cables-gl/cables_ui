@@ -3,11 +3,13 @@ class Ele
 {
     byId(id)
     {
+        if (id && id[0] == "#") console.warn("ele.byId should not contain #");
         return document.getElementById(id);
     }
 
     byClassSingle(name)
     {
+        if (name && name[0] == ".") console.warn("ele.byClassSingle should not contain .");
         const els = document.getElementsByClassName(name);
         if (els.length > 0) return els[0];
         return null;
@@ -15,6 +17,7 @@ class Ele
 
     byClass(name)
     {
+        if (name && name[0] == ".") console.warn("ele.byClass should not contain .");
         const els = document.getElementsByClassName(name);
         if (!els) return [];
         return els;
@@ -22,6 +25,8 @@ class Ele
 
     forEachClass(name, cb)
     {
+        if (name && name[0] == ".") console.warn("ele.forEachClass should not contain .");
+
         const eles = document.getElementsByClassName(name);
         for (let i = 0; i < eles.length; i++) cb(eles[i]);
     }

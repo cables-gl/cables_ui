@@ -1735,6 +1735,10 @@ export default class PatchView extends CABLES.EventTarget
         const selectedOps = this.getSelectedOps();
 
         for (let i = 0; i < selectedOps.length; i++)
+            if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
+                return selectedOps[i].setUiAttrib({ "color": col });
+
+        for (let i = 0; i < selectedOps.length; i++)
             selectedOps[i].setUiAttrib({ "color": col });
     }
 

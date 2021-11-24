@@ -1,6 +1,7 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
+
 CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -17,6 +18,7 @@ CABLES.UI.GUI = function (cfg)
     this.socket = null;
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
+
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
@@ -966,6 +968,7 @@ CABLES.UI.GUI = function (cfg)
             const fn = portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
+            console.log("showfileselect", opid, gui.corePatch().getOpById(opid));
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
         });
