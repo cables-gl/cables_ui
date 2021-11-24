@@ -4,7 +4,7 @@
 
         <h2>{{ converterName }}</h2>
         <br/>
-        <i id="converterprogress" class="fa fa-circle-o-notch fa-spin" style="display:none;"></i>
+        <i id="converterprogress">Working....</i>
 
         <form id="converterform">
 
@@ -103,7 +103,7 @@
 
             {{/compare}}
 
-            <a class="button fa fa-retweet" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')">&nbsp;Start Converter: {{ converterName }}</a>
+            <a class="button" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')"><span class="icon icon-refresh"></span>Start Converter: {{ converterName }}</a>
             <br/><br/>
 
 

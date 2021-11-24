@@ -1,4 +1,15 @@
 
+.button-icon .icon
+{
+    vertical-align: bottom;
+    margin-right: 0px !important;
+}
+
+.button-small.button-icon
+{
+    padding-top:1px !important;
+}
+
 
 .button-small,.button
 {
@@ -8,6 +19,7 @@
         margin-right:10px;
     }
 }
+
 .iconbutton
 {
 	padding:3px;

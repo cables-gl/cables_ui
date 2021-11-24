@@ -111,7 +111,7 @@
 
 #patchname
 {
-    margin-top:2px;
+    margin-top:1px;
     user-select:none;
 }
 
@@ -155,6 +155,13 @@ nav
     user-select: none;
     float:left;
     $nav-li-padding: 5px 10px;
+
+    .main .icon
+{
+    margin-top:2px;
+}
+
+
 
     li
     {
@@ -412,6 +419,10 @@ nav
     }
 }
 
+#nav-logo
+{
+    margin-top: 0px !important;
+}
 
 .nav_logo
 {
