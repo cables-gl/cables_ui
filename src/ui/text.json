@@ -214,7 +214,7 @@
         },
         {
             "title": "Delete Links",
-            "descr": " To delete a cable just press the `right mouse button` on one of the connected ports.",
+            "descr": " To **delete a cable** just press the `right mouse button` on one of the connected ports.",
             "img": "f_delete_link.gif"
         },
         {
@@ -244,12 +244,12 @@
             "img": "l_connect_with_drag_to_center.gif"
         },
         {
-            "descr": " **To add an existing op between two other ops**, click and hold 'left mouse button' and drag the op to the middle of the cable and release.",
+            "descr": " To **add an existing op between two other ops**, click and hold 'left mouse button' and drag the op to the middle of the cable and release.",
             "img": "m_add_existing_op_between.gif"
         },
         {
             "title": "Duplicating Links",
-            "descr": " **Duplicate a link** by pressing `ALT` and the `right mouse button` and dragging the cable to another port",
+            "descr": " You can **duplicate a link** by pressing `ALT` and the `right mouse button` and dragging the cable to another port",
             "img": "n_duplicate_link.gif"
         },
         {
@@ -262,11 +262,11 @@
             "img": "p_disable_ops_with_d_key.gif"
         },
         {
-            "descr": " **Temporarily disconnect/bypass a selected op** by pressing `SHIFT + d`, pressing `SHIFT + d` again reconnects the cable",
+            "descr": " You can **temporarily disconnect/bypass a selected op** by pressing `SHIFT + d`, pressing `SHIFT + d` again reconnects the cable",
             "img": "q_disable_op_with_shift_and_d_key.gif"
         },
         {
-            "descr": " **Upload files** by dragging them into the window",
+            "descr": " You can **upload files** by dragging them into the window",
             "img": "r_add_file_drag_and_drop.gif"
         },
         {
@@ -274,7 +274,7 @@
             "img": "s_command_palette_ctrl_and_p.gif"
         },
         {
-            "descr": " **set a custom title to an op** by clicking the title in the parameter panel (you can also select an op and press `t`)",
+            "descr": " You can **set a custom title to an op** by clicking the title in the parameter panel (you can also select an op and press `t`)",
             "img": "t_change_op_title.gif"
         },
         {
