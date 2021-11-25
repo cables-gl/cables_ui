@@ -286,7 +286,7 @@
 
         .icon
         {
-            background-color: black;
+            background-color: white;
             margin-top: 1px;
             width:16px;
             height:16px;
@@ -599,7 +599,7 @@ td.head
     }
 
     input:checked + span {
-        color: var(--color-11);
+        color: var(--color-13);
         background-color: var(--color-07);
     }
 
