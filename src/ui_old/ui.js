@@ -1105,17 +1105,17 @@ CABLES.UI.GUI = function (cfg)
 
     this.helperContextMenu = function (ele)
     {
-        let iconTransforms = "fa fa-check fa-hide";
-        if (CABLES.UI.showCanvasTransforms) iconTransforms = "fa fa-check";
+        let iconTransforms = "icon icon-check hidden";
+        if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
-        let iconShowAllHelpers = "fa fa-check fa-hide";
-        if (CABLES.UI.userSettings.get("helperMode")) iconShowAllHelpers = "fa fa-check";
+        let iconShowAllHelpers = "icon icon-check hidden";
+        if (CABLES.UI.userSettings.get("helperMode")) iconShowAllHelpers = "icon icon-check";
 
-        let iconShowCurrentOpHelper = "fa fa-check fa-hide";
-        if (CABLES.UI.userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "fa fa-check";
+        let iconShowCurrentOpHelper = "icon icon-check hidden";
+        if (CABLES.UI.userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "icon icon-check";
 
-        let iconCurrentOpTransform = "fa fa-check fa-hide";
-        if (CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "fa fa-check";
+        let iconCurrentOpTransform = "icon icon-check hidden";
+        if (CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "icon icon-check";
 
         CABLES.contextMenu.show(
             {
