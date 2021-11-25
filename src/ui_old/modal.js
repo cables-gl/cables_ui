@@ -258,13 +258,13 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
     if (gui.user.isAdmin || opName.startsWith("Op.User." + gui.user.usernameLowercase))
     {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-edit\" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\">Edit op</a> &nbsp;&nbsp;";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\"><span class=\"icon icon-edit\"><span>Edit op</a> &nbsp;&nbsp;";
     }
 
     CABLES.lastError = { "exception": ex, opName };
 
     // TODO API?
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 };
 
