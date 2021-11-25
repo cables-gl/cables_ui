@@ -302,13 +302,13 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-exclamation-triangle\"></span>&nbsp;cablefail :/</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><<span class=\"icon icon-2x icon-alert-triangle\"></span>cablefail :/</h2>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
 
     CABLES.lastError = { "exception": ex };
     // TODO API
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
 
     CABLES.UI.MODAL._setVisible(true);
 
