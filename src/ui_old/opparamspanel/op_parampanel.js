@@ -109,8 +109,6 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
-        if (!op) this._log.stack("op undefined");
-
         if (this._currentOp != op)
         {
             if (this._currentOp) this._stopListeners();
@@ -797,7 +795,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         {
             items.push({
                 "title": "edit op ",
-                "iconClass": "fa fa-lock",
+                "iconClass": "icon icon-lock",
                 func()
                 {
                     gui.serverOps.edit(opname);
@@ -806,7 +804,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
             items.push({
                 "title": "rename op ",
-                "iconClass": "fa fa-lock",
+                "iconClass": "icon icon-lock",
                 func()
                 {
                     window.open(CABLES.sandbox.getCablesUrl() + "/op/rename?op=" + opname + "&new=" + opname, "_blank");

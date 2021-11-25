@@ -7,12 +7,12 @@
         <div class="groupSpacer"><h3>Code</h3></div>
 
 
-        <span class="button-small fa fa-file-text-o" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}Edit{{else}}View{{/if}} code</span>
-        <span class="button-small fa fa-clone" onclick="gui.serverOps.cloneDialog('{{op.objName}}');">Clone op code</span>
+        <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
+        <span class="button-small " onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-copy"></span>Clone op code</span>
 
         {{#if user.isStaff}}
             {{#if op.github}}
-                <a class="button-small fa fa-github" href="{{op.github}}" target="_blank">view on github</a>
+                <a class="button-small" href="{{op.github}}" target="_blank">View on github</a>
             {{/if}}
         {{/if}}
 
@@ -41,7 +41,7 @@
             No attachments...<br/><br/>
         {{/if}}
 
-        <a class="button-small fa fa-plus" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');">Create</a>
+        <a class="button" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create</a>
 
         <br/><br/>
 
@@ -72,7 +72,7 @@
         {{/each}}
         <select>
 
-        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
+        <a class="button-small" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
 
@@ -99,7 +99,7 @@
                 <option value="{{.}}">{{.}}</option>
             {{/each}}
         <select>
-        <a class="button-small fa fa-plus-o" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+        <a class="button-small" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
 
         <br /><br /><br />
 

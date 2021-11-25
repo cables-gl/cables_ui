@@ -136,10 +136,8 @@ export default class GlPatch extends CABLES.EventTarget
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 
-
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
-
 
         cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this));
         cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this));
@@ -151,7 +149,6 @@ export default class GlPatch extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
-
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
@@ -208,25 +205,20 @@ export default class GlPatch extends CABLES.EventTarget
             gui.socket.on("netCursorPos", (msg) =>
             {
                 if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
-
                 this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
             });
 
             gui.on("netGotoPos", (msg) =>
             {
                 if (typeof msg.x !== "undefined" && typeof msg.y !== "undefined")
-                {
                     this.center(msg.x, msg.y);
-                }
             });
 
             // remove client on connection lost
             gui.socket.on("netClientRemoved", (msg) =>
             {
                 if (this._glCursors[msg.clientId])
-                {
                     this._glCursors[msg.clientId].visible = false;
-                }
             });
         });
 
@@ -237,11 +229,24 @@ export default class GlPatch extends CABLES.EventTarget
         {
             // this._log.log("linetype changed!", value);
             for (let i in this.links)
-            {
                 this.links[i].updateLineStyle();
-            }
         });
     }
+
+
+    get name() { return "glpatch"; }
+
+    get time() { return this._time; }
+
+    set patchAPI(api) { this._patchAPI = api; }
+
+    get patchAPI() { return this._patchAPI; }
+
+    get rectDrawer() { return this._rectInstancer; }
+
+    get selectedGlOps() { return this._selectedGlOps; }
+
+    get subPatch() { return this._currentSubpatch; }
 
     zIndex()
     {
@@ -328,10 +333,8 @@ export default class GlPatch extends CABLES.EventTarget
             this._pauseMouseUntilButtonUp = false;
             return;
         }
-        if (this._selectionArea.active)
-        {
-            this._selectionArea.hideArea();
-        }
+        if (this._selectionArea.active) this._selectionArea.hideArea();
+
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
         this.emitEvent("mouseleave", e);
@@ -408,7 +411,6 @@ export default class GlPatch extends CABLES.EventTarget
         this.emitEvent("mouseup", e);
         this.quickLinkSuggestion.longPressCancel();
         this._rectInstancer.interactive = true;
-        // this._hoverCable.visible = false;
 
         if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
         {
@@ -426,20 +428,6 @@ export default class GlPatch extends CABLES.EventTarget
         if (e.stopPropagation) e.stopPropagation();
         if (e.preventDefault) e.preventDefault();
     }
-
-    get name() { return "glpatch"; }
-
-    get time() { return this._time; }
-
-    set patchAPI(api) { this._patchAPI = api; }
-
-    get patchAPI() { return this._patchAPI; }
-
-    get rectDrawer() { return this._rectInstancer; }
-
-    get selectedGlOps() { return this._selectedGlOps; }
-
-    get subPatch() { return this._currentSubpatch; }
 
     isFocussed()
     {

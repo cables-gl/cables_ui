@@ -47,8 +47,8 @@
             <div class="button fright " style="margin-top:10px;" onclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">{{{../texts.opselect_addop}}}</div>
             <a>
                 {{oldState}}
-                {{#if userOp }}<i class="fa fa-user" style="color:white;"></i>{{/if}}
-                {{#if devOp }}<i class="fa fa-wrench" style="color:white;"></i>{{/if}}
+                {{#if userOp }}<span class="icon icon-user" ></span>{{/if}}
+                {{#if devOp }}<span class="icon icon-tool" ></span>{{/if}}
                 <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                 - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
                 </span>{{isFunction}}

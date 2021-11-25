@@ -17,9 +17,9 @@
             <a onclick="gui.patchView.setOpColor(null)" style="background-color:#fff;" class="colorbutton icon-x icon"></a>
             <br/><br/><br/>
 
-            <a onclick="CABLES.CMD.PATCH.opsAlignHorizontal()" class="button fa fa-align-left">Align Horizontally  [a]</a>
+            <a onclick="CABLES.CMD.PATCH.alignOpsLeft()" class="icon-button button-small info" data-info="Press `A` to align left"><span class="icon icon-align-left icon-1_25x"></span>Align Left</a>
             <br/>
-            <a onclick="CABLES.CMD.PATCH.opsCompress()" class="button fa fa-align-justify">Compress Vertically [shift]+[a]</a>
+            <a onclick="CABLES.CMD.PATCH.compressOps()" class="icon-button button-small info" data-info="Press `shift`+`A` to Compress Vertically"><span class="icon icon-align-justify icon-1_25x"></span>Compress Vertically </a>
             <br/>
             <br/>
             <br/>
@@ -27,12 +27,9 @@
             <a onclick="CABLES.CMD.PATCH.createSubPatchFromSelection()" class="icon-button button-small "><span class="icon icon-subpatch icon-1_25x"></span>Create Subpatch</a>
             <br/>
             <a onclick="CABLES.CMD.PATCH.createAreaFromSelection()" class="icon-button button-small "><span class="icon icon-square icon-1_25x"></span>Create Area</a>
-            <br/><br/>
+            <br/>
+            <!-- <a onclick="CABLES.CMD.PATCH.deleteSelectedOps()" class="icon-button button-small info" data-info="Press `del` to delete ops"><span class="icon icon-trash icon-1_25x"></span>Delete Ops </a> -->
 
-            <br/>
-            <br/>
-            <br/>
-            <a onclick="CABLES.CMD.PATCH.deleteSelectedOps()" class="button fa fa-trash">delete</a>
         {{else}}
         <h2>no ops selected</h2>
         {{/if}}

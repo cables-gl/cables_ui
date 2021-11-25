@@ -84,15 +84,15 @@ export default class OpSelect
 
         optionsHtml += "&nbsp;found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
-        if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
-        {
-            optionsHtml += `&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.create('${this._getQuery()}');">create op</a>`;
-        }
+        // if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
+        // {
+        //     optionsHtml += `&nbsp;&nbsp;<span class="icon icon-edit"></span> <a onclick="gui.serverOps.create('${this._getQuery()}');">create op</a>`;
+        // }
 
-        if (opname && (gui.user.isAdmin || opname.startsWith(`Ops.User.${gui.user.username}`)) && gui.serverOps.isServerOp(opname))
-        {
-            optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<i class="fa fa-lock"/> <a onclick="gui.serverOps.edit('${opname}');">edit op</a>`;
-        }
+        // if (opname && (gui.user.isAdmin || opname.startsWith(`Ops.User.${gui.user.username}`)) && gui.serverOps.isServerOp(opname))
+        // {
+        //     optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<span class="icon icon-lock"></span> <a onclick="gui.serverOps.edit('${opname}');">edit op</a>`;
+        // }
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");// .data('scoreDebug')

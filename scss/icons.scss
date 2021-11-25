@@ -1,4 +1,15 @@
 
+.button-icon .icon
+{
+    vertical-align: bottom;
+    margin-right: 0px !important;
+}
+
+.button-small.button-icon
+{
+    padding-top:1px !important;
+}
+
 
 .button-small,.button
 {
@@ -8,6 +19,7 @@
         margin-right:10px;
     }
 }
+
 .iconbutton
 {
 	padding:3px;
@@ -92,10 +104,15 @@
 	height: calc(24px + 1.5 * var(--font-size-off));
 }
 
-.icon-1_25x
+.icon-0_75x
 {
-	width: calc(20px + 1.25 * var(--font-size-off));
-	height: calc(20px + 1.25 * var(--font-size-off));
+	width: calc(12px + 0.75 * var(--font-size-off));
+	height: calc(12px + 0.75 * var(--font-size-off));
 }
 
 
+.button-small .icon
+{
+	width: calc(15px + 0.75 * var(--font-size-off)) !important;
+	height: calc(15px + 0.75 * var(--font-size-off)) !important;
+}

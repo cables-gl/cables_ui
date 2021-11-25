@@ -10,7 +10,7 @@ export default class GlArea
 
         this._w = 300;
         this._h = 200;
-
+        this._visible = true;
 
         this._rectBg = this._instancer.createRect({ "draggable": false });
         this._rectBg.setSize(this._w, this._h);
@@ -21,10 +21,8 @@ export default class GlArea
         this._rectResize = this._instancer.createRect({ "draggable": true });
         this._rectResize.setSize(this.resizeCornerSize, this.resizeCornerSize);
         this._rectResize.setColor([0, 0, 0, 0.2]);
-
         this._rectResize.setPosition(200 - this.resizeCornerSize, 200 - this.resizeCornerSize);
         this._rectResize.draggable = true;
-
         this._rectResize.draggableMove = true;
 
         this._glop.on("drag", () =>
@@ -46,7 +44,6 @@ export default class GlArea
             this._update();
         });
 
-
         if (this._glop.op.uiAttribs.area)
         {
             if (this._glop.op.uiAttribs.area.id) this._id = this._glop.op.uiAttribs.area.id;
@@ -54,12 +51,20 @@ export default class GlArea
             this._h = this._glop.op.uiAttribs.area.h;
         }
 
+        this._update();
+    }
 
+    set visible(v)
+    {
+        this._visible = v;
         this._update();
     }
 
     _update()
     {
+        this._rectBg.visible = this._visible;
+        this._rectResize.visible = this._visible;
+
         this._rectBg.setPosition(
             this._glop.x,
             this._glop.y);
@@ -84,7 +89,7 @@ export default class GlArea
             cols[3] = 0.1;
             this._rectBg.setColor(cols);
         }
-        else this._rectBg.setColor([0, 0, 0, 0.1]);
+        else this._rectBg.setColor([0, 0, 0, 0.08]);
     }
 
     dispose()

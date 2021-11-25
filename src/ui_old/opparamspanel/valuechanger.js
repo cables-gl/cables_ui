@@ -15,13 +15,15 @@ CABLES.UI.togglePortValBool = function (which, checkbox)
 
     if (bool_value)
     {
-        checkBoxEle.classList.add("fa-check-square");
-        checkBoxEle.classList.remove("fa-square");
+        checkBoxEle.parentElement.classList.add("checkbox-active");
+        checkBoxEle.parentElement.classList.remove("checkbox-inactive");
+        // checkBoxEle.classList.add("icon-check");
     }
     else
     {
-        checkBoxEle.classList.add("fa-square");
-        checkBoxEle.classList.remove("fa-check-square");
+        checkBoxEle.parentElement.classList.add("checkbox-inactive");
+        checkBoxEle.parentElement.classList.remove("checkbox-active");
+        // checkBoxEle.classList.remove("icon-check");
     }
 
     inputEle.value = bool_value;

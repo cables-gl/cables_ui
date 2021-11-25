@@ -52,7 +52,7 @@ export default class GlViewBox
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
-        this._drawBoundingRect = !CABLES.UI.userSettings.get("glpatch_hideboundings");
+        this._drawBoundingRect = CABLES.UI.userSettings.get("glpatch_showboundings");
     }
 
     setSize(w, h)
