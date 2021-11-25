@@ -88,7 +88,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
     {
         this._updateSize();
         const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
-        const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizGraph");
+        const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
         ops.push(...ops2);
 
 
@@ -109,7 +109,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 this._items.push(item);
 
                 if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
-                if (ops[i].objName == "Ops.Dev.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
+                if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
             }
         }
     }
