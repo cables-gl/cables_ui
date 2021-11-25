@@ -88,8 +88,8 @@ export default class GlPreviewLayer extends CABLES.EventTarget
     updateViewPort()
     {
         this._updateSize();
-        const ops = gui.corePatch().getOpsByObjName("Ops.Dev.VizTexture");
-        const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizNumber");
+        const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
+        const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizNumber");
         ops.push(...ops2);
 
         for (let i = 0; i < ops.length; i++)
@@ -107,8 +107,8 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 this._itemsLookup[ops[i].id] = item;
                 this._items.push(item);
 
-                if (ops[i].objName == "Ops.Dev.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
-                if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new GlPreviewLayerNumber(this, item);
+                if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Ui.VizNumber") item.renderer = new GlPreviewLayerNumber(this, item);
             }
         }
     }
