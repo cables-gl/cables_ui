@@ -268,13 +268,11 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
     }
     else if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
     {
-        portName = "Object";
         opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
         opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
     }
     else if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
     {
-        portName = "Array";
         opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
         opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
     }
@@ -283,6 +281,8 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
         opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
     }
+    else
+        console.log("createvar unknown var", p);
 
     gui.patchView.addOp(opSetterName, { "onOpAdd": (opSetter) =>
     {
@@ -291,7 +291,10 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
-            opSetter.getPort(portName).set(value);
+
+            console.log(opSetter, opSetter.portsIn, portName, opSetter.getPortByName(portName));
+
+            opSetter.getPortByName(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
             {
@@ -316,6 +319,8 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opGetter.varName.set(name);
 
             if (next)next(opSetter, opGetter);
+
+            CABLES.UI.MODAL.hide(true);
         } });
     } });
 };
