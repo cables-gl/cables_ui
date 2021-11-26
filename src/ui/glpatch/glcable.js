@@ -379,7 +379,7 @@ export default class GlCable
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
             const selectedOp = gui.patchView.getSelectedOps()[0];
-            if (!selectedOp || !selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0) return;
+            if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
 
             if (this._glPatch.isDraggingOps() &&
                 gui.patchView.getSelectedOps().length == 1 &&
