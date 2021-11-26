@@ -27,6 +27,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.logEvents(false, "glpatch");
         if (!cgl) this._logonsole.error("[glpatch] need cgl");
 
+
         this._log = new Logger("glpatch");
         this.paused = false;
 

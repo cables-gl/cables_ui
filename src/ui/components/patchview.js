@@ -97,6 +97,13 @@ export default class PatchView extends CABLES.EventTarget
 
     setProject(proj, cb)
     {
+        if (!this._patchRenderer)
+        {
+            this._log.error("no patchrenderer...");
+            cb();
+            return;
+        }
+
         if (proj && proj.ui)
         {
             this.store.setProject(proj);

@@ -11,6 +11,14 @@ CABLES.GLGUI.GlGuiFull = function (tabs)
     ele.id = id;
     ele.classList.add("glpatchcontainer");
 
+
+    if (!CABLES.patch.cgl.gl)
+    {
+        console.log("yep,b0rken!!!!");
+        return;
+    }
+
+
     const a = new CABLES.GLGUI.GlUiCanvas(CABLES.patch, ele);
 
     gui.patchView.setPatchRenderer(id, a.glPatch);

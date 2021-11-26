@@ -1,3 +1,5 @@
+
+
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
@@ -2117,6 +2119,16 @@ function startUi(cfg)
         gui.initCoreListeners();
 
         gui.corePatch().timer.setTime(0);
+
+        if (!gui.corePatch().cgl.gl)
+        {
+            // console.log("yep,b0rken!.............");
+            ele.byId("loadingstatus").remove();
+            ele.byId("loadingstatusLog").remove();
+            CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
+            return;
+        }
+
 
         gui.bind(() =>
         {
