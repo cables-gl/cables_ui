@@ -514,6 +514,10 @@ export default class OpSelect
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
+
+        if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)) ele.show(ele.byId("opselect_createTrigger"));
+        else ele.hide(ele.byId("opselect_createTrigger"));
+
         if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_ARRAY || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_OBJECT)) ele.show(ele.byId("opselect_createVar"));
         else ele.hide(ele.byId("opselect_createVar"));
 

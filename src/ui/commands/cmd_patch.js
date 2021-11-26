@@ -258,6 +258,7 @@ CABLES_CMD_PATCH.stats = function (force)
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
     let portName = "Value";
+    let portNameOut = portName;
     let opSetterName;
     let opGetterName;
 
@@ -281,6 +282,14 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
         opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
     }
+    else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION)
+    {
+        portName = "Trigger";
+        portNameOut = "Triggered";
+
+        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTrigger;
+        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetTrigger;
+    }
     else
         console.log("createvar unknown var", p);
 
@@ -292,27 +301,18 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
 
 
-            console.log(opSetter, opSetter.portsIn, portName, opSetter.getPortByName(portName));
-
-            opSetter.getPortByName(portName).set(value);
+            if (p.type != CABLES.OP_PORT_TYPE_FUNCTION)
+                opSetter.getPortByName(portName).set(value);
 
             if (p.direction == CABLES.PORT_DIR_IN)
             {
                 p.parent.patch.link(opGetter, portName, p.parent, p.name);
-
-                if (p2)
-                {
-                    p2.parent.patch.link(opSetter, portName, p2.parent, p2.name);
-                }
+                if (p2) p2.parent.patch.link(opSetter, portNameOut, p2.parent, p2.name);
             }
             else
             {
                 p.parent.patch.link(opSetter, portName, p.parent, p.name);
-
-                if (p2)
-                {
-                    p2.parent.patch.link(opGetter, portName, p2.parent, p2.name);
-                }
+                if (p2) p2.parent.patch.link(opGetter, portNameOut, p2.parent, p2.name);
             }
 
             opSetter.varName.set(name);
@@ -370,6 +370,41 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
         {
             const link = CABLES.UI.OPSELECT.linkNewLink;
 
+            const p1 = link.portIn;
+            const p2 = link.portOut;
+            CABLES.UI.OPSELECT.linkNewLink = null;
+
+            if (p1.direction == CABLES.PORT_DIR_IN)p1.removeLinks();
+            else p2.removeLinks();
+
+            link.remove();
+
+            CABLES_CMD_PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
+            {
+                getter.uiAttr({ "translate": {
+                    "x": p1.parent.uiAttribs.translate.x,
+                    "y": p1.parent.uiAttribs.translate.y - 40
+                } });
+
+                setter.uiAttr({ "translate": {
+                    "x": p2.parent.uiAttribs.translate.x,
+                    "y": p2.parent.uiAttribs.translate.y + 40
+                } });
+            });
+        } });
+};
+
+CABLES_CMD_PATCH.createTriggerSendReceive = () =>
+{
+    const link = CABLES.UI.OPSELECT.linkNewLink;
+
+    new CABLES.UI.ModalDialog({
+        "prompt": true,
+        "title": "New Trigger Send",
+        "text": "Enter a name for a new wireless trigger",
+        "promptValue": link.portOut.name,
+        "promptOk": (str) =>
+        {
             const p1 = link.portIn;
             const p2 = link.portOut;
             CABLES.UI.OPSELECT.linkNewLink = null;
