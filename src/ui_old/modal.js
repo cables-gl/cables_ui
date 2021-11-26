@@ -374,12 +374,12 @@ CABLES.UI.MODAL.showPortValue = function (title, port)
         CABLES.UI.MODAL.PORTPREVIEW = port;
         CABLES.UI.MODAL.showClose();
         CABLES.UI.MODAL.init();
-        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;Inspect</h2>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
         CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
         CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
         CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button fa fa-copy\" >Copy</a>";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
 
         CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
         const thing = port.get();
