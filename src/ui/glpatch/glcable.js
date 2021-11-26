@@ -378,11 +378,14 @@ export default class GlCable
 
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
+            const selectedOp = gui.patchView.getSelectedOps()[0];
+            if (selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0) return;
+
             if (this._glPatch.isDraggingOps())
                 if (gui.patchView.getSelectedOps().length == 1 &&
             (
-                this._link._opIn.id == gui.patchView.getSelectedOps()[0].id ||
-                this._link._opOut.id == gui.patchView.getSelectedOps()[0].id)
+                this._link._opIn.id == selectedOp.id ||
+                this._link._opOut.id == selectedOp.id)
                 )
                 {
                     // no self hovering/linking
