@@ -352,7 +352,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
                 if (ele.byId("portFilename_" + i))
-                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button fa fa-folder-open-o monospace\" style=\"text-transform:none;font-family:monospace;font-size: 13px;\">" + shortName + "</span>";
+                    ele.byId("portFilename_" + i).innerHTML = "<span class=\"button button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
 
                 if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".webp"))
                 {
@@ -403,7 +403,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -724,6 +724,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             this._currentOp.uiAttr({ "comment": v });
             if (v.length == 0) this._currentOp.uiAttr({ "comment": null });
             this._currentOp.patch.emitEvent("commentChanged");
+            gui.setStateUnsaved();
         }
         else
         {

@@ -224,7 +224,14 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
     if (ex)
     {
         CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>";
+        if (ex.stack)
+        {
+            CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>";
+        }
+        if (ex.customMessage)
+        {
+            CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.customMessage + "</div><br/>";
+        }
     }
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
@@ -258,13 +265,13 @@ CABLES.UI.MODAL.showOpException = function (ex, opName)
 
     if (gui.user.isAdmin || opName.startsWith("Op.User." + gui.user.usernameLowercase))
     {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-edit\" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\">Edit op</a> &nbsp;&nbsp;";
+        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
     }
 
     CABLES.lastError = { "exception": ex, opName };
 
     // TODO API?
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 };
 
@@ -302,13 +309,13 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-exclamation-triangle\"></span>&nbsp;cablefail :/</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><<span class=\"icon icon-2x icon-alert-triangle\"></span>cablefail :/</h2>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
 
     CABLES.lastError = { "exception": ex };
     // TODO API
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton fa fa-bug\" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
 
     CABLES.UI.MODAL._setVisible(true);
 

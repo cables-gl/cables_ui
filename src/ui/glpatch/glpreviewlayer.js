@@ -25,9 +25,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         this._eleCanvas.classList.add("gluiPreviewLayer");
         this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
 
-
         document.body.appendChild(this._eleCanvas);
-
 
         this._canvasCtx = this._eleCanvas.getContext("2d");
 
@@ -50,6 +48,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
     renderGl()
     {
         if (this._items.length == 0) return;
+        this._canvasCtx.fillStyle = "#222222";
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
         const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderGl");
@@ -88,9 +87,10 @@ export default class GlPreviewLayer extends CABLES.EventTarget
     updateViewPort()
     {
         this._updateSize();
-        const ops = gui.corePatch().getOpsByObjName("Ops.Dev.VizTexture");
-        const ops2 = gui.corePatch().getOpsByObjName("Ops.Dev.VizNumber");
+        const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
+        const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
         ops.push(...ops2);
+
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -100,6 +100,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 item = {
                     "op": ops[i],
                     "port": ops[i].portsIn[0],
+                    "ports": ops[i].portsIn,
                     "posX": ops[i].uiAttribs.translate.x,
                     "posY": ops[i].uiAttribs.translate.y,
                 };
@@ -107,12 +108,11 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 this._itemsLookup[ops[i].id] = item;
                 this._items.push(item);
 
-                if (ops[i].objName == "Ops.Dev.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
-                if (ops[i].objName == "Ops.Dev.VizNumber") item.renderer = new GlPreviewLayerNumber(this, item);
+                if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
+                if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
             }
         }
     }
-
 
     pauseInteraction()
     {
