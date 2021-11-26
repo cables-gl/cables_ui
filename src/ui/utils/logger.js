@@ -15,7 +15,6 @@ export default class Logger extends CABLES.EventTarget
         console.log((new Error()).stack);
     }
 
-
     groupCollapsed(t)
     {
         console.groupCollapsed("[" + this.initiator + "] " + t);
