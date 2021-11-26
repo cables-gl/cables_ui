@@ -587,10 +587,28 @@ export default class PatchView extends CABLES.EventTarget
             "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding)
         };
 
-        const patchOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
+        const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
             "area": {
                 "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
                 "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+
+        const undofunc = (function (opid)
+        {
+            CABLES.UI.undo.add({
+                "title": "paste op",
+                undo()
+                {
+                    gui.corePatch().deleteOp(opid, true);
+                },
+                redo()
+                {
+                    gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
+                        "area": {
+                            "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
+                            "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+                }
+            });
+        }(areaOp.id));
     }
 
 
