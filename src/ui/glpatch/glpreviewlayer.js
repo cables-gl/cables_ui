@@ -91,7 +91,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
         ops.push(...ops2);
 
-
         for (let i = 0; i < ops.length; i++)
         {
             let item = this._itemsLookup[ops[i].id];

@@ -18,6 +18,8 @@ export default
         "VarGetArray": "Ops.Vars.VarGetArray_v2",
         "VarSetString": "Ops.Vars.VarSetString_v2",
         "VarGetString": "Ops.Vars.VarGetString",
+        "VarSetTrigger": "Ops.Trigger.TriggerSend",
+        "VarGetTrigger": "Ops.Trigger.TriggerReceive",
         "defaultFont": "Ops.Html.FontFile_v2",
         "blueprint": "Ops.Dev.Blueprint",
 

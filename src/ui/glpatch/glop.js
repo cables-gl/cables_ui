@@ -64,7 +64,14 @@ export default class GlOp extends CABLES.EventTarget
         if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
         if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
 
-        this._glRectBg = instancer.createRect({ "draggable": true });
+        this._wasInited = false;
+
+        this._initGl();
+    }
+
+    _initGl()
+    {
+        this._glRectBg = this._instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(GlUiConfig.opWidth, GlUiConfig.opHeight);
         this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
         this._glRectNames.push("_glRectBg");
@@ -75,6 +82,8 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
         this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
         this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+
+        this._wasInited = true;
 
         this.setHover(false);
         this.updateVisible();
@@ -144,7 +153,6 @@ export default class GlOp extends CABLES.EventTarget
     {
         const glOps = this._glPatch.selectedGlOps;
         for (const i in glOps) glOps[i].endPassiveDrag();
-
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
 
@@ -727,10 +735,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this.opUiAttribs.comment_title)
         {
-            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
-                this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
-            else
-                this._glTitle.setColor(1, 1, 1);
+            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color) this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+            else this._glTitle.setColor(1, 1, 1);
         }
         else
         {

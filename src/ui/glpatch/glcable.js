@@ -378,20 +378,20 @@ export default class GlCable
 
         if (distance <= r)// && !this._glPatch.isMouseOverOp()
         {
-            if (this._glPatch.isDraggingOps())
-                if (gui.patchView.getSelectedOps().length == 1 &&
-            (
-                this._link._opIn.id == gui.patchView.getSelectedOps()[0].id ||
-                this._link._opOut.id == gui.patchView.getSelectedOps()[0].id)
-                )
-                {
-                    // no self hovering/linking
-                    this._buttonRect.visible =
+            const selectedOp = gui.patchView.getSelectedOps()[0];
+            if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
+
+            if (this._glPatch.isDraggingOps() &&
+                gui.patchView.getSelectedOps().length == 1 &&
+                (this._link._opIn.id == selectedOp.id || this._link._opOut.id == selectedOp.id))
+            {
+                // no self hovering/linking
+                this._buttonRect.visible =
                     this._buttonRect.interactive =
                     this._buttonRect._hovering = false;
 
-                    return false;
-                }
+                return false;
+            }
 
             this.setColor();
 

@@ -457,7 +457,7 @@ export default class ServerOps
         html += "<br/>";
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\"></div>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton fa fa-clone\">create</a>";
+        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
         html += "<br/><br/>";
 
         CABLES.UI.MODAL.show(html);
