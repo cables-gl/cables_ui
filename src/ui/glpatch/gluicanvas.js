@@ -169,8 +169,8 @@ export default class GlUiCanvas
 
         this.canvas.style.width = this.width + "px";
         this.canvas.style.height = this.height + "px";
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
+        this.canvas.width = this.width * window.devicePixelRatio;
+        this.canvas.height = this.height * window.devicePixelRatio;
 
         if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width, this.height);
         this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
