@@ -289,7 +289,6 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
-
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
@@ -353,7 +352,7 @@ CABLES.UI.GUI = function (cfg)
         //     this._elIconBar.show();
         // }
 
-        let patchHeight = window.innerHeight - 2;
+        let patchHeight = window.innerHeight;
 
         if (this.isRemoteClient)
         {
@@ -621,9 +620,9 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.showTwoMetaPanels())
         {
-            metaWidth = this.rightPanelWidth - optionsWidth + 1;
+            metaWidth = this.rightPanelWidth - optionsWidth;
 
-            this._elOptions.style.left = window.innerWidth - this.rightPanelWidth - 1 + "px";
+            this._elOptions.style.right = metaWidth + "px";
             this._elOptions.style.top = self.rendererHeightScaled + "px";
             this._elOptions.style.width = optionsWidth + "px";
             this._elOptions.style.height = window.innerHeight - self.rendererHeightScaled + "px";
