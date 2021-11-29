@@ -514,14 +514,25 @@ export default class OpSelect
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
 
-        // var helper buttons
         /*
-            case 1: pressing circle on an existing link on a typed value cable
-            case 2: pressing circle on an existing link on a trigger cable
-            case 3: dragging out (or clicking title of) a typed value input port
+            var helper buttons / shortcuts
+
+            case 1: pressing circle of an existing link on a "typed value" cable - show create button
+            case 2: pressing circle of an existing link on a "typed value" cable - show "existing var" button IF a var by that port type exists already
+            case 3: dragging out (or clicking title of) a "typed value" input port - show create button
+            case 4: dragging out (or clicking title of) a "typed value" input port - show "existing var" button IF a var by that port type exists already
+
+            case 5: pressing circle of an existing link on a trigger cable - show create button
+
+            TODO case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
+            TODO case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
+            TODO case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
+
+            case9+: for now we dont set vars when dragging out an output "typed value"-port because the whole discussion if this should be a triggerVar op or not...
+
         */
 
-
+        // case 6
         if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)) ele.show(ele.byId("opselect_createTrigger"));
         else ele.hide(ele.byId("opselect_createTrigger"));
 
@@ -532,11 +543,25 @@ export default class OpSelect
         else ele.hide(ele.byId("opselect_replaceVar"));
 
 
+        // case 7
+        const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
+
+        console.log("CABLES.UI.OPSELECT.linkNewOpToPort", CABLES.UI.OPSELECT.linkNewOpToPort);
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_FUNCTION)
+        {
+            const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
+
+            console.log("numExistingTriggers", numExistingTriggers);
+            if (numExistingTriggers == 0) ele.hide(eleCreateWithExistingTrigger);
+            else ele.show(eleCreateWithExistingTrigger);
+        }
+        else ele.hide(eleCreateWithExistingTrigger);
+
+
         const eleCreateWithExistingVar = ele.byId("createLinkVariableExists");
         if (CABLES.UI.OPSELECT.linkNewOpToPort)
         {
-            const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
-            const existingVars = gui.corePatch().getVars(type);
+            const existingVars = gui.corePatch().getVars(CABLES.UI.OPSELECT.linkNewOpToPort.type);
             if (existingVars.length == 0) ele.hide(eleCreateWithExistingVar);
             else ele.show(eleCreateWithExistingVar);
         }
@@ -546,13 +571,11 @@ export default class OpSelect
         if ((link && link.portIn))
         {
             // show "replace with existing var button..."
-            const type = link.portIn.type;
-            const existingVars = gui.corePatch().getVars(type);
+            const existingVars = gui.corePatch().getVars(link.portIn.type);
             if (existingVars.length == 0) ele.hide(eleReplaceWithExisting);
             else ele.show(eleReplaceWithExisting);
         }
         else ele.hide(eleReplaceWithExisting);
-
 
         const eleOpsearch = ele.byId("opsearch");
         eleOpsearch.select();
