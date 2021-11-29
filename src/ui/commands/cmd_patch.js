@@ -294,6 +294,31 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         } });
     } });
 };
+CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
+{
+    const link = CABLES.UI.OPSELECT.linkNewLink;
+    const p = link.portIn;
+    const portOut = link.portOut;
+    CABLES.UI.OPSELECT.linkNewLink = null;
+
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+
+    gui.patchView.addOp(
+        getsetOp.getter,
+        { "onOpAdd": (opGetter) =>
+        {
+            link.remove();
+            p.removeLinks();
+            p.parent.patch.link(opGetter, getsetOp.portNameOut, p.parent, p.name);
+
+            opGetter.uiAttr({
+                "translate": {
+                    "x": p.parent.uiAttribs.translate.x + 20,
+                    "y": p.parent.uiAttribs.translate.y - 40
+                } });
+        } });
+};
 
 CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
 {

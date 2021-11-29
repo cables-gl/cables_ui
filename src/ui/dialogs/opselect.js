@@ -1,4 +1,3 @@
-
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -525,14 +524,14 @@ export default class OpSelect
             case 5: pressing circle of an existing link on a trigger cable - show create button
 
             TODO case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
-            TODO case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
-            TODO case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
+            case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
+            case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
 
-            case9+: for now we dont set vars when dragging out an output "typed value"-port because the whole discussion if this should be a triggerVar op or not...
+            [case9]: for now we dont set vars when dragging out an output "typed value"-port because the whole discussion if this should be a triggerVar op or not...
 
         */
 
-        // case 6
+
         if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)) ele.show(ele.byId("opselect_createTrigger"));
         else ele.hide(ele.byId("opselect_createTrigger"));
 
@@ -543,15 +542,28 @@ export default class OpSelect
         else ele.hide(ele.byId("opselect_replaceVar"));
 
 
-        // case 7
-        const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
+        const eleReplaceLinkWithExistingTrigger = ele.byId("replaceLinkTriggerExists");
+        if (link && link.portIn && link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)
+        {
+            // show "replace with existing var button..."
+            const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
-        console.log("CABLES.UI.OPSELECT.linkNewOpToPort", CABLES.UI.OPSELECT.linkNewOpToPort);
+            if (numExistingTriggers == 0) ele.hide(eleReplaceLinkWithExistingTrigger);
+            else ele.show(eleReplaceLinkWithExistingTrigger);
+        }
+        else ele.hide(eleReplaceLinkWithExistingTrigger);
+
+        // case 7 / 8
+        const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_FUNCTION)
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
-            console.log("numExistingTriggers", numExistingTriggers);
+            const eleTitle = ele.byId("createLinkTriggerExists");
+            console.log("!!!!!!!!!!!!!!!!!", eleTitle);
+            if (CABLES.UI.OPSELECT.linkNewOpToPort.direction == CABLES.PORT_DIR_IN) eleTitle.innerText = "Receive existing trigger send";
+            else eleTitle.innerText = "Send into existing trigger send";
+
             if (numExistingTriggers == 0) ele.hide(eleCreateWithExistingTrigger);
             else ele.show(eleCreateWithExistingTrigger);
         }
@@ -567,15 +579,15 @@ export default class OpSelect
         }
         else ele.hide(eleCreateWithExistingVar);
 
-        const eleReplaceWithExisting = ele.byId("replaceLinkVariableExists");
+        const eleReplaceWithExistingVar = ele.byId("replaceLinkVariableExists");
         if ((link && link.portIn))
         {
             // show "replace with existing var button..."
             const existingVars = gui.corePatch().getVars(link.portIn.type);
-            if (existingVars.length == 0) ele.hide(eleReplaceWithExisting);
-            else ele.show(eleReplaceWithExisting);
+            if (existingVars.length == 0) ele.hide(eleReplaceWithExistingVar);
+            else ele.show(eleReplaceWithExistingVar);
         }
-        else ele.hide(eleReplaceWithExisting);
+        else ele.hide(eleReplaceWithExistingVar);
 
         const eleOpsearch = ele.byId("opsearch");
         eleOpsearch.select();
