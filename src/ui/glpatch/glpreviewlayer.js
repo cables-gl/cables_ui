@@ -10,7 +10,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
         this._items = [];
         this._itemsLookup = {};
-
         this._glPatch = glPatch;
 
         gui.on("uiloaded", () =>
@@ -27,7 +26,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
         document.body.appendChild(this._eleCanvas);
 
-        this._canvasCtx = this._eleCanvas.getContext("2d");
+        this._updateSize();
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
 
@@ -36,8 +35,12 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
     _updateSize()
     {
+        this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / window.devicePixelRatio + "px";
+        this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / window.devicePixelRatio + "px";
+
         this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
         this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
+        this._canvasCtx = this._eleCanvas.getContext("2d");
     }
 
     render()
@@ -67,10 +70,17 @@ export default class GlPreviewLayer extends CABLES.EventTarget
             const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
             pos[1] += paddingY;
 
+            pos[0] *= window.devicePixelRatio;
+            pos[1] *= window.devicePixelRatio;
+
             const glop = this._glPatch.getGlOp(item.op);
             if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
+
+            size[0] *= window.devicePixelRatio;
+            size[1] *= window.devicePixelRatio;
+
 
             if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
