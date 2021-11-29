@@ -867,10 +867,9 @@ export default class GlOp extends CABLES.EventTarget
             y = this._glPatch.snapLines.snapY(y);
         }
 
-        this.emitEvent("drag");
-
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.updatePosition();
+        this.emitEvent("drag");
     }
 
     getGlPort(name)
