@@ -297,7 +297,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
     } });
 };
 
-
 CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 {
     const link = CABLES.UI.OPSELECT.linkNewLink;
@@ -306,7 +305,6 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
     CABLES.UI.OPSELECT.linkNewLink = null;
 
     CABLES.UI.MODAL.hide(true);
-
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
 
     gui.patchView.addOp(
@@ -324,6 +322,31 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
             } });
         } });
 };
+
+
+CABLES_CMD_PATCH.createLinkVariableExist = function ()
+{
+    const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
+    const p = CABLES.UI.OPSELECT.linkNewOpToPort;
+
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type);
+    CABLES.UI.OPSELECT.linkNewOpToPort = null;
+
+    gui.patchView.addOp(
+        getsetOp.getter,
+        { "onOpAdd": (opGetter) =>
+        {
+            p.removeLinks();
+            p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
+
+            opGetter.uiAttr({ "translate": {
+                "x": p.parent.uiAttribs.translate.x + 20,
+                "y": p.parent.uiAttribs.translate.y - 40
+            } });
+        } });
+};
+
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {

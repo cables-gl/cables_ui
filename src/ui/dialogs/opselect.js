@@ -514,6 +514,14 @@ export default class OpSelect
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
 
+        // var helper buttons
+        /*
+            case 1: pressing circle on an existing link on a typed value cable
+            case 2: pressing circle on an existing link on a trigger cable
+            case 3: dragging out (or clicking title of) a typed value input port
+        */
+
+
         if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)) ele.show(ele.byId("opselect_createTrigger"));
         else ele.hide(ele.byId("opselect_createTrigger"));
 
@@ -524,12 +532,22 @@ export default class OpSelect
         else ele.hide(ele.byId("opselect_replaceVar"));
 
 
+        const eleCreateWithExistingVar = ele.byId("createLinkVariableExists");
+        if (CABLES.UI.OPSELECT.linkNewOpToPort)
+        {
+            const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
+            const existingVars = gui.corePatch().getVars(type);
+            if (existingVars.length == 0) ele.hide(eleCreateWithExistingVar);
+            else ele.show(eleCreateWithExistingVar);
+        }
+        else ele.hide(eleCreateWithExistingVar);
+
         const eleReplaceWithExisting = ele.byId("replaceLinkVariableExists");
-        if (link && link.portIn)
+        if ((link && link.portIn))
         {
             // show "replace with existing var button..."
-            const existingVars = gui.corePatch().getVars(link.portIn.type);
-
+            const type = link.portIn.type;
+            const existingVars = gui.corePatch().getVars(type);
             if (existingVars.length == 0) ele.hide(eleReplaceWithExisting);
             else ele.show(eleReplaceWithExisting);
         }
