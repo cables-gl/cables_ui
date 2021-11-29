@@ -13,6 +13,7 @@ export default class GlLink
         this._id = id;
         this._link = link;
         this._visible = visible;
+        this._cable = null;
 
         this._glPatch = glpatch;
         this._type = type;

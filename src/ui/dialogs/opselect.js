@@ -520,10 +520,8 @@ export default class OpSelect
             case 2: pressing circle of an existing link on a "typed value" cable - show "existing var" button IF a var by that port type exists already
             case 3: dragging out (or clicking title of) a "typed value" input port - show create button
             case 4: dragging out (or clicking title of) a "typed value" input port - show "existing var" button IF a var by that port type exists already
-
             case 5: pressing circle of an existing link on a trigger cable - show create button
-
-            TODO case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
+            case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
             case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
             case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
 

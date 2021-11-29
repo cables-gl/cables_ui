@@ -60,10 +60,12 @@ export default class GlOp extends CABLES.EventTarget
         this._glDotHint = null;
         this._glRectRightHandle = null;
 
-        if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0) this._displayType = this.DISPLAY_SUBPATCH;
-        if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
-        if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
-
+        if (this._op)
+        {
+            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0) this._displayType = this.DISPLAY_SUBPATCH;
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
+            if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
+        }
         this._wasInited = false;
 
         this._initGl();
@@ -201,6 +203,11 @@ export default class GlOp extends CABLES.EventTarget
 
     _onMouseDown(e)
     {
+        if (!this._op)
+        {
+            console.log("glop no op", this);
+            return;
+        }
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
             this._glPatch._selectOpsInRect(
@@ -245,21 +252,13 @@ export default class GlOp extends CABLES.EventTarget
 
     set uiAttribs(attr)
     {
-        if (attr.selected)
-        {
-            this._glPatch.selectOpId(this._id);
-        }
-        if (attr && !this.opUiAttribs.selected && attr.selected)
-        {
-            this._glPatch.selectOpId(this._id);
-        }
+        if (attr.selected) this._glPatch.selectOpId(this._id);
+        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
 
         if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
-
         if (attr.color) this._updateColors();
-
 
         this._needsUpdate = true;
     }
