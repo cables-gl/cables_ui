@@ -28,7 +28,6 @@
 
 <script id="op_select_ops" type="text/x-handlebars-template">
 
-
     <div class="searchbrowser">
 
         <div style="text-align:center;" id="opselect_createTrigger">
@@ -42,7 +41,12 @@
         <div style="text-align:center;" id="opselect_replaceVar">
             Replace link with:
             <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">New variable</a>
-            <!-- <a class="button-small" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a> -->
+
+
+            <a class="button-small" id="replaceLinkVariableExists" style="background-color:var(--color-05);" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a>
+
+
+
         </div>
       {{#each ops}}
 

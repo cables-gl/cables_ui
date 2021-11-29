@@ -1,4 +1,3 @@
-import ele from "../utils/ele";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -523,6 +522,19 @@ export default class OpSelect
 
         if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING || link.portIn.type == CABLES.OP_PORT_TYPE_ARRAY || link.portIn.type == CABLES.OP_PORT_TYPE_OBJECT)) ele.show(ele.byId("opselect_replaceVar"));
         else ele.hide(ele.byId("opselect_replaceVar"));
+
+
+        const eleReplaceWithExisting = ele.byId("replaceLinkVariableExists");
+        if (link && link.portIn)
+        {
+            // show "replace with existing var button..."
+            const existingVars = gui.corePatch().getVars(link.portIn.type);
+
+            if (existingVars.length == 0) ele.hide(eleReplaceWithExisting);
+            else ele.show(eleReplaceWithExisting);
+        }
+        else ele.hide(eleReplaceWithExisting);
+
 
         const eleOpsearch = ele.byId("opsearch");
         eleOpsearch.select();

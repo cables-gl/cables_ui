@@ -617,7 +617,6 @@ CABLES.UI.GUI = function (cfg)
 
         let metaWidth;
 
-
         if (this.showTwoMetaPanels())
         {
             metaWidth = this.rightPanelWidth - optionsWidth;
