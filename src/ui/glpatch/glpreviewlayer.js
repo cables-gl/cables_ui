@@ -81,7 +81,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
             size[0] *= window.devicePixelRatio;
             size[1] *= window.devicePixelRatio;
 
-
             if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
             this._canvasCtx.fillStyle = "#222222";

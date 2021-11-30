@@ -12,6 +12,10 @@
     padding:0;
 }
 
+#opselect_replaceVar,#opselect_createTrigger
+{
+    padding-bottom:5px;
+}
 
 .opsearch
 {
@@ -28,7 +32,6 @@
         right: 20px;
         top: 20px;
     }
-
 
     header
     {
@@ -132,10 +135,10 @@
 		border-bottom: 1px solid var(--color-01);
         background-color: $background-color-brighter;
 
-        &:hover
-        {
-            background-color: $background-color-hover;
-        }
+        // &:hover
+        // {
+        //     background-color: $background-color-hover;
+        // }
     }
 
 

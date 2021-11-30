@@ -156,6 +156,7 @@ CABLES.LibLoader = LibLoader;
 CABLES.UI.LoggingTab = LoggingTab;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
+CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
 
 // expose global objects

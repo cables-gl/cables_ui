@@ -786,8 +786,6 @@ export default class GlPatch extends CABLES.EventTarget
         perf.finish();
 
         this._cgl.profileData.clearGlQuery();
-
-        // this.previewLayer.render();
     }
 
     mouseMove(x, y)

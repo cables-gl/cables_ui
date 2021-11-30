@@ -42,6 +42,54 @@ export default
         else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
 
         return ops;
+    },
+    "getVarGetterOpNameByType": (type) =>
+    {
+        let portName = "Value";
+        let portNameOut = portName;
+
+        let opSetterName = "unknown";
+        let opGetterName = "unknown";
+        if (type == CABLES.OP_PORT_TYPE_VALUE)
+        {
+            opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;
+            opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetNumber;
+        }
+        else if (type == CABLES.OP_PORT_TYPE_OBJECT)
+        {
+            opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
+            opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
+        }
+        else if (type == CABLES.OP_PORT_TYPE_ARRAY)
+        {
+            opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
+            opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
+        }
+        else if (type == CABLES.OP_PORT_TYPE_STRING)
+        {
+            opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
+            opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
+        }
+        else if (type == CABLES.OP_PORT_TYPE_FUNCTION)
+        {
+            portName = "Trigger";
+            portNameOut = "Triggered";
+
+            opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTrigger;
+            opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetTrigger;
+        }
+        else
+        {
+            console.log("createvar unknown var", type);
+        }
+
+        return {
+            "portName": portName,
+            "portNameOut": portNameOut,
+            "setter": opSetterName,
+            "getter": opGetterName,
+        };
     }
+
 
 };

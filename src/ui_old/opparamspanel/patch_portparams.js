@@ -465,7 +465,7 @@ CABLES.UI.initPortClickListener = function (op, index)
     {
         for (let i = 0; i < op.portsIn[index].value.length; i++)
         {
-            let eli = ele.byId("#portbutton_" + index + "_" + i);
+            let eli = ele.byId("portbutton_" + index + "_" + i);
             if (eli)eli.addEventListener("click", function (e)
             {
                 const name = e.target.dataset.title;

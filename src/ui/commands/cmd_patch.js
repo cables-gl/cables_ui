@@ -257,41 +257,12 @@ CABLES_CMD_PATCH.stats = function (force)
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
-    let portName = "Value";
-    let portNameOut = portName;
-    let opSetterName;
-    let opGetterName;
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
 
-    if (p.type == CABLES.OP_PORT_TYPE_VALUE)
-    {
-        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;
-        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetNumber;
-    }
-    else if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
-    {
-        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
-        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
-    }
-    else if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
-    {
-        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
-        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
-    }
-    else if (p.type == CABLES.OP_PORT_TYPE_STRING)
-    {
-        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
-        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
-    }
-    else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION)
-    {
-        portName = "Trigger";
-        portNameOut = "Triggered";
-
-        opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTrigger;
-        opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetTrigger;
-    }
-    else
-        console.log("createvar unknown var", p);
+    let portName = getsetOp.portName;
+    let portNameOut = getsetOp.portNameOut;
+    let opSetterName = getsetOp.setter;
+    let opGetterName = getsetOp.getter;
 
     gui.patchView.addOp(opSetterName, { "onOpAdd": (opSetter) =>
     {
@@ -299,7 +270,6 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         {
             opSetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
             opGetter.uiAttr({ "subPatch": gui.patchView.getCurrentSubPatch() });
-
 
             if (p.type != CABLES.OP_PORT_TYPE_FUNCTION)
                 opSetter.getPortByName(portName).set(value);
@@ -324,40 +294,118 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         } });
     } });
 };
+CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
+{
+    const link = CABLES.UI.OPSELECT.linkNewLink;
+    const p = link.portIn;
+    const portOut = link.portOut;
+    CABLES.UI.OPSELECT.linkNewLink = null;
+
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+
+    gui.patchView.addOp(
+        getsetOp.getter,
+        { "onOpAdd": (opGetter) =>
+        {
+            link.remove();
+            p.removeLinks();
+            p.parent.patch.link(opGetter, getsetOp.portNameOut, p.parent, p.name);
+
+            opGetter.uiAttr({
+                "translate": {
+                    "x": p.parent.uiAttribs.translate.x + 20,
+                    "y": p.parent.uiAttribs.translate.y - 40
+                } });
+        } });
+};
+
+CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
+{
+    const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
+    const p = CABLES.UI.OPSELECT.linkNewOpToPort;
+
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type);
+    CABLES.UI.OPSELECT.linkNewOpToPort = null;
+
+    let getset = getsetOp.setter;
+    if (p.direction == CABLES.PORT_DIR_IN)getset = getsetOp.getter;
+
+    gui.patchView.addOp(
+        getset,
+        { "onOpAdd": (op) =>
+        {
+            p.removeLinks();
+            let off = -40;
+
+            if (p.direction == CABLES.PORT_DIR_IN)
+            {
+                p.parent.patch.link(op, getsetOp.portNameOut, p.parent, p.name);
+            }
+            else
+            {
+                p.parent.patch.link(op, getsetOp.portName, p.parent, p.name);
+                off *= -1;
+            }
+
+            op.uiAttr({ "translate": {
+                "x": p.parent.uiAttribs.translate.x + 20,
+                "y": p.parent.uiAttribs.translate.y + off
+            } });
+        } });
+};
+
+CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
+{
+    const link = CABLES.UI.OPSELECT.linkNewLink;
+    const p = link.portIn;
+    const portOut = link.portOut;
+    CABLES.UI.OPSELECT.linkNewLink = null;
+
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+
+    gui.patchView.addOp(
+        getsetOp.getter,
+        { "onOpAdd": (opGetter) =>
+        {
+            link.remove();
+            p.removeLinks();
+
+            p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
+
+            opGetter.uiAttr({ "translate": {
+                "x": p.parent.uiAttribs.translate.x + 20,
+                "y": p.parent.uiAttribs.translate.y - 40
+            } });
+        } });
+};
 
 
-// CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
-// {
-//     const link = CABLES.UI.OPSELECT.linkNewLink;
-//     const p = link.p1.thePort;
-//     const p2 = link.p2.thePort;
-//     CABLES.UI.OPSELECT.linkNewLink = null;
+CABLES_CMD_PATCH.createLinkVariableExist = function ()
+{
+    const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
+    const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-//     const opGetter = gui.patchView.addOp("Ops.Vars.VarGetNumber");
+    CABLES.UI.MODAL.hide(true);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type);
+    CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
-//     link.remove();
-//     p.removeLinks();
+    gui.patchView.addOp(
+        getsetOp.getter,
+        { "onOpAdd": (opGetter) =>
+        {
+            p.removeLinks();
+            p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
 
-//     const portName = "Value";
+            opGetter.uiAttr({ "translate": {
+                "x": p.parent.uiAttribs.translate.x + 20,
+                "y": p.parent.uiAttribs.translate.y - 40
+            } });
+        } });
+};
 
-//     let otherPort = p2;
-//     if (p.direction == CABLES.PORT_DIR_IN)
-//     {
-//         p.parent.patch.link(opGetter, portName, p.parent, p.name);
-//     }
-//     else
-//     {
-//         otherPort = p;
-//         p.parent.patch.link(opGetter, portName, p2.parent, p2.name);
-//     }
-
-//     if (otherPort.parent.objName.indexOf("Ops.Vars.VarGet") == 0)
-//     {
-//         opGetter.varName.set(otherPort.parent.varName.get());
-//     }
-
-//     CABLES.UI.MODAL.hide(true);
-// };
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
