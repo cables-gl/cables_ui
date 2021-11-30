@@ -889,6 +889,7 @@ CABLES.UI.GUI = function (cfg)
         CABLES.UI.userSettings.set("timelineOpened", true);
 
         showTiming = !showTiming;
+        CABLES.UI.userSettings.set("timelineOpened", showTiming);
         updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
