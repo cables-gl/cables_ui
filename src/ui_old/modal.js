@@ -324,7 +324,7 @@ CABLES.UI.MODAL.copyPortValuePreview = function (e, title)
         .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
         .then(() =>
         {
-            CABLES.UI.notify("Copied value to clipboard");
+            CABLES.UI.notify("Copied value to clipboard?????");
         })
         .catch((err) =>
         {

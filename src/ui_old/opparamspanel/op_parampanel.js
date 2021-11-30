@@ -323,6 +323,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 });
             }
 
+
             perfLoopOut.finish();
         }
 
@@ -387,6 +388,40 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 }
             };
 
+            ele.forEachClass("portCopyClipboard", (el) =>
+            {
+                console.log(el); //
+                el.addEventListener("click", (e) =>
+                {
+                    if (!navigator.clipboard)
+                    {
+                        return;
+                    }
+
+                    // console.log({
+                    //     "a": 2,
+                    //     "opid": e.target.dataset.opid,
+                    //     "portname": e.target.dataset.portname });
+
+                    const op = gui.corePatch().getOpById(e.target.dataset.opid);
+                    const port = op.getPortByName(e.target.dataset.portname);
+
+                    navigator.clipboard
+                        .writeText(JSON.stringify(port.get()))
+                        .then(() =>
+                        {
+                            CABLES.UI.notify("Copied value to clipboard");
+                        })
+                        .catch((err) =>
+                        {
+                            console.warn("copy to clipboard failed", err);
+                        });
+
+                    e.preventDefault();
+                });
+            });
+
+
             // document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", () => { this._isPortLineDragDown = true; });
@@ -403,7 +438,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));

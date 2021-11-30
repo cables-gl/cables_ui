@@ -66,30 +66,6 @@ export default class WatchPortVisualizer
         body.appendChild(this.canvas);
         this.ctx = this.canvas.getContext("2d");
         this.update();
-
-        document.addEventListener("click",
-            (e) =>
-            {
-                if (!e.target.classList.contains("linkedValue")) return;
-
-                if (!navigator.clipboard)
-                {
-                    return;
-                }
-
-                navigator.clipboard
-                    .writeText(e.target.innerHTML)
-                    .then(() =>
-                    {
-                        CABLES.UI.notify("Copied value to clipboard");
-                    })
-                    .catch((err) =>
-                    {
-                        console.warn("copy to clipboard failed", err);
-                    });
-
-                e.preventDefault();
-            });
     }
 
     update(classname, id, value)

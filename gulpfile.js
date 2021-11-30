@@ -279,3 +279,8 @@ gulp.task("electron", gulp.series(
     _electronapp,
     _electron_watch
 ));
+
+gulp.task("testui", gulp.series(
+    _scripts_ui,
+    _scripts_ui_webpack
+));
