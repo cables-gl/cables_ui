@@ -4,17 +4,26 @@ export default class ModalBackground extends CABLES.EventTarget
     {
         super();
         this._eleBg = document.getElementById("modalbg");
+        this.showing = false;
     }
 
     show()
     {
-        this.emitEvent("show");
+        if (!this.showing)
+        {
+            this.showing = true;
+            this.emitEvent("show");
+        }
         this._eleBg.style.display = "block";
     }
 
     hide()
     {
-        this.emitEvent("hide");
+        if (this.showing)
+        {
+            this.showing = false;
+            this.emitEvent("hide");
+        }
         this._eleBg.style.display = "none";
     }
 }

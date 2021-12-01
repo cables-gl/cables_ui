@@ -99,6 +99,21 @@
 .color-op-category-math { color: var(--color_op_handle_math); }
 .color-op-category-user { color: var(--color_op_handle_user); }
 
+
+
+@keyframes animSuggestionFadein
+{
+    0%{		opacity: 0;	}
+    100%{	opacity: 1;	}
+}
+
+.suggestionFadeIn
+{
+    opacity: 0;
+    animation:animSuggestionFadein 0.2s normal forwards ease-out;
+    animation-iteration-count: 1;
+}
+
 #suggestionDialog
 {
     position: absolute;

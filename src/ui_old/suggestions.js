@@ -22,7 +22,6 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
         ele.hide(this._eleDialog);
         this._bg.hide();
 
-        // CABLES.UI.MODAL.hide(true);
         CABLES.UI.suggestions = null;
     };
 
@@ -63,7 +62,6 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
     const html = CABLES.UI.getHandleBarHtml("suggestions", { suggestions, showSelect });
     this._eleDialog.innerHTML = html;
-    // $("#modalbg").show();
     this._bg.show();
 
     ele.show(this._eleDialog);
@@ -78,7 +76,8 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
         suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
-        $("#suggestion" + i).css({ "opacity": 0 });
+        ele.byId("suggestion" + i).classList.add("suggestionFadeIn");
+
         $("#suggestion" + i).animate(
             {
                 "opacity": 1,
