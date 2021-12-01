@@ -1209,25 +1209,28 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     function toggleMoveMode()
     {
         CABLES.ANIM.MoveMode++;
-        if (CABLES.ANIM.MoveMode > 2)CABLES.ANIM.MoveMode = 0;
+        if (CABLES.ANIM.MoveMode > 1)CABLES.ANIM.MoveMode = 0;
         if (CABLES.ANIM.MoveMode === 0)
         {
-            document.getElementById("keymovemode").classList.add("fa-arrows-h");
-            document.getElementById("keymovemode").classList.remove("fa-arrows-v");
-            document.getElementById("keymovemode").classList.remove("fa-arrows");
+            document.getElementById("keymovemode").innerHTML = "move horizontal";
+            // document.getElementById("keymovemode").classList.add("fa-arrows-h");
+            // document.getElementById("keymovemode").classList.remove("fa-arrows-v");
+            // document.getElementById("keymovemode").classList.remove("fa-arrows");
         }
         if (CABLES.ANIM.MoveMode == 1)
         {
-            document.getElementById("keymovemode").classList.add("fa-arrows-v");
-            document.getElementById("keymovemode").classList.remove("fa-arrows-h");
-            document.getElementById("keymovemode").classList.remove("fa-arrows");
+            document.getElementById("keymovemode").innerHTML = "move vertical";
+            // document.getElementById("keymovemode").classList.add("fa-arrows-v");
+            // document.getElementById("keymovemode").classList.remove("fa-arrows-h");
+            // document.getElementById("keymovemode").classList.remove("fa-arrows");
         }
-        if (CABLES.ANIM.MoveMode == 2)
-        {
-            document.getElementById("keymovemode").classList.add("fa-arrows");
-            document.getElementById("keymovemode").classList.remove("fa-arrows-v");
-            document.getElementById("keymovemode").classList.remove("fa-arrows-h");
-        }
+        // if (CABLES.ANIM.MoveMode == 2)
+        // {
+        //     document.getElementById("keymovemode").innerHTML = "move free";
+        //     // document.getElementById("keymovemode").classList.add("fa-arrows");
+        //     // document.getElementById("keymovemode").classList.remove("fa-arrows-v");
+        //     // document.getElementById("keymovemode").classList.remove("fa-arrows-h");
+        // }
     }
 
     this.getTimeLeft = function ()
