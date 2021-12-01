@@ -76,13 +76,15 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
         suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
-        ele.byId("suggestion" + i).classList.add("suggestionFadeIn");
-
-        $("#suggestion" + i).animate(
-            {
-                "opacity": 1,
-                left,
-            }, 230);
+        const sugEle = ele.byId("suggestion" + i);
+        sugEle.animate([
+            { "left": -left + "px", "opacity": 0 },
+            { "left": 0 + "px", "opacity": 1 },
+        ], {
+            "duration": 150 + i * 50,
+            "easing": "ease-out",
+            "iterations": 1,
+        });
 
         suggestions[i].id = i;
     }
