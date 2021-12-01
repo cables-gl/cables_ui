@@ -1,4 +1,4 @@
-// CABLES.UI.SuggestPortDialog
+
 export default class SuggestPortDialog
 {
     constructor(op, port, mouseEvent, cb, cbCancel)

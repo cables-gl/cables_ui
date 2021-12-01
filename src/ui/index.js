@@ -75,6 +75,7 @@ import ModalDialog from "./dialogs/modal";
 import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
 import SuggestPortDialog from "./components/suggestionportdialog";
 import ModalBackground from "./dialogs/modalbg";
+import SuggestionDialog from "./components/suggestiondialog";
 
 
 CABLES = CABLES || {};
@@ -157,6 +158,7 @@ CABLES.CoreLibLoader = CoreLibLoader;
 CABLES.LibLoader = LibLoader;
 CABLES.UI.LoggingTab = LoggingTab;
 CABLES.UI.ModalBackground = ModalBackground;
+CABLES.UI.SuggestionDialog = SuggestionDialog;
 
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
