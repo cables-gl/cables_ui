@@ -2,43 +2,6 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
-CABLES.UI.SuggestPortDialog = function (op, port, mouseEvent, cb, cbCancel)
-{
-    const suggestions = [];
-
-    function addPort(p)
-    {
-        const name = p.name;
-        suggestions.push({
-            p,
-            "name": p.name,
-            "isLinked": p.isLinked(),
-            "isBoundToVar": p.isBoundToVar(),
-            "isAnimated": p.isAnimated()
-        });
-    }
-
-    // linkRecommendations
-    for (let i = 0; i < op.portsIn.length; i++)
-        if (CABLES.Link.canLink(op.portsIn[i], port))
-            addPort(op.portsIn[i]);
-
-    for (let i = 0; i < op.portsOut.length; i++)
-        if (CABLES.Link.canLink(op.portsOut[i], port))
-            addPort(op.portsOut[i]);
-
-    new CABLES.UI.SuggestionDialog(suggestions, op, mouseEvent, cb,
-        function (id)
-        {
-            for (const i in suggestions)
-            {
-                if (suggestions[i].id == id)
-                {
-                    cb(suggestions[i].name);
-                }
-            }
-        }, false, cbCancel);
-};
 
 CABLES.UI.SuggestOpDialog = function (op, portname, mouseEvent, coords, cb)
 {
@@ -176,7 +139,7 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
         suggestions[i].shortName = suggestions[i].name.substr(4, suggestions[i].name.length);
 
         $("#suggestion" + i).css({ "opacity": 0 });
-        $("#suggestion" + i).delay(Math.abs(i - suggestions.length / 2) * 25).animate(
+        $("#suggestion" + i).animate(
             {
                 "opacity": 1,
                 left,

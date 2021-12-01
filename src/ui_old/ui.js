@@ -192,6 +192,7 @@ CABLES.UI.GUI = function (cfg)
         else this._find = new CABLES.UI.FindTab(gui.mainTabs, str);
 
         this._find.focus();
+        gui.maintabPanel.show(true);
     };
 
     this.texturePreview = function ()

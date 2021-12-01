@@ -440,34 +440,21 @@ export default class PatchView extends CABLES.EventTarget
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-        {
             if (ops[i].uiAttribs && ops[i].uiAttribs.uierrors)
-            {
                 for (let j = 0; j < ops[i].uiAttribs.uierrors.length; j++)
-                {
                     if (ops[i].uiAttribs.uierrors[j].level == 2)
                     {
                         this.hasUiErrors = true;
                         break;
                     }
-                }
-            }
-        }
 
         if (hadErrors != this.hasUiErrors)
-        {
             gui.corePatch().emitEvent("warningErrorIconChange");
-        }
 
         clearTimeout(this._checkErrorTimeout);
-        if (this.hasUiErrors)
-        {
-            ele.show(ele.byId("nav-item-error"));
-        }
-        else
-        {
-            ele.hide(ele.byId("nav-item-error"));
-        }
+        if (this.hasUiErrors) ele.show(ele.byId("nav-item-error"));
+        else ele.hide(ele.byId("nav-item-error"));
+
         this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 

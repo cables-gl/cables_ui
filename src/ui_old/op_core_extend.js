@@ -1,4 +1,3 @@
-
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 
@@ -82,6 +81,7 @@ CABLES.Op.prototype.unLinkTemporary = function ()
 
 CABLES.Op.prototype.checkLinkTimeWarnings = function ()
 {
+    console.log("checkLinkTimeWarnings");
     function hasParent(op, type, name)
     {
         for (let i = 0; i < op.portsIn.length; i++)

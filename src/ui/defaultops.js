@@ -25,8 +25,6 @@ export default
 
         "subPatch": "Ops.Ui.SubPatch",
         "uiArea": "Ops.Ui.Area"
-
-
     },
 
     "getOpsForFilename": (filename) =>
