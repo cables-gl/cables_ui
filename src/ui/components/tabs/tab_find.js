@@ -1,3 +1,4 @@
+import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
 
 export default class FindTab
@@ -210,7 +211,7 @@ export default class FindTab
     {
         let html = "";
 
-        const colorClass = "" + CABLES.UI.uiConfig.getVarClass(v.type);
+        const colorClass = "" + defaultops.getVarClass(v.type);
 
         html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v.getName() + "\" > ";
         html += "<span class=\"" + colorClass + "\">#" + v.getName() + "</span> <span class=\"monospace\" id=\"varresult_" + v.getName() + "\">/span>";
@@ -223,7 +224,7 @@ export default class FindTab
     {
         let html = "";
 
-        const colorClass = "" + CABLES.UI.uiConfig.getVarClass("trigger");
+        const colorClass = "" + defaultops.getVarClass("trigger");
 
         html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v + "\" > ";
         html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"opacity:0.1;background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
@@ -243,7 +244,7 @@ export default class FindTab
 
         if (op.op)op = op.op;
 
-        const colorClass = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName);
+        const colorClass = "op_color_" + defaultops.getNamespaceClassName(op.objName);
 
         let hiddenClass = "";
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";

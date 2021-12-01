@@ -1,3 +1,5 @@
+import defaultops from "../defaultops";
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -798,7 +800,7 @@ export default class OpSelect
                         if (opname.indexOf("Ops.Admin") > -1)oldState = "ADMIN";
 
                         const op = {
-                            "nscolor": CABLES.UI.uiConfig.getNamespaceClassName(opname),
+                            "nscolor": defaultops.getNamespaceClassName(opname),
                             "isOp": isOp,
                             "name": opname,
                             "userOp": opname.startsWith("Ops.User"),

@@ -200,7 +200,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         let html = this._templateHead({
             op,
             isBookmarked,
-            "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+            "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(op.objName),
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
             "optitle": op.getTitle(),

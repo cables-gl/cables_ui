@@ -76,6 +76,7 @@ import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
 import SuggestPortDialog from "./components/suggestionportdialog";
 import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
+import SandboxBrowser from "./sandbox_browser";
 
 
 CABLES = CABLES || {};
@@ -88,6 +89,8 @@ CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
+
+CABLES.SandboxBrowser = SandboxBrowser;
 
 CABLES.UI.userSettings = new UserSettings();
 
@@ -164,6 +167,7 @@ CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
+CABLES.UI.DEFAULTOPS = defaultops;
 
 // expose global objects
 CABLES.api = new Api();
