@@ -1,5 +1,6 @@
 import ele from "../utils/ele";
 import Logger from "../utils/logger";
+import ModalBackground from "./modalbg";
 
 export default class ModalDialog
 {
@@ -9,7 +10,8 @@ export default class ModalDialog
         this._options = options;
         this._ele = null;
         this._eleContent = null;
-        this._eleBg = document.getElementById("modalbg");
+        // this._eleBg = document.getElementById("modalbg");
+        this._bg = new ModalBackground();
 
         this.show();
 
@@ -19,7 +21,8 @@ export default class ModalDialog
     close()
     {
         this._ele.remove();
-        this._eleBg.style.display = "none";
+        // this._eleBg.style.display = "none";
+        this._bg.hide();
     }
 
     html()
@@ -72,7 +75,8 @@ export default class ModalDialog
 
     show()
     {
-        this._eleBg.style.display = "block";
+        // this._eleBg.style.display = "block";
+        this._bg.show();
 
         this._ele = document.createElement("div");
         this._eleContent = document.createElement("div");

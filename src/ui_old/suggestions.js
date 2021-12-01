@@ -3,65 +3,26 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
 
-CABLES.UI.SuggestOpDialog = function (op, portname, mouseEvent, coords, cb)
-{
-    let suggestions = gui.opDocs.getSuggestions(op.objName, portname);
-
-    if (op && op.getPort(portname) && op.getPort(portname).uiAttribs && op.getPort(portname).uiAttribs.linkRecommendations)
-    {
-        const recs = op.getPort(portname).uiAttribs.linkRecommendations.ops;
-        if (recs)
-        {
-            suggestions = suggestions || [];
-
-            for (let i = 0; i < recs.length; i++)
-            {
-                suggestions.push(
-                    {
-                        "name": recs[i].name,
-                        "port": recs[i].port,
-                        "isLinked": recs[i].isLinked,
-                        "recommended": true,
-                    });
-            }
-        }
-    }
-
-    if (suggestions)
-        for (let i = 0; i < suggestions.length; i++)
-            suggestions[i].classname = "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(suggestions[i].name || "");
-
-    CABLES.UI.OPSELECT.newOpPos = coords;
-
-    new CABLES.UI.SuggestionDialog(suggestions, op, mouseEvent, cb,
-        function (id)
-        {
-            for (const i in suggestions)
-            {
-                if (suggestions[i].id == id)
-                {
-                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort = {};
-                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.op = op;
-                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.portName = portname;
-                    CABLES.UI.OPSELECT.linkNewOpToSuggestedPort.newPortName = suggestions[i].port;
-                    gui.corePatch().addOp(suggestions[i].name);
-                }
-            }
-        }, true);
-};
-
-
-// ----------------------------------------------------------------------------------
-
-
 CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action, showSelect, cbCancel)
 {
+    this._eleDialog = ele.byId("suggestionDialog");
+    this._bg = new CABLES.UI.ModalBackground();
+
+    this._bg.on("hide", () =>
+    {
+        this.close();
+        if (cbCancel)cbCancel();
+    });
+
     this.doShowSelect = showSelect;
     this.close = function ()
     {
-        $("#suggestionDialog").html("");
-        $("#suggestionDialog").hide();
-        CABLES.UI.MODAL.hide(true);
+        this._eleDialog.innerHTML = "";
+
+        ele.hide(this._eleDialog);
+        this._bg.hide();
+
+        // CABLES.UI.MODAL.hide(true);
         CABLES.UI.suggestions = null;
     };
 
@@ -100,36 +61,15 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
         if (suggestions[i].name) suggestions[i].shortName = suggestions[i].name;
     }
 
-    // if(suggestions.length==1)
-    // {
-    //     _action(0);
-    //     return;
-    // }
-
     const html = CABLES.UI.getHandleBarHtml("suggestions", { suggestions, showSelect });
-    $("#suggestionDialog").html(html);
-    $("#modalbg").show();
-    $("#suggestionDialog").show();
-    $("#suggestionDialog").css(
-        {
-            "left": mouseEvent.clientX,
-            "top": mouseEvent.clientY,
-        });
+    this._eleDialog.innerHTML = html;
+    // $("#modalbg").show();
+    this._bg.show();
 
-    $(".opSelect").css({
-        "width": 5,
-        "height": 5,
-        "margin-left": 2.5,
-        "margin-top": -2.5
-    });
+    ele.show(this._eleDialog);
 
-    $(".opSelect").animate(
-        {
-            "width": 30,
-            "height": 30,
-            "margin-left": -15,
-            "margin-top": -15
-        }, 100);
+    this._eleDialog.style.left = mouseEvent.clientX + "px";
+    this._eleDialog.style.top = mouseEvent.clientY + "px";
 
     for (let i = 0; i < suggestions.length; i++)
     {
@@ -147,11 +87,4 @@ CABLES.UI.SuggestionDialog = function (suggestions, op, mouseEvent, cb, _action,
 
         suggestions[i].id = i;
     }
-
-    $("#modalbg").on("click", function ()
-    {
-        self.close();
-
-        if (cbCancel)cbCancel();
-    });
 };

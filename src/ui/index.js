@@ -73,7 +73,8 @@ import LibLoader from "./api/libloader";
 import LogFilter from "./utils/loggerfilter";
 import ModalDialog from "./dialogs/modal";
 import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
-import SuggestPortDialog from "./components/SuggestPortDialog";
+import SuggestPortDialog from "./components/suggestionportdialog";
+import ModalBackground from "./dialogs/modalbg";
 
 
 CABLES = CABLES || {};
@@ -155,6 +156,8 @@ CABLES.UI.NoPatchEditor = NoPatchEditor;
 CABLES.CoreLibLoader = CoreLibLoader;
 CABLES.LibLoader = LibLoader;
 CABLES.UI.LoggingTab = LoggingTab;
+CABLES.UI.ModalBackground = ModalBackground;
+
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
