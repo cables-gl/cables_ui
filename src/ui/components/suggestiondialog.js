@@ -22,7 +22,6 @@ export default class SuggestionDialog
             return;
         }
 
-
         CABLES.UI.suggestions = this;
 
         const sugDegree = 6;

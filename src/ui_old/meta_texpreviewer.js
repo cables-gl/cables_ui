@@ -3,6 +3,7 @@ CABLES.UI = CABLES.UI || {};
 
 CABLES.UI.TexturePreviewer = function (tabs)
 {
+    this._log = new CABLES.UI.Logger();
     // this._tab = new CABLES.UI.Tab("preview", { "icon": "eye", "infotext": "tab_preview", "showTitle": false, "hideToolbar": true, "padding": true });
     // tabs.addTab(this._tab);
     // this._tab.addEventListener("onActivate", function ()
@@ -21,12 +22,14 @@ CABLES.UI.TexturePreviewer = function (tabs)
     this._hoveringTexPort = false;
     this._listeningFrame = false;
     this._emptyCubemap = null;
+
     this._ele = document.getElementById("bgpreview");
     this.setSize();
     this._ele.addEventListener("click", function ()
     {
         if (this._lastClicked && window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
     }.bind(this));
+
 
     CABLES.UI.userSettings.addEventListener("onChange", (key, v) =>
     {
@@ -473,6 +476,7 @@ CABLES.UI.TexturePreviewer.prototype.selectTexturePortId = function (opid, porti
 {
     if (!window.gui) return;
 
+
     const op = gui.corePatch().getOpById(opid);
     if (!op) return;
 
@@ -512,6 +516,15 @@ CABLES.UI.TexturePreviewer.prototype.hoverEnd = function ()
 
 CABLES.UI.TexturePreviewer.prototype.selectTexturePort = function (p)
 {
+    if (!CABLES.UI.userSettings.get("bgpreview"))
+    {
+        this._lastClickedP = p;
+        this._lastClicked = this.updateTexturePort(p);
+
+        return;
+    }
+
+
     ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
     CABLES.UI.hideToolTip();
 
