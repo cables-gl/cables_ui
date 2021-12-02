@@ -40,7 +40,7 @@
         "portMouseCreate": "* press left mousebutton (or press and drag) to create and link new op",
         "portObjectSnapshot": "see at object data snapshot",
 
-        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical spacing\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
+        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical sptng\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
         "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `del` delete op\n* `page up/down` snap to parent/child op",
 
         "projectSettingsPublic": "make patch public - everyone can see it",
@@ -79,7 +79,7 @@
         "bookmark_added": "Bookmark added!",
         "bookmark_removed": "Bookmark removed!",
         "sidebarMenu":
-            "## Customize sidebar \n\nOpen the sidebar customizer to add / remove menu items by dragging them to / from the sidebar. \nDrag menu items vertically to change their order. \nYou can also press `cmd + p` to show the command pallet – there you can press the bookmark icon to add / remove menu items as well. ",
+            "## Customize sidebar \n\nOpen the sidebar customizer to add / remove menu items by dragging them to / from the sidebar. \nDrag menu items vertically to change their order. \nYou can also press `cmd + p` to show the Command Palette – there you can press the bookmark icon to add / remove menu items as well. ",
 
         "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `[drag left click]` move area\n* `[drag right click]` move area and change time\n* `[double click]` toggle show full project length",
         "timeline_frames": "## timeline \n\n* `[click]` move cursor",
@@ -176,7 +176,7 @@
             "subtitle_wheelmode":" Set this to mousewheel if you can't zoom in using your mousewheel",
 
             "title_noidlemode":"Idle Mode",
-            "subtitle_noidlemode":"go into idle mode after some time (to save energy and less fan acitvity)",
+            "subtitle_noidlemode":"go into idle mode after some time (to save energy and less fan activity)",
 
             "title_tipps":"Tips",
             "subtitle_tipps":"Show tips when opening editor (needs reload)",
@@ -205,7 +205,7 @@
             "img": "c_add_op_between_other_ops.gif"
         },
         {
-            "descr": " To **change one of the op-parameters** first select the op by clicking on it, then you will see the the op-settings in the pane on the right. To change one of the number value inputs click and drag up or down.",
+            "descr": " To **change one of the op-parameters** first select the op by clicking on it, then you will see the op-settings in the pane on the right. To change one of the number value inputs click and drag up or down.",
             "img": "d_change_op_parameter.gif"
         },
         {
@@ -329,6 +329,10 @@
         {
             "descr": " Quickly **find your sidebar operators** in a patch by clicking `left mouse button` on a sidebar element while holding the `CTRL` or `CMD` key on your keyboard.",
             "img": "inspect_sidebar.gif"
+        },
+         {
+            "descr": " You can **organize** your operators into colorful Area groups by selecting multiple ops and clicking Create Area. Move operators out of an area to separate them, group groups into groups, hold down `ALT`to drag Area without ops!",
+            "img": "area_create.gif"
         },
         {
             "descr": " You can click `left mouse button` on an output field in any operator's parameter panel to **copy it to your clipboard**. Great for saving arrays or generated outputs.",
