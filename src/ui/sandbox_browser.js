@@ -226,6 +226,12 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
     createBackup()
     {
+        if (!gui.getSavedState())
+        {
+            CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectBackupNotSaved);
+            return;
+        }
+
         new CABLES.UI.ModalDialog({
             "prompt": true,
             "title": "New Backup",
