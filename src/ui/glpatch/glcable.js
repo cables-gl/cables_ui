@@ -62,17 +62,17 @@ export default class GlCable
         if (CABLES.UI.userSettings.get("linetype") == "h1")
         {
             this._linetype = this.LINETYPE_HANGING;
-            this._tension = 0.1;
+            this._tension = 0.0;
         }
         if (CABLES.UI.userSettings.get("linetype") == "h2")
         {
             this._linetype = this.LINETYPE_HANGING;
-            this._tension = 0.3;
+            this._tension = 0.2;
         }
         if (CABLES.UI.userSettings.get("linetype") == "h3")
         {
             this._linetype = this.LINETYPE_HANGING;
-            this._tension = 0.6;
+            this._tension = 0.3;
         }
 
         this._updateDistFromPort();
@@ -270,7 +270,11 @@ export default class GlCable
                     const distY = Math.abs(this._y - this._y2);
                     const distX = Math.abs(this._x - this._x2);
 
-                    let hang = (distX - (distY * 0.3)) * this._tension;
+                    let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
+
+
+                    let centerX = (posX * 0.3 + posX2 * 0.7);
+                    if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
 
                     this._splineDrawer.setSpline(
                         this._splineIdx,
@@ -278,11 +282,11 @@ export default class GlCable
                             [
                                 posX, this._y, 0,
                                 posX, this._y, 0,
-                                (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort, 0,
+                                (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
 
-                                (posX * 0.3 + posX2 * 0.7), (this._y + this._y2) * 0.5 + hang, 0, // * 0.5 - (0.001 * distY), 0,
+                                centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
 
-                                posX2, this._y2 + this._distFromPort, 0,
+                                posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
                                 posX2, this._y2, 0,
                                 posX2, this._y2, 0,
                             ], 8));
