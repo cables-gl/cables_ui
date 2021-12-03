@@ -14,6 +14,8 @@ export default
         "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
         "VarSetObject": "Ops.Vars.VarSetObject_v2",
         "VarGetObject": "Ops.Vars.VarGetObject_v2",
+        "VarSetTexture": "Ops.Vars.VarSetTexture_v2",
+        "VarGetTexture": "Ops.Vars.VarGetTexture_v2",
         "VarSetArray": "Ops.Vars.VarSetArray_v2",
         "VarGetArray": "Ops.Vars.VarGetArray_v2",
         "VarSetString": "Ops.Vars.VarSetString_v2",
@@ -41,7 +43,7 @@ export default
 
         return ops;
     },
-    "getVarGetterOpNameByType": (type) =>
+    "getVarGetterOpNameByType": (type, port) =>
     {
         let portName = "Value";
         let portNameOut = portName;
@@ -57,6 +59,12 @@ export default
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
+
+            if (port && port.uiAttribs.objType == "texture")
+            {
+                opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTexture;
+                opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetTexture;
+            }
         }
         else if (type == CABLES.OP_PORT_TYPE_ARRAY)
         {
