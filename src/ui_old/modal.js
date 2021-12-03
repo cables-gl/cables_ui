@@ -19,7 +19,7 @@ CABLES.UI.MODAL.hideLoading = function ()
 CABLES.UI.MODAL.init = function (options)
 {
     options = options || {};
-    if (window.gui)gui.showCanvasModal(false);
+    if (window.gui && gui.canvasUi)gui.canvasUi.showCanvasModal(false);
 
     if (CABLES.UI.MODAL.contentElement)
         CABLES.UI.MODAL.contentElement.style.display = "none";

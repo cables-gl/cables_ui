@@ -52,9 +52,9 @@
     user-select: none;
     color:var(--color-13);
     position: absolute;
-    padding-bottom: 30px;;
+    padding-bottom: 30px;
     z-index: $zindex_over;
-    padding-left: 28px; /* to give resize-window icon some space */
+    // padding-left: 28px; /* to give resize-window icon some space */
 
     a
     {

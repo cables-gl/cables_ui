@@ -77,6 +77,7 @@ import SuggestPortDialog from "./components/suggestionportdialog";
 import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
+import CanvasUi from "./components/canvasui";
 
 
 CABLES = CABLES || {};
@@ -162,6 +163,7 @@ CABLES.LibLoader = LibLoader;
 CABLES.UI.LoggingTab = LoggingTab;
 CABLES.UI.ModalBackground = ModalBackground;
 CABLES.UI.SuggestionDialog = SuggestionDialog;
+CABLES.UI.CanvasUi = CanvasUi;
 
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
