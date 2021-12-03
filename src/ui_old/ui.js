@@ -292,6 +292,7 @@ CABLES.UI.GUI = function (cfg)
         this._elAceEditor = this._elAceEditor || $("#ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
+        this._elCanvasFlash = ele.byId("canvasflash");
 
         this._elIconbarLeft = document.getElementById("iconbar_sidebar_left");
 
@@ -580,7 +581,7 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
         if (this._elCanvasIconbarBottom)
         {
-            this._elCanvasIconbarBottom.style.right = this.rendererWidth + 20 + "px";
+            this._elCanvasIconbarBottom.style.right = this.rendererWidthScaled + 20 + "px";
             this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
         }
 
@@ -722,11 +723,11 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
-
-        document.getElementById("canvasflash").style.width = this.rendererWidth + "px";
-        document.getElementById("canvasflash").style.height = this.rendererHeight + "px";
-        document.getElementById("canvasflash").style.right = 0 + "px";
-        document.getElementById("canvasflash").style.top = 0 + "px";
+        // flashing canvas overlay when sabing
+        this._elCanvasFlash.style.width = this.rendererWidth * this._corePatch.cgl.canvasScale + "px";
+        this._elCanvasFlash.style.height = this.rendererHeight * this._corePatch.cgl.canvasScale + "px";
+        this._elCanvasFlash.style.right = 0 + "px";
+        this._elCanvasFlash.style.top = 0 + "px";
 
 
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
