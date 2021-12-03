@@ -584,8 +584,6 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
                             if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
                             {
                                 console.log("filename:", ops[i].portsIn[j].get());
-                                // console.log("srch", srch);
-                                // console.log("rplc", rplc);
                                 let v = ops[i].portsIn[j].get();
 
                                 if (v) console.log("srch index", v.indexOf(srch));

@@ -290,7 +290,7 @@ CABLES.UI.GUI = function (cfg)
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
-        this._elAceEditor = ele.byId("ace_editors");// this._elAceEditor || $("#ace_editors");
+        this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
         this._elCanvasFlash = this._elCanvasFlash || ele.byId("canvasflash");
@@ -306,37 +306,28 @@ CABLES.UI.GUI = function (cfg)
         this._elOptions = this._elOptions || ele.byId("options");
         this._elMeta = this._elMeta || ele.byId("meta");
         this._elMenubar = this._elMenubar || ele.byId("menubar");
-        this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");// $("#splitterMeta");
-        this._elInfoArea = this._elInfoArea || $("#infoArea");
+        this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");
+        this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
         this._elGlCanvas = this._elGlCanvas || $("#glcanvas");
-        this._elGlCanvasDom = this._elGlCanvasDom || document.getElementById("glcanvas");
+        this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
 
-        this._elEditorBar = this._elEditorBar || $("#editorbar");
+        this._elMaintab = this._elMaintab || ele.byId("maintabs");
+        this._elEditor = this._elEditor || ele.byId("editor");
+        this._elLibrary = this._elLibrary || ele.byId("library");
+        this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
+        this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
+        this._elEditorMinimized = this._elEditorMinimized || ele.byId("editorminimized");
+        this._elEditorMaximized = this._elEditorMaximized || ele.byId("editormaximized");
 
-        this._elMaintab = this._elMaintab || document.getElementById("maintabs");
-        this._elEditor = this._elEditor || document.getElementById("editor");
-        this._elLibrary = this._elLibrary || document.getElementById("library");
-        this._elCanvasInfoSize = this._elCanvasInfoSize || document.getElementById("canvasInfoSize");
-        this._elSplitterMaintabs = this._elSplitterMaintabs || document.getElementById("splitterMaintabs");
-        this._elEditorMinimized = this._elEditorMinimized || document.getElementById("editorminimized");
-        this._elEditorMaximized = this._elEditorMaximized || document.getElementById("editormaximized");
+        this._elTLoverviewtimeline = this._elTLoverviewtimeline || ele.byId("overviewtimeline");
+        this._elTLtimelineTitle = this._elTLtimelineTitle || ele.byId("timelineTitle");
+        this._elTLkeycontrols = this._elTLkeycontrols || ele.byId("keycontrols");
+        this._elTLtimetimeline = this._elTLtimetimeline || ele.byId("timetimeline");
+        this._elTLsplitterTimeline = this._elTLsplitterTimeline || ele.byId("splitterTimeline");
 
-        // this._elMiniMapContainer = this._elMiniMapContainer || document.getElementById("minimapContainer");
-        // this._elMiniMap = this._elMiniMap || document.getElementById("minimap");
-        this._elTLoverviewtimeline = this._elTLoverviewtimeline || document.getElementById("overviewtimeline");
-        this._elTLtimelineTitle = this._elTLtimelineTitle || document.getElementById("timelineTitle");
-        this._elTLkeycontrols = this._elTLkeycontrols || document.getElementById("keycontrols");
-        this._elTLtimetimeline = this._elTLtimetimeline || document.getElementById("timetimeline");
-        this._elTLsplitterTimeline = this._elTLsplitterTimeline || document.getElementById("splitterTimeline");
-
-        this._elSubpatchNav = this._elSubpatchNav || document.getElementById("subpatch_nav");
-
-        this._elCablesCanvas = this._elCablesCanvas || document.getElementById("cablescanvas");
-
+        this._elSubpatchNav = this._elSubpatchNav || ele.byId("subpatch_nav");
+        this._elCablesCanvas = this._elCablesCanvas || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
-
-
-        // const iconBarnav_patch_saveasWidth = this._elIconBar.outerWidth();
 
         let timelineHeight = this.timingHeight;
 
@@ -500,30 +491,11 @@ CABLES.UI.GUI = function (cfg)
         this._elPatch.style.top = 0 + "px";
         this._elPatch.style.left = patchLeft + "px";
 
-
-        // if (showMiniMap)
-        // {
-        //     this._elMiniMapContainer.style.display = "block";
-        //     this._elMiniMap.style.display = "block";
-
-        //     this._elMiniMapContainer.style.left = patchLeft + patchWidth - CABLES.UI.uiConfig.miniMapWidth - 4 + "px";
-        //     this._elMiniMapContainer.style.top = menubarHeight + patchHeight - CABLES.UI.uiConfig.miniMapHeight - 24 + "px";
-
-        //     $("#minimapContainer .title_closed").hide();
-        //     $("#minimapContainer .title_opened").show();
-        // }
-        // else
-        // {
-        //     this._elMiniMapContainer.style.display = "none";
-        //     this._elMiniMap.style.display = "none";
-        // }
-
         this._elLibrary.style.left = iconBarWidth + "px";
         this._elLibrary.style.width = window.innerWidth - this.rendererWidthScaled - iconBarWidth + "px";
         this._elLibrary.style.bottom = 0;
 
         const timelineWidth = window.innerWidth - this.rendererWidthScaled - 2 - iconBarWidth;
-
 
         if (this._elTLoverviewtimeline)
         {
@@ -652,28 +624,29 @@ CABLES.UI.GUI = function (cfg)
         this._elMenubar.style.top = 0 + "px";
         // this._elMenubar.style.height = menubarHeight + "px";
 
-        if (self.infoHeight === 0)
+        if (this.infoHeight === 0)
         {
-            this._elInfoArea.hide();
-            $("#splitterMeta").hide();
+            ele.hide(this._elInfoArea);
+            ele.hide(this._elSplitterMeta);
 
-            document.getElementById("infoAreaMin").style.width = (metaWidth - 20) + "px";
-            document.getElementById("infoAreaMin").classList.remove("hidden");
+            ele.byId("infoAreaMin").style.width = (metaWidth - 20) + "px";
+            ele.byId("infoAreaMin").classList.remove("hidden");
         }
         else
         {
-            document.getElementById("infoAreaMin").classList.add("hidden");
-
-            $("#splitterMeta").show();
-            this._elInfoArea.show();
-            this._elInfoArea.css("width", (metaWidth - 20) + "px");
-            this._elInfoArea.css("height", (self.infoHeight) + "px");
-            this._elInfoArea.css("top", (window.innerHeight - self.rendererHeight - self.infoHeight) + "px");
+            ele.byId("infoAreaMin").classList.add("hidden");
+            ele.show(this._elSplitterMeta);
+            ele.show(this._elInfoArea);
+            this._elInfoArea.style.width = metaWidth - 20 + "px";
+            this._elInfoArea.style.height = this.infoHeight + "px";
+            this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoHeight) + "px";
         }
 
-        $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
-        $("#maintabs").css("top", menubarHeight);
-        $("#maintabs").css("height", window.innerHeight - menubarHeight - timelineHeight);
+        $("#metatabpanel .contentcontainer").css("height", window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50);
+
+        ele.byId("maintabs").style.top = menubarHeight + "px";
+        ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight) + "px";
+
         $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - timelineHeight - 50);
 
 
@@ -885,46 +858,6 @@ CABLES.UI.GUI = function (cfg)
         gui.timeLine().redraw();
     };
 
-    this.showUiDebug = function ()
-    {
-        let numVisibleOps = 0;
-        for (const i in self.ops)
-        {
-            if (!self.ops[i].isHidden()) numVisibleOps++;
-        }
-
-        const canvass = [];
-        const canvs = $("canvas");
-
-        for (let i = 0; i < canvs.length; i++)
-        {
-            canvass.push({
-                "name": canvs[i].id,
-                "width": canvs[i].width,
-                "height": canvs[i].height
-            });
-        }
-
-        const gl = this._corePatch.cgl.gl;
-        const dbgRenderInfo = gl.getExtension("WEBGL_debug_renderer_info");
-        let gl_renderer = "unknown";
-        if (dbgRenderInfo) gl_renderer = gl.getParameter(dbgRenderInfo.UNMASKED_RENDERER_WEBGL);
-
-        const html = CABLES.UI.getHandleBarHtml(
-            "uiDebug", {
-
-                "gl_ver": gl.getParameter(gl.VERSION),
-                "gl_renderer": gl_renderer,
-                "numOps": gui.corePatch().ops.length,
-                "numVisibleOps": numVisibleOps,
-                "canvass": canvass,
-                "numSvgElements": $("#patch svg *").length,
-                "startup": CABLES.startup.log
-            });
-
-        CABLES.UI.MODAL.show(html);
-    };
-
     this.refreshFileManager = function ()
     {
         if (this.fileManager) this.fileManager.refresh();
@@ -1037,18 +970,6 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    // this.showFile = function (fileId, file)
-    // {
-    //     const html = CABLES.UI.getHandleBarHtml(
-    //         "params_file", {
-    //             file,
-    //             fileId,
-    //             "projectId": this.patchId
-    //         });
-
-    //     $("#options").html(html);
-    // };
-
     this.serializeForm = function (selector)
     {
         const json = {};
@@ -1073,7 +994,6 @@ CABLES.UI.GUI = function (cfg)
             function (err, res)
             {
                 $("#converterprogress").hide();
-                // $("#converteroutput").show();
                 ele.show(ele.byId("converteroutput"));
 
                 if (err)
@@ -1094,7 +1014,7 @@ CABLES.UI.GUI = function (cfg)
             });
     };
 
-    this.helperContextMenu = function (ele)
+    this.helperContextMenu = function (el)
     {
         let iconTransforms = "icon icon-check hidden";
         if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
@@ -1134,10 +1054,10 @@ CABLES.UI.GUI = function (cfg)
                         "iconClass": iconTransforms,
                     }
                 ]
-            }, ele);
+            }, el);
     };
 
-    this.rendererContextMenu = function (ele)
+    this.rendererContextMenu = function (el)
     {
         CABLES.contextMenu.show(
             {
@@ -1152,11 +1072,11 @@ CABLES.UI.GUI = function (cfg)
                         "func": CABLES.CMD.RENDERER.scaleCanvas
                     }
                 ]
-            }, ele);
+            }, el);
     };
 
 
-    this.rendererAspectMenu = function (ele)
+    this.rendererAspectMenu = function (el)
     {
         CABLES.contextMenu.show(
             {
@@ -1199,7 +1119,7 @@ CABLES.UI.GUI = function (cfg)
                         func() { CABLES.CMD.RENDERER.aspect(9 / 16); }
                     }
                 ]
-            }, ele);
+            }, el);
     };
 
     this.showConverter = function (converterId, projectId, fileId, converterName)
@@ -1620,38 +1540,6 @@ CABLES.UI.GUI = function (cfg)
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" }, true);
     };
 
-    this.setWorking = function (active, where)
-    {
-        if (active)
-        {
-            let posX = 0;
-            let posY = 0;
-            let r = null;
-            if (where == "patch") r = document.getElementById("patch").getBoundingClientRect();
-            else if (where == "canvas")
-            {
-                r = document.getElementById("cablescanvas").getBoundingClientRect();
-                // this._elGlCanvas.css({ "opacity": 0.7 });
-            }
-            else r = document.body.getBoundingClientRect();
-
-            posX = r.width / 2 + r.left;
-            posY = r.height / 2 + r.top;
-
-            $(".workingindicator").css(
-                {
-                    "left": posX,
-                    "top": posY,
-                    "display": "block"
-                });
-        }
-        else
-        {
-            // if (where == "canvas") this._elGlCanvas.css({ "opacity": 1 });
-            $(".workingindicator").hide();
-        }
-    };
-
     this._cursor = "";
     this.setCursor = function (str)
     {
@@ -1691,18 +1579,18 @@ CABLES.UI.GUI = function (cfg)
     };
 
 
-    this.setElementBgPattern = function (ele)
+    this.setElementBgPattern = function (el)
     {
-        if (!ele) return;
-        ele.classList.remove("bgPatternDark");
-        ele.classList.remove("bgPatternBright");
-        ele.classList.remove("bgPatternBlack");
-        ele.classList.remove("bgPatternWhite");
-        ele.classList.remove("bgPatternRed");
-        ele.classList.remove("bgPatternGrey");
-        ele.classList.remove("bgPatternBlue");
+        if (!el) return;
+        el.classList.remove("bgPatternDark");
+        el.classList.remove("bgPatternBright");
+        el.classList.remove("bgPatternBlack");
+        el.classList.remove("bgPatternWhite");
+        el.classList.remove("bgPatternRed");
+        el.classList.remove("bgPatternGrey");
+        el.classList.remove("bgPatternBlue");
 
-        ele.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
+        el.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
     };
 
     this.notIdling = function ()
@@ -1935,11 +1823,6 @@ function startUi(cfg)
     incrementStartup();
     gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId, () =>
     {
-        // $("#patch").bind("contextmenu", function (e)
-        // {
-        //     if (e.preventDefault) e.preventDefault();
-        // });
-
         gui.init();
         gui.checkIdle();
         gui.initCoreListeners();

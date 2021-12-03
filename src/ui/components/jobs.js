@@ -4,7 +4,7 @@ export default class Jobs
     {
         this._jobs = [];
         this._lastIndicator = null;
-        this._jobsEle = document.getElementById("jobs");
+        this._jobsEle = ele.byId("jobs");
         this._listenerStarted = false;
     }
 
@@ -42,18 +42,7 @@ export default class Jobs
             gui.showLoadingProgress(false);
         }
 
-        if (indicator)
-        {
-            gui.setWorking(true, indicator);
-            this._lastIndicator = indicator;
-        }
-        else
-        {
-            if (this._lastIndicator) gui.setWorking(false, this._lastIndicator);
-        }
-
-
-        document.getElementById("jobs").innerHTML = str;
+        ele.byId("jobs").innerHTML = str;
         if (!this._listenerStarted) this.startListener();
     }
 
@@ -106,7 +95,7 @@ export default class Jobs
 
     setProgress(jobId, progress)
     {
-        if (progress != 100)document.getElementById("uploadprogresscontainer").classList.remove("hidden");
+        if (progress != 100)ele.byId("uploadprogresscontainer").classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
@@ -114,7 +103,7 @@ export default class Jobs
             if (this._jobs[i].id == jobId)
             {
                 this._jobs[i].progress = progress;
-                document.getElementById("jobprogress" + this._jobs[i].id).style.width = progress + "%";
+                ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
             }
 
             if (this._jobs[i].progress)
@@ -126,10 +115,10 @@ export default class Jobs
         if (avgCount)
         {
             const prog = avg / avgCount;
-            document.getElementById("uploadprogress").style.width = prog + "%";
+            ele.byId("uploadprogress").style.width = prog + "%";
 
-            if (prog === 100) document.getElementById("uploadprogresscontainer").classList.add("hidden");
-            else document.getElementById("uploadprogresscontainer").classList.remove("hidden");
+            if (prog === 100) ele.byId("uploadprogresscontainer").classList.add("hidden");
+            else ele.byId("uploadprogresscontainer").classList.remove("hidden");
         }
     }
 

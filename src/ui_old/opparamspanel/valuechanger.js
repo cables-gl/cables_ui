@@ -102,10 +102,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 {
     CABLES.UI.showInputFieldInfo();
 
-    // const elem = $("#" + eleId);
     const eleInput = ele.byId(eleId);
-    // const el = document.getElementById(eleId);
-
     const eleContainer = ele.byId(eleId + "-container");
     const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
 
@@ -181,7 +178,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             eleInput.focus();
 
             const vv = eleInput.value;
-            elem[0].setSelectionRange(0, vv.length);
+            eleInput.setSelectionRange(0, vv.length);
             // elem.bind("keydown", tabKeyListener);
             eleInput.addEventListener("keydown", tabKeyListener);
         }
