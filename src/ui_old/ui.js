@@ -3,6 +3,7 @@
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
+let ele = window.ele;
 
 CABLES.UI.GUI = function (cfg)
 {
@@ -289,12 +290,12 @@ CABLES.UI.GUI = function (cfg)
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
-        this._elAceEditor = this._elAceEditor || $("#ace_editors");
-        this._elSplitterPatch = this._elSplitterPatch || $("#splitterPatch");
-        this._elSplitterRenderer = this._elSplitterRenderer || $("#splitterRenderer");
-        this._elCanvasFlash = ele.byId("canvasflash");
+        this._elAceEditor = ele.byId("ace_editors");// this._elAceEditor || $("#ace_editors");
+        this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
+        this._elSplitterRenderer = this._elSplitterRenderer || ele.byId("splitterRenderer");
+        this._elCanvasFlash = this._elCanvasFlash || ele.byId("canvasflash");
 
-        this._elIconbarLeft = document.getElementById("iconbar_sidebar_left");
+        this._elIconbarLeft = this._elIconbarLeft || ele.byId("iconbar_sidebar_left");
 
         this.patchView.updateBoundingRect();
 
@@ -302,17 +303,15 @@ CABLES.UI.GUI = function (cfg)
         this._elBgPreview = ele.byId("bgpreview");
         this._elBgPreviewButtonContainer = ele.byId("bgpreviewButtonsContainer");
 
-        this._elOptions = this._elOptions || document.getElementById("options");
-        this._elMeta = this._elMeta || document.getElementById("meta");
-        this._elMenubar = this._elMenubar || document.getElementById("menubar");
-        this._elSplitterMeta = this._elSplitterMeta || $("#splitterMeta");
-        this._elInforArea = this._elInforArea || $("#infoArea");
+        this._elOptions = this._elOptions || ele.byId("options");
+        this._elMeta = this._elMeta || ele.byId("meta");
+        this._elMenubar = this._elMenubar || ele.byId("menubar");
+        this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");// $("#splitterMeta");
+        this._elInfoArea = this._elInfoArea || $("#infoArea");
         this._elGlCanvas = this._elGlCanvas || $("#glcanvas");
         this._elGlCanvasDom = this._elGlCanvasDom || document.getElementById("glcanvas");
 
-
         this._elEditorBar = this._elEditorBar || $("#editorbar");
-        // this._elIconBar = this._elIconBar || $("#icon-bar");
 
         this._elMaintab = this._elMaintab || document.getElementById("maintabs");
         this._elEditor = this._elEditor || document.getElementById("editor");
@@ -437,7 +436,7 @@ CABLES.UI.GUI = function (cfg)
             this._elMaintab.style.width = editorWidth + "px";
 
 
-            this._elAceEditor.css("height", editorHeight);
+            if (this._elAceEditor) this._elAceEditor.style.height = editorHeight + "px";
             this._elSplitterMaintabs.style.display = "block";
             this._elSplitterMaintabs.style.left = editorWidth + iconBarWidth + "px";
             this._elSplitterMaintabs.style.height = patchHeight + 2 + "px";
@@ -489,10 +488,10 @@ CABLES.UI.GUI = function (cfg)
         this.rightPanelWidth = this.rendererWidthScaled;
         if (this._canvasMode == this.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
 
-        this._elSplitterPatch.css("left", window.innerWidth - this.rightPanelWidth - 4);
-        this._elSplitterPatch.css("height", patchHeight + timelineUiHeight + 2);
-        this._elSplitterRenderer.css("top", this.rendererHeightScaled);
-        this._elSplitterRenderer.css("width", this.rendererWidthScaled);
+        this._elSplitterPatch.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
+        this._elSplitterPatch.style.height = (patchHeight + timelineUiHeight + 2) + "px";
+        this._elSplitterRenderer.style.top = this.rendererHeightScaled + "px";
+        this._elSplitterRenderer.style.width = this.rendererWidthScaled + "px";
 
         this.patchView.setSize(patchLeft, menubarHeight, patchWidth, patchHeight);
 
@@ -598,7 +597,6 @@ CABLES.UI.GUI = function (cfg)
 
 
         $("#splitterTimeline").css("width", timelineWidth);
-        $("#delayed").css("left", window.innerWidth - this.rendererWidth + 10);
 
         if (this._elIconbarLeft)
         {
@@ -648,15 +646,15 @@ CABLES.UI.GUI = function (cfg)
             this._elOptions.style.display = "none";
         }
 
-        this._elSplitterMeta.css("bottom", self.infoHeight + "px");
-        this._elSplitterMeta.css("width", metaWidth - 28 + "px");
+        this._elSplitterMeta.style.bottom = self.infoHeight + "px";
+        this._elSplitterMeta.style.width = metaWidth - 28 + "px";
 
         this._elMenubar.style.top = 0 + "px";
         // this._elMenubar.style.height = menubarHeight + "px";
 
         if (self.infoHeight === 0)
         {
-            this._elInforArea.hide();
+            this._elInfoArea.hide();
             $("#splitterMeta").hide();
 
             document.getElementById("infoAreaMin").style.width = (metaWidth - 20) + "px";
@@ -667,10 +665,10 @@ CABLES.UI.GUI = function (cfg)
             document.getElementById("infoAreaMin").classList.add("hidden");
 
             $("#splitterMeta").show();
-            this._elInforArea.show();
-            this._elInforArea.css("width", (metaWidth - 20) + "px");
-            this._elInforArea.css("height", (self.infoHeight) + "px");
-            this._elInforArea.css("top", (window.innerHeight - self.rendererHeight - self.infoHeight) + "px");
+            this._elInfoArea.show();
+            this._elInfoArea.css("width", (metaWidth - 20) + "px");
+            this._elInfoArea.css("height", (self.infoHeight) + "px");
+            this._elInfoArea.css("top", (window.innerHeight - self.rendererHeight - self.infoHeight) + "px");
         }
 
         $("#metatabpanel .contentcontainer").css("height", window.innerHeight - self.rendererHeightScaled - self.infoHeight - 50);
@@ -751,14 +749,14 @@ CABLES.UI.GUI = function (cfg)
         CABLES.UI.MODAL.show(html);
     };
 
-    this.exportDialog = function ()
-    {
-        let html = "";
-        html += "export:<br/><br/>";
-        html += "<textarea id=\"serialized\"></textarea>";
-        CABLES.UI.MODAL.show(html);
-        $("#serialized").val(self.patch().scene.serialize());
-    };
+    // this.exportDialog = function ()
+    // {
+    //     let html = "";
+    //     html += "export:<br/><br/>";
+    //     html += "<textarea id=\"serialized\"></textarea>";
+    //     CABLES.UI.MODAL.show(html);
+    //     ele.byId("serialized").value = self.patch().scene.serialize();
+    // };
 
     this._setCanvasMode = function (m)
     {
@@ -826,16 +824,7 @@ CABLES.UI.GUI = function (cfg)
 
     function updateTimingIcon()
     {
-        if (showTiming)
-        {
-            $("#button_toggleTiming i").removeClass("fa-caret-up");
-            $("#button_toggleTiming i").addClass("fa-caret-down");
-        }
-        else
-        {
-            $("#button_toggleTiming i").removeClass("fa-caret-down");
-            $("#button_toggleTiming i").addClass("fa-caret-up");
-        }
+
     }
 
     this.isShowingTiming = function ()
@@ -1228,8 +1217,6 @@ CABLES.UI.GUI = function (cfg)
 
     this.bind = function (cb)
     {
-        $("#glcanvas").attr("tabindex", "3");
-
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
 
@@ -1841,7 +1828,7 @@ CABLES.UI.GUI = function (cfg)
 
 
         if (this.isRemoteClient)
-            document.getElementById("undev").style.display = "none";
+            ele.byId("undev").style.display = "none";
 
         CABLES.UI.initSplitPanes();
 
@@ -1853,56 +1840,26 @@ CABLES.UI.GUI = function (cfg)
         // this.patchView.setPatchRenderer("patch", _patch);
 
 
-        $("#undev").hover(function (e)
+        ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
         });
-        $("#sidebar-menu").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.sidebarMenu);
-        }, function ()
+        ele.byId("undev").addEventListener("pointerLeave", (e) =>
         {
             CABLES.UI.hideInfo();
         });
 
-        $(".download_screenshot").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.download_screenshot);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
-        // $("#minimapContainer").hover(function (e)
-        // {
-        //     CABLES.UI.showInfo(CABLES.UI.TEXTS.minimapContainer);
-        // }, function ()
-        // {
-        // CABLES.UI.hideInfo();
-        // });
-        $("#project_settings_btn").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.project_settings_btn);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
-        $("#timelineui").hover(function (e)
+
+        ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.timelineui);
-        }, function ()
+        });
+        ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
+
         {
             CABLES.UI.hideInfo();
         });
-        $(".op_background").hover(function (e)
-        {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.op_background);
-        }, function ()
-        {
-            CABLES.UI.hideInfo();
-        });
+
         gui.replaceNavShortcuts();
     };
 };
@@ -1954,12 +1911,10 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 
     this._corePatch.on("renderDelayStart", function ()
     {
-        $("#delayed").show();
     });
 
     this._corePatch.on("renderDelayEnd", function ()
     {
-        $("#delayed").hide();
     });
 };
 
@@ -2020,9 +1975,6 @@ function startUi(cfg)
                 gui.opSelect().prepare();
                 CABLES.UI.userSettings.init();
                 incrementStartup();
-                $("#username").html(gui.user.usernameLowercase);
-                $("#delayed").hide();
-
 
                 gui.metaCode().init();
 

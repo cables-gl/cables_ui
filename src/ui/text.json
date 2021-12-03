@@ -72,15 +72,12 @@
 
         "download_screenshot": "## Download screenshot \n\nDownload a HD-image (1920 x 1080) of your patch",
         "minimapContainer": "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate.",
-        "project_settings_btn": "## project Settings \n\nEdit project name, make it private / public, add collaborators.",
         "timelineui": "## Timeline \n\nIn the timeline you can animate ports over time.",
         "op_background": "## Op \n\n",
         "op_title": "## Op Title \n\n* click to edit title",
 
         "bookmark_added": "Bookmark added!",
         "bookmark_removed": "Bookmark removed!",
-        "sidebarMenu":
-            "## Customize sidebar \n\nOpen the sidebar customizer to add / remove menu items by dragging them to / from the sidebar. \nDrag menu items vertically to change their order. \nYou can also press `cmd + p` to show the command pallet – there you can press the bookmark icon to add / remove menu items as well. ",
 
         "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `[drag left click]` move area\n* `[drag right click]` move area and change time\n* `[double click]` toggle show full project length",
         "timeline_frames": "## timeline \n\n* `[click]` move cursor",

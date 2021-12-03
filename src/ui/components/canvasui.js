@@ -35,6 +35,7 @@ export default class CanvasUi
             }
         });
 
+        ele.byId("glcanvas").setAttribute("tabindex", 3);
 
         ele.byId("glcanvas").addEventListener("focus", () =>
         {
@@ -76,24 +77,28 @@ export default class CanvasUi
         const w = gui.rendererWidth * this._cgl.canvasScale;
 
 
-        this._elCanvasIconbar.style.display = "inline-block";
+        ele.show(this._elCanvasIconbar);
+        // this._elCanvasIconbar.style.display = "inline-block";
         this._elCanvasIconbar.style.transform = "translate(-50%)";
         this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
 
         if (w < 400)
         {
-            this._elCanvasIconbar.style.display = "none";
-        }
-        else
-        if (w < 600)
-        {
-            ele.hide(this._elCanvasInfoFps);
-            ele.hide(this._elCanvasInfoMs);
+            // this._elCanvasIconbar.style.display = "none";
+            ele.hide(this._elCanvasIconbar);
         }
         else
         {
-            ele.show(this._elCanvasInfoFps);
-            ele.show(this._elCanvasInfoMs);
+            if (w < 600)
+            {
+                ele.hide(this._elCanvasInfoFps);
+                ele.hide(this._elCanvasInfoMs);
+            }
+            else
+            {
+                ele.show(this._elCanvasInfoFps);
+                ele.show(this._elCanvasInfoMs);
+            }
         }
     }
 
