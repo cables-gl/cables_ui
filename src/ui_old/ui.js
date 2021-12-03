@@ -1948,7 +1948,8 @@ CABLES.UI.GUI = function (cfg)
             {
                 if (this.isCanvasFocussed &&
                     !e.target.classList.contains("item") &&
-                    !e.target.classList.contains("icon")
+                    !e.target.classList.contains("icon") &&
+                    e.target.id != "glcanvas"
                 ) gui.showCanvasModal(false);
             }, true);
 
