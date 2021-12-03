@@ -110,7 +110,7 @@ export default class PatchView extends CABLES.EventTarget
 
             if (proj.ui.renderer)
             {
-                if (proj.ui.renderer.w > document.body.clientWidth * 0.9 || proj.ui.renderer.h > document.body.clientHeight * 0.9)
+                if (proj.ui.renderer.w * proj.ui.renderer.s > document.body.clientWidth * 0.9 || proj.ui.renderer.h * proj.ui.renderer.s > document.body.clientHeight * 0.9)
                 {
                     proj.ui.renderer.w = 640;
                     proj.ui.renderer.h = 360;

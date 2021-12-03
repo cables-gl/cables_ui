@@ -22,6 +22,12 @@ CABLES.UI.GUI = function (cfg)
     this.spaceBarStart = 0;
 
 
+    this.infoHeight = 200;
+    this.timingHeight = 250;
+    this.rendererWidth = 640;
+    this.rendererHeight = 360;
+
+
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
     this.CANVASMODE_PATCHBG = 1;
@@ -216,12 +222,6 @@ CABLES.UI.GUI = function (cfg)
     {
         return this.user.username == "guest";
     };
-
-    this.infoHeight = 200;
-    this.timingHeight = 250;
-    this.rendererWidth = 640;
-    this.rendererHeight = 360;
-
 
     this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
     this.updateTheme();
