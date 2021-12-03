@@ -626,7 +626,8 @@ CABLES.UI.GUI = function (cfg)
 
         if (this.infoHeight === 0)
         {
-            ele.hide(this._elInfoArea);
+            // ele.hide(this._elInfoArea);
+            this._elInfoArea.style.display = "none";
             ele.hide(this._elSplitterMeta);
 
             ele.byId("infoAreaMin").style.width = (metaWidth - 20) + "px";
@@ -636,7 +637,8 @@ CABLES.UI.GUI = function (cfg)
         {
             ele.byId("infoAreaMin").classList.add("hidden");
             ele.show(this._elSplitterMeta);
-            ele.show(this._elInfoArea);
+            // ele.show(this._elInfoArea);
+            this._elInfoArea.style.display = "block";
             this._elInfoArea.style.width = metaWidth - 20 + "px";
             this._elInfoArea.style.height = this.infoHeight + "px";
             this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoHeight) + "px";
