@@ -308,6 +308,7 @@ CABLES.UI.GUI = function (cfg)
         this._elMenubar = this._elMenubar || ele.byId("menubar");
         this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
+
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
 
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
@@ -981,39 +982,6 @@ CABLES.UI.GUI = function (cfg)
         return json;
     };
 
-    this.converterStart = function (projectId, fileId, converterId)
-    {
-        $("#converterprogress").show();
-        $("#converterform").hide();
-
-        CABLESUILOADER.talkerAPI.send("fileConvert",
-            {
-                "fileId": fileId,
-                "converterId": converterId,
-                "options": this.serializeForm("#converterform")
-            },
-            function (err, res)
-            {
-                $("#converterprogress").hide();
-                ele.show(ele.byId("converteroutput"));
-
-                if (err)
-                {
-                    $("#converteroutput").html("Error: something went wrong while converting..." + (err.msg || ""));
-                }
-                else
-                {
-                    let html = "";
-
-                    if (res && res.info) html = res.info;
-                    else html = "Finished!";
-
-                    html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
-                    $("#converteroutput").html(html);
-                }
-                gui.refreshFileManager();
-            });
-    };
 
     this.helperContextMenu = function (el)
     {
@@ -1136,6 +1104,41 @@ CABLES.UI.GUI = function (cfg)
         CABLES.UI.MODAL.show(html);
     };
 
+    this.converterStart = function (projectId, fileId, converterId)
+    {
+        ele.show(ele.byId("converterprogress"));
+        ele.hide(ele.byId("converterform"));
+
+        CABLESUILOADER.talkerAPI.send("fileConvert",
+            {
+                "fileId": fileId,
+                "converterId": converterId,
+                "options": this.serializeForm("#converterform")
+            },
+            function (err, res)
+            {
+                ele.hide(ele.byId("converterprogress"));
+                ele.show(ele.byId("converteroutput"));
+
+                if (err)
+                {
+                    ele.byId("converteroutput").innerHTML = "Error: something went wrong while converting..." + (err.msg || "");
+                }
+                else
+                {
+                    let html = "";
+
+                    if (res && res.info) html = res.info;
+                    else html = "Finished!";
+
+                    html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
+                    ele.byId("converteroutput").innerHTML = html;
+                }
+                gui.refreshFileManager();
+            });
+    };
+
+
     this.bind = function (cb)
     {
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
@@ -1185,15 +1188,8 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
 
-
-        $(".nav_op_addOp").bind("click", function (event)
-        {
-            CABLES.CMD.PATCH.addOp();
-        });
-
         ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(null, true); });
-
 
         ele.byId("nav_timeline").addEventListener("click", (event) =>
         {
@@ -1302,8 +1298,6 @@ CABLES.UI.GUI = function (cfg)
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
 
-        $(".tooltip").hide();
-
         if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
@@ -1350,6 +1344,14 @@ CABLES.UI.GUI = function (cfg)
                 "y": 0
             });
         }
+
+        setTimeout(() =>
+        {
+            ele.forEachClass("tooltip", (el) =>
+            {
+                ele.hide(el);
+            });
+        }, 50);
     };
 
 
