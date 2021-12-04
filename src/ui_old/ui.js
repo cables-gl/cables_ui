@@ -1373,14 +1373,13 @@ CABLES.UI.GUI = function (cfg)
 
     this.showUiElements = function ()
     {
-        $("#cablescanvas").show();
-        $("#loadingstatus").hide();
-        $("#mainContainer").show();
+        ele.show(ele.byId("cablescanvas"));
+        ele.hide(ele.byId("loadingstatus"));
+        ele.show(ele.byId("mainContainer"));
+
         document.getElementById("menubar").classList.remove("hidden");
 
-
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
-
 
         this._elGlCanvasDom.addEventListener("pointerenter", (e) =>
         {
