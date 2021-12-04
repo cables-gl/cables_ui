@@ -644,13 +644,12 @@ CABLES.UI.GUI = function (cfg)
             this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoHeight) + "px";
         }
 
-        $("#metatabpanel .contentcontainer").css("height", window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50);
+        document.querySelector("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50 + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight) + "px";
 
-        $("#maintabs .contentcontainer").css("height", window.innerHeight - menubarHeight - timelineHeight - 50);
-
+        document.querySelector("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
@@ -713,16 +712,16 @@ CABLES.UI.GUI = function (cfg)
         perf.finish();
     };
 
-    this.importDialog = function ()
-    {
-        let html = "";
-        html += "import:<br/><br/>";
-        html += "<textarea id=\"serialized\"></textarea>";
-        html += "<br/>";
-        html += "<br/>";
-        html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
-        CABLES.UI.MODAL.show(html);
-    };
+    // this.importDialog = function ()
+    // {
+    //     let html = "";
+    //     html += "import:<br/><br/>";
+    //     html += "<textarea id=\"serialized\"></textarea>";
+    //     html += "<br/>";
+    //     html += "<br/>";
+    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
+    //     CABLES.UI.MODAL.show(html);
+    // };
 
     // this.exportDialog = function ()
     // {
@@ -1377,7 +1376,7 @@ CABLES.UI.GUI = function (cfg)
         ele.hide(ele.byId("loadingstatus"));
         ele.show(ele.byId("mainContainer"));
 
-        document.getElementById("menubar").classList.remove("hidden");
+        ele.byId("menubar").classList.remove("hidden");
 
         if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 

@@ -77,8 +77,7 @@ export default class IconBar
 
         this._eleContainer.innerHTML = html;
 
-
-        document.body.appendChild(this._eleContainer);
+        ele.byId("mainContainer").appendChild(this._eleContainer);
     }
 
     addItem(item)
