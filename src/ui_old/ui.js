@@ -1321,19 +1321,13 @@ CABLES.UI.GUI = function (cfg)
             CABLES.UI.suggestions.close();
             CABLES.UI.suggestions = null;
         }
-        else if ($("#cmdpalette").is(":visible")) gui.cmdPallet.close();
-        else if ($(".contextmenu").is(":visible")) CABLES.contextMenu.close();
-        else if ($("#sidebar").is(":visible")) $("#sidebar").animate({
-            "width": "toggle"
-        }, 200);
+        else if (gui.cmdPallet.isVisible()) gui.cmdPallet.close();
+        else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
         else if (CABLES.UI.MODAL._visible)
         {
             CABLES.UI.MODAL.hide(true);
             CABLES.UI.MODAL.hide();
-            if (this._showingEditor)
-            {
-                self.editor().focus();
-            }
+            if (this._showingEditor) self.editor().focus();
         }
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if (this._showingEditor) this.closeEditor();
