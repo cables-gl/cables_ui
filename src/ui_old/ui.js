@@ -499,29 +499,29 @@ CABLES.UI.GUI = function (cfg)
 
         if (this._elTLoverviewtimeline)
         {
+            this._eleSplitterTimeline = this._eleSplitterTimeline || ele.byId("splitterTimeline");
+            this._eleTiming = this._eleTiming || ele.byId("timing");
+
             if (showTiming)
             {
-                $("#timelineui").css("width", timelineWidth);
-                $("#timing").css("width", timelineWidth);
-                $("#timing").css("bottom", filesHeight);
+                this._eleTiming.style.width = timelineWidth + "px";
+                this._eleTiming.style.bottom = filesHeight + "px";
+                this._eleTiming.style.height = this.timingHeight + "px";
+                this._eleTiming.style.left = iconBarWidth + "px";
 
-                $("#timelineui").show();
-                $("#timing").css("height", this.timingHeight);
-                $("#timing").css("left", iconBarWidth);
+                ele.byId("timelineui").style.width = timelineWidth + "px";
 
-                $("#overviewtimeline").css("margin-top", timelineUiHeight);
-                $("#overviewtimeline svg").css("width", timelineWidth);
-                $("#overviewtimeline svg").css("height", 25);
+                ele.byId("overviewtimeline").style["margin-top"] = timelineUiHeight + "px";
+                document.querySelector("#overviewtimeline svg").style.width = timelineWidth + "px";
+                document.querySelector("#overviewtimeline svg").style.height = 25 + "px";
 
-                $("#timetimeline").css("margin-top", timelineUiHeight + timedisplayheight);
-                $("#timetimeline svg").css("width", timelineWidth);
-                $("#timetimeline svg").css("height", 25);
+                ele.byId("timetimeline").style["margin-top"] = timelineUiHeight + timedisplayheight + "px";
+                document.querySelector("#timetimeline svg").style.width = timelineWidth + "px";
+                document.querySelector("#timetimeline svg").style.height = 25 + "px";
 
-                $("#timeline svg").css("width", timelineWidth);
-                $("#timeline svg").css("height", this.timingHeight - timedisplayheight);
-                $("#timeline svg").css("margin-top", timelineUiHeight + timedisplayheight + timedisplayheight);
-
-                $("#timeline svg").show();
+                document.querySelector("#timeline svg").style.width = timelineWidth + "px";
+                document.querySelector("#timeline svg").style.height = this.timingHeight - timedisplayheight + "px";
+                document.querySelector("#timeline svg").style["margin-top"] = timelineUiHeight + timedisplayheight + timedisplayheight + "px";
 
                 this._elTLoverviewtimeline.style.display = "block";
                 this._elTLtimetimeline.style.display = "block";
@@ -529,7 +529,8 @@ CABLES.UI.GUI = function (cfg)
                 this._elTLsplitterTimeline.style.display = "block";
                 this._elTLtimelineTitle.style.display = "block";
 
-                $("#splitterTimeline").css("bottom", this.timingHeight - 4);
+                this._eleSplitterTimeline.style.bottom = this.timingHeight - 4 + "px";
+                ele.show(this._eleSplitterTimeline);
             }
             else
             {
@@ -540,9 +541,9 @@ CABLES.UI.GUI = function (cfg)
                 this._elTLtimelineTitle.style.display = "none";
                 this._elTLsplitterTimeline.style.display = "none";
 
-                $("#timeline svg").hide();
-                $("#timing").css("height", timelineUiHeight);
-                $("#splitterTimeline").hide();
+                this._eleTiming.style.height = timelineUiHeight + "px";
+
+                ele.hide(this._eleSplitterTimeline);
             }
         }
 
@@ -556,7 +557,6 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
         }
 
-
         this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
         if (this._elCanvasIconbarTimeline)
         {
@@ -567,8 +567,7 @@ CABLES.UI.GUI = function (cfg)
             else this._elCanvasIconbarTimeline.style.display = "inline-block";
         }
 
-
-        $("#splitterTimeline").css("width", timelineWidth);
+        ele.byId("splitterTimeline").style.width = timelineWidth + "px";
 
         if (this._elIconbarLeft)
         {
@@ -841,7 +840,7 @@ CABLES.UI.GUI = function (cfg)
     {
         gui.timeLine().hidden = true;
         showTiming = false;
-        $("#timing").hide();
+        ele.hide(ele.byId("timing"));
         gui.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
@@ -849,7 +848,7 @@ CABLES.UI.GUI = function (cfg)
     this.toggleTiming = function ()
     {
         gui.timeLine().hidden = false;
-        $("#timing").show();
+        ele.show(ele.byId("timing"));
         CABLES.UI.userSettings.set("timelineOpened", true);
 
         showTiming = !showTiming;

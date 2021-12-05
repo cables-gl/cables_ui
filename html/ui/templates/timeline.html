@@ -5,8 +5,8 @@
     <div id="timelineui" data-info="{{ texts.timelineui }}">
         <a id="button_toggleTiming" class=""><span class="icon icon-chevron-down"></span>timing</a>
 
-        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
-        <span class="timelineprogress" onclick="gui.timeLine().setProjectLength();"></span>
+        <span id="timelinetime" class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
+        <span id="timelineprogress" class="timelineprogress" onclick="gui.timeLine().setProjectLength();"></span>
 
         <a class="button button-icon" onclick="gui.timeLine().gotoZero();"><span class="icon icon-skip-back"></span></a>
         <a class="button button-icon" onclick="gui.timeLine().gotoOffset(-2);"><span class="icon icon-fast-forward" style="transform:rotate(180deg)"></span></a>
