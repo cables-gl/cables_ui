@@ -599,7 +599,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             anims[j].removeUi();
         }
 
-        if ($("#timeline svg circle").length > 0)
+        if (ele.byQueryAll("#timeline svg circle").length > 0)
         {
             console.log("KEYS NOT REMOVED PROPERLY");
         }
@@ -608,7 +608,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     this.isFocussed = function ()
     {
-        return $("#timeline").is(":focus");
+        ele.hasFocus(ele.byId("timeline"));
     };
 
     this.addAnim = function (newanim)
@@ -616,9 +616,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         if (newanim === null) return;
 
         let i = 0;
-        // newanim.onChange=null;
-        // var newAnims=[];
-        // newAnims.push(newanim);
+
         newanim.show();
 
         let found = true;
@@ -704,7 +702,9 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     this.setAnim = function (newanim, config)
     {
         if (!gui.timeLine()) return;
-        $(document).bind("mousemove", mousemoveTime);
+
+        document.removeEventListener("mousemove", mousemoveTime);
+        document.addEventListener("mousemove", mousemoveTime);
 
         if (newanim == anim) return;
         if (newanim && newanim != tlEmpty)gui.showTiming();
@@ -1019,12 +1019,12 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     };
 
 
-    this.getCanvasCoordsSVG = function (id, evt)
+    this.getCanvasCoordsSVG = function (query, evt)
     {
-        let ctm = $(id)[0].getScreenCTM();
+        let ctm = ele.byQuery(query).getScreenCTM();
 
         ctm = ctm.inverse();
-        let uupos = $(id)[0].createSVGPoint();
+        let uupos = ele.byQuery(query).createSVGPoint();
 
         uupos.x = evt.clientX;
         uupos.y = evt.clientY;
@@ -1363,7 +1363,8 @@ CABLES.ANIM.UI.TimeLineUI = function ()
             }
 
             const s = Math.abs(maxv) + Math.abs(minv);
-            self.setValueScale($("#timeline svg").height() / 2.3 / (s - Math.abs(s) * 0.2));
+
+            self.setValueScale(ele.byQuery("#timeline svg").clientHeight / 2.3 / (s - Math.abs(s) * 0.2));
 
             viewBox.y = -maxv * 1.1 * CABLES.ANIM.VALUESCALE;
             self.updateViewBox();
@@ -1467,17 +1468,17 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     // }
 
 
-    $("#keymovemode").bind("click", toggleMoveMode);
-    $("#keyscaleheight").bind("click", this.scaleHeight);
-    $("#keyscalewidth").bind("click", this.scaleWidth);
-    $(".timelinetime").bind("click", this.timeLineTimeClick);
+    ele.byId("keymovemode").addEventListener("click", toggleMoveMode);
+    ele.byId("keyscaleheight").addEventListener("click", this.scaleHeight);
+    ele.byId("keyscalewidth").addEventListener("click", this.scaleWidth);
+    ele.byId("timelinetime").addEventListener("click", this.timeLineTimeClick);
 
-    $("#loop").bind("click", this.toggleLoop);
-    $("#centercursor").bind("click", this.centerCursor);
-    $("#centercursor").bind("mousedown", function () { doCenter = true; });
-    $("#centercursor").bind("mouseup", function () { doCenter = false; });
+    ele.byId("loop").addEventListener("click", this.toggleLoop);
+    ele.byId("centercursor").addEventListener("click", this.centerCursor);
+    ele.byId("centercursor").addEventListener("mousedown", function () { doCenter = true; });
+    ele.byId("centercursor").addEventListener("mouseup", function () { doCenter = false; });
 
-    $(".timeLineInsert").bind("click", function (e)
+    ele.byId("timeLineInsert").addEventListener("click", function (e)
     {
         anim.keys.push(new CABLES.ANIM.Key({ paper, "time": cursorTime, "value": anim.getValue(cursorTime) }));
         updateKeyLine();
@@ -1538,7 +1539,6 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateViewBox();
     });
 
-    // $(document).bind("mouseup", function (e)
     document.addEventListener("mouseup", () =>
     {
         isScrollingTime = false;
@@ -1562,7 +1562,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         }
     }
 
-    $("#timelineui").bind("mousedown", function (e)
+    ele.byId("timelineui").addEventListener("mousedown", function (e)
     {
         ele.byId("timeline").focus();
         if (e.target.nodeName != "INPUT")e.preventDefault();
@@ -1580,14 +1580,8 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     ele.byId("timelinetime").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_time); });
     ele.byId("timelinetime").addEventListener("pointerleave", CABLES.UI.hideInfo);
 
-    // $("#overviewtimeline,#timetimeline,#timelineui").contextmenu(function (e)
-    // {
-    //     e.stopPropagation();
-    //     e.preventDefault();
-    //     return false;
-    // });
 
-    $("#overviewtimeline").bind("mousemove", function (e)
+    ele.byId("overviewtimeline").addEventListener("mousemove", function (e)
     {
         if (e.which > 1)
         {
@@ -1599,15 +1593,15 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         }
     });
 
-    $("#timetimeline").bind("mousedown", (e) =>
+    ele.byId("timetimeline").addEventListener("mousedown", (e) =>
     {
-        $(document).bind("mousemove", mousemoveTime);
+        document.addEventListener("mousemove", mousemoveTime);
         ele.byId("timeline").focus();
         e = this.mouseEvent(e);
         scrollTime(e);
     });
 
-    $("#overviewtimeline").bind("mousedown", function (e)
+    ele.byId("overviewtimeline").addEventListener("mousedown", function (e)
     {
         e.preventDefault();
         e.stopPropagation();
@@ -1637,14 +1631,18 @@ CABLES.ANIM.UI.TimeLineUI = function ()
 
     let panX = 0, panY = 0;
 
-    $("#timeline").bind("mouseleave", function (e)
+    ele.byId("timeline").addEventListener("mouseleave", function (e)
     {
         rubberBandHide();
     });
 
-    $("#timeline").bind("mousewheel", function (e)
+    ele.byId("timeline").addEventListener("wheel", function (e)
     {
-        const delta = CGL.getWheelSpeed(event);
+        let delta = e.deltaY;// CGL.getWheelSpeed(event);
+
+        if (delta < 0)delta = -1;
+        if (delta > 0)delta = 1;
+        delta *= 5;
 
         if (e.metaKey)
         {
@@ -1668,7 +1666,7 @@ CABLES.ANIM.UI.TimeLineUI = function ()
         self.updateOverviewLine();
     });
 
-    $("#timeline").bind("mousemove", (e) =>
+    ele.byId("timeline").addEventListener("mousemove", (e) =>
     {
         if (isScrollingTime) return;
         e = this.mouseEvent(e);

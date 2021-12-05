@@ -7,17 +7,27 @@ class Ele
         return document.getElementById(id);
     }
 
-    byClassSingle(name)
+    byQuery(q)
     {
-        if (name && name[0] == ".") console.warn("ele.byClassSingle should not contain .");
-        const els = document.getElementsByClassName(name);
-        if (els.length > 0) return els[0];
-        return null;
+        return document.querySelector(q);
+    }
+
+    byQueryAll(q)
+    {
+        return document.querySelectorAll(q);
     }
 
     byClass(name)
     {
         if (name && name[0] == ".") console.warn("ele.byClass should not contain .");
+        const els = document.getElementsByClassName(name);
+        if (els.length > 0) return els[0];
+        return null;
+    }
+
+    byClassAll(name)
+    {
+        if (name && name[0] == ".") console.warn("ele.byClassAll should not contain .");
         const els = document.getElementsByClassName(name);
         if (!els) return [];
         return els;

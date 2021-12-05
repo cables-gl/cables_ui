@@ -42,7 +42,7 @@ export default class OpSelect
     updateOptions(opname)
     {
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
-        const num = document.querySelectorAll(".searchbrowser .searchable:not(.hidden)").length;
+        const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
 
         const eleTypeStart = ele.byId("search_startType");
@@ -321,7 +321,7 @@ export default class OpSelect
         const htmlFoot = "";
 
         let opname = "";
-        const selectedEle = ele.byClassSingle("selected");
+        const selectedEle = ele.byClass("selected");
 
         if (selectedEle)opname = selectedEle.dataset.opname;
 
@@ -394,7 +394,7 @@ export default class OpSelect
         this.Navigate(0);
 
         if (this.itemHeight === 0)
-            this.itemHeight = ele.byClassSingle("searchresult").getBoundingClientRect().height;
+            this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
 
         this.updateOptions();
         perf.finish();
@@ -406,8 +406,8 @@ export default class OpSelect
 
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
 
-        const oBoxCollection = document.querySelectorAll(".searchresult:not(.hidden)");
-        const oBoxCollectionAll = ele.byClassSingle("searchresult");
+        const oBoxCollection = ele.byQueryAll(".searchresult:not(.hidden)");
+        const oBoxCollectionAll = ele.byClass("searchresult");
 
         if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length - 1;
         if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
@@ -420,8 +420,8 @@ export default class OpSelect
 
         if (oBoxCollection[this.displayBoxIndex]) oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
 
-        if (this.displayBoxIndex > 5) ele.byClassSingle("searchbrowser").scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
-        else ele.byClassSingle("searchbrowser").scrollTop = 1;
+        if (this.displayBoxIndex > 5) ele.byClass("searchbrowser").scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
+        else ele.byClass("searchbrowser").scrollTop = 1;
 
         this.updateInfo();
     }
@@ -623,7 +623,7 @@ export default class OpSelect
         {
             ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
 
-            const el = document.querySelector(".searchresult[data-opname=\"" + name + "\"]");
+            const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
             el.classList.add("selected");
 
             this.updateInfo();
@@ -644,7 +644,7 @@ export default class OpSelect
     {
         clearTimeout(this._keyTimeout);
 
-        document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+        ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
         this._searching = true;
 
         this._keyTimeout = setTimeout(() =>
@@ -653,7 +653,7 @@ export default class OpSelect
             this.displayBoxIndex = 0;
             this.updateInfo();
             this.search();
-            document.querySelector("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+            ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
             this._searching = false;
             if (this._enterPressedEarly) this.addSelectedOp();
         }, 250);
@@ -674,7 +674,7 @@ export default class OpSelect
 
     addSelectedOp()
     {
-        const selEle = ele.byClassSingle("selected");
+        const selEle = ele.byClass("selected");
         if (selEle)
         {
             const opname = selEle.dataset.opname;
@@ -684,7 +684,7 @@ export default class OpSelect
 
     keyDown(e)
     {
-        const eleSelected = ele.byClassSingle("selected");
+        const eleSelected = ele.byClass("selected");
 
         switch (e.which)
         {

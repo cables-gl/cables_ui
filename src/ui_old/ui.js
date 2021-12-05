@@ -272,14 +272,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.pauseInteractionSplitpanes = function ()
     {
-        const iframes = document.querySelectorAll("iframe,canvas");
+        const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
         this.patchView.pauseInteraction();
     };
 
     this.resumeInteractionSplitpanes = function ()
     {
-        const iframes = document.querySelectorAll("iframe,canvas");
+        const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
         this.patchView.resumeInteraction();
     };
@@ -512,16 +512,16 @@ CABLES.UI.GUI = function (cfg)
                 ele.byId("timelineui").style.width = timelineWidth + "px";
 
                 ele.byId("overviewtimeline").style["margin-top"] = timelineUiHeight + "px";
-                document.querySelector("#overviewtimeline svg").style.width = timelineWidth + "px";
-                document.querySelector("#overviewtimeline svg").style.height = 25 + "px";
+                ele.byQuery("#overviewtimeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#overviewtimeline svg").style.height = 25 + "px";
 
                 ele.byId("timetimeline").style["margin-top"] = timelineUiHeight + timedisplayheight + "px";
-                document.querySelector("#timetimeline svg").style.width = timelineWidth + "px";
-                document.querySelector("#timetimeline svg").style.height = 25 + "px";
+                ele.byQuery("#timetimeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#timetimeline svg").style.height = 25 + "px";
 
-                document.querySelector("#timeline svg").style.width = timelineWidth + "px";
-                document.querySelector("#timeline svg").style.height = this.timingHeight - timedisplayheight + "px";
-                document.querySelector("#timeline svg").style["margin-top"] = timelineUiHeight + timedisplayheight + timedisplayheight + "px";
+                ele.byQuery("#timeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#timeline svg").style.height = this.timingHeight - timedisplayheight + "px";
+                ele.byQuery("#timeline svg").style["margin-top"] = timelineUiHeight + timedisplayheight + timedisplayheight + "px";
 
                 this._elTLoverviewtimeline.style.display = "block";
                 this._elTLtimetimeline.style.display = "block";
@@ -643,12 +643,12 @@ CABLES.UI.GUI = function (cfg)
             this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoHeight) + "px";
         }
 
-        document.querySelector("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50 + "px";
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50 + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight) + "px";
 
-        document.querySelector("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
+        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
@@ -718,7 +718,7 @@ CABLES.UI.GUI = function (cfg)
     //     html += "<textarea id=\"serialized\"></textarea>";
     //     html += "<br/>";
     //     html += "<br/>";
-    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
+    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize(ele.byId('serialized').value);CABLES.UI.MODAL.hide();\">import</a>";
     //     CABLES.UI.MODAL.show(html);
     // };
 
@@ -883,7 +883,7 @@ CABLES.UI.GUI = function (cfg)
     {
         this.showFileManager(() =>
         {
-            const portInputEle = document.querySelector(inputId);
+            const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {
                 this._log.warn("[showfileselect] no portInputEle");
@@ -973,7 +973,7 @@ CABLES.UI.GUI = function (cfg)
     this.serializeForm = function (selector)
     {
         const json = {};
-        Array.from(document.querySelector(selector).elements).forEach((e) =>
+        Array.from(ele.byQuery(selector).elements).forEach((e) =>
         {
             json[e.getAttribute("name")] = e.value;
         });
@@ -1146,7 +1146,7 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
         ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
-        document.querySelectorAll(".nav_create_from_template").forEach((el) =>
+        ele.byQueryAll(".nav_create_from_template").forEach((el) =>
         {
             const href = el.dataset.href;
             el.addEventListener("click", () =>
@@ -1260,7 +1260,7 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            const eleAceTextEditor = document.querySelector("#ace_editors textarea");
+            const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
             if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });
