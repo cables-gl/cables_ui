@@ -5,6 +5,7 @@ export default class ContextMenu
     {
         this._element = null;
         this._modalBg = null;
+        this._visible = false;
     }
 
     close()
@@ -13,6 +14,12 @@ export default class ContextMenu
         if (this._modalBg) this._modalBg.remove();
         this._element = null;
         this._modalBg = null;
+        this._visible = false;
+    }
+
+    isVisible()
+    {
+        return this._visible;
     }
 
     show(obj, parent)
@@ -72,8 +79,8 @@ export default class ContextMenu
                 }
 
                 this._element.appendChild(item);
+                this._visible = true;
 
-                const ctx = this;
                 item.addEventListener("click", function ()
                 {
                     if (obj.refresh)

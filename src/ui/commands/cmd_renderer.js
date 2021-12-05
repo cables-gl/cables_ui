@@ -69,7 +69,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
     }
 
     gui.setLayout();
-    gui.updateCanvasIconBar();
+    gui.canvasUi.updateCanvasIconBar();
 };
 
 CABLES_CMD_RENDERER.scaleCanvas = function ()

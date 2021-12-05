@@ -10,11 +10,6 @@ const debugCommands =
 
 export default debugCommands;
 
-CABLES_CMD_DEBUG.showUiDebug = function ()
-{
-    gui.showUiDebug();
-};
-
 CABLES_CMD_DEBUG.globalVarDump = function ()
 {
     CABLES.GlobalVarTester.after(window);

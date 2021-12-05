@@ -25,7 +25,6 @@
             body { background-color: #282828; color:#aaa; position:fixed;overflow: hidden;}
             #loadingstatusBar { background-color: #999;height:100%;width:0px;margin-bottom: 10px;}
             #loadingstatus { position:absolute;top:0px;left:0px;height:4px;width:100%;}
-            #mainContainer { display:none; }
 
             @keyframes spin
             {
@@ -61,7 +60,7 @@
                 margin-bottom:20px;
             }
 
-            .workingindicator
+            <!-- .workingindicator
             {
                 margin-left: 0;
                 margin-right: 0;
@@ -69,9 +68,9 @@
                 position: absolute;
                 display: none;
                 margin-top:-40px !important;
-                border:10px solid #aaa;
-
-            }
+                border:10px solid red;
+                color:#aaa;
+            } -->
 
             .startUpError
             {
@@ -92,13 +91,13 @@
     <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
     <div id="loadingstatusLog" style="font-family: monospace;padding:30px;"></div>
 
-    <div class="workingindicator" style="margin-top:50px;"></div>
+    <!-- <div class="workingindicator" style="margin-top:50px;"></div> -->
 
-    <div id="cablescanvas" class="bgpatternDark" style="overflow:hidden;width:640px;height:300px;position:absolute;right:0px;">
+    <div id="cablescanvas" class="bgpatternDark hidden" style="overflow:hidden;width:640px;height:300px;position:absolute;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>
     </div>
 
-    <div id="mainContainer">
+    <div id="mainContainer" class="hidden">
 
     <div id="cmdpalette" class="hidden">
 		<div class="input-container">

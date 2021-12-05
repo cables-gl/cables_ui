@@ -38,7 +38,7 @@ export default class MetaKeyframes
                             "opname": ops[i].name,
                             "opid": ops[i].id,
                             "portname": p.name,
-                            "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(ops[i].objName)
+                            "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(ops[i].objName)
                         });
                 }
             }

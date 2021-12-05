@@ -1,3 +1,5 @@
+import defaultops from "../defaultops";
+
 CABLES = CABLES || {};
 
 
@@ -31,7 +33,7 @@ export default class OpTreeList
         let i = 0;
         for (i = 0; i < level; i++) html += "&nbsp;&nbsp;&nbsp;";
 
-        const style = CABLES.UI.uiConfig.getNamespaceClassName(item.fullname);
+        const style = defaultops.getNamespaceClassName(item.fullname);
 
         html += "<a class=\"op_color_" + style + "\" onclick=\"gui.opSelect().tree.searchFor('" + item.fullname + ".')\">";
         html += "" + item.name;

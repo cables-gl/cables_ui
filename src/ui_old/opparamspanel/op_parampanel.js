@@ -200,7 +200,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         let html = this._templateHead({
             op,
             isBookmarked,
-            "colorClass": "op_color_" + CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+            "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(op.objName),
             "texts": CABLES.UI.TEXTS,
             "user": gui.user,
             "optitle": op.getTitle(),
@@ -323,6 +323,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 });
             }
 
+
             perfLoopOut.finish();
         }
 
@@ -386,6 +387,34 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                     }
                 }
             };
+
+            ele.forEachClass("portCopyClipboard", (ell) =>
+            {
+                ell.addEventListener("click", (e) =>
+                {
+                    if (!navigator.clipboard)
+                    {
+                        return;
+                    }
+
+                    const cop = gui.corePatch().getOpById(e.target.dataset.opid);
+                    const port = cop.getPortByName(e.target.dataset.portname);
+
+                    navigator.clipboard
+                        .writeText(JSON.stringify(port.get()))
+                        .then(() =>
+                        {
+                            CABLES.UI.notify("Copied value to clipboard");
+                        })
+                        .catch((err) =>
+                        {
+                            console.warn("copy to clipboard failed", err);
+                        });
+
+                    e.preventDefault();
+                });
+            });
+
 
             // document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });

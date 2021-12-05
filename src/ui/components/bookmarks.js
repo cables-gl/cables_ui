@@ -1,3 +1,4 @@
+import defaultops from "../defaultops";
 
 export default class Bookmarks
 {
@@ -43,7 +44,7 @@ export default class Bookmarks
                     "id": this._bookmarks[i],
                     "name": op.name,
                     "objName": op.objName,
-                    "class": CABLES.UI.uiConfig.getNamespaceClassName(op.objName),
+                    "class": defaultops.getNamespaceClassName(op.objName),
                 });
             }
             else

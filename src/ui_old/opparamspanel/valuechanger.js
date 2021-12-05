@@ -102,10 +102,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 {
     CABLES.UI.showInputFieldInfo();
 
-    const elem = $("#" + eleId);
     const eleInput = ele.byId(eleId);
-    // const el = document.getElementById(eleId);
-
     const eleContainer = ele.byId(eleId + "-container");
     const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
 
@@ -126,7 +123,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     if (focus)
     {
         setTextEdit(true);
-        elem.keydown(CABLES.UI.inputListenerCursorKeys);
+        eleInput.addEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
+        // elem.keydown(CABLES.UI.inputListenerCursorKeys);
     }
 
     function switchToNextInput(dir)
@@ -145,7 +143,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
                 const portname = pEle.dataset.portname;
 
                 setTextEdit(false);
-                elem.unbind("keydown", tabKeyListener);
+                // elem.unbind("keydown", tabKeyListener);
+                eleInput.removeEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
                 CABLES.valueChanger("portval_" + i, true, portname, opid);
 
                 return;
@@ -179,8 +178,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
             eleInput.focus();
 
             const vv = eleInput.value;
-            elem[0].setSelectionRange(0, vv.length);
-            elem.bind("keydown", tabKeyListener);
+            eleInput.setSelectionRange(0, vv.length);
+            // elem.bind("keydown", tabKeyListener);
+            eleInput.addEventListener("keydown", tabKeyListener);
         }
         else
         {
@@ -199,10 +199,16 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     {
         if (ele.hasFocus(eleInput)) return;
 
-        elem.unbind("mousewheel");
-        elem.unbind("keydown");
-        elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
-        elem.keydown(CABLES.UI.inputListenerCursorKeys);
+        // elem.unbind("mousewheel");
+        eleInput.removeEventListener("wheel", CABLES.UI.inputListenerMousewheel);
+        // elem.unbind("keydown");
+        eleInput.removeEventListener("keydown", tabKeyListener);
+        // elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
+
+        eleInput.addEventListener("wheel", CABLES.UI.inputListenerMousewheel);
+
+        eleInput.addEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
+        // elem.keydown(CABLES.UI.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();
         isDown = true;

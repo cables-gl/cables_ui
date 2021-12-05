@@ -1,4 +1,5 @@
 
+import defaultops from "../defaultops";
 import Logger from "../utils/logger";
 
 export default class OpDocs
@@ -96,7 +97,7 @@ export default class OpDocs
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
-            opDoc.category = CABLES.Op.getNamespaceClassName(opDoc.name);
+            opDoc.category = defaultops.getNamespaceClassName(opDoc.name);
             if (opDoc.layout)
             {
                 if (opDoc.layout.portsIn)
@@ -155,19 +156,19 @@ export default class OpDocs
                     for (j = 0; j < this._opDocs[i].layout.portsIn.length; j++)
                     {
                         const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portIn.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(this._opDocs[i].layout.portsIn[j].type));
+                        portIn.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsIn[j].type));
                     }
 
                 if (this._opDocs[i].layout.portsOut)
                     for (j = 0; j < this._opDocs[i].layout.portsOut.length; j++)
                     {
                         const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portOut.node.classList.add(CABLES.UI.uiConfig.getPortTypeClass(this._opDocs[i].layout.portsOut[j].type));
+                        portOut.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsOut[j].type));
                     }
 
                 const visualYOffset = 2;
                 const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, this._opDocs[i].shortNameDisplay);
-                label.node.classList.add("op_handle_" + CABLES.UI.uiConfig.getNamespaceClassName(opname));
+                label.node.classList.add("op_handle_" + defaultops.getNamespaceClassName(opname));
                 label.node.classList.add("op-svg-shortname");
                 // CABLES.UI.cleanRaphael(label);
                 this.layoutPaper = p;
@@ -197,7 +198,9 @@ export default class OpDocs
     getPortDoc(op_docs, portname, type)
     {
         let html = "";
-        const className = CABLES.UI.uiConfig.getPortTypeClassHtml(type);
+
+
+        const className = defaultops.getPortTypeClassHtml(type);
         html += "<li>";
         html += "<span class=\"" + className + "\">" + portname + "</span>";
 

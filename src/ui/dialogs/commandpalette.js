@@ -45,7 +45,6 @@ export default class CommandPallete
     {
         this._cursorIndex = 0;
         CABLES.UI.MODAL.hide(true);
-        // ele.show(ele.byId("modalbg"));
         document.getElementById("modalbg").style.display = "block";
         ele.show(ele.byId("cmdpalette"));
         ele.byId("cmdinput").focus();

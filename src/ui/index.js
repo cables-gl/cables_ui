@@ -13,7 +13,7 @@ import UserSettings from "./components/usersettings";
 import Api from "./api/api";
 import Introduction from "./components/introduction";
 import Tipps from "./dialogs/tipps";
-import KeyBindingsManager from "./components/keybindingsmanager";
+import KeyBindingsManager from "./utils/keybindingsmanager";
 import OpHistory from "./components/ophistory";
 import Exporter from "./dialogs/exporter";
 import ele from "./utils/ele";
@@ -23,7 +23,6 @@ import OpSelect from "./dialogs/opselect";
 import initSplitPanes from "./elements/splitpane";
 import PatchSaveServer from "./api/patchServerApi";
 import CMD from "./commands/commands";
-
 import TabPanel from "./elements/tabpanel/tabpanel";
 import Tab from "./elements/tabpanel/tab";
 import MainTabPanel from "./elements/tabpanel/maintabpanel";
@@ -62,7 +61,7 @@ import defaultops from "./defaultops";
 import { arrayContains, uniqueArray } from "./utils/helper";
 import { getHandleBarHtml, initHandleBarsHelper } from "./utils/handlebars";
 import GlPatchAPI from "./glpatch/patchapi";
-import setHtmlDefaultListeners from "./utils/htmldefaults";
+import setHtmlDefaultListeners from "./components/htmldefaultlisteners";
 import PatchView from "./components/patchview";
 import { notify, notifyError } from "./elements/notification";
 import DragNDrop from "./components/filemananager_dragdrop";
@@ -74,6 +73,11 @@ import LibLoader from "./api/libloader";
 import LogFilter from "./utils/loggerfilter";
 import ModalDialog from "./dialogs/modal";
 import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
+import SuggestPortDialog from "./components/suggestionportdialog";
+import ModalBackground from "./dialogs/modalbg";
+import SuggestionDialog from "./components/suggestiondialog";
+import SandboxBrowser from "./sandbox_browser";
+import CanvasUi from "./components/canvasui";
 
 
 CABLES = CABLES || {};
@@ -86,6 +90,8 @@ CABLES.UI.MOUSE_BUTTON_LEFT = 1;
 CABLES.UI.MOUSE_BUTTON_RIGHT = 2;
 CABLES.UI.MOUSE_BUTTON_WHEEL = 4;
 
+
+CABLES.SandboxBrowser = SandboxBrowser;
 
 CABLES.UI.userSettings = new UserSettings();
 
@@ -103,6 +109,7 @@ CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
 
 
+CABLES.UI.SuggestPortDialog = SuggestPortDialog;
 CABLES.UI.ScConnection = ScConnection;
 CABLES.UI.ScGui = ScGui;
 
@@ -154,10 +161,15 @@ CABLES.UI.NoPatchEditor = NoPatchEditor;
 CABLES.CoreLibLoader = CoreLibLoader;
 CABLES.LibLoader = LibLoader;
 CABLES.UI.LoggingTab = LoggingTab;
+CABLES.UI.ModalBackground = ModalBackground;
+CABLES.UI.SuggestionDialog = SuggestionDialog;
+CABLES.UI.CanvasUi = CanvasUi;
+
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
+CABLES.UI.DEFAULTOPS = defaultops;
 
 // expose global objects
 CABLES.api = new Api();

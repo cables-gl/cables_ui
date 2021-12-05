@@ -257,7 +257,7 @@ CABLES_CMD_PATCH.stats = function (force)
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
     let portName = getsetOp.portName;
     let portNameOut = getsetOp.portNameOut;
@@ -302,7 +302,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
     CABLES.UI.OPSELECT.linkNewLink = null;
 
     CABLES.UI.MODAL.hide(true);
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -326,7 +326,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     CABLES.UI.MODAL.hide(true);
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let getset = getsetOp.setter;
@@ -364,7 +364,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
     CABLES.UI.OPSELECT.linkNewLink = null;
 
     CABLES.UI.MODAL.hide(true);
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
         getsetOp.getter,
@@ -389,7 +389,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     CABLES.UI.MODAL.hide(true);
-    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type);
+    const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     gui.patchView.addOp(
@@ -584,8 +584,6 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
                             if (ops[i].portsIn[j].uiAttribs && ops[i].portsIn[j].uiAttribs.display && ops[i].portsIn[j].uiAttribs.display == "file")
                             {
                                 console.log("filename:", ops[i].portsIn[j].get());
-                                // console.log("srch", srch);
-                                // console.log("rplc", rplc);
                                 let v = ops[i].portsIn[j].get();
 
                                 if (v) console.log("srch index", v.indexOf(srch));
