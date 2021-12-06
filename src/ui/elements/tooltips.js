@@ -1,5 +1,3 @@
-
-
 let tooltipTimeout = null;
 let eleInfoArea = null;
 let eleTooltip = null;
@@ -45,6 +43,7 @@ function eleTtOver(e)
 
 function eleTtOut(e)
 {
+    if (document.activeElement.classList.contains("tt")) return;
     clearTimeout(tooltipTimeout);
     hideToolTip();
 }
