@@ -23,7 +23,7 @@ const isLiveBuild = env.live || false;
 
 let buildInfo = getBuildInfo();
 
-function _lint()
+function _lint(done)
 {
     return gulp
         .src("src/**/*.js")
@@ -31,7 +31,7 @@ function _lint()
         .pipe(jshint.reporter("default"));
 }
 
-function _scripts_libs_ui()
+function _scripts_libs_ui(done)
 {
     let task = gulp.src(["libs/ui/*.js"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
@@ -40,7 +40,7 @@ function _scripts_libs_ui()
     return task.pipe(gulp.dest("dist/js"));
 }
 
-function _scripts_talkerapi()
+function _scripts_talkerapi(done)
 {
     let task = gulp.src(["src-talkerapi/*.js"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
@@ -56,51 +56,44 @@ function _scripts_core()
         .pipe(gulp.dest("dist/js/"));
 }
 
-function _scripts_ops()
+function _scripts_ops(done)
 {
     let task = gulp.src(["src/ops/*.js"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
     task = task.pipe(concat("cables.ops.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cables.ops.min.js"));
     if (isLiveBuild) task = task.pipe(uglify());
-    task = task.on("error", () =>
-    {
-        console.log("error.....");
-    });
     if (isLiveBuild) task = task.pipe(sourcemaps.write("./"));
     return task.pipe(gulp.dest("dist/js"));
 }
 
-function _scripts_ui_webpack()
+function _scripts_ui_webpack(done)
 {
-    return new Promise((resolve, reject) =>
-    {
-        gulp.src(["src/ui/index.js"])
-            .pipe(
-                webpack(
+    return gulp.src(["src/ui/index.js"])
+        .pipe(
+            webpack(
+                {
+                    "config": webpackConfig(isLiveBuild, false),
+                },
+                compiler,
+                (err, stats) =>
+                {
+                    if (err) throw err;
+                    if (stats.hasErrors())
                     {
-                        "config": webpackConfig(isLiveBuild, false),
-                    },
-                    compiler,
-                    (err, stats) =>
-                    {
-                        if (err) throw err;
-                        if (stats.hasErrors())
-                        {
-                            return reject(new Error(stats.compilation.errors.join("\n")));
-                        }
-                        resolve();
+                        return done(new Error(stats.compilation.errors.join("\n")));
                     }
-                )
+                    done();
+                }
             )
-            .pipe(gulp.dest("dist/js"))
-            .on("error", (err) =>
-            {
-                console.error("WEBPACK ERROR", err);
-            });
-    });
+        )
+        .pipe(gulp.dest("dist/js"))
+        .on("error", (err) =>
+        {
+            console.error("WEBPACK ERROR", err);
+        });
 }
 
-function _scripts_ui()
+function _scripts_ui(done)
 {
     let task = gulp.src(["src/ui_old/**/*.js", "src/ui_old/**/*.json"]);
     if (isLiveBuild) task = task.pipe(sourcemaps.init());
@@ -109,7 +102,7 @@ function _scripts_ui()
     return task.pipe(gulp.dest("dist/js"));
 }
 
-function _append_build_info()
+function _append_build_info(done)
 {
     return gulp
         .src(["dist/js/cablesuiold.max.js", "dist/js/cablesuiold.min.js"])
@@ -133,14 +126,14 @@ function getBuildInfo()
     };
 }
 
-function _update_buildInfo(cb)
+function _update_buildInfo(done)
 {
     buildInfo = getBuildInfo();
     fs.writeFileSync("dist/buildInfo.json", JSON.stringify(buildInfo));
-    cb();
+    done();
 }
 
-function _html_ui()
+function _html_ui(done)
 {
     return gulp
         .src(["html/ui/header.html", "html/ui/templates/*.html", "html/ui/footer.html"])
@@ -148,7 +141,7 @@ function _html_ui()
         .pipe(gulp.dest("dist/"));
 }
 
-function _sass()
+function _sass(done)
 {
     return gulp
         .src("scss/style-dark.scss")
@@ -162,7 +155,7 @@ function _sass()
         .pipe(gulp.dest("dist/css"));
 }
 
-function _svgcss()
+function _svgcss(done)
 {
     return gulp
         .src("icons/**/*.svg")
@@ -184,37 +177,39 @@ function _svgcss()
         .pipe(gulp.dest("scss/"));
 }
 
-function _electronapp()
+function _electronapp(done)
 {
     const copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
     const electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
     return merge(copydist, electronsrc);
 }
 
-function _watch(cb)
+function _watch(done)
 {
-    gulp.watch("../cables/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
-    gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    gulp.watch("src/ui_old/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info));
-    gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
-    gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
-    gulp.watch("src-talkerapi/**/*", gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
-    cb();
+    gulp.watch(["../cables/build/*.js", "../cables/build/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
+    gulp.watch(["src/ops/*.js", "src/ops/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
+    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch(["icons/**/*.svg", "icons/*.svg"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _svgcss, _append_build_info));
+    gulp.watch("src-talkerapi/**/*", { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
+    console.log("registered watchers...");
+    done();
 }
 
-function _electron_watch(cb)
+function _electron_watch(done)
 {
-    gulp.watch("../cables/src/core/build/**/*.js", gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
-    gulp.watch("src/ops/**/*.js", gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    gulp.watch("src/ui_old/**/*.js", gulp.series(_update_buildInfo, _scripts_ui, _append_build_info, _electronapp));
-    gulp.watch("src/ui/**/*.js", gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    gulp.watch("scss/**/*.scss", gulp.series(_update_buildInfo, _sass, _append_build_info, _electronapp));
-    gulp.watch("html/**/*.html", gulp.series(_update_buildInfo, _html_ui, _append_build_info));
-    gulp.watch("icons/**/*.svg", gulp.series(_update_buildInfo, _svgcss, _append_build_info));
-    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _append_build_info, _electronapp));
-    cb();
+    gulp.watch(["../cables/build/*.js", "../cables/build/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
+    gulp.watch(["src/ops/*.js", "src/ops/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
+    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch(["icons/**/*.svg", "icons/*.svg"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _svgcss, _append_build_info));
+    gulp.watch("src-electron/**/*", { "ignoreInitial": true }, gulp.series(_update_buildInfo, _append_build_info, _electronapp));
+    console.log("registered watchers...");
+    done();
 }
 
 /*
@@ -237,10 +232,9 @@ gulp.task("default", gulp.series(
     _scripts_libs_ui,
     _scripts_ops,
     _sass,
-    // _vueify,
     _svgcss,
     _scripts_talkerapi,
-    _watch,
+    _watch
 ));
 
 /**
