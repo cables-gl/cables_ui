@@ -272,14 +272,14 @@ CABLES.UI.GUI = function (cfg)
 
     this.pauseInteractionSplitpanes = function ()
     {
-        const iframes = document.querySelectorAll("iframe,canvas");
+        const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
         this.patchView.pauseInteraction();
     };
 
     this.resumeInteractionSplitpanes = function ()
     {
-        const iframes = document.querySelectorAll("iframe,canvas");
+        const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
         this.patchView.resumeInteraction();
     };
@@ -499,29 +499,29 @@ CABLES.UI.GUI = function (cfg)
 
         if (this._elTLoverviewtimeline)
         {
+            this._eleSplitterTimeline = this._eleSplitterTimeline || ele.byId("splitterTimeline");
+            this._eleTiming = this._eleTiming || ele.byId("timing");
+
             if (showTiming)
             {
-                $("#timelineui").css("width", timelineWidth);
-                $("#timing").css("width", timelineWidth);
-                $("#timing").css("bottom", filesHeight);
+                this._eleTiming.style.width = timelineWidth + "px";
+                this._eleTiming.style.bottom = filesHeight + "px";
+                this._eleTiming.style.height = this.timingHeight + "px";
+                this._eleTiming.style.left = iconBarWidth + "px";
 
-                $("#timelineui").show();
-                $("#timing").css("height", this.timingHeight);
-                $("#timing").css("left", iconBarWidth);
+                ele.byId("timelineui").style.width = timelineWidth + "px";
 
-                $("#overviewtimeline").css("margin-top", timelineUiHeight);
-                $("#overviewtimeline svg").css("width", timelineWidth);
-                $("#overviewtimeline svg").css("height", 25);
+                ele.byId("overviewtimeline").style["margin-top"] = timelineUiHeight + "px";
+                ele.byQuery("#overviewtimeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#overviewtimeline svg").style.height = 25 + "px";
 
-                $("#timetimeline").css("margin-top", timelineUiHeight + timedisplayheight);
-                $("#timetimeline svg").css("width", timelineWidth);
-                $("#timetimeline svg").css("height", 25);
+                ele.byId("timetimeline").style["margin-top"] = timelineUiHeight + timedisplayheight + "px";
+                ele.byQuery("#timetimeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#timetimeline svg").style.height = 25 + "px";
 
-                $("#timeline svg").css("width", timelineWidth);
-                $("#timeline svg").css("height", this.timingHeight - timedisplayheight);
-                $("#timeline svg").css("margin-top", timelineUiHeight + timedisplayheight + timedisplayheight);
-
-                $("#timeline svg").show();
+                ele.byQuery("#timeline svg").style.width = timelineWidth + "px";
+                ele.byQuery("#timeline svg").style.height = this.timingHeight - timedisplayheight + "px";
+                ele.byQuery("#timeline svg").style["margin-top"] = timelineUiHeight + timedisplayheight + timedisplayheight + "px";
 
                 this._elTLoverviewtimeline.style.display = "block";
                 this._elTLtimetimeline.style.display = "block";
@@ -529,7 +529,8 @@ CABLES.UI.GUI = function (cfg)
                 this._elTLsplitterTimeline.style.display = "block";
                 this._elTLtimelineTitle.style.display = "block";
 
-                $("#splitterTimeline").css("bottom", this.timingHeight - 4);
+                this._eleSplitterTimeline.style.bottom = this.timingHeight - 4 + "px";
+                ele.show(this._eleSplitterTimeline);
             }
             else
             {
@@ -540,9 +541,9 @@ CABLES.UI.GUI = function (cfg)
                 this._elTLtimelineTitle.style.display = "none";
                 this._elTLsplitterTimeline.style.display = "none";
 
-                $("#timeline svg").hide();
-                $("#timing").css("height", timelineUiHeight);
-                $("#splitterTimeline").hide();
+                this._eleTiming.style.height = timelineUiHeight + "px";
+
+                ele.hide(this._eleSplitterTimeline);
             }
         }
 
@@ -556,7 +557,6 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + "px";
         }
 
-
         this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
         if (this._elCanvasIconbarTimeline)
         {
@@ -567,8 +567,7 @@ CABLES.UI.GUI = function (cfg)
             else this._elCanvasIconbarTimeline.style.display = "inline-block";
         }
 
-
-        $("#splitterTimeline").css("width", timelineWidth);
+        ele.byId("splitterTimeline").style.width = timelineWidth + "px";
 
         if (this._elIconbarLeft)
         {
@@ -644,12 +643,12 @@ CABLES.UI.GUI = function (cfg)
             this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoHeight) + "px";
         }
 
-        document.querySelector("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50 + "px";
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - this.infoHeight - 50 + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight) + "px";
 
-        document.querySelector("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
+        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
@@ -719,7 +718,7 @@ CABLES.UI.GUI = function (cfg)
     //     html += "<textarea id=\"serialized\"></textarea>";
     //     html += "<br/>";
     //     html += "<br/>";
-    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize($('#serialized').val());CABLES.UI.MODAL.hide();\">import</a>";
+    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize(ele.byId('serialized').value);CABLES.UI.MODAL.hide();\">import</a>";
     //     CABLES.UI.MODAL.show(html);
     // };
 
@@ -841,7 +840,7 @@ CABLES.UI.GUI = function (cfg)
     {
         gui.timeLine().hidden = true;
         showTiming = false;
-        $("#timing").hide();
+        ele.hide(ele.byId("timing"));
         gui.setLayout();
         CABLES.UI.userSettings.set("timelineOpened", showTiming);
     };
@@ -849,7 +848,7 @@ CABLES.UI.GUI = function (cfg)
     this.toggleTiming = function ()
     {
         gui.timeLine().hidden = false;
-        $("#timing").show();
+        ele.show(ele.byId("timing"));
         CABLES.UI.userSettings.set("timelineOpened", true);
 
         showTiming = !showTiming;
@@ -884,7 +883,7 @@ CABLES.UI.GUI = function (cfg)
     {
         this.showFileManager(() =>
         {
-            const portInputEle = document.querySelector(inputId);
+            const portInputEle = ele.byQuery(inputId);
             if (!portInputEle)
             {
                 this._log.warn("[showfileselect] no portInputEle");
@@ -974,7 +973,7 @@ CABLES.UI.GUI = function (cfg)
     this.serializeForm = function (selector)
     {
         const json = {};
-        Array.from(document.querySelector(selector).elements).forEach((e) =>
+        Array.from(ele.byQuery(selector).elements).forEach((e) =>
         {
             json[e.getAttribute("name")] = e.value;
         });
@@ -1147,7 +1146,7 @@ CABLES.UI.GUI = function (cfg)
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
         ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
-        document.querySelectorAll(".nav_create_from_template").forEach((el) =>
+        ele.byQueryAll(".nav_create_from_template").forEach((el) =>
         {
             const href = el.dataset.href;
             el.addEventListener("click", () =>
@@ -1261,7 +1260,7 @@ CABLES.UI.GUI = function (cfg)
 
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            const eleAceTextEditor = document.querySelector("#ace_editors textarea");
+            const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
             if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });

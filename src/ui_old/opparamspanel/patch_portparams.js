@@ -19,8 +19,9 @@ CABLES.UI.inputListenerCursorKeys = function (e)
     }
 };
 
-CABLES.UI.inputListenerMousewheel = function (event, delta)
+CABLES.UI.inputListenerMousewheel = function (event)
 {
+    delta = -event.deltaY;
     if (ele.hasFocus(event.target))
     {
         if (delta > 0)
@@ -33,7 +34,6 @@ CABLES.UI.inputListenerMousewheel = function (event, delta)
             if (event.shiftKey) this.value = CABLES.UI.inputIncrement(this.value, -0.1, event);
             else this.value = CABLES.UI.inputIncrement(this.value, -1, event);
         }
-
         event.target.dispatchEvent(new Event("input"));
 
         return false;

@@ -478,7 +478,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             (function (_thePort)
             {
                 const id = "watchPortValue_" + _thePort.watchId;
-                const elm = ele.byClassSingle(id);
+                const elm = ele.byClass(id);
                 if (elm)elm.addEventListener("focus", () =>
                 {
                     if (_thePort.isAnimated())
@@ -676,7 +676,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
                     if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                     {
-                        const elVal = ele.byClassSingle(id);
+                        const elVal = ele.byClass(id);
                         if (elVal)
                             if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;
                             else if (elVal.value != valDisp) elVal.value = valDisp;

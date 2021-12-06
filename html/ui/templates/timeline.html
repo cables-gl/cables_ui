@@ -5,8 +5,8 @@
     <div id="timelineui" data-info="{{ texts.timelineui }}">
         <a id="button_toggleTiming" class=""><span class="icon icon-chevron-down"></span>timing</a>
 
-        <span class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
-        <span class="timelineprogress" onclick="gui.timeLine().setProjectLength();"></span>
+        <span id="timelinetime" class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
+        <span id="timelineprogress" class="timelineprogress" onclick="gui.timeLine().setProjectLength();"></span>
 
         <a class="button button-icon" onclick="gui.timeLine().gotoZero();"><span class="icon icon-skip-back"></span></a>
         <a class="button button-icon" onclick="gui.timeLine().gotoOffset(-2);"><span class="icon icon-fast-forward" style="transform:rotate(180deg)"></span></a>
@@ -14,7 +14,7 @@
         <a class="button button-icon" onclick="gui.timeLine().gotoOffset(2);"><span class="icon icon-fast-forward"></span></a>
 
         <div id="keycontrols">
-            <span class="button button-icon"><span class="icon icon-plus"></span></span>
+            <span id="timeLineInsert" class="button button-icon"><span class="icon icon-plus"></span></span>
 
             <!-- <input type ="range" min="20" max="2000" value="" step ="1" oninput="gui.timeLine().setTimeScale(this.value);" style="float:left;width:85px;margin-left:20px;margin-top:10px;" class="tt" data-tt="scale time display"/> -->
 
