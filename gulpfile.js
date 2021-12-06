@@ -17,7 +17,6 @@ const footer = require("gulp-footer");
 const env = require("gulp-util").env;
 const webpack = require("webpack-stream");
 const compiler = require("webpack");
-const watch = require("gulp-watch");
 const webpackConfig = require("./webpack.config");
 
 const isLiveBuild = env.live || false;
@@ -187,29 +186,21 @@ function _electronapp(done)
 
 function _watch(done)
 {
-    watch(["../cables/build/*.js", "../cables/build/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
-    watch(["src/ops/*.js", "src/ops/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    watch(["src/ui/**/*.js", "src/ui/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    watch(["scss/**/*.scss", "scss/*.scss"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
-    watch(["html/**/*.html", "html/*.html"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
-    watch(["icons/**/*.svg", "icons/*.svg"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _svgcss, _append_build_info));
-    watch("src-talkerapi/**/*", { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
-    console.log("registered watchers...");
+    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
     done();
 }
 
 function _electron_watch(done)
 {
-    watch(["../cables/build/*.js", "../cables/build/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_core, _append_build_info));
-    watch(["src/ops/*.js", "src/ops/**/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ops, _append_build_info));
-    watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    watch(["src/ui/**/*.js", "src/ui/*.js"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
-    watch(["scss/**/*.scss", "scss/*.scss"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
-    watch(["html/**/*.html", "html/*.html"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
-    watch(["icons/**/*.svg", "icons/*.svg"], { "ignoreInitial": true }, gulp.series(_update_buildInfo, _svgcss, _append_build_info));
-    watch("src-electron/**/*", { "ignoreInitial": true }, gulp.series(_update_buildInfo, _append_build_info, _electronapp));
-    console.log("registered watchers...");
+    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], gulp.series(_update_buildInfo, _scripts_ui, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js"], gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info)); // ,'electron' // electron broke the watch SOMEHOW
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _append_build_info, _electronapp));
     done();
 }
 
