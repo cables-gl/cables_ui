@@ -11,6 +11,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
+        this._watchStrings = [];
 
         this._sourcePort = document.getElementById("params_port").innerHTML;
         this._templatePort = Handlebars.compile(this._sourcePort);
@@ -55,6 +56,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         this._watchPorts.length = 0;
         this._watchAnimPorts.length = 0;
         this._watchColorPicker.length = 0;
+        this._watchStrings.length = 0;
     }
 
     _onUiAttrChangeOp(attr)
@@ -247,6 +249,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 op.portsIn[i].watchId = "in_" + i;
                 this._watchAnimPorts.push(op.portsIn[i]);
 
+
+                if (op.portsIn[i].getType() == CABLES.OP_PORT_TYPE_STRING) this._watchStrings.push(op.portsIn[i]);
                 if (op.portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(op.portsIn[i]);
                 if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) this._watchPorts.push(op.portsIn[i]);
 
@@ -432,7 +436,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -497,6 +501,22 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             const thePort2 = this._watchColorPicker[iwcp];
             CABLES.UI.watchColorPickerPort(thePort2);
         }
+        // for (const iws in this._watchStrings)
+        // {
+        //     const id = "watchcolorpick_" + this._watchStrings[iws].watchId;
+
+        //     ele.byId(id).addEventListener("keydown", (event) =>
+        //     {
+        //         if (event.which == 9)
+        //         {
+        //             console.log("tab...");
+        //             // event.preventDefault();
+        //             // if (event.shiftKey)switchToNextInput(-1);
+        //             // else switchToNextInput(1);
+        //         }
+        //     });
+        // }
+
 
         this._watchPortVisualizer.bind();
 

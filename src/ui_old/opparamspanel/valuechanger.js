@@ -199,20 +199,13 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     {
         if (ele.hasFocus(eleInput)) return;
 
-        // elem.unbind("mousewheel");
         eleInput.removeEventListener("wheel", CABLES.UI.inputListenerMousewheel);
-        // elem.unbind("keydown");
         eleInput.removeEventListener("keydown", tabKeyListener);
-        // elem.bind("mousewheel", CABLES.UI.inputListenerMousewheel);
-
         eleInput.addEventListener("wheel", CABLES.UI.inputListenerMousewheel);
-
         eleInput.addEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
-        // elem.keydown(CABLES.UI.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();
         isDown = true;
-
 
         if (usePointerLock)
         {

@@ -59,7 +59,6 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
     const port = op.getPortByName(portname);
     if (!port) return console.warn("paramedit port not found");
 
-
     new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(),
         {
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),

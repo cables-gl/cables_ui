@@ -1247,6 +1247,15 @@ CABLES.UI.GUI = function (cfg)
                     this.pressedEscape(e);
                     this.patchView.focus();
                 }
+                else
+                {
+                    if (e.target.hasAttribute("data-portnum"))
+                    {
+                        const n = e.target.dataset.portnum;
+                        const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                        if (nextInputEle) nextInputEle.focus();
+                    }
+                }
             });
 
         this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(); this.setLayout(); });
