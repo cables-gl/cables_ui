@@ -92,6 +92,7 @@ function initSplitPanes()
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
+            gui.pauseInteractionSplitpanes();
             e.preventDefault();
             gui.timingHeight = window.innerHeight - e.clientY;
             gui.setLayout();
@@ -131,6 +132,7 @@ function initSplitPanes()
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
+            gui.pauseInteractionSplitpanes();
             let x = e.clientX;
             let y = e.clientY;
 
@@ -171,6 +173,7 @@ function initSplitPanes()
                 document.removeEventListener("touchmove", CABLES.SPLITPANE.listeners[i]);
             }
             gui.resumeInteractionSplitpanes();
+
 
             CABLES.SPLITPANE.listeners.length = 0;
             CABLES.SPLITPANE.bound = false;
