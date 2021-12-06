@@ -1,4 +1,4 @@
-
+console.log("ui", 1);
 
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
