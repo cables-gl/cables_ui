@@ -21,7 +21,7 @@ CABLES.UI.inputListenerCursorKeys = function (e)
 
 CABLES.UI.inputListenerMousewheel = function (event)
 {
-    delta = -event.deltaY;
+    let delta = -event.deltaY;
     if (ele.hasFocus(event.target))
     {
         if (delta > 0)
@@ -58,7 +58,6 @@ CABLES.UI.openParamSpreadSheetEditor = function (opid, portname, cb)
 
     const port = op.getPortByName(portname);
     if (!port) return console.warn("paramedit port not found");
-
 
     new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(),
         {

@@ -1,4 +1,4 @@
-
+console.log("ui", 1);
 
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
@@ -1246,6 +1246,15 @@ CABLES.UI.GUI = function (cfg)
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
+                }
+                else
+                {
+                    if (e.target.hasAttribute("data-portnum"))
+                    {
+                        const n = e.target.dataset.portnum;
+                        const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                        if (nextInputEle) nextInputEle.focus();
+                    }
                 }
             });
 

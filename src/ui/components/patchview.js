@@ -136,6 +136,10 @@ export default class PatchView extends CABLES.EventTarget
             CABLES.UI.undo.clear();
             CABLES.UI.MODAL.hideLoading();
 
+            const ops = gui.corePatch().ops;
+            for (let i = 0; i < ops.length; i++)
+                if (ops[i].uiAttribs.selected) this.selectOpId(ops[i].id);
+
             if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
             {
                 this._showingNavHelperEmpty = true;

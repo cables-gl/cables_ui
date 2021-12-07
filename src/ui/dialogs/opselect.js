@@ -469,7 +469,30 @@ export default class OpSelect
             this._html = CABLES.UI.getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": CABLES.UI.TEXTS });
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
+
+            ele.forEachClass("addbutton", (e) =>
+            {
+                e.addEventListener("click", this._onClickAddButton);
+            });
         }
+    }
+
+    _onClickAddButton(evt)
+    {
+        console.log("clikaddbutton3", evt);
+        gui.opSelect().addOp(evt.target.dataset.opname);
+
+        CABLES.UI.MODAL.hide();
+
+        if (evt.shiftKey)
+            setTimeout(() =>
+            {
+                gui.opSelect().show({
+                    "subPatch": gui.patchView.getCurrentSubPatch(),
+                    "x": 0,
+                    "y": 0
+                });
+            }, 50);
     }
 
     show(options, linkOp, linkPort, link)
