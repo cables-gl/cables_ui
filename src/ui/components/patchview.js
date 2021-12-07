@@ -45,6 +45,11 @@ export default class PatchView extends CABLES.EventTarget
         return document.querySelector("#patchviews .visible");
     }
 
+    get patchRenderer()
+    {
+        return this._patchRenderer;
+    }
+
     get rendererName()
     {
         return this._patchRenderer.name;

@@ -20,6 +20,37 @@ CABLES_CMD_DEBUG.glguiTab = function ()
     const t = new CABLES.GLGUI.GlGuiTab(gui.mainTabs);
 };
 
+CABLES_CMD_DEBUG.toggleMultiplayer = function ()
+{
+    CABLESUILOADER.talkerAPI.send(
+        "toggleMultiplayerSession",
+        { "projectId": this._patchId },
+        (err, res) =>
+        {
+            // window reloaded from outside
+        },
+    );
+    /*
+    if (!gui.getSavedState())
+    {
+        console.log("SHOW MODAL");
+        CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectNotSaved);
+    }
+    else
+    {
+        CABLESUILOADER.talkerAPI.send(
+            "toggleMultiplayerSession",
+            { "projectId": this._patchId },
+            (err, res) =>
+            {
+                // window reloaded from outside
+            },
+        );
+    }
+     */
+};
+
+
 CABLES_CMD_DEBUG.glguiFull = function ()
 {
     new CABLES.GLGUI.GlGuiFull();
@@ -91,6 +122,12 @@ CMD_DEBUG_COMMANDS.push(
         "cmd": "glgui tab",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.glguiTab,
+        "icon": "command"
+    },
+    {
+        "cmd": "toggle multiplayer",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.toggleMultiplayer,
         "icon": "command"
     }
 );

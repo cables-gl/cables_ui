@@ -405,16 +405,67 @@ nav
     }
 }
 
+#multiplayerbar {
+    display: none;
+    &[data-multiplayer-follow] {
+        border-top: 5px solid var(--color-special) !important;
+    }
+}
+
 .nav-clientlist
 {
     padding-top:4px;
     padding-left:3px;
     padding-right:3px;
 
-    div
+    .socket_userlist_item
     {
-        margin-left:2px;
-        margin-right:2px;
+        display:inline-block;
+        height: 100%;
+
+        .avatar {
+            color:black;
+            text-align:center;
+            width:24px;
+            height:24px;
+            border-radius:100px;
+            overflow: hidden;
+            display:inline-block;
+            background-size:contain;
+    
+            margin-left:2px;
+            margin-right:2px;
+
+            pointer-events: none;
+        }
+
+        &.presenter {
+            .avatar {
+                box-sizing: border-box;
+                border: 2px solid white;
+            }
+        }
+
+        &.following {
+            .avatar {
+                box-sizing: border-box;
+                border: 2px solid var(--color-special);
+            }
+        }
+
+        &.me {
+            .avatar {
+                box-sizing: border-box;
+                border: 2px solid var(--color_op_handle_default);
+            }
+        }
+
+        &.follower {
+            .avatar {
+                box-sizing: border-box;
+                border: 2px solid var(--color_port_function);
+            }
+        }
     }
 }
 

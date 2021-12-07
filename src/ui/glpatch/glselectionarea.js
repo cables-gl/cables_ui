@@ -23,6 +23,16 @@ export default class GlSelectionArea
         return this._w != 0 || this._h != 0;
     }
 
+    setColor(rgba)
+    {
+        this._selectRect.setColor(rgba);
+    }
+
+    isVisible()
+    {
+        return this._selectRect._w != 0 && this._selectRect._h != 0;
+    }
+
     hideArea()
     {
         this._selectRect.setSize(0, 0);

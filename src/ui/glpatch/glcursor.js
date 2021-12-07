@@ -49,8 +49,9 @@ export default class GlCursor extends CABLES.EventTarget
         {
             this._animX.clear(this._glPatch.time);
             this._animY.clear(this._glPatch.time);
-            this._animX.setValue(this._glPatch.time + (gui.socketUi.netMouseCursorDelay / 1000), x);
-            this._animY.setValue(this._glPatch.time + (gui.socketUi.netMouseCursorDelay / 1000), y);
+            const netCursorDelay = gui.socketUi ? gui.socketUi.netMouseCursorDelay / 1000 : 0;
+            this._animX.setValue(this._glPatch.time + netCursorDelay, x);
+            this._animY.setValue(this._glPatch.time + netCursorDelay, y);
             this.updateAnim();
         }
     }

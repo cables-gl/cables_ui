@@ -101,8 +101,10 @@ export default class GlPatch extends CABLES.EventTarget
         this._localGlCursor.setColor(1, 1, 1, 1);
         this._glCursors[0] = this._localGlCursor;
 
+        this._glSelectionAreas = {};
+
         this.opShakeDetector = new ShakeDetector();
-        this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length == 1)gui.patchView.unlinkSelectedOps(); });
+        this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length === 1)gui.patchView.unlinkSelectedOps(); });
 
         this.snapLines = new SnapLines(cgl, this, this._rectInstancer);
 
@@ -203,23 +205,73 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.on("uiloaded", () =>
         {
-            gui.socket.on("netCursorPos", (msg) =>
+            // update remote cursor positions
+            gui.on("netCursorPos", (msg) =>
             {
                 if (!this._glCursors[msg.clientId]) this._glCursors[msg.clientId] = new GlCursor(this, this._overLayRects, msg.clientId);
-                this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
+                if (msg.hasOwnProperty("subpatch") && gui.patchView.getCurrentSubPatch() !== msg.subpatch)
+                {
+                    this._glCursors[msg.clientId].visible = false;
+                }
+                else
+                {
+                    this._glCursors[msg.clientId].visible = true;
+                    this._glCursors[msg.clientId].setPosition(msg.x, msg.y);
+                }
             });
 
+            gui.on("netSelectionArea", (msg) =>
+            {
+                if (!this._glSelectionAreas[msg.clientId]) this._glSelectionAreas[msg.clientId] = new GlSelectionArea(this._overLayRects, this);
+                const area = this._glSelectionAreas[msg.clientId];
+                if (msg.hide)
+                {
+                    area.hideArea();
+                }
+                else
+                {
+                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colors.patchSelectionArea[3]]);
+                    area.setPos(msg.x, msg.y, 1000);
+                    area.setSize(msg.sizeX, msg.sizeY);
+                }
+            });
+
+            // jump to client position, aka. follow mode
             gui.on("netGotoPos", (msg) =>
             {
-                if (typeof msg.x !== "undefined" && typeof msg.y !== "undefined")
-                    this.center(msg.x, msg.y);
+                if (msg.hasOwnProperty("scrollX") && msg.hasOwnProperty("scrollY"))
+                {
+                    if (msg.hasOwnProperty("subpatch"))
+                    {
+                        gui.patchView.setCurrentSubPatch(msg.subpatch);
+                    }
+
+                    if (msg.hasOwnProperty("zoom"))
+                    {
+                        if (gui.patchView.patchRenderer.viewBox)
+                        {
+                            gui.patchView.patchRenderer.viewBox.animateZoom(msg.zoom);
+                        }
+                    }
+                    if (gui.patchView.patchRenderer.viewBox)
+                    {
+                        // why negate X here?
+                        gui.patchView.patchRenderer.viewBox.scrollTo(-msg.scrollX, msg.scrollY);
+                    }
+                    else
+                    {
+                        this.center(msg.scrollX, msg.scrollY);
+                    }
+                }
             });
 
             // remove client on connection lost
-            gui.socket.on("netClientRemoved", (msg) =>
+            gui.on("netClientRemoved", (msg) =>
             {
                 if (this._glCursors[msg.clientId])
+                {
                     this._glCursors[msg.clientId].visible = false;
+                }
             });
         });
 
@@ -334,8 +386,11 @@ export default class GlPatch extends CABLES.EventTarget
             this._pauseMouseUntilButtonUp = false;
             return;
         }
-        if (this._selectionArea.active) this._selectionArea.hideArea();
-
+        if (this._selectionArea.active)
+        {
+            this._selectionArea.hideArea();
+            gui.emitEvent("hideSelectionArea");
+        }
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
         this.emitEvent("mouseleave", e);
@@ -848,6 +903,8 @@ export default class GlPatch extends CABLES.EventTarget
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
 
+            gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
+
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
 
             gui.patchView.showSelectedOpsPanel();
@@ -856,7 +913,11 @@ export default class GlPatch extends CABLES.EventTarget
         else
         {
             this._numSelectedGlOps = -1;
-            this._selectionArea.hideArea();
+            if (this._selectionArea.isVisible())
+            {
+                this._selectionArea.hideArea();
+                gui.emitEvent("hideSelectionArea");
+            }
             this._lastMouseX = x;
             this._lastMouseY = y;
         }
