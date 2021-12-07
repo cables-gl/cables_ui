@@ -1,9 +1,8 @@
-console.log("ui", 1);
-
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
-let ele = window.ele;
+
+// let ele = window.ele;
 
 CABLES.UI.GUI = function (cfg)
 {
@@ -22,12 +21,10 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-
     this.infoHeight = 200;
     this.timingHeight = 250;
     this.rendererWidth = 640;
     this.rendererHeight = 360;
-
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;

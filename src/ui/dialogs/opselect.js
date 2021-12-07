@@ -479,7 +479,6 @@ export default class OpSelect
 
     _onClickAddButton(evt)
     {
-        console.log("clikaddbutton3", evt);
         gui.opSelect().addOp(evt.target.dataset.opname);
 
         CABLES.UI.MODAL.hide();
