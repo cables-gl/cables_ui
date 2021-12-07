@@ -180,6 +180,32 @@
     }
 }
 
+#multiplayer_message_nav
+{
+    position: relative;
+	z-index: $zindex_superlow;  
+    display: none;
+
+    #multiplayer_message
+	{
+		float:left;
+        color: var(--color_op_text_active);
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+        margin-top: 4px;
+
+        font-size: 15px;
+        background-color: $color-bar-bg;
+        color: var(--color_op_text_active);
+        padding: 2px;
+        padding-left: 8px;
+        padding-right: 8px;
+        border-radius: 4px;
+        margin-right: 8px;
+        margin-left: 20px;
+    }
+}
 
 #subpatch_nav
 {

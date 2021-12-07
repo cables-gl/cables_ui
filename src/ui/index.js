@@ -78,6 +78,7 @@ import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
+import ScState from "./multiplayer/sc_state";
 
 
 CABLES = CABLES || {};
@@ -112,6 +113,7 @@ CABLES.GLUI.glUiConfig = gluiconfig;
 CABLES.UI.SuggestPortDialog = SuggestPortDialog;
 CABLES.UI.ScConnection = ScConnection;
 CABLES.UI.ScGui = ScGui;
+CABLES.UI.ScState = ScState;
 
 CABLES.UI.Logger = Logger;
 CABLES.UI.Bookmarks = Bookmarks;

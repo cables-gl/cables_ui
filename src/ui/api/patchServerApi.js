@@ -194,6 +194,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
     saveCurrentProject(cb, _id, _name, _force)
     {
         if (gui.showGuestWarning()) return;
+        if (!_force && gui.showSaveWarning()) return;
 
         if (_force)
         {

@@ -17,7 +17,9 @@
 <div id="inspectHtmlOverlay"  class="hidden"></div>
 
 
-
+<div id="multiplayer_message_nav">
+    <div id="multiplayer_message"></div>
+</div>
 
 <div id="subpatch_nav">
     <div id="subpatch_breadcrumb"></div>
@@ -98,7 +100,7 @@
 
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
-            <li class="nav_logo main" onmouseover="gui.socketUi.updateHtml();" >
+            <li class="nav_logo main" onmouseover="if(gui.socketUi) gui.socketUi.updateHtml();" >
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
                 <span id="nav-logo" class="icon-empty icon">

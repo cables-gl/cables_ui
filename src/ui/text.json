@@ -49,6 +49,7 @@
 
         "projectExportNotSaved": "Patch not saved - save patch before exporting",
         "projectBackupNotSaved":"Patch not saved - save patch before creating a backup",
+        "projectNotSaved": "Patch not saved - save patch and try again",
 
         "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
         "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
