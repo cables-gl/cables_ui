@@ -72,6 +72,7 @@ export default class GlViewBox
         const coord = this.screenToPatchCoord(x + dx, y + dy);
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
 
+        gui.patchView.emitEvent("mouseMove", this._mousePatchX, this._mousePatchY);
 
         if (gui.socketUi) gui.socketUi.sendCursorPos(this._mousePatchX, this._mousePatchY);
         gui.patchView.emitEvent("viewBoxChange");

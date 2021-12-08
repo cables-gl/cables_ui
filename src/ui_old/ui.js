@@ -1,9 +1,8 @@
-console.log("ui", 1);
-
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
-let ele = window.ele;
+
+// let ele = window.ele;
 
 CABLES.UI.GUI = function (cfg)
 {
@@ -22,12 +21,10 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-
     this.infoHeight = 200;
     this.timingHeight = 250;
     this.rendererWidth = 640;
     this.rendererHeight = 360;
-
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
@@ -208,6 +205,26 @@ CABLES.UI.GUI = function (cfg)
     };
 
 
+    this.showSaveWarning = function ()
+    {
+        if (this.showGuestWarning()) return true;
+        if (!gui.canSaveInMultiplayer())
+        {
+            iziToast.show({
+                "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                "theme": "dark",
+                "title": "multiplayer session",
+                "message": "you cannot save the patch, since you are not the presenter",
+                "progressBar": false,
+                "animateInside": false,
+                "close": true,
+                "timeout": 2000
+            });
+            return true;
+        }
+        return false;
+    };
+
     this.showGuestWarning = function ()
     {
         if (gui.isGuestEditor())
@@ -215,6 +232,18 @@ CABLES.UI.GUI = function (cfg)
             CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint +
             "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
             );
+            return true;
+        }
+    };
+
+    this.canSaveInMultiplayer = function ()
+    {
+        if (gui.socket && gui.socket.connected && !gui.socket.client.isPresenter)
+        {
+            return false;
+        }
+        else
+        {
             return true;
         }
     };
@@ -328,6 +357,7 @@ CABLES.UI.GUI = function (cfg)
         this._elSubpatchNav = this._elSubpatchNav || ele.byId("subpatch_nav");
         this._elCablesCanvas = this._elCablesCanvas || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
+        this._elMulitplayerMessageNav = this._elMulitplayerMessageNav || document.getElementById("multiplayer_message_nav");
 
         let timelineHeight = this.timingHeight;
 
@@ -443,6 +473,7 @@ CABLES.UI.GUI = function (cfg)
             // this._elEditorMaximized.style.top = subPatchNavPosY + "px";
 
             this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
+            this._elMulitplayerMessageNav.style.left = editorWidth + iconBarWidth + 15 + "px";
 
             gui.mainTabs.updateSize();
         }
@@ -457,6 +488,7 @@ CABLES.UI.GUI = function (cfg)
             // this._elEditorMinimized.style.top = 80 + "px";
 
             this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
+            this._elMulitplayerMessageNav.style.left = iconBarWidth + 15 + "px";
         }
 
 
@@ -473,6 +505,8 @@ CABLES.UI.GUI = function (cfg)
         this._elSubpatchNav.style.left = menupos - 20 + "px";
         this._elSubpatchNav.style.top = 55 + "px";
 
+        // this._elMulitplayerMessageNav.style.left = menupos - 20 + "px";
+        this._elMulitplayerMessageNav.style.top = 55 + "px";
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
@@ -1911,9 +1945,13 @@ function startUi(cfg)
 
                 gui.bindKeys();
 
-                gui.socket = new CABLES.UI.ScConnection(CABLES.sandbox.getSocketclusterConfig());
-                gui.socketUi = new CABLES.UI.ScGui(gui.socket);
-                gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
+                const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
+                gui.socket = new CABLES.UI.ScConnection(socketClusterConfig);
+                if (gui.socket.multiplayerEnabled)
+                {
+                    gui.socketUi = new CABLES.UI.ScGui(gui.socket);
+                    gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
+                }
 
                 CABLES.UI.startIdleListeners();
 

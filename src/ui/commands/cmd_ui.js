@@ -71,7 +71,7 @@ CABLES_CMD_UI.toggleMute = function ()
 
 CABLES_CMD_UI.showChat = function ()
 {
-    gui.chat.show();
+    if (gui.chat) gui.chat.show();
 };
 
 

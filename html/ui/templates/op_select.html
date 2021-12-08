@@ -47,8 +47,8 @@
             <a class="button-small" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">New variable</a>
             <a class="button-small" id="replaceLinkVariableExists" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a>
         </div>
-      {{#each ops}}
 
+        {{#each ops}}
         <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">
             <div class="button fright addbutton" data-opname="{{name}}" style="margin-top:10px;" >{{{../texts.opselect_addop}}}</div>
             <a>
@@ -62,9 +62,7 @@
                 <div class="summary">{{summary}}&nbsp;</div>
             </a>
         </div>
-
       {{/each}}
-
 
 
       <div id="search_startType" class="hidden">
