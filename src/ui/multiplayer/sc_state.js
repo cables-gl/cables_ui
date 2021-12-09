@@ -18,7 +18,7 @@ export default class ScState extends CABLES.EventTarget
         this._followers = [];
         this._connection = connection;
         this._colors = {};
-        this._pilot = {};
+        this._pilot = null;
 
         connection.on("onPingAnswer", this.onPingAnswer.bind(this));
         connection.on("netCursorPos", (msg) =>
@@ -75,23 +75,26 @@ export default class ScState extends CABLES.EventTarget
         let newPilot = null;
         if (payload.isPilot)
         {
-            Object.values(this._clients).forEach((client) =>
+            const keys = Object.keys(this._clients);
+            for (let i = 0; i < keys.length; i++)
             {
+                const client = this._clients[keys[i]];
                 if (client.clientId !== payload.clientId)
                 {
                     client.isPilot = false;
                 }
                 else
                 {
-                    if (client.clientId == this._connection.clientId && gui.isRemoteClient) return;
+                    if (client.clientId === this._connection.clientId && gui.isRemoteClient) continue;
                     client.isPilot = true;
                     newPilot = client;
                 }
-            });
-            if (!this._pilot || (newPilot && (newPilot.clientId != this._pilot.clientId)))
+            }
+            if (newPilot && (!this._pilot || newPilot.clientId !== this._pilot.clientId))
             {
                 userListChanged = true;
                 this._pilot = newPilot;
+                this.emitEvent("pilotChanged", newPilot);
             }
         }
 
@@ -166,6 +169,7 @@ export default class ScState extends CABLES.EventTarget
                 if (this._pilot && this._pilot.clientId === client.clientId)
                 {
                     this._pilot = null;
+                    this.emitEvent("pilotRemoved");
                 }
                 if (this.followers.includes(client.clientId)) this._followers = this._followers.filter(followerId => followerId != client.clientId);
                 cleanupChange = true;
@@ -198,10 +202,6 @@ export default class ScState extends CABLES.EventTarget
                 if (pilot.clientId === this._connection.clientId)
                 {
                     this.becomePilot();
-                }
-                else
-                {
-                    this._log.verbose("i think", pilot.clientId, "should be the new pilot");
                 }
             }
         }

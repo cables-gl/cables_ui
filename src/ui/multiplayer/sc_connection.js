@@ -22,6 +22,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._pacoSynced = false;
 
         this._receivePaco = false;
+
         this._pacoEnabled = this.multiplayerEnabled;
 
         if (cfg) this._init();

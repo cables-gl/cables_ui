@@ -1,4 +1,4 @@
-import Logger from "../utils/logger";
+import { notify } from "../elements/notification";
 
 export default class ScGui extends CABLES.EventTarget
 {
@@ -15,6 +15,22 @@ export default class ScGui extends CABLES.EventTarget
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
+        this._connection.state.on("pilotChanged", (pilot) =>
+        {
+            if (this._connection.state.getNumClients() > 1)
+            {
+                let username = pilot.username + " is";
+                if (pilot.clientId === this._connection.clientId)
+                {
+                    username = "YOU are";
+                }
+                notify(username + " now the pilot");
+            }
+        });
+        this._connection.state.on("pilotRemoved", () =>
+        {
+            notify("the pilot just left the session");
+        });
         this._connection.state.on("patchSynchronized", this.updateHtml.bind(this));
 
         this._connection.state.on("clientRemoved", (msg) =>
