@@ -201,7 +201,7 @@ export default class ScState extends CABLES.EventTarget
                 }
                 else
                 {
-                    this._log.verbose("i think ", pilot.clientId, "should be the new pilot");
+                    this._log.verbose("i think", pilot.clientId, "should be the new pilot");
                 }
             }
         }
