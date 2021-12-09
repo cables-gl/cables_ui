@@ -1,3 +1,5 @@
+import Logger from "../utils/logger";
+
 CABLES = CABLES || {};
 
 export default class ScState extends CABLES.EventTarget
@@ -5,6 +7,9 @@ export default class ScState extends CABLES.EventTarget
     constructor(connection)
     {
         super();
+
+        this._log = new Logger("scstate");
+
         this._clients = {};
         this._clients[connection.clientId] = {
             "clientId": connection.clientId,
@@ -67,7 +72,6 @@ export default class ScState extends CABLES.EventTarget
             };
         }
 
-        const amPilot = this._connection.client && this._connection.client.isPilot;
         let newPilot = null;
         if (payload.isPilot)
         {
@@ -105,10 +109,6 @@ export default class ScState extends CABLES.EventTarget
         const cleanupChange = this._cleanUpUserList();
         if (userListChanged || cleanupChange)
         {
-            if (!amPilot && (this._connection.client && this._connection.client.isPilot))
-            {
-                this.emitEvent("becamePilot");
-            }
             this.emitEvent("userListChanged");
         }
     }
@@ -195,6 +195,14 @@ export default class ScState extends CABLES.EventTarget
             if (pilot)
             {
                 this._clients[pilot.clientId].isPilot = true;
+                if (pilot.clientId === this._connection.clientId)
+                {
+                    this.becomePilot();
+                }
+                else
+                {
+                    this._log.verbose("i think ", pilot.clientId, "should be the new pilot");
+                }
             }
         }
 
@@ -204,5 +212,13 @@ export default class ScState extends CABLES.EventTarget
     hasPilot()
     {
         return Object.values(this._clients).some(client => client.isPilot);
+    }
+
+    becomePilot()
+    {
+        this._log.verbose("this client became multiplayer pilot");
+        this._connection.client.isPilot = true;
+        this._connection.sendPing();
+        this.emitEvent("becamePilot");
     }
 }

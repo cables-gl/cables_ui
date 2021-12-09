@@ -21,12 +21,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._paco = null;
         this._pacoSynced = false;
 
-        this._receivePaco = false;// gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
-        this._sendPacoInitial = false;//! gui.isRemoteClient;
-
-        // this._log.log("this._receivePaco", this._receivePaco);
-        // this._log.log("this._sendPacoInitial", this._sendPacoInitial);
-
+        this._receivePaco = false;
         this._pacoEnabled = this.multiplayerEnabled;
 
         if (cfg) this._init();
@@ -55,13 +50,6 @@ export default class ScConnection extends CABLES.EventTarget
         return this.state.hasPilot();
     }
 
-    becomePilot()
-    {
-        this.client.isPilot = true;
-        this.sendPing();
-        this.state.emitEvent("becamePilot");
-    }
-
     startPacoSend()
     {
         if (this._pacoEnabled)
@@ -78,6 +66,7 @@ export default class ScConnection extends CABLES.EventTarget
                     "patch": JSON.stringify(json)
                 });
             this._pacoSynced = true;
+            this.state.emitEvent("patchSynchronized");
         }
     }
 
@@ -126,7 +115,6 @@ export default class ScConnection extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 this.emitEvent("netActivityIn");
-                // this._log.info("cables-socketcluster clientId", this._socket.clientId);
                 this._log.verbose("sc connected!");
                 this._connected = true;
                 this._connectedSince = Date.now();
@@ -313,8 +301,6 @@ export default class ScConnection extends CABLES.EventTarget
 
             if (!this._paco)
             {
-                // this._log.log(msg);
-
                 if (msg.data.event !== CABLES.PACO_LOAD)
                 {
                     return;
@@ -332,6 +318,7 @@ export default class ScConnection extends CABLES.EventTarget
             this._paco.receive(msg.data);
             this._pacoSynced = true;
             this.state.emitEvent("userListChanged");
+            this.state.emitEvent("patchSynchronized");
         }
     }
 
@@ -361,8 +348,6 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (msg.clientId === this._socket.clientId) return;
-
-        // this._log.log("msg", msg);
         this.emitEvent(msg.name, msg);
     }
 

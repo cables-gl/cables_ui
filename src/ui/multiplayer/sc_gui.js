@@ -1,3 +1,4 @@
+import Logger from "../utils/logger";
 
 export default class ScGui extends CABLES.EventTarget
 {
@@ -14,6 +15,8 @@ export default class ScGui extends CABLES.EventTarget
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
+        this._connection.state.on("patchSynchronized", this.updateHtml.bind(this));
+
         this._connection.state.on("clientRemoved", (msg) =>
         {
             if (this._followedClient && this._followedClient.clientId == msg)
@@ -249,7 +252,7 @@ export default class ScGui extends CABLES.EventTarget
                     {
                         if (event.ctrlKey || event.metaKey)
                         {
-                            this._connection.becomePilot();
+                            this._connection.state.becomePilot();
                         }
                     }
 
