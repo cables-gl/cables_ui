@@ -214,7 +214,7 @@ CABLES.UI.GUI = function (cfg)
                 "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
                 "theme": "dark",
                 "title": "multiplayer session",
-                "message": "you cannot save the patch, since you are not the presenter",
+                "message": "you cannot save the patch, since you are not the pilot",
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
@@ -238,7 +238,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.canSaveInMultiplayer = function ()
     {
-        if (gui.socket && gui.socket.connected && !gui.socket.client.isPresenter)
+        if (gui.socket && gui.socket.connected && !gui.socket.client.isPilot)
         {
             return false;
         }

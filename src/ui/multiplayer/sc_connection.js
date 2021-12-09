@@ -50,16 +50,16 @@ export default class ScConnection extends CABLES.EventTarget
         else { return this._pacoSynced; }
     }
 
-    hasPresenter()
+    hasPilot()
     {
-        return this.state.hasPresenter();
+        return this.state.hasPilot();
     }
 
-    becomePresenter()
+    becomePilot()
     {
-        this.client.isPresenter = true;
+        this.client.isPilot = true;
         this.sendPing();
-        this.state.emitEvent("becamePresenter");
+        this.state.emitEvent("becamePilot");
     }
 
     startPacoSend()
@@ -104,7 +104,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._state = new CABLES.UI.ScState(this);
 
-        this._state.on("becamePresenter", () =>
+        this._state.on("becamePilot", () =>
         {
             this.startPacoSend();
         });
@@ -247,7 +247,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendPaco(payload)
     {
-        if (this.client && this.client.isPresenter)
+        if (this.client && this.client.isPilot)
         {
             payload.name = "paco";
             this._send("paco", payload);
@@ -273,7 +273,7 @@ export default class ScConnection extends CABLES.EventTarget
         };
         if (this.state.clients[this.clientId])
         {
-            payload.isPresenter = this.state.clients[this.clientId].isPresenter;
+            payload.isPilot = this.state.clients[this.clientId].isPilot;
             payload.following = this.state.clients[this.clientId].following;
         }
         this.sendControl("pingAnswer", payload);
@@ -341,9 +341,9 @@ export default class ScConnection extends CABLES.EventTarget
         {
             if (msg.clientId === this._socket.clientId) return;
 
-            if (this._pacoEnabled && this.client && this.client.isPresenter)
+            if (this._pacoEnabled && this.client && this.client.isPilot)
             {
-                this._log.log("RESYNC sending paco patch....", this.client.isPresenter);
+                this._log.log("RESYNC sending paco patch....", this.client.isPilot);
                 this.startPacoSend();
             }
         }

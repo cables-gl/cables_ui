@@ -13,7 +13,7 @@ export default class ScState extends CABLES.EventTarget
         this._followers = [];
         this._connection = connection;
         this._colors = {};
-        this._presenter = {};
+        this._pilot = {};
 
         connection.on("onPingAnswer", this.onPingAnswer.bind(this));
         connection.on("netCursorPos", (msg) =>
@@ -67,27 +67,27 @@ export default class ScState extends CABLES.EventTarget
             };
         }
 
-        const amPresenter = this._connection.client && this._connection.client.isPresenter;
-        let newPresenter = null;
-        if (payload.isPresenter)
+        const amPilot = this._connection.client && this._connection.client.isPilot;
+        let newPilot = null;
+        if (payload.isPilot)
         {
             Object.values(this._clients).forEach((client) =>
             {
                 if (client.clientId !== payload.clientId)
                 {
-                    client.isPresenter = false;
+                    client.isPilot = false;
                 }
                 else
                 {
                     if (client.clientId == this._connection.clientId && gui.isRemoteClient) return;
-                    client.isPresenter = true;
-                    newPresenter = client;
+                    client.isPilot = true;
+                    newPilot = client;
                 }
             });
-            if (!this._presenter || (newPresenter && (newPresenter.clientId != this._presenter.clientId)))
+            if (!this._pilot || (newPilot && (newPilot.clientId != this._pilot.clientId)))
             {
                 userListChanged = true;
-                this._presenter = newPresenter;
+                this._pilot = newPilot;
             }
         }
 
@@ -105,9 +105,9 @@ export default class ScState extends CABLES.EventTarget
         const cleanupChange = this._cleanUpUserList();
         if (userListChanged || cleanupChange)
         {
-            if (!amPresenter && (this._connection.client && this._connection.client.isPresenter))
+            if (!amPilot && (this._connection.client && this._connection.client.isPilot))
             {
-                this.emitEvent("becamePresenter");
+                this.emitEvent("becamePilot");
             }
             this.emitEvent("userListChanged");
         }
@@ -163,46 +163,46 @@ export default class ScState extends CABLES.EventTarget
             {
                 this.emitEvent("clientRemoved", this._clients[client.clientId]);
                 delete this._clients[client.clientId];
-                if (this._presenter && this._presenter.clientId === client.clientId)
+                if (this._pilot && this._pilot.clientId === client.clientId)
                 {
-                    this._presenter = null;
+                    this._pilot = null;
                 }
                 if (this.followers.includes(client.clientId)) this._followers = this._followers.filter(followerId => followerId != client.clientId);
                 cleanupChange = true;
             }
         });
 
-        if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPresenter)
+        if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPilot)
         {
-            this._clients[this._connection.clientId].isPresenter = true;
+            this._clients[this._connection.clientId].isPilot = true;
             cleanupChange = true;
         }
 
-        if (!this.hasPresenter())
+        if (!this.hasPilot())
         {
-            // connection has no presenter, try to find the longest connected client
-            let presenter = null;
+            // connection has no pilot, try to find the longest connected client
+            let pilot = null;
             let earliestConnection = Date.now();
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
                 if (client.connectedSince && client.connectedSince < earliestConnection)
                 {
-                    presenter = client;
+                    pilot = client;
                     earliestConnection = client.connectedSince;
                 }
             });
-            if (presenter)
+            if (pilot)
             {
-                this._clients[presenter.clientId].isPresenter = true;
+                this._clients[pilot.clientId].isPilot = true;
             }
         }
 
         return cleanupChange;
     }
 
-    hasPresenter()
+    hasPilot()
     {
-        return Object.values(this._clients).some(client => client.isPresenter);
+        return Object.values(this._clients).some(client => client.isPilot);
     }
 }

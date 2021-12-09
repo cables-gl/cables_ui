@@ -13,7 +13,7 @@ export default class ScGui extends CABLES.EventTarget
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
-        this._connection.state.on("becamePresenter", this.updateHtml.bind(this));
+        this._connection.state.on("becamePilot", this.updateHtml.bind(this));
         this._connection.state.on("clientRemoved", (msg) =>
         {
             if (this._followedClient && this._followedClient.clientId == msg)
@@ -34,7 +34,7 @@ export default class ScGui extends CABLES.EventTarget
         {
             gui.on("netOpPos", (payload) =>
             {
-                if (this._connection.client.isPresenter)
+                if (this._connection.client.isPilot)
                 {
                     this._connection.sendUi("netOpPos", payload);
                 }
@@ -156,15 +156,15 @@ export default class ScGui extends CABLES.EventTarget
             const messageBox = document.getElementById("multiplayer_message");
             if (!this._connection.synced)
             {
-                messageBox.innerHTML = "waiting for presenter to send current state of patch - changes will be discarded";
+                messageBox.innerHTML = "waiting for pilot to send current state of patch - changes will be discarded";
                 messageNav.style.display = "block";
                 messageBox.style.display = "block";
 
                 gui.patchView.patchRenderer.greyOut = true;
             }
-            else if (this._connection.client && !this._connection.client.isPresenter)
+            else if (this._connection.client && !this._connection.client.isPilot)
             {
-                messageBox.innerHTML = "you are not the presenter in this multiplayer session - changes will not be saved";
+                messageBox.innerHTML = "you are not the pilot in this multiplayer session - changes will not be saved";
                 messageNav.style.display = "block";
                 messageBox.style.display = "block";
 
@@ -186,13 +186,13 @@ export default class ScGui extends CABLES.EventTarget
                 const itemId = ele.dataset.clientId;
                 if (this._connection.clients[itemId])
                 {
-                    if (this._connection.clients[itemId].isPresenter)
+                    if (this._connection.clients[itemId].isPilot)
                     {
-                        ele.classList.add("presenter");
+                        ele.classList.add("pilot");
                     }
                     else
                     {
-                        ele.classList.remove("presenter");
+                        ele.classList.remove("pilot");
                     }
 
                     if (this._connection.clients[itemId].isMe)
@@ -249,7 +249,7 @@ export default class ScGui extends CABLES.EventTarget
                     {
                         if (event.ctrlKey || event.metaKey)
                         {
-                            this._connection.becomePresenter();
+                            this._connection.becomePilot();
                         }
                     }
 
