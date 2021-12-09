@@ -21,6 +21,7 @@ CABLES.UI.inputListenerCursorKeys = function (e)
 
 CABLES.UI.inputListenerMousewheel = function (event)
 {
+    event.preventDefault();
     let delta = -event.deltaY;
     if (ele.hasFocus(event.target))
     {
