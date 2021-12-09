@@ -207,6 +207,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         mouseDownTime = performance.now();
         isDown = true;
 
+
         if (usePointerLock)
         {
             document.addEventListener("pointerlockerror", lockError, false);
@@ -292,7 +293,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function eleInputValue()
     {
-        return parseFloat(eleInput.value);
+        let v = parseFloat(eleInput.value);
+        if (v != v)v = 0;
+        return v;
     }
 
     function move(e)
