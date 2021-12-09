@@ -202,6 +202,19 @@ export default class ScConnection extends CABLES.EventTarget
         return this._connected;
     }
 
+    track(eventCategory, eventAction, eventLabel, meta = {})
+    {
+        const payload = {
+            "name": "track",
+            eventCategory,
+            eventAction,
+            eventLabel,
+            meta
+        };
+
+        this._send("control", payload);
+    }
+
     sendInfo(text)
     {
         this._send("info", { "name": "info", text });
