@@ -2,7 +2,7 @@ import Logger from "../utils/logger";
 
 CABLES = CABLES || {};
 
-export default class ScState extends CABLES.EventTarget
+export default class ScStateMultiplayer extends CABLES.EventTarget
 {
     constructor(connection)
     {

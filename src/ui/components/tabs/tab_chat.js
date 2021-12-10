@@ -11,7 +11,6 @@ export default class Chat extends CABLES.EventTarget
         this.activityCounterOut = 0;
 
         this._connection.on("onChatMessage", this.onChatMsg.bind(this));
-        this._connection.on("onInfoMessage", this.onChatMsg.bind(this));
 
         this._connection.on("connectionChanged", this._updateClientList.bind(this));
         this._connection.state.on("userListChanged", this._updateClientList.bind(this));
@@ -78,7 +77,7 @@ export default class Chat extends CABLES.EventTarget
 
         for (let i = 0; i < this._msgs.length; i++)
         {
-            if (this._msgs[i].name == "info")
+            if (this._msgs[i].name === "info")
             {
                 html += "<b>";
                 html += this._msgs[i].text;

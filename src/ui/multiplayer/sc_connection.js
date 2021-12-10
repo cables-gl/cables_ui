@@ -1,7 +1,8 @@
 
-import ScState from "./sc_state";
 import PacoConnector from "./sc_paconnector";
 import Logger from "../utils/logger";
+
+import ScStateMultiplayer from "./sc_state_multiplayer";
 
 export default class ScConnection extends CABLES.EventTarget
 {
@@ -81,24 +82,21 @@ export default class ScConnection extends CABLES.EventTarget
             return;
         }
 
-        if (!this.multiplayerEnabled)
-        {
-            this._log.warn("multiplayer disabled");
-            return;
-        }
-
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.channelName = this._scConfig.channel;
         this.channelName = this._socket.channelName;
 
-        this._state = new CABLES.UI.ScState(this);
 
-        this._state.on("becamePilot", () =>
+        if (this.multiplayerEnabled)
         {
-            this.startPacoSend();
-        });
+            this._state = new ScStateMultiplayer(this);
 
+            this._state.on("becamePilot", () =>
+            {
+                this.startPacoSend();
+            });
+        }
 
         (async () =>
         {
@@ -123,7 +121,7 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("connectionChanged");
 
                 // send me patch
-                this.sendInfo(gui.user.username + " joined");
+                this.sendChat(gui.user.username + " joined");
                 this.updateMembers();
 
                 this.sendControl("resync");
@@ -181,9 +179,6 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("netActivityIn");
             }
         })();
-
-
-        this._state = new ScState(this);
     }
 
     isConnected()
@@ -204,7 +199,12 @@ export default class ScConnection extends CABLES.EventTarget
         this._send("control", payload);
     }
 
-    sendInfo(text)
+    sendNotification(title, text)
+    {
+        this._send("info", { "name": "notify", title, text });
+    }
+
+    sendInfo(name, text)
     {
         this._send("info", { "name": "info", text });
     }
@@ -260,7 +260,7 @@ export default class ScConnection extends CABLES.EventTarget
             "userid": gui.user.id,
             "connectedSince": this._connectedSince
         };
-        if (this.state.clients[this.clientId])
+        if (this.multiplayerEnabled && this.state.clients[this.clientId])
         {
             payload.isPilot = this.state.clients[this.clientId].isPilot;
             payload.following = this.state.clients[this.clientId].following;
@@ -354,9 +354,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     _handleInfoChannelMsg(msg)
     {
-        if (msg.name === "info")
-        {
-            this.emitEvent("onInfoMessage", msg);
-        }
+        if (msg.clientId === this._socket.clientId) return;
+        this.emitEvent("onInfoMessage", msg);
     }
 }

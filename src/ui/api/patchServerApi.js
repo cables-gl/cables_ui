@@ -355,7 +355,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         this._log.log(r);
                         return;
                     }
-                    else CABLES.UI.notify("Patch saved");
+                    else
+                    {
+                        CABLES.UI.notify("Patch saved");
+                        if (gui.socket)
+                        {
+                            gui.socket.sendNotification("Patch saved in other window");
+                        }
+                    }
 
                     this._serverDate = r.updated;
                     const thePatch = gui.corePatch();

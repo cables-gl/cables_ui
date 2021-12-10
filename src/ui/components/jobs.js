@@ -12,15 +12,18 @@ export default class Jobs
     {
         this._listenerStarted = true;
 
-        gui.chat.addEventListener("updated", () =>
+        if (gui.chat)
         {
-            if (this._jobsEle.style.display == "block") this.updateJobListing();
-        });
+            gui.chat.addEventListener("updated", () =>
+            {
+                if (this._jobsEle.style.display === "block") this.updateJobListing();
+            });
+        }
     }
 
     updateJobListing()
     {
-        if (!window.gui || !gui.chat) return;
+        if (!window.gui) return;
 
         let str = "";
         let indicator = null;
@@ -35,7 +38,7 @@ export default class Jobs
             str += "</div>";
         }
 
-        if (this._jobs.length == 0)
+        if (this._jobs.length === 0)
         {
             str += "All server jobs finished...";
             // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");

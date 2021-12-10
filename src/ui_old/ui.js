@@ -238,7 +238,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.canSaveInMultiplayer = function ()
     {
-        if (gui.socket && gui.socket.connected && !gui.socket.client.isPilot)
+        if (gui.socket && gui.socket.multiplayerEnabled && gui.socket.connected && !gui.socket.client.isPilot)
         {
             return false;
         }
@@ -1650,23 +1650,6 @@ CABLES.UI.GUI = function (cfg)
         }
     };
 
-    this.startPacoSender = function ()
-    {
-        this.patchConnection.connectors.push(new CABLES.PatchConnectorSocketIO());
-    };
-
-    this.startPacoReceiver = function ()
-    {
-        // this.patch().scene.clear();
-
-        // const conn = new CABLES.PatchConnectionReceiver(
-        //     this.patch().scene, {},
-        //     new CABLES.PatchConnectorSocketIO(),
-        //     this.connector = new PatchConnectorBroadcastChannel()
-
-        // );
-    };
-
     this.setStateUnsaved = function ()
     {
         if (this._savedState)
@@ -1947,9 +1930,10 @@ function startUi(cfg)
 
                 const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
                 gui.socket = new CABLES.UI.ScConnection(socketClusterConfig);
+                gui.socketUi = new CABLES.UI.ScUi(gui.socket);
                 if (gui.socket.multiplayerEnabled)
                 {
-                    gui.socketUi = new CABLES.UI.ScGui(gui.socket);
+                    gui.multiplayerUi = new CABLES.UI.ScUiMultiplayer(gui.socket);
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
                 }
 
