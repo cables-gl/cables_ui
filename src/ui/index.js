@@ -78,6 +78,7 @@ import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
+import Tracking from "./tracking/tracking";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -114,6 +115,7 @@ CABLES.UI.ScUi = ScUi;
 CABLES.UI.ScUiMultiplayer = ScUiMultiplayer;
 
 CABLES.UI.Logger = Logger;
+CABLES.UI.Tracking = Tracking;
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;

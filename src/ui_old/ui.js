@@ -11,6 +11,7 @@ CABLES.UI.GUI = function (cfg)
     const self = this;
 
     this._log = new CABLES.UI.Logger("gui");
+
     this.patchId = cfg.patchId;
     let showTiming = false;
     this._showingEditor = false;
@@ -1837,6 +1838,11 @@ function startUi(cfg)
 
 
     window.gui = new CABLES.UI.GUI(cfg);
+
+    gui.on("uiloaded", () =>
+    {
+        new CABLES.UI.Tracking(gui);
+    });
 
     if (gui.isRemoteClient)
         new CABLES.UI.NoPatchEditor();
