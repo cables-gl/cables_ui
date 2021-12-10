@@ -21,11 +21,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._paco = null;
         this._pacoSynced = false;
 
-        this._receivePaco = false;// gui.isRemoteClient;// gui.patchView.rendererName == "glpatch" || gui.isRemoteClient;
-        this._sendPacoInitial = false;//! gui.isRemoteClient;
-
-        // this._log.log("this._receivePaco", this._receivePaco);
-        // this._log.log("this._sendPacoInitial", this._sendPacoInitial);
+        this._receivePaco = false;
 
         this._pacoEnabled = this.multiplayerEnabled;
 
@@ -50,16 +46,9 @@ export default class ScConnection extends CABLES.EventTarget
         else { return this._pacoSynced; }
     }
 
-    hasPresenter()
+    hasPilot()
     {
-        return this.state.hasPresenter();
-    }
-
-    becomePresenter()
-    {
-        this.client.isPresenter = true;
-        this.sendPing();
-        this.state.emitEvent("becamePresenter");
+        return this.state.hasPilot();
     }
 
     startPacoSend()
@@ -78,6 +67,7 @@ export default class ScConnection extends CABLES.EventTarget
                     "patch": JSON.stringify(json)
                 });
             this._pacoSynced = true;
+            this.state.emitEvent("patchSynchronized");
         }
     }
 
@@ -104,7 +94,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._state = new CABLES.UI.ScState(this);
 
-        this._state.on("becamePresenter", () =>
+        this._state.on("becamePilot", () =>
         {
             this.startPacoSend();
         });
@@ -126,7 +116,6 @@ export default class ScConnection extends CABLES.EventTarget
             for await (const event of this._socket.listener("connect"))
             {
                 this.emitEvent("netActivityIn");
-                // this._log.info("cables-socketcluster clientId", this._socket.clientId);
                 this._log.verbose("sc connected!");
                 this._connected = true;
                 this._connectedSince = Date.now();
@@ -247,7 +236,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendPaco(payload)
     {
-        if (this.client && this.client.isPresenter)
+        if (this.client && this.client.isPilot)
         {
             payload.name = "paco";
             this._send("paco", payload);
@@ -273,7 +262,7 @@ export default class ScConnection extends CABLES.EventTarget
         };
         if (this.state.clients[this.clientId])
         {
-            payload.isPresenter = this.state.clients[this.clientId].isPresenter;
+            payload.isPilot = this.state.clients[this.clientId].isPilot;
             payload.following = this.state.clients[this.clientId].following;
         }
         this.sendControl("pingAnswer", payload);
@@ -313,8 +302,6 @@ export default class ScConnection extends CABLES.EventTarget
 
             if (!this._paco)
             {
-                // this._log.log(msg);
-
                 if (msg.data.event !== CABLES.PACO_LOAD)
                 {
                     return;
@@ -332,6 +319,7 @@ export default class ScConnection extends CABLES.EventTarget
             this._paco.receive(msg.data);
             this._pacoSynced = true;
             this.state.emitEvent("userListChanged");
+            this.state.emitEvent("patchSynchronized");
         }
     }
 
@@ -341,9 +329,9 @@ export default class ScConnection extends CABLES.EventTarget
         {
             if (msg.clientId === this._socket.clientId) return;
 
-            if (this._pacoEnabled && this.client && this.client.isPresenter)
+            if (this._pacoEnabled && this.client && this.client.isPilot)
             {
-                this._log.log("RESYNC sending paco patch....", this.client.isPresenter);
+                this._log.log("RESYNC sending paco patch....", this.client.isPilot);
                 this.startPacoSend();
             }
         }
@@ -361,8 +349,6 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (msg.clientId === this._socket.clientId) return;
-
-        // this._log.log("msg", msg);
         this.emitEvent(msg.name, msg);
     }
 

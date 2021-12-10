@@ -1,3 +1,5 @@
+import Logger from "../utils/logger";
+
 CABLES = CABLES || {};
 
 export default class ScState extends CABLES.EventTarget
@@ -5,6 +7,9 @@ export default class ScState extends CABLES.EventTarget
     constructor(connection)
     {
         super();
+
+        this._log = new Logger("scstate");
+
         this._clients = {};
         this._clients[connection.clientId] = {
             "clientId": connection.clientId,
@@ -13,7 +18,7 @@ export default class ScState extends CABLES.EventTarget
         this._followers = [];
         this._connection = connection;
         this._colors = {};
-        this._presenter = {};
+        this._pilot = null;
 
         connection.on("onPingAnswer", this.onPingAnswer.bind(this));
         connection.on("netCursorPos", (msg) =>
@@ -67,27 +72,29 @@ export default class ScState extends CABLES.EventTarget
             };
         }
 
-        const amPresenter = this._connection.client && this._connection.client.isPresenter;
-        let newPresenter = null;
-        if (payload.isPresenter)
+        let newPilot = null;
+        if (payload.isPilot)
         {
-            Object.values(this._clients).forEach((client) =>
+            const keys = Object.keys(this._clients);
+            for (let i = 0; i < keys.length; i++)
             {
+                const client = this._clients[keys[i]];
                 if (client.clientId !== payload.clientId)
                 {
-                    client.isPresenter = false;
+                    client.isPilot = false;
                 }
                 else
                 {
-                    if (client.clientId == this._connection.clientId && gui.isRemoteClient) return;
-                    client.isPresenter = true;
-                    newPresenter = client;
+                    if (client.clientId === this._connection.clientId && gui.isRemoteClient) continue;
+                    client.isPilot = true;
+                    newPilot = client;
                 }
-            });
-            if (!this._presenter || (newPresenter && (newPresenter.clientId != this._presenter.clientId)))
+            }
+            if (newPilot && (!this._pilot || newPilot.clientId !== this._pilot.clientId))
             {
                 userListChanged = true;
-                this._presenter = newPresenter;
+                this._pilot = newPilot;
+                this.emitEvent("pilotChanged", newPilot);
             }
         }
 
@@ -105,10 +112,6 @@ export default class ScState extends CABLES.EventTarget
         const cleanupChange = this._cleanUpUserList();
         if (userListChanged || cleanupChange)
         {
-            if (!amPresenter && (this._connection.client && this._connection.client.isPresenter))
-            {
-                this.emitEvent("becamePresenter");
-            }
             this.emitEvent("userListChanged");
         }
     }
@@ -163,46 +166,59 @@ export default class ScState extends CABLES.EventTarget
             {
                 this.emitEvent("clientRemoved", this._clients[client.clientId]);
                 delete this._clients[client.clientId];
-                if (this._presenter && this._presenter.clientId === client.clientId)
+                if (this._pilot && this._pilot.clientId === client.clientId)
                 {
-                    this._presenter = null;
+                    this._pilot = null;
+                    this.emitEvent("pilotRemoved");
                 }
                 if (this.followers.includes(client.clientId)) this._followers = this._followers.filter(followerId => followerId != client.clientId);
                 cleanupChange = true;
             }
         });
 
-        if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPresenter)
+        if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPilot)
         {
-            this._clients[this._connection.clientId].isPresenter = true;
+            this._clients[this._connection.clientId].isPilot = true;
             cleanupChange = true;
         }
 
-        if (!this.hasPresenter())
+        if (!this.hasPilot())
         {
-            // connection has no presenter, try to find the longest connected client
-            let presenter = null;
+            // connection has no pilot, try to find the longest connected client
+            let pilot = null;
             let earliestConnection = Date.now();
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
                 if (client.connectedSince && client.connectedSince < earliestConnection)
                 {
-                    presenter = client;
+                    pilot = client;
                     earliestConnection = client.connectedSince;
                 }
             });
-            if (presenter)
+            if (pilot)
             {
-                this._clients[presenter.clientId].isPresenter = true;
+                this._clients[pilot.clientId].isPilot = true;
+                if (pilot.clientId === this._connection.clientId)
+                {
+                    this.becomePilot();
+                }
             }
         }
 
         return cleanupChange;
     }
 
-    hasPresenter()
+    hasPilot()
     {
-        return Object.values(this._clients).some(client => client.isPresenter);
+        return Object.values(this._clients).some(client => client.isPilot);
+    }
+
+    becomePilot()
+    {
+        this._log.verbose("this client became multiplayer pilot");
+        this._connection.client.isPilot = true;
+        this._connection.sendPing();
+        this.emitEvent("becamePilot");
     }
 }
