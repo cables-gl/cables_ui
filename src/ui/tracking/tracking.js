@@ -16,6 +16,11 @@ export default class Tracking
                 this._trackEvent("ui", "opAdd", op.objName, { "shortName": op._shortOpName });
             }
         });
+
+        this.gui.on("uiIdleEnd", (idleSeconds) =>
+        {
+            this._trackEvent("ui", "idleEnd", "end", { "seconds": idleSeconds });
+        });
     }
 
     _trackEvent(eventCategory, eventAction, eventLabel, meta = {})

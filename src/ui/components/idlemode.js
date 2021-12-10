@@ -41,14 +41,15 @@ function stopIdleMode()
     if (!CABLES.UI.loaded || !window.gui) return;
     if (!idling) return;
 
-    logger.log("idled for ", Math.round((Date.now() - idleModeStart) / 1000) + " seconds");
+    const idleSeconds = Math.round((Date.now() - idleModeStart) / 1000);
+    logger.log("idled for ", idleSeconds + " seconds");
 
 
     gui.corePatch().resume();
     CABLES.UI.MODAL.hide();
     idling = false;
     clearTimeout(idleTimeout);
-    gui.emitEvent("uiIdleEnd");
+    gui.emitEvent("uiIdleEnd", idleSeconds);
 }
 
 function visibilityChanged(e)
