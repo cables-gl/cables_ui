@@ -432,14 +432,14 @@ nav
             overflow: hidden;
             display:inline-block;
             background-size:contain;
-    
+
             margin-left:2px;
             margin-right:2px;
 
             pointer-events: none;
         }
 
-        &.presenter {
+        &.pilot {
             .avatar {
                 box-sizing: border-box;
                 border: 2px solid white;
