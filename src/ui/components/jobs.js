@@ -30,7 +30,7 @@ export default class Jobs
         for (const i in this._jobs)
         {
             if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
-            str += "<div><i class=\"fa fa-circle-o-notch fa-spin\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
+            str += "<div><i class=\"icon icon-loader\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
             str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
             str += "</div>";
         }
