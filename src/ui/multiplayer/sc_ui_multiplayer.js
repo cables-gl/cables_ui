@@ -1,6 +1,6 @@
 import { notify } from "../elements/notification";
 
-export default class ScGui extends CABLES.EventTarget
+export default class ScUiMultiplayer extends CABLES.EventTarget
 {
     constructor(connection)
     {
@@ -35,7 +35,7 @@ export default class ScGui extends CABLES.EventTarget
 
         this._connection.state.on("clientRemoved", (msg) =>
         {
-            if (this._followedClient && this._followedClient.clientId == msg)
+            if (this._followedClient && this._followedClient.clientId === msg)
             {
                 this._followedClient = null;
             }
@@ -49,49 +49,46 @@ export default class ScGui extends CABLES.EventTarget
             this.sendCursorPos(x, y);
         });
 
-        if (CABLES.sandbox.isDevEnv() || CABLES.sandbox._cfg.env === "nightly")
+        gui.on("netOpPos", (payload) =>
         {
-            gui.on("netOpPos", (payload) =>
+            if (this._connection.client.isPilot)
             {
-                if (this._connection.client.isPilot)
-                {
-                    this._connection.sendUi("netOpPos", payload);
-                }
-            });
+                this._connection.sendUi("netOpPos", payload);
+            }
+        });
 
-            gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
-            {
-                this.sendSelectionArea(x, y, sizeX, sizeY);
-            });
+        gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
+        {
+            this.sendSelectionArea(x, y, sizeX, sizeY);
+        });
 
-            gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
-            {
-                this.sendSelectionArea(x, y, sizeX, sizeY, true);
-            });
+        gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
+        {
+            this.sendSelectionArea(x, y, sizeX, sizeY, true);
+        });
 
-            this._connection.on("netOpPos", (msg) =>
+        this._connection.on("netOpPos", (msg) =>
+        {
+            const op = gui.corePatch().getOpById(msg.opId);
+            if (op)
             {
-                const op = gui.corePatch().getOpById(msg.opId);
-                if (op)
-                {
-                    op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
-                }
-                else
-                {
-                    setTimeout(
-                        () =>
-                        {
-                            this._connection.emitEvent("netOpPos", msg);
-                        }, 100);
-                }
-            });
+                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+            }
+            else
+            {
+                setTimeout(
+                    () =>
+                    {
+                        this._connection.emitEvent("netOpPos", msg);
+                    }, 100);
+            }
+        });
 
-            this._connection.on("netSelectionArea", (msg) =>
-            {
-                msg.color = this.getClientColor(msg.clientId);
-                gui.emitEvent("netSelectionArea", msg);
-            });
-        }
+        this._connection.on("netSelectionArea", (msg) =>
+        {
+            msg.color = this.getClientColor(msg.clientId);
+            gui.emitEvent("netSelectionArea", msg);
+        });
 
         this._connection.on("netCursorPos", (msg) =>
         {

@@ -19,7 +19,7 @@ export default class GlCursor extends CABLES.EventTarget
         this._cursor2.setDecoration(5);
 
         let col = null;
-        if (gui.socketUi)col = gui.socketUi.getClientColor(clientId);
+        if (gui.multiplayerUi)col = gui.multiplayerUi.getClientColor(clientId);
         if (col) this._cursor2.setColor(col.r, col.g, col.b, 1);
         else this._cursor2.setColor(1, 1, 1, 1);
     }
@@ -49,7 +49,7 @@ export default class GlCursor extends CABLES.EventTarget
         {
             this._animX.clear(this._glPatch.time);
             this._animY.clear(this._glPatch.time);
-            const netCursorDelay = gui.socketUi ? gui.socketUi.netMouseCursorDelay / 1000 : 0;
+            const netCursorDelay = gui.multiplayerUi ? gui.multiplayerUi.netMouseCursorDelay / 1000 : 0;
             this._animX.setValue(this._glPatch.time + netCursorDelay, x);
             this._animY.setValue(this._glPatch.time + netCursorDelay, y);
             this.updateAnim();

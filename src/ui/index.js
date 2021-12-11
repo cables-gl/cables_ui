@@ -48,8 +48,8 @@ import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
 import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import OpDocs from "./components/opdocs";
 import ScConnection from "./multiplayer/sc_connection";
-import ScGui from "./multiplayer/sc_gui";
-import PacoConnector from "./multiplayer/sc_paconnector";
+import ScUi from "./multiplayer/sc_ui";
+import ScUiMultiplayer from "./multiplayer/sc_ui_multiplayer";
 import EditorTab from "./components/tabs/tab_editor";
 import Chat from "./components/tabs/tab_chat";
 import MetaOpParams from "./components/tabs/meta_opparams";
@@ -78,8 +78,7 @@ import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
-import ScState from "./multiplayer/sc_state";
-
+import Tracking from "./tracking/tracking";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -112,10 +111,11 @@ CABLES.GLUI.glUiConfig = gluiconfig;
 
 CABLES.UI.SuggestPortDialog = SuggestPortDialog;
 CABLES.UI.ScConnection = ScConnection;
-CABLES.UI.ScGui = ScGui;
-CABLES.UI.ScState = ScState;
+CABLES.UI.ScUi = ScUi;
+CABLES.UI.ScUiMultiplayer = ScUiMultiplayer;
 
 CABLES.UI.Logger = Logger;
+CABLES.UI.Tracking = Tracking;
 CABLES.UI.Bookmarks = Bookmarks;
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.HtmlInspector = HtmlInspector;

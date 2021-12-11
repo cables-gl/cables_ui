@@ -174,7 +174,8 @@ function _svgcss(done)
             })
         )
         .pipe(rename("svgicons.scss"))
-        .pipe(gulp.dest("scss/"));
+        .pipe(gulp.dest("scss/"))
+        .pipe(gulp.dest("../cables_api/scss/"));
 }
 
 function _electronapp(done)
