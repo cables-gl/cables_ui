@@ -111,9 +111,7 @@ export default class GlPort
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);
 
-        console.log("upd...");
         CABLES.UI.updateHoverToolTip(event, this._port);
-        // this._glPatch.showOpCursor(false);
     }
 
     _onUnhover(rect)

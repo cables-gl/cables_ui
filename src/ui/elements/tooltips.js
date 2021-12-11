@@ -134,7 +134,7 @@ function getPortDescription(thePort)
 export function updateHoverToolTip(event, port)
 {
     if (!port) return;
-    console.log(1);
+
     let txt = getPortDescription(port);
     let val = null;
     if (port)
