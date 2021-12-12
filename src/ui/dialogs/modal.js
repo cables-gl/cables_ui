@@ -45,7 +45,6 @@ export default class ModalDialog
         return html;
     }
 
-
     _addListeners()
     {
         this._eleClose.addEventListener("click", this.close.bind(this));
@@ -99,8 +98,9 @@ export default class ModalDialog
         this._eleContent.innerHTML = this.html();
 
         this._addListeners();
-    }
 
+        CABLES.UI.hideToolTip();
+    }
 
     _promptSubmit()
     {

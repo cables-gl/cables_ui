@@ -496,6 +496,7 @@ export default class OpSelect
 
     show(options, linkOp, linkPort, link)
     {
+        CABLES.UI.hideToolTip();
         this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;

@@ -1,13 +1,16 @@
+import ele from "../utils/ele";
+
 let tooltipTimeout = null;
 let eleInfoArea = null;
 let eleTooltip = null;
 
 export function showToolTip(e, txt)
 {
-    eleTooltip = eleTooltip || document.getElementById("cbltooltip");
+    eleTooltip = eleTooltip || ele.byId("cbltooltip");
     if (!eleTooltip) return;
 
-    eleTooltip.style.display = "block";
+    ele.show(eleTooltip);
+    // eleTooltip.style.display = "block";
 
     if (e)
         if (e.style)
@@ -27,7 +30,11 @@ export function showToolTip(e, txt)
 export function hideToolTip()
 {
     if (!eleTooltip) return;
-    eleTooltip.style.display = "none";
+    // eleTooltip.style.display = "none";
+    clearTimeout(tooltipTimeout);
+    clearInterval(CABLES.UI.hoverInterval);
+    CABLES.UI.hoverInterval = -1;
+    ele.hide(eleTooltip);
 }
 
 
@@ -180,8 +187,9 @@ export function updateHoverToolTip(event, port)
 
     CABLES.UI.showToolTip(event, txt);
     if (CABLES.UI.hoverInterval == -1)
-        CABLES.UI.hoverInterval = setInterval(function ()
-        {
-            updateHoverToolTip(event, port);
-        }, 50);
+        CABLES.UI.hoverInterval = setInterval(
+            () =>
+            {
+                updateHoverToolTip(event, port);
+            }, 50);
 }

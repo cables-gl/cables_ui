@@ -98,6 +98,8 @@ export default class GlPort
 
     _onHover(rect)
     {
+        if (!this._glPatch.hasFocus) return;
+
         const event = {
             "clientX": this._glPatch.viewBox.mouseX,
             "clientY": this._glPatch.viewBox.mouseY - 25
@@ -110,7 +112,6 @@ export default class GlPort
                 this._glop._links[i].highlight(true);
 
         CABLES.UI.updateHoverToolTip(event, this._port);
-        // this._glPatch.showOpCursor(false);
     }
 
     _onUnhover(rect)

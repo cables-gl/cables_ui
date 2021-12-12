@@ -86,10 +86,8 @@ CABLES.UI.MODAL.hide = function (force)
     CABLES.UI.MODAL._setVisible(false);
     CABLES.UI.MODAL.contentElement.classList.remove("nopadding");
     document.getElementById("modalbg").style.display = "none";
-    Array.from(document.querySelectorAll(".tooltip")).forEach((e) =>
-    {
-        e.style.display = "none";
-    });
+
+    CABLES.UI.hideToolTip();
 };
 
 CABLES.UI.MODAL.showTop = function (content, options)

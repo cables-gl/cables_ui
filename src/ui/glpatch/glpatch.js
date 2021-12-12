@@ -697,6 +697,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._log.error("BROKEN");
         }
 
+        this.hasFocus = ele.hasFocus(this._cgl.canvas);
         this.debugData.splineUpdate = 0;
 
         for (const i in this._glOpz)
@@ -756,6 +757,8 @@ export default class GlPatch extends CABLES.EventTarget
         this.viewBox.setSize(resX, resY);
 
         const starttime = performance.now();
+
+
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         this._drawCursor();
