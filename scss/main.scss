@@ -567,13 +567,13 @@ body,div
     z-index: $zindex_high;
 }
 
-#splitterMeta
-{
-    height:2px;
-    padding:4px !important;
-    z-index: $zindex_high;
-    cursor:ns-resize;
-}
+// #splitterMeta
+// {
+//     height:2px;
+//     padding:4px !important;
+//     z-index: $zindex_high;
+//     cursor:ns-resize;
+// }
 
 #splitterRendererWH
 {
@@ -746,7 +746,7 @@ input
     background-color: var(--color-07);
     mask-repeat: no-repeat;
     display: block;
-    z-index: $zindex_highest;
+    z-index: $zindex_highest+1;
 }
 
 .shaderErrorCode

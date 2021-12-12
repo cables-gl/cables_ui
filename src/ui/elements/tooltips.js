@@ -60,28 +60,17 @@ function eleTtOut(e)
 
 export function showInfo(txt)
 {
-    txt = txt || CABLES.UI.TEXTS.infoArea;
-    eleInfoArea = eleInfoArea || document.getElementById("infoArea");
-    eleInfoArea.classList.remove("hidden");
-    eleInfoArea.innerHTML = "<div class=\"infoareaContent\">" + mmd(txt || "") + "</div>";
+    gui.bottomInfoArea.setContent(txt);
 }
 
 export function hideInfo()
 {
-    eleInfoArea = eleInfoArea || document.getElementById("infoArea");
-    eleInfoArea.classList.add("hidden");
-    eleInfoArea.innerHTML = "";
+    gui.bottomInfoArea.setContent("");
 }
 
 function eleInfoOver(e)
 {
-    let txt = e.target.dataset.info;
-    if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
-    if (!txt)
-    {
-        txt = document.getElementById("infoArea").dataset.info;
-    }
-    showInfo(txt);
+    gui.bottomInfoArea.hoverInfoEle(e);
 }
 
 function eleInfoOut(e)
@@ -89,7 +78,6 @@ function eleInfoOut(e)
     clearTimeout(tooltipTimeout);
     CABLES.UI.hideInfo();
 }
-
 
 document.querySelector("body").addEventListener("mouseover", function (evt)
 {

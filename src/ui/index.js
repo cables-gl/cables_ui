@@ -79,6 +79,7 @@ import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
 import Tracking from "./tracking/tracking";
+import BottomInfoAreaBar from "./elements/bottoInfoAreaBar";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -146,6 +147,7 @@ CABLES.UI.GlDebugTab = GlDebugTab;
 CABLES.UI.GpuProfiler = GpuProfiler;
 CABLES.UI.ItemManager = ItemManager;
 CABLES.UI.MetaCode = MetaCode;
+CABLES.UI.BottomInfoAreaBar = BottomInfoAreaBar;
 CABLES.UI.MetaHistory = MetaHistory;
 CABLES.UI.MetaKeyframes = MetaKeyframes;
 CABLES.UI.MetaDoc = MetaDoc;

@@ -39,6 +39,7 @@ CABLES.UI.uiConfig = {
     "watchValuesInterval": 50, // 33
     "rendererSizes": [{ "w": 640, "h": 360 }, { "w": 1024, "h": 768 }, { "w": 1280, "h": 720 }, { "w": 0, "h": 0 }],
 
+    "infoAreaHeight": 28,
 
     "linkingLine": {
         "stroke-width": 1,

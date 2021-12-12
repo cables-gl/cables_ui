@@ -693,9 +693,7 @@ export default class GlPatch extends CABLES.EventTarget
     {
         // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
-        {
             this._log.error("BROKEN");
-        }
 
         this.hasFocus = ele.hasFocus(this._cgl.canvas);
         this.debugData.splineUpdate = 0;
