@@ -22,7 +22,7 @@
         "nav_patch_new": "## New Patch\n\nCreates a new patch",
         "nav_patch_open": "## Open Patch\n\nLoad an existing patch",
 
-        "linkAddCircle": "## Link \n\n* `[left click]` - insert op \n* `[right click]` - delete link \n* `[shift+left click]` - insert op",
+        "linkAddCircle": "## Link \n\n* `left click` - insert op \n* `right click` - delete link \n* `shift+left click` - insert op",
 
         "timeLineToggle": "Toggle timeline / keyframing panel",
         "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
@@ -34,13 +34,13 @@
         "portAnimKeep": "Keep in keyframing view",
         "portAnimToggle": "Toggle parameter animation. enable to keyframe parameter",
 
-        "portDirIn": "## Input Port \n\n",
-        "portDirOut": "## Output Port\n\n",
-        "portMouseUnlink": "* press right mouse button to unlink port\n* drag while holding right mouse button to move link\n* `[del]` - delete link\n* [ALT]+drag while holding right mouse button to copy link",
+        "portDirIn": "## Input Port ",
+        "portDirOut": "## Output Port",
+        "portMouseUnlink": "* press right mouse button to unlink port\n* drag while holding right mouse button to move link\n* `del` - delete link\n* [ALT]+drag while holding right mouse button to copy link",
         "portMouseCreate": "* press left mousebutton (or press and drag) to create and link new op",
         "portObjectSnapshot": "see at object data snapshot",
 
-        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `[a]` align ops left\n* `[c]` center ops\n* `[shift+a]` reduce vertical sptng\n* `[del]` delete selcted ops\n* `[mod] + c`: Copy selected op ",
+        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* `shift+a` reduce vertical sptng\n* `del` delete selcted ops\n* `cmd + c`: Copy selected op ",
         "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `del` delete op\n* `page up/down` snap to parent/child op",
 
         "projectSettingsPublic": "make patch public - everyone can see it",
@@ -52,7 +52,7 @@
         "projectNotSaved": "Patch not saved - save patch and try again",
 
         "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-        "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `[right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
+        "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
         "canvas": "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
         "projectFiles": "## Project Files \n\nOverview over your uploaded files",
         "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
@@ -80,11 +80,11 @@
         "bookmark_added": "Bookmark added!",
         "bookmark_removed": "Bookmark removed!",
 
-        "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `[drag left click]` move area\n* `[drag right click]` move area and change time\n* `[double click]` toggle show full project length",
-        "timeline_frames": "## timeline \n\n* `[click]` move cursor",
-        "timeline_time": "`[click]` jump to frame",
-        "timeline_progress": "`[click]` set project duration",
-        "timeline_keys": "## timeline  \n\n* `[drag right click]` move visible area\n* `[drag left click]` select keys\n* `[h]` center all keys\n* `[j/k]` jump to next/previous key\n* `[DEL]` delete selected keys",
+        "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* `drag left click` move area\n* `drag right click` move area and change time\n* `double click` toggle show full project length",
+        "timeline_frames": "## timeline \n\n* `click` move cursor",
+        "timeline_time": "`click` jump to frame",
+        "timeline_progress": "`click` set project duration",
+        "timeline_keys": "## timeline  \n\n* `drag right click` move visible area\n* `drag left click` select keys\n* `h` center all keys\n* `j/k` jump to next/previous key\n* `DEl` delete selected keys",
 
         "usersettings": "## User Settings\n\nchange editor settings ",
         "texpreview": "## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
@@ -340,4 +340,6 @@
 
     ]
 }
+
+
 

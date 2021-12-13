@@ -220,18 +220,19 @@
 <div id="meta">
     <div id="metatabpanel" style="width:100%;min-height:400px;"></div>
 
-    <div id="splitterMeta" class="splitter">
+    <!-- <div id="splitterMeta" class="splitter">
         <a class="icon-x icon fright iconhover" style="position: absolute;z-index: 9999;right: 10px;margin-top: 10px;" onclick="gui.closeInfo();">.</a>
-    </div>
+    </div> -->
 
-    <div id="infoAreaContainer">
-        <div id="infoArea" class="hidden"></div>
-    </div>
-    <div id="infoAreaMin" class="hidden" onclick="gui.openInfo();"><span class="icon icon-chevron-up"></span></div>
+
 </div>
 
 <div id="options"></div>
 
+<div id="infoAreaContainer">
+    <div id="infoArea" class=""></div>
+</div>
+<div id="infoAreaToggle" onclick="gui.bottomInfoArea.toggle();"><span class="icon icon-chevron-up"></span></div>
 
 <form id="hiddenupload" class="hide">
     <input id="hiddenfileElem" type="file" multiple accept="*" style="display:none" onchange="CABLES.fileUploader.handleFileInputUpload(this.files)"/>
