@@ -136,9 +136,7 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
         port.parent.patch.cgl.profileData.profileTexPreviews++;
 
-
         const portTex = port.get() || CGL.Texture.getEmptyTexture(cgl);
-
 
         if (!this._mesh)
         {

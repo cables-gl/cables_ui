@@ -1,12 +1,15 @@
 
 import GlPreviewLayerTexture from "./glpreviewlayer_texture";
 import GlPreviewLayerNumber from "./glpreviewlayer_number_graph";
+import Logger from "../utils/logger";
 
 export default class GlPreviewLayer extends CABLES.EventTarget
 {
     constructor(glPatch)
     {
         super();
+
+        this._log = new Logger("glpreviewlayer");
 
         this._items = [];
         this._itemsLookup = {};
@@ -114,12 +117,37 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 };
 
                 this._itemsLookup[ops[i].id] = item;
+
+
+                item.op.on("onDelete", (op) =>
+                {
+                    this._removeOpItem(op);
+                });
+
                 this._items.push(item);
 
                 if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
                 if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
             }
         }
+    }
+
+    _removeOpItem(op)
+    {
+        console.log("this._items", this._items.length);
+
+        const it = this._itemsLookup[op.id];
+        let found = -1;
+
+        let idx = this._items.indexOf(it);
+
+        if (idx > -1) this._items.splice(idx, 1);
+        else this._log.warn("could not find item");
+
+        delete this._itemsLookup[op.id];
+        console.log("this._items", this._items.length);
+
+        // this.updateViewPort();
     }
 
     pauseInteraction()
