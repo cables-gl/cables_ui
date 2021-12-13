@@ -134,8 +134,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
     _removeOpItem(op)
     {
-        console.log("this._items", this._items.length);
-
         const it = this._itemsLookup[op.id];
         let found = -1;
 
@@ -145,9 +143,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         else this._log.warn("could not find item");
 
         delete this._itemsLookup[op.id];
-        console.log("this._items", this._items.length);
-
-        // this.updateViewPort();
     }
 
     pauseInteraction()
