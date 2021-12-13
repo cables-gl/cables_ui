@@ -46,7 +46,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     setContent(txt)
     {
-        txt = txt || CABLES.UI.TEXTS.infoArea;
+        txt = txt || CABLES.UI.TEXTS.infoArea || "";
+        // txt = txt.replaceAll("CMD", "⌘");
 
         this._eleInfoArea.classList.remove("hidden");
         this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\">" + mmd(txt || "") + "</div>";
@@ -57,6 +58,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         let txt = e.target.dataset.info;
         if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
         if (!txt) txt = document.getElementById("infoArea").dataset.info;
+
+
         this.setContent(txt);
     }
 }
