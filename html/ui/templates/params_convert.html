@@ -103,7 +103,9 @@
 
             {{/compare}}
 
-            <a class="button" onclick="new CABLES.UI.ConverterDialog('{{ projectId }}','{{ fileId }}','{{ converterId }}')"><span class="icon icon-refresh"></span>Start Converter: {{ converterName }}</a>
+
+            <a class="button" onclick="gui.converterStart('{{ projectId }}','{{ fileId }}','{{ converterId }}')"><span class="icon icon-refresh"></span>Start Converter: {{ converterName }}</a>
+            <!-- <a class="button" onclick="new CABLES.UI.ConverterDialog('{{ projectId }}','{{ fileId }}','{{ converterId }}')"><span class="icon icon-refresh"></span>Start Converter: {{ converterName }}</a> -->
             <br/><br/>
 
 
