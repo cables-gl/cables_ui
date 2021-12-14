@@ -16,7 +16,8 @@ export default class GlPreviewLayerNumber extends CABLES.EventTarget
     render(ctx, pos, size)
     {
         const port = this._item.port;
-        if (!port || !port.get()) return;
+
+        if (!port) return;
 
         const perf = CABLES.UI.uiProfiler.start("previewlayer graph");
 
@@ -30,6 +31,7 @@ export default class GlPreviewLayerNumber extends CABLES.EventTarget
             "#ffffff",
             "#888888",
         ];
+
 
         for (let p = 0; p < this._item.ports.length; p++)
         {

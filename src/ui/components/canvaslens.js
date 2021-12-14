@@ -53,8 +53,8 @@ export default class CanvasLens
     {
         clearTimeout(this.leaveTimeout);
         const rect = e.target.getBoundingClientRect();
-        this._x = e.clientX - rect.left; // x position within the element.
-        this._y = e.clientY - rect.top; // y position within the element.
+        this._x = (e.clientX - rect.left) / gui._corePatch.cgl.canvasScale; // x position within the element.
+        this._y = (e.clientY - rect.top) / gui._corePatch.cgl.canvasScale; // y position within the element.
 
         this._lensCanvas.style.left = e.clientX - this._size2 + "px";
         this._lensCanvas.style.top = e.clientY + 15 + "px";

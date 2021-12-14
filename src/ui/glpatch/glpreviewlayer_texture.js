@@ -126,7 +126,7 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
     render(ctx, pos, size)
     {
         const port = this._item.port;
-        if (!port.get()) return;
+        if (!port) return;
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
 
@@ -135,6 +135,8 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
 
         if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
         port.parent.patch.cgl.profileData.profileTexPreviews++;
+
+        const portTex = port.get() || CGL.Texture.getEmptyTexture(cgl);
 
         if (!this._mesh)
         {
@@ -156,13 +158,13 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
             this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
             this._shaderTexCubemapUniform = new CGL.Uniform(this._shader, "tc", "cubeMap", texSlotCubemap);
 
-            this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
-            this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
+            this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", portTex.width);
+            this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", portTex.height);
             this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
         }
 
         cgl.pushPMatrix();
-        const sizeTex = [port.get().width, port.get().height];
+        const sizeTex = [portTex.width, portTex.height];
         const small = port.parent.patch.cgl.canvasWidth > sizeTex[0] && port.parent.patch.cgl.canvasHeight > sizeTex[1];
 
         if (small)
@@ -175,18 +177,18 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         const oldTexCubemap = cgl.getTexture(texSlotCubemap);
 
         let texType = 0;
-        if (!port.get()) return;
-        if (port.get().cubemap) texType = 1;
-        if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
+        if (!portTex) return;
+        if (portTex.cubemap) texType = 1;
+        if (portTex.textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
 
         if (texType == 0 || texType == 2)
         {
-            cgl.setTexture(texSlot, port.get().tex);
+            cgl.setTexture(texSlot, portTex.tex);
             cgl.setTexture(texSlotCubemap, this._emptyCubemap.cubemap, cgl.gl.TEXTURE_CUBE_MAP);
         }
         else if (texType == 1)
         {
-            cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
+            cgl.setTexture(texSlotCubemap, portTex.cubemap, cgl.gl.TEXTURE_CUBE_MAP);
         }
 
         // this._shader.toggleDefine("CUBEMAP", true);
@@ -219,7 +221,7 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         const stretch = false;
         if (!stretch)
         {
-            if (port.get().width > port.get().height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
+            if (portTex.width > portTex.height) sizeImg[1] = size[0] * sizeTex[1] / sizeTex[0];
             else
             {
                 sizeImg[1] = size[0] * (sizeTex[1] / sizeTex[0]);

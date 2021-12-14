@@ -583,7 +583,6 @@ export default class OpSelect
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
             const eleTitle = ele.byId("createLinkTriggerExists");
-            console.log("!!!!!!!!!!!!!!!!!", eleTitle);
             if (CABLES.UI.OPSELECT.linkNewOpToPort.direction == CABLES.PORT_DIR_IN) eleTitle.innerText = "Receive existing trigger send";
             else eleTitle.innerText = "Send into existing trigger send";
 
