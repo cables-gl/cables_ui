@@ -85,17 +85,35 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        /*
+
+        this would update selection to what the pilot has, crashes/is unreliable with dragging/selecting multiple ops
+
         gui.corePatch().on("onUiAttribsChange", (op) =>
         {
             if (this._connection.multiplayerEnabled && this._connection.client && !this._connection.client.isPilot)
             {
-                if (op.uiAttribs.selected)
+                const patch = gui.corePatch();
+                if (patch)
                 {
-                    gui.patchView.setSelectedOpById(op.id);
-                    gui.opParams.show(op);
+                    console.log("PATCHVIEW", gui.patchView);
+                    const patchOp = patch.getOpById(op.id);
+                    if (patchOp)
+                    {
+                        if (patchOp.uiAttribs.selected)
+                        {
+                            gui.patchView.setSelectedOpById(patchOp.id);
+                            // gui.opParams.show(op);
+                        }
+                        else
+                        {
+                            gui.patchView.unselectOpId(patchOp.id);
+                        }
+                    }
                 }
             }
         });
+         */
 
         this._connection.on("netSelectionArea", (msg) =>
         {

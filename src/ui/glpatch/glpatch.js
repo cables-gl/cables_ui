@@ -243,7 +243,14 @@ export default class GlPatch extends CABLES.EventTarget
                 {
                     if (msg.hasOwnProperty("subpatch"))
                     {
-                        gui.patchView.setCurrentSubPatch(msg.subpatch);
+                        // set subpatch and revert greyout-state to what is appropriate for this
+                        // client in multiplayer session
+                        const mpGreyOut = gui.patchView.patchRenderer.greyOut;
+                        gui.patchView.setCurrentSubPatch(msg.subpatch, () =>
+                        {
+                            console.log("RESET TO", mpGreyOut);
+                            gui.patchView.patchRenderer.greyOut = mpGreyOut;
+                        });
                     }
 
                     if (msg.hasOwnProperty("zoom"))
