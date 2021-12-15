@@ -13,9 +13,20 @@
 
 <script id="socket_userlist" type="text/x-handlebars-template">
     {{#each clients}}
-    <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
-        <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
-    </div>
+        {{#if isRemoteClient}}
+        <div class="tt socket_userlist_item remote_client" data-client-id="{{clientId}}" data-tt="{{username}} (remote viewer)">
+            <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar">R</div>
+        </div>
+        {{else}}
+        <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
+            <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
+        </div>
+        {{/if}}
     {{/each}}
+    {{#if isActive}}
+    <div class="tt socket_exit_session" data-tt="exit multiplayer session" style="border-left: 1px solid white; float: right; margin-top: 3%; margin-left: 10px; padding-left: 5px;">
+        <div style="color: white;">EXIT</div>
+    </div>
+    {{/if}}
 </script>
 

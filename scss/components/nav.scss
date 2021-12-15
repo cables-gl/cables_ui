@@ -418,6 +418,8 @@ nav
     padding-left:3px;
     padding-right:3px;
 
+
+
     .socket_userlist_item
     {
         display:inline-block;
@@ -437,6 +439,12 @@ nav
             margin-right:2px;
 
             pointer-events: none;
+        }
+
+        &.remote_client {
+            .avatar {
+                color: white;
+            }
         }
 
         &.pilot {
