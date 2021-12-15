@@ -209,14 +209,27 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
             const userList = document.getElementById("nav-clientlist");
             userList.innerHTML = html;
-            const exitItem = userList.querySelector(".socket_exit_session");
-            if (exitItem)
+            const moreOptions = userList.querySelector(".socket_more_options");
+            if (moreOptions)
             {
-                exitItem.addEventListener("click", () =>
+                moreOptions.addEventListener("click", (event) =>
                 {
-                    this._connection.leaveMultiplayerSession();
+                    CABLES.contextMenu.show(
+                        {
+                            "items": [
+                                {
+                                    "title": "open chat",
+                                    "func": () => { CABLES.CMD.UI.showChat(); }
+                                },
+                                {
+                                    "title": "exit multiplayer",
+                                    "func": () => { this._connection.leaveMultiplayerSession(); }
+                                }
+                            ],
+                        }, event.currentTarget);
                 });
             }
+
             const userListItems = userList.querySelectorAll(".socket_userlist_item");
             userListItems.forEach((ele) =>
             {
