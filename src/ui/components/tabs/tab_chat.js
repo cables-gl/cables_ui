@@ -51,6 +51,21 @@ export default class Chat extends CABLES.EventTarget
 
         const html = CABLES.UI.getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
+        const inputEle = document.getElementById("newchatmsg");
+
+        const submitAction = (event) =>
+        {
+            if (event.key === "Enter")
+            {
+                gui.chat.send(document.getElementById("newchatmsg").value);
+                document.getElementById("newchatmsg").value = "";
+            }
+        };
+        if (inputEle)
+        {
+            inputEle.removeEventListener("keyup", submitAction);
+            inputEle.addEventListener("keyup", submitAction);
+        }
         this._updateText();
     }
 
