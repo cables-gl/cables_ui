@@ -13,6 +13,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._followedClient = null;
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
+        /* do something with chatmessages
         this._connection.on("onChatMessage", (msg) =>
         {
             if (this._connection.multiplayerEnabled)
@@ -23,6 +24,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
             }
         });
+         */
 
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
