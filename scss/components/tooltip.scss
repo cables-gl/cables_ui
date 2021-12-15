@@ -59,12 +59,22 @@
     z-index: $zindex_highest;
 
     h2 {
-        font-size: 15px;
+        font-size: 18px;
+        color:white;
     }
 
     ul {
         margin-left: 15px;
         padding-left: 0px;
+    }
+
+    .icon
+    {
+        margin-top: 2px;
+        width:20px;
+        height:20px;
+        vertical-align: sub;
+        margin-right: 5px;;
     }
 
     .infoareaContent {
