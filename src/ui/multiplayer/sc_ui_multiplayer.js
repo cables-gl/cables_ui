@@ -210,10 +210,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             const userList = document.getElementById("nav-clientlist");
             userList.innerHTML = html;
             const exitItem = userList.querySelector(".socket_exit_session");
-            exitItem.addEventListener("click", () =>
+            if (exitItem)
             {
-                this._connection.leaveMultiplayerSession();
-            });
+                exitItem.addEventListener("click", () =>
+                {
+                    this._connection.leaveMultiplayerSession();
+                });
+            }
             const userListItems = userList.querySelectorAll(".socket_userlist_item");
             userListItems.forEach((ele) =>
             {
