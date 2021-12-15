@@ -36,7 +36,7 @@
 
         "portDirIn": "## Input Port ",
         "portDirOut": "## Output Port",
-        "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `del` delete link || `ALT`+[DRAG_LMB] while holding right mouse button to copy link",
+        "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `del` delete link || `ALT`+[DRAG_LMB] copy link",
         "portMouseCreate": "|| [DRAG_LMB] create and link new op",
         "portObjectSnapshot": "see at object data snapshot",
 
