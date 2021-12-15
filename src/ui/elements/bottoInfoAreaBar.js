@@ -50,7 +50,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         // txt = txt.replaceAll("CMD", "⌘");
 
         this._eleInfoArea.classList.remove("hidden");
-        this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\">" + mmd(txt || "") + "</div>";
+        this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\"> <span class=\"icon icon-left_mouse_drag\"></span>Drag mouse to whatever " + mmd(txt || "") + "</div>";
     }
 
     hoverInfoEle(e)
