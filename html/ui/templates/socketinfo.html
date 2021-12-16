@@ -13,9 +13,18 @@
 
 <script id="socket_userlist" type="text/x-handlebars-template">
     {{#each clients}}
-    <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
-        <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
-    </div>
+        {{#if isRemoteClient}}
+        <div class="tt socket_userlist_item remote_client" data-client-id="{{clientId}}" data-tt="{{username}} (remote viewer)">
+            <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar">R</div>
+        </div>
+        {{else}}
+        <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
+            <div style="background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
+        </div>
+        {{/if}}
     {{/each}}
+    {{#if isActive}}
+    <a class="tt icon icon-triple-dot iconhover socket_more_options" data-info="More Options"></a>
+    {{/if}}
 </script>
 

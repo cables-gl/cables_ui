@@ -10,9 +10,9 @@ export default class Tracking
     {
         this.gui._corePatch.on("onOpAdd", (op, fromDeserialize) =>
         {
-            if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")))
+            if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")) && !(op.uiAttribs && op.uiAttribs.fromNetwork))
             {
-                // do not track patchload, subpatch and blueprint init
+                // do not track patchload, multiplayer-session, subpatch and blueprint init
                 this._trackEvent("ui", "opAdd", op.objName, { "shortName": op._shortOpName });
             }
         });

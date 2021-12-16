@@ -19,6 +19,8 @@ export function notifyError(title, text)
 
 export function notify(title, text)
 {
+    if (gui.isRemoteClient) return;
+
     if (title == lastNotify && text == lastText)
     {
         setTimeout(function ()

@@ -47,10 +47,27 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
     setContent(txt)
     {
         txt = txt || CABLES.UI.TEXTS.infoArea || "";
-        // txt = txt.replaceAll("CMD", "⌘");
+
+        if (this._txt == txt) return;
+
+        this._txt = txt;
+
+        txt = txt.replaceAll("[CMD]", "´⌘´");
+        txt = txt.replaceAll("||", "\n\n* ");
+
+        txt = mmd(txt || "");
+
+
+        txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
+        txt = txt.replaceAll("[DRAG_RMB]", "<span class=\"icon icon-mouse_rmb_drag\"></span>");
+        txt = txt.replaceAll("[DRAG_MMB]", "<span class=\"icon icon-mouse_mmb_drag\"></span>");
+        txt = txt.replaceAll("[RMB]", "<span class=\"icon icon-mouse_lmb\"></span>");
+        txt = txt.replaceAll("[LMB]", "<span class=\"icon icon-mouse_rmb\"></span>");
+        txt = txt.replaceAll("[MMB]", "<span class=\"icon icon-mouse_mmb\"></span>");
+        txt = txt.replaceAll("[MW]", "<span class=\"icon icon-mouse_wheel\"></span>");
 
         this._eleInfoArea.classList.remove("hidden");
-        this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\"> <span class=\"icon icon-left_mouse_drag\"></span>Drag mouse to whatever " + mmd(txt || "") + "</div>";
+        this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\"> " + txt + "</div>";
     }
 
     hoverInfoEle(e)

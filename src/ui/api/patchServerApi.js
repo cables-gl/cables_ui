@@ -360,7 +360,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         CABLES.UI.notify("Patch saved");
                         if (gui.socket)
                         {
-                            gui.socket.sendNotification("Patch saved in other window");
+                            if (gui.user.usernameLowercase)
+                            {
+                                gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");
+                            }
+                            else
+                            {
+                                gui.socket.sendNotification("Patch saved in other window");
+                            }
                         }
                     }
 

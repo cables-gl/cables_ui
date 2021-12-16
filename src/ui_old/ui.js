@@ -239,7 +239,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.canSaveInMultiplayer = function ()
     {
-        if (gui.socket && gui.socket.multiplayerEnabled && gui.socket.connected && !gui.socket.client.isPilot)
+        if (gui.socket && !gui.socket.canSaveInMultiplayer())
         {
             return false;
         }
@@ -1744,7 +1744,10 @@ CABLES.UI.GUI = function (cfg)
 
 
         if (this.isRemoteClient)
+        {
             ele.byId("undev").style.display = "none";
+            ele.byId("infoAreaContainer").style.display = "none";
+        }
 
         CABLES.UI.initSplitPanes();
 
@@ -1843,12 +1846,10 @@ function startUi(cfg)
 
     window.gui = new CABLES.UI.GUI(cfg);
 
-    /*
     gui.on("uiloaded", () =>
     {
         new CABLES.UI.Tracking(gui);
     });
-     */
 
     if (gui.isRemoteClient)
         new CABLES.UI.NoPatchEditor();

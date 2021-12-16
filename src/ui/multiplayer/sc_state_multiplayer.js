@@ -13,7 +13,8 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
         this._clients = {};
         this._clients[connection.clientId] = {
             "clientId": connection.clientId,
-            "isMe": true
+            "isMe": true,
+            "isRemoteClient": gui.isRemoteClient
         };
         this._followers = [];
         this._connection = connection;
@@ -55,6 +56,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
             this._clients[payload.clientId].connectedSince = payload.connectedSince;
             this._clients[payload.clientId].following = payload.following;
+            this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
         }
         else
         {
@@ -68,12 +70,13 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
                 "isMe": payload.clientId == this._connection.clientId,
                 "color": this.getClientColor(payload.clientId),
                 "connectedSince": payload.connectedSince,
-                "following": payload.following
+                "following": payload.following ? payload.following.clientId : null,
+                "isRemoteClient": payload.isRemoteClient
             };
         }
 
         let newPilot = null;
-        if (payload.isPilot)
+        if (payload.isPilot && !payload.isRemoteClient)
         {
             const keys = Object.keys(this._clients);
             for (let i = 0; i < keys.length; i++)
@@ -92,9 +95,12 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             }
             if (newPilot && (!this._pilot || newPilot.clientId !== this._pilot.clientId))
             {
-                userListChanged = true;
-                this._pilot = newPilot;
-                this.emitEvent("pilotChanged", newPilot);
+                if (!newPilot.isRemoteClient)
+                {
+                    userListChanged = true;
+                    this._pilot = newPilot;
+                    this.emitEvent("pilotChanged", newPilot);
+                }
             }
         }
 
@@ -178,8 +184,11 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
         if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPilot)
         {
-            this._clients[this._connection.clientId].isPilot = true;
-            cleanupChange = true;
+            if (!gui.isRemoteClient)
+            {
+                this._clients[this._connection.clientId].isPilot = true;
+                cleanupChange = true;
+            }
         }
 
         if (!this.hasPilot())
@@ -190,13 +199,13 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
-                if (client.connectedSince && client.connectedSince < earliestConnection)
+                if (!client.isRemoteClient && client.connectedSince && client.connectedSince < earliestConnection)
                 {
                     pilot = client;
                     earliestConnection = client.connectedSince;
                 }
             });
-            if (pilot)
+            if (pilot && !pilot.isRemoteClient)
             {
                 this._clients[pilot.clientId].isPilot = true;
                 if (pilot.clientId === this._connection.clientId)
@@ -216,9 +225,12 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
     becomePilot()
     {
-        this._log.verbose("this client became multiplayer pilot");
-        this._connection.client.isPilot = true;
-        this._connection.sendPing();
-        this.emitEvent("becamePilot");
+        if (!gui.isRemoteClient)
+        {
+            this._log.verbose("this client became multiplayer pilot");
+            this._connection.client.isPilot = true;
+            this._connection.sendPing();
+            this.emitEvent("becamePilot");
+        }
     }
 }

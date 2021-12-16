@@ -22,7 +22,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._paco = null;
         this._pacoSynced = false;
 
-        this._receivePaco = false;
+        this.multiplayerEnabled = this._scConfig.multiplayerEnabled;
 
         this._pacoEnabled = this.multiplayerEnabled;
 
@@ -39,7 +39,6 @@ export default class ScConnection extends CABLES.EventTarget
 
     get clients() { return this.state.clients; }
 
-    get multiplayerEnabled() { return this._scConfig.multiplayerEnabled; }
 
     get synced()
     {
@@ -186,6 +185,31 @@ export default class ScConnection extends CABLES.EventTarget
         return this._connected;
     }
 
+    canSaveInMultiplayer()
+    {
+        if (this.multiplayerEnabled)
+        {
+            return this.connected && this.client && this.client.isPilot;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    leaveMultiplayerSession()
+    {
+        if (this.multiplayerEnabled)
+        {
+            this._socket.unsubscribe(this._socket.channelName + "/ui");
+            this._socket.unsubscribe(this._socket.channelName + "/control");
+            this._socket.unsubscribe(this._socket.channelName + "/chat");
+            this._socket.unsubscribe(this._socket.channelName + "/paco");
+            this.multiplayerEnabled = false;
+        }
+        this.emitEvent("netLeaveSession");
+    }
+
     track(eventCategory, eventAction, eventLabel, meta = {})
     {
         const payload = {
@@ -195,7 +219,6 @@ export default class ScConnection extends CABLES.EventTarget
             eventLabel,
             meta
         };
-
         this._send("control", payload);
     }
 
@@ -211,6 +234,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendControl(name, payload)
     {
+        if (!this.multiplayerEnabled) return;
         payload = payload || {};
         payload.name = name;
 
@@ -220,6 +244,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendUi(name, payload, sendOnEmptyClientList = false)
     {
+        if (!this.multiplayerEnabled) return;
         if (sendOnEmptyClientList || this.state.getNumClients() > 1)
         {
             payload = payload || {};
@@ -231,11 +256,13 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendChat(text)
     {
+        if (!this.multiplayerEnabled) return;
         this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
     sendPaco(payload)
     {
+        if (!this.multiplayerEnabled) return;
         if (this.client && this.client.isPilot)
         {
             payload.name = "paco";
@@ -258,7 +285,8 @@ export default class ScConnection extends CABLES.EventTarget
         const payload = {
             "username": gui.user.usernameLowercase,
             "userid": gui.user.id,
-            "connectedSince": this._connectedSince
+            "connectedSince": this._connectedSince,
+            "isRemoteClient": gui.isRemoteClient
         };
         if (this.multiplayerEnabled && this.state.clients[this.clientId])
         {
@@ -298,8 +326,6 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this._pacoEnabled && msg.name === "paco")
         {
-            this._log.log("paco message !");
-
             if (!this._paco)
             {
                 if (msg.data.event !== CABLES.PACO_LOAD)
@@ -316,9 +342,10 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 gui.corePatch().clear();
             }
+
             this._paco.receive(msg.data);
             this._pacoSynced = true;
-            this.state.emitEvent("userListChanged");
+            // this.state.emitEvent("userListChanged");
             this.state.emitEvent("patchSynchronized");
         }
     }
