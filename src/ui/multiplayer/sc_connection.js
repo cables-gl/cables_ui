@@ -371,6 +371,11 @@ export default class ScConnection extends CABLES.EventTarget
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
         }
+        if (msg.name === "pilotRequest")
+        {
+            if (msg.clientId === this._socket.clientId) return;
+            this.emitEvent("onPilotRequest", msg);
+        }
     }
 
     _handleUiChannelMsg(msg)

@@ -72,14 +72,12 @@ CABLES.UI.MODAL._setVisible = function (visible)
 
 CABLES.UI.MODAL.hide = function (force)
 {
-    if (CABLES.UI.MODAL.onClose)CABLES.UI.MODAL.onClose();
-
     if (!force && document.querySelectorAll(".modalerror").length > 0)
     {
-        // console.log("not forcing close");
         return;
     }
 
+    if (CABLES.UI.MODAL.onClose)CABLES.UI.MODAL.onClose();
 
     document.getElementById("modalclose").style.display = "block";
     CABLES.UI.MODAL.init();
@@ -166,7 +164,7 @@ CABLES.UI.MODAL.showError = function (title, content)
 {
     CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<span class=\"icon icon-2x icon-alert-triangle\"></span><h2>" + title + "</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> " + title + "</h2>";
 
 
     if (content)
@@ -303,7 +301,7 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL.showClose();
 
     CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span>cablefail :/</h2>";
+    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> cablefail :/</h2>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
 

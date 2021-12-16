@@ -8,6 +8,8 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
     {
         super();
 
+        this.PILOT_REQUEST_TIMEOUT = 20000;
+
         this._log = new Logger("scstate");
 
         this._clients = {};
@@ -231,6 +233,53 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._connection.client.isPilot = true;
             this._connection.sendPing();
             this.emitEvent("becamePilot");
+        }
+    }
+
+    requestPilotSeat()
+    {
+        const client = this._clients[this._connection.clientId];
+        if (!gui.isRemoteClient && (client && !client.isPilot))
+        {
+            this._connection.sendControl("pilotRequest", { "username": client.username, "state": "request" });
+            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            if (myAvatar) myAvatar.classList.add("pilot-request");
+            this._pendingPilotRequest = setTimeout(() =>
+            {
+                if (this._pendingPilotRequest)
+                {
+                    this.acceptPilotSeatRequest();
+                    this._pendingPilotRequest = null;
+                }
+            }, this.PILOT_REQUEST_TIMEOUT + 2000);
+        }
+    }
+
+    hasPendingPilotSeatRequest()
+    {
+        return !!this._pendingPilotRequest;
+    }
+
+    acceptPilotSeatRequest()
+    {
+        const client = this._clients[this._connection.clientId];
+        if (client && !client.isPilot && this._pendingPilotRequest)
+        {
+            clearTimeout(this._pendingPilotRequest);
+            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            if (myAvatar) myAvatar.classList.add("pilot-request");
+            this.becomePilot();
+        }
+    }
+
+    cancelPilotSeatRequest()
+    {
+        const client = this._clients[this._connection.clientId];
+        if (client && this._pendingPilotRequest)
+        {
+            clearTimeout(this._pendingPilotRequest);
+            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            if (myAvatar) myAvatar.classList.remove("pilot-request");
         }
     }
 }
