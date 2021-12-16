@@ -49,9 +49,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientRemoved", (msg) =>
         {
-            if (this._followedClient && this._followedClient.clientId === msg)
+            if (this._followedClient && this._followedClient.clientId === msg.clientId)
             {
                 this._followedClient = null;
+                const multiPlayerBar = document.getElementById("multiplayerbar");
+                if (multiPlayerBar) delete multiPlayerBar.dataset.multiplayerFollow;
             }
 
             this._connection.sendUi("netClientRemoved", msg, true);
@@ -217,6 +219,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netLeaveSession", (msg) =>
         {
+            gui.emitEvent("netLeaveSession", msg);
             this.updateHtml();
         });
     }

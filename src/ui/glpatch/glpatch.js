@@ -248,7 +248,6 @@ export default class GlPatch extends CABLES.EventTarget
                         const mpGreyOut = gui.patchView.patchRenderer.greyOut;
                         gui.patchView.setCurrentSubPatch(msg.subpatch, () =>
                         {
-                            console.log("RESET TO", mpGreyOut);
                             gui.patchView.patchRenderer.greyOut = mpGreyOut;
                         });
                     }
@@ -278,6 +277,20 @@ export default class GlPatch extends CABLES.EventTarget
                 if (this._glCursors[msg.clientId])
                 {
                     this._glCursors[msg.clientId].visible = false;
+                }
+            });
+
+            gui.on("netLeaveSession", (msg) =>
+            {
+                if (msg.clients)
+                {
+                    msg.clients.forEach((client) =>
+                    {
+                        if (this._glCursors[client.clientId])
+                        {
+                            this._glCursors[client.clientId].visible = false;
+                        }
+                    });
                 }
             });
         });
