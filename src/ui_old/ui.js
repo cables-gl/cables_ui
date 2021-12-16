@@ -1529,11 +1529,11 @@ CABLES.UI.GUI = function (cfg)
             }
             buildInfoTable.push(infoRow);
         }
+
         console.table(buildInfoTable);
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
-
 
         gui.patchView.focus();
     };
