@@ -21,6 +21,10 @@ export default class Chat extends CABLES.EventTarget
 
     onChatMsg(payload)
     {
+        // remove html
+        const el = document.createElement("div");
+        el.innerHTML = payload.text;
+        payload.text = el.textContent || el.innerText || "";
         this._msgs.push(payload);
         this._updateText();
         this._updateClientList();
@@ -51,6 +55,21 @@ export default class Chat extends CABLES.EventTarget
 
         const html = CABLES.UI.getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
+        const inputEle = document.getElementById("newchatmsg");
+
+        const submitAction = (event) =>
+        {
+            if (event.key === "Enter")
+            {
+                gui.chat.send(document.getElementById("newchatmsg").value);
+                document.getElementById("newchatmsg").value = "";
+            }
+        };
+        if (inputEle)
+        {
+            inputEle.removeEventListener("keyup", submitAction);
+            inputEle.addEventListener("keyup", submitAction);
+        }
         this._updateText();
     }
 

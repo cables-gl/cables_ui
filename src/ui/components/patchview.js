@@ -90,7 +90,10 @@ export default class PatchView extends CABLES.EventTarget
                 undo()
                 {
                     const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
-                    for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                    if (newop)
+                    {
+                        for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                    }
                 },
                 redo()
                 {
@@ -142,15 +145,17 @@ export default class PatchView extends CABLES.EventTarget
             CABLES.UI.MODAL.hideLoading();
 
             const ops = gui.corePatch().ops;
-            for (let i = 0; i < ops.length; i++)
-                if (ops[i].uiAttribs.selected) this.selectOpId(ops[i].id);
-
-            if (!gui.isRemoteClient && !this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
+            if (!gui.isRemoteClient)
             {
-                this._showingNavHelperEmpty = true;
-                ele.show(ele.byId("patchnavhelperEmpty"));
-            }
+                for (let i = 0; i < ops.length; i++)
+                    if (ops[i].uiAttribs.selected) this.selectOpId(ops[i].id);
 
+                if (!this._showingNavHelperEmpty && gui.corePatch().ops.length == 0)
+                {
+                    this._showingNavHelperEmpty = true;
+                    ele.show(ele.byId("patchnavhelperEmpty"));
+                }
+            }
             if (cb)cb();
         });
     }
