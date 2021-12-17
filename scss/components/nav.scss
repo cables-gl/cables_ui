@@ -500,23 +500,28 @@ nav
         }
 
         &.pilot .piloticon,
-        &.follower .followicon
+        &.follower .followicon,
+        .greyicon
         {
-            display: block !important;
             position: absolute;
             border-radius: 100%;
             background-color: #444;
             color:white;
-            width:16px;
-            height:16px;
+            width:17px;
+            height:17px;
             margin-top: -20px;
-
             z-index: 99;
 
             .icon
             {
-                margin-left:1px;
+                margin-left:2px;
             }
+        }
+
+        &.pilot .piloticon,
+        &.follower .followicon
+        {
+            display: block !important;
         }
 
         &.me {
