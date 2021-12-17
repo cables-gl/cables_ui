@@ -21,6 +21,10 @@ export default class Chat extends CABLES.EventTarget
 
     onChatMsg(payload)
     {
+        // remove html
+        const el = document.createElement("div");
+        el.innerHTML = payload.text;
+        payload.text = el.textContent || el.innerText || "";
         this._msgs.push(payload);
         this._updateText();
         this._updateClientList();

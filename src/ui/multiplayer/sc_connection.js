@@ -207,7 +207,9 @@ export default class ScConnection extends CABLES.EventTarget
             this._socket.unsubscribe(this._socket.channelName + "/paco");
             this.multiplayerEnabled = false;
         }
-        this.emitEvent("netLeaveSession");
+        const msg = { "clients": [] };
+        if (this.state) msg.clients = Object.values(this.state.clients);
+        this.emitEvent("netLeaveSession", msg);
     }
 
     track(eventCategory, eventAction, eventLabel, meta = {})
@@ -257,6 +259,10 @@ export default class ScConnection extends CABLES.EventTarget
     sendChat(text)
     {
         if (!this.multiplayerEnabled) return;
+        // remove html
+        const el = document.createElement("div");
+        el.innerHTML = text;
+        text = el.textContent || el.innerText || "";
         this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
     }
 
@@ -370,6 +376,11 @@ export default class ScConnection extends CABLES.EventTarget
         {
             msg.lastSeen = Date.now();
             this.emitEvent("onPingAnswer", msg);
+        }
+        if (msg.name === "pilotRequest")
+        {
+            if (msg.clientId === this._socket.clientId) return;
+            this.emitEvent("onPilotRequest", msg);
         }
     }
 

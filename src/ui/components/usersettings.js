@@ -65,7 +65,6 @@ export default class UserSettings extends CABLES.EventTarget
         if (value === "true") value = true;
         else if (value === "false") value = false;
 
-
         if (CABLES.UTILS.isNumeric(value)) value = parseFloat(value);
 
         const wasChanged = this._settings[key] != value;

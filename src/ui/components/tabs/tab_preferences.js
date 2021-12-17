@@ -71,6 +71,8 @@ export default class Preferences
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
 
         this.setSwitchValue("fontSizeOff", CABLES.UI.userSettings.get("fontSizeOff") || 0);
+
+        this.setSwitchValue("bgpreviewTemp", CABLES.UI.userSettings.get("bgpreviewTemp"));
     }
 
     show()

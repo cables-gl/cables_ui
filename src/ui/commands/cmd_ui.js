@@ -23,12 +23,12 @@ CABLES_CMD_UI.openRemoteViewer = function ()
 
 CABLES_CMD_UI.files = function ()
 {
-    gui.showFileManager();
+    gui.showFileManager(null, true);
 };
 
 CABLES_CMD_UI.toggleFiles = function ()
 {
-    gui.showFileManager();
+    gui.showFileManager(null, true);
 };
 
 

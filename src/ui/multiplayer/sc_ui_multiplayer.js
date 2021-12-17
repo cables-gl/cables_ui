@@ -49,9 +49,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientRemoved", (msg) =>
         {
-            if (this._followedClient && this._followedClient.clientId === msg)
+            if (this._followedClient && this._followedClient.clientId === msg.clientId)
             {
                 this._followedClient = null;
+                const multiPlayerBar = document.getElementById("multiplayerbar");
+                if (multiPlayerBar) delete multiPlayerBar.dataset.multiplayerFollow;
             }
 
             this._connection.sendUi("netClientRemoved", msg, true);
@@ -95,6 +97,78 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     {
                         this._connection.emitEvent("netOpPos", msg);
                     }, 100);
+            }
+        });
+
+        this._connection.on("onPilotRequest", (msg) =>
+        {
+            if (!this._connection.multiplayerEnabled) return;
+
+            if (msg.state === "request")
+            {
+                if (this._connection.client && this._connection.client.isPilot)
+                {
+                    let content = "<div class=\"modalerror\"> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
+                    content += "<div style='margin-top: 20px; text-align: center;'><a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
+                    content += "<a class=\"button decline\">Decline</a></div>";
+                    CABLES.UI.MODAL.showError(msg.username + " wants to be the pilot", content);
+                    CABLES.UI.MODAL.onClose = () =>
+                    {
+                        clearTimeout(requestTimeout);
+                        this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                        CABLES.UI.MODAL.onClose = null;
+                    };
+                    const requestTimeout = setTimeout(() =>
+                    {
+                        this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                        CABLES.UI.MODAL.onClose = null;
+                        CABLES.UI.MODAL.hide(true);
+                    }, this._connection.state.PILOT_REQUEST_TIMEOUT);
+                    const acceptButton = document.querySelector("#modalcontainer .button.accept");
+                    const declineButton = document.querySelector("#modalcontainer .button.decline");
+                    if (acceptButton)
+                    {
+                        acceptButton.addEventListener("click", () =>
+                        {
+                            clearTimeout(requestTimeout);
+                            this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                            CABLES.UI.MODAL.onClose = null;
+                            CABLES.UI.MODAL.hide(true);
+                        });
+                    }
+                    if (declineButton)
+                    {
+                        declineButton.addEventListener("click", () =>
+                        {
+                            clearTimeout(requestTimeout);
+                            this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                            CABLES.UI.MODAL.onClose = null;
+                            CABLES.UI.MODAL.hide(true);
+                        });
+                    }
+                }
+            }
+            else if (msg.state === "accepted")
+            {
+                if (msg.initiator && this._connection.clientId === msg.initiator)
+                {
+                    if (this._connection.state && this._connection.state.hasPendingPilotSeatRequest())
+                    {
+                        this._connection.state.acceptPilotSeatRequest();
+                        notify(msg.username, "accepted your pilot seat request");
+                    }
+                }
+            }
+            else if (msg.state === "declined")
+            {
+                if (msg.initiator && this._connection.clientId === msg.initiator)
+                {
+                    if (this._connection.state && this._connection.state.hasPendingPilotSeatRequest())
+                    {
+                        this._connection.state.cancelPilotSeatRequest();
+                        notify(msg.username, "declined your pilot seat request");
+                    }
+                }
             }
         });
 
@@ -145,6 +219,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netLeaveSession", (msg) =>
         {
+            gui.emitEvent("netLeaveSession", msg);
             this.updateHtml();
         });
     }
@@ -354,10 +429,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 if (!client.isPilot)
                 {
                     items.push({
-                        "title": "become pilot",
+                        "title": "request pilot seat",
                         "func": () =>
                         {
-                            this._connection.state.becomePilot();
+                            this._connection.state.requestPilotSeat();
                         }
                     });
                 }

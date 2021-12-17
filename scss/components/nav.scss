@@ -465,6 +465,11 @@ nav
         }
 
         &.me {
+            &.pilot-request {
+                .avatar {
+                    animation: animLogoFadein 2s infinite;
+                }
+            }
             .avatar {
                 box-sizing: border-box;
                 border: 2px solid var(--color_op_handle_default);

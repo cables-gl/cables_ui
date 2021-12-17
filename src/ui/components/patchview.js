@@ -90,7 +90,10 @@ export default class PatchView extends CABLES.EventTarget
                 undo()
                 {
                     const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
-                    for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                    if (newop)
+                    {
+                        for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                    }
                 },
                 redo()
                 {
