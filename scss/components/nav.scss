@@ -407,9 +407,9 @@ nav
 
 #multiplayerbar {
     display: none;
-    &[data-multiplayer-follow] {
-        border-top: 5px solid var(--color-special) !important;
-    }
+    // &[data-multiplayer-follow] {
+    //     border-top: 5px solid var(--color-special) !important;
+    // }
 }
 
 .nav-clientlist
@@ -450,18 +450,78 @@ nav
             }
         }
 
-        &.pilot {
-            .avatar {
-                box-sizing: border-box;
-                border: 2px solid white;
+        // &.pilot {
+        //     .avatar {
+        //         box-sizing: border-box;
+        //         border: 2px solid white;
+        //     }
+        // }
+
+        // &.following {
+        //     .avatar {
+        //         box-sizing: border-box;
+        //         border: 2px solid var(--color-special);
+        //     }
+        // }
+
+        .avatar
+        {
+            opacity: 0.5;
+        }
+        &.me .avatar
+        {
+            opacity: 1;
+        }
+
+        .piloticon,.followicon,.followingicon
+        {
+            display: none;
+        }
+
+        .cursorcolor
+        {
+            width:5px;
+            height:5px;
+            border-radius: 100%;
+            position: absolute;
+            background-color: red;
+            margin-left:-3px;
+
+        }
+
+        &.following .followingicon
+        {
+            position: absolute;
+            display: block !important;
+            width:24px;
+            height:24px;
+            margin-top: -24px;
+            margin-left: 6px;
+        }
+
+        &.pilot .piloticon,
+        &.follower .followicon,
+        .greyicon
+        {
+            position: absolute;
+            border-radius: 100%;
+            background-color: #444;
+            color:white;
+            width:17px;
+            height:17px;
+            margin-top: -20px;
+            z-index: 99;
+
+            .icon
+            {
+                margin-left:2px;
             }
         }
 
-        &.following {
-            .avatar {
-                box-sizing: border-box;
-                border: 2px solid var(--color-special);
-            }
+        &.pilot .piloticon,
+        &.follower .followicon
+        {
+            display: block !important;
         }
 
         &.me {
@@ -470,18 +530,14 @@ nav
                     animation: animLogoFadein 2s infinite;
                 }
             }
-            .avatar {
-                box-sizing: border-box;
-                border: 2px solid var(--color_op_handle_default);
-            }
         }
 
-        &.follower {
-            .avatar {
-                box-sizing: border-box;
-                border: 2px solid var(--color_port_function);
-            }
-        }
+        // &.follower {
+        //     .avatar {
+        //         // box-sizing: border-box;
+        //         // border: 2px solid var(--color_port_function);
+        //     }
+        // }
     }
 }
 

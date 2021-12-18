@@ -1469,6 +1469,11 @@ CABLES.ANIM.UI.TimeLineUI = function ()
     ele.byId("keyscalewidth").addEventListener("click", this.scaleWidth);
     ele.byId("timelinetime").addEventListener("click", this.timeLineTimeClick);
 
+
+
+    ele.byId("keyframe_previous").addEventListener("click", ()=>{this.jumpKey(-1);});
+    ele.byId("keyframe_next").addEventListener("click", ()=>{this.jumpKey(1);});
+
     ele.byId("loop").addEventListener("click", this.toggleLoop);
     ele.byId("centercursor").addEventListener("click", this.centerCursor);
     ele.byId("centercursor").addEventListener("mousedown", function () { doCenter = true; });
