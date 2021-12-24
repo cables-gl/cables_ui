@@ -3,6 +3,35 @@
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
+
+
+CABLES.UI.inputIncrement = function (v, dir, e)
+{
+    if (e.target.type == "search") return v;
+    gui.setStateUnsaved();
+    if (v == "true") return "false";
+    if (v == "false") return "true";
+
+    const val = parseFloat(v);
+    if (val != val) return v;
+
+    let add = 0.1;
+
+    if (e.target.classList.contains("inc_int"))add = 1;
+
+    if (e && e.shiftKey && e.metaKey)add = 0.001;
+    else if (e && e.altKey && e.shiftKey) add = 10;
+    else if (e && e.shiftKey) add = 0.01;
+    else if (e && e.altKey) add = 1;
+
+    let r = val + add * dir;
+
+    if (isNaN(r)) r = 0.0;
+    else r = Math.round(1000 * r) / 1000;
+    return r;
+};
+
+
 CABLES.UI.inputListenerCursorKeys = function (e)
 {
     switch (e.which)

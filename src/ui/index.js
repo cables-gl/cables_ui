@@ -80,6 +80,9 @@ import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
 import Tracking from "./tracking/tracking";
 import BottomInfoAreaBar from "./elements/bottoInfoAreaBar";
+import params_helper from "./components/opparampanel/params_helper";
+import valueChanger from "./components/opparampanel/valuechanger";
+import op_parampanel from "./components/opparampanel/op_parampanel";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -168,6 +171,7 @@ CABLES.UI.LoggingTab = LoggingTab;
 CABLES.UI.ModalBackground = ModalBackground;
 CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.CanvasUi = CanvasUi;
+CABLES.UI.OpParampanel=op_parampanel;
 
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
@@ -210,5 +214,9 @@ CABLES.uniqueArray = uniqueArray;
 CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
 CABLES.UI.logFilter = new LogFilter();
+
+
+CABLES.UI.paramsHelper=params_helper;
+CABLES.UI.valueChanger=valueChanger;
 
 setHtmlDefaultListeners();

@@ -1,7 +1,7 @@
 
-var CABLES = CABLES || {};
+export default OpParampanel =OpParampanel;
 
-CABLES.UI.OpParampanel = class extends CABLES.EventTarget
+class OpParampanel extends CABLES.EventTarget
 {
     constructor()
     {
@@ -345,7 +345,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         // gui.showOpDoc(op.objName);
         perfHtml.finish();
 
-        CABLES.valueChangerInitSliders();
+        CABLES.UI.paramsHelper.valueChangerInitSliders();
 
         this.updateUiAttribs();
 
