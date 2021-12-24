@@ -282,7 +282,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         if (this._connection.multiplayerEnabled && this._connection.state.getNumClients() > 1)
         {
-            const clientList = Object.fromEntries(Object.entries(this._connection.clients).sort((a, b) => b.connectedSince - a.connectedSince));
+            const clientList = Object.fromEntries(Object.entries(this._connection.clients).sort((a, b) => { return b.connectedSince - a.connectedSince; }));
 
             const data = {
                 "isActive": this._connection.state.getNumClients() > 1,
@@ -340,6 +340,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             userListItems.forEach((ele) =>
             {
                 const itemId = ele.dataset.clientId;
+                const cursorColorEl = ele.querySelector(".cursorcolor");
+                if (cursorColorEl)
+                {
+                    const clientColor = this.getClientColor(itemId);
+                    cursorColorEl.style.backgroundColor = "rgb(" + [clientColor.rb, clientColor.gb, clientColor.bb].join(",") + ")";
+                }
                 if (this._connection.clients[itemId])
                 {
                     if (this._connection.clients[itemId].isPilot)
@@ -487,7 +493,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             this._followedClient = client;
                             const userList = document.getElementById("nav-clientlist");
                             const userListItems = userList.querySelectorAll(".socket_userlist_item");
-                            userListItems.forEach(item => item.classList.remove("following"));
+                            userListItems.forEach((item) => { return item.classList.remove("following"); });
                             ele.classList.add("following");
                             multiPlayerBar.dataset.multiplayerFollow = client.username;
                             this._connection.client.following = client.clientId;
