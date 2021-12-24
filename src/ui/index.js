@@ -83,6 +83,9 @@ import BottomInfoAreaBar from "./elements/bottoInfoAreaBar";
 import params_helper from "./components/opparampanel/params_helper";
 import valueChanger from "./components/opparampanel/valuechanger";
 import op_parampanel from "./components/opparampanel/op_parampanel";
+import gluifull from "./glpatch/gluifull";
+import GlGuiFull from "./glpatch/gluifull";
+import GlGuiTab from "./glpatch/gluitab";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -173,6 +176,8 @@ CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.CanvasUi = CanvasUi;
 CABLES.UI.OpParampanel=op_parampanel;
 
+CABLES.GLGUI.GlGuiFull=GlGuiFull;
+CABLES.GLGUI.GlGuiTab=GlGuiTab;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;

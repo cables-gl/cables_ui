@@ -1,7 +1,7 @@
 
-export default OpParampanel =OpParampanel;
 
-class OpParampanel extends CABLES.EventTarget
+
+export default class OpParampanel extends CABLES.EventTarget
 {
     constructor()
     {
@@ -864,3 +864,4 @@ class OpParampanel extends CABLES.EventTarget
         CABLES.contextMenu.show({ items }, ele);
     }
 };
+
