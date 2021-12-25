@@ -90,6 +90,7 @@ import TexturePreviewer from "./components/texturepreviewer";
 import uiconfig from "./uiconfig";
 import extendCore from "./op_core_extend";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
+import ModalLoading from "./dialogs/modalloading";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -201,6 +202,7 @@ CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
 
 CABLES.UI.ModalDialog = ModalDialog;
+CABLES.UI.ModalLoading=ModalLoading;
 CABLES.UI.WatchPortVisualizer = WatchPortVisualizer;
 
 // expose global functions

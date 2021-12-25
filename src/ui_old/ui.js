@@ -2,8 +2,6 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
 
-// let ele = window.ele;
-
 CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -87,16 +85,11 @@ CABLES.UI.GUI = function (cfg)
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
     this._savedState = true;
 
-
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
-
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
-    // this.variables = new CABLES.UI.MetaVars(this.metaTabs);
-    // this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
     this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
@@ -120,10 +113,13 @@ CABLES.UI.GUI = function (cfg)
     this.tipps = new CABLES.UI.Tipps();
 
 
+
+
+
+
     this.project = function ()
     {
         return this._currentProject;
-        // return this.project;
     };
 
     this.setProject = function (p)
@@ -207,7 +203,6 @@ CABLES.UI.GUI = function (cfg)
         return this.metaTexturePreviewer;
     };
 
-
     this.showSaveWarning = function ()
     {
         if (this.showGuestWarning()) return true;
@@ -241,14 +236,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.canSaveInMultiplayer = function ()
     {
-        if (gui.socket && !gui.socket.canSaveInMultiplayer())
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
+        else return true;
     };
 
     this.isGuestEditor = function ()
@@ -1410,7 +1399,6 @@ CABLES.UI.GUI = function (cfg)
         }, 50);
     };
 
-
     this.showOpCrash = function (op)
     {
         iziToast.error({
@@ -1430,7 +1418,6 @@ CABLES.UI.GUI = function (cfg)
             ]
         });
     };
-
 
     this.showUiElements = function ()
     {
@@ -1465,7 +1452,6 @@ CABLES.UI.GUI = function (cfg)
         gui.iconBarLeft = new CABLES.UI.IconBar("sidebar_left");
         gui.iconBarPatchNav = new CABLES.UI.IconBar("sidebar_bottom");
         gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
-
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
 
@@ -1720,7 +1706,6 @@ CABLES.UI.GUI = function (cfg)
         gui.opDocs = new CABLES.UI.OpDocs();
         if (cb)cb();
     };
-
 
     this._timeoutPauseProfiler = null;
 

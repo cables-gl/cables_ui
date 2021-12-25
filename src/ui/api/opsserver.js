@@ -108,6 +108,11 @@ export default class ServerOps
 
     create(name, cb)
     {
+
+        const loadingModal=new CABLES.UI.ModalLoading("Creating op...");
+
+        loadingModal.setTask("Creating Op");
+
         CABLESUILOADER.talkerAPI.send(
             "opCreate",
             {
@@ -117,12 +122,16 @@ export default class ServerOps
             {
                 if (err) this._log.error(err);
 
+                loadingModal.setTask("Loading Op");
+
                 this.load(() =>
                 {
                     gui.maintabPanel.show(true);
                     this.edit(name);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
+                    loadingModal.close();
+
                 });
             },
         );
@@ -217,7 +226,6 @@ export default class ServerOps
             return;
         }
 
-        CABLES.UI.MODAL.showLoading("executing...");
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = () =>
@@ -238,7 +246,6 @@ export default class ServerOps
                 },
             );
 
-            CABLES.UI.MODAL.hideLoading();
         };
         document.body.appendChild(s);
     }
@@ -246,6 +253,8 @@ export default class ServerOps
     clone(oldname, name)
     {
         this._log.log("clone", name, oldname);
+
+        const loadingModal=new CABLES.UI.ModalLoading("Cloning op...");
 
         CABLESUILOADER.talkerAPI.send(
             "opClone",
@@ -258,7 +267,10 @@ export default class ServerOps
                 if (err)
                 {
                     this._log.log("err res", res);
+                    loadingModal.close();
+
                     CABLES.UI.MODAL.showError("could not clone op", "");
+
                     return;
                 }
                 this.load(() =>
@@ -266,6 +278,8 @@ export default class ServerOps
                     this.edit(name);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
+                    loadingModal.close();
+
                 });
             },
         );
@@ -528,10 +542,14 @@ export default class ServerOps
 
         const userInteraction = !fromListener;
 
+
+
+
         let editorObj = null;
         CABLES.api.clearCache();
 
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
+
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
@@ -588,6 +606,8 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
+                            const loadingModal=new CABLES.UI.ModalLoading("Save attachment...");
+
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -606,7 +626,12 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
-                                    gui.serverOps.execute(opname);
+
+                                    gui.serverOps.execute(opname,()=>{
+                                        loadingModal.close();
+                                    });
+
+
                                 },
                             );
                         },
@@ -650,6 +675,8 @@ export default class ServerOps
 
         gui.jobs().start({ "id": "load_opcode_" + opname, "title": "loading op code " + opname });
 
+
+
         CABLESUILOADER.talkerAPI.send(
             "getOpCode",
             {
@@ -669,6 +696,11 @@ export default class ServerOps
                 {
                     save = (setStatus, content, editor) =>
                     {
+                        // CABLES.UI.MODAL.showLoading("Saving and executing op...");
+
+                        const loadingModal=new CABLES.UI.ModalLoading("Saving and executing op...");
+                        loadingModal.setTask("Saving Op");
+
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
                             {
@@ -679,6 +711,8 @@ export default class ServerOps
                             {
                                 if (!res || !res.success)
                                 {
+                                    loadingModal.close();
+
                                     if (res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
                                     else setStatus("Error: " + err.msg || "Unknown error");
                                 }
@@ -687,12 +721,15 @@ export default class ServerOps
                                     if (!CABLES.Patch.getOpClass(opname))
                                         gui.opSelect().reload();
 
-                                    // exec ???
+                                    loadingModal.setTask("Executing code");
+
                                     gui.serverOps.execute(opname, () =>
                                     {
                                         setStatus("saved " + opname);
                                         editor.focus();
                                         setTimeout(() => { gui.opParams.refresh(); }, 100);
+
+                                        loadingModal.close();
                                     });
                                 }
                             },
@@ -700,6 +737,9 @@ export default class ServerOps
                             {
                                 setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
+
+                                loadingModal.close();
+
                             },
                         );
                     };

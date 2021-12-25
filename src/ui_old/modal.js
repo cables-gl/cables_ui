@@ -7,13 +7,13 @@ CABLES.UI.MODAL._visible = false;
 CABLES.UI.MODAL.contentElement = null;
 CABLES.UI.MODAL.headerElement = null; // the (small) header shown in the title bar of the modal
 
-CABLES.UI.MODAL.hideLoading = function ()
-{
-    if (document.querySelectorAll(".modalLoading").length > 0)
-    {
-        CABLES.UI.MODAL.hide();
-    }
-};
+// CABLES.UI.MODAL.hideLoading = function ()
+// {
+//     if (document.querySelectorAll(".modalLoading").length > 0)
+//     {
+//         CABLES.UI.MODAL.hide();
+//     }
+// };
 
 CABLES.UI.MODAL.init = function (options)
 {
@@ -140,17 +140,17 @@ CABLES.UI.MODAL.show = function (content, options)
     gui.emitEvent("showModal");
 };
 
-CABLES.UI.MODAL.showLoading = function (title, content)
-{
-    CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>";
-    if (content)
-    {
-        CABLES.UI.MODAL.contentElement.innerHTML += content;
-    }
-    CABLES.UI.MODAL._setVisible(true);
-    document.getElementById("modalbg").style.display = "block";
-};
+// CABLES.UI.MODAL.showLoading = function (title, content)
+// {
+//     CABLES.UI.MODAL.init();
+//     CABLES.UI.MODAL.contentElement.innerHTML = "<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>";
+//     if (content)
+//     {
+//         CABLES.UI.MODAL.contentElement.innerHTML += content;
+//     }
+//     CABLES.UI.MODAL._setVisible(true);
+//     document.getElementById("modalbg").style.display = "block";
+// };
 
 
 CABLES.UI.MODAL.showClose = function ()

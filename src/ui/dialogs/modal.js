@@ -10,7 +10,6 @@ export default class ModalDialog
         this._options = options;
         this._ele = null;
         this._eleContent = null;
-        // this._eleBg = document.getElementById("modalbg");
         this._bg = new ModalBackground();
 
         this.show();
@@ -21,7 +20,6 @@ export default class ModalDialog
     close()
     {
         this._ele.remove();
-        // this._eleBg.style.display = "none";
         this._bg.hide();
     }
 
@@ -31,7 +29,8 @@ export default class ModalDialog
         if (this._options.title)
             html += "<h2>" + this._options.title + "</h2>";
 
-        if (this._options.text)html += this._options.text;
+            if (this._options.text)html += this._options.text;
+            if (this._options.html)html += this._options.html;
 
         if (this._options.prompt)
         {
@@ -70,6 +69,12 @@ export default class ModalDialog
 
         const elePromptCancel = ele.byId("prompt_cancel");
         if (elePromptCancel) elePromptCancel.addEventListener("click", this.close.bind(this));
+    }
+
+    updateHtml(h)
+    {
+        this._options.html=h;
+        this._eleContent.innerHTML=this.html();
     }
 
     show()

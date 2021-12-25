@@ -217,7 +217,7 @@ export default class ModalPortValue
             fullHTML += "<br/><br/>";
             fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";
 
-            CABLES.UI.MODAL.showLoading("analyzing structure....");
+            CABLES.UI.MODAL.showLoading("Analyzing structure....");
             asyncInnerHTML(fullHTML, function (fragment)
             {
                 CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
