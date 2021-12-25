@@ -8,7 +8,6 @@ export default function extendCore()
 
 CABLES.Op.prototype.undoUnLinkTemporary = function ()
 {
-    console.log("yep NEU....")
     if (this.shakeLink) this.shakeLink.remove();
     this.shakeLink = null;
 

@@ -89,6 +89,7 @@ import helperMeshes from "./components/cgl_helpermeshes";
 import TexturePreviewer from "./components/texturepreviewer";
 import uiconfig from "./uiconfig";
 import extendCore from "./op_core_extend";
+import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -180,6 +181,7 @@ CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.CanvasUi = CanvasUi;
 CABLES.UI.OpParampanel=op_parampanel;
 CABLES.UI.TexturePreviewer=TexturePreviewer;
+CABLES.UI.ModalPortValue=ModalPortValue;
 
 CABLES.GLGUI.GlGuiFull=GlGuiFull;
 CABLES.GLGUI.GlGuiTab=GlGuiTab;

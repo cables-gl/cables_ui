@@ -18,6 +18,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
+    this.opPortModal=new CABLES.UI.ModalPortValue();
+
     this.socket = null;
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
