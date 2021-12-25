@@ -102,7 +102,7 @@ CABLES.UI.MODAL.show = function (content, options)
 {
     if (CABLES.UI.MODAL.contentElement && options && !options.ignoreTop) CABLES.UI.MODAL.contentElement.style.top = "5%";
 
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init(options);
 
     if (options)
@@ -134,13 +134,13 @@ CABLES.UI.MODAL.show = function (content, options)
 
 CABLES.UI.MODAL.showClose = function ()
 {
-    if (document.getElementById("modalclose"))
-        document.getElementById("modalclose").style.display = "block";
+    // if (document.getElementById("modalclose"))
+    //     document.getElementById("modalclose").style.display = "block";
 };
 
 CABLES.UI.MODAL.showError = function (title, content)
 {
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> " + title + "</h2>";
 
@@ -157,146 +157,9 @@ CABLES.UI.MODAL.showError = function (title, content)
     });
 };
 
-CABLES.UI.MODAL.getFileSnippet = function (url, line, cb)
-{
-    CABLES.ajax(
-        url,
-        function (err, _data, xhr)
-        {
-            if (err)
-            {
-                cb("err");
-            }
-            const lines = _data.split("\n");
-            const linesAround = 4;
-            const sliced = lines.slice(line - (linesAround + 1), line + linesAround);
-            let html = "";
-            for (const i in sliced)
-            {
-                if (i == linesAround)
-                {
-                    html += "<span class=\"error\">";
-                    CABLES.lastError.errorLine = sliced[i];
-                }
-                html += sliced[i];
-                html += "</span>";
-                html += "<br/>";
-            }
-            cb(html);
-        });
-};
-
-// CABLES.UI.MODAL.showOpException = function (ex, opName)
-// {
-//     console.warn("deprecated showOpException");
-//     new CABLES.UI.ModalException(ex,{"opname":opName});
-
-//     // CABLES.UI.MODAL.showClose();
-//     // CABLES.UI.MODAL.init();
-//     // CABLES.UI.MODAL.setTitle("op cablefail :/");
-
-//     // CABLES.UI.MODAL.contentElement.innerHTML += "Error in op: <b>" + opName + "</b><br/><br/>";
-
-//     // if (ex)
-//     // {
-//     //     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-//     //     if (ex.stack)
-//     //     {
-//     //         CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>";
-//     //     }
-//     //     if (ex.customMessage)
-//     //     {
-//     //         CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.customMessage + "</div><br/>";
-//     //     }
-//     // }
-//     // CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
-
-//     // if (ex)
-//     // {
-//     //     console.trace();
-
-//     //     const info = stackinfo(ex);
-//     //     console.log("ex:", ex, info);
-//     //     if (info && info[0].file)
-//     //     {
-//     //         console.log("This is line " + (info[0].line + 1));
-//     //         console.log("This is file " + (info[0].file));
-
-//     //         CABLES.UI.MODAL.getFileSnippet(info[0].file, info[0].line, function (html)
-//     //         {
-//     //             document.getElementById("stackFileContent").style.display = "block";
-//     //             document.getElementById("stackFileContent").innerHTML = html;
-//     //         });
-//     //     }
-//     // }
-
-//     // CABLES.UI.MODAL._setVisible(true);
-//     // document.getElementById("modalbg").style.display = "block";
-
-//     // const ops = gui.corePatch().getOpsByObjName(opName);
-//     // for (let i = 0; i < ops.length; i++)
-//     // {
-//     //     ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
-//     // }
-
-//     // if (gui.user.isAdmin || opName.startsWith("Op.User." + gui.user.usernameLowercase))
-//     // {
-//     //     CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
-//     // }
-
-//     // CABLES.lastError = { "exception": ex, opName };
-
-//     // // TODO API?
-//     // CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
-//     // CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-// };
-
-// CABLES.UI.MODAL.showException = function (ex, op)
-// {
-//     if (String(ex.stack).indexOf("file:blob:") == 0)
-//     {
-//         console.log("ignore file blob exception...");
-//         return;
-//     }
-
-//     if (op)
-//     {
-//         CABLES.UI.MODAL.showOpException(ex, op.objName);
-//         return;
-//     }
-
-//     console.log(ex, ex.stack);
-
-//     if (!CABLES.UI.loaded)
-//     {
-//         let html = "";
-//         html += "<div class=\"startUpError\"><b>error</b>\n";
-//         html += "<br/>";
-//         html += ex.message;
-//         html += "<br/><br/><a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\">reload</a>";
-//         html += "</div>";
-
-//         document.body.innerHTML += html;
-//     }
-//     CABLES.UI.MODAL.showClose();
-
-//     CABLES.UI.MODAL.init();
-//     CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> cablefail :/</h2>";
-//     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-//     CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
-
-//     CABLES.lastError = { "exception": ex };
-//     // TODO API
-//     CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
-
-//     CABLES.UI.MODAL._setVisible(true);
-
-//     document.getElementById("modalbg").style.display = "block";
-// };
-
 CABLES.UI.MODAL.showCode = function (title, code, type)
 {
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
 
     CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>";
@@ -316,7 +179,6 @@ CABLES.UI.MODAL.showCode = function (title, code, type)
         hljs.highlightBlock(block);
     });
 };
-
 
 // todo: use modaldialog and remove
 CABLES.UI.MODAL.prompt = function (title, text, value, callback)

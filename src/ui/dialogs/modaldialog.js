@@ -14,6 +14,8 @@ export default class ModalDialog
 
         this.show();
 
+        ele.byId("modalclose").style.display = "block";
+
         this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
     }
 
@@ -26,11 +28,13 @@ export default class ModalDialog
     html()
     {
         let html = "";
-        if (this._options.title)
-            html += "<h2>" + this._options.title + "</h2>";
 
-            if (this._options.text)html += this._options.text;
-            if (this._options.html)html += this._options.html;
+        if (this._options.title) html += "<h2>"
+        if (this._options.warning) html+="<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
+        if (this._options.title) html += this._options.title + "</h2>";
+
+        if (this._options.text)html += this._options.text;
+        if (this._options.html)html += this._options.html;
 
         if (this._options.prompt)
         {
@@ -39,6 +43,11 @@ export default class ModalDialog
             html += "<br/><br/>";
             html += "<a class=\"bluebutton\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+        }
+
+        if(this._options.showOkButton)
+        {
+            html += "<br/><br/><a class=\"bluebutton\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
         }
 
         return html;
@@ -64,6 +73,15 @@ export default class ModalDialog
             elePromptOk.addEventListener("click", () =>
             {
                 this._promptSubmit();
+            });
+        }
+
+        const eleModalOk = ele.byId("modalClose");
+        if (eleModalOk)
+        {
+            eleModalOk.addEventListener("click", () =>
+            {
+                this.close();
             });
         }
 

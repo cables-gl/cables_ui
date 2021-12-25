@@ -120,7 +120,11 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     if (!fileElem)
     {
         const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.project()._id });
-        CABLES.UI.MODAL.show(html, { "title": "" });
+        // CABLES.UI.MODAL.show(html, { "title": "" });
+
+        new CAVLES.UI.ModalDialog({"html":html});
+
+
     }
 };
 

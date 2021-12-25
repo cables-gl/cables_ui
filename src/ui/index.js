@@ -71,7 +71,7 @@ import NoPatchEditor from "./components/nopatcheditor";
 import CoreLibLoader from "./api/corelibloader";
 import LibLoader from "./api/libloader";
 import LogFilter from "./utils/loggerfilter";
-import ModalDialog from "./dialogs/modal";
+import ModalDialog from "./dialogs/modaldialog";
 import WatchPortVisualizer from "./components/opparampanel/watchPortVisualizer";
 import SuggestPortDialog from "./components/suggestionportdialog";
 import ModalBackground from "./dialogs/modalbg";

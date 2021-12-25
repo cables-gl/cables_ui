@@ -50,7 +50,7 @@ export default class Tipps
         html += "</div>";
 
         html += "<div style=\"clear:both;padding:20px;\">";
-        html += "  <a onclick=\"CABLES.UI.MODAL.hide();\" class=\"bluebutton\">close</a>";
+        html += "  <a id=\"modalClose\" class=\"bluebutton\">close</a>";
         html += "  <a onclick=\"gui.tipps.next();\" class=\"greybutton\">next tip</a>";
 
         html += "  <div style=\"float:right;\"><br/>";
@@ -60,7 +60,7 @@ export default class Tipps
 
         html += "</div>";
 
-        CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });
+        new CABLES.UI.ModalDialog({"html":html, "nopadding": true});
     }
 
     showOnce()

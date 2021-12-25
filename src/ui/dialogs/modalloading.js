@@ -1,4 +1,4 @@
-import ModalDialog from "./modal";
+import ModalDialog from "./modaldialog";
 
 export default class ModalLoading
 {

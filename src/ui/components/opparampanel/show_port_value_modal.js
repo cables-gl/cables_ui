@@ -220,7 +220,7 @@ export default class ModalPortValue
             asyncInnerHTML(fullHTML, function (fragment)
             {
                 CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
-                CABLES.UI.MODAL.showClose();
+                // CABLES.UI.MODAL.showClose();
                 CABLES.UI.MODAL.init();
                 CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
                 CABLES.UI.MODAL._setVisible(true);
@@ -254,7 +254,7 @@ export default class ModalPortValue
         try
         {
             CABLES.UI.MODAL.PORTPREVIEW = port;
-            CABLES.UI.MODAL.showClose();
+            // CABLES.UI.MODAL.showClose();
             CABLES.UI.MODAL.init();
             CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
             CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";

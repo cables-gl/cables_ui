@@ -1,4 +1,4 @@
-import ModalDialog from "./modal";
+import ModalDialog from "./modaldialog";
 
 export default class ModalException
 {
@@ -38,7 +38,7 @@ export default class ModalException
                 console.log("This is line " + (info[0].line + 1));
                 console.log("This is file " + (info[0].file));
 
-                CABLES.UI.MODAL.getFileSnippet(info[0].file, info[0].line, function (html)
+                this._getFileSnippet(info[0].file, info[0].line, function (html)
                 {
                     document.getElementById("stackFileContent").style.display = "block";
                     document.getElementById("stackFileContent").innerHTML = html;
@@ -56,6 +56,36 @@ export default class ModalException
 
         }
 
+    }
+
+
+    _getFileSnippet (url, line, cb)
+    {
+        CABLES.ajax(
+            url,
+            function (err, _data, xhr)
+            {
+                if (err)
+                {
+                    cb("err");
+                }
+                const lines = _data.split("\n");
+                const linesAround = 4;
+                const sliced = lines.slice(line - (linesAround + 1), line + linesAround);
+                let html = "";
+                for (const i in sliced)
+                {
+                    if (i == linesAround)
+                    {
+                        html += "<span class=\"error\">";
+                        CABLES.lastError.errorLine = sliced[i];
+                    }
+                    html += sliced[i];
+                    html += "</span>";
+                    html += "<br/>";
+                }
+                cb(html);
+            });
     }
 
     getHtml()

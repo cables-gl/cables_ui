@@ -749,26 +749,6 @@ CABLES.UI.GUI = function (cfg)
         perf.finish();
     };
 
-    // this.importDialog = function ()
-    // {
-    //     let html = "";
-    //     html += "import:<br/><br/>";
-    //     html += "<textarea id=\"serialized\"></textarea>";
-    //     html += "<br/>";
-    //     html += "<br/>";
-    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize(ele.byId('serialized').value);CABLES.UI.MODAL.hide();\">import</a>";
-    //     CABLES.UI.MODAL.show(html);
-    // };
-
-    // this.exportDialog = function ()
-    // {
-    //     let html = "";
-    //     html += "export:<br/><br/>";
-    //     html += "<textarea id=\"serialized\"></textarea>";
-    //     CABLES.UI.MODAL.show(html);
-    //     ele.byId("serialized").value = self.patch().scene.serialize();
-    // };
-
     this._setCanvasMode = function (m)
     {
         this._canvasMode = m;
@@ -1137,7 +1117,9 @@ CABLES.UI.GUI = function (cfg)
                 "fileId": fileId
             });
 
-        CABLES.UI.MODAL.show(html);
+        new CABLES.UI.ModalDialog({"html":html});
+
+        // CABLES.UI.MODAL.show(html);
     };
 
     this.converterStart = function (projectId, fileId, converterId)
@@ -1155,6 +1137,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 ele.hide(ele.byId("converterprogress"));
                 ele.show(ele.byId("converteroutput"));
+                ele.show(ele.byId("modalClose"));
 
                 if (err)
                 {
@@ -1167,7 +1150,9 @@ CABLES.UI.GUI = function (cfg)
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
 
-                    html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
+                    // html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
+
+                    ele.byId("modalClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
                 }
                 gui.refreshFileManager();
