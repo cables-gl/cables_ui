@@ -39,10 +39,7 @@ export default class ModalLoading
 
     close()
     {
-        setTimeout(()=>{
-            this._dialog.close();
-            this._dialog=null;
-
-        },1000);
+        this._dialog.close();
+        this._dialog=null;
     }
 }

@@ -142,7 +142,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             gui.corePatch().deSerialize(proj);
             CABLES.UI.undo.clear();
-            CABLES.UI.MODAL.hideLoading();
+
 
             const ops = gui.corePatch().ops;
             if (!gui.isRemoteClient)

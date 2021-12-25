@@ -206,7 +206,6 @@ export default class ModalPortValue
                 inputDataType = "Array";
             }
             const jsonInfo = printJsonInfo(thing, port.parent, port.name, inputDataType);
-            CABLES.UI.MODAL.hideLoading();
 
             let fullHTML = "";
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
@@ -226,13 +225,11 @@ export default class ModalPortValue
                 CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
                 CABLES.UI.MODAL._setVisible(true);
                 document.getElementById("modalbg").style.display = "block";
-                CABLES.UI.MODAL.hideLoading();
             });
         }
         catch (ex)
         {
             console.log(ex);
-            CABLES.UI.MODAL.hideLoading();
         }
     };
 

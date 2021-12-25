@@ -1802,12 +1802,14 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 {
     this._corePatch.on("exception", function (ex, op)
     {
-        CABLES.UI.MODAL.showException(ex, op);
+        // CABLES.UI.MODAL.showException(ex, op);
+        new CABLES.UI.ModalException(ex,{"op":op});
     });
 
     this._corePatch.on("exceptionOp", function (e, objName)
     {
-        CABLES.UI.MODAL.showOpException(e, objName);
+        new CABLES.UI.ModalException(e,{"opname":objName});
+        // CABLES.UI.MODAL.showOpException(e, objName);
     });
 
     this._corePatch.on("criticalError", function (title, msg)
@@ -1857,7 +1859,7 @@ function startUi(cfg)
             // console.log("yep,b0rken!.............");
             ele.byId("loadingstatus").remove();
             ele.byId("loadingstatusLog").remove();
-            CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
+            // CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
             return;
         }
 
