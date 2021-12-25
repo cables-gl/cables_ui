@@ -17,12 +17,15 @@ export default class ModalDialog
         ele.byId("modalclose").style.display = "block";
 
         this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
+
+        gui.lastModal=this;
     }
 
     close()
     {
         this._ele.remove();
         this._bg.hide();
+        gui.lastModal=null;
     }
 
     html()
@@ -117,6 +120,7 @@ export default class ModalDialog
         document.body.appendChild(this._ele);
 
         if (!this._options.nopadding) this._eleContent.style.padding = "15px";
+        if (this._options.nopadding) this._ele.style.padding = "0px";
 
         this._eleContent.innerHTML = this.html();
 

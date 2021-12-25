@@ -1599,7 +1599,8 @@ export default class PatchView extends CABLES.EventTarget
             }, 100);
 
 
-            CABLES.UI.MODAL.show(html);
+            // CABLES.UI.MODAL.show(html);
+            new ModalDialog({"html":html});
         } });
     }
 

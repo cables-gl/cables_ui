@@ -1,7 +1,8 @@
 
+import ModalDialog from "../dialogs/modaldialog";
 import Logger from "../utils/logger";
 
-let idleTime = 180;
+// let idleTime = 180;
 let idling = false;
 let idleTimeout = null;
 let idleModeStart = 0;
@@ -15,7 +16,7 @@ function startIdleMode()
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    CABLES.UI.MODAL.show("<center><b>cables is paused!</b><br/><br/>Click to resume<br/></center>");
+    new ModalDialog({"html":"<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>"});
 
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart");
@@ -32,7 +33,7 @@ function idleInteractivity()
     if (!document.hidden)
     {
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, idleTime * 1000);
+        idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
     }
 }
 
@@ -75,7 +76,7 @@ export default function startIdleListeners()
     {
         idleFocus = false;
         clearTimeout(idleTimeout);
-        idleTimeout = setTimeout(startIdleMode, idleTime * 1000);
+        idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
     });
 
     document.addEventListener("keydown", idleInteractivity, false);
@@ -83,5 +84,5 @@ export default function startIdleListeners()
     document.addEventListener("visibilitychange", visibilityChanged);
     gui.on("userActivity", idleInteractivity);
 
-    idleTimeout = setTimeout(startIdleMode, idleTime * 1000);
+    idleTimeout = setTimeout(startIdleMode, CABLES.UI.uiConfig.idleModeTimeout * 1000);
 }

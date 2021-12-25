@@ -10,6 +10,7 @@ class UiConfig
         this.snapX= 12;
         this.snapY= 20;
 
+        this.idleModeTimeout=180;
         // this.opHeight= 31;
         // this.opWidth= 20;
         // this.opWidthSmall= 40;

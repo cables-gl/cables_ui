@@ -255,6 +255,11 @@ CABLES.UI.GUI = function (cfg)
         return eleId;
     };
 
+    this.closeModal=function()
+    {
+        if(gui.lastModal)gui.lastModal.close();
+    }
+
     this.showTwoMetaPanels = function ()
     {
         let r = true;
@@ -1119,7 +1124,6 @@ CABLES.UI.GUI = function (cfg)
 
         new CABLES.UI.ModalDialog({"html":html});
 
-        // CABLES.UI.MODAL.show(html);
     };
 
     this.converterStart = function (projectId, fileId, converterId)
