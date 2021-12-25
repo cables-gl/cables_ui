@@ -1,6 +1,5 @@
 // http://html5doctor.com/drag-and-drop-to-server/
 
-
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.MODAL = CABLES.UI.MODAL || {};
@@ -312,95 +311,6 @@ CABLES.UI.MODAL.showException = function (ex, op)
     CABLES.UI.MODAL._setVisible(true);
 
     document.getElementById("modalbg").style.display = "block";
-};
-
-// CABLES.UI.MODAL.copyPortValuePreview = function (e, title)
-// {
-//     navigator.clipboard
-//         .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
-//         .then(() =>
-//         {
-//             CABLES.UI.notify("Copied value to clipboard?????");
-//         })
-//         .catch((err) =>
-//         {
-//             console.warn("copy to clipboard failed", err);
-//         });
-
-//     // console.log(e);
-//     // const objStr = JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get());
-//     // CABLES.UI.notify("Copied title");
-//     // e.clipboardData.setData("text/plain", objStr);
-// };
-
-
-CABLES.UI.MODAL.updatePortValuePreview = function (title)
-{
-    CABLES.UI.MODAL.showPortValue(title, CABLES.UI.MODAL.PORTPREVIEW);
-};
-
-CABLES.UI.MODAL.updatePortStructurePreview = function (title)
-{
-    CABLES.UI.MODAL.showPortStructure(title, CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW);
-};
-
-CABLES.UI.MODAL.showPortValue = function (title, port)
-{
-    function convertHTML(str)
-    {
-        const regex = /[&|<|>|"|']/g;
-        const htmlString = str.replace(regex, function (match)
-        {
-            if (match === "&") return "&amp;";
-            else if (match === "<") return "&lt;";
-            else if (match === ">") return "&gt;";
-            else if (match === "\"") return "&quot;";
-            else return "&apos;";
-        });
-        return htmlString;
-    }
-
-    try
-    {
-        CABLES.UI.MODAL.PORTPREVIEW = port;
-        CABLES.UI.MODAL.showClose();
-        CABLES.UI.MODAL.init();
-        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
-
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        const thing = port.get();
-
-        if (thing && thing.constructor)
-        {
-            CABLES.UI.MODAL.contentElement.innerHTML += "" + thing.constructor.name + " \n";
-
-            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
-            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
-        }
-
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>";
-
-        CABLES.UI.MODAL._setVisible(true);
-
-        document.getElementById("modalbg").style.display = "block";
-
-        hljs.highlightBlock(document.getElementById("portvalue"));
-
-        ele.byId("copybutton").addEventListener("click", (e) =>
-        {
-            CABLES.UI.MODAL.copyPortValuePreview(e, title);
-        });
-    }
-    catch (ex)
-    {
-        console.log(ex);
-    }
 };
 
 

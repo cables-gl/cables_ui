@@ -262,7 +262,7 @@ export default class ModalPortValue
             CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
             CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
             CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-            CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
+            CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
             CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
 
@@ -288,7 +288,8 @@ export default class ModalPortValue
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {
-                CABLES.UI.MODAL.copyPortValuePreview(e, title);
+
+                this.copyPortValuePreview(e, title);
             });
         }
         catch (ex)
@@ -299,6 +300,8 @@ export default class ModalPortValue
 
     copyPortValuePreview(e, title)
     {
+        // todo this should copy from the port value directly, not the html element...
+
         navigator.clipboard
             .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
             .then(() =>
