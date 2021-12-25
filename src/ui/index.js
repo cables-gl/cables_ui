@@ -80,12 +80,15 @@ import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
 import Tracking from "./tracking/tracking";
 import BottomInfoAreaBar from "./elements/bottoInfoAreaBar";
-import params_helper from "./components/opparampanel/params_helper";
 import valueChanger from "./components/opparampanel/valuechanger";
 import op_parampanel from "./components/opparampanel/op_parampanel";
-import gluifull from "./glpatch/gluifull";
 import GlGuiFull from "./glpatch/gluifull";
 import GlGuiTab from "./glpatch/gluitab";
+import paramsHelper from "./components/opparampanel/params_helper";
+import helperMeshes from "./components/cgl_helpermeshes";
+import TexturePreviewer from "./components/texturepreviewer";
+import uiconfig from "./uiconfig";
+import extendCore from "./op_core_extend";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -114,6 +117,7 @@ CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
 CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
+CABLES.UI.uiConfig = uiconfig;
 
 
 CABLES.UI.SuggestPortDialog = SuggestPortDialog;
@@ -175,6 +179,7 @@ CABLES.UI.ModalBackground = ModalBackground;
 CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.CanvasUi = CanvasUi;
 CABLES.UI.OpParampanel=op_parampanel;
+CABLES.UI.TexturePreviewer=TexturePreviewer;
 
 CABLES.GLGUI.GlGuiFull=GlGuiFull;
 CABLES.GLGUI.GlGuiTab=GlGuiTab;
@@ -220,8 +225,11 @@ CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
 CABLES.UI.logFilter = new LogFilter();
 
+CABLES.GL_MARKER=helperMeshes;
 
-CABLES.UI.paramsHelper=params_helper;
+CABLES.UI.paramsHelper=paramsHelper;
 CABLES.UI.valueChanger=valueChanger;
 
 setHtmlDefaultListeners();
+extendCore();
+

@@ -1287,7 +1287,7 @@ CABLES.UI.GUI = function (cfg)
 
             if (portName)
             {
-                CABLES.UI.openParamStringEditor(selectedOpId, portName, null, true);
+                CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, portName, null, true);
             }
         });
 
