@@ -34,7 +34,6 @@ CABLES_CMD_DEBUG.toggleMultiplayer = function ()
     if (!gui.getSavedState())
     {
         console.log("SHOW MODAL");
-        CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectNotSaved);
     }
     else
     {

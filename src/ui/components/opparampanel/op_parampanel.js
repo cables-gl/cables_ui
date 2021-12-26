@@ -1,7 +1,7 @@
+import paramsHelper from "./params_helper";
 
-var CABLES = CABLES || {};
 
-CABLES.UI.OpParampanel = class extends CABLES.EventTarget
+export default class OpParampanel extends CABLES.EventTarget
 {
     constructor()
     {
@@ -345,7 +345,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         // gui.showOpDoc(op.objName);
         perfHtml.finish();
 
-        CABLES.valueChangerInitSliders();
+        CABLES.UI.paramsHelper.valueChangerInitSliders();
 
         this.updateUiAttribs();
 
@@ -459,7 +459,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             });
         }
 
-        for (let ipi = 0; ipi < op.portsIn.length; ipi++) CABLES.UI.initPortClickListener(op, ipi);
+        for (let ipi = 0; ipi < op.portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi);
 
         for (let ipip = 0; ipip < op.portsIn.length; ipip++)
         {
@@ -474,7 +474,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
             }(ipip));
         }
 
-        for (let ipii = 0; ipii < op.portsIn.length; ipii++) CABLES.UI.initPortInputListener(op, ipii);
+        for (let ipii = 0; ipii < op.portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii);
 
         for (const iwap in this._watchAnimPorts)
         {
@@ -499,24 +499,8 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         for (const iwcp in this._watchColorPicker)
         {
             const thePort2 = this._watchColorPicker[iwcp];
-            CABLES.UI.watchColorPickerPort(thePort2);
+            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2);
         }
-        // for (const iws in this._watchStrings)
-        // {
-        //     const id = "watchcolorpick_" + this._watchStrings[iws].watchId;
-
-        //     ele.byId(id).addEventListener("keydown", (event) =>
-        //     {
-        //         if (event.which == 9)
-        //         {
-        //             console.log("tab...");
-        //             // event.preventDefault();
-        //             // if (event.shiftKey)switchToNextInput(-1);
-        //             // else switchToNextInput(1);
-        //         }
-        //     });
-        // }
-
 
         this._watchPortVisualizer.bind();
 
@@ -751,7 +735,7 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
                 for (const iwcp in this._watchColorPicker)
                 {
                     const thePort2 = this._watchColorPicker[iwcp];
-                    CABLES.UI.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
+                    CABLES.UI.paramsHelper.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
                 }
 
 
@@ -765,6 +749,11 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
 
         setTimeout(this._updateWatchPorts.bind(this), CABLES.UI.uiConfig.watchValuesInterval);
     }
+
+
+
+
+
 
     setCurrentOpComment(v)
     {
@@ -864,3 +853,4 @@ CABLES.UI.OpParampanel = class extends CABLES.EventTarget
         CABLES.contextMenu.show({ items }, ele);
     }
 };
+

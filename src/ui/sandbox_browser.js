@@ -228,7 +228,13 @@ export default class SandboxBrowser extends CABLES.EventTarget
     {
         if (!gui.getSavedState())
         {
-            CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectBackupNotSaved);
+            new CABLES.UI.ModalDialog({
+                "showOkButton": true,
+                "title": "Backup",
+                "warning":true,
+                "text": CABLES.UI.TEXTS.projectBackupNotSaved,
+            });
+
             return;
         }
 

@@ -112,7 +112,7 @@
                             </td><td>
                                 <span class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
 
-                                    <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
+                                    <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.paramsHelper.togglePortValBool('portval_{{ portnum }}','portcheckbox_{{ portnum }}');" ></span>
                                 </span>
                             <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
                         {{/compare}}
@@ -147,7 +147,7 @@
                         {{#compare port.uiAttribs.display '==' 'range' }}
                             </td><td>
                             <!-- new value input2 !!! -->
-                            <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}"  data-portname="{{ port.name }}" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" ontouchstart="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInputFieldInfo();"
+                            <div class="numberinput valuesliderinput" id="portval_{{ portnum }}-container" data-portnum="{{ portnum }}"  data-portname="{{ port.name }}" onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" ontouchstart="CABLES.UI.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');" onmouseover="CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
                             {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}">{{ port.value }}</span>
                                 <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
@@ -221,7 +221,7 @@
                         {{#compare port.type '==' 0 }}
                             </td><td>
                             <!-- new value input2 -->
-                            <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"   data-portname="{{ port.name }}" id="portval_{{ portnum }}-container" onmousedown="CABLES.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');"  onmouseover="CABLES.UI.showInputFieldInfo();">
+                            <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"   data-portname="{{ port.name }}" id="portval_{{ portnum }}-container" onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}',false,'{{port.name}}','{{op.id}}');"  onmouseover="CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
                                 <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}">{{ port.value }}</span>
                                 <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}" value="{{ port.value }}"/>
                             </div>
@@ -261,7 +261,7 @@
 
             {{#compare port.type '==' 5 }}
                 <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}">{{port.port.getValueForDisplay}}</span>
-                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
+                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
             {{/compare}}
 
             {{#compare port.type '==' 3 }}
@@ -274,8 +274,8 @@
 
                 <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"><span class="icon icon-align-justify"></span></span>
 
-                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
-                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
+                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
             </td>
             <td>
 
@@ -305,8 +305,8 @@
                 {{else}}
                     <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >
                     </span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="CABLES.UI.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
+                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}

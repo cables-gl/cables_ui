@@ -15,7 +15,7 @@ export default class EditorSession
 
         this.addListener("param", (name, data) =>
         {
-            CABLES.UI.openParamStringEditor(data.opid, data.portname, null, userInteraction);
+            CABLES.UI.paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
         });
     }
 

@@ -18,7 +18,7 @@ export default function setHtmlDefaultListeners()
         {
             if (!CABLES.lastError)
             {
-                CABLES.UI.MODAL.showException(e);
+                new CABLES.UI.ModalException(e);
             }
         }, 100);
     });

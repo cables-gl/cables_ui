@@ -1,3 +1,4 @@
+import ModalDialog from "./modaldialog";
 
 export default class Exporter
 {
@@ -11,7 +12,7 @@ export default class Exporter
     {
         if (!gui.getSavedState())
         {
-            CABLES.UI.MODAL.show(CABLES.UI.TEXTS.projectExportNotSaved);
+            new ModalDialog({"html":CABLES.UI.TEXTS.projectExportNotSaved,warning:true,title:"Export",showOkButton:true});
             return;
         }
 
@@ -23,6 +24,6 @@ export default class Exporter
 
         const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
 
-        CABLES.UI.MODAL.show(html, { "title": "", "nopadding": true });
+        new ModalDialog({"html":html,nopadding:true});
     }
 }

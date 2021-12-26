@@ -1,5 +1,6 @@
 
 import Logger from "../utils/logger";
+import ModalDialog from "../dialogs/modaldialog";
 
 export default class PatchSaveServer extends CABLES.EventTarget
 {
@@ -25,7 +26,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
     checkUpdatedSaveForce(updated)
     {
         this._serverDate = updated;
-        CABLES.UI.MODAL.hide(true);
+        // CABLES.UI.MODAL.hide(true);
+        gui.closeModal();
         CABLES.CMD.PATCH.save(true);
     }
 
@@ -74,10 +76,17 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                             if (newCore || newUi)
                             {
-                                CABLES.UI.MODAL.showError("meanwhile...", "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>");
-                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;";
-                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;";
-                                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                                const html=
+                                    "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>"+
+                                    "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;"+
+                                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;"+
+                                    "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
+                                new ModalDialog(
+                                    {
+                                        "title":"Meanwhile...",
+                                        "html":html
+                                    });
 
                                 gui.jobs().finish("checkupdated");
                             }

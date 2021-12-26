@@ -1,17 +1,18 @@
-var CABLES = CABLES || {};
 
-CABLES.GL_MARKER = {};
-CABLES.GL_MARKER.count = 0;
+const helperMeshes= {};
+helperMeshes.count = 0;
 
-CABLES.GL_MARKER.startFramebuffer = function (cgl)
+export default helperMeshes;
+
+helperMeshes.startFramebuffer = function (cgl)
 {
-    if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
+    if (!helperMeshes.FB || !helperMeshes.FB.fb)
     {
-        CABLES.GL_MARKER.FB = {};
+        helperMeshes.FB = {};
 
         if (cgl.glVersion == 1)
         {
-            CABLES.GL_MARKER.FB.fb = new CGL.Framebuffer(cgl, 8, 8, {
+            helperMeshes.FB.fb = new CGL.Framebuffer(cgl, 8, 8, {
                 "isFloatingPointTexture": false,
                 "depth": true,
                 "clear": false,
@@ -19,7 +20,7 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
         }
         else
         {
-            CABLES.GL_MARKER.FB.fb = new CGL.Framebuffer2(cgl, 8, 8, {
+            helperMeshes.FB.fb = new CGL.Framebuffer2(cgl, 8, 8, {
                 "isFloatingPointTexture": false,
                 "depth": true,
                 "clear": false,
@@ -29,58 +30,57 @@ CABLES.GL_MARKER.startFramebuffer = function (cgl)
         }
     }
 
-    if (CABLES.GL_MARKER.FB.oldWidth != cgl.getViewPort()[2] || CABLES.GL_MARKER.FB.oldHeight != cgl.getViewPort()[3])
+    if (helperMeshes.FB.oldWidth != cgl.getViewPort()[2] || helperMeshes.FB.oldHeight != cgl.getViewPort()[3])
     {
-        CABLES.GL_MARKER.FB.fb.setSize(cgl.getViewPort()[2], cgl.getViewPort()[3]);
-        CABLES.GL_MARKER.FB.oldWidth = cgl.getViewPort()[2];
-        CABLES.GL_MARKER.FB.oldHeight = cgl.getViewPort()[3];
+        helperMeshes.FB.fb.setSize(cgl.getViewPort()[2], cgl.getViewPort()[3]);
+        helperMeshes.FB.oldWidth = cgl.getViewPort()[2];
+        helperMeshes.FB.oldHeight = cgl.getViewPort()[3];
     }
 
-    CABLES.GL_MARKER.FB.fb.renderStart(cgl);
+    helperMeshes.FB.fb.renderStart(cgl);
 
-    if (cgl.frameCycler != CABLES.GL_MARKER.FB.oldFrameCycle)
+    if (cgl.frameCycler != helperMeshes.FB.oldFrameCycle)
     {
         cgl.gl.clearColor(0, 0, 0, 0);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
-        CABLES.GL_MARKER.FB.oldFrameCycle = cgl.frameCycler;
+        helperMeshes.FB.oldFrameCycle = cgl.frameCycler;
     }
 };
 
-CABLES.GL_MARKER.endFramebuffer = function (cgl)
+helperMeshes.endFramebuffer = function (cgl)
 {
-    // CABLES.GL_MARKER.FB.fb.pop();
-    CABLES.GL_MARKER.FB.fb.renderEnd();
+    helperMeshes.FB.fb.renderEnd();
 };
 
-CABLES.GL_MARKER.getDefaultShader = function (cgl)
+helperMeshes.getDefaultShader = function (cgl)
 {
-    if (!CABLES.GL_MARKER.defaultShader)
+    if (!helperMeshes.defaultShader)
     {
-        CABLES.GL_MARKER.defaultShader = new CGL.Shader(cgl, "marker shader");
-        CABLES.GL_MARKER.defaultShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
+        helperMeshes.defaultShader = new CGL.Shader(cgl, "marker shader");
+        helperMeshes.defaultShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
     }
-    return CABLES.GL_MARKER.defaultShader;
+    return helperMeshes.defaultShader;
 };
 
-CABLES.GL_MARKER.getSelectedShader = function (cgl)
+helperMeshes.getSelectedShader = function (cgl)
 {
-    if (!CABLES.GL_MARKER.selectedShader)
+    if (!helperMeshes.selectedShader)
     {
-        CABLES.GL_MARKER.selectedShader = new CGL.Shader(cgl, "marker shader");
-        CABLES.GL_MARKER.selectedShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0, 1, 1));
+        helperMeshes.selectedShader = new CGL.Shader(cgl, "marker shader");
+        helperMeshes.selectedShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0, 1, 1));
     }
-    return CABLES.GL_MARKER.selectedShader;
+    return helperMeshes.selectedShader;
 };
 
-CABLES.GL_MARKER.drawSphere = function (op, size)
+helperMeshes.drawSphere = function (op, size)
 {
     const cgl = op.patch.cgl;
 
-    if (!CABLES.GL_MARKER.SPHERE)
+    if (!helperMeshes.SPHERE)
     {
-        CABLES.GL_MARKER.SPHERE = {};
+        helperMeshes.SPHERE = {};
 
-        CABLES.GL_MARKER.SPHERE.vScale = vec3.create();
+        helperMeshes.SPHERE.vScale = vec3.create();
         function bufferData()
         {
             let verts = [];
@@ -103,7 +103,7 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            CABLES.GL_MARKER.SPHERE.mesh = new CGL.Mesh(cgl, geom);
+            helperMeshes.SPHERE.mesh = new CGL.Mesh(cgl, geom);
 
             //---
 
@@ -122,7 +122,7 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            CABLES.GL_MARKER.SPHERE.mesh2 = new CGL.Mesh(cgl, geom);
+            helperMeshes.SPHERE.mesh2 = new CGL.Mesh(cgl, geom);
 
             //---
 
@@ -141,7 +141,7 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            CABLES.GL_MARKER.SPHERE.mesh3 = new CGL.Mesh(cgl, geom);
+            helperMeshes.SPHERE.mesh3 = new CGL.Mesh(cgl, geom);
         }
 
         bufferData();
@@ -150,30 +150,30 @@ CABLES.GL_MARKER.drawSphere = function (op, size)
     if (cgl.lastMesh) cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
-    vec3.set(CABLES.GL_MARKER.SPHERE.vScale, size, size, size);
-    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.SPHERE.vScale);
+    vec3.set(helperMeshes.SPHERE.vScale, size, size, size);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.SPHERE.vScale);
 
-    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
+    let shader = helperMeshes.getDefaultShader(cgl);
 
-    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
     shader.glPrimitive = cgl.gl.LINE_STRIP;
-    CABLES.GL_MARKER.SPHERE.mesh.render(shader);
-    CABLES.GL_MARKER.SPHERE.mesh2.render(shader);
-    CABLES.GL_MARKER.SPHERE.mesh3.render(shader);
-    CABLES.GL_MARKER.count++;
+    helperMeshes.SPHERE.mesh.render(shader);
+    helperMeshes.SPHERE.mesh2.render(shader);
+    helperMeshes.SPHERE.mesh3.render(shader);
+    helperMeshes.count++;
     cgl.popModelMatrix();
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawAxisMarker = function (op, size)
+helperMeshes.drawAxisMarker = function (op, size)
 {
     const cgl = op.patch.cgl;
 
-    if (!CABLES.GL_MARKER.MARKER)
+    if (!helperMeshes.MARKER)
     {
-        CABLES.GL_MARKER.MARKER = {};
+        helperMeshes.MARKER = {};
 
         const geom = new CGL.Geometry("marker");
         geom.setPointVertices([
@@ -183,8 +183,8 @@ CABLES.GL_MARKER.drawAxisMarker = function (op, size)
         ]);
         // geom.resetTextureCoords();
 
-        CABLES.GL_MARKER.MARKER.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
-        CABLES.GL_MARKER.MARKER.mesh.setGeom(geom);
+        helperMeshes.MARKER.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+        helperMeshes.MARKER.mesh.setGeom(geom);
 
         const frag = "".endl() + "IN vec3 axisColor;".endl() + "void main()".endl() + "{".endl() + "    vec4 col=vec4(axisColor,1.0);".endl() + "    outColor = col;".endl() + "}";
 
@@ -202,42 +202,42 @@ CABLES.GL_MARKER.drawAxisMarker = function (op, size)
             + "   gl_Position = projMatrix * mvMatrix * pos;".endl()
             + "}";
 
-        CABLES.GL_MARKER.MARKER.shader = new CGL.Shader(cgl, "markermaterial");
-        CABLES.GL_MARKER.MARKER.shader.setSource(vert, frag);
+        helperMeshes.MARKER.shader = new CGL.Shader(cgl, "markermaterial");
+        helperMeshes.MARKER.shader.setSource(vert, frag);
 
-        CABLES.GL_MARKER.MARKER.vScale = vec3.create();
+        helperMeshes.MARKER.vScale = vec3.create();
     }
 
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
     if (!size) size = 2;
     cgl.pushModelMatrix();
 
-    cgl.pushShader(CABLES.GL_MARKER.MARKER.shader);
+    cgl.pushShader(helperMeshes.MARKER.shader);
 
-    vec3.set(CABLES.GL_MARKER.MARKER.vScale, size, size, size);
-    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.MARKER.vScale);
+    vec3.set(helperMeshes.MARKER.vScale, size, size, size);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.MARKER.vScale);
 
     cgl.pushDepthTest(false);
 
-    CABLES.GL_MARKER.MARKER.mesh.render(cgl.getShader());
+    helperMeshes.MARKER.mesh.render(cgl.getShader());
 
-    CABLES.GL_MARKER.count++;
+    helperMeshes.count++;
     cgl.popDepthTest();
     cgl.popShader();
     cgl.popModelMatrix();
 
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawLineSourceDest = function ({
+helperMeshes.drawLineSourceDest = function ({
     op, sourceX, sourceY, sourceZ, destX, destY, destZ,
 })
 {
     const cgl = op.patch.cgl;
-    if (!CABLES.GL_MARKER.ARROW_SRC_DST)
+    if (!helperMeshes.ARROW_SRC_DST)
     {
-        CABLES.GL_MARKER.ARROW_SRC_DST = {};
+        helperMeshes.ARROW_SRC_DST = {};
         function bufferData()
         {
             // eslint-disable-line
@@ -254,41 +254,41 @@ CABLES.GL_MARKER.drawLineSourceDest = function ({
             geom.vertices = verts;
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            CABLES.GL_MARKER.ARROW_SRC_DST.geom = geom;
-            CABLES.GL_MARKER.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+            helperMeshes.ARROW_SRC_DST.geom = geom;
+            helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         }
 
         bufferData();
     }
     else
     {
-        CABLES.GL_MARKER.ARROW_SRC_DST.geom.setVertices([sourceX, sourceY, sourceZ, destX, destY, destZ]);
-        CABLES.GL_MARKER.ARROW_SRC_DST.cube.updateVertices(CABLES.GL_MARKER.ARROW_SRC_DST.geom);
+        helperMeshes.ARROW_SRC_DST.geom.setVertices([sourceX, sourceY, sourceZ, destX, destY, destZ]);
+        helperMeshes.ARROW_SRC_DST.cube.updateVertices(helperMeshes.ARROW_SRC_DST.geom);
     }
 
     if (cgl.lastMesh) cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
-    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    let shader = helperMeshes.getDefaultShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
 
-    CABLES.GL_MARKER.ARROW_SRC_DST.cube.render(shader);
-    CABLES.GL_MARKER.count++;
+    helperMeshes.ARROW_SRC_DST.cube.render(shader);
+    helperMeshes.count++;
 
     cgl.popModelMatrix();
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
+helperMeshes.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
 {
     const cgl = op.patch.cgl;
 
-    if (!CABLES.GL_MARKER.ARROW)
+    if (!helperMeshes.ARROW)
     {
-        CABLES.GL_MARKER.ARROW = {};
-        CABLES.GL_MARKER.ARROW.vScale = vec3.create();
+        helperMeshes.ARROW = {};
+        helperMeshes.ARROW.vScale = vec3.create();
 
         function bufferData()
         {
@@ -310,7 +310,7 @@ CABLES.GL_MARKER.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            CABLES.GL_MARKER.ARROW.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+            helperMeshes.ARROW.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
         }
 
         bufferData();
@@ -319,33 +319,33 @@ CABLES.GL_MARKER.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
     if (cgl.lastMesh) cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
-    vec3.set(CABLES.GL_MARKER.ARROW.vScale, sizeX, sizeX, sizeX);
-    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.ARROW.vScale);
+    vec3.set(helperMeshes.ARROW.vScale, sizeX, sizeX, sizeX);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.ARROW.vScale);
 
     if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * CGL.DEG2RAD);
     if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * CGL.DEG2RAD);
     if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
-    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    let shader = helperMeshes.getDefaultShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
 
-    CABLES.GL_MARKER.ARROW.cube.render(shader);
-    CABLES.GL_MARKER.count++;
+    helperMeshes.ARROW.cube.render(shader);
+    helperMeshes.count++;
 
     cgl.popModelMatrix();
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
+helperMeshes.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
 {
     const cgl = op.patch.cgl;
 
-    if (!CABLES.GL_MARKER.XPLANE)
+    if (!helperMeshes.XPLANE)
     {
-        CABLES.GL_MARKER.XPLANE = {};
-        CABLES.GL_MARKER.XPLANE.vScale = vec3.create();
+        helperMeshes.XPLANE = {};
+        helperMeshes.XPLANE.vScale = vec3.create();
 
         function bufferData()
         {
@@ -367,7 +367,7 @@ CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            CABLES.GL_MARKER.XPLANE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
+            helperMeshes.XPLANE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
 
         bufferData();
@@ -376,33 +376,33 @@ CABLES.GL_MARKER.drawXPlane = function (op, sizeX, rotX, rotY, rotZ)
     if (cgl.lastMesh) cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
-    vec3.set(CABLES.GL_MARKER.XPLANE.vScale, sizeX, sizeX, sizeX);
-    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.XPLANE.vScale);
+    vec3.set(helperMeshes.XPLANE.vScale, sizeX, sizeX, sizeX);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.XPLANE.vScale);
 
     if (rotX) mat4.rotateX(cgl.mvMatrix, cgl.mvMatrix, rotX * CGL.DEG2RAD);
     if (rotY) mat4.rotateY(cgl.mvMatrix, cgl.mvMatrix, rotY * CGL.DEG2RAD);
     if (rotZ) mat4.rotateZ(cgl.mvMatrix, cgl.mvMatrix, rotZ * CGL.DEG2RAD);
 
-    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    let shader = helperMeshes.getDefaultShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
 
-    CABLES.GL_MARKER.XPLANE.mesh.render(shader);
-    CABLES.GL_MARKER.count++;
+    helperMeshes.XPLANE.mesh.render(shader);
+    helperMeshes.count++;
 
     cgl.popModelMatrix();
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
+helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 {
     const cgl = op.patch.cgl;
 
-    if (!CABLES.GL_MARKER.CUBE)
+    if (!helperMeshes.CUBE)
     {
-        CABLES.GL_MARKER.CUBE = {};
-        CABLES.GL_MARKER.CUBE.vScale = vec3.create();
+        helperMeshes.CUBE = {};
+        helperMeshes.CUBE.vScale = vec3.create();
 
         function bufferData()
         {
@@ -439,7 +439,7 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            CABLES.GL_MARKER.CUBE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
+            helperMeshes.CUBE.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINE_STRIP);
         }
 
         bufferData();
@@ -448,24 +448,24 @@ CABLES.GL_MARKER.drawCube = function (op, sizeX, sizeY, sizeZ)
     if (cgl.lastMesh) cgl.lastMesh.unBind();
 
     cgl.pushModelMatrix();
-    CABLES.GL_MARKER.startFramebuffer(cgl);
+    helperMeshes.startFramebuffer(cgl);
 
     if (sizeY == undefined) sizeY = sizeX;
     if (sizeZ == undefined) sizeZ = sizeX;
-    vec3.set(CABLES.GL_MARKER.CUBE.vScale, sizeX, sizeY, sizeZ);
-    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, CABLES.GL_MARKER.CUBE.vScale);
+    vec3.set(helperMeshes.CUBE.vScale, sizeX, sizeY, sizeZ);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.CUBE.vScale);
 
-    let shader = CABLES.GL_MARKER.getDefaultShader(cgl);
-    if (gui.patchView.isCurrentOp(op)) shader = CABLES.GL_MARKER.getSelectedShader(cgl);
+    let shader = helperMeshes.getDefaultShader(cgl);
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
 
-    CABLES.GL_MARKER.CUBE.mesh.render(shader);
-    CABLES.GL_MARKER.count++;
+    helperMeshes.CUBE.mesh.render(shader);
+    helperMeshes.count++;
 
     cgl.popModelMatrix();
-    CABLES.GL_MARKER.endFramebuffer(cgl);
+    helperMeshes.endFramebuffer(cgl);
 };
 
-CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
+helperMeshes.drawMarkerLayer = function (cgl, size)
 {
     CABLES.UI.renderHelper = CABLES.UI.userSettings.get("helperMode");
     CABLES.UI.renderHelperCurrent = CABLES.UI.userSettings.get("helperModeCurrentOp");
@@ -473,10 +473,10 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
     if (!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper) return;
 
     // if (!CABLES.UI.renderHelper) return;
-    if (CABLES.GL_MARKER.count == 0) return;
-    CABLES.GL_MARKER.count = 0;
+    if (helperMeshes.count == 0) return;
+    helperMeshes.count = 0;
 
-    if (!CABLES.GL_MARKER.FB || !CABLES.GL_MARKER.FB.fb)
+    if (!helperMeshes.FB || !helperMeshes.FB.fb)
     {
         return;
     }
@@ -485,12 +485,12 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
     const w = currentViewPort[2];
     const h = currentViewPort[3];
 
-    if (!CABLES.GL_MARKER.fullscreenRectMesh || CABLES.GL_MARKER.FSWIDTH != w || CABLES.GL_MARKER.FSHEIGHT != h)
+    if (!helperMeshes.fullscreenRectMesh || helperMeshes.FSWIDTH != w || helperMeshes.FSHEIGHT != h)
     {
         const fsGeom = new CGL.Geometry("fullscreen rectangle");
 
-        CABLES.GL_MARKER.FSWIDTH = w;
-        CABLES.GL_MARKER.FSHEIGHT = h;
+        helperMeshes.FSWIDTH = w;
+        helperMeshes.FSHEIGHT = h;
 
         // prettier-ignore
         fsGeom.vertices = new Float32Array([
@@ -519,13 +519,13 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
             3, 1, 2,
         ]);
 
-        // CABLES.GL_MARKER.fsGeom=fsGeom;
-        if (!CABLES.GL_MARKER.fullscreenRectMesh) CABLES.GL_MARKER.fullscreenRectMesh = new CGL.Mesh(cgl, fsGeom);
-        else CABLES.GL_MARKER.fullscreenRectMesh.setGeom(fsGeom);
+        // helperMeshes.fsGeom=fsGeom;
+        if (!helperMeshes.fullscreenRectMesh) helperMeshes.fullscreenRectMesh = new CGL.Mesh(cgl, fsGeom);
+        else helperMeshes.fullscreenRectMesh.setGeom(fsGeom);
 
         // ------------
 
-        if (!CABLES.GL_MARKER.fullscreenRectShader)
+        if (!helperMeshes.fullscreenRectShader)
         {
             const shader = new CGL.Shader(cgl, "marker overlay");
 
@@ -560,13 +560,13 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
             shader.setSource(shader_vert, shader_frag);
             shader.texUniform = new CGL.Uniform(shader, "t", "tex", 0);
 
-            CABLES.GL_MARKER.fullscreenRectShader = shader;
+            helperMeshes.fullscreenRectShader = shader;
 
 
             // shader.bindTextures = function ()
             // {
             //     cgl.gl.activeTexture(cgl.gl.TEXTURE0);
-            //     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
+            //     cgl.gl.bindTexture(cgl.gl.TEXTURE_2D, helperMeshes.FB.fb.getTextureColor().tex);
             // };
         }
     }
@@ -582,11 +582,11 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
     cgl.pushViewMatrix();
     mat4.identity(cgl.vMatrix);
 
-    CABLES.GL_MARKER.fullscreenRectShader.popTextures();
-    CABLES.GL_MARKER.fullscreenRectShader.pushTexture(CABLES.GL_MARKER.fullscreenRectShader.texUniform, CABLES.GL_MARKER.FB.fb.getTextureColor().tex);
+    helperMeshes.fullscreenRectShader.popTextures();
+    helperMeshes.fullscreenRectShader.pushTexture(helperMeshes.fullscreenRectShader.texUniform, helperMeshes.FB.fb.getTextureColor().tex);
 
-    cgl.pushShader(CABLES.GL_MARKER.fullscreenRectShader);
-    // CABLES.GL_MARKER.fullscreenRectShader.bind();
+    cgl.pushShader(helperMeshes.fullscreenRectShader);
+    // helperMeshes.fullscreenRectShader.bind();
     // cgl.getShader().bind
 
     // for (var i =0;i< cgl.gl.getProgramParameter(cgl.getShader().getProgram(), cgl.gl.ACTIVE_ATTRIBUTES) ; i++)
@@ -599,7 +599,7 @@ CABLES.GL_MARKER.drawMarkerLayer = function (cgl, size)
     cgl.gl.blendEquation(cgl.gl.FUNC_ADD);
     cgl.gl.blendFunc(cgl.gl.ONE, cgl.gl.ONE_MINUS_SRC_ALPHA);
 
-    CABLES.GL_MARKER.fullscreenRectMesh.render(cgl.getShader());
+    helperMeshes.fullscreenRectMesh.render(cgl.getShader());
     cgl.gl.blendFunc(cgl.gl.SRC_ALPHA, cgl.gl.ONE_MINUS_SRC_ALPHA);
 
     cgl.gl.clear(cgl.gl.DEPTH_BUFFER_BIT);

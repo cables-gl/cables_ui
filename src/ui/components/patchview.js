@@ -142,7 +142,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             gui.corePatch().deSerialize(proj);
             CABLES.UI.undo.clear();
-            CABLES.UI.MODAL.hideLoading();
+
 
             const ops = gui.corePatch().ops;
             if (!gui.isRemoteClient)
@@ -1599,7 +1599,8 @@ export default class PatchView extends CABLES.EventTarget
             }, 100);
 
 
-            CABLES.UI.MODAL.show(html);
+            // CABLES.UI.MODAL.show(html);
+            new ModalDialog({"html":html});
         } });
     }
 

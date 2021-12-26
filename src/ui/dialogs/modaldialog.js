@@ -10,28 +10,34 @@ export default class ModalDialog
         this._options = options;
         this._ele = null;
         this._eleContent = null;
-        // this._eleBg = document.getElementById("modalbg");
         this._bg = new ModalBackground();
 
         this.show();
 
+        ele.byId("modalclose").style.display = "block";
+
         this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
+
+        gui.lastModal=this;
     }
 
     close()
     {
         this._ele.remove();
-        // this._eleBg.style.display = "none";
         this._bg.hide();
+        gui.lastModal=null;
     }
 
     html()
     {
         let html = "";
-        if (this._options.title)
-            html += "<h2>" + this._options.title + "</h2>";
+
+        if (this._options.title) html += "<h2>"
+        if (this._options.warning) html+="<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
+        if (this._options.title) html += this._options.title + "</h2>";
 
         if (this._options.text)html += this._options.text;
+        if (this._options.html)html += this._options.html;
 
         if (this._options.prompt)
         {
@@ -40,6 +46,11 @@ export default class ModalDialog
             html += "<br/><br/>";
             html += "<a class=\"bluebutton\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+        }
+
+        if(this._options.showOkButton)
+        {
+            html += "<br/><br/><a class=\"bluebutton\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
         }
 
         return html;
@@ -68,8 +79,23 @@ export default class ModalDialog
             });
         }
 
+        const eleModalOk = ele.byId("modalClose");
+        if (eleModalOk)
+        {
+            eleModalOk.addEventListener("click", () =>
+            {
+                this.close();
+            });
+        }
+
         const elePromptCancel = ele.byId("prompt_cancel");
         if (elePromptCancel) elePromptCancel.addEventListener("click", this.close.bind(this));
+    }
+
+    updateHtml(h)
+    {
+        this._options.html=h;
+        this._eleContent.innerHTML=this.html();
     }
 
     show()
@@ -94,6 +120,7 @@ export default class ModalDialog
         document.body.appendChild(this._ele);
 
         if (!this._options.nopadding) this._eleContent.style.padding = "15px";
+        if (this._options.nopadding) this._ele.style.padding = "0px";
 
         this._eleContent.innerHTML = this.html();
 

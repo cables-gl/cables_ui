@@ -525,6 +525,8 @@ export default class OpSelect
 
         ele.hide(ele.byId("search_noresults"));
 
+
+
         CABLES.UI.MODAL.show(null,
             {
                 "title": null,

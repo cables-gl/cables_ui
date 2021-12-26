@@ -1,20 +1,11 @@
 // http://html5doctor.com/drag-and-drop-to-server/
 
-
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.MODAL = CABLES.UI.MODAL || {};
 CABLES.UI.MODAL._visible = false;
 CABLES.UI.MODAL.contentElement = null;
 CABLES.UI.MODAL.headerElement = null; // the (small) header shown in the title bar of the modal
-
-CABLES.UI.MODAL.hideLoading = function ()
-{
-    if (document.querySelectorAll(".modalLoading").length > 0)
-    {
-        CABLES.UI.MODAL.hide();
-    }
-};
 
 CABLES.UI.MODAL.init = function (options)
 {
@@ -111,7 +102,7 @@ CABLES.UI.MODAL.show = function (content, options)
 {
     if (CABLES.UI.MODAL.contentElement && options && !options.ignoreTop) CABLES.UI.MODAL.contentElement.style.top = "5%";
 
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init(options);
 
     if (options)
@@ -141,31 +132,17 @@ CABLES.UI.MODAL.show = function (content, options)
     gui.emitEvent("showModal");
 };
 
-CABLES.UI.MODAL.showLoading = function (title, content)
-{
-    CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML = "<div class=\"modalLoading\" style=\"text-align:center;\"><h3>" + title + "</h3><div class=\"loading\" style=\"margin-top:0px;\"><br/><br/><div>";
-    if (content)
-    {
-        CABLES.UI.MODAL.contentElement.innerHTML += content;
-    }
-    CABLES.UI.MODAL._setVisible(true);
-    document.getElementById("modalbg").style.display = "block";
-};
-
-
 CABLES.UI.MODAL.showClose = function ()
 {
-    if (document.getElementById("modalclose"))
-        document.getElementById("modalclose").style.display = "block";
+    // if (document.getElementById("modalclose"))
+    //     document.getElementById("modalclose").style.display = "block";
 };
 
 CABLES.UI.MODAL.showError = function (title, content)
 {
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
     CABLES.UI.MODAL.contentElement.innerHTML = "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> " + title + "</h2>";
-
 
     if (content)
     {
@@ -180,452 +157,9 @@ CABLES.UI.MODAL.showError = function (title, content)
     });
 };
 
-CABLES.UI.MODAL.getFileSnippet = function (url, line, cb)
-{
-    CABLES.ajax(
-        url,
-        function (err, _data, xhr)
-        {
-            if (err)
-            {
-                cb("err");
-            }
-            const lines = _data.split("\n");
-            const linesAround = 4;
-            const sliced = lines.slice(line - (linesAround + 1), line + linesAround);
-            let html = "";
-            for (const i in sliced)
-            {
-                if (i == linesAround)
-                {
-                    html += "<span class=\"error\">";
-                    CABLES.lastError.errorLine = sliced[i];
-                }
-                html += sliced[i];
-                html += "</span>";
-                html += "<br/>";
-            }
-            cb(html);
-        });
-};
-
-CABLES.UI.MODAL.showOpException = function (ex, opName)
-{
-    CABLES.UI.MODAL.showClose();
-    CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.setTitle("op cablefail :/");
-
-    CABLES.UI.MODAL.contentElement.innerHTML += "Error in op: <b>" + opName + "</b><br/><br/>";
-
-    if (ex)
-    {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-        if (ex.stack)
-        {
-            CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div><br/>";
-        }
-        if (ex.customMessage)
-        {
-            CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.customMessage + "</div><br/>";
-        }
-    }
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
-
-    if (ex)
-    {
-        console.trace();
-
-        const info = stackinfo(ex);
-        console.log("ex:", ex, info);
-        if (info && info[0].file)
-        {
-            console.log("This is line " + (info[0].line + 1));
-            console.log("This is file " + (info[0].file));
-
-            CABLES.UI.MODAL.getFileSnippet(info[0].file, info[0].line, function (html)
-            {
-                document.getElementById("stackFileContent").style.display = "block";
-                document.getElementById("stackFileContent").innerHTML = html;
-            });
-        }
-    }
-
-    CABLES.UI.MODAL._setVisible(true);
-    document.getElementById("modalbg").style.display = "block";
-
-    const ops = gui.corePatch().getOpsByObjName(opName);
-    for (let i = 0; i < ops.length; i++)
-    {
-        ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
-    }
-
-    if (gui.user.isAdmin || opName.startsWith("Op.User." + gui.user.usernameLowercase))
-    {
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + opName + "');CABLES.UI.MODAL.hide(true);\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
-    }
-
-    CABLES.lastError = { "exception": ex, opName };
-
-    // TODO API?
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-};
-
-CABLES.UI.MODAL.showException = function (ex, op)
-{
-    if (String(ex.stack).indexOf("file:blob:") == 0)
-    {
-        console.log("ignore file blob exception...");
-        return;
-    }
-
-    if (op)
-    {
-        CABLES.UI.MODAL.showOpException(ex, op.objName);
-        return;
-    }
-
-    console.log(ex, ex.stack);
-
-    if (!CABLES.UI.loaded)
-    {
-        let html = "";
-        html += "<div class=\"startUpError\"><b>error</b>\n";
-        html += "<br/>";
-        html += ex.message;
-        html += "<br/><br/><a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\">reload</a>";
-        html += "</div>";
-
-        document.body.innerHTML += html;
-    }
-    CABLES.UI.MODAL.showClose();
-
-    CABLES.UI.MODAL.init();
-    CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-2x icon-alert-triangle\"></span> cablefail :/</h2>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.message + "</div><br/>";
-    CABLES.UI.MODAL.contentElement.innerHTML += "<div class=\"shaderErrorCode\">" + ex.stack + "</div>";
-
-    CABLES.lastError = { "exception": ex };
-    // TODO API
-    CABLES.UI.MODAL.contentElement.innerHTML += "<br/><a class=\"bluebutton \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>";
-
-    CABLES.UI.MODAL._setVisible(true);
-
-    document.getElementById("modalbg").style.display = "block";
-};
-
-CABLES.UI.MODAL.copyPortValuePreview = function (e, title)
-{
-    navigator.clipboard
-        .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
-        .then(() =>
-        {
-            CABLES.UI.notify("Copied value to clipboard?????");
-        })
-        .catch((err) =>
-        {
-            console.warn("copy to clipboard failed", err);
-        });
-
-    // console.log(e);
-    // const objStr = JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get());
-    // CABLES.UI.notify("Copied title");
-    // e.clipboardData.setData("text/plain", objStr);
-};
-
-
-CABLES.UI.MODAL.updatePortValuePreview = function (title)
-{
-    CABLES.UI.MODAL.showPortValue(title, CABLES.UI.MODAL.PORTPREVIEW);
-};
-
-CABLES.UI.MODAL.updatePortStructurePreview = function (title)
-{
-    CABLES.UI.MODAL.showPortStructure(title, CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW);
-};
-
-CABLES.UI.MODAL.showPortValue = function (title, port)
-{
-    function convertHTML(str)
-    {
-        const regex = /[&|<|>|"|']/g;
-        const htmlString = str.replace(regex, function (match)
-        {
-            if (match === "&") return "&amp;";
-            else if (match === "<") return "&lt;";
-            else if (match === ">") return "&gt;";
-            else if (match === "\"") return "&quot;";
-            else return "&apos;";
-        });
-        return htmlString;
-    }
-
-
-    try
-    {
-        CABLES.UI.MODAL.PORTPREVIEW = port;
-        CABLES.UI.MODAL.showClose();
-        CABLES.UI.MODAL.init();
-        CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
-
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        const thing = port.get();
-
-        if (thing && thing.constructor)
-        {
-            CABLES.UI.MODAL.contentElement.innerHTML += "" + thing.constructor.name + " \n";
-
-            if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
-            if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
-        }
-
-        CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-        CABLES.UI.MODAL.contentElement.innerHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>";
-
-        CABLES.UI.MODAL._setVisible(true);
-
-        document.getElementById("modalbg").style.display = "block";
-
-        hljs.highlightBlock(document.getElementById("portvalue"));
-
-        ele.byId("copybutton").addEventListener("click", (e) =>
-        {
-            CABLES.UI.MODAL.copyPortValuePreview(e, title);
-        });
-    }
-    catch (ex)
-    {
-        console.log(ex);
-    }
-};
-
-CABLES.UI.MODAL.showPortStructure = function (title, port)
-{
-    function asyncInnerHTML(HTML, callback)
-    {
-        const temp = document.createElement("div");
-        const frag = document.createDocumentFragment();
-        temp.innerHTML = HTML;
-        (function ()
-        {
-            if (temp.firstChild)
-            {
-                frag.appendChild(temp.firstChild);
-                setTimeout(arguments.callee, 0);
-            }
-            else
-            {
-                callback(frag);
-            }
-        }());
-    }
-
-    function printNode(op, portName, html, key, node, path, level, inputDataType = "Object")
-    {
-        html += "<tr class=\"row\">";
-        let i = 0;
-        let ident = "";
-
-        for (i = 0; i < level; i++)
-        {
-            let identClass = "identBg";
-            if (i == 0)identClass = "identBgLevel0";
-            ident += "<td class=\"ident  " + identClass + "\" ><div style=\"\"></div></td>";
-        }
-        html += ident;
-        html += "<td colspan=\"" + (20 - level) + "\">";
-        if (Array.isArray(node))
-        {
-            html += "<span class=\"icon icon-arrow-down-right\">[]</span> &nbsp;";
-        }
-        else if (typeof node === "object")
-        {
-            html += "<span class=\"icon icon-arrow-down-right\">[]</span> &nbsp;";
-        }
-        else
-        {
-            html += "<span class=\"icon icon-circle\">[]</span> &nbsp;";
-        }
-        html += key;
-        html += "</td>";
-
-        html += "<td style='max-width: 100px; overflow: hidden; text-overflow: ellipsis;'>";
-        if (!Array.isArray(node) && !(typeof node === "object"))
-        {
-            html += String(node).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-        html += "</td>";
-
-        html += "<td>";
-
-        let dataType = "Array";
-        if (!Array.isArray(node))
-        {
-            switch (typeof node)
-            {
-            case "string":
-                dataType = "String";
-                break;
-            case "number":
-                dataType = "Number";
-                break;
-            default:
-                dataType = "Object";
-                break;
-            }
-        }
-        const hideclass = "";
-        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeArray('" + op.id + "', '" + portName + "', '" + path + "', '" + inputDataType + "')\" class=\"treebutton\">Array</a>";
-        html += "&nbsp;";
-        html += "<a onclick=\"CABLES.UI.MODAL.showPortStructureHelpers.exposeNode('" + op.id + "', '" + portName + "', '" + path + "', '" + dataType + "', '" + inputDataType + "')\" class=\"treebutton " + dataType.toLowerCase() + "\">" + dataType + "</a>";
-        html += "</td>";
-
-        html += "</tr>";
-
-        if (node)
-        {
-            if (Array.isArray(node))
-            {
-                for (i = 0; i < node.length; i++)
-                {
-                    const newPath = path + "." + i;
-                    html = printNode(op, portName, html, i, node[i], newPath, level + 1, inputDataType);
-                }
-            }
-            else if (typeof node === "object")
-            {
-                const children = Object.keys(node);
-                for (i = 0; i < children.length; i++)
-                {
-                    const newKey = children[i];
-                    const newPath = path + "." + newKey;
-                    html = printNode(op, portName, html, newKey, node[newKey], newPath, level + 1, inputDataType);
-                }
-            }
-        }
-
-        return html;
-    }
-
-    function printJsonInfo(json, op, portName, inputDataType = "Object")
-    {
-        if (!json) return;
-
-        const sizes = {};
-
-        let html = "<div style=\"overflow:scroll;width:100%;height:100%\">";
-
-        let elements = [];
-        if (Array.isArray(json))
-        {
-            elements = json;
-        }
-        else if (typeof json === "object")
-        {
-            elements = Object.keys(json);
-        }
-
-        html += "<h3>Nodes (" + elements.length + ")</h3>";
-        html += "<table class=\"table treetable\">";
-
-        html += "<tr>";
-        html += " <th colspan=\"20\">Name</th>";
-        html += " <th>Value</th>";
-        html += " <th>Expose</th>";
-        html += "</tr>";
-
-        for (let i = 0; i < elements.length; i++)
-        {
-            if (Array.isArray(json))
-            {
-                const path = i;
-                html = printNode(op, portName, html, i, json[i], path, 1, inputDataType);
-            }
-            else if (typeof json === "object")
-            {
-                const key = elements[i];
-                const path = key;
-                html = printNode(op, portName, html, key, json[key], path, 1, inputDataType);
-            }
-        }
-        html += "</table>";
-        html += "</div>";
-
-        return html;
-    }
-
-    try
-    {
-        const thing = port.get();
-        let inputDataType = "Object";
-        if (Array.isArray(thing))
-        {
-            inputDataType = "Array";
-        }
-        const jsonInfo = printJsonInfo(thing, port.parent, port.name, inputDataType);
-        CABLES.UI.MODAL.hideLoading();
-
-        let fullHTML = "";
-        fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-        fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-        fullHTML += "<br/><br/>";
-        fullHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-        fullHTML += "<br/><br/>";
-        fullHTML += "<br/><br/>";
-        fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";
-
-        CABLES.UI.MODAL.showLoading("analyzing structure....");
-        asyncInnerHTML(fullHTML, function (fragment)
-        {
-            CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
-            CABLES.UI.MODAL.showClose();
-            CABLES.UI.MODAL.init();
-            CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
-            CABLES.UI.MODAL._setVisible(true);
-            document.getElementById("modalbg").style.display = "block";
-            CABLES.UI.MODAL.hideLoading();
-        });
-    }
-    catch (ex)
-    {
-        console.log(ex);
-        CABLES.UI.MODAL.hideLoading();
-    }
-};
-CABLES.UI.MODAL.showPortStructureHelpers = {};
-CABLES.UI.MODAL.showPortStructureHelpers.exposeNode = function (opId, portName, path, dataType, inputDataType = "Object")
-{
-    const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
-    newop.getPort("Path").set(path);
-    op.patch.link(op, portName, newop, inputDataType);
-    gui.patchView.centerSelectOp(newop.id, true);
-    gui.patchView.centerSelectOp(newop.id);
-    CABLES.UI.MODAL.hide();
-};
-
-CABLES.UI.MODAL.showPortStructureHelpers.exposeArray = function (opId, portName, path, inputDataType = "Object")
-{
-    const op = gui.corePatch().getOpById(opId);
-    const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "GetArrayValuesByPath");
-
-    newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
-
-    newop.getPort("Path").set(path);
-    op.patch.link(op, portName, newop, inputDataType);
-    gui.patchView.centerSelectOp(newop.id, true);
-    gui.patchView.centerSelectOp(newop.id);
-    CABLES.UI.MODAL.hide();
-};
-
 CABLES.UI.MODAL.showCode = function (title, code, type)
 {
-    CABLES.UI.MODAL.showClose();
+    // CABLES.UI.MODAL.showClose();
     CABLES.UI.MODAL.init();
 
     CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"fa fa-search\"></span>&nbsp;inspect</h2>";
@@ -646,7 +180,6 @@ CABLES.UI.MODAL.showCode = function (title, code, type)
     });
 };
 
-
 // todo: use modaldialog and remove
 CABLES.UI.MODAL.prompt = function (title, text, value, callback)
 {
@@ -658,41 +191,4 @@ CABLES.UI.MODAL.prompt = function (title, text, value, callback)
         "promptValue": value,
         "promptOk": callback
     });
-};
-
-
-CABLES.UI.showJson = function (opid, which)
-{
-    const op = gui.corePatch().getOpById(opid);
-    if (!op)
-    {
-        console.warn("opid not found:", opid);
-        return;
-    }
-    const port = op.getPort(which);
-    if (!port)
-    {
-        console.warn("port not found:", which);
-        return;
-    }
-
-    CABLES.UI.MODAL.showPortValue(port.name, port);
-};
-
-CABLES.UI.showJsonStructure = function (opid, which)
-{
-    const op = gui.corePatch().getOpById(opid);
-    if (!op)
-    {
-        console.warn("opid not found:", opid);
-        return;
-    }
-    const port = op.getPort(which);
-    if (!port)
-    {
-        console.warn("port not found:", which);
-        return;
-    }
-
-    CABLES.UI.MODAL.showPortStructure(port.name, port);
 };

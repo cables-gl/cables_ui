@@ -1,6 +1,11 @@
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 
+export default function extendCore()
+{
+
+
+
 CABLES.Op.prototype.undoUnLinkTemporary = function ()
 {
     if (this.shakeLink) this.shakeLink.remove();
@@ -157,3 +162,6 @@ CABLES.Op.prototype.checkLinkTimeWarnings = function ()
         this.setUiError("notworking", null);
     }
 };
+
+}
+

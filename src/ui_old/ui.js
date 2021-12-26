@@ -2,8 +2,6 @@ CABLES.UI = CABLES.UI || {};
 CABLES.UI.undo = new UndoManager();
 
 
-// let ele = window.ele;
-
 CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
@@ -18,6 +16,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.keys = new CABLES.UI.KeyBindingsManager();
     this.opParams = new CABLES.UI.OpParampanel();
+    this.opPortModal=new CABLES.UI.ModalPortValue();
+
     this.socket = null;
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
@@ -85,16 +85,11 @@ CABLES.UI.GUI = function (cfg)
     this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
     this._savedState = true;
 
-
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
-
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
-    // this.variables = new CABLES.UI.MetaVars(this.metaTabs);
-    // this.metaPaco = new CABLES.UI.Paco(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
     this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
@@ -118,10 +113,13 @@ CABLES.UI.GUI = function (cfg)
     this.tipps = new CABLES.UI.Tipps();
 
 
+
+
+
+
     this.project = function ()
     {
         return this._currentProject;
-        // return this.project;
     };
 
     this.setProject = function (p)
@@ -205,7 +203,6 @@ CABLES.UI.GUI = function (cfg)
         return this.metaTexturePreviewer;
     };
 
-
     this.showSaveWarning = function ()
     {
         if (this.showGuestWarning()) return true;
@@ -239,14 +236,8 @@ CABLES.UI.GUI = function (cfg)
 
     this.canSaveInMultiplayer = function ()
     {
-        if (gui.socket && !gui.socket.canSaveInMultiplayer())
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
+        else return true;
     };
 
     this.isGuestEditor = function ()
@@ -263,6 +254,11 @@ CABLES.UI.GUI = function (cfg)
         if (!gui.showTwoMetaPanels()) eleId = "options_meta";
         return eleId;
     };
+
+    this.closeModal=function()
+    {
+        if(gui.lastModal)gui.lastModal.close();
+    }
 
     this.showTwoMetaPanels = function ()
     {
@@ -758,26 +754,6 @@ CABLES.UI.GUI = function (cfg)
         perf.finish();
     };
 
-    // this.importDialog = function ()
-    // {
-    //     let html = "";
-    //     html += "import:<br/><br/>";
-    //     html += "<textarea id=\"serialized\"></textarea>";
-    //     html += "<br/>";
-    //     html += "<br/>";
-    //     html += "<a class=\"button\" onclick=\"this._corePatch.clear();this._corePatch.deSerialize(ele.byId('serialized').value);CABLES.UI.MODAL.hide();\">import</a>";
-    //     CABLES.UI.MODAL.show(html);
-    // };
-
-    // this.exportDialog = function ()
-    // {
-    //     let html = "";
-    //     html += "export:<br/><br/>";
-    //     html += "<textarea id=\"serialized\"></textarea>";
-    //     CABLES.UI.MODAL.show(html);
-    //     ele.byId("serialized").value = self.patch().scene.serialize();
-    // };
-
     this._setCanvasMode = function (m)
     {
         this._canvasMode = m;
@@ -1146,7 +1122,8 @@ CABLES.UI.GUI = function (cfg)
                 "fileId": fileId
             });
 
-        CABLES.UI.MODAL.show(html);
+        new CABLES.UI.ModalDialog({"html":html});
+
     };
 
     this.converterStart = function (projectId, fileId, converterId)
@@ -1164,6 +1141,7 @@ CABLES.UI.GUI = function (cfg)
             {
                 ele.hide(ele.byId("converterprogress"));
                 ele.show(ele.byId("converteroutput"));
+                ele.show(ele.byId("modalClose"));
 
                 if (err)
                 {
@@ -1176,7 +1154,9 @@ CABLES.UI.GUI = function (cfg)
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
 
-                    html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
+                    // html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
+
+                    ele.byId("modalClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
                 }
                 gui.refreshFileManager();
@@ -1287,7 +1267,7 @@ CABLES.UI.GUI = function (cfg)
 
             if (portName)
             {
-                CABLES.UI.openParamStringEditor(selectedOpId, portName, null, true);
+                CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, portName, null, true);
             }
         });
 
@@ -1408,7 +1388,6 @@ CABLES.UI.GUI = function (cfg)
         }, 50);
     };
 
-
     this.showOpCrash = function (op)
     {
         iziToast.error({
@@ -1428,7 +1407,6 @@ CABLES.UI.GUI = function (cfg)
             ]
         });
     };
-
 
     this.showUiElements = function ()
     {
@@ -1463,7 +1441,6 @@ CABLES.UI.GUI = function (cfg)
         gui.iconBarLeft = new CABLES.UI.IconBar("sidebar_left");
         gui.iconBarPatchNav = new CABLES.UI.IconBar("sidebar_bottom");
         gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
-
 
         if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
 
@@ -1719,7 +1696,6 @@ CABLES.UI.GUI = function (cfg)
         if (cb)cb();
     };
 
-
     this._timeoutPauseProfiler = null;
 
     this.pauseProfiling = function ()
@@ -1815,12 +1791,14 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 {
     this._corePatch.on("exception", function (ex, op)
     {
-        CABLES.UI.MODAL.showException(ex, op);
+        // CABLES.UI.MODAL.showException(ex, op);
+        new CABLES.UI.ModalException(ex,{"op":op});
     });
 
     this._corePatch.on("exceptionOp", function (e, objName)
     {
-        CABLES.UI.MODAL.showOpException(e, objName);
+        new CABLES.UI.ModalException(e,{"opname":objName});
+        // CABLES.UI.MODAL.showOpException(e, objName);
     });
 
     this._corePatch.on("criticalError", function (title, msg)
@@ -1870,7 +1848,7 @@ function startUi(cfg)
             // console.log("yep,b0rken!.............");
             ele.byId("loadingstatus").remove();
             ele.byId("loadingstatusLog").remove();
-            CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
+            // CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
             return;
         }
 

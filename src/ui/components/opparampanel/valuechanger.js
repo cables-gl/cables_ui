@@ -1,106 +1,13 @@
 
-CABLES = CABLES || {};
-CABLES.UI = CABLES.UI || {};
+let pointerLockFirstTime = true;
 
-CABLES.UI.pointerLockFirstTime = true;
 
-CABLES.UI.togglePortValBool = function (which, checkbox)
+export default valueChanger;
+
+function valueChanger (eleId, focus, portName, opid)
 {
-    gui.setStateUnsaved();
-    const inputEle = document.getElementById(which);
-    const checkBoxEle = document.getElementById(checkbox);
 
-    let bool_value = inputEle.value == "true";
-    bool_value = !bool_value;
-
-    if (bool_value)
-    {
-        checkBoxEle.parentElement.classList.add("checkbox-active");
-        checkBoxEle.parentElement.classList.remove("checkbox-inactive");
-        // checkBoxEle.classList.add("icon-check");
-    }
-    else
-    {
-        checkBoxEle.parentElement.classList.add("checkbox-inactive");
-        checkBoxEle.parentElement.classList.remove("checkbox-active");
-        // checkBoxEle.classList.remove("icon-check");
-    }
-
-    inputEle.value = bool_value;
-    inputEle.dispatchEvent(new Event("input"));
-};
-
-
-CABLES.UI.inputIncrement = function (v, dir, e)
-{
-    if (e.target.type == "search") return v;
-    gui.setStateUnsaved();
-    if (v == "true") return "false";
-    if (v == "false") return "true";
-
-    const val = parseFloat(v);
-    if (val != val) return v;
-
-    let add = 0.1;
-
-    if (e.target.classList.contains("inc_int"))add = 1;
-
-    if (e && e.shiftKey && e.metaKey)add = 0.001;
-    else if (e && e.altKey && e.shiftKey) add = 10;
-    else if (e && e.shiftKey) add = 0.01;
-    else if (e && e.altKey) add = 1;
-
-    let r = val + add * dir;
-
-    if (isNaN(r)) r = 0.0;
-    else r = Math.round(1000 * r) / 1000;
-    return r;
-};
-
-
-CABLES.valueChangerInitSliders = function ()
-{
-    const els = document.querySelectorAll(".valuesliderinput input");
-    for (let i = 0; i < els.length; i++)
-    {
-        const v = els[i].value;
-        CABLES.valueChangerSetSliderCSS(v, els[i].parentElement);
-    }
-};
-
-CABLES.valueChangerSetSliderCSS = function (v, eleInput)
-{
-    if (eleInput.dataset.min || eleInput.dataset.max)
-        v = CABLES.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
-
-    v = Math.max(0, v);
-    v = Math.min(1, v);
-    const cssv = v * 100;
-    const grad = "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
-
-    eleInput.style.background = grad;
-};
-
-// CABLES.valueChangerGetSliderCss = function (v, el)
-// {
-//     v = Math.max(0, v);
-//     v = Math.min(1, v);
-//     const cssv = v * 100;
-//     return "linear-gradient(0.25turn,#5a5a5a, #5a5a5a " + cssv + "%, #444 " + cssv + "%)";
-// };
-
-// CABLES.UI.lastValueChanger=null;
-
-CABLES.UI.showInputFieldInfo = function ()
-{
-    if (document.activeElement.tagName == "INPUT") CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerInput);
-    else CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerHover);
-};
-
-
-CABLES.valueChanger = function (eleId, focus, portName, opid)
-{
-    CABLES.UI.showInputFieldInfo();
+    CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerInput);
 
     const eleInput = ele.byId(eleId);
     const eleContainer = ele.byId(eleId + "-container");
@@ -115,7 +22,6 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     let mouseDownTime = 0;
     const usePointerLock = true;
 
-
     document.addEventListener("mouseup", up);
     document.addEventListener("mousedown", down);
     eleInput.addEventListener("focusout", blur);
@@ -123,8 +29,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     if (focus)
     {
         setTextEdit(true);
-        eleInput.addEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
-        // elem.keydown(CABLES.UI.inputListenerCursorKeys);
+        eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
+        // elem.keydown(CABLES.UI.paramsHelper.inputListenerCursorKeys);
     }
 
     function switchToNextInput(dir)
@@ -144,8 +50,8 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
                 setTextEdit(false);
                 // elem.unbind("keydown", tabKeyListener);
-                eleInput.removeEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
-                CABLES.valueChanger("portval_" + i, true, portname, opid);
+                eleInput.removeEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
+                CABLES.UI.valueChanger("portval_" + i, true, portname, opid);
 
                 return;
             }
@@ -170,7 +76,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
         if (enabled)
         {
-            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
             ele.hide(eleNumInputDisplay);
 
             eleContainer.classList.add("numberinputFocussed");
@@ -184,7 +90,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
         }
         else
         {
-            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
 
             ele.show(eleNumInputDisplay);
             ele.hide(eleInput);
@@ -199,14 +105,13 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     {
         if (ele.hasFocus(eleInput)) return;
 
-        eleInput.removeEventListener("wheel", CABLES.UI.inputListenerMousewheel);
+        eleInput.removeEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
         eleInput.removeEventListener("keydown", tabKeyListener);
-        eleInput.addEventListener("wheel", CABLES.UI.inputListenerMousewheel);
-        eleInput.addEventListener("keydown", CABLES.UI.inputListenerCursorKeys);
+        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
+        eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();
         isDown = true;
-
 
         if (usePointerLock)
         {
@@ -287,7 +192,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function setProgress(v)
     {
-        CABLES.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+        CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
         return v;
     }
 
@@ -300,9 +205,9 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
 
     function move(e)
     {
-        if (CABLES.UI.pointerLockFirstTime)
+        if (pointerLockFirstTime)
         {
-            CABLES.UI.pointerLockFirstTime = false;
+            pointerLockFirstTime = false;
             return;
         }
 
@@ -363,7 +268,7 @@ CABLES.valueChanger = function (eleId, focus, portName, opid)
     {
         if (document.pointerLockElement === eleInput || document.mozPointerLockElement === eleInput || document.webkitPointerLockElement === eleInput)
         {
-            CABLES.UI.pointerLockFirstTime = true;
+            pointerLockFirstTime = true;
             document.addEventListener("mousemove", move, false);
         }
         else
