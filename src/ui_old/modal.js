@@ -1,5 +1,6 @@
 // http://html5doctor.com/drag-and-drop-to-server/
 
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.UI.MODAL = CABLES.UI.MODAL || {};
@@ -100,6 +101,7 @@ CABLES.UI.MODAL.setTitle = function (title)
 
 CABLES.UI.MODAL.show = function (content, options)
 {
+
     if (CABLES.UI.MODAL.contentElement && options && !options.ignoreTop) CABLES.UI.MODAL.contentElement.style.top = "5%";
 
     // CABLES.UI.MODAL.showClose();

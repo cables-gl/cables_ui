@@ -1,4 +1,5 @@
 import Logger from "../utils/logger";
+import ModalDialog from "./modaldialog";
 
 export default class GradientEditor
 {
@@ -194,10 +195,7 @@ export default class GradientEditor
 
         const html = CABLES.UI.getHandleBarHtml("GradientEditor", {});
 
-        CABLES.UI.MODAL.show(html, {
-            "title": "",
-            "nopadding": true
-        });
+        new ModalDialog({"html":html,"nopadding":true});
 
         this._paper = Raphael("gradienteditorbar", 0, 0);
 

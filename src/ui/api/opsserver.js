@@ -269,7 +269,7 @@ export default class ServerOps
                     this._log.log("err res", res);
                     loadingModal.close();
 
-                    CABLES.UI.MODAL.showError("could not clone op", "");
+                    CABLES.UI.MODAL.showError("Could not clone op", "");
 
                     return;
                 }

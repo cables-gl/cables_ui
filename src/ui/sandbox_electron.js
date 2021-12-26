@@ -1,4 +1,3 @@
-
 export default class SandboxElectron extends CABLES.EventTarget
 {
     constructor()

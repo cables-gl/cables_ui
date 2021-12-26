@@ -2,11 +2,41 @@ import ele from "../utils/ele";
 import Logger from "../utils/logger";
 import ModalBackground from "./modalbg";
 
+/**
+ * configuration object for loading a patch
+ * @typedef {Object} ModalDialogOptions
+ * @hideconstructor
+ * @property {String} [html=''] html content
+ * @property {String} [tite=''] a title of the dialog
+ * @property {Boolean} [nopadding=false] remove padding around the window
+ * @property {Boolean} [warning=false] show a warning triangle
+ * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
+ * @property {Boolean} [prompt=false] show an input field to enter a value
+ */
+
+/**
+ * ModalDialog opens a modal dialog overlay
+ *
+ * @param {ModalDialogOptions} options The option object.
+ * @class
+ * @example
+ * new ModalDialog(
+ * {
+ *     "title":"Title",
+ *     "html":"hello world",
+ * });
+ */
 export default class ModalDialog
 {
     constructor(options)
     {
         this._log = new Logger("ModalDialog");
+
+        if(gui.lastModal)
+        {
+            this._log.warn("modal dialog was still open");
+            gui.lastModal.close();
+        }
         this._options = options;
         this._ele = null;
         this._eleContent = null;
