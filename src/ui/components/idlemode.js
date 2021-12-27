@@ -45,9 +45,8 @@ function stopIdleMode()
     const idleSeconds = Math.round((Date.now() - idleModeStart) / 1000);
     logger.log("idled for ", idleSeconds + " seconds");
 
-
     gui.corePatch().resume();
-    CABLES.UI.MODAL.hide();
+    gui.closeModal();
     idling = false;
     clearTimeout(idleTimeout);
     gui.emitEvent("uiIdleEnd", idleSeconds);
