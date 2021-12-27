@@ -6,12 +6,11 @@ CABLES.UI.GUI = function (cfg)
 {
     CABLES.EventTarget.apply(this);
 
-    const self = this;
 
     this._log = new CABLES.UI.Logger("gui");
 
     this.patchId = cfg.patchId;
-    let showTiming = false;
+    this._showTiming = false;
     this._showingEditor = false;
 
     this.keys = new CABLES.UI.KeyBindingsManager();
@@ -47,10 +46,10 @@ CABLES.UI.GUI = function (cfg)
         }
     });
 
-    let patchLoadEndiD = this._corePatch.on("patchLoadEnd",
+    this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
         () =>
         {
-            this._corePatch.off(patchLoadEndiD);
+            this._corePatch.off(this._patchLoadEndiD);
             this.setStateSaved();
 
             logStartup("Patch loaded");
@@ -64,9 +63,8 @@ CABLES.UI.GUI = function (cfg)
     this.patchView = new CABLES.UI.PatchView(this._corePatch);
 
     this._corePatch.gui = true;
-    let _patch = null;
 
-    const _jobs = new CABLES.UI.Jobs();
+    this._jobs = new CABLES.UI.Jobs();
     this.cmdPallet = new CABLES.UI.CommandPallete();
     this._opselect = new CABLES.UI.OpSelect();
     this.introduction = new CABLES.UI.Introduction();
@@ -87,17 +85,17 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
-    const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
+    this._metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
     this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
 
-    const favIconLink = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(favIconLink);
-    favIconLink.type = "image/x-icon";
-    favIconLink.rel = "shortcut icon";
+    this._favIconLink = document.createElement("link");
+    document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
+    this._favIconLink.type = "image/x-icon";
+    this._favIconLink.rel = "shortcut icon";
 
     this.user = null;
     this.onSaveProject = null;
@@ -109,14 +107,8 @@ CABLES.UI.GUI = function (cfg)
     this._eventListeners = {};
 
     this._currentProject = null;
-
     this.tipps = new CABLES.UI.Tipps();
-
     this.currentModal=null;
-
-
-
-
 
     this.project = function ()
     {
@@ -147,14 +139,9 @@ CABLES.UI.GUI = function (cfg)
         return this._corePatch;
     };
 
-    this.patch = function ()
-    {
-        return _patch;
-    };
-
     this.jobs = function ()
     {
-        return _jobs;
+        return this._jobs;
     };
 
     this.finishedLoading = function ()
@@ -366,16 +353,6 @@ CABLES.UI.GUI = function (cfg)
 
         const iconBarWidth = 0;
 
-        // if (CABLES.UI.userSettings.get("hideSizeBar"))
-        // {
-        //     iconBarWidth = 0;
-        //     this._elIconBar.hide();
-        // }
-        // else
-        // {
-        //     this._elIconBar.show();
-        // }
-
         let patchHeight = window.innerHeight;
 
         if (this.isRemoteClient)
@@ -436,10 +413,10 @@ CABLES.UI.GUI = function (cfg)
 
         patchHeight -= infoAreaHeight;
 
-        if (showTiming) patchHeight -= this.timingHeight;
+        if (this._showTiming) patchHeight -= this.timingHeight;
         else patchHeight -= timelineUiHeight;
 
-        let editorWidth = self.editorWidth;
+        let editorWidth = this.editorWidth;
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
@@ -534,7 +511,7 @@ CABLES.UI.GUI = function (cfg)
             this._eleSplitterTimeline = this._eleSplitterTimeline || ele.byId("splitterTimeline");
             this._eleTiming = this._eleTiming || ele.byId("timing");
 
-            if (showTiming)
+            if (this._showTiming)
             {
                 this._eleTiming.style.width = timelineWidth + "px";
                 this._eleTiming.style.bottom = infoAreaHeight + "px";
@@ -595,7 +572,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
             this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
 
-            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
+            if (!this._showTiming) this._elCanvasIconbarTimeline.style.display = "none";
             else this._elCanvasIconbarTimeline.style.display = "inline-block";
         }
 
@@ -624,14 +601,14 @@ CABLES.UI.GUI = function (cfg)
             metaWidth = this.rightPanelWidth - optionsWidth;
 
             this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = self.rendererHeightScaled + "px";
+            this._elOptions.style.top = this.rendererHeightScaled + "px";
             this._elOptions.style.width = optionsWidth + "px";
-            this._elOptions.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.top = this.rendererHeightScaled + "px";
             this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elOptions.style.display = "block";
         }
@@ -640,57 +617,26 @@ CABLES.UI.GUI = function (cfg)
             metaWidth = this.rightPanelWidth;
             this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.top = this.rendererHeightScaled + "px";
             this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elOptions.style.width = 0 + "px";
             this._elOptions.style.height = 0 + "px";
             this._elOptions.style.display = "none";
         }
 
-        // this._elSplitterMeta.style.bottom = self.infoAreaHeight + "px";
-        // this._elSplitterMeta.style.width = metaWidth - 28 + "px";
 
         this._elMenubar.style.top = 0 + "px";
-        // this._elMenubar.style.height = menubarHeight + "px";
-
 
         if (!this.bottomInfoArea.showing)
         {
             this._elInfoArea.style.height = 0 + "px";
-            // ele.byId("infoAreaToggle").style.width = window.innerHeight + "px";
-            // ele.byId("infoAreaToggle").classList.remove("hidden");
         }
         else
         {
             this._elInfoArea.style.height = infoAreaHeight + "px";
         }
-
-        // if (this.infoAreaHeight === 0)
-        // {
-        //     // ele.hide(this._elInfoArea);
-        //     this._elInfoArea.style.display = "none";
-        //     ele.hide(this._elSplitterMeta);
-
-        //     ele.byId("infoAreaMin").style.width = window.innerHeight + "px";
-        //     ele.byId("infoAreaMin").classList.remove("hidden");
-        // }
-        // else
-        // {
-        //     ele.byId("infoAreaMin").classList.add("hidden");
-        //     ele.show(this._elSplitterMeta);
-        //     // ele.show(this._elInfoArea);
-        //     this._elInfoArea.style.display = "block";
-        //     this._elInfoArea.style.width = metaWidth - 20 + "px";
-        //     this._elInfoArea.style.height = this.infoAreaHeight + "px";
-        //     this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoAreaHeight) + "px";
-        // }
-
-        // this._elInfoArea.style.display = "block";
-        // this._elInfoArea.style.width = window.innerWidth + "px";
-        // this._elInfoArea.style.height = 22 + "px";
-        // this._elInfoArea.style.bottom = 0 + "px";
 
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - menubarHeight - timelineHeight + "px";
 
@@ -731,11 +677,11 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style["z-index"] = 10;
 
             this._elGlCanvasDom.setAttribute("width", this.rendererWidth * density);
-            this._elGlCanvasDom.setAttribute("height", self.rendererHeight * density);
+            this._elGlCanvasDom.setAttribute("height", this.rendererHeight * density);
             this._elGlCanvasDom.style.width = this.rendererWidth + "px";
-            this._elGlCanvasDom.style.height = self.rendererHeight + "px";
+            this._elGlCanvasDom.style.height = this.rendererHeight + "px";
             this._elCablesCanvas.style.width = this.rendererWidth + "px";
-            this._elCablesCanvas.style.height = self.rendererHeight + "px";
+            this._elCablesCanvas.style.height = this.rendererHeight + "px";
             this._elCablesCanvas.style.right = "0px";
             this._elCablesCanvas.style.left = "initial";
 
@@ -831,15 +777,15 @@ CABLES.UI.GUI = function (cfg)
 
     this.isShowingTiming = function ()
     {
-        return showTiming;
+        return this._showTiming;
     };
 
     this.showTiming = function ()
     {
-        showTiming = true;
+        this._showTiming = true;
         this.timeLine().show();
         this.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
     };
 
     this.showLoadingProgress = function (show)
@@ -868,10 +814,10 @@ CABLES.UI.GUI = function (cfg)
     this.hideTiming = function ()
     {
         gui.timeLine().hidden = true;
-        showTiming = false;
+        this._showTiming = false;
         ele.hide(ele.byId("timing"));
         gui.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
     };
 
     this.toggleTiming = function ()
@@ -880,8 +826,8 @@ CABLES.UI.GUI = function (cfg)
         ele.show(ele.byId("timing"));
         CABLES.UI.userSettings.set("timelineOpened", true);
 
-        showTiming = !showTiming;
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
+        this._showTiming = !this._showTiming;
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
         updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
@@ -1160,8 +1106,6 @@ CABLES.UI.GUI = function (cfg)
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
 
-                    // html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
-
                     ele.byId("modalClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
                 }
@@ -1173,9 +1117,6 @@ CABLES.UI.GUI = function (cfg)
     this.bind = function (cb)
     {
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
-
-        // if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
-
 
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
@@ -1562,7 +1503,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaCode = function ()
     {
-        return metaCode;
+        return this._metaCode;
     };
 
 
@@ -1583,8 +1524,8 @@ CABLES.UI.GUI = function (cfg)
             }
         }.bind(this);
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" }, true);
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settingsiframe";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settings" }, true);
     };
 
     this._cursor = "";
@@ -1647,7 +1588,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.checkIdle = function ()
     {
-        const idling = (CABLES.now() - self.lastNotIdle) / 1000;
+        const idling = (CABLES.now() - this.lastNotIdle) / 1000;
         if (idling > 30 * 60)
         {
         }
@@ -1666,7 +1607,7 @@ CABLES.UI.GUI = function (cfg)
             title += gui.project.name + " *";
             document.title = title;
 
-            favIconLink.href = "/favicon/favicon_orange.ico";
+            this._favIconLink.href = "/favicon/favicon_orange.ico";
             this._savedState = false;
 
             document.getElementById("patchname").classList.add("warning");
@@ -1691,7 +1632,7 @@ CABLES.UI.GUI = function (cfg)
     this.setStateSaved = function ()
     {
         this._savedState = true;
-        favIconLink.href = "/favicon/favicon.ico";
+        this._favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 
         let title = "";
@@ -1739,14 +1680,6 @@ CABLES.UI.GUI = function (cfg)
 
         CABLES.UI.initSplitPanes();
 
-
-        // _patch = new CABLES.UI.Patch(this);
-        // _patch.show(this._corePatch);
-        // this.patchView.store.setPatch(this._corePatch);
-
-        // this.patchView.setPatchRenderer("patch", _patch);
-
-
         ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
@@ -1755,7 +1688,6 @@ CABLES.UI.GUI = function (cfg)
         {
             CABLES.UI.hideInfo();
         });
-
 
         ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
@@ -1831,7 +1763,6 @@ function startUi(cfg)
     logStartup("Init UI");
     CABLES.UI.initHandleBarsHelper();
 
-
     window.gui = new CABLES.UI.GUI(cfg);
 
     gui.on("uiloaded", () =>
@@ -1862,7 +1793,6 @@ function startUi(cfg)
             new CABLES.UI.ModalDialog({html: "could not initialize webgl. try to restart your browser, or try another one" });
             return;
         }
-
 
         gui.bind(() =>
         {
