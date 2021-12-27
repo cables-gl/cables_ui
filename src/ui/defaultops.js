@@ -1,3 +1,7 @@
+/**
+ * default ops for various shortcuts/operations/files/variables etc.
+ *
+ */
 
 export default
 {
@@ -24,7 +28,6 @@ export default
         "VarGetTrigger": "Ops.Trigger.TriggerReceive",
         "defaultFont": "Ops.Html.FontFile_v2",
         "blueprint": "Ops.Dev.Blueprint",
-
         "subPatch": "Ops.Ui.SubPatch",
         "uiArea": "Ops.Ui.Area"
     },

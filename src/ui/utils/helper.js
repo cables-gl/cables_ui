@@ -1,3 +1,7 @@
+/**
+ * Helper functions
+ *
+ */
 
 String.prototype.endl = function ()
 {

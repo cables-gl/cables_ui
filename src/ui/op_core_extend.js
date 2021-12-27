@@ -1,3 +1,7 @@
+/**
+ * extending core classes for helper functions which will be only available in ui/editor mode
+ */
+
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 

@@ -1,10 +1,17 @@
 import ModalDialog from "./modaldialog";
 
+/**
+ * Opens a modal dialog and shows info about given exception
+ *
+ * @param {exception} exception
+ * @param {Object} option option object
+ * @class
+ */
 export default class ModalException
 {
-    constructor(ex,options)
+    constructor(exception,options)
     {
-        this._exception=ex;
+        this._exception=exception;
 
         if(options)
         {

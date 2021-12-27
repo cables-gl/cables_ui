@@ -121,9 +121,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     {
         const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.project()._id });
 
-        new CAVLES.UI.ModalDialog({"html":html});
-
-
+        new CABLES.UI.ModalDialog({"html":html});
     }
 };
 

@@ -1,22 +1,47 @@
+/**
+ * Ele - minimalistic html dom helper
+ *
+ * @class
+ */
 
 class Ele
 {
-    byId(id)
+    /**
+     * shortcut for document.getElementById(id)
+     * @param  {String} id
+     * @returns {Object} DOM element
+     */
+     byId(id)
     {
         if (id && id[0] == "#") console.warn("ele.byId should not contain #");
         return document.getElementById(id);
     }
 
+    /**
+     * shortcut for document.querySelector(id)
+     * @param  {String} query
+     * @returns {Object} DOM element
+     */
     byQuery(q)
     {
         return document.querySelector(q);
     }
 
+    /**
+     * shortcut for document.querySelectorAll(id)
+     * @param  {String} query
+     * @returns {Array} DOM elements
+     */
     byQueryAll(q)
     {
         return document.querySelectorAll(q);
     }
 
+    /**
+     * returns the first element with class
+     * @param  {String} classname
+     * @returns {Object} DOM element
+     */
     byClass(name)
     {
         if (name && name[0] == ".") console.warn("ele.byClass should not contain .");
@@ -25,6 +50,11 @@ class Ele
         return null;
     }
 
+    /**
+     * returns the all elements with class
+     * @param  {String} classname
+     * @returns {Array} DOM elements
+     */
     byClassAll(name)
     {
         if (name && name[0] == ".") console.warn("ele.byClassAll should not contain .");

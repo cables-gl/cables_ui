@@ -1,3 +1,7 @@
+/**
+ * Handlebars template helper functions
+ *
+ */
 
 const handleBarsPrecompiled = {};
 

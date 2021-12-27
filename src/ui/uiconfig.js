@@ -1,4 +1,8 @@
-
+/**
+ * general settings for the user interface
+ *
+ * @class
+ */
 class UiConfig
 {
     constructor()

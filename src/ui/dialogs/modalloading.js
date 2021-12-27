@@ -1,5 +1,11 @@
 import ModalDialog from "./modaldialog";
 
+/**
+ * Opens a modal dialog and shows a loading indicator animation
+ *
+ * @param {String} title
+ * @class
+ */
 export default class ModalLoading
 {
     constructor(title)

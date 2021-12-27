@@ -1,4 +1,5 @@
 
+import ModalDialog from "../dialogs/modaldialog";
 import Logger from "../utils/logger";
 
 export default class Api
@@ -71,7 +72,11 @@ export default class Api
                         {
                             if (_data.statusText == "NOT_LOGGED_IN")
                             {
-                                CABLES.UI.MODAL.showError("not logged in", "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">continue</a> <br/><br/> ");
+                                new ModalDialog({
+                                    warning:true,
+                                    title:"not logged in",
+                                    html: "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">continue</a> <br/><br/> "
+                                });
                             }
                             else
                             if (_data.statusText == "Multiple Choices")
@@ -81,7 +86,10 @@ export default class Api
                             }
                             else
                             {
-                                if (!cbError) CABLES.UI.MODAL.show("Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a> <br/><br/>");
+                                if (!cbError) new ModalDialog({
+                                    warning:true,
+                                    html:"Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">ok</a> <br/><br/>"
+                                });
                                 this._log.log(_data);
                             }
                         }
@@ -194,7 +202,7 @@ export default class Api
             html += "<h2>thank you</h2>";
             html += "we will look into it<br/>";
             html += "<br/>";
-            html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "</center>";
 
             CABLES.UI.MODAL.show(html, { "title": "" });
