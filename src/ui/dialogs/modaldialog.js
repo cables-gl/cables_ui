@@ -46,7 +46,7 @@ export default class ModalDialog
 
         ele.byId("modalclose").style.display = "block";
 
-        this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
+        // this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
 
         gui.currentModal=this;
     }

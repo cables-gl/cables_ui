@@ -257,9 +257,9 @@ CABLES.UI.GUI = function (cfg)
         return eleId;
     };
 
-    this.isShowindModal=function()
+    this.isShowingModal=function()
     {
-
+        return gui.currentModal!=null;
     }
     this.closeModal=function()
     {
@@ -1309,7 +1309,7 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
-            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowindModal()) CABLES.CMD.UI.showSearch();
+            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });
 
@@ -1359,7 +1359,7 @@ CABLES.UI.GUI = function (cfg)
 
             this._showingEditor = this._oldShowingEditor;
             this._elGlCanvasDom.classList.remove("maximized");
-            self.setLayout();
+            this.setLayout();
             this.canvasUi.showCanvasModal(true);
         }
         else if (CABLES.UI.suggestions)
@@ -1369,11 +1369,10 @@ CABLES.UI.GUI = function (cfg)
         }
         else if (gui.cmdPallet.isVisible()) gui.cmdPallet.close();
         else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
-        else if (CABLES.UI.MODAL._visible)
+        else if (gui.isShowingModal())
         {
-            CABLES.UI.MODAL.hide(true);
-            CABLES.UI.MODAL.hide();
-            if (this._showingEditor) self.editor().focus();
+            gui.closeModal();
+            if (this._showingEditor) this.editor().focus();
         }
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if (this._showingEditor) this.closeEditor();

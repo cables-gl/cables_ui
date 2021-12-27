@@ -1,7 +1,6 @@
 import ele from "../utils/ele";
 
 let tooltipTimeout = null;
-let eleInfoArea = null;
 let eleTooltip = null;
 
 export function showToolTip(e, txt)
