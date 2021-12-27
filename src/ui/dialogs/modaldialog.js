@@ -34,7 +34,7 @@ export default class ModalDialog
 
         if(gui.currentModal)
         {
-            this._log.warn("modal dialog was still open");
+            // this._log.warn("modal dialog was still open");
             gui.currentModal.close();
         }
         this._options = options;

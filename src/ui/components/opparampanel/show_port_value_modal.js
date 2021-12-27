@@ -1,3 +1,4 @@
+import ModalDialog from "../../dialogs/modaldialog";
 
 export default class ModalPortValue
 {
@@ -220,7 +221,6 @@ export default class ModalPortValue
             asyncInnerHTML(fullHTML, function (fragment)
             {
                 CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
-                // CABLES.UI.MODAL.showClose();
                 CABLES.UI.MODAL.init();
                 CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
                 CABLES.UI.MODAL._setVisible(true);
@@ -254,34 +254,31 @@ export default class ModalPortValue
         try
         {
             CABLES.UI.MODAL.PORTPREVIEW = port;
-            // CABLES.UI.MODAL.showClose();
-            CABLES.UI.MODAL.init();
-            CABLES.UI.MODAL.contentElement.innerHTML += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            CABLES.UI.MODAL.contentElement.innerHTML += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-            CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-            CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-            CABLES.UI.MODAL.contentElement.innerHTML += "&nbsp;";
-            CABLES.UI.MODAL.contentElement.innerHTML += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
+            let html=""
+            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
+            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            html += "<br/><br/>";
+            html += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
+            html += "&nbsp;";
+            html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
 
-            CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
+            html += "<br/><br/>";
             const thing = port.get();
 
             if (thing && thing.constructor)
             {
-                CABLES.UI.MODAL.contentElement.innerHTML += "" + thing.constructor.name + " \n";
+                html += "" + thing.constructor.name + " \n";
 
-                if (thing.constructor.name == "Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
-                if (thing.constructor.name == "Float32Array") CABLES.UI.MODAL.contentElement.innerHTML += " - length: " + thing.length + "\n";
+                if (thing.constructor.name == "Array") html += " - length: " + thing.length + "\n";
+                if (thing.constructor.name == "Float32Array") html += " - length: " + thing.length + "\n";
             }
 
-            CABLES.UI.MODAL.contentElement.innerHTML += "<br/><br/>";
-            CABLES.UI.MODAL.contentElement.innerHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</pre>";
+            html += "<br/><br/>";
+            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</code></pre>";
 
-            CABLES.UI.MODAL._setVisible(true);
+            new ModalDialog({html:html});
 
-            document.getElementById("modalbg").style.display = "block";
-
-            hljs.highlightBlock(document.getElementById("portvalue"));
+            hljs.highlightBlock(ele.byId("portvalue"));
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {
