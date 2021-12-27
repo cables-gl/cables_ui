@@ -91,7 +91,7 @@ import uiconfig from "./uiconfig";
 import extendCore from "./op_core_extend";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import ModalLoading from "./dialogs/modalloading";
-import ModalException from "./dialogs/modalException";
+import ModalException from "./dialogs/modalexception";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
