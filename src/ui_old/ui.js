@@ -68,7 +68,7 @@ CABLES.UI.GUI = function (cfg)
 
     const _jobs = new CABLES.UI.Jobs();
     this.cmdPallet = new CABLES.UI.CommandPallete();
-    const _opselect = new CABLES.UI.OpSelect();
+    this._opselect = new CABLES.UI.OpSelect();
     this.introduction = new CABLES.UI.Introduction();
     this._gizmo = null;
     this._transformOverlay = new CABLES.UI.TransformsOverlay();
@@ -132,7 +132,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.opSelect = function ()
     {
-        return _opselect;
+        return this._opselect;
     };
 
     this.timeLine = function ()
@@ -227,8 +227,9 @@ CABLES.UI.GUI = function (cfg)
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint +
-            "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+            CABLES.UI.MODAL.showError(
+                "Demo Editor",
+                CABLES.UI.TEXTS.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
             );
             return true;
         }
@@ -1274,7 +1275,8 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
             (e) =>
             {
-                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")))
+                if ( !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA") )
+                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape") ) )
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
@@ -1372,11 +1374,17 @@ CABLES.UI.GUI = function (cfg)
         else if (this._showingEditor) this.closeEditor();
         else
         {
-            if (e) gui.opSelect().show({
-                "subPatch": this.patchView.getCurrentSubPatch(),
-                "x": 0,
-                "y": 0
-            });
+            if (this._opselect.isOpen()) this._opselect.close();
+            else
+            if (e)
+            {
+                gui.opSelect().show({
+                    "subPatch": this.patchView.getCurrentSubPatch(),
+                    "x": 0,
+                    "y": 0
+                });
+            }
+
         }
 
         setTimeout(() =>
@@ -1791,14 +1799,12 @@ CABLES.UI.GUI.prototype.initCoreListeners = function ()
 {
     this._corePatch.on("exception", function (ex, op)
     {
-        // CABLES.UI.MODAL.showException(ex, op);
         new CABLES.UI.ModalException(ex,{"op":op});
     });
 
     this._corePatch.on("exceptionOp", function (e, objName)
     {
         new CABLES.UI.ModalException(e,{"opname":objName});
-        // CABLES.UI.MODAL.showOpException(e, objName);
     });
 
     this._corePatch.on("criticalError", function (title, msg)
@@ -1848,7 +1854,8 @@ function startUi(cfg)
             // console.log("yep,b0rken!.............");
             ele.byId("loadingstatus").remove();
             ele.byId("loadingstatusLog").remove();
-            // CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
+
+            new CABLES.UI.ModalDialog({html: "could not initialize webgl. try to restart your browser, or try another one" });
             return;
         }
 

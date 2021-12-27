@@ -1,4 +1,5 @@
 import defaultops from "../defaultops";
+import ele from "../utils/ele";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -27,11 +28,16 @@ export default class OpSelect
         this._searchInputEle = null;
         this._enterPressedEarly = false;
         this._searching = false;
+        this._bg=new CABLES.UI.ModalBackground();
+        this._escapeListener = null;
     }
 
     close()
     {
         gui.patchView.focus();
+        ele.hide()
+        this._bg.hide();
+        ele.hide(ele.byId("opsearchmodal"));
     }
 
     _getQuery()
@@ -481,7 +487,8 @@ export default class OpSelect
     {
         gui.opSelect().addOp(evt.target.dataset.opname);
 
-        CABLES.UI.MODAL.hide();
+        // CABLES.UI.MODAL.hide();
+        this.close();
 
         if (evt.shiftKey)
             setTimeout(() =>
@@ -494,8 +501,19 @@ export default class OpSelect
             }, 50);
     }
 
+    isOpen()
+    {
+        return this._bg.showing;
+    }
+
     show(options, linkOp, linkPort, link)
     {
+        // if(!this._escapeListener)this._escapeListener = gui.on("pressedEscape", ()=>
+        //     {
+        //         console.log("pressed esc!");
+        //         this.close();
+        //     });
+
         CABLES.UI.hideToolTip();
         this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
@@ -527,14 +545,18 @@ export default class OpSelect
 
 
 
-        CABLES.UI.MODAL.show(null,
-            {
-                "title": null,
-                "element": "#opsearchmodal",
-                "transparent": true,
-                "onClose": this.close,
-                "nopadding": true
-            });
+        this._bg.show();
+        ele.show(ele.byId("opsearchmodal"));
+
+
+        // CABLES.UI.MODAL.show(null,
+        //     {
+        //         "title": null,
+        //         "element": "#opsearchmodal",
+        //         "transparent": true,
+        //         "onClose": this.close,
+        //         "nopadding": true
+        //     });
 
         if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
@@ -687,11 +709,10 @@ export default class OpSelect
     {
         if (opname && opname.length > 2)
         {
-            // gui.log.userInteraction("adds op " + opname);
 
             this._newOpOptions.createdLocally = true;
 
-            CABLES.UI.MODAL.hide();
+            this.close();
             gui.patchView.addOp(opname, this._newOpOptions);
         }
     }
@@ -712,10 +733,14 @@ export default class OpSelect
 
         switch (e.which)
         {
-        case 27:
-            this.close();
-            e.preventDefault();
-            break;
+        // case 27:
+        //     this.close();
+        //     e.preventDefault();
+            // console.log("opselect input escape!");
+
+            // gui.pressedEscape();
+
+            // break;
 
         case 13:
 

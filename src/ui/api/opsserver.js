@@ -131,7 +131,6 @@ export default class ServerOps
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
-
                 });
             },
         );
