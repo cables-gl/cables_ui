@@ -112,6 +112,7 @@ CABLES.UI.GUI = function (cfg)
 
     this.tipps = new CABLES.UI.Tipps();
 
+    this.currentModal=null;
 
 
 
@@ -256,9 +257,13 @@ CABLES.UI.GUI = function (cfg)
         return eleId;
     };
 
+    this.isShowindModal=function()
+    {
+
+    }
     this.closeModal=function()
     {
-        if(gui.lastModal)gui.lastModal.close();
+        if(gui.currentModal)gui.currentModal.close();
     }
 
     this.showTwoMetaPanels = function ()
@@ -1304,7 +1309,7 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
-            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
+            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowindModal()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });
 

@@ -62,7 +62,6 @@ function visibilityChanged(e)
 export default function startIdleListeners()
 {
     if (gui.isRemoteClient) return;
-    // logger.log("idle listeners started!");
 
     window.addEventListener("focus", (event) =>
     {

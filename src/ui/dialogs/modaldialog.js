@@ -32,10 +32,10 @@ export default class ModalDialog
     {
         this._log = new Logger("ModalDialog");
 
-        if(gui.lastModal)
+        if(gui.currentModal)
         {
             this._log.warn("modal dialog was still open");
-            gui.lastModal.close();
+            gui.currentModal.close();
         }
         this._options = options;
         this._ele = null;
@@ -48,14 +48,14 @@ export default class ModalDialog
 
         this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
 
-        gui.lastModal=this;
+        gui.currentModal=this;
     }
 
     close()
     {
         this._ele.remove();
         this._bg.hide();
-        gui.lastModal=null;
+        gui.currentModal=null;
     }
 
     html()

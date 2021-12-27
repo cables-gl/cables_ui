@@ -236,14 +236,14 @@ export default class GradientEditor
 
         document.getElementById("gradientSaveButton").addEventListener("click", () =>
         {
-            CABLES.UI.MODAL.hide();
+            gui.closeModal();
         });
 
         document.getElementById("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(this._previousContent);
-            CABLES.UI.MODAL.hide();
+            gui.closeModal();
         });
 
         const colEle = document.getElementById("gradientColorInput");
