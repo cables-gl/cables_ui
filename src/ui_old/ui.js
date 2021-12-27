@@ -21,9 +21,9 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-    this.timingHeight = 250;
-    this.rendererWidth = 640;
-    this.rendererHeight = 360;
+    this.timingHeight = CABLES.UI.uiConfig.timingPanelHeight;
+    this.rendererWidth = CABLES.UI.uiConfig.rendererDefaultWidth;
+    this.rendererHeight = CABLES.UI.uiConfig.rendererDefaultHeight;
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
@@ -277,14 +277,8 @@ CABLES.UI.GUI = function (cfg)
             return;
         }
         const port = op.getPort(which);
-        if (!port)
-        {
-            this._warn("port not found:", which);
-        }
+        if (!port) this._warn("port not found:", which);
 
-        // if (port.type == 2)
-        // new CABLES.UI.WatchTextureSpreadsheetTab(gui.mainTabs, op, port, {});
-        // else
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);
     };
@@ -325,7 +319,6 @@ CABLES.UI.GUI = function (cfg)
         this._elOptions = this._elOptions || ele.byId("options");
         this._elMeta = this._elMeta || ele.byId("meta");
         this._elMenubar = this._elMenubar || ele.byId("menubar");
-        // this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
 
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
@@ -695,7 +688,6 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
-
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 
@@ -792,12 +784,8 @@ CABLES.UI.GUI = function (cfg)
     {
         if (show)
         {
-            // document.getElementById("nav-logo_idle").style.opacity = 0.3;
-
             document.getElementById("nav-logo_idle").classList.add("logoFadeout");
             document.getElementById("nav-logo_idle").classList.remove("logoFadein");
-
-
             document.getElementById("nav-loading").classList.remove("hidden");
         }
         else

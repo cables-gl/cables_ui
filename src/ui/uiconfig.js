@@ -15,6 +15,11 @@ class UiConfig
         this.snapY= 20;
 
         this.idleModeTimeout=180;
+
+
+        this.timingPanelHeight=250;
+        this.rendererDefaultWidth=640;
+        this.rendererDefaultHeight=320;
         // this.opHeight= 31;
         // this.opWidth= 20;
         // this.opWidthSmall= 40;
