@@ -19,7 +19,7 @@ export default class ModalException
             if(options.op) this._opname=options.op.name
         }
 
-        if (String(ex.stack).indexOf("file:blob:") == 0)
+        if (String(this._exception.stack).indexOf("file:blob:") == 0)
         {
             console.log("ignore file blob exception...");
             return;
