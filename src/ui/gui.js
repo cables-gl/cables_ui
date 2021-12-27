@@ -1316,7 +1316,6 @@ project()
                     "y": 0
                 });
             }
-
         }
 
         setTimeout(() =>
@@ -1461,7 +1460,7 @@ project()
         {
             if (html && html.length > 0) CABLES.UI.MODAL.show(
                 "<div style=\"min-height:30px;max-height:500px;overflow-y:scroll;\">" + html + "</div>" +
-                "<center><a class=\"bluebutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>"
+                "<center><a class=\"bluebutton\" onclick=\"gui.closeModal();\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>"
             );
         }
 

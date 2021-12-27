@@ -182,7 +182,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
         CABLESUILOADER.talkerAPI.addEventListener("refreshFileManager", (options, next) =>
         {
-            CABLES.UI.MODAL.hide();
+            gui.closeModal();
             gui.refreshFileManager();
         });
 

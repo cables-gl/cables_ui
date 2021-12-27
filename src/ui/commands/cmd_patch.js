@@ -38,9 +38,9 @@ CABLES_CMD_PATCH.save = function (force)
                 dosave = false;
 
                 CABLES.UI.MODAL.showError("Not Collaborator", "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>");
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
+                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
             }
         }
     }
@@ -291,7 +291,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 
             if (next)next(opSetter, opGetter);
 
-            CABLES.UI.MODAL.hide(true);
+            gui.closeModal();
         } });
     } });
 };
@@ -302,7 +302,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
-    CABLES.UI.MODAL.hide(true);
+    gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
@@ -326,7 +326,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-    CABLES.UI.MODAL.hide(true);
+    gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
@@ -364,7 +364,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
-    CABLES.UI.MODAL.hide(true);
+    gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
     gui.patchView.addOp(
@@ -389,7 +389,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-    CABLES.UI.MODAL.hide(true);
+    gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 

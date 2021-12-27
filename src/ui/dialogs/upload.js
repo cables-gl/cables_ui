@@ -101,7 +101,7 @@ export default class FileUploader
         event.preventDefault();
         event.stopPropagation();
 
-        CABLES.UI.MODAL.hide();
+        gui.closeModal();
 
         if (event.dataTransfer.files.length === 0)
         {

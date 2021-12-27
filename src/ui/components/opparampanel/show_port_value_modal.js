@@ -333,7 +333,7 @@ export default class ModalPortValue
         op.patch.link(op, portName, newop, inputDataType);
         gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
-        CABLES.UI.MODAL.hide();
+        gui.closeModal();
     }
 
     structureHelper_exposeArray(opId, portName, path, inputDataType = "Object")
@@ -347,7 +347,7 @@ export default class ModalPortValue
         op.patch.link(op, portName, newop, inputDataType);
         gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
-        CABLES.UI.MODAL.hide();
+        gui.closeModal();
     }
 
 

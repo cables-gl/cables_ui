@@ -122,7 +122,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     {
                         this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
                         CABLES.UI.MODAL.onClose = null;
-                        CABLES.UI.MODAL.hide(true);
+                        gui.closeModal();
                     }, this._connection.state.PILOT_REQUEST_TIMEOUT);
                     const acceptButton = document.querySelector("#modalcontainer .button.accept");
                     const declineButton = document.querySelector("#modalcontainer .button.decline");
@@ -133,7 +133,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             clearTimeout(requestTimeout);
                             this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
                             CABLES.UI.MODAL.onClose = null;
-                            CABLES.UI.MODAL.hide(true);
+                            gui.closeModal();
                         });
                     }
                     if (declineButton)
@@ -143,7 +143,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             clearTimeout(requestTimeout);
                             this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
                             CABLES.UI.MODAL.onClose = null;
-                            CABLES.UI.MODAL.hide(true);
+                            gui.closeModal();
                         });
                     }
                 }

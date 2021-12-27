@@ -1590,8 +1590,8 @@ export default class PatchView extends CABLES.EventTarget
                 html += htmlList;
             }
 
-            html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');CABLES.UI.MODAL.hide();\" class=\"bluebutton\">Really Upgrade</a>";
-            html += "<a onClick=\"CABLES.UI.MODAL.hide();\" class=\"button\">Cancel</a>";
+            html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
+            html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
 
             setTimeout(() =>
             {

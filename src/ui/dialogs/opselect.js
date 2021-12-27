@@ -487,7 +487,7 @@ export default class OpSelect
     {
         gui.opSelect().addOp(evt.target.dataset.opname);
 
-        // CABLES.UI.MODAL.hide();
+        // gui.closeModal();
         this.close();
 
         if (evt.shiftKey)
