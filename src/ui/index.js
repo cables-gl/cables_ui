@@ -96,6 +96,7 @@ import Gui from "./gui";
 import startUi from "./startgui";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend";
 import TimeLineGui from "./components/timelinesvg/timeline";
+import oldModalWrap from "./dialogs/modal_old_wrap";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -248,7 +249,7 @@ CABLES.UI.undo = new UndoManager();
 CABLES.UI.Gui=Gui;
 
 
-
+CABLES.UI.MODAL=oldModalWrap;
 
 
 setHtmlDefaultListeners();
