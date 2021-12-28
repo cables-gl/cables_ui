@@ -478,7 +478,7 @@ export default class OpSelect
 
             ele.forEachClass("addbutton", (e) =>
             {
-                e.addEventListener("click", this._onClickAddButton);
+                e.addEventListener("click", this._onClickAddButton.bind(this));
             });
         }
     }

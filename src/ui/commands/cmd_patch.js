@@ -305,6 +305,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
@@ -329,6 +330,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
@@ -367,6 +369,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
@@ -389,6 +392,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
 CABLES_CMD_PATCH.createLinkVariableExist = function ()
 {
+    gui.opSelect().close();
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
@@ -413,6 +417,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
+    gui.opSelect().close();
     new CABLES.UI.ModalDialog({
         "prompt": true,
         "title": "New Variable",
@@ -448,6 +453,7 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
 
 CABLES_CMD_PATCH.createTriggerSendReceive = () =>
 {
+    gui.opSelect().close();
     const link = CABLES.UI.OPSELECT.linkNewLink;
 
     new CABLES.UI.ModalDialog({
@@ -483,6 +489,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () =>
 
 CABLES_CMD_PATCH.createAutoVariable = function ()
 {
+    gui.opSelect().close();
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     new CABLES.UI.ModalDialog({
@@ -505,6 +512,7 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                     "x": setter.uiAttribs.translate.x,
                     "y": setter.uiAttribs.translate.y + 40
                 } });
+
             });
         } });
 };
