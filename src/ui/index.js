@@ -91,7 +91,9 @@ import uiconfig from "./uiconfig";
 import extendCore from "./op_core_extend";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import ModalLoading from "./dialogs/modalloading";
-import ModalException from "./dialogs/modalException";
+import ModalException from "./dialogs/modalexception";
+import Gui from "./gui";
+import startUi from "./startgui";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -236,6 +238,10 @@ CABLES.GL_MARKER=helperMeshes;
 CABLES.UI.paramsHelper=paramsHelper;
 CABLES.UI.valueChanger=valueChanger;
 
+CABLES.UI.undo = new UndoManager();
+CABLES.UI.Gui=Gui;
+
 setHtmlDefaultListeners();
 extendCore();
 
+CABLES.UI.startUi=startUi;

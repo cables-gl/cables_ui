@@ -12,7 +12,7 @@
             {{#if opDoc.userOp}}
                 <br/>
                 <br/>
-                <a onclick="gui.serverOps.edit('{{ opDoc.name}}');CABLES.UI.MODAL.hide();" class="button">Edit Op</a>
+                <a onclick="gui.serverOps.edit('{{ opDoc.name}}');gui.closeModal();" class="button">Edit Op</a>
             {{/if}}
 
             {{#if opDoc.summaryHtml}}

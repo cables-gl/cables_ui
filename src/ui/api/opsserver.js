@@ -131,7 +131,6 @@ export default class ServerOps
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
-
                 });
             },
         );
@@ -516,7 +515,7 @@ export default class ServerOps
         {
             this.create("Ops.User." + gui.user.usernameLowercase + "." + newname, () =>
             {
-                CABLES.UI.MODAL.hide();
+                gui.closeModal();
             });
         });
     }

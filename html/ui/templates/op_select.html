@@ -4,14 +4,14 @@
     <div class="opsearch">
         <!-- <div id="optree" class="optree"></div> -->
         <div id="searchinfo" class="searchinfo"></div>
-        <!-- <div id="closearea" onclick="CABLES.UI.MODAL.hide();" style="width:100px;height:50px;position: absolute;left:500px;height:100px;width:500px;"></div> -->
+        <!-- <div id="closearea" onclick="gui.closeModal();" style="width:100px;height:50px;position: absolute;left:500px;height:100px;width:500px;"></div> -->
 
         <div  class="opselectclose">
             <a class="icon-x icon icon-1_5x" onclick="gui.pressedEscape();"></a>
         </div>
 
         <header>
-            <input id="opsearch" placeholder="Search for op" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search"/>
+            <input id="opsearch" class="notIgnoreEscape" placeholder="Search for op" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" type="search"/>
             <br/>
             <span style="margin-top:6px;position:absolute;font-size:13px;opacity:0.35;" id="realsearch"></span>
         </header>
@@ -49,7 +49,7 @@
         </div>
 
         {{#each ops}}
-        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');CABLES.UI.MODAL.hide();">
+        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');gui.closeModal();">
             <div class="button fright addbutton" data-opname="{{name}}" style="margin-top:10px;" >{{{../texts.opselect_addop}}}</div>
             <a>
                 {{oldState}}

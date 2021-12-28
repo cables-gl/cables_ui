@@ -194,8 +194,6 @@ export default class Api
 
         CABLES.api.post("errorReport", report, (d) =>
         {
-            // CABLES.UI.MODAL.showClose();
-            CABLES.UI.MODAL.init();
 
             let html = "";
             html += "<center>";

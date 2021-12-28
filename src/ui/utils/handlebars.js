@@ -15,7 +15,7 @@ export function getHandleBarHtml(name, obj)
         const source = document.getElementById(name).innerHTML;
         if (!source)
         {
-            CABLES.UI.MODAL.showError("template not found", "template " + name + " not found...");
+            console.warn("template not found", "template " + name + " not found...");
             return;
         }
         template = handleBarsPrecompiled[name] = Handlebars.compile(source);

@@ -26,7 +26,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
     checkUpdatedSaveForce(updated)
     {
         this._serverDate = updated;
-        // CABLES.UI.MODAL.hide(true);
+        // gui.closeModal();
         gui.closeModal();
         CABLES.CMD.PATCH.save(true);
     }
@@ -54,7 +54,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     const html=
                         "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>"+
-                        "<a class=\"button\" onclick=\"CABLES.UI.MODAL.hide(true);\">Close</a>&nbsp;&nbsp;"+
+                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;"+
                         "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;"+
                         "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 

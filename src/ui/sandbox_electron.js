@@ -27,7 +27,7 @@ export default class SandboxElectron extends CABLES.EventTarget
 
     showStartupChangelog()
     {
-        CABLES.UI.MODAL.hide(); // quickfix to hide empty modal on startup
+        gui.closeModal(); // quickfix to hide empty modal on startup
     }
 
     getUrlOpsCode()

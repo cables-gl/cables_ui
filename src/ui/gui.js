@@ -1,17 +1,15 @@
-CABLES.UI = CABLES.UI || {};
-CABLES.UI.undo = new UndoManager();
 
+export default class Gui
+{
 
-CABLES.UI.GUI = function (cfg)
+constructor(cfg)
 {
     CABLES.EventTarget.apply(this);
-
-    const self = this;
 
     this._log = new CABLES.UI.Logger("gui");
 
     this.patchId = cfg.patchId;
-    let showTiming = false;
+    this._showTiming = false;
     this._showingEditor = false;
 
     this.keys = new CABLES.UI.KeyBindingsManager();
@@ -22,14 +20,17 @@ CABLES.UI.GUI = function (cfg)
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-    this.timingHeight = 250;
-    this.rendererWidth = 640;
-    this.rendererHeight = 360;
+    this.timingHeight = CABLES.UI.uiConfig.timingPanelHeight;
+    this.rendererWidth = CABLES.UI.uiConfig.rendererDefaultWidth;
+    this.rendererHeight = CABLES.UI.uiConfig.rendererDefaultHeight;
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
     this.CANVASMODE_PATCHBG = 1;
     this._canvasMode = this.CANVASMODE_NORMAL;
+    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
+    this._timeoutPauseProfiler = null;
+    this._cursor = "";
 
     if (!cfg) cfg = {};
     if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -47,10 +48,10 @@ CABLES.UI.GUI = function (cfg)
         }
     });
 
-    let patchLoadEndiD = this._corePatch.on("patchLoadEnd",
+    this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
         () =>
         {
-            this._corePatch.off(patchLoadEndiD);
+            this._corePatch.off(this._patchLoadEndiD);
             this.setStateSaved();
 
             logStartup("Patch loaded");
@@ -64,11 +65,10 @@ CABLES.UI.GUI = function (cfg)
     this.patchView = new CABLES.UI.PatchView(this._corePatch);
 
     this._corePatch.gui = true;
-    let _patch = null;
 
-    const _jobs = new CABLES.UI.Jobs();
+    this._jobs = new CABLES.UI.Jobs();
     this.cmdPallet = new CABLES.UI.CommandPallete();
-    const _opselect = new CABLES.UI.OpSelect();
+    this._opselect = new CABLES.UI.OpSelect();
     this.introduction = new CABLES.UI.Introduction();
     this._gizmo = null;
     this._transformOverlay = new CABLES.UI.TransformsOverlay();
@@ -87,17 +87,17 @@ CABLES.UI.GUI = function (cfg)
 
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
-    const metaCode = new CABLES.UI.MetaCode(this.metaTabs);
+    this._metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
     this.bookmarks = new CABLES.UI.Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
     this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
 
-    const favIconLink = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(favIconLink);
-    favIconLink.type = "image/x-icon";
-    favIconLink.rel = "shortcut icon";
+    this._favIconLink = document.createElement("link");
+    document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
+    this._favIconLink.type = "image/x-icon";
+    this._favIconLink.rel = "shortcut icon";
 
     this.user = null;
     this.onSaveProject = null;
@@ -109,59 +109,55 @@ CABLES.UI.GUI = function (cfg)
     this._eventListeners = {};
 
     this._currentProject = null;
-
     this.tipps = new CABLES.UI.Tipps();
+    this.currentModal=null;
+    this.updateTheme();
+}
 
-
-
-
-
-
-    this.project = function ()
+project()
     {
         return this._currentProject;
-    };
+    }
 
-    this.setProject = function (p)
+    setProject(p)
     {
         this._currentProject = p;
         gui.setProjectName(p.name || "unknown");
 
         ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id);
-    };
+    }
 
-    this.opSelect = function ()
+    opSelect()
     {
-        return _opselect;
-    };
+        return this._opselect;
+    }
 
-    this.timeLine = function ()
+    timeLine()
     {
         // if (!this._timeline) this._timeLine = new CABLES.TL.UI.TimeLineUI();
         return this._timeLine;
-    };
+    }
 
-    this.corePatch = this.scene = function ()
+    scene()
     {
         return this._corePatch;
-    };
-
-    this.patch = function ()
+    }
+    corePatch()
     {
-        return _patch;
-    };
+        return this._corePatch;
+    }
 
-    this.jobs = function ()
+    jobs()
     {
-        return _jobs;
-    };
+        return this._jobs;
+    }
 
-    this.finishedLoading = function ()
+    finishedLoading()
     {
         return CABLES.UI.loaded;
-    };
+    }
 
-    this.focusFindResult = (idx, opid, subpatch, x, y) =>
+    focusFindResult(idx, opid, subpatch, x, y)
     {
         if (gui.keys.shiftKey)
         {
@@ -178,9 +174,9 @@ CABLES.UI.GUI = function (cfg)
         }
 
         gui.find().setClicked(idx);
-    };
+    }
 
-    this.find = function (str)
+    find(str)
     {
         if (this._find && this._find.isClosed()) this._find = null;
 
@@ -196,14 +192,14 @@ CABLES.UI.GUI = function (cfg)
 
         this._find.focus();
         gui.maintabPanel.show(true);
-    };
+    }
 
-    this.texturePreview = function ()
+    texturePreview()
     {
         return this.metaTexturePreviewer;
-    };
+    }
 
-    this.showSaveWarning = function ()
+    showSaveWarning()
     {
         if (this.showGuestWarning()) return true;
         if (!gui.canSaveInMultiplayer())
@@ -221,46 +217,49 @@ CABLES.UI.GUI = function (cfg)
             return true;
         }
         return false;
-    };
+    }
 
-    this.showGuestWarning = function ()
+    showGuestWarning()
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint +
-            "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+            CABLES.UI.MODAL.showError(
+                "Demo Editor",
+                CABLES.UI.TEXTS.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
             );
             return true;
         }
-    };
+    }
 
-    this.canSaveInMultiplayer = function ()
+    canSaveInMultiplayer()
     {
         if (gui.socket && !gui.socket.canSaveInMultiplayer()) return false;
         else return true;
-    };
+    }
 
-    this.isGuestEditor = function ()
+    isGuestEditor()
     {
         return this.user.username == "guest";
-    };
+    }
 
-    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
-    this.updateTheme();
-
-    this.getParamPanelEleId = function ()
+    getParamPanelEleId()
     {
         let eleId = "options";
         if (!gui.showTwoMetaPanels()) eleId = "options_meta";
         return eleId;
-    };
-
-    this.closeModal=function()
-    {
-        if(gui.lastModal)gui.lastModal.close();
     }
 
-    this.showTwoMetaPanels = function ()
+    isShowingModal()
+    {
+        return gui.currentModal!=null;
+    }
+
+    closeModal()
+    {
+        if(gui.currentModal)gui.currentModal.close();
+    }
+
+    showTwoMetaPanels()
     {
         let r = true;
         if (this.rendererWidth < 700) r = false;
@@ -272,10 +271,9 @@ CABLES.UI.GUI = function (cfg)
             this.metaOpParams.updateVisibility(r);
 
         return r;
-    };
+    }
 
-
-    this.watchArray = function (opid, which)
+    watchArray(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op)
@@ -284,33 +282,27 @@ CABLES.UI.GUI = function (cfg)
             return;
         }
         const port = op.getPort(which);
-        if (!port)
-        {
-            this._warn("port not found:", which);
-        }
+        if (!port) this._warn("port not found:", which);
 
-        // if (port.type == 2)
-        // new CABLES.UI.WatchTextureSpreadsheetTab(gui.mainTabs, op, port, {});
-        // else
         new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);
-    };
+    }
 
-    this.pauseInteractionSplitpanes = function ()
+    pauseInteractionSplitpanes()
     {
         const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "none";
         this.patchView.pauseInteraction();
-    };
+    }
 
-    this.resumeInteractionSplitpanes = function ()
+    resumeInteractionSplitpanes()
     {
         const iframes = ele.byQueryAll("iframe,canvas");
         for (let i = 0; i < iframes.length; i++) iframes[i].style["pointer-events"] = "initial";
         this.patchView.resumeInteraction();
-    };
+    }
 
-    this.setLayout = function ()
+    setLayout()
     {
         this.pauseProfiling();
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
@@ -332,7 +324,6 @@ CABLES.UI.GUI = function (cfg)
         this._elOptions = this._elOptions || ele.byId("options");
         this._elMeta = this._elMeta || ele.byId("meta");
         this._elMenubar = this._elMenubar || ele.byId("menubar");
-        // this._elSplitterMeta = this._elSplitterMeta || ele.byId("splitterMeta");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
 
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
@@ -359,16 +350,6 @@ CABLES.UI.GUI = function (cfg)
         let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
-
-        // if (CABLES.UI.userSettings.get("hideSizeBar"))
-        // {
-        //     iconBarWidth = 0;
-        //     this._elIconBar.hide();
-        // }
-        // else
-        // {
-        //     this._elIconBar.show();
-        // }
 
         let patchHeight = window.innerHeight;
 
@@ -430,10 +411,10 @@ CABLES.UI.GUI = function (cfg)
 
         patchHeight -= infoAreaHeight;
 
-        if (showTiming) patchHeight -= this.timingHeight;
+        if (this._showTiming) patchHeight -= this.timingHeight;
         else patchHeight -= timelineUiHeight;
 
-        let editorWidth = self.editorWidth;
+        let editorWidth = this.editorWidth;
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
@@ -528,7 +509,7 @@ CABLES.UI.GUI = function (cfg)
             this._eleSplitterTimeline = this._eleSplitterTimeline || ele.byId("splitterTimeline");
             this._eleTiming = this._eleTiming || ele.byId("timing");
 
-            if (showTiming)
+            if (this._showTiming)
             {
                 this._eleTiming.style.width = timelineWidth + "px";
                 this._eleTiming.style.bottom = infoAreaHeight + "px";
@@ -589,7 +570,7 @@ CABLES.UI.GUI = function (cfg)
             this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
             this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
 
-            if (!showTiming) this._elCanvasIconbarTimeline.style.display = "none";
+            if (!this._showTiming) this._elCanvasIconbarTimeline.style.display = "none";
             else this._elCanvasIconbarTimeline.style.display = "inline-block";
         }
 
@@ -618,14 +599,14 @@ CABLES.UI.GUI = function (cfg)
             metaWidth = this.rightPanelWidth - optionsWidth;
 
             this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = self.rendererHeightScaled + "px";
+            this._elOptions.style.top = this.rendererHeightScaled + "px";
             this._elOptions.style.width = optionsWidth + "px";
-            this._elOptions.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.top = this.rendererHeightScaled + "px";
             this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elOptions.style.display = "block";
         }
@@ -634,57 +615,26 @@ CABLES.UI.GUI = function (cfg)
             metaWidth = this.rightPanelWidth;
             this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = self.rendererHeightScaled + "px";
+            this._elMeta.style.top = this.rendererHeightScaled + "px";
             this._elMeta.style.width = metaWidth + "px";
-            this._elMeta.style.height = window.innerHeight - self.rendererHeightScaled + "px";
+            this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elOptions.style.width = 0 + "px";
             this._elOptions.style.height = 0 + "px";
             this._elOptions.style.display = "none";
         }
 
-        // this._elSplitterMeta.style.bottom = self.infoAreaHeight + "px";
-        // this._elSplitterMeta.style.width = metaWidth - 28 + "px";
 
         this._elMenubar.style.top = 0 + "px";
-        // this._elMenubar.style.height = menubarHeight + "px";
-
 
         if (!this.bottomInfoArea.showing)
         {
             this._elInfoArea.style.height = 0 + "px";
-            // ele.byId("infoAreaToggle").style.width = window.innerHeight + "px";
-            // ele.byId("infoAreaToggle").classList.remove("hidden");
         }
         else
         {
             this._elInfoArea.style.height = infoAreaHeight + "px";
         }
-
-        // if (this.infoAreaHeight === 0)
-        // {
-        //     // ele.hide(this._elInfoArea);
-        //     this._elInfoArea.style.display = "none";
-        //     ele.hide(this._elSplitterMeta);
-
-        //     ele.byId("infoAreaMin").style.width = window.innerHeight + "px";
-        //     ele.byId("infoAreaMin").classList.remove("hidden");
-        // }
-        // else
-        // {
-        //     ele.byId("infoAreaMin").classList.add("hidden");
-        //     ele.show(this._elSplitterMeta);
-        //     // ele.show(this._elInfoArea);
-        //     this._elInfoArea.style.display = "block";
-        //     this._elInfoArea.style.width = metaWidth - 20 + "px";
-        //     this._elInfoArea.style.height = this.infoAreaHeight + "px";
-        //     this._elInfoArea.style.top = (window.innerHeight - this.rendererHeight - this.infoAreaHeight) + "px";
-        // }
-
-        // this._elInfoArea.style.display = "block";
-        // this._elInfoArea.style.width = window.innerWidth + "px";
-        // this._elInfoArea.style.height = 22 + "px";
-        // this._elInfoArea.style.bottom = 0 + "px";
 
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - menubarHeight - timelineHeight + "px";
 
@@ -725,11 +675,11 @@ CABLES.UI.GUI = function (cfg)
             this._elCablesCanvas.style["z-index"] = 10;
 
             this._elGlCanvasDom.setAttribute("width", this.rendererWidth * density);
-            this._elGlCanvasDom.setAttribute("height", self.rendererHeight * density);
+            this._elGlCanvasDom.setAttribute("height", this.rendererHeight * density);
             this._elGlCanvasDom.style.width = this.rendererWidth + "px";
-            this._elGlCanvasDom.style.height = self.rendererHeight + "px";
+            this._elGlCanvasDom.style.height = this.rendererHeight + "px";
             this._elCablesCanvas.style.width = this.rendererWidth + "px";
-            this._elCablesCanvas.style.height = self.rendererHeight + "px";
+            this._elCablesCanvas.style.height = this.rendererHeight + "px";
             this._elCablesCanvas.style.right = "0px";
             this._elCablesCanvas.style.left = "initial";
 
@@ -743,7 +693,6 @@ CABLES.UI.GUI = function (cfg)
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
-
         this._elBgPreview.style.right = this.rightPanelWidth + "px";
         this._elBgPreview.style.top = menubarHeight + "px";
 
@@ -754,25 +703,25 @@ CABLES.UI.GUI = function (cfg)
         perf.finish();
     };
 
-    this._setCanvasMode = function (m)
+    _setCanvasMode(m)
     {
         this._canvasMode = m;
         this.emitEvent("canvasModeChange", m);
-    };
+    }
 
-    this._switchCanvasSizeNormal = function ()
+    _switchCanvasSizeNormal()
     {
         this._setCanvasMode(this.CANVASMODE_NORMAL);
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
-    };
+    }
 
-    this.getCanvasMode = function ()
+    getCanvasMode()
     {
         return this._canvasMode;
-    };
+    }
 
-    this.cyclePatchBg = function ()
+    cyclePatchBg()
     {
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
 
@@ -793,9 +742,9 @@ CABLES.UI.GUI = function (cfg)
 
         this.setLayout();
         this.canvasUi.showCanvasModal(false);
-    };
+    }
 
-    this.cycleFullscreen = function ()
+    cycleFullscreen()
     {
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
@@ -816,36 +765,32 @@ CABLES.UI.GUI = function (cfg)
 
         this.canvasUi.showCanvasModal(false);
         this.setLayout();
-    };
+    }
 
-    function updateTimingIcon()
+    updateTimingIcon()
     {
 
     }
 
-    this.isShowingTiming = function ()
+    isShowingTiming()
     {
-        return showTiming;
-    };
+        return this._showTiming;
+    }
 
-    this.showTiming = function ()
+    showTiming()
     {
-        showTiming = true;
+        this._showTiming = true;
         this.timeLine().show();
         this.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
-    };
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
+    }
 
-    this.showLoadingProgress = function (show)
+    showLoadingProgress(show)
     {
         if (show)
         {
-            // document.getElementById("nav-logo_idle").style.opacity = 0.3;
-
             document.getElementById("nav-logo_idle").classList.add("logoFadeout");
             document.getElementById("nav-logo_idle").classList.remove("logoFadein");
-
-
             document.getElementById("nav-loading").classList.remove("hidden");
         }
         else
@@ -857,37 +802,37 @@ CABLES.UI.GUI = function (cfg)
                 document.getElementById("nav-loading").classList.add("hidden");
             }, 250);
         }
-    };
+    }
 
-    this.hideTiming = function ()
+    hideTiming()
     {
         gui.timeLine().hidden = true;
-        showTiming = false;
+        this._showTiming = false;
         ele.hide(ele.byId("timing"));
         gui.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
-    };
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
+    }
 
-    this.toggleTiming = function ()
+    toggleTiming()
     {
         gui.timeLine().hidden = false;
         ele.show(ele.byId("timing"));
         CABLES.UI.userSettings.set("timelineOpened", true);
 
-        showTiming = !showTiming;
-        CABLES.UI.userSettings.set("timelineOpened", showTiming);
+        this._showTiming = !this._showTiming;
+        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
         updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
-    };
+    }
 
-    this.refreshFileManager = function ()
+    refreshFileManager()
     {
         if (this.fileManager) this.fileManager.refresh();
         else this.showFileManager(null, true);
-    };
+    }
 
-    this.showFileManager = function (cb, unserInteraction)
+    showFileManager(cb, unserInteraction)
     {
         if (this.fileManager)
         {
@@ -900,9 +845,9 @@ CABLES.UI.GUI = function (cfg)
         {
             this.fileManager = new CABLES.UI.FileManager(cb, unserInteraction);
         }
-    };
+    }
 
-    this.showFileSelect = function (inputId, filterType, opid, previewId)
+    showFileSelect(inputId, filterType, opid, previewId)
     {
         this.showFileManager(() =>
         {
@@ -919,9 +864,8 @@ CABLES.UI.GUI = function (cfg)
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
         });
-    };
-
-    this.setProjectName = function (name)
+    }
+    setProjectName(name)
     {
         if (name && name !== "undefined")
         {
@@ -929,9 +873,8 @@ CABLES.UI.GUI = function (cfg)
             document.getElementById("patchname").dataset.patchname = name;
             gui.corePatch().name = name;
         }
-    };
-
-    this.createProject = function ()
+    }
+    createProject()
     {
         if (gui.showGuestWarning()) return;
 
@@ -949,10 +892,9 @@ CABLES.UI.GUI = function (cfg)
                     });
             }
         });
-    };
+    }
 
-
-    this.getUserOs = function ()
+    getUserOs()
     {
         let OSName = "Unknown OS";
         if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
@@ -964,7 +906,7 @@ CABLES.UI.GUI = function (cfg)
     };
 
     /* Returns the default mod key for a OS */
-    this.getModKeyForOs = function (os)
+    getModKeyForOs(os)
     {
         switch (os)
         {
@@ -977,10 +919,10 @@ CABLES.UI.GUI = function (cfg)
         default:
             return "mod";
         }
-    };
+    }
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
-    this.replaceNavShortcuts = function ()
+    replaceNavShortcuts()
     {
         const osMod = gui.getModKeyForOs(gui.getUserOs());
 
@@ -989,11 +931,11 @@ CABLES.UI.GUI = function (cfg)
         for (let i in els)
         {
             const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
-            els[i].innerHTML = newShortcut;
+            if(els[i].innerHTML) els[i].innerHTML = newShortcut;
         }
-    };
+    }
 
-    this.serializeForm = function (selector)
+    serializeForm(selector)
     {
         const json = {};
         Array.from(ele.byQuery(selector).elements).forEach((e) =>
@@ -1001,10 +943,9 @@ CABLES.UI.GUI = function (cfg)
             json[e.getAttribute("name")] = e.value;
         });
         return json;
-    };
+    }
 
-
-    this.helperContextMenu = function (el)
+    helperContextMenu(el)
     {
         let iconTransforms = "icon icon-check hidden";
         if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
@@ -1045,9 +986,9 @@ CABLES.UI.GUI = function (cfg)
                     }
                 ]
             }, el);
-    };
+    }
 
-    this.rendererContextMenu = function (el)
+    rendererContextMenu(el)
     {
         CABLES.contextMenu.show(
             {
@@ -1063,10 +1004,9 @@ CABLES.UI.GUI = function (cfg)
                     }
                 ]
             }, el);
-    };
+    }
 
-
-    this.rendererAspectMenu = function (el)
+    rendererAspectMenu(el)
     {
         CABLES.contextMenu.show(
             {
@@ -1110,9 +1050,9 @@ CABLES.UI.GUI = function (cfg)
                     }
                 ]
             }, el);
-    };
+    }
 
-    this.showConverter = function (converterId, projectId, fileId, converterName)
+    showConverter(converterId, projectId, fileId, converterName)
     {
         const html = CABLES.UI.getHandleBarHtml(
             "params_convert", {
@@ -1124,9 +1064,9 @@ CABLES.UI.GUI = function (cfg)
 
         new CABLES.UI.ModalDialog({"html":html});
 
-    };
+    }
 
-    this.converterStart = function (projectId, fileId, converterId)
+    converterStart(projectId, fileId, converterId)
     {
         ele.show(ele.byId("converterprogress"));
         ele.hide(ele.byId("converterform"));
@@ -1154,22 +1094,16 @@ CABLES.UI.GUI = function (cfg)
                     if (res && res.info) html = res.info;
                     else html = "Finished!";
 
-                    // html += "<br/><a class=\"button\" onclick=\"CABLES.UI.MODAL.hide()\">ok</a>";
-
                     ele.byId("modalClose").classList.remove("hidden");
                     ele.byId("converteroutput").innerHTML = html;
                 }
                 gui.refreshFileManager();
             });
-    };
+    }
 
-
-    this.bind = function (cb)
+    bind(cb)
     {
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
-
-        // if (CABLES.UI.userSettings.get("closeInfoArea")) gui.closeInfo();
-
 
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
@@ -1239,9 +1173,9 @@ CABLES.UI.GUI = function (cfg)
         }, false);
 
         cb();
-    };
+    }
 
-    this.bindKeys = function ()
+    bindKeys()
     {
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
@@ -1274,7 +1208,8 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
             (e) =>
             {
-                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")))
+                if ( !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA") )
+                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape") ) )
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
@@ -1302,7 +1237,7 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key("f", "Find/Search in patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             const eleAceTextEditor = ele.byQuery("#ace_editors textarea");
-            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !CABLES.UI.MODAL.isVisible()) CABLES.CMD.UI.showSearch();
+            if (!(eleAceTextEditor && ele.hasFocus(eleAceTextEditor)) && !gui.isShowingModal()) CABLES.CMD.UI.showSearch();
             else e.dontPreventDefault = true;
         });
 
@@ -1327,9 +1262,9 @@ CABLES.UI.GUI = function (cfg)
         this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
 
         this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); });
-    };
+    }
 
-    this.pressedEscape = function (e)
+    pressedEscape(e)
     {
         this.canvasUi.showCanvasModal(false);
         this.emitEvent("pressedEscape");
@@ -1352,7 +1287,7 @@ CABLES.UI.GUI = function (cfg)
 
             this._showingEditor = this._oldShowingEditor;
             this._elGlCanvasDom.classList.remove("maximized");
-            self.setLayout();
+            this.setLayout();
             this.canvasUi.showCanvasModal(true);
         }
         else if (CABLES.UI.suggestions)
@@ -1362,21 +1297,25 @@ CABLES.UI.GUI = function (cfg)
         }
         else if (gui.cmdPallet.isVisible()) gui.cmdPallet.close();
         else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
-        else if (CABLES.UI.MODAL._visible)
+        else if (gui.isShowingModal())
         {
-            CABLES.UI.MODAL.hide(true);
-            CABLES.UI.MODAL.hide();
-            if (this._showingEditor) self.editor().focus();
+            gui.closeModal();
+            if (this._showingEditor) this.editor().focus();
         }
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else if (this._showingEditor) this.closeEditor();
         else
         {
-            if (e) gui.opSelect().show({
-                "subPatch": this.patchView.getCurrentSubPatch(),
-                "x": 0,
-                "y": 0
-            });
+            if (this._opselect.isOpen()) this._opselect.close();
+            else
+            if (e)
+            {
+                gui.opSelect().show({
+                    "subPatch": this.patchView.getCurrentSubPatch(),
+                    "x": 0,
+                    "y": 0
+                });
+            }
         }
 
         setTimeout(() =>
@@ -1386,9 +1325,9 @@ CABLES.UI.GUI = function (cfg)
                 ele.hide(el);
             });
         }, 50);
-    };
+    }
 
-    this.showOpCrash = function (op)
+    showOpCrash(op)
     {
         iziToast.error({
             "position": "topRight",
@@ -1406,9 +1345,9 @@ CABLES.UI.GUI = function (cfg)
                 }]
             ]
         });
-    };
+    }
 
-    this.showUiElements = function ()
+    showUiElements()
     {
         ele.show(ele.byId("cablescanvas"));
         ele.hide(ele.byId("loadingstatus"));
@@ -1513,15 +1452,15 @@ CABLES.UI.GUI = function (cfg)
         console.groupEnd();
 
         gui.patchView.focus();
-    };
+    }
 
-    this.showWelcomeNotifications = function ()
+    showWelcomeNotifications()
     {
         function show(html)
         {
             if (html && html.length > 0) CABLES.UI.MODAL.show(
                 "<div style=\"min-height:30px;max-height:500px;overflow-y:scroll;\">" + html + "</div>" +
-                "<center><a class=\"bluebutton\" onclick=\"CABLES.UI.MODAL.hide()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>"
+                "<center><a class=\"bluebutton\" onclick=\"gui.closeModal();\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>"
             );
         }
 
@@ -1541,22 +1480,21 @@ CABLES.UI.GUI = function (cfg)
 
         if (CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
         if (CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
-    };
+    }
 
-    this.getOpDoc = function (opname, html, cb)
+    getOpDoc(opname, html, cb)
     {
         cb(this.opDocs.get2(opname));
-    };
+    }
 
-    this.metaCode = function ()
+    metaCode()
     {
-        return metaCode;
-    };
+        return this._metaCode;
+    }
 
-
-    this.showSettings = function (unserInteraction)
+    showSettings(unserInteraction)
     {
-        window.onmessage = function (e)
+        window.onmessage=(e)=>
         {
             if (e.data && typeof e.data == "string")
             {
@@ -1569,28 +1507,26 @@ CABLES.UI.GUI = function (cfg)
                     if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
                 }
             }
-        }.bind(this);
+        };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + self.project()._id + "/settings" }, true);
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settingsiframe";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settings" }, true);
     };
 
-    this._cursor = "";
-    this.setCursor = function (str)
+    setCursor(str)
     {
         if (!str)str = "auto";
         document.body.classList.remove("cursor_" + this._cursor);
         document.body.classList.add("cursor_" + str);
         this._cursor = str;
-    };
+    }
 
-
-    this.getSavedState = function ()
+    getSavedState()
     {
         return this._savedState;
-    };
+    }
 
-    this.setTransformGizmo = function (params)
+    setTransformGizmo(params)
     {
         if (!this._gizmo) this._gizmo = new CABLES.UI.Gizmo(this.scene().cgl);
         if (!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
@@ -1600,21 +1536,19 @@ CABLES.UI.GUI = function (cfg)
         }
 
         this._gizmo.set(params);
-    };
+    }
 
-
-    this.transformOverlay = function ()
+    transformOverlay()
     {
         return this._transformOverlay;
-    };
+    }
 
-    this.setTransform = function (id, x, y, z)
+    setTransform(id, x, y, z)
     {
         this._transformOverlay.add(this.scene().cgl, id, x, y, z);
-    };
+    }
 
-
-    this.setElementBgPattern = function (el)
+    setElementBgPattern(el)
     {
         if (!el) return;
         el.classList.remove("bgPatternDark");
@@ -1626,16 +1560,16 @@ CABLES.UI.GUI = function (cfg)
         el.classList.remove("bgPatternBlue");
 
         el.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
-    };
+    }
 
-    this.notIdling = function ()
+    notIdling()
     {
         this.lastNotIdle = CABLES.now();
-    };
+    }
 
-    this.checkIdle = function ()
+    checkIdle()
     {
-        const idling = (CABLES.now() - self.lastNotIdle) / 1000;
+        const idling = (CABLES.now() - this.lastNotIdle) / 1000;
         if (idling > 30 * 60)
         {
         }
@@ -1643,9 +1577,9 @@ CABLES.UI.GUI = function (cfg)
         {
             setTimeout(gui.checkIdle, 1000 * 60 * 2);
         }
-    };
+    }
 
-    this.setStateUnsaved = function ()
+    setStateUnsaved()
     {
         if (this._savedState)
         {
@@ -1654,12 +1588,12 @@ CABLES.UI.GUI = function (cfg)
             title += gui.project.name + " *";
             document.title = title;
 
-            favIconLink.href = "/favicon/favicon_orange.ico";
+            this._favIconLink.href = "/favicon/favicon_orange.ico";
             this._savedState = false;
 
             document.getElementById("patchname").classList.add("warning");
 
-            window.onbeforeunload = function (event)
+            window.onbeforeunload=(event)=>
             {
                 const message = "unsaved content!";
                 if (typeof event == "undefined")
@@ -1673,13 +1607,12 @@ CABLES.UI.GUI = function (cfg)
                 return message;
             };
         }
-    };
+    }
 
-
-    this.setStateSaved = function ()
+    setStateSaved()
     {
         this._savedState = true;
-        favIconLink.href = "/favicon/favicon.ico";
+        this._favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 
         let title = "";
@@ -1687,18 +1620,15 @@ CABLES.UI.GUI = function (cfg)
         title += gui.project.name;
         document.title = title;
         window.onbeforeunload = null;
-    };
+    }
 
-
-    this.reloadDocs = function (cb)
+    reloadDocs(cb)
     {
         gui.opDocs = new CABLES.UI.OpDocs();
         if (cb)cb();
-    };
+    }
 
-    this._timeoutPauseProfiler = null;
-
-    this.pauseProfiling = function ()
+    pauseProfiling()
     {
         if (!this._corePatch.cgl || !this._corePatch.cgl.profileData) return;
         this._corePatch.cgl.profileData.pause = true;
@@ -1708,10 +1638,9 @@ CABLES.UI.GUI = function (cfg)
         {
             this._corePatch.cgl.profileData.pause = false;
         }, 200);
-    };
+    }
 
-
-    this.init = function (next)
+    init(next)
     {
         this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
@@ -1727,14 +1656,6 @@ CABLES.UI.GUI = function (cfg)
 
         CABLES.UI.initSplitPanes();
 
-
-        // _patch = new CABLES.UI.Patch(this);
-        // _patch.show(this._corePatch);
-        // this.patchView.store.setPatch(this._corePatch);
-
-        // this.patchView.setPatchRenderer("patch", _patch);
-
-
         ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
@@ -1744,237 +1665,68 @@ CABLES.UI.GUI = function (cfg)
             CABLES.UI.hideInfo();
         });
 
-
         ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
             CABLES.UI.showInfo(CABLES.UI.TEXTS.timelineui);
         });
-        ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
 
+        ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
         {
             CABLES.UI.hideInfo();
         });
 
         gui.replaceNavShortcuts();
-    };
-};
+    }
 
-
-CABLES.UI.GUI.prototype.setFontSize = function (v)
-{
-    document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
-};
-
-CABLES.UI.GUI.prototype.setUser = function (u)
-{
-    gui.user = u;
-};
-
-CABLES.UI.GUI.prototype.updateTheme = function ()
-{
-    if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
-    else document.body.classList.remove("bright");
-};
-
-
-// todo use eventtarget...
-CABLES.UI.GUI.prototype.addEventListener = function (name, cb)
-{
-    this._log.warn("deprecated eventlistener:", name);
-    console.log((new Error()).stack);
-    this._eventListeners[name] = this._eventListeners[name] || [];
-    this._eventListeners[name].push(cb);
-};
-
-
-CABLES.UI.GUI.prototype.initCoreListeners = function ()
-{
-    this._corePatch.on("exception", function (ex, op)
+    setFontSize(v)
     {
-        // CABLES.UI.MODAL.showException(ex, op);
-        new CABLES.UI.ModalException(ex,{"op":op});
-    });
+        document.documentElement.style.setProperty("--font-size-off", (v || 0) + "px");
+    }
 
-    this._corePatch.on("exceptionOp", function (e, objName)
+    setUser(u)
     {
-        new CABLES.UI.ModalException(e,{"opname":objName});
-        // CABLES.UI.MODAL.showOpException(e, objName);
-    });
+        gui.user = u;
+    }
 
-    this._corePatch.on("criticalError", function (title, msg)
+    updateTheme()
     {
-        CABLES.UI.MODAL.showError(title, msg);
-    });
+        if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
+        else document.body.classList.remove("bright");
+    }
 
-    this._corePatch.on("renderDelayStart", function ()
+    // todo use eventtarget...
+    addEventListener(name, cb)
     {
-    });
+        this._log.warn("deprecated eventlistener:", name);
+        console.log((new Error()).stack);
+        this._eventListeners[name] = this._eventListeners[name] || [];
+        this._eventListeners[name].push(cb);
+    }
 
-    this._corePatch.on("renderDelayEnd", function ()
+    initCoreListeners()
     {
-    });
-};
-
-
-function startUi(cfg)
-{
-    logStartup("Init UI");
-    CABLES.UI.initHandleBarsHelper();
-
-
-    window.gui = new CABLES.UI.GUI(cfg);
-
-    gui.on("uiloaded", () =>
-    {
-        new CABLES.UI.Tracking(gui);
-    });
-
-    if (gui.isRemoteClient)
-        new CABLES.UI.NoPatchEditor();
-    else
-        CABLES.CMD.DEBUG.glguiFull();
-
-    incrementStartup();
-    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId, () =>
-    {
-        gui.init();
-        gui.checkIdle();
-        gui.initCoreListeners();
-
-        gui.corePatch().timer.setTime(0);
-
-        if (!gui.corePatch().cgl.gl)
+        this._corePatch.on("exception", function (ex, op)
         {
-            // console.log("yep,b0rken!.............");
-            ele.byId("loadingstatus").remove();
-            ele.byId("loadingstatusLog").remove();
-            // CABLES.UI.MODAL.showException({ "message": "could not initialize webgl. try to restart your browser, or try another one" });
-            return;
-        }
-
-
-        gui.bind(() =>
-        {
-            incrementStartup();
-            CABLES.sandbox.initRouting(() =>
-            {
-                document.addEventListener("visibilitychange", function ()
-                {
-                    if (!document.hidden)
-                    {
-                        gui.setLayout();
-                        gui.patchView.store.checkUpdated();
-                    }
-                }, false);
-
-                incrementStartup();
-                gui.opDocs = new CABLES.UI.OpDocs();
-                gui.opSelect().prepare();
-                CABLES.UI.userSettings.init();
-                incrementStartup();
-
-                gui.metaCode().init();
-
-                gui.metaDoc.init();
-                gui.opSelect().reload();
-                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
-                gui.showWelcomeNotifications();
-                incrementStartup();
-                gui.showUiElements();
-                gui.setLayout();
-                gui.opSelect().prepare();
-                incrementStartup();
-                gui.opSelect().search();
-                gui.setElementBgPattern(ele.byId("cablescanvas"));
-
-                CABLES.editorSession.open();
-
-                gui.setFontSize(CABLES.UI.userSettings.get("fontSizeOff"));
-
-                CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
-                {
-                    if (key == "fontSizeOff")
-                    {
-                        gui.setFontSize(v);
-                    }
-
-                    if (key == "bgpattern")
-                    {
-                        gui.setElementBgPattern(ele.byId("cablescanvas"));
-                        gui.setElementBgPattern(ele.byId("bgpreview"));
-                    }
-
-                    if (key == "theme-bright")
-                    {
-                        gui.updateTheme();
-                    }
-
-                    if (key == "hideSizeBar")
-                    {
-                        gui.setLayout();
-                    }
-                });
-
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
-
-                gui.bindKeys();
-
-                const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
-                gui.socket = new CABLES.UI.ScConnection(socketClusterConfig);
-                gui.socketUi = new CABLES.UI.ScUi(gui.socket);
-                if (gui.socket.multiplayerEnabled)
-                {
-                    gui.multiplayerUi = new CABLES.UI.ScUiMultiplayer(gui.socket);
-                    gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
-                }
-
-                CABLES.UI.startIdleListeners();
-
-                gui.jobs().updateJobListing();
-
-                new CABLES.UI.HtmlInspector();
-
-
-                if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
-
-                gui.maintabPanel.init();
-
-                logStartup("finished loading cables");
-
-                setTimeout(() =>
-                {
-                    if (CABLES.UI.userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
-                }, 1000);
-
-                if (window.module) module = window.module; // electronn workaround/fix
-
-                gui.patchView.checkPatchErrors();
-
-                gui.patchView.setCurrentSubPatch(0);
-
-                ele.byId("patchnavhelperEmpty").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_empty;
-                ele.byId("patchnavhelperBounds").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_outofbounds;
-
-                document.getElementById("loadingstatusLog").style.display = "none";
-
-                new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,
-                    "width": 200,
-                    "height": 200,
-                    "colorDark": "#000000",
-                    "colorLight": "#ffffff",
-                    "correctLevel": QRCode.CorrectLevel.H
-                });
-
-                CABLES.UI.loaded = true;
-                setTimeout(() =>
-                {
-                    window.gui.emitEvent("uiloaded");
-                    gui.corePatch().timer.setTime(0);
-                }, 100);
-            });
+            new CABLES.UI.ModalException(ex,{"op":op});
         });
-    });
 
-    logStartup("Init UI done");
+        this._corePatch.on("exceptionOp", function (e, objName)
+        {
+            new CABLES.UI.ModalException(e,{"opname":objName});
+        });
+
+        this._corePatch.on("criticalError", function (title, msg)
+        {
+            CABLES.UI.MODAL.showError(title, msg);
+        });
+
+        this._corePatch.on("renderDelayStart", function ()
+        {
+        });
+
+        this._corePatch.on("renderDelayEnd", function ()
+        {
+        });
+    };
+
 }
