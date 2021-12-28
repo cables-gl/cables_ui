@@ -4,17 +4,6 @@ CABLES.UI.MODAL = CABLES.UI.MODAL || {};
 
 CABLES.UI.MODAL.logger=new CABLES.UI.Logger("modal");
 
-CABLES.UI.MODAL.init = function (options)
-{
-    CABLES.UI.MODAL.logger.stack("deprecated function CABLES.UI.MODAL.init ");
-};
-
-CABLES.UI.MODAL.hide = function (force)
-{
-    CABLES.UI.MODAL.logger.stack("deprecated function CABLES.UI.MODAL.hide ");
-    gui.closeModal();
-};
-
 CABLES.UI.MODAL.show = function (content, options)
 {
     CABLES.UI.MODAL.logger.stack("deprecated function CABLES.UI.MODAL.show ");

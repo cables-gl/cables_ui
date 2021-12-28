@@ -94,6 +94,8 @@ import ModalLoading from "./dialogs/modalloading";
 import ModalException from "./dialogs/modalexception";
 import Gui from "./gui";
 import startUi from "./startgui";
+import extendCoreAnim from "./components/timelinesvg/core_anim_extend";
+import TimeLineGui from "./components/timelinesvg/timeline";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -228,6 +230,10 @@ CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
 
+CABLES.UI.TimeLineUI=TimeLineGui;
+
+
+
 CABLES.uniqueArray = uniqueArray;
 CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
@@ -241,7 +247,12 @@ CABLES.UI.valueChanger=valueChanger;
 CABLES.UI.undo = new UndoManager();
 CABLES.UI.Gui=Gui;
 
+
+
+
+
 setHtmlDefaultListeners();
 extendCore();
+extendCoreAnim();
 
 CABLES.UI.startUi=startUi;
