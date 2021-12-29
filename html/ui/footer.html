@@ -130,90 +130,61 @@
                         loadjs.ready('cablesuinew', function()
                         {
                             incrementStartup();
-                            logStartup('loaded ui new');
+                            logStartup('loaded ui');
 
-                            loadjs([
-                            CABLESUILOADER.builtVersionUrl("ui", 'js/cablesuiold.'+jsType+'.js'),
-                            ], 'cablesui');
+                            fetch(CABLESUILOADER.builtVersionUrl("core",
+                                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
+                            .then(function (response)
+                            {
+                                response.json().then(function (_data)
+                                {
+                                    CABLESUILOADER.preload.opDocsAll=_data;
+                                });
+                            })
+                            .catch(function (response)
+                            {
+                                console.error("preloading error",response);
+                            });
 
-                            loadjs.ready('cablesui', function()
+                            if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+                            else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
+
+                            incrementStartup();
+                            // local ops are only available in electron version
+                            var localOpCode = CABLES.sandbox.getLocalOpCode();
+                            // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
+
+                            // if(localOpPaths && localOpPaths.length > 0) {
+                            //     localOpPaths = localOpPaths.concat(opPathsToLoad);
+                            // }
+
+                            // append the local-op-code to document
+                            function addJS(jsCode) {
+                                var s = document.createElement('script');
+
+                                s.type = 'text/javascript';
+                                s.innerText = jsCode;
+                                document.getElementsByTagName('head')[0].appendChild(s);
+                            }
+
+                            addJS(localOpCode);
+
+
+                            loadjs([CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
+
+                            loadjs.ready('cables_ops', function()
                             {
                                 incrementStartup();
-                                logStartup('loaded ui');
+                                logStartup('loaded cables ops');
+                                const uiBuild = CABLESUILOADER.buildInfo.ui;
+                                const coreBuild = CABLESUILOADER.buildInfo.core;
+                                const apiBuild = CABLESUILOADER.buildInfo.api;
 
+                                if(uiBuild && uiBuild.git) logStartup("UI buildmessage: " + uiBuild.git.message);
+                                if(coreBuild && coreBuild.git) logStartup("CORE buildmessage: " + coreBuild.git.message);
+                                if(apiBuild && apiBuild.git)  logStartup("API buildmessage: " + apiBuild.git.message);
 
-                                fetch(CABLESUILOADER.builtVersionUrl("core",
-                                    cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
-                                .then(function (response)
-                                {
-                                    response.json().then(function (_data)
-                                    {
-                                        CABLESUILOADER.preload.opDocsAll=_data;
-                                    });
-                                })
-                                .catch(function (response)
-                                {
-                                    console.error("preloading error",response);
-                                });
-
-
-                                // try
-                                // {
-                                    // loadjs([CABLESUILOADER.noCacheUrl('js/bundle.js')],'cables_vue');
-                                    if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-                                    else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
-
-                                // }catch(e)
-                                // {
-                                //     console.log("err",e);
-                                //     return;
-                                // }
-
-                                // loadjs.ready('cables_vue', function()
-                                // {
-                                    incrementStartup();
-                                    // local ops are only available in electron version
-                                    var localOpCode = CABLES.sandbox.getLocalOpCode();
-                                    // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
-
-                                    // if(localOpPaths && localOpPaths.length > 0) {
-                                    //     localOpPaths = localOpPaths.concat(opPathsToLoad);
-                                    // }
-
-                                    // append the local-op-code to document
-                                    function addJS(jsCode) {
-                                        var s = document.createElement('script');
-
-                                        s.type = 'text/javascript';
-                                        s.innerText = jsCode;
-                                        document.getElementsByTagName('head')[0].appendChild(s);
-                                    }
-
-                                    addJS(localOpCode);
-
-
-                                    loadjs([CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
-
-                                    loadjs.ready('cables_ops', function()
-                                    {
-                                        incrementStartup();
-                                        logStartup('loaded cables ops');
-                                        const uiBuild = CABLESUILOADER.buildInfo.ui;
-                                        const coreBuild = CABLESUILOADER.buildInfo.core;
-                                        const apiBuild = CABLESUILOADER.buildInfo.api;
-                                        if(uiBuild && uiBuild.git) {
-                                            logStartup("UI buildmessage: " + uiBuild.git.message);
-                                        }
-                                        if(coreBuild && coreBuild.git) {
-                                            logStartup("CORE buildmessage: " + coreBuild.git.message);
-                                        }
-                                        if(apiBuild && apiBuild.git) {
-                                            logStartup("API buildmessage: " + apiBuild.git.message);
-                                        }
-                                        waitForAce();
-
-                                    });
-                                // });
+                                waitForAce();
                             });
                         });
                     });
@@ -270,11 +241,7 @@
 
         if(! (function() { return !this; })() ) console.log('not in strict mode: footer html' );
 
-
-
-
     </script>
-
 
 <div class="preloading" style="font-family:fontawesome"></div>
 <div class="preloading" style="font-family:SourceSansPro"></div>

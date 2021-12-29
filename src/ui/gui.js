@@ -134,7 +134,7 @@ project()
 
     timeLine()
     {
-        // if (!this._timeline) this._timeLine = new CABLES.TL.UI.TimeLineUI();
+        // if (!this._timeline) this._timeLine = new CABLES.UI.TimeLineUI();
         return this._timeLine;
     }
 
@@ -1645,7 +1645,7 @@ project()
         this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
         ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
-        this._timeLine = new CABLES.TL.UI.TimeLineUI();
+        this._timeLine = new CABLES.UI.TimeLineUI();
 
 
         if (this.isRemoteClient)

@@ -120,7 +120,7 @@ export default class ModalException
 
         if(this._opname)
             if (gui.user.isAdmin || this._opname.startsWith("Op.User." + gui.user.usernameLowercase))
-                str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');CABLES.UI.MODAL.hide(true);\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+                str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
 
         str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";

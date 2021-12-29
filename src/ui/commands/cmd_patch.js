@@ -37,10 +37,13 @@ CABLES_CMD_PATCH.save = function (force)
             {
                 dosave = false;
 
-                CABLES.UI.MODAL.showError("Not Collaborator", "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>");
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
-                CABLES.UI.MODAL.contentElement.innerHTML += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                const html="You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
+                + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
+                + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
+                + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+
+                CABLES.UI.MODAL.showError("Not Collaborator", html);
+
             }
         }
     }
@@ -302,6 +305,7 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
@@ -326,6 +330,7 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
@@ -364,6 +369,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
     const portOut = link.portOut;
     CABLES.UI.OPSELECT.linkNewLink = null;
 
+    gui.opSelect().close();
     gui.closeModal();
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(p.type, p);
 
@@ -386,6 +392,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 
 CABLES_CMD_PATCH.createLinkVariableExist = function ()
 {
+    gui.opSelect().close();
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
@@ -410,6 +417,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
+    gui.opSelect().close();
     new CABLES.UI.ModalDialog({
         "prompt": true,
         "title": "New Variable",
@@ -445,6 +453,7 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
 
 CABLES_CMD_PATCH.createTriggerSendReceive = () =>
 {
+    gui.opSelect().close();
     const link = CABLES.UI.OPSELECT.linkNewLink;
 
     new CABLES.UI.ModalDialog({
@@ -480,6 +489,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () =>
 
 CABLES_CMD_PATCH.createAutoVariable = function ()
 {
+    gui.opSelect().close();
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
     new CABLES.UI.ModalDialog({
@@ -502,6 +512,7 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                     "x": setter.uiAttribs.translate.x,
                     "y": setter.uiAttribs.translate.y + 40
                 } });
+
             });
         } });
 };

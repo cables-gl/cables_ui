@@ -221,7 +221,6 @@ export default class ModalPortValue
             asyncInnerHTML(fullHTML, function (fragment)
             {
                 CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
-                CABLES.UI.MODAL.init();
                 CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
                 CABLES.UI.MODAL._setVisible(true);
                 document.getElementById("modalbg").style.display = "block";
