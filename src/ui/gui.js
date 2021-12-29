@@ -780,11 +780,6 @@ project()
         this.setLayout();
     }
 
-    updateTimingIcon()
-    {
-
-    }
-
     isShowingTiming()
     {
         return this._showTiming;
@@ -834,7 +829,7 @@ project()
 
         this._showTiming = !this._showTiming;
         CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
-        updateTimingIcon();
+        // updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
     }

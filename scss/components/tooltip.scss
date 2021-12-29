@@ -104,6 +104,45 @@
     }
 }
 
+.key_up
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"↑";
+        vertical-align: top;
+    }
+}
+
+.key_left
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"←";
+        vertical-align: top;
+    }
+}
+
+.key_right
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"→";
+        vertical-align: top;
+    }
+}
+.key_down
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"↓";
+        vertical-align: top;
+    }
+}
+
 .key_option
 {
     &:after
@@ -111,13 +150,16 @@
         font-size: 17px;
         content:"⌥";
         vertical-align: top;
-
     }
 }
+
 .key_shift
 {
-    width:9px;
-    display:inline-block;
+    &:before
+    {
+        content:"W";
+        color:transparent;
+    }
 
     &:after
     {
@@ -126,8 +168,14 @@
         position:absolute;
         display: block;
         top:3px;
-        margin-left:-1px;
+        margin-left:12px;
     }
+}
+
+#infoArea .key_shift:after
+{
+    margin-top:-3px;
+    margin-left:5px;
 }
 
 .key_cmd

@@ -383,6 +383,8 @@ export default class GlCable
     isHoveredButtonRect()
     {
         if (this._glPatch.isDraggingPort()) return false;
+
+
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
@@ -473,6 +475,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText)
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
+                CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
 
             perf.finish();
             return true;

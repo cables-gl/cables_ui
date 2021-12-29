@@ -644,7 +644,7 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.save,
         "icon": "save",
-        "hotkey": "CTRL/CMD + s",
+        "hotkey": "[cmd_ctrl]`S`",
         "infotext": "cmd_savepatch"
 
     },
@@ -653,7 +653,7 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.saveAs,
         "icon": "save",
-        "hotkey": "CTRL/CMD + SHIFT + s",
+        "hotkey": "[cmd_ctrl][shift]`s`",
     },
     {
         "cmd": "upload file dialog",

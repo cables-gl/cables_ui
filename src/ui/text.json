@@ -4,25 +4,24 @@
         "save_screenshot": "## Save Screenshot\n\nDownload renderer output as an image file",
         "toggle_sound": "## Toggle Sound\n\nTurn sound on or off",
         "toggle_helper": "Enable or disable of showing helper and bounding boxes",
-        "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n`ctrl/cmd`+`c` copy hovered color to clipboard",
+        "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n[cmd_ctrl]`c` copy hovered color to clipboard",
 
         "canvas_size": "## Canvas Size\n\nCanvas size in pixels\n\nclick to set the canvas manually",
         "canvas_aspect": "## Canvas Aspect ratio\n\nclick to choose an aspect ratio",
-        "canvas_zoom": "## Website Zoom\n\nYour browser is zoomed in, use ctrl/cmd and +/- to change zoom",
+        "canvas_zoom": "## Website Zoom\n\nYour browser is zoomed in, use [cmd_ctrl] and +/- to change zoom",
         "canvas_version": "## WebGl Version",
         "canvas_fps": "## FPS\n\nCurrently number of rendered frames per second",
         "canvas_ms": "## Miliseconds\n\nCurrent amount of time needed to render the mainloop",
 
-
-        "renderer_patchbg": "## Toggle Patch Background\n\n`cmd/ctrl`+`shift`+`enter` Toggle patch nackground renderer",
-        "renderer_maximize": "## Toggle Fullscreen\n\n`cmd/ctrl`+`enter` Toggle Fullscreen",
+        "renderer_patchbg": "## Toggle Patch Background\n\n[cmd_ctrl][shift]`enter` Toggle patch nackground renderer",
+        "renderer_maximize": "## Toggle Fullscreen\n\n[cmd_ctrl]`enter` Toggle Fullscreen",
         "renderer_setsize": "## Canvas Size \n\n* click to set canvas size",
         "infoarea": "## Infoarea\n\nLook here for contextual information",
 
         "nav_patch_new": "## New Patch\n\nCreates a new patch",
         "nav_patch_open": "## Open Patch\n\nLoad an existing patch",
 
-        "linkAddCircle": "## Link \n\n* `left click` - insert op \n* `right click` - delete link \n* `shift+left click` - insert op",
+        "linkAddCircle": "## Cable \n\n* [LMB] insert op \n* [RMB] remove cable ",
 
         "timeLineToggle": "Toggle timeline / keyframing panel",
         "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
@@ -81,8 +80,8 @@
         "bookmark_removed": "Bookmark removed!",
 
         "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* [DRAG_LMB] move area\n* [DRAG_RMB] move area and change time\n* `double click` toggle show full project length",
-        "timeline_frames": "## timeline \n\n* `click` move cursor",
-        "timeline_time": "`click` jump to frame",
+        "timeline_frames": "## timeline \n\n* [LMB] move cursor",
+        "timeline_time": "[LMB] jump to frame",
         "timeline_progress": "`click` set project duration",
         "timeline_keys": "## timeline  \n\n* [DRAG_RMB] move visible area\n* [DRAG_LMB] select keys\n* `h` center all keys\n* `j` / `k` jump to next/previous key\n* `DEL` delete selected keys",
 
@@ -90,7 +89,7 @@
         "texpreview": "## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
 
         "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] - change value slowly \n* [shift] + [DRAG_LMB] - change value fast",
-        "valueChangerInput": "## Number Input Focussed \n\n* [up / down / mousewheel] - change value +/- 0.1\n* [shift + up / down / mousewheel] - change value +/- 0.01\n* [alt + up / down / mousewheel] - change value +/- 1",
+        "valueChangerInput": "## Number Input Focussed \n\n* [up][down][MW] change value +/- 0.1 \n* [shift][up][down][MW] change value +/- 0.01\n* [alt][up][down][MW] change value +/- 1",
         "open_new_window": "## View Patch\n\nopen patch viewer in new window",
         "settings": "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",
 
@@ -114,7 +113,7 @@
         "cmd_centerpatch": "`c` center patch or selected ops",
         "cmd_zoomin": "`+` Zoom In",
         "cmd_zoomout": "`-` Zoom Out",
-        "cmd_savepatch": "`CTRL/CMD`+`S` Save Patch",
+        "cmd_savepatch": "[cmd_ctrl]`S` Save Patch",
         "cmd_addop": "`esc` Add Operator",
         "cmd_patchsettings": "## Open Patch settings",
 
