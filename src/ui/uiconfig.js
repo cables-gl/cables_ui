@@ -20,7 +20,6 @@ class UiConfig
         this.timingPanelHeight=250;
         this.rendererDefaultWidth=640;
         this.rendererDefaultHeight=320;
-        // this.opHeight= 31;
         // this.opWidth= 20;
         // this.opWidthSmall= 40;
 
@@ -39,7 +38,7 @@ class UiConfig
         this.watchValuesInterval= 50; // 33
         this.rendererSizes= [{ "w": 640, "h": 360 }, { "w": 1024, "h": 768 }, { "w": 1280, "h": 720 }, { "w": 0, "h": 0 }];
 
-        this.infoAreaHeight= 28;
+        this.infoAreaHeight= 29;
     }
 };
 

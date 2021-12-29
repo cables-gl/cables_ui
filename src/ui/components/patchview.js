@@ -2,6 +2,7 @@ import ele from "../utils/ele";
 import Logger from "../utils/logger";
 import PatchSaveServer from "../api/patchServerApi";
 import { notify, notifyError } from "../elements/notification";
+import gluiconfig from "../glpatch/gluiconfig";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -1161,8 +1162,11 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let j = 0; j < ops.length; j++)
         {
-            if (j > 0) y += (ops[j].uiAttribs.height || CABLES.UI.uiConfig.opHeight) + 10;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(y));
+            if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
+
+            y=this.snapOpPosY(y);
+
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
             this.testCollision(ops[j]);
         }
     }

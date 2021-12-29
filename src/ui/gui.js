@@ -1,3 +1,15 @@
+import Bookmarks from "./components/bookmarks";
+import Introduction from "./components/introduction";
+import Jobs from "./components/jobs";
+import OpHistory from "./components/ophistory";
+import OpParampanel from "./components/opparampanel/op_parampanel";
+import CommandPallete from "./dialogs/commandpalette";
+import OpSelect from "./dialogs/opselect";
+import BottomInfoAreaBar from "./elements/bottomInfoAreaBar";
+import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
+import MainTabPanel from "./elements/tabpanel/maintabpanel";
+import TabPanel from "./elements/tabpanel/tabpanel";
+import KeyBindingsManager from "./utils/keybindingsmanager";
 
 export default class Gui
 {
@@ -12,8 +24,8 @@ constructor(cfg)
     this._showTiming = false;
     this._showingEditor = false;
 
-    this.keys = new CABLES.UI.KeyBindingsManager();
-    this.opParams = new CABLES.UI.OpParampanel();
+    this.keys = new KeyBindingsManager();
+    this.opParams = new OpParampanel();
     this.opPortModal=new CABLES.UI.ModalPortValue();
 
     this.socket = null;
@@ -66,33 +78,34 @@ constructor(cfg)
 
     this._corePatch.gui = true;
 
-    this._jobs = new CABLES.UI.Jobs();
-    this.cmdPallet = new CABLES.UI.CommandPallete();
-    this._opselect = new CABLES.UI.OpSelect();
-    this.introduction = new CABLES.UI.Introduction();
+    this._jobs = new Jobs();
+    this.cmdPallet = new CommandPallete();
+    this._opselect = new OpSelect();
+    this.introduction = new Introduction();
     this._gizmo = null;
-    this._transformOverlay = new CABLES.UI.TransformsOverlay();
+    this._transformOverlay = new TransformsOverlay();
 
     this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
     this.opDocs = null;
-    this.opHistory = new CABLES.UI.OpHistory();
+    this.opHistory = new OpHistory();
 
-    this.mainTabs = new CABLES.UI.TabPanel("maintabs");
-    this.maintabPanel = new CABLES.UI.MainTabPanel(this.mainTabs);
+    this.mainTabs = new TabPanel("maintabs");
+    this.maintabPanel = new MainTabPanel(this.mainTabs);
 
     this.chat = null;
 
-    this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
+    this.metaTabs = new TabPanel("metatabpanel");
     this._savedState = true;
 
     this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
+
     this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
     this._metaCode = new CABLES.UI.MetaCode(this.metaTabs);
     this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
     this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
-    this.bookmarks = new CABLES.UI.Bookmarks();
+    this.bookmarks = new Bookmarks();
     this.history = new CABLES.UI.MetaHistory(this.metaTabs);
-    this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
+    this.bottomInfoArea = new BottomInfoAreaBar();
 
     this._favIconLink = document.createElement("link");
     document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
@@ -894,43 +907,17 @@ project()
         });
     }
 
-    getUserOs()
-    {
-        let OSName = "Unknown OS";
-        if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
-        if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
-        if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
-        if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
 
-        return OSName;
-    };
-
-    /* Returns the default mod key for a OS */
-    getModKeyForOs(os)
-    {
-        switch (os)
-        {
-        case "Windows":
-            return "ctrl";
-        case "MacOS":
-            return "cmd";
-        case "UNIX":
-            return "cmd";
-        default:
-            return "mod";
-        }
-    }
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
     {
-        const osMod = gui.getModKeyForOs(gui.getUserOs());
-
-        let els = document.getElementsByClassName("shortcut");
+        let els = ele.byClassAll("shortcut");
 
         for (let i in els)
         {
-            const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
+            const newShortcut=this.bottomInfoArea.replaceShortcuts(els[i].innerHTML||"");
+            // const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
             if(els[i].innerHTML) els[i].innerHTML = newShortcut;
         }
     }

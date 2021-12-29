@@ -36,12 +36,12 @@
 
         "portDirIn": "## Input Port ",
         "portDirOut": "## Output Port",
-        "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `del` delete link || `ALT`+[DRAG_LMB] copy link",
+        "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `DEL` delete link || [alt]+[DRAG_LMB] copy link",
         "portMouseCreate": "|| [DRAG_LMB] create and link new op",
         "portObjectSnapshot": "see at object data snapshot",
 
-        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n*   `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* `shift+a` reduce vertical sptng\n* `del` delete selcted ops\n* [cmd] + `c`: Copy selected op ",
-        "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `del` delete op\n* `page up/down` snap to parent/child op",
+        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n*   `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
+        "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
         "projectSettingsPublic": "make patch public - everyone can see it",
         "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
@@ -52,7 +52,7 @@
         "projectNotSaved": "Patch not saved - save patch and try again",
 
         "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-        "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `right click] + mouse drag:`: Scroll \n* `mod` + `s`: Save patch \n* `mod` + `v`: Paste \n* `mod` + `a`: Select all ops",
+        "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `right click] + mouse drag:`: Scroll \n* [cmd_ctrl]`s`: Save patch \n* [cmd_ctrl]`v`: Paste \n* [cmd_ctrl]`a`: Select all ops",
         "canvas": "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
         "projectFiles": "## Project Files \n\nOverview over your uploaded files",
         "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
@@ -248,7 +248,7 @@
         },
         {
             "title": "Duplicating Links",
-            "descr": " You can **duplicate a link** by pressing `ALT` and the `right mouse button` and dragging the cable to another port",
+            "descr": " You can **duplicate a link** by pressing [alt] and the `right mouse button` and dragging the cable to another port",
             "img": "n_duplicate_link.gif"
         },
         {
@@ -297,12 +297,12 @@
             "img": "snaptogrid.gif"
         },
         {
-            "descr": " `Right mouse button` click while holding `ALT` key and drag a cable from a port or the cable itself, to **copy the connection**.",
+            "descr": " `Right mouse button` click while holding [alt] key and drag a cable from a port or the cable itself, to **copy the connection**.",
             "img": "rightclickdrag.gif"
         },
 
         {
-            "descr": " To **move a cable connection to another port**, hold `SHIFT + ALT` keyboard keys and `right mouse button` while over either end of the cable.",
+            "descr": " To **move a cable connection to another port**, hold `SHIFT + alt` keyboard keys and `right mouse button` while over either end of the cable.",
             "img": "right_shift_alt.gif"
         },
         {
@@ -330,7 +330,7 @@
             "img": "inspect_sidebar.gif"
         },
          {
-            "descr": " You can **organize** your operators into colorful Area groups by selecting multiple ops and clicking Create Area. Move operators out of an area to separate them, group groups into groups, hold down `ALT`to drag Area without ops!",
+            "descr": " You can **organize** your operators into colorful Area groups by selecting multiple ops and clicking Create Area. Move operators out of an area to separate them, group groups into groups, hold down [alt]to drag Area without ops!",
             "img": "area_create.gif"
         },
         {

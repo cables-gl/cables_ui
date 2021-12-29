@@ -58,10 +58,6 @@
 
     z-index: $zindex_highest;
 
-    h2 {
-        font-size: 18px;
-        color:white;
-    }
 
     ul {
         margin-left: 15px;
@@ -80,10 +76,8 @@
     .infoareaContent {
         padding: 0px;
         position: absolute;
-        // height: 100%;
         padding-top: 1px !important;
         padding-left: 20px !important;
-
 
         h2,li,ul,p
         {
@@ -94,6 +88,55 @@
             margin-right:15px;
             background-color: transparent;
         }
+
+        code
+        {
+            font-size: 14px;
+            margin-right: 3px;
+        }
+
+
+        h2 {
+            font-size: 14px;
+            color:white;
+            margin-top: 3px;
+        }
+    }
+}
+
+.key_option
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"⌥";
+        vertical-align: top;
+
+    }
+}
+.key_shift
+{
+    width:9px;
+    display:inline-block;
+
+    &:after
+    {
+        font-size: 17px;
+        content:"⇧";
+        position:absolute;
+        display: block;
+        top:3px;
+        margin-left:-1px;
+    }
+}
+
+.key_cmd
+{
+    &:after
+    {
+        font-size: 17px;
+        content:"⌘";
+        vertical-align: top;
     }
 }
 
@@ -102,7 +145,7 @@
     pointer-events: none;
     z-index: $zindex_highest;
     background-color: var(--color-03);
-    border-radius: 5px;;
+    border-radius: 5px;
 
     color: var(--color-13);
     padding: 5px;
