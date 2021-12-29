@@ -1,3 +1,4 @@
+import { getHandleBarHtml } from "./handlebars";
 
 export default class KeyBindingsManager extends CABLES.EventTarget
 {
@@ -43,7 +44,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
             if (k[i].key == " ")k[i].key = "Space";
         }
 
-        const html = CABLES.UI.getHandleBarHtml("tab_keys", { "keys": k });
+        const html = getHandleBarHtml("tab_keys", { "keys": k });
         this._tab.html(html);
 
         gui.maintabPanel.show(true);

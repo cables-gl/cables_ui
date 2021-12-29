@@ -1,4 +1,6 @@
 import ele from "../../utils/ele";
+import Tab from '../../elements/tabpanel/tab';
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class LoggingTab extends CABLES.EventTarget
 {
@@ -7,11 +9,9 @@ export default class LoggingTab extends CABLES.EventTarget
         super();
         this._tabs = tabs;
 
-        this._tab = new CABLES.UI.Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+        this._tab = new Tab("Logging", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
-
         this.data = { "cells": this.cells, "colNames": this.colNames };
-
 
         this._html();
         CABLES.UI.logFilter.on("initiatorsChanged", this._html.bind(this));
@@ -19,7 +19,7 @@ export default class LoggingTab extends CABLES.EventTarget
 
     _html()
     {
-        const html = CABLES.UI.getHandleBarHtml("tab_logging", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
+        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
         this._tab.html(html);
     }
 }

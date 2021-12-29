@@ -1,9 +1,11 @@
+import Tab from '../../elements/tabpanel/tab';
+import { getHandleBarHtml } from '../../utils/handlebars';
 
 export default class Preferences
 {
     constructor(tabs)
     {
-        this._tab = new CABLES.UI.Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
+        this._tab = new Tab("Preferences", { "icon": "settings", "infotext": "tab_preferences", "singleton": true });
         tabs.addTab(this._tab, true);
 
         this.show();
@@ -77,7 +79,7 @@ export default class Preferences
 
     show()
     {
-        const html = CABLES.UI.getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
+        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
         this._tab.html(html);
         this.updateValues();
 

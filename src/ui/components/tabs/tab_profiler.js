@@ -1,5 +1,6 @@
 import Tab from "../../elements/tabpanel/tab";
 import ele from "../../utils/ele";
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Profiler
 {
@@ -39,10 +40,9 @@ export default class Profiler
         this.update();
     }
 
-
     show()
     {
-        const html = CABLES.UI.getHandleBarHtml("meta_profiler", {});
+        const html = getHandleBarHtml("meta_profiler", {});
         this._tab.html(html);
 
         ele.byId("profilerstartbutton").addEventListener("click", function ()
@@ -54,6 +54,7 @@ export default class Profiler
     update()
     {
         const profiler = gui.corePatch().profiler;
+        if(!profiler)return;
         const items = profiler.getItems();
         let html = "";
         let htmlBar = "";

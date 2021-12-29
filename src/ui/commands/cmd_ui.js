@@ -1,3 +1,7 @@
+import GpuProfiler from '../components/tabs/tab_gpuprofiler';
+import Preferences from '../components/tabs/tab_preferences';
+import ChangelogToast from '../dialogs/changelog';
+import WatchVarTab from '../components/tabs/tab_watchvars';
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -141,7 +145,7 @@ CABLES_CMD_UI.startPresentationMode = function ()
 
 CABLES_CMD_UI.showChangelog = function (since)
 {
-    (new CABLES.UI.ChangelogToast()).show(since);
+    (new ChangelogToast()).show(since);
 };
 
 
@@ -262,7 +266,7 @@ CABLES_CMD_UI.showAutomaton = function ()
 CABLES_CMD_UI.showPreferences = function ()
 {
     if (gui.showGuestWarning()) return;
-    new CABLES.UI.Preferences(gui.mainTabs);
+    new Preferences(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
 
@@ -274,16 +278,14 @@ CABLES_CMD_UI.toggleTheme = function ()
 
 CABLES_CMD_UI.profileGPU = function ()
 {
-    new CABLES.UI.GpuProfiler(gui.mainTabs);
+    new GpuProfiler(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
-
 
 CABLES_CMD_UI.profileUI = function ()
 {
     CABLES.UI.uiProfiler.show();
 };
-
 
 CABLES_CMD_UI.zoomOut = function ()
 {
@@ -296,7 +298,7 @@ CABLES_CMD_UI.zoomIn = function ()
 
 CABLES_CMD_UI.watchVars = function ()
 {
-    new CABLES.UI.WatchVarTab(gui.mainTabs);
+    new WatchVarTab(gui.mainTabs);
 
     // gui.patchView.zoomStep(-1);
 };

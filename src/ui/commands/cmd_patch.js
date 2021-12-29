@@ -1,3 +1,5 @@
+import ModalDialog from '../dialogs/modaldialog';
+import { getHandleBarHtml } from '../utils/handlebars';
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -122,9 +124,9 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
     if (!fileElem)
     {
-        const html = CABLES.UI.getHandleBarHtml("upload", { "patchId": gui.project()._id });
+        const html = getHandleBarHtml("upload", { "patchId": gui.project()._id });
 
-        new CABLES.UI.ModalDialog({"html":html});
+        new ModalDialog({"html":html});
     }
 };
 
@@ -171,7 +173,7 @@ CABLES_CMD_PATCH.patchWebsite = function ()
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "Rename Variable",
         "text": "Enter a new name for the variable " + oldname,
@@ -185,7 +187,7 @@ CABLES_CMD_PATCH.renameVariable = function (oldname)
 
 CABLES_CMD_PATCH.createVariable = function (op)
 {
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "New Variable",
         "text": "Enter a name for the new variable",
@@ -203,7 +205,7 @@ CABLES_CMD_PATCH.createVariable = function (op)
 
 CABLES_CMD_PATCH.createVarNumber = function (next)
 {
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "New Variable",
         "text": "Enter a name for the new variable",
@@ -418,7 +420,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
     gui.opSelect().close();
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "New Variable",
         "text": "Enter a name for the new variable",
@@ -456,7 +458,7 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () =>
     gui.opSelect().close();
     const link = CABLES.UI.OPSELECT.linkNewLink;
 
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "New Trigger Send",
         "text": "Enter a name for a new wireless trigger",
@@ -492,7 +494,7 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
     gui.opSelect().close();
     const p = CABLES.UI.OPSELECT.linkNewOpToPort;
 
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "New Variable",
         "text": "Enter a name for the new variable",
@@ -550,7 +552,7 @@ CABLES_CMD_PATCH.setOpTitle = function ()
         return;
     }
 
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "Set Title",
         "text": "Enter a title for this op",
@@ -574,14 +576,14 @@ CABLES_CMD_PATCH.pause = function ()
 
 CABLES_CMD_PATCH.replaceFilePath = function ()
 {
-    new CABLES.UI.ModalDialog({
+    new ModalDialog({
         "prompt": true,
         "title": "Replace String Values",
         "text": "Search for...",
         "promptValue": "/assets/",
         "promptOk": (srch) =>
         {
-            new CABLES.UI.ModalDialog({
+            new ModalDialog({
                 "prompt": true,
                 "title": "Replace String Values",
                 "text": "...replace with",

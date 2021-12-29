@@ -1,5 +1,8 @@
 
+import ModalLoading from "../dialogs/modalloading";
 import Logger from "../utils/logger";
+import EditorTab from '../components/tabs/tab_editor';
+import CoreLibLoader from './corelibloader';
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -109,7 +112,7 @@ export default class ServerOps
     create(name, cb)
     {
 
-        const loadingModal=new CABLES.UI.ModalLoading("Creating op...");
+        const loadingModal=new ModalLoading("Creating op...");
 
         loadingModal.setTask("Creating Op");
 
@@ -253,7 +256,7 @@ export default class ServerOps
     {
         this._log.log("clone", name, oldname);
 
-        const loadingModal=new CABLES.UI.ModalLoading("Cloning op...");
+        const loadingModal=new ModalLoading("Cloning op...");
 
         CABLESUILOADER.talkerAPI.send(
             "opClone",
@@ -590,7 +593,7 @@ export default class ServerOps
                         }
                     }
 
-                    new CABLES.UI.EditorTab({
+                    new EditorTab({
                         "title": title,
                         "name": editorObj.name,
                         content,
@@ -605,7 +608,7 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            const loadingModal=new CABLES.UI.ModalLoading("Save attachment...");
+                            const loadingModal=new ModalLoading("Save attachment...");
 
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
@@ -697,7 +700,7 @@ export default class ServerOps
                     {
                         // CABLES.UI.MODAL.showLoading("Saving and executing op...");
 
-                        const loadingModal=new CABLES.UI.ModalLoading("Saving and executing op...");
+                        const loadingModal=new ModalLoading("Saving and executing op...");
                         loadingModal.setTask("Saving Op");
 
                         CABLESUILOADER.talkerAPI.send(
@@ -749,7 +752,7 @@ export default class ServerOps
 
                 if (editorObj)
                 {
-                    const t = new CABLES.UI.EditorTab({
+                    const t = new EditorTab({
                         title,
                         "name": editorObj.name,
                         "content": rslt.code,
@@ -864,7 +867,7 @@ export default class ServerOps
 
         new CABLES.LibLoader(libsToLoad, () =>
         {
-            new CABLES.CoreLibLoader(coreLibsToLoad, () =>
+            new CoreLibLoader(coreLibsToLoad, () =>
             {
                 if (_next)_next();
             });
@@ -918,7 +921,7 @@ export default class ServerOps
 
         new CABLES.LibLoader(libsToLoad, () =>
         {
-            new CABLES.CoreLibLoader(coreLibsToLoad, () =>
+            new CoreLibLoader(coreLibsToLoad, () =>
             {
                 finishedCb();
             });

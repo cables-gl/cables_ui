@@ -1,3 +1,5 @@
+import ModalDialog from './dialogs/modaldialog';
+import ChangelogToast from './dialogs/changelog';
 export default class SandboxBrowser extends CABLES.EventTarget
 {
     constructor(cfg)
@@ -94,7 +96,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
     showStartupChangelog()
     {
         const lastView = CABLES.UI.userSettings.get("changelogLastView");
-        const cl = new CABLES.UI.ChangelogToast();
+        const cl = new ChangelogToast();
 
         cl.getHtml((clhtml) =>
         {
@@ -228,7 +230,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
     {
         if (!gui.getSavedState())
         {
-            new CABLES.UI.ModalDialog({
+            new ModalDialog({
                 "showOkButton": true,
                 "title": "Backup",
                 "warning":true,
@@ -238,7 +240,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
             return;
         }
 
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "New Backup",
             "text": "Enter a name for the backup",

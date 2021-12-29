@@ -1,3 +1,5 @@
+import { getHandleBarHtml } from "../utils/handlebars";
+
 export default class UiProfiler
 {
     constructor()
@@ -75,7 +77,7 @@ export default class UiProfiler
         });
 
         this._ignore = true;
-        const html = CABLES.UI.getHandleBarHtml("uiperformance", { "measures": data });
+        const html = getHandleBarHtml("uiperformance", { "measures": data });
 
         this._ele.innerHTML = html;
         this._ele.style.display = "block";

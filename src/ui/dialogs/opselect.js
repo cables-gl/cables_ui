@@ -1,5 +1,8 @@
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
+import { getHandleBarHtml } from "../utils/handlebars";
+import ModalBackground from './modalbg';
+import OpTreeList from '../components/opselect_treelist';
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -18,7 +21,7 @@ export default class OpSelect
         this.displayBoxIndex = 0;
         this.itemHeight = 0;
         this.firstTime = true;
-        this.tree = new CABLES.UI.OpTreeList();
+        this.tree = new OpTreeList();
         this._sortTimeout = 0;
         this._backspaceDelay = -1;
         this._wordsDb = null;
@@ -28,7 +31,7 @@ export default class OpSelect
         this._searchInputEle = null;
         this._enterPressedEarly = false;
         this._searching = false;
-        this._bg=new CABLES.UI.ModalBackground();
+        this._bg=new ModalBackground();
         this._escapeListener = null;
     }
 
@@ -468,11 +471,11 @@ export default class OpSelect
 
         if (!this._html)
         {
-            const head = CABLES.UI.getHandleBarHtml("op_select");
+            const head = getHandleBarHtml("op_select");
 
             ele.byId("opsearchmodal").innerHTML = head;
 
-            this._html = CABLES.UI.getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": CABLES.UI.TEXTS });
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": CABLES.UI.TEXTS });
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
 

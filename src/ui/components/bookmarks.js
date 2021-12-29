@@ -1,4 +1,5 @@
 import defaultops from "../defaultops";
+import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class Bookmarks
 {
@@ -52,7 +53,7 @@ export default class Bookmarks
             }
         }
 
-        const html = CABLES.UI.getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
+        const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         return html;
     }
 

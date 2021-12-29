@@ -1,3 +1,5 @@
+import Tab from '../../elements/tabpanel/tab';
+import { getHandleBarHtml } from '../../utils/handlebars';
 
 export default class Chat extends CABLES.EventTarget
 {
@@ -50,10 +52,10 @@ export default class Chat extends CABLES.EventTarget
 
     show()
     {
-        this._tab = new CABLES.UI.Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true, "singleton": "true", });
+        this._tab = new Tab("chat", { "icon": "pie-chart", "infotext": "tab_chat", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-        const html = CABLES.UI.getHandleBarHtml("tab_chat", {});
+        const html = getHandleBarHtml("tab_chat", {});
         this._tab.html(html);
         const inputEle = document.getElementById("newchatmsg");
 
@@ -79,7 +81,7 @@ export default class Chat extends CABLES.EventTarget
 
         if (ele)
         {
-            const html = CABLES.UI.getHandleBarHtml("chat_clientlist", {
+            const html = getHandleBarHtml("chat_clientlist", {
                 "numClients": this._connection.state.getNumClients(),
                 "clients": this._connection.state.clients,
                 "connected": this._connection.isConnected()

@@ -1,3 +1,4 @@
+import Logger from '../utils/logger';
 //
 
 
@@ -120,7 +121,7 @@ export default class TexturePreviewer
 {
     constructor(tabs)
     {
-        this._log = new CABLES.UI.Logger();
+        this._log = new Logger();
 
         this._texturePorts = [];
         this._showing = false;

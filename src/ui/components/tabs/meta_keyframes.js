@@ -1,3 +1,5 @@
+import { getHandleBarHtml } from "../../utils/handlebars";
+
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 
@@ -52,7 +54,7 @@ export default class MetaKeyframes
             }
         }
 
-        const html = CABLES.UI.getHandleBarHtml("meta_keyframes",
+        const html = getHandleBarHtml("meta_keyframes",
             {
                 "anim": self.anim,
                 anims

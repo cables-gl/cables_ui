@@ -1,3 +1,4 @@
+import ModalDialog from '../dialogs/modaldialog';
 
 
 const CABLES_CMD_RENDERER = {};
@@ -33,7 +34,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
 {
     if (!a)
     {
-        const p = new CABLES.UI.ModalDialog({
+        const p = new ModalDialog({
             "prompt": true,
             "title": "Change Aspect Ratio of Renderer",
             "text": "Enter an aspect ratio, e.g.: 16:9 or 0.22",
@@ -74,7 +75,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
 
 CABLES_CMD_RENDERER.scaleCanvas = function ()
 {
-    const p = new CABLES.UI.ModalDialog({
+    const p = new ModalDialog({
         "prompt": true,
         "title": "Change Scale of Renderer",
         "text": "Enter a new scale",
@@ -91,7 +92,7 @@ CABLES_CMD_RENDERER.scaleCanvas = function ()
 
 CABLES_CMD_RENDERER.changeSize = function ()
 {
-    const p = new CABLES.UI.ModalDialog({
+    const p = new ModalDialog({
         "prompt": true,
         "title": "Change Canvas size",
         "text": "Enter a new size",

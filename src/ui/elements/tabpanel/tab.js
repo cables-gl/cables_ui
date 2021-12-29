@@ -1,3 +1,4 @@
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Tab extends CABLES.EventTarget
 {
@@ -28,7 +29,7 @@ export default class Tab extends CABLES.EventTarget
         {
             this.toolbarContainerEle.id = "toolbar" + this.id;
             this.toolbarContainerEle.classList.add("toolbar");
-            this.toolbarContainerEle.innerHTML = CABLES.UI.getHandleBarHtml("tabpanel_toolbar",
+            this.toolbarContainerEle.innerHTML = getHandleBarHtml("tabpanel_toolbar",
                 {
                     "options": this.options, "id": this.id, "title": this.title, "hideToolbar": true,
                 });

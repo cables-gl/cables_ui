@@ -10,7 +10,6 @@ import OpTreeList from "./components/opselect_treelist";
 import UiProfiler from "./components/uiperformance";
 import UserSettings from "./components/usersettings";
 import Api from "./api/api";
-import Tipps from "./dialogs/tipps";
 import Exporter from "./dialogs/exporter";
 import ele from "./utils/ele";
 import GradientEditor from "./dialogs/gradienteditor";
@@ -68,7 +67,6 @@ import ModalBackground from "./dialogs/modalbg";
 import SuggestionDialog from "./components/suggestiondialog";
 import SandboxBrowser from "./sandbox_browser";
 import CanvasUi from "./components/canvasui";
-import Tracking from "./tracking/tracking";
 import valueChanger from "./components/opparampanel/valuechanger";
 import GlGuiFull from "./glpatch/gluifull";
 import GlGuiTab from "./glpatch/gluitab";
@@ -80,7 +78,6 @@ import extendCore from "./op_core_extend";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import ModalLoading from "./dialogs/modalloading";
 import ModalException from "./dialogs/modalexception";
-import Gui from "./gui";
 import startUi from "./startgui";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend";
 import TimeLineGui from "./components/timelinesvg/timeline";
@@ -115,56 +112,21 @@ CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
 CABLES.UI.uiConfig = uiconfig;
 
-
-CABLES.UI.SuggestPortDialog = SuggestPortDialog;
-CABLES.UI.ScConnection = ScConnection;
-CABLES.UI.ScUi = ScUi;
-CABLES.UI.ScUiMultiplayer = ScUiMultiplayer;
-
-CABLES.UI.Logger = Logger;
-CABLES.UI.Tracking = Tracking;
 CABLES.UI.CanvasLens = CanvasLens;
-CABLES.UI.HtmlInspector = HtmlInspector;
-CABLES.UI.IconBar = IconBar;
 CABLES.UI.Keypresenter = Keypresenter;
-CABLES.UI.OpTreeList = OpTreeList;
 CABLES.UI.UiProfiler = UiProfiler;
-CABLES.UI.Tipps = Tipps;
 CABLES.UI.Exporter = Exporter;
 CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
-CABLES.UI.Tab = Tab;
+CABLES.UI.Tab = Tab; // needs to stay - is used in ops
 CABLES.UI.FindTab = FindTab;
 CABLES.UI.SpreadSheetTab = SpreadSheetTab;
-CABLES.UI.WatchArrayTab = WatchArrayTab;
-CABLES.UI.WatchVarTab = WatchVarTab;
 CABLES.UI.FileManager = FileManager;
-CABLES.UI.Preferences = Preferences;
 CABLES.UI.Profiler = Profiler;
-CABLES.UI.GlDebugTab = GlDebugTab;
-CABLES.UI.GpuProfiler = GpuProfiler;
-CABLES.UI.ItemManager = ItemManager;
-CABLES.UI.MetaCode = MetaCode;
-CABLES.UI.MetaHistory = MetaHistory;
-CABLES.UI.MetaKeyframes = MetaKeyframes;
-CABLES.UI.MetaDoc = MetaDoc;
-CABLES.UI.ChangelogToast = ChangelogToast;
-CABLES.UI.Gizmo = Gizmo;
-CABLES.UI.OpDocs = OpDocs;
-CABLES.UI.EditorTab = EditorTab;
 CABLES.UI.Chat = Chat;
-CABLES.UI.MetaOpParams = MetaOpParams;
-CABLES.UI.ServerOps = ServerOps;
-CABLES.UI.PatchView = PatchView;
-CABLES.UI.NoPatchEditor = NoPatchEditor;
-CABLES.CoreLibLoader = CoreLibLoader;
 CABLES.LibLoader = LibLoader;
-CABLES.UI.LoggingTab = LoggingTab;
-CABLES.UI.ModalBackground = ModalBackground;
-CABLES.UI.SuggestionDialog = SuggestionDialog;
 CABLES.UI.CanvasUi = CanvasUi;
 CABLES.UI.TexturePreviewer=TexturePreviewer;
-CABLES.UI.ModalPortValue=ModalPortValue;
 
 CABLES.GLGUI.GlGuiFull=GlGuiFull;
 CABLES.GLGUI.GlGuiTab=GlGuiTab;
@@ -183,14 +145,12 @@ CABLES.editorSession = new EditorSession();
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
 
-CABLES.UI.ModalDialog = ModalDialog;
+CABLES.UI.ModalDialog=ModalDialog;  // needs to stay - is used in ops
 CABLES.UI.ModalLoading=ModalLoading;
 CABLES.UI.ModalException=ModalException;
-CABLES.UI.WatchPortVisualizer = WatchPortVisualizer;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
-CABLES.UI.getHandleBarHtml = getHandleBarHtml;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
 CABLES.UI.startIdleListeners = startIdleListeners;
@@ -207,8 +167,6 @@ CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
 
-CABLES.UI.TimeLineUI=TimeLineGui;
-
 
 
 CABLES.uniqueArray = uniqueArray;
@@ -222,8 +180,6 @@ CABLES.UI.paramsHelper=paramsHelper;
 CABLES.UI.valueChanger=valueChanger;
 
 CABLES.UI.undo = new UndoManager();
-CABLES.UI.Gui=Gui;
-
 
 CABLES.UI.MODAL=oldModalWrap;
 

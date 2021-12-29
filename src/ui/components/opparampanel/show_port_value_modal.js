@@ -1,10 +1,11 @@
 import ModalDialog from "../../dialogs/modaldialog";
+import Logger from "../../utils/logger";
 
 export default class ModalPortValue
 {
     constructor()
     {
-        this._log = new CABLES.UI.Logger("ModalPortValue");
+        this._log = new Logger("ModalPortValue");
     }
 
     showJson (opid, which)
