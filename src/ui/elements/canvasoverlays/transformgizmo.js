@@ -263,6 +263,33 @@ export default class Gizmo
 
         function up(e)
         {
+            if(self._draggingPort)
+            {
+                const undofunc = (function (patch, p1Name, op1Id,oldValue,newValue)
+                {
+                    const op=patch.getOpById(op1Id)
+                    const p=op.getPortByName(p1Name);
+
+                    CABLES.UI.undo.add({
+                        "title": "move gizmo "+p.name,
+                        undo()
+                        {
+                            p.set(oldValue);
+                        },
+                        redo()
+                        {
+                            p.set(newValue);
+                        }
+                    });
+                }(
+                    self._draggingPort.parent.patch,
+                    self._draggingPort.getName(),
+                    self._draggingPort.parent.id,
+                    self._origValue,
+                    self._draggingPort.get()
+                ));
+            }
+
             if (CABLES.UI) gui.setStateUnsaved();
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
@@ -278,6 +305,8 @@ export default class Gizmo
             document.removeEventListener("mousemove", move, false);
 
             if (CABLES.UI) gui.opParams.show(self._draggingPort.parent);
+
+
         }
 
         function move(e)

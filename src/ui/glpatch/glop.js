@@ -153,11 +153,9 @@ export default class GlOp extends CABLES.EventTarget
 
     _onBgRectDragEnd(rect)
     {
-        const undoGroup = CABLES.UI.undo.startGroup();
 
 
         const glOps = this._glPatch.selectedGlOps;
-        for (const i in glOps) glOps[i].endPassiveDrag();
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
 
@@ -172,6 +170,11 @@ export default class GlOp extends CABLES.EventTarget
 
         if (changed)
         {
+            const undoGroup = CABLES.UI.undo.startGroup();
+
+            for (const i in glOps) glOps[i].endPassiveDrag();
+
+
             const undoAdd = (function (scope, _oldUiAttribs)
             {
                 if (!scope._op) return;
@@ -198,8 +201,10 @@ export default class GlOp extends CABLES.EventTarget
                     }
                 });
             }(this, this._dragOldUiAttribs + ""));
+
+            CABLES.UI.undo.endGroup(undoGroup, "Move Ops");
+
         }
-        CABLES.UI.undo.endGroup(undoGroup, "Move Ops");
     }
 
     _onMouseDown(e)
@@ -844,26 +849,29 @@ export default class GlOp extends CABLES.EventTarget
 
     endPassiveDrag()
     {
-
-        const undmove = (function (scope, newX,newY,oldX,oldY)
+        if(this._passiveDragStartX!=this.x || this._passiveDragStartY!=this.y)
         {
-            CABLES.UI.undo.add({
-                "title": "Move op",
-                undo()
-                {
-                    try
+            const undmove = (function (scope, newX,newY,oldX,oldY)
+            {
+                CABLES.UI.undo.add({
+                    "title": "Move op",
+                    undo()
                     {
-                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": newX, "y": newY });
+                        try
+                        {
+                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": newX, "y": newY });
+                        }
+                        catch (e) {}
+                    },
+                    redo()
+                    {
+                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
                     }
-                    catch (e) {}
-                },
-                redo()
-                {
-                    scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
-                }
-            });
+                });
 
-        }(this, this._passiveDragStartX,this._passiveDragStartY,this.x,this.y));
+            }(this, this._passiveDragStartX,this._passiveDragStartY,this.x,this.y));
+
+        }
 
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
