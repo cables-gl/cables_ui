@@ -1,11 +1,13 @@
 import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
+import Tab from '../../elements/tabpanel/tab';
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class FindTab
 {
     constructor(tabs, str)
     {
-        this._tab = new CABLES.UI.Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
+        this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
 
@@ -39,7 +41,7 @@ export default class FindTab
         }
         colors = CABLES.uniqueArray(colors);
 
-        const html = CABLES.UI.getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
+        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
 
         this._tab.html(html);
 

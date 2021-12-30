@@ -1,23 +1,33 @@
+import ServerOps from './api/opsserver';
+import NoPatchEditor from './components/nopatcheditor';
+import Gui from './gui';
+import Tracking from './tracking/tracking';
+import OpDocs from './components/opdocs';
+import HtmlInspector from './elements/canvasoverlays/htmlinspect';
+import ModalDialog from './dialogs/modaldialog';
+import ScUiMultiplayer from './multiplayer/sc_ui_multiplayer';
+import ScUi from './multiplayer/sc_ui';
+import ScConnection from './multiplayer/sc_connection';
 
 export default function startUi(cfg)
 {
     logStartup("Init UI");
     CABLES.UI.initHandleBarsHelper();
 
-    window.gui = new CABLES.UI.Gui(cfg);
+    window.gui = new Gui(cfg);
 
     gui.on("uiloaded", () =>
     {
-        new CABLES.UI.Tracking(gui);
+        new Tracking(gui);
     });
 
     if (gui.isRemoteClient)
-        new CABLES.UI.NoPatchEditor();
+        new NoPatchEditor();
     else
         CABLES.CMD.DEBUG.glguiFull();
 
     incrementStartup();
-    gui.serverOps = new CABLES.UI.ServerOps(gui, cfg.patchId, () =>
+    gui.serverOps = new ServerOps(gui, cfg.patchId, () =>
     {
         gui.init();
         gui.checkIdle();
@@ -31,7 +41,7 @@ export default function startUi(cfg)
             ele.byId("loadingstatus").remove();
             ele.byId("loadingstatusLog").remove();
 
-            new CABLES.UI.ModalDialog({html: "could not initialize webgl. try to restart your browser, or try another one" });
+            new ModalDialog({html: "could not initialize webgl. try to restart your browser, or try another one" });
             return;
         }
 
@@ -50,7 +60,7 @@ export default function startUi(cfg)
                 }, false);
 
                 incrementStartup();
-                gui.opDocs = new CABLES.UI.OpDocs();
+                gui.opDocs = new OpDocs();
                 gui.opSelect().prepare();
                 CABLES.UI.userSettings.init();
                 incrementStartup();
@@ -102,11 +112,11 @@ export default function startUi(cfg)
                 gui.bindKeys();
 
                 const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
-                gui.socket = new CABLES.UI.ScConnection(socketClusterConfig);
-                gui.socketUi = new CABLES.UI.ScUi(gui.socket);
+                gui.socket = new ScConnection(socketClusterConfig);
+                gui.socketUi = new ScUi(gui.socket);
                 if (gui.socket.multiplayerEnabled)
                 {
-                    gui.multiplayerUi = new CABLES.UI.ScUiMultiplayer(gui.socket);
+                    gui.multiplayerUi = new ScUiMultiplayer(gui.socket);
                     gui.chat = new CABLES.UI.Chat(gui.mainTabs, gui.socket);
                 }
 
@@ -114,7 +124,7 @@ export default function startUi(cfg)
 
                 gui.jobs().updateJobListing();
 
-                new CABLES.UI.HtmlInspector();
+                new HtmlInspector();
 
 
                 if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();

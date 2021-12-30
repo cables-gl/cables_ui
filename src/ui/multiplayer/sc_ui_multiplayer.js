@@ -1,4 +1,5 @@
 import { notify } from "../elements/notification";
+import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class ScUiMultiplayer extends CABLES.EventTarget
 {
@@ -312,7 +313,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 gui.patchView.patchRenderer.greyOut = false;
             }
 
-            const html = CABLES.UI.getHandleBarHtml("socket_userlist", data);
+            const html = getHandleBarHtml("socket_userlist", data);
             const userList = document.getElementById("nav-clientlist");
             userList.innerHTML = html;
             const moreOptions = userList.querySelector(".socket_more_options");
@@ -414,7 +415,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         };
         data.ping = CABLES.api.pingTime;
 
-        const html = CABLES.UI.getHandleBarHtml("socketinfo", data);
+        const html = getHandleBarHtml("socketinfo", data);
         return html;
     }
 

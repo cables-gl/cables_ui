@@ -1058,6 +1058,9 @@ export default function TimeLineGui ()
     ele.byId("keyframe_previous").addEventListener("click", ()=>{this.jumpKey(-1);});
     ele.byId("keyframe_next").addEventListener("click", ()=>{this.jumpKey(1);});
 
+    ele.byId("keyframe_meta").addEventListener("click", ()=>{gui.metaTabs.activateTabByName("keyframes")});
+
+
     ele.byId("loop").addEventListener("click", this.toggleLoop);
     ele.byId("centercursor").addEventListener("click", this.centerCursor);
     ele.byId("centercursor").addEventListener("mousedown", function () { doCenter = true; });

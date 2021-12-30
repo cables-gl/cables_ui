@@ -1,4 +1,6 @@
 import ele from "../utils/ele";
+import ModalBackground from '../dialogs/modalbg';
+import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class SuggestionDialog
 {
@@ -7,7 +9,7 @@ export default class SuggestionDialog
         this._cb = cb;
         this._action = _action;
         this._eleDialog = ele.byId("suggestionDialog");
-        this._bg = new CABLES.UI.ModalBackground();
+        this._bg = new ModalBackground();
         this._bg.on("hide", () =>
         {
             this.close();
@@ -37,7 +39,7 @@ export default class SuggestionDialog
             if (suggestions[i].name) suggestions[i].shortName = suggestions[i].name;
         }
 
-        const html = CABLES.UI.getHandleBarHtml("suggestions", { suggestions, _showSelect });
+        const html = getHandleBarHtml("suggestions", { suggestions, _showSelect });
         this._eleDialog.innerHTML = html;
         this._bg.show();
 

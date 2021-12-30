@@ -175,7 +175,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         }
 
 
-        const p = new CABLES.UI.ModalDialog({
+        const p = new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,

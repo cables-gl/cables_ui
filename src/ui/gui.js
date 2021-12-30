@@ -1,3 +1,34 @@
+import Bookmarks from "./components/bookmarks";
+import Introduction from "./components/introduction";
+import Jobs from "./components/jobs";
+import OpHistory from "./components/ophistory";
+import OpParampanel from "./components/opparampanel/op_parampanel";
+import CommandPallete from "./dialogs/commandpalette";
+import OpSelect from "./dialogs/opselect";
+import BottomInfoAreaBar from "./elements/bottomInfoAreaBar";
+import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
+import MainTabPanel from "./elements/tabpanel/maintabpanel";
+import TabPanel from "./elements/tabpanel/tabpanel";
+import KeyBindingsManager from "./utils/keybindingsmanager";
+import ModalDialog from './dialogs/modaldialog';
+import ModalPortValue from './components/opparampanel/show_port_value_modal';
+import uiconfig from "./uiconfig";
+import MetaKeyframes from './components/tabs/meta_keyframes';
+import MetaCode from './components/tabs/meta_code';
+import MetaDoc from './components/tabs/meta_doc';
+import TexturePreviewer from './components/texturepreviewer';
+import MetaHistory from './components/tabs/meta_history';
+import Logger from './utils/logger';
+import OpDocs from './components/opdocs';
+import IconBar from './elements/iconbar';
+import ModalException from "./dialogs/modalexception";
+import Tips from './dialogs/tips';
+import PatchView from './components/patchview';
+import TimeLineGui from "./components/timelinesvg/timeline";
+import MetaOpParams from './components/tabs/meta_opparams';
+import { getHandleBarHtml } from './utils/handlebars';
+import WatchArrayTab from './components/tabs/tab_watcharray';
+import Gizmo from './elements/canvasoverlays/transformgizmo';
 
 export default class Gui
 {
@@ -6,23 +37,23 @@ constructor(cfg)
 {
     CABLES.EventTarget.apply(this);
 
-    this._log = new CABLES.UI.Logger("gui");
+    this._log = new Logger("gui");
 
     this.patchId = cfg.patchId;
     this._showTiming = false;
     this._showingEditor = false;
 
-    this.keys = new CABLES.UI.KeyBindingsManager();
-    this.opParams = new CABLES.UI.OpParampanel();
-    this.opPortModal=new CABLES.UI.ModalPortValue();
+    this.keys = new KeyBindingsManager();
+    this.opParams = new OpParampanel();
+    this.opPortModal=new ModalPortValue();
 
     this.socket = null;
     this.isRemoteClient = cfg.remoteClient;
     this.spaceBarStart = 0;
 
-    this.timingHeight = CABLES.UI.uiConfig.timingPanelHeight;
-    this.rendererWidth = CABLES.UI.uiConfig.rendererDefaultWidth;
-    this.rendererHeight = CABLES.UI.uiConfig.rendererDefaultHeight;
+    this.timingHeight = uiconfig.timingPanelHeight;
+    this.rendererWidth = uiconfig.rendererDefaultWidth;
+    this.rendererHeight = uiconfig.rendererDefaultHeight;
 
     this.CANVASMODE_NORMAL = 0;
     this.CANVASMODE_FULLSCREEN = 2;
@@ -62,37 +93,38 @@ constructor(cfg)
         this.showOpCrash(portTriggered.parent);
     });
 
-    this.patchView = new CABLES.UI.PatchView(this._corePatch);
+    this.patchView = new PatchView(this._corePatch);
 
     this._corePatch.gui = true;
 
-    this._jobs = new CABLES.UI.Jobs();
-    this.cmdPallet = new CABLES.UI.CommandPallete();
-    this._opselect = new CABLES.UI.OpSelect();
-    this.introduction = new CABLES.UI.Introduction();
+    this._jobs = new Jobs();
+    this.cmdPallet = new CommandPallete();
+    this._opselect = new OpSelect();
+    this.introduction = new Introduction();
     this._gizmo = null;
-    this._transformOverlay = new CABLES.UI.TransformsOverlay();
+    this._transformOverlay = new TransformsOverlay();
 
     this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
     this.opDocs = null;
-    this.opHistory = new CABLES.UI.OpHistory();
+    this.opHistory = new OpHistory();
 
-    this.mainTabs = new CABLES.UI.TabPanel("maintabs");
-    this.maintabPanel = new CABLES.UI.MainTabPanel(this.mainTabs);
+    this.mainTabs = new TabPanel("maintabs");
+    this.maintabPanel = new MainTabPanel(this.mainTabs);
 
     this.chat = null;
 
-    this.metaTabs = new CABLES.UI.TabPanel("metatabpanel");
+    this.metaTabs = new TabPanel("metatabpanel");
     this._savedState = true;
 
-    this.metaOpParams = new CABLES.UI.MetaOpParams(this.metaTabs);
-    this.metaDoc = new CABLES.UI.MetaDoc(this.metaTabs);
-    this._metaCode = new CABLES.UI.MetaCode(this.metaTabs);
-    this.metaTexturePreviewer = new CABLES.UI.TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-    this.metaKeyframes = new CABLES.UI.MetaKeyframes(this.metaTabs);
-    this.bookmarks = new CABLES.UI.Bookmarks();
-    this.history = new CABLES.UI.MetaHistory(this.metaTabs);
-    this.bottomInfoArea = new CABLES.UI.BottomInfoAreaBar();
+    this.metaOpParams = new MetaOpParams(this.metaTabs);
+
+    this.metaDoc = new MetaDoc(this.metaTabs);
+    this._metaCode = new MetaCode(this.metaTabs);
+    this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+    this.metaKeyframes = new MetaKeyframes(this.metaTabs);
+    this.bookmarks = new Bookmarks();
+    this.history = new MetaHistory(this.metaTabs);
+    this.bottomInfoArea = new BottomInfoAreaBar();
 
     this._favIconLink = document.createElement("link");
     document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
@@ -109,7 +141,7 @@ constructor(cfg)
     this._eventListeners = {};
 
     this._currentProject = null;
-    this.tipps = new CABLES.UI.Tipps();
+    this.tips = new Tips();
     this.currentModal=null;
     this.updateTheme();
 }
@@ -134,7 +166,7 @@ project()
 
     timeLine()
     {
-        // if (!this._timeline) this._timeLine = new CABLES.UI.TimeLineUI();
+        // if (!this._timeline) this._timeLine = new TimeLineUI();
         return this._timeLine;
     }
 
@@ -284,7 +316,7 @@ project()
         const port = op.getPort(which);
         if (!port) this._warn("port not found:", which);
 
-        new CABLES.UI.WatchArrayTab(gui.mainTabs, op, port, {});
+        new WatchArrayTab(gui.mainTabs, op, port, {});
         gui.maintabPanel.show(true);
     }
 
@@ -767,11 +799,6 @@ project()
         this.setLayout();
     }
 
-    updateTimingIcon()
-    {
-
-    }
-
     isShowingTiming()
     {
         return this._showTiming;
@@ -821,7 +848,7 @@ project()
 
         this._showTiming = !this._showTiming;
         CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
-        updateTimingIcon();
+        // updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
     }
@@ -878,7 +905,9 @@ project()
     {
         if (gui.showGuestWarning()) return;
 
-        new CABLES.UI.ModalDialog({
+
+
+        new ModalDialog({
             "prompt": true,
             "title": "New Project",
             "text": "Enter a name for your new Project",
@@ -894,43 +923,17 @@ project()
         });
     }
 
-    getUserOs()
-    {
-        let OSName = "Unknown OS";
-        if (navigator.appVersion.indexOf("Win") != -1) OSName = "Windows";
-        if (navigator.appVersion.indexOf("Mac") != -1) OSName = "MacOS";
-        if (navigator.appVersion.indexOf("X11") != -1) OSName = "UNIX";
-        if (navigator.appVersion.indexOf("Linux") != -1) OSName = "Linux";
 
-        return OSName;
-    };
-
-    /* Returns the default mod key for a OS */
-    getModKeyForOs(os)
-    {
-        switch (os)
-        {
-        case "Windows":
-            return "ctrl";
-        case "MacOS":
-            return "cmd";
-        case "UNIX":
-            return "cmd";
-        default:
-            return "mod";
-        }
-    }
 
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
     {
-        const osMod = gui.getModKeyForOs(gui.getUserOs());
-
-        let els = document.getElementsByClassName("shortcut");
+        let els = ele.byClassAll("shortcut");
 
         for (let i in els)
         {
-            const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
+            const newShortcut=this.bottomInfoArea.replaceShortcuts(els[i].innerHTML||"");
+            // const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
             if(els[i].innerHTML) els[i].innerHTML = newShortcut;
         }
     }
@@ -1054,7 +1057,7 @@ project()
 
     showConverter(converterId, projectId, fileId, converterName)
     {
-        const html = CABLES.UI.getHandleBarHtml(
+        const html = getHandleBarHtml(
             "params_convert", {
                 "converterId": converterId,
                 "converterName": converterName,
@@ -1062,7 +1065,7 @@ project()
                 "fileId": fileId
             });
 
-        new CABLES.UI.ModalDialog({"html":html});
+        new ModalDialog({"html":html});
 
     }
 
@@ -1146,7 +1149,7 @@ project()
         ele.byId("nav_help_keys").addEventListener("click", (event) => { CABLES.CMD.UI.showKeys(); });
         ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open("https://docs.cables.gl", "_blank"); });
         ele.byId("nav_help_forum").addEventListener("click", (event) => { window.open("https://forum.cables.gl", "_blank"); });
-        ele.byId("nav_help_tipps").addEventListener("click", (event) => { gui.tipps.show(); });
+        ele.byId("nav_help_tipps").addEventListener("click", (event) => { gui.tips.show(); });
 
         // Introduction
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
@@ -1377,11 +1380,11 @@ project()
 
         if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.iconBarLeft = new CABLES.UI.IconBar("sidebar_left");
-        gui.iconBarPatchNav = new CABLES.UI.IconBar("sidebar_bottom");
-        gui.iconBarTimeline = new CABLES.UI.IconBar("sidebar_timeline");
+        gui.iconBarLeft = new IconBar("sidebar_left");
+        gui.iconBarPatchNav = new IconBar("sidebar_bottom");
+        gui.iconBarTimeline = new IconBar("sidebar_timeline");
 
-        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tipps.show();
+        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tips.show();
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
@@ -1528,7 +1531,7 @@ project()
 
     setTransformGizmo(params)
     {
-        if (!this._gizmo) this._gizmo = new CABLES.UI.Gizmo(this.scene().cgl);
+        if (!this._gizmo) this._gizmo = new Gizmo(this.scene().cgl);
         if (!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
         {
             this._gizmo.set(null);
@@ -1624,7 +1627,7 @@ project()
 
     reloadDocs(cb)
     {
-        gui.opDocs = new CABLES.UI.OpDocs();
+        gui.opDocs = new OpDocs();
         if (cb)cb();
     }
 
@@ -1644,9 +1647,8 @@ project()
     {
         this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
-        ele.byId("timing").innerHTML = CABLES.UI.getHandleBarHtml("timeline_controler");
-        this._timeLine = new CABLES.UI.TimeLineUI();
-
+        ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
+        this._timeLine = new TimeLineGui();
 
         if (this.isRemoteClient)
         {
@@ -1707,12 +1709,12 @@ project()
     {
         this._corePatch.on("exception", function (ex, op)
         {
-            new CABLES.UI.ModalException(ex,{"op":op});
+            new ModalException(ex,{"op":op});
         });
 
         this._corePatch.on("exceptionOp", function (e, objName)
         {
-            new CABLES.UI.ModalException(e,{"opname":objName});
+            new ModalException(e,{"opname":objName});
         });
 
         this._corePatch.on("criticalError", function (title, msg)

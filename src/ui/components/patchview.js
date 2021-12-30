@@ -2,6 +2,10 @@ import ele from "../utils/ele";
 import Logger from "../utils/logger";
 import PatchSaveServer from "../api/patchServerApi";
 import { notify, notifyError } from "../elements/notification";
+import gluiconfig from "../glpatch/gluiconfig";
+import { getHandleBarHtml } from "../utils/handlebars";
+import ModalDialog from '../dialogs/modaldialog';
+import SuggestPortDialog from './suggestionportdialog';
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -38,7 +42,7 @@ export default class PatchView extends CABLES.EventTarget
         corepatch.addEventListener("onUnLink", this.setUnsaved.bind(this));
     }
 
-    get element() { return this._element || CABLES.UI.PatchView.getElement(); }
+    get element() { return this._element || PatchView.getElement(); }
 
     static getElement()
     {
@@ -201,7 +205,7 @@ export default class PatchView extends CABLES.EventTarget
 
     updateBoundingRect()
     {
-        this.boundingRect = CABLES.UI.PatchView.getElement().getBoundingClientRect();
+        this.boundingRect = PatchView.getElement().getBoundingClientRect();
     }
 
     hasFocus()
@@ -413,7 +417,7 @@ export default class PatchView extends CABLES.EventTarget
 
         if (numops > 0)
         {
-            const html = CABLES.UI.getHandleBarHtml(
+            const html = getHandleBarHtml(
                 "params_ops", {
                     "numOps": numops,
                 });
@@ -478,7 +482,7 @@ export default class PatchView extends CABLES.EventTarget
         this.checkPatchErrors();
 
         const project = gui.project();
-        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += CABLES.UI.getHandleBarHtml("clonepatch", {});
+        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += getHandleBarHtml("clonepatch", {});
         html += gui.bookmarks.getHtml();
 
         // const views = document.getElementById("patchviews");
@@ -1161,8 +1165,11 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let j = 0; j < ops.length; j++)
         {
-            if (j > 0) y += (ops[j].uiAttribs.height || CABLES.UI.uiConfig.opHeight) + 10;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(y));
+            if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
+
+            y=this.snapOpPosY(y);
+
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
             this.testCollision(ops[j]);
         }
     }
@@ -1307,7 +1314,7 @@ export default class PatchView extends CABLES.EventTarget
 
         if (numFitting > 1)
         {
-            new CABLES.UI.SuggestPortDialog(op2, p, e, (p2n) =>
+            new SuggestPortDialog(op2, p, e, (p2n) =>
             {
                 this._p.link(op1, pid, op2, p2n);
             });
@@ -1328,7 +1335,7 @@ export default class PatchView extends CABLES.EventTarget
 
         if (numFitting > 1)
         {
-            new CABLES.UI.SuggestPortDialog(op1, p, e, (suggport) =>
+            new SuggestPortDialog(op1, p, e, (suggport) =>
             {
                 for (let i = 0; i < portnames.length; i++)
                 {
@@ -1669,7 +1676,7 @@ export default class PatchView extends CABLES.EventTarget
 
     setPortTitle(opId, portId, oldtitle)
     {
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Set Title",
             "text": "Enter a custom title for this port",

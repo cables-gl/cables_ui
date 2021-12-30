@@ -1,3 +1,4 @@
+import EditorTab from '../tabs/tab_editor';
 
 const paramsHelper=
 {
@@ -437,7 +438,7 @@ const paramsHelper=
 
         if (editorObj)
         {
-            new CABLES.UI.EditorTab(
+            new EditorTab(
                 {
                     "title": name,
                     "dataId": dataId,

@@ -1,3 +1,4 @@
+import { getHandleBarHtml } from "../utils/handlebars";
 import Logger from "../utils/logger";
 import ModalDialog from "./modaldialog";
 
@@ -193,7 +194,7 @@ export default class GradientEditor
     {
         this._callback = cb;
 
-        const html = CABLES.UI.getHandleBarHtml("GradientEditor", {});
+        const html = getHandleBarHtml("GradientEditor", {});
 
         new ModalDialog({"html":html,"nopadding":true});
 

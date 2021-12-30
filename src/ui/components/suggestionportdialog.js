@@ -1,3 +1,4 @@
+import SuggestionDialog from './suggestiondialog';
 
 export default class SuggestPortDialog
 {
@@ -14,7 +15,7 @@ export default class SuggestPortDialog
             if (CABLES.Link.canLink(op.portsOut[i], port))
                 this._addPort(op.portsOut[i]);
 
-        new CABLES.UI.SuggestionDialog(this._suggestions, op, mouseEvent, cb,
+        new SuggestionDialog(this._suggestions, op, mouseEvent, cb,
             (id) =>
             {
                 for (const i in this._suggestions)

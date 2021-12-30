@@ -1,5 +1,8 @@
 import ele from "../utils/ele";
 import Logger from "../utils/logger";
+import ItemManager from './tabs/tab_item_manager';
+import { getHandleBarHtml } from '../utils/handlebars';
+import ModalDialog from '../dialogs/modaldialog';
 
 export default class FileManager
 {
@@ -7,7 +10,7 @@ export default class FileManager
     {
         this._log = new Logger("filemanager");
         this._filterType = null;
-        this._manager = new CABLES.UI.ItemManager("Files", gui.mainTabs);
+        this._manager = new ItemManager("Files", gui.mainTabs);
         this._filePortEle = null;
         this._firstTimeOpening = true;
         this._refreshDelay = null;
@@ -335,7 +338,7 @@ export default class FileManager
         }
 
 
-        const html = CABLES.UI.getHandleBarHtml("filemanager_header", {
+        const html = getHandleBarHtml("filemanager_header", {
             "fileSelectOp": this._filePortOp,
             "filterType": this._filterType,
             "source": this._fileSource,
@@ -392,7 +395,7 @@ export default class FileManager
                     if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource != "lib")
                     {
-                        html = CABLES.UI.getHandleBarHtml("filemanager_details", {
+                        html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
@@ -422,7 +425,7 @@ export default class FileManager
                                 try
                                 {
                                     // * use file-type specific template
-                                    html = CABLES.UI.getHandleBarHtml(templateName, {
+                                    html = getHandleBarHtml(templateName, {
                                         "filename": item.p,
                                         "file": item,
                                         "fileInfo": itemInfo
@@ -431,7 +434,7 @@ export default class FileManager
                                 catch (e)
                                 {
                                     // * use default template
-                                    html = CABLES.UI.getHandleBarHtml("filemanager_details_lib", {
+                                    html = getHandleBarHtml("filemanager_details_lib", {
                                         "filename": item.p,
                                         "file": item,
                                         "fileInfo": itemInfo
@@ -552,7 +555,7 @@ export default class FileManager
 
     createFile()
     {
-        new CABLES.UI.ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Create new file",
             "text": "Enter filename",

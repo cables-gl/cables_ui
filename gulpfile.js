@@ -93,14 +93,14 @@ function _scripts_ui_webpack(done)
         });
 }
 
-function _scripts_ui(done)
-{
-    let task = gulp.src(["src/ui_old/**/*.js", "src/ui_old/**/*.json"]);
-    if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("cablesuiold.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesuiold.min.js"));
-    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
-    return task.pipe(gulp.dest("dist/js"));
-}
+// function _scripts_ui(done)
+// {
+//     let task = gulp.src(["src/ui_old/**/*.js", "src/ui_old/**/*.json"]);
+//     if (isLiveBuild) task = task.pipe(sourcemaps.init());
+//     task = task.pipe(concat("cablesuiold.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cablesuiold.min.js"));
+//     if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
+//     return task.pipe(gulp.dest("dist/js"));
+// }
 
 function _append_build_info(done)
 {
@@ -187,7 +187,7 @@ function _electronapp(done)
 
 function _watch(done)
 {
-    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
+    // gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/text.json"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
@@ -197,7 +197,7 @@ function _watch(done)
 
 function _electron_watch(done)
 {
-    gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
+    // gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/text.json"], gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui, _append_build_info));
@@ -217,7 +217,7 @@ function _electron_watch(done)
  */
 gulp.task("default", gulp.series(
     _update_buildInfo,
-    _scripts_ui,
+    // _scripts_ui,
     _scripts_ui_webpack,
     _append_build_info,
     _html_ui,
@@ -241,7 +241,7 @@ gulp.task("build", gulp.series(
     _scripts_libs_ui,
     _scripts_ops,
     _scripts_core,
-    _scripts_ui,
+    // _scripts_ui,
     _scripts_ui_webpack,
     _append_build_info,
     _scripts_talkerapi,
@@ -255,7 +255,7 @@ gulp.task("build", gulp.series(
 gulp.task("electron", gulp.series(
     _update_buildInfo,
     _svgcss,
-    _scripts_ui,
+    // _scripts_ui,
     _scripts_ui_webpack,
     _append_build_info,
     _lint,
@@ -268,6 +268,6 @@ gulp.task("electron", gulp.series(
 ));
 
 gulp.task("testui", gulp.series(
-    _scripts_ui,
+    // _scripts_ui,
     _scripts_ui_webpack
 ));

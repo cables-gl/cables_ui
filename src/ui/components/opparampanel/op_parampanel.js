@@ -1,4 +1,7 @@
 import paramsHelper from "./params_helper";
+import { getHandleBarHtml } from '../../utils/handlebars';
+import Logger from "../../utils/logger";
+import WatchPortVisualizer from './watchPortVisualizer';
 
 
 export default class OpParampanel extends CABLES.EventTarget
@@ -7,7 +10,7 @@ export default class OpParampanel extends CABLES.EventTarget
     {
         super();
 
-        this._log = new CABLES.UI.Logger("OpParampanel");
+        this._log = new Logger("OpParampanel");
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
@@ -22,7 +25,7 @@ export default class OpParampanel extends CABLES.EventTarget
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
         this._isPortLineDragDown = false;
-        this._watchPortVisualizer = new CABLES.UI.WatchPortVisualizer();
+        this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();
     }
@@ -218,7 +221,7 @@ export default class OpParampanel extends CABLES.EventTarget
 
         if (op.portsIn.length > 0)
         {
-            html += CABLES.UI.getHandleBarHtml("params_ports_head", {
+            html += getHandleBarHtml("params_ports_head", {
                 "dirStr": "in",
                 "title": "Input",
                 "texts": CABLES.UI.TEXTS,
@@ -272,7 +275,7 @@ export default class OpParampanel extends CABLES.EventTarget
 
         if (op.portsOut.length > 0)
         {
-            html += CABLES.UI.getHandleBarHtml("params_ports_head", {
+            html += getHandleBarHtml("params_ports_head", {
                 "dirStr": "out",
                 "title": "Output",
                 "op": op,
@@ -331,7 +334,7 @@ export default class OpParampanel extends CABLES.EventTarget
             perfLoopOut.finish();
         }
 
-        html += CABLES.UI.getHandleBarHtml("params_op_foot", {
+        html += getHandleBarHtml("params_op_foot", {
             op,
             "opserialized": op.getSerialized(),
             "user": gui.user,

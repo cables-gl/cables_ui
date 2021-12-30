@@ -203,7 +203,18 @@ nav
         }
 
         .shortcut {
-                float: right;
+            float: right;
+
+            p
+            {
+                padding:0;
+                margin:0;
+            }
+
+            code
+            {
+                margin-right: 3px;
+            }
         }
 
 

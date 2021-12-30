@@ -1,4 +1,5 @@
 import Logger from "../../utils/logger";
+import Tab from '../../elements/tabpanel/tab';
 
 export default class EditorTab
 {
@@ -12,7 +13,7 @@ export default class EditorTab
 
         gui.maintabPanel.show();
 
-        this._tab = new CABLES.UI.Tab(options.title,
+        this._tab = new Tab(options.title,
             {
                 "icon": null,
                 "type": options.syntax,

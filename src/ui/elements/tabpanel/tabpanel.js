@@ -1,3 +1,5 @@
+import { getHandleBarHtml } from "../../utils/handlebars";
+
 export default class TabPanel extends CABLES.EventTarget
 {
     constructor(eleId)
@@ -51,7 +53,7 @@ export default class TabPanel extends CABLES.EventTarget
     updateHtml()
     {
         let html = "";
-        html += CABLES.UI.getHandleBarHtml("tabpanel_bar", { "id": this.id, "tabs": this._tabs });
+        html += getHandleBarHtml("tabpanel_bar", { "id": this.id, "tabs": this._tabs });
         this._eleTabPanel.innerHTML = html;
 
         const editortabList = document.getElementById("editortabList" + this.id);

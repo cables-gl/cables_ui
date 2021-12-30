@@ -1,7 +1,8 @@
+import Tab from '../elements/tabpanel/tab';
 
 export default function GlGuiTab (tabs)
 {
-    this._tab = new CABLES.UI.Tab("GlGui", { "icon": "cube", "infotext": "tab_glgui" });
+    this._tab = new Tab("GlGui", { "icon": "cube", "infotext": "tab_glgui" });
     tabs.addTab(this._tab, true);
     gui.maintabPanel.show();
     this._tab.contentEle.innerHTML = "";

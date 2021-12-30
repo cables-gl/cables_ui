@@ -1,4 +1,5 @@
 import GlLinedrawer from "../gldraw/gllinedrawer";
+import SuggestionDialog from '../components/suggestiondialog';
 
 export default class QuickLinkSuggestion extends CABLES.EventTarget
 {
@@ -131,7 +132,7 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
 
             // op2rect.showFocus();
 
-            new CABLES.UI.SuggestionDialog(sugIn, op2, mouseEvent, null,
+            new SuggestionDialog(sugIn, op2, mouseEvent, null,
                 function (sid)
                 {
                     gui.corePatch().link(
@@ -143,6 +144,6 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
         }
 
         if (suggestions.length == 1) showSuggestions2(0);
-        else new CABLES.UI.SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
+        else new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
     }
 }

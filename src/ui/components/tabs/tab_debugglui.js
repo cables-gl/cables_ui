@@ -1,3 +1,4 @@
+import Tab from '../../elements/tabpanel/tab';
 
 export default class GlDebugTab
 {
@@ -6,7 +7,7 @@ export default class GlDebugTab
         this._count = 0;
 
 
-        this._tab = new CABLES.UI.Tab("gluidebug", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
+        this._tab = new Tab("gluidebug", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
 

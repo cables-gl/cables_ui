@@ -1,6 +1,7 @@
 
 import defaultops from "../defaultops";
 import Logger from "../utils/logger";
+import { getHandleBarHtml } from '../utils/handlebars';
 
 export default class OpDocs
 {
@@ -251,7 +252,7 @@ export default class OpDocs
                 };
         }
 
-        const html = CABLES.UI.getHandleBarHtml("op-doc-template", {
+        const html = getHandleBarHtml("op-doc-template", {
             "opDoc": opDoc
         });
 

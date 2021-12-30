@@ -1,3 +1,4 @@
+import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class IconBar
 {
@@ -69,7 +70,7 @@ export default class IconBar
         this._eleContainer.classList.add("cbl_iconbarContainer");
         if (!this.vertical) this._eleContainer.classList.add("cbl_iconbar_hor");
 
-        const html = CABLES.UI.getHandleBarHtml("iconbar", {
+        const html = getHandleBarHtml("iconbar", {
             "items": this._items,
             "id": this._id,
             "vertical": this.vertical

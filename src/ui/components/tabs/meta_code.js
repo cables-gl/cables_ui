@@ -1,4 +1,6 @@
 import Logger from "../../utils/logger";
+import Tab from '../../elements/tabpanel/tab';
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 
 export default class MetaCode
@@ -11,7 +13,7 @@ export default class MetaCode
         this._lastSelectedOp = null;
         this._currentName = null;
 
-        this._tab = new CABLES.UI.Tab("code", { "icon": "code", "infotext": "tab_code", "showTitle": false, "hideToolbar": true, "padding": true });
+        this._tab = new Tab("code", { "icon": "code", "infotext": "tab_code", "showTitle": false, "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
         this._tab.addEventListener("onActivate", function ()
         {
@@ -87,7 +89,7 @@ export default class MetaCode
                     if (this._op.objName.indexOf("User.") == -1)
                         this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + this._op.objName;
 
-                    const html = CABLES.UI.getHandleBarHtml("meta_code",
+                    const html = getHandleBarHtml("meta_code",
                         {
                             "op": this._op,
                             "doc": doc,

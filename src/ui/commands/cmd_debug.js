@@ -1,3 +1,4 @@
+import GlDebugTab from '../components/tabs/tab_debugglui';
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -57,14 +58,14 @@ CABLES_CMD_DEBUG.glguiFull = function ()
 
 CABLES_CMD_DEBUG.debugGlUi = function ()
 {
-    new CABLES.UI.GlDebugTab(gui.mainTabs);
+    new GlDebugTab(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
 
 
 CABLES_CMD_DEBUG.logging = function ()
 {
-    new CABLES.UI.LoggingTab(gui.mainTabs);
+    new LoggingTab(gui.mainTabs);
     gui.maintabPanel.show(true);
 };
 
