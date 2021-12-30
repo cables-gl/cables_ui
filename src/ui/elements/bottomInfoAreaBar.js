@@ -101,9 +101,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
     hoverInfoEle(e)
     {
         let txt = e.target.dataset.info;
-        if (e.target.dataset.infotext) txt = CABLES.UI.TEXTS[e.target.dataset.infotext];
-        if (!txt) txt = document.getElementById("infoArea").dataset.info;
-
+        if(CABLES.UI.TEXTS[e.target.dataset.info]) txt = CABLES.UI.TEXTS[e.target.dataset.info];
+        // if (!txt) txt = ele.byId("infoArea").dataset.info;
 
         this.setContent(txt);
     }
