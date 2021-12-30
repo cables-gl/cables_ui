@@ -217,7 +217,7 @@ export default class OpParampanel extends CABLES.EventTarget
             "hasExample": hasScreenshot,
         });
 
-        CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
+        gui.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
 
         if (op.portsIn.length > 0)
         {

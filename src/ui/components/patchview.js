@@ -426,7 +426,7 @@ export default class PatchView extends CABLES.EventTarget
 
             ele.byId(gui.getParamPanelEleId()).innerHTML = html;
             gui.setTransformGizmo(null);
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+            gui.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
         }
         else
         {

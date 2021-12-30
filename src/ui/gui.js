@@ -29,6 +29,7 @@ import MetaOpParams from './components/tabs/meta_opparams';
 import { getHandleBarHtml } from './utils/handlebars';
 import WatchArrayTab from './components/tabs/tab_watcharray';
 import Gizmo from './elements/canvasoverlays/transformgizmo';
+import { showInfo } from "./elements/tooltips";
 
 export default class Gui
 {
@@ -1362,7 +1363,7 @@ project()
 
         this._elGlCanvasDom.addEventListener("pointerenter", (e) =>
         {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.canvas);
+            gui.showInfo(CABLES.UI.TEXTS.canvas);
         });
 
         this._elGlCanvasDom.addEventListener("pointerleave", (e) =>
@@ -1660,7 +1661,7 @@ project()
 
         ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.undevLogo);
+            gui.showInfo(CABLES.UI.TEXTS.undevLogo);
         });
         ele.byId("undev").addEventListener("pointerLeave", (e) =>
         {
@@ -1669,7 +1670,7 @@ project()
 
         ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
-            CABLES.UI.showInfo(CABLES.UI.TEXTS.timelineui);
+            gui.showInfo(CABLES.UI.TEXTS.timelineui);
         });
 
         ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
@@ -1730,5 +1731,10 @@ project()
         {
         });
     };
+
+    showInfo(txt)
+    {
+        showInfo(txt);
+    }
 
 }

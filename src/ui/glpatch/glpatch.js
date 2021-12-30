@@ -492,6 +492,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this.unselectAll();
             gui.patchView.showDefaultPanel();
+            gui.showInfo(CABLES.UI.TEXTS.patch);
 
             if (CABLES.UI.userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }

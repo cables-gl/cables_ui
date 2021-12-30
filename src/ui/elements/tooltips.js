@@ -113,7 +113,7 @@ function getPortDescription(thePort)
     if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += CABLES.UI.TEXTS.portDirOut;
     if (thePort.isLinked()) strInfo += CABLES.UI.TEXTS.portMouseUnlink;
     else strInfo += CABLES.UI.TEXTS.portMouseCreate;
-    CABLES.UI.showInfo(strInfo);
+    gui.showInfo(strInfo);
 
     return str;
 }
