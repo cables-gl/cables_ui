@@ -153,8 +153,9 @@ export default class GlOp extends CABLES.EventTarget
 
     _onBgRectDragEnd(rect)
     {
+
+
         const glOps = this._glPatch.selectedGlOps;
-        for (const i in glOps) glOps[i].endPassiveDrag();
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
 
@@ -165,13 +166,15 @@ export default class GlOp extends CABLES.EventTarget
             oldUiAttribs.translate.y != this._op.uiAttribs.translate.y;
 
         if (this._preDragPosZ != this._glRectBg.z)
-        {
             this._glRectBg.setPosition(this._glRectBg.x, this._glRectBg.y, this._preDragPosZ);
-        }
-
 
         if (changed)
         {
+            const undoGroup = CABLES.UI.undo.startGroup();
+
+            for (const i in glOps) glOps[i].endPassiveDrag();
+
+
             const undoAdd = (function (scope, _oldUiAttribs)
             {
                 if (!scope._op) return;
@@ -198,6 +201,9 @@ export default class GlOp extends CABLES.EventTarget
                     }
                 });
             }(this, this._dragOldUiAttribs + ""));
+
+            CABLES.UI.undo.endGroup(undoGroup, "Move Ops");
+
         }
     }
 
@@ -843,6 +849,30 @@ export default class GlOp extends CABLES.EventTarget
 
     endPassiveDrag()
     {
+        if(this._passiveDragStartX!=this.x || this._passiveDragStartY!=this.y)
+        {
+            const undmove = (function (scope, newX,newY,oldX,oldY)
+            {
+                CABLES.UI.undo.add({
+                    "title": "Move op",
+                    undo()
+                    {
+                        try
+                        {
+                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": newX, "y": newY });
+                        }
+                        catch (e) {}
+                    },
+                    redo()
+                    {
+                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
+                    }
+                });
+
+            }(this, this._passiveDragStartX,this._passiveDragStartY,this.x,this.y));
+
+        }
+
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
     }

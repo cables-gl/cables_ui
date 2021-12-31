@@ -10,15 +10,15 @@
 
             <span class="divider"></span>
 
-            <span class="iconbutton info" data-infotext="filemanager_file_refresh" onclick="gui.refreshFileManager();" >
+            <span class="iconbutton info" data-info="filemanager_file_refresh" onclick="gui.refreshFileManager();" >
                 <i class="icon icon-refresh"></i>
             </span>
 
-            <span class="iconbutton info" data-infotext="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+            <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
                 <i class="icon icon-upload"></i>
             </span>
 
-            <span class="iconbutton info" data-infotext="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
+            <span class="iconbutton info" data-info="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
                 <i class="icon icon-file-plus"></i>
             </span>
 
@@ -143,13 +143,13 @@
     <div class="filemanager-detail-element">
         <div style="padding:10px;">
 
-            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="{{filename}}">
+            <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
                 <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="{{filename}}">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{filename}}">
                 <span class="icon icon-1x icon-external"></span>
             </a>
-            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find('{{filename}}')">
+            <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{filename}}')">
                 <a class="icon icon-1x icon-search"></a>
             </span>
 
@@ -172,13 +172,13 @@
     <div class="filemanager-detail-element">
         <div style="padding:10px;">
 
-            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="{{filename}}">
+            <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
                 <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="{{filename}}">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{filename}}">
                 <span class="icon icon-1x icon-external"></span>
             </a>
-            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find('{{filename}}')">
+            <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{filename}}')">
                 <a class="icon icon-1x icon-search"></a>
             </span>
 
@@ -222,18 +222,18 @@
 
         <div style="padding:10px;">
 
-            <a class="iconbutton info" data-infotext="filemanager_file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+            <a class="iconbutton info" data-info="filemanager_file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
                 <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-infotext="filemanager_file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
                 <span class="icon icon-1x icon-external"></span>
             </a>
-            <span class="iconbutton info" data-infotext="filemanager_file_search" onclick="gui.find('{{file.fileDb.fileName}}')">
+            <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{file.fileDb.fileName}}')">
                 <a class="icon icon-1x icon-search"></a>
             </span>
 
             {{#compare source '==' 'patch' }}
-                <span class="iconbutton info" data-infotext="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
+                <span class="iconbutton info" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
                     <a class="info icon icon-1x icon-trash" ></a>
                 </span>
             {{/compare}}

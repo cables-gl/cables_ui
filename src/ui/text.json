@@ -39,8 +39,8 @@
         "portMouseCreate": "|| [DRAG_LMB] create and link new op",
         "portObjectSnapshot": "see at object data snapshot",
 
-        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n*   `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
-        "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* `shift`+`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
+        "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
+        "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
         "projectSettingsPublic": "make patch public - everyone can see it",
         "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
@@ -51,12 +51,12 @@
         "projectNotSaved": "Patch not saved - save patch and try again",
 
         "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-        "patch": "## Patch-Panel \n\nHere you can connect ops and make cables do things. \n\n* `esc` Quick-add op \n* `space` + `mouse drag`: Scroll \n* `right click] + mouse drag:`: Scroll \n* [cmd_ctrl]`s`: Save patch \n* [cmd_ctrl]`v`: Paste \n* [cmd_ctrl]`a`: Select all ops",
-        "canvas": "## Canvas \n\nHere you can see the visual output of your patch.\n\n[CMD] + [ENTER] - Maximize canvas",
+        "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Scroll || [cmd_ctrl]`s` Save patch || `c` center all op || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
+        "canvas": "## Canvas\n\n|| Here you can see the visual output of your patch.\n\n|| [cmd_ctrl][ENTER] - Maximize canvas",
         "projectFiles": "## Project Files \n\nOverview over your uploaded files",
         "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
 
-        "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - minimize panel",
+        "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - minimize panel || [alt]`ESC` - unminimize panel",
 
         "tab_files": "## Files \n\nUpload and manage your files",
         "tab_code": "## Code\n\noperator code",

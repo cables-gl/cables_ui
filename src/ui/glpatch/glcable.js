@@ -475,7 +475,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText)
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
-                CABLES.UI.showInfo(CABLES.UI.TEXTS.linkAddCircle);
+                gui.showInfo(CABLES.UI.TEXTS.linkAddCircle);
 
             perf.finish();
             return true;

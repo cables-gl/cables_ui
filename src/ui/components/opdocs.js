@@ -2,6 +2,7 @@
 import defaultops from "../defaultops";
 import Logger from "../utils/logger";
 import { getHandleBarHtml } from '../utils/handlebars';
+import Gui from "../gui";
 
 export default class OpDocs
 {
@@ -301,14 +302,14 @@ export default class OpDocs
                     {
                         if (this._opDocs[i].docs.ports[j].name == portname)
                         {
-                            CABLES.UI.showInfo("<b>" + group + portname + "</b>:<br/>" + this._opDocs[i].docs.ports[j].text);
+                            gui.showInfo("<b>" + group + portname + "</b>: " + this._opDocs[i].docs.ports[j].text);
                             perf.finish();
                             return;
                         }
                     }
                 }
 
-                CABLES.UI.showInfo("<b>" + group + portname + "</b><br/> ");
+                gui.showInfo("<b>" + group + portname + "</b> ");
                 perf.finish();
                 return;
             }

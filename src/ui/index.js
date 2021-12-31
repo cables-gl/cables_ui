@@ -157,7 +157,6 @@ CABLES.UI.startIdleListeners = startIdleListeners;
 
 CABLES.UI.hideToolTip = hideToolTip;
 CABLES.UI.showToolTip = showToolTip;
-CABLES.UI.showInfo = showInfo;
 CABLES.UI.hideInfo = hideInfo;
 CABLES.UI.updateHoverToolTip = updateHoverToolTip;
 

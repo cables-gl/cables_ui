@@ -7,7 +7,7 @@ export default valueChanger;
 function valueChanger (eleId, focus, portName, opid)
 {
 
-    CABLES.UI.showInfo(CABLES.UI.TEXTS.valueChangerInput);
+    gui.showInfo(CABLES.UI.TEXTS.valueChangerInput);
 
     const eleInput = ele.byId(eleId);
     const eleContainer = ele.byId(eleId + "-container");

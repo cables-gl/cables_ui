@@ -86,7 +86,7 @@ export default class Introduction
             "bottom"
         );
         this.defineIntroStep(
-            "#iconbar_sidebar_left div[data-infotext=\"cmd_addop\"]",
+            "#iconbar_sidebar_left div[data-info=\"cmd_addop\"]",
             "To add your first op to the patch you can press the <i>Add Op</i> icon, but it is much faster to just press the <code>Esc</code> key.<br />Happy patching!",
             "right"
         );

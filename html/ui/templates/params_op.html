@@ -11,7 +11,7 @@
         {{/if}}
 
         <div class="panel params_op_head">
-            <input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-infotext="op_title">
+            <input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
 			<br/>
             <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
             <br/>
@@ -80,9 +80,7 @@
                 {{/each}}
             {{/if}}
 
-            <div id="op_params_uierrors" style="">
-
-            </div>
+            <div id="op_params_uierrors"></div>
 
             <!--
             {{#if op.uiAttribs.uierrors }}

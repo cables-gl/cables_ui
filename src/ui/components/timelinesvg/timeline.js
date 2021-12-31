@@ -1156,16 +1156,16 @@ export default function TimeLineGui ()
         if (e.target.nodeName != "INPUT")e.preventDefault();
     });
 
-    ele.byId("overviewtimeline").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_overview); });
+    ele.byId("overviewtimeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_overview); });
     ele.byId("overviewtimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timetimeline").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_frames); });
+    ele.byId("timetimeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_frames); });
     ele.byId("timetimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timeline").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_keys); });
+    ele.byId("timeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_keys); });
     ele.byId("timeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
 
-    ele.byId("timelineprogress").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_progress); });
+    ele.byId("timelineprogress").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_progress); });
     ele.byId("timelineprogress").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timelinetime").addEventListener("pointerenter", () => { CABLES.UI.showInfo(CABLES.UI.TEXTS.timeline_time); });
+    ele.byId("timelinetime").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_time); });
     ele.byId("timelinetime").addEventListener("pointerleave", CABLES.UI.hideInfo);
 
 
