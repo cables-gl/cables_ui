@@ -410,12 +410,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         const data = {
             "numClients": this._connection.state.getNumClients(),
             "apiUrl": CABLES.sandbox.getCablesUrl(),
-            "clients": this._connection.clients,
+            "clients": Object.values(this._connection.clients),
             "connected": this._connection.isConnected(),
         };
         data.ping = CABLES.api.pingTime;
 
-        const html = getHandleBarHtml("socketinfo", data);
+        const html = getHandleBarHtml("socketinfo", data, true);
         return html;
     }
 
