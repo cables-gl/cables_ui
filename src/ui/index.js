@@ -126,10 +126,10 @@ CABLES.UI.Profiler = Profiler;
 CABLES.UI.Chat = Chat;
 CABLES.LibLoader = LibLoader;
 CABLES.UI.CanvasUi = CanvasUi;
-CABLES.UI.TexturePreviewer=TexturePreviewer;
+CABLES.UI.TexturePreviewer = TexturePreviewer;
 
-CABLES.GLGUI.GlGuiFull=GlGuiFull;
-CABLES.GLGUI.GlGuiTab=GlGuiTab;
+CABLES.GLGUI.GlGuiFull = GlGuiFull;
+CABLES.GLGUI.GlGuiTab = GlGuiTab;
 
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
@@ -145,9 +145,9 @@ CABLES.editorSession = new EditorSession();
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text.text;
 
-CABLES.UI.ModalDialog=ModalDialog;  // needs to stay - is used in ops
-CABLES.UI.ModalLoading=ModalLoading;
-CABLES.UI.ModalException=ModalException;
+CABLES.UI.ModalDialog = ModalDialog; // needs to stay - is used in ops
+CABLES.UI.ModalLoading = ModalLoading;
+CABLES.UI.ModalException = ModalException;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
@@ -167,24 +167,23 @@ CABLES.DragNDrop = DragNDrop;
 CABLES.CMD = CMD;
 
 
-
 CABLES.uniqueArray = uniqueArray;
 CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
 CABLES.UI.logFilter = new LogFilter();
 
-CABLES.GL_MARKER=helperMeshes;
+CABLES.GL_MARKER = helperMeshes;
 
-CABLES.UI.paramsHelper=paramsHelper;
-CABLES.UI.valueChanger=valueChanger;
+CABLES.UI.paramsHelper = paramsHelper;
+CABLES.UI.valueChanger = valueChanger;
 
 CABLES.UI.undo = new UndoManager();
 
-CABLES.UI.MODAL=oldModalWrap;
+CABLES.UI.MODAL = oldModalWrap;
 
 
 setHtmlDefaultListeners();
 extendCore();
 extendCoreAnim();
 
-CABLES.UI.startUi=startUi;
+CABLES.UI.startUi = startUi;
