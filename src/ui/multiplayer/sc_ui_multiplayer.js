@@ -431,18 +431,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             if (client.isRemoteClient) displayName += " (remote viewer)";
             items.push({ "title": displayName, "func": () => {} });
 
-            if (client.isMe && !client.isRemoteClient)
+            if (client.isPilot && !client.isMe && !client.isRemoteClient)
             {
-                if (!client.isPilot)
-                {
-                    items.push({
-                        "title": "request pilot seat",
-                        "func": () =>
-                        {
-                            this._connection.state.requestPilotSeat();
-                        }
-                    });
-                }
+                items.push({
+                    "title": "request pilot seat",
+                    "func": () =>
+                    {
+                        this._connection.state.requestPilotSeat();
+                    }
+                });
             }
             else if (!client.isRemoteClient)
             {
