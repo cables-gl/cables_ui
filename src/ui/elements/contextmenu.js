@@ -27,7 +27,7 @@ export default class ContextMenu
         if (!this._modalBg)
         {
             this._modalBg = document.createElement("div");
-            this._modalBg.classList.add("contextmenu_modal");
+            this._modalBg.classList.add("cables_contextmenu_modal");
             this._modalBg.addEventListener("click",
                 function ()
                 {
@@ -42,7 +42,7 @@ export default class ContextMenu
         if (!this._element)
         {
             this._element = document.createElement("ul");
-            this._element.classList.add("contextmenu");
+            this._element.classList.add("cables_contextmenu");
             document.body.appendChild(this._element);
         }
 

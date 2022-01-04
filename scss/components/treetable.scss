@@ -1,67 +1,70 @@
-.treetable
+.cablesCssUi
 {
-
-
-    .treebutton
+    .treetable
     {
-        background-color: var(--color-04);
-        border-radius: 4px;
-        padding:1   px;
-        padding-left:8px;
-        padding-right:8px;
-        // border:1px solid var(--color-special);
 
-        &:hover
+
+        .treebutton
         {
-            color:var(--color-special);
+            background-color: var(--color-04);
+            border-radius: 4px;
+            padding:1   px;
+            padding-left:8px;
+            padding-right:8px;
+            // border:1px solid var(--color-special);
+
+            &:hover
+            {
+                color:var(--color-special);
+            }
+
+            &.object {
+                background-color:var(--color_port_object);
+                color: black;
+            }
+
+            &.string {
+                background-color:var(--color_port_string);
+                color: black;
+            }
+
+            &.number {
+                background-color:var(--color_port_number);
+                color: black;
+            }
+
+            &.array {
+                background-color:var(--color_port_array);
+                color: black;
+            }
         }
 
-        &.object {
-            background-color:var(--color_port_object);
-            color: black;
+        .node-hidden
+        {
+            opacity: 0.25;;
         }
 
-        &.string {
-            background-color:var(--color_port_string);
-            color: black;
+        td
+        {
+            white-space: nowrap;
         }
 
-        &.number {
-            background-color:var(--color_port_number);
-            color: black;
+
+        .ident
+        {
+            width:7px;
+            background-size: contain;
         }
 
-        &.array {
-            background-color:var(--color_port_array);
-            color: black;
+        .identBgLevel0
+        {
+            background-size: contain;
         }
+
+        .identBg
+        {
+            background-size: contain;
+        }
+
     }
-
-    .node-hidden
-    {
-        opacity: 0.25;;
-    }
-
-    td
-    {
-        white-space: nowrap;
-    }
-
-
-    .ident
-    {
-        width:7px;
-        background-size: contain;
-    }
-
-    .identBgLevel0
-    {
-        background-size: contain;
-    }
-
-    .identBg
-    {
-        background-size: contain;
-    }
-
 }
