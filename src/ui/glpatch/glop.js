@@ -660,7 +660,7 @@ export default class GlOp extends CABLES.EventTarget
         let doUpdateSize = false;
 
 
-        if (this._displayType == this.DISPLAY_UI_AREA)
+        if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
         this._glRectNames.push("_glTitle");
