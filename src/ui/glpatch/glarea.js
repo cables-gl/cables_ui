@@ -65,9 +65,10 @@ export default class GlArea
         this._rectBg.visible = this._visible;
         this._rectResize.visible = this._visible;
 
+        if (!this._visible) return;
         this._rectBg.setPosition(
             this._glop.x,
-            this._glop.y);
+            this._glop.y, 0.1);
 
         this._rectBg.setSize(this._w, this._h);
 
@@ -96,5 +97,7 @@ export default class GlArea
     {
         this._rectBg.dispose();
         this._rectResize.dispose();
+        this._rectBg = null;
+        this._rectResize = null;
     }
 }
