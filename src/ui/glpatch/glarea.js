@@ -3,7 +3,6 @@ export default class GlArea
 {
     constructor(instancer, glop)
     {
-        console.log("new glarea");
         this._instancer = instancer;
 
         this._glop = glop;
@@ -69,13 +68,14 @@ export default class GlArea
         if (!this._visible) return;
         this._rectBg.setPosition(
             this._glop.x,
-            this._glop.y);
+            this._glop.y, -0.1);
 
         this._rectBg.setSize(this._w, this._h);
 
         this._rectResize.setPosition(
             this._glop.x + this._w - this._rectResize.w,
             this._glop.y + this._h - this._rectResize.h,
+            -0.1
         );
 
         this._glop.op.setUiAttrib({ "area": { "w": this._w, "h": this._h, "id": this._id } });

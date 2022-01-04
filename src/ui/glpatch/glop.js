@@ -27,6 +27,8 @@ export default class GlOp extends CABLES.EventTarget
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+        this._origPosZ = Math.random() * -0.3 - 0.1;
+
         this._glTitleExt = null;
         this._glRectNames.push("_glTitleExt");
 
@@ -39,7 +41,6 @@ export default class GlOp extends CABLES.EventTarget
         this._hidePorts = false;
         this._hideBgRect = false;
 
-        this._posZ = Math.random() * -0.3 + -0.1;
 
         this._displayType = 0;
 
@@ -152,9 +153,16 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setOpacity(0.5);
             this._glRectBg.setOpacity(0.8);
             this._preDragPosZ = this._glRectBg.z;
-            this._posZ = -0.5;
+            // this._posZ = -0.5;
             this.updatePosition();
         }
+    }
+
+    getPosZ()
+    {
+        if (this._displayType == this.DISPLAY_UI_AREA) return -0.1;
+        if (this.selected) return -0.5;
+        return this._origPosZ;
     }
 
     sendNetPos()
@@ -334,8 +342,8 @@ export default class GlOp extends CABLES.EventTarget
     _updateCommentPosition()
     {
         if (this._glComment)
-            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this._posZ);
-            else this._glComment.setPosition(0, this._height + 20, this._posZ);
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this.getPosZ());
+            else this._glComment.setPosition(0, this._height + 20, this.getPosZ());
     }
 
     updateSize()
@@ -490,10 +498,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
-        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this._posZ);
+        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this._posZ);
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this._posZ);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this.getPosZ());
+        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this.getPosZ());
         this._updateCommentPosition();
         this._updateErrorDots();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
@@ -661,7 +669,9 @@ export default class GlOp extends CABLES.EventTarget
 
 
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
+        {
             this._resizableArea = new GlArea(this._instancer, this);
+        }
 
         this._glRectNames.push("_glTitle");
 
