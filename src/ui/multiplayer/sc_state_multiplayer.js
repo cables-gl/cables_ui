@@ -127,7 +127,6 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
     getClientColor(clientId)
     {
-        if (clientId == this._connection.clientId) this._colors[clientId] = { "r": 1, "g": 1, "b": 1, "rb": 255, "gb": 255, "bb": 255 };
         if (!this._colors[clientId])
         {
             let hash = 0;
