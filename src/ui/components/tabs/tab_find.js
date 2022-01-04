@@ -1,6 +1,6 @@
 import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class FindTab
@@ -553,7 +553,7 @@ export default class FindTab
 
                 if (
                     ops[i].uiAttribs.extendTitle &&
-                    ops[i].uiAttribs.extendTitle.toLowerCase().indexOf(str) > -1)
+                    (ops[i].uiAttribs.extendTitle + "").toLowerCase().indexOf(str) > -1)
                 {
                     where = "title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
                     score += 1;
