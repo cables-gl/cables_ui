@@ -52,16 +52,16 @@ export default class PatchSaveServer extends CABLES.EventTarget
             {
                 if (this._serverDate != data.updated)
                 {
-                    const html=
-                        "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>"+
-                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;"+
-                        "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;"+
+                    const html =
+                        "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
+                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;" +
+                        "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;" +
                         "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                     new ModalDialog(
                         {
-                            "title":"Meanwhile...",
-                            "html":html
+                            "title": "Meanwhile...",
+                            "html": html
                         });
 
                     gui.jobs().finish("checkupdated");
@@ -84,16 +84,16 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                             if (newCore || newUi)
                             {
-                                const html=
-                                    "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>"+
-                                    "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;"+
-                                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;"+
+                                const html =
+                                    "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
+                                    "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;" +
+                                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
                                     "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                                 new ModalDialog(
                                     {
-                                        "title":"Meanwhile...",
-                                        "html":html
+                                        "title": "Meanwhile...",
+                                        "html": html
                                     });
 
                                 gui.jobs().finish("checkupdated");
@@ -156,9 +156,20 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // }
 
         const project = gui.project();
+        let hasPrivateUserOps = false;
+        if (!project.userList.includes(gui.user.usernameLowercase))
+        {
+            hasPrivateUserOps = project.ops.find((op) => { return op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
+        }
+
         const copyCollaborators = (project.settings.opExample.length == 0 && !project.settings.isPublic); // dont do this for example and public patches
 
         let prompt = "Enter a name for the copy of this Project.";
+
+        if (hasPrivateUserOps)
+        {
+            prompt += "<br/><br/><b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue saving this patch, but probably some things will not work.";
+        }
 
         if (copyCollaborators)
         {
@@ -173,7 +184,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             prompt += "<br/><br/>Collaborators will NOT be copied for public patches!";
         }
-
 
         const p = new ModalDialog({
             "prompt": true,

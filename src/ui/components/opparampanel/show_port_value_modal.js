@@ -1,14 +1,17 @@
 import ModalDialog from "../../dialogs/modaldialog";
 import Logger from "../../utils/logger";
+import ele from "../../utils/ele";
+import GlUiConfig from "../../glpatch/gluiconfig";
 
 export default class ModalPortValue
 {
     constructor()
     {
         this._log = new Logger("ModalPortValue");
+        this._port = null;
     }
 
-    showJson (opid, which)
+    showJson(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op)
@@ -23,10 +26,12 @@ export default class ModalPortValue
             return;
         }
 
-        this._showPortValue(port.name, port);
+        this._port = port;
+        const modal = new ModalDialog({});
+        this._showPortValue(port.name, modal);
     }
 
-    showJsonStructure (opid, which)
+    showJsonStructure(opid, which)
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op)
@@ -41,28 +46,37 @@ export default class ModalPortValue
             return;
         }
 
-        this._showPortStructure(port.name, port);
+        this._port = port;
+        const modal = new ModalDialog({});
+        this._showPortStructure(port.name, modal, port);
     }
 
-    _showPortStructure(title, port)
+    _showPortStructure(title, modal, port)
     {
         function asyncInnerHTML(HTML, callback)
         {
+            const container = document.createElement("div");
             const temp = document.createElement("div");
-            const frag = document.createDocumentFragment();
+            const frag = document.createElement("template");
             temp.innerHTML = HTML;
-            (function ()
+            const _innerHTML = function ()
             {
                 if (temp.firstChild)
                 {
                     frag.appendChild(temp.firstChild);
-                    setTimeout(arguments.callee, 0);
+                    setTimeout(_innerHTML, 0);
                 }
                 else
                 {
-                    callback(frag);
+                    const fragmentElms = [...frag.children];
+                    fragmentElms.forEach((elm) =>
+                    {
+                        container.appendChild(elm);
+                    });
+                    callback(container, frag);
                 }
-            }());
+            };
+            _innerHTML();
         }
 
         function printNode(op, portName, html, key, node, path, level, inputDataType = "Object")
@@ -201,7 +215,7 @@ export default class ModalPortValue
 
         try
         {
-            const thing = port.get();
+            const thing = this._port.get();
             let inputDataType = "Object";
             if (Array.isArray(thing))
             {
@@ -213,29 +227,26 @@ export default class ModalPortValue
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
             fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
             fullHTML += "<br/><br/>";
-            fullHTML += "<a class=\"button \" onclick=\"CABLES.UI.MODAL.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
+            fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             fullHTML += "<br/><br/>";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre id=\"portvalue\" class=\"code hljs json\">" + jsonInfo + "</pre>";
 
-            CABLES.UI.MODAL.showLoading("Analyzing structure....");
-            asyncInnerHTML(fullHTML, function (fragment)
+            asyncInnerHTML(fullHTML, function (html, fragment)
             {
-                CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW = port;
-                CABLES.UI.MODAL.contentElement.appendChild(fragment); // myTarget should be an element node.
-                CABLES.UI.MODAL._setVisible(true);
-                document.getElementById("modalbg").style.display = "block";
+                modal.updateHtml(html.innerHTML);
             });
         }
         catch (ex)
         {
             console.log(ex);
         }
-    };
+    }
 
 
-    _showPortValue(title, port)
+    _showPortValue(title)
     {
+        const port = this._port;
         function convertHTML(str)
         {
             const regex = /[&|<|>|"|']/g;
@@ -253,8 +264,7 @@ export default class ModalPortValue
 
         try
         {
-            CABLES.UI.MODAL.PORTPREVIEW = port;
-            let html=""
+            let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
             html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
             html += "<br/><br/>";
@@ -276,13 +286,12 @@ export default class ModalPortValue
             html += "<br/><br/>";
             html += "<pre><code id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</code></pre>";
 
-            new ModalDialog({html:html});
+            new ModalDialog({ "html": html });
 
             hljs.highlightBlock(ele.byId("portvalue"));
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {
-
                 this.copyPortValuePreview(e, title);
             });
         }
@@ -297,7 +306,7 @@ export default class ModalPortValue
         // todo this should copy from the port value directly, not the html element...
 
         navigator.clipboard
-            .writeText(JSON.stringify(CABLES.UI.MODAL.PORTPREVIEW.get()))
+            .writeText(JSON.stringify(this._port.get()))
             .then(() =>
             {
                 CABLES.UI.notify("Copied value to clipboard");
@@ -306,23 +315,18 @@ export default class ModalPortValue
             {
                 console.warn("copy to clipboard failed", err);
             });
-
-    };
+    }
 
 
     updatePortValuePreview(title)
     {
-        this._showPortValue(title, CABLES.UI.MODAL.PORTPREVIEW);
-    };
+        this._showPortValue(title);
+    }
 
     updatePortStructurePreview(title)
     {
-        this._showPortStructure(title, CABLES.UI.MODAL.PORTSTRUCTUREPREVIEW);
-    };
-
-
-
-
+        this._showPortStructure(title, gui.currentModal, this._port);
+    }
 
 
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
@@ -331,7 +335,7 @@ export default class ModalPortValue
         const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
-        gui.patchView.centerSelectOp(newop.id, true);
+        // gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
         gui.closeModal();
     }
@@ -345,13 +349,8 @@ export default class ModalPortValue
 
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
-        gui.patchView.centerSelectOp(newop.id, true);
+        // gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
         gui.closeModal();
     }
-
-
-
-
 }
-
