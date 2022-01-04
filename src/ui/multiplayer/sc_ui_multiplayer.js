@@ -482,7 +482,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         }
                     });
                 }
-                else
+                else if (!client.isMe)
                 {
                     items.push({
                         "title": "follow",
