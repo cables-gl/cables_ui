@@ -1,4 +1,4 @@
-import { notify } from "../elements/notification";
+import { notify, notifyError } from "../elements/notification";
 
 export default class ScUi extends CABLES.EventTarget
 {
@@ -6,12 +6,35 @@ export default class ScUi extends CABLES.EventTarget
     {
         super();
         this._connection = connection;
+        this.notifyPingTimeout = true;
 
         this._connection.on("onInfoMessage", (payload) =>
         {
             if (payload.name === "notify")
             {
                 notify(payload.title, payload.text);
+            }
+        });
+
+        this._connection.on("connectionError", (payload) =>
+        {
+            notifyError("network error", payload.message);
+        });
+
+        this._connection.on("onPingAnswer", (msg) =>
+        {
+            if (msg.clientId === this._connection.clientId)
+            {
+                this.notifyPingTimeout = true;
+            }
+        });
+
+        this._connection.on("onPingTimeout", (payload) =>
+        {
+            if (this.notifyPingTimeout)
+            {
+                this.notifyPingTimeout = false;
+                notify("network warning", "received last ping more than " + payload.seconds + " seconds ago");
             }
         });
     }

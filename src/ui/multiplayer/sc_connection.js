@@ -13,6 +13,8 @@ export default class ScConnection extends CABLES.EventTarget
         this._log = new Logger("scconnection");
         this.PING_INTERVAL = 5000;
         this.PINGS_TO_TIMEOUT = 2;
+        this.OWN_PINGS_TO_TIMEOUT = 5;
+        this._lastPing = Date.now();
         this.channelName = null;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._socket = null;
@@ -101,9 +103,10 @@ export default class ScConnection extends CABLES.EventTarget
         {
             for await (const { error } of this._socket.listener("error"))
             {
-                this._log.error(error);
+                this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 
+                this.emitEvent("connectionError", error);
                 this.emitEvent("connectionChanged");
                 this.emitEvent("netActivityIn");
             }
@@ -370,11 +373,24 @@ export default class ScConnection extends CABLES.EventTarget
         }
         if (msg.name === "pingMembers")
         {
+            const timeOutSeconds = this.PING_INTERVAL * this.OWN_PINGS_TO_TIMEOUT;
+            const pingOutTime = Date.now() - timeOutSeconds;
+            msg.lastPing = this._lastPing;
+            if (this._lastPing < pingOutTime)
+            {
+                msg.seconds = timeOutSeconds / 1000;
+                this.emitEvent("onPingTimeout", msg);
+                this._log.warn("didn't receive ping for more than", timeOutSeconds, "seconds");
+            }
             this.sendPing();
         }
         if (msg.name === "pingAnswer")
         {
             msg.lastSeen = Date.now();
+            if (msg.clientId === this._socket.clientId)
+            {
+                this._lastPing = msg.lastSeen;
+            }
             this.emitEvent("onPingAnswer", msg);
         }
         if (msg.name === "pilotRequest")

@@ -14,6 +14,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
         this._clients = {};
         this._clients[connection.clientId] = {
+            "userid": gui.user.id,
             "clientId": connection.clientId,
             "isMe": true,
             "isRemoteClient": gui.isRemoteClient
@@ -113,7 +114,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
         }
         else if (!payload.following && this._followers.includes(payload.clientId))
         {
-            this._followers = this._followers.filter(followerId => followerId !== payload.clientId);
+            this._followers = this._followers.filter((followerId) => { return followerId !== payload.clientId; });
             userListChanged = true;
         }
 
@@ -126,7 +127,6 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
     getClientColor(clientId)
     {
-        if (clientId == this._connection.clientId) this._colors[clientId] = { "r": 1, "g": 1, "b": 1, "rb": 255, "gb": 255, "bb": 255 };
         if (!this._colors[clientId])
         {
             let hash = 0;
@@ -179,7 +179,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
                     this._pilot = null;
                     this.emitEvent("pilotRemoved");
                 }
-                if (this.followers.includes(client.clientId)) this._followers = this._followers.filter(followerId => followerId != client.clientId);
+                if (this.followers.includes(client.clientId)) this._followers = this._followers.filter((followerId) => { return followerId != client.clientId; });
                 cleanupChange = true;
             }
         });
@@ -222,7 +222,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
     hasPilot()
     {
-        return Object.values(this._clients).some(client => client.isPilot);
+        return Object.values(this._clients).some((client) => { return client.isPilot; });
     }
 
     becomePilot()

@@ -410,12 +410,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         const data = {
             "numClients": this._connection.state.getNumClients(),
             "apiUrl": CABLES.sandbox.getCablesUrl(),
-            "clients": this._connection.clients,
+            "clients": Object.values(this._connection.clients),
             "connected": this._connection.isConnected(),
         };
         data.ping = CABLES.api.pingTime;
 
-        const html = getHandleBarHtml("socketinfo", data);
+        const html = getHandleBarHtml("socketinfo", data, true);
         return html;
     }
 
@@ -431,18 +431,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             if (client.isRemoteClient) displayName += " (remote viewer)";
             items.push({ "title": displayName, "func": () => {} });
 
-            if (client.isMe && !client.isRemoteClient)
+            if (client.isPilot && !client.isMe && !client.isRemoteClient)
             {
-                if (!client.isPilot)
-                {
-                    items.push({
-                        "title": "request pilot seat",
-                        "func": () =>
-                        {
-                            this._connection.state.requestPilotSeat();
-                        }
-                    });
-                }
+                items.push({
+                    "title": "request pilot seat",
+                    "func": () =>
+                    {
+                        this._connection.state.requestPilotSeat();
+                    }
+                });
             }
             else if (!client.isRemoteClient)
             {
@@ -485,7 +482,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         }
                     });
                 }
-                else
+                else if (!client.isMe)
                 {
                     items.push({
                         "title": "follow",
