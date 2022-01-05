@@ -1054,35 +1054,25 @@ export default class GlPatch extends CABLES.EventTarget
 
     _selectOpsInRect(xa, ya, xb, yb)
     {
-        // const x=Math.min(xa,xb);
-        // const y=Math.min(ya,yb);
-        // const x2=Math.max(xa,xb);
-        // const y2=Math.max(ya,yb);
-
-        // for(var i in this._glOpz)
-        // {
-        //     const glop=this._glOpz[i];
-        //     glop.selected=false;
-
-        //     if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
-        //         glop.x <= x2 &&       // glop. left edge past r2 right
-        //         glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
-        //         glop.y <= y2)  // r1 bottom edge past r2 top
-        //     {
-        //         glop.selected=true;
-        //     }
-        // }
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
+        const opIds = [];
+        for (let i = 0; i < ops.length; i++)
+            opIds.push(ops[i].id);
 
-        this.unselectAll();
+        for (let i in this._selectedGlOps)
+        {
+            if (opIds.indexOf(i) == -1)
+            {
+                this._selectedGlOps[i].selected = false;
+                delete this._selectedGlOps[i];
+            }
+        }
 
         for (let i = 0; i < ops.length; i++)
         {
             ops[i].selected = true;
-
             this.selectOpId(ops[i].id);
-            // this._selectedGlOps[ops[i].id] = ops[i];
         }
     }
 
