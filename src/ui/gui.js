@@ -720,7 +720,7 @@ export default class Gui
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
-        // flashing canvas overlay when sabing
+        // flashing canvas overlay when saving
         this._elCanvasFlash.style.width = this.rendererWidth * this._corePatch.cgl.canvasScale + "px";
         this._elCanvasFlash.style.height = this.rendererHeight * this._corePatch.cgl.canvasScale + "px";
         this._elCanvasFlash.style.right = 0 + "px";
