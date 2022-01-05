@@ -54,7 +54,7 @@ export default class GlOp extends CABLES.EventTarget
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;
         this._dragOldUiAttribs = null;
-        this._rectDecoration = 0;
+        this._rectBorder = 0;
 
         this._glDotError = null;
         this._glDotWarning = null;
@@ -312,7 +312,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
             {
-                this._rectDecoration = 2;
+                this._rectBorder = 1;
             }
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
@@ -616,17 +616,17 @@ export default class GlOp extends CABLES.EventTarget
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotHint.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
                 this._glDotHint.setColor(GlUiConfig.colors.opErrorHint);
-                this._glDotHint.setDecoration(6);
+                this._glDotHint.setShape(6);
 
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotWarning.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
                 this._glDotWarning.setColor(GlUiConfig.colors.opErrorWarning);
-                this._glDotWarning.setDecoration(6);
+                this._glDotWarning.setShape(6);
 
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotError.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
                 this._glDotError.setColor(GlUiConfig.colors.opError);
-                this._glDotError.setDecoration(6);
+                this._glDotError.setShape(6);
             }
 
             if (hasHints)
@@ -777,14 +777,13 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
         }
 
-        this._glRectBg.setDecoration(this._rectDecoration);
+        this._glRectBg.setBorder(this._rectBorder);
         if (this._transparent) this._glRectBg.setColor(GlUiConfig.colors.transparent);
         else
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
                 this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(4).gl());
-
 
                 if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
                 {
@@ -808,9 +807,10 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this.opUiAttribs.selected)
         {
-            this._glRectBg.setDecoration(3);
+            this._glRectBg.setSelected(1);
             this._glTitle.setColor(GlUiConfig.colors.opTitleSelected);
         }
+        else this._glRectBg.setSelected(0);
 
 
         if (this._displayType === this.DISPLAY_UI_AREA)

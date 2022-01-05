@@ -14,7 +14,7 @@ export default class GlRect extends CABLES.EventTarget
         this._parent = options.parent || null;
 
         this.childs = [];
-        this._decoration = false;
+        this._shape = false;
         this._x = 0;
         this._y = 0;
         this._z = 0;
@@ -78,10 +78,22 @@ export default class GlRect extends CABLES.EventTarget
         if (!this.hasChild(c)) this.childs.push(c);
     }
 
-    setDecoration(c)
+    setShape(c)
     {
-        this._decoration = c;
-        this._rectInstancer.setDecoration(this._attrIndex, c);
+        this._shape = c;
+        this._rectInstancer.setShape(this._attrIndex, c);
+        this._rectInstancer.setBorder(this._attrIndex, 0);
+        this._rectInstancer.setSelected(this._attrIndex, 0);
+    }
+
+    setBorder(c)
+    {
+        this._rectInstancer.setBorder(this._attrIndex, c);
+    }
+
+    setSelected(c)
+    {
+        this._rectInstancer.setSelected(this._attrIndex, c);
     }
 
     get visible() { return this._visible; }
@@ -285,7 +297,7 @@ export default class GlRect extends CABLES.EventTarget
     dispose()
     {
         if (this.parent) this.parent.removeChild(this);
-        this.setDecoration(0);
+        this.setShape(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);
     }

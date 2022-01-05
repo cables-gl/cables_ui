@@ -94,7 +94,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
-        this._focusRect.setDecoration(4);
+        this._focusRect.setShape(4);
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
@@ -137,7 +137,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._dropInOpBorder = this._overLayRects.createRect();
         this._dropInOpBorder.setSize(100, 100);
-        // this._dropInOpBorder.setDecoration(4);
+        // this._dropInOpBorder.setShape(4);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 

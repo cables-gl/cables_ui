@@ -27,7 +27,7 @@ export default class GlCable
         this._splineDrawer = splineDrawer;
         this._splineIdx = this._splineDrawer.getSplineIndex();
 
-        this._buttonRect.setDecoration(1);
+        this._buttonRect.setShape(1);
         this._buttonRect.visible = false;
 
         this._x = 0;
@@ -349,7 +349,7 @@ export default class GlCable
         this._updateLinePos();
 
         // circle button
-        this._buttonRect.setDecoration(1);
+        this._buttonRect.setShape(1);
         this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
@@ -475,7 +475,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText)
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
-                gui.showInfo(CABLES.UI.TEXTS.linkAddCircle);
+            gui.showInfo(CABLES.UI.TEXTS.linkAddCircle);
 
             perf.finish();
             return true;

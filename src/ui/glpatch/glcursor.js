@@ -16,7 +16,7 @@ export default class GlCursor extends CABLES.EventTarget
         this._instancer = instancer;
         this._cursor2 = this._instancer.createRect();
         this._cursor2.setSize(10, 10);
-        this._cursor2.setDecoration(5);
+        this._cursor2.setShape(5);
 
         let col = null;
         if (gui.multiplayerUi)col = gui.multiplayerUi.getClientColor(clientId);
