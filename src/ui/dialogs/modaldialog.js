@@ -144,6 +144,7 @@ export default class ModalDialog
         this._eleClose.style.display = "block";
 
         this._ele.classList.add("modalcontainer");
+        this._ele.classList.add("cablesCssUi");
         this._ele.appendChild(this._eleClose);
         this._ele.appendChild(this._eleContent);
 

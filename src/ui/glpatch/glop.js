@@ -27,6 +27,8 @@ export default class GlOp extends CABLES.EventTarget
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+        this._origPosZ = Math.random() * -0.3 - 0.1;
+
         this._glTitleExt = null;
         this._glRectNames.push("_glTitleExt");
 
@@ -39,7 +41,6 @@ export default class GlOp extends CABLES.EventTarget
         this._hidePorts = false;
         this._hideBgRect = false;
 
-        this._posZ = Math.random() * -0.3 + -0.1;
 
         this._displayType = 0;
 
@@ -68,7 +69,30 @@ export default class GlOp extends CABLES.EventTarget
         }
         this._wasInited = false;
 
+        this._wasInCurrentSubpatch = false;
+
         this._initGl();
+    }
+
+    _initWhenFirstInCurrentSubpatch()
+    {
+        if (this._wasInCurrentSubpatch) return;
+        if (!this.isInCurrentSubPatch()) return;
+
+        this._wasInCurrentSubpatch = true;
+
+        this.refreshPorts();
+
+        this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
+        this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
+        this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
+        this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+
+        this._needsUpdate = true;
+
+        this.setHover(false);
+        this.updateVisible();
+        this.updateSize();
     }
 
     _initGl()
@@ -78,17 +102,8 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
         this._glRectNames.push("_glRectBg");
 
-        this.refreshPorts();
-
-        this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
-        this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
-        this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
-        this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
-
+        this._initWhenFirstInCurrentSubpatch();
         this._wasInited = true;
-
-        this.setHover(false);
-        this.updateVisible();
     }
 
     get glPatch() { return this._glPatch; }
@@ -138,9 +153,16 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setOpacity(0.5);
             this._glRectBg.setOpacity(0.8);
             this._preDragPosZ = this._glRectBg.z;
-            this._posZ = -0.5;
+            // this._posZ = -0.5;
             this.updatePosition();
         }
+    }
+
+    getPosZ()
+    {
+        if (this._displayType == this.DISPLAY_UI_AREA) return -0.1;
+        if (this.selected) return -0.5;
+        return this._origPosZ;
     }
 
     sendNetPos()
@@ -153,8 +175,6 @@ export default class GlOp extends CABLES.EventTarget
 
     _onBgRectDragEnd(rect)
     {
-
-
         const glOps = this._glPatch.selectedGlOps;
 
         const oldUiAttribs = JSON.parse(this._dragOldUiAttribs);
@@ -203,7 +223,6 @@ export default class GlOp extends CABLES.EventTarget
             }(this, this._dragOldUiAttribs + ""));
 
             CABLES.UI.undo.endGroup(undoGroup, "Move Ops");
-
         }
     }
 
@@ -323,8 +342,8 @@ export default class GlOp extends CABLES.EventTarget
     _updateCommentPosition()
     {
         if (this._glComment)
-            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this._posZ);
-            else this._glComment.setPosition(0, this._height + 20, this._posZ);
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this.getPosZ());
+            else this._glComment.setPosition(0, this._height + 20, this.getPosZ());
     }
 
     updateSize()
@@ -347,7 +366,7 @@ export default class GlOp extends CABLES.EventTarget
         // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = this._getTitleWidth();
         this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
-        this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
+        if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
         // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
@@ -479,10 +498,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
-        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this._posZ);
+        this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this._posZ);
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this._posZ);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this.getPosZ());
+        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this.getPosZ());
         this._updateCommentPosition();
         this._updateErrorDots();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
@@ -516,6 +535,10 @@ export default class GlOp extends CABLES.EventTarget
 
     updateVisible()
     {
+        if (!this._wasInCurrentSubpatch && this.isInCurrentSubPatch())
+        {
+            this._initWhenFirstInCurrentSubpatch();
+        }
         this._setVisible();
     }
 
@@ -547,6 +570,8 @@ export default class GlOp extends CABLES.EventTarget
                 this[this._glRectNames[i]].visible = visi;
 
         this._updateErrorDots();
+
+        if (this._resizableArea) this._resizableArea.visible = false;
 
         for (const i in this._links) this._links[i].visible = visi;
 
@@ -639,11 +664,15 @@ export default class GlOp extends CABLES.EventTarget
 
     update()
     {
+        if (!this._wasInCurrentSubpatch) return;
         let doUpdateSize = false;
 
-        if (this._displayType == this.DISPLAY_UI_AREA)
-            if (!this._resizableArea)
-                this._resizableArea = new GlArea(this._instancer, this);
+
+        if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
+        {
+            this._resizableArea = new GlArea(this._instancer, this);
+        }
+
         this._glRectNames.push("_glTitle");
 
         if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._glTitleExt)
@@ -849,9 +878,9 @@ export default class GlOp extends CABLES.EventTarget
 
     endPassiveDrag()
     {
-        if(this._passiveDragStartX!=this.x || this._passiveDragStartY!=this.y)
+        if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
         {
-            const undmove = (function (scope, newX,newY,oldX,oldY)
+            const undmove = (function (scope, newX, newY, oldX, oldY)
             {
                 CABLES.UI.undo.add({
                     "title": "Move op",
@@ -868,9 +897,7 @@ export default class GlOp extends CABLES.EventTarget
                         scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
                     }
                 });
-
-            }(this, this._passiveDragStartX,this._passiveDragStartY,this.x,this.y));
-
+            }(this, this._passiveDragStartX, this._passiveDragStartY, this.x, this.y));
         }
 
         this._passiveDragStartX = null;

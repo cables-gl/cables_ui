@@ -1,133 +1,137 @@
-
-.button-icon .icon
+.cablesCssUi
 {
-    vertical-align: bottom;
-    margin-right: 0px !important;
-}
 
-.button-small.button-icon
-{
-    padding-top:1px !important;
-}
+    .button-icon .icon
+    {
+        vertical-align: bottom;
+        margin-right: 0px !important;
+    }
+
+    .button-small.button-icon
+    {
+        padding-top:1px !important;
+    }
 
 
-.button-small,.button
-{
+    .button-small,.button
+    {
+        .icon
+        {
+            vertical-align: middle;
+            margin-right:10px;
+        }
+    }
+
+    .iconbutton
+    {
+        padding:3px;
+        background-color: var(--color-button-bg);
+        border-radius: 8px;
+        padding-left:8px;
+        padding-right:7px;
+        padding-top:8px;
+        margin-right:4px;
+        cursor:pointer;
+
+
+        &:hover
+        {
+            background-color: var( --color-button-bg-hover);
+            .icon
+            {
+                background-color: var(--color-special) !important;
+            }
+        }
+
+        &:active {
+            background-color: var(--color-button-bg-active) !important;
+        }
+
+    }
+
     .icon
     {
-        vertical-align: middle;
-        margin-right:10px;
-    }
-}
+        display: inline-block;
+        width: calc(16px + var(--font-size-off));
+        height: calc(16px + var(--font-size-off));
+        mask-repeat: no-repeat;
+        -webkit-mask-repeat: no-repeat;
 
-.iconbutton
-{
-	padding:3px;
-	background-color: var(--color-button-bg);
-	border-radius: 8px;
-	padding-left:8px;
-	padding-right:7px;
-	padding-top:8px;
-	margin-right:4px;
-	cursor:pointer;
+        mask-size: 100%;
+        -webkit-mask-size: 100%;
 
-
-	&:hover
-	{
-		background-color: var( --color-button-bg-hover);
-		.icon
-		{
-			background-color: var(--color-special) !important;
-		}
-	}
-
-    &:active {
-        background-color: var(--color-button-bg-active) !important;
+        background-color: var(--color-13);
     }
 
-}
-
-.icon
-{
-	display: inline-block;
-	width: calc(16px + var(--font-size-off));
-	height: calc(16px + var(--font-size-off));
-	mask-repeat: no-repeat;
-	-webkit-mask-repeat: no-repeat;
-
-	mask-size: 100%;
-	-webkit-mask-size: 100%;
-
-    background-color: var(--color-13);
-}
-
-.icon-empty
-{
-    background-color: transparent;
-}
-
-.icon-active
-{
-    background-color:var(--color-special);
-}
-
-.iconhover
-{
-	cursor:pointer;
-	&:hover
-	{
-		background-color:var(--color-special) !important;
-	}
-}
-
-.iconToggleActive
-{
-	background-color:var(--color-special) !important;
-}
-
-.icon-2x
-{
-	width: calc(32px + 2.0 * var(--font-size-off));
-	height: calc(32px + 2.0 * var(--font-size-off));
-}
-
-.icon-4x
-{
-	width: calc(64px + 4.0 * var(--font-size-off));
-	height: calc(64px + 4.0 * var(--font-size-off));
-}
-
-.icon-1_5x
-{
-	width: calc(24px + 1.5 * var(--font-size-off));
-	height: calc(24px + 1.5 * var(--font-size-off));
-}
-
-.icon-0_75x
-{
-	width: calc(12px + 0.75 * var(--font-size-off));
-	height: calc(12px + 0.75 * var(--font-size-off));
-}
-
-
-.button-small .icon
-{
-	width: calc(15px + 0.75 * var(--font-size-off)) !important;
-	height: calc(15px + 0.75 * var(--font-size-off)) !important;
-}
-
-
-@keyframes rotating {
-    from {
-      transform: rotate(0deg);
+    .icon-empty
+    {
+        background-color: transparent;
     }
-    to {
-      transform: rotate(360deg);
+
+    .icon-active
+    {
+        background-color:var(--color-special);
     }
-  }
-.icon-loader
-{
-    animation: rotating 2s linear infinite;
-    vertical-align: sub;
+
+    .iconhover
+    {
+        cursor:pointer;
+        &:hover
+        {
+            background-color:var(--color-special) !important;
+        }
+    }
+
+    .iconToggleActive
+    {
+        background-color:var(--color-special) !important;
+    }
+
+    .icon-2x
+    {
+        width: calc(32px + 2.0 * var(--font-size-off));
+        height: calc(32px + 2.0 * var(--font-size-off));
+    }
+
+    .icon-4x
+    {
+        width: calc(64px + 4.0 * var(--font-size-off));
+        height: calc(64px + 4.0 * var(--font-size-off));
+    }
+
+    .icon-1_5x
+    {
+        width: calc(24px + 1.5 * var(--font-size-off));
+        height: calc(24px + 1.5 * var(--font-size-off));
+    }
+
+    .icon-0_75x
+    {
+        width: calc(12px + 0.75 * var(--font-size-off));
+        height: calc(12px + 0.75 * var(--font-size-off));
+    }
+
+
+    .button-small .icon
+    {
+        width: calc(15px + 0.75 * var(--font-size-off)) !important;
+        height: calc(15px + 0.75 * var(--font-size-off)) !important;
+    }
+
+
+    @keyframes rotating {
+        from {
+        transform: rotate(0deg);
+        }
+        to {
+        transform: rotate(360deg);
+        }
+    }
+    .icon-loader
+    {
+        animation: rotating 2s linear infinite;
+        vertical-align: sub;
+
+    }
 
 }
