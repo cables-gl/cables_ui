@@ -11,7 +11,7 @@ export default class GlTextWriter
         if (!cgl) throw new Error("[gltextwriter] no cgl");
 
         this._rectDrawer = new GlRectInstancer(cgl, { "initNum": options.initNum, "name": "textrects_" + this._name });
-        this._rectDrawer.doBulkUploads = true;
+        this._rectDrawer.doBulkUploads = false;
         this._font = CABLES.GLGUI.SDF_FONT_ARIAL;
         this._fontTex = null;
         // var txt=new Text(this,"H  u  n  d   e   k   u   c   h   e  n");
