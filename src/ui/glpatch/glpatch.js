@@ -61,6 +61,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.viewBox = new GlViewBox(cgl, this);
 
         this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
+        this._rectInstancer.doBulkUploads = true;
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
 
