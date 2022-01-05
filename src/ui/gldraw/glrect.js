@@ -80,8 +80,12 @@ export default class GlRect extends CABLES.EventTarget
 
     setShape(c)
     {
-        this._shape = c;
-        this._rectInstancer.setShape(this._attrIndex, c);
+        if (this._shape != c)
+        {
+            this._shape = c;
+            this._rectInstancer.setShape(this._attrIndex, c);
+        }
+
         this._rectInstancer.setBorder(this._attrIndex, 0);
         this._rectInstancer.setSelected(this._attrIndex, 0);
     }
