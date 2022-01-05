@@ -1069,6 +1069,8 @@ export default class GlPatch extends CABLES.EventTarget
             }
         }
 
+        this._cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
+
         for (let i = 0; i < ops.length; i++)
         {
             ops[i].selected = true;

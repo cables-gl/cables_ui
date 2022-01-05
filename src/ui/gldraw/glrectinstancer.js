@@ -33,8 +33,8 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._needsTextureUpdate = false;
         this._draggingRect = null;
         this._reUploadAttribs = true;
-        // this._updateRangesMin = {};
-        // this._updateRangesMax = {};
+        this._updateRangesMin = {};
+        this._updateRangesMax = {};
         this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
 
         this._meshAttrPos = null;
@@ -125,9 +125,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "UNI sampler2D tex;"
             .endl() + "UNI float zoom;"
 
-        // .endl() + "UNI sampler2D tex;"
-
-
             .endl() + "float median(float r, float g, float b)"
             .endl() + "{"
             .endl() + "    return max(min(r, g), min(max(r, g), b));"
@@ -139,7 +136,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "   vec4 finalColor;"
             .endl() + "   finalColor.rgb=col.rgb;"
             .endl() + "   finalColor.a=1.0;"
-
 
             .endl() + "if(useTexture>=0.0)"
             .endl() + "{"
@@ -403,6 +399,38 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        // if (this._updateRangesMin[this.ATTR_POS] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_POS, this._attrBuffPos, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
+        //     this._resetAttrRange(this.ATTR_POS);
+        // }
+
+        // if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_COLOR, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
+        //     this._resetAttrRange(this.ATTR_COLOR);
+        // }
+
+        // if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+        //     this._resetAttrRange(this.ATTR_SIZE);
+        // }
+
+        if (this._updateRangesMin[this.ATTR_DECO] != 9999)
+        {
+            // this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
+            this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
+
+            this._resetAttrRange(this.ATTR_DECO);
+        }
+
+        // if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
+        // {
+        //     this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+        //     this._resetAttrRange(this.ATTR_TEXRECT);
+        // }
+
         this._uniResX.set(resX);
         this._uniResY.set(resY);
         this._uniscrollX.set(scrollX);
@@ -431,7 +459,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (this._reUploadAttribs)
         {
             const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] _reUploadAttribs");
-            // this._log.log("reupload all attribs");
             this._meshAttrPos = this._mesh.setAttribute(this.ATTR_POS, this._attrBuffPos, 3, { "instanced": true });
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
@@ -441,37 +468,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
             this._reUploadAttribs = false;
             perf.finish();
         }
-
-        // if (this._updateRangesMin[this.ATTR_POS] != 9999)
-        // {
-        //     this._mesh.setAttributeRange(this.ATTR_POS, this._attrBuffPos, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
-        //     this._resetAttrRange(this.ATTR_POS);
-        // }
-
-        // if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
-        // {
-        //     this._mesh.setAttributeRange(this.ATTR_COLOR, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
-        //     this._resetAttrRange(this.ATTR_COLOR);
-        // }
-
-        // if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
-        // {
-        //     this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
-        //     this._resetAttrRange(this.ATTR_SIZE);
-        // }
-
-        // if (this._updateRangesMin[this.ATTR_DECO] != 9999)
-        // {
-        //     this._mesh.setAttributeRange(this.ATTR_DECO, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
-        //     this._resetAttrRange(this.ATTR_DECO);
-        // }
-
-        // if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
-        // {
-        //     this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
-        //     this._resetAttrRange(this.ATTR_TEXRECT);
-        // }
-
 
         this._needsRebuild = false;
     }
@@ -615,19 +611,22 @@ export default class GlRectInstancer extends CABLES.EventTarget
     setShape(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 0] = o;
-        this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        // this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
     }
 
     setBorder(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 1] = o;
-        this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        // this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
     }
 
     setSelected(idx, o)
     {
         this._attrBuffDeco[idx * 4 + 2] = o;
-        this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        // this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx * 4, idx * 4 + 4);
+        this._setAttrRange(this.ATTR_DECO, idx * 4, idx * 4 + 4);
     }
 
     setDebugRenderer(i)
@@ -646,17 +645,17 @@ export default class GlRectInstancer extends CABLES.EventTarget
         }
     }
 
-    // _resetAttrRange(attr)
-    // {
-    //     this._updateRangesMin[attr] = 9999;
-    //     this._updateRangesMax[attr] = -9999;
-    // }
+    _resetAttrRange(attr)
+    {
+        this._updateRangesMin[attr] = 9999;
+        this._updateRangesMax[attr] = -9999;
+    }
 
-    // _setAttrRange(attr, start, end)
-    // {
-    //     this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
-    //     this._updateRangesMax[attr] = Math.max(end, this._updateRangesMin[attr]);
-    // }
+    _setAttrRange(attr, start, end)
+    {
+        this._updateRangesMin[attr] = Math.min(start, this._updateRangesMin[attr]);
+        this._updateRangesMax[attr] = Math.max(end, this._updateRangesMax[attr]);
+    }
 
 
     // setOutline(idx,o)
