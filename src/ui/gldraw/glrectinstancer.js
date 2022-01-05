@@ -18,6 +18,9 @@ export default class GlRectInstancer extends CABLES.EventTarget
         }
 
         this._name = options.name || "unknown";
+
+        this._debugRenderStyle = 0;
+
         this._counter = 0;
         this._num = options.initNum || 5000;
         this._needsRebuild = true;
@@ -106,7 +109,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "    pos.y+=scrollY;"
 
             .endl() + "    pos.z=zz=instPos.z;"
-        // .endl() + "    pos.z=zz=0.0;"
 
             .endl() + "    gl_Position = vec4(pos,1.0);"
             .endl() + "}",
@@ -128,14 +130,15 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             .endl() + "float median(float r, float g, float b)"
             .endl() + "{"
-            .endl() + "return max(min(r, g), min(max(r, g), b));"
+            .endl() + "    return max(min(r, g), min(max(r, g), b));"
             .endl() + "}"
 
             .endl() + "void main()"
             .endl() + "{"
 
-            .endl() + "   outColor.rgb=col.rgb;"
-            .endl() + "   outColor.a=1.0;"
+            .endl() + "   vec4 finalColor;"
+            .endl() + "   finalColor.rgb=col.rgb;"
+            .endl() + "   finalColor.a=1.0;"
 
 
             .endl() + "if(useTexture>=0.0)"
@@ -146,16 +149,16 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "        vec2 msdfUnit = 8.0/vec2(1024.0);"
             .endl() + "        sigDist *= dot(msdfUnit, 0.5/fwidth(uv));"
             .endl() + "        float opacity = clamp(sigDist + 0.5, 0.0, 1.0);"
-            .endl() + "        outColor=vec4(outColor.rgb, opacity);"
+            .endl() + "        finalColor=vec4(finalColor.rgb, opacity);"
             .endl() + "   #endif"
 
             .endl() + "   #ifndef SDF_TEXTURE"
-            .endl() + "        outColor=texture(tex,uv);"
-            // .endl() + "     if(int(useTexture)==1)outColor=texture(tex[1],uv);"
-            // .endl() + "     if(int(useTexture)==2)outColor=texture(tex[2],uv);"
-            // .endl() + "     if(int(useTexture)==3)outColor=texture(tex[3],uv);"
-            // .endl() + "     if(int(useTexture)==4)outColor=texture(tex[4],uv);"
-            // .endl() + "     if(int(useTexture)==5)outColor=texture(tex[5],uv);"
+            .endl() + "        finalColor=texture(tex,uv);"
+            // .endl() + "     if(int(useTexture)==1)finalColor=texture(tex[1],uv);"
+            // .endl() + "     if(int(useTexture)==2)finalColor=texture(tex[2],uv);"
+            // .endl() + "     if(int(useTexture)==3)finalColor=texture(tex[3],uv);"
+            // .endl() + "     if(int(useTexture)==4)finalColor=texture(tex[4],uv);"
+            // .endl() + "     if(int(useTexture)==5)finalColor=texture(tex[5],uv);"
             .endl() + "   #endif"
             .endl() + "}"
 
@@ -163,10 +166,10 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
-            .endl() + "   if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)outColor.rgb=vec3(" + GlUiConfig.colors.opBoundsRect[0] + ");"
+            .endl() + "   finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "   if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)finalColor.rgb=vec3(" + GlUiConfig.colors.opBoundsRect[0] + ");"
 
-            .endl() + "   if(outColor.a==0.0)discard;"
+            .endl() + "   if(finalColor.a==0.0)discard;"
             .endl() + "}"
 
             .endl() + "if(decoration==2.0)" // border
@@ -176,52 +179,60 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
             .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
             .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
-            .endl() + "       outColor.rgb+=vec3(add*0.4);"
+            .endl() + "       finalColor.rgb+=vec3(add*0.4);"
             .endl() + "   }"
 
             .endl() + "if(decoration==3.0)" // stripes
             .endl() + "{"
             .endl() + "    float w=0.03;"
-            .endl() + "    outColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));"
+            .endl() + "    finalColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));"
             .endl() + "}"
 
             .endl() + "if(decoration==4.0)" // border no content
             .endl() + "{"
             .endl() + "   float outlinefrag=0.003;"
-            .endl() + "       float add=(1.0-step(outlinefrag,posSize.x));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
-            // .endl() + "       outColor.rgb=vec3(add*0.4);"
-            .endl() + "       if(add==0.0)outColor.a=0.0;"
+            .endl() + "   float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.w));"
+            .endl() + "   if(add==0.0) finalColor.a=0.0;"
             .endl() + "}"
 
             .endl() + "if(decoration==5.0)" // cursor
             .endl() + "{"
-            .endl() + "     if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)outColor.a=1.0;"
-            .endl() + "     else outColor.a=0.0;"
+            .endl() + "     if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;"
+            .endl() + "     else finalColor.a=0.0;"
             .endl() + "}"
 
             .endl() + "if(decoration==6.0)" // filled circle
             .endl() + "{"
             .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   outColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
-            .endl() + "   if(outColor.a==0.0)discard;"
+            .endl() + "   finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "   if(finalColor.a==0.0)discard;"
             .endl() + "}"
 
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
-        // .endl() + "   if(posSize.x>3.0)outColor.rgb=vec3(1.0);"
+        // .endl() + "   if(posSize.x>3.0)finalColor.rgb=vec3(1.0);"
 
-        // .endl() + "   outColor=vec4(zz,zz,zz,1.0);"
-        // .endl() + "   outColor.rg+=uv*0.3;"
-
-
-            .endl() + "   outColor.a*=col.a;"
-            .endl() + "   if(outColor.a==0.0)discard;"
+        // .endl() + "   finalColor=vec4(zz,zz,zz,1.0);"
+        // .endl() + "   finalColor.rg+=uv*0.3;"
 
 
-        // .endl() + "   outColor.rgb=vec3((zz+1.0)/2.0);"
-        // .endl() + "   outColor.a=1.0;"
+            .endl() + "   finalColor.a*=col.a;"
+            .endl() + "   if(finalColor.a==0.0)discard;"
+
+            .endl() + "   #ifdef DEBUG_1"
+            .endl() + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
+            .endl() + "   #ifdef DEBUG_2"
+            .endl() + "       finalColor.rg=uv;"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
+
+
+            .endl() + "   outColor=finalColor;"
+
 
             .endl() + "}");
 
@@ -612,6 +623,12 @@ export default class GlRectInstancer extends CABLES.EventTarget
     {
         this._attrBuffDeco[idx] = o;
         this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, idx, idx + 1);
+    }
+
+    setDebugRenderer(i)
+    {
+        this._shader.toggleDefine("DEBUG_1", i == 1);
+        this._shader.toggleDefine("DEBUG_2", i == 2);
     }
 
     setAllTexture(tex, sdf)

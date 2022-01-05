@@ -36,4 +36,9 @@ export default class GlTextWriter
     {
         return this._fontTex;
     }
+
+    setDebugRenderer(i)
+    {
+        this._rectDrawer.setDebugRenderer(i);
+    }
 }

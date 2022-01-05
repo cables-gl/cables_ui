@@ -63,6 +63,8 @@ export default class GlPatch extends CABLES.EventTarget
         this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
+
+
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
@@ -153,12 +155,11 @@ export default class GlPatch extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
+
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
-
-            // this._log.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -185,6 +186,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.toggleOpsEnable(); });
         gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
+
+        gui.keys.key("0", "debug", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
@@ -378,6 +381,22 @@ export default class GlPatch extends CABLES.EventTarget
         this.profileMouseEvents++;
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+    }
+
+    _cycleDebug()
+    {
+        this._debugRenderStyle = this._debugRenderStyle || 0;
+
+        this._debugRenderStyle++;
+        if (this._debugRenderStyle > 2) this._debugRenderStyle = 0;
+
+        for (let i in this._splineDrawers) this._splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
+
+        this._rectInstancer.setDebugRenderer(this._debugRenderStyle);
+        this._overLayRects.setDebugRenderer(this._debugRenderStyle);
+
+        this._textWriter.setDebugRenderer(this._debugRenderStyle);
+        this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
     }
 
     _onCanvasDblClick(e)
@@ -847,7 +866,6 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
-
 
             for (let i in this._cgl.profileData.profileSingleMeshAttribute)
             {

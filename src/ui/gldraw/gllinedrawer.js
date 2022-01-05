@@ -65,20 +65,20 @@ export default class GlLinedrawer
 
             .endl() + "void main()"
             .endl() + "{"
-            .endl() + "   vec4 color=col;"
-            .endl() + "   if(color.a==0.0) discard;"
+            .endl() + "   vec4 finalColor=col;"
+            .endl() + "   if(finalColor.a==0.0) discard;"
             .endl() + "   float stepLength=5.0;"
 
             .endl() + "   float showSpeed=clamp(speedy,0.4,1.0);"
 
 
         // .endl() + "   float colmul=step(stepLength*0.5,mod(dist+(speedy*time),stepLength))+0.7;"
-        // .endl() + "   if(speedy>=1.0) color.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
-        // .endl() + "   else color.rgb = color.rgb;"
-        // .endl() + "   else color.rgb = color.rgb;"
+        // .endl() + "   if(speedy>=1.0) finalColor.rgb *= clamp(speedy,0.5,1.0)*(showSpeed)*clamp(colmul,0.0,1.0)*2.0;"
+        // .endl() + "   else finalColor.rgb = finalColor.rgb;"
+        // .endl() + "   else finalColor.rgb = finalColor.rgb;"
 
-            .endl() + "   color.rgb = color.rgb;"
-            .endl() + "   color.a = showSpeed;"
+            .endl() + "   finalColor.rgb = finalColor.rgb;"
+            .endl() + "   finalColor.a = showSpeed;"
         // .endl()+'   color.r = 1.0;'
 
 
@@ -90,8 +90,16 @@ export default class GlLinedrawer
         // .endl()+'  a=sin(a);'
         // .endl()+'  a=(a+1.0)/2.0;'
         // .endl()+'  a=floor(a);'
+            .endl() + "   #ifdef DEBUG_1"
+            .endl() + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
+            .endl() + "   #ifdef DEBUG_2"
+            .endl() + "       finalColor.rg=uv;"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
 
-            .endl() + "   outColor=color;"
+            .endl() + "   outColor=finalColor;"
             .endl() + "}"
         );
 
@@ -179,6 +187,12 @@ export default class GlLinedrawer
         if (oldAttrDists) this._dists.set(oldAttrDists);
         if (oldAttrSpeeds) this._speeds.set(oldAttrSpeeds);
         this._needsUpload = true;
+    }
+
+    setDebugRenderer(i)
+    {
+        this._shader.toggleDefine("DEBUG_1", i == 1);
+        this._shader.toggleDefine("DEBUG_2", i == 2);
     }
 
     getIndex()
