@@ -187,7 +187,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.toggleOpsEnable(); });
         gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
 
-        gui.keys.key("0", "debug", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
+        gui.keys.key("1", "debug", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
@@ -812,8 +812,6 @@ export default class GlPatch extends CABLES.EventTarget
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-
-
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);

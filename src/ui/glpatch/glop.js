@@ -500,8 +500,8 @@ export default class GlOp extends CABLES.EventTarget
         if (!this.opUiAttribs.translate) return;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, this.getPosZ());
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, this.getPosZ());
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
+        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
         this._updateErrorDots();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
@@ -846,6 +846,7 @@ export default class GlOp extends CABLES.EventTarget
             this.opUiAttribs.selected = s;
             this._updateColors();
         }
+        this.updatePosition();
     }
 
     getPortPos(id)

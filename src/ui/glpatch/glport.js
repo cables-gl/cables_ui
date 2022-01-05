@@ -9,19 +9,20 @@ export default class GlPort
         this._port = p;
         this._name = p.name;
         this._id = p.id;
+        this._parent = oprect;
 
         this._direction = p.direction;
 
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
-        this._rect = new GlRect(rectInstancer, { "parent": oprect, "interactive": true });
+        this._rect = new GlRect(rectInstancer, { "parent": this._parent, "interactive": true });
 
         this._mouseButtonRightTimeDown = 0;
 
         this._posX = i * (GlUiConfig.portWidth + GlUiConfig.portPadding);
 
-        oprect.addChild(this._rect);
+        this._parent.addChild(this._rect);
 
         this._updateColor(p.uiAttribs);
 
@@ -66,8 +67,11 @@ export default class GlPort
         if (this._port.direction == 1) y = this._glop.h - GlUiConfig.portHeight;
         else if (this._port.isLinked()) y -= GlUiConfig.portHeight * 0.5;
 
-        this._rect.setPosition(this._posX, y);
-        this._rect.setSize(GlUiConfig.portWidth, h);
+        if (this._rect)
+        {
+            this._rect.setPosition(this._posX, y);
+            this._rect.setSize(GlUiConfig.portWidth, h);
+        }
     }
 
     _onLinkChanged()
@@ -145,5 +149,9 @@ export default class GlPort
         this._mouseEvents.length = 0;
 
         this._rect.dispose();
+        this._rect = null;
+
+
+        console.log("port dispose");
     }
 }

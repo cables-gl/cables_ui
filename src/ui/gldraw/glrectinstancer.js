@@ -164,23 +164,23 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             .endl() + "if(decoration==1.0)" // circle
             .endl() + "{"
-            .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
-            .endl() + "   if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)finalColor.rgb=vec3(" + GlUiConfig.colors.opBoundsRect[0] + ");"
+            .endl() + "    float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
+            .endl() + "    float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
+            .endl() + "    finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            .endl() + "    if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)finalColor.rgb=vec3(" + GlUiConfig.colors.opBoundsRect[0] + ");"
 
-            .endl() + "   if(finalColor.a==0.0)discard;"
+            // .endl() + "   if(finalColor.a==0.0)discard;"
             .endl() + "}"
 
             .endl() + "if(decoration==2.0)" // border
             .endl() + "{"
-            .endl() + "   float outlinefrag=0.003;"
-            .endl() + "       float add=(1.0-step(outlinefrag,posSize.x));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
-            .endl() + "       if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
-            .endl() + "       finalColor.rgb+=vec3(add*0.4);"
-            .endl() + "   }"
+            .endl() + "    float outlinefrag=0.003;"
+            .endl() + "    float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));"
+            .endl() + "    finalColor.rgb+=vec3(add*0.4);"
+            .endl() + "}"
 
             .endl() + "if(decoration==3.0)" // stripes
             .endl() + "{"
@@ -190,25 +190,25 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             .endl() + "if(decoration==4.0)" // border no content
             .endl() + "{"
-            .endl() + "   float outlinefrag=0.003;"
-            .endl() + "   float add=(1.0-step(outlinefrag,posSize.x));"
-            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.y));"
-            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.z));"
-            .endl() + "   if(add==0.0) add=(1.0-step(outlinefrag,posSize.w));"
-            .endl() + "   if(add==0.0) finalColor.a=0.0;"
+            .endl() + "    float outlinefrag=0.003;"
+            .endl() + "    float add=(1.0-step(outlinefrag,posSize.x));"
+            .endl() + "    if(add==0.0) add=(1.0-step(outlinefrag,posSize.y));"
+            .endl() + "    if(add==0.0) add=(1.0-step(outlinefrag,posSize.z));"
+            .endl() + "    if(add==0.0) add=(1.0-step(outlinefrag,posSize.w));"
+            .endl() + "    if(add==0.0) finalColor.a=0.0;"
             .endl() + "}"
 
             .endl() + "if(decoration==5.0)" // cursor
             .endl() + "{"
-            .endl() + "     if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;"
-            .endl() + "     else finalColor.a=0.0;"
+            .endl() + "    if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;"
+            .endl() + "    else finalColor.a=0.0;"
             .endl() + "}"
 
             .endl() + "if(decoration==6.0)" // filled circle
             .endl() + "{"
-            .endl() + "   float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
-            .endl() + "   finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
-            .endl() + "   if(finalColor.a==0.0)discard;"
+            .endl() + "    float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
+            .endl() + "    finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
+            // .endl() + "   if(finalColor.a==0.0)discard;"
             .endl() + "}"
 
         // .endl() + "   float sc = 1.0 / fwidth(uv.x);"
@@ -217,25 +217,20 @@ export default class GlRectInstancer extends CABLES.EventTarget
         // .endl() + "   finalColor=vec4(zz,zz,zz,1.0);"
         // .endl() + "   finalColor.rg+=uv*0.3;"
 
+            .endl() + "    finalColor.a*=col.a;"
 
-            .endl() + "   finalColor.a*=col.a;"
-            .endl() + "   if(finalColor.a==0.0)discard;"
+            .endl() + "    #ifdef DEBUG_1"
+            .endl() + "        finalColor.rgb=vec3((zz+1.0)/2.0);"
+            .endl() + "        finalColor.a=1.0;"
+            .endl() + "    #endif"
+            .endl() + "    #ifdef DEBUG_2"
+            .endl() + "        finalColor.rg=uv;"
+            .endl() + "        finalColor.a=1.0;"
+            .endl() + "    #endif"
 
-            .endl() + "   #ifdef DEBUG_1"
-            .endl() + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
-            .endl() + "       finalColor.a=1.0;"
-            .endl() + "   #endif"
-            .endl() + "   #ifdef DEBUG_2"
-            .endl() + "       finalColor.rg=uv;"
-            .endl() + "       finalColor.a=1.0;"
-            .endl() + "   #endif"
-
-
-            .endl() + "   outColor=finalColor;"
-
-
+            .endl() + "    if(finalColor.a==0.0)discard;"
+            .endl() + "    outColor=finalColor;"
             .endl() + "}");
-
 
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
@@ -250,7 +245,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
         this._geom.verticesIndices = new Float32Array([2, 1, 0, 3, 1, 2]);
         this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
-
 
         if (this._cgl.glVersion == 1) this._shader.enableExtension("GL_OES_standard_derivatives");
         this._mesh = new CGL.Mesh(cgl, this._geom);
