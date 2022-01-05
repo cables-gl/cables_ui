@@ -88,12 +88,20 @@ export default class GlRect extends CABLES.EventTarget
 
     setBorder(c)
     {
-        this._rectInstancer.setBorder(this._attrIndex, c);
+        if (this._border != c)
+        {
+            this._border = c;
+            this._rectInstancer.setBorder(this._attrIndex, c);
+        }
     }
 
     setSelected(c)
     {
-        this._rectInstancer.setSelected(this._attrIndex, c);
+        if (this._selected != c)
+        {
+            this._selected = c;
+            this._rectInstancer.setSelected(this._attrIndex, c);
+        }
     }
 
     get visible() { return this._visible; }
