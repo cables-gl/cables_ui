@@ -167,9 +167,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "    float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "    float inner = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));"
             .endl() + "    finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);"
-            .endl() + "    if(1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner)==0.0)finalColor.rgb=vec3(" + GlUiConfig.colors.opBoundsRect[0] + ");"
-
-            // .endl() + "   if(finalColor.a==0.0)discard;"
+            .endl() + "    finalColor.rgb=mix(vec3(" + GlUiConfig.colors.opBoundsRect[0] + "), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner));"
             .endl() + "}"
 
             .endl() + "if(decoration==2.0)" // border

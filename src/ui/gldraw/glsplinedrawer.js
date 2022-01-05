@@ -180,8 +180,8 @@ export default class GlSplineDrawer
             .endl() + "    {{MODULE_COLOR}}"
             .endl() + "    finalColor.rgb*=darken;"
 
-            // .endl() + "#ifdef LINE_OUTLINE"
-            .endl() + "    if(abs(texCoord.y)>0.7) finalColor.rgb*=0.7;"
+        // .endl() + "#ifdef LINE_OUTLINE"
+        // .endl() + "    if(abs(texCoord.y)>0.7) finalColor.rgb*=0.7;"
         // .endl() + "#endif"
 
 

@@ -143,15 +143,10 @@ export default class GlPort
     dispose()
     {
         for (let i = 0; i < this._mouseEvents.length; i++)
-        {
             this._rect.off(this._mouseEvents[i]);
-        }
-        this._mouseEvents.length = 0;
 
+        this._mouseEvents.length = 0;
         this._rect.dispose();
         this._rect = null;
-
-
-        console.log("port dispose");
     }
 }
