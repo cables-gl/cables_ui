@@ -20,6 +20,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._name = options.name || "unknown";
 
         this._debugRenderStyle = 0;
+        this.doBulkUploads = true;
 
         this._counter = 0;
         this._num = options.initNum || 5000;
@@ -41,10 +42,8 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._meshAttrCol = null;
         this._meshAttrSize = null;
         this._meshAttrDeco = null;
-        this._meshAttrRect = null;
+        this._meshAttrTexRect = null;
         this._meshAttrTex = null;
-
-        this.doBulkUploads = false;
 
 
         this._setupAttribBuffers();
@@ -304,7 +303,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         for (i = 0; i < 2 * this._num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
         for (i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
         for (i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
-        // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
         for (i = 0; i < 4 * this._num; i++) this._attrBuffDeco[i] = 0;// Math.random();
         for (i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
 
@@ -417,21 +415,19 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
             {
-                this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+                this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
                 this._resetAttrRange(this.ATTR_SIZE);
             }
 
             if (this._updateRangesMin[this.ATTR_DECO] != 9999)
             {
-                // this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
                 this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
-
                 this._resetAttrRange(this.ATTR_DECO);
             }
 
             if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
             {
-                this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+                this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
                 this._resetAttrRange(this.ATTR_TEXRECT);
             }
         }
@@ -468,7 +464,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
             this._meshAttrDeco = this._mesh.setAttribute(this.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
-            this._meshAttrRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
+            this._meshAttrTexRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
             this._meshAttrTex = this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this._reUploadAttribs = false;
             perf.finish();
@@ -488,7 +484,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (this._counter > this._num - 100)
         {
             this._num += Math.max(5000, Math.ceil(this._num));
-            this._log.verbose("rectinstancer " + this._name + " resize to", this._num);
+            this._log.warn("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
             this._needsRebuildReason = "resize";
@@ -585,7 +581,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
 
         if (this.doBulkUploads) this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrRect, this._attrTexRect, idx * 4, idx * 4 + 4);
+        else this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrTexRect, idx * 4, idx * 4 + 4);
     }
 
     setColor(idx, r, g, b, a)
