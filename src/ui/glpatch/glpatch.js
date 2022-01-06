@@ -888,7 +888,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
 
-
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
         if (this._rectInstancer.isDragging()) return;

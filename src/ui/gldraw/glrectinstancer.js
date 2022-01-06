@@ -440,6 +440,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             if (this._updateRangesMin[this.ATTR_COLOR] != this._DEFAULT_BIGNUM)
             {
+                // console.log("update colors,", this._updateRangesMax[this.ATTR_COLOR] - this._updateRangesMin[this.ATTR_COLOR]);
                 this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
                 this._resetAttrRange(this.ATTR_COLOR);
             }
@@ -678,9 +679,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._shader.toggleDefine("SDF_TEXTURE", sdf);
 
         for (let i = 0; i < this._rects.length; i++)
-        {
             this._rects[i].setTexture(tex);
-        }
     }
 
     _resetAttrRange(attr)
@@ -721,7 +720,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     mouseMove(x, y, button, event)
     {
-        const perf = CABLES.UI.uiProfiler.start("glrectinstancer mousemove");
+        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this._interactive) return;
         if (this.allowDragging && this._draggingRect)
         {
@@ -731,8 +730,10 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         for (let i = 0; i < this._rects.length; i++)
         {
-            this._rects[i].mouseMove(x, y, button);
+            if (!this._rects[i].parent)
+                this._rects[i].mouseMove(x, y, button);
         }
+
         perf.finish();
     }
 
@@ -740,8 +741,9 @@ export default class GlRectInstancer extends CABLES.EventTarget
     {
         if (!this._interactive) return;
 
-
+        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseDown(e);
+        perf.finish();
     }
 
     mouseUp(e)
