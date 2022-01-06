@@ -39,8 +39,8 @@
         right:100px;
         cursor:pointer;
         text-align: center;
-        z-index: $zindex_highest+1;
-    }
+        z-index: $zindex_lowest;
+        }
 
     #infoArea
     {
@@ -58,7 +58,7 @@
         bottom:0px;
         opacity: 0.9;
 
-        z-index: $zindex_highest;
+        z-index: $zindex_lowest;
 
 
         ul {

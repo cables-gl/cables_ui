@@ -16,7 +16,7 @@ function startIdleMode()
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    new ModalDialog({"html":"<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>"});
+    new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
 
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart");

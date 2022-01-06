@@ -32,8 +32,6 @@
     header
     {
         width:440px;
-        // border-top-left-radius: $border-radius-popups;
-        // border-top-right-radius: $border-radius-popups;
         background-color: var(--color-03);
         padding: 20px;
         padding-top: 20px;
@@ -63,12 +61,10 @@
     }
 
     // documentation in the op add modal
-    .op-doc {
-        h3 {
-
-        }
-
-        .op-summary {
+    .op-doc
+    {
+        .op-summary
+        {
             font-style: italic;
             font-size: 20px;
         }
@@ -84,14 +80,12 @@
 
     .opOptions
     {
-        // background-color: $background-color-brighter;
         padding:5px;
         padding-left: 15px;
         text-align: center;
 
         border-bottom-left-radius: $border-radius-popups;
         border-bottom-right-radius: $border-radius-popups;
-        // background-color: $color-searchInputContainer;
 
         .warning
         {
@@ -112,7 +106,6 @@
 
     .shortname
     {
-        // color:white;
         font-weight: bold;
 
         i
@@ -121,45 +114,21 @@
             font-style: normal;
             color:white;
         }
-
     }
 
-    .searchresult //,.searchresult_cmd
+    .searchresult
     {
         font-size: 16px;
         padding: 15px 20px;
 		border-bottom: 1px solid var(--color-01);
         background-color: $background-color-brighter;
-
-        // &:hover
-        // {
-        //     background-color: $background-color-hover;
-        // }
     }
-
 
     .searchbrowser
     {
         height:465px;
         overflow:auto;
     }
-
-    // .optree
-    // {
-    //     position: absolute;
-    //     margin-left:-190px;
-    //     width:130px;
-    //     overflow-y: scroll;
-    //     height: 460px;
-    //     // left:0;
-    //     background-color: $background-color-dark;
-	// 	border-bottom:30px solid $background-color-dark;
-	// 	border-top:30px solid $background-color-dark;
-    //     border-top-left-radius: $border-radius-popups;
-    //     border-bottom-left-radius: $border-radius-popups;
-    //     padding: 0 30px;
-    //     margin-top: 109px;
-    // }
 
     .searchinfo
     {
@@ -208,19 +177,6 @@
 
         .namespace-wrapper {
             margin-top: 30px;
-        }
-
-        // img
-        // {
-        //     max-width: 100%;
-        //     max-height: 200px;
-        //     margin-top:10px;
-        //     margin-bottom:10px;
-        // }
-
-        p
-        {
-        //   line-height: 21px;
         }
 
         #opselect-layout
@@ -335,7 +291,6 @@
             font-style: normal;
         }
     }
-
 }
 
 .opsearch.minimal
@@ -395,23 +350,10 @@
     {
         padding: 5px 10px;
     }
-
-    // .optree
-    // {
-    //     visibility: hidden;
-    // }
-
-
 }
-
-
-
 
 .searchbrowser
 {
-    .searchable{
-        // margin-bottom: 1px;
-    }
     .item_color_default { border-left:15px solid var(--color_op_handle_default);}
     .item_color_gl { border-left:15px solid var(--color_op_handle_gl); }
     .item_color_audio { border-left:15px solid var(--color_op_handle_audio); }
@@ -420,5 +362,4 @@
     .item_color_math { border-left:15px solid var(--color_op_handle_math); }
     .item_color_user { border-left:15px solid var(--color_op_handle_user); }
 }
-
 

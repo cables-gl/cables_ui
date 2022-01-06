@@ -1,5 +1,5 @@
 import Logger from "../../utils/logger";
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 
 export default class EditorTab
 {
@@ -194,6 +194,10 @@ function createEditor(id, val)
     const snippets = snippetManager.parseSnippetFile("");
 
     snippets.push(
+        {
+            "content": "setUiError = function (\"${1:id}\",\"${1:message}\")",
+            "name": "inTriggerButton",
+        },
         {
             "content": "inTriggerButton(\"${1:name}\")",
             "name": "inTriggerButton",

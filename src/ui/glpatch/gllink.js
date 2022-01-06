@@ -29,9 +29,8 @@ export default class GlLink
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
         this._buttonRect.colorHoverMultiply = 1.0;
-        this._buttonRect.setDecoration(1);
+        this._buttonRect.setShape(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
-
 
         this._buttonRect.on("mouseup", (e) =>
         {
@@ -47,7 +46,6 @@ export default class GlLink
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
-
 
             // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
             if (gui.patchView.getSelectedOps().length == 1)

@@ -7,6 +7,7 @@ export default class ScUi extends CABLES.EventTarget
         super();
         this._connection = connection;
         this.notifyPingTimeout = true;
+        this.notifyNetworkError = true;
 
         this._connection.on("onInfoMessage", (payload) =>
         {
@@ -18,7 +19,11 @@ export default class ScUi extends CABLES.EventTarget
 
         this._connection.on("connectionError", (payload) =>
         {
-            notifyError("network error", payload.message);
+            if (this.notifyNetworkError)
+            {
+                notifyError("network error", payload.message);
+                this.notifyNetworkError = false;
+            }
         });
 
         this._connection.on("onPingAnswer", (msg) =>

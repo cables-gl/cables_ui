@@ -10,144 +10,143 @@ import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
 import MainTabPanel from "./elements/tabpanel/maintabpanel";
 import TabPanel from "./elements/tabpanel/tabpanel";
 import KeyBindingsManager from "./utils/keybindingsmanager";
-import ModalDialog from './dialogs/modaldialog';
-import ModalPortValue from './components/opparampanel/show_port_value_modal';
+import ModalDialog from "./dialogs/modaldialog";
+import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
-import MetaKeyframes from './components/tabs/meta_keyframes';
-import MetaCode from './components/tabs/meta_code';
-import MetaDoc from './components/tabs/meta_doc';
-import TexturePreviewer from './components/texturepreviewer';
-import MetaHistory from './components/tabs/meta_history';
-import Logger from './utils/logger';
-import OpDocs from './components/opdocs';
-import IconBar from './elements/iconbar';
+import MetaKeyframes from "./components/tabs/meta_keyframes";
+import MetaCode from "./components/tabs/meta_code";
+import MetaDoc from "./components/tabs/meta_doc";
+import TexturePreviewer from "./components/texturepreviewer";
+import MetaHistory from "./components/tabs/meta_history";
+import Logger from "./utils/logger";
+import OpDocs from "./components/opdocs";
+import IconBar from "./elements/iconbar";
 import ModalException from "./dialogs/modalexception";
-import Tips from './dialogs/tips';
-import PatchView from './components/patchview';
+import Tips from "./dialogs/tips";
+import PatchView from "./components/patchview";
 import TimeLineGui from "./components/timelinesvg/timeline";
-import MetaOpParams from './components/tabs/meta_opparams';
-import { getHandleBarHtml } from './utils/handlebars';
-import WatchArrayTab from './components/tabs/tab_watcharray';
-import Gizmo from './elements/canvasoverlays/transformgizmo';
+import MetaOpParams from "./components/tabs/meta_opparams";
+import { getHandleBarHtml } from "./utils/handlebars";
+import WatchArrayTab from "./components/tabs/tab_watcharray";
+import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import { showInfo } from "./elements/tooltips";
 
 export default class Gui
 {
+    constructor(cfg)
+    {
+        CABLES.EventTarget.apply(this);
 
-constructor(cfg)
-{
-    CABLES.EventTarget.apply(this);
+        this._log = new Logger("gui");
 
-    this._log = new Logger("gui");
+        this.patchId = cfg.patchId;
+        this._showTiming = false;
+        this._showingEditor = false;
 
-    this.patchId = cfg.patchId;
-    this._showTiming = false;
-    this._showingEditor = false;
+        this.keys = new KeyBindingsManager();
+        this.opParams = new OpParampanel();
+        this.opPortModal = new ModalPortValue();
 
-    this.keys = new KeyBindingsManager();
-    this.opParams = new OpParampanel();
-    this.opPortModal=new ModalPortValue();
+        this.socket = null;
+        this.isRemoteClient = cfg.remoteClient;
+        this.spaceBarStart = 0;
 
-    this.socket = null;
-    this.isRemoteClient = cfg.remoteClient;
-    this.spaceBarStart = 0;
+        this.timingHeight = uiconfig.timingPanelHeight;
+        this.rendererWidth = uiconfig.rendererDefaultWidth;
+        this.rendererHeight = uiconfig.rendererDefaultHeight;
 
-    this.timingHeight = uiconfig.timingPanelHeight;
-    this.rendererWidth = uiconfig.rendererDefaultWidth;
-    this.rendererHeight = uiconfig.rendererDefaultHeight;
+        this.CANVASMODE_NORMAL = 0;
+        this.CANVASMODE_FULLSCREEN = 2;
+        this.CANVASMODE_PATCHBG = 1;
+        this._canvasMode = this.CANVASMODE_NORMAL;
+        this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
+        this._timeoutPauseProfiler = null;
+        this._cursor = "";
 
-    this.CANVASMODE_NORMAL = 0;
-    this.CANVASMODE_FULLSCREEN = 2;
-    this.CANVASMODE_PATCHBG = 1;
-    this._canvasMode = this.CANVASMODE_NORMAL;
-    this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
-    this._timeoutPauseProfiler = null;
-    this._cursor = "";
+        if (!cfg) cfg = {};
+        if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
 
-    if (!cfg) cfg = {};
-    if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
-
-    this._corePatch = CABLES.patch = new CABLES.Patch({
-        "editorMode": true,
-        "canvas":
+        this._corePatch = CABLES.patch = new CABLES.Patch({
+            "editorMode": true,
+            "canvas":
         {
             "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
             "alpha": true,
             "premultipliedAlpha": true,
         },
-        "variables":
+            "variables":
         {
         }
-    });
-
-    this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
-        () =>
-        {
-            this._corePatch.off(this._patchLoadEndiD);
-            this.setStateSaved();
-
-            logStartup("Patch loaded");
         });
 
-    this._corePatch.on("opcrash", (portTriggered) =>
-    {
-        this.showOpCrash(portTriggered.parent);
-    });
+        this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
+            () =>
+            {
+                this._corePatch.off(this._patchLoadEndiD);
+                this.setStateSaved();
 
-    this.patchView = new PatchView(this._corePatch);
+                logStartup("Patch loaded");
+            });
 
-    this._corePatch.gui = true;
+        this._corePatch.on("opcrash", (portTriggered) =>
+        {
+            this.showOpCrash(portTriggered.parent);
+        });
 
-    this._jobs = new Jobs();
-    this.cmdPallet = new CommandPallete();
-    this._opselect = new OpSelect();
-    this.introduction = new Introduction();
-    this._gizmo = null;
-    this._transformOverlay = new TransformsOverlay();
+        this.patchView = new PatchView(this._corePatch);
 
-    this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
-    this.opDocs = null;
-    this.opHistory = new OpHistory();
+        this._corePatch.gui = true;
 
-    this.mainTabs = new TabPanel("maintabs");
-    this.maintabPanel = new MainTabPanel(this.mainTabs);
+        this._jobs = new Jobs();
+        this.cmdPallet = new CommandPallete();
+        this._opselect = new OpSelect();
+        this.introduction = new Introduction();
+        this._gizmo = null;
+        this._transformOverlay = new TransformsOverlay();
 
-    this.chat = null;
+        this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
+        this.opDocs = null;
+        this.opHistory = new OpHistory();
 
-    this.metaTabs = new TabPanel("metatabpanel");
-    this._savedState = true;
+        this.mainTabs = new TabPanel("maintabs");
+        this.maintabPanel = new MainTabPanel(this.mainTabs);
 
-    this.metaOpParams = new MetaOpParams(this.metaTabs);
+        this.chat = null;
 
-    this.metaDoc = new MetaDoc(this.metaTabs);
-    this._metaCode = new MetaCode(this.metaTabs);
-    this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-    this.metaKeyframes = new MetaKeyframes(this.metaTabs);
-    this.bookmarks = new Bookmarks();
-    this.history = new MetaHistory(this.metaTabs);
-    this.bottomInfoArea = new BottomInfoAreaBar();
+        this.metaTabs = new TabPanel("metatabpanel");
+        this._savedState = true;
 
-    this._favIconLink = document.createElement("link");
-    document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
-    this._favIconLink.type = "image/x-icon";
-    this._favIconLink.rel = "shortcut icon";
+        this.metaOpParams = new MetaOpParams(this.metaTabs);
 
-    this.user = null;
-    this.onSaveProject = null;
-    this.lastNotIdle = CABLES.now();
+        this.metaDoc = new MetaDoc(this.metaTabs);
+        this._metaCode = new MetaCode(this.metaTabs);
+        this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+        this.metaKeyframes = new MetaKeyframes(this.metaTabs);
+        this.bookmarks = new Bookmarks();
+        this.history = new MetaHistory(this.metaTabs);
+        this.bottomInfoArea = new BottomInfoAreaBar();
 
-    this._oldCanvasWidth = 0;
-    this._oldCanvasHeight = 0;
-    this._oldShowingEditor = false;
-    this._eventListeners = {};
+        this._favIconLink = document.createElement("link");
+        document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
+        this._favIconLink.type = "image/x-icon";
+        this._favIconLink.rel = "shortcut icon";
 
-    this._currentProject = null;
-    this.tips = new Tips();
-    this.currentModal=null;
-    this.updateTheme();
-}
+        this.user = null;
+        this.onSaveProject = null;
+        this.lastNotIdle = CABLES.now();
 
-project()
+        this._oldCanvasWidth = 0;
+        this._oldCanvasHeight = 0;
+        this._oldShowingEditor = false;
+        this._eventListeners = {};
+
+        this._currentProject = null;
+        this.tips = new Tips();
+        this.currentModal = null;
+        this.updateTheme();
+    }
+
+    project()
     {
         return this._currentProject;
     }
@@ -175,6 +174,7 @@ project()
     {
         return this._corePatch;
     }
+
     corePatch()
     {
         return this._corePatch;
@@ -284,12 +284,12 @@ project()
 
     isShowingModal()
     {
-        return gui.currentModal!=null;
+        return gui.currentModal != null;
     }
 
     closeModal()
     {
-        if(gui.currentModal)gui.currentModal.close();
+        if (gui.currentModal)gui.currentModal.close();
     }
 
     showTwoMetaPanels()
@@ -720,7 +720,7 @@ project()
             this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
-        // flashing canvas overlay when sabing
+        // flashing canvas overlay when saving
         this._elCanvasFlash.style.width = this.rendererWidth * this._corePatch.cgl.canvasScale + "px";
         this._elCanvasFlash.style.height = this.rendererHeight * this._corePatch.cgl.canvasScale + "px";
         this._elCanvasFlash.style.right = 0 + "px";
@@ -734,7 +734,7 @@ project()
         this.emitEvent("setLayout");
 
         perf.finish();
-    };
+    }
 
     _setCanvasMode(m)
     {
@@ -893,6 +893,7 @@ project()
             this.fileManager.selectFile(fn);
         });
     }
+
     setProjectName(name)
     {
         if (name && name !== "undefined")
@@ -902,10 +903,10 @@ project()
             gui.corePatch().name = name;
         }
     }
+
     createProject()
     {
         if (gui.showGuestWarning()) return;
-
 
 
         new ModalDialog({
@@ -925,7 +926,6 @@ project()
     }
 
 
-
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
     {
@@ -933,9 +933,9 @@ project()
 
         for (let i in els)
         {
-            const newShortcut=this.bottomInfoArea.replaceShortcuts(els[i].innerHTML||"");
+            const newShortcut = this.bottomInfoArea.replaceShortcuts(els[i].innerHTML || "");
             // const newShortcut = (els[i].innerHTML || "").replace("mod", osMod);
-            if(els[i].innerHTML) els[i].innerHTML = newShortcut;
+            if (els[i].innerHTML) els[i].innerHTML = newShortcut;
         }
     }
 
@@ -1066,8 +1066,7 @@ project()
                 "fileId": fileId
             });
 
-        new ModalDialog({"html":html});
-
+        new ModalDialog({ "html": html });
     }
 
     converterStart(projectId, fileId, converterId)
@@ -1116,15 +1115,15 @@ project()
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
         ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
-        ele.byQueryAll(".nav_create_from_template").forEach((el) =>
-        {
-            const href = el.dataset.href;
-            el.addEventListener("click", () =>
-            {
-                const win = window.open(CABLES.sandbox.getCablesUrl() + href, "_blank");
-                win.focus();
-            });
-        });
+        // ele.byQueryAll(".nav_create_from_template").forEach((el) =>
+        // {
+        //     const href = el.dataset.href;
+        //     el.addEventListener("click", () =>
+        //     {
+        //         const win = window.open(CABLES.sandbox.getCablesUrl() + href, "_blank");
+        //         win.focus();
+        //     });
+        // });
 
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
@@ -1212,8 +1211,8 @@ project()
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
             (e) =>
             {
-                if ( !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA") )
-                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape") ) )
+                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA"))
+                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
@@ -1498,7 +1497,7 @@ project()
 
     showSettings(unserInteraction)
     {
-        window.onmessage=(e)=>
+        window.onmessage = (e) =>
         {
             if (e.data && typeof e.data == "string")
             {
@@ -1515,7 +1514,7 @@ project()
 
         const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settingsiframe";
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settings" }, true);
-    };
+    }
 
     setCursor(str)
     {
@@ -1597,7 +1596,7 @@ project()
 
             document.getElementById("patchname").classList.add("warning");
 
-            window.onbeforeunload=(event)=>
+            window.onbeforeunload = (event) =>
             {
                 const message = "unsaved content!";
                 if (typeof event == "undefined")
@@ -1710,12 +1709,12 @@ project()
     {
         this._corePatch.on("exception", function (ex, op)
         {
-            new ModalException(ex,{"op":op});
+            new ModalException(ex, { "op": op });
         });
 
         this._corePatch.on("exceptionOp", function (e, objName)
         {
-            new ModalException(e,{"opname":objName});
+            new ModalException(e, { "opname": objName });
         });
 
         this._corePatch.on("criticalError", function (title, msg)
@@ -1730,11 +1729,10 @@ project()
         this._corePatch.on("renderDelayEnd", function ()
         {
         });
-    };
+    }
 
     showInfo(txt)
     {
         showInfo(txt);
     }
-
 }

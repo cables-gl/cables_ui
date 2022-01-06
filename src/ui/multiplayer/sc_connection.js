@@ -103,6 +103,7 @@ export default class ScConnection extends CABLES.EventTarget
         {
             for await (const { error } of this._socket.listener("error"))
             {
+                if (!this.isConnected()) return;
                 this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 

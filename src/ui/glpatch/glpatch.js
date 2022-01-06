@@ -61,8 +61,11 @@ export default class GlPatch extends CABLES.EventTarget
         this.viewBox = new GlViewBox(cgl, this);
 
         this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
+        this._rectInstancer.doBulkUploads = false;
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
+
+
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
@@ -92,7 +95,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
-        this._focusRect.setDecoration(4);
+        this._focusRect.setShape(4);
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
@@ -135,7 +138,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._dropInOpBorder = this._overLayRects.createRect();
         this._dropInOpBorder.setSize(100, 100);
-        // this._dropInOpBorder.setDecoration(4);
+        // this._dropInOpBorder.setShape(4);
         this._dropInOpBorder.setColor(1, 0, 0, 1);
         this._dropInOpBorder.visible = false;
 
@@ -153,12 +156,11 @@ export default class GlPatch extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
+
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
             CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
-
-            // this._log.log("flowmode", CABLES.UI.userSettings.get("glflowmode"));
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -185,6 +187,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.toggleOpsEnable(); });
         gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
+
+        gui.keys.key("1", "debug", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
@@ -378,6 +382,22 @@ export default class GlPatch extends CABLES.EventTarget
         this.profileMouseEvents++;
 
         if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+    }
+
+    _cycleDebug()
+    {
+        this._debugRenderStyle = this._debugRenderStyle || 0;
+
+        this._debugRenderStyle++;
+        if (this._debugRenderStyle > 2) this._debugRenderStyle = 0;
+
+        for (let i in this._splineDrawers) this._splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
+
+        this._rectInstancer.setDebugRenderer(this._debugRenderStyle);
+        this._overLayRects.setDebugRenderer(this._debugRenderStyle);
+
+        this._textWriter.setDebugRenderer(this._debugRenderStyle);
+        this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
     }
 
     _onCanvasDblClick(e)
@@ -793,8 +813,6 @@ export default class GlPatch extends CABLES.EventTarget
         this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-
-
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
@@ -847,7 +865,6 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
-
 
             for (let i in this._cgl.profileData.profileSingleMeshAttribute)
             {
@@ -1038,35 +1055,27 @@ export default class GlPatch extends CABLES.EventTarget
 
     _selectOpsInRect(xa, ya, xb, yb)
     {
-        // const x=Math.min(xa,xb);
-        // const y=Math.min(ya,yb);
-        // const x2=Math.max(xa,xb);
-        // const y2=Math.max(ya,yb);
-
-        // for(var i in this._glOpz)
-        // {
-        //     const glop=this._glOpz[i];
-        //     glop.selected=false;
-
-        //     if( glop.x + glop.w >= x &&     // glop. right edge past r2 left
-        //         glop.x <= x2 &&       // glop. left edge past r2 right
-        //         glop.y + glop.h >= y &&       // glop. top edge past r2 bottom
-        //         glop.y <= y2)  // r1 bottom edge past r2 top
-        //     {
-        //         glop.selected=true;
-        //     }
-        // }
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
+        const opIds = [];
+        for (let i = 0; i < ops.length; i++)
+            opIds.push(ops[i].id);
 
-        this.unselectAll();
+        for (let i in this._selectedGlOps)
+        {
+            if (opIds.indexOf(i) == -1)
+            {
+                this._selectedGlOps[i].selected = false;
+                delete this._selectedGlOps[i];
+            }
+        }
+
+        this._cachedNumSelectedOps = Object.keys(this._selectedGlOps).length;
 
         for (let i = 0; i < ops.length; i++)
         {
             ops[i].selected = true;
-
             this.selectOpId(ops[i].id);
-            // this._selectedGlOps[ops[i].id] = ops[i];
         }
     }
 

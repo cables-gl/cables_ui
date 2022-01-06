@@ -56,6 +56,7 @@ export default class GlSplineDrawer
 
             .endl() + "OUT vec2 texCoord;"
             .endl() + "OUT vec3 norm;"
+            .endl() + "OUT float zz;"
 
             .endl() + "UNI float zoom,resX,resY,scrollX,scrollY;"
 
@@ -150,6 +151,7 @@ export default class GlSplineDrawer
             .endl() + "IN vec4 fcolor;"
             .endl() + "IN float fProgress;"
             .endl() + "IN float fspeed;"
+            .endl() + "IN float zz;"
 
             .endl() + "UNI vec2 mousePos;"
 
@@ -159,7 +161,7 @@ export default class GlSplineDrawer
             .endl() + "{{MODULES_HEAD}}"
             .endl() + "void main()"
             .endl() + "{"
-            .endl() + "    vec4 col=fcolor;"
+            .endl() + "    vec4 finalColor=fcolor;"
             .endl() + "    float darken=1.0;"
 
             .endl() + "    float minOpacity=0.7;"
@@ -176,14 +178,23 @@ export default class GlSplineDrawer
             .endl() + "    }"
 
             .endl() + "    {{MODULE_COLOR}}"
-            .endl() + "    col.rgb*=darken;"
+            .endl() + "    finalColor.rgb*=darken;"
 
-            // .endl() + "#ifdef LINE_OUTLINE"
-            .endl() + "    if(abs(texCoord.y)>0.7) col.rgb*=0.7;"
+        // .endl() + "#ifdef LINE_OUTLINE"
+        // .endl() + "    if(abs(texCoord.y)>0.7) finalColor.rgb*=0.7;"
         // .endl() + "#endif"
 
 
-            .endl() + "    outColor = col;"
+            .endl() + "   #ifdef DEBUG_1"
+            .endl() + "       finalColor.rgb=vec3((zz+1.0)/2.0);"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
+            .endl() + "   #ifdef DEBUG_2"
+            .endl() + "       finalColor.rg=texCoord;"
+            .endl() + "       finalColor.a=1.0;"
+            .endl() + "   #endif"
+
+            .endl() + "    outColor = finalColor;"
             .endl() + "}");
 
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
@@ -266,6 +277,12 @@ export default class GlSplineDrawer
     _float32Diff(a, b)
     {
         return Math.abs(a - b) > 0.0001;
+    }
+
+    setDebugRenderer(i)
+    {
+        this._shader.toggleDefine("DEBUG_1", i == 1);
+        this._shader.toggleDefine("DEBUG_2", i == 2);
     }
 
     setSplineSpeed(idx, speed)

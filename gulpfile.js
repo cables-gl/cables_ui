@@ -40,6 +40,11 @@ function _scripts_libs_ui(done)
     return task.pipe(gulp.dest("dist/js"));
 }
 
+function _scripts_lazyload_ui(done)
+{
+    return gulp.src(["libs/lazyload/**"]).pipe(gulp.dest("dist/lazyload"));
+}
+
 function _scripts_talkerapi(done)
 {
     let task = gulp.src(["src-talkerapi/*.js"]);
@@ -187,7 +192,6 @@ function _electronapp(done)
 
 function _watch(done)
 {
-    // gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/text.json"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
@@ -197,7 +201,6 @@ function _watch(done)
 
 function _electron_watch(done)
 {
-    // gulp.watch(["src/ui_old/**/*.js", "src/ui_old/*.js"], gulp.series(_update_buildInfo, _scripts_ui, _append_build_info));
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/text.json"], gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui, _append_build_info));
@@ -223,6 +226,7 @@ gulp.task("default", gulp.series(
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
+    _scripts_lazyload_ui,
     _scripts_ops,
     _sass,
     _svgcss,
@@ -239,6 +243,7 @@ gulp.task("build", gulp.series(
     _svgcss,
     _html_ui,
     _scripts_libs_ui,
+    _scripts_lazyload_ui,
     _scripts_ops,
     _scripts_core,
     // _scripts_ui,
@@ -261,6 +266,7 @@ gulp.task("electron", gulp.series(
     _lint,
     _html_ui,
     _scripts_libs_ui,
+    _scripts_lazyload_ui,
     _scripts_ops,
     _sass,
     _electronapp,
