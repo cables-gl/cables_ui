@@ -20,6 +20,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._name = options.name || "unknown";
 
         this._debugRenderStyle = 0;
+        this.doBulkUploads = false;
 
         this._counter = 0;
         this._num = options.initNum || 5000;
@@ -43,8 +44,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._meshAttrDeco = null;
         this._meshAttrTexRect = null;
         this._meshAttrTex = null;
-
-        this.doBulkUploads = true;
 
 
         this._setupAttribBuffers();
