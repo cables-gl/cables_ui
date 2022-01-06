@@ -1,11 +1,10 @@
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 
 export default class GlDebugTab
 {
     constructor(tabs)
     {
         this._count = 0;
-
 
         this._tab = new Tab("gluidebug", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
@@ -31,7 +30,7 @@ export default class GlDebugTab
         html += "<table>";
         for (const i in gui.patchView._patchRenderer.debugData)
         {
-            html += "<tr><td>" + i + ":</td><td> " + gui.patchView._patchRenderer.debugData[i] + "</td></tr>";
+            html += "<tr><td>" + i + ":</td><td><pre>" + gui.patchView._patchRenderer.debugData[i] + "</pre></td></tr>";
         }
 
         html += "</table>";
