@@ -44,7 +44,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._meshAttrRect = null;
         this._meshAttrTex = null;
 
-        this.doBulkUploads = false;
+        this.doBulkUploads = true;
 
 
         this._setupAttribBuffers();
@@ -417,21 +417,19 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
             {
-                this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+                this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
                 this._resetAttrRange(this.ATTR_SIZE);
             }
 
             if (this._updateRangesMin[this.ATTR_DECO] != 9999)
             {
-                // this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
                 this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
-
                 this._resetAttrRange(this.ATTR_DECO);
             }
 
             if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
             {
-                this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+                this._mesh.setAttributeRange(this._meshAttrTex, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
                 this._resetAttrRange(this.ATTR_TEXRECT);
             }
         }
