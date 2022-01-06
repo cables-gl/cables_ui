@@ -65,14 +65,12 @@ export default class GlPatch extends CABLES.EventTarget
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
 
-
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
         this._currentSubpatch = 0;
         this._selectionArea = new GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
-
 
         this.cablesHoverText = new GlText(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -343,8 +341,6 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
-        // this._hoverCable.visible = false;
-
         this._dropInCircleRect = null;
 
         this.emitEvent("mousemove", e);
@@ -438,7 +434,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseEnter(e)
     {
-        if (this._mouseLeaveButtons != e.buttons)
+        if (this._mouseLeaveButtons != e.buttons && e.touchType == "mouse")
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
@@ -477,6 +473,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseDown(e)
     {
+        if (!e.pointerType) return;
         this._removeDropInRect();
 
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
@@ -798,7 +795,6 @@ export default class GlPatch extends CABLES.EventTarget
         this.viewBox.setSize(resX, resY);
 
         const starttime = performance.now();
-
 
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 

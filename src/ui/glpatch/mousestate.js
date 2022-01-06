@@ -26,40 +26,14 @@ export default class MouseState extends CABLES.EventTarget
             this._mouseOverCanvas = false;
         });
 
-        canvas.addEventListener("pointerdown", (e) =>
-        {
-            this._mouseDownX = e.offsetX;
-            this._mouseDownY = e.offsetY;
-            this._isDragging = false;
-            this.draggingDistance = 0;
+        canvas.addEventListener("pointerdown", this._down.bind(this));
+        canvas.addEventListener("pointerup", this._up.bind(this));
+        canvas.addEventListener("pointermove", this._move.bind(this));
+        canvas.addEventListener("touchmove", this._move.bind(this));
 
-            this._setButton(e.buttons, true);
-        });
+        canvas.addEventListener("touchstart", this._down.bind(this));
+        canvas.addEventListener("touchend", this._up.bind(this));
 
-        canvas.addEventListener("pointerup", (e) =>
-        {
-            this._isDragging = false;
-            this._setButtonsUp();
-        });
-
-        canvas.addEventListener("pointermove", (e) =>
-        {
-            this._mouseOverCanvas = true;
-
-            if (this.buttonAny)
-            {
-                this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
-                this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
-            }
-
-            if (e.buttons) this._setButton(e.buttons, true);
-            else this._setButtonsUp();
-        });
-
-        canvas.addEventListener("touchmove", (e) =>
-        {
-            this._numFingers = e.touches.length;
-        });
         canvas.addEventListener("touchenter", (e) =>
         {
             this._numFingers = e.touches.length;
@@ -141,5 +115,36 @@ export default class MouseState extends CABLES.EventTarget
     {
         data.mouse_OverCanvas = this._mouseOverCanvas;
         data.mouse_buttonStates = this._buttonStates.join(",");
+    }
+
+
+    _move(e)
+    {
+        if (!e.pointerType) return;
+        this._mouseOverCanvas = true;
+
+        if (this.buttonAny)
+        {
+            this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
+            this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
+        }
+
+        if (e.buttons) this._setButton(e.buttons, true);
+        else this._setButtonsUp();
+    }
+
+    _down(e)
+    {
+        this._mouseDownX = e.offsetX;
+        this._mouseDownY = e.offsetY;
+        this._isDragging = false;
+        this.draggingDistance = 0;
+        this._setButton(e.buttons, true);
+    }
+
+    _up(e)
+    {
+        this._isDragging = false;
+        this._setButtonsUp();
     }
 }
