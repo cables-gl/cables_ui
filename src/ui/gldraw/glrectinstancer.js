@@ -200,7 +200,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             .endl() + "if(border==1.0)" // border
             .endl() + "{"
-            .endl() + "    float outlinefrag=0.005;"
+            .endl() + "    float outlinefrag=0.004;"
             .endl() + "    float add=(1.0-step(outlinefrag,posSize.x));"
             .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
             .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
@@ -360,36 +360,63 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._needsTextureUpdate = false;
         this._textures.length = 0;
         let count = 0;
+
+        let minIdx = this._DEFAULT_BIGNUM;
+        let maxIdx = -this._DEFAULT_BIGNUM;
+
+
         for (let i = 0; i < this._rects.length; i++)
         {
+            let changed = false;
+            const thatRectIdx = this._rects[i].idx;
+
             if (this._rects[i].texture)
             {
                 let found = false;
+
 
                 for (let j = 0; j < this._textures.length; j++)
                 {
                     if (this._textures[j] && this._textures[j].texture == this._rects[i].texture)
                     {
                         found = true;
-                        this._attrBuffTextures[this._rects[i].idx] = this._textures[j].num;
-                        this._needsRebuild = true;
+
+                        if (this._attrBuffTextures[thatRectIdx] != this._textures[j].num)changed = true;
+
+                        this._attrBuffTextures[thatRectIdx] = this._textures[j].num;
+                        minIdx = Math.min(thatRectIdx, minIdx);
+                        maxIdx = Math.min(thatRectIdx, maxIdx);
                     }
                 }
 
                 if (!found)
                 {
-                    this._attrBuffTextures[this._rects[i].idx] = count;
+                    this._attrBuffTextures[thatRectIdx] = count;
                     this._textures[count] =
                         {
                             "texture": this._rects[i].texture,
                             "num": count
                         };
                     count++;
-                    this._needsRebuild = true;
                 }
             }
-            else this._attrBuffTextures[this._rects[i].idx] = -1;
+            else
+            {
+                if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
+                this._attrBuffTextures[thatRectIdx] = -1;
+            }
+
+            if (changed)
+            {
+                minIdx = Math.min(this._rects[i].idx, minIdx);
+                maxIdx = Math.min(this._rects[i].idx, maxIdx);
+            }
         }
+
+        // this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+        // if (this.doBulkUploads) this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
+        // else
+        this._mesh.setAttributeRange(this._meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
     }
 
     _bindTextures()

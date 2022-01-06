@@ -1,33 +1,33 @@
-import Logger from '../utils/logger';
-import ModalDialog from './modaldialog';
+import Logger from "../utils/logger";
+import ModalDialog from "./modaldialog";
 
-const oldModalWrap=
+const oldModalWrap =
 {
 
-    show : function (content, options)
+    "show": function (content, options)
     {
-        let logger=new Logger("modal");
+        let logger = new Logger("modal");
         logger.stack("deprecated function CABLES.UI.MODAL.show ");
 
-        options=options||{};
-        options.html=content;
+        options = options || {};
+        options.html = content;
         new ModalDialog(options);
     },
 
-    showError : function (title, content)
+    "showError": function (title, content)
     {
-        let logger=new Logger("modal");
+        let logger = new Logger("modal");
         logger.stack("deprecated function CABLES.UI.MODAL.showError ");
         new ModalDialog({
-                "warning":true,
-                "title":title,
-                "html":content
-            });
+            "warning": true,
+            "title": title,
+            "html": content
+        });
     },
 
-    prompt : function (title, text, value, callback)
+    "prompt": function (title, text, value, callback)
     {
-        let logger=new Logger("modal");
+        let logger = new Logger("modal");
         logger.stack("deprecated CABLES.UI.MODAL.prompt, use CABLES.UI.ModalDialog ");
 
         new ModalDialog({
@@ -39,6 +39,6 @@ const oldModalWrap=
         });
     }
 
-}
+};
 
 export default oldModalWrap;
