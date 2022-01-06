@@ -821,7 +821,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
-
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
 
