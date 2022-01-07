@@ -28,6 +28,7 @@ export default class GlPort
         this._parent.addChild(this._rect);
 
         this._updateColor();
+        this._activity = 1;
 
         this._mouseEvents = [];
 
@@ -45,12 +46,9 @@ export default class GlPort
 
         this.setFlowModeActivity(0);
         this.updateSize();
+        this._updateColor();
     }
 
-    _hasFlowActivity()
-    {
-        return !(this._activity > 0);
-    }
 
     _updateColor()
     {
@@ -129,8 +127,11 @@ export default class GlPort
     _getBrightness()
     {
         if (this._hover) return 2;
-        if (this._hasFlowActivity() > 0) return 1;
-        return 0;
+        if (this._activity > 0) return 0;
+
+        // if (this._hasFlowActivity() == 0) return 0;
+        // if (this._activity == -1) return 1;
+        return 1;
     }
 
     _onHover(rect)
@@ -181,7 +182,8 @@ export default class GlPort
     setFlowModeActivity(a)
     {
         this._activity = a;
-        this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
+        // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
+        this._updateColor();
     }
 
     dispose()

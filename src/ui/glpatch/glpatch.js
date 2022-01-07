@@ -162,9 +162,9 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (fm == 3)fm = 0;
 
-            const modes = ["Off", "Blink", "Flow"];
+            const modes = ["Off", "Highlight Active", "Show Dataflow"];
 
-            CABLES.UI.notify("Flow Visualization ", modes[fm]);
+            CABLES.UI.notify("Flow Visualization: ", modes[fm]);
 
 
             CABLES.UI.userSettings.set("glflowmode", fm);

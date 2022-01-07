@@ -15,7 +15,7 @@ export default class GlPatchAPI
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
         this._flowvisStartFrame = 0;
-        this._currentFlowMode = 0;
+        this._currentFlowMode = -1;
 
         this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
