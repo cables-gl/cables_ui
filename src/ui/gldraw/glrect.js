@@ -191,14 +191,14 @@ export default class GlRect extends CABLES.EventTarget
 
         if (this._parent)
         {
-            this._absX += this._parent.x;
-            this._absY += this._parent.y;
-            this._absZ += this._parent.z;
+            this._absX += this._parent._absX;
+            this._absY += this._parent._absY;
+            this._absZ += this._parent._absZ;
         }
 
         this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY, this._absZ);
 
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].setPosition(this.childs[i].x, this.childs[i].y);
+        for (let i = 0; i < this.childs.length; i++) this.childs[i].setPosition(this.childs[i].x, this.childs[i].y, this.childs[i].z);
         this.emitEvent("positionChanged");
     }
 
