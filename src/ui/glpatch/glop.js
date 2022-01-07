@@ -255,10 +255,7 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
-            setTimeout(() =>
-            {
-                this._glPatch.patchAPI.showOpParams(this._id);
-            }, 33);
+            this._glPatch.patchAPI.showOpParams(this._id);
         }
 
 

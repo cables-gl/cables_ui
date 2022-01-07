@@ -233,8 +233,11 @@ export default class GlPatchAPI
 
     showOpParams(opid)
     {
-        const op = gui.corePatch().getOpById(opid);
-        gui.opParams.show(op);
+        setTimeout(() =>
+        {
+            const op = gui.corePatch().getOpById(opid);
+            gui.opParams.show(op);
+        }, 33);
     }
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)
