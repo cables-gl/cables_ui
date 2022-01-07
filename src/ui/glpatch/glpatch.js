@@ -162,6 +162,11 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (fm == 3)fm = 0;
 
+            const modes = ["Off", "Blink", "Flow"];
+
+            CABLES.UI.notify("Flow Visualization ", modes[fm]);
+
+
             CABLES.UI.userSettings.set("glflowmode", fm);
         });
 
@@ -1150,10 +1155,12 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
     // make static util thing...
-    setDrawableColorByType(e, t, darken)
+    setDrawableColorByType(e, t, brightness)
     {
         let diff = 1;
-        if (darken)diff = 0.7;
+
+        if (brightness == 1)diff = 0.8;
+        if (brightness == 2)diff = 1.5;
 
         let col = [0, 0, 0, 0];
 

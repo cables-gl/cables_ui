@@ -2,6 +2,9 @@
 import GlLink from "./gllink";
 import Logger from "../utils/logger";
 
+
+const DEFAULT_ACTIVITY = 1;
+
 export default class GlPatchAPI
 {
     constructor(patch, glpatch)
@@ -87,24 +90,26 @@ export default class GlPatchAPI
                 const op = this._patch.ops[i];
                 const glop = this._glPatch.getGlOp(op);
 
+                if (!glop) continue;
+
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
                     const thePort = op.portsOut[ip];
                     if (thePort)
                     {
                         const glp = glop.getGlPort(thePort.name);
-                        if (glp)glp.setFlowModeActivity(1);
+                        if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
                     }
                 }
                 for (let ip = 0; ip < op.portsIn.length; ip++)
                 {
                     const thePort = op.portsIn[ip];
                     const glp = glop.getGlPort(thePort.name);
-                    if (glp)glp.setFlowModeActivity(1);
+                    if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
                 }
             }
 
-            for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(1);
+            for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
         }
 
         this._currentFlowMode = flowMode;
@@ -122,7 +127,7 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            for (let ip = 0; ip < op.portsOut.length; ip++)
+            if (glop) for (let ip = 0; ip < op.portsOut.length; ip++)
             {
                 const thePort = op.portsOut[ip];
                 const glp = glop.getGlPort(thePort.name);
@@ -133,8 +138,11 @@ export default class GlPatchAPI
             for (let ip = 0; ip < op.portsIn.length; ip++)
             {
                 const thePort = op.portsIn[ip];
-                const glp = glop.getGlPort(thePort.name);
-                if (glp)glp.setFlowModeActivity(thePort.activityCounter);
+                if (glop)
+                {
+                    const glp = glop.getGlPort(thePort.name);
+                    if (glp)glp.setFlowModeActivity(thePort.activityCounter);
+                }
 
                 thePort.activityCounter = 0;
 
