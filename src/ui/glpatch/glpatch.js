@@ -157,7 +157,12 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
-            CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
+            let fm = CABLES.UI.userSettings.get("glflowmode") || 0;
+            fm++;
+
+            if (fm == 3)fm = 0;
+
+            CABLES.UI.userSettings.set("glflowmode", fm);
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });

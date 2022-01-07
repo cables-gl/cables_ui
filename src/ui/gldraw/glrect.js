@@ -282,7 +282,7 @@ export default class GlRect extends CABLES.EventTarget
         for (let i = 0; i < this.childs.length; i++)
         {
             this.childs[i].mouseMove(x, y, button);
-            // if (this.childs[i].isHovering()) this._hovering = false;
+            if (this.childs[i].isHovering()) this._hovering = false;
         }
 
         if (this._hovering)

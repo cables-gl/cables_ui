@@ -140,6 +140,15 @@ export default class GlPort
 
     get rect() { return this._rect; }
 
+    setFlowModeActivity(a)
+    {
+        // console.log(a);
+        // if (a > 0) this._rect.setColor(1, 0, 0, 1);
+        // else this._rect.setColor(0, 1, 0, 1);
+
+        this._glPatch.setDrawableColorByType(this._rect, this._type, !(a > 0));
+    }
+
     dispose()
     {
         for (let i = 0; i < this._mouseEvents.length; i++)

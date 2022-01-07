@@ -27,6 +27,7 @@ export default class GlOp extends CABLES.EventTarget
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
         this._glTitleExt = null;
