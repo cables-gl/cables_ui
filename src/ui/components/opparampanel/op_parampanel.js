@@ -361,21 +361,6 @@ export default class OpParampanel extends CABLES.EventTarget
 
                 if (ele.byId("portFilename_" + i))
                     ele.byId("portFilename_" + i).innerHTML = "<span class=\"button button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
-
-                if ((op.portsIn[i].get() && ((op.portsIn[i].get() + "").endsWith(".jpg") || (op.portsIn[i].get() + "").endsWith(".png"))) || (op.portsIn[i].get() + "").endsWith(".webp"))
-                {
-                    const previewEle = ele.byId("portFileVal_" + i + "_preview");
-                    if (previewEle)
-                    {
-                        previewEle.style["max-width"] = "100%";
-                        previewEle.innerHTML = "<img class=\"dark\" src=\"" + op.portsIn[i].get() + "\" style=\"max-width:100%;margin-top:10px;\"/>";
-                    }
-                }
-                else
-                {
-                    if (ele.byId("portFileVal_" + i + "_preview"))
-                        ele.byId("portFileVal_" + i + "_preview").innerHTML = "";
-                }
             }
 
 
