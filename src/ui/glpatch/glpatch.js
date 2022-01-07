@@ -1002,7 +1002,7 @@ export default class GlPatch extends CABLES.EventTarget
     unselectAll()
     {
         for (const i in this._glOpz) this._glOpz[i].selected = false;
-        this._selectedGlOps = {};// .length=0;
+        this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
     }
@@ -1052,6 +1052,8 @@ export default class GlPatch extends CABLES.EventTarget
     {
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] _selectOpsInRect");
+
         const opIds = [];
         for (let i = 0; i < ops.length; i++)
             opIds.push(ops[i].id);
@@ -1072,6 +1074,7 @@ export default class GlPatch extends CABLES.EventTarget
             ops[i].selected = true;
             this.selectOpId(ops[i].id);
         }
+        perf.finish();
     }
 
     getZoomForAllOps()

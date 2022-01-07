@@ -1,7 +1,7 @@
 import paramsHelper from "./params_helper";
-import { getHandleBarHtml } from '../../utils/handlebars';
+import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
-import WatchPortVisualizer from './watchPortVisualizer';
+import WatchPortVisualizer from "./watchPortVisualizer";
 
 
 export default class OpParampanel extends CABLES.EventTarget
@@ -111,6 +111,7 @@ export default class OpParampanel extends CABLES.EventTarget
     show(op)
     {
         clearTimeout(this.refreshTimeout);
+        const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
@@ -134,8 +135,7 @@ export default class OpParampanel extends CABLES.EventTarget
             self._oldOpParamsId = op.id;
         }
 
-        const perf = CABLES.UI.uiProfiler.start("_showOpParams");
-        const perfHtml = CABLES.UI.uiProfiler.start("_showOpParamsHTML");
+        const perfHtml = CABLES.UI.uiProfiler.start("[opparampanel] build html ");
 
         gui.opHistory.push(op.id);
         gui.setTransformGizmo(null);
@@ -228,7 +228,7 @@ export default class OpParampanel extends CABLES.EventTarget
             });
 
             let lastGroup = null;
-            const perfLoop = CABLES.UI.uiProfiler.start("_showOpParamsLOOP");
+            const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP");
 
             for (let i = 0; i < op.portsIn.length; i++)
             {
@@ -282,7 +282,7 @@ export default class OpParampanel extends CABLES.EventTarget
                 "texts": CABLES.UI.TEXTS,
             });
 
-            const perfLoopOut = CABLES.UI.uiProfiler.start("_showOpParamsLOOP OUT");
+            const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
 
             let foundPreview = false;
             let lastGroup = null;
@@ -589,7 +589,7 @@ export default class OpParampanel extends CABLES.EventTarget
             this._uiAttrFpsCount = 0;
         }
 
-        const perf = CABLES.UI.uiProfiler.start("updateUiAttribs");
+        const perf = CABLES.UI.uiProfiler.start("[opparampanel] updateUiAttribs");
         let el = null;
 
         // this.setCurrentOpTitle(this._currentOp.name);
@@ -665,7 +665,7 @@ export default class OpParampanel extends CABLES.EventTarget
     {
         if (this._watchPorts.length)
         {
-            const perf = CABLES.UI.uiProfiler.start("watch ports");
+            const perf = CABLES.UI.uiProfiler.start("[opparampanel] watch ports");
 
             for (let i = 0; i < this._watchPorts.length; i++)
             {
@@ -752,10 +752,6 @@ export default class OpParampanel extends CABLES.EventTarget
 
         setTimeout(this._updateWatchPorts.bind(this), CABLES.UI.uiConfig.watchValuesInterval);
     }
-
-
-
-
 
 
     setCurrentOpComment(v)
@@ -855,5 +851,4 @@ export default class OpParampanel extends CABLES.EventTarget
         }
         CABLES.contextMenu.show({ items }, ele);
     }
-};
-
+}

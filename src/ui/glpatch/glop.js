@@ -247,6 +247,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
+
         if (e.touchType == "mouse")
         {
             if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
@@ -262,6 +263,8 @@ export default class GlOp extends CABLES.EventTarget
             gui.patchView.selectChilds(this.op.id);
         }
 
+        const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
+
         if (!this.selected)
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
@@ -273,6 +276,8 @@ export default class GlOp extends CABLES.EventTarget
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
             this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
         }
+
+        perf.finish();
     }
 
     _onMouseUp(e)
@@ -851,12 +856,15 @@ export default class GlOp extends CABLES.EventTarget
 
     set selected(s)
     {
-        if (s != this.opUiAttribs.selected)
+        if (this.selected != s || s != this.opUiAttribs.selected)
         {
-            this.opUiAttribs.selected = s;
-            this._updateColors();
+            if (s != this.opUiAttribs.selected)
+            {
+                this.opUiAttribs.selected = s;
+                this._updateColors();
+            }
+            this.updatePosition();
         }
-        this.updatePosition();
     }
 
     getPortPos(id)

@@ -84,6 +84,7 @@ export default class GlPatchAPI
         if (this._glPatch.frameCount % 6 != 0) return;
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
+
         for (let i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];
@@ -99,10 +100,9 @@ export default class GlPatchAPI
 
                     if (flowMode)
                     {
-                        if (link.activityCounter >= 2) newClass = 2;
-
-                        if (link.activityCounter >= 5) newClass = 3;
                         if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+                        else if (link.activityCounter >= 5) newClass = 3;
+                        else if (link.activityCounter >= 2) newClass = 2;
                     }
 
                     if (this._glPatch.links[link.id])
