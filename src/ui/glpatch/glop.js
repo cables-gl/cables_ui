@@ -231,9 +231,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._op)
         {
-            console.log("glop no op", this);
+            console.warn("glop no op", this);
             return;
         }
+        const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
@@ -254,16 +255,18 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
-            this._glPatch.patchAPI.showOpParams(this._id);
+            setTimeout(() =>
+            {
+                this._glPatch.patchAPI.showOpParams(this._id);
+            }, 33);
         }
+
 
         if (e.altKey || e.metaKey)
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
             gui.patchView.selectChilds(this.op.id);
         }
-
-        const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
 
         if (!this.selected)
         {
