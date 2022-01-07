@@ -1,5 +1,5 @@
-import ModalDialog from '../dialogs/modaldialog';
-import { getHandleBarHtml } from '../utils/handlebars';
+import ModalDialog from "../dialogs/modaldialog";
+import { getHandleBarHtml } from "../utils/handlebars";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -39,13 +39,12 @@ CABLES_CMD_PATCH.save = function (force)
             {
                 dosave = false;
 
-                const html="You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
+                const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
                 + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
                 + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
                 + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
 
                 CABLES.UI.MODAL.showError("Not Collaborator", html);
-
             }
         }
     }
@@ -126,7 +125,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
     {
         const html = getHandleBarHtml("upload", { "patchId": gui.project()._id });
 
-        new ModalDialog({"html":html});
+        new ModalDialog({ "html": html });
     }
 };
 
@@ -256,10 +255,8 @@ CABLES_CMD_PATCH.stats = function (force)
 
     for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
 
-
-    CABLES.UI.MODAL.show(report, { "title": "stats" });
+    new ModalDialog({ "html": report, "title": "Stats" });
 };
-
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
 {
@@ -514,7 +511,6 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                     "x": setter.uiAttribs.translate.x,
                     "y": setter.uiAttribs.translate.y + 40
                 } });
-
             });
         } });
 };

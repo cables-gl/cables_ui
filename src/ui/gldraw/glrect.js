@@ -1,5 +1,3 @@
-
-
 export default class GlRect extends CABLES.EventTarget
 {
     constructor(instancer, options)
@@ -66,7 +64,6 @@ export default class GlRect extends CABLES.EventTarget
     get isDragging() { return this._isDragging; }
 
     get idx() { return this._attrIndex; }
-
 
     hasChild(c)
     {
@@ -260,26 +257,32 @@ export default class GlRect extends CABLES.EventTarget
         const hovering = this.isPointInside(x, y);
         const isHovered = this._hovering;
 
+        const hoverChanged = this._hovering != hovering;
         this._hovering = hovering;
 
         if (hovering && !isHovered) this.emitEvent("hover", this);
         else if (!hovering && isHovered) this.emitEvent("unhover", this);
 
-        if (this.colorHover)
+        if (hoverChanged)
         {
-            if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
-            else this._rectInstancer.setColor(this._attrIndex, this.colorHover[0], this.colorHover[1], this.colorHover[2], this.colorHover[3]);
+            if (this.colorHover)
+            {
+                if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
+                else this._rectInstancer.setColor(this._attrIndex, this.colorHover[0], this.colorHover[1], this.colorHover[2], this.colorHover[3]);
+            }
+
+            if (this.colorHoverMultiply)
+            {
+                if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
+                else this._rectInstancer.setColor(this._attrIndex, this.color[0] * this.colorHoverMultiply, this.color[1] * this.colorHoverMultiply, this.color[2] * this.colorHoverMultiply, this.color[3] * this.colorHoverMultiply);
+            }
         }
-        if (this.colorHoverMultiply)
-        {
-            if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
-            else this._rectInstancer.setColor(this._attrIndex, this.color[0] * this.colorHoverMultiply, this.color[1] * this.colorHoverMultiply, this.color[2] * this.colorHoverMultiply, this.color[3] * this.colorHoverMultiply);
-        }
+
 
         for (let i = 0; i < this.childs.length; i++)
         {
-            this.childs[i].mouseMove(x, y);
-            if (this.childs[i].isHovering()) this._hovering = false;
+            this.childs[i].mouseMove(x, y, button);
+            // if (this.childs[i].isHovering()) this._hovering = false;
         }
 
         if (this._hovering)

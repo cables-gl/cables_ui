@@ -20,6 +20,9 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._name = options.name || "unknown";
 
         this._debugRenderStyle = 0;
+        this.doBulkUploads = true;
+
+        this._DEFAULT_BIGNUM = 999999;
 
         this._counter = 0;
         this._num = options.initNum || 5000;
@@ -35,16 +38,14 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._reUploadAttribs = true;
         this._updateRangesMin = {};
         this._updateRangesMax = {};
-        this._bounds = { "minX": 99999, "maxX": -999999, "minY": 999999, "maxY": -9999999, "minZ": 99999, "maxZ": -999999 };
+        this._bounds = { "minX": this._DEFAULT_BIGNUM, "maxX": -this._DEFAULT_BIGNUM, "minY": this._DEFAULT_BIGNUM, "maxY": -this._DEFAULT_MBIGNUM9, "minZ": this._DEFAULT_BIGNUM, "maxZ": -this._DEFAULT_BIGNUM };
 
         this._meshAttrPos = null;
         this._meshAttrCol = null;
         this._meshAttrSize = null;
         this._meshAttrDeco = null;
-        this._meshAttrRect = null;
+        this._meshAttrTexRect = null;
         this._meshAttrTex = null;
-
-        this.doBulkUploads = false;
 
 
         this._setupAttribBuffers();
@@ -199,7 +200,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
             .endl() + "if(border==1.0)" // border
             .endl() + "{"
-            .endl() + "    float outlinefrag=0.005;"
+            .endl() + "    float outlinefrag=0.004;"
             .endl() + "    float add=(1.0-step(outlinefrag,posSize.x));"
             .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));"
             .endl() + "    if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));"
@@ -264,8 +265,8 @@ export default class GlRectInstancer extends CABLES.EventTarget
         {
             const perf = CABLES.UI.uiProfiler.start("[glRectInstancer] recalcBounds");
 
-            const defaultMin = 999999;
-            const defaultMax = -999999;
+            const defaultMin = this._DEFAULT_BIGNUM;
+            const defaultMax = -this._DEFAULT_BIGNUM;
             this._newBounds = { "minX": defaultMin, "maxX": defaultMax, "minY": defaultMin, "maxY": defaultMax, "minZ": defaultMin, "maxZ": defaultMax };
 
             for (let i = 0; i < this._rects.length; i++)
@@ -298,22 +299,29 @@ export default class GlRectInstancer extends CABLES.EventTarget
         return this._bounds;
     }
 
+    getDebug()
+    {
+        return {
+            "num": this._num,
+            "len_attrBuffSizes": this._attrBuffSizes.length,
+            "len_attrBuffPos": this._attrBuffPos.length,
+            "len_attrBuffCol": this._attrBuffCol.length,
+            "len_attrBuffDeco": this._attrBuffDeco.length
+        };
+    }
+
     clear()
     {
-        let i = 0;
-        for (i = 0; i < 2 * this._num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
-        for (i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
-        for (i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
-        // for(i=0;i<this._num;i++) this._attrOutline[i]=0;//Math.random();
-        for (i = 0; i < 4 * this._num; i++) this._attrBuffDeco[i] = 0;// Math.random();
-        for (i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
+        for (let i = 0; i < 2 * this._num; i++) this._attrBuffSizes[i] = 0;// Math.random()*61;
+        for (let i = 0; i < 3 * this._num; i++) this._attrBuffPos[i] = 0;// Math.random()*60;
+        for (let i = 0; i < 4 * this._num; i++) this._attrBuffCol[i] = 1;// Math.random();
+        for (let i = 0; i < 4 * this._num; i++) this._attrBuffDeco[i] = 0;// Math.random();
+        for (let i = 0; i < this._num; i++) this._attrBuffTextures[i] = -1;// Math.random();
 
-        for (i = 0; i < 4 * this._num; i += 4)
+        for (let i = 0; i < 4 * this._num; i += 4)
         {
-            this._attrTexRect[i + 0] = 0;
-            this._attrTexRect[i + 1] = 0;
-            this._attrTexRect[i + 2] = 1;
-            this._attrTexRect[i + 3] = 1;
+            this._attrBuffTexRect[i + 0] = this._attrBuffTexRect[i + 1] = 0;
+            this._attrBuffTexRect[i + 2] = this._attrBuffTexRect[i + 3] = 1;
         }
     }
 
@@ -323,23 +331,23 @@ export default class GlRectInstancer extends CABLES.EventTarget
         const oldAttrTextures = this._attrBuffTextures;
         const oldAttrColors = this._attrBuffCol;
         const oldAttrSizes = this._attrBuffSizes;
-        const oldAttrCircle = this._attrBuffDeco;
-        const oldAttrTexRect = this._attrTexRect;
+        const oldAttrDeco = this._attrBuffDeco;
+        const oldAttrTexRect = this._attrBuffTexRect;
 
         this._attrBuffPos = new Float32Array(3 * this._num);
         this._attrBuffTextures = new Float32Array(this._num);
         this._attrBuffCol = new Float32Array(4 * this._num);
         this._attrBuffSizes = new Float32Array(2 * this._num);
         this._attrBuffDeco = new Float32Array(4 * this._num);
-        this._attrTexRect = new Float32Array(4 * this._num);
+        this._attrBuffTexRect = new Float32Array(4 * this._num);
         this.clear();
 
         if (oldAttrPositions) this._attrBuffPos.set(oldAttrPositions);
         if (oldAttrTextures) this._attrBuffTextures.set(oldAttrTextures);
         if (oldAttrColors) this._attrBuffCol.set(oldAttrColors);
         if (oldAttrSizes) this._attrBuffSizes.set(oldAttrSizes);
-        if (oldAttrCircle) this._attrBuffDeco.set(oldAttrCircle);
-        if (oldAttrTexRect) this._attrTexRect.set(oldAttrTexRect);
+        if (oldAttrDeco) this._attrBuffDeco.set(oldAttrDeco);
+        if (oldAttrTexRect) this._attrBuffTexRect.set(oldAttrTexRect);
     }
 
     isDragging()
@@ -352,86 +360,106 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._needsTextureUpdate = false;
         this._textures.length = 0;
         let count = 0;
+
+        let minIdx = this._DEFAULT_BIGNUM;
+        let maxIdx = -this._DEFAULT_BIGNUM;
+
+
         for (let i = 0; i < this._rects.length; i++)
         {
+            let changed = false;
+            const thatRectIdx = this._rects[i].idx;
+
             if (this._rects[i].texture)
             {
                 let found = false;
+
 
                 for (let j = 0; j < this._textures.length; j++)
                 {
                     if (this._textures[j] && this._textures[j].texture == this._rects[i].texture)
                     {
                         found = true;
-                        this._attrBuffTextures[this._rects[i].idx] = this._textures[j].num;
-                        this._needsRebuild = true;
+
+                        if (this._attrBuffTextures[thatRectIdx] != this._textures[j].num)changed = true;
+
+                        this._attrBuffTextures[thatRectIdx] = this._textures[j].num;
+                        minIdx = Math.min(thatRectIdx, minIdx);
+                        maxIdx = Math.min(thatRectIdx, maxIdx);
                     }
                 }
 
                 if (!found)
                 {
-                    this._attrBuffTextures[this._rects[i].idx] = count;
+                    this._attrBuffTextures[thatRectIdx] = count;
                     this._textures[count] =
                         {
                             "texture": this._rects[i].texture,
                             "num": count
                         };
                     count++;
-                    this._needsRebuild = true;
                 }
             }
-            else this._attrBuffTextures[this._rects[i].idx] = -1;
+            else
+            {
+                if (this._attrBuffTextures[thatRectIdx] != -1) changed = true;
+                this._attrBuffTextures[thatRectIdx] = -1;
+            }
+
+            if (changed)
+            {
+                minIdx = Math.min(this._rects[i].idx, minIdx);
+                maxIdx = Math.min(this._rects[i].idx, maxIdx);
+            }
         }
 
-        this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+        // this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
+        // if (this.doBulkUploads) this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
+        // else
+        this._mesh.setAttributeRange(this._meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
     }
-
 
     _bindTextures()
     {
         for (let i = 0; i < 4; i++)
-        {
             if (this._textures[0])
                 this._cgl.setTexture(i, this._textures[0].texture.tex);
-        }
 
         if (this._textures[0]) this._cgl.setTexture(0, this._textures[0].texture.tex);
     }
-
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
         if (this.doBulkUploads)
         {
-            if (this._updateRangesMin[this.ATTR_POS] != 9999)
+            if (this._updateRangesMin[this.ATTR_POS] != this._DEFAULT_BIGNUM)
             {
                 this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, this._updateRangesMin[this.ATTR_POS], this._updateRangesMax[this.ATTR_POS]);
                 this._resetAttrRange(this.ATTR_POS);
             }
 
-            if (this._updateRangesMin[this.ATTR_COLOR] != 9999)
+            if (this._updateRangesMin[this.ATTR_COLOR] != this._DEFAULT_BIGNUM)
             {
+                // console.log("update colors,", this._updateRangesMax[this.ATTR_COLOR] - this._updateRangesMin[this.ATTR_COLOR]);
                 this._mesh.setAttributeRange(this._meshAttrCol, this._attrBuffCol, this._updateRangesMin[this.ATTR_COLOR], this._updateRangesMax[this.ATTR_COLOR]);
                 this._resetAttrRange(this.ATTR_COLOR);
             }
 
-            if (this._updateRangesMin[this.ATTR_SIZE] != 9999)
+            if (this._updateRangesMin[this.ATTR_SIZE] != this._DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this.ATTR_SIZE, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
+                this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, this._updateRangesMin[this.ATTR_SIZE], this._updateRangesMax[this.ATTR_SIZE]);
                 this._resetAttrRange(this.ATTR_SIZE);
             }
 
-            if (this._updateRangesMin[this.ATTR_DECO] != 9999)
+            if (this._updateRangesMin[this.ATTR_DECO] != this._DEFAULT_BIGNUM)
             {
-                // this._mesh.setAttributeRange(this._meshAttrSize, this._attrBuffSizes, idx * 2, (idx + 1) * 2);
                 this._mesh.setAttributeRange(this._meshAttrDeco, this._attrBuffDeco, this._updateRangesMin[this.ATTR_DECO], this._updateRangesMax[this.ATTR_DECO]);
-
                 this._resetAttrRange(this.ATTR_DECO);
             }
 
-            if (this._updateRangesMin[this.ATTR_TEXRECT] != 9999)
+            if (this._updateRangesMin[this.ATTR_TEXRECT] != this._DEFAULT_BIGNUM)
             {
-                this._mesh.setAttributeRange(this.ATTR_TEXRECT, this._attrTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
+                this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrBuffTexRect, this._updateRangesMin[this.ATTR_TEXRECT], this._updateRangesMax[this.ATTR_TEXRECT]);
                 this._resetAttrRange(this.ATTR_TEXRECT);
             }
         }
@@ -468,7 +496,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
             this._meshAttrCol = this._mesh.setAttribute(this.ATTR_COLOR, this._attrBuffCol, 4, { "instanced": true });
             this._meshAttrSize = this._mesh.setAttribute(this.ATTR_SIZE, this._attrBuffSizes, 2, { "instanced": true });
             this._meshAttrDeco = this._mesh.setAttribute(this.ATTR_DECO, this._attrBuffDeco, 4, { "instanced": true });
-            this._meshAttrRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrTexRect, 4, { "instanced": true });
+            this._meshAttrTexRect = this._mesh.setAttribute(this.ATTR_TEXRECT, this._attrBuffTexRect, 4, { "instanced": true });
             this._meshAttrTex = this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
             this._reUploadAttribs = false;
             perf.finish();
@@ -488,7 +516,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (this._counter > this._num - 100)
         {
             this._num += Math.max(5000, Math.ceil(this._num));
-            this._log.verbose("rectinstancer " + this._name + " resize to", this._num);
+            this._log.warn("rectinstancer " + this._name + " resize to", this._num);
             this._setupAttribBuffers();
             this._needsRebuild = true;
             this._needsRebuildReason = "resize";
@@ -505,8 +533,8 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     setPosition(idx, x, y, z)
     {
-        const i = idx * 3;
-        if (this._float32Diff(this._attrBuffPos[i + 0], x) || this._float32Diff(this._attrBuffPos[i + 1], y) || this._float32Diff(this._attrBuffPos[i + 2], z))
+        const buffIdx = idx * 3;
+        if (this._float32Diff(this._attrBuffPos[buffIdx + 0], x) || this._float32Diff(this._attrBuffPos[buffIdx + 1], y) || this._float32Diff(this._attrBuffPos[buffIdx + 2], z))
         {
             // this._needsRebuild = true;
             // this._needsRebuildReason = "pos change";
@@ -514,37 +542,37 @@ export default class GlRectInstancer extends CABLES.EventTarget
         else return;
 
         if (
-            this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
-            this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+            this._attrBuffPos[buffIdx + 0] >= this._bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this._bounds.minX ||
+            this._attrBuffPos[buffIdx + 1] >= this._bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this._bounds.minY)
         {
             this._needsBoundsRecalc = true;
         }
 
-        this._attrBuffPos[i + 0] = x;
-        this._attrBuffPos[i + 1] = y;
-        this._attrBuffPos[i + 2] = z;
+        this._attrBuffPos[buffIdx + 0] = x;
+        this._attrBuffPos[buffIdx + 1] = y;
+        this._attrBuffPos[buffIdx + 2] = z;
 
         if (
-            this._attrBuffPos[i + 0] >= this._bounds.maxX || this._attrBuffPos[i + 0] <= this._bounds.minX ||
-            this._attrBuffPos[i + 1] >= this._bounds.maxY || this._attrBuffPos[i + 1] <= this._bounds.minY)
+            this._attrBuffPos[buffIdx + 0] >= this._bounds.maxX || this._attrBuffPos[buffIdx + 0] <= this._bounds.minX ||
+            this._attrBuffPos[buffIdx + 1] >= this._bounds.maxY || this._attrBuffPos[buffIdx + 1] <= this._bounds.minY)
         {
             this._needsBoundsRecalc = true;
         }
 
         if (!this._needsBoundsRecalc)
         {
-            this._bounds.minX = Math.min(this._attrBuffPos[i + 0], this._bounds.minX);
-            this._bounds.maxX = Math.max(this._attrBuffPos[i + 0], this._bounds.maxX);
+            this._bounds.minX = Math.min(this._attrBuffPos[buffIdx + 0], this._bounds.minX);
+            this._bounds.maxX = Math.max(this._attrBuffPos[buffIdx + 0], this._bounds.maxX);
 
-            this._bounds.minY = Math.min(this._attrBuffPos[i + 1], this._bounds.minY);
-            this._bounds.maxY = Math.max(this._attrBuffPos[i + 1], this._bounds.maxY);
+            this._bounds.minY = Math.min(this._attrBuffPos[buffIdx + 1], this._bounds.minY);
+            this._bounds.maxY = Math.max(this._attrBuffPos[buffIdx + 1], this._bounds.maxY);
 
-            this._bounds.minZ = Math.min(this._attrBuffPos[i + 2], this._bounds.minZ);
-            this._bounds.maxZ = Math.max(this._attrBuffPos[i + 2], this._bounds.maxZ);
+            this._bounds.minZ = Math.min(this._attrBuffPos[buffIdx + 2], this._bounds.minZ);
+            this._bounds.maxZ = Math.max(this._attrBuffPos[buffIdx + 2], this._bounds.maxZ);
         }
 
-        if (this.doBulkUploads) this._setAttrRange(this.ATTR_POS, i, i + 3);
-        else this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, i, i + 3);
+        if (this.doBulkUploads) this._setAttrRange(this.ATTR_POS, buffIdx, buffIdx + 3);
+        else this._mesh.setAttributeRange(this._meshAttrPos, this._attrBuffPos, buffIdx, buffIdx + 3);
 
         this._needsBoundsRecalc = true;
     }
@@ -568,24 +596,24 @@ export default class GlRectInstancer extends CABLES.EventTarget
     setTexRect(idx, x, y, w, h)
     {
         if (
-            this._float32Diff(this._attrTexRect[idx * 4 + 0], x) ||
-            this._float32Diff(this._attrTexRect[idx * 4 + 1], y) ||
-            this._float32Diff(this._attrTexRect[idx * 4 + 2], w) ||
-            this._float32Diff(this._attrTexRect[idx * 4 + 3], h))
+            this._float32Diff(this._attrBuffTexRect[idx * 4 + 0], x) ||
+            this._float32Diff(this._attrBuffTexRect[idx * 4 + 1], y) ||
+            this._float32Diff(this._attrBuffTexRect[idx * 4 + 2], w) ||
+            this._float32Diff(this._attrBuffTexRect[idx * 4 + 3], h))
         {
             // this._needsRebuild = true;
             // this._needsRebuildReason = "texrect";
         }
         else return;
 
-        this._attrTexRect[idx * 4 + 0] = x;
-        this._attrTexRect[idx * 4 + 1] = y;
-        this._attrTexRect[idx * 4 + 2] = w;
-        this._attrTexRect[idx * 4 + 3] = h;
+        this._attrBuffTexRect[idx * 4 + 0] = x;
+        this._attrBuffTexRect[idx * 4 + 1] = y;
+        this._attrBuffTexRect[idx * 4 + 2] = w;
+        this._attrBuffTexRect[idx * 4 + 3] = h;
 
 
         if (this.doBulkUploads) this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
-        else this._mesh.setAttributeRange(this._meshAttrRect, this._attrTexRect, idx * 4, idx * 4 + 4);
+        else this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrBuffTexRect, idx * 4, idx * 4 + 4);
     }
 
     setColor(idx, r, g, b, a)
@@ -651,15 +679,13 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._shader.toggleDefine("SDF_TEXTURE", sdf);
 
         for (let i = 0; i < this._rects.length; i++)
-        {
             this._rects[i].setTexture(tex);
-        }
     }
 
     _resetAttrRange(attr)
     {
-        this._updateRangesMin[attr] = 9999;
-        this._updateRangesMax[attr] = -9999;
+        this._updateRangesMin[attr] = this._DEFAULT_BIGNUM;
+        this._updateRangesMax[attr] = -this._DEFAULT_BIGNUM;
     }
 
     _setAttrRange(attr, start, end)
@@ -694,7 +720,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     mouseMove(x, y, button, event)
     {
-        const perf = CABLES.UI.uiProfiler.start("glrectinstancer mousemove");
+        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mousemove");
         if (!this._interactive) return;
         if (this.allowDragging && this._draggingRect)
         {
@@ -704,8 +730,10 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         for (let i = 0; i < this._rects.length; i++)
         {
-            this._rects[i].mouseMove(x, y, button);
+            if (!this._rects[i].parent)
+                this._rects[i].mouseMove(x, y, button);
         }
+
         perf.finish();
     }
 
@@ -713,8 +741,9 @@ export default class GlRectInstancer extends CABLES.EventTarget
     {
         if (!this._interactive) return;
 
-
+        const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseDown");
         for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseDown(e);
+        perf.finish();
     }
 
     mouseUp(e)

@@ -234,6 +234,7 @@ export default class GlOp extends CABLES.EventTarget
             console.log("glop no op", this);
             return;
         }
+
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
             this._glPatch._selectOpsInRect(
@@ -245,7 +246,15 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
-        if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
+
+        if (e.touchType == "mouse")
+        {
+            if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
+        }
+        else
+        {
+            this._glPatch.patchAPI.showOpParams(this._id);
+        }
 
         if (e.altKey || e.metaKey)
         {

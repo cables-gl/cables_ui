@@ -61,10 +61,8 @@ export default class GlPatch extends CABLES.EventTarget
         this.viewBox = new GlViewBox(cgl, this);
 
         this._rectInstancer = new GlRectInstancer(cgl, { "name": "mainrects", "initNum": 1000 });
-        this._rectInstancer.doBulkUploads = false;
         this._lines = new GlLinedrawer(cgl, { "name": "links", "initNum": 100 });
         this._overLayRects = new GlRectInstancer(cgl, { "name": "overlayrects" });
-
 
         this._textWriter = new GlTextWriter(cgl, { "name": "mainText", "initNum": 1000 });
         this._textWriterOverlay = new GlTextWriter(cgl, { "name": "textoverlay" });
@@ -72,7 +70,6 @@ export default class GlPatch extends CABLES.EventTarget
         this._selectionArea = new GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
-
 
         this.cablesHoverText = new GlText(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -343,8 +340,6 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
-        // this._hoverCable.visible = false;
-
         this._dropInCircleRect = null;
 
         this.emitEvent("mousemove", e);
@@ -438,7 +433,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseEnter(e)
     {
-        if (this._mouseLeaveButtons != e.buttons)
+        if (this._mouseLeaveButtons != e.buttons && e.touchType == "mouse")
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
@@ -477,6 +472,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseDown(e)
     {
+        if (!e.pointerType) return;
         this._removeDropInRect();
 
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
@@ -799,7 +795,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         const starttime = performance.now();
 
-
         this.mouseMove(this.viewBox.mousePatchX, this.viewBox.mousePatchY);
 
         this._drawCursor();
@@ -810,11 +805,10 @@ export default class GlPatch extends CABLES.EventTarget
 
         // this._splineDrawer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
-        this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
+        this.getSplineDrawer(this._currentSubpatch).render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
         this._rectInstancer.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
         this._textWriter.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
-
         this._overlaySplines.render(resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom);
 
         this._cgl.popDepthTest();
@@ -826,7 +820,6 @@ export default class GlPatch extends CABLES.EventTarget
         this._cgl.pushDepthTest(true);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
-
 
         this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
@@ -854,6 +847,9 @@ export default class GlPatch extends CABLES.EventTarget
         this.debugData._mousePatchX = Math.round(this.viewBox._mousePatchX * 100) / 100;
         this.debugData._mousePatchY = Math.round(this.viewBox._mousePatchY * 100) / 100;
         this.debugData.mouse_isDragging = this.mouseState.isDragging;
+
+
+        this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
 
         this.mouseState.debug(this.debugData);
 
@@ -891,7 +887,6 @@ export default class GlPatch extends CABLES.EventTarget
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
         let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
-
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
