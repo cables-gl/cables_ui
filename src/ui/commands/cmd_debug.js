@@ -1,7 +1,9 @@
-import GlDebugTab from '../components/tabs/tab_debugglui';
+import GlDebugTab from "../components/tabs/tab_debugglui";
+import LoggingTab from "../components/tabs/tab_logging";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
+
 
 const debugCommands =
 {

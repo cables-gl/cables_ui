@@ -200,6 +200,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     },
                     (err, d) =>
                     {
+                        const newProjectId = d.shortId ? d.shortId : d._id;
                         gui.corePatch().settings = gui.corePatch().settings || {};
                         gui.corePatch().settings.isPublic = false;
                         gui.corePatch().settings.secret = "";
@@ -211,7 +212,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         this.saveCurrentProject(
                             function ()
                             {
-                                CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
+                                CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId });
                             }, d._id, d.name, true);
                     });
             }

@@ -16,7 +16,10 @@ export default class GlPort
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
-        this._rect = new GlRect(rectInstancer, { "parent": this._parent, "interactive": true });
+        this._rectInstancer = rectInstancer;
+        this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
+        this._rectAssigned = null;
+        this._rect.colorHoverMultiply = 0.0;
 
         this._mouseButtonRightTimeDown = 0;
 
@@ -24,7 +27,8 @@ export default class GlPort
 
         this._parent.addChild(this._rect);
 
-        this._updateColor(p.uiAttribs);
+        this._updateColor();
+        this._activity = 1;
 
         this._mouseEvents = [];
 
@@ -37,15 +41,35 @@ export default class GlPort
 
         p.on("onUiAttrChange", (attribs) =>
         {
-            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor(p.uiAttribs);
+            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor();
         });
 
+        this.setFlowModeActivity(0);
         this.updateSize();
+        this._updateColor();
     }
 
-    _updateColor(attribs)
+
+    _updateColor()
     {
-        this._glPatch.setDrawableColorByType(this._rect, this._type, attribs.useVariable || attribs.isAnimated);
+        const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
+        if (!this._rectAssigned && isAssigned)
+        {
+            this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": true });
+            this._rectAssigned.setShape(6);
+            this._rectAssigned.setColor(1, 1, 1, 1);
+            const size = GlUiConfig.portHeight * 0.5;
+            this._rectAssigned.setSize(size, size);
+            this._rectAssigned.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
+            this._rect.addChild(this._rectAssigned);
+        }
+
+        if (this._rectAssigned && !isAssigned)
+        {
+            this._rectAssigned.dispose();
+            this._rectAssigned = null;
+        }
+        this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
     }
 
     get direction()
@@ -100,10 +124,21 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
     }
 
+    _getBrightness()
+    {
+        if (this._hover) return 2;
+        if (this._activity > 0) return 0;
+
+        // if (this._hasFlowActivity() == 0) return 0;
+        // if (this._activity == -1) return 1;
+        return 1;
+    }
+
     _onHover(rect)
     {
         if (!this._glPatch.hasFocus) return;
 
+        this._hover = true;
         const event = {
             "clientX": this._glPatch.viewBox.mouseX,
             "clientY": this._glPatch.viewBox.mouseY - 25
@@ -116,16 +151,20 @@ export default class GlPort
                 this._glop._links[i].highlight(true);
 
         CABLES.UI.updateHoverToolTip(event, this._port);
+        this._updateColor();
     }
 
     _onUnhover(rect)
     {
+        this._hover = false;
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
         CABLES.UI.hideToolTip();
 
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
+
+        this._updateColor();
     }
 
     get type() { return this._port.type; }
@@ -139,6 +178,13 @@ export default class GlPort
     get glOp() { return this._glop; }
 
     get rect() { return this._rect; }
+
+    setFlowModeActivity(a)
+    {
+        this._activity = a;
+        // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
+        this._updateColor();
+    }
 
     dispose()
     {

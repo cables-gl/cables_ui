@@ -2,6 +2,9 @@
 import GlLink from "./gllink";
 import Logger from "../utils/logger";
 
+
+const DEFAULT_ACTIVITY = 1;
+
 export default class GlPatchAPI
 {
     constructor(patch, glpatch)
@@ -12,6 +15,7 @@ export default class GlPatchAPI
         this._glPatch = glpatch;
         this._glPatch.patchAPI = this;
         this._flowvisStartFrame = 0;
+        this._currentFlowMode = -1;
 
         this._patch.addEventListener("onOpAdd", this._onAddOp.bind(this));
         this._patch.addEventListener("onOpDelete", this._onDeleteOp.bind(this));
@@ -79,34 +83,84 @@ export default class GlPatchAPI
     {
         const flowMode = CABLES.UI.userSettings.get("glflowmode");
 
+        if (flowMode == 0 && this._currentFlowMode != 0)
+        {
+            for (let i = 0; i < this._patch.ops.length; i++)
+            {
+                const op = this._patch.ops[i];
+                const glop = this._glPatch.getGlOp(op);
+
+                if (!glop) continue;
+
+                for (let ip = 0; ip < op.portsOut.length; ip++)
+                {
+                    const thePort = op.portsOut[ip];
+                    if (thePort)
+                    {
+                        const glp = glop.getGlPort(thePort.name);
+                        if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
+                    }
+                }
+                for (let ip = 0; ip < op.portsIn.length; ip++)
+                {
+                    const thePort = op.portsIn[ip];
+                    const glp = glop.getGlPort(thePort.name);
+                    if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
+                }
+            }
+
+            for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
+        }
+
+        this._currentFlowMode = flowMode;
+
+        if (flowMode == 0) return;
+
         if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 6 != 0) return;
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
+
         for (let i = 0; i < this._patch.ops.length; i++)
         {
             const op = this._patch.ops[i];
+            const glop = this._glPatch.getGlOp(op);
+
+            if (glop) for (let ip = 0; ip < op.portsOut.length; ip++)
+            {
+                const thePort = op.portsOut[ip];
+                const glp = glop.getGlPort(thePort.name);
+                if (glp)glp.setFlowModeActivity(thePort.activityCounter);
+                thePort.activityCounter = 0;
+            }
 
             for (let ip = 0; ip < op.portsIn.length; ip++)
             {
-                for (let il = 0; il < op.portsIn[ip].links.length; il++)
+                const thePort = op.portsIn[ip];
+                if (glop)
                 {
-                    const link = op.portsIn[ip].links[il];
+                    const glp = glop.getGlPort(thePort.name);
+                    if (glp)glp.setFlowModeActivity(thePort.activityCounter);
+                }
+
+                thePort.activityCounter = 0;
+
+                for (let il = 0; il < thePort.links.length; il++)
+                {
+                    const link = thePort.links[il];
                     let newClass = 0;
 
                     if (link.activityCounter >= 1) newClass = 1;
 
-                    if (flowMode)
+                    if (flowMode == 2)
                     {
-                        if (link.activityCounter >= 2) newClass = 2;
-
-                        if (link.activityCounter >= 5) newClass = 3;
                         if (link.activityCounter >= 10) newClass = (link.activityCounter / 10) + 3;
+                        else if (link.activityCounter >= 5) newClass = 3;
+                        else if (link.activityCounter >= 2) newClass = 2;
                     }
 
-                    if (this._glPatch.links[link.id])
-                        this._glPatch.links[link.id].setFlowModeActivity(newClass, op.portsIn[ip].get());
+                    if (this._glPatch.links[link.id]) this._glPatch.links[link.id].setFlowModeActivity(newClass, thePort.get());
                     link.activityCounter = 0;
                 }
             }
@@ -233,8 +287,11 @@ export default class GlPatchAPI
 
     showOpParams(opid)
     {
-        const op = gui.corePatch().getOpById(opid);
-        gui.opParams.show(op);
+        setTimeout(() =>
+        {
+            const op = gui.corePatch().getOpById(opid);
+            gui.opParams.show(op);
+        }, 33);
     }
 
     removeLink(opIdIn, opIdOut, portIdIn, portIdOut)

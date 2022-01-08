@@ -381,7 +381,7 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 msg.seconds = timeOutSeconds / 1000;
                 this.emitEvent("onPingTimeout", msg);
-                this._log.warn("didn't receive ping for more than", timeOutSeconds, "seconds");
+                this._log.warn("didn't receive ping for more than", msg.seconds, "seconds");
             }
             this.sendPing();
         }

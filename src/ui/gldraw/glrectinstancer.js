@@ -742,7 +742,9 @@ export default class GlRectInstancer extends CABLES.EventTarget
         if (!this._interactive) return;
 
         const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseDown");
-        for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseDown(e);
+        for (let i = 0; i < this._rects.length; i++)
+            if (!this._rects[i].parent)
+                this._rects[i].mouseDown(e);
         perf.finish();
     }
 

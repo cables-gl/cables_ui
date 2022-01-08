@@ -27,6 +27,7 @@ export default class GlOp extends CABLES.EventTarget
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
         this._glTitleExt = null;
@@ -231,9 +232,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._op)
         {
-            console.log("glop no op", this);
+            console.warn("glop no op", this);
             return;
         }
+        const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
@@ -247,6 +249,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
+
         if (e.touchType == "mouse")
         {
             if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
@@ -255,6 +258,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._glPatch.patchAPI.showOpParams(this._id);
         }
+
 
         if (e.altKey || e.metaKey)
         {
@@ -273,6 +277,8 @@ export default class GlOp extends CABLES.EventTarget
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
             this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
         }
+
+        perf.finish();
     }
 
     _onMouseUp(e)
@@ -851,12 +857,15 @@ export default class GlOp extends CABLES.EventTarget
 
     set selected(s)
     {
-        if (s != this.opUiAttribs.selected)
+        if (this.selected != s || s != this.opUiAttribs.selected)
         {
-            this.opUiAttribs.selected = s;
-            this._updateColors();
+            if (s != this.opUiAttribs.selected)
+            {
+                this.opUiAttribs.selected = s;
+                this._updateColors();
+            }
+            this.updatePosition();
         }
-        this.updatePosition();
     }
 
     getPortPos(id)

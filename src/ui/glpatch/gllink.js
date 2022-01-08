@@ -285,7 +285,9 @@ export default class GlLink
 
     highlight(b)
     {
-        if (b) this._cable.setColor(1, 1, 1, 1);
-        else this._glPatch.setDrawableColorByType(this._cable, this._type);
+        // if (b) this._cable.setColor(1, 1, 1, 1);
+        // else
+
+        this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
     }
 }
