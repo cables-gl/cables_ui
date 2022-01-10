@@ -26,13 +26,14 @@ import ModalBackground from "./modalbg";
  *     "html":"hello world",
  * });
  */
-export default class ModalDialog
+export default class ModalDialog extends CABLES.EventTarget
 {
-    constructor(options)
+    constructor(options, autoOpen = true)
     {
+        super();
         this._log = new Logger("ModalDialog");
 
-        if(gui.currentModal)
+        if (gui.currentModal)
         {
             // this._log.warn("modal dialog was still open");
             gui.currentModal.close();
@@ -42,28 +43,29 @@ export default class ModalDialog
         this._eleContent = null;
         this._bg = new ModalBackground();
 
-        this.show();
+        if (autoOpen) this.show();
 
         ele.byId("modalclose").style.display = "block";
 
         // this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
 
-        gui.currentModal=this;
+        gui.currentModal = this;
     }
 
     close()
     {
         this._ele.remove();
         this._bg.hide();
-        gui.currentModal=null;
+        gui.currentModal = null;
+        this.emitEvent("onClose", this);
     }
 
     html()
     {
         let html = "";
 
-        if (this._options.title) html += "<h2>"
-        if (this._options.warning) html+="<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
+        if (this._options.title) html += "<h2>";
+        if (this._options.warning) html += "<span class=\"icon icon-2x icon-alert-triangle\" style=\"vertical-align:bottom;\"></span>&nbsp;&nbsp;";
         if (this._options.title) html += this._options.title + "</h2>";
 
         if (this._options.text)html += this._options.text;
@@ -78,7 +80,7 @@ export default class ModalDialog
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
         }
 
-        if(this._options.showOkButton)
+        if (this._options.showOkButton)
         {
             html += "<br/><br/><a class=\"bluebutton\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
         }
@@ -88,7 +90,7 @@ export default class ModalDialog
 
     _addListeners()
     {
-        this._eleClose.addEventListener("click", this.close.bind(this));
+        this._eleClose.addEventListener("pointerdown", this.close.bind(this));
 
         const elePromptInput = ele.byId("modalpromptinput");
         if (elePromptInput)
@@ -103,7 +105,7 @@ export default class ModalDialog
         const elePromptOk = ele.byId("prompt_ok");
         if (elePromptOk)
         {
-            elePromptOk.addEventListener("click", () =>
+            elePromptOk.addEventListener("pointerdown", () =>
             {
                 this._promptSubmit();
             });
@@ -112,20 +114,20 @@ export default class ModalDialog
         const eleModalOk = ele.byId("modalClose");
         if (eleModalOk)
         {
-            eleModalOk.addEventListener("click", () =>
+            eleModalOk.addEventListener("pointerdown", () =>
             {
                 this.close();
             });
         }
 
         const elePromptCancel = ele.byId("prompt_cancel");
-        if (elePromptCancel) elePromptCancel.addEventListener("click", this.close.bind(this));
+        if (elePromptCancel) elePromptCancel.addEventListener("pointerdown", this.close.bind(this));
     }
 
     updateHtml(h)
     {
-        this._options.html=h;
-        this._eleContent.innerHTML=this.html();
+        this._options.html = h;
+        this._eleContent.innerHTML = this.html();
     }
 
     show()
@@ -158,6 +160,13 @@ export default class ModalDialog
         this._addListeners();
 
         CABLES.UI.hideToolTip();
+
+        this.emitEvent("onShow", this);
+    }
+
+    getElement()
+    {
+        return this._ele;
     }
 
     _promptSubmit()
@@ -169,5 +178,6 @@ export default class ModalDialog
 
         this.close();
         this._options.promptOk(elePromptInput.value);
+        this.emitEvent("onSubmit", elePromptInput.value);
     }
 }
