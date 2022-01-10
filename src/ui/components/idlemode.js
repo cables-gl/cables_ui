@@ -7,6 +7,7 @@ let idling = false;
 let idleTimeout = null;
 let idleModeStart = 0;
 let idleFocus = false;
+let idleModal = null;
 
 const logger = new Logger("idlemode");
 
@@ -16,7 +17,7 @@ function startIdleMode()
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
+    idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
 
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart");
@@ -46,7 +47,8 @@ function stopIdleMode()
     logger.log("idled for ", idleSeconds + " seconds");
 
     gui.corePatch().resume();
-    gui.closeModal();
+    if (idleModal) idleModal.close();
+    // gui.closeModal();
     idling = false;
     clearTimeout(idleTimeout);
     gui.emitEvent("uiIdleEnd", idleSeconds);
