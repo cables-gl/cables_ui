@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 
 export default function setHtmlDefaultListeners()
 {
@@ -7,6 +8,9 @@ export default function setHtmlDefaultListeners()
         if (e.target.currentSrc) return;
         if (e.target.classList.contains("selectable")) return;
         if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
+
+        // if (ele.byId("cablescanvas").contains(e.target)) return;
+
 
         e.preventDefault();
     });
