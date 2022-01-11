@@ -77,7 +77,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                             if (buildInfo.updateWarning)
                             {
-                                if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
+                                if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
                                 if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
                                 if (CABLESUILOADER.buildInfo.api) newApi = buildInfo.api.timestamp > CABLESUILOADER.buildInfo.api.timestamp;
                             }

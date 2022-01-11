@@ -1,5 +1,6 @@
 import { notify } from "../elements/notification";
 import { getHandleBarHtml } from "../utils/handlebars";
+import ModalDialog from "../dialogs/modaldialog";
 
 export default class ScUiMultiplayer extends CABLES.EventTarget
 {
@@ -14,18 +15,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._followedClient = null;
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
-        /* do something with chatmessages
-        this._connection.on("onChatMessage", (msg) =>
-        {
-            if (this._connection.multiplayerEnabled)
-            {
-                if (msg.clientId !== this._connection.clientId)
-                {
-                    notify(msg.username, msg.text);
-                }
-            }
-        });
-         */
 
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
@@ -109,44 +98,58 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 if (this._connection.client && this._connection.client.isPilot)
                 {
-                    let content = "<div class=\"modalerror\"> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
-                    content += "<div style='margin-top: 20px; text-align: center;'><a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
-                    content += "<a class=\"button decline\">Decline</a></div>";
-                    CABLES.UI.MODAL.showError(msg.username + " wants to be the pilot", content);
-                    CABLES.UI.MODAL.onClose = () =>
+                    let content = "<div> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
+                    content += "<div style='margin-top: 20px; text-align: center;'>";
+                    content += "<a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
+                    content += "<a class=\"button decline\">Decline</a>";
+                    content += "</div>";
+
+                    const options = {
+                        "title": msg.username + " wants to be the pilot",
+                        "html": content
+                    };
+                    const modal = new ModalDialog(options, false);
+                    const closeListener = () =>
                     {
                         clearTimeout(requestTimeout);
                         this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                        CABLES.UI.MODAL.onClose = null;
                     };
+                    const closeListenerId = modal.on("onClose", closeListener);
+                    modal.on("onShow", () =>
+                    {
+                        const modalElement = modal.getElement();
+                        const acceptButton = modalElement.querySelector(".button.accept");
+                        const declineButton = modalElement.querySelector(".button.decline");
+
+                        if (acceptButton)
+                        {
+                            acceptButton.addEventListener("pointerdown", () =>
+                            {
+                                clearTimeout(requestTimeout);
+                                modal.off(closeListenerId);
+                                this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                                modal.close();
+                            });
+                        }
+                        if (declineButton)
+                        {
+                            declineButton.addEventListener("pointerdown", () =>
+                            {
+                                clearTimeout(requestTimeout);
+                                modal.off(closeListenerId);
+                                this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                                modal.close();
+                            });
+                        }
+                    });
+
                     const requestTimeout = setTimeout(() =>
                     {
+                        modal.off(closeListenerId);
                         this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                        CABLES.UI.MODAL.onClose = null;
-                        gui.closeModal();
+                        modal.close();
                     }, this._connection.state.PILOT_REQUEST_TIMEOUT);
-                    const acceptButton = document.querySelector("#modalcontainer .button.accept");
-                    const declineButton = document.querySelector("#modalcontainer .button.decline");
-                    if (acceptButton)
-                    {
-                        acceptButton.addEventListener("click", () =>
-                        {
-                            clearTimeout(requestTimeout);
-                            this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                            CABLES.UI.MODAL.onClose = null;
-                            gui.closeModal();
-                        });
-                    }
-                    if (declineButton)
-                    {
-                        declineButton.addEventListener("click", () =>
-                        {
-                            clearTimeout(requestTimeout);
-                            this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                            CABLES.UI.MODAL.onClose = null;
-                            gui.closeModal();
-                        });
-                    }
+                    modal.show();
                 }
             }
             else if (msg.state === "accepted")
@@ -172,36 +175,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
             }
         });
-
-        /*
-
-        this would update selection to what the pilot has, crashes/is unreliable with dragging/selecting multiple ops
-
-        gui.corePatch().on("onUiAttribsChange", (op) =>
-        {
-            if (this._connection.multiplayerEnabled && this._connection.client && !this._connection.client.isPilot)
-            {
-                const patch = gui.corePatch();
-                if (patch)
-                {
-                    console.log("PATCHVIEW", gui.patchView);
-                    const patchOp = patch.getOpById(op.id);
-                    if (patchOp)
-                    {
-                        if (patchOp.uiAttribs.selected)
-                        {
-                            gui.patchView.setSelectedOpById(patchOp.id);
-                            // gui.opParams.show(op);
-                        }
-                        else
-                        {
-                            gui.patchView.unselectOpId(patchOp.id);
-                        }
-                    }
-                }
-            }
-        });
-         */
 
         this._connection.on("netSelectionArea", (msg) =>
         {
@@ -319,7 +292,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             const moreOptions = userList.querySelector(".socket_more_options");
             if (moreOptions)
             {
-                moreOptions.addEventListener("click", (event) =>
+                moreOptions.addEventListener("pointerdown", (event) =>
                 {
                     CABLES.contextMenu.show(
                         {
@@ -386,7 +359,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     }
                 }
 
-                ele.addEventListener("click", (event) =>
+                ele.addEventListener("pointerdown", (event) =>
                 {
                     CABLES.contextMenu.show(
                         {
