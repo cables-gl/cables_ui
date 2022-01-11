@@ -347,7 +347,7 @@ export default class FindTab
                 for (let i = 0; i < ops.length; i++)
                 {
                     const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-                    if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("Deprecated") > -1)
+                    if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
                         results.push({ "op": ops[i], "score": 1 });
                 }
             }
