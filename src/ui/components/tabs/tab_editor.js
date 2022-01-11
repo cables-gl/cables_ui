@@ -322,6 +322,11 @@ function createEditor(id, val)
             "content": "mat4.translate(${1:out},${2:a},${3:v});",
             "name": "mat4.translate(out,a,v);",
         },
+        {
+            "content": "op.patch.isEditorMode();",
+            "name": "op.patch.isEditorMode();",
+        },
+
     );
     snippetManager.register(snippets, "javascript");
 
