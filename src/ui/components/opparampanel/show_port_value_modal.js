@@ -328,7 +328,6 @@ export default class ModalPortValue
         this._showPortStructure(title, gui.currentModal, this._port);
     }
 
-
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
     {
         const op = gui.corePatch().getOpById(opId);
@@ -338,7 +337,6 @@ export default class ModalPortValue
 
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
-        // gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
         gui.closeModal();
     }
@@ -352,7 +350,6 @@ export default class ModalPortValue
 
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
-        // gui.patchView.centerSelectOp(newop.id, true);
         gui.patchView.centerSelectOp(newop.id);
         gui.closeModal();
     }

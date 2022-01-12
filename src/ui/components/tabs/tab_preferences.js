@@ -1,5 +1,5 @@
-import Tab from '../../elements/tabpanel/tab';
-import { getHandleBarHtml } from '../../utils/handlebars';
+import Tab from "../../elements/tabpanel/tab";
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Preferences
 {
@@ -68,7 +68,7 @@ export default class Preferences
         this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
         this.setSwitchValue("glpatch_showboundings", CABLES.UI.userSettings.get("glpatch_showboundings") || false);
 
-        this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
+        // this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
 
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
 
