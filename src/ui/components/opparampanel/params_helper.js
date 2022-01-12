@@ -238,13 +238,11 @@ const paramsHelper =
                 },
                 "onStart": () =>
                 {
-                    console.log("start color");
                     undoGroup = CABLES.UI.undo.startGroup();
                 },
                 "onEnd": () =>
                 {
                     CABLES.UI.undo.endGroup(undoGroup, "Change Color");
-                    console.log("end color");
                 },
             });
         });
