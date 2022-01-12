@@ -30,6 +30,7 @@ import { getHandleBarHtml } from "./utils/handlebars";
 import WatchArrayTab from "./components/tabs/tab_watcharray";
 import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import { showInfo } from "./elements/tooltips";
+import ele from "./utils/ele";
 
 export default class Gui
 {
@@ -669,12 +670,18 @@ export default class Gui
             this._elInfoArea.style.height = infoAreaHeight + "px";
         }
 
-        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - menubarHeight - timelineHeight + "px";
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
 
-        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - timelineHeight - 50 + "px";
+
+        const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
+        let tabPanelTopHeight = 0;
+        if (tabPanelTop)tabPanelTopHeight = tabPanelTop.getBoundingClientRect().height;
+
+        ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - infoAreaHeight - timelineHeight - tabPanelTopHeight + "px";
+
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - menubarHeight - timelineHeight + "px";
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {

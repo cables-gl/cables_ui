@@ -25,6 +25,7 @@ function initSplitPanes()
             gui.splitpanePatchPos = pos;
 
             gui.setLayout();
+            gui.emitEvent("resizecanvas");
             gui.canvasUi.updateCanvasIconBar();
         }
 
@@ -151,6 +152,7 @@ function initSplitPanes()
             gui.setLayout();
             gui.canvasUi.updateCanvasIconBar();
             document.getElementById("glcanvas").focus();
+            gui.emitEvent("resizecanvas");
             e.preventDefault();
         }
 

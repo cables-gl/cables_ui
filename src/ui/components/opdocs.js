@@ -1,8 +1,7 @@
 
 import defaultops from "../defaultops";
 import Logger from "../utils/logger";
-import { getHandleBarHtml } from '../utils/handlebars';
-import Gui from "../gui";
+import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class OpDocs
 {
