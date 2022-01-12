@@ -43,6 +43,8 @@ export default class ContextMenu
         {
             this._element = document.createElement("ul");
             this._element.classList.add("cables_contextmenu");
+            this._element.classList.add("cablesCssUi");
+
             document.body.appendChild(this._element);
         }
 
