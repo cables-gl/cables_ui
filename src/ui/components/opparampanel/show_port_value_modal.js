@@ -333,6 +333,9 @@ export default class ModalPortValue
     {
         const op = gui.corePatch().getOpById(opId);
         const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
+
+        newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
+
         newop.getPort("Path").set(path);
         op.patch.link(op, portName, newop, inputDataType);
         // gui.patchView.centerSelectOp(newop.id, true);
