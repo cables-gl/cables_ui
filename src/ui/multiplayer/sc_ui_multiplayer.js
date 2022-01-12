@@ -491,9 +491,21 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
             else
             {
-                console.log("CLIENTINFO", client);
+                let title = "remoteviewer";
+                if (client.platform)
+                {
+                    const platform = client.platform;
+                    if (platform.name)
+                    {
+                        title += " " + platform.name;
+                    }
+                    if (platform.os && platform.os.family)
+                    {
+                        title += " on " + platform.os.family;
+                    }
+                }
                 items.push({
-                    "title": "remoteviewer",
+                    "title": title,
                     "iconClass": "icon icon-monitor",
                     "func": () => {}
                 });

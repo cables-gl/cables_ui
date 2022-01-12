@@ -303,7 +303,18 @@ export default class ScConnection extends CABLES.EventTarget
             payload.isPilot = this.state.clients[this.clientId].isPilot;
             payload.following = this.state.clients[this.clientId].following;
         }
-        this.sendControl("pingAnswer", payload);
+        if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)
+        {
+            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+            {
+                payload.platform = browserInfo;
+                this.sendControl("pingAnswer", payload);
+            });
+        }
+        else
+        {
+            this.sendControl("pingAnswer", payload);
+        }
     }
 
     _send(topic, payload)
