@@ -716,17 +716,25 @@ export default class GlOp extends CABLES.EventTarget
             this._titleExt = null;
         }
 
-        if (this.opUiAttribs.hasOwnProperty("resizable") && !this._rectResize)
+        if (!this.opUiAttribs.resizable && this._rectResize)
         {
-            // this._rectResize = new GlRect(this._instancer, { "parent": this._glRectBg, "draggable": true });
-            this._rectResize = this._instancer.createRect({ "parent": this._glRectBg, "draggable": true });
+            this._rectResize.dispose();
+            this._rectResize = null;
 
+            this._op.setUiAttribs({
+                "height": 0,
+                "width": 0
+            });
+            this.updateSize();
+        }
+
+        if (this.opUiAttribs.resizable && !this._rectResize)
+        {
+            this._rectResize = this._instancer.createRect({ "parent": this._glRectBg, "draggable": true });
             this._rectResize.setShape(2);
             this._rectResize.setSize(10, 10);
-
             this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
-
-
+            this._rectResize.setColor([0.15, 0.15, 0.15, 1]);
             this._rectResize.draggable = true;
             this._rectResize.draggableMove = true;
             this._rectResize.interactive = true;
