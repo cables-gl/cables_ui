@@ -294,19 +294,28 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 moreOptions.addEventListener("pointerdown", (event) =>
                 {
-                    CABLES.contextMenu.show(
-                        {
-                            "items": [
-                                {
-                                    "title": "open chat",
-                                    "func": () => { CABLES.CMD.UI.showChat(); }
-                                },
-                                {
-                                    "title": "exit multiplayer",
-                                    "func": () => { this._connection.leaveMultiplayerSession(); }
-                                }
-                            ],
-                        }, event.currentTarget);
+                    const items = [];
+                    items.push({
+                        "title": "open chat",
+                        "iconClass": "icon icon-message",
+                        "func": () => { CABLES.CMD.UI.showChat(); }
+                    });
+                    /*
+                    if (this._connection.client && this._connection.client.isPilot)
+                    {
+                        items.push({
+                            "title": "load last saved version",
+                            "iconClass": "icon icon-refresh",
+                            "func": () => { this._restoreLastSavedPatchVersion(); }
+                        });
+                    }
+                     */
+                    items.push({
+                        "title": "exit multiplayer",
+                        "iconClass": "icon icon-log-out",
+                        "func": () => { this._connection.leaveMultiplayerSession(); }
+                    });
+                    CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
                 });
             }
 
@@ -378,6 +387,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         }
     }
 
+    _restoreLastSavedPatchVersion()
+    {
+        console.log("RESTORE");
+        CABLES.UI.startUi(CABLESUILOADER.cfg);
+    }
+
     _getUserInfoHtml()
     {
         const data = {
@@ -398,10 +413,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         const items = [];
         if (client)
         {
-            let sessionName = "current session: ";
-            if (!client.isMe) sessionName = "session: ";
-            let displayName = sessionName + client.username;
-            if (client.isRemoteClient) displayName += " (remote viewer)";
+            let displayName = client.username;
             items.push({ "title": displayName, "func": () => {} });
 
             if (!client.isRemoteClient)
@@ -410,6 +422,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     items.push({
                         "title": "request pilot seat",
+                        "iconClass": "icon icon-user",
                         "func": () =>
                         {
                             this._connection.state.requestPilotSeat();
@@ -421,6 +434,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     items.push({
                         "title": "jump to cursor",
+                        "iconClass": "icon icon-mouse-pointer",
                         "func": () =>
                         {
                             const guiEvent = { "x": client.x, "y": client.y };
@@ -447,6 +461,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     items.push({
                         "title": "unfollow",
+                        "iconClass": "icon icon-eye-off",
                         "func": () =>
                         {
                             this._followedClient = null;
@@ -460,6 +475,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     items.push({
                         "title": "follow",
+                        "iconClass": "icon icon-eye",
                         "func": () =>
                         {
                             this._followedClient = client;
@@ -472,6 +488,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         }
                     });
                 }
+            }
+            else
+            {
+                console.log("CLIENTINFO", client);
+                items.push({
+                    "title": "remoteviewer",
+                    "iconClass": "icon icon-monitor",
+                    "func": () => {}
+                });
             }
         }
         return items;
