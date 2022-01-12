@@ -722,7 +722,7 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize = null;
 
             this._op.setUiAttribs({
-                "height": 0,
+                "height": 1,
                 "width": 0
             });
             this.updateSize();
