@@ -1,8 +1,9 @@
 
 import ModalLoading from "../dialogs/modalloading";
 import Logger from "../utils/logger";
-import EditorTab from '../components/tabs/tab_editor';
-import CoreLibLoader from './corelibloader';
+import EditorTab from "../components/tabs/tab_editor";
+import CoreLibLoader from "./corelibloader";
+import ModalDialog from "../dialogs/modaldialog";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -111,8 +112,7 @@ export default class ServerOps
 
     create(name, cb)
     {
-
-        const loadingModal=new ModalLoading("Creating op...");
+        const loadingModal = new ModalLoading("Creating op...");
 
         loadingModal.setTask("Creating Op");
 
@@ -247,7 +247,6 @@ export default class ServerOps
                     if (next)next();
                 },
             );
-
         };
         document.body.appendChild(s);
     }
@@ -256,7 +255,7 @@ export default class ServerOps
     {
         this._log.log("clone", name, oldname);
 
-        const loadingModal=new ModalLoading("Cloning op...");
+        const loadingModal = new ModalLoading("Cloning op...");
 
         CABLESUILOADER.talkerAPI.send(
             "opClone",
@@ -281,7 +280,6 @@ export default class ServerOps
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
-
                 });
             },
         );
@@ -289,6 +287,8 @@ export default class ServerOps
 
     addOpLib(opName, libName)
     {
+        if (libName === "---") return;
+
         CABLESUILOADER.talkerAPI.send(
             "opAddLib",
             {
@@ -297,21 +297,35 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                this._log.log("lib added!");
-                gui.reloadDocs(() =>
+                if (err)
                 {
-                    this._log.log("docs reloaded");
-                    gui.metaTabs.activateTabByName("code");
-                    let html = "";
-                    html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                    // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
-                    html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-
-                    CABLES.UI.MODAL.show(html, {
-                        "title": "new library added",
+                    if (err.msg === "NO_OP_RIGHTS")
+                    {
+                        let html = "";
+                        html += "you are not allowed to add libraries to this op.<br/><br/>";
+                        html += "to modify this op, try cloning it";
+                        new ModalDialog({ "title": "error adding library", "showOkButton": true, "html": html });
+                    }
+                    else
+                    {
+                        let html = "";
+                        html += err.msg + "<br/><br/>";
+                        new ModalDialog({ "title": "error adding library", "showOkButton": true, "html": html });
+                    }
+                }
+                else
+                {
+                    this._log.log("lib added!");
+                    gui.reloadDocs(() =>
+                    {
+                        this._log.log("docs reloaded");
+                        gui.metaTabs.activateTabByName("code");
+                        let html = "";
+                        html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                        new ModalDialog({ "title": "new library added", "html": html });
                     });
-                });
+                }
             },
         );
     }
@@ -355,6 +369,8 @@ export default class ServerOps
 
     addCoreLib(opName, libName)
     {
+        if (libName === "---") return;
+
         CABLESUILOADER.talkerAPI.send(
             "opAddCoreLib",
             {
@@ -363,19 +379,33 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                gui.reloadDocs(() =>
+                if (err)
                 {
-                    gui.metaTabs.activateTabByName("code");
-                    let html = "";
-                    html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                    // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
-                    html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-
-                    CABLES.UI.MODAL.show(html, {
-                        "title": "new library added",
+                    if (err.msg === "NO_OP_RIGHTS")
+                    {
+                        let html = "";
+                        html += "you are not allowed to add libraries to this op.<br/><br/>";
+                        html += "to modify this op, try cloning it";
+                        new ModalDialog({ "title": "error adding core-lib", "showOkButton": true, "html": html });
+                    }
+                    else
+                    {
+                        let html = "";
+                        html += err.msg + "<br/><br/>";
+                        new ModalDialog({ "title": "error adding core-lib", "showOkButton": true, "html": html });
+                    }
+                }
+                else
+                {
+                    gui.reloadDocs(() =>
+                    {
+                        gui.metaTabs.activateTabByName("code");
+                        let html = "";
+                        html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                        new ModalDialog({ "title": "new library added", "html": html });
                     });
-                });
+                }
             },
         );
     }
@@ -545,8 +575,6 @@ export default class ServerOps
         const userInteraction = !fromListener;
 
 
-
-
         let editorObj = null;
         CABLES.api.clearCache();
 
@@ -608,7 +636,7 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
-                            const loadingModal=new ModalLoading("Save attachment...");
+                            const loadingModal = new ModalLoading("Save attachment...");
 
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
@@ -629,11 +657,10 @@ export default class ServerOps
 
                                     _setStatus("saved");
 
-                                    gui.serverOps.execute(opname,()=>{
+                                    gui.serverOps.execute(opname, () =>
+                                    {
                                         loadingModal.close();
                                     });
-
-
                                 },
                             );
                         },
@@ -678,7 +705,6 @@ export default class ServerOps
         gui.jobs().start({ "id": "load_opcode_" + opname, "title": "loading op code " + opname });
 
 
-
         CABLESUILOADER.talkerAPI.send(
             "getOpCode",
             {
@@ -700,7 +726,7 @@ export default class ServerOps
                     {
                         // CABLES.UI.MODAL.showLoading("Saving and executing op...");
 
-                        const loadingModal=new ModalLoading("Saving and executing op...");
+                        const loadingModal = new ModalLoading("Saving and executing op...");
                         loadingModal.setTask("Saving Op");
 
                         CABLESUILOADER.talkerAPI.send(
@@ -741,7 +767,6 @@ export default class ServerOps
                                 this._log.log("err result", result);
 
                                 loadingModal.close();
-
                             },
                         );
                     };
