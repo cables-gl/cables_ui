@@ -108,7 +108,7 @@ export default class GlViewBox
 
     _onCanvasMouseDown(e)
     {
-        if (this.glPatch.mouseState.buttonRight || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
+        if (this.glPatch.mouseState.buttonForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
@@ -128,8 +128,8 @@ export default class GlViewBox
         this._lastPosPixel[1] = e.offsetY;
 
         if (
-            (this.glPatch.mouseState.buttonRight && !this.glPatch.isDraggingPort()) ||
-            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight)))
+            (this.glPatch.mouseState.buttonForScrolling && !this.glPatch.isDraggingPort()) ||
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonForScrolling)))
         // && this.glPatch.allowDragging
         // && !this.glPatch.isDraggingPort()
         {

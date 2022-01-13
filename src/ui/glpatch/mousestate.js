@@ -54,7 +54,13 @@ export default class MouseState extends CABLES.EventTarget
 
     get buttonRight() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]; }
 
-    get buttonMiddle() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_MIDDLE]; }
+    get buttonMiddle() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_WHEEL]; }
+
+
+    get buttonForScrolling()
+    {
+        return this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT];
+    }
 
     get isDragging() { return this._isDragging; }
 
@@ -62,7 +68,7 @@ export default class MouseState extends CABLES.EventTarget
     {
         if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_LEFT]) return CABLES.UI.MOUSE_BUTTON_LEFT;
         if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]) return CABLES.UI.MOUSE_BUTTON_RIGHT;
-        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_MIDDLE]) return CABLES.UI.MOUSE_BUTTON_MIDDLE;
+        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_WHEEL]) return CABLES.UI.MOUSE_BUTTON_WHEEL;
         return CABLES.UI.MOUSE_BUTTON_NONE;
     }
 
@@ -116,7 +122,6 @@ export default class MouseState extends CABLES.EventTarget
         data.mouse_OverCanvas = this._mouseOverCanvas;
         data.mouse_buttonStates = this._buttonStates.join(",");
     }
-
 
     _move(e)
     {

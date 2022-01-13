@@ -1,8 +1,16 @@
+import Logger from "../utils/logger";
+
 export default class GlRect extends CABLES.EventTarget
 {
     constructor(instancer, options)
     {
         super();
+
+        this._log = new Logger("GlRect");
+
+
+        if (!instancer || !instancer.getIndex)
+            this._log.warn("no instancer given!");
 
         options = options || {};
         this._visible = true;
@@ -191,9 +199,9 @@ export default class GlRect extends CABLES.EventTarget
 
         if (this._parent)
         {
-            this._absX += this._parent._absX;
-            this._absY += this._parent._absY;
-            this._absZ += this._parent._absZ;
+            this._absX += this.getParentX();
+            this._absY += this.getParentY();
+            this._absZ += this.getParentZ();
         }
 
         this._rectInstancer.setPosition(this._attrIndex, this._absX, this._absY, this._absZ);
@@ -226,6 +234,27 @@ export default class GlRect extends CABLES.EventTarget
         return this._hovering;
     }
 
+    getParentX()
+    {
+        // todo: add up all parents
+        if (!this._parent) return 0;
+        return this._parent._absX;
+    }
+
+    getParentY()
+    {
+        // todo: add up all parents
+        if (!this._parent) return 0;
+        return this._parent._absY;
+    }
+
+    getParentZ()
+    {
+        // todo: add up all parents
+        if (!this._parent) return 0;
+        return this._parent._absZ;
+    }
+
     mouseDrag(x, y, button)
     {
         if (!this.interactive) return;
@@ -234,7 +263,7 @@ export default class GlRect extends CABLES.EventTarget
 
         if (this.draggableMove)
         {
-            this.setPosition(this.x + this._dragOffsetX, this.y + this._dragOffsetY);
+            this.setPosition(this.x + this._dragOffsetX + this.getParentX(), this.y + this._dragOffsetY + this.getParentY());
             this._dragStartX = this.x;
             this._dragStartY = this.y;
         }
@@ -296,8 +325,8 @@ export default class GlRect extends CABLES.EventTarget
                     this._dragStartY = y;
                     this.emitEvent("dragStart", this);
                 }
-                this._dragOffsetX = x - this._dragStartX;
-                this._dragOffsetY = y - this._dragStartY;
+                this._dragOffsetX = x;
+                this._dragOffsetY = y;
             }
         }
     }

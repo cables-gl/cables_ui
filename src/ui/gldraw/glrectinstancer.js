@@ -174,6 +174,13 @@ export default class GlRectInstancer extends CABLES.EventTarget
             .endl() + "    finalColor.rgb=mix(vec3(" + GlUiConfig.colors.opBoundsRect[0] + "), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner));"
             .endl() + "}"
 
+            .endl() + "if(shape==2.0)" // trianglebottom
+            .endl() + "{"
+            .endl() + "    if(uv.x+(1.0-uv.y) > 1.0)finalColor.a=1.0;"
+            .endl() + "    else finalColor.a=0.0;"
+            .endl() + "}"
+
+
             .endl() + "if(shape==5.0)" // cursor
             .endl() + "{"
             .endl() + "    if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;"

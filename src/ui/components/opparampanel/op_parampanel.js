@@ -778,12 +778,12 @@ export default class OpParampanel extends CABLES.EventTarget
         const opid = this._currentOp.id;
 
         items.push({
-            "title": "set title",
+            "title": "Set title",
             "func": CABLES.CMD.PATCH.setOpTitle,
         });
 
         items.push({
-            "title": "set default values",
+            "title": "Set default values",
             func()
             {
                 gui.patchView.resetOpValues(opid);
@@ -791,7 +791,15 @@ export default class OpParampanel extends CABLES.EventTarget
         });
 
         items.push({
-            "title": "bookmark",
+            "title": "Make resizable",
+            func()
+            {
+                gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
+            },
+        });
+
+        items.push({
+            "title": "Bookmark",
             func()
             {
                 gui.bookmarks.add();
@@ -799,7 +807,7 @@ export default class OpParampanel extends CABLES.EventTarget
         });
 
         items.push({
-            "title": "clone op code",
+            "title": "Clone op code",
             func()
             {
                 gui.serverOps.cloneDialog(opname);
@@ -807,7 +815,7 @@ export default class OpParampanel extends CABLES.EventTarget
         });
 
         items.push({
-            "title": "view op code",
+            "title": "View op code",
             func()
             {
                 gui.serverOps.edit(opname, false, false, true);

@@ -2,6 +2,7 @@ import GlUiConfig from "./gluiconfig";
 import GlPort from "./glport";
 import GlText from "../gldraw/gltext";
 import GlArea from "./glarea";
+import GlRect from "../gldraw/glrect";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -27,11 +28,13 @@ export default class GlOp extends CABLES.EventTarget
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+        this._glRectBg = null;
+        this._rectResize = null;
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
-        this._glTitleExt = null;
-        this._glRectNames.push("_glTitleExt");
+        this._titleExt = null;
+        this._glRectNames.push("_titleExt");
 
         this._glTitle = null;
         this._glRectNames.push("_glTitle");
@@ -381,10 +384,14 @@ export default class GlOp extends CABLES.EventTarget
 
         // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = this._getTitleWidth();
-        this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
+        let minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
+        if (this.opUiAttribs.width) this._width = Math.max(minWidth, this.opUiAttribs.width);
+
+        if (this._height < GlUiConfig.opHeight) this._height = GlUiConfig.opHeight;
+
         // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
@@ -393,6 +400,11 @@ export default class GlOp extends CABLES.EventTarget
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
                 this._glPorts[i].updateSize();
+
+        if (this._rectResize) // && !this.opUiAttribs.hasOwnProperty("height"))
+        {
+            this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
+        }
 
         this._updateCommentPosition();
         this._updateSizeRightHandle();
@@ -458,7 +470,7 @@ export default class GlOp extends CABLES.EventTarget
             this._glComment.dispose();
             this._glComment = null;
         }
-        if (this._glTitleExt) this._glTitleExt.dispose();
+        if (this._titleExt) this._titleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea.dispose();
         this._disposeDots();
@@ -517,7 +529,7 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
-        if (this._glTitleExt) this._glTitleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
+        if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
         this._updateErrorDots();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
@@ -531,7 +543,7 @@ export default class GlOp extends CABLES.EventTarget
     _getTitleWidth()
     {
         let w = 0;
-        if (this._glTitleExt) w += this._glTitleExt.width + GlUiConfig.OpTitlePaddingExtTitle;
+        if (this._titleExt) w += this._titleExt.width + GlUiConfig.OpTitlePaddingExtTitle;
         if (this._glTitle) w += this._glTitle.width;
 
         w += GlUiConfig.OpTitlePaddingLeftRight * 2.0;
@@ -691,17 +703,61 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glRectNames.push("_glTitle");
 
-        if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._glTitleExt)
+        if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._titleExt)
         {
-            this._glTitleExt = new GlText(this._textWriter, " ???");
-            this._glTitleExt.setParentRect(this._glRectBg);
-            this._glTitleExt.setColor(GlUiConfig.colors.opTitleExt);
-            this._glTitleExt.visible = this.visible;
+            this._titleExt = new GlText(this._textWriter, " ???");
+            this._titleExt.setParentRect(this._glRectBg);
+            this._titleExt.setColor(GlUiConfig.colors.opTitleExt);
+            this._titleExt.visible = this.visible;
         }
-        if ((!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) && this._glTitleExt)
+        if ((!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) && this._titleExt)
         {
-            this._glTitleExt.dispose();
-            this._glTitleExt = null;
+            this._titleExt.dispose();
+            this._titleExt = null;
+        }
+
+        if (!this.opUiAttribs.resizable && this._rectResize)
+        {
+            this._rectResize.dispose();
+            this._rectResize = null;
+
+            this._op.setUiAttribs({
+                "height": 1,
+                "width": 0
+            });
+            this.updateSize();
+        }
+
+        if (this.opUiAttribs.resizable && !this._rectResize)
+        {
+            this._rectResize = this._instancer.createRect({ "parent": this._glRectBg, "draggable": true });
+            this._rectResize.setShape(2);
+            this._rectResize.setSize(10, 10);
+            this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
+            this._rectResize.setColor([0.15, 0.15, 0.15, 1]);
+            this._rectResize.draggable = true;
+            this._rectResize.draggableMove = true;
+            this._rectResize.interactive = true;
+
+            doUpdateSize = true;
+
+            this._rectResize.on("drag", (e) =>
+            {
+                let w = this._rectResize.x - this.x + this._rectResize.w;
+                let h = this._rectResize.y - this.y + this._rectResize.h;
+
+                if (CABLES.UI.userSettings.get("snapToGrid"))
+                {
+                    w = this.glPatch.snapLines.snapX(w);
+                    h = this.glPatch.snapLines.snapY(h);
+                }
+
+                this._op.setUiAttrib({
+                    "height": h,
+                    "width": w
+                });
+                this.updateSize();
+            });
         }
 
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
@@ -731,9 +787,9 @@ export default class GlOp extends CABLES.EventTarget
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
 
-        if (this._glTitleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._glTitleExt.text)
+        if (this._titleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
         {
-            this._glTitleExt.text = " " + this.opUiAttribs.extendTitle || "!?!?!";
+            this._titleExt.text = " " + this.opUiAttribs.extendTitle || "!?!?!";
             doUpdateSize = true;
         }
 

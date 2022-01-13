@@ -51,7 +51,7 @@
         "projectNotSaved": "Patch not saved - save patch and try again",
 
         "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-        "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Scroll || [cmd_ctrl]`s` Save patch || `c` center all op || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
+        "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
         "canvas": "## Canvas\n\n|| Here you can see the visual output of your patch.\n\n|| [cmd_ctrl][ENTER] - Maximize canvas",
         "projectFiles": "## Project Files \n\nOverview over your uploaded files",
         "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
@@ -170,8 +170,6 @@
             "title_wheelmultiplier":"Wheel Speed",
             "subtitle_wheelmultiplier":"Mouse/Touchpad scrollwheel speed higher number - faster zooming, default is 1",
 
-            "title_wheelmode":"Wheel Mode",
-            "subtitle_wheelmode":" Set this to mousewheel if you can't zoom in using your mousewheel",
 
             "title_noidlemode":"Idle Mode",
             "subtitle_noidlemode":"go into idle mode after some time (to save energy and less fan activity)",

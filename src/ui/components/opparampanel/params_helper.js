@@ -1,8 +1,9 @@
-import EditorTab from '../tabs/tab_editor';
+import ele from "../../utils/ele";
+import EditorTab from "../tabs/tab_editor";
 
-const paramsHelper=
+const paramsHelper =
 {
-    "valueChangerInitSliders" : ()=>
+    "valueChangerInitSliders": () =>
     {
         const els = document.querySelectorAll(".valuesliderinput input");
         for (let i = 0; i < els.length; i++)
@@ -12,7 +13,7 @@ const paramsHelper=
         }
     },
 
-    "valueChangerSetSliderCSS" : (v, eleInput)=>
+    "valueChangerSetSliderCSS": (v, eleInput) =>
     {
         if (eleInput.dataset.min || eleInput.dataset.max)
             v = CABLES.map(v, parseFloat(eleInput.dataset.min), parseFloat(eleInput.dataset.max), 0, 1);
@@ -25,7 +26,7 @@ const paramsHelper=
         eleInput.style.background = grad;
     },
 
-    inputIncrement:  (v, dir, e)=>
+    "inputIncrement": (v, dir, e) =>
     {
         if (e.target.type == "search") return v;
         gui.setStateUnsaved();
@@ -52,7 +53,7 @@ const paramsHelper=
     },
 
 
-    checkDefaultValue :  (op, index)=>
+    "checkDefaultValue": (op, index) =>
     {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
         {
@@ -61,7 +62,7 @@ const paramsHelper=
         }
     },
 
-    inputListenerMousewheel : (event) =>
+    "inputListenerMousewheel": (event) =>
     {
         event.preventDefault();
         let delta = -event.deltaY;
@@ -83,7 +84,7 @@ const paramsHelper=
         }
     },
 
-    inputListenerCursorKeys : (e)=>
+    "inputListenerCursorKeys": (e) =>
     {
         switch (e.which)
         {
@@ -100,8 +101,7 @@ const paramsHelper=
     },
 
 
-
-    "togglePortValBool":  (which, checkbox)=>
+    "togglePortValBool": (which, checkbox) =>
     {
         gui.setStateUnsaved();
         const inputEle = document.getElementById(which);
@@ -126,8 +126,7 @@ const paramsHelper=
     },
 
 
-
-    openParamSpreadSheetEditor : (opid, portname, cb)=>
+    "openParamSpreadSheetEditor": (opid, portname, cb) =>
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op) return console.warn("paramedit op not found");
@@ -147,7 +146,7 @@ const paramsHelper=
     },
 
 
-    updateLinkedColorBoxes : (thePort, thePort1, thePort2)=>
+    "updateLinkedColorBoxes": (thePort, thePort1, thePort2) =>
     {
         const id = "watchcolorpick_" + thePort.watchId;
         const splits = id.split("_");
@@ -174,7 +173,7 @@ const paramsHelper=
             }
         }
     },
-    watchColorPickerPort : (thePort) =>
+    "watchColorPickerPort": (thePort) =>
     {
         const id = "watchcolorpick_" + thePort.watchId;
         const splits = id.split("_");
@@ -200,10 +199,12 @@ const paramsHelper=
         }
 
         const getCurrentColor = () =>
-            [
+        {
+            return [
                 Math.round(255 * parseFloat(inputElements[0].value)),
                 Math.round(255 * parseFloat(inputElements[1].value)),
                 Math.round(255 * parseFloat(inputElements[2].value))];
+        };
 
         inputElements[0].addEventListener("input", updateColorBox);
         inputElements[1].addEventListener("input", updateColorBox);
@@ -213,6 +214,7 @@ const paramsHelper=
 
         colEle.addEventListener("click", (e) =>
         {
+            let undoGroup;
             const cr = new ColorRick({
                 "ele": colEle,
                 "color": getCurrentColor(), // "#ffffff",
@@ -233,14 +235,21 @@ const paramsHelper=
                     inputElements[0].dispatchEvent(new Event("input"));
                     inputElements[1].dispatchEvent(new Event("input"));
                     inputElements[2].dispatchEvent(new Event("input"));
-                }
+                },
+                "onStart": () =>
+                {
+                    undoGroup = CABLES.UI.undo.startGroup();
+                },
+                "onEnd": () =>
+                {
+                    CABLES.UI.undo.endGroup(undoGroup, "Change Color");
+                },
             });
         });
     },
 
 
-
-    initPortClickListener : (op, index)=>
+    "initPortClickListener": (op, index) =>
     {
         if (op.portsIn[index].isAnimated()) ele.byId("portanim_in_" + index).classList.add("timingbutton_active");
         if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) ele.byId("portgraph_in_" + index).classList.add("timingbutton_active");
@@ -412,7 +421,7 @@ const paramsHelper=
     },
 
 
-    openParamStringEditor : (opid, portname, cb, userInteraction)=>
+    "openParamStringEditor": (opid, portname, cb, userInteraction) =>
     {
         const op = gui.corePatch().getOpById(opid);
         if (!op) return console.warn("paramedit op not found", opid);
@@ -477,8 +486,7 @@ const paramsHelper=
     },
 
 
-
-    "initPortInputListener" : (op, index)=>
+    "initPortInputListener": (op, index) =>
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
         CABLES.UI.paramsHelper.checkDefaultValue(op, index);
@@ -647,11 +655,7 @@ const paramsHelper=
     }
 
 
-
-
 };
-
-
 
 
 export default paramsHelper;

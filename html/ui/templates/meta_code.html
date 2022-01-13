@@ -58,7 +58,9 @@
                     <tr>
                         <td>{{.}}</td>
                         <td>
+                            {{#if ../canEditOp}}
                             <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../op.objName}}','{{.}}');"></a>
+                            {{/if}}
                         </td>
                     </tr>
                 {{/each}}
@@ -86,7 +88,9 @@
                     <tr>
                         <td>{{.}}</td>
                         <td>
+                            {{#if ../canEditOp}}
                             <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../op.objName}}','{{.}}');"></a>
+                            {{/if}}
                         </td>
                     </tr>
                 {{/each}}
