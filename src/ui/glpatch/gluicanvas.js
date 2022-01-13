@@ -1,6 +1,7 @@
 import glUiConfig from "./gluiconfig";
 import GlPatch from "./glpatch";
 import GlPatchAPI from "./patchapi";
+import GlAlwaysCheckError from "./glalwayscheckerror";
 
 export default class GlUiCanvas
 {
@@ -52,6 +53,9 @@ export default class GlUiCanvas
                 "glCanvasResizeToWindow": false,
                 "canvas": { "alpha": true }
             });
+
+
+        // new GlAlwaysCheckError(this.patch.cgl);
 
         this.glPatch = new GlPatch(this.patch.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);

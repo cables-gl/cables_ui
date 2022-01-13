@@ -392,7 +392,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
                         this._attrBuffTextures[thatRectIdx] = this._textures[j].num;
                         minIdx = Math.min(thatRectIdx, minIdx);
-                        maxIdx = Math.min(thatRectIdx, maxIdx);
+                        maxIdx = Math.max(thatRectIdx, maxIdx);
                     }
                 }
 
@@ -416,13 +416,14 @@ export default class GlRectInstancer extends CABLES.EventTarget
             if (changed)
             {
                 minIdx = Math.min(this._rects[i].idx, minIdx);
-                maxIdx = Math.min(this._rects[i].idx, maxIdx);
+                maxIdx = Math.max(this._rects[i].idx, maxIdx);
             }
         }
 
         // this._mesh.setAttribute(this.ATTR_CONTENT_TEX, this._attrBuffTextures, 1, { "instanced": true });
         // if (this.doBulkUploads) this._setAttrRange(this.ATTR_COLOR, idx * 4, idx * 4 + 4);
         // else
+        console.log(this._meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
         this._mesh.setAttributeRange(this._meshAttrTex, this._attrBuffCol, minIdx, maxIdx);
     }
 

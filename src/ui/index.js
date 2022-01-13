@@ -82,6 +82,7 @@ import startUi from "./startgui";
 import extendCoreAnim from "./components/timelinesvg/core_anim_extend";
 import TimeLineGui from "./components/timelinesvg/timeline";
 import oldModalWrap from "./dialogs/modal_old_wrap";
+import { copyArray } from "../../../cables/src/core/utils";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -153,6 +154,7 @@ CABLES.UI.ModalException = ModalException;
 CABLES.UI.initSplitPanes = initSplitPanes;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
+
 CABLES.UI.startIdleListeners = startIdleListeners;
 
 CABLES.UI.hideToolTip = hideToolTip;

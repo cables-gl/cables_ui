@@ -124,6 +124,7 @@ export default class Gizmo
         if (!this._eleCenter)
         {
             const container = this._cgl.canvas.parentElement;
+            if (!container) return;
 
             this._eleCenter = document.createElement("div");
             this._eleCenter.id = "gizmo";
@@ -263,15 +264,15 @@ export default class Gizmo
 
         function up(e)
         {
-            if(self._draggingPort)
+            if (self._draggingPort)
             {
-                const undofunc = (function (patch, p1Name, op1Id,oldValue,newValue)
+                const undofunc = (function (patch, p1Name, op1Id, oldValue, newValue)
                 {
-                    const op=patch.getOpById(op1Id)
-                    const p=op.getPortByName(p1Name);
+                    const op = patch.getOpById(op1Id);
+                    const p = op.getPortByName(p1Name);
 
                     CABLES.UI.undo.add({
-                        "title": "move gizmo "+p.name,
+                        "title": "move gizmo " + p.name,
                         undo()
                         {
                             p.set(oldValue);
@@ -305,8 +306,6 @@ export default class Gizmo
             document.removeEventListener("mousemove", move, false);
 
             if (CABLES.UI) gui.opParams.show(self._draggingPort.parent);
-
-
         }
 
         function move(e)
