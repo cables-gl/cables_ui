@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import ModalBackground from "./modalbg";
 import OpTreeList from "../components/opselect_treelist";
 import text from "../text";
+import userSettings from "../components/usersettings";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -27,7 +28,7 @@ export default class OpSelect
         this._backspaceDelay = -1;
         this._wordsDb = null;
         this._eleSearchinfo = null;
-        this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
+        this._forceShowOldOps = userSettings.get("showOldOps") || false;
         this._newOpOptions = {};
         this._searchInputEle = null;
         this._enterPressedEarly = false;
@@ -533,7 +534,7 @@ export default class OpSelect
             "linkNewLink": link
         };
 
-        this._forceShowOldOps = CABLES.UI.userSettings.get("showOldOps") || false;
+        this._forceShowOldOps = userSettings.get("showOldOps") || false;
         this._searchInputEle = ele.byId("opsearch");
 
         if (options.search)
@@ -561,7 +562,7 @@ export default class OpSelect
         //         "nopadding": true
         //     });
 
-        if (CABLES.UI.userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
+        if (userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
 

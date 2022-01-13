@@ -3,6 +3,7 @@ import GlPort from "./glport";
 import GlText from "../gldraw/gltext";
 import GlArea from "./glarea";
 import GlRect from "../gldraw/glrect";
+import userSettings from "../components/usersettings";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -746,7 +747,7 @@ export default class GlOp extends CABLES.EventTarget
                 let w = this._rectResize.x - this.x + this._rectResize.w;
                 let h = this._rectResize.y - this.y + this._rectResize.h;
 
-                if (CABLES.UI.userSettings.get("snapToGrid"))
+                if (userSettings.get("snapToGrid"))
                 {
                     w = this.glPatch.snapLines.snapX(w);
                     h = this.glPatch.snapLines.snapY(h);
@@ -993,7 +994,7 @@ export default class GlOp extends CABLES.EventTarget
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
-        if (CABLES.UI.userSettings.get("snapToGrid"))
+        if (userSettings.get("snapToGrid"))
         {
             x = this._glPatch.snapLines.snapX(x);
             y = this._glPatch.snapLines.snapY(y);

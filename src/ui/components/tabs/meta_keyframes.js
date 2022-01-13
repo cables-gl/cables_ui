@@ -1,4 +1,5 @@
 import { getHandleBarHtml } from "../../utils/handlebars";
+import userSettings from "../usersettings";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -88,7 +89,7 @@ export default class MetaKeyframes
 
     setAnim(anim)
     {
-        if (CABLES.UI.userSettings.get("metatab") == "keyframes")
+        if (userSettings.get("metatab") == "keyframes")
         {
             self.anim = anim;
             this.show();

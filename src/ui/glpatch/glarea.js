@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 
 export default class GlArea
 {
@@ -36,7 +37,7 @@ export default class GlArea
             this._w = this._rectResize.x - this._glop.x + this._rectResize.w / 2;
             this._h = this._rectResize.y - this._glop.y + this._rectResize.h / 2;
 
-            if (CABLES.UI.userSettings.get("snapToGrid"))
+            if (userSettings.get("snapToGrid"))
             {
                 this._w = this._glop.glPatch.snapLines.snapX(this._w);
                 this._h = this._glop.glPatch.snapLines.snapY(this._h);

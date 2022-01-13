@@ -1,4 +1,5 @@
 import { getHandleBarHtml } from "../utils/handlebars";
+import userSettings from "./usersettings";
 
 export default class UiProfiler
 {
@@ -8,7 +9,7 @@ export default class UiProfiler
         this._ele = null;
         this._timeout = null;
 
-        this._currentHighlight = CABLES.UI.userSettings.get("uiPerfLastHighlight");
+        this._currentHighlight = userSettings.get("uiPerfLastHighlight");
         this._ignore = false;
     }
 
@@ -17,12 +18,12 @@ export default class UiProfiler
         this._ele.style.display = "none";
         clearTimeout(this._timeout);
 
-        CABLES.UI.userSettings.set("showUIPerf", false);
+        userSettings.set("showUIPerf", false);
     }
 
     show()
     {
-        CABLES.UI.userSettings.set("showUIPerf", true);
+        userSettings.set("showUIPerf", true);
         this.update();
     }
 
@@ -30,8 +31,8 @@ export default class UiProfiler
     {
         for (const i in this._measures) this._measures[i].highlight = false;
         this._currentHighlight = name;
-        CABLES.UI.userSettings.set("uiPerfLastHighlight", name);
-        if (CABLES.UI.userSettings.get("showUIPerf")) this.show();
+        userSettings.set("uiPerfLastHighlight", name);
+        if (userSettings.get("showUIPerf")) this.show();
     }
 
     update()
@@ -86,7 +87,7 @@ export default class UiProfiler
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
-            if (CABLES.UI.userSettings.get("showUIPerf")) CABLES.UI.uiProfiler.update();
+            if (userSettings.get("showUIPerf")) CABLES.UI.uiProfiler.update();
         }, 500);
     }
 

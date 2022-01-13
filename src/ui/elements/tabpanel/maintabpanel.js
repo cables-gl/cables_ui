@@ -1,3 +1,4 @@
+import userSettings from "../../components/usersettings";
 
 export default class MainTabPanel extends CABLES.EventTarget
 {
@@ -36,7 +37,7 @@ export default class MainTabPanel extends CABLES.EventTarget
 
     init()
     {
-        const showMainTabs = CABLES.UI.userSettings.get("maintabsVisible");
+        const showMainTabs = userSettings.get("maintabsVisible");
         if (showMainTabs) this.show();
         else this.hide(true);
 
@@ -58,7 +59,7 @@ export default class MainTabPanel extends CABLES.EventTarget
 
         if (!userInteraction)
         {
-            if (!CABLES.UI.userSettings.get("maintabsVisible"))
+            if (!userSettings.get("maintabsVisible"))
             {
                 return;
             }
@@ -69,7 +70,7 @@ export default class MainTabPanel extends CABLES.EventTarget
         this._ele.style.display = "block";
         document.getElementById("editorminimized").style.display = "none";
 
-        if (CABLES.UI.loaded && userInteraction) CABLES.UI.userSettings.set("maintabsVisible", true);
+        if (CABLES.UI.loaded && userInteraction) userSettings.set("maintabsVisible", true);
 
         gui.setLayout();
 
@@ -83,7 +84,7 @@ export default class MainTabPanel extends CABLES.EventTarget
         this._ele.style.display = "none";
         if (window.gui)gui.setLayout();
 
-        if (!donotsave && CABLES.UI.loaded) CABLES.UI.userSettings.set("maintabsVisible", false);
+        if (!donotsave && CABLES.UI.loaded) userSettings.set("maintabsVisible", false);
     }
 
     toggle(userInteraction)

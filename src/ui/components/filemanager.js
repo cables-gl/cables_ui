@@ -4,6 +4,7 @@ import ItemManager from "./tabs/tab_item_manager";
 import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
+import userSettings from "./usersettings";
 
 export default class FileManager
 {
@@ -16,15 +17,15 @@ export default class FileManager
         this._firstTimeOpening = true;
         this._refreshDelay = null;
         this._orderReverse = false;
-        this._order = CABLES.UI.userSettings.get("filemanager_order") || "name";
+        this._order = userSettings.get("filemanager_order") || "name";
         this._files = [];
 
         gui.maintabPanel.show(unserInteraction);
-        CABLES.UI.userSettings.set("fileManagerOpened", true);
+        userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
 
-        this._manager.setDisplay(CABLES.UI.userSettings.get("filemanager_display") || "icons");
+        this._manager.setDisplay(userSettings.get("filemanager_display") || "icons");
 
         this.reload(cb);
 
@@ -35,7 +36,7 @@ export default class FileManager
 
         this._manager.addEventListener("onClose", () =>
         {
-            CABLES.UI.userSettings.set("fileManagerOpened", false);
+            userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;
         });
     }
@@ -273,7 +274,7 @@ export default class FileManager
         else this._orderReverse = !this._orderReverse;
 
         this._order = o;
-        CABLES.UI.userSettings.set("filemanager_order", this._order);
+        userSettings.set("filemanager_order", this._order);
         this._buildHtml();
     }
 
@@ -324,7 +325,7 @@ export default class FileManager
 
     setDisplay(type)
     {
-        CABLES.UI.userSettings.set("filemanager_display", type);
+        userSettings.set("filemanager_display", type);
         this._manager.setDisplay(type);
         this._manager.setItems();
         this.updateHeader();

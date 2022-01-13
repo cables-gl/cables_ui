@@ -1,6 +1,7 @@
 import ModalDialog from "./dialogs/modaldialog";
 import ChangelogToast from "./dialogs/changelog";
 import text from "./text";
+import userSettings from "./components/usersettings";
 
 export default class SandboxBrowser extends CABLES.EventTarget
 {
@@ -9,8 +10,8 @@ export default class SandboxBrowser extends CABLES.EventTarget
         super();
         this._cfg = cfg;
 
-        if (cfg.usersettings && cfg.usersettings.settings) CABLES.UI.userSettings.load(cfg.usersettings.settings);
-        else CABLES.UI.userSettings.load({});
+        if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
+        else userSettings.load({});
 
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
@@ -97,7 +98,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
     showStartupChangelog()
     {
-        const lastView = CABLES.UI.userSettings.get("changelogLastView");
+        const lastView = userSettings.get("changelogLastView");
         const cl = new ChangelogToast();
 
         cl.getHtml((clhtml) =>
@@ -125,14 +126,14 @@ export default class SandboxBrowser extends CABLES.EventTarget
                     ],
                 });
             }
-        }, CABLES.UI.userSettings.get("changelogLastView"));
+        }, userSettings.get("changelogLastView"));
     }
 
     showBrowserWarning(id)
     {
         const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
 
-        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !CABLES.UI.userSettings.get("nobrowserWarning"))
+        if (!gui.isRemoteClient && !window.chrome && !isFirefox && !userSettings.get("nobrowserWarning"))
         {
             iziToast.error({
                 "position": "topRight",

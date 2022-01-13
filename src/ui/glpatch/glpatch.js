@@ -17,6 +17,7 @@ import GlPreviewLayer from "./glpreviewlayer";
 import Logger from "../utils/logger";
 import ele from "../utils/ele";
 import text from "../text";
+import userSettings from "../components/usersettings";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -158,7 +159,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
         {
-            let fm = CABLES.UI.userSettings.get("glflowmode") || 0;
+            let fm = userSettings.get("glflowmode") || 0;
             fm++;
 
             if (fm == 3)fm = 0;
@@ -168,7 +169,7 @@ export default class GlPatch extends CABLES.EventTarget
             CABLES.UI.notify("Flow Visualization: ", modes[fm]);
 
 
-            CABLES.UI.userSettings.set("glflowmode", fm);
+            userSettings.set("glflowmode", fm);
         });
 
         gui.keys.key(" ", "Drag left mouse button to pan patch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._spacePressed = true; this.emitEvent("spacedown"); });
@@ -310,7 +311,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.previewLayer = new GlPreviewLayer(this);
 
 
-        CABLES.UI.userSettings.on("onChange", (key, value) =>
+        userSettings.on("onChange", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
             for (let i in this.links)
@@ -521,7 +522,7 @@ export default class GlPatch extends CABLES.EventTarget
             gui.patchView.showDefaultPanel();
             gui.showInfo(text.patch);
 
-            if (CABLES.UI.userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
+            if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }
 
         this._dropInCircleRect = null;
@@ -712,7 +713,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _drawCursor()
     {
-        const drawGlCursor = CABLES.UI.userSettings.get("glpatch_cursor");
+        const drawGlCursor = userSettings.get("glpatch_cursor");
 
         if (drawGlCursor) this._cgl.setCursor("none");
         else

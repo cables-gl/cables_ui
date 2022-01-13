@@ -84,6 +84,7 @@ import TimeLineGui from "./components/timelinesvg/timeline";
 import oldModalWrap from "./dialogs/modal_old_wrap";
 import { copyArray } from "../../../cables/src/core/utils";
 import text from "./text";
+import userSettings from "./components/usersettings";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -92,7 +93,7 @@ CABLES.GLUI = CABLES.GLUI || {};
 
 CABLES.SandboxBrowser = SandboxBrowser;
 
-CABLES.UI.userSettings = new UserSettings();
+CABLES.UI.userSettings = userSettings;
 
 // CONSTANTS
 

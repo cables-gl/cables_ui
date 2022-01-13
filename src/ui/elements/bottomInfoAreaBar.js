@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 import text from "../text";
 import ele from "../utils/ele";
 
@@ -11,7 +12,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
         this._eleInfoArea = ele.byId("infoArea");
 
-        if (!CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
     }
 
@@ -24,13 +25,13 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     toggle()
     {
-        if (CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
     }
 
     openInfo()
     {
-        CABLES.UI.userSettings.set(this._SETTINGS_NAME, false);
+        userSettings.set(this._SETTINGS_NAME, false);
         const wasShowing = this.showing;
 
         this.showing = true;
@@ -39,7 +40,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     closeInfo()
     {
-        CABLES.UI.userSettings.set(this._SETTINGS_NAME, true);
+        userSettings.set(this._SETTINGS_NAME, true);
         const wasShowing = this.showing;
         this.showing = false;
         if (wasShowing != this.showing) this.emitEvent("changed");

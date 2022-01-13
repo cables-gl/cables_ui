@@ -1,6 +1,7 @@
 import GlUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import text from "../text";
+import userSettings from "../components/usersettings";
 
 export default class GlCable
 {
@@ -58,19 +59,19 @@ export default class GlCable
 
         this._linetype = this.LINETYPE_CURVED;
 
-        if (CABLES.UI.userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
-        if (CABLES.UI.userSettings.get("linetype") == "straight") this._linetype = this.LINETYPE_STRAIGHT;
-        if (CABLES.UI.userSettings.get("linetype") == "h1")
+        if (userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
+        if (userSettings.get("linetype") == "straight") this._linetype = this.LINETYPE_STRAIGHT;
+        if (userSettings.get("linetype") == "h1")
         {
             this._linetype = this.LINETYPE_HANGING;
             this._tension = 0.0;
         }
-        if (CABLES.UI.userSettings.get("linetype") == "h2")
+        if (userSettings.get("linetype") == "h2")
         {
             this._linetype = this.LINETYPE_HANGING;
             this._tension = 0.2;
         }
-        if (CABLES.UI.userSettings.get("linetype") == "h3")
+        if (userSettings.get("linetype") == "h3")
         {
             this._linetype = this.LINETYPE_HANGING;
             this._tension = 0.3;

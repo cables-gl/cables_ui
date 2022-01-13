@@ -1,5 +1,5 @@
 
-export default class UserSettings extends CABLES.EventTarget
+class UserSettings extends CABLES.EventTarget
 {
     constructor()
     {
@@ -98,3 +98,8 @@ export default class UserSettings extends CABLES.EventTarget
         return this._settings;
     }
 }
+
+
+const userSettings = new UserSettings();
+
+export default userSettings;

@@ -7,6 +7,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import SuggestPortDialog from "./suggestionportdialog";
 import text from "../text";
+import userSettings from "./usersettings";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -1152,7 +1153,7 @@ export default class PatchView extends CABLES.EventTarget
                     {
                         let x = json.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (CABLES.UI.userSettings.get("snapToGrid"))
+                        if (userSettings.get("snapToGrid"))
                         {
                             x = gui.patchView.snapOpPosX(x);
                             y = gui.patchView.snapOpPosY(y);
@@ -1234,7 +1235,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
+            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1250,7 +1251,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
+            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }

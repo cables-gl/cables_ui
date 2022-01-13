@@ -1,5 +1,6 @@
+import userSettings from "./usersettings";
 
-const helperMeshes= {};
+const helperMeshes = {};
 helperMeshes.count = 0;
 
 export default helperMeshes;
@@ -467,8 +468,8 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
 helperMeshes.drawMarkerLayer = function (cgl, size)
 {
-    CABLES.UI.renderHelper = CABLES.UI.userSettings.get("helperMode");
-    CABLES.UI.renderHelperCurrent = CABLES.UI.userSettings.get("helperModeCurrentOp");
+    CABLES.UI.renderHelper = userSettings.get("helperMode");
+    CABLES.UI.renderHelperCurrent = userSettings.get("helperModeCurrentOp");
 
     if (!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper) return;
 

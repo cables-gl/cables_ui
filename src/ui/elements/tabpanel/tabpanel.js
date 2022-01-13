@@ -1,3 +1,4 @@
+import userSettings from "../../components/usersettings";
 import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class TabPanel extends CABLES.EventTarget
@@ -195,13 +196,13 @@ export default class TabPanel extends CABLES.EventTarget
 
     loadCurrentTabUsersettings()
     {
-        // console.log("load current tab", CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId));
+        // console.log("load current tab", userSettings.get("tabsLastTitle_" + this._eleId));
 
         for (let i = 0; i < this._tabs.length; i++)
         {
-            // console.log(CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId), this._tabs[i].title, CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title);
+            // console.log(userSettings.get("tabsLastTitle_" + this._eleId), this._tabs[i].title, userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title);
 
-            if (CABLES.UI.userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
+            if (userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
                 this.activateTab(this._tabs[i].id);
         }
     }
@@ -211,7 +212,7 @@ export default class TabPanel extends CABLES.EventTarget
         const activeTab = this.getActiveTab();
 
         if (!activeTab) return;
-        CABLES.UI.userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
+        userSettings.set("tabsLastTitle_" + this._eleId, activeTab.title);
     }
 
     getTabByDataId(dataId)

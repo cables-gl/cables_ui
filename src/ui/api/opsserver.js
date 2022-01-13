@@ -5,6 +5,7 @@ import EditorTab from "../components/tabs/tab_editor";
 import CoreLibLoader from "./corelibloader";
 import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
+import userSettings from "../components/usersettings";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -23,11 +24,11 @@ export default class ServerOps
             {
                 // gui.jobs().start("open op editor" + name);
                 CABLES.editorSession.startLoadingTab();
-                const lastTab = CABLES.UI.userSettings.get("editortab");
+                const lastTab = userSettings.get("editortab");
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
-                    CABLES.UI.userSettings.set("editortab", lastTab);
+                    userSettings.set("editortab", lastTab);
                     CABLES.editorSession.finishLoadingTab();
                     // gui.jobs().finish("open op editor" + name);
                 });
@@ -50,11 +51,11 @@ export default class ServerOps
 
                 if (name.includes("att_") && data && data.opname)
                 {
-                    const lastTab = CABLES.UI.userSettings.get("editortab");
+                    const lastTab = userSettings.get("editortab");
                     this.editAttachment(data.opname, attName, false, () =>
                     {
                         gui.mainTabs.activateTabByName(lastTab);
-                        CABLES.UI.userSettings.set("editortab", lastTab);
+                        userSettings.set("editortab", lastTab);
                         CABLES.editorSession.finishLoadingTab();
                         // gui.jobs().finish("open att editor" + attName);
                     }, true);
@@ -612,7 +613,7 @@ export default class ServerOps
 
                 if (editorObj)
                 {
-                    const lastTab = CABLES.UI.userSettings.get("editortab");
+                    const lastTab = userSettings.get("editortab");
                     let inactive = false;
                     if (fromListener)
                     {

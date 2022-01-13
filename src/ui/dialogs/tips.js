@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 
 export default class Tips
 {
@@ -16,13 +17,13 @@ export default class Tips
 
     neverShow()
     {
-        CABLES.UI.userSettings.set("showTipps", false);
+        userSettings.set("showTipps", false);
         this.show();
     }
 
     showAlways()
     {
-        CABLES.UI.userSettings.set("showTipps", true);
+        userSettings.set("showTipps", true);
         this.show();
     }
 
@@ -54,13 +55,13 @@ export default class Tips
         html += "  <a onclick=\"gui.tips.next();\" class=\"greybutton\">next tip</a>";
 
         html += "  <div style=\"float:right;\"><br/>";
-        if (CABLES.UI.userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">do not show this on startup</a>";
+        if (userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">do not show this on startup</a>";
         else html += "<a onclick=\"gui.tips.showAlways();\" class=\"button-small\">show on startup again</a>";
         html += "  </div\">";
 
         html += "</div>";
 
-        new CABLES.UI.ModalDialog({"html":html, "nopadding": true});
+        new CABLES.UI.ModalDialog({ "html": html, "nopadding": true });
     }
 
     showOnce()
