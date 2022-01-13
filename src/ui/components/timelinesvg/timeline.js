@@ -1,3 +1,4 @@
+import MouseState from "../../glpatch/mousestate";
 import text from "../../text";
 
 export default function TimeLineGui()
@@ -992,8 +993,8 @@ export default function TimeLineGui()
         {
             event.buttons = event.which;
 
-            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
-            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
+            if (event.which == 3)event.buttons = MouseState.BUTTON_RIGHT;
+            if (event.which == 2)event.buttons = MouseState.BUTTON_WHEEL;
         }
 
         if (event.type == "touchmove" && event.originalEvent)

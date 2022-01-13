@@ -1,6 +1,7 @@
 
 import GlUiConfig from "./gluiconfig";
 import GlRect from "../gldraw/glrect";
+import MouseState from "./mousestate";
 
 export default class GlPort
 {
@@ -105,7 +106,7 @@ export default class GlPort
 
     _onMouseDown(e, rect)
     {
-        if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
+        if (e.buttons == MouseState.BUTTON_RIGHT) this._mouseButtonRightTimeDown = performance.now();
 
         this._glPatch.emitEvent("mouseDownOverPort", this, this._glop.id, this._port.name, e);
     }

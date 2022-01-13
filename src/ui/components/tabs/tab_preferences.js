@@ -69,12 +69,8 @@ export default class Preferences
         this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
         this.setSwitchValue("glpatch_showboundings", CABLES.UI.userSettings.get("glpatch_showboundings") || false);
 
-        // this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
-
         this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
-
         this.setSwitchValue("fontSizeOff", CABLES.UI.userSettings.get("fontSizeOff") || 0);
-
         this.setSwitchValue("bgpreviewTemp", CABLES.UI.userSettings.get("bgpreviewTemp"));
     }
 

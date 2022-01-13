@@ -1,5 +1,6 @@
 import glUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
+import MouseState from "./mousestate";
 
 
 export default class GlDragLine
@@ -29,7 +30,8 @@ export default class GlDragLine
         {
             if (!this.isActive) return;
 
-            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
+
+            if (this._button == MouseState.BUTTON_LEFT)
             {
             }
 
@@ -41,7 +43,7 @@ export default class GlDragLine
                 this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
             }
 
-            if ((this._button == CABLES.UI.MOUSE_BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == CABLES.UI.MOUSE_BUTTON_LEFT &&
+            if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {
                 let x = this._glPatch.viewBox.mousePatchX;
 
@@ -68,7 +70,7 @@ export default class GlDragLine
 
             this.setPort(glport, opid, portName);
             // }
-            // else if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            // else if (this._button == MouseState.BUTTON_RIGHT)
             // {
             //     this.setPort(glport, opid, portName);
             //     const glports = this._glPatch.getConnectedGlPorts(opid, portName);
@@ -83,11 +85,11 @@ export default class GlDragLine
         {
             this._button = e.buttons;
 
-            if (this._button == CABLES.UI.MOUSE_BUTTON_LEFT)
+            if (this._button == MouseState.BUTTON_LEFT)
             {
                 this.setPort(glport, opid, portName);
             }
-            else if (this._button == CABLES.UI.MOUSE_BUTTON_RIGHT)
+            else if (this._button == MouseState.BUTTON_RIGHT)
             {
                 this.setPort(glport, opid, portName);
                 const glports = this._glPatch.getConnectedGlPorts(opid, portName);
