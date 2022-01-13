@@ -961,6 +961,29 @@ export default class PatchView extends CABLES.EventTarget
                     }
                 }
             }
+
+            for (j = 0; j < ops[i].portsOut.length; j++)
+            {
+                if (ops[i].portsOut[j].links)
+                {
+                    k = ops[i].portsOut[j].links.length;
+                    while (k--)
+                    {
+                        if (ops[i].portsOut[j].links[k] && ops[i].portsOut[j].links[k].objIn && ops[i].portsOut[j].links[k].objOut)
+                        {
+                            if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objOut))
+                            {
+                                const p = selectedOps[0].patch.getOpById(ops[i].portsOut[j].links[k].objOut).getPort(ops[i].portsOut[j].links[k].portOut);
+                                ops[i].portsOut[j].links[k] = null;
+                                if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                {
+                                    ops[i].portsOut[j].value = p.get();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         const objStr = JSON.stringify({
