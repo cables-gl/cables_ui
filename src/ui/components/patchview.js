@@ -1005,17 +1005,31 @@ export default class PatchView extends CABLES.EventTarget
                             {
                                 let l = json.ops[j].portsIn[k].links.length;
                                 while (l--)
-                                {
                                     if (json.ops[j].portsIn[k].links[l] === null)
-                                    {
                                         json.ops[j].portsIn[k].links.splice(l, 1);
-                                    }
-                                }
 
                                 for (l in json.ops[j].portsIn[k].links)
                                 {
                                     if (json.ops[j].portsIn[k].links[l].objIn == searchID) json.ops[j].portsIn[k].links[l].objIn = newID;
                                     if (json.ops[j].portsIn[k].links[l].objOut == searchID) json.ops[j].portsIn[k].links[l].objOut = newID;
+                                }
+                            }
+                        }
+
+                    if (json.ops[j].portsOut)
+                        for (const k in json.ops[j].portsOut)
+                        {
+                            if (json.ops[j].portsOut[k].links)
+                            {
+                                let l = json.ops[j].portsOut[k].links.length;
+                                while (l--)
+                                    if (json.ops[j].portsOut[k].links[l] === null)
+                                        json.ops[j].portsOut[k].links.splice(l, 1);
+
+                                for (l in json.ops[j].portsOut[k].links)
+                                {
+                                    if (json.ops[j].portsOut[k].links[l].objIn == searchID) json.ops[j].portsOut[k].links[l].objIn = newID;
+                                    if (json.ops[j].portsOut[k].links[l].objOut == searchID) json.ops[j].portsOut[k].links[l].objOut = newID;
                                 }
                             }
                         }
@@ -1148,7 +1162,10 @@ export default class PatchView extends CABLES.EventTarget
         for (let j = 0; j < ops.length; j++)
         {
             if (j > 0) y += (ops[j].uiAttribs.height || CABLES.UI.uiConfig.opHeight) + 10;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(y));
+
+            y = this.snapOpPosY(y);
+
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
             this.testCollision(ops[j]);
         }
     }
@@ -1583,7 +1600,6 @@ export default class PatchView extends CABLES.EventTarget
             {
                 this.setSelectedOpById(origOp.id);
             }, 100);
-
 
             CABLES.UI.MODAL.show(html);
         } });
