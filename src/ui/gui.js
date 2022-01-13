@@ -250,6 +250,7 @@ export default class Gui
             });
             return true;
         }
+        if (this.showBackupSaveWarning()) return true;
         return false;
     }
 
@@ -263,6 +264,23 @@ export default class Gui
             );
             return true;
         }
+    }
+
+    showBackupSaveWarning()
+    {
+        if (!CABLES.sandbox.getPatchVersion()) return false;
+
+        const html = "You are overwriting your current patch with a backup! Are you sure?<br/><br/>" +
+            "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('');\"><span class=\"icon icon-save\"></span>Yes, save</a>&nbsp;&nbsp;" +
+            "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>No, save as a copy</a>&nbsp;&nbsp;" +
+            "<a class=\"button\" onclick=\"gui.closeModal();\">Cancel</a>&nbsp;&nbsp;";
+
+        new ModalDialog(
+            {
+                "title": "Saving Backup",
+                "html": html
+            });
+        return true;
     }
 
     canSaveInMultiplayer()

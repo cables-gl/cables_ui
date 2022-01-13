@@ -1,7 +1,7 @@
 import Logger from "../../utils/logger";
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
-
+import { hideToolTip, showToolTip } from "../../elements/tooltips";
 
 export default class MetaCode
 {
@@ -86,6 +86,8 @@ export default class MetaCode
                     doc.coreLibs = gui.serverOps.getCoreLibs(this._op.objName, false);
                     summary = gui.opDocs.getSummary(this._op.objName);
 
+                    const canEditOp = gui.serverOps.canEditOp(gui.user, this._op.objName);
+
                     if (this._op.objName.indexOf("User.") == -1)
                         this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + this._op.objName;
 
@@ -95,13 +97,38 @@ export default class MetaCode
                             "doc": doc,
                             "summary": summary,
                             "ownsOp": gui.serverOps.ownsOp(this._op.objName),
+                            "canEditOp": canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
                             "opserialized": this._op.getSerialized()
                         });
-                    this._tab.html(html);
 
+                    this._tab.html(html);
+                    console.log("CAN EDIT OP", canEditOp);
+                    if (!canEditOp)
+                    {
+                        const coreLibSelect = document.querySelector("#addcorelib");
+                        coreLibSelect.disabled = true;
+                        coreLibSelect.addEventListener("pointerenter", (event) =>
+                        {
+                            showToolTip(event.currentTarget, "you are not allowed to add corelibs to this op");
+                        });
+                        coreLibSelect.addEventListener("pointerleave", (event) =>
+                        {
+                            hideToolTip();
+                        });
+                        const opLibSelect = document.querySelector("#addoplib");
+                        opLibSelect.disabled = true;
+                        opLibSelect.addEventListener("pointerenter", (event) =>
+                        {
+                            showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+                        });
+                        opLibSelect.addEventListener("pointerleave", (event) =>
+                        {
+                            hideToolTip();
+                        });
+                    }
                     perf.finish();
                 },
                 () =>
