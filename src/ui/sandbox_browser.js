@@ -1,5 +1,7 @@
-import ModalDialog from './dialogs/modaldialog';
-import ChangelogToast from './dialogs/changelog';
+import ModalDialog from "./dialogs/modaldialog";
+import ChangelogToast from "./dialogs/changelog";
+import text from "./text";
+
 export default class SandboxBrowser extends CABLES.EventTarget
 {
     constructor(cfg)
@@ -135,8 +137,8 @@ export default class SandboxBrowser extends CABLES.EventTarget
             iziToast.error({
                 "position": "topRight",
                 "theme": "dark",
-                "title": CABLES.UI.TEXTS.notOptimizedBrowser_title,
-                "message": CABLES.UI.TEXTS.notOptimizedBrowser_text,
+                "title": text.notOptimizedBrowser_title,
+                "message": text.notOptimizedBrowser_text,
                 "progressBar": false,
                 "animateInside": false,
                 "close": true,
@@ -233,8 +235,8 @@ export default class SandboxBrowser extends CABLES.EventTarget
             new ModalDialog({
                 "showOkButton": true,
                 "title": "Backup",
-                "warning":true,
-                "text": CABLES.UI.TEXTS.projectBackupNotSaved,
+                "warning": true,
+                "text": text.projectBackupNotSaved,
             });
 
             return;

@@ -1,4 +1,5 @@
 import Tab from "../../elements/tabpanel/tab";
+import text from "../../text";
 import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Preferences
@@ -79,7 +80,7 @@ export default class Preferences
 
     show()
     {
-        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
+        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": text.preferences });
         this._tab.html(html);
         this.updateValues();
 

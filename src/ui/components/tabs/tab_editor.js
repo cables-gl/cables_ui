@@ -1,5 +1,6 @@
 import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
+import text from "../../text";
 
 export default class EditorTab
 {
@@ -38,12 +39,14 @@ export default class EditorTab
 
         this._editor = createEditor("editorcontent" + this._tab.id, options.content || "");
 
+
+        console.log(text);
         if (options.allowEdit)
         {
-            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+            if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
             if (!options.hideFormatButton)
             {
-                if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
+                if (options.onSave) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
             }
         }
         else

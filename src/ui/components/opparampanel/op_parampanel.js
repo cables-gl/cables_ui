@@ -2,6 +2,7 @@ import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
 import WatchPortVisualizer from "./watchPortVisualizer";
+import text from "../../text";
 
 
 export default class OpParampanel extends CABLES.EventTarget
@@ -206,7 +207,7 @@ export default class OpParampanel extends CABLES.EventTarget
             op,
             isBookmarked,
             "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(op.objName),
-            "texts": CABLES.UI.TEXTS,
+            "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
 
@@ -217,14 +218,14 @@ export default class OpParampanel extends CABLES.EventTarget
             "hasExample": hasScreenshot,
         });
 
-        gui.showInfo(CABLES.UI.TEXTS.patchSelectedOp);
+        gui.showInfo(text.patchSelectedOp);
 
         if (op.portsIn.length > 0)
         {
             html += getHandleBarHtml("params_ports_head", {
                 "dirStr": "in",
                 "title": "Input",
-                "texts": CABLES.UI.TEXTS,
+                "texts": text,
             });
 
             let lastGroup = null;
@@ -265,7 +266,7 @@ export default class OpParampanel extends CABLES.EventTarget
                     "portnum": i,
                     "isInput": true,
                     op,
-                    "texts": CABLES.UI.TEXTS,
+                    "texts": text,
                     "vars": op.patch.getVars(op.portsIn[i].type)
 
                 });
@@ -279,7 +280,7 @@ export default class OpParampanel extends CABLES.EventTarget
                 "dirStr": "out",
                 "title": "Output",
                 "op": op,
-                "texts": CABLES.UI.TEXTS,
+                "texts": text,
             });
 
             const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
@@ -424,7 +425,7 @@ export default class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));

@@ -8,6 +8,8 @@ import ModalDialog from "./dialogs/modaldialog";
 import ScUiMultiplayer from "./multiplayer/sc_ui_multiplayer";
 import ScUi from "./multiplayer/sc_ui";
 import ScConnection from "./multiplayer/sc_connection";
+import text from "./text";
+import ele from "./utils/ele";
 
 export default function startUi(cfg)
 {
@@ -147,8 +149,8 @@ export default function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
-                ele.byId("patchnavhelperEmpty").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_empty;
-                ele.byId("patchnavhelperBounds").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_outofbounds;
+                ele.byId("patchnavhelperEmpty").innerHTML = text.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = text.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 

@@ -1,3 +1,4 @@
+import text from "../../text";
 import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Tab extends CABLES.EventTarget
@@ -56,7 +57,7 @@ export default class Tab extends CABLES.EventTarget
 
     getSaveButton()
     {
-        for (let i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == CABLES.UI.TEXTS.editorSaveButton) return this.buttons[i];
+        for (let i = 0; i < this.buttons.length; i++) if (this.buttons[i].title == text.editorSaveButton) return this.buttons[i];
     }
 
     remove()

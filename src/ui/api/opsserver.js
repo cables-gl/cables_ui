@@ -4,6 +4,7 @@ import Logger from "../utils/logger";
 import EditorTab from "../components/tabs/tab_editor";
 import CoreLibLoader from "./corelibloader";
 import ModalDialog from "../dialogs/modaldialog";
+import text from "../text";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -692,7 +693,7 @@ export default class ServerOps
     {
         if (gui.isGuestEditor())
         {
-            CABLES.UI.MODAL.showError("Demo Editor", CABLES.UI.TEXTS.guestHint);
+            CABLES.UI.MODAL.showError("Demo Editor", text.guestHint);
             return;
         }
 

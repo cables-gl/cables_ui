@@ -6,6 +6,7 @@ import gluiconfig from "../glpatch/gluiconfig";
 import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import SuggestPortDialog from "./suggestionportdialog";
+import text from "../text";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -426,7 +427,7 @@ export default class PatchView extends CABLES.EventTarget
 
             ele.byId(gui.getParamPanelEleId()).innerHTML = html;
             gui.setTransformGizmo(null);
-            gui.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+            gui.showInfo(text.patchSelectedMultiOps);
         }
         else
         {
@@ -1587,7 +1588,6 @@ export default class PatchView extends CABLES.EventTarget
 
             html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
 
-
             let htmlList = "";
             htmlList += "<table>";
             for (let i = 0; i < origOp.portsIn.length; i++)
@@ -1615,7 +1615,6 @@ export default class PatchView extends CABLES.EventTarget
                     htmlList += "NOT FOUND in new version!";
                     allFine = false;
                 }
-                // else htmlList += "found in new version";
 
                 htmlList += "</td>";
                 htmlList += "</tr>";

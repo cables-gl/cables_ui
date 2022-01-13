@@ -44,7 +44,7 @@ import EditorTab from "./components/tabs/tab_editor";
 import Chat from "./components/tabs/tab_chat";
 import MetaOpParams from "./components/tabs/meta_opparams";
 import ServerOps from "./api/opsserver";
-import text from "./text.json";
+
 import EditorSession from "./elements/tabpanel/editor_session";
 import defaultops from "./defaultops";
 import { arrayContains, uniqueArray } from "./utils/helper";
@@ -83,6 +83,7 @@ import extendCoreAnim from "./components/timelinesvg/core_anim_extend";
 import TimeLineGui from "./components/timelinesvg/timeline";
 import oldModalWrap from "./dialogs/modal_old_wrap";
 import { copyArray } from "../../../cables/src/core/utils";
+import text from "./text";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -144,7 +145,7 @@ CABLES.fileUploader = new FileUploader();
 CABLES.editorSession = new EditorSession();
 
 CABLES.UI.TIPS = text.tips;
-CABLES.UI.TEXTS = text.text;
+CABLES.UI.TEXTS = text;
 
 CABLES.UI.ModalDialog = ModalDialog; // needs to stay - is used in ops
 CABLES.UI.ModalLoading = ModalLoading;

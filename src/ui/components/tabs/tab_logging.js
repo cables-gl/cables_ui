@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
+import text from "../../text";
 
 export default class LoggingTab extends CABLES.EventTarget
 {
@@ -19,7 +19,7 @@ export default class LoggingTab extends CABLES.EventTarget
 
     _html()
     {
-        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
+        const html = getHandleBarHtml("tab_logging", { "user": gui.user, "texts": text.preferences, "info": CABLES.UI.logFilter.getTabInfo() });
         this._tab.html(html);
     }
 }

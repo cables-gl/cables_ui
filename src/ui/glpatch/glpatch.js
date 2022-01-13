@@ -16,6 +16,7 @@ import QuickLinkSuggestion from "./quicklinksuggestion";
 import GlPreviewLayer from "./glpreviewlayer";
 import Logger from "../utils/logger";
 import ele from "../utils/ele";
+import text from "../text";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -518,7 +519,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this.unselectAll();
             gui.patchView.showDefaultPanel();
-            gui.showInfo(CABLES.UI.TEXTS.patch);
+            gui.showInfo(text.patch);
 
             if (CABLES.UI.userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }

@@ -1,3 +1,4 @@
+import text from "../text";
 import ele from "../utils/ele";
 
 export default class BottomInfoAreaBar extends CABLES.EventTarget
@@ -46,7 +47,6 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     replaceShortcuts(txt)
     {
-
         txt = mmd(txt || "");
 
         txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
@@ -78,21 +78,19 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         }
 
 
-
         return txt;
     }
 
 
-
     setContent(txt)
     {
-        txt = txt || CABLES.UI.TEXTS.infoArea || "";
+        txt = txt || text.infoArea || "";
 
         if (this._txt == txt) return;
 
         this._txt = txt;
         txt = txt.replaceAll("||", "\n\n* ");
-        txt=this.replaceShortcuts(txt);
+        txt = this.replaceShortcuts(txt);
 
         this._eleInfoArea.classList.remove("hidden");
         this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\"> " + txt + "</div>";
@@ -101,7 +99,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
     hoverInfoEle(e)
     {
         let txt = e.target.dataset.info;
-        if(CABLES.UI.TEXTS[e.target.dataset.info]) txt = CABLES.UI.TEXTS[e.target.dataset.info];
+        if (text[e.target.dataset.info]) txt = text[e.target.dataset.info];
         // if (!txt) txt = ele.byId("infoArea").dataset.info;
 
         this.setContent(txt);

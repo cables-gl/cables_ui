@@ -1,8 +1,9 @@
 import ele from "../utils/ele";
 import Logger from "../utils/logger";
-import ItemManager from './tabs/tab_item_manager';
-import { getHandleBarHtml } from '../utils/handlebars';
-import ModalDialog from '../dialogs/modaldialog';
+import ItemManager from "./tabs/tab_item_manager";
+import { getHandleBarHtml } from "../utils/handlebars";
+import ModalDialog from "../dialogs/modaldialog";
+import text from "../text";
 
 export default class FileManager
 {
@@ -333,7 +334,7 @@ export default class FileManager
     {
         if (gui.isGuestEditor())
         {
-            if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (CABLES.UI.TEXTS.guestHint);
+            if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (text.guestHint);
             return;
         }
 

@@ -1,13 +1,14 @@
+import text from "../../text";
+import ele from "../../utils/ele";
 
 let pointerLockFirstTime = true;
 
 
 export default valueChanger;
 
-function valueChanger (eleId, focus, portName, opid)
+function valueChanger(eleId, focus, portName, opid)
 {
-
-    gui.showInfo(CABLES.UI.TEXTS.valueChangerInput);
+    gui.showInfo(text.valueChangerInput);
 
     const eleInput = ele.byId(eleId);
     const eleContainer = ele.byId(eleId + "-container");
@@ -317,4 +318,4 @@ function valueChanger (eleId, focus, portName, opid)
 
         if (eleInput.classList.contains("valuesliderinput"))setProgress();
     }
-};
+}

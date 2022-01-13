@@ -1,8 +1,9 @@
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
 import { getHandleBarHtml } from "../utils/handlebars";
-import ModalBackground from './modalbg';
-import OpTreeList from '../components/opselect_treelist';
+import ModalBackground from "./modalbg";
+import OpTreeList from "../components/opselect_treelist";
+import text from "../text";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -31,14 +32,14 @@ export default class OpSelect
         this._searchInputEle = null;
         this._enterPressedEarly = false;
         this._searching = false;
-        this._bg=new ModalBackground();
+        this._bg = new ModalBackground();
         this._escapeListener = null;
     }
 
     close()
     {
         gui.patchView.focus();
-        ele.hide()
+        ele.hide();
         this._bg.hide();
         ele.hide(ele.byId("opsearchmodal"));
     }
@@ -268,7 +269,7 @@ export default class OpSelect
             }
 
             this._wordsDb = Object.keys(buildWordDB);
-            this._wordsDb.sort((a, b) => b.length - a.length);
+            this._wordsDb.sort((a, b) => { return b.length - a.length; });
         }
 
         if (this._wordsDb) // search through word db
@@ -475,7 +476,7 @@ export default class OpSelect
 
             ele.byId("opsearchmodal").innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": CABLES.UI.TEXTS });
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": text });
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
 
@@ -545,7 +546,6 @@ export default class OpSelect
         if (!this._list || !this._html) this.prepare();
 
         ele.hide(ele.byId("search_noresults"));
-
 
 
         this._bg.show();
@@ -712,7 +712,6 @@ export default class OpSelect
     {
         if (opname && opname.length > 2)
         {
-
             this._newOpOptions.createdLocally = true;
 
             this.close();
@@ -739,11 +738,11 @@ export default class OpSelect
         // case 27:
         //     this.close();
         //     e.preventDefault();
-            // console.log("opselect input escape!");
+        // console.log("opselect input escape!");
 
-            // gui.pressedEscape();
+        // gui.pressedEscape();
 
-            // break;
+        // break;
 
         case 13:
 
@@ -879,7 +878,7 @@ export default class OpSelect
         const ops = this._getop([], "Ops", Ops, "");
         // getop('Op',CABLES.Op,'');
 
-        ops.sort((a, b) => b.pop - a.pop,
+        ops.sort((a, b) => { return b.pop - a.pop; },
             // return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
         );
 

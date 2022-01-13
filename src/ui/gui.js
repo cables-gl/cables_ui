@@ -31,6 +31,7 @@ import WatchArrayTab from "./components/tabs/tab_watcharray";
 import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import { showInfo } from "./elements/tooltips";
 import ele from "./utils/ele";
+import text from "./text";
 
 export default class Gui
 {
@@ -260,7 +261,7 @@ export default class Gui
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                CABLES.UI.TEXTS.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+                text.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
             );
             return true;
         }
@@ -1387,7 +1388,7 @@ export default class Gui
 
         this._elGlCanvasDom.addEventListener("pointerenter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.canvas);
+            gui.showInfo(text.canvas);
         });
 
         this._elGlCanvasDom.addEventListener("pointerleave", (e) =>
@@ -1685,7 +1686,7 @@ export default class Gui
 
         ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.undevLogo);
+            gui.showInfo(text.undevLogo);
         });
         ele.byId("undev").addEventListener("pointerLeave", (e) =>
         {
@@ -1694,7 +1695,7 @@ export default class Gui
 
         ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.timelineui);
+            gui.showInfo(text.timelineui);
         });
 
         ele.byId("timelineui").addEventListener("pointerLeave", (e) =>

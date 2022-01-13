@@ -1,5 +1,6 @@
 import GlUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
+import text from "../text";
 
 export default class GlCable
 {
@@ -475,7 +476,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText)
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
-            gui.showInfo(CABLES.UI.TEXTS.linkAddCircle);
+            gui.showInfo(text.linkAddCircle);
 
             perf.finish();
             return true;
