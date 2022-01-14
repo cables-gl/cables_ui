@@ -998,6 +998,7 @@ export default class PatchView extends CABLES.EventTarget
 
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
+        const currentSubPatch = this.getCurrentSubPatch();
         this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
@@ -1130,7 +1131,7 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
 
-            for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
+            // for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
 
 
             { // change position of ops to paste
@@ -1188,6 +1189,9 @@ export default class PatchView extends CABLES.EventTarget
             next(json.ops, focusSubpatchop);
         });
         CABLES.UI.undo.endGroup(undoGroup, "Paste");
+
+        this.setCurrentSubPatch(currentSubPatch);
+        this.unselectOpsFromOtherSubpatches();
     }
 
 
@@ -1454,6 +1458,20 @@ export default class PatchView extends CABLES.EventTarget
     unselectAllOps()
     {
         this._patchRenderer.unselectAll();
+    }
+
+    unselectOpsFromOtherSubpatches()
+    {
+        const ops = this.getSelectedOps();
+        console.log(this.getSelectedOps().length);
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs.subPatch != this.getCurrentSubPatch())
+            {
+                ops[i].setUiAttribs({ "selected": false });
+            }
+        }
+        console.log(this.getSelectedOps().length);
     }
 
     selectOpId(id)
