@@ -24,6 +24,7 @@ export default class GlLink
         this._opIdOutput = opIdOutput;
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
+        this._subpatch = subpatch;
 
         this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
@@ -147,6 +148,8 @@ export default class GlLink
         this.update();
     }
 
+    get link() { return this._link; }
+
     get opIn() { return this._opIn; }
 
     get opOut() { return this._opOut; }
@@ -164,6 +167,8 @@ export default class GlLink
     get portIdIn() { return this._portIdInput; }
 
     get portIdOut() { return this._portIdOutput; }
+
+    get subPatch() { return this._subpatch; }
 
     updateLineStyle()
     {
@@ -245,8 +250,10 @@ export default class GlLink
         if (this._opOut) this._opOut.removeLink(this._id);
         if (this._opIn) this._opIn.removeLink(this._id);
 
-        this._cable.dispose();
-        this._buttonRect.dispose();
+        if (this._cable) this._cable.dispose();
+        this._cable = null;
+
+        if (this._buttonRect) this._buttonRect.dispose();
         this._buttonRect = null;
     }
 

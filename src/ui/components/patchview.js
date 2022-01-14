@@ -639,16 +639,15 @@ export default class PatchView extends CABLES.EventTarget
 
         patchOp.uiAttr({ "translate": trans });
 
-        let i, j, k;
-        for (i in selectedOps) selectedOps[i].uiAttribs.subPatch = patchId;
+        for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 
-        for (i = 0; i < selectedOps.length; i++)
+        for (let i = 0; i < selectedOps.length; i++)
         {
-            for (j = 0; j < selectedOps[i].portsIn.length; j++)
+            for (let j = 0; j < selectedOps[i].portsIn.length; j++)
             {
                 const theOp = selectedOps[i];
                 let found = null;
-                for (k = 0; k < theOp.portsIn[j].links.length; k++)
+                for (let k = 0; k < theOp.portsIn[j].links.length; k++)
                 {
                     const otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
                     const otherOp = otherPort.parent;
@@ -682,7 +681,7 @@ export default class PatchView extends CABLES.EventTarget
 
                 if (theOp.portsOut[j])
                 {
-                    for (k = 0; k < theOp.portsOut[j].links.length; k++)
+                    for (let k = 0; k < theOp.portsOut[j].links.length; k++)
                     {
                         const otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
                         if (otherPortOut)
