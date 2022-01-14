@@ -135,7 +135,7 @@ export default class GlLink
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
@@ -172,7 +172,10 @@ export default class GlLink
 
     updateLineStyle()
     {
-        this._cable.updateLineStyle();
+        this._cable.dispose();
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._glPatch.setDrawableColorByType(this._cable, this._type);
+        this.update();
     }
 
     updateVisible()
