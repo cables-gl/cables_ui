@@ -1,3 +1,5 @@
+import userSettings from "../components/usersettings";
+import text from "../text";
 import ele from "../utils/ele";
 
 export default class BottomInfoAreaBar extends CABLES.EventTarget
@@ -10,7 +12,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
         this._eleInfoArea = ele.byId("infoArea");
 
-        if (!CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
     }
 
@@ -23,13 +25,13 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     toggle()
     {
-        if (CABLES.UI.userSettings.get(this._SETTINGS_NAME)) this.openInfo();
+        if (userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
     }
 
     openInfo()
     {
-        CABLES.UI.userSettings.set(this._SETTINGS_NAME, false);
+        userSettings.set(this._SETTINGS_NAME, false);
         const wasShowing = this.showing;
 
         this.showing = true;
@@ -38,7 +40,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     closeInfo()
     {
-        CABLES.UI.userSettings.set(this._SETTINGS_NAME, true);
+        userSettings.set(this._SETTINGS_NAME, true);
         const wasShowing = this.showing;
         this.showing = false;
         if (wasShowing != this.showing) this.emitEvent("changed");
@@ -46,7 +48,6 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     replaceShortcuts(txt)
     {
-
         txt = mmd(txt || "");
 
         txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
@@ -78,21 +79,19 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         }
 
 
-
         return txt;
     }
 
 
-
     setContent(txt)
     {
-        txt = txt || CABLES.UI.TEXTS.infoArea || "";
+        txt = txt || text.infoArea || "";
 
         if (this._txt == txt) return;
 
         this._txt = txt;
         txt = txt.replaceAll("||", "\n\n* ");
-        txt=this.replaceShortcuts(txt);
+        txt = this.replaceShortcuts(txt);
 
         this._eleInfoArea.classList.remove("hidden");
         this._eleInfoArea.innerHTML = "<div class=\"infoareaContent\"> " + txt + "</div>";
@@ -101,7 +100,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
     hoverInfoEle(e)
     {
         let txt = e.target.dataset.info;
-        if(CABLES.UI.TEXTS[e.target.dataset.info]) txt = CABLES.UI.TEXTS[e.target.dataset.info];
+        if (text[e.target.dataset.info]) txt = text[e.target.dataset.info];
         // if (!txt) txt = ele.byId("infoArea").dataset.info;
 
         this.setContent(txt);

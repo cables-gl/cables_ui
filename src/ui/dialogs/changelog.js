@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 import Logger from "../utils/logger";
 
 export default class ChangelogToast
@@ -20,13 +21,13 @@ export default class ChangelogToast
 
             let firstTime = false;
 
-            if (!CABLES.UI.userSettings.get("changelogLastView"))
+            if (!userSettings.get("changelogLastView"))
             {
                 firstTime = true;
                 this._log.log("first time changelog!");
             }
 
-            CABLES.UI.userSettings.set("changelogLastView", obj.ts);
+            userSettings.set("changelogLastView", obj.ts);
 
             if (obj.items.length === 0)
             {

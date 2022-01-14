@@ -1,4 +1,5 @@
 import defaultops from "../defaultops";
+import text from "../text";
 import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class Bookmarks
@@ -91,7 +92,7 @@ export default class Bookmarks
                         elements[eli].classList.remove("icon-bookmark-filled");
                         elements[eli].classList.add("icon-bookmark");
                     }
-                    CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_removed);
+                    CABLES.UI.notify(text.bookmark_removed);
                     return;
                 }
             }
@@ -106,7 +107,7 @@ export default class Bookmarks
             }
 
             gui.patchView.centerSelectOp(id);
-            CABLES.UI.notify(CABLES.UI.TEXTS.bookmark_added);
+            CABLES.UI.notify(text.bookmark_added);
         }
     }
 

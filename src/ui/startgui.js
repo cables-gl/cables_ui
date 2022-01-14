@@ -8,6 +8,9 @@ import ModalDialog from "./dialogs/modaldialog";
 import ScUiMultiplayer from "./multiplayer/sc_ui_multiplayer";
 import ScUi from "./multiplayer/sc_ui";
 import ScConnection from "./multiplayer/sc_connection";
+import text from "./text";
+import ele from "./utils/ele";
+import userSettings from "./components/usersettings";
 
 export default function startUi(cfg)
 {
@@ -62,14 +65,14 @@ export default function startUi(cfg)
                 incrementStartup();
                 gui.opDocs = new OpDocs();
                 gui.opSelect().prepare();
-                CABLES.UI.userSettings.init();
+                userSettings.init();
                 incrementStartup();
 
                 gui.metaCode().init();
 
                 gui.metaDoc.init();
                 gui.opSelect().reload();
-                // gui.setMetaTab(CABLES.UI.userSettings.get("metatab") || 'doc');
+                // gui.setMetaTab(userSettings.get("metatab") || 'doc');
                 gui.showWelcomeNotifications();
                 incrementStartup();
                 gui.showUiElements();
@@ -81,9 +84,9 @@ export default function startUi(cfg)
 
                 CABLES.editorSession.open();
 
-                gui.setFontSize(CABLES.UI.userSettings.get("fontSizeOff"));
+                gui.setFontSize(userSettings.get("fontSizeOff"));
 
-                CABLES.UI.userSettings.addEventListener("onChange", function (key, v)
+                userSettings.addEventListener("onChange", function (key, v)
                 {
                     if (key == "fontSizeOff")
                     {
@@ -107,7 +110,7 @@ export default function startUi(cfg)
                     }
                 });
 
-                if (!CABLES.UI.userSettings.get("introCompleted"))gui.introduction.showIntroduction();
+                if (!userSettings.get("introCompleted"))gui.introduction.showIntroduction();
 
                 gui.bindKeys();
 
@@ -130,7 +133,7 @@ export default function startUi(cfg)
                 new HtmlInspector();
 
 
-                if (CABLES.UI.userSettings.get("timelineOpened") == true) gui.showTiming();
+                if (userSettings.get("timelineOpened") == true) gui.showTiming();
 
                 gui.maintabPanel.init();
 
@@ -138,7 +141,7 @@ export default function startUi(cfg)
 
                 setTimeout(() =>
                 {
-                    if (CABLES.UI.userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
+                    if (userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
                 }, 1000);
 
                 if (window.module) module = window.module; // electronn workaround/fix
@@ -147,8 +150,8 @@ export default function startUi(cfg)
 
                 gui.patchView.setCurrentSubPatch(0);
 
-                ele.byId("patchnavhelperEmpty").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_empty;
-                ele.byId("patchnavhelperBounds").innerHTML = CABLES.UI.TEXTS.patch_hint_overlay_outofbounds;
+                ele.byId("patchnavhelperEmpty").innerHTML = text.patch_hint_overlay_empty;
+                ele.byId("patchnavhelperBounds").innerHTML = text.patch_hint_overlay_outofbounds;
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 

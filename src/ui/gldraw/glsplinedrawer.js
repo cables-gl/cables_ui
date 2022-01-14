@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 
 export default class GlSplineDrawer
 {
@@ -734,7 +735,7 @@ export default class GlSplineDrawer
         let count = 0;
 
         let step = 0.001;
-        if (!CABLES.UI.userSettings.get("straightLines")) step = 0.01;
+        if (!userSettings.get("straightLines")) step = 0.01;
         const oneMinusStep = 1 - step;
         const l = oldArr.length * 3 - 3;
 

@@ -312,7 +312,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                      */
                     items.push({
                         "title": "exit multiplayer",
-                        "iconClass": "icon icon-log-out",
+                        "iconClass": "icon icon-exit",
                         "func": () => { this._connection.leaveMultiplayerSession(); }
                     });
                     CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
@@ -434,7 +434,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     items.push({
                         "title": "jump to cursor",
-                        "iconClass": "icon icon-mouse-pointer",
+                        "iconClass": "icon icon-mouse-cursor",
                         "func": () =>
                         {
                             const guiEvent = { "x": client.x, "y": client.y };
@@ -506,7 +506,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
                 items.push({
                     "title": title,
-                    "iconClass": "icon icon-monitor",
+                    "iconClass": "icon icon-remoteviewer",
                     "func": () => {}
                 });
             }

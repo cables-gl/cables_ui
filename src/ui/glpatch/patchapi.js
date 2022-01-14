@@ -1,6 +1,7 @@
 
 import GlLink from "./gllink";
 import Logger from "../utils/logger";
+import userSettings from "../components/usersettings";
 
 
 const DEFAULT_ACTIVITY = 1;
@@ -81,7 +82,7 @@ export default class GlPatchAPI
 
     updateFlowModeActivity()
     {
-        const flowMode = CABLES.UI.userSettings.get("glflowmode");
+        const flowMode = userSettings.get("glflowmode");
 
         if (flowMode == 0 && this._currentFlowMode != 0)
         {

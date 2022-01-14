@@ -31,6 +31,8 @@ import WatchArrayTab from "./components/tabs/tab_watcharray";
 import Gizmo from "./elements/canvasoverlays/transformgizmo";
 import { showInfo } from "./elements/tooltips";
 import ele from "./utils/ele";
+import text from "./text";
+import userSettings from "./components/usersettings";
 
 export default class Gui
 {
@@ -60,7 +62,7 @@ export default class Gui
         this.CANVASMODE_FULLSCREEN = 2;
         this.CANVASMODE_PATCHBG = 1;
         this._canvasMode = this.CANVASMODE_NORMAL;
-        this.editorWidth = CABLES.UI.userSettings.get("editorWidth") || 350;
+        this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
 
@@ -260,7 +262,7 @@ export default class Gui
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                CABLES.UI.TEXTS.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+                text.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
             );
             return true;
         }
@@ -630,7 +632,7 @@ export default class Gui
 
         if (this._elIconbarLeft)
         {
-            if (CABLES.UI.userSettings.get("hideSizeBar"))
+            if (userSettings.get("hideSizeBar"))
             {
                 this._elIconbarLeft.style.display = "none";
             }
@@ -835,7 +837,7 @@ export default class Gui
         this._showTiming = true;
         this.timeLine().show();
         this.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
+        userSettings.set("timelineOpened", this._showTiming);
     }
 
     showLoadingProgress(show)
@@ -863,17 +865,17 @@ export default class Gui
         this._showTiming = false;
         ele.hide(ele.byId("timing"));
         gui.setLayout();
-        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
+        userSettings.set("timelineOpened", this._showTiming);
     }
 
     toggleTiming()
     {
         gui.timeLine().hidden = false;
         ele.show(ele.byId("timing"));
-        CABLES.UI.userSettings.set("timelineOpened", true);
+        userSettings.set("timelineOpened", true);
 
         this._showTiming = !this._showTiming;
-        CABLES.UI.userSettings.set("timelineOpened", this._showTiming);
+        userSettings.set("timelineOpened", this._showTiming);
         // updateTimingIcon();
         this.setLayout();
         gui.timeLine().redraw();
@@ -980,13 +982,13 @@ export default class Gui
         if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
         let iconShowAllHelpers = "icon icon-check hidden";
-        if (CABLES.UI.userSettings.get("helperMode")) iconShowAllHelpers = "icon icon-check";
+        if (userSettings.get("helperMode")) iconShowAllHelpers = "icon icon-check";
 
         let iconShowCurrentOpHelper = "icon icon-check hidden";
-        if (CABLES.UI.userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "icon icon-check";
+        if (userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "icon icon-check";
 
         let iconCurrentOpTransform = "icon icon-check hidden";
-        if (CABLES.UI.userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "icon icon-check";
+        if (userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "icon icon-check";
 
         CABLES.contextMenu.show(
             {
@@ -1383,11 +1385,11 @@ export default class Gui
 
         ele.byId("menubar").classList.remove("hidden");
 
-        if (CABLES.UI.userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
+        if (userSettings.get("showUIPerf") == true) CABLES.UI.uiProfiler.show();
 
         this._elGlCanvasDom.addEventListener("pointerenter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.canvas);
+            gui.showInfo(text.canvas);
         });
 
         this._elGlCanvasDom.addEventListener("pointerleave", (e) =>
@@ -1395,7 +1397,7 @@ export default class Gui
             CABLES.UI.hideInfo();
         });
 
-        if (CABLES.UI.userSettings.get("presentationmode")) CABLES.CMD.UI.startPresentationMode();
+        if (userSettings.get("presentationmode")) CABLES.CMD.UI.startPresentationMode();
 
         if (this._corePatch.cgl.aborted)
         {
@@ -1403,13 +1405,13 @@ export default class Gui
             return;
         }
 
-        if (CABLES.UI.userSettings.get("fileManagerOpened") == true) this.showFileManager();
+        if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
         gui.iconBarLeft = new IconBar("sidebar_left");
         gui.iconBarPatchNav = new IconBar("sidebar_bottom");
         gui.iconBarTimeline = new IconBar("sidebar_timeline");
 
-        if (CABLES.UI.userSettings.get("showTipps") && CABLES.UI.userSettings.get("introCompleted")) gui.tips.show();
+        if (userSettings.get("showTipps") && userSettings.get("introCompleted")) gui.tips.show();
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
@@ -1557,7 +1559,7 @@ export default class Gui
     setTransformGizmo(params)
     {
         if (!this._gizmo) this._gizmo = new Gizmo(this.scene().cgl);
-        if (!CABLES.UI.userSettings.get("toggleHelperCurrentTransforms"))
+        if (!userSettings.get("toggleHelperCurrentTransforms"))
         {
             this._gizmo.set(null);
             return;
@@ -1587,7 +1589,7 @@ export default class Gui
         el.classList.remove("bgPatternGrey");
         el.classList.remove("bgPatternBlue");
 
-        el.classList.add(CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
+        el.classList.add(userSettings.get("bgpattern") || "bgPatternDark");
     }
 
     notIdling()
@@ -1685,7 +1687,7 @@ export default class Gui
 
         ele.byId("undev").addEventListener("pointerEnter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.undevLogo);
+            gui.showInfo(text.undevLogo);
         });
         ele.byId("undev").addEventListener("pointerLeave", (e) =>
         {
@@ -1694,7 +1696,7 @@ export default class Gui
 
         ele.byId("timelineui").addEventListener("pointerEnter", (e) =>
         {
-            gui.showInfo(CABLES.UI.TEXTS.timelineui);
+            gui.showInfo(text.timelineui);
         });
 
         ele.byId("timelineui").addEventListener("pointerLeave", (e) =>
@@ -1717,7 +1719,7 @@ export default class Gui
 
     updateTheme()
     {
-        if (CABLES.UI.userSettings.get("theme-bright")) document.body.classList.add("bright");
+        if (userSettings.get("theme-bright")) document.body.classList.add("bright");
         else document.body.classList.remove("bright");
     }
 

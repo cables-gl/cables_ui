@@ -15,7 +15,6 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseDownX = 0;
         this._mouseDownY = 0;
 
-
         canvas.addEventListener("pointerenter", (e) =>
         {
             this._mouseOverCanvas = true;
@@ -44,32 +43,33 @@ export default class MouseState extends CABLES.EventTarget
         });
     }
 
+
     get numFingers() { return this._numFingers; }
 
     get mouseOverCanvas() { return this._mouseOverCanvas; }
 
     get buttonAny() { return this._buttonStates[0] || this._buttonStates[1] || this._buttonStates[2] || this._buttonStates[3]; }
 
-    get buttonLeft() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_LEFT]; }
+    get buttonLeft() { return this._buttonStates[MouseState.BUTTON_LEFT]; }
 
-    get buttonRight() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]; }
+    get buttonRight() { return this._buttonStates[MouseState.BUTTON_RIGHT]; }
 
-    get buttonMiddle() { return this._buttonStates[CABLES.UI.MOUSE_BUTTON_WHEEL]; }
+    get buttonMiddle() { return this._buttonStates[MouseState.BUTTON_WHEEL]; }
 
 
     get buttonForScrolling()
     {
-        return this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT];
+        return this._buttonStates[MouseState.BUTTON_RIGHT];
     }
 
     get isDragging() { return this._isDragging; }
 
     getButton()
     {
-        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_LEFT]) return CABLES.UI.MOUSE_BUTTON_LEFT;
-        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_RIGHT]) return CABLES.UI.MOUSE_BUTTON_RIGHT;
-        if (this._buttonStates[CABLES.UI.MOUSE_BUTTON_WHEEL]) return CABLES.UI.MOUSE_BUTTON_WHEEL;
-        return CABLES.UI.MOUSE_BUTTON_NONE;
+        if (this._buttonStates[MouseState.BUTTON_LEFT]) return MouseState.BUTTON_LEFT;
+        if (this._buttonStates[MouseState.BUTTON_RIGHT]) return MouseState.BUTTON_RIGHT;
+        if (this._buttonStates[MouseState.BUTTON_WHEEL]) return MouseState.BUTTON_WHEEL;
+        return MouseState.BUTTON_NONE;
     }
 
     isButtonDown(button)
@@ -153,3 +153,8 @@ export default class MouseState extends CABLES.EventTarget
         this._setButtonsUp();
     }
 }
+
+MouseState.BUTTON_NONE = 0;
+MouseState.BUTTON_LEFT = 1;
+MouseState.BUTTON_RIGHT = 2;
+MouseState.BUTTON_WHEEL = 4;

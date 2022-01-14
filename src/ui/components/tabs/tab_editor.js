@@ -1,5 +1,7 @@
 import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
+import text from "../../text";
+import userSettings from "../usersettings";
 
 export default class EditorTab
 {
@@ -40,11 +42,9 @@ export default class EditorTab
 
         if (options.allowEdit)
         {
-            if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorSaveButton, this.save.bind(this));
+            if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
             if (!options.hideFormatButton)
-            {
-                if (options.onSave) this._tab.addButton(CABLES.UI.TEXTS.editorFormatButton, this.format.bind(this));
-            }
+                if (options.onSave) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
         }
         else
         {
@@ -86,7 +86,7 @@ export default class EditorTab
             {
                 this._editor.resize(true);
                 this._editor.focus();
-                CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+                userSettings.set("editortab", this._tab.editorObj.name);
             }.bind(this),
         );
 
@@ -94,7 +94,7 @@ export default class EditorTab
         // {
         //     if (!options.inactive)
         //     {
-        //         CABLES.UI.userSettings.set("editortab", this._tab.editorObj.name);
+        //         userSettings.set("editortab", this._tab.editorObj.name);
         //         gui.mainTabs.activateTab(this._tab.id);
         //     }
         // }, 100);
@@ -178,7 +178,7 @@ function createEditor(id, val)
         "showPrintMargin": false,
     });
 
-    if (!CABLES.UI.userSettings.get("theme-bright")) editor.setTheme("ace/theme/cables");
+    if (!userSettings.get("theme-bright")) editor.setTheme("ace/theme/cables");
 
     editor.session.setMode("ace/mode/javascript");
     editor.$blockScrolling = Infinity;

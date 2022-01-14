@@ -4,8 +4,10 @@ import PatchSaveServer from "../api/patchServerApi";
 import { notify, notifyError } from "../elements/notification";
 import gluiconfig from "../glpatch/gluiconfig";
 import { getHandleBarHtml } from "../utils/handlebars";
-import ModalDialog from '../dialogs/modaldialog';
-import SuggestPortDialog from './suggestionportdialog';
+import ModalDialog from "../dialogs/modaldialog";
+import SuggestPortDialog from "./suggestionportdialog";
+import text from "../text";
+import userSettings from "./usersettings";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -426,7 +428,7 @@ export default class PatchView extends CABLES.EventTarget
 
             ele.byId(gui.getParamPanelEleId()).innerHTML = html;
             gui.setTransformGizmo(null);
-            gui.showInfo(CABLES.UI.TEXTS.patchSelectedMultiOps);
+            gui.showInfo(text.patchSelectedMultiOps);
         }
         else
         {
@@ -961,6 +963,29 @@ export default class PatchView extends CABLES.EventTarget
                     }
                 }
             }
+
+            for (j = 0; j < ops[i].portsOut.length; j++)
+            {
+                if (ops[i].portsOut[j].links)
+                {
+                    k = ops[i].portsOut[j].links.length;
+                    while (k--)
+                    {
+                        if (ops[i].portsOut[j].links[k] && ops[i].portsOut[j].links[k].objIn && ops[i].portsOut[j].links[k].objOut)
+                        {
+                            if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objOut))
+                            {
+                                const p = selectedOps[0].patch.getOpById(ops[i].portsOut[j].links[k].objOut).getPort(ops[i].portsOut[j].links[k].portOut);
+                                ops[i].portsOut[j].links[k] = null;
+                                if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                {
+                                    ops[i].portsOut[j].value = p.get();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         const objStr = JSON.stringify({
@@ -1023,17 +1048,31 @@ export default class PatchView extends CABLES.EventTarget
                             {
                                 let l = json.ops[j].portsIn[k].links.length;
                                 while (l--)
-                                {
                                     if (json.ops[j].portsIn[k].links[l] === null)
-                                    {
                                         json.ops[j].portsIn[k].links.splice(l, 1);
-                                    }
-                                }
 
                                 for (l in json.ops[j].portsIn[k].links)
                                 {
                                     if (json.ops[j].portsIn[k].links[l].objIn == searchID) json.ops[j].portsIn[k].links[l].objIn = newID;
                                     if (json.ops[j].portsIn[k].links[l].objOut == searchID) json.ops[j].portsIn[k].links[l].objOut = newID;
+                                }
+                            }
+                        }
+
+                    if (json.ops[j].portsOut)
+                        for (const k in json.ops[j].portsOut)
+                        {
+                            if (json.ops[j].portsOut[k].links)
+                            {
+                                let l = json.ops[j].portsOut[k].links.length;
+                                while (l--)
+                                    if (json.ops[j].portsOut[k].links[l] === null)
+                                        json.ops[j].portsOut[k].links.splice(l, 1);
+
+                                for (l in json.ops[j].portsOut[k].links)
+                                {
+                                    if (json.ops[j].portsOut[k].links[l].objIn == searchID) json.ops[j].portsOut[k].links[l].objIn = newID;
+                                    if (json.ops[j].portsOut[k].links[l].objOut == searchID) json.ops[j].portsOut[k].links[l].objOut = newID;
                                 }
                             }
                         }
@@ -1114,7 +1153,7 @@ export default class PatchView extends CABLES.EventTarget
                     {
                         let x = json.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (CABLES.UI.userSettings.get("snapToGrid"))
+                        if (userSettings.get("snapToGrid"))
                         {
                             x = gui.patchView.snapOpPosX(x);
                             y = gui.patchView.snapOpPosY(y);
@@ -1167,7 +1206,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
 
-            y=this.snapOpPosY(y);
+            y = this.snapOpPosY(y);
 
             this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
             this.testCollision(ops[j]);
@@ -1196,7 +1235,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
+            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1212,7 +1251,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (CABLES.UI.userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
+            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
@@ -1550,7 +1589,6 @@ export default class PatchView extends CABLES.EventTarget
 
             html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
 
-
             let htmlList = "";
             htmlList += "<table>";
             for (let i = 0; i < origOp.portsIn.length; i++)
@@ -1578,7 +1616,6 @@ export default class PatchView extends CABLES.EventTarget
                     htmlList += "NOT FOUND in new version!";
                     allFine = false;
                 }
-                // else htmlList += "found in new version";
 
                 htmlList += "</td>";
                 htmlList += "</tr>";
@@ -1607,7 +1644,7 @@ export default class PatchView extends CABLES.EventTarget
 
 
             // CABLES.UI.MODAL.show(html);
-            new ModalDialog({"html":html});
+            new ModalDialog({ "html": html });
         } });
     }
 

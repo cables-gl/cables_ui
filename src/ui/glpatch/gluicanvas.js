@@ -1,6 +1,8 @@
 import glUiConfig from "./gluiconfig";
 import GlPatch from "./glpatch";
 import GlPatchAPI from "./patchapi";
+import GlAlwaysCheckError from "./glalwayscheckerror";
+import userSettings from "../components/usersettings";
 
 export default class GlUiCanvas
 {
@@ -20,7 +22,7 @@ export default class GlUiCanvas
         // this._zoom = GlUiConfig.zoomDefault;
 
         this.updateTheme();
-        CABLES.UI.userSettings.on("onchange", (key, value) =>
+        userSettings.on("onchange", (key, value) =>
         {
             this.updateTheme();
         });
@@ -52,6 +54,9 @@ export default class GlUiCanvas
                 "glCanvasResizeToWindow": false,
                 "canvas": { "alpha": true }
             });
+
+
+        // new GlAlwaysCheckError(this.patch.cgl);
 
         this.glPatch = new GlPatch(this.patch.cgl);
         this.patchApi = new GlPatchAPI(_patch, this.glPatch);
@@ -125,7 +130,7 @@ export default class GlUiCanvas
         {
             this.activityHigh();
             event.preventDefault();
-            // const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
+            // const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
 
             // let delta = CGL.getWheelSpeed(event);
             // delta *= wheelMultiplier;
@@ -271,6 +276,6 @@ export default class GlUiCanvas
 
     updateTheme()
     {
-        glUiConfig.setTheme(CABLES.UI.userSettings.get("theme-bright") == true);
+        glUiConfig.setTheme(userSettings.get("theme-bright") == true);
     }
 }

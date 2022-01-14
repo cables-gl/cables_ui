@@ -1,5 +1,6 @@
 import GlUiConfig from "./gluiconfig";
 import ele from "../utils/ele";
+import userSettings from "../components/usersettings";
 
 export default class GlViewBox
 {
@@ -52,7 +53,7 @@ export default class GlViewBox
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
-        this._drawBoundingRect = CABLES.UI.userSettings.get("glpatch_showboundings");
+        this._drawBoundingRect = userSettings.get("glpatch_showboundings");
     }
 
     setSize(w, h)
@@ -211,7 +212,7 @@ export default class GlViewBox
     {
         if (delta == 0) return;
 
-        const wheelMultiplier = CABLES.UI.userSettings.get("wheelmultiplier") || 1;
+        const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;

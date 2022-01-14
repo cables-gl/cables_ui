@@ -1,5 +1,7 @@
 import Tab from "../../elements/tabpanel/tab";
+import text from "../../text";
 import { getHandleBarHtml } from "../../utils/handlebars";
+import userSettings from "../usersettings";
 
 export default class Preferences
 {
@@ -42,44 +44,40 @@ export default class Preferences
 
     updateValues()
     {
-        this.setSwitchValue("snapToGrid", CABLES.UI.userSettings.get("snapToGrid"));
-        this.setSwitchValue("theme-bright", CABLES.UI.userSettings.get("theme-bright"));
-        this.setSwitchValue("bgpreview", CABLES.UI.userSettings.get("bgpreview"));
-        this.setSwitchValue("texpreviewSize", CABLES.UI.userSettings.get("texpreviewSize"));
-        this.setSwitchValue("linetype", CABLES.UI.userSettings.get("linetype") || "curved");
-        this.setSwitchValue("touchpadmode", CABLES.UI.userSettings.get("touchpadmode"));
-        this.setSwitchValue("presentationmode", CABLES.UI.userSettings.get("presentationmode"));
-        this.setSwitchValue("nobrowserWarning", CABLES.UI.userSettings.get("nobrowserWarning"));
-        this.setSwitchValue("introCompleted", CABLES.UI.userSettings.get("introCompleted"));
-        this.setSwitchValue("showTipps", CABLES.UI.userSettings.get("showTipps"));
-        this.setSwitchValue("showMinimap", CABLES.UI.userSettings.get("showMinimap"));
-        this.setSwitchValue("hideSizeBar", CABLES.UI.userSettings.get("hideSizeBar"));
+        this.setSwitchValue("snapToGrid", userSettings.get("snapToGrid"));
+        this.setSwitchValue("theme-bright", userSettings.get("theme-bright"));
+        this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
+        this.setSwitchValue("texpreviewSize", userSettings.get("texpreviewSize"));
+        this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
+        this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));
+        this.setSwitchValue("presentationmode", userSettings.get("presentationmode"));
+        this.setSwitchValue("nobrowserWarning", userSettings.get("nobrowserWarning"));
+        this.setSwitchValue("introCompleted", userSettings.get("introCompleted"));
+        this.setSwitchValue("showTipps", userSettings.get("showTipps"));
+        this.setSwitchValue("showMinimap", userSettings.get("showMinimap"));
+        this.setSwitchValue("hideSizeBar", userSettings.get("hideSizeBar"));
 
-        this.setSwitchValue("helperMode", CABLES.UI.userSettings.get("helperMode"));
-        this.setSwitchValue("noidlemode", CABLES.UI.userSettings.get("noidlemode"));
+        this.setSwitchValue("helperMode", userSettings.get("helperMode"));
+        this.setSwitchValue("noidlemode", userSettings.get("noidlemode"));
 
-        this.setInputValue("wheelmultiplier", CABLES.UI.userSettings.get("wheelmultiplier") || 1);
+        this.setInputValue("wheelmultiplier", userSettings.get("wheelmultiplier") || 1);
 
-        this.setSwitchValue("forceWebGl1", CABLES.UI.userSettings.get("forceWebGl1"));
+        this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
 
-        this.setSwitchValue("miniopselect", CABLES.UI.userSettings.get("miniopselect"));
+        this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
 
-        this.setSwitchValue("showOldOps", CABLES.UI.userSettings.get("showOldOps"));
-        this.setSwitchValue("glpatch_cursor", CABLES.UI.userSettings.get("glpatch_cursor"));
-        this.setSwitchValue("glpatch_showboundings", CABLES.UI.userSettings.get("glpatch_showboundings") || false);
+        this.setSwitchValue("showOldOps", userSettings.get("showOldOps"));
+        this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
+        this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
-        // this.setSwitchValue("wheelmode", CABLES.UI.userSettings.get("wheelmode") || 0);
-
-        this.setSwitchValue("bgpattern", CABLES.UI.userSettings.get("bgpattern") || "bgPatternDark");
-
-        this.setSwitchValue("fontSizeOff", CABLES.UI.userSettings.get("fontSizeOff") || 0);
-
-        this.setSwitchValue("bgpreviewTemp", CABLES.UI.userSettings.get("bgpreviewTemp"));
+        this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
+        this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
+        this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
     }
 
     show()
     {
-        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": CABLES.UI.TEXTS.preferences });
+        const html = getHandleBarHtml("tab_preferences", { "user": gui.user, "texts": text.preferences });
         this._tab.html(html);
         this.updateValues();
 
@@ -92,7 +90,7 @@ export default class Preferences
                 if (v === "true") v = true;
                 if (v === "false") v = false;
 
-                CABLES.UI.userSettings.set(e.target.dataset.setting, v);
+                userSettings.set(e.target.dataset.setting, v);
             });
         }
 
@@ -105,12 +103,12 @@ export default class Preferences
                 if (e.target.classList.contains("numberinput")) v = parseFloat(v);
                 if (v == v)
                 {
-                    CABLES.UI.userSettings.set(e.target.dataset.setting, v);
+                    userSettings.set(e.target.dataset.setting, v);
                 }
             });
         }
 
-        CABLES.UI.userSettings.addEventListener("onChange", () =>
+        userSettings.addEventListener("onChange", () =>
         {
             this.updateValues();
         });

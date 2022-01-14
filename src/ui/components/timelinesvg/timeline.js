@@ -1,12 +1,14 @@
+import MouseState from "../../glpatch/mousestate";
+import text from "../../text";
 
-export default function TimeLineGui ()
+export default function TimeLineGui()
 {
     const self = this;
 
-    CABLES.ANIM.MultiGraphKeyDisplayMode = CABLES.ANIM.MultiGraphKeyDisplayMode||true;
-    CABLES.ANIM.MoveMode = CABLES.ANIM.MoveMode||0;
-    CABLES.ANIM.TIMESCALE = CABLES.ANIM.TIMESCALE||100;
-    CABLES.ANIM.VALUESCALE = CABLES.ANIM.VALUESCALE||100;
+    CABLES.ANIM.MultiGraphKeyDisplayMode = CABLES.ANIM.MultiGraphKeyDisplayMode || true;
+    CABLES.ANIM.MoveMode = CABLES.ANIM.MoveMode || 0;
+    CABLES.ANIM.TIMESCALE = CABLES.ANIM.TIMESCALE || 100;
+    CABLES.ANIM.VALUESCALE = CABLES.ANIM.VALUESCALE || 100;
 
     let projectLength = 20;
     const tlEmpty = new CABLES.Anim();
@@ -991,8 +993,8 @@ export default function TimeLineGui ()
         {
             event.buttons = event.which;
 
-            if (event.which == 3)event.buttons = CABLES.UI.MOUSE_BUTTON_RIGHT;
-            if (event.which == 2)event.buttons = CABLES.UI.MOUSE_BUTTON_WHEEL;
+            if (event.which == 3)event.buttons = MouseState.BUTTON_RIGHT;
+            if (event.which == 2)event.buttons = MouseState.BUTTON_WHEEL;
         }
 
         if (event.type == "touchmove" && event.originalEvent)
@@ -1054,11 +1056,10 @@ export default function TimeLineGui ()
     ele.byId("timelinetime").addEventListener("click", this.timeLineTimeClick);
 
 
+    ele.byId("keyframe_previous").addEventListener("click", () => { this.jumpKey(-1); });
+    ele.byId("keyframe_next").addEventListener("click", () => { this.jumpKey(1); });
 
-    ele.byId("keyframe_previous").addEventListener("click", ()=>{this.jumpKey(-1);});
-    ele.byId("keyframe_next").addEventListener("click", ()=>{this.jumpKey(1);});
-
-    ele.byId("keyframe_meta").addEventListener("click", ()=>{gui.metaTabs.activateTabByName("keyframes")});
+    ele.byId("keyframe_meta").addEventListener("click", () => { gui.metaTabs.activateTabByName("keyframes"); });
 
 
     ele.byId("loop").addEventListener("click", this.toggleLoop);
@@ -1156,16 +1157,16 @@ export default function TimeLineGui ()
         if (e.target.nodeName != "INPUT")e.preventDefault();
     });
 
-    ele.byId("overviewtimeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_overview); });
+    ele.byId("overviewtimeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_overview); });
     ele.byId("overviewtimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timetimeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_frames); });
+    ele.byId("timetimeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_frames); });
     ele.byId("timetimeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timeline").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_keys); });
+    ele.byId("timeline").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_keys); });
     ele.byId("timeline").addEventListener("pointerleave", CABLES.UI.hideInfo);
 
-    ele.byId("timelineprogress").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_progress); });
+    ele.byId("timelineprogress").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_progress); });
     ele.byId("timelineprogress").addEventListener("pointerleave", CABLES.UI.hideInfo);
-    ele.byId("timelinetime").addEventListener("pointerenter", () => { gui.showInfo(CABLES.UI.TEXTS.timeline_time); });
+    ele.byId("timelinetime").addEventListener("pointerenter", () => { gui.showInfo(text.timeline_time); });
     ele.byId("timelinetime").addEventListener("pointerleave", CABLES.UI.hideInfo);
 
 
@@ -1740,4 +1741,4 @@ export default function TimeLineGui ()
             this.refresh();
         });
     }, 100);
-};
+}

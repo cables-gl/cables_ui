@@ -1,3 +1,5 @@
+import userSettings from "../../components/usersettings";
+
 /**
  * stores opened editors to reopen when loading ui
  * @namespace CABLES.EditorSession
@@ -21,7 +23,7 @@ export default class EditorSession
 
     store()
     {
-        CABLES.UI.userSettings.set("openEditors", this._openEditors);
+        userSettings.set("openEditors", this._openEditors);
     }
 
     loaded()
@@ -101,7 +103,7 @@ export default class EditorSession
         this.store();
         if (!skipSetEditorTab)
         {
-            CABLES.UI.userSettings.set("editortab", name);
+            userSettings.set("editortab", name);
         }
 
         return obj;
@@ -114,7 +116,7 @@ export default class EditorSession
      */
     open()
     {
-        const sessions = CABLES.UI.userSettings.get("openEditors");
+        const sessions = userSettings.get("openEditors");
 
         if (sessions)
         {

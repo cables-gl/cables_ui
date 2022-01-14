@@ -1,3 +1,4 @@
+import text from "../text";
 import ele from "../utils/ele";
 
 let tooltipTimeout = null;
@@ -109,10 +110,10 @@ function getPortDescription(thePort)
     else str += " <b>" + thePort.getName() + "</b> ";
     let strInfo = "";
 
-    if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += CABLES.UI.TEXTS.portDirIn;
-    if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += CABLES.UI.TEXTS.portDirOut;
-    if (thePort.isLinked()) strInfo += CABLES.UI.TEXTS.portMouseUnlink;
-    else strInfo += CABLES.UI.TEXTS.portMouseCreate;
+    if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += text.portDirIn;
+    if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += text.portDirOut;
+    if (thePort.isLinked()) strInfo += text.portMouseUnlink;
+    else strInfo += text.portMouseCreate;
     gui.showInfo(strInfo);
 
     return str;

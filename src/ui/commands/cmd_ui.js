@@ -1,7 +1,8 @@
-import GpuProfiler from '../components/tabs/tab_gpuprofiler';
-import Preferences from '../components/tabs/tab_preferences';
-import ChangelogToast from '../dialogs/changelog';
-import WatchVarTab from '../components/tabs/tab_watchvars';
+import GpuProfiler from "../components/tabs/tab_gpuprofiler";
+import Preferences from "../components/tabs/tab_preferences";
+import ChangelogToast from "../dialogs/changelog";
+import WatchVarTab from "../components/tabs/tab_watchvars";
+import userSettings from "../components/usersettings";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -81,20 +82,20 @@ CABLES_CMD_UI.showChat = function ()
 
 CABLES_CMD_UI.toggleBgTexturePreview = function ()
 {
-    CABLES.UI.userSettings.set("bgpreview", !CABLES.UI.userSettings.get("bgpreview"));
+    userSettings.set("bgpreview", !userSettings.get("bgpreview"));
 };
 
 CABLES_CMD_UI.hideMinimap = function ()
 {
-    CABLES.UI.userSettings.set("showMinimap", false);
+    userSettings.set("showMinimap", false);
     gui.hideMiniMap();
 };
 
 
 CABLES_CMD_UI.toggleMinimap = function ()
 {
-    CABLES.UI.userSettings.set("showMinimap", !CABLES.UI.userSettings.get("showMinimap"));
-    if (CABLES.UI.userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
+    userSettings.set("showMinimap", !userSettings.get("showMinimap"));
+    if (userSettings.get("showMinimap")) CABLES.CMD.PATCH.reload();
     else CABLES_CMD_UI.hideMinimap();
 };
 
@@ -131,7 +132,7 @@ CABLES_CMD_UI.centerPatchOps = function ()
 
 CABLES_CMD_UI.flowVis = function ()
 {
-    CABLES.UI.userSettings.set("glflowmode", !CABLES.UI.userSettings.get("glflowmode"));
+    userSettings.set("glflowmode", !userSettings.get("glflowmode"));
 };
 
 CABLES_CMD_UI.startPresentationMode = function ()
@@ -202,34 +203,34 @@ CABLES_CMD_UI.showBuildInfo = function ()
 //     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
 //     else document.getElementById("canvasIconTransforms").classList.remove("iconToggleActive");
 
-//     if(CABLES.UI.userSettings.get("helperMode")) document.getElementById("canvasIconHelper").classList.add("iconToggleActive");
+//     if(userSettings.get("helperMode")) document.getElementById("canvasIconHelper").classList.add("iconToggleActive");
 //     else document.getElementById("canvasIconHelper").classList.remove("iconToggleActive");
 // }
 
 
 CABLES_CMD_UI.toggleHelperCurrentTransform = function ()
 {
-    const mode = !CABLES.UI.userSettings.get("toggleHelperCurrentTransforms");
-    CABLES.UI.userSettings.set("toggleHelperCurrentTransforms", mode);
+    const mode = !userSettings.get("toggleHelperCurrentTransforms");
+    userSettings.set("toggleHelperCurrentTransforms", mode);
 };
 
 CABLES_CMD_UI.toggleHelperCurrent = function ()
 {
-    const mode = !CABLES.UI.userSettings.get("helperModeCurrentOp");
-    CABLES.UI.userSettings.set("helperModeCurrentOp", mode);
+    const mode = !userSettings.get("helperModeCurrentOp");
+    userSettings.set("helperModeCurrentOp", mode);
 };
 
 CABLES_CMD_UI.toggleHelper = function ()
 {
-    const mode = !CABLES.UI.userSettings.get("helperMode");
-    CABLES.UI.userSettings.set("helperMode", mode);
+    const mode = !userSettings.get("helperMode");
+    userSettings.set("helperMode", mode);
 };
 
 
 // CABLES_CMD_UI.toggleFloorGrid = function ()
 // {
-//     const mode=!CABLES.UI.userSettings.get("floorGrid");
-//     CABLES.UI.userSettings.set("floorGrid", mode);
+//     const mode=!userSettings.get("floorGrid");
+//     userSettings.set("floorGrid", mode);
 //     // CABLES_CMD_UI.updateCanvasIcons();
 // };
 
@@ -248,14 +249,14 @@ CABLES_CMD_UI.gradientTest = function ()
 
 CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
-    CABLES.UI.userSettings.set("snapToGrid", !CABLES.UI.userSettings.get("snapToGrid"));
+    userSettings.set("snapToGrid", !userSettings.get("snapToGrid"));
 };
 
 CABLES_CMD_UI.toggleIntroCompleted = function ()
 {
-    CABLES.UI.userSettings.set("introCompleted", !CABLES.UI.userSettings.get("introCompleted"));
+    userSettings.set("introCompleted", !userSettings.get("introCompleted"));
 
-    if (!CABLES.UI.userSettings.get("introCompleted")) gui.introduction.showIntroduction();
+    if (!userSettings.get("introCompleted")) gui.introduction.showIntroduction();
 };
 
 CABLES_CMD_UI.showAutomaton = function ()
@@ -272,7 +273,7 @@ CABLES_CMD_UI.showPreferences = function ()
 
 CABLES_CMD_UI.toggleTheme = function ()
 {
-    CABLES.UI.userSettings.set("theme-bright", !CABLES.UI.userSettings.get("theme-bright"));
+    userSettings.set("theme-bright", !userSettings.get("theme-bright"));
     gui.updateTheme();
 };
 

@@ -1,6 +1,6 @@
-import Logger from '../utils/logger';
+import Logger from "../utils/logger";
+import userSettings from "./usersettings";
 //
-
 
 
 const srcShaderFragment = "".endl()
@@ -143,7 +143,7 @@ export default class TexturePreviewer
         }.bind(this));
 
 
-        CABLES.UI.userSettings.addEventListener("onChange", (key, v) =>
+        userSettings.addEventListener("onChange", (key, v) =>
         {
             if (key == "texpreviewSize") this.setSize(v);
             if (key == "bgpreview") this.enableBgPreview(v);
@@ -266,7 +266,7 @@ export default class TexturePreviewer
     {
         if (size == undefined)
         {
-            size = CABLES.UI.userSettings.get("texpreviewSize");
+            size = userSettings.get("texpreviewSize");
             if (!size)size = 50;
         }
 
@@ -277,7 +277,7 @@ export default class TexturePreviewer
 
         this._ele.classList.add("bgpreviewScale" + size);
 
-        CABLES.UI.userSettings.set("texpreviewSize", size);
+        userSettings.set("texpreviewSize", size);
 
 
         document.getElementById("bgpreviewButtons").addEventListener("pointerenter", (e) =>
@@ -445,7 +445,7 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
-        if (!CABLES.UI.userSettings.get("bgpreview"))
+        if (!userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
             this._lastClicked = this.updateTexturePort(p);
@@ -530,7 +530,6 @@ export default class TexturePreviewer
 
         return this._texturePorts[idx];
     }
-
 }
 
 

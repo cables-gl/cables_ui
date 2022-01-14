@@ -1,6 +1,7 @@
 import GlUiConfig from "./gluiconfig";
 import GlCable from "./glcable";
 import Logger from "../utils/logger";
+import MouseState from "./mousestate";
 
 export default class GlLink
 {
@@ -24,7 +25,7 @@ export default class GlLink
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
 
-        this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;
+        this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
@@ -39,7 +40,7 @@ export default class GlLink
             const pressTime = performance.now() - this._buttonDownTime;
 
             if (
-                this._buttonDown == CABLES.UI.MOUSE_BUTTON_RIGHT &&
+                this._buttonDown == MouseState.BUTTON_RIGHT &&
                 this._mouseDownX - e.offsetX == 0 &&
                 this._mouseDownY - e.offsetY == 0 &&
                 pressTime < GlUiConfig.clickMaxDuration)
@@ -61,7 +62,7 @@ export default class GlLink
                 }
             }
 
-            if (this._buttonDown == CABLES.UI.MOUSE_BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
+            if (this._buttonDown == MouseState.BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
             {
                 const
                     opIn = gui.corePatch().getOpById(this._opIdInput),
@@ -92,12 +93,12 @@ export default class GlLink
                         } }, null, null, llink);
             }
 
-            this._buttonDown = CABLES.UI.MOUSE_BUTTON_NONE;
+            this._buttonDown = MouseState.BUTTON_NONE;
         });
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == CABLES.UI.MOUSE_BUTTON_RIGHT && e.altKey)
+            if (e.buttons == MouseState.BUTTON_RIGHT && e.altKey)
             {
                 const
                     opIn = gui.corePatch().getOpById(this._opIdInput),
