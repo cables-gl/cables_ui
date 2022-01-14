@@ -319,6 +319,7 @@ export default class GlOp extends CABLES.EventTarget
         this._needsUpdate = false;
     }
 
+
     setTitle(title, textWriter)
     {
         if (title == "") title = " ";
@@ -693,14 +694,17 @@ export default class GlOp extends CABLES.EventTarget
 
     update()
     {
-        if (!this._wasInCurrentSubpatch) return;
+        if (!this._wasInCurrentSubpatch)
+        {
+            this._setVisible();
+
+            return;
+        }
         let doUpdateSize = false;
 
 
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
-        {
             this._resizableArea = new GlArea(this._instancer, this);
-        }
 
         this._glRectNames.push("_glTitle");
 
@@ -783,6 +787,7 @@ export default class GlOp extends CABLES.EventTarget
                 this._glComment = null;
             }
         }
+
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
