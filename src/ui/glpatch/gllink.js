@@ -24,6 +24,7 @@ export default class GlLink
         this._opIdOutput = opIdOutput;
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
+        this._subpatch = subpatch;
 
         this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
@@ -134,7 +135,7 @@ export default class GlLink
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         this._opIn = null;
@@ -146,6 +147,8 @@ export default class GlLink
         this._glPatch.addLink(this);
         this.update();
     }
+
+    get link() { return this._link; }
 
     get opIn() { return this._opIn; }
 
@@ -165,9 +168,14 @@ export default class GlLink
 
     get portIdOut() { return this._portIdOutput; }
 
+    get subPatch() { return this._subpatch; }
+
     updateLineStyle()
     {
-        this._cable.updateLineStyle();
+        this._cable.dispose();
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._glPatch.setDrawableColorByType(this._cable, this._type);
+        this.update();
     }
 
     updateVisible()
@@ -245,8 +253,10 @@ export default class GlLink
         if (this._opOut) this._opOut.removeLink(this._id);
         if (this._opIn) this._opIn.removeLink(this._id);
 
-        this._cable.dispose();
-        this._buttonRect.dispose();
+        if (this._cable) this._cable.dispose();
+        this._cable = null;
+
+        if (this._buttonRect) this._buttonRect.dispose();
         this._buttonRect = null;
     }
 

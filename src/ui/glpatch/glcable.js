@@ -47,16 +47,10 @@ export default class GlCable
 
     updateLineStyle()
     {
-        this._oldx = 0;
-        this._oldy = 0;
-        this._oldx2 = 0;
-        this._oldy2 = 0;
+        this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
         this._tension = 0.1;
         this._curvedSimple = false;
-
-        // this.visible = false;
-
-
+        const oldLineType = this._linetype;
         this._linetype = this.LINETYPE_CURVED;
 
         if (userSettings.get("linetype") == "simple") this._linetype = this.LINETYPE_SIMPLE;
@@ -76,6 +70,7 @@ export default class GlCable
             this._linetype = this.LINETYPE_HANGING;
             this._tension = 0.3;
         }
+
 
         this._updateDistFromPort();
         this._updateLinePos();
@@ -174,7 +169,6 @@ export default class GlCable
     _updateLinePos()
     {
         this._updateDistFromPort();
-
 
         // "hanging" cables
         // this._splineDrawer.setSpline(this._splineIdx,
@@ -444,7 +438,9 @@ export default class GlCable
         const distance = Math.sqrt((distX * distX) + (distY * distY));
 
 
-        if (distance <= r)// && !this._glPatch.isMouseOverOp()
+        const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
+
+        if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {
             const selectedOp = gui.patchView.getSelectedOps()[0];
             if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;

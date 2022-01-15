@@ -1,7 +1,6 @@
 const loadedLibs = [];
 CABLES.onLoadedLib = {};
 
-
 export default class LibLoader
 {
     constructor(libnames, cb, options = {})

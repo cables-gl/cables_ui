@@ -407,6 +407,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
     }
 
+
     _onCanvasDblClick(e)
     {
         if (this._hoverOps.length > 0)

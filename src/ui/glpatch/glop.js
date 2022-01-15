@@ -4,6 +4,8 @@ import GlText from "../gldraw/gltext";
 import GlArea from "./glarea";
 import GlRect from "../gldraw/glrect";
 import userSettings from "../components/usersettings";
+import GlLinedrawer from "../gldraw/gllinedrawer";
+import GlLink from "./gllink";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -305,6 +307,31 @@ export default class GlOp extends CABLES.EventTarget
         if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
         if (attr.color) this._updateColors();
 
+        if (attr.subPatch)
+        {
+            for (const i in this._links)
+            {
+                if (this._links[i].subPatch != attr.subPatch)
+                {
+                    const link = this._links[i].link;
+
+                    this._links[i].dispose();
+
+                    this._links[i] = new GlLink(
+                        this._glPatch,
+                        link,
+                        link.id,
+                        link.portIn.parent.id,
+                        link.portOut.parent.id,
+                        link.portIn.name,
+                        link.portOut.name,
+                        link.portIn.id,
+                        link.portOut.id,
+                        link.portIn.type, this.isInCurrentSubPatch(), link.portIn.parent.uiAttribs.subPatch);
+                }
+            }
+        }
+
         this._needsUpdate = true;
     }
 
@@ -318,6 +345,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._needsUpdate) this.update();
         this._needsUpdate = false;
     }
+
 
     setTitle(title, textWriter)
     {
@@ -693,14 +721,17 @@ export default class GlOp extends CABLES.EventTarget
 
     update()
     {
-        if (!this._wasInCurrentSubpatch) return;
+        if (!this._wasInCurrentSubpatch)
+        {
+            this._setVisible();
+
+            return;
+        }
         let doUpdateSize = false;
 
 
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
-        {
             this._resizableArea = new GlArea(this._instancer, this);
-        }
 
         this._glRectNames.push("_glTitle");
 
@@ -783,6 +814,7 @@ export default class GlOp extends CABLES.EventTarget
                 this._glComment = null;
             }
         }
+
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);

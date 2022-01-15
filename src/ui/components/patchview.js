@@ -639,16 +639,15 @@ export default class PatchView extends CABLES.EventTarget
 
         patchOp.uiAttr({ "translate": trans });
 
-        let i, j, k;
-        for (i in selectedOps) selectedOps[i].uiAttribs.subPatch = patchId;
+        for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 
-        for (i = 0; i < selectedOps.length; i++)
+        for (let i = 0; i < selectedOps.length; i++)
         {
-            for (j = 0; j < selectedOps[i].portsIn.length; j++)
+            for (let j = 0; j < selectedOps[i].portsIn.length; j++)
             {
                 const theOp = selectedOps[i];
                 let found = null;
-                for (k = 0; k < theOp.portsIn[j].links.length; k++)
+                for (let k = 0; k < theOp.portsIn[j].links.length; k++)
                 {
                     const otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
                     const otherOp = otherPort.parent;
@@ -682,7 +681,7 @@ export default class PatchView extends CABLES.EventTarget
 
                 if (theOp.portsOut[j])
                 {
-                    for (k = 0; k < theOp.portsOut[j].links.length; k++)
+                    for (let k = 0; k < theOp.portsOut[j].links.length; k++)
                     {
                         const otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
                         if (otherPortOut)
@@ -999,6 +998,7 @@ export default class PatchView extends CABLES.EventTarget
 
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
+        const currentSubPatch = this.getCurrentSubPatch();
         this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
@@ -1131,7 +1131,7 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
 
-            for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
+            // for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
 
 
             { // change position of ops to paste
@@ -1189,6 +1189,9 @@ export default class PatchView extends CABLES.EventTarget
             next(json.ops, focusSubpatchop);
         });
         CABLES.UI.undo.endGroup(undoGroup, "Paste");
+
+        this.setCurrentSubPatch(currentSubPatch);
+        this.unselectOpsFromOtherSubpatches();
     }
 
 
@@ -1455,6 +1458,20 @@ export default class PatchView extends CABLES.EventTarget
     unselectAllOps()
     {
         this._patchRenderer.unselectAll();
+    }
+
+    unselectOpsFromOtherSubpatches()
+    {
+        const ops = this.getSelectedOps();
+        console.log(this.getSelectedOps().length);
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs.subPatch != this.getCurrentSubPatch())
+            {
+                ops[i].setUiAttribs({ "selected": false });
+            }
+        }
+        console.log(this.getSelectedOps().length);
     }
 
     selectOpId(id)

@@ -1,5 +1,8 @@
 import LibLoader from "./libloader";
 
+CABLES = CABLES || {};
+CABLES.UI = CABLES.UI || {};
+
 CABLES.UI.loadedCoreLibs = [];
 CABLES.onLoadedCoreLib = {};
 

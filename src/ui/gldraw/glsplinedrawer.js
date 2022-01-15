@@ -329,7 +329,7 @@ export default class GlSplineDrawer
     hideSpline(idx)
     {
         this._splines[idx].hidden = true;
-        for (let i = 0; i < this._splines[idx].points.length; i++) this._splines[idx].points[i] = 0;
+        if (this._splines[idx].points) for (let i = 0; i < this._splines[idx].points.length; i++) this._splines[idx].points[i] = 0;
         this._updateAttribsCoordinates(idx);
     }
 

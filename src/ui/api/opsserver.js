@@ -1,4 +1,3 @@
-
 import ModalLoading from "../dialogs/modalloading";
 import Logger from "../utils/logger";
 import EditorTab from "../components/tabs/tab_editor";
