@@ -67,14 +67,16 @@
             </table>
         {{/if}}
 
-        <select id="addcorelib">
-            <option value="">---</option>
-        {{#each coreLibs}}
-            <option value="{{.}}">{{.}}</option>
-        {{/each}}
-        <select>
+        <div class="libselect">
+            <select id="addcorelib">
+                <option value="">---</option>
+                {{#each coreLibs}}
+                <option value="{{.}}">{{.}}</option>
+                {{/each}}
+            <select>
+            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
+        </div>
 
-        <a class="button-small" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
 
@@ -97,13 +99,15 @@
             </table>
         {{/if}}
 
-        <select id="addoplib">
-            <option value="">---</option>
-            {{#each libs}}
+        <div class="libselect">
+            <select id="addoplib">
+                <option value="">---</option>
+                {{#each libs}}
                 <option value="{{.}}">{{.}}</option>
-            {{/each}}
-        <select>
-        <a class="button-small" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+                {{/each}}
+            <select>
+            <a class="button-small" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+        </div>
 
         <br /><br /><br />
 

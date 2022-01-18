@@ -157,6 +157,10 @@
     overflow-y: scroll;
 }
 
+#metatabpanel .libselect.inactive {
+    opacity: 0.5;
+}
+
 #maintabs
 {
     background-color:$background-color-dark;
