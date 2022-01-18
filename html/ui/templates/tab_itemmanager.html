@@ -273,7 +273,7 @@
             File Tools
             <br/><br/>
             {{#each file.converters}}
-                <a class="button" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
+                <a class="button" onclick="gui.showConverter('{{ id }}','{{ ../file.fileDb.projectId }}','{{ ../file.fileDb._id }}','{{ name }}', '{{ ../file.fileDb.name }}');"><span class="icon icon-refresh"></span>{{ name }}</a>
                 <br/>
             {{/each}}
         {{/if}}
