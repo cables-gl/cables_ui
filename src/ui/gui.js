@@ -1083,14 +1083,15 @@ export default class Gui
             }, el);
     }
 
-    showConverter(converterId, projectId, fileId, converterName)
+    showConverter(converterId, projectId, fileId, converterName, fileName = null)
     {
         const html = getHandleBarHtml(
             "params_convert", {
                 "converterId": converterId,
                 "converterName": converterName,
                 "projectId": projectId,
-                "fileId": fileId
+                "fileId": fileId,
+                "fileName": fileName
             });
 
         new ModalDialog({ "html": html });

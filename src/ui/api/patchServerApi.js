@@ -355,6 +355,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     "name": name,
                     "namespace": currentProject.namespace,
                     "data": uint8data,
+                    "fromBackup": !!CABLES.sandbox.getPatchVersion(),
                     "buildInfo": {
                         "core": CABLES.build,
                         "ui": CABLES.UI.build
