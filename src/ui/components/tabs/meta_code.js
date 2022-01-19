@@ -105,28 +105,24 @@ export default class MetaCode
                         });
 
                     this._tab.html(html);
-                    console.log("CAN EDIT OP", canEditOp);
                     if (!canEditOp)
                     {
-                        const coreLibSelect = document.querySelector("#addcorelib");
-                        coreLibSelect.disabled = true;
-                        coreLibSelect.addEventListener("pointerenter", (event) =>
+                        document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
                         {
-                            showToolTip(event.currentTarget, "you are not allowed to add corelibs to this op");
+                            opLibSelect.disabled = true;
+                            opLibSelect.addEventListener("pointerenter", (event) =>
+                            {
+                                showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+                            });
+                            opLibSelect.addEventListener("pointerleave", (event) =>
+                            {
+                                hideToolTip();
+                            });
                         });
-                        coreLibSelect.addEventListener("pointerleave", (event) =>
+
+                        document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
                         {
-                            hideToolTip();
-                        });
-                        const opLibSelect = document.querySelector("#addoplib");
-                        opLibSelect.disabled = true;
-                        opLibSelect.addEventListener("pointerenter", (event) =>
-                        {
-                            showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
-                        });
-                        opLibSelect.addEventListener("pointerleave", (event) =>
-                        {
-                            hideToolTip();
+                            select.classList.add("inactive");
                         });
                     }
                     perf.finish();

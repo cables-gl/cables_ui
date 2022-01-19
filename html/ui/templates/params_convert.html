@@ -8,6 +8,34 @@
 
         <form id="converterform">
 
+            {{#compare converterId '==' 'duplicate' }}
+            <div>
+                <table>
+                    <tr>
+                        <td>New Filename</td>
+                        <td>
+                            <input style="width: 60%" type="text" name="newName" value="{{ fileName }}" autofocus>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            {{/compare}}
+
+            {{#compare converterId '==' 'rename' }}
+            <div>
+                <table>
+                    <tr>
+                        <td>New Filename</td>
+                        <td>
+                            <input style="width: 60%" type="text" name="newName" value="{{ fileName }}" autofocus>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <br/>
+            {{/compare}}
+
             {{#compare converterId '==' 'gltf2draco' }}
 
             <table>
