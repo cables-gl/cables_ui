@@ -16,7 +16,19 @@ module.exports = (isLiveBuild) =>
         "optimization": { "minimize": isLiveBuild },
         "externals": ["CABLES"],
         "resolve": {
-            "extensions": [".json", ".js"],
+            "extensions": [".json", ".js", ".frag", ".vert"],
+        },
+        "module": {
+            "rules": [
+                {
+                    "test": /\.frag/,
+                    "use": "raw-loader",
+                },
+                {
+                    "test": /\.vert/,
+                    "use": "raw-loader",
+                }
+            ]
         },
     };
 };
