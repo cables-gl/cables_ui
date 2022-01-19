@@ -19,6 +19,16 @@ export default class CoreLibLoader extends LibLoader
             "basePath": CABLES.sandbox.getCablesUrl() + "/api/corelib/"
         });
     }
+
+    getCacheBusterNumber()
+    {
+        let timestamp = Date.now();
+        if (CABLESUILOADER.buildInfo && CABLESUILOADER.buildInfo.core && CABLESUILOADER.buildInfo.core.timestamp)
+        {
+            timestamp = CABLESUILOADER.buildInfo.core.timestamp;
+        }
+        return timestamp;
+    }
 }
 
 // this will be called from loaded lib files (api inject the call into js files...)

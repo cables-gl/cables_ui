@@ -273,7 +273,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
         const proj = this._cfg.patch;
 
 
-        for (const i in proj.userList) userOpsUrls.push(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i]));
+        for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i])));
 
         const lid = "userops" + proj._id + CABLES.generateUUID();
         loadjs.ready(lid, () =>
