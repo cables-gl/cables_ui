@@ -16,7 +16,7 @@ module.exports = (isLiveBuild) =>
         "optimization": { "minimize": isLiveBuild },
         "externals": ["CABLES"],
         "resolve": {
-            "extensions": [".json", ".js", ".frag", ".vert"],
+            "extensions": [".json", ".js"],
         },
         "module": {
             "rules": [
