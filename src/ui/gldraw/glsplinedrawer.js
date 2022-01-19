@@ -1,7 +1,7 @@
 import userSettings from "../components/usersettings";
 
-import srcShaderGlSplineDrawerFrag from "./shader_glsplinedrawer.frag";
-import srcShaderGlSplineDrawerVert from "./shader_glsplinedrawer.vert";
+import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
+import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";
 
 export default class GlSplineDrawer
 {

@@ -1,7 +1,7 @@
 import GlRect from "./glrect";
 import Logger from "../utils/logger";
-import srcShaderGlRectInstancerFrag from "./shader_glrectinstancer.frag";
-import srcShaderGlRectInstancerVert from "./shader_glrectinstancer.vert";
+import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
+import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 
 export default class GlRectInstancer extends CABLES.EventTarget
 {
