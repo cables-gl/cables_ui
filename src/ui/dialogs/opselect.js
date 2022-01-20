@@ -139,6 +139,17 @@ export default class OpSelect
             let found = false;
             let points = 0;
 
+
+            if (list[i].lowercasename.indexOf(query) > -1)
+            {
+                if (list[i].name == "Ops.Gl.MainLoop")
+                {
+                    found = true;
+                    scoreDebug += "+2 vip op<br/>";
+                    points += 2;
+                }
+            }
+
             if (list[i]._summary.indexOf(query) > -1)
             {
                 found = true;

@@ -7,19 +7,19 @@ class UiConfig
 {
     constructor()
     {
-        this.portSize= 10;
-        this.portHeight= 6;
-        this.portPadding= 2;
+        this.portSize = 10;
+        this.portHeight = 6;
+        this.portPadding = 2;
 
-        this.snapX= 12;
-        this.snapY= 20;
+        this.snapX = 12;
+        this.snapY = 20;
 
-        this.idleModeTimeout=180;
+        this.idleModeTimeout = 180;
 
 
-        this.timingPanelHeight=250;
-        this.rendererDefaultWidth=640;
-        this.rendererDefaultHeight=320;
+        this.timingPanelHeight = 250;
+        this.rendererDefaultWidth = 640;
+        this.rendererDefaultHeight = 320;
         // this.opWidth= 20;
         // this.opWidthSmall= 40;
 
@@ -35,11 +35,11 @@ class UiConfig
 
         // "highlight": "#52FDE1",
 
-        this.watchValuesInterval= 50; // 33
-        this.rendererSizes= [{ "w": 640, "h": 360 }, { "w": 1024, "h": 768 }, { "w": 1280, "h": 720 }, { "w": 0, "h": 0 }];
+        this.watchValuesInterval = 50; // 33
+        this.rendererSizes = [{ "w": 640, "h": 360 }, { "w": 1024, "h": 768 }, { "w": 1280, "h": 720 }, { "w": 0, "h": 0 }];
 
-        this.infoAreaHeight= 29;
+        this.infoAreaHeight = 29;
     }
-};
+}
 
 export default new UiConfig();
