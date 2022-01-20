@@ -18,5 +18,17 @@ module.exports = (isLiveBuild) =>
         "resolve": {
             "extensions": [".json", ".js"],
         },
+        "module": {
+            "rules": [
+                {
+                    "test": /\.frag/,
+                    "use": "raw-loader",
+                },
+                {
+                    "test": /\.vert/,
+                    "use": "raw-loader",
+                }
+            ]
+        },
     };
 };

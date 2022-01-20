@@ -31,7 +31,6 @@ export default class GlText
             for (let i = 0; i < this._font.chars.length; i++) this._font.characters[this._font.chars[i].char] = this._font.chars[i];
         }
 
-
         this.rebuild();
     }
 
@@ -99,7 +98,6 @@ export default class GlText
 
         for (let i = 0; i < this._rects.length; i++) if (this._rects[i]) this._rects[i].setColor(this._color);
     }
-
 
     rebuild()
     {

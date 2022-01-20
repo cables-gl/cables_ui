@@ -40,6 +40,16 @@ export default class LibLoader
         }
     }
 
+    getCacheBusterNumber()
+    {
+        let timestamp = Date.now();
+        if (CABLESUILOADER.buildInfo && CABLESUILOADER.buildInfo.api && CABLESUILOADER.buildInfo.api.timestamp)
+        {
+            timestamp = CABLESUILOADER.buildInfo.api.timestamp;
+        }
+        return timestamp;
+    }
+
     loadLib(name)
     {
         if (this.list.indexOf(name) === -1)
@@ -69,7 +79,7 @@ export default class LibLoader
                 newScript.dataset.libname = elRef;
                 newScript.type = "text/javascript";
                 newScript.async = true;
-                newScript.src = this.basePath + name;
+                newScript.src = this.basePath + name + "?nc=" + this.getCacheBusterNumber();
                 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newScript);
             }
         }

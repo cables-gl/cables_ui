@@ -1,7 +1,6 @@
 
 export default function extendCoreAnim()
 {
-
     CABLES.ANIM.Key.prototype.isUI = true;
     CABLES.ANIM.Key.prototype.circle = null;
     CABLES.ANIM.Key.prototype.circleBezierOut = null;
@@ -80,7 +79,7 @@ export default function extendCoreAnim()
 
         if (!gui.timeLine()) return;
         if (!this.circle) this.initUI();
-        if (this.getEasing() == CABLES.ANIM.EASING_BEZIER && !this.circleBezierOut) this.initUI();
+        if (this.getEasing() == CABLES.ANIM.EASING_CUBICSPLINE && !this.circleBezierOut) this.initUI();
 
         if (isNaN(this.value)) this.value = 0;
 
@@ -90,7 +89,7 @@ export default function extendCoreAnim()
         if (!this.showCircle) this.circle.hide();
         else this.circle.show();
 
-        if (this.getEasing() == CABLES.ANIM.EASING_BEZIER)
+        if (this.getEasing() == CABLES.ANIM.EASING_CUBICSPLINE)
         {
             const posBezX = this.x + this.bezTime * CABLES.ANIM.TIMESCALE;
             const posBezY = this.y + this.bezValue * CABLES.ANIM.VALUESCALE;
@@ -140,7 +139,7 @@ export default function extendCoreAnim()
             this.removeUi();
         }
 
-        if (this.getEasing() == CABLES.ANIM.EASING_BEZIER)
+        if (this.getEasing() == CABLES.ANIM.EASING_CUBICSPLINE)
         {
             if (!this.circleBezierOut)
                 this.circleBezierOut = gui.timeLine().getPaper().circle(this.bezX, this.bezY, 7);
@@ -316,12 +315,7 @@ export default function extendCoreAnim()
     };
 
 
-
-
-
     // -----------------------------------------------
-
-
 
 
     CABLES.Anim.prototype.hasSelectedKeys = function ()
@@ -419,5 +413,4 @@ export default function extendCoreAnim()
         this.sortKeys();
         gui.metaKeyframes.update();
     };
-
 }

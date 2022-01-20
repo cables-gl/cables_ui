@@ -540,8 +540,7 @@ export default class PatchView extends CABLES.EventTarget
             "minx": 9999999,
             "maxx": -9999999,
             "miny": 9999999,
-            "maxy": -9999999,
-        };
+            "maxy": -9999999 };
 
         for (let j = 0; j < ops.length; j++)
         {
@@ -598,8 +597,7 @@ export default class PatchView extends CABLES.EventTarget
         const padding = 80;
         const trans = {
             "x": gui.patchView.snapOpPosX(bounds.minx - 0.8 * padding),
-            "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding)
-        };
+            "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding) };
 
         const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
             "area": {
@@ -632,8 +630,7 @@ export default class PatchView extends CABLES.EventTarget
         const bounds = this.getSelectionBounds();
         const trans = {
             "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
-            "y": bounds.miny
-        };
+            "y": bounds.miny };
         const patchOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.subPatch, { "translate": trans });
         const patchId = patchOp.patchId.get();
 
@@ -662,8 +659,7 @@ export default class PatchView extends CABLES.EventTarget
                                 otherPort.parent,
                                 otherPort.getName(),
                                 patchOp,
-                                found
-                            );
+                                found);
                         }
                         else
                         {
@@ -671,8 +667,7 @@ export default class PatchView extends CABLES.EventTarget
                                 otherPort.parent,
                                 otherPort.getName(),
                                 patchOp,
-                                patchOp.dyn.name
-                            );
+                                patchOp.dyn.name);
 
                             found = patchOp.addSubLink(theOp.portsIn[j], otherPort);
                         }
@@ -694,8 +689,7 @@ export default class PatchView extends CABLES.EventTarget
                                     otherPortOut.parent,
                                     otherPortOut.getName(),
                                     patchOp,
-                                    patchOp.dynOut.name
-                                );
+                                    patchOp.dynOut.name);
                                 patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
                             }
                         }
@@ -1463,15 +1457,9 @@ export default class PatchView extends CABLES.EventTarget
     unselectOpsFromOtherSubpatches()
     {
         const ops = this.getSelectedOps();
-        console.log(this.getSelectedOps().length);
         for (let i = 0; i < ops.length; i++)
-        {
             if (ops[i].uiAttribs.subPatch != this.getCurrentSubPatch())
-            {
                 ops[i].setUiAttribs({ "selected": false });
-            }
-        }
-        console.log(this.getSelectedOps().length);
     }
 
     selectOpId(id)
