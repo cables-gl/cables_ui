@@ -300,7 +300,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         "iconClass": "icon icon-message",
                         "func": () => { CABLES.CMD.UI.showChat(); }
                     });
-                    /*
                     if (this._connection.client && this._connection.client.isPilot)
                     {
                         items.push({
@@ -309,7 +308,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             "func": () => { this._restoreLastSavedPatchVersion(); }
                         });
                     }
-                     */
                     items.push({
                         "title": "exit multiplayer",
                         "iconClass": "icon icon-exit",
@@ -389,8 +387,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _restoreLastSavedPatchVersion()
     {
-        console.log("RESTORE");
-        CABLES.UI.startUi(CABLESUILOADER.cfg);
+        CABLES.sandbox.reloadLastSavedVersion((err, project) =>
+        {
+            this._connection.startPacoSend();
+        });
     }
 
     _getUserInfoHtml()
