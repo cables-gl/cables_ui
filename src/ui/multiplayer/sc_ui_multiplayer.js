@@ -12,7 +12,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = 0;
         this._mouseTimeout = null;
 
-        this._followedClient = null;
+        this._firstPilotChange = true;
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
 
@@ -26,7 +26,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 if (pilot.clientId === this._connection.clientId)
                 {
                     username = "YOU are";
+                    // unfollow on becoming pilot
+                    this._connection.client.following = null;
                 }
+                else
+                {
+                    // follow the pilot
+                    this._connection.client.following = pilot.clientId;
+                }
+                this.updateHtml();
                 notify(username + " the pilot");
             }
         });
@@ -39,11 +47,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientRemoved", (msg) =>
         {
-            if (this._followedClient && this._followedClient.clientId === msg.clientId)
+            if (this._connection.client.following && this._connection.client.following === msg.clientId)
             {
-                this._followedClient = null;
                 const multiPlayerBar = document.getElementById("multiplayerbar");
                 if (multiPlayerBar) delete multiPlayerBar.dataset.multiplayerFollow;
+                this._connection.client.following = null;
             }
 
             this._connection.sendUi("netClientRemoved", msg, true);
@@ -184,7 +192,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netCursorPos", (msg) =>
         {
-            if (this._followedClient && msg.clientId == this._followedClient.clientId)
+            if (this._connection.client.following && msg.clientId === this._connection.client.following)
             {
                 gui.emitEvent("netGotoPos", msg);
             }
@@ -356,7 +364,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         ele.classList.remove("follower");
                     }
 
-                    if (this._followedClient && this._followedClient.clientId === ele.dataset.clientId)
+                    if (this._connection.client.following && this._connection.client.following === ele.dataset.clientId)
                     {
                         ele.classList.add("following");
                     }
@@ -457,14 +465,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
                 const multiPlayerBar = document.getElementById("multiplayerbar");
                 const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
-                if (this._followedClient && this._followedClient.clientId === clientId)
+                if (this._connection.client.following && this._connection.client.following === clientId)
                 {
                     items.push({
                         "title": "unfollow",
                         "iconClass": "icon icon-eye-off",
                         "func": () =>
                         {
-                            this._followedClient = null;
                             ele.classList.remove("following");
                             delete multiPlayerBar.dataset.multiplayerFollow;
                             this._connection.client.following = null;
@@ -478,7 +485,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         "iconClass": "icon icon-eye",
                         "func": () =>
                         {
-                            this._followedClient = client;
                             const userList = document.getElementById("nav-clientlist");
                             const userListItems = userList.querySelectorAll(".socket_userlist_item");
                             userListItems.forEach((item) => { return item.classList.remove("following"); });

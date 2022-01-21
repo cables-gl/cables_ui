@@ -41,7 +41,6 @@ export default class ScConnection extends CABLES.EventTarget
 
     get clients() { return this.state.clients; }
 
-
     get synced()
     {
         if (!this._pacoEnabled) { return true; }
@@ -298,10 +297,10 @@ export default class ScConnection extends CABLES.EventTarget
             "connectedSince": this._connectedSince,
             "isRemoteClient": gui.isRemoteClient
         };
-        if (this.multiplayerEnabled && this.state.clients[this.clientId])
+        if (this.multiplayerEnabled && this.client)
         {
-            payload.isPilot = this.state.clients[this.clientId].isPilot;
-            payload.following = this.state.clients[this.clientId].following;
+            payload.isPilot = this.client.isPilot;
+            payload.following = this.client.following;
         }
         if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)
         {
