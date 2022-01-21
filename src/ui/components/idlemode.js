@@ -13,6 +13,9 @@ const logger = new Logger("idlemode");
 
 function startIdleMode()
 {
+    if (gui.getCanvasMode() == gui.CANVASMODE_FULLSCREEN) return;
+    if (gui.patchView.hasFocus()) return;
+
     if (!CABLES.UI.loaded || !window.gui) return;
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
