@@ -181,6 +181,15 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("netActivityIn");
             }
         })();
+
+        window.addEventListener("beforeunload", () =>
+        {
+            this._log.verbose("sc will disconnect!");
+            if (this._socket && this._socket.destroy)
+            {
+                this._socket.destroy();
+            }
+        });
     }
 
     isConnected()
