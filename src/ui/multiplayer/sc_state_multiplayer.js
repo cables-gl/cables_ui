@@ -62,6 +62,12 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
             this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
             this._clients[payload.clientId].platform = payload.platform;
+            this._clients[payload.clientId].x = payload.x;
+            this._clients[payload.clientId].y = payload.y;
+            this._clients[payload.clientId].subpatch = payload.subpatch;
+            this._clients[payload.clientId].zoom = payload.zoom;
+            this._clients[payload.clientId].scrollX = payload.scrollX;
+            this._clients[payload.clientId].scrollY = payload.scrollY;
         }
         else
         {
@@ -77,7 +83,13 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
                 "connectedSince": payload.connectedSince,
                 "following": isOwnAnswer ? this._connection.client.following : payload.following,
                 "isRemoteClient": payload.isRemoteClient,
-                "platform": payload.platform
+                "platform": payload.platform,
+                "x": payload.x,
+                "y": payload.y,
+                "subpatch": payload.subpatch,
+                "zoom": payload.zoom,
+                "scrollX": payload.scrollX,
+                "scrollY": payload.scrollY
             };
         }
 

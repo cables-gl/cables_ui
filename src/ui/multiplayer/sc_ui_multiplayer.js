@@ -12,8 +12,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = 0;
         this._mouseTimeout = null;
 
-        this._firstPilotChange = true;
-
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
 
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
@@ -33,6 +31,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     // follow the pilot
                     this._connection.client.following = pilot.clientId;
+                    this._jumpToCursor(pilot);
                 }
                 this.updateHtml();
                 notify(username + " the pilot");
@@ -393,6 +392,36 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         }
     }
 
+    _jumpToCursor(client)
+    {
+        const guiEvent = {};
+        if (client.hasOwnProperty("x"))
+        {
+            guiEvent.x = client.x;
+        }
+        if (client.hasOwnProperty("y"))
+        {
+            guiEvent.y = client.y;
+        }
+        if (client.hasOwnProperty("subpatch"))
+        {
+            guiEvent.subpatch = client.subpatch;
+        }
+        if (client.hasOwnProperty("zoom"))
+        {
+            guiEvent.zoom = client.zoom;
+        }
+        if (client.hasOwnProperty("scrollX") && client.hasOwnProperty("scrollY"))
+        {
+            guiEvent.scrollX = client.scrollX;
+            guiEvent.scrollY = client.scrollY;
+        }
+        if (Object.keys(guiEvent).length > 0)
+        {
+            gui.emitEvent("netGotoPos", guiEvent);
+        }
+    }
+
     _restoreLastSavedPatchVersion()
     {
         CABLES.sandbox.reloadLastSavedVersion((err, project) =>
@@ -445,21 +474,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         "iconClass": "icon icon-mouse-cursor",
                         "func": () =>
                         {
-                            const guiEvent = { "x": client.x, "y": client.y };
-                            if (client.hasOwnProperty("subpatch"))
-                            {
-                                guiEvent.subpatch = client.subpatch;
-                            }
-                            if (client.hasOwnProperty("zoom"))
-                            {
-                                guiEvent.zoom = client.zoom;
-                            }
-                            if (client.hasOwnProperty("scrollX") && client.hasOwnProperty("scrollY"))
-                            {
-                                guiEvent.scrollX = client.scrollX;
-                                guiEvent.scrollY = client.scrollY;
-                            }
-                            gui.emitEvent("netGotoPos", guiEvent);
+                            this._jumpToCursor(client);
                         }
                     });
                 }
@@ -491,6 +506,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             ele.classList.add("following");
                             multiPlayerBar.dataset.multiplayerFollow = client.username;
                             this._connection.client.following = client.clientId;
+                            this._jumpToCursor(client);
                         }
                     });
                 }

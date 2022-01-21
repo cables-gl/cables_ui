@@ -300,12 +300,26 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendPing()
     {
+        const x = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchX : null;
+        const y = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchY : null;
+        const subPatch = gui.patchView.getCurrentSubPatch();
+        const zoom = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.zoom : null;
+        const scrollX = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollX : null;
+        const scrollY = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollY : null;
+
         const payload = {
             "username": gui.user.usernameLowercase,
             "userid": gui.user.id,
             "connectedSince": this._connectedSince,
-            "isRemoteClient": gui.isRemoteClient
+            "isRemoteClient": gui.isRemoteClient,
+            "x": x,
+            "y": y,
+            "subpatch": subPatch,
+            "zoom": zoom,
+            "scrollX": scrollX,
+            "scrollY": scrollY
         };
+
         if (this.multiplayerEnabled && this.client)
         {
             payload.isPilot = this.client.isPilot;
