@@ -230,7 +230,7 @@ export default class ServerOps
         }
 
         const s = document.createElement("script");
-        s.setAttribute("src", CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
+        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = () =>
         {
             gui.corePatch().reloadOp(

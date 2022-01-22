@@ -170,7 +170,7 @@
                             addJS(localOpCode);
 
 
-                            loadjs([CABLESUILOADER.builtVersionUrl("core", CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
+                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
 
                             loadjs.ready('cables_ops', function()
                             {
