@@ -11,7 +11,7 @@ class Ele
      * @param  {String} id
      * @returns {Object} DOM element
      */
-     byId(id)
+    byId(id)
     {
         if (id && id[0] == "#") console.warn("ele.byId should not contain #");
         return document.getElementById(id);

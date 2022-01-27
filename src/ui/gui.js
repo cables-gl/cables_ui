@@ -1411,9 +1411,9 @@ export default class Gui
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.iconBarLeft = new IconBar("sidebar_left");
-        gui.iconBarPatchNav = new IconBar("sidebar_bottom");
-        gui.iconBarTimeline = new IconBar("sidebar_timeline");
+        this.iconBarLeft = new IconBar("sidebar_left");
+        this.iconBarPatchNav = new IconBar("sidebar_bottom");
+        this.iconBarTimeline = new IconBar("sidebar_timeline");
 
         if (userSettings.get("showTipps") && userSettings.get("introCompleted")) gui.tips.show();
 
@@ -1682,6 +1682,10 @@ export default class Gui
             ele.byId("undev").style.display = "none";
             ele.byId("infoAreaContainer").style.display = "none";
         }
+
+        if (this.iconBarLeft) this.iconBarLeft.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
+        if (this.iconBarPatchNav) this.iconBarPatchNav.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
+        if (this.bottomInfoArea) this.bottomInfoArea.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
     }
 
     init(next)

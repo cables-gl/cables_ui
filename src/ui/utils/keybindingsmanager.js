@@ -1,3 +1,4 @@
+import { notifyError } from "../elements/notification";
 import Gui from "../gui";
 import { getHandleBarHtml } from "./handlebars";
 
@@ -68,11 +69,18 @@ export default class KeyBindingsManager extends CABLES.EventTarget
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
 
-            if (k.options.minRestriction > window.gui.getRestriction()) continue;
-
 
             if (!k.target || k.target == e.target.id)
             {
+                if (k.options.minRestriction > window.gui.getRestriction())
+                {
+                    notifyError("Not allowed");
+                    if (!e.dontPreventDefault) e.preventDefault();
+
+                    continue;
+                }
+
+
                 if (k.cb) k.cb(e);
                 else console.warn("[keys] key event has no callback", k);
 

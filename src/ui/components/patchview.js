@@ -176,6 +176,8 @@ export default class PatchView extends CABLES.EventTarget
 
         document.addEventListener("paste", (e) =>
         {
+            if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
             if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
             else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
         });
@@ -248,11 +250,13 @@ export default class PatchView extends CABLES.EventTarget
 
     addAssetOpAuto(filename, event)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
         const ops = CABLES.UI.getOpsForFilename(filename);
 
         if (ops.length == 0)
         {
-            notify("no known operator found");
+            notify("No default op for filetype");
             return;
         }
 

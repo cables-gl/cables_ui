@@ -72,7 +72,6 @@ CABLES_CMD_DEBUG.logging = function ()
     gui.maintabPanel.show(true);
 };
 
-
 CABLES_CMD_DEBUG.restrictRemoteView = () =>
 {
     gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
@@ -89,7 +88,6 @@ CABLES_CMD_DEBUG.restrictFull = () =>
 {
     gui.setRestriction(Gui.RESTRICT_MODE_FULL);
 };
-
 
 CABLES_CMD_DEBUG.testAllOps = function ()
 {

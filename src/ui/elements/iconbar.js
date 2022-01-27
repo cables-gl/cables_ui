@@ -86,4 +86,17 @@ export default class IconBar
     {
         this._items.push(item);
     }
+
+    setVisible(b)
+    {
+        if (!this._eleContainer) return;
+        if (b)
+        {
+            ele.show(this._eleContainer);
+        }
+        else
+        {
+            ele.hide(this._eleContainer);
+        }
+    }
 }
