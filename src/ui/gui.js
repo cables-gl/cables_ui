@@ -34,6 +34,7 @@ import ele from "./utils/ele";
 import text from "./text";
 import userSettings from "./components/usersettings";
 
+
 export default class Gui
 {
     constructor(cfg)
@@ -65,6 +66,7 @@ export default class Gui
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
+        this._restrictionMode = Gui.RESTRICT_MODE_LOADING;
 
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -127,7 +129,7 @@ export default class Gui
         this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
         this.history = new MetaHistory(this.metaTabs);
-        this.bottomInfoArea = new BottomInfoAreaBar();
+        this.bottomInfoArea = new BottomInfoAreaBar(this);
 
         this._favIconLink = document.createElement("link");
         document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
@@ -1671,6 +1673,15 @@ export default class Gui
         }, 200);
     }
 
+    hideElementsByRestriction(r)
+    {
+        if (r == Gui.RESTRICT_MODE_REMOTEVIEW)
+        {
+            ele.byId("undev").style.display = "none";
+            ele.byId("infoAreaContainer").style.display = "none";
+        }
+    }
+
     init(next)
     {
         this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
@@ -1678,11 +1689,8 @@ export default class Gui
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
 
-        if (this.isRemoteClient)
-        {
-            ele.byId("undev").style.display = "none";
-            ele.byId("infoAreaContainer").style.display = "none";
-        }
+        if (this.isRemoteClient) this.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        else this.setRestriction(Gui.RESTRICT_MODE_FULL);
 
         CABLES.UI.initSplitPanes();
 
@@ -1763,4 +1771,23 @@ export default class Gui
     {
         showInfo(txt);
     }
+
+    setRestriction(r)
+    {
+        this._restrictionMode = r;
+        this.hideElementsByRestriction(r);
+        this.emitEvent("restrictionChange", r);
+        this.setLayout();
+    }
+
+    getRestriction()
+    {
+        return this._restrictionMode;
+    }
 }
+
+Gui.RESTRICT_MODE_LOADING = 0;
+Gui.RESTRICT_MODE_REMOTEVIEW = 10;
+Gui.RESTRICT_MODE_FOLLOWER = 20;
+Gui.RESTRICT_MODE_EXPLORER = 30;
+Gui.RESTRICT_MODE_FULL = 40;

@@ -8,6 +8,7 @@ import ModalDialog from "../dialogs/modaldialog";
 import SuggestPortDialog from "./suggestionportdialog";
 import text from "../text";
 import userSettings from "./usersettings";
+import Gui from "../gui";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -148,7 +149,6 @@ export default class PatchView extends CABLES.EventTarget
         {
             gui.corePatch().deSerialize(proj);
             CABLES.UI.undo.clear();
-
 
             const ops = gui.corePatch().ops;
             if (!gui.isRemoteClient)
@@ -580,6 +580,8 @@ export default class PatchView extends CABLES.EventTarget
 
     deleteSelectedOps()
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
         const undoGroup = CABLES.UI.undo.startGroup();
         const ids = [];
         const ops = this.getSelectedOps();

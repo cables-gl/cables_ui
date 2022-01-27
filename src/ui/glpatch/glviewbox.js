@@ -1,6 +1,7 @@
 import GlUiConfig from "./gluiconfig";
 import ele from "../utils/ele";
 import userSettings from "../components/usersettings";
+import Gui from "../gui";
 
 export default class GlViewBox
 {
@@ -124,6 +125,8 @@ export default class GlViewBox
 
     _onCanvasMouseMove(e)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+
         this.setMousePos(e.offsetX, e.offsetY);
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
@@ -210,6 +213,8 @@ export default class GlViewBox
 
     wheelZoom(delta)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+
         if (delta == 0) return;
 
         const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;

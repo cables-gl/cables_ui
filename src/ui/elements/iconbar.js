@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class IconBar
