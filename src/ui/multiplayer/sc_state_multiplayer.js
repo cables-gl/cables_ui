@@ -47,6 +47,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
     onPingAnswer(payload)
     {
         let userListChanged = false;
+        const isOwnAnswer = payload.clientId === this._connection.clientId;
 
         if (this._clients[payload.clientId])
         {
@@ -55,12 +56,18 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
             this._clients[payload.clientId].clientId = payload.clientId;
             this._clients[payload.clientId].lastSeen = payload.lastSeen;
-            this._clients[payload.clientId].isMe = payload.clientId === this._connection.clientId;
+            this._clients[payload.clientId].isMe = isOwnAnswer;
             this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
             this._clients[payload.clientId].connectedSince = payload.connectedSince;
-            this._clients[payload.clientId].following = payload.following;
+            this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
             this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
             this._clients[payload.clientId].platform = payload.platform;
+            this._clients[payload.clientId].x = payload.x;
+            this._clients[payload.clientId].y = payload.y;
+            this._clients[payload.clientId].subpatch = payload.subpatch;
+            this._clients[payload.clientId].zoom = payload.zoom;
+            this._clients[payload.clientId].scrollX = payload.scrollX;
+            this._clients[payload.clientId].scrollY = payload.scrollY;
         }
         else
         {
@@ -71,12 +78,18 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
                 "userid": payload.userid,
                 "shortname": payload.username.substr(0, 2).toUpperCase(),
                 "lastSeen": payload.lastSeen,
-                "isMe": payload.clientId == this._connection.clientId,
+                "isMe": isOwnAnswer,
                 "color": this.getClientColor(payload.clientId),
                 "connectedSince": payload.connectedSince,
-                "following": payload.following ? payload.following.clientId : null,
+                "following": isOwnAnswer ? this._connection.client.following : payload.following,
                 "isRemoteClient": payload.isRemoteClient,
-                "platform": payload.platform
+                "platform": payload.platform,
+                "x": payload.x,
+                "y": payload.y,
+                "subpatch": payload.subpatch,
+                "zoom": payload.zoom,
+                "scrollX": payload.scrollX,
+                "scrollY": payload.scrollY
             };
         }
 
@@ -109,7 +122,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             }
         }
 
-        if (payload.following && payload.following == this._connection.clientId && !this._followers.includes(payload.clientId))
+        if (payload.following && (payload.following === this._connection.clientId) && !this._followers.includes(payload.clientId))
         {
             this._followers.push(payload.clientId);
             userListChanged = true;

@@ -144,6 +144,7 @@ export default class Gui
         this._oldCanvasHeight = 0;
         this._oldShowingEditor = false;
         this._eventListeners = {};
+        this._onBeforeUnloadListener = null;
 
         this._currentProject = null;
         this.tips = new Tips();
@@ -1626,7 +1627,7 @@ export default class Gui
 
             document.getElementById("patchname").classList.add("warning");
 
-            window.onbeforeunload = (event) =>
+            this._onBeforeUnloadListener = (event) =>
             {
                 const message = "unsaved content!";
                 if (typeof event == "undefined")
@@ -1639,6 +1640,7 @@ export default class Gui
                 }
                 return message;
             };
+            window.addEventListener("beforeunload", this._onBeforeUnloadListener);
         }
     }
 
@@ -1652,7 +1654,7 @@ export default class Gui
         if (CABLES.sandbox.isDevEnv())title = "DEV ";
         title += gui.project.name;
         document.title = title;
-        window.onbeforeunload = null;
+        window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
     }
 
     reloadDocs(cb)
