@@ -1,3 +1,5 @@
+import { notifyError } from "../elements/notification";
+import Gui from "../gui";
 import { getHandleBarHtml } from "./handlebars";
 
 export default class KeyBindingsManager extends CABLES.EventTarget
@@ -57,9 +59,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
         {
             const k = this._keys[i];
 
-
             if (!k.options.ignoreInput && document.activeElement && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) continue;
-
 
             if (k.key != (e.key + "").toLowerCase() || k.event != "up") continue;
 
@@ -72,6 +72,15 @@ export default class KeyBindingsManager extends CABLES.EventTarget
 
             if (!k.target || k.target == e.target.id)
             {
+                if (k.options.minRestriction > window.gui.getRestriction())
+                {
+                    notifyError("Not allowed");
+                    if (!e.dontPreventDefault) e.preventDefault();
+
+                    continue;
+                }
+
+
                 if (k.cb) k.cb(e);
                 else console.warn("[keys] key event has no callback", k);
 
@@ -100,6 +109,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
             if (k.options.shiftKey && !e.shiftKey) continue;
             if (k.options.altKey && !e.altKey) continue;
             if (!k.options.shiftKey && e.shiftKey) continue;
+            if (k.options.minRestriction > window.gui.getRestriction()) continue;
 
             if (!k.target || k.target == e.target.id)
             {
@@ -134,6 +144,9 @@ export default class KeyBindingsManager extends CABLES.EventTarget
 
     key(key, title, event, target, options, cb)
     {
+        options = options || {};
+        if (!options.hasOwnProperty("minRestriction")) options.minRestriction = Gui.RESTRICT_MODE_FULL;
+
         if (Array.isArray(key)) for (let i = 0; i < key.length; i++) this._addKey(key[i], title, event, target, options, cb);
         else this._addKey(key, title, event, target, options, cb);
     }

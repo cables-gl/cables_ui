@@ -1,5 +1,7 @@
 import ModalDialog from "../dialogs/modaldialog";
+import Gui from "../gui";
 import { getHandleBarHtml } from "../utils/handlebars";
+import { notifyError } from "../elements/notification";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -29,6 +31,12 @@ CABLES_CMD_PATCH.reload = function ()
 
 CABLES_CMD_PATCH.save = function (force)
 {
+    if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL)
+    {
+        notifyError("Not allowed");
+        return;
+    }
+
     let dosave = true;
 
     if (!force)

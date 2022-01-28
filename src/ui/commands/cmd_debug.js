@@ -1,5 +1,6 @@
 import GlDebugTab from "../components/tabs/tab_debugglui";
 import LoggingTab from "../components/tabs/tab_logging";
+import Gui from "../gui";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];
@@ -71,6 +72,22 @@ CABLES_CMD_DEBUG.logging = function ()
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_DEBUG.restrictRemoteView = () =>
+{
+    gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+};
+CABLES_CMD_DEBUG.restrictFollow = () =>
+{
+    gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+};
+CABLES_CMD_DEBUG.restrictExplorer = () =>
+{
+    gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+};
+CABLES_CMD_DEBUG.restrictFull = () =>
+{
+    gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+};
 
 CABLES_CMD_DEBUG.testAllOps = function ()
 {
@@ -130,6 +147,30 @@ CMD_DEBUG_COMMANDS.push(
         "cmd": "toggle multiplayer",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.toggleMultiplayer,
+        "icon": "command"
+    },
+    {
+        "cmd": "restriction remoteviewer",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.restrictRemoteView,
+        "icon": "command"
+    },
+    {
+        "cmd": "restriction follow",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.restrictFollow,
+        "icon": "command"
+    },
+    {
+        "cmd": "restriction explorer",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.restrictExplorer,
+        "icon": "command"
+    },
+    {
+        "cmd": "restriction full",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.restrictFull,
         "icon": "command"
     }
 );

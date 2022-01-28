@@ -9,7 +9,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         super();
         this.showing = true;
         this._SETTINGS_NAME = "closeInfoArea2";
-
+        this.hidden = false;
         this._eleInfoArea = ele.byId("infoArea");
 
         if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
@@ -18,6 +18,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     getHeight()
     {
+        if (this.hidden) return 0;
         if (this.showing)
             return CABLES.UI.uiConfig.infoAreaHeight;
         else return 0;
@@ -82,6 +83,16 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         return txt;
     }
 
+    setVisible(v)
+    {
+        const eleContainer = ele.byId("infoAreaContainer");
+        if (!eleContainer) return;
+
+        this.hidden = !v;
+
+        if (v) ele.show(this._eleInfoArea);
+        else ele.hide(this._eleInfoArea);
+    }
 
     setContent(txt)
     {

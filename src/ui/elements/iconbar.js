@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class IconBar
@@ -84,5 +85,18 @@ export default class IconBar
     addItem(item)
     {
         this._items.push(item);
+    }
+
+    setVisible(b)
+    {
+        if (!this._eleContainer) return;
+        if (b)
+        {
+            ele.show(this._eleContainer);
+        }
+        else
+        {
+            ele.hide(this._eleContainer);
+        }
     }
 }

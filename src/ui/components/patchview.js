@@ -8,6 +8,7 @@ import ModalDialog from "../dialogs/modaldialog";
 import SuggestPortDialog from "./suggestionportdialog";
 import text from "../text";
 import userSettings from "./usersettings";
+import Gui from "../gui";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -149,7 +150,6 @@ export default class PatchView extends CABLES.EventTarget
             gui.corePatch().deSerialize(proj);
             CABLES.UI.undo.clear();
 
-
             const ops = gui.corePatch().ops;
             if (!gui.isRemoteClient)
             {
@@ -176,6 +176,8 @@ export default class PatchView extends CABLES.EventTarget
 
         document.addEventListener("paste", (e) =>
         {
+            if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
             if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
             else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
         });
@@ -248,11 +250,13 @@ export default class PatchView extends CABLES.EventTarget
 
     addAssetOpAuto(filename, event)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
         const ops = CABLES.UI.getOpsForFilename(filename);
 
         if (ops.length == 0)
         {
-            notify("no known operator found");
+            notify("No default op for filetype");
             return;
         }
 
@@ -580,6 +584,8 @@ export default class PatchView extends CABLES.EventTarget
 
     deleteSelectedOps()
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
         const undoGroup = CABLES.UI.undo.startGroup();
         const ids = [];
         const ops = this.getSelectedOps();
