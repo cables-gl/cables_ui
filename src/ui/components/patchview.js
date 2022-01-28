@@ -537,8 +537,9 @@ export default class PatchView extends CABLES.EventTarget
         return bounds;
     }
 
-    getSelectionBounds()
+    getSelectionBounds(minWidth)
     {
+        if (minWidth == undefined)minWidth = 100;
         const ops = this.getSelectedOps();
         const bounds = {
             "minx": 9999999,
@@ -551,7 +552,7 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
             {
                 bounds.minx = Math.min(bounds.minx, ops[j].uiAttribs.translate.x);
-                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + 100);
+                bounds.maxx = Math.max(bounds.maxx, ops[j].uiAttribs.translate.x + minWidth);
                 bounds.miny = Math.min(bounds.miny, ops[j].uiAttribs.translate.y);
                 bounds.maxy = Math.max(bounds.maxy, ops[j].uiAttribs.translate.y);
             }
@@ -1195,6 +1196,36 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
+    addSpaceBetweenOpsX()
+    {
+        const bounds = this.getSelectionBounds(0);
+        const ops = gui.patchView.getSelectedOps();
+        const centerX = (bounds.minx + bounds.maxx) / 2;
+        const undoGroup = CABLES.UI.undo.startGroup();
+
+        for (let j = 0; j < ops.length; j++)
+        {
+            const diffX = ops[j].uiAttribs.translate.x - centerX;
+            this.setOpPos(ops[j], this.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
+        }
+        CABLES.UI.undo.endGroup(undoGroup, "add space x");
+    }
+
+    addSpaceBetweenOpsY()
+    {
+        const bounds = this.getSelectionBounds(0);
+        const ops = gui.patchView.getSelectedOps();
+        const centerY = (bounds.miny + bounds.maxy) / 2;
+        const undoGroup = CABLES.UI.undo.startGroup();
+
+        for (let j = 0; j < ops.length; j++)
+        {
+            const diffY = ops[j].uiAttribs.translate.y - centerY;
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(centerY + (diffY * 1.8)));
+        }
+        CABLES.UI.undo.endGroup(undoGroup, "add space y");
+    }
+
     compressSelectedOps(ops)
     {
         if (!ops || ops.length === 0) return;
@@ -1263,6 +1294,23 @@ export default class PatchView extends CABLES.EventTarget
 
     setOpPos(op, x, y)
     {
+        if (op && op.uiAttribs && op.uiAttribs.translate)
+        {
+            const oldX = op.uiAttribs.translate.x;
+            const oldY = op.uiAttribs.translate.y;
+            CABLES.UI.undo.add({
+                "title": "Move op",
+                undo()
+                {
+                    op.setUiAttribs({ "translate": { "x": oldX, "y": oldY } });
+                },
+                redo()
+                {
+                    op.setUiAttribs({ "translate": { "x": x, "y": y } });
+                }
+            });
+        }
+
         op.uiAttr({ "translate":
             {
                 "x": x,

@@ -5,6 +5,7 @@ import CoreLibLoader from "./corelibloader";
 import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
 import userSettings from "../components/usersettings";
+import { notifyError } from "../elements/notification";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -648,6 +649,8 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
+                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+
                                     if (errr)
                                     {
                                         CABLES.UI.notifyError("error: op not saved");
@@ -747,6 +750,8 @@ export default class ServerOps
                                 }
                                 else
                                 {
+                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+
                                     if (!CABLES.Patch.getOpClass(opname))
                                         gui.opSelect().reload();
 
