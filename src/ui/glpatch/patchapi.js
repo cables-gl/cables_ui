@@ -2,6 +2,7 @@
 import GlLink from "./gllink";
 import Logger from "../utils/logger";
 import userSettings from "../components/usersettings";
+import undo from "../utils/undo";
 
 
 const DEFAULT_ACTIVITY = 1;
@@ -193,7 +194,7 @@ export default class GlPatchAPI
         {
             const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
             {
-                CABLES.UI.undo.add({
+                undo.add({
                     "title": "Link port",
                     undo()
                     {
@@ -234,7 +235,7 @@ export default class GlPatchAPI
 
         const undofunc = (function (patch, p1Name, p2Name, op1Id, op2Id)
         {
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "Unlink port",
                 undo()
                 {
@@ -277,7 +278,7 @@ export default class GlPatchAPI
 
     _onDeleteOp(op)
     {
-        if (!CABLES.UI.undo.paused()) gui.setStateUnsaved();
+        if (!undo.paused()) gui.setStateUnsaved();
 
         this._glPatch.deleteOp(op.id);
 

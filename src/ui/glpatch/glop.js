@@ -6,6 +6,7 @@ import GlRect from "../gldraw/glrect";
 import userSettings from "../components/usersettings";
 import GlLinedrawer from "../gldraw/gllinedrawer";
 import GlLink from "./gllink";
+import undo from "../utils/undo";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -198,7 +199,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (changed)
         {
-            const undoGroup = CABLES.UI.undo.startGroup();
+            const undoGroup = undo.startGroup();
 
             for (const i in glOps) glOps[i].endPassiveDrag();
 
@@ -208,7 +209,7 @@ export default class GlOp extends CABLES.EventTarget
                 if (!scope._op) return;
 
                 const newUiAttr = JSON.stringify(scope._op.uiAttribs);
-                CABLES.UI.undo.add({
+                undo.add({
                     "title": "Move op",
                     undo()
                     {
@@ -230,7 +231,7 @@ export default class GlOp extends CABLES.EventTarget
                 });
             }(this, this._dragOldUiAttribs + ""));
 
-            CABLES.UI.undo.endGroup(undoGroup, "Move Ops");
+            undo.endGroup(undoGroup, "Move Ops");
         }
     }
 
@@ -991,7 +992,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             const undmove = (function (scope, newX, newY, oldX, oldY)
             {
-                CABLES.UI.undo.add({
+                undo.add({
                     "title": "Move op",
                     undo()
                     {

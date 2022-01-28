@@ -9,6 +9,7 @@ import SuggestPortDialog from "./suggestionportdialog";
 import text from "../text";
 import userSettings from "./usersettings";
 import Gui from "../gui";
+import undo from "../utils/undo";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -92,7 +93,7 @@ export default class PatchView extends CABLES.EventTarget
             const oldValues = {};
             for (let i = 0; i < op.portsIn.length; i++) oldValues[op.portsIn[i].name] = op.portsIn[i].get();
 
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "delete op",
                 undo()
                 {
@@ -148,7 +149,7 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectLibs(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
-            CABLES.UI.undo.clear();
+            undo.clear();
 
             const ops = gui.corePatch().ops;
             if (!gui.isRemoteClient)
@@ -577,24 +578,24 @@ export default class PatchView extends CABLES.EventTarget
 
     unlinkSelectedOps()
     {
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
         const ops = this.getSelectedOps();
         for (const i in ops) ops[i].unLinkTemporary();
-        CABLES.UI.undo.endGroup(undoGroup, "Unlink selected Ops");
+        undo.endGroup(undoGroup, "Unlink selected Ops");
     }
 
     deleteSelectedOps()
     {
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
         const ids = [];
         const ops = this.getSelectedOps();
 
         for (let i = 0; i < ops.length; i++) ids.push(ops[i].id);
         for (let i = 0; i < ids.length; i++) this._p.deleteOp(ids[i], true);
 
-        CABLES.UI.undo.endGroup(undoGroup, "Delete selected ops");
+        undo.endGroup(undoGroup, "Delete selected ops");
     }
 
     createAreaFromSelection()
@@ -613,7 +614,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const undofunc = (function (opid)
         {
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "paste op",
                 undo()
                 {
@@ -1025,7 +1026,7 @@ export default class PatchView extends CABLES.EventTarget
             this._log.error(exp);
         }
 
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
 
         if (!json || !json.ops) return;
 
@@ -1170,7 +1171,7 @@ export default class PatchView extends CABLES.EventTarget
 
                     const undofunc = (function (opid)
                     {
-                        CABLES.UI.undo.add({
+                        undo.add({
                             "title": "paste op",
                             undo()
                             {
@@ -1189,7 +1190,7 @@ export default class PatchView extends CABLES.EventTarget
             this.isPasting = false;
             next(json.ops, focusSubpatchop);
         });
-        CABLES.UI.undo.endGroup(undoGroup, "Paste");
+        undo.endGroup(undoGroup, "Paste");
 
         this.setCurrentSubPatch(currentSubPatch);
         this.unselectOpsFromOtherSubpatches();
@@ -1201,14 +1202,14 @@ export default class PatchView extends CABLES.EventTarget
         const bounds = this.getSelectionBounds(0);
         const ops = gui.patchView.getSelectedOps();
         const centerX = (bounds.minx + bounds.maxx) / 2;
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
 
         for (let j = 0; j < ops.length; j++)
         {
             const diffX = ops[j].uiAttribs.translate.x - centerX;
             this.setOpPos(ops[j], this.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
         }
-        CABLES.UI.undo.endGroup(undoGroup, "add space x");
+        undo.endGroup(undoGroup, "add space x");
     }
 
     addSpaceBetweenOpsY()
@@ -1216,14 +1217,14 @@ export default class PatchView extends CABLES.EventTarget
         const bounds = this.getSelectionBounds(0);
         const ops = gui.patchView.getSelectedOps();
         const centerY = (bounds.miny + bounds.maxy) / 2;
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
 
         for (let j = 0; j < ops.length; j++)
         {
             const diffY = ops[j].uiAttribs.translate.y - centerY;
             this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(centerY + (diffY * 1.8)));
         }
-        CABLES.UI.undo.endGroup(undoGroup, "add space y");
+        undo.endGroup(undoGroup, "add space y");
     }
 
     compressSelectedOps(ops)
@@ -1298,7 +1299,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             const oldX = op.uiAttribs.translate.x;
             const oldY = op.uiAttribs.translate.y;
-            CABLES.UI.undo.add({
+            undo.add({
                 "title": "Move op",
                 undo()
                 {
@@ -1331,7 +1332,7 @@ export default class PatchView extends CABLES.EventTarget
             opPositions.push(obj);
         }
 
-        CABLES.UI.undo.add({
+        undo.add({
             "title": "save op positions",
             undo()
             {
@@ -1389,10 +1390,10 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
-        const undoGroup = CABLES.UI.undo.startGroup();
+        const undoGroup = undo.startGroup();
 
         p.removeLinks();
-        CABLES.UI.undo.endGroup(undoGroup, "Unlink Port");
+        undo.endGroup(undoGroup, "Unlink Port");
     }
 
     linkPortToOp(e, opid, pid, op2id)

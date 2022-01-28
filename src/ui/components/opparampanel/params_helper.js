@@ -1,4 +1,5 @@
 import ele from "../../utils/ele";
+import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
 
 const paramsHelper =
@@ -238,11 +239,11 @@ const paramsHelper =
                 },
                 "onStart": () =>
                 {
-                    undoGroup = CABLES.UI.undo.startGroup();
+                    undoGroup = undo.startGroup();
                 },
                 "onEnd": () =>
                 {
-                    CABLES.UI.undo.endGroup(undoGroup, "Change Color");
+                    undo.endGroup(undoGroup, "Change Color");
                 },
             });
         });
@@ -594,7 +595,7 @@ const paramsHelper =
                 const undoAdd = (function (oldv, newv, opid, portname)
                 {
                     if (oldv != newv)
-                        CABLES.UI.undo.add({
+                        undo.add({
                             "title": "Value change " + oldv + " to " + newv,
                             undo()
                             {

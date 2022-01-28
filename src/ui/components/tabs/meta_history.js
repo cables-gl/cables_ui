@@ -1,3 +1,4 @@
+import undo from "../../utils/undo";
 
 export default class MetaHistory
 {
@@ -7,7 +8,7 @@ export default class MetaHistory
         this._tab = new CABLES.UI.Tab("doc", { "icon": "list", "infotext": "tab_history", "showTitle": false, "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
 
-        CABLES.UI.undo.setCallback(this.update.bind(this));
+        undo.setCallback(this.update.bind(this));
 
         this.update();
     }
@@ -21,9 +22,9 @@ export default class MetaHistory
         this.html += "<span onclick=\"CABLES.UI.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
         this.html += "<span onclick=\"CABLES.UI.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";
 
-        const commands = CABLES.UI.undo.getCommands();
+        const commands = undo.getCommands();
 
-        this.html += "&nbsp;&nbsp;&nbsp;" + (CABLES.UI.undo.getIndex() + 1) + " / " + (commands.length) + "<br/><br/>";
+        this.html += "&nbsp;&nbsp;&nbsp;" + (undo.getIndex() + 1) + " / " + (commands.length) + "<br/><br/>";
 
         let groupSummary = [];
         let lastGroup = null;
@@ -38,8 +39,8 @@ export default class MetaHistory
             let style = "";
             if (!cmd.group || i == 0 || (i > 0 && lastGroup && lastGroup != cmd.group)) style += "margin-top:4px;";
 
-            if (CABLES.UI.undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
-            else if (CABLES.UI.undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
+            if (undo.getIndex() == i) style += "border-left:4px solid var(--color-10);background-color:var(--color-04);";
+            else if (undo.getIndex() < i) style += "opacity:0.4;border-left:4px solid var(--color-06);background-color:var(--color-03);";
             else style += "border-left:4px solid var(--color-08);background-color:var(--color-03);";
 
             groupSummary.push(cmd.title);
@@ -56,9 +57,11 @@ export default class MetaHistory
             {
                 if (i != -1 && groupSummary.length > 1)
                 {
+                    groupSummary.length = Math.min(groupSummary.length, 5);
                     this.html += groupSummary.join(", ");
-                    this.html += "<br/>";
+                    this.html += "...<br/>";
                 }
+
                 this.html += "<b>" + cmd.groupName + "</b>";
                 lastGroup = cmd.group;
                 groupSummary = [];
