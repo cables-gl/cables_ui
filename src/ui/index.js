@@ -50,6 +50,7 @@ import ele from "./utils/ele";
 import { initHandleBarsHelper } from "./utils/handlebars";
 import { arrayContains, uniqueArray } from "./utils/helper";
 import LogFilter from "./utils/loggerfilter";
+import undo from "./utils/undo";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -141,7 +142,7 @@ CABLES.GL_MARKER = helperMeshes;
 CABLES.UI.paramsHelper = paramsHelper;
 CABLES.UI.valueChanger = valueChanger;
 
-CABLES.UI.undo = new UndoManager();
+CABLES.UI.undo = undo;
 
 CABLES.UI.MODAL = oldModalWrap;
 

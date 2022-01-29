@@ -523,6 +523,16 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
         } });
 };
 
+CABLES_CMD_PATCH.addSpaceX = () =>
+{
+    gui.patchView.addSpaceBetweenOpsX();
+};
+
+CABLES_CMD_PATCH.addSpaceY = () =>
+{
+    gui.patchView.addSpaceBetweenOpsY();
+};
+
 CABLES_CMD_PATCH.compressOps = () =>
 {
     gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
@@ -798,7 +808,18 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "compress ops vertically",
         "func": CABLES_CMD_PATCH.compressOps,
         "icon": "list"
+    },
+    {
 
+        "cmd": "add space x",
+        "func": CABLES_CMD_PATCH.addSpaceX,
+        "icon": "list"
+    },
+    {
+
+        "cmd": "add space y",
+        "func": CABLES_CMD_PATCH.addSpaceY,
+        "icon": "list"
     }
 
 );
