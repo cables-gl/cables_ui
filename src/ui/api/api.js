@@ -16,16 +16,17 @@ export default class Api
 
     ping()
     {
-        if (!CABLES.UI.idling)
+        if (gui.corePatch().isPlaying())
         {
             const startTime = performance.now();
             this.request("POST", "ping", { "lastPing": this.pingTime }, () =>
             {
                 this.pingTime = Math.round(performance.now() - startTime);
+                this._log.log("ping roundtrip", this.pingTime);
             });
         }
 
-        setTimeout(this.ping.bind(this), 30 * 1000);
+        setTimeout(this.ping.bind(this), 1 * 1000);
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)
