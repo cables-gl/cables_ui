@@ -25,8 +25,6 @@ export default class Api
             });
         }
 
-        console.log("this.pingTime", this.pingTime);
-
         setTimeout(this.ping.bind(this), 30 * 1000);
     }
 
