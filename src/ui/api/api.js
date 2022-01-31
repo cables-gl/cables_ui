@@ -27,7 +27,7 @@ export default class Api
 
         console.log("this.pingTime", this.pingTime);
 
-        setTimeout(this.ping.bind(this), 5000);
+        setTimeout(this.ping.bind(this), 30 * 1000);
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)
