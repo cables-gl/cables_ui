@@ -143,6 +143,11 @@ export default class ServerOps
 
     saveOpLayout(op)
     {
+        if (!op)
+        {
+            this._log.error("saveoplayout: no op!");
+            return;
+        }
         let i = 0;
         const opObj = {
             "portsIn": [],
@@ -242,7 +247,8 @@ export default class ServerOps
 
                     for (let i = 0; i < newOps.length; i++)
                     {
-                        delete newOps[i].uiAttribs.uierrors;
+                        if (newOps[i] && newOps[i].uiAttribs)
+                            delete newOps[i].uiAttribs.uierrors;
                     }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);

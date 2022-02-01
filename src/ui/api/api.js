@@ -16,16 +16,17 @@ export default class Api
 
     ping()
     {
-        if (!CABLES.UI.idling)
+        if (gui.corePatch().isPlaying())
         {
             const startTime = performance.now();
-            this.request("GET", "ping", {}, () =>
+            this.request("POST", "ping", { "lastPing": this.pingTime }, () =>
             {
                 this.pingTime = Math.round(performance.now() - startTime);
+                this._log.log("ping roundtrip", this.pingTime);
             });
         }
 
-        setTimeout(this.ping.bind(this), 30000);
+        setTimeout(this.ping.bind(this), 1 * 1000);
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)
@@ -73,9 +74,9 @@ export default class Api
                             if (_data.statusText == "NOT_LOGGED_IN")
                             {
                                 new ModalDialog({
-                                    warning:true,
-                                    title:"not logged in",
-                                    html: "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">continue</a> <br/><br/> "
+                                    "warning": true,
+                                    "title": "not logged in",
+                                    "html": "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">continue</a> <br/><br/> "
                                 });
                             }
                             else
@@ -87,8 +88,8 @@ export default class Api
                             else
                             {
                                 if (!cbError) new ModalDialog({
-                                    warning:true,
-                                    html:"Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">ok</a> <br/><br/>"
+                                    "warning": true,
+                                    "html": "Fetch Error: " + _data.statusText + "<br/><br/>" + url + "<br/><br/><a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">ok</a> <br/><br/>"
                                 });
                                 this._log.log(_data);
                             }
@@ -194,7 +195,6 @@ export default class Api
 
         CABLES.api.post("errorReport", report, (d) =>
         {
-
             let html = "";
             html += "<center>";
             html += "<h2>thank you</h2>";
