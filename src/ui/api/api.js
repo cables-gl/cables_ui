@@ -26,7 +26,7 @@ export default class Api
             });
         }
 
-        setTimeout(this.ping.bind(this), 1 * 1000);
+        setTimeout(this.ping.bind(this), 30 * 1000);
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)
