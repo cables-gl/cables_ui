@@ -1,4 +1,5 @@
 import Logger from "../utils/logger";
+import Gui from "../gui";
 
 CABLES = CABLES || {};
 
@@ -267,6 +268,7 @@ export default class ScState extends CABLES.EventTarget
             this._connection.client.isPilot = true;
             this._connection.sendPing();
             this.emitEvent("becamePilot");
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
         }
     }
 

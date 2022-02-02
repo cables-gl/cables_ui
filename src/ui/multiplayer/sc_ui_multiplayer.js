@@ -1,6 +1,7 @@
 import { notify } from "../elements/notification";
 import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
+import Gui from "../gui";
 
 export default class ScUiMultiplayer extends CABLES.EventTarget
 {
@@ -11,6 +12,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._connection = connection;
         this._lastMouseX = this._lastMouseY = 0;
         this._mouseTimeout = null;
+
+        if (this._connection.client.isRemoteClient)
+        {
+            gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        }
 
         this._connection.on("onInfoMessage", (payload) =>
         {
@@ -68,7 +74,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             notify("the pilot just left the session");
         });
 
-        // this._connection.state.on("patchSynchronized", this.updateHtml.bind(this));
+        this._connection.state.on("patchSynchronized", () =>
+        {
+            if (!this._connection.client.isPilot)
+            {
+                // set patchsave state if not pilot after sync
+                gui.setStateSaved();
+            }
+        });
 
         this._connection.state.on("clientRemoved", (msg) =>
         {
@@ -288,7 +301,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             document.getElementById("multiplayerbar").style.display = "none";
             document.getElementById("multiplayer_message_nav").style.display = "none";
-            // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             gui.patchView.patchRenderer.greyOut = false;
             return;
         }
@@ -381,14 +394,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 messageNav.style.display = "block";
                 messageBox.style.display = "block";
 
-                // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "none";
+                gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
                 gui.patchView.patchRenderer.greyOut = true;
             }
             else
             {
                 messageBox.style.display = "none";
                 messageNav.style.display = "none";
-                // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
+                gui.setRestriction(Gui.RESTRICT_MODE_FULL);
                 gui.patchView.patchRenderer.greyOut = false;
             }
         }
@@ -396,7 +409,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             messageBox.style.display = "none";
             messageNav.style.display = "none";
-            // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             gui.patchView.patchRenderer.greyOut = false;
         }
 
