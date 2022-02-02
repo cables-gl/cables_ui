@@ -264,16 +264,23 @@ export default class ScConnection extends CABLES.EventTarget
 
     startMultiplayerSession()
     {
-        if (this.multiplayerCapable)
+        if (this.runningMultiplayerSession)
         {
-            if (!this.client.isRemoteClient)
+            this.joinMultiplayerSession();
+        }
+        else
+        {
+            if (this.multiplayerCapable)
             {
-                this.client.isPilot = true;
-                this.sendNotification(this.client.username + " just started a multiplayer session");
+                if (!this.client.isRemoteClient)
+                {
+                    this.client.isPilot = true;
+                    this.sendNotification(this.client.username + " just started a multiplayer session");
+                }
+                this.client.inMultiplayerSession = true;
+                this.sendPing();
+                this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
             }
-            this.client.inMultiplayerSession = true;
-            this.sendPing();
-            this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
         }
     }
 
@@ -284,6 +291,7 @@ export default class ScConnection extends CABLES.EventTarget
             this.sendNotification(this.client.username + " just joined the multiplayer session");
         }
         this.client.inMultiplayerSession = true;
+        this.sendPing();
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
     }
 

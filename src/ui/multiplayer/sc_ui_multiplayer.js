@@ -314,29 +314,32 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         });
 
         const data = {
-            "multiplayerCapable": this._connection.multiplayerCapable,
-            "numClients": this._connection.state.getNumClients(),
             "clients": clientList,
-            "cablesurl": CABLES.sandbox.getCablesUrl(),
-            "connected": this._connection.isConnected()
+            "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
         const html = getHandleBarHtml("socket_userlist", data);
         const userList = document.getElementById("nav-clientlist");
         userList.innerHTML = html;
 
-        const userListItems = userList.querySelectorAll(".socket_userlist_item.inSession");
+        const userListItems = userList.querySelectorAll(".socket_userlist_item");
         userListItems.forEach((ele) =>
         {
             const itemId = ele.dataset.clientId;
-            const cursorColorEl = ele.querySelector(".cursorcolor");
-            if (cursorColorEl)
-            {
-                const clientColor = this._connection.getClientColor(itemId);
-                cursorColorEl.style.backgroundColor = "rgb(" + [clientColor.rb, clientColor.gb, clientColor.bb].join(",") + ")";
-            }
             if (this._connection.clients[itemId])
             {
+                const cursorColorEl = ele.querySelector(".cursorcolor");
+                if (cursorColorEl)
+                {
+                    const clientColor = this._connection.getClientColor(itemId);
+                    let alpha = "0.0";
+                    if (this._connection.clients[itemId].inMultiplayerSession)
+                    {
+                        alpha = "1.0";
+                    }
+                    cursorColorEl.style.backgroundColor = "rgba(" + [clientColor.rb, clientColor.gb, clientColor.bb, alpha].join(",") + ")";
+                }
+
                 if (this._connection.clients[itemId].isPilot)
                 {
                     ele.classList.add("pilot");
