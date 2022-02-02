@@ -73,21 +73,6 @@ export default class ScConnection extends CABLES.EventTarget
         return Object.values(this.clients).some((c) => { return c.inMultiplayerSession; });
     }
 
-    get onlyRemoteViewersInSession()
-    {
-        if (!this.state) return false;
-        const clients = Object.values(this.clients);
-        for (let i = 0; i < clients.length; i++)
-        {
-            const client = clients[i];
-            if (client.clientId !== this.client.clientId)
-            {
-                if (!client.isRemoteClient) return false;
-            }
-        }
-        return true;
-    }
-
     hasPilot()
     {
         return this.state.hasPilot();
@@ -204,13 +189,6 @@ export default class ScConnection extends CABLES.EventTarget
                 {
                     this.joinMultiplayerSession();
                 }
-                else
-                {
-                    if (this.onlyRemoteViewersInSession)
-                    {
-                        this.startMultiplayerSession();
-                    }
-                }
             }
         })();
 
@@ -320,6 +298,7 @@ export default class ScConnection extends CABLES.EventTarget
         }
         else
         {
+            console.log("START BEASUE REMOTE");
             this.startMultiplayerSession();
         }
     }
