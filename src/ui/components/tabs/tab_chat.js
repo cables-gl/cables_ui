@@ -1,5 +1,5 @@
-import Tab from '../../elements/tabpanel/tab';
-import { getHandleBarHtml } from '../../utils/handlebars';
+import Tab from "../../elements/tabpanel/tab";
+import { getHandleBarHtml } from "../../utils/handlebars";
 
 export default class Chat extends CABLES.EventTarget
 {
@@ -63,7 +63,7 @@ export default class Chat extends CABLES.EventTarget
         {
             if (event.key === "Enter")
             {
-                gui.chat.send(document.getElementById("newchatmsg").value);
+                gui.socket.chat.send(document.getElementById("newchatmsg").value);
                 document.getElementById("newchatmsg").value = "";
             }
         };

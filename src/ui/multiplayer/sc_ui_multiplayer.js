@@ -12,12 +12,37 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._lastMouseX = this._lastMouseY = 0;
         this._mouseTimeout = null;
 
+        this._connection.on("onInfoMessage", (payload) =>
+        {
+            if (payload.name === "notify")
+            {
+                notify(payload.title, payload.text);
+            }
+        });
+
+        this._connection.state.on("enableMultiplayer", (payload) =>
+        {
+            if (payload.started)
+            {
+                let username = payload.username;
+                if (payload.clientId === this._connection.clientId)
+                {
+                    username = "YOU";
+                }
+                notify(username + " just started a multiplayer session");
+            }
+        });
+
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
+
+        this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
 
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
         this._connection.state.on("pilotChanged", (pilot) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
+
             if (this._connection.state.getNumClients() > 1)
             {
                 let username = pilot.username + " is";
@@ -39,6 +64,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         });
         this._connection.state.on("pilotRemoved", () =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             notify("the pilot just left the session");
         });
 
@@ -62,8 +88,21 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             this.sendCursorPos(x, y);
         });
 
+        gui.on("remoteViewerOpened", (payload) =>
+        {
+            if (this._connection.runningMultiplayerSession)
+            {
+                this._connection.joinMultiplayerSession();
+            }
+            else
+            {
+                this._connection.startMultiplayerSession();
+            }
+        });
+
         gui.on("netOpPos", (payload) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client && this._connection.client.isPilot)
             {
                 this._connection.sendUi("netOpPos", payload);
@@ -72,6 +111,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             this.sendSelectionArea(x, y, sizeX, sizeY);
         });
 
@@ -82,6 +122,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netOpPos", (msg) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {
@@ -99,11 +140,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("onPilotRequest", (msg) =>
         {
-            if (!this._connection.multiplayerEnabled) return;
+            if (!this._connection.multiplayerCapable) return;
 
             if (msg.state === "request")
             {
-                if (this._connection.client && this._connection.client.isPilot)
+                if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
                 {
                     let content = "<div> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
                     content += "<div style='margin-top: 20px; text-align: center;'>";
@@ -185,12 +226,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netSelectionArea", (msg) =>
         {
-            msg.color = this.getClientColor(msg.clientId);
+            if (!this._connection.inMultiplayerSession) return;
+            msg.color = this._connection.getClientColor(msg.clientId);
             gui.emitEvent("netSelectionArea", msg);
         });
 
         this._connection.on("netCursorPos", (msg) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client.following && msg.clientId === this._connection.client.following)
             {
                 gui.emitEvent("netGotoPos", msg);
@@ -200,19 +243,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("netLeaveSession", (msg) =>
         {
-            gui.emitEvent("netLeaveSession", msg);
             this.updateHtml();
         });
-    }
-
-    get netMouseCursorDelay()
-    {
-        return 100;
     }
 
     sendCursorPos(x, y)
     {
         if (!this._connection.isConnected()) return;
+        if (!this._connection.inMultiplayerSession) return;
 
         if (this._lastMouseX === x || this._lastMouseY === y) return;
 
@@ -239,6 +277,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
     sendSelectionArea(x, y, sizeX, sizeY, hide = false)
     {
         if (!this._connection.isConnected()) return;
+        if (!this._connection.inMultiplayerSession) return;
+
         if (!hide && this._mouseTimeout) return;
 
         let timeout = this.netMouseCursorDelay;
@@ -252,30 +292,99 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         }, timeout);
     }
 
-    getClientColor(clientId)
-    {
-        return this._connection.state.getClientColor(clientId);
-    }
-
     updateHtml()
     {
-        document.getElementById("navsocketinfo").innerHTML = this._getUserInfoHtml();
-
-        if (this._connection.multiplayerEnabled && this._connection.state.getNumClients() > 1)
+        if (this._connection.state.getNumClients() < 2)
         {
-            const clientList = Object.fromEntries(Object.entries(this._connection.clients).sort((a, b) => { return b.connectedSince - a.connectedSince; }));
+            document.getElementById("multiplayerbar").style.display = "none";
+            document.getElementById("multiplayer_message_nav").style.display = "none";
+            // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
+            gui.patchView.patchRenderer.greyOut = false;
+            return;
+        }
 
-            const data = {
-                "isActive": this._connection.state.getNumClients() > 1,
-                "numClients": this._connection.state.getNumClients(),
-                "clients": clientList,
-                "cablesurl": CABLES.sandbox.getCablesUrl(),
-                "connected": this._connection.isConnected()
-            };
+        const clientList = Object.values(this._connection.clients).sort((a, b) =>
+        {
+            if (!a.username) a.username = "";
+            if (!b.username) b.username = "";
+            return a.username.localeCompare(b.username);
+        });
 
+        const data = {
+            "multiplayerCapable": this._connection.multiplayerCapable,
+            "numClients": this._connection.state.getNumClients(),
+            "clients": clientList,
+            "cablesurl": CABLES.sandbox.getCablesUrl(),
+            "connected": this._connection.isConnected()
+        };
 
-            const messageNav = document.getElementById("multiplayer_message_nav");
-            const messageBox = document.getElementById("multiplayer_message");
+        const html = getHandleBarHtml("socket_userlist", data);
+        const userList = document.getElementById("nav-clientlist");
+        userList.innerHTML = html;
+
+        const userListItems = userList.querySelectorAll(".socket_userlist_item.inSession");
+        userListItems.forEach((ele) =>
+        {
+            const itemId = ele.dataset.clientId;
+            const cursorColorEl = ele.querySelector(".cursorcolor");
+            if (cursorColorEl)
+            {
+                const clientColor = this._connection.getClientColor(itemId);
+                cursorColorEl.style.backgroundColor = "rgb(" + [clientColor.rb, clientColor.gb, clientColor.bb].join(",") + ")";
+            }
+            if (this._connection.clients[itemId])
+            {
+                if (this._connection.clients[itemId].isPilot)
+                {
+                    ele.classList.add("pilot");
+                }
+                else
+                {
+                    ele.classList.remove("pilot");
+                }
+
+                if (this._connection.clients[itemId].isMe)
+                {
+                    ele.classList.add("me");
+                }
+                else
+                {
+                    ele.classList.remove("me");
+                }
+
+                if (this._connection.followers.includes(itemId))
+                {
+                    ele.classList.add("follower");
+                }
+                else
+                {
+                    ele.classList.remove("follower");
+                }
+
+                if (this._connection.client.following && this._connection.client.following === ele.dataset.clientId)
+                {
+                    ele.classList.add("following");
+                }
+                else
+                {
+                    ele.classList.remove("following");
+                }
+            }
+
+            ele.addEventListener("pointerdown", (event) =>
+            {
+                CABLES.contextMenu.show(
+                    {
+                        "items": this._getContextMenuItems(event.currentTarget.dataset.clientId)
+                    }, event.currentTarget);
+            });
+        });
+
+        const messageNav = document.getElementById("multiplayer_message_nav");
+        const messageBox = document.getElementById("multiplayer_message");
+
+        if (this._connection.inMultiplayerSession)
+        {
             if (this._connection.client && !this._connection.client.isPilot)
             {
                 messageBox.innerHTML = "you are not the pilot in this multiplayer session - changes will not be saved";
@@ -292,104 +401,78 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
                 gui.patchView.patchRenderer.greyOut = false;
             }
-
-            const html = getHandleBarHtml("socket_userlist", data);
-            const userList = document.getElementById("nav-clientlist");
-            userList.innerHTML = html;
-            const moreOptions = userList.querySelector(".socket_more_options");
-            if (moreOptions)
-            {
-                moreOptions.addEventListener("pointerdown", (event) =>
-                {
-                    const items = [];
-                    items.push({
-                        "title": "open chat",
-                        "iconClass": "icon icon-message",
-                        "func": () => { CABLES.CMD.UI.showChat(); }
-                    });
-                    if (this._connection.client && this._connection.client.isPilot)
-                    {
-                        items.push({
-                            "title": "load last saved version",
-                            "iconClass": "icon icon-refresh",
-                            "func": () => { this._restoreLastSavedPatchVersion(); }
-                        });
-                    }
-                    items.push({
-                        "title": "exit multiplayer",
-                        "iconClass": "icon icon-exit",
-                        "func": () => { this._connection.leaveMultiplayerSession(); }
-                    });
-                    CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
-                });
-            }
-
-            const userListItems = userList.querySelectorAll(".socket_userlist_item");
-            userListItems.forEach((ele) =>
-            {
-                const itemId = ele.dataset.clientId;
-                const cursorColorEl = ele.querySelector(".cursorcolor");
-                if (cursorColorEl)
-                {
-                    const clientColor = this.getClientColor(itemId);
-                    cursorColorEl.style.backgroundColor = "rgb(" + [clientColor.rb, clientColor.gb, clientColor.bb].join(",") + ")";
-                }
-                if (this._connection.clients[itemId])
-                {
-                    if (this._connection.clients[itemId].isPilot)
-                    {
-                        ele.classList.add("pilot");
-                    }
-                    else
-                    {
-                        ele.classList.remove("pilot");
-                    }
-
-                    if (this._connection.clients[itemId].isMe)
-                    {
-                        ele.classList.add("me");
-                    }
-                    else
-                    {
-                        ele.classList.remove("me");
-                    }
-
-                    if (this._connection.followers.includes(itemId))
-                    {
-                        ele.classList.add("follower");
-                    }
-                    else
-                    {
-                        ele.classList.remove("follower");
-                    }
-
-                    if (this._connection.client.following && this._connection.client.following === ele.dataset.clientId)
-                    {
-                        ele.classList.add("following");
-                    }
-                    else
-                    {
-                        ele.classList.remove("following");
-                    }
-                }
-
-                ele.addEventListener("pointerdown", (event) =>
-                {
-                    CABLES.contextMenu.show(
-                        {
-                            "items": this._getContextMenuItems(event.currentTarget.dataset.clientId)
-                        }, event.currentTarget);
-                });
-            });
-            document.getElementById("multiplayerbar").style.display = "block";
         }
         else
         {
-            document.getElementById("multiplayerbar").style.display = "none";
-            document.getElementById("multiplayer_message_nav").style.display = "none";
+            messageBox.style.display = "none";
+            messageNav.style.display = "none";
             // gui.patchView.patchRenderer._cgl.canvas.style.pointerEvents = "all";
             gui.patchView.patchRenderer.greyOut = false;
         }
+
+        const moreOptions = userList.querySelector(".socket_more_options");
+        if (moreOptions)
+        {
+            moreOptions.addEventListener("pointerdown", (event) =>
+            {
+                const items = [];
+                items.push({
+                    "title": "open chat",
+                    "iconClass": "icon icon-message",
+                    "func": () => { CABLES.CMD.UI.showChat(); }
+                });
+                if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
+                {
+                    items.push({
+                        "title": "load last saved version",
+                        "iconClass": "icon icon-refresh",
+                        "func": () => { this._restoreLastSavedPatchVersion(); }
+                    });
+                }
+                if (this._connection.inMultiplayerSession)
+                {
+                    if (!this._connection.client.isPilot)
+                    {
+                        items.push({
+                            "title": "request pilot seat",
+                            "iconClass": "icon icon-user",
+                            "func": () =>
+                            {
+                                this._connection.state.requestPilotSeat();
+                            }
+                        });
+                    }
+
+                    items.push({
+                        "title": "exit multiplayer session",
+                        "iconClass": "icon icon-exit",
+                        "func": () => { this._connection.leaveMultiplayerSession(); }
+                    });
+                }
+                else
+                {
+                    if (this._connection.runningMultiplayerSession)
+                    {
+                        items.push({
+                            "title": "join multiplayer session",
+                            "iconClass": "icon icon-users",
+                            "func": () => { this._connection.joinMultiplayerSession(); }
+                        });
+                    }
+                    else if (this._connection.multiplayerCapable)
+                    {
+                        items.push({
+                            "title": "start multiplayer session",
+                            "iconClass": "icon icon-users",
+                            "func": () => { this._connection.startMultiplayerSession(); }
+                        });
+                    }
+                }
+
+                CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
+            });
+        }
+        document.getElementById("multiplayerbar").style.display = "block";
     }
 
     _jumpToCursor(client)
@@ -430,22 +513,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         });
     }
 
-    _getUserInfoHtml()
-    {
-        const data = {
-            "numClients": this._connection.state.getNumClients(),
-            "apiUrl": CABLES.sandbox.getCablesUrl(),
-            "clients": Object.values(this._connection.clients),
-            "connected": this._connection.isConnected(),
-        };
-        data.ping = CABLES.api.pingTime;
-
-        const html = getHandleBarHtml("socketinfo", data, true);
-        return html;
-    }
-
     _getContextMenuItems(clientId)
     {
+        if (!this._connection.multiplayerCapable) return;
+
         const client = this._connection.clients[clientId];
         const items = [];
         if (client)
@@ -455,18 +526,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
             if (!client.isRemoteClient)
             {
-                if (client.isPilot && !client.isMe)
-                {
-                    items.push({
-                        "title": "request pilot seat",
-                        "iconClass": "icon icon-user",
-                        "func": () =>
-                        {
-                            this._connection.state.requestPilotSeat();
-                        }
-                    });
-                }
-
                 if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
                 {
                     items.push({
@@ -478,37 +537,40 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         }
                     });
                 }
-                const multiPlayerBar = document.getElementById("multiplayerbar");
-                const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
-                if (this._connection.client.following && this._connection.client.following === clientId)
+                if (this._connection.inMultiplayerSession)
                 {
-                    items.push({
-                        "title": "unfollow",
-                        "iconClass": "icon icon-eye-off",
-                        "func": () =>
-                        {
-                            ele.classList.remove("following");
-                            delete multiPlayerBar.dataset.multiplayerFollow;
-                            this._connection.client.following = null;
-                        }
-                    });
-                }
-                else if (!client.isMe)
-                {
-                    items.push({
-                        "title": "follow",
-                        "iconClass": "icon icon-eye",
-                        "func": () =>
-                        {
-                            const userList = document.getElementById("nav-clientlist");
-                            const userListItems = userList.querySelectorAll(".socket_userlist_item");
-                            userListItems.forEach((item) => { return item.classList.remove("following"); });
-                            ele.classList.add("following");
-                            multiPlayerBar.dataset.multiplayerFollow = client.username;
-                            this._connection.client.following = client.clientId;
-                            this._jumpToCursor(client);
-                        }
-                    });
+                    const multiPlayerBar = document.getElementById("multiplayerbar");
+                    const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
+                    if (this._connection.client.following && this._connection.client.following === clientId)
+                    {
+                        items.push({
+                            "title": "unfollow",
+                            "iconClass": "icon icon-eye-off",
+                            "func": () =>
+                            {
+                                ele.classList.remove("following");
+                                delete multiPlayerBar.dataset.multiplayerFollow;
+                                this._connection.client.following = null;
+                            }
+                        });
+                    }
+                    else if (!client.isMe)
+                    {
+                        items.push({
+                            "title": "follow",
+                            "iconClass": "icon icon-eye",
+                            "func": () =>
+                            {
+                                const userList = document.getElementById("nav-clientlist");
+                                const userListItems = userList.querySelectorAll(".socket_userlist_item");
+                                userListItems.forEach((item) => { return item.classList.remove("following"); });
+                                ele.classList.add("following");
+                                multiPlayerBar.dataset.multiplayerFollow = client.username;
+                                this._connection.client.following = client.clientId;
+                                this._jumpToCursor(client);
+                            }
+                        });
+                    }
                 }
             }
             else
@@ -516,6 +578,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 let title = "remoteviewer";
                 if (client.platform)
                 {
+                    title = "";
                     const platform = client.platform;
                     if (platform.name)
                     {

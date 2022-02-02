@@ -24,6 +24,7 @@ CABLES_CMD_UI.settings = function ()
 CABLES_CMD_UI.openRemoteViewer = function ()
 {
     window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId);
+    gui.emitEvent("remoteViewerOpened");
 };
 
 CABLES_CMD_UI.files = function ()
@@ -76,7 +77,7 @@ CABLES_CMD_UI.toggleMute = function ()
 
 CABLES_CMD_UI.showChat = function ()
 {
-    if (gui.chat) gui.chat.show();
+    if (gui.socket) gui.socket.showChat();
 };
 
 
