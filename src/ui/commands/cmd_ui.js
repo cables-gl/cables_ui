@@ -23,8 +23,10 @@ CABLES_CMD_UI.settings = function ()
 
 CABLES_CMD_UI.openRemoteViewer = function ()
 {
-    window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId);
-    gui.emitEvent("remoteViewerOpened");
+    if (gui.socket) gui.socket.startRemoteViewer(() =>
+    {
+        window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId);
+    });
 };
 
 CABLES_CMD_UI.files = function ()
@@ -323,46 +325,46 @@ CMD_UI_COMMANDS.push(
         "cmd": "show files",
         "category": "ui",
         "func": CABLES_CMD_UI.files,
-        "icon": "file",
+        "icon": "file"
     },
     {
         "cmd": "toggle files",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleFiles,
-        "icon": "file",
+        "icon": "file"
     },
     {
         "cmd": "toggle mute",
         "category": "ui",
-        "func": CABLES_CMD_UI.toggleMute,
+        "func": CABLES_CMD_UI.toggleMute
     },
 
 
     {
         "cmd": "hide minimap",
         "category": "ui",
-        "func": CABLES_CMD_UI.hideMinimap,
+        "func": CABLES_CMD_UI.hideMinimap
     },
     {
         "cmd": "search",
         "category": "ui",
         "func": CABLES_CMD_UI.showSearch,
         "icon": "search",
-        "hotkey": "CMD + f",
+        "hotkey": "CMD + f"
     },
     {
         "cmd": "maximize renderer [CMD+ENTER]",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMaxRenderer,
         "icon": "canvas_max",
-        "hotkey": "CMD + ENTER",
+        "hotkey": "CMD + ENTER"
     },
     {
         "cmd": "patch background renderer [CMD+SHIFT+ENTER]",
         "category": "ui",
         "func": CABLES_CMD_UI.togglePatchBgRenderer,
         "icon": "canvas_patchbg",
-        "hotkey": "CMD + ENTER",
+        "hotkey": "CMD + ENTER"
     },
 
     {
@@ -377,19 +379,19 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.showCommandPallet,
         "icon": "search",
-        "hotkey": "CMD + P",
+        "hotkey": "CMD + P"
     },
     {
         "cmd": "show changelog",
         "category": "cables",
         "func": CABLES_CMD_UI.showChangelog,
-        "icon": "info",
+        "icon": "info"
     },
     {
         "cmd": "show buildinfo",
         "category": "cables",
         "func": CABLES_CMD_UI.showBuildInfo,
-        "icon": "info",
+        "icon": "info"
     },
     {
         "cmd": "center patch",
@@ -402,14 +404,14 @@ CMD_UI_COMMANDS.push(
     {
         "cmd": "start presentation mode",
         "category": "ui",
-        "func": CABLES_CMD_UI.startPresentationMode,
+        "func": CABLES_CMD_UI.startPresentationMode
     },
     {
         "cmd": "toggle flow visualization",
         "category": "ui",
         "func": CABLES_CMD_UI.flowVis,
         "icon": "cables",
-        "hotkey": "f",
+        "hotkey": "f"
     },
     // {
     //     "cmd": "download patch svg",
@@ -421,25 +423,25 @@ CMD_UI_COMMANDS.push(
         "cmd": "toggle window fullscreen",
         "category": "ui",
         "func": CABLES_CMD_UI.windowFullscreen,
-        "icon": "cables",
+        "icon": "cables"
     },
     {
         "cmd": "toggle helper",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleHelper,
-        "icon": "command",
+        "icon": "command"
     },
     {
         "cmd": "gradient test",
         "category": "ui",
         "func": CABLES_CMD_UI.gradientTest,
-        "icon": "command",
+        "icon": "command"
     },
     {
         "cmd": "toggle snap to grid",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleSnapToGrid,
-        "icon": "command",
+        "icon": "command"
     },
     // {
     //     "cmd": "toggle mini map",
@@ -451,31 +453,31 @@ CMD_UI_COMMANDS.push(
         "cmd": "toggle texture preview",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleBgTexturePreview,
-        "icon": "monitor",
+        "icon": "monitor"
     },
     {
         "cmd": "ui profiler",
         "category": "ui",
         "func": CABLES_CMD_UI.profileUI,
-        "icon": "command",
+        "icon": "command"
     },
     {
         "cmd": "Preferences",
         "category": "ui",
         "func": CABLES_CMD_UI.showPreferences,
-        "icon": "cables_editor",
+        "icon": "cables_editor"
     },
     {
         "cmd": "chat",
         "category": "ui",
         "func": CABLES_CMD_UI.showChat,
-        "icon": "command",
+        "icon": "command"
     },
     {
         "cmd": "open remote viewer",
         "category": "ui",
         "func": CABLES_CMD_UI.openRemoteViewer,
-        "icon": "command",
+        "icon": "command"
     },
 
     {

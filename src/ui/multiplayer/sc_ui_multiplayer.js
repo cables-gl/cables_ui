@@ -88,18 +88,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             this.sendCursorPos(x, y);
         });
 
-        gui.on("remoteViewerOpened", (payload) =>
-        {
-            if (this._connection.runningMultiplayerSession)
-            {
-                this._connection.joinMultiplayerSession();
-            }
-            else
-            {
-                this._connection.startMultiplayerSession();
-            }
-        });
-
         gui.on("netOpPos", (payload) =>
         {
             if (!this._connection.inMultiplayerSession) return;

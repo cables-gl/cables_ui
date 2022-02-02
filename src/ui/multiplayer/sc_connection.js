@@ -35,18 +35,6 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 this._multiplayerUi = new ScUiMultiplayer(this);
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
-
-                if (this.client.isRemoteClient)
-                {
-                    if (this.runningMultiplayerSession)
-                    {
-                        this.joinMultiplayerSession();
-                    }
-                    else
-                    {
-                        this.startMultiplayerSession();
-                    }
-                }
             }
         });
     }
@@ -102,7 +90,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     startPacoSend()
     {
-        if (this._pacoEnabled)
+        if (this.inMultiplayerSession)
         {
             if (!this._paco)
             {
@@ -143,7 +131,7 @@ export default class ScConnection extends CABLES.EventTarget
                 this.startPacoSend();
             });
 
-            this._state.on("enableMultiplayer", (startSession) =>
+            this._state.on("enableMultiplayer", (payload) =>
             {
                 this._pacoEnabled = true;
 
@@ -158,6 +146,14 @@ export default class ScConnection extends CABLES.EventTarget
                         this.emitEvent("netActivityIn");
                     }
                 })();
+                if (payload.started)
+                {
+                    this.startPacoSend();
+                }
+                else
+                {
+                    this.sendControl("resync");
+                }
             });
         }
 
@@ -188,6 +184,11 @@ export default class ScConnection extends CABLES.EventTarget
                 // send me patch
                 this.sendChat(gui.user.username + " joined");
                 this.updateMembers();
+
+                if (this.client.isRemoteClient)
+                {
+                    this.joinMultiplayerSession();
+                }
             }
         })();
 
@@ -278,15 +279,26 @@ export default class ScConnection extends CABLES.EventTarget
 
     joinMultiplayerSession()
     {
-        if (this.multiplayerCapable)
+        if (this.inMultiplayerSession)
         {
-            this.sendControl("resync");
-            if (this.inMultiplayerSession)
-            {
-                this.sendNotification(this.client.username + " just joined the multiplayer session");
-            }
-            this.client.inMultiplayerSession = true;
-            this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+            this.sendNotification(this.client.username + " just joined the multiplayer session");
+        }
+        this.client.inMultiplayerSession = true;
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+    }
+
+    startRemoteViewer(doneCallback)
+    {
+        const listener = () => { this._state.removeEventListener(listener); doneCallback(); };
+        this._state.addEventListener("enableMultiplayer", listener);
+
+        if (this.runningMultiplayerSession)
+        {
+            this.joinMultiplayerSession();
+        }
+        else
+        {
+            this.startMultiplayerSession();
         }
     }
 
@@ -442,7 +454,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (msg.clientId === this._socket.clientId) return;
 
-        if (this._pacoEnabled && msg.name === "paco")
+        if (this.inMultiplayerSession && msg.name === "paco")
         {
             if (!this._paco)
             {
