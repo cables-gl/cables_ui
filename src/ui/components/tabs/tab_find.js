@@ -2,6 +2,7 @@ import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
 import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
+import text from "../../text";
 
 export default class FindTab
 {
@@ -242,7 +243,7 @@ export default class FindTab
         let info = "";
         this._maxIdx = idx;
 
-        info += "* score : " + result.score + "\n";
+        info += "## searchresult \n\n* score : " + result.score + text.searchResult + "\n";
 
         if (op.op)op = op.op;
 

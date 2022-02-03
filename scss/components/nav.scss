@@ -431,11 +431,14 @@
         padding-left:3px;
         padding-right:3px;
 
+        display: flex;
+        flex-direction: row;
+        align-items: center;
 
         .socket_more_options {
             margin-bottom: 5px;
         }
-
+        
         .socket_userlist_item
         {
             display:inline-block;

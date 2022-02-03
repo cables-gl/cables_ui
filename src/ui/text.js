@@ -51,6 +51,10 @@ const text =
     "projectBackupNotSaved": "Patch not saved - save patch before creating a backup",
     "projectNotSaved": "Patch not saved - save patch and try again",
 
+    "editorTab": "## Editor \n\n* [LMB] activate tab [MMB] close tab ",
+    "searchResult": "|| [LMB] focus op || [shift][LMB] show op params",
+    "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create op!",
+
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
     "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
     "canvas": "## Canvas\n\n|| Here you can see the visual output of your patch.\n\n|| [cmd_ctrl][ENTER] - Maximize canvas",

@@ -1,39 +1,23 @@
-
-<script id="socketinfo" type="text/x-handlebars-template">
-    Socket Connected: {{connected}}
-    <br/>
-    Num clients: {{numClients}}
-    <br/>
-    {{#if ping}}Ping http: {{ping}}
-    <br/>
-    {{/if}}
-
-</script>
-
-
 <script id="socket_userlist" type="text/x-handlebars-template">
     {{#each clients}}
-
         {{#if isRemoteClient}}
         <div class="tt socket_userlist_item remote_client" data-client-id="{{clientId}}" data-tt="{{username}}">
             <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
-                <div class="greyicon"><span class="icon icon-smartphone icon-0_75x"></span>
+            <div class="greyicon"><span class="icon icon-smartphone icon-0_75x"></span>
             </div>
         </div>
         {{else}}
+            <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
+                <div class="cursorcolor" style=""></div>
 
-        <div class="tt socket_userlist_item" data-client-id="{{clientId}}" data-tt="{{username}}">
-            <div class="cursorcolor" style=""></div>
-
-            <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
-            <div class="piloticon"><span class="icon icon-edit icon-0_75x"></span></div>
-            <div class="followicon"><span class="icon icon-eye icon-0_75x"></span></div>
-            <div class="followingicon"><span class="icon icon-eye"></span></div>
-        </div>
+                <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
+                <div class="piloticon"><span class="icon icon-edit icon-0_75x"></span></div>
+                <div class="followicon"><span class="icon icon-eye icon-0_75x"></span></div>
+                <div class="followingicon"><span class="icon icon-eye"></span></div>
+            </div>
         {{/if}}
     {{/each}}
-    {{#if isActive}}
-    <a class="tt icon icon-triple-dot iconhover socket_more_options" data-info="More Options"></a>
-    {{/if}}
+    </div>
+    <a class="tt icon icon-triple-dot iconhover socket_more_options" data-tt="More Options"></a>
 </script>
 

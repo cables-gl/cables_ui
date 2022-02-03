@@ -21,7 +21,7 @@ export default class EditorTab
                 "type": options.syntax,
                 "name": options.name,
                 "dataId": options.dataId,
-                "infotext": "a code editor",
+                "infotext": text.editorTab,
                 "singleton": options.singleton,
             });
 

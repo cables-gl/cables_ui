@@ -1,8 +1,9 @@
 import Logger from "../utils/logger";
+import Gui from "../gui";
 
 CABLES = CABLES || {};
 
-export default class ScStateMultiplayer extends CABLES.EventTarget
+export default class ScState extends CABLES.EventTarget
 {
     constructor(connection)
     {
@@ -49,6 +50,8 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
         let userListChanged = false;
         const isOwnAnswer = payload.clientId === this._connection.clientId;
 
+        if (!this._connection.inMultiplayerSession && payload.inMultiplayerSession) userListChanged = true;
+
         if (this._clients[payload.clientId])
         {
             this._clients[payload.clientId].username = payload.username;
@@ -68,6 +71,8 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._clients[payload.clientId].zoom = payload.zoom;
             this._clients[payload.clientId].scrollX = payload.scrollX;
             this._clients[payload.clientId].scrollY = payload.scrollY;
+            this._clients[payload.clientId].inMultiplayerSession = payload.inMultiplayerSession;
+            this._clients[payload.clientId].multiplayerCapable = payload.multiplayerCapable;
         }
         else
         {
@@ -89,48 +94,62 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
                 "subpatch": payload.subpatch,
                 "zoom": payload.zoom,
                 "scrollX": payload.scrollX,
-                "scrollY": payload.scrollY
+                "scrollY": payload.scrollY,
+                "inMultiplayerSession": payload.inMultiplayerSession,
+                "multiplayerCapable": payload.multiplayerCapable
             };
         }
 
-        let newPilot = null;
-        if (payload.isPilot && !payload.isRemoteClient)
+        if (this._connection.inMultiplayerSession)
         {
-            const keys = Object.keys(this._clients);
-            for (let i = 0; i < keys.length; i++)
+            let newPilot = null;
+            if (payload.isPilot && !payload.isRemoteClient)
             {
-                const client = this._clients[keys[i]];
-                if (client.clientId !== payload.clientId)
+                const keys = Object.keys(this._clients);
+                for (let i = 0; i < keys.length; i++)
                 {
-                    client.isPilot = false;
+                    const client = this._clients[keys[i]];
+                    if (client.clientId !== payload.clientId)
+                    {
+                        client.isPilot = false;
+                    }
+                    else
+                    {
+                        if (client.clientId === this._connection.clientId && gui.isRemoteClient) continue;
+                        client.isPilot = true;
+                        newPilot = client;
+                    }
                 }
-                else
+                if (newPilot && (!this._pilot || newPilot.clientId !== this._pilot.clientId))
                 {
-                    if (client.clientId === this._connection.clientId && gui.isRemoteClient) continue;
-                    client.isPilot = true;
-                    newPilot = client;
+                    if (!newPilot.isRemoteClient)
+                    {
+                        userListChanged = true;
+                        this._pilot = newPilot;
+                        this.emitEvent("pilotChanged", newPilot);
+                    }
                 }
             }
-            if (newPilot && (!this._pilot || newPilot.clientId !== this._pilot.clientId))
+            else if (this._pilot)
             {
-                if (!newPilot.isRemoteClient)
+                if (this._pilot.clientId === payload.clientId && !payload.isPilot)
                 {
-                    userListChanged = true;
-                    this._pilot = newPilot;
-                    this.emitEvent("pilotChanged", newPilot);
+                    // pilot left the multiplayer session but is still in socketcluster
+                    this._pilot = null;
+                    this.emitEvent("pilotRemoved");
                 }
             }
-        }
 
-        if (payload.following && (payload.following === this._connection.clientId) && !this._followers.includes(payload.clientId))
-        {
-            this._followers.push(payload.clientId);
-            userListChanged = true;
-        }
-        else if (!payload.following && this._followers.includes(payload.clientId))
-        {
-            this._followers = this._followers.filter((followerId) => { return followerId !== payload.clientId; });
-            userListChanged = true;
+            if (payload.following && (payload.following === this._connection.clientId) && !this._followers.includes(payload.clientId))
+            {
+                this._followers.push(payload.clientId);
+                userListChanged = true;
+            }
+            else if (!payload.following && this._followers.includes(payload.clientId))
+            {
+                this._followers = this._followers.filter((followerId) => { return followerId !== payload.clientId; });
+                userListChanged = true;
+            }
         }
 
         const cleanupChange = this._cleanUpUserList();
@@ -202,22 +221,22 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
         if (this.getNumClients() < 2 && this._clients[this._connection.clientId] && !this._clients[this._connection.clientId].isPilot)
         {
-            if (!gui.isRemoteClient)
+            if (this._connection.inMultiplayerSession && !gui.isRemoteClient)
             {
                 this._clients[this._connection.clientId].isPilot = true;
                 cleanupChange = true;
             }
         }
 
-        if (!this.hasPilot())
+        if (!this.hasPilot() && this._connection.inMultiplayerSession)
         {
-            // connection has no pilot, try to find the longest connected client
+            // connection has no pilot, try to find the longest connected client that is also in a multiplayer session
             let pilot = null;
             let earliestConnection = Date.now();
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
-                if (!client.isRemoteClient && client.connectedSince && client.connectedSince < earliestConnection)
+                if (!client.isRemoteClient && client.inMultiplayerSession && client.connectedSince && client.connectedSince < earliestConnection)
                 {
                     pilot = client;
                     earliestConnection = client.connectedSince;
@@ -238,7 +257,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
 
     hasPilot()
     {
-        return Object.values(this._clients).some((client) => { return client.isPilot; });
+        return !!this._pilot;
     }
 
     becomePilot()
@@ -249,6 +268,7 @@ export default class ScStateMultiplayer extends CABLES.EventTarget
             this._connection.client.isPilot = true;
             this._connection.sendPing();
             this.emitEvent("becamePilot");
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
         }
     }
 

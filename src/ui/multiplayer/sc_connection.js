@@ -2,7 +2,8 @@
 import PacoConnector from "./sc_paconnector";
 import Logger from "../utils/logger";
 
-import ScStateMultiplayer from "./sc_state_multiplayer";
+import ScState from "./sc_state";
+import ScUiMultiplayer from "./sc_ui_multiplayer";
 
 export default class ScConnection extends CABLES.EventTarget
 {
@@ -24,12 +25,26 @@ export default class ScConnection extends CABLES.EventTarget
         this._paco = null;
         this._pacoSynced = false;
 
-        this.multiplayerEnabled = this._scConfig.multiplayerEnabled;
+        this.multiplayerCapable = this._scConfig.multiplayerCapable;
+        this._pacoEnabled = false;
 
-        this._pacoEnabled = this.multiplayerEnabled;
 
-        if (cfg) this._init();
+        if (cfg) this._init((isActive) =>
+        {
+            if (isActive)
+            {
+                this._multiplayerUi = new ScUiMultiplayer(this);
+                this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
+            }
+        });
     }
+
+    get netMouseCursorDelay()
+    {
+        return 100;
+    }
+
+    get chat() { return this._chat; }
 
     get state() { return this._state; }
 
@@ -47,14 +62,35 @@ export default class ScConnection extends CABLES.EventTarget
         else { return this._pacoSynced; }
     }
 
+    get inMultiplayerSession()
+    {
+        return this._pacoEnabled;
+    }
+
+    get runningMultiplayerSession()
+    {
+        if (!this.state) return false;
+        return Object.values(this.clients).some((c) => { return c.inMultiplayerSession; });
+    }
+
     hasPilot()
     {
         return this.state.hasPilot();
     }
 
+    getClientColor(clientId)
+    {
+        return this._state.getClientColor(clientId);
+    }
+
+    showChat()
+    {
+        this._chat.show();
+    }
+
     startPacoSend()
     {
-        if (this._pacoEnabled)
+        if (this.inMultiplayerSession)
         {
             if (!this._paco)
             {
@@ -74,12 +110,12 @@ export default class ScConnection extends CABLES.EventTarget
 
     get clientId() { return this._socket.clientId; }
 
-    _init()
+    _init(doneCallback)
     {
         if (!this._active)
         {
             this._log.info("CABLES-SOCKETCLUSTER NOT ACTIVE, WON'T SEND MESSAGES (enable in config)");
-            return;
+            doneCallback(false);
         }
 
         this._token = this._scConfig.token;
@@ -87,14 +123,37 @@ export default class ScConnection extends CABLES.EventTarget
         this._socket.channelName = this._scConfig.channel;
         this.channelName = this._socket.channelName;
 
-
-        if (this.multiplayerEnabled)
+        this._state = new ScState(this);
+        if (this.multiplayerCapable)
         {
-            this._state = new ScStateMultiplayer(this);
-
             this._state.on("becamePilot", () =>
             {
                 this.startPacoSend();
+            });
+
+            this._state.on("enableMultiplayer", (payload) =>
+            {
+                this._pacoEnabled = true;
+
+                (async () =>
+                {
+                    if (!this._pacoEnabled) return;
+
+                    const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
+                    for await (const msg of pacoChannel)
+                    {
+                        this._handlePacoMessage(msg);
+                        this.emitEvent("netActivityIn");
+                    }
+                })();
+                if (payload.started)
+                {
+                    this.startPacoSend();
+                }
+                else
+                {
+                    this.sendControl("resync");
+                }
             });
         }
 
@@ -126,7 +185,10 @@ export default class ScConnection extends CABLES.EventTarget
                 this.sendChat(gui.user.username + " joined");
                 this.updateMembers();
 
-                this.sendControl("resync");
+                if (this.client.isRemoteClient)
+                {
+                    this.joinMultiplayerSession();
+                }
             }
         })();
 
@@ -171,17 +233,6 @@ export default class ScConnection extends CABLES.EventTarget
             }
         })();
 
-        (async () =>
-        {
-            if (!this._pacoEnabled) return;
-            const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
-            for await (const msg of pacoChannel)
-            {
-                this._handlePacoMessage(msg);
-                this.emitEvent("netActivityIn");
-            }
-        })();
-
         window.addEventListener("beforeunload", () =>
         {
             this._log.verbose("sc will disconnect!");
@@ -190,6 +241,8 @@ export default class ScConnection extends CABLES.EventTarget
                 this._socket.destroy();
             }
         });
+
+        doneCallback(true);
     }
 
     isConnected()
@@ -199,7 +252,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     canSaveInMultiplayer()
     {
-        if (this.multiplayerEnabled)
+        if (this._pacoEnabled)
         {
             return this.connected && this.client && this.client.isPilot;
         }
@@ -209,19 +262,63 @@ export default class ScConnection extends CABLES.EventTarget
         }
     }
 
+    startMultiplayerSession()
+    {
+        if (this.runningMultiplayerSession)
+        {
+            this.joinMultiplayerSession();
+        }
+        else
+        {
+            if (this.multiplayerCapable)
+            {
+                if (!this.client.isRemoteClient)
+                {
+                    this.client.isPilot = true;
+                    this.sendNotification(this.client.username + " just started a multiplayer session");
+                }
+                this.client.inMultiplayerSession = true;
+                this.sendPing();
+                this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
+            }
+        }
+    }
+
+    joinMultiplayerSession()
+    {
+        if (this.inMultiplayerSession)
+        {
+            this.sendNotification(this.client.username + " just joined the multiplayer session");
+        }
+        this.client.inMultiplayerSession = true;
+        this.sendPing();
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+    }
+
+    startRemoteViewer(doneCallback)
+    {
+        const listener = () => { this._state.removeEventListener(listener); doneCallback(); };
+        this._state.addEventListener("enableMultiplayer", listener);
+
+        if (this.runningMultiplayerSession)
+        {
+            this.joinMultiplayerSession();
+        }
+        else
+        {
+            console.log("START BEASUE REMOTE");
+            this.startMultiplayerSession();
+        }
+    }
+
     leaveMultiplayerSession()
     {
-        if (this.multiplayerEnabled)
-        {
-            this._socket.unsubscribe(this._socket.channelName + "/ui");
-            this._socket.unsubscribe(this._socket.channelName + "/control");
-            this._socket.unsubscribe(this._socket.channelName + "/chat");
-            this._socket.unsubscribe(this._socket.channelName + "/paco");
-            this.multiplayerEnabled = false;
-        }
-        const msg = { "clients": [] };
-        if (this.state) msg.clients = Object.values(this.state.clients);
-        this.emitEvent("netLeaveSession", msg);
+        this.client.isPilot = false;
+        this._socket.unsubscribe(this._socket.channelName + "/paco");
+        this._pacoEnabled = false;
+        this.client.inMultiplayerSession = false;
+        this.emitEvent("netLeaveSession");
+        this.sendPing();
     }
 
     track(eventCategory, eventAction, eventLabel, meta = {})
@@ -248,7 +345,6 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendControl(name, payload)
     {
-        if (!this.multiplayerEnabled) return;
         payload = payload || {};
         payload.name = name;
 
@@ -258,7 +354,6 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendUi(name, payload, sendOnEmptyClientList = false)
     {
-        if (!this.multiplayerEnabled) return;
         if (sendOnEmptyClientList || this.state.getNumClients() > 1)
         {
             payload = payload || {};
@@ -270,7 +365,6 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendChat(text)
     {
-        if (!this.multiplayerEnabled) return;
         // remove html
         const el = document.createElement("div");
         el.innerHTML = text;
@@ -280,7 +374,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     sendPaco(payload)
     {
-        if (!this.multiplayerEnabled) return;
+        if (!this._pacoEnabled) return;
         if (this.client && this.client.isPilot)
         {
             payload.name = "paco";
@@ -317,10 +411,12 @@ export default class ScConnection extends CABLES.EventTarget
             "subpatch": subPatch,
             "zoom": zoom,
             "scrollX": scrollX,
-            "scrollY": scrollY
+            "scrollY": scrollY,
+            "inMultiplayerSession": this._pacoEnabled,
+            "multiplayerCapable": this.multiplayerCapable
         };
 
-        if (this.multiplayerEnabled && this.client)
+        if (this.client)
         {
             payload.isPilot = this.client.isPilot;
             payload.following = this.client.following;
@@ -367,7 +463,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (msg.clientId === this._socket.clientId) return;
 
-        if (this._pacoEnabled && msg.name === "paco")
+        if (this.inMultiplayerSession && msg.name === "paco")
         {
             if (!this._paco)
             {
@@ -401,7 +497,7 @@ export default class ScConnection extends CABLES.EventTarget
 
             if (this._pacoEnabled && this.client && this.client.isPilot)
             {
-                this._log.log("RESYNC sending paco patch....", this.client.isPilot);
+                this._log.log("RESYNC sending paco patch....");
                 this.startPacoSend();
             }
         }

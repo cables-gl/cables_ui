@@ -12,9 +12,9 @@ export default class Jobs
     {
         this._listenerStarted = true;
 
-        if (gui.chat)
+        if (gui.socket)
         {
-            gui.chat.addEventListener("updated", () =>
+            gui.socket.chat.addEventListener("updated", () =>
             {
                 if (this._jobsEle.style.display === "block") this.updateJobListing();
             });
