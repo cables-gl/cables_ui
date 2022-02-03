@@ -503,6 +503,8 @@ export default class GlOp extends CABLES.EventTarget
         if (this._titleExt) this._titleExt.dispose();
         if (this._glRectRightHandle) this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea.dispose();
+        if (this._rectResize) this._rectResize.dispose();
+
         this._disposeDots();
 
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
@@ -785,10 +787,7 @@ export default class GlOp extends CABLES.EventTarget
                     h = this.glPatch.snapLines.snapY(h);
                 }
 
-                this._op.setUiAttrib({
-                    "height": h,
-                    "width": w
-                });
+                if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
                 this.updateSize();
             });
         }
