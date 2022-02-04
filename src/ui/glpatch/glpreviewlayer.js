@@ -38,12 +38,16 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
     _updateSize()
     {
-        this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / window.devicePixelRatio + "px";
-        this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / window.devicePixelRatio + "px";
+        if (this._eleCanvas.width != this._glPatch._cgl.canvasWidth ||
+            this._eleCanvas.height != this._glPatch._cgl.canvasHeight)
+        {
+            this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / window.devicePixelRatio + "px";
+            this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / window.devicePixelRatio + "px";
 
-        this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
-        this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
-        this._canvasCtx = this._eleCanvas.getContext("2d");
+            this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
+            this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
+            this._canvasCtx = this._eleCanvas.getContext("2d");
+        }
     }
 
     render()
@@ -86,10 +90,11 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
             if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
-            this._canvasCtx.fillStyle = "#222222";
-            this._canvasCtx.fillRect(pos[0], pos[1], size[0], size[1]);
+            this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
 
             this._items[i].renderer.render(this._canvasCtx, pos, size);
+            this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
+
             count++;
         }
 

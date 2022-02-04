@@ -425,7 +425,7 @@ export default class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -684,8 +684,10 @@ export default class OpParampanel extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
-                    if (thePort.get()) newValue = "Array (" + String(thePort.get().length) + ")";
-                    else newValue = "Array (null)";
+                    let name = "Array";
+                    if (thePort.uiAttribs.stride)name += thePort.uiAttribs.stride;
+                    if (thePort.get()) newValue = name + " (" + String(thePort.get().length) + ")";
+                    else newValue = name + " (null)";
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {

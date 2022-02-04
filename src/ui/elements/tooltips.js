@@ -104,7 +104,10 @@ function getPortDescription(thePort)
     let objType = thePort.uiAttribs.objType || "";
     if (objType)objType += " ";
 
-    str += "[" + objType + thePort.getTypeString() + "] ";
+    let stride = "";
+    if (thePort.uiAttribs.stride)stride = thePort.uiAttribs.stride;
+
+    str += "[" + objType + thePort.getTypeString() + stride + "] ";
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
