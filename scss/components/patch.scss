@@ -63,13 +63,13 @@
 .port_color_unknown { fill:#0f0; }
 
 
-.op_color_default { color:var(--color_op_handle_default);}
-.op_color_gl { color:var(--color_op_handle_gl); }
-.op_color_audio { color:var(--color_op_handle_audio); }
-.op_color_devices { color:var(--color_op_handle_devices); }
-.op_color_html { color:var(--color_op_handle_html); }
-.op_color_math { color:var(--color_op_handle_math); }
-.op_color_user { color:var(--color_op_handle_user); }
+.op_color_default { color:var(--color_op_handle_default) !important; }
+.op_color_gl { color:var(--color_op_handle_gl) !important; }
+.op_color_audio { color:var(--color_op_handle_audio) !important; }
+.op_color_devices { color:var(--color_op_handle_devices) !important; }
+.op_color_html { color:var(--color_op_handle_html) !important; }
+.op_color_math { color:var(--color_op_handle_math) !important; }
+.op_color_user { color:var(--color_op_handle_user) !important; }
 
 
 .glpatchcontainer
@@ -91,13 +91,13 @@
     .op_handle_user { fill:var(--color_op_handle_user); text-decoration:underline}
 }
 
-.color-op-category-default { color: var(--color_op_handle_audio); }
-.color-op-category-gl { color: var(--color_op_handle_gl); }
-.color-op-category-audio { color: var(--color_op_handle_audio); }
-.color-op-category-devices { color: var(--color_op_handle_devices); }
-.color-op-category-html { color: var(--color_op_handle_html); }
-.color-op-category-math { color: var(--color_op_handle_math); }
-.color-op-category-user { color: var(--color_op_handle_user); }
+.color-op-category-default { color: var(--color_op_handle_audio) !important; }
+.color-op-category-gl { color: var(--color_op_handle_gl) !important; }
+.color-op-category-audio { color: var(--color_op_handle_audio) !important; }
+.color-op-category-devices { color: var(--color_op_handle_devices) !important; }
+.color-op-category-html { color: var(--color_op_handle_html) !important; }
+.color-op-category-math { color: var(--color_op_handle_math) !important; }
+.color-op-category-user { color: var(--color_op_handle_user) !important; }
 
 
 
@@ -183,7 +183,7 @@
 #multiplayer_message_nav
 {
     position: relative;
-	z-index: $zindex_superlow;  
+	z-index: $zindex_superlow;
     display: none;
 
     #multiplayer_message
