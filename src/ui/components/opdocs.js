@@ -301,14 +301,14 @@ export default class OpDocs
                     {
                         if (this._opDocs[i].docs.ports[j].name == portname)
                         {
-                            gui.showInfo("<b>" + group + portname + "</b>: " + this._opDocs[i].docs.ports[j].text);
+                            gui.showInfoParam("<b>" + group + portname + "</b>: " + this._opDocs[i].docs.ports[j].text);
                             perf.finish();
                             return;
                         }
                     }
                 }
 
-                gui.showInfo("<b>" + group + portname + "</b> ");
+                gui.showInfoParam("<b>" + group + portname + "</b> ");
                 perf.finish();
                 return;
             }

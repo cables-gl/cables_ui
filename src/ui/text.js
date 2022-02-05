@@ -38,7 +38,7 @@ const text =
     "portDirOut": "## Output Port",
     "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `DEL` delete link || [alt]+[DRAG_RMB] copy link",
     "portMouseCreate": "|| [DRAG_LMB] create and link new op",
-    "portObjectSnapshot": "see at object data snapshot",
+    "portObjectSnapshot": "see an object data snapshot",
 
     "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
     "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
@@ -93,8 +93,8 @@ const text =
     "usersettings": "## User Settings\n\nchange editor settings ",
     "texpreview": "## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
 
-    "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] - change value slowly \n* [shift] + [DRAG_LMB] - change value fast",
-    "valueChangerInput": "## Number Input Focussed \n\n* [up][down][MW] change value +/- 0.1 \n* [shift][up][down][MW] change value +/- 0.01\n* [alt][up][down][MW] change value +/- 1",
+    "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] - change value \n* [alt] + [DRAG_LMB] - change value fast\n* [shift] + [DRAG_LMB] - change value slow",
+    "valueChangerInput": "## Number Input Focussed \n\n* [updown][MW] change value +/- 0.1 \n* [shift][updown][MW] change value +/- 0.01\n* [alt][updown][MW] change value +/- 1",
     "open_new_window": "## View Patch\n\nopen patch viewer in new window",
     "settings": "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",
 
