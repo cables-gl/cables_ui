@@ -382,6 +382,8 @@ export default class Gui
         this._elMeta = this._elMeta || ele.byId("meta");
         this._elMenubar = this._elMenubar || ele.byId("menubar");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
+        this._elInfoAreaParam = this._elInfoAreaParam || ele.byId("infoAreaParam");
+
 
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
 
@@ -684,6 +686,7 @@ export default class Gui
 
         this._elMenubar.style.top = 0 + "px";
 
+
         if (!this.bottomInfoArea.showing)
         {
             this._elInfoArea.style.height = 0 + "px";
@@ -692,6 +695,8 @@ export default class Gui
         {
             this._elInfoArea.style.height = infoAreaHeight + "px";
         }
+        this._elInfoAreaParam.style.right = "0px";
+        this._elInfoAreaParam.style.width = this.rendererWidth + "px";
 
 
         ele.byId("maintabs").style.top = menubarHeight + "px";
@@ -1771,6 +1776,11 @@ export default class Gui
         this._corePatch.on("renderDelayEnd", function ()
         {
         });
+    }
+
+    showInfoParam(txt)
+    {
+        showInfo(txt, true);
     }
 
     showInfo(txt)

@@ -55,12 +55,12 @@ function eleTtOut(e)
     hideToolTip();
 }
 
-
 // --------------------------
 
-export function showInfo(txt)
+export function showInfo(txt, param)
 {
-    gui.bottomInfoArea.setContent(txt);
+    if (param)gui.bottomInfoArea.setContentParam(txt);
+    else gui.bottomInfoArea.setContent(txt);
 }
 
 export function hideInfo()

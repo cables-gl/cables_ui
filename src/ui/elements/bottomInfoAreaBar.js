@@ -11,6 +11,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         this._SETTINGS_NAME = "closeInfoArea2";
         this.hidden = false;
         this._eleInfoArea = ele.byId("infoArea");
+        this._eleInfoAreaParam = ele.byId("infoAreaParam");
 
         if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
@@ -59,6 +60,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         txt = txt.replaceAll("[MMB]", "<span class=\"icon icon-mouse_mmb\"></span>");
         txt = txt.replaceAll("[MW]", "<span class=\"icon icon-mouse_wheel\"></span>");
 
+        txt = txt.replaceAll("[updown]", "<code class=\"key_updown\"></code>");
+
 
         txt = txt.replaceAll("[up]", "<code class=\"key_up\"></code>");
         txt = txt.replaceAll("[down]", "<code class=\"key_down\"></code>");
@@ -94,8 +97,15 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         else ele.hide(this._eleInfoArea);
     }
 
+    setContentParam(txt)
+    {
+        this._eleInfoAreaParam.classList.remove("hidden");
+        this._eleInfoAreaParam.innerHTML = "<div class=\"infoareaContent\">&nbsp;&nbsp;" + txt + "</div>";
+    }
+
     setContent(txt)
     {
+        this._eleInfoAreaParam.classList.add("hidden");
         txt = txt || text.infoArea || "";
 
         if (this._txt == txt) return;
