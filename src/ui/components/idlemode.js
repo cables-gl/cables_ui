@@ -36,7 +36,6 @@ function startIdleMode()
 
 function idleInteractivity()
 {
-    console.log("activity...");
     idleFocus = true;
 
     if (idling) stopIdleMode();

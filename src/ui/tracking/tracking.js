@@ -37,7 +37,7 @@ export default class Tracking
     {
         if (this.gui.socket)
         {
-            console.log(eventCategory, eventAction, eventLabel, meta);
+            // console.log(eventCategory, eventAction, eventLabel, meta);
             this.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
         }
     }

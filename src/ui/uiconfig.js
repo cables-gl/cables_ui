@@ -16,7 +16,6 @@ class UiConfig
 
         this.idleModeTimeout = 60;
 
-
         this.timingPanelHeight = 250;
         this.rendererDefaultWidth = 640;
         this.rendererDefaultHeight = 320;
