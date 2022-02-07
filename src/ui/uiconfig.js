@@ -14,7 +14,7 @@ class UiConfig
         this.snapX = 12;
         this.snapY = 20;
 
-        this.idleModeTimeout = 180;
+        this.idleModeTimeout = 60;
 
 
         this.timingPanelHeight = 250;
