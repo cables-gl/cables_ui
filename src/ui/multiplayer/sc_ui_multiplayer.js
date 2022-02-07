@@ -318,7 +318,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         const data = {
             "clients": clientList,
-            "muliplayerCapable": this._connection.multiplayerCapable,
+            "multiplayerCapable": this._connection.multiplayerCapable,
             "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
