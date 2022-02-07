@@ -295,7 +295,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     updateHtml()
     {
-        document.querySelector(".nav_remote_viewer").classList.remove("hidden");
+        if (this._connection.multiplayerCapable)
+        {
+            document.querySelector(".nav_remote_viewer").classList.remove("hidden");
+        }
 
         if (this._connection.state.getNumClients() < 2)
         {
