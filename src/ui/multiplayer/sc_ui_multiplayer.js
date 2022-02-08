@@ -295,7 +295,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     updateHtml()
     {
-        document.querySelector(".nav_remote_viewer").classList.remove("hidden");
+        if (this._connection.multiplayerCapable)
+        {
+            document.querySelector(".nav_remote_viewer").classList.remove("hidden");
+        }
 
         if (this._connection.state.getNumClients() < 2)
         {
@@ -315,6 +318,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         const data = {
             "clients": clientList,
+            "multiplayerCapable": this._connection.multiplayerCapable,
             "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
@@ -427,6 +431,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     "iconClass": "icon icon-message",
                     "func": () => { CABLES.CMD.UI.showChat(); }
                 });
+
                 if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
                 {
                     items.push({
@@ -475,7 +480,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     }
                 }
 
-                CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
+                if (items.length > 0)
+                {
+                    CABLES.contextMenu.show({ "items": items, }, event.currentTarget);
+                }
             });
         }
         document.getElementById("multiplayerbar").style.display = "block";

@@ -4,6 +4,11 @@ export default class Tracking
     {
         this.gui = gui;
         this._initListeners();
+
+
+        this._trackEvent("ui", "userIsGuest", "", { "isGuest": gui.isGuestEditor() });
+
+        this._trackEvent("ui", "loadStartupFiles", "", { "seconds": CABLESUILOADER.uiLoadFiles / 1000 });
     }
 
     _initListeners()
@@ -21,12 +26,18 @@ export default class Tracking
         {
             this._trackEvent("ui", "idleEnd", "end", { "seconds": idleSeconds });
         });
+
+        this.gui.on("uiIdleStart", (activeSeconds) =>
+        {
+            this._trackEvent("ui", "activeDuration", "", { "seconds": activeSeconds });
+        });
     }
 
     _trackEvent(eventCategory, eventAction, eventLabel, meta = {})
     {
         if (this.gui.socket)
         {
+            // console.log(eventCategory, eventAction, eventLabel, meta);
             this.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
         }
     }

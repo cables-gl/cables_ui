@@ -50,6 +50,7 @@
         {
 
             const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
+
             CABLESUILOADER.startup.log.push(
             {
                 "title":title,
@@ -122,10 +123,7 @@
 
                         incrementStartup();
 
-
-                        loadjs([
-                        CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js'),
-                        ], 'cablesuinew');
+                        loadjs([CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js')], 'cablesuinew');
 
                         loadjs.ready('cablesuinew', function()
                         {
@@ -184,6 +182,8 @@
                                 if(coreBuild && coreBuild.git) logStartup("CORE buildmessage: " + coreBuild.git.message);
                                 if(apiBuild && apiBuild.git)  logStartup("API buildmessage: " + apiBuild.git.message);
 
+
+
                                 waitForAce();
                             });
                         });
@@ -207,7 +207,7 @@
             }
             else
             {
-
+                CABLESUILOADER.uiLoadFiles=performance.now()-CABLESUILOADER.uiLoadStart;
 
                 CABLES.UI.startUi(CABLESUILOADER.cfg);
             }
