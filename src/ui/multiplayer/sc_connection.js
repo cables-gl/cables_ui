@@ -437,6 +437,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     _send(topic, payload)
     {
+        if (!this.client) return;
+
         if (this._active && this._connected)
         {
             const finalPayload = {
@@ -453,6 +455,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     _handleChatChannelMsg(msg)
     {
+        if (!this.client) return;
+
         if (msg.name === "chatmsg")
         {
             this.emitEvent("onChatMessage", msg);
@@ -461,6 +465,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     _handlePacoMessage(msg)
     {
+        if (!this.client) return;
         if (msg.clientId === this._socket.clientId) return;
 
         if (this.inMultiplayerSession && msg.name === "paco")
@@ -491,6 +496,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     _handleControlChannelMessage(msg)
     {
+        if (!this.client) return;
+
         if (msg.name === "resync")
         {
             if (msg.clientId === this._socket.clientId) return;
@@ -532,12 +539,16 @@ export default class ScConnection extends CABLES.EventTarget
 
     _handleUiChannelMsg(msg)
     {
+        if (!this.client) return;
+
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
     }
 
     _handleInfoChannelMsg(msg)
     {
+        if (!this.client) return;
+
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);
     }
