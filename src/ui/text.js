@@ -56,7 +56,7 @@ const text =
     "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create op!",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
+    "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
     "canvas": "## Canvas\n\n|| Here you can see the visual output of your patch.\n\n|| [cmd_ctrl][ENTER] - Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
@@ -93,7 +93,7 @@ const text =
     "usersettings": "## User Settings\n\nchange editor settings ",
     "texpreview": "## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
 
-    "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] - change value \n* [alt] + [DRAG_LMB] - change value fast\n* [shift] + [DRAG_LMB] - change value slow",
+    "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] change value \n* [alt] + [DRAG_LMB] change value fast\n* [shift] + [DRAG_LMB] change value slow",
     "valueChangerInput": "## Number Input Focussed \n\n* [updown][MW] change value +/- 0.1 \n* [shift][updown][MW] change value +/- 0.01\n* [alt][updown][MW] change value +/- 1",
     "open_new_window": "## View Patch\n\nopen patch viewer in new window",
     "settings": "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",

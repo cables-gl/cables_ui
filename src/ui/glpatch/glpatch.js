@@ -33,7 +33,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._log = new Logger("glpatch");
         this.paused = false;
 
-
+        this.clear = true;
         this._cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
 
@@ -197,7 +197,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.toggleOpsEnable(); });
         gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
 
-        gui.keys.key("1", "debug", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
+        gui.keys.key("!", "debug", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
 
         gui.keys.key("+", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
         gui.keys.key("=", "Zoom In", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(-1); });
@@ -396,7 +396,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._debugRenderStyle = this._debugRenderStyle || 0;
 
         this._debugRenderStyle++;
-        if (this._debugRenderStyle > 2) this._debugRenderStyle = 0;
+        if (this._debugRenderStyle > 3) this._debugRenderStyle = 0;
 
         for (let i in this._splineDrawers) this._splineDrawers[i].setDebugRenderer(this._debugRenderStyle);
 
@@ -405,6 +405,9 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._textWriter.setDebugRenderer(this._debugRenderStyle);
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
+
+        if (this._debugRenderStyle == 3) this.clear = false;
+        else this.clear = true;
     }
 
 
@@ -743,6 +746,18 @@ export default class GlPatch extends CABLES.EventTarget
 
     render(resX, resY)
     {
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG || !this.clear)
+            this._cgl.gl.clearColor(0, 0, 0, 0);
+        else
+            this._cgl.gl.clearColor(
+                glUiConfig.colors.background[0],
+                glUiConfig.colors.background[1],
+                glUiConfig.colors.background[2],
+                glUiConfig.colors.background[3]);
+
+
+        this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
+
         // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
             this._log.error("BROKEN");

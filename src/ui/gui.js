@@ -1000,7 +1000,7 @@ export default class Gui
 
         CABLES.contextMenu.show(
             {
-                "refresh": gui.helperContextMenu,
+                "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
                 "items":
                 [
                     {
