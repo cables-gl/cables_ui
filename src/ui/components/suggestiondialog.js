@@ -1,5 +1,5 @@
 import ele from "../utils/ele";
-import ModalBackground from '../dialogs/modalbg';
+import ModalBackground from "../dialogs/modalbg";
 import { getHandleBarHtml } from "../utils/handlebars";
 
 export default class SuggestionDialog
@@ -77,6 +77,7 @@ export default class SuggestionDialog
         this._bg.hide();
 
         CABLES.UI.suggestions = null;
+        gui.patchView.focus();
     }
 
     showSelect()
