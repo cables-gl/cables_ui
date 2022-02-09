@@ -20,9 +20,10 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         // .endl() + "{"
         // .endl() + "    float num=40.0;"
         // .endl() + "    float h=(height/width)*num;"
-        // .endl() + "    float total = floor(texCoord.x*num) +floor(texCoord.y*h);"
-        // .endl() + "    return mod(total,2.0)*0.1+0.05;"
+        // .endl() + "    float total = floor(gl_FragCoord.x/150.0*h) +floor(gl_FragCoord.y/150.0*h);"
+        // .endl() + "    return mod(total,2.0)*0.1+0.15;"
         // .endl() + "}"
+
             .endl() + "float LinearizeDepth(float d,float zNear,float zFar)"
             .endl() + "{"
             .endl() + "    float z_n = 2.0 * d - 1.0;"
@@ -31,8 +32,18 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
 
             .endl() + "void main()"
             .endl() + "{"
-            .endl() + "    vec4 col=vec4(0.0);"
+            .endl() + "    vec4 col=vec4(vec3(0.15),1.0);"
+
+        // .endl() + "    col.r=texCoord.x;"
+        // .endl() + "    col.g=texCoord.y;"
+        // .endl() + "    col.a=1.0;"
+
             .endl() + "    vec4 colTex=texture2D(tex,texCoord);"
+
+            .endl() + "    if(type==0.0)"
+            .endl() + "    {"
+            .endl() + "    }"
+
             .endl() + "    if(type==1.0)"
             .endl() + "    {"
             .endl() + "        vec4 depth=vec4(0.);"
@@ -196,7 +207,7 @@ export default class GlPreviewLayerTexture extends CABLES.EventTarget
         this._shaderTypeUniform.setValue(texType);
         let s = [port.parent.patch.cgl.canvasWidth, port.parent.patch.cgl.canvasHeight];
 
-        cgl.gl.clearColor(1, 0, 0, 1);
+        cgl.gl.clearColor(0.2, 0.2, 0.2, 1);
         cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
 

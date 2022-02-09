@@ -37,7 +37,6 @@ export default class ContextMenu
             document.body.appendChild(this._modalBg);
         }
 
-        const rect = parent.getBoundingClientRect();
 
         if (!this._element)
         {
@@ -47,6 +46,9 @@ export default class ContextMenu
 
             document.body.appendChild(this._element);
         }
+
+        const rect = parent.getBoundingClientRect();
+        if (rect.x == 0 && rect.y == 0 && rect.width == 0 && rect.height == 0) return;
 
         if (rect.left > window.innerWidth - 200)
         {

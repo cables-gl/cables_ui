@@ -17,6 +17,7 @@ export default class GlUiCanvas
         this._mouseY = 0;
         this.loaded = false;
         this._inited = false;
+        this.clear = true;
 
         document.body.style["touch-action"] = "none";
         // this._zoom = GlUiConfig.zoomDefault;
@@ -219,10 +220,10 @@ export default class GlUiCanvas
 
         const cgl = this.patch.cgl;
 
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
-        else cgl.gl.clearColor(0, 0, 0, 1);
+        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
+        // else cgl.gl.clearColor(0, 0, 0, 1);
 
-        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
+        // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
 
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();
@@ -244,15 +245,6 @@ export default class GlUiCanvas
         {
             this._firstTime = false;
         }
-
-        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG)
-            cgl.gl.clearColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                glUiConfig.colors.background[3]);
-
-        cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
 
         this.glPatch.debugData.targetFps = this._targetFps;

@@ -556,6 +556,14 @@ CABLES_CMD_PATCH.editOp = function (userInteraction)
     }
 };
 
+CABLES_CMD_PATCH.savePatchScreenshot = function ()
+{
+    gui.patchView.patchRenderer._cgl.saveScreenshot("patchfield_" + performance.now(), () =>
+    {
+        gui.patchView.patchRenderer._cgl.patch.resume();
+    });
+};
+
 
 CABLES_CMD_PATCH.setOpTitle = function ()
 {
@@ -820,6 +828,12 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "add space y",
         "func": CABLES_CMD_PATCH.addSpaceY,
         "icon": "list"
+    },
+    {
+
+        "cmd": "save patchfield screenshot",
+        "func": CABLES_CMD_PATCH.savePatchScreenshot,
+        "icon": "image"
     }
 
 );
