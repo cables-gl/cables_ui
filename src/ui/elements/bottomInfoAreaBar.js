@@ -15,6 +15,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
         if (!userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
+
+        this.updateStyles();
     }
 
     getHeight()
@@ -25,10 +27,28 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         else return 0;
     }
 
+    updateStyles()
+    {
+        this._eleInfoAreaParam.classList.add("hidden");
+
+        if (this.showing)
+        {
+            ele.byQuery("#infoAreaToggle span").classList.add("icon-chevron-down");
+            ele.byQuery("#infoAreaToggle span").classList.remove("icon-help");
+        }
+        else
+        {
+            ele.byQuery("#infoAreaToggle span").classList.remove("icon-chevron-down");
+            ele.byQuery("#infoAreaToggle span").classList.add("icon-help");
+        }
+    }
+
     toggle()
     {
         if (userSettings.get(this._SETTINGS_NAME)) this.openInfo();
         else this.closeInfo();
+
+        this.updateStyles();
     }
 
     openInfo()
@@ -99,8 +119,11 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     setContentParam(txt)
     {
-        this._eleInfoAreaParam.classList.remove("hidden");
-        this._eleInfoAreaParam.innerHTML = "<div class=\"infoareaContent\">&nbsp;&nbsp;" + txt + "</div>";
+        if (this.showing)
+        {
+            this._eleInfoAreaParam.classList.remove("hidden");
+            this._eleInfoAreaParam.innerHTML = "<div class=\"infoareaContent\">&nbsp;&nbsp;" + txt + "</div>";
+        }
     }
 
     setContent(txt)
