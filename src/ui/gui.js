@@ -954,7 +954,9 @@ export default class Gui
                 if (name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
-                        CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": d._id });
+                        let id = d._id;
+                        if (d.shortId) id = d.shortId;
+                        CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": id });
                     });
             }
         });

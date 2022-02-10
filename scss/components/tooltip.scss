@@ -34,13 +34,13 @@
     #infoAreaToggle
     {
         position: absolute;
-        bottom:0px;
-        background-color: black;
-        right:100px;
+        bottom:3px;
+        // background-color: black;
+        right:90px;
         cursor:pointer;
         text-align: center;
-        z-index: $zindex_lowest;
-        }
+        z-index: $zindex_low+2;
+    }
 
     #infoAreaParam
     {
