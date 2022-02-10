@@ -98,8 +98,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         }
         else
         {
-            txt = txt.replaceAll("[cmd_ctrl]", "<code class=\"key_cmd\">CTRL</code>");
-            txt = txt.replaceAll("[alt]", "<code class=\"key_cmd\">ALT</code>");
+            txt = txt.replaceAll("[cmd_ctrl]", "<code>CTRL</code>");
+            txt = txt.replaceAll("[alt]", "<code>ALT</code>");
         }
 
 
