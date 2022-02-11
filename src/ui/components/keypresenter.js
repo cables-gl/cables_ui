@@ -1,5 +1,3 @@
-import ele from "../utils/ele";
-
 export default class Keypresenter
 {
     constructor()
@@ -17,29 +15,17 @@ export default class Keypresenter
     }
 
 
-    addLine(title)
+    addLine()
     {
-        function setUpDeath(id)
-        {
-            setTimeout(function ()
-            {
-                const el = document.querySelector(id);
-                ele.fadeOut(el, 30, () =>
-                {
-                    el.style.opacity = 0.01;
-                    el.style.display = "block";
-                    ele.slideUp(el, 400, () =>
-                    {
-                        el.remove();
-                    });
-                });
-            }, 2000);
-        }
-
         if (Date.now() - this._lastKeyEvent > 500)
         {
             const elId = "#kp-line" + this._lineCounter;
-            setUpDeath(elId);
+            setTimeout(function ()
+            {
+                const el = document.querySelector(elId);
+                if (el) el.remove();
+            }, 2000);
+
             this._lineCounter++;
 
             const newEl = document.createElement("div");
@@ -70,30 +56,31 @@ export default class Keypresenter
         document.addEventListener("keydown", function (e)
         {
             let str = e.key;
-
-            if (e.key.length == 1)
+            if (e.key.length === 1)
             {
-                if (e.key == " ")str = "_";
-                str = str.toUpperCase();
-
-                if (this._lastTextElement !== null && Date.now() - this._lastKeyEvent < 300)
+                if (e.key === " ")str = "_";
+                if (str)
                 {
-                    str = this._lastTextElement.innerHTML + str;
-                    this._lastTextElement.remove();
-                }
+                    str = str.toUpperCase();
+                    if (this._lastTextElement !== null && Date.now() - this._lastKeyEvent < 300)
+                    {
+                        str = this._lastTextElement.innerHTML + str;
+                        this._lastTextElement.remove();
+                    }
 
-                const id = this.showAction(str);
-                this._lastTextElement = document.getElementById(id);
+                    const id = this.showAction(str);
+                    this._lastTextElement = document.getElementById(id);
+                }
             }
             else
             {
                 str = "[" + e.key + "]";
-                if (e.key == "ArrowUp")str = "<span class=\"icon icon-arrow-up\"></span>";
-                if (e.key == "ArrowDown")str = "<span class=\"icon icon-arrow-down\"></span>";
-                if (e.key == "ArrowLeft")str = "<span class=\"icon icon-arrow-left\"></span>";
-                if (e.key == "ArrowRight")str = "<span class=\"icon icon-arrow-right\"></span>";
-                if (e.key == "Enter")str = "<span class=\"icon icon-corner-down-left\"></span>";
-                if (e.key == "Meta")str = "<span class=\"icon icon-command\"></span>";
+                if (e.key === "ArrowUp")str = "<span class=\"icon icon-arrow-up\"></span>";
+                if (e.key === "ArrowDown")str = "<span class=\"icon icon-arrow-down\"></span>";
+                if (e.key === "ArrowLeft")str = "<span class=\"icon icon-arrow-left\"></span>";
+                if (e.key === "ArrowRight")str = "<span class=\"icon icon-arrow-right\"></span>";
+                if (e.key === "Enter")str = "<span class=\"icon icon-corner-down-left\"></span>";
+                if (e.key === "Meta")str = "<span class=\"icon icon-command\"></span>";
                 this.showAction(str);
                 this._lastTextElement = null;
             }
