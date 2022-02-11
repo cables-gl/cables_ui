@@ -285,13 +285,6 @@
         }
     }
 
-
-    .icon-key
-    {
-        border:1px solid red;
-
-    }
-
     .key, .infoareaContent code, .shortcut code
     {
         margin-right: 3px;
@@ -299,13 +292,10 @@
         border-radius: 3px;
         border-bottom: 4px solid var(--color-06);
         padding: 0px;
-        padding-bottom: 0px;
         padding-left: 5px;
         padding-right: 5px;
         border: 1px solid var(--color-05);
         background-color: var( --color-04);
-
-        // color: white;
         font-size: 14px;
         font-family: monospace;
     }
