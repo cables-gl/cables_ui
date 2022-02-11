@@ -63,7 +63,7 @@
 
         text-overflow: ellipsis;
         overflow: hidden;
-        font-size: 13px;
+        font-size: 17px;
         bottom:0px;
         opacity: 0.9;
 
@@ -71,10 +71,14 @@
         z-index: $zindex_lowest;
 
 
-        ul {
-            margin-left: 15px;
-            padding-left: 0px;
-        }
+        // ul {
+        //     float:left;
+        //     margin:0px;
+        //     padding:0px;
+
+        //     margin-left: 15px;
+        //     padding-left: 0px;
+        // }
 
         .icon
         {
@@ -96,22 +100,33 @@
                 display:inline;
                 margin:0px;
                 padding:0px;
-                float:left;
+
+                // float:left;
                 margin-right:15px;
                 background-color: transparent;
+                // border:1px solid red;
+                min-height:100%;
+                // margin-top: 3px;
             }
 
-            code
-            {
-                font-size: 14px;
-                margin-right: 3px;
-            }
+
+
+            // code
+            // {
+            //     font-size: 11px;
+            //     margin-right: 3px;
+            //     padding:0px;
+            //     padding-left:4px;
+            //     padding-right:4px;
+            //     display:inline;
+            // }
 
 
             h2 {
-                font-size: 14px;
+                font-size: 16px;
                 color:white;
-                margin-top: 3px;
+                padding-top: 3px;
+                display:inline;
             }
         }
     }
@@ -120,7 +135,7 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"↑↓";
             vertical-align: top;
         }
@@ -130,7 +145,7 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"↑";
             vertical-align: top;
         }
@@ -140,7 +155,7 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"←";
             vertical-align: top;
         }
@@ -150,7 +165,7 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"→";
             vertical-align: top;
         }
@@ -159,7 +174,7 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"↓";
             vertical-align: top;
         }
@@ -169,29 +184,49 @@
     {
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"⌥";
             vertical-align: top;
         }
     }
 
+    // .key_shift
+    // {
+    //     &:before
+    //     {
+    //         content:"W";
+    //         color:transparent;
+    //     }
+
+    //     &:after
+    //     {
+    //         font-size: 14px;
+    //         content:"⇧";
+    //         position:absolute;
+    //         display: block;
+    //         // top:3px;
+    //         // margin-left:12px;
+    //     }
+    // }
     .key_shift
     {
-        &:before
-        {
-            content:"W";
-            color:transparent;
-        }
-
         &:after
         {
-            font-size: 17px;
+            font-size: 14px;
             content:"⇧";
-            position:absolute;
-            display: block;
-            top:3px;
-            margin-left:12px;
+            // color:green;
+            vertical-align: top;
         }
+
+        // &:after
+        // {
+            // font-size: 14px;
+            // content:"⇧";
+            // position:absolute;
+            // display: block;
+            // top:3px;
+            // margin-left:12px;
+        // }
     }
 
     #infoArea .key_shift:after
@@ -204,9 +239,9 @@
     {
         &:after
         {
-            font-size: 17px;
+            // font-size: 14px;
             content:"⌘";
-            vertical-align: top;
+            // vertical-align: top;
         }
     }
 
@@ -239,15 +274,22 @@
         i {
             color: var(--color-13);
         }
-        .code {
-            font-family: monospace;
-            color: var(--color-13);
-            background-color: transparent;
-        }
+        // .code {
+        //     font-family: monospace;
+        //     color: var(--color-13);
+        //     background-color: transparent;
+        // }
         .multiline-string-port {
             display: block;
             @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 3, $bgColor: $background-color-dark);
         }
+    }
+
+
+    .icon-key
+    {
+        border:1px solid red;
+
     }
 
     .key, .infoareaContent code
@@ -265,7 +307,7 @@
         // color: var( --color-01);
         // font-family: monospace;
 
-        text-transform: capitalize;
+        text-transform: uppercase;
         border-radius: 3px;
         border-bottom: 4px solid var(--color-06);
         padding: 0px;
@@ -275,9 +317,9 @@
         border: 1px solid var(--color-05);
         background-color: var( --color-04);
 
-        line-height: 24px;
+        // line-height: 24px;
         color: white;
-        font-size: 12px;
+        font-size: 14px;
         font-family: monospace;
 
         // text-transform: capitalize;

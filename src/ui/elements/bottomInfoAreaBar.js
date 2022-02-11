@@ -70,6 +70,9 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     replaceShortcuts(txt)
     {
+        console.log("-----");
+        console.log(txt);
+
         txt = mmd(txt || "");
 
         txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
@@ -80,28 +83,29 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         txt = txt.replaceAll("[MMB]", "<span class=\"icon icon-mouse_mmb\"></span>");
         txt = txt.replaceAll("[MW]", "<span class=\"icon icon-mouse_wheel\"></span>");
 
-        txt = txt.replaceAll("[updown]", "<code class=\"key_updown\"></code>");
+        txt = txt.replaceAll("[updown]", "<span class=\"key_updown\"></span>");
 
 
-        txt = txt.replaceAll("[up]", "<code class=\"key_up\"></code>");
-        txt = txt.replaceAll("[down]", "<code class=\"key_down\"></code>");
-        txt = txt.replaceAll("[left]", "<code class=\"key_left\"></code>");
-        txt = txt.replaceAll("[right]", "<code class=\"key_right\"></code>");
+        txt = txt.replaceAll("[up]", "<span class=\"key_up\"></span>");
+        txt = txt.replaceAll("[down]", "<span class=\"key_down\"></span>");
+        txt = txt.replaceAll("[left]", "<span class=\"key_left\"></span>");
+        txt = txt.replaceAll("[right]", "<span class=\"key_right\"></span>");
 
 
-        txt = txt.replaceAll("[shift]", "<code class=\"key_shift\"></code>");
+        txt = txt.replaceAll("[shift]", "<span class=\"key\">shift</span>");
+        txt = txt.replaceAll("[enter]", "<span class=\"key\">enter</span>");
 
         if (navigator.appVersion.indexOf("Mac") != -1)
         {
-            txt = txt.replaceAll("[cmd_ctrl]", "<code class=\"key_cmd\"></code>");
-            txt = txt.replaceAll("[alt]", "<code class=\"key_option\"></code>");
+            txt = txt.replaceAll("[cmd_ctrl]", "<span class=\"key key_cmd\"></span>");
+            txt = txt.replaceAll("[alt]", "<span class=\"key key_option\"></span>");
         }
         else
         {
-            txt = txt.replaceAll("[cmd_ctrl]", "<code>CTRL</code>");
-            txt = txt.replaceAll("[alt]", "<code>ALT</code>");
+            txt = txt.replaceAll("[cmd_ctrl]", "<span class=\"key\">CTRL</span>");
+            txt = txt.replaceAll("[alt]", "<span class=\"key\">ALT</span>");
         }
-
+        console.log(txt);
 
         return txt;
     }
@@ -119,6 +123,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     setContentParam(txt)
     {
+        if (!txt) return;
         if (this.showing)
         {
             this._eleInfoAreaParam.classList.remove("hidden");
