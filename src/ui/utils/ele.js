@@ -101,55 +101,6 @@ class Ele
         let style = window.getComputedStyle(el);
         return !(style.display === "none");
     }
-
-    fadeOut(el, duration, completeCallback)
-    {
-        if (!el) return;
-        const fadeEffect = setInterval(function ()
-        {
-            if (!el.style.opacity)
-            {
-                el.style.opacity = 1;
-            }
-            if (el.style.opacity > 0)
-            {
-                el.style.opacity -= 0.1;
-            }
-            else
-            {
-                clearInterval(fadeEffect);
-                if (typeof completeCallback === "function") completeCallback(el);
-            }
-        }, duration);
-    }
-
-
-    slideUp(el, duration, completeCallback)
-    {
-        el.style.transitionProperty = "height, margin, padding";
-        el.style.transitionDuration = duration + "ms";
-        el.style.boxSizing = "border-box";
-        el.style.height = el.offsetHeight + "px";
-        el.style.overflow = "hidden";
-        el.style.height = 0;
-        el.style.paddingTop = 0;
-        el.style.paddingBottom = 0;
-        el.style.marginTop = 0;
-        el.style.marginBottom = 0;
-        window.setTimeout(() =>
-        {
-            el.style.display = "none";
-            el.style.removeProperty("height");
-            el.style.removeProperty("padding-top");
-            el.style.removeProperty("padding-bottom");
-            el.style.removeProperty("margin-top");
-            el.style.removeProperty("margin-bottom");
-            el.style.removeProperty("overflow");
-            el.style.removeProperty("transition-duration");
-            el.style.removeProperty("transition-property");
-            if (typeof completeCallback === "function") completeCallback(el);
-        }, duration);
-    }
 }
 
 export default new Ele();

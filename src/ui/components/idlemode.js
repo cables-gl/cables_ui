@@ -21,14 +21,11 @@ function startIdleMode()
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
 
-    const wasActiveSedonds = (performance.now() - activeModeStart) / 1000;
-    gui.emitEvent("uiIdleStart", wasActiveSedonds);
-
-
+    const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
     idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
 
     gui.corePatch().pause();
-    gui.emitEvent("uiIdleStart");
+    gui.emitEvent("uiIdleStart", wasActiveSeconds);
     idling = true;
     clearTimeout(idleTimeout);
     idleModeStart = Date.now();
