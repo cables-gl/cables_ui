@@ -42,6 +42,8 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 let item = this._itemsLookup[a.id];
                 if (!item)
                 {
+                    a.uiAttribs.translate = a.uiAttribs.translate || { "x": 0, "y": 0 };
+
                     item = {
                         "op": a,
                         "port": a.portsIn[0],

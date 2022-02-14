@@ -125,6 +125,8 @@ export default class Gui
 
         this.metaDoc = new MetaDoc(this.metaTabs);
         this._metaCode = new MetaCode(this.metaTabs);
+
+
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
@@ -1778,6 +1780,15 @@ export default class Gui
 
         this._corePatch.on("renderDelayEnd", function ()
         {
+        });
+
+        this._corePatch.cgl.on("webglcontextlost", () =>
+        {
+            new CABLES.UI.ModalDialog({
+                "warnning": true,
+                "title": "Context lost",
+                "text": "something went wrong. webgl context was lost. reload page or try restarting your browser",
+            });
         });
     }
 

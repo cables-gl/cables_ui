@@ -9,14 +9,14 @@ import ModalDialog from "./modaldialog";
  */
 export default class ModalException
 {
-    constructor(exception,options)
+    constructor(exception, options)
     {
-        this._exception=exception;
+        this._exception = exception;
 
-        if(options)
+        if (options)
         {
-            if(options.opname) this._opname=options.opname;
-            if(options.op) this._opname=options.op.name
+            if (options.opname) this._opname = options.opname;
+            if (options.op) this._opname = options.op.name;
         }
 
         if (String(this._exception.stack).indexOf("file:blob:") == 0)
@@ -25,12 +25,12 @@ export default class ModalException
             return;
         }
 
-        this.options={
-            "title":"cablefail :/",
-            "html":this.getHtml()
-        }
+        this.options = {
+            "title": "cablefail :/",
+            "html": this.getHtml()
+        };
 
-        this._dialog=new ModalDialog(this.options);
+        this._dialog = new ModalDialog(this.options);
 
         if (this._exception)
         {
@@ -53,20 +53,18 @@ export default class ModalException
             }
         }
 
-        if(this._opname)
+        if (this._opname)
         {
             const ops = gui.corePatch().getOpsByObjName(this._opname);
             for (let i = 0; i < ops.length; i++)
             {
                 ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
             }
-
         }
-
     }
 
 
-    _getFileSnippet (url, line, cb)
+    _getFileSnippet(url, line, cb)
     {
         CABLES.ajax(
             url,
@@ -97,9 +95,9 @@ export default class ModalException
 
     getHtml()
     {
-        let str="";
+        let str = "";
 
-        if(this._opname)
+        if (this._opname)
             str += "Error in op: <b>" + this._opname + "</b><br/><br/>";
 
         if (this._exception)
@@ -118,7 +116,7 @@ export default class ModalException
 
         CABLES.lastError = { "exception": this._exception, "opname": this._opName };
 
-        if(this._opname)
+        if (this._opname)
             if (gui.user.isAdmin || this._opname.startsWith("Op.User." + gui.user.usernameLowercase))
                 str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
 
@@ -132,6 +130,6 @@ export default class ModalException
     close()
     {
         this._dialog.close();
-        this._dialog=null;
+        this._dialog = null;
     }
 }
