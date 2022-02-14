@@ -1,6 +1,4 @@
 
-import GlPreviewLayerTexture from "./glpreviewlayer_texture";
-import GlPreviewLayerNumber from "./glpreviewlayer_number_graph";
 import Logger from "../utils/logger";
 
 export default class GlPreviewLayer extends CABLES.EventTarget
@@ -34,6 +32,36 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
 
         setInterval(this.updateViewPort.bind(this), 500);
+
+        gui.corePatch().on("onOpAdd", (a) =>
+        {
+            if (a.renderPreviewLayer)
+            {
+                console.log("FOUND PREWVIEW RENDERER", a);
+
+                let item = this._itemsLookup[a.id];
+                if (!item)
+                {
+                    item = {
+                        "op": a,
+                        "port": a.portsIn[0],
+                        "ports": a.portsIn,
+                        "posX": a.uiAttribs.translate.x,
+                        "posY": a.uiAttribs.translate.y,
+                    };
+
+                    this._itemsLookup[a.id] = item;
+
+
+                    item.op.on("onDelete", (op) =>
+                    {
+                        this._removeOpItem(op);
+                    });
+
+                    this._items.push(item);
+                }
+            }
+        });
     }
 
     _updateSize()
@@ -92,7 +120,7 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
             this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
 
-            this._items[i].renderer.render(this._canvasCtx, pos, size);
+            this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
 
             count++;
@@ -101,40 +129,42 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         perf.finish();
     }
 
+
     updateViewPort()
     {
-        this._updateSize();
-        const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
-        const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
-        ops.push(...ops2);
+        // this._updateSize();
+        // const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
+        // const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            let item = this._itemsLookup[ops[i].id];
-            if (!item)
-            {
-                item = {
-                    "op": ops[i],
-                    "port": ops[i].portsIn[0],
-                    "ports": ops[i].portsIn,
-                    "posX": ops[i].uiAttribs.translate.x,
-                    "posY": ops[i].uiAttribs.translate.y,
-                };
+        // ops.push(...ops2);
 
-                this._itemsLookup[ops[i].id] = item;
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     let item = this._itemsLookup[a.id];
+        //     if (!item)
+        //     {
+        //         item = {
+        //             "op": ops[i],
+        //             "port": ops[i].portsIn[0],
+        //             "ports": ops[i].portsIn,
+        //             "posX": ops[i].uiAttribs.translate.x,
+        //             "posY": ops[i].uiAttribs.translate.y,
+        //         };
+
+        //         this._itemsLookup[ops[i].id] = item;
 
 
-                item.op.on("onDelete", (op) =>
-                {
-                    this._removeOpItem(op);
-                });
+        //         item.op.on("onDelete", (op) =>
+        //         {
+        //             this._removeOpItem(op);
+        //         });
 
-                this._items.push(item);
+        //         this._items.push(item);
 
-                if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
-                if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
-            }
-        }
+        //         if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
+        //         if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
+        //     }
+        // }
     }
 
     _removeOpItem(op)
