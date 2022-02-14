@@ -15,7 +15,6 @@ export default
         "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v3",
         "defaultOpJson": "Ops.Json.AjaxRequest_v2",
         "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
-        "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
         "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
         "VarSetObject": "Ops.Vars.VarSetObject_v2",
@@ -48,8 +47,6 @@ export default
         else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
         else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
         else if (filename.endsWith(".exr")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpExr);
-        else if (filename.endsWith(".svg")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpSvg);
-
         return ops;
     },
     "getVarGetterOpNameByType": (type, port) =>
