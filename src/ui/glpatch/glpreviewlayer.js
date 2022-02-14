@@ -92,6 +92,8 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderGl");
         const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
 
+        this._updateSize();
+
         let count = 0;
         for (let i = 0; i < this._items.length; i++)
         {
