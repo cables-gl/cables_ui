@@ -231,8 +231,8 @@ export default class Gui
         }
         else this._find = new CABLES.UI.FindTab(gui.mainTabs, str);
 
-        this._find.focus();
         gui.maintabPanel.show(true);
+        this._find.focus();
     }
 
     texturePreview()
