@@ -26,23 +26,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
-        this._connection.state.on("enableMultiplayer", (payload) =>
-        {
-            if (payload.started)
-            {
-                let username = payload.username;
-                if (payload.clientId === this._connection.clientId)
-                {
-                    username = "YOU";
-                }
-                notify(username + " just started a multiplayer session");
-            }
-        });
-
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
 
-        this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
+        this._connection.state.on("clientLeft", (client) =>
+        {
+            notify(client.username + " just left the multiplayer session");
+        });
 
+        this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
         this._connection.state.on("pilotChanged", (pilot) =>
@@ -67,11 +58,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 this.updateHtml();
                 notify(username + " the pilot");
             }
-        });
-        this._connection.state.on("pilotRemoved", () =>
-        {
-            if (!this._connection.inMultiplayerSession) return;
-            notify("the pilot just left the session");
         });
 
         this._connection.state.on("patchSynchronized", () =>
@@ -420,7 +406,67 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             gui.patchView.patchRenderer.greyOut = false;
         }
 
-        const moreOptions = userList.querySelector(".more_options");
+        const startButton = userList.querySelector(".start-button");
+        const joinButton = userList.querySelector(".join-button");
+        const leaveButton = userList.querySelector(".leave-button");
+
+        if (startButton)
+        {
+            startButton.addEventListener("pointerdown", () =>
+            {
+                this._connection.startMultiplayerSession();
+            });
+            if (this._connection.multiplayerCapable && !(this._connection.runningMultiplayerSession || this._connection.inMultiplayerSession))
+            {
+                startButton.classList.add("visible");
+            }
+            else
+            {
+                startButton.classList.remove("visible");
+            }
+        }
+
+        if (joinButton)
+        {
+            joinButton.addEventListener("pointerdown", () =>
+            {
+                this._connection.joinMultiplayerSession();
+            });
+            if (this._connection.onlyRemoteClientsConnected)
+            {
+                joinButton.textContent = "reconnect";
+            }
+            else
+            {
+                joinButton.textContent = "join";
+            }
+            if (this._connection.multiplayerCapable && this._connection.runningMultiplayerSession && !this._connection.inMultiplayerSession)
+            {
+                joinButton.classList.add("visible");
+            }
+            else
+            {
+                joinButton.classList.remove("visible");
+            }
+        }
+
+        if (leaveButton)
+        {
+            leaveButton.addEventListener("pointerdown", () =>
+            {
+                this._connection.leaveMultiplayerSession();
+            });
+            if (this._connection.multiplayerCapable && this._connection.inMultiplayerSession)
+            {
+                leaveButton.classList.add("visible");
+            }
+            else
+            {
+                leaveButton.classList.remove("visible");
+            }
+        }
+
+        const moreOptions = userList.querySelector(".more-options");
         if (moreOptions)
         {
             moreOptions.addEventListener("pointerdown", (event) =>
@@ -451,31 +497,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             {
                                 this._connection.state.requestPilotSeat();
                             }
-                        });
-                    }
-
-                    items.push({
-                        "title": "exit multiplayer session",
-                        "iconClass": "icon icon-exit",
-                        "func": () => { this._connection.leaveMultiplayerSession(); }
-                    });
-                }
-                else
-                {
-                    if (this._connection.runningMultiplayerSession)
-                    {
-                        items.push({
-                            "title": "join multiplayer session",
-                            "iconClass": "icon icon-users",
-                            "func": () => { this._connection.joinMultiplayerSession(); }
-                        });
-                    }
-                    else if (this._connection.multiplayerCapable)
-                    {
-                        items.push({
-                            "title": "start multiplayer session",
-                            "iconClass": "icon icon-users",
-                            "func": () => { this._connection.startMultiplayerSession(); }
                         });
                     }
                 }
@@ -540,19 +561,20 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
             if (!client.isRemoteClient)
             {
-                if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
-                {
-                    items.push({
-                        "title": "jump to cursor",
-                        "iconClass": "icon icon-mouse-cursor",
-                        "func": () =>
-                        {
-                            this._jumpToCursor(client);
-                        }
-                    });
-                }
                 if (this._connection.inMultiplayerSession)
                 {
+                    if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
+                    {
+                        items.push({
+                            "title": "jump to cursor",
+                            "iconClass": "icon icon-mouse-cursor",
+                            "func": () =>
+                            {
+                                this._jumpToCursor(client);
+                            }
+                        });
+                    }
+
                     const multiPlayerBar = document.getElementById("multiplayerbar");
                     const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
                     if (this._connection.client.following && this._connection.client.following === clientId)

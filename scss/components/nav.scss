@@ -427,7 +427,6 @@
 
     .nav-clientlist
     {
-        padding-top:4px;
         padding-left:3px;
         padding-right:3px;
 
@@ -435,9 +434,14 @@
         flex-direction: row;
         align-items: center;
 
-        .sc_userlist {
+        .sc-userlist {
 
-            .more_options {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            padding-top: 2px;
+
+            .more-options {
                 margin-bottom: 5px;
             }
 
@@ -462,7 +466,7 @@
                     pointer-events: none;
                 }
 
-                &.remote_client {
+                &.remote-client {
                     .avatar {
                         color: white;
                     }
@@ -556,6 +560,22 @@
                 //         // border: 2px solid var(--color_port_function);
                 //     }
                 // }
+            }
+        }
+
+        .sc-options {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            margin-left: 10px;
+            .start-button, .join-button, .leave-button {
+                display: none !important;
+                margin-top: 0;
+
+                &.visible {
+                    display: inline-block !important;
+                }
             }
         }
     }

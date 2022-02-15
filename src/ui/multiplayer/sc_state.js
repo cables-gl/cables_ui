@@ -50,10 +50,15 @@ export default class ScState extends CABLES.EventTarget
         let userListChanged = false;
         const isOwnAnswer = payload.clientId === this._connection.clientId;
 
-        if (!this._connection.inMultiplayerSession && payload.inMultiplayerSession) userListChanged = true;
+        // if (!this._connection.inMultiplayerSession && payload.inMultiplayerSession) userListChanged = true;
 
         if (this._clients[payload.clientId])
         {
+            if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
+            {
+                this.emitEvent("clientLeft", payload);
+                userListChanged = true;
+            }
             this._clients[payload.clientId].username = payload.username;
             this._clients[payload.clientId].userid = payload.userid;
             this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
@@ -62,6 +67,7 @@ export default class ScState extends CABLES.EventTarget
             this._clients[payload.clientId].isMe = isOwnAnswer;
             this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
             this._clients[payload.clientId].connectedSince = payload.connectedSince;
+            this._clients[payload.clientId].inSessionSince = payload.inSessionSince;
             this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
             this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
             this._clients[payload.clientId].platform = payload.platform;
@@ -86,6 +92,7 @@ export default class ScState extends CABLES.EventTarget
                 "isMe": isOwnAnswer,
                 "color": this.getClientColor(payload.clientId),
                 "connectedSince": payload.connectedSince,
+                "inSessionSince": payload.inSessionSince,
                 "following": isOwnAnswer ? this._connection.client.following : payload.following,
                 "isRemoteClient": payload.isRemoteClient,
                 "platform": payload.platform,
@@ -150,6 +157,10 @@ export default class ScState extends CABLES.EventTarget
                 this._followers = this._followers.filter((followerId) => { return followerId !== payload.clientId; });
                 userListChanged = true;
             }
+        }
+        else if (payload.startedSession)
+        {
+            userListChanged = true;
         }
 
         const cleanupChange = this._cleanUpUserList();
@@ -236,10 +247,10 @@ export default class ScState extends CABLES.EventTarget
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
-                if (!client.isRemoteClient && client.inMultiplayerSession && client.connectedSince && client.connectedSince < earliestConnection)
+                if (!client.isRemoteClient && client.inMultiplayerSession && client.inSessionSince && client.inSessionSince < earliestConnection)
                 {
                     pilot = client;
-                    earliestConnection = client.connectedSince;
+                    earliestConnection = client.inSessionSince;
                 }
             });
             if (pilot && !pilot.isRemoteClient)
@@ -278,7 +289,7 @@ export default class ScState extends CABLES.EventTarget
         if (!gui.isRemoteClient && (client && !client.isPilot))
         {
             this._connection.sendControl("pilotRequest", { "username": client.username, "state": "request" });
-            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
             if (myAvatar) myAvatar.classList.add("pilot-request");
             this._pendingPilotRequest = setTimeout(() =>
             {
@@ -302,7 +313,7 @@ export default class ScState extends CABLES.EventTarget
         if (client && !client.isPilot && this._pendingPilotRequest)
         {
             clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
             if (myAvatar) myAvatar.classList.add("pilot-request");
             this.becomePilot();
         }
@@ -314,7 +325,7 @@ export default class ScState extends CABLES.EventTarget
         if (client && this._pendingPilotRequest)
         {
             clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
             if (myAvatar) myAvatar.classList.remove("pilot-request");
         }
     }
