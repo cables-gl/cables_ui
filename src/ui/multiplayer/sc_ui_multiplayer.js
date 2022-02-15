@@ -322,11 +322,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
-        const html = getHandleBarHtml("socket_userlist", data);
+        const html = getHandleBarHtml("sc_userlist", data);
         const userList = document.getElementById("nav-clientlist");
         userList.innerHTML = html;
 
-        const userListItems = userList.querySelectorAll(".socket_userlist_item");
+        const userListItems = userList.querySelectorAll(".item");
         userListItems.forEach((ele) =>
         {
             const itemId = ele.dataset.clientId;
@@ -420,7 +420,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             gui.patchView.patchRenderer.greyOut = false;
         }
 
-        const moreOptions = userList.querySelector(".socket_more_options");
+        const moreOptions = userList.querySelector(".more_options");
         if (moreOptions)
         {
             moreOptions.addEventListener("pointerdown", (event) =>
@@ -576,7 +576,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                             "func": () =>
                             {
                                 const userList = document.getElementById("nav-clientlist");
-                                const userListItems = userList.querySelectorAll(".socket_userlist_item");
+                                const userListItems = userList.querySelectorAll(".item");
                                 userListItems.forEach((item) => { return item.classList.remove("following"); });
                                 ele.classList.add("following");
                                 multiPlayerBar.dataset.multiplayerFollow = client.username;

@@ -205,10 +205,6 @@ export default class GlLink
 
                 this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
             }
-            else
-            {
-                this._log.warn("no op in/out");
-            }
         }
         else this._cable.setPosition(0, 0, 0, 0);
     }

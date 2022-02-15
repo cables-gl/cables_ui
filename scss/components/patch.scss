@@ -190,21 +190,18 @@
 	{
 		float:left;
         color: var(--color_op_text_active);
-        padding:5px;
-        padding-left:10px;
-        padding-right:10px;
-        margin-top: 4px;
-
         font-size: 15px;
+
         background-color: $color-bar-bg;
-        color: var(--color_op_text_active);
-        padding: 2px;
-        padding-left: 8px;
-        padding-right: 8px;
+        padding: 2px 8px;
         border-radius: 4px;
-        margin-right: 8px;
-        margin-left: 20px;
+        margin: 4px 8px 5px 5px;
+
     }
+}
+
+#breadcrumb_nav {
+  position: absolute;
 }
 
 #subpatch_nav
@@ -214,11 +211,10 @@
 
 	#subpatch_breadcrumb
 	{
+
 		float:left;
         color: var(--color_op_text_active);
-        padding:5px;
-        padding-left:10px;
-        padding-right:10px;
+        padding: 5px 10px 5px 0;
         margin-top: 4px;
 
         .sparrow
@@ -240,6 +236,10 @@
 			border-radius: 4px;
             margin-right: 8px;
             margin-left: 20px;
+
+            &:first-child {
+              margin-left: 5px;
+            }
 
 			&:hover
 		    {

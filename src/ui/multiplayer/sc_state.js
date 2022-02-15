@@ -278,7 +278,7 @@ export default class ScState extends CABLES.EventTarget
         if (!gui.isRemoteClient && (client && !client.isPilot))
         {
             this._connection.sendControl("pilotRequest", { "username": client.username, "state": "request" });
-            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
             if (myAvatar) myAvatar.classList.add("pilot-request");
             this._pendingPilotRequest = setTimeout(() =>
             {
@@ -302,7 +302,7 @@ export default class ScState extends CABLES.EventTarget
         if (client && !client.isPilot && this._pendingPilotRequest)
         {
             clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
             if (myAvatar) myAvatar.classList.add("pilot-request");
             this.becomePilot();
         }
@@ -314,7 +314,7 @@ export default class ScState extends CABLES.EventTarget
         if (client && this._pendingPilotRequest)
         {
             clearTimeout(this._pendingPilotRequest);
-            const myAvatar = document.querySelector("#multiplayerbar .socket_userlist_item.me");
+            const myAvatar = document.querySelector("#multiplayerbar .sc_userlist .item.me");
             if (myAvatar) myAvatar.classList.remove("pilot-request");
         }
     }
