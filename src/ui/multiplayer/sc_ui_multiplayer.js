@@ -387,7 +387,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 messageNav.style.display = "block";
                 messageBox.style.display = "block";
 
-                gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+                if (this._connection.client.following)
+                {
+                    gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                }
+                else
+                {
+                    gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+                }
                 gui.patchView.patchRenderer.greyOut = true;
             }
             else
@@ -563,16 +570,19 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 if (this._connection.inMultiplayerSession)
                 {
-                    if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
+                    if (!client.isMe)
                     {
-                        items.push({
-                            "title": "jump to cursor",
-                            "iconClass": "icon icon-mouse-cursor",
-                            "func": () =>
-                            {
-                                this._jumpToCursor(client);
-                            }
-                        });
+                        if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
+                        {
+                            items.push({
+                                "title": "jump to cursor",
+                                "iconClass": "icon icon-mouse-cursor",
+                                "func": () =>
+                                {
+                                    this._jumpToCursor(client);
+                                }
+                            });
+                        }
                     }
 
                     const multiPlayerBar = document.getElementById("multiplayerbar");
@@ -587,10 +597,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                                 ele.classList.remove("following");
                                 delete multiPlayerBar.dataset.multiplayerFollow;
                                 this._connection.client.following = null;
+                                gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
                             }
                         });
                     }
-                    else if (!client.isMe)
+                    else if (!client.isMe && !this._connection.client.isPilot)
                     {
                         items.push({
                             "title": "follow",
@@ -604,6 +615,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                                 multiPlayerBar.dataset.multiplayerFollow = client.username;
                                 this._connection.client.following = client.clientId;
                                 this._jumpToCursor(client);
+                                gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
                             }
                         });
                     }

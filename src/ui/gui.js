@@ -1687,6 +1687,29 @@ export default class Gui
             ele.byId("infoAreaContainer").style.display = "none";
         }
 
+        if (r < Gui.RESTRICT_MODE_FULL)
+        {
+            const tabpanel = ele.byId("metatabpanel");
+            if (tabpanel)
+            {
+                tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
+                {
+                    tab.classList.add("readonly");
+                });
+            }
+        }
+        else
+        {
+            const tabpanel = ele.byId("metatabpanel");
+            if (tabpanel)
+            {
+                tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
+                {
+                    tab.classList.remove("readonly");
+                });
+            }
+        }
+
         if (this.iconBarLeft) this.iconBarLeft.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
         if (this.iconBarPatchNav) this.iconBarPatchNav.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
         if (this.bottomInfoArea) this.bottomInfoArea.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
