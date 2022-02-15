@@ -1175,6 +1175,7 @@ export default class GlPatch extends CABLES.EventTarget
     // make static util thing...
     setDrawableColorByType(e, t, brightness)
     {
+        if (!e) return;
         let diff = 1;
 
         if (brightness == 1)diff = 0.8;
