@@ -221,6 +221,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._connection.on("netCursorPos", (msg) =>
         {
             if (!this._connection.inMultiplayerSession) return;
+            delete msg.zoom;
             if (this._connection.client.following && msg.clientId === this._connection.client.following)
             {
                 gui.emitEvent("netGotoPos", msg);
@@ -532,10 +533,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             guiEvent.subpatch = client.subpatch;
         }
+        /*
         if (client.hasOwnProperty("zoom"))
         {
             guiEvent.zoom = client.zoom;
         }
+         */
         if (client.hasOwnProperty("scrollX") && client.hasOwnProperty("scrollY"))
         {
             guiEvent.scrollX = client.scrollX;
