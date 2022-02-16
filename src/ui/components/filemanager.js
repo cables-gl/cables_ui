@@ -477,6 +477,7 @@ export default class FileManager
 
             if (this._filePortEle)
             {
+                gui.setStateUnsaved();
                 this._filePortEle.value = detailItems[0].p;
                 const event = document.createEvent("Event");
                 event.initEvent("input", true, true);
@@ -488,8 +489,6 @@ export default class FileManager
                     if (this._filePortElePreview) this._filePortElePreview.innerHTML =
                     "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
                 }
-
-                console.log(this._filePortOp);
 
                 gui.opParams.show(this._filePortOp);
             }
