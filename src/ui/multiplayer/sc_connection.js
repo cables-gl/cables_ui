@@ -262,9 +262,14 @@ export default class ScConnection extends CABLES.EventTarget
 
         window.addEventListener("beforeunload", () =>
         {
+            this.client.isDisconnected = true;
             if (this.inMultiplayerSession)
             {
-                this.leaveMultiplayerSession();
+                this.leaveMultiplayerSession(true);
+            }
+            else
+            {
+                this.sendPing();
             }
             this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
@@ -455,6 +460,10 @@ export default class ScConnection extends CABLES.EventTarget
         {
             payload.isPilot = this.client.isPilot;
             payload.following = this.client.following;
+            if (this.client.isDisconnected)
+            {
+                payload.isDisconnected = true;
+            }
         }
         if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)
         {

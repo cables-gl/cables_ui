@@ -52,36 +52,45 @@ export default class ScState extends CABLES.EventTarget
 
         if (this._clients[payload.clientId])
         {
-            if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
+            if (payload.isDisconnected)
             {
+                delete this._clients[payload.clientId];
                 this.emitEvent("clientLeft", payload);
                 userListChanged = true;
             }
-            if (payload.inMultiplayerSession && !this._clients[payload.clientId].inMultiplayerSession)
+            else
             {
-                this.emitEvent("clientJoined", payload);
-                userListChanged = true;
+                if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
+                {
+                    this.emitEvent("clientLeft", payload);
+                    userListChanged = true;
+                }
+                if (payload.inMultiplayerSession && !this._clients[payload.clientId].inMultiplayerSession)
+                {
+                    this.emitEvent("clientJoined", payload);
+                    userListChanged = true;
+                }
+                this._clients[payload.clientId].username = payload.username;
+                this._clients[payload.clientId].userid = payload.userid;
+                this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
+                this._clients[payload.clientId].clientId = payload.clientId;
+                this._clients[payload.clientId].lastSeen = payload.lastSeen;
+                this._clients[payload.clientId].isMe = isOwnAnswer;
+                this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
+                this._clients[payload.clientId].connectedSince = payload.connectedSince;
+                this._clients[payload.clientId].inSessionSince = payload.inSessionSince;
+                this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
+                this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
+                this._clients[payload.clientId].platform = payload.platform;
+                this._clients[payload.clientId].x = payload.x;
+                this._clients[payload.clientId].y = payload.y;
+                this._clients[payload.clientId].subpatch = payload.subpatch;
+                this._clients[payload.clientId].zoom = payload.zoom;
+                this._clients[payload.clientId].scrollX = payload.scrollX;
+                this._clients[payload.clientId].scrollY = payload.scrollY;
+                this._clients[payload.clientId].inMultiplayerSession = payload.inMultiplayerSession;
+                this._clients[payload.clientId].multiplayerCapable = payload.multiplayerCapable;
             }
-            this._clients[payload.clientId].username = payload.username;
-            this._clients[payload.clientId].userid = payload.userid;
-            this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
-            this._clients[payload.clientId].clientId = payload.clientId;
-            this._clients[payload.clientId].lastSeen = payload.lastSeen;
-            this._clients[payload.clientId].isMe = isOwnAnswer;
-            this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
-            this._clients[payload.clientId].connectedSince = payload.connectedSince;
-            this._clients[payload.clientId].inSessionSince = payload.inSessionSince;
-            this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
-            this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
-            this._clients[payload.clientId].platform = payload.platform;
-            this._clients[payload.clientId].x = payload.x;
-            this._clients[payload.clientId].y = payload.y;
-            this._clients[payload.clientId].subpatch = payload.subpatch;
-            this._clients[payload.clientId].zoom = payload.zoom;
-            this._clients[payload.clientId].scrollX = payload.scrollX;
-            this._clients[payload.clientId].scrollY = payload.scrollY;
-            this._clients[payload.clientId].inMultiplayerSession = payload.inMultiplayerSession;
-            this._clients[payload.clientId].multiplayerCapable = payload.multiplayerCapable;
         }
         else
         {
