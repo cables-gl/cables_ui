@@ -13,10 +13,15 @@ export default class ModalException
     {
         this._exception = exception;
 
+        this._op = null;
         if (options)
         {
             if (options.opname) this._opname = options.opname;
-            if (options.op) this._opname = options.op.name;
+            if (options.op)
+            {
+                this._opname = options.op.name;
+                this._op = options.op;
+            }
         }
 
         if (String(this._exception.stack).indexOf("file:blob:") == 0)
@@ -114,13 +119,30 @@ export default class ModalException
         }
         str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
-        CABLES.lastError = { "exception": this._exception, "opname": this._opName };
+        CABLES.lastError = { "exception": this._exception, "opname": this._opname };
 
+        let isCustomOp = false;
         if (this._opname)
-            if (gui.user.isAdmin || this._opname.startsWith("Op.User." + gui.user.usernameLowercase))
-                str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+        {
+            isCustomOp = this._opname.startsWith("Ops.Cables.CustomOp");
+            if (isCustomOp && this._op)
+            {
+                const codePortName = "JavaScript";
+                str += "<a class=\"button \" onclick=\"CABLES.UI.paramsHelper.openParamStringEditor('" + this._op.id + "', '" + codePortName + "', null, true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+            }
+            else
+            {
+                if (gui.user.isAdmin || this._opname.startsWith("Op.User." + gui.user.usernameLowercase))
+                {
+                    str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+                }
+            }
+        }
 
-        str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+        if (!isCustomOp)
+        {
+            str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+        }
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
         return str;
