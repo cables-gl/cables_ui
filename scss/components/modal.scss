@@ -130,6 +130,11 @@
         background-color: #400;
         width: 100%;
     }
+
+    .shaderErrorCodeInner {
+        max-height: 400px;
+        overflow: scroll;
+    }
 }
 
 .modalScrollContent {
