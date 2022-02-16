@@ -119,6 +119,37 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        gui.on("opReloaded", (opName) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                this._connection.sendControl("reloadOp", { "opName": opName });
+            }
+        });
+
+        this._connection.on("reloadOp", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (msg.opName)
+            {
+                const opName = msg.opName;
+                notify("reloaded code for op", opName);
+
+                this._requestResync(msg.username + " changed " + opName, (next) =>
+                {
+                    const taskName = String(Date.now());
+                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName)], taskName);
+
+                    const loadJsCallback = () =>
+                    {
+                        next();
+                    };
+                    loadjs.ready(taskName, loadJsCallback, loadJsCallback);
+                });
+            }
+        });
+
         gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
         {
             if (!this._connection.inMultiplayerSession) return;
@@ -529,6 +560,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                                 this._connection.state.requestPilotSeat();
                             }
                         });
+
+                        items.push({
+                            "title": "sync patch with pilot",
+                            "iconClass": "icon icon-refresh",
+                            "func": () =>
+                            {
+                                this._resyncPatch();
+                            }
+                        });
                     }
                 }
 
@@ -579,6 +619,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             this._connection.startPacoSend();
         });
+    }
+
+    _resyncPatch()
+    {
+        this._connection.requestPilotPatch();
     }
 
     _getContextMenuItems(clientId)
@@ -671,5 +716,47 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         }
         return items;
+    }
+
+    _requestResync(title, callbackBeforeSync)
+    {
+        let content = "<div>You should resync your patch with the pilot version to make sure everything runs with the new code.</div>";
+        content += "<div style='margin-top: 20px; text-align: center;'>";
+        content += "<a class=\"button accept\">Resync</a>&nbsp;&nbsp;";
+        content += "<a class=\"button decline\">Ignore</a>";
+        content += "</div>";
+
+        const options = {
+            "title": title,
+            "html": content
+        };
+
+        const modal = new ModalDialog(options, false);
+        modal.on("onShow", () =>
+        {
+            const modalElement = modal.getElement();
+            const acceptButton = modalElement.querySelector(".button.accept");
+            const declineButton = modalElement.querySelector(".button.decline");
+
+            if (acceptButton)
+            {
+                acceptButton.addEventListener("pointerdown", () =>
+                {
+                    callbackBeforeSync(() =>
+                    {
+                        this._resyncPatch();
+                        modal.close();
+                    });
+                });
+            }
+            if (declineButton)
+            {
+                declineButton.addEventListener("pointerdown", () =>
+                {
+                    modal.close();
+                });
+            }
+        });
+        modal.show();
     }
 }
