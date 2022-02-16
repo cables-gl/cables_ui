@@ -213,7 +213,7 @@ export default class GlViewBox
 
     wheelZoom(delta)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FOLLOWER) return;
 
         if (delta == 0) return;
 

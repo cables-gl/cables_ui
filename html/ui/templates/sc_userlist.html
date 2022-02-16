@@ -1,0 +1,31 @@
+<script id="sc_userlist" type="text/x-handlebars-template">
+    <div class="sc-userlist">
+    {{#each clients}}
+        {{#if isRemoteClient}}
+            <div class="tt item remote-client" data-client-id="{{clientId}}" data-tt="{{username}}">
+                <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
+                <div class="greyicon"><span class="icon icon-smartphone icon-0_75x"></span>
+                </div>
+            </div>
+        {{else}}
+            <div class="tt item" data-client-id="{{clientId}}" data-tt="{{username}}">
+                <div class="cursorcolor" style=""></div>
+
+                <div style="background-image:url({{../cablesurl}}/api/avatar/{{userid}});" class="avatar"></div>
+                <div class="piloticon"><span class="icon icon-edit icon-0_75x"></span></div>
+                <div class="followicon"><span class="icon icon-eye icon-0_75x"></span></div>
+                <div class="followingicon"><span class="icon icon-eye"></span></div>
+            </div>
+        {{/if}}
+    {{/each}}
+    </div>
+    <div class="sc-options">
+    {{#if multiplayerCapable}}
+        <span class="tt button-small start-button" data-tt="start multiplayer session">start</span>
+        <span class="tt button-small join-button" data-tt="join multiplayer session">join</span>
+        <span class="tt button-small leave-button" data-tt="leave multiplayer session">leave</span>
+        <a class="tt icon icon-triple-dot iconhover more-options" data-tt="More Options"></a>
+    {{/if}}
+    </div>
+</script>
+
