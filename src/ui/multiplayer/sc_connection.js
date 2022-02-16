@@ -338,13 +338,20 @@ export default class ScConnection extends CABLES.EventTarget
         const listener = () => { this._state.off(listenerId); doneCallback(); };
         const listenerId = this._state.on("enableMultiplayer", listener);
 
-        if (this.runningMultiplayerSession)
+        if (!this.inMultiplayerSession)
         {
-            this.joinMultiplayerSession();
+            if (this.runningMultiplayerSession)
+            {
+                this.joinMultiplayerSession();
+            }
+            else
+            {
+                this.startMultiplayerSession();
+            }
         }
         else
         {
-            this.startMultiplayerSession();
+            doneCallback();
         }
     }
 
