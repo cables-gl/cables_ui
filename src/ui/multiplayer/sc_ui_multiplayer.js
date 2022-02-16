@@ -33,6 +33,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             if (this._connection.inMultiplayerSession) notify(client.username + " just left the multiplayer session");
         });
 
+        this._connection.state.on("clientJoined", (client) =>
+        {
+            if (this._connection.inMultiplayerSession) notify(client.username + " just joined the multiplayer session");
+        });
+
         this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));

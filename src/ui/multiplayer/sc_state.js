@@ -50,13 +50,16 @@ export default class ScState extends CABLES.EventTarget
         let userListChanged = false;
         const isOwnAnswer = payload.clientId === this._connection.clientId;
 
-        // if (!this._connection.inMultiplayerSession && payload.inMultiplayerSession) userListChanged = true;
-
         if (this._clients[payload.clientId])
         {
             if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
             {
                 this.emitEvent("clientLeft", payload);
+                userListChanged = true;
+            }
+            if (payload.inMultiplayerSession && !this._clients[payload.clientId].inMultiplayerSession)
+            {
+                this.emitEvent("clientJoined", payload);
                 userListChanged = true;
             }
             this._clients[payload.clientId].username = payload.username;

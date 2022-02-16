@@ -262,6 +262,10 @@ export default class ScConnection extends CABLES.EventTarget
 
         window.addEventListener("beforeunload", () =>
         {
+            if (this.inMultiplayerSession)
+            {
+                this.leaveMultiplayerSession();
+            }
             this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
             {
@@ -320,7 +324,6 @@ export default class ScConnection extends CABLES.EventTarget
         this.client.inMultiplayerSession = true;
         this._inSessionSince = Date.now();
         this.sendPing();
-        this.sendNotification(this.client.username + " just joined the multiplayer session");
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
     }
 
