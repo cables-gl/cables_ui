@@ -483,12 +483,9 @@ export default class FileManager
                 event.initEvent("input", true, true);
                 this._filePortEle.dispatchEvent(event);
 
-
                 if (detailItems[0].t == "image" || detailItems[0].icon == "image")
-                {
-                    if (this._filePortElePreview) this._filePortElePreview.innerHTML =
-                    "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
-                }
+                    if (this._filePortElePreview)
+                        this._filePortElePreview.innerHTML = "<img class=\"dark\" src=\"" + detailItems[0].p + "\" style=\"max-width:100%;margin-top:10px;\"/>";
 
                 gui.opParams.show(this._filePortOp);
             }
