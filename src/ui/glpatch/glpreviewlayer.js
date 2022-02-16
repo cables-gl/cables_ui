@@ -37,8 +37,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
         {
             if (a.renderPreviewLayer)
             {
-                console.log("FOUND PREWVIEW RENDERER", a);
-
                 let item = this._itemsLookup[a.id];
                 if (!item)
                 {
@@ -53,7 +51,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                     };
 
                     this._itemsLookup[a.id] = item;
-
 
                     item.op.on("onDelete", (op) =>
                     {
