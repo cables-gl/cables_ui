@@ -4,6 +4,7 @@ import Logger from "../utils/logger";
 
 import ScState from "./sc_state";
 import ScUiMultiplayer from "./sc_ui_multiplayer";
+import { notify } from "../elements/notification";
 
 export default class ScConnection extends CABLES.EventTarget
 {
@@ -22,6 +23,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._scConfig = cfg;
         this._connected = false;
         this._connectedSince = null;
+        this._inSessionSince = null;
         this._paco = null;
         this._pacoSynced = false;
 
@@ -70,7 +72,32 @@ export default class ScConnection extends CABLES.EventTarget
     get runningMultiplayerSession()
     {
         if (!this.state) return false;
-        return Object.values(this.clients).some((c) => { return c.inMultiplayerSession; });
+        let clientsInSession = false;
+        const clients = Object.values(this.clients);
+        for (let i = 0; i < clients.length; i++)
+        {
+            const client = clients[i];
+            if (client.inMultiplayerSession)
+            {
+                clientsInSession = true;
+                break;
+            }
+        }
+        return clientsInSession;
+    }
+
+    get onlyRemoteClientsConnected()
+    {
+        if (!this.state) return false;
+        let onlyRemoteClients = true;
+        const clients = Object.values(this.clients);
+        for (let i = 0; i < clients.length; i++)
+        {
+            const client = clients[i];
+            if (!client.inMultiplayerSession) continue;
+            if (!client.isRemoteClient) onlyRemoteClients = false;
+        }
+        return onlyRemoteClients;
     }
 
     hasPilot()
@@ -276,9 +303,11 @@ export default class ScConnection extends CABLES.EventTarget
                 {
                     this.client.isPilot = true;
                     this.sendNotification(this.client.username + " just started a multiplayer session");
+                    notify("YOU just started a multiplayer session");
                 }
+                this._inSessionSince = Date.now();
                 this.client.inMultiplayerSession = true;
-                this.sendPing();
+                this.sendPing(true);
                 this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
             }
         }
@@ -286,19 +315,19 @@ export default class ScConnection extends CABLES.EventTarget
 
     joinMultiplayerSession()
     {
-        if (this.inMultiplayerSession)
-        {
-            this.sendNotification(this.client.username + " just joined the multiplayer session");
-        }
+        this.client.isPilot = false;
+        this.client.following = null;
         this.client.inMultiplayerSession = true;
+        this._inSessionSince = Date.now();
         this.sendPing();
+        this.sendNotification(this.client.username + " just joined the multiplayer session");
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
     }
 
     startRemoteViewer(doneCallback)
     {
-        const listener = () => { this._state.removeEventListener(listener); doneCallback(); };
-        this._state.addEventListener("enableMultiplayer", listener);
+        const listener = () => { this._state.off(listenerId); doneCallback(); };
+        const listenerId = this._state.on("enableMultiplayer", listener);
 
         if (this.runningMultiplayerSession)
         {
@@ -306,7 +335,6 @@ export default class ScConnection extends CABLES.EventTarget
         }
         else
         {
-            console.log("START BEASUE REMOTE");
             this.startMultiplayerSession();
         }
     }
@@ -317,6 +345,8 @@ export default class ScConnection extends CABLES.EventTarget
         this._socket.unsubscribe(this._socket.channelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
+        this.client.following = null;
+        this._inSessionSince = null;
         this.emitEvent("netLeaveSession");
         this.sendPing();
     }
@@ -392,7 +422,7 @@ export default class ScConnection extends CABLES.EventTarget
         }, this.PING_INTERVAL);
     }
 
-    sendPing()
+    sendPing(startedSession = false)
     {
         const x = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchX : null;
         const y = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchY : null;
@@ -405,6 +435,7 @@ export default class ScConnection extends CABLES.EventTarget
             "username": gui.user.usernameLowercase,
             "userid": gui.user.id,
             "connectedSince": this._connectedSince,
+            "inSessionSince": this._inSessionSince,
             "isRemoteClient": gui.isRemoteClient,
             "x": x,
             "y": y,
@@ -412,8 +443,9 @@ export default class ScConnection extends CABLES.EventTarget
             "zoom": zoom,
             "scrollX": scrollX,
             "scrollY": scrollY,
-            "inMultiplayerSession": this._pacoEnabled,
-            "multiplayerCapable": this.multiplayerCapable
+            "inMultiplayerSession": this.client.inMultiplayerSession,
+            "multiplayerCapable": this.multiplayerCapable,
+            "startedSession": startedSession
         };
 
         if (this.client)

@@ -231,8 +231,8 @@ export default class Gui
         }
         else this._find = new CABLES.UI.FindTab(gui.mainTabs, str);
 
-        this._find.focus();
         gui.maintabPanel.show(true);
+        this._find.focus();
     }
 
     texturePreview()
@@ -403,10 +403,10 @@ export default class Gui
         this._elTLtimetimeline = this._elTLtimetimeline || ele.byId("timetimeline");
         this._elTLsplitterTimeline = this._elTLsplitterTimeline || ele.byId("splitterTimeline");
 
-        this._elSubpatchNav = this._elSubpatchNav || ele.byId("subpatch_nav");
+        this._elBreadcrumbNav = this._elBreadcrumbNav || ele.byId("breadcrumb_nav");
+
         this._elCablesCanvas = this._elCablesCanvas || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
-        this._elMulitplayerMessageNav = this._elMulitplayerMessageNav || document.getElementById("multiplayer_message_nav");
 
         let timelineHeight = this.timingHeight;
 
@@ -506,8 +506,7 @@ export default class Gui
             this._elEditorMaximized.style.left = editorWidth + iconBarWidth + 3 + "px";
             // this._elEditorMaximized.style.top = subPatchNavPosY + "px";
 
-            this._elSubpatchNav.style.left = editorWidth + iconBarWidth + 15 + "px";
-            this._elMulitplayerMessageNav.style.left = editorWidth + iconBarWidth + 15 + "px";
+            this._elBreadcrumbNav.style.left = editorWidth + iconBarWidth + 15 + "px";
 
             gui.mainTabs.updateSize();
         }
@@ -521,8 +520,7 @@ export default class Gui
             this._elSplitterMaintabs.style.display = "none";
             // this._elEditorMinimized.style.top = 80 + "px";
 
-            this._elSubpatchNav.style.left = iconBarWidth + 15 + "px";
-            this._elMulitplayerMessageNav.style.left = iconBarWidth + 15 + "px";
+            this._elBreadcrumbNav.style.left = iconBarWidth + 15 + "px";
         }
 
 
@@ -535,12 +533,8 @@ export default class Gui
         const rMenuBar = this._elMenubar.getBoundingClientRect();
         document.getElementById("multiplayerbar").style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
 
-        // this._elSubpatchNav.style.width = patchWidth + "px";
-        this._elSubpatchNav.style.left = menupos - 20 + "px";
-        this._elSubpatchNav.style.top = 55 + "px";
-
-        // this._elMulitplayerMessageNav.style.left = menupos - 20 + "px";
-        this._elMulitplayerMessageNav.style.top = 55 + "px";
+        this._elBreadcrumbNav.style.left = menupos + 5 + "px";
+        this._elBreadcrumbNav.style.top = 60 + "px";
 
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
@@ -1691,6 +1685,29 @@ export default class Gui
         {
             ele.byId("undev").style.display = "none";
             ele.byId("infoAreaContainer").style.display = "none";
+        }
+
+        if (r < Gui.RESTRICT_MODE_FULL)
+        {
+            const tabpanel = ele.byId("metatabpanel");
+            if (tabpanel)
+            {
+                tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
+                {
+                    tab.classList.add("readonly");
+                });
+            }
+        }
+        else
+        {
+            const tabpanel = ele.byId("metatabpanel");
+            if (tabpanel)
+            {
+                tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
+                {
+                    tab.classList.remove("readonly");
+                });
+            }
         }
 
         if (this.iconBarLeft) this.iconBarLeft.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);

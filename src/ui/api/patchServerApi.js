@@ -50,6 +50,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
         CABLES.api.get("project/" + gui.project()._id + "/updated",
             function (data)
             {
+                if (gui.isRemoteClient)
+                {
+                    gui.jobs().finish("checkupdated");
+                    if (cb)cb(null);
+                    return;
+                }
+
                 if (this._serverDate != data.updated)
                 {
                     const html =
