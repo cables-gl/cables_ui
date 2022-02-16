@@ -142,6 +142,7 @@ const paramsHelper =
                 {
                     console.warn(content);
                     port.set(content);
+                    gui.emitEvent("portValueEdited", op, port, content);
                 }
             });
     },
@@ -467,6 +468,7 @@ const paramsHelper =
                         gui.setStateUnsaved();
                         gui.jobs().finish("saveeditorcontent");
                         port.set(content);
+                        gui.emitEvent("portValueEdited", op, port, content);
                     },
                     "onChange": function (e)
                     {
@@ -643,15 +645,10 @@ const paramsHelper =
                 "name": gui.user.usernameLowercase
             };
 
-            gui.patchConnection.send(CABLES.PACO_VALUECHANGE, {
-                "op": op.id,
-                "port": op.portsIn[index].name,
-                "v": v
-            });
-
             CABLES.UI.paramsHelper.checkDefaultValue(op, index);
-
             if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+
+            gui.emitEvent("portValueEdited", op, op.portsIn[index], v);
         });
     }
 

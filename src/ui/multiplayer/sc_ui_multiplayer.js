@@ -101,6 +101,24 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        gui.on("portValueEdited", (op, port, value) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (op && port)
+            {
+                const payload = {};
+                payload.data = {
+                    "event": CABLES.PACO_VALUECHANGE,
+                    "vars": {
+                        "op": op.id,
+                        "port": port.name,
+                        "v": value
+                    }
+                };
+                this._connection.sendPaco(payload);
+            }
+        });
+
         gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
         {
             if (!this._connection.inMultiplayerSession) return;

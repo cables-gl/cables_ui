@@ -25,6 +25,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._connectedSince = null;
         this._inSessionSince = null;
         this._paco = null;
+        this._patchConnection = new CABLES.PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
 
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
@@ -121,8 +122,8 @@ export default class ScConnection extends CABLES.EventTarget
         {
             if (!this._paco)
             {
-                this._paco = new PacoConnector(this, gui.patchConnection);
-                gui.patchConnection.connectors.push(this._paco);
+                this._paco = new PacoConnector(this, this._patchConnection);
+                this._patchConnection.connectors.push(this._paco);
             }
 
             const json = gui.corePatch().serialize(true);
@@ -523,8 +524,8 @@ export default class ScConnection extends CABLES.EventTarget
 
                 this._log.log("first paco message !");
                 gui.corePatch().clear();
-                this._paco = new PacoConnector(this, gui.patchConnection);
-                gui.patchConnection.connectors.push(this._paco);
+                this._paco = new PacoConnector(this, this._patchConnection);
+                this._patchConnection.connectors.push(this._paco);
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {
