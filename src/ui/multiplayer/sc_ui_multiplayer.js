@@ -33,6 +33,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             if (this._connection.inMultiplayerSession) notify(client.username + " just left the multiplayer session");
         });
 
+        this._connection.state.on("clientJoined", (client) =>
+        {
+            if (this._connection.inMultiplayerSession) notify(client.username + " just joined the multiplayer session");
+        });
+
         this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
         this._connection.state.on("userListChanged", this.updateHtml.bind(this));
         this._connection.state.on("becamePilot", this.updateHtml.bind(this));
@@ -93,6 +98,24 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             if (this._connection.client && this._connection.client.isPilot)
             {
                 this._connection.sendUi("netOpPos", payload);
+            }
+        });
+
+        gui.on("portValueEdited", (op, port, value) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (op && port)
+            {
+                const payload = {};
+                payload.data = {
+                    "event": CABLES.PACO_VALUECHANGE,
+                    "vars": {
+                        "op": op.id,
+                        "port": port.name,
+                        "v": value
+                    }
+                };
+                this._connection.sendPaco(payload);
             }
         });
 

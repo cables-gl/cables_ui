@@ -25,6 +25,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._connectedSince = null;
         this._inSessionSince = null;
         this._paco = null;
+        this._patchConnection = new CABLES.PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
 
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
@@ -121,8 +122,8 @@ export default class ScConnection extends CABLES.EventTarget
         {
             if (!this._paco)
             {
-                this._paco = new PacoConnector(this, gui.patchConnection);
-                gui.patchConnection.connectors.push(this._paco);
+                this._paco = new PacoConnector(this, this._patchConnection);
+                this._patchConnection.connectors.push(this._paco);
             }
 
             const json = gui.corePatch().serialize(true);
@@ -262,6 +263,15 @@ export default class ScConnection extends CABLES.EventTarget
 
         window.addEventListener("beforeunload", () =>
         {
+            this.client.isDisconnected = true;
+            if (this.inMultiplayerSession)
+            {
+                this.leaveMultiplayerSession(true);
+            }
+            else
+            {
+                this.sendPing();
+            }
             this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
             {
@@ -320,7 +330,6 @@ export default class ScConnection extends CABLES.EventTarget
         this.client.inMultiplayerSession = true;
         this._inSessionSince = Date.now();
         this.sendPing();
-        this.sendNotification(this.client.username + " just joined the multiplayer session");
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
     }
 
@@ -329,13 +338,20 @@ export default class ScConnection extends CABLES.EventTarget
         const listener = () => { this._state.off(listenerId); doneCallback(); };
         const listenerId = this._state.on("enableMultiplayer", listener);
 
-        if (this.runningMultiplayerSession)
+        if (!this.inMultiplayerSession)
         {
-            this.joinMultiplayerSession();
+            if (this.runningMultiplayerSession)
+            {
+                this.joinMultiplayerSession();
+            }
+            else
+            {
+                this.startMultiplayerSession();
+            }
         }
         else
         {
-            this.startMultiplayerSession();
+            doneCallback();
         }
     }
 
@@ -452,6 +468,10 @@ export default class ScConnection extends CABLES.EventTarget
         {
             payload.isPilot = this.client.isPilot;
             payload.following = this.client.following;
+            if (this.client.isDisconnected)
+            {
+                payload.isDisconnected = true;
+            }
         }
         if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)
         {
@@ -511,8 +531,8 @@ export default class ScConnection extends CABLES.EventTarget
 
                 this._log.log("first paco message !");
                 gui.corePatch().clear();
-                this._paco = new PacoConnector(this, gui.patchConnection);
-                gui.patchConnection.connectors.push(this._paco);
+                this._paco = new PacoConnector(this, this._patchConnection);
+                this._patchConnection.connectors.push(this._paco);
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {

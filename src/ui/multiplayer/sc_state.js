@@ -1,5 +1,6 @@
 import Logger from "../utils/logger";
 import Gui from "../gui";
+import ScClient from "./sc_client";
 
 CABLES = CABLES || {};
 
@@ -14,12 +15,13 @@ export default class ScState extends CABLES.EventTarget
         this._log = new Logger("scstate");
 
         this._clients = {};
-        this._clients[connection.clientId] = {
+        this._clients[connection.clientId] = new ScClient({
+            "username": gui.user.username,
             "userid": gui.user.id,
             "clientId": connection.clientId,
             "isMe": true,
             "isRemoteClient": gui.isRemoteClient
-        };
+        });
         this._followers = [];
         this._connection = connection;
         this._colors = {};
@@ -48,63 +50,33 @@ export default class ScState extends CABLES.EventTarget
     onPingAnswer(payload)
     {
         let userListChanged = false;
-        const isOwnAnswer = payload.clientId === this._connection.clientId;
-
-        // if (!this._connection.inMultiplayerSession && payload.inMultiplayerSession) userListChanged = true;
-
-        if (this._clients[payload.clientId])
+        if (payload.isDisconnected)
         {
-            if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
-            {
-                this.emitEvent("clientLeft", payload);
-                userListChanged = true;
-            }
-            this._clients[payload.clientId].username = payload.username;
-            this._clients[payload.clientId].userid = payload.userid;
-            this._clients[payload.clientId].shortname = payload.username.substr(0, 2).toUpperCase();
-            this._clients[payload.clientId].clientId = payload.clientId;
-            this._clients[payload.clientId].lastSeen = payload.lastSeen;
-            this._clients[payload.clientId].isMe = isOwnAnswer;
-            this._clients[payload.clientId].color = this.getClientColor(payload.clientId);
-            this._clients[payload.clientId].connectedSince = payload.connectedSince;
-            this._clients[payload.clientId].inSessionSince = payload.inSessionSince;
-            this._clients[payload.clientId].following = isOwnAnswer ? this._connection.client.following : payload.following;
-            this._clients[payload.clientId].isRemoteClient = payload.isRemoteClient;
-            this._clients[payload.clientId].platform = payload.platform;
-            this._clients[payload.clientId].x = payload.x;
-            this._clients[payload.clientId].y = payload.y;
-            this._clients[payload.clientId].subpatch = payload.subpatch;
-            this._clients[payload.clientId].zoom = payload.zoom;
-            this._clients[payload.clientId].scrollX = payload.scrollX;
-            this._clients[payload.clientId].scrollY = payload.scrollY;
-            this._clients[payload.clientId].inMultiplayerSession = payload.inMultiplayerSession;
-            this._clients[payload.clientId].multiplayerCapable = payload.multiplayerCapable;
+            delete this._clients[payload.clientId];
+            this.emitEvent("clientLeft", payload);
+            userListChanged = true;
         }
         else
         {
-            userListChanged = true;
-            this._clients[payload.clientId] = {
-                "clientId": payload.clientId,
-                "username": payload.username,
-                "userid": payload.userid,
-                "shortname": payload.username.substr(0, 2).toUpperCase(),
-                "lastSeen": payload.lastSeen,
-                "isMe": isOwnAnswer,
-                "color": this.getClientColor(payload.clientId),
-                "connectedSince": payload.connectedSince,
-                "inSessionSince": payload.inSessionSince,
-                "following": isOwnAnswer ? this._connection.client.following : payload.following,
-                "isRemoteClient": payload.isRemoteClient,
-                "platform": payload.platform,
-                "x": payload.x,
-                "y": payload.y,
-                "subpatch": payload.subpatch,
-                "zoom": payload.zoom,
-                "scrollX": payload.scrollX,
-                "scrollY": payload.scrollY,
-                "inMultiplayerSession": payload.inMultiplayerSession,
-                "multiplayerCapable": payload.multiplayerCapable
-            };
+            const client = new ScClient(payload, this._connection.client);
+            if (this._clients[payload.clientId])
+            {
+                if (!payload.inMultiplayerSession && this._clients[payload.clientId].inMultiplayerSession)
+                {
+                    this.emitEvent("clientLeft", payload);
+                    userListChanged = true;
+                }
+                if (payload.inMultiplayerSession && !this._clients[payload.clientId].inMultiplayerSession)
+                {
+                    this.emitEvent("clientJoined", payload);
+                    userListChanged = true;
+                }
+            }
+            else
+            {
+                userListChanged = true;
+            }
+            this._clients[payload.clientId] = client;
         }
 
         if (this._connection.inMultiplayerSession)
@@ -172,30 +144,15 @@ export default class ScState extends CABLES.EventTarget
 
     getClientColor(clientId)
     {
-        if (!clientId) return { "r": 1, "g": 1, "b": 1, "rb": 255, "gb": 255, "bb": 255 };
+        const defaultColor = { "r": 1, "g": 1, "b": 1, "rb": 255, "gb": 255, "bb": 255 };
+        if (!clientId) return defaultColor;
         if (!this._colors[clientId])
         {
-            let hash = 0;
-            for (let i = 0; i < clientId.length; i++)
+            const client = this._clients[clientId];
+            if (client)
             {
-                hash = clientId.charCodeAt(i) + ((hash << 5) - hash);
+                this._colors[clientId] = client.getColor();
             }
-            let result = [];
-            for (let i = 0; i < 3; i++)
-            {
-                let value = (hash >> (i * 8)) & 0xFF;
-                result[i] = value / 255;
-            }
-            const color = {
-                "r": result[0],
-                "g": result[1],
-                "b": result[2],
-            };
-            color.rb = Math.round(255 * color.r);
-            color.gb = Math.round(255 * color.g);
-            color.bb = Math.round(255 * color.b);
-
-            this._colors[clientId] = color;
         }
 
         return this._colors[clientId];

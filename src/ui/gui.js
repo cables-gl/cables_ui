@@ -109,7 +109,6 @@ export default class Gui
         this._gizmo = null;
         this._transformOverlay = new TransformsOverlay();
 
-        this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
         this.opDocs = null;
         this.opHistory = new OpHistory();
 
