@@ -30,7 +30,8 @@ export default
         "defaultFont": "Ops.Html.FontFile_v2",
         "blueprint": "Ops.Dev.Blueprint",
         "subPatch": "Ops.Ui.SubPatch",
-        "uiArea": "Ops.Ui.Area"
+        "uiArea": "Ops.Ui.Area",
+        "defaultOpVizTexture": "Ops.Ui.VizTexture"
     },
 
     "getOpsForFilename": (filename) =>

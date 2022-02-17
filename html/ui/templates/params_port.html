@@ -293,8 +293,12 @@
 
                     {{#compare port.uiAttribs.objType '==' 'texture' }}
 
-                    {{port.port.get.shortInfoString}}
+                        {{port.port.get.shortInfoString}}
                         &nbsp;<span class="button-small button-icon info" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"><span class="icon icon-align-justify"></span></span>
+
+                        <a class="button-small button-icon"  onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpVizTexture,'{{op.id}}','{{port.name}}');"><span class="icon icon-eye"></span></a>
+
+
                     {{/compare}}
 
                 </span>
