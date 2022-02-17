@@ -252,6 +252,7 @@ export default class ServerOps
                     }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
+                    gui.emitEvent("opReloaded", name);
                     if (next)next();
                 },
             );

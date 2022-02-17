@@ -136,6 +136,14 @@ export default class ScConnection extends CABLES.EventTarget
         }
     }
 
+    requestPilotPatch()
+    {
+        if (this.inMultiplayerSession && !this.client.isPilot)
+        {
+            this.sendControl("resync");
+        }
+    }
+
     get clientId() { return this._socket.clientId; }
 
     _init(doneCallback)
@@ -263,6 +271,8 @@ export default class ScConnection extends CABLES.EventTarget
 
         window.addEventListener("beforeunload", () =>
         {
+            if (!this.client) return;
+
             this.client.isDisconnected = true;
             if (this.inMultiplayerSession)
             {
@@ -495,7 +505,8 @@ export default class ScConnection extends CABLES.EventTarget
         {
             const finalPayload = {
                 "token": this._token,
-                "clientId": this._socket.clientId,
+                "clientId": this.client.clientId,
+                "username": this.client.username,
                 topic,
                 ...payload,
             };
@@ -586,6 +597,12 @@ export default class ScConnection extends CABLES.EventTarget
         {
             if (msg.clientId === this._socket.clientId) return;
             this.emitEvent("onPilotRequest", msg);
+        }
+        if (msg.name === "reloadOp")
+        {
+            if (!this.inMultiplayerSession) return;
+            if (msg.clientId === this._socket.clientId) return;
+            this.emitEvent("reloadOp", msg);
         }
     }
 

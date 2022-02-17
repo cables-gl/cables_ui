@@ -1780,9 +1780,9 @@ export default class Gui
             new ModalException(ex, { "op": op });
         });
 
-        this._corePatch.on("exceptionOp", function (e, objName)
+        this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalException(e, { "opname": objName });
+            new ModalException(e, { "opname": objName, "op": op });
         });
 
         this._corePatch.on("criticalError", function (title, msg)
