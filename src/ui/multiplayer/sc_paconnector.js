@@ -1,4 +1,3 @@
-
 export default class PacoConnector extends CABLES.EventTarget
 {
     constructor(connection, paco)

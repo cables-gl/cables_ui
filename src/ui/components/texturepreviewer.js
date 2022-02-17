@@ -189,6 +189,9 @@ export default class TexturePreviewer
         if (!this._lastClicked || !this._lastClicked.port) return;
 
         const t = this._lastClicked.port.get();
+
+        if (!t) return;
+
         CABLES.UI.showToolTip(e, t.getInfoOneLine());
     }
 

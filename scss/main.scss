@@ -405,10 +405,11 @@ body
         }
     }
 
-    input[type=text]:hover, input[type=search]:hover {
-    background-color: $text-input-background-color-hover;
-    color: $text-input-color-hover;
-    border: 1px solid $text-input-border-color-hover;
+    input[type=text]:hover, input[type=search]:hover
+    {
+        background-color: $text-input-background-color-hover;
+        color: $text-input-color-hover;
+        border: 1px solid $text-input-border-color-hover;
     }
 
     input[type=search].big-search {

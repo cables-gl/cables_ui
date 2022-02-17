@@ -109,7 +109,6 @@ export default class Gui
         this._gizmo = null;
         this._transformOverlay = new TransformsOverlay();
 
-        this.patchConnection = new CABLES.PatchConnectionSender(this._corePatch);
         this.opDocs = null;
         this.opHistory = new OpHistory();
 
@@ -1781,9 +1780,9 @@ export default class Gui
             new ModalException(ex, { "op": op });
         });
 
-        this._corePatch.on("exceptionOp", function (e, objName)
+        this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalException(e, { "opname": objName });
+            new ModalException(e, { "opname": objName, "op": op });
         });
 
         this._corePatch.on("criticalError", function (title, msg)
