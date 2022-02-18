@@ -406,7 +406,11 @@ export default class PatchView extends CABLES.EventTarget
         gui.patchView.addOp(opname, {
             "onOpAdd": (newOp) =>
             {
-                const newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
+                let newPort = newOp.getFirstOutPortByType(oldOp.getPortByName(portname).type);
+                if (oldOp.getPortByName(portname).direction == CABLES.PORT_DIR_OUT)
+                    newPort = newOp.getFirstInPortByType(oldOp.getPortByName(portname).type);
+
+
                 gui.corePatch().link(oldOp, portname, newOp, newPort.name);
 
                 newOp.setUiAttrib({
