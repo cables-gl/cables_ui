@@ -371,6 +371,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             this.updateHtml();
         });
+
+        this._connection.on("resyncWithPilot", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (!this._connection.client.isRemoteClient) return;
+            if (this._connection.clientId !== msg.reloadClient) return;
+            this._resyncPatch();
+        });
     }
 
     sendCursorPos(x, y)
@@ -797,9 +805,23 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     "iconClass": "icon icon-remoteviewer",
                     "func": () => {}
                 });
+                items.push({
+                    "title": "send resync command",
+                    "iconClass": "icon icon-refresh",
+                    "func": () =>
+                    {
+                        this._sendForceResync(client);
+                    }
+                });
             }
         }
         return items;
+    }
+
+    _sendForceResync(client)
+    {
+        if (!this._connection.inMultiplayerSession) return;
+        this._connection.sendUi("resyncWithPilot", { "reloadClient": client.clientId });
     }
 
     _requestResync(title, callbackBeforeSync)
