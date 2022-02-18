@@ -473,9 +473,11 @@ export default class GlPatch extends CABLES.EventTarget
             this._greyOutRect.setColor(
                 glUiConfig.colors.background[0],
                 glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2], 0.5);
+                glUiConfig.colors.background[2], 0.25);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
+
+            this._cgl.canvas.style.cursor = "not-allowed";
         }
         else if (!this.greyOut && this._greyOutRect)
         {
