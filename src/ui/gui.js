@@ -1696,6 +1696,13 @@ export default class Gui
                     tab.classList.add("readonly");
                 });
             }
+            const timeline = ele.byId("timing");
+            if (timeline)
+            {
+                timeline.classList.add("readonly");
+            }
+            const tlIconBar = ele.byId("iconbar_sidebar_timeline");
+            if (tlIconBar) ele.hide(tlIconBar);
         }
         else
         {
@@ -1707,6 +1714,14 @@ export default class Gui
                     tab.classList.remove("readonly");
                 });
             }
+            const timeline = ele.byId("timing");
+            if (timeline)
+            {
+                timeline.classList.remove("readonly");
+            }
+
+            const tlIconBar = ele.byId("iconbar_sidebar_timeline");
+            if (tlIconBar) ele.show(tlIconBar);
         }
 
         if (this.iconBarLeft) this.iconBarLeft.setVisible(r > Gui.RESTRICT_MODE_FOLLOWER);
