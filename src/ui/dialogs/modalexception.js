@@ -13,6 +13,12 @@ export default class ModalException
     {
         this._exception = exception;
 
+        if (exception && exception.message && exception.message.indexOf("NetworkError") > -1 && exception.message.indexOf("/ace/worker") > -1)
+        {
+            console.log("yay! suppressed nonsense ace editor exception... ");
+            return;
+        }
+
         this._op = null;
         if (options)
         {
