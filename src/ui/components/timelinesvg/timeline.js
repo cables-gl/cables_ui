@@ -1,5 +1,6 @@
 import MouseState from "../../glpatch/mousestate";
 import text from "../../text";
+import ele from "../../utils/ele";
 
 export default function TimeLineGui()
 {
@@ -344,7 +345,7 @@ export default function TimeLineGui()
 
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
-            anim.keys.push(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
+            anim.addKey(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
             this.centerCursor();
         }
 
@@ -826,7 +827,7 @@ export default function TimeLineGui()
 
     this.toggleLoop = function ()
     {
-        if (anim) anim.loop = !anim.loop;
+        if (anim) anim.setLoop(!anim.getLoop());
         updateKeyLine();
     };
 
@@ -1018,7 +1019,7 @@ export default function TimeLineGui()
                 anims[anii].removeUi();
 
                 if (anims[anii].keys[i].selected)
-                    anims[anii].keys[i].setEasing(e);
+                    anims[anii].setKeyEasing(i, e);
             }
         }
         updateKeyLine();
@@ -1052,6 +1053,7 @@ export default function TimeLineGui()
 
     ele.byId("keymovemode").addEventListener("click", toggleMoveMode);
     ele.byId("keyscaleheight").addEventListener("click", this.scaleHeight);
+    ele.byId("keyscalelength").addEventListener("click", this.scaleHeight);
     ele.byId("keyscalewidth").addEventListener("click", this.scaleWidth);
     ele.byId("timelinetime").addEventListener("click", this.timeLineTimeClick);
 
@@ -1069,7 +1071,7 @@ export default function TimeLineGui()
 
     ele.byId("timeLineInsert").addEventListener("click", function (e)
     {
-        anim.keys.push(new CABLES.ANIM.Key({ paper, "time": cursorTime, "value": anim.getValue(cursorTime) }));
+        anim.addKey(new CABLES.ANIM.Key({ paper, "time": cursorTime, "value": anim.getValue(cursorTime) }));
         updateKeyLine();
     });
 

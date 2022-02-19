@@ -89,6 +89,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         gui.patchView.on("mouseMove", (x, y) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             this.sendCursorPos(x, y);
         });
 
@@ -101,21 +102,103 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        gui.on("timelineControl", (command, value) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                const payload = {
+                    "command": command,
+                    "value": value
+                };
+                this._connection.sendUi("timelineControl", payload);
+            }
+        });
+
+        this._connection.on("timelineControl", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            const timeline = gui.timeLine();
+            switch (msg.command)
+            {
+            case "goto":
+                if (!msg.value)
+                {
+                    timeline.gotoZero();
+                }
+                else
+                {
+                    timeline.gotoOffset(Number(msg.value));
+                }
+                break;
+            case "setPlay":
+                const timer = gui.scene().timer;
+                const targetState = !!msg.value;
+                const isPlaying = timer.isPlaying();
+                if (targetState !== isPlaying)
+                {
+                    timeline.togglePlay();
+                }
+                break;
+            }
+        });
+
         gui.on("portValueEdited", (op, port, value) =>
         {
             if (!this._connection.inMultiplayerSession) return;
-            if (op && port)
+            if (this._connection.client && this._connection.client.isPilot)
             {
-                const payload = {};
-                payload.data = {
-                    "event": CABLES.PACO_VALUECHANGE,
-                    "vars": {
-                        "op": op.id,
-                        "port": port.name,
-                        "v": value
-                    }
-                };
-                this._connection.sendPaco(payload);
+                if (op && port)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_VALUECHANGE,
+                        "vars": {
+                            "op": op.id,
+                            "port": port.name,
+                            "v": value
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
+            }
+        });
+
+        gui.corePatch().on("pacoPortValueSetAnimated", (op, index, targetState, defaultValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, defaultValue);
+        });
+
+        gui.corePatch().on("pacoPortAnimUpdated", (port) =>
+        {
+            console.log("UPDATING SHIT");
+            if (!this._connection.inMultiplayerSession) return;
+            if (port.anim)
+            {
+                gui.metaKeyframes.showAnim(port.parent.id, port.name);
+            }
+        });
+
+        gui.on("portValueSetAnimated", (op, portIndex, targetState, defaultValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                if (op)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_PORT_SETANIMATED,
+                        "vars": {
+                            "opId": op.id,
+                            "portIndex": portIndex,
+                            "targetState": targetState,
+                            "defaultValue": defaultValue
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
             }
         });
 
@@ -158,6 +241,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
         {
+            if (!this._connection.inMultiplayerSession) return;
             this.sendSelectionArea(x, y, sizeX, sizeY, true);
         });
 
@@ -286,6 +370,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._connection.on("netLeaveSession", (msg) =>
         {
             this.updateHtml();
+        });
+
+        this._connection.on("resyncWithPilot", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (!this._connection.client.isRemoteClient) return;
+            if (this._connection.clientId !== msg.reloadClient) return;
+            this._resyncPatch();
         });
     }
 
@@ -713,9 +805,23 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     "iconClass": "icon icon-remoteviewer",
                     "func": () => {}
                 });
+                items.push({
+                    "title": "send resync command",
+                    "iconClass": "icon icon-refresh",
+                    "func": () =>
+                    {
+                        this._sendForceResync(client);
+                    }
+                });
             }
         }
         return items;
+    }
+
+    _sendForceResync(client)
+    {
+        if (!this._connection.inMultiplayerSession) return;
+        this._connection.sendUi("resyncWithPilot", { "reloadClient": client.clientId });
     }
 
     _requestResync(title, callbackBeforeSync)

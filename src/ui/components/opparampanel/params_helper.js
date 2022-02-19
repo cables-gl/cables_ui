@@ -390,38 +390,50 @@ const paramsHelper =
         el = ele.byId("portanim_in_" + index);
         if (el)el.addEventListener("click", (e) =>
         {
+            const targetState = !el.classList.contains("timingbutton_active");
             const elVal = ele.byId("portval_" + index);
 
-            if (el.classList.contains("timingbutton_active"))
-            {
-                const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
-                op.portsIn[index].setAnimated(false);
-
-                gui.timeLine().setAnim(null);
-
-                if (elVal)
-                {
-                    elVal.value = val;
-                    elVal.dispatchEvent(new Event("input"));
-                    elVal.focus();
-                }
-
-                op.portsIn[index].parent.refreshParams();
-                return;
-            }
-
-            ele.byId("portanim_in_" + index).classList.add("timingbutton_active");
-
-            op.portsIn[index].toggleAnim();
-            gui.timeLine().setAnim(op.portsIn[index].anim, {
-                "opid": op.id,
-                "name": op.getTitle() + ": " + op.portsIn[index].name,
-                "defaultValue": elVal.value
-            });
-            op.portsIn[index].parent.refreshParams();
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, elVal.value);
+            gui.emitEvent("portValueSetAnimated", op, index, targetState, elVal.value);
         });
     },
 
+    "setPortAnimated": (op, index, targetState, defaultValue) =>
+    {
+        const isOpen = gui.patchView.getSelectedOps()[0] ? op.id === gui.patchView.getSelectedOps()[0].id : false;
+
+        const elVal = ele.byId("portval_" + index);
+
+        if (!targetState)
+        {
+            const val = gui.timeLine().removeAnim(op.portsIn[index].anim);
+            op.portsIn[index].setAnimated(false);
+
+            gui.timeLine().setAnim(null);
+
+            if (isOpen && elVal)
+            {
+                elVal.value = val;
+                elVal.dispatchEvent(new Event("input"));
+                elVal.focus();
+            }
+
+            op.portsIn[index].parent.refreshParams();
+            return;
+        }
+
+        const portAnimEle = ele.byId("portanim_in_" + index);
+        if (isOpen && portAnimEle) portAnimEle.classList.add("timingbutton_active");
+
+        op.portsIn[index].toggleAnim();
+        const animOptions = {
+            "opid": op.id,
+            "name": op.getTitle() + ": " + op.portsIn[index].name,
+            "defaultValue": defaultValue
+        };
+        gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
+        op.portsIn[index].parent.refreshParams();
+    },
 
     "openParamStringEditor": (opid, portname, cb, userInteraction) =>
     {

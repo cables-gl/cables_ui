@@ -3,6 +3,7 @@ import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
 import WatchPortVisualizer from "./watchPortVisualizer";
 import text from "../../text";
+import ele from "../../utils/ele";
 
 
 export default class OpParampanel extends CABLES.EventTarget
@@ -773,7 +774,7 @@ export default class OpParampanel extends CABLES.EventTarget
         return this._currentOp.id == opid;
     }
 
-    opContextMenu(ele)
+    opContextMenu(el)
     {
         const items = [];
 
@@ -845,6 +846,6 @@ export default class OpParampanel extends CABLES.EventTarget
                 },
             });
         }
-        CABLES.contextMenu.show({ items }, ele);
+        CABLES.contextMenu.show({ items }, el);
     }
 }
