@@ -1,0 +1,45 @@
+
+<script id="op_select_sugggest" type="text/x-handlebars-template">
+
+
+    <h2>Suggestions</h2>
+
+    {{#each ops}}
+
+        <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"><span class="icon icon-eye"></span> {{.}}</a><br/>
+
+    {{/each}}
+
+    <h2>Helper</h2>
+
+    <span id="opselect_createTrigger">
+        <a class="button-small" onclick="CABLES.CMD.PATCH.createTriggerSendReceive();">Create trigger send/receive</a>
+        <br/>
+        <a class="button-small" id="replaceLinkTriggerExists" onclick="CABLES.CMD.PATCH.replaceLinkTriggerReceiveExist();">Receive existing trigger send!</a>
+        <br/>
+    </span>
+
+    <span id="opselect_createTriggerExists">
+        <a class="button-small" id="createLinkTriggerExists" onclick="CABLES.CMD.PATCH.createTriggerSendReceiveExist();">TRIGGER SEND OR RECEIVE</a>
+        <br/>
+    </span>
+
+    <span id="opselect_createVar">
+        <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
+        <br/>
+        <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Existing variable</a>
+        <br/>
+    </span>
+
+    <span id="opselect_replaceVar">
+        Replace link with:
+        <a class="button-small" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">New variable</a>
+        <br/>
+        <a class="button-small" id="replaceLinkVariableExists" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a>
+        <br/>
+    </span>
+
+    <br/>
+
+
+</script>
