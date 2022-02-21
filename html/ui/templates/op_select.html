@@ -28,41 +28,21 @@
 
     <div class="searchbrowser">
 
-        <div style="text-align:center;" id="opselect_createTrigger">
-            <a class="button-small" onclick="CABLES.CMD.PATCH.createTriggerSendReceive();">Create trigger send/receive</a>
-            <a class="button-small" id="replaceLinkTriggerExists" onclick="CABLES.CMD.PATCH.replaceLinkTriggerReceiveExist();">Receive existing trigger send!</a>
-        </div>
-
-        <div style="text-align:center;" id="opselect_createTriggerExists">
-            <a class="button-small" id="createLinkTriggerExists" onclick="CABLES.CMD.PATCH.createTriggerSendReceiveExist();">TRIGGER SEND OR RECEIVE</a>
-        </div>
-
-        <div style="text-align:center;" id="opselect_createVar">
-            <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
-            <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Existing variable</a>
-        </div>
-
-        <div style="text-align:center;" id="opselect_replaceVar">
-            Replace link with:
-            <a class="button-small" onclick="CABLES.CMD.PATCH.replaceLinkVariable();">New variable</a>
-            <a class="button-small" id="replaceLinkVariableExists" onclick="CABLES.CMD.PATCH.replaceLinkVariableExist();">Existing variable</a>
-        </div>
-
         {{#each ops}}
-        <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');gui.closeModal();">
-            <div class="button fright addbutton" data-opname="{{name}}" style="margin-top:10px;" >{{{../texts.opselect_addop}}}</div>
-            <a>
-                {{oldState}}
-                {{#if userOp }}<span class="icon icon-user"></span>{{/if}}
-                {{#if devOp }}<span class="icon icon-tool"></span>{{/if}}
-                <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
-                - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
-                </span>{{isFunction}}
+          <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');gui.closeModal();">
+                <div class="button fright addbutton" data-opname="{{name}}" style="margin-top:10px;" >{{{../texts.opselect_addop}}}</div>
+                <a>
+                    {{oldState}}
+                    {{#if userOp }}<span class="icon icon-user"></span>{{/if}}
+                    {{#if devOp }}<span class="icon icon-tool"></span>{{/if}}
+                    <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
+                    - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
+                    </span>{{isFunction}}
 
-                <div class="summary">{{summary}}&nbsp;</div>
-            </a>
-        </div>
-      {{/each}}
+                    <div class="summary">{{summary}}&nbsp;</div>
+                </a>
+            </div>
+        {{/each}}
 
 
       <div id="search_startType" class="hidden">

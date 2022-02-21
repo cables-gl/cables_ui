@@ -40,14 +40,14 @@ export default class GlPreviewLayer extends CABLES.EventTarget
                 let item = this._itemsLookup[a.id];
                 if (!item)
                 {
-                    a.uiAttribs.translate = a.uiAttribs.translate || { "x": 0, "y": 0 };
+                    // a.uiAttribs.translate = a.uiAttribs.translate || { "x": 0, "y": 0 };
 
                     item = {
                         "op": a,
                         "port": a.portsIn[0],
                         "ports": a.portsIn,
-                        "posX": a.uiAttribs.translate.x,
-                        "posY": a.uiAttribs.translate.y,
+                        // "posX": a.uiAttribs.translate.x,
+                        // "posY": a.uiAttribs.translate.y,
                     };
 
                     this._itemsLookup[a.id] = item;
@@ -121,8 +121,16 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
             this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
 
+            this._canvasCtx.strokeStyle = "transparent";
+
+            this._canvasCtx.save();
+            this._canvasCtx.rect(pos[0], pos[1], size[0], size[1]);
+            this._canvasCtx.stroke();
+            this._canvasCtx.clip();
+
             this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
+            this._canvasCtx.restore();
 
             count++;
         }

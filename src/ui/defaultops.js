@@ -3,6 +3,8 @@
  *
  */
 
+import { CONSTANTS } from "../../../cables/src/core/constants";
+
 export default
 {
     "defaultOpNames":
@@ -33,12 +35,19 @@ export default
         "uiArea": "Ops.Ui.Area",
         "defaultOpVizTexture": "Ops.Ui.VizTexture"
     },
-
+    "getOpsForPortLink": (p, l) =>
+    {
+        if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
+        {
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.Ui.VizString"];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable"];
+        }
+    },
     "getOpsForFilename": (filename) =>
     {
         const ops = [];
-
-        console.log("filename", filename);
 
         if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
