@@ -122,15 +122,21 @@ export default class VizLayer extends CABLES.EventTarget
 
             this._canvasCtx.strokeStyle = "transparent";
 
+
+            // this._canvasCtx.save();
             this._canvasCtx.save();
-            this._canvasCtx.rect(pos[0], pos[1], size[0], size[1]);
-            this._canvasCtx.stroke();
-            this._canvasCtx.clip();
+
+            let region = new Path2D();
+            region.rect(pos[0], pos[1], size[0], size[1]);
+            this._canvasCtx.clip(region);
+
 
             this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
-            this._canvasCtx.restore();
+            // this._canvasCtx.restore();
 
+
+            this._canvasCtx.restore();
             count++;
         }
 

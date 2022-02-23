@@ -138,10 +138,14 @@ export default class TexturePreviewer
             previewCanvasEle.width = s[0];
             previewCanvasEle.height = s[1];
 
+            const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
+
             previewCanvas.clearRect(0, 0, previewCanvasEle.width, previewCanvasEle.height);
             previewCanvas.drawImage(cgl.canvas, 0, 0, previewCanvasEle.width, previewCanvasEle.height);
 
-            cgl.gl.clearColor(0, 0, 0, 0);
+            perf2.finish();
+
+            cgl.gl.clearColor(0, 0, 0, 1);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             perf.finish();
