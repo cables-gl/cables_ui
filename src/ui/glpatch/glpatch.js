@@ -13,7 +13,7 @@ import glUiConfig from "./gluiconfig";
 import ShakeDetector from "./shakedetect";
 import SnapLines from "./snaplines";
 import QuickLinkSuggestion from "./quicklinksuggestion";
-import GlPreviewLayer from "./glpreviewlayer";
+import VizLayer from "./vizlayer";
 import Logger from "../utils/logger";
 import ele from "../utils/ele";
 import text from "../text";
@@ -306,7 +306,7 @@ export default class GlPatch extends CABLES.EventTarget
             });
         });
 
-        this.previewLayer = new GlPreviewLayer(this);
+        this.previewLayer = new VizLayer(this);
 
 
         userSettings.on("onChange", (key, value) =>
