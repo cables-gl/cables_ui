@@ -169,12 +169,12 @@ export default class OpParampanel extends CABLES.EventTarget
         //         currentOp = this.ops[iops];
 
         let doc = null;
-        let hasScreenshot = false;
+        let hasExample = false;
         if (gui.opDocs)
         {
             op.summary = gui.opDocs.getSummary(op.objName);
             doc = gui.opDocs.getOpDocByName(op.objName);
-            hasScreenshot = doc && doc.hasScreenshot;
+            hasExample = doc && doc.hasExample;
         }
 
 
@@ -216,7 +216,7 @@ export default class OpParampanel extends CABLES.EventTarget
             "oldVersion": oldversion,
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
-            "hasExample": hasScreenshot,
+            "hasExample": hasExample,
         });
 
         gui.showInfo(text.patchSelectedOp);
