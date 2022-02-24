@@ -169,12 +169,12 @@ export default class OpParampanel extends CABLES.EventTarget
         //         currentOp = this.ops[iops];
 
         let doc = null;
-        let hasScreenshot = false;
+        let hasExample = false;
         if (gui.opDocs)
         {
             op.summary = gui.opDocs.getSummary(op.objName);
             doc = gui.opDocs.getOpDocByName(op.objName);
-            hasScreenshot = doc && doc.hasScreenshot;
+            hasExample = doc && doc.hasExample;
         }
 
 
@@ -216,7 +216,7 @@ export default class OpParampanel extends CABLES.EventTarget
             "oldVersion": oldversion,
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
-            "hasExample": hasScreenshot,
+            "hasExample": hasExample,
         });
 
         gui.showInfo(text.patchSelectedOp);
@@ -704,22 +704,22 @@ export default class OpParampanel extends CABLES.EventTarget
                     newValue = String(thePort.get());
                 }
 
-                // if (thePort._tempLastUiValue != newValue)
+                if (thePort._tempLastUiValue != newValue)
                 {
-                    let ele = thePort._tempLastUiEle;
-                    // if (!ele || thePort._tempLastUiEleId != id)
-                    // {
-                    ele = document.getElementsByClassName(id);
-                    if (ele.length > 0)
+                    let el = thePort._tempLastUiEle;
+                    if (!el || thePort._tempLastUiEleId != id)
                     {
-                        ele = thePort._tempLastUiEle = ele[0];
-                        thePort._tempLastUiEleId = id;
+                        el = document.getElementsByClassName(id);
+                        if (el.length > 0)
+                        {
+                            el = thePort._tempLastUiEle = el[0];
+                            thePort._tempLastUiEleId = id;
+                        }
                     }
-                    // }
 
-                    if (ele)
+                    if (el)
                     {
-                        ele.innerHTML = newValue;
+                        el.innerHTML = newValue;
                         thePort._tempLastUiValue = newValue;
                     }
                 }

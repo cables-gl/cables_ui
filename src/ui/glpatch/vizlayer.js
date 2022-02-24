@@ -1,13 +1,13 @@
 
 import Logger from "../utils/logger";
 
-export default class GlPreviewLayer extends CABLES.EventTarget
+export default class VizLayer extends CABLES.EventTarget
 {
     constructor(glPatch)
     {
         super();
 
-        this._log = new Logger("glpreviewlayer");
+        this._log = new Logger("VizLayer");
 
         this._items = [];
         this._itemsLookup = {};
@@ -31,7 +31,6 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
 
-        setInterval(this.updateViewPort.bind(this), 500);
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
@@ -123,57 +122,25 @@ export default class GlPreviewLayer extends CABLES.EventTarget
 
             this._canvasCtx.strokeStyle = "transparent";
 
+
+            // this._canvasCtx.save();
             this._canvasCtx.save();
-            this._canvasCtx.rect(pos[0], pos[1], size[0], size[1]);
-            this._canvasCtx.stroke();
-            this._canvasCtx.clip();
+
+            let region = new Path2D();
+            region.rect(pos[0], pos[1], size[0], size[1]);
+            this._canvasCtx.clip(region);
+
 
             this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
-            this._canvasCtx.restore();
+            // this._canvasCtx.restore();
 
+
+            this._canvasCtx.restore();
             count++;
         }
 
         perf.finish();
-    }
-
-
-    updateViewPort()
-    {
-        // this._updateSize();
-        // const ops = gui.corePatch().getOpsByObjName("Ops.Ui.VizTexture");
-        // const ops2 = gui.corePatch().getOpsByObjName("Ops.Ui.VizGraph");
-
-        // ops.push(...ops2);
-
-        // for (let i = 0; i < ops.length; i++)
-        // {
-        //     let item = this._itemsLookup[a.id];
-        //     if (!item)
-        //     {
-        //         item = {
-        //             "op": ops[i],
-        //             "port": ops[i].portsIn[0],
-        //             "ports": ops[i].portsIn,
-        //             "posX": ops[i].uiAttribs.translate.x,
-        //             "posY": ops[i].uiAttribs.translate.y,
-        //         };
-
-        //         this._itemsLookup[ops[i].id] = item;
-
-
-        //         item.op.on("onDelete", (op) =>
-        //         {
-        //             this._removeOpItem(op);
-        //         });
-
-        //         this._items.push(item);
-
-        //         if (ops[i].objName == "Ops.Ui.VizTexture") item.renderer = new GlPreviewLayerTexture(this, item);
-        //         if (ops[i].objName == "Ops.Ui.VizGraph") item.renderer = new GlPreviewLayerNumber(this, item);
-        //     }
-        // }
     }
 
     _removeOpItem(op)
