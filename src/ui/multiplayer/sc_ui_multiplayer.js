@@ -533,25 +533,26 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client && !this._connection.client.isPilot)
             {
-                messageBox.innerHTML = "you are not the pilot in this multiplayer session - changes will not be saved";
-                messageNav.style.display = "block";
-                messageBox.style.display = "block";
-
                 if (this._connection.client.following)
                 {
+                    let userName = "someone";
+                    if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
                     gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                    messageBox.innerHTML = "you are following  " + userName + " in a multiplayer session - editing is restricted";
                 }
                 else
                 {
                     gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+                    messageBox.innerHTML = "you are NOT the pilot in this multiplayer session - changes will not be saved";
                 }
             }
             else
             {
-                messageBox.style.display = "none";
-                messageNav.style.display = "none";
+                messageBox.innerHTML = "you are the pilot in this multiplayer session - changes will be sent to others";
                 gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             }
+            messageBox.style.display = "block";
+            messageNav.style.display = "block";
         }
         else
         {
