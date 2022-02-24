@@ -145,7 +145,7 @@ export default class TexturePreviewer
 
             perf2.finish();
 
-            cgl.gl.clearColor(0, 0, 0, 1);
+            cgl.gl.clearColor(0, 0, 0, 0);
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             perf.finish();
