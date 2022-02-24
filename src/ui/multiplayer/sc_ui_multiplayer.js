@@ -733,21 +733,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 if (this._connection.inMultiplayerSession)
                 {
-                    if (!client.isMe)
-                    {
-                        if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
-                        {
-                            items.push({
-                                "title": "jump to cursor",
-                                "iconClass": "icon icon-mouse-cursor",
-                                "func": () =>
-                                {
-                                    this._jumpToCursor(client);
-                                }
-                            });
-                        }
-                    }
-
                     const multiPlayerBar = document.getElementById("multiplayerbar");
                     const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
                     if (this._connection.client.following && this._connection.client.following === clientId)
