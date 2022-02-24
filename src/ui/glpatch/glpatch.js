@@ -312,7 +312,6 @@ export default class GlPatch extends CABLES.EventTarget
         userSettings.on("onChange", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
-
             if (key == "linetype")
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
