@@ -7,6 +7,7 @@ import userSettings from "../components/usersettings";
 import GlLinedrawer from "../gldraw/gllinedrawer";
 import GlLink from "./gllink";
 import undo from "../utils/undo";
+import Gui from "../gui";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -138,6 +139,7 @@ export default class GlOp extends CABLES.EventTarget
     _onBgRectDrag(rect)
     {
         if (!this._glRectBg) return;
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);

@@ -56,6 +56,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     if (cb)cb(null);
                     return;
                 }
+                else if (gui.socket && gui.socket.inMultiplayerSession)
+                {
+                    gui.jobs().finish("checkupdated");
+                    if (cb)cb(null);
+
+                    return;
+                }
 
                 if (this._serverDate != data.updated)
                 {
