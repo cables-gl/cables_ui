@@ -53,6 +53,8 @@ export default class GlPort
 
     _updateColor()
     {
+        if (!this._rect) return;
+
         const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
         if (!this._rectAssigned && isAssigned)
         {
