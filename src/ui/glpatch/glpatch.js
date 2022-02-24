@@ -314,8 +314,9 @@ export default class GlPatch extends CABLES.EventTarget
         userSettings.on("onChange", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
-            for (let i in this.links)
-                this.links[i].updateLineStyle();
+            if (key == "linetype")
+                for (let i in this.links)
+                    this.links[i].updateLineStyle();
         });
     }
 
@@ -1175,6 +1176,7 @@ export default class GlPatch extends CABLES.EventTarget
     // make static util thing...
     setDrawableColorByType(e, t, brightness)
     {
+        if (!e) return;
         let diff = 1;
 
         if (brightness == 1)diff = 0.8;
