@@ -18,6 +18,7 @@ import Logger from "../utils/logger";
 import ele from "../utils/ele";
 import text from "../text";
 import userSettings from "../components/usersettings";
+import Gui from "../gui";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -304,6 +305,18 @@ export default class GlPatch extends CABLES.EventTarget
                     });
                 }
             });
+        });
+
+        gui.on("restrictionChange", () =>
+        {
+            if (gui.getRestriction() === Gui.RESTRICT_MODE_FOLLOWER)
+            {
+                gui.patchView.patchRenderer.greyOut = true;
+            }
+            else
+            {
+                gui.patchView.patchRenderer.greyOut = false;
+            }
         });
 
         this.previewLayer = new VizLayer(this);

@@ -30,7 +30,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientLeft", (client) =>
         {
-            if (this._connection.inMultiplayerSession) notify(client.username + " just left the multiplayer session");
+            if (this._connection.inMultiplayerSession)
+            {
+                notify(client.username + " just left the multiplayer session");
+            }
+            gui.emitEvent("netClientRemoved", { "clientId": client.clientId });
         });
 
         this._connection.state.on("clientJoined", (client) =>
@@ -438,7 +442,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             document.getElementById("multiplayerbar").style.display = "none";
             document.getElementById("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            gui.patchView.patchRenderer.greyOut = false;
             return;
         }
 
@@ -542,14 +545,12 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
                 }
-                gui.patchView.patchRenderer.greyOut = true;
             }
             else
             {
                 messageBox.style.display = "none";
                 messageNav.style.display = "none";
                 gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-                gui.patchView.patchRenderer.greyOut = false;
             }
         }
         else
@@ -557,7 +558,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             messageBox.style.display = "none";
             messageNav.style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            gui.patchView.patchRenderer.greyOut = false;
         }
 
         const startButton = userList.querySelector(".start-button");

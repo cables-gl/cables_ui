@@ -101,6 +101,11 @@ export default class ScConnection extends CABLES.EventTarget
         return onlyRemoteClients;
     }
 
+    getPilot()
+    {
+        return this.state.getPilot();
+    }
+
     hasPilot()
     {
         return this.state.hasPilot();
@@ -189,6 +194,10 @@ export default class ScConnection extends CABLES.EventTarget
                 else
                 {
                     this.sendControl("resync");
+                    if (this._state.hasPilot())
+                    {
+                        this.state.emitEvent("pilotChanged", this.state.getPilot());
+                    }
                 }
             });
         }
