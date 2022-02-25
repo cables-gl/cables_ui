@@ -128,6 +128,26 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        gui.opParams.addEventListener("opSelected", (op) =>
+        {
+            this._connection.sendUi("opSelected", { "opId": op.id });
+        });
+
+        this._connection.on("opSelected", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client.isRemoteClient) return;
+            if (!this._connection.client.following) return;
+            if (!this._connection.client.following === msg.clientId) return;
+            const op = gui.corePatch().getOpById(msg.opId);
+            if (op)
+            {
+                gui.patchView.unselectAllOps();
+                gui.patchView.selectOpId(msg.opId);
+                gui.patchView.focusOp(msg.opId);
+            }
+        });
+
         this._connection.on("timelineControl", (msg) =>
         {
             if (!this._connection.inMultiplayerSession) return;
