@@ -28,9 +28,9 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.on("connectionChanged", this.updateHtml.bind(this));
 
-        this._connection.state.on("clientLeft", (client) =>
+        this._connection.state.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
         {
-            if (this._connection.inMultiplayerSession)
+            if (this._connection.inMultiplayerSession && wasInMultiplayerSession)
             {
                 notify(client.username + " just left the multiplayer session");
             }
@@ -40,6 +40,15 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._connection.state.on("clientJoined", (client) =>
         {
             if (this._connection.inMultiplayerSession) notify(client.username + " just joined the multiplayer session");
+        });
+
+        this._connection.state.on("clientLeft", (client) =>
+        {
+            if (this._connection.inMultiplayerSession)
+            {
+                notify(client.username + " just left the multiplayer session");
+            }
+            gui.emitEvent("netClientRemoved", { "clientId": client.clientId });
         });
 
         this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
@@ -176,7 +185,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         gui.corePatch().on("pacoPortAnimUpdated", (port) =>
         {
-            console.log("UPDATING SHIT");
             if (!this._connection.inMultiplayerSession) return;
             if (port.anim)
             {
@@ -533,16 +541,16 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client && !this._connection.client.isPilot)
             {
+                gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+
                 if (this._connection.client.following)
                 {
                     let userName = "someone";
                     if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
-                    gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
                     messageBox.innerHTML = "you are following  " + userName + " in a multiplayer session - editing is restricted";
                 }
                 else
                 {
-                    gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
                     messageBox.innerHTML = "you are NOT the pilot in this multiplayer session - changes will not be saved";
                 }
             }

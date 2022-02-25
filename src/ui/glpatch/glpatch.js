@@ -307,9 +307,9 @@ export default class GlPatch extends CABLES.EventTarget
             });
         });
 
-        gui.on("restrictionChange", () =>
+        gui.on("restrictionChange", (r) =>
         {
-            if (gui.getRestriction() === Gui.RESTRICT_MODE_FOLLOWER)
+            if (r === Gui.RESTRICT_MODE_FOLLOWER)
             {
                 gui.patchView.patchRenderer.greyOut = true;
             }
