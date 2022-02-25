@@ -125,11 +125,12 @@ export default class GlViewBox
 
     _onCanvasMouseMove(e)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
-
         this.setMousePos(e.offsetX, e.offsetY);
+
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
+
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
             (this.glPatch.mouseState.buttonForScrolling && !this.glPatch.isDraggingPort()) ||

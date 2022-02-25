@@ -23,9 +23,10 @@
 
     <table>
     {{#each clients}}
+        {{#if isRemoteClient }} {{else}}
         <tr>
             <td>
-            <span style="display:inline-block;width:12px;height:12px;border-radius:20px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});"></span>
+                <span style="display:inline-block;width:12px;height:12px;border-radius:20px;background-color:rgb({{color.rb}},{{color.gb}},{{color.bb}});"></span>
             </td>
             <td>
                 {{username}}
@@ -35,6 +36,7 @@
                 {{#if lost}}timeout??{{/if}}
             </td>
         </tr>
+        {{/if}}
     {{/each}}
     </table>
 

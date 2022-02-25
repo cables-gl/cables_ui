@@ -30,7 +30,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientLeft", (client) =>
         {
-            if (this._connection.inMultiplayerSession) notify(client.username + " just left the multiplayer session");
+            if (this._connection.inMultiplayerSession)
+            {
+                notify(client.username + " just left the multiplayer session");
+            }
+            gui.emitEvent("netClientRemoved", { "clientId": client.clientId });
         });
 
         this._connection.state.on("clientJoined", (client) =>
@@ -438,7 +442,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             document.getElementById("multiplayerbar").style.display = "none";
             document.getElementById("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            gui.patchView.patchRenderer.greyOut = false;
             return;
         }
 
@@ -530,34 +533,32 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client && !this._connection.client.isPilot)
             {
-                messageBox.innerHTML = "you are not the pilot in this multiplayer session - changes will not be saved";
-                messageNav.style.display = "block";
-                messageBox.style.display = "block";
-
                 if (this._connection.client.following)
                 {
+                    let userName = "someone";
+                    if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
                     gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                    messageBox.innerHTML = "you are following  " + userName + " in a multiplayer session - editing is restricted";
                 }
                 else
                 {
                     gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+                    messageBox.innerHTML = "you are NOT the pilot in this multiplayer session - changes will not be saved";
                 }
-                gui.patchView.patchRenderer.greyOut = true;
             }
             else
             {
-                messageBox.style.display = "none";
-                messageNav.style.display = "none";
+                messageBox.innerHTML = "you are the pilot in this multiplayer session - changes will be sent to others";
                 gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-                gui.patchView.patchRenderer.greyOut = false;
             }
+            messageBox.style.display = "block";
+            messageNav.style.display = "block";
         }
         else
         {
             messageBox.style.display = "none";
             messageNav.style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-            gui.patchView.patchRenderer.greyOut = false;
         }
 
         const startButton = userList.querySelector(".start-button");
@@ -733,21 +734,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 if (this._connection.inMultiplayerSession)
                 {
-                    if (!client.isMe)
-                    {
-                        if (client.hasOwnProperty("x") && client.hasOwnProperty("y"))
-                        {
-                            items.push({
-                                "title": "jump to cursor",
-                                "iconClass": "icon icon-mouse-cursor",
-                                "func": () =>
-                                {
-                                    this._jumpToCursor(client);
-                                }
-                            });
-                        }
-                    }
-
                     const multiPlayerBar = document.getElementById("multiplayerbar");
                     const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
                     if (this._connection.client.following && this._connection.client.following === clientId)

@@ -223,6 +223,11 @@ export default class ScState extends CABLES.EventTarget
         return cleanupChange;
     }
 
+    getPilot()
+    {
+        return this._pilot;
+    }
+
     hasPilot()
     {
         return !!this._pilot;
