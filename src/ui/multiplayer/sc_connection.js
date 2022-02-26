@@ -5,6 +5,7 @@ import Logger from "../utils/logger";
 import ScState from "./sc_state";
 import ScUiMultiplayer from "./sc_ui_multiplayer";
 import { notify } from "../elements/notification";
+import Gui from "../gui";
 
 export default class ScConnection extends CABLES.EventTarget
 {
@@ -347,6 +348,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     joinMultiplayerSession()
     {
+        gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
         this.client.isPilot = false;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
