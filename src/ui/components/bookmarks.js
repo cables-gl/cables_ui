@@ -38,7 +38,13 @@ export default class Bookmarks
         for (let i = 0; i < subs.length; i++)
         {
             subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
-            subs[i].sortname = subs[i].path.join(" ");
+
+            let sortname = "";
+            for (let j = subs[i].path.length - 1; j > 0; j--)
+            {
+                sortname += subs[i].path[j].name;
+            }
+            subs[i].sortname = sortname;
         }
 
         subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
