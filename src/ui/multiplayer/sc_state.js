@@ -52,8 +52,9 @@ export default class ScState extends CABLES.EventTarget
         let userListChanged = false;
         if (payload.isDisconnected)
         {
+            const wasInMultiplayerSession = this._clients[payload.clientId].inMultiplayerSession;
             delete this._clients[payload.clientId];
-            this.emitEvent("clientLeft", payload);
+            this.emitEvent("clientDisconnected", payload, wasInMultiplayerSession);
             userListChanged = true;
         }
         else
