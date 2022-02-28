@@ -40,9 +40,9 @@ export default class Bookmarks
             subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
 
             let sortname = "";
-            for (let j = subs[i].path.length - 1; j > 0; j--)
+            for (let j = 0; j < subs[i].path.length; j++)
             {
-                sortname += subs[i].path[j].name;
+                sortname = subs[i].path[j].name + sortname;
             }
             subs[i].sortname = sortname;
         }
@@ -54,7 +54,7 @@ export default class Bookmarks
             subs[i].indent = "";
             for (let j = 0; j < subs[i].path.length; j++)
             {
-                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
             }
         }
 
