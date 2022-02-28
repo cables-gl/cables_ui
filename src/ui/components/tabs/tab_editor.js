@@ -323,8 +323,16 @@ function createEditor(id, val)
             "name": "mat4.translate(out,a,v);",
         },
         {
-            "content": "op.patch.isEditorMode();",
-            "name": "op.patch.isEditorMode();",
+            "content": "CGL.Texture.PFORMATSTR_RGBA32F",
+            "name": "CGL.Texture.PFORMATSTR_RGBA32F",
+        },
+        {
+            "content": "CGL.Texture.PFORMATSTR_RGBA8UB",
+            "name": "CGL.Texture.PFORMATSTR_RGBA8UB",
+        },
+        {
+            "content": "CGL.Texture.PIXELFORMATS",
+            "name": "CGL.Texture.PIXELFORMATS",
         },
 
     );

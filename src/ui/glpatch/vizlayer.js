@@ -119,9 +119,7 @@ export default class VizLayer extends CABLES.EventTarget
             if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
             this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
-
             this._canvasCtx.strokeStyle = "transparent";
-
 
             // this._canvasCtx.save();
             this._canvasCtx.save();
@@ -146,7 +144,6 @@ export default class VizLayer extends CABLES.EventTarget
     _removeOpItem(op)
     {
         const it = this._itemsLookup[op.id];
-        let found = -1;
 
         let idx = this._items.indexOf(it);
 
@@ -154,6 +151,8 @@ export default class VizLayer extends CABLES.EventTarget
         else this._log.warn("could not find item");
 
         delete this._itemsLookup[op.id];
+
+        if (this._items.length == 0) this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
     }
 
     pauseInteraction()
