@@ -32,7 +32,9 @@
             {{#each subPatches}}
                 <div class="list">
                     <div class="{{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
-                        <h3 class="op_color_default">{{name}}</h3>
+
+
+                        <h3 class="op_color_default">{{{indent}}}{{name}}</h3>
                     </div>
                 </div>
             {{/each}}
