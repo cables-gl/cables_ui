@@ -113,7 +113,12 @@
 
     .blueprint, .blueprint_subpatch
     {
-        border-left: 5px solid var(--color_op_handle_default);
+        opacity:0.8;
+
+        h3
+        {
+            border-right: 5px solid var(--color_op_handle_default);
+        }
     }
 
     .selected
