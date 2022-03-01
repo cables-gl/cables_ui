@@ -862,11 +862,19 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 acceptButton.addEventListener("pointerdown", () =>
                 {
-                    callbackBeforeSync(() =>
+                    if (callbackBeforeSync)
+                    {
+                        callbackBeforeSync(() =>
+                        {
+                            this._resyncPatch();
+                            modal.close();
+                        });
+                    }
+                    else
                     {
                         this._resyncPatch();
                         modal.close();
-                    });
+                    }
                 });
             }
             if (declineButton)
