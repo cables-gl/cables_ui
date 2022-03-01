@@ -807,9 +807,7 @@ export default class PatchView extends CABLES.EventTarget
         const subPatches = [];
         const ops = gui.corePatch().ops;
 
-        let i = 0;
-
-        for (i = 0; i < ops.length; i++)
+        for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
@@ -817,7 +815,7 @@ export default class PatchView extends CABLES.EventTarget
             }
         }
 
-        for (i = 0; i < ops.length; i++)
+        for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].uiAttribs)
             {
@@ -841,7 +839,7 @@ export default class PatchView extends CABLES.EventTarget
 
         foundPatchIds = CABLES.uniqueArray(foundPatchIds);
 
-        for (i = 0; i < foundPatchIds.length; i++)
+        for (let i = 0; i < foundPatchIds.length; i++)
         {
             let found = false;
             for (let j = 0; j < ops.length; j++)

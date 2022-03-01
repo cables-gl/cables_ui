@@ -33,7 +33,30 @@ export default class Bookmarks
 
     getHtml()
     {
-        const subs = gui.patchView.getSubPatches(true);
+        const subs = gui.patchView.getSubPatches(false);
+
+        for (let i = 0; i < subs.length; i++)
+        {
+            subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
+
+            let sortname = "";
+            for (let j = 0; j < subs[i].path.length; j++)
+            {
+                sortname = subs[i].path[j].name + sortname;
+            }
+            subs[i].sortname = sortname;
+        }
+
+        subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
+
+        for (let i = 0; i < subs.length; i++)
+        {
+            subs[i].indent = "";
+            for (let j = 0; j < subs[i].path.length; j++)
+            {
+                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+            }
+        }
 
         const bm = [];
         for (const i in this._bookmarks)
