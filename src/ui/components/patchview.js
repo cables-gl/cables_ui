@@ -1233,6 +1233,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         if (!ops || ops.length === 0) return;
 
+        const undoGroup = undo.startGroup();
+
         this.saveUndoSelectedOpsPositions(ops);
 
         ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
@@ -1248,6 +1250,8 @@ export default class PatchView extends CABLES.EventTarget
             this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
             this.testCollision(ops[j]);
         }
+
+        undo.endGroup(undoGroup, "Compress Ops");
     }
 
     alignSelectedOpsVert(ops)
