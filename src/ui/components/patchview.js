@@ -1356,26 +1356,12 @@ export default class PatchView extends CABLES.EventTarget
 
     alignOps(selectedOps)
     {
-        // let minX = 9999999,
-        //     minY = 9999999,
-        //     maxX = -9999999,
-        //     maxY = -9999999,
-        //     j = 0;
+        const undoGroup = undo.startGroup();
 
         this.saveUndoSelectedOpsPositions(selectedOps);
-
-        // for (j in selectedOps)
-        // {
-        //     minX = Math.min(minX, selectedOps[j].uiAttribs.translate.x);
-        //     minY = Math.min(minY, selectedOps[j].uiAttribs.translate.y);
-
-        //     maxX = Math.max(maxX, selectedOps[j].uiAttribs.translate.x); // magic number: reduce
-        //     maxY = Math.max(maxY, selectedOps[j].uiAttribs.translate.y);
-        // }
-
-        // if (Math.abs(maxX - minX) > Math.abs(maxY - minY)) this.alignSelectedOpsHor(selectedOps);
-        // else
         this.alignSelectedOpsVert(selectedOps);
+
+        undo.endGroup(undoGroup, "Align Ops");
 
         return selectedOps;
     }
