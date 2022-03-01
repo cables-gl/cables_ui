@@ -908,6 +908,8 @@ export default class PatchView extends CABLES.EventTarget
         }
         else this._patchRenderer.greyOut = false;
 
+        str += "...";
+
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }
