@@ -297,6 +297,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0 / zoom);
+
         this._uniTime.set(performance.now() / 1000);
 
         if (this._needsTextureUpdate) this._setupTextures();

@@ -633,7 +633,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._updateErrorDots();
 
-        if (this._resizableArea) this._resizableArea.visible = false;
+        if (this._resizableArea) this._resizableArea.visible = visi;
 
         for (const i in this._links) this._links[i].visible = visi;
 

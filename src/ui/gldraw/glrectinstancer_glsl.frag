@@ -27,7 +27,12 @@
         #ifdef SDF_TEXTURE
             vec4 smpl=texture(tex,uv);
             float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;
-            vec2 msdfUnit = 8.0/vec2(1024.0);
+            // vec2 msdfUnit = vec2(1.0/pow(zoom,2.0))/10000.0;//8.0/vec2(1024);
+            // vec2 msdfUnit=vec2(1.0/zoom*200000.0);
+            vec2 msdfUnit=vec2(8.0/1024.0);
+
+            if(zoom<0.001)msdfUnit=vec2(8.0/1200.0);
+
             sigDist *= dot(msdfUnit, 0.5/fwidth(uv));
             float opacity = clamp(sigDist + 0.5, 0.0, 1.0);
             finalColor=vec4(finalColor.rgb, opacity);
