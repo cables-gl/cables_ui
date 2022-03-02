@@ -729,48 +729,48 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    getSubPatchStructure()
-    {
-        const structured = [{ "name": "Main", "id": 0, "childs": [] }];
-        const subs = [];
-        const ops = this._p.ops;
+    // getSubPatchStructure()
+    // {
+    //     const structured = [{ "name": "Main", "id": 0, "childs": [] }];
+    //     const subs = [];
+    //     const ops = this._p.ops;
 
-        function findSub(id, root)
-        {
-            if (id == 0) return structured[0];
-            for (let i = 0; i < root.childs.length; i++)
-            {
-                if (root[i].id == id) return root[i];
-            }
-        }
+    //     function findSub(id, root)
+    //     {
+    //         if (id == 0) return structured[0];
+    //         for (let i = 0; i < root.childs.length; i++)
+    //         {
+    //             if (root[i].id == id) return root[i];
+    //         }
+    //     }
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
-            {
-                const id = ops[i].patchId.get();
-                subs.push({ "name": ops[i].name, "id": id, "parent": ops[i].uiAttribs.subpatchId, "childs": [] });
-            }
-        }
+    //     for (let i = 0; i < ops.length; i++)
+    //     {
+    //         if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
+    //         {
+    //             const id = ops[i].patchId.get();
+    //             subs.push({ "name": ops[i].name, "id": id, "parent": ops[i].uiAttribs.subpatchId, "childs": [] });
+    //         }
+    //     }
 
-        for (let i = 0; i < subs.length; i++)
-        {
-            findSub(subs[i], structured[0]);
-            // if (subs.parent == 0)struct.push(subs[i]);
-            // else
-            // {
-            //     for (let j = 0; j < subs.length; j++)
-            //     {
-            //         const parent = findSub(subs[j].parent, struct[0]);
-            //         if (!parent)this._log.warn("parent not found!");
-            //         else
-            //         {
-            //             parent.childs.push(subs[j]);
-            //         }
-            //     }
-            // }
-        }
-    }
+    //     for (let i = 0; i < subs.length; i++)
+    //     {
+    //         findSub(subs[i], structured[0]);
+    //         // if (subs.parent == 0)struct.push(subs[i]);
+    //         // else
+    //         // {
+    //         //     for (let j = 0; j < subs.length; j++)
+    //         //     {
+    //         //         const parent = findSub(subs[j].parent, struct[0]);
+    //         //         if (!parent)this._log.warn("parent not found!");
+    //         //         else
+    //         //         {
+    //         //             parent.childs.push(subs[j]);
+    //         //         }
+    //         //     }
+    //         // }
+    //     }
+    // }
 
     getSubpatchPathArray(subId, arr)
     {
@@ -886,6 +886,68 @@ export default class PatchView extends CABLES.EventTarget
         return subPatches;
     }
 
+
+    subpatchContextMenu(id, el)
+    {
+        const ids = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
+            {
+                ids.push(ops[i].patchId.get());
+            }
+        }
+
+        const items = [];
+        for (let i = 0; i < ids.length; i++)
+        {
+            const theId = ids[i];
+            console.log(this.getSubPatchName(ids[i]));
+            items.push({
+                "title": "› " + this.getSubPatchName(ids[i]),
+                "func": () =>
+                {
+                    gui.patchView.setCurrentSubPatch(theId);
+                }
+            });
+        }
+
+        items.push({
+            "title": "Goto op",
+            "func": () =>
+            {
+                gui.patchView.focusSubpatchOp(id);
+            }
+
+
+        });
+
+        CABLES.contextMenu.show(
+            {
+                "items": items,
+            }, el);
+    }
+
+    focusSubpatchOp(subPatchId)
+    {
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId.get() == subPatchId)
+            {
+                this.setCurrentSubPatch(ops[i].uiAttribs.subPatch, () =>
+                {
+                    this.focus();
+                    this.focusOp(ops[i].id);
+                    this.centerSelectOp(ops[i].id);
+                });
+
+                return;
+            }
+        }
+    }
+
     updateSubPatchBreadCrumb(currentSubPatch)
     {
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
@@ -901,15 +963,14 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
+        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\">...</a>";
+
         if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
             this._patchRenderer.greyOut = true;
-            str += "<br/><br/><a class=\"\">this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + names[0].blueprintPatchId + "\">open patch</a>";
+            str += "<br/><br/><a >this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + names[0].blueprintPatchId + "\">open patch</a>";
         }
         else this._patchRenderer.greyOut = false;
-
-        str += "...";
-
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }

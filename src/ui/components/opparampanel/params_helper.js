@@ -350,6 +350,8 @@ const paramsHelper =
 
             if (port) port.setVariable(e.target.value);
             else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
+
+            gui.setStateUnsaved();
         });
 
         el = ele.byId("portremovevar_" + index);
@@ -358,6 +360,7 @@ const paramsHelper =
             const port = op.getPortById(e.target.dataset.portid);
             if (port) port.setVariable(null);
             port.parent.refreshParams();
+            gui.setStateUnsaved();
         });
 
         el = ele.byId("port_contextmenu_in_" + index);
@@ -372,6 +375,7 @@ const paramsHelper =
                             "title": "Assign variable",
                             "func": () =>
                             {
+                                gui.setStateUnsaved();
                                 port.setVariable("unknown");
                                 port.parent.refreshParams();
                             }
@@ -380,6 +384,7 @@ const paramsHelper =
                             "title": "Set animated",
                             "func": () =>
                             {
+                                gui.setStateUnsaved();
                                 el = ele.byId("portanim_in_" + index);
                                 if (el)el.dispatchEvent(new Event("click"));
                             }
@@ -393,6 +398,7 @@ const paramsHelper =
             const targetState = !el.classList.contains("timingbutton_active");
             const elVal = ele.byId("portval_" + index);
 
+            gui.setStateUnsaved();
             CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, elVal.value);
             gui.emitEvent("portValueSetAnimated", op, index, targetState, elVal.value);
         });
@@ -545,6 +551,8 @@ const paramsHelper =
         if (el) el.addEventListener("input", (e) =>
         {
             let v = "" + el.value;
+
+            gui.setStateUnsaved();
 
             if (
                 op.portsIn[index].uiAttribs.display != "bool" &&
