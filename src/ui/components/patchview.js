@@ -10,6 +10,7 @@ import text from "../text";
 import userSettings from "./usersettings";
 import Gui from "../gui";
 import undo from "../utils/undo";
+import SuggestionDialog from "./suggestiondialog";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -1915,6 +1916,114 @@ export default class PatchView extends CABLES.EventTarget
         this._patchRenderer.zoomStep(step);
     }
 
+    suggestionBetweenTwoOps(op1, op2)
+    {
+        // for (let i = 0; i < op1.portsIn.length; i++)
+        // {
+        //     for (let j = 0; j < op2.portsOut.length; j++)
+        //     {
+        //         const p1 = op1.portsIn[i];
+        //         const p2 = op2.portsOut[j];
+
+        //         if (p1.type == p2.type)
+        //         {
+        //             console.log(p1.name + " -- " + p2.name);
+        //         }
+        //     }
+        // }
+
+        const mouseEvent = { "clientX": 400, "clientY": 400 };
+
+        // const op1 = this._longPressOp;
+
+        const suggestions = [
+            {
+                "cb": () => { console.log("yep....", op1, op2); gui.patchView.suggestionBetweenTwoOps(op2, op1); },
+                "name": "<span class=\"icon icon-op\"></span>OUT: " + op1.getTitle(),
+                "classname": ""
+            }];
+        if (!op1 || !op2) return;
+
+        for (let j = 0; j < op1.portsOut.length; j++)
+        {
+            const p = op1.portsOut[j];
+
+            const numFitting = op2.countFittingPorts(p);
+            let addText = "...";
+            if (numFitting > 0)
+            {
+                if (numFitting == 1)
+                {
+                    const p2 = op2.findFittingPort(p);
+                    addText = p2.name;
+                }
+
+                suggestions.push({
+                    p,
+                    "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
+                    "classname": "port_text_color_" + p.getTypeString().toLowerCase()
+                });
+            }
+        }
+
+        if (suggestions.length === 0)
+        {
+            CABLES.UI.notify("can not link!");
+            return;
+        }
+
+        const showSuggestions2 = (id) =>
+        {
+            if (suggestions[id].cb) return suggestions[id].cb();
+
+            const p = suggestions[id].p;
+            const sugIn =
+            [{
+                "cb": () => { console.log("yep....", op1, op2); gui.patchView.suggestionBetweenTwoOps(op2, op1); },
+                "name": "<span class=\"icon icon-op\"></span>IN: " + op2.getTitle(),
+                "classname": ""
+            }];
+
+
+            for (let i = 0; i < op2.portsIn.length; i++)
+            {
+                if (CABLES.Link.canLink(op2.portsIn[i], p))
+                {
+                    sugIn.push({
+                        "p": op2.portsIn[i],
+                        "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].name,
+                        "classname": "port_text_color_" + op2.portsIn[i].getTypeString().toLowerCase()
+                    });
+                }
+            }
+
+            if (sugIn.length == 1)
+            {
+                gui.corePatch().link(
+                    p.parent,
+                    p.name,
+                    sugIn[0].p.parent,
+                    sugIn[0].p.name);
+                return;
+            }
+
+            // op2rect.showFocus();
+
+            new SuggestionDialog(sugIn, op2, mouseEvent, null,
+                function (sid)
+                {
+                    gui.corePatch().link(
+                        p.parent,
+                        p.name,
+                        sugIn[sid].p.parent,
+                        sugIn[sid].p.name);
+                });
+        };
+
+        // if (suggestions.length == 1) showSuggestions2(0);
+        // else
+        new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
+    }
 
     setOpColor(col)
     {
