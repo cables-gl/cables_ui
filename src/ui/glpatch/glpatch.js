@@ -257,11 +257,14 @@ export default class GlPatch extends CABLES.EventTarget
                     {
                         // set subpatch and revert greyout-state to what is appropriate for this
                         // client in multiplayer session
-                        const mpGreyOut = gui.patchView.patchRenderer.greyOut;
-                        gui.patchView.setCurrentSubPatch(msg.subpatch, () =>
+                        if (msg.subpatch !== this.getCurrentSubPatch())
                         {
-                            gui.patchView.patchRenderer.greyOut = mpGreyOut;
-                        });
+                            const mpGreyOut = gui.patchView.patchRenderer.greyOut;
+                            gui.patchView.setCurrentSubPatch(msg.subpatch, () =>
+                            {
+                                gui.patchView.patchRenderer.greyOut = mpGreyOut;
+                            });
+                        }
                     }
 
                     if (msg.hasOwnProperty("zoom"))
@@ -271,6 +274,8 @@ export default class GlPatch extends CABLES.EventTarget
                             gui.patchView.patchRenderer.viewBox.animateZoom(msg.zoom);
                         }
                     }
+
+
                     if (gui.patchView.patchRenderer.viewBox)
                     {
                         // why negate X here?

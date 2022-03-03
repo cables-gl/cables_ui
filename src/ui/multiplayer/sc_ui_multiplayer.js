@@ -130,7 +130,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         gui.opParams.addEventListener("opSelected", (op) =>
         {
-            this._connection.sendUi("opSelected", { "opId": op.id });
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                this._connection.sendUi("opSelected", { "opId": op.id });
+            }
         });
 
         this._connection.on("opSelected", (msg) =>
@@ -774,6 +778,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                                 ele.classList.remove("following");
                                 delete multiPlayerBar.dataset.multiplayerFollow;
                                 this._connection.client.following = null;
+                                gui.patchView.unselectAllOps();
                                 gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
                             }
                         });
