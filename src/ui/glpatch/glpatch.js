@@ -321,7 +321,9 @@ export default class GlPatch extends CABLES.EventTarget
             else
             {
                 gui.patchView.patchRenderer.greyOut = false;
+                this._cgl.canvas.style.cursor = "auto";
             }
+            this._updateGreyout();
         });
 
         this.previewLayer = new VizLayer(this);
