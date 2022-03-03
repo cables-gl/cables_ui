@@ -156,6 +156,15 @@ export default function startUi(cfg)
                     "correctLevel": QRCode.CorrectLevel.H
                 });
 
+                new QRCode(document.getElementById("patch_view_qr"), {
+                    "text": CABLES.sandbox.getCablesUrl() + "/p/" + gui.patchId,
+                    "width": 200,
+                    "height": 200,
+                    "colorDark": "#000000",
+                    "colorLight": "#ffffff",
+                    "correctLevel": QRCode.CorrectLevel.H
+                });
+
                 CABLES.UI.loaded = true;
                 setTimeout(() =>
                 {

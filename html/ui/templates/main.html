@@ -125,7 +125,6 @@
                 <div id="patchname" onclick="CABLES.CMD.UI.settings();"></div>
                 <ul class="nav-submenu">
                     <li class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings</li>
-                    <li id="nav_viewProjectLink" >Open in new window</li>
 
                     <li class="divide"></li>
                     <li id="nav_createBackup">Create Backup</li>
@@ -137,11 +136,24 @@
                     <li id="nav_patch_export">Export</li>
                     <li class="divide"></li>
 
+                    <li class="nav-sub-submenu nav_patch_page">
+                        View Patch Page
+                        <span class="icon icon-chevron-right"></span>
+                        <ul>
+                            <li><a id="nav_viewProjectLink">Open in new window</a></li>
+                            <li class="divide"></li>
+                            <li><a>Open on mobile:</a>
+                                <div id="patch_view_qr" style="border: 10px solid white;"></div>
+                            </li>
+
+                        </ul>
+                    </li>
+
                     <li class="nav-sub-submenu nav_remote_viewer hidden">
                         Remote Viewer (beta)
                         <span class="icon icon-chevron-right"></span>
                         <ul>
-                            <li><a class="" onclick="CABLES.CMD.UI.openRemoteViewer()">Open in new tab</a></li>
+                            <li><a onclick="CABLES.CMD.UI.openRemoteViewer()">Open in new window</a></li>
                             <li class="divide"></li>
                             <li><a>Open on mobile:</a>
                                 <div id="remote_view_qr" style="border: 10px solid white;"></div>
