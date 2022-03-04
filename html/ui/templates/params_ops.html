@@ -22,6 +22,12 @@
             <a onclick="CABLES.CMD.PATCH.compressOps()" class="icon-button button-small info" data-info="Press `shift`+`A` to Compress Vertically"><span class="icon icon-align-justify icon-1_25x"></span>Compress Vertically </a>
             <br/>
             <br/>
+
+
+            {{#compare numOps '==' 2}}
+                <a id="link_two_ops" onclick="CABLES.CMD.PATCH.linkTwoSelectedOps()" class="icon-button button-small "><span class="icon icon-op icon-1_25x"></span><span class="icon icon-op icon-1_25x"></span>Link two ops</a>
+                <br/>
+            {{/compare}}
             <br/>
 
             <a onclick="CABLES.CMD.PATCH.createSubPatchFromSelection()" class="icon-button button-small "><span class="icon icon-subpatch icon-1_25x"></span>Create Subpatch</a>
@@ -32,11 +38,12 @@
             <br/>
 
 
-
             <a onclick="CABLES.CMD.PATCH.addSpaceX()" class="icon-button button-small "><span class="icon icon-subpatch icon-1_25x"></span>Add space X</a>
             <br/>
             <a onclick="CABLES.CMD.PATCH.addSpaceY()" class="icon-button button-small "><span class="icon icon-square icon-1_25x"></span>Add space Y</a>
             <br/>
+
+
             <!-- <a onclick="CABLES.CMD.PATCH.deleteSelectedOps()" class="icon-button button-small info" data-info="Press `del` to delete ops"><span class="icon icon-trash icon-1_25x"></span>Delete Ops </a> -->
 
         {{else}}

@@ -14,12 +14,21 @@ const autoprefixer = require("gulp-autoprefixer");
 const merge = require("merge-stream");
 const getRepoInfo = require("git-repo-info");
 const footer = require("gulp-footer");
-const env = require("gulp-util").env;
 const webpack = require("webpack-stream");
 const compiler = require("webpack");
 const webpackConfig = require("./webpack.config");
 
-const isLiveBuild = env.live || false;
+let configLocation = "../cables_api/cables.json";
+if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
+
+if (!fs.existsSync(configLocation))
+{
+    console.error("config file not found at", configLocation);
+    process.exit(1);
+}
+
+const config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
+const isLiveBuild = config.env === "live";
 
 let buildInfo = getBuildInfo();
 
@@ -100,9 +109,12 @@ function _scripts_ui_webpack(done)
 
 function _append_build_info(done)
 {
+    const jsFiles = [];
+    if (fs.existsSync("dist/js/cablesui.max.js")) jsFiles.push("dist/js/cablesui.max.js");
+    if (isLiveBuild && fs.existsSync("dist/js/cablesui.min.js")) jsFiles.push("dist/js/cablesui.min.js");
     return gulp
-        .src(["dist/js/cablesuiold.max.js", "dist/js/cablesuiold.min.js"])
-        .pipe(footer("CABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
+        .src(jsFiles)
+        .pipe(footer("\nCABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
         .pipe(gulp.dest("dist/js/"));
 }
 
@@ -125,7 +137,7 @@ function getBuildInfo()
 function _update_buildInfo(done)
 {
     buildInfo = getBuildInfo();
-    fs.writeFileSync("dist/buildInfo.json", JSON.stringify(buildInfo));
+    fs.writeFileSync("./dist/buildInfo.json", JSON.stringify(buildInfo));
     done();
 }
 
@@ -135,6 +147,31 @@ function _html_ui(done)
         .src(["html/ui/header.html", "html/ui/templates/*.html", "html/ui/footer.html"])
         .pipe(concat("index.html"))
         .pipe(gulp.dest("dist/"));
+}
+
+function _cleanup_scripts(done)
+{
+    if (isLiveBuild)
+    {
+        console.log("live build: deleting map/max files...");
+        const filesToDelete = [
+            "./dist/js/cablesui.min.js.map",
+            "./dist/js/stats.json",
+            "./dist/js/libs.core.min.js.map",
+            "./dist/js/libs.ui.min.js.map",
+            "./dist/js/talkerapi.js.map",
+            "./dist/js/babel.cables.min.js.map"
+        ];
+        filesToDelete.forEach((file) =>
+        {
+            if (fs.existsSync(file))
+            {
+                console.log("   deleting", file);
+                fs.unlinkSync(file);
+            }
+        });
+    }
+    done();
 }
 
 function _sass(done)
@@ -213,7 +250,6 @@ gulp.task("default", gulp.series(
     _update_buildInfo,
     // _scripts_ui,
     _scripts_ui_webpack,
-    _append_build_info,
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
@@ -222,6 +258,8 @@ gulp.task("default", gulp.series(
     _sass,
     _svgcss,
     _scripts_talkerapi,
+    _append_build_info,
+    _cleanup_scripts,
     _watch
 ));
 
@@ -239,8 +277,9 @@ gulp.task("build", gulp.series(
     _scripts_core,
     // _scripts_ui,
     _scripts_ui_webpack,
-    _append_build_info,
     _scripts_talkerapi,
+    _append_build_info,
+    _cleanup_scripts,
     _sass,
 ));
 
@@ -253,12 +292,13 @@ gulp.task("electron", gulp.series(
     _svgcss,
     // _scripts_ui,
     _scripts_ui_webpack,
-    _append_build_info,
     _lint,
     _html_ui,
     _scripts_libs_ui,
     _scripts_lazyload_ui,
     _scripts_ops,
+    _append_build_info,
+    _cleanup_scripts,
     _sass,
     _electronapp,
     _electron_watch

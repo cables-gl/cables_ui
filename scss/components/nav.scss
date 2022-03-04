@@ -387,6 +387,7 @@
                 position: absolute;
                 left: 204px;
                 visibility: hidden;
+                z-index: $zindex_superlow;
 
                 li {
                     position: relative;

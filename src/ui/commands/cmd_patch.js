@@ -305,6 +305,7 @@ CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
         } });
     } });
 };
+
 CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
 {
     const link = CABLES.UI.OPSELECT.linkNewLink;
@@ -532,6 +533,18 @@ CABLES_CMD_PATCH.addSpaceY = () =>
 {
     gui.patchView.addSpaceBetweenOpsY();
 };
+
+CABLES_CMD_PATCH.linkTwoSelectedOps = () =>
+{
+    if (gui.patchView.getSelectedOps().length != 2)
+    {
+        console.log("needs 2 selected ops");
+        return;
+    }
+
+    gui.patchView.suggestionBetweenTwoOps(gui.patchView.getSelectedOps()[0], gui.patchView.getSelectedOps()[1]);
+};
+
 
 CABLES_CMD_PATCH.compressOps = () =>
 {
@@ -824,16 +837,19 @@ CMD_PATCH_COMMANDS.push(
         "icon": "list"
     },
     {
-
         "cmd": "add space y",
         "func": CABLES_CMD_PATCH.addSpaceY,
         "icon": "list"
     },
     {
-
         "cmd": "save patchfield screenshot",
         "func": CABLES_CMD_PATCH.savePatchScreenshot,
         "icon": "image"
+    },
+    {
+        "cmd": "link two selected ops",
+        "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
+        "icon": "op"
     }
 
 );
