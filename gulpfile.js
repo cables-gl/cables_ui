@@ -91,12 +91,15 @@ function _scripts_ui_webpack(done)
                 compiler,
                 (err, stats) =>
                 {
-                    if (err) throw err;
+                    if (err) done(err);
                     if (stats.hasErrors())
                     {
-                        return done(new Error(stats.compilation.errors.join("\n")));
+                        done(new Error(stats.compilation.errors.join("\n")));
                     }
-                    done();
+                    else
+                    {
+                        done();
+                    }
                 }
             )
         )
