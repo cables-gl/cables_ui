@@ -542,7 +542,11 @@ CABLES_CMD_PATCH.linkTwoSelectedOps = () =>
         return;
     }
 
-    gui.patchView.suggestionBetweenTwoOps(gui.patchView.getSelectedOps()[0], gui.patchView.getSelectedOps()[1]);
+    let a = gui.patchView.getSelectedOps()[0];
+    let b = gui.patchView.getSelectedOps()[1];
+
+    if (a.uiAttribs.translate.y > b.uiAttribs.translate.y) gui.patchView.suggestionBetweenTwoOps(b, a);
+    else gui.patchView.suggestionBetweenTwoOps(a, b);
 };
 
 

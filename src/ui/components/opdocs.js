@@ -132,51 +132,51 @@ export default class OpDocs
         return this._opDocs;
     }
 
-    opLayoutSVG(opname, elementId)
-    {
-        if (this.layoutPaper) this.layoutPaper.clear();
+    // opLayoutSVG(opname, elementId)
+    // {
+    //     if (this.layoutPaper) this.layoutPaper.clear();
 
-        for (let i = 0; i < this._opDocs.length; i++)
-        {
-            if (this._opDocs[i].name == opname)
-            {
-                if (!this._opDocs[i].layout) return;
+    //     for (let i = 0; i < this._opDocs.length; i++)
+    //     {
+    //         if (this._opDocs[i].name == opname)
+    //         {
+    //             if (!this._opDocs[i].layout) return;
 
-                const opHeight = 40;
-                const opWidth = 250;
-                const ele = document.getElementById(elementId);
-                if (!ele) return;
+    //             const opHeight = 40;
+    //             const opWidth = 250;
+    //             const ele = document.getElementById(elementId);
+    //             if (!ele) return;
 
-                const p = Raphael(ele, opWidth, opHeight);
+    //             const p = Raphael(ele, opWidth, opHeight);
 
-                const bg = p.rect(0, 0, opWidth, opHeight);
-                bg.attr("fill", "#333");
-                let j = 0;
+    //             const bg = p.rect(0, 0, opWidth, opHeight);
+    //             bg.attr("fill", "#333");
+    //             let j = 0;
 
-                if (this._opDocs[i].layout.portsIn)
-                    for (j = 0; j < this._opDocs[i].layout.portsIn.length; j++)
-                    {
-                        const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portIn.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsIn[j].type));
-                    }
+    //             if (this._opDocs[i].layout.portsIn)
+    //                 for (j = 0; j < this._opDocs[i].layout.portsIn.length; j++)
+    //                 {
+    //                     const portIn = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), 0, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
+    //                     portIn.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsIn[j].type));
+    //                 }
 
-                if (this._opDocs[i].layout.portsOut)
-                    for (j = 0; j < this._opDocs[i].layout.portsOut.length; j++)
-                    {
-                        const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
-                        portOut.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsOut[j].type));
-                    }
+    //             if (this._opDocs[i].layout.portsOut)
+    //                 for (j = 0; j < this._opDocs[i].layout.portsOut.length; j++)
+    //                 {
+    //                     const portOut = p.rect(j * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding * 2), opHeight - CABLES.UI.uiConfig.portHeight, CABLES.UI.uiConfig.portSize, CABLES.UI.uiConfig.portHeight);
+    //                     portOut.node.classList.add(defaultops.getPortTypeClass(this._opDocs[i].layout.portsOut[j].type));
+    //                 }
 
-                const visualYOffset = 2;
-                const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, this._opDocs[i].shortNameDisplay);
-                label.node.classList.add("op_handle_" + defaultops.getNamespaceClassName(opname));
-                label.node.classList.add("op-svg-shortname");
-                // CABLES.UI.cleanRaphael(label);
-                this.layoutPaper = p;
-                return;
-            }
-        }
-    }
+    //             const visualYOffset = 2;
+    //             const label = p.text(0 + opWidth / 2, 0 + opHeight / 2 + visualYOffset, this._opDocs[i].shortNameDisplay);
+    //             label.node.classList.add("op_handle_" + defaultops.getNamespaceClassName(opname));
+    //             label.node.classList.add("op-svg-shortname");
+    //             // CABLES.UI.cleanRaphael(label);
+    //             this.layoutPaper = p;
+    //             return;
+    //         }
+    //     }
+    // }
 
     getPopularity(opname)
     {

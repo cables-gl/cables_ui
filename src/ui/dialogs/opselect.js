@@ -441,18 +441,20 @@ export default class OpSelect
 
             let html = "<div id=\"opselect-layout\">";
 
+            html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+
             html += "</div>";
-            html += `<a target="_blank" href="${CABLES.sandbox.getCablesUrl()}/op/${opname || ""}" class="button-small">View Documentation</a>`;
+            html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + " class=\"button-small\">View Documentation</a>";
 
             html += opDoc;
             html += htmlFoot;
 
             this._eleSearchinfo.innerHTML = html;
-            setTimeout(() =>
-            {
-                gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
-            }, 50);
-
+            // setTimeout(() =>
+            // {
+            // gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
+            // }, 50);
+            //! 23
             perf.finish();
         }
         else

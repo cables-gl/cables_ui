@@ -1918,27 +1918,11 @@ export default class PatchView extends CABLES.EventTarget
 
     suggestionBetweenTwoOps(op1, op2)
     {
-        // for (let i = 0; i < op1.portsIn.length; i++)
-        // {
-        //     for (let j = 0; j < op2.portsOut.length; j++)
-        //     {
-        //         const p1 = op1.portsIn[i];
-        //         const p2 = op2.portsOut[j];
-
-        //         if (p1.type == p2.type)
-        //         {
-        //             console.log(p1.name + " -- " + p2.name);
-        //         }
-        //     }
-        // }
-
         const mouseEvent = { "clientX": 400, "clientY": 400 };
-
-        // const op1 = this._longPressOp;
 
         const suggestions = [
             {
-                "cb": () => { console.log("yep....", op1, op2); gui.patchView.suggestionBetweenTwoOps(op2, op1); },
+                "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
                 "name": "<span class=\"icon icon-op\"></span>OUT: " + op1.getTitle(),
                 "classname": ""
             }];
@@ -1979,7 +1963,7 @@ export default class PatchView extends CABLES.EventTarget
             const p = suggestions[id].p;
             const sugIn =
             [{
-                "cb": () => { console.log("yep....", op1, op2); gui.patchView.suggestionBetweenTwoOps(op2, op1); },
+                "cb": () => { gui.patchView.suggestionBetweenTwoOps(op2, op1); },
                 "name": "<span class=\"icon icon-op\"></span>IN: " + op2.getTitle(),
                 "classname": ""
             }];
@@ -2007,8 +1991,6 @@ export default class PatchView extends CABLES.EventTarget
                 return;
             }
 
-            // op2rect.showFocus();
-
             new SuggestionDialog(sugIn, op2, mouseEvent, null,
                 function (sid)
                 {
@@ -2020,8 +2002,6 @@ export default class PatchView extends CABLES.EventTarget
                 });
         };
 
-        // if (suggestions.length == 1) showSuggestions2(0);
-        // else
         new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
     }
 
