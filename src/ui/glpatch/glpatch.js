@@ -504,6 +504,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._greyOutRect.dispose();
             this._greyOutRect = null;
+            this._cgl.canvas.style.cursor = "auto";
         }
     }
 
