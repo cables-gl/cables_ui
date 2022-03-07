@@ -2,11 +2,14 @@
 import GlUiConfig from "./gluiconfig";
 import GlRect from "../gldraw/glrect";
 import MouseState from "./mousestate";
+import Logger from "../utils/logger";
 
 export default class GlPort
 {
     constructor(glpatch, glop, rectInstancer, p, i, oprect)
     {
+        this._log = new Logger("glPort");
+
         this._port = p;
         this._name = p.name;
         this._id = p.id;
@@ -26,7 +29,9 @@ export default class GlPort
 
         this._posX = i * (GlUiConfig.portWidth + GlUiConfig.portPadding);
 
-        this._parent.addChild(this._rect);
+
+        if (!this._parent) this._log.warn("no parent rect given");
+        else this._parent.addChild(this._rect);
 
         this._updateColor();
         this._activity = 1;
