@@ -87,6 +87,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (this._wasInCurrentSubpatch) return;
         if (!this.isInCurrentSubPatch()) return;
+        if (!this._wasInited) return;
 
         this._wasInCurrentSubpatch = true;
 
