@@ -122,7 +122,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._chat.show();
     }
 
-    startPacoSend()
+    startPacoSend(requestedBy)
     {
         if (this.inMultiplayerSession)
         {
@@ -133,10 +133,11 @@ export default class ScConnection extends CABLES.EventTarget
             }
 
             const json = gui.corePatch().serialize(true);
-            this._paco.send(CABLES.PACO_LOAD,
-                {
-                    "patch": JSON.stringify(json)
-                });
+            const payload = {
+                "patch": JSON.stringify(json),
+                "requestedBy": requestedBy
+            };
+            this._paco.send(CABLES.PACO_LOAD, payload);
             this._pacoSynced = true;
             this.state.emitEvent("patchSynchronized");
         }
@@ -146,7 +147,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.inMultiplayerSession && !this.client.isPilot)
         {
-            this.sendControl("resync");
+            this.sendControl("resync", { "requestedBy": this.client.clientId });
         }
     }
 
@@ -194,7 +195,7 @@ export default class ScConnection extends CABLES.EventTarget
                 }
                 else
                 {
-                    this.sendControl("resync");
+                    this.requestPilotPatch();
                     if (this._state.hasPilot())
                     {
                         this.state.emitEvent("pilotChanged", this.state.getPilot());
@@ -547,6 +548,8 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
+            const foreignRequest = (msg.data && msg.data.vars && msg.data.vars.requestedBy && this.client) && (msg.data.vars.requestedBy !== this.clientId);
+
             if (!this._paco)
             {
                 if (msg.data.event !== CABLES.PACO_LOAD)
@@ -558,16 +561,28 @@ export default class ScConnection extends CABLES.EventTarget
                 gui.corePatch().clear();
                 this._paco = new PacoConnector(this, this._patchConnection);
                 this._patchConnection.connectors.push(this._paco);
+
+
+                this._paco.receive(msg.data);
+                this._pacoSynced = true;
+                this.state.emitEvent("patchSynchronized");
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {
-                gui.corePatch().clear();
+                if (!foreignRequest)
+                {
+                    gui.corePatch().clear();
+                    this._paco.receive(msg.data);
+                    this._pacoSynced = true;
+                    this.state.emitEvent("patchSynchronized");
+                }
             }
-
-            this._paco.receive(msg.data);
-            this._pacoSynced = true;
-            // this.state.emitEvent("userListChanged");
-            this.state.emitEvent("patchSynchronized");
+            else
+            {
+                this._paco.receive(msg.data);
+                this._pacoSynced = true;
+                this.state.emitEvent("patchSynchronized");
+            }
         }
     }
 
@@ -578,11 +593,10 @@ export default class ScConnection extends CABLES.EventTarget
         if (msg.name === "resync")
         {
             if (msg.clientId === this._socket.clientId) return;
-
             if (this._pacoEnabled && this.client && this.client.isPilot)
             {
                 this._log.log("RESYNC sending paco patch....");
-                this.startPacoSend();
+                this.startPacoSend(msg.clientId);
             }
         }
         if (msg.name === "pingMembers")
