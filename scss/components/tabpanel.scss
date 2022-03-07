@@ -147,13 +147,7 @@
 
         &.readonly {
             opacity: 0.6;
-            pointer-events: none !important;
-            user-select: none !important;
-
-            input {
-                pointer-events: none !important;
-                user-select: none !important;
-            }
+            pointer-events: none;
         }
     }
 

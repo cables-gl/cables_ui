@@ -762,7 +762,48 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             let displayName = client.username;
             items.push({ "title": displayName, "func": () => {} });
 
-            if (client.isRemoteClient)
+            if (!client.isRemoteClient)
+            {
+                if (this._connection.inMultiplayerSession)
+                {
+                    const multiPlayerBar = document.getElementById("multiplayerbar");
+                    const ele = multiPlayerBar.querySelector("[data-client-id=\"" + clientId + "\"]");
+                    if (this._connection.client.following && this._connection.client.following === clientId)
+                    {
+                        items.push({
+                            "title": "unfollow",
+                            "iconClass": "icon icon-eye-off",
+                            "func": () =>
+                            {
+                                ele.classList.remove("following");
+                                delete multiPlayerBar.dataset.multiplayerFollow;
+                                this._connection.client.following = null;
+                                gui.patchView.unselectAllOps();
+                                gui.setRestriction(Gui.RESTRICT_MODE_EXPLORER);
+                            }
+                        });
+                    }
+                    else if (!client.isMe && !this._connection.client.isPilot)
+                    {
+                        items.push({
+                            "title": "follow",
+                            "iconClass": "icon icon-eye",
+                            "func": () =>
+                            {
+                                const userList = document.getElementById("nav-clientlist");
+                                const userListItems = userList.querySelectorAll(".item");
+                                userListItems.forEach((item) => { return item.classList.remove("following"); });
+                                ele.classList.add("following");
+                                multiPlayerBar.dataset.multiplayerFollow = client.username;
+                                this._connection.client.following = client.clientId;
+                                this._jumpToCursor(client);
+                                gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                            }
+                        });
+                    }
+                }
+            }
+            else
             {
                 let title = "remoteviewer";
                 if (client.platform)
