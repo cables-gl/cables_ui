@@ -1694,6 +1694,7 @@ export default class Gui
                 tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
                 {
                     tab.classList.add("readonly");
+                    tab.inert = true;
                 });
             }
             const timeline = ele.byId("timing");
@@ -1711,6 +1712,7 @@ export default class Gui
             {
                 tabpanel.querySelectorAll(".tabcontent").forEach((tab) =>
                 {
+                    tab.inert = false;
                     tab.classList.remove("readonly");
                 });
             }
