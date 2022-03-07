@@ -87,7 +87,6 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (this._wasInCurrentSubpatch) return;
         if (!this.isInCurrentSubPatch()) return;
-        if (!this._wasInited) return;
 
         this._wasInCurrentSubpatch = true;
 
@@ -600,6 +599,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._wasInCurrentSubpatch && this.isInCurrentSubPatch())
         {
+            if (!this._wasInited)
+            {
+                this._initGl();
+            }
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
