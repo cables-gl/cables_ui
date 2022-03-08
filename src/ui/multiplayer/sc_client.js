@@ -28,6 +28,7 @@ export default class ScClient
         this.scrollY = payload.scrollY;
         this.inMultiplayerSession = payload.inMultiplayerSession;
         this.multiplayerCapable = payload.multiplayerCapable;
+        this.isPilot = payload.isPilot;
     }
 
     getColor()
