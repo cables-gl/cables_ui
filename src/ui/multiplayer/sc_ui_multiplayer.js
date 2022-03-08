@@ -87,6 +87,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             }
         });
 
+        this._connection.on("connectionError", (error) =>
+        {
+            this.updateHtml(true);
+        });
+
         this._connection.state.on("clientRemoved", (msg) =>
         {
             if (this._connection.client.following && this._connection.client.following === msg.clientId)
@@ -464,6 +469,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     updateHtml()
     {
+        if (!this._connection.isConnected())
+        {
+            document.getElementById("multiplayerbar").style.display = "none";
+            document.getElementById("multiplayer_message_nav").style.display = "none";
+            return;
+        }
+
         if (this._connection.multiplayerCapable)
         {
             document.querySelector(".nav_remote_viewer").classList.remove("hidden");

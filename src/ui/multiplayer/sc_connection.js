@@ -4,7 +4,7 @@ import Logger from "../utils/logger";
 
 import ScState from "./sc_state";
 import ScUiMultiplayer from "./sc_ui_multiplayer";
-import { notify } from "../elements/notification";
+import { notify, notifyError } from "../elements/notification";
 import Gui from "../gui";
 
 export default class ScConnection extends CABLES.EventTarget
@@ -209,6 +209,11 @@ export default class ScConnection extends CABLES.EventTarget
             for await (const { error } of this._socket.listener("error"))
             {
                 if (!this.isConnected()) return;
+                if (this.inMultiplayerSession)
+                {
+                    notifyError("multiplayer server disconnected!", "wait for reconnection to rejoin session");
+                    this.leaveMultiplayerSession();
+                }
                 this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 
