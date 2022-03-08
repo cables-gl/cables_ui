@@ -115,10 +115,17 @@ function _append_build_info(done)
     const jsFiles = [];
     if (fs.existsSync("dist/js/cablesui.max.js")) jsFiles.push("dist/js/cablesui.max.js");
     if (isLiveBuild && fs.existsSync("dist/js/cablesui.min.js")) jsFiles.push("dist/js/cablesui.min.js");
-    return gulp
-        .src(jsFiles)
-        .pipe(footer("\nCABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
-        .pipe(gulp.dest("dist/js/"));
+    if (jsFiles.length > 0)
+    {
+        return gulp
+            .src(jsFiles)
+            .pipe(footer("\nCABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
+            .pipe(gulp.dest("dist/js/"));
+    }
+    else
+    {
+        done();
+    }
 }
 
 function getBuildInfo()
@@ -223,7 +230,7 @@ function _electronapp(done)
 
 function _watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack), _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
     gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
@@ -232,7 +239,7 @@ function _watch(done)
 
 function _electron_watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], gulp.series(_update_buildInfo, _scripts_ui_webpack, _append_build_info));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack), _append_build_info));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass, _append_build_info));
     gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui, _append_build_info));
     gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _append_build_info, _electronapp));

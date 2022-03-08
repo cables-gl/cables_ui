@@ -20,7 +20,8 @@ export default class ScState extends CABLES.EventTarget
             "userid": gui.user.id,
             "clientId": connection.clientId,
             "isMe": true,
-            "isRemoteClient": gui.isRemoteClient
+            "isRemoteClient": gui.isRemoteClient,
+            "isPilot": false
         });
         this._followers = [];
         this._connection = connection;
@@ -55,9 +56,12 @@ export default class ScState extends CABLES.EventTarget
             if (this._clients[payload.clientId])
             {
                 const wasInMultiplayerSession = this._clients[payload.clientId].inMultiplayerSession;
-                delete this._clients[payload.clientId];
-                this.emitEvent("clientDisconnected", payload, wasInMultiplayerSession);
-                userListChanged = true;
+                if (this._connection.clientId !== payload.clientId)
+                {
+                    delete this._clients[payload.clientId];
+                    this.emitEvent("clientDisconnected", payload, wasInMultiplayerSession);
+                    userListChanged = true;
+                }
             }
         }
         else
@@ -179,8 +183,11 @@ export default class ScState extends CABLES.EventTarget
 
             if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds)
             {
-                this.emitEvent("clientRemoved", this._clients[client.clientId]);
-                delete this._clients[client.clientId];
+                if (this._connection.clientId !== clientId)
+                {
+                    this.emitEvent("clientRemoved", this._clients[client.clientId]);
+                    delete this._clients[client.clientId];
+                }
                 if (this._pilot && this._pilot.clientId === client.clientId)
                 {
                     this._pilot = null;

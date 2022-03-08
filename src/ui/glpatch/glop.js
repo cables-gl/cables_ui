@@ -239,11 +239,14 @@ export default class GlOp extends CABLES.EventTarget
 
     _onMouseDown(e)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+
         if (!this._op)
         {
             console.warn("glop no op", this);
             return;
         }
+
         const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
@@ -599,6 +602,10 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._wasInCurrentSubpatch && this.isInCurrentSubPatch())
         {
+            if (!this._wasInited)
+            {
+                this._initGl();
+            }
             this._initWhenFirstInCurrentSubpatch();
         }
         this._setVisible();
