@@ -39,6 +39,8 @@ export default class Tracking
                 "initiator": initiator,
                 "arguments": args
             };
+            const project = this.gui.project();
+            if (project) payload.projectId = project._id;
             if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
             {
                 CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>

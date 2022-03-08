@@ -16,7 +16,6 @@ const getRepoInfo = require("git-repo-info");
 const footer = require("gulp-footer");
 const webpack = require("webpack-stream");
 const compiler = require("webpack");
-const map = require("map-stream");
 const webpackConfig = require("./webpack.config");
 
 let configLocation = "../cables_api/cables.json";
@@ -87,7 +86,7 @@ function _scripts_ui_webpack(done)
         .pipe(
             webpack(
                 {
-                    "config": webpackConfig(isLiveBuild, buildInfo),
+                    "config": webpackConfig(isLiveBuild, false),
                 },
                 compiler,
                 (err, stats) =>
@@ -109,6 +108,24 @@ function _scripts_ui_webpack(done)
         {
             console.error("WEBPACK ERROR", err);
         });
+}
+
+function _append_build_info(done)
+{
+    const jsFiles = [];
+    if (fs.existsSync("dist/js/cablesui.max.js")) jsFiles.push("dist/js/cablesui.max.js");
+    if (isLiveBuild && fs.existsSync("dist/js/cablesui.min.js")) jsFiles.push("dist/js/cablesui.min.js");
+    if (jsFiles.length > 0)
+    {
+        return gulp
+            .src(jsFiles)
+            .pipe(footer("\nCABLES.UI.build = " + JSON.stringify(buildInfo) + ";"))
+            .pipe(gulp.dest("dist/js/"));
+    }
+    else
+    {
+        done();
+    }
 }
 
 function getBuildInfo()
@@ -213,19 +230,19 @@ function _electronapp(done)
 
 function _watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack)));
-    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass));
-    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui));
-    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack), _append_build_info));
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi, _append_build_info));
     done();
 }
 
 function _electron_watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack)));
-    gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass));
-    gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui));
-    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _electronapp));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], gulp.series(_update_buildInfo, gulp.parallel(_scripts_ui_webpack), _append_build_info));
+    gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass, _append_build_info));
+    gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui, _append_build_info));
+    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _append_build_info, _electronapp));
     done();
 }
 
@@ -251,6 +268,7 @@ gulp.task("default", gulp.series(
     _sass,
     _svgcss,
     _scripts_talkerapi,
+    _append_build_info,
     _cleanup_scripts,
     _watch
 ));
@@ -270,6 +288,7 @@ gulp.task("build", gulp.series(
     // _scripts_ui,
     _scripts_ui_webpack,
     _scripts_talkerapi,
+    _append_build_info,
     _cleanup_scripts,
     _sass,
 ));
@@ -288,6 +307,7 @@ gulp.task("electron", gulp.series(
     _scripts_libs_ui,
     _scripts_lazyload_ui,
     _scripts_ops,
+    _append_build_info,
     _cleanup_scripts,
     _sass,
     _electronapp,
