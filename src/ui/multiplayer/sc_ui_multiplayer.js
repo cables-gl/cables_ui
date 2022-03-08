@@ -187,7 +187,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             joinButton.addEventListener("pointerdown", () =>
             {
-                this._connection.joinMultiplayerSession();
+                this._modalJoinMultiplayerSession();
             });
             if (this._connection.onlyRemoteClientsConnected)
             {
@@ -367,6 +367,31 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         if (!this._connection.inMultiplayerSession) return;
         this._connection.sendUi("resyncWithPilot", { "reloadClient": client.clientId });
     }
+
+    _modalJoinMultiplayerSession()
+    {
+        if (!gui.getSavedState())
+        {
+            let content = "Your unsaved changes will be lost, once you enter a multiplayer session.";
+            const options = {
+                "title": "Joining Multiplayer",
+                "html": content,
+                "warning": true,
+                "choice": true
+            };
+
+            const modal = new ModalDialog(options);
+            modal.on("onSubmit", () =>
+            {
+                this._connection.joinMultiplayerSession();
+            });
+        }
+        else
+        {
+            this._connection.joinMultiplayerSession();
+        }
+    }
+
 
     _requestResync(title, callbackBeforeSync)
     {
