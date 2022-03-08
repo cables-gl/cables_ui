@@ -30,6 +30,13 @@ export default class PacoConnector extends CABLES.EventTarget
 
         // wait for initial patch sync before handling other messages
         if (!this.initialized && pacoMsg.event !== 5) return;
+        if (pacoMsg.event === CABLES.PACO_VALUECHANGE)
+        {
+            if (this._connection.state)
+            {
+                this._connection.emitEvent("onPortValueChanged", pacoMsg.vars);
+            }
+        }
         this._receiver._receive(pacoMsg);
         this.initialized = true;
     }

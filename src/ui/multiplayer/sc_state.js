@@ -534,6 +534,39 @@ export default class ScState extends CABLES.EventTarget
             if (this._connection.clientId !== msg.reloadClient) return;
             this._connection.requestPilotPatch();
         });
+
+        this._connection.on("onPortValueChanged", (vars) =>
+        {
+            if (this._paramPanelTimeout) return;
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client.isRemoteClient) return;
+            if (this._connection.client.isPilot) return;
+
+
+            this._paramPanelTimeout = setTimeout(() =>
+            {
+                const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
+                if (selectedOp)
+                {
+                    const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
+                    if (portIndex)
+                    {
+                        const elePortId = "portval_" + portIndex;
+                        const elePort = document.getElementById(elePortId);
+                        if (elePort)
+                        {
+                            gui.opParams.refreshDelayed();
+                            const elePortContainer = document.getElementById("tr_in_" + portIndex);
+                            if (elePortContainer)
+                            {
+                                elePortContainer.scrollIntoView({ "block": "center" });
+                            }
+                        }
+                    }
+                }
+                this._paramPanelTimeout = null;
+            }, this._connection.paramPanelUpdateDelay);
+        });
     }
 
     _sendCursorPos(x, y)
@@ -560,7 +593,7 @@ export default class ScState extends CABLES.EventTarget
             const payload = { "x": this._lastMouseX, "y": this._lastMouseY, "subpatch": subPatch, "zoom": zoom, "scrollX": scrollX, "scrollY": scrollY };
             this._connection.sendUi("netCursorPos", payload);
             this._mouseTimeout = null;
-        }, this.netMouseCursorDelay);
+        }, this._connection.netMouseCursorDelay);
     }
 
     _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
@@ -570,14 +603,11 @@ export default class ScState extends CABLES.EventTarget
 
         if (!hide && this._mouseTimeout) return;
 
-        let timeout = this.netMouseCursorDelay;
-
-
         this._mouseTimeout = setTimeout(() =>
         {
             const payload = { x, y, sizeX, sizeY, hide };
             this._connection.sendUi("netSelectionArea", payload);
             this._mouseTimeout = null;
-        }, timeout);
+        }, this._connection.netMouseCursorDelay);
     }
 }
