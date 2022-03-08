@@ -1,6 +1,7 @@
+const webpack = require("webpack");
 const path = require("path");
 
-module.exports = (isLiveBuild) =>
+module.exports = (isLiveBuild, buildInfo = {}) =>
 {
     return {
         "mode": isLiveBuild ? "production" : "development",
@@ -30,5 +31,10 @@ module.exports = (isLiveBuild) =>
                 }
             ]
         },
+        "plugins": [
+            new webpack.EnvironmentPlugin({
+                "BUILDINFO": JSON.stringify(buildInfo)
+            })
+        ]
     };
 };

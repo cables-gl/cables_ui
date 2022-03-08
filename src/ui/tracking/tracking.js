@@ -31,13 +31,33 @@ export default class Tracking
         {
             this._trackEvent("ui", "activeDuration", "", { "seconds": activeSeconds });
         });
+
+        this.gui.on("logEvent", (initiator, level, args) =>
+        {
+            if (!["error", "warn"].includes(level)) return;
+            const payload = {
+                "initiator": initiator,
+                "arguments": args
+            };
+            if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+            {
+                CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+                {
+                    payload.platform = browserInfo;
+                    this._trackEvent("ui", "logging", level, payload);
+                });
+            }
+            else
+            {
+                this._trackEvent("ui", "logging", level, payload);
+            }
+        });
     }
 
     _trackEvent(eventCategory, eventAction, eventLabel, meta = {})
     {
         if (this.gui.socket)
         {
-            // console.log(eventCategory, eventAction, eventLabel, meta);
             this.gui.socket.track(eventCategory, eventAction, eventLabel, meta);
         }
     }
