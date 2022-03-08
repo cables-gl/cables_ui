@@ -394,6 +394,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     track(eventCategory, eventAction, eventLabel, meta = {})
     {
+        if (!this._scConfig.enableTracking) return;
+
         const payload = {
             "name": "track",
             eventCategory,
