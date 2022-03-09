@@ -110,8 +110,10 @@ function getPortDescription(thePort)
 
     str += "<span class=\"tooltip_port\" style=\"background-color:var(--color_port_" + thePort.getTypeString().toLowerCase() + ");\">";
     str += thePort.getTypeString() + stride;
-    if (objType)str += "[" + objType + "]";
     str += "</span>";
+
+    if (objType)str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
+
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
@@ -177,6 +179,10 @@ export function updateHoverToolTip(event, port)
                 txt += " ...] </span>";
             }
             else txt += "<span class=\"tooltip_value\">null</span>";
+        }
+        else
+        {
+            txt += "&nbsp;&nbsp;";
         }
     }
 

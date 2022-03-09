@@ -250,6 +250,7 @@
         padding-left: 4px !important;
         padding-right: 4px !important;
     }
+
     .tooltip {
         position: absolute;
         pointer-events: none;
@@ -303,8 +304,13 @@
             font-family: SourceCodePro,monospace;
             background-color: black;
         }
+        .tooltip_objtype
+        {
+            background-color: #444;
+            margin-right: 10px;
+        }
 
-        .tooltip_port,.tooltip_value
+        .tooltip_port,.tooltip_value,.tooltip_objtype
         {
             border-radius: 3px;
             padding:2px;
