@@ -35,6 +35,9 @@ export default class Tracking
         this.gui.on("logEvent", (initiator, level, args) =>
         {
             if (!["error", "warn"].includes(level)) return;
+
+            const perf = CABLES.UI.uiProfiler.start("logEvent");
+
             const payload = {
                 "initiator": initiator,
                 "arguments": args
@@ -53,6 +56,8 @@ export default class Tracking
             {
                 this._trackEvent("ui", "logging", level, payload);
             }
+
+            perf.finish();
         });
     }
 
