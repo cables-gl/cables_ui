@@ -268,12 +268,16 @@ export default class PatchView extends CABLES.EventTarget
 
         if (event)
         {
-            let coord = {};
+            let coord = { "x": 0, "y": 0 };
             if (this._patchRenderer.screenToPatchCoord)
             {
                 const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX, event.clientY);
+
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
+
+            coord.x = gui.patchView.snapOpPosX(coord.x);
+            coord.y = gui.patchView.snapOpPosY(coord.y);
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }

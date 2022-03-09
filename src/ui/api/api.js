@@ -16,14 +16,17 @@ export default class Api
 
     ping()
     {
-        if (gui.corePatch().isPlaying())
+        if (window.gui)
         {
-            const startTime = performance.now();
-            this.request("POST", "ping", { "lastPing": this.pingTime }, () =>
+            if (gui.corePatch().isPlaying())
             {
-                this.pingTime = Math.round(performance.now() - startTime);
-                this._log.log("ping roundtrip", this.pingTime);
-            });
+                const startTime = performance.now();
+                this.request("POST", "ping", { "lastPing": this.pingTime }, () =>
+                {
+                    this.pingTime = Math.round(performance.now() - startTime);
+                    this._log.log("ping roundtrip", this.pingTime);
+                });
+            }
         }
 
         setTimeout(this.ping.bind(this), 30 * 1000);

@@ -33,11 +33,7 @@ export default class ModalDialog extends CABLES.EventTarget
         super();
         this._log = new Logger("ModalDialog");
 
-        if (gui.currentModal)
-        {
-            // this._log.warn("modal dialog was still open");
-            gui.currentModal.close();
-        }
+        if (window.gui && gui.currentModal) gui.currentModal.close();
         this._options = options;
         this._ele = null;
         this._eleContent = null;
@@ -46,8 +42,6 @@ export default class ModalDialog extends CABLES.EventTarget
         if (autoOpen) this.show();
 
         ele.byId("modalclose").style.display = "block";
-
-        // this._escapeListener = gui.on("pressedEscape", this.close.bind(this));
 
         gui.currentModal = this;
     }
