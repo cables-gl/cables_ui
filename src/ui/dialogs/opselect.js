@@ -444,7 +444,7 @@ export default class OpSelect
             html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
 
             html += "</div>";
-            html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + " class=\"button-small\">View Documentation</a>";
+            html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + "\" class=\"button-small\">View Documentation</a>";
 
             html += opDoc;
             html += htmlFoot;

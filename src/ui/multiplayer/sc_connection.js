@@ -1,10 +1,9 @@
-
 import PacoConnector from "./sc_paconnector";
 import Logger from "../utils/logger";
 
 import ScState from "./sc_state";
 import ScUiMultiplayer from "./sc_ui_multiplayer";
-import { notify } from "../elements/notification";
+import { notify, notifyError } from "../elements/notification";
 import Gui from "../gui";
 
 export default class ScConnection extends CABLES.EventTarget
@@ -43,10 +42,9 @@ export default class ScConnection extends CABLES.EventTarget
         });
     }
 
-    get netMouseCursorDelay()
-    {
-        return 100;
-    }
+    get paramPanelUpdateDelay() { return 300; }
+
+    get netMouseCursorDelay() { return 100; }
 
     get chat() { return this._chat; }
 
@@ -55,6 +53,8 @@ export default class ScConnection extends CABLES.EventTarget
     get connected() { return this._connected; }
 
     get client() { return this.state.clients[this.clientId]; }
+
+    get clientId() { return this._socket.clientId; }
 
     get followers() { return this.state.followers; }
 
@@ -66,10 +66,7 @@ export default class ScConnection extends CABLES.EventTarget
         else { return this._pacoSynced; }
     }
 
-    get inMultiplayerSession()
-    {
-        return this._pacoEnabled;
-    }
+    get inMultiplayerSession() { return this._pacoEnabled; }
 
     get runningMultiplayerSession()
     {
@@ -102,6 +99,11 @@ export default class ScConnection extends CABLES.EventTarget
         return onlyRemoteClients;
     }
 
+    isConnected()
+    {
+        return this._connected;
+    }
+
     getPilot()
     {
         return this.state.getPilot();
@@ -110,6 +112,18 @@ export default class ScConnection extends CABLES.EventTarget
     hasPilot()
     {
         return this.state.hasPilot();
+    }
+
+    canSaveInMultiplayer()
+    {
+        if (this._pacoEnabled)
+        {
+            return this.connected && this.client && this.client.isPilot;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     getClientColor(clientId)
@@ -122,7 +136,84 @@ export default class ScConnection extends CABLES.EventTarget
         this._chat.show();
     }
 
-    startPacoSend(requestedBy)
+    startMultiplayerSession()
+    {
+        if (this.runningMultiplayerSession)
+        {
+            this.joinMultiplayerSession();
+        }
+        else
+        {
+            if (this.multiplayerCapable)
+            {
+                if (!this.client.isRemoteClient)
+                {
+                    this.client.isPilot = true;
+                    this.sendNotification(this.client.username + " just started a multiplayer session");
+                    notify("YOU just started a multiplayer session");
+                }
+                this._inSessionSince = Date.now();
+                this.client.inMultiplayerSession = true;
+                this._sendPing(true);
+                this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
+            }
+        }
+    }
+
+    joinMultiplayerSession()
+    {
+        gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        this.client.isPilot = false;
+        this.client.following = null;
+        this.client.inMultiplayerSession = true;
+        this._inSessionSince = Date.now();
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+        this._sendPing();
+    }
+
+    startRemoteViewer(doneCallback)
+    {
+        const listener = () => { this._state.off(listenerId); doneCallback(); };
+        const listenerId = this._state.on("enableMultiplayer", listener);
+
+        if (!this.inMultiplayerSession)
+        {
+            if (this.runningMultiplayerSession)
+            {
+                this.joinMultiplayerSession();
+            }
+            else
+            {
+                this.startMultiplayerSession();
+            }
+        }
+        else
+        {
+            doneCallback();
+        }
+    }
+
+    leaveMultiplayerSession()
+    {
+        this.client.isPilot = false;
+        this._socket.unsubscribe(this._socket.channelName + "/paco");
+        this._pacoEnabled = false;
+        this.client.inMultiplayerSession = false;
+        this.client.following = null;
+        this._inSessionSince = null;
+        this.emitEvent("netLeaveSession");
+        this._sendPing();
+    }
+
+    sendCurrentVersion()
+    {
+        if (this.client.isPilot)
+        {
+            this._startPacoSend();
+        }
+    }
+
+    _startPacoSend(requestedBy)
     {
         if (this.inMultiplayerSession)
         {
@@ -151,7 +242,66 @@ export default class ScConnection extends CABLES.EventTarget
         }
     }
 
-    get clientId() { return this._socket.clientId; }
+    track(eventCategory, eventAction, eventLabel, meta = {})
+    {
+        if (!this._scConfig.enableTracking) return;
+
+        const payload = {
+            "name": "track",
+            eventCategory,
+            eventAction,
+            eventLabel,
+            meta
+        };
+        this._send("control", payload);
+    }
+
+    sendNotification(title, text)
+    {
+        this._send("info", { "name": "notify", title, text });
+    }
+
+    sendInfo(name, text)
+    {
+        this._send("info", { "name": "info", text });
+    }
+
+    sendControl(name, payload)
+    {
+        payload = payload || {};
+        payload.name = name;
+
+        this._send("control", payload);
+    }
+
+    sendUi(name, payload, sendOnEmptyClientList = false)
+    {
+        if (sendOnEmptyClientList || this.state.getNumClients() > 1)
+        {
+            payload = payload || {};
+            payload.name = name;
+            this._send("ui", payload);
+        }
+    }
+
+    sendChat(text)
+    {
+        // remove html
+        const el = document.createElement("div");
+        el.innerHTML = text;
+        text = el.textContent || el.innerText || "";
+        this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
+    }
+
+    sendPaco(payload)
+    {
+        if (!this._pacoEnabled) return;
+        if (this.client && this.client.isPilot)
+        {
+            payload.name = "paco";
+            this._send("paco", payload);
+        }
+    }
 
     _init(doneCallback)
     {
@@ -171,7 +321,8 @@ export default class ScConnection extends CABLES.EventTarget
         {
             this._state.on("becamePilot", () =>
             {
-                this.startPacoSend();
+                this._sendPing();
+                this._startPacoSend();
             });
 
             this._state.on("enableMultiplayer", (payload) =>
@@ -191,7 +342,7 @@ export default class ScConnection extends CABLES.EventTarget
                 })();
                 if (payload.started)
                 {
-                    this.startPacoSend();
+                    this._startPacoSend();
                 }
                 else
                 {
@@ -209,6 +360,11 @@ export default class ScConnection extends CABLES.EventTarget
             for await (const { error } of this._socket.listener("error"))
             {
                 if (!this.isConnected()) return;
+                if (this.inMultiplayerSession)
+                {
+                    notifyError("multiplayer server disconnected!", "wait for reconnection to rejoin session");
+                    this.leaveMultiplayerSession();
+                }
                 this._log.error(error.code + " - " + error.message);
                 this._connected = false;
 
@@ -233,7 +389,7 @@ export default class ScConnection extends CABLES.EventTarget
                 {
                     this.sendChat(gui.user.username + " joined");
                 }
-                this.updateMembers();
+                this._updateMembers();
 
                 if (this.client.isRemoteClient)
                 {
@@ -294,7 +450,7 @@ export default class ScConnection extends CABLES.EventTarget
             }
             else
             {
-                this.sendPing();
+                this._sendPing();
             }
             this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
@@ -306,164 +462,17 @@ export default class ScConnection extends CABLES.EventTarget
         doneCallback(true);
     }
 
-    isConnected()
-    {
-        return this._connected;
-    }
-
-    canSaveInMultiplayer()
-    {
-        if (this._pacoEnabled)
-        {
-            return this.connected && this.client && this.client.isPilot;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
-    startMultiplayerSession()
-    {
-        if (this.runningMultiplayerSession)
-        {
-            this.joinMultiplayerSession();
-        }
-        else
-        {
-            if (this.multiplayerCapable)
-            {
-                if (!this.client.isRemoteClient)
-                {
-                    this.client.isPilot = true;
-                    this.sendNotification(this.client.username + " just started a multiplayer session");
-                    notify("YOU just started a multiplayer session");
-                }
-                this._inSessionSince = Date.now();
-                this.client.inMultiplayerSession = true;
-                this.sendPing(true);
-                this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
-            }
-        }
-    }
-
-    joinMultiplayerSession()
-    {
-        gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
-        this.client.isPilot = false;
-        this.client.following = null;
-        this.client.inMultiplayerSession = true;
-        this._inSessionSince = Date.now();
-        this.sendPing();
-        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
-    }
-
-    startRemoteViewer(doneCallback)
-    {
-        const listener = () => { this._state.off(listenerId); doneCallback(); };
-        const listenerId = this._state.on("enableMultiplayer", listener);
-
-        if (!this.inMultiplayerSession)
-        {
-            if (this.runningMultiplayerSession)
-            {
-                this.joinMultiplayerSession();
-            }
-            else
-            {
-                this.startMultiplayerSession();
-            }
-        }
-        else
-        {
-            doneCallback();
-        }
-    }
-
-    leaveMultiplayerSession()
-    {
-        this.client.isPilot = false;
-        this._socket.unsubscribe(this._socket.channelName + "/paco");
-        this._pacoEnabled = false;
-        this.client.inMultiplayerSession = false;
-        this.client.following = null;
-        this._inSessionSince = null;
-        this.emitEvent("netLeaveSession");
-        this.sendPing();
-    }
-
-    track(eventCategory, eventAction, eventLabel, meta = {})
-    {
-        const payload = {
-            "name": "track",
-            eventCategory,
-            eventAction,
-            eventLabel,
-            meta
-        };
-        this._send("control", payload);
-    }
-
-    sendNotification(title, text)
-    {
-        this._send("info", { "name": "notify", title, text });
-    }
-
-    sendInfo(name, text)
-    {
-        this._send("info", { "name": "info", text });
-    }
-
-    sendControl(name, payload)
-    {
-        payload = payload || {};
-        payload.name = name;
-
-        this._send("control", payload);
-    }
-
-
-    sendUi(name, payload, sendOnEmptyClientList = false)
-    {
-        if (sendOnEmptyClientList || this.state.getNumClients() > 1)
-        {
-            payload = payload || {};
-            payload.name = name;
-            this._send("ui", payload);
-        }
-    }
-
-
-    sendChat(text)
-    {
-        // remove html
-        const el = document.createElement("div");
-        el.innerHTML = text;
-        text = el.textContent || el.innerText || "";
-        this._send("chat", { "name": "chatmsg", text, "username": gui.user.username });
-    }
-
-    sendPaco(payload)
-    {
-        if (!this._pacoEnabled) return;
-        if (this.client && this.client.isPilot)
-        {
-            payload.name = "paco";
-            this._send("paco", payload);
-        }
-    }
-
-    updateMembers()
+    _updateMembers()
     {
         this.sendControl("pingMembers", {});
 
         setTimeout(() =>
         {
-            this.updateMembers();
+            this._updateMembers();
         }, this.PING_INTERVAL);
     }
 
-    sendPing(startedSession = false)
+    _sendPing(startedSession = false)
     {
         const x = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchX : null;
         const y = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.mousePatchY : null;
@@ -596,7 +605,7 @@ export default class ScConnection extends CABLES.EventTarget
             if (this._pacoEnabled && this.client && this.client.isPilot)
             {
                 this._log.log("RESYNC sending paco patch....");
-                this.startPacoSend(msg.clientId);
+                this._startPacoSend(msg.clientId);
             }
         }
         if (msg.name === "pingMembers")
@@ -610,15 +619,12 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("onPingTimeout", msg);
                 this._log.warn("didn't receive ping for more than", msg.seconds, "seconds");
             }
-            this.sendPing();
+            this._sendPing();
         }
         if (msg.name === "pingAnswer")
         {
             msg.lastSeen = Date.now();
-            if (msg.clientId === this._socket.clientId)
-            {
-                this._lastPing = msg.lastSeen;
-            }
+            this._lastPing = msg.lastSeen;
             this.emitEvent("onPingAnswer", msg);
         }
         if (msg.name === "pilotRequest")

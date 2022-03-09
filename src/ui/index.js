@@ -152,3 +152,6 @@ extendCore();
 extendCoreAnim();
 
 CABLES.UI.startUi = startUi;
+
+// added during webpack build
+CABLES.UI.build = window.BUILD_INFO;
