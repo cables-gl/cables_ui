@@ -1,6 +1,7 @@
 import glUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import MouseState from "./mousestate";
+import Gui from "../gui";
 
 
 export default class GlDragLine
@@ -83,6 +84,8 @@ export default class GlDragLine
 
         glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
         {
+            if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
             this._button = e.buttons;
 
             if (this._button == MouseState.BUTTON_LEFT)

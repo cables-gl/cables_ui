@@ -12,6 +12,7 @@ import ModalBackground from "./modalbg";
  * @property {Boolean} [warning=false] show a warning triangle
  * @property {Boolean} [showOkButton=false] show a ok button to close the dialog
  * @property {Boolean} [prompt=false] show an input field to enter a value
+ * @property {Boolean} [choice=false] show ok/cancel buttons with onSubmit and onClosed callbacks
  */
 
 /**
@@ -74,6 +75,13 @@ export default class ModalDialog extends CABLES.EventTarget
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
         }
 
+        if (this._options.choice)
+        {
+            html += "<br/><br/>";
+            html += "<a class=\"bluebutton\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+        }
+
         if (this._options.showOkButton)
         {
             html += "<br/><br/><a class=\"bluebutton\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
@@ -105,6 +113,21 @@ export default class ModalDialog extends CABLES.EventTarget
             });
         }
 
+        const elePromptCancel = ele.byId("prompt_cancel");
+        if (elePromptCancel) elePromptCancel.addEventListener("pointerdown", this.close.bind(this));
+
+        const eleChoiceOk = ele.byId("choice_ok");
+        if (eleChoiceOk)
+        {
+            eleChoiceOk.addEventListener("pointerdown", () =>
+            {
+                this._choiceSubmit();
+            });
+        }
+
+        const eleChoiceCancel = ele.byId("choice_cancel");
+        if (eleChoiceCancel) eleChoiceCancel.addEventListener("pointerdown", this.close.bind(this));
+
         const eleModalOk = ele.byId("modalClose");
         if (eleModalOk)
         {
@@ -113,9 +136,6 @@ export default class ModalDialog extends CABLES.EventTarget
                 this.close();
             });
         }
-
-        const elePromptCancel = ele.byId("prompt_cancel");
-        if (elePromptCancel) elePromptCancel.addEventListener("pointerdown", this.close.bind(this));
     }
 
     updateHtml(h)
@@ -161,6 +181,12 @@ export default class ModalDialog extends CABLES.EventTarget
     getElement()
     {
         return this._ele;
+    }
+
+    _choiceSubmit()
+    {
+        this.close();
+        this.emitEvent("onSubmit");
     }
 
     _promptSubmit()

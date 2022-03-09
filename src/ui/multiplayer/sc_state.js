@@ -20,34 +20,22 @@ export default class ScState extends CABLES.EventTarget
             "userid": gui.user.id,
             "clientId": connection.clientId,
             "isMe": true,
-            "isRemoteClient": gui.isRemoteClient
+            "isRemoteClient": gui.isRemoteClient,
+            "isPilot": false
         });
         this._followers = [];
         this._connection = connection;
         this._colors = {};
         this._pilot = null;
 
-        connection.on("onPingAnswer", this.onPingAnswer.bind(this));
-        connection.on("netCursorPos", (msg) =>
-        {
-            if (this._clients[msg.clientId])
-            {
-                this._clients[msg.clientId].x = msg.x;
-                this._clients[msg.clientId].y = msg.y;
-                this._clients[msg.clientId].subpatch = msg.subpatch;
-                this._clients[msg.clientId].zoom = msg.zoom;
-                this._clients[msg.clientId].center = msg.center;
-                this._clients[msg.clientId].scrollX = msg.scrollX;
-                this._clients[msg.clientId].scrollY = msg.scrollY;
-            }
-        });
+        this._registerEventListeners();
     }
 
     get clients() { return this._clients; }
 
     get followers() { return this._followers; }
 
-    onPingAnswer(payload)
+    _onPingAnswer(payload)
     {
         let userListChanged = false;
         if (payload.isDisconnected)
@@ -55,9 +43,12 @@ export default class ScState extends CABLES.EventTarget
             if (this._clients[payload.clientId])
             {
                 const wasInMultiplayerSession = this._clients[payload.clientId].inMultiplayerSession;
-                delete this._clients[payload.clientId];
-                this.emitEvent("clientDisconnected", payload, wasInMultiplayerSession);
-                userListChanged = true;
+                if (this._connection.clientId !== payload.clientId)
+                {
+                    delete this._clients[payload.clientId];
+                    this.emitEvent("clientDisconnected", payload, wasInMultiplayerSession);
+                    userListChanged = true;
+                }
             }
         }
         else
@@ -179,8 +170,11 @@ export default class ScState extends CABLES.EventTarget
 
             if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds)
             {
-                this.emitEvent("clientRemoved", this._clients[client.clientId]);
-                delete this._clients[client.clientId];
+                if (this._connection.clientId !== clientId)
+                {
+                    this.emitEvent("clientRemoved", this._clients[client.clientId]);
+                    delete this._clients[client.clientId];
+                }
                 if (this._pilot && this._pilot.clientId === client.clientId)
                 {
                     this._pilot = null;
@@ -243,7 +237,6 @@ export default class ScState extends CABLES.EventTarget
         {
             this._log.verbose("this client became multiplayer pilot");
             this._connection.client.isPilot = true;
-            this._connection.sendPing();
             this.emitEvent("becamePilot");
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
         }
@@ -294,5 +287,327 @@ export default class ScState extends CABLES.EventTarget
             const myAvatar = document.querySelector("#multiplayerbar .sc-userlist .item.me");
             if (myAvatar) myAvatar.classList.remove("pilot-request");
         }
+    }
+
+    _registerEventListeners()
+    {
+        this._connection.on("onPingAnswer", this._onPingAnswer.bind(this));
+        this._connection.on("netCursorPos", (msg) =>
+        {
+            if (this._clients[msg.clientId])
+            {
+                this._clients[msg.clientId].x = msg.x;
+                this._clients[msg.clientId].y = msg.y;
+                this._clients[msg.clientId].subpatch = msg.subpatch;
+                this._clients[msg.clientId].zoom = msg.zoom;
+                this._clients[msg.clientId].center = msg.center;
+                this._clients[msg.clientId].scrollX = msg.scrollX;
+                this._clients[msg.clientId].scrollY = msg.scrollY;
+            }
+        });
+
+        this.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
+        {
+            gui.emitEvent("netClientRemoved", { "clientId": client.clientId });
+        });
+
+        this.on("clientLeft", (client) =>
+        {
+            gui.emitEvent("netClientRemoved", { "clientId": client.clientId });
+        });
+
+        this.on("patchSynchronized", () =>
+        {
+            if (!this._connection.client.isPilot)
+            {
+                // set patchsave state if not pilot after sync
+                gui.setStateSaved();
+            }
+        });
+
+        this._connection.on("clientRemoved", (msg) =>
+        {
+            this._connection.sendUi("netClientRemoved", msg, true);
+            gui.emitEvent("netClientRemoved", msg);
+        });
+
+        gui.patchView.on("mouseMove", (x, y) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            this._sendCursorPos(x, y);
+        });
+
+        gui.on("netOpPos", (payload) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                this._connection.sendUi("netOpPos", payload);
+            }
+        });
+
+        gui.on("timelineControl", (command, value) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                const payload = {
+                    "command": command,
+                    "value": value
+                };
+                this._connection.sendUi("timelineControl", payload);
+            }
+        });
+
+        gui.opParams.addEventListener("opSelected", (op) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                this._connection.sendUi("opSelected", { "opId": op.id });
+            }
+        });
+
+        this._connection.on("opSelected", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client.isRemoteClient) return;
+            if (!this._connection.client.following) return;
+            if (!this._connection.client.following === msg.clientId) return;
+            const op = gui.corePatch().getOpById(msg.opId);
+            if (op)
+            {
+                gui.patchView.unselectAllOps();
+                gui.patchView.selectOpId(msg.opId);
+                gui.patchView.focusOp(msg.opId);
+            }
+        });
+
+        this._connection.on("timelineControl", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            const timeline = gui.timeLine();
+            switch (msg.command)
+            {
+            case "goto":
+                if (!msg.value)
+                {
+                    timeline.gotoZero();
+                }
+                else
+                {
+                    timeline.gotoOffset(Number(msg.value));
+                }
+                break;
+            case "setPlay":
+                const timer = gui.scene().timer;
+                const targetState = !!msg.value;
+                const isPlaying = timer.isPlaying();
+                if (targetState !== isPlaying)
+                {
+                    timeline.togglePlay();
+                }
+                break;
+            }
+        });
+
+        gui.on("portValueEdited", (op, port, value) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                if (op && port)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_VALUECHANGE,
+                        "vars": {
+                            "op": op.id,
+                            "port": port.name,
+                            "v": value
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
+            }
+        });
+
+        gui.corePatch().on("pacoPortValueSetAnimated", (op, index, targetState, defaultValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, defaultValue);
+        });
+
+        gui.corePatch().on("pacoPortAnimUpdated", (port) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (port.anim)
+            {
+                gui.metaKeyframes.showAnim(port.parent.id, port.name);
+            }
+        });
+
+        gui.on("portValueSetAnimated", (op, portIndex, targetState, defaultValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                if (op)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_PORT_SETANIMATED,
+                        "vars": {
+                            "opId": op.id,
+                            "portIndex": portIndex,
+                            "targetState": targetState,
+                            "defaultValue": defaultValue
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
+            }
+        });
+
+        gui.on("opReloaded", (opName) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                this._connection.sendControl("reloadOp", { "opName": opName });
+            }
+        });
+
+        gui.on("drawSelectionArea", (x, y, sizeX, sizeY) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            this._sendSelectionArea(x, y, sizeX, sizeY);
+        });
+
+        gui.on("hideSelectionArea", (x, y, sizeX, sizeY) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            this._sendSelectionArea(x, y, sizeX, sizeY, true);
+        });
+
+
+        this._connection.on("netOpPos", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            const op = gui.corePatch().getOpById(msg.opId);
+            if (op)
+            {
+                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+            }
+            else
+            {
+                setTimeout(
+                    () =>
+                    {
+                        this._connection.emitEvent("netOpPos", msg);
+                    }, 100);
+            }
+        });
+
+        this._connection.on("netSelectionArea", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            msg.color = this._connection.getClientColor(msg.clientId);
+            gui.emitEvent("netSelectionArea", msg);
+        });
+
+        this._connection.on("netCursorPos", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            delete msg.zoom;
+            if (this._connection.client.following && msg.clientId === this._connection.client.following)
+            {
+                gui.emitEvent("netGotoPos", msg);
+            }
+            gui.emitEvent("netCursorPos", msg);
+        });
+
+        this._connection.on("resyncWithPilot", (msg) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (!this._connection.client.isRemoteClient) return;
+            if (this._connection.clientId !== msg.reloadClient) return;
+            this._connection.requestPilotPatch();
+        });
+
+        this._connection.on("onPortValueChanged", (vars) =>
+        {
+            if (this._paramPanelTimeout) return;
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client.isRemoteClient) return;
+            if (this._connection.client.isPilot) return;
+
+
+            this._paramPanelTimeout = setTimeout(() =>
+            {
+                const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
+                if (selectedOp)
+                {
+                    const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
+                    if (portIndex)
+                    {
+                        const elePortId = "portval_" + portIndex;
+                        const elePort = document.getElementById(elePortId);
+                        if (elePort)
+                        {
+                            gui.opParams.refreshDelayed();
+                            const elePortContainer = document.getElementById("tr_in_" + portIndex);
+                            if (elePortContainer)
+                            {
+                                elePortContainer.scrollIntoView({ "block": "center" });
+                            }
+                        }
+                    }
+                }
+                this._paramPanelTimeout = null;
+            }, this._connection.paramPanelUpdateDelay);
+        });
+    }
+
+    _sendCursorPos(x, y)
+    {
+        if (!this._connection.isConnected()) return;
+        if (!this._connection.inMultiplayerSession) return;
+
+        if (this._lastMouseX === x || this._lastMouseY === y) return;
+
+
+        this._lastMouseX = x;
+        this._lastMouseY = y;
+
+        if (this._mouseTimeout) return;
+
+        const subPatch = gui.patchView.getCurrentSubPatch();
+        const zoom = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.zoom : null;
+        const scrollX = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollX : null;
+        const scrollY = gui.patchView.patchRenderer.viewBox ? gui.patchView.patchRenderer.viewBox.scrollY : null;
+
+
+        this._mouseTimeout = setTimeout(() =>
+        {
+            const payload = { "x": this._lastMouseX, "y": this._lastMouseY, "subpatch": subPatch, "zoom": zoom, "scrollX": scrollX, "scrollY": scrollY };
+            this._connection.sendUi("netCursorPos", payload);
+            this._mouseTimeout = null;
+        }, this._connection.netMouseCursorDelay);
+    }
+
+    _sendSelectionArea(x, y, sizeX, sizeY, hide = false)
+    {
+        if (!this._connection.isConnected()) return;
+        if (!this._connection.inMultiplayerSession) return;
+
+        if (!hide && this._mouseTimeout) return;
+
+        this._mouseTimeout = setTimeout(() =>
+        {
+            const payload = { x, y, sizeX, sizeY, hide };
+            this._connection.sendUi("netSelectionArea", payload);
+            this._mouseTimeout = null;
+        }, this._connection.netMouseCursorDelay);
     }
 }

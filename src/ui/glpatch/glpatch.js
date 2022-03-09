@@ -314,15 +314,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.on("restrictionChange", (r) =>
         {
-            if (r === Gui.RESTRICT_MODE_FOLLOWER)
-            {
-                gui.patchView.patchRenderer.greyOut = true;
-            }
-            else
-            {
-                gui.patchView.patchRenderer.greyOut = false;
-                this._cgl.canvas.style.cursor = "auto";
-            }
+            gui.patchView.patchRenderer.greyOut = r === Gui.RESTRICT_MODE_FOLLOWER;
             this._updateGreyout();
         });
 
