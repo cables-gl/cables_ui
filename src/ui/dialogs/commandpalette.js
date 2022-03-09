@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 
 export default class CommandPallete
 {
@@ -148,6 +149,8 @@ export default class CommandPallete
         for (let i = 0; i < CABLES.CMD.commands.length; i++)
         {
             const cmd = CABLES.CMD.commands[i].cmd;
+
+            if (!str && CABLES.CMD.commands[i].category == "debug") continue;
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
                 html += this.addResult(CABLES.CMD.commands[i], count);
