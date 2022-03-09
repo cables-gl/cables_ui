@@ -487,12 +487,6 @@ export default class ScConnection extends CABLES.EventTarget
             "connectedSince": this._connectedSince,
             "inSessionSince": this._inSessionSince,
             "isRemoteClient": gui.isRemoteClient,
-            "x": x,
-            "y": y,
-            "subpatch": subPatch,
-            "zoom": zoom,
-            "scrollX": scrollX,
-            "scrollY": scrollY,
             "inMultiplayerSession": this.client.inMultiplayerSession,
             "multiplayerCapable": this.multiplayerCapable,
             "startedSession": startedSession
@@ -505,6 +499,15 @@ export default class ScConnection extends CABLES.EventTarget
             if (this.client.isDisconnected)
             {
                 payload.isDisconnected = true;
+            }
+            if (this.inMultiplayerSession)
+            {
+                payload.x = x;
+                payload.y = y;
+                payload.subpatch = subPatch;
+                payload.zoom = zoom;
+                payload.scrollX = scrollX;
+                payload.scrollY = scrollY;
             }
         }
         if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)

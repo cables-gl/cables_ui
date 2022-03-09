@@ -57,6 +57,13 @@ export default class Logger extends CABLES.EventTarget
         if (gui) gui.emitEvent("logEvent", this.initiator, "log", arguments);
     }
 
+    info(args)
+    {
+        if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
+            console.log("[" + this.initiator + "]", ...arguments);
+        if (gui) gui.emitEvent("logEvent", this.initiator, "info", arguments);
+    }
+
     userInteraction(text)
     {
         // this.log({ "initiator": "userinteraction", "text": text });

@@ -15,14 +15,6 @@
                 window.addEventListener("hashchange", (event) => {
                     parent.postMessage({"type": "hashchange", "data": window.location.hash}, "*");
                 });
-
-                window.addEventListener("message", (event) => {
-                    if(!CABLES || !CABLES.sandbox) return;
-                    if (event.origin !==  CABLES.sandbox.getCablesUrl()) return;
-                    if(event.data && event.data.type === "hashchange") {
-                        window.location.hash = event.data.data;
-                    }
-                }, false);
             }
         </script>
 
