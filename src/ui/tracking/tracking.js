@@ -70,12 +70,12 @@ export default class Tracking
             CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
             {
                 payload.platform = browserInfo;
-                this._trackEvent("ui", "logging", level, payload);
+                this._trackEvent("ui", actionName, level, payload);
             });
         }
         else
         {
-            this._trackEvent("ui", "logging", level, payload);
+            this._trackEvent("ui", actionName, level, payload);
         }
     }
 
