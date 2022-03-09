@@ -566,7 +566,7 @@ export default class ScConnection extends CABLES.EventTarget
                     return;
                 }
 
-                this._log.log("first paco message !");
+                this._log.info("first paco message !");
                 gui.corePatch().clear();
                 this._paco = new PacoConnector(this, this._patchConnection);
                 this._patchConnection.connectors.push(this._paco);
@@ -604,7 +604,7 @@ export default class ScConnection extends CABLES.EventTarget
             if (msg.clientId === this._socket.clientId) return;
             if (this._pacoEnabled && this.client && this.client.isPilot)
             {
-                this._log.log("RESYNC sending paco patch....");
+                this._log.info("RESYNC sending paco patch....");
                 this._startPacoSend(msg.clientId);
             }
         }
@@ -617,7 +617,7 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 msg.seconds = timeOutSeconds / 1000;
                 this.emitEvent("onPingTimeout", msg);
-                this._log.warn("didn't receive ping for more than", msg.seconds, "seconds");
+                this._log.info("didn't receive ping for more than", msg.seconds, "seconds");
             }
             this._sendPing();
         }
