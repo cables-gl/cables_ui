@@ -339,6 +339,70 @@ export default class ServerOps
         );
     }
 
+    addOpAssetLib(opName, assetFile)
+    {
+        CABLESUILOADER.talkerAPI.send(
+            "opAddAssetLib",
+            {
+                "opname": opName,
+                "assetFile": assetFile,
+                "name": assetFile.title
+            },
+            (err, res) =>
+            {
+                if (err)
+                {
+                    if (err.msg === "NO_OP_RIGHTS")
+                    {
+                        let html = "";
+                        html += "you are not allowed to add libraries to this op.<br/><br/>";
+                        html += "to modify this op, try cloning it";
+                        new ModalDialog({ "title": "error adding library", "showOkButton": true, "html": html });
+                    }
+                    else
+                    {
+                        let html = "";
+                        html += err.msg + "<br/><br/>";
+                        new ModalDialog({ "title": "error adding library", "showOkButton": true, "html": html });
+                    }
+                }
+                else
+                {
+                    this._log.log("lib added!");
+                    gui.reloadDocs(() =>
+                    {
+                        this._log.log("docs reloaded");
+                        gui.metaTabs.activateTabByName("code");
+                        let html = "";
+                        html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                        new ModalDialog({ "title": "new library added", "html": html });
+                    });
+                }
+            },
+        );
+    }
+
+    selectAssetLib(opName)
+    {
+        gui.showFileManager(() =>
+        {
+            gui.fileManager.setFilterType([".js"]);
+            gui.fileManager._manager.addEventListener("onItemsSelected", (items) =>
+            {
+                console.log("LIB SELECTED", items);
+                if (items && items.length > 0)
+                {
+                    const userLib = items[0];
+                    if (userLib.p)
+                    {
+                        this.addOpAssetLib(opName, userLib);
+                    }
+                }
+            });
+        }, true);
+    }
+
     removeOpLib(opName, libName)
     {
         if (confirm("really remove library '" + libName + "' from op?"))
@@ -826,9 +890,10 @@ export default class ServerOps
         {
             if (this._ops[i].name == opname)
             {
+                let found = false;
+                const libs = [];
                 if (this._ops[i].libs)
                 {
-                    const libs = [];
                     for (let j = 0; j < this._ops[i].libs.length; j++)
                     {
                         const libName = this._ops[i].libs[j];
@@ -841,9 +906,28 @@ export default class ServerOps
                             libs.push(libName);
                         }
                     }
-
-                    return libs;
+                    found = true;
                 }
+
+                console.log("CHECKING OP", this._ops[i]);
+
+                if (this._ops[i].assetlibs)
+                {
+                    for (let j = 0; j < this._ops[i].assetlibs.length; j++)
+                    {
+                        const libName = this._ops[i].assetlibs[j];
+                        if (!checkLoaded)
+                        {
+                            libs.push(libName);
+                        }
+                        else if (this._loadedLibs.indexOf(libName) == -1)
+                        {
+                            libs.push(libName);
+                        }
+                    }
+                    found = true;
+                }
+                if (found) return libs;
             }
         }
         return [];
@@ -887,7 +971,6 @@ export default class ServerOps
             if (proj.ops[i])
             {
                 // if (this.getOpLibs(proj.ops[i].objName).length) this._log.log("op with libs:", proj.ops[i].objName, this.getOpLibs(proj.ops[i].objName));
-
                 libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
                 coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
             }
