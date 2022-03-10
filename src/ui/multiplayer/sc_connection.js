@@ -68,6 +68,24 @@ export default class ScConnection extends CABLES.EventTarget
 
     get inMultiplayerSession() { return this._pacoEnabled; }
 
+    get hasOtherMultiplayerCapableClients()
+    {
+        if (!this.state) return false;
+        let clientsInSession = false;
+        const clients = Object.values(this.clients);
+        for (let i = 0; i < clients.length; i++)
+        {
+            const client = clients[i];
+            if (client.clientId === this.clientId) continue;
+            if (client.multiplayerCapable)
+            {
+                clientsInSession = true;
+                break;
+            }
+        }
+        return clientsInSession;
+    }
+
     get runningMultiplayerSession()
     {
         if (!this.state) return false;
