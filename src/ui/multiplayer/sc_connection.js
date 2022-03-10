@@ -595,7 +595,9 @@ export default class ScConnection extends CABLES.EventTarget
                 this._patchConnection.connectors.push(this._paco);
 
 
+                const perf = CABLES.UI.uiProfiler.start("[sc] paco receive");
                 this._paco.receive(msg.data);
+                perf.finish();
                 this._pacoSynced = true;
                 this.state.emitEvent("patchSynchronized");
             }
