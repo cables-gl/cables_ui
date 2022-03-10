@@ -557,7 +557,9 @@ export default class ScConnection extends CABLES.EventTarget
             };
 
             this.emitEvent("netActivityOut");
+            const perf = CABLES.UI.uiProfiler.start("[sc] send");
             this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+            perf.finish();
         }
     }
 
