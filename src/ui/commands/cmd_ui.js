@@ -353,14 +353,14 @@ CMD_UI_COMMANDS.push(
         "hotkey": "CMD + f"
     },
     {
-        "cmd": "maximize renderer [CMD+ENTER]",
+        "cmd": "maximize renderer",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMaxRenderer,
         "icon": "canvas_max",
         "hotkey": "CMD + ENTER"
     },
     {
-        "cmd": "patch background renderer [CMD+SHIFT+ENTER]",
+        "cmd": "patch background renderer",
         "category": "ui",
         "func": CABLES_CMD_UI.togglePatchBgRenderer,
         "icon": "canvas_patchbg",

@@ -245,16 +245,23 @@
         }
     }
 
+    .tooltip_nopadding
+    {
+        padding-left: 4px !important;
+        padding-right: 4px !important;
+    }
+
     .tooltip {
         position: absolute;
         pointer-events: none;
         z-index: $zindex_highest;
         background-color: var(--color-03);
         border-radius: 5px;
+        text-transform: capitalize;
 
         color: var(--color-13);
         padding: 5px;
-        padding-bottom: 7px;
+        // padding-bottom: 7px;
         padding-left: 14px;
         padding-right: 14px;
         // border-radius: 0px;
@@ -274,14 +281,43 @@
         i {
             color: var(--color-13);
         }
-        // .code {
-        //     font-family: monospace;
-        //     color: var(--color-13);
-        //     background-color: transparent;
-        // }
+
         .multiline-string-port {
             display: block;
             @include multiLineEllipsis($lineHeight: 1.2em, $lineCount: 3, $bgColor: $background-color-dark);
+        }
+
+        .code
+        {
+            background-color: transparent;
+        }
+
+        .tooltip_port
+        {
+            color:black;
+            margin-right: 10px;
+        }
+
+        .tooltip_value
+        {
+            margin-left: 10px;
+            font-family: SourceCodePro,monospace;
+            background-color: black;
+        }
+        .tooltip_objtype
+        {
+            background-color: #444;
+            margin-right: 10px;
+        }
+
+        .tooltip_port,.tooltip_value,.tooltip_objtype
+        {
+            border-radius: 3px;
+            padding:2px;
+            padding-left:5px;
+            padding-right:5px;
+            text-transform: capitalize;
+
         }
     }
 

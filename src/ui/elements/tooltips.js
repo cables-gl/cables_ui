@@ -4,13 +4,14 @@ import ele from "../utils/ele";
 let tooltipTimeout = null;
 let eleTooltip = null;
 
-export function showToolTip(e, txt)
+export function showToolTip(e, txt, nopadding)
 {
     eleTooltip = eleTooltip || ele.byId("cbltooltip");
     if (!eleTooltip) return;
 
     ele.show(eleTooltip);
-    // eleTooltip.style.display = "block";
+
+    eleTooltip.classList.toggle("tooltip_nopadding", nopadding);
 
     if (e)
         if (e.style)
@@ -107,7 +108,12 @@ function getPortDescription(thePort)
     let stride = "";
     if (thePort.uiAttribs.stride)stride = thePort.uiAttribs.stride;
 
-    str += "[" + objType + thePort.getTypeString() + stride + "] ";
+    str += "<span class=\"tooltip_port\" style=\"background-color:var(--color_port_" + thePort.getTypeString().toLowerCase() + ");\">";
+    str += thePort.getTypeString() + stride;
+    str += "</span>";
+
+    if (objType)str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
+
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
@@ -134,8 +140,8 @@ export function updateHoverToolTip(event, port)
         {
             val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
-            else val = "\"" + val + "\"";
-            txt += ": <span class=\"code\">" + val + "</span>";
+            // else val = "\"" + val + "\"";
+            txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
         else if (port.type == CABLES.OP_PORT_TYPE_STRING)
         {
@@ -143,12 +149,12 @@ export function updateHoverToolTip(event, port)
             if (isMultilineString(val))
             {
                 val = "\"" + val + "\"";
-                txt += ": <span class=\"code multiline-string-port\">" + val + "</span>";
+                txt += ": <span class=\"tooltip_value multiline-string-port\">" + val + "</span>";
             }
             else
             {
                 val = "\"" + val + "\"";
-                txt += ": <span class=\"code\">" + val + "</span>";
+                txt += ": <span class=\"tooltip_value\">" + val + "</span>";
             }
         }
         else if (port.type == CABLES.OP_PORT_TYPE_ARRAY)
@@ -156,7 +162,7 @@ export function updateHoverToolTip(event, port)
             val = port.get();
             if (val)
             {
-                txt += " (total:" + val.length + ") <span class=\"\"> [";
+                txt += " (total:" + val.length + ") <span class=\"tooltip_value\"> [";
                 for (let i = 0; i < Math.min(3, val.length); i++)
                 {
                     if (i != 0)txt += ", ";
@@ -172,11 +178,16 @@ export function updateHoverToolTip(event, port)
 
                 txt += " ...] </span>";
             }
-            else txt += "no array";
+            else txt += "<span class=\"tooltip_value\">null</span>";
+        }
+        else
+        {
+            txt += "&nbsp;&nbsp;";
         }
     }
 
-    CABLES.UI.showToolTip(event, txt);
+    CABLES.UI.showToolTip(event, txt, true);
+
     if (CABLES.UI.hoverInterval == -1)
         CABLES.UI.hoverInterval = setInterval(
             () =>

@@ -131,7 +131,7 @@ export default class EditorTab
 
     save()
     {
-        function onSaveCb(txt)
+        function onSaveCb(txt, hasErrorLine, newCode)
         {
             gui.jobs().finish("saveeditorcontent");
 
@@ -141,7 +141,12 @@ export default class EditorTab
                 CABLES.UI.notify(txt);
                 gui.mainTabs.setChanged(this._tab.id, false);
             }
-
+            if (newCode)
+            {
+                const posOld = this._editor.getCursorPosition();
+                this._editor.setValue(newCode, 1);
+                this._editor.gotoLine(posOld.row + 1, posOld.column);
+            }
             this._editor.focus();
             setTimeout(
                 function ()
