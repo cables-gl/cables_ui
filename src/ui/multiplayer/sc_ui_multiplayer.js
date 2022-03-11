@@ -53,6 +53,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         const data = {
             "clients": clientList,
             "multiplayerCapable": this._connection.multiplayerCapable,
+            "showMoreOptions": this._connection.multiplayerCapable && this._connection.hasOtherMultiplayerCapableClients,
             "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
@@ -173,7 +174,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 this._connection.startMultiplayerSession();
             });
-            if (this._connection.multiplayerCapable && !(this._connection.runningMultiplayerSession || this._connection.inMultiplayerSession))
+            if (this._connection.multiplayerCapable && this._connection.hasOtherMultiplayerCapableClients && !(this._connection.runningMultiplayerSession || this._connection.inMultiplayerSession))
             {
                 startButton.classList.add("visible");
             }
@@ -229,11 +230,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             moreOptions.addEventListener("pointerdown", (event) =>
             {
                 const items = [];
-                items.push({
-                    "title": "open chat",
-                    "iconClass": "icon icon-message",
-                    "func": () => { CABLES.CMD.UI.showChat(); }
-                });
+                if (this._connection.hasOtherMultiplayerCapableClients)
+                {
+                    items.push({
+                        "title": "open chat",
+                        "iconClass": "icon icon-message",
+                        "func": () => { CABLES.CMD.UI.showChat(); }
+                    });
+                }
 
                 if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
                 {

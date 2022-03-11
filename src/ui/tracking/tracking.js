@@ -35,30 +35,48 @@ export default class Tracking
         this.gui.on("logEvent", (initiator, level, args) =>
         {
             if (!["error", "warn"].includes(level)) return;
-
             const perf = CABLES.UI.uiProfiler.start("logEvent");
-
-            const payload = {
-                "initiator": initiator,
-                "arguments": args
-            };
-            const project = this.gui.project();
-            if (project) payload.projectId = project._id;
-            if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
-            {
-                CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-                {
-                    payload.platform = browserInfo;
-                    this._trackEvent("ui", "logging", level, payload);
-                });
-            }
-            else
-            {
-                this._trackEvent("ui", "logging", level, payload);
-            }
-
+            this._trackLogEvent("logging", level, initiator, args);
             perf.finish();
         });
+
+        this.gui.on("coreLogEvent", (initiator, level, args) =>
+        {
+            if (!["error", "warn"].includes(level)) return;
+            const perf = CABLES.UI.uiProfiler.start("coreLogEvent");
+            this._trackLogEvent("logging", level, initiator, args);
+            perf.finish();
+        });
+
+        this.gui.on("opLogEvent", (initiator, level, args) =>
+        {
+            if (!["error"].includes(level)) return;
+            const perf = CABLES.UI.uiProfiler.start("opLogEvent");
+            this._trackLogEvent("oplogging", level, initiator, args);
+            perf.finish();
+        });
+    }
+
+    _trackLogEvent(actionName, level, initiator, args)
+    {
+        const payload = {
+            "initiator": initiator,
+            "arguments": args
+        };
+        const project = this.gui.project();
+        if (project) payload.projectId = project._id;
+        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+        {
+            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+            {
+                payload.platform = browserInfo;
+                this._trackEvent("ui", actionName, level, payload);
+            });
+        }
+        else
+        {
+            this._trackEvent("ui", actionName, level, payload);
+        }
     }
 
     _trackEvent(eventCategory, eventAction, eventLabel, meta = {})
