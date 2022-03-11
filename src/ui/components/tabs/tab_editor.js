@@ -138,14 +138,14 @@ export default class EditorTab
             if (txt.toLowerCase().indexOf("error") == 0) CABLES.UI.notifyError(txt);
             else
             {
-                if (newCode)
-                {
-                    const posOld = this._editor.getCursorPosition();
-                    this._editor.setValue(newCode, 1);
-                    this._editor.gotoLine(posOld.row + 1, posOld.column);
-                }
                 CABLES.UI.notify(txt);
                 gui.mainTabs.setChanged(this._tab.id, false);
+            }
+            if (newCode)
+            {
+                const posOld = this._editor.getCursorPosition();
+                this._editor.setValue(newCode, 1);
+                this._editor.gotoLine(posOld.row + 1, posOld.column);
             }
             this._editor.focus();
             setTimeout(
