@@ -1213,6 +1213,8 @@ export default class Gui
 
     bindKeys()
     {
+        if (gui.isRemoteClient) return;
+
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
         {
@@ -1277,7 +1279,11 @@ export default class Gui
             else e.dontPreventDefault = true;
         });
 
-        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patchView.store.saveAs(); });
+        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) =>
+        {
+            gui.patchView.store.saveAs();
+        });
+
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (this.patchView.hasFocus())
@@ -1417,7 +1423,10 @@ export default class Gui
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
         this.iconBarTimeline = new IconBar("sidebar_timeline");
 
-        if (userSettings.get("showTipps") && userSettings.get("introCompleted")) gui.tips.show();
+
+        if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
+                userSettings.get("showTipps") &&
+                userSettings.get("introCompleted")) gui.tips.show();
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
@@ -1515,8 +1524,9 @@ export default class Gui
         //     });
         // }
 
-        if (CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
-        if (CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
+
+        if (!gui.isRemoteClient && CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
+        if (!gui.isRemoteClient && CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
     }
 
     getOpDoc(opname, html, cb)
