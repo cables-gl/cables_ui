@@ -68,6 +68,24 @@ export default class ScConnection extends CABLES.EventTarget
 
     get inMultiplayerSession() { return this._pacoEnabled; }
 
+    get hasOtherMultiplayerCapableClients()
+    {
+        if (!this.state) return false;
+        let clientsInSession = false;
+        const clients = Object.values(this.clients);
+        for (let i = 0; i < clients.length; i++)
+        {
+            const client = clients[i];
+            if (client.clientId === this.clientId) continue;
+            if (client.multiplayerCapable)
+            {
+                clientsInSession = true;
+                break;
+            }
+        }
+        return clientsInSession;
+    }
+
     get runningMultiplayerSession()
     {
         if (!this.state) return false;
@@ -539,7 +557,9 @@ export default class ScConnection extends CABLES.EventTarget
             };
 
             this.emitEvent("netActivityOut");
+            const perf = CABLES.UI.uiProfiler.start("[sc] send");
             this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+            perf.finish();
         }
     }
 
@@ -575,7 +595,9 @@ export default class ScConnection extends CABLES.EventTarget
                 this._patchConnection.connectors.push(this._paco);
 
 
+                const perf = CABLES.UI.uiProfiler.start("[sc] paco receive");
                 this._paco.receive(msg.data);
+                perf.finish();
                 this._pacoSynced = true;
                 this.state.emitEvent("patchSynchronized");
             }
