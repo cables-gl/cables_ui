@@ -12,25 +12,30 @@ export default class ScConnection extends CABLES.EventTarget
     {
         super();
 
-        this._log = new Logger("scconnection");
         this.PING_INTERVAL = 5000;
         this.PINGS_TO_TIMEOUT = 2;
         this.OWN_PINGS_TO_TIMEOUT = 5;
-        this._lastPing = Date.now();
-        this.channelName = null;
-        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
-        this._socket = null;
+
+        this._log = new Logger("scconnection");
+
         this._scConfig = cfg;
+        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
+        this._lastPing = Date.now();
+
+        this._socket = null;
         this._connected = false;
         this._connectedSince = null;
         this._inSessionSince = null;
+
         this._paco = null;
+        this._pacoEnabled = false;
         this._patchConnection = new CABLES.PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
+        this._pacoChannel = null;
+        this._pacoLoopReady = false;
 
+        this.channelName = this._scConfig.channel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
-        this._pacoEnabled = false;
-
 
         if (cfg) this._init((isActive) =>
         {
@@ -214,7 +219,7 @@ export default class ScConnection extends CABLES.EventTarget
     leaveMultiplayerSession()
     {
         this.client.isPilot = false;
-        this._socket.unsubscribe(this._socket.channelName + "/paco");
+        this._pacoChannel = this._socket.unsubscribe(this.channelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
         this.client.following = null;
@@ -331,8 +336,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
-        this._socket.channelName = this._scConfig.channel;
-        this.channelName = this._socket.channelName;
+        this._socket.channelName = this.channelName;
 
         this._state = new ScState(this);
         if (this.multiplayerCapable)
@@ -350,14 +354,21 @@ export default class ScConnection extends CABLES.EventTarget
                 (async () =>
                 {
                     if (!this._pacoEnabled) return;
-
-                    const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
-                    for await (const msg of pacoChannel)
+                    if (!this._pacoChannel)
                     {
-                        this._handlePacoMessage(msg);
-                        this.emitEvent("netActivityIn");
+                        this._pacoChannel = this._socket.subscribe(this.channelName + "/paco");
+                        if (!this._pacoLoopReady)
+                        {
+                            this._pacoLoopReady = true;
+                            for await (const msg of this._pacoChannel)
+                            {
+                                this._handlePacoMessage(msg);
+                                this.emitEvent("netActivityIn");
+                            }
+                        }
                     }
                 })();
+
                 if (payload.started)
                 {
                     this._startPacoSend();
@@ -418,7 +429,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const controlChannel = this._socket.subscribe(this._socket.channelName + "/control");
+            const controlChannel = this._socket.subscribe(this.channelName + "/control");
 
             for await (const msg of controlChannel)
             {
@@ -429,7 +440,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const uiChannel = this._socket.subscribe(this._socket.channelName + "/ui");
+            const uiChannel = this._socket.subscribe(this.channelName + "/ui");
             for await (const msg of uiChannel)
             {
                 this._handleUiChannelMsg(msg);
@@ -439,7 +450,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const infoChannel = this._socket.subscribe(this._socket.channelName + "/info");
+            const infoChannel = this._socket.subscribe(this.channelName + "/info");
             for await (const msg of infoChannel)
             {
                 this._handleInfoChannelMsg(msg);
@@ -449,7 +460,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const chatChannel = this._socket.subscribe(this._socket.channelName + "/chat");
+            const chatChannel = this._socket.subscribe(this.channelName + "/chat");
             for await (const msg of chatChannel)
             {
                 this._handleChatChannelMsg(msg);
@@ -558,7 +569,7 @@ export default class ScConnection extends CABLES.EventTarget
 
             this.emitEvent("netActivityOut");
             const perf = CABLES.UI.uiProfiler.start("[sc] send");
-            this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+            this._socket.transmitPublish(this.channelName + "/" + topic, finalPayload);
             perf.finish();
         }
     }
