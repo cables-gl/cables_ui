@@ -753,7 +753,7 @@ export default class ServerOps
                                     loadingModal.close();
 
                                     if (res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
-                                    else setStatus("Error: " + err.msg || "Unknown error", false);
+                                    else setStatus("Error: " + err.msg || "Unknown error");
                                 }
                                 else
                                 {
@@ -766,7 +766,7 @@ export default class ServerOps
 
                                     gui.serverOps.execute(opname, () =>
                                     {
-                                        setStatus("saved " + opname, false, res.opFullCode);
+                                        setStatus("saved " + opname);
                                         editor.focus();
                                         setTimeout(() => { gui.opParams.refresh(); }, 100);
 
@@ -776,7 +776,7 @@ export default class ServerOps
                             },
                             (result) =>
                             {
-                                setStatus("ERROR: not saved - " + result.msg, false);
+                                setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
 
                                 loadingModal.close();

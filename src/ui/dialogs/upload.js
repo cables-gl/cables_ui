@@ -31,6 +31,8 @@ export default class FileUploader
 
     uploadDragOver(event)
     {
+        if (gui.isRemoteClient) return;
+
         this._uploadDropEvent = event.originalEvent;
 
         if (CABLES.DragNDrop.internal)
@@ -66,6 +68,8 @@ export default class FileUploader
 
     uploadFile(file)
     {
+        if (gui.isRemoteClient) return;
+
         const reader = new FileReader();
 
         reader.addEventListener("load",
@@ -87,6 +91,8 @@ export default class FileUploader
     uploadFiles(files)
     {
         if (!window.gui) return;
+        if (gui.isRemoteClient) return;
+
         gui.jobs().start({ "id": "prepareuploadfiles", "title": "preparing files for upload..." });
 
         for (let i = 0; i < files.length; i++)
@@ -100,6 +106,8 @@ export default class FileUploader
     {
         event.preventDefault();
         event.stopPropagation();
+
+        if (gui.isRemoteClient) return;
 
         gui.closeModal();
 

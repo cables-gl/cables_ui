@@ -46,6 +46,8 @@ export default class ChangelogToast
 
     show()
     {
+        if (gui.isRemoteClient) return;
+
         gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { "icon": "book-open", "closable": true }, true);
     }
 }
