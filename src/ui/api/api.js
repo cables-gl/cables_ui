@@ -163,9 +163,6 @@ export default class Api
         report.time = Date.now();
 
         this.lastErrorReport = Date.now();
-        if (window.gui)report.projectId = gui.project()._id;
-        if (window.gui)report.username = gui.user.username;
-        if (window.gui)report.userId = gui.user.id;
         report.url = document.location.href;
 
         report.infoPlatform = navigator.platform;
@@ -174,6 +171,13 @@ export default class Api
 
         if (window.gui)
         {
+            if (gui.project()) report.projectId = gui.project()._id;
+            if (gui.user)
+            {
+                report.username = gui.user.username;
+                report.userId = gui.user.id;
+            }
+
             try
             {
                 const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
@@ -185,10 +189,18 @@ export default class Api
             }
         }
 
-
-        report.exception = err.exception;
-        if (err.exception && err.exception.stack)
-            report.stack = err.exception.stack;
+        report.exception = {};
+        if (err.exception)
+        {
+            report.exception = {
+                "type": err.exception.type,
+                "error": err.exception.error,
+                "filename": err.exception.filename,
+                "lineno": err.exception.lineno,
+                "message": err.exception.message,
+            };
+            if (err.exception.stack) report.stack = err.exception.stack;
+        }
 
         report.opName = err.opName;
         report.errorLine = err.errorLine;
