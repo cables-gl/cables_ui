@@ -218,7 +218,10 @@ export default class Api
             html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "</center>";
 
-            CABLES.UI.MODAL.show(html, { "title": "" });
+            const modalOptions = {
+                "html": html
+            };
+            new ModalDialog(modalOptions);
             CABLES.lastError = null;
         });
     }
