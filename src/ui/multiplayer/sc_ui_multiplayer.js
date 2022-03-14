@@ -21,7 +21,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         this._registerEventListeners();
     }
 
-    updateHtml()
+    updateMultiplayerBar()
     {
         if (!this._connection.isConnected())
         {
@@ -254,7 +254,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
             });
         }
-        document.getElementById("multiplayerbar").style.display = "block";
+        const mpBar = document.getElementById("multiplayerbar");
+        if (mpBar) mpBar.style.display = "block";
     }
 
     _jumpToCursor(client)
@@ -449,12 +450,27 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _registerEventListeners()
     {
-        this._connection.on("netLeaveSession", this.updateHtml.bind(this));
-        this._connection.on("connectionError", this.updateHtml.bind(this));
-        this._connection.state.on("enableMultiplayer", this.updateHtml.bind(this));
-        this._connection.state.on("userListChanged", this.updateHtml.bind(this));
-        this._connection.state.on("becamePilot", this.updateHtml.bind(this));
-        this._connection.on("connectionChanged", this.updateHtml.bind(this));
+        this._connection.state.on("enableMultiplayer", () =>
+        {
+            const multiplayerBar = document.getElementById("multiplayerbar");
+            if (multiplayerBar) multiplayerBar.classList.add("syncing");
+        });
+        this._connection.state.on("startPatchSync", () =>
+        {
+            const multiplayerBar = document.getElementById("multiplayerbar");
+            if (multiplayerBar) multiplayerBar.classList.add("syncing");
+        });
+        this._connection.state.on("patchSynchronized", () =>
+        {
+            const multiplayerBar = document.getElementById("multiplayerbar");
+            if (multiplayerBar) multiplayerBar.classList.remove("syncing");
+        });
+        this._connection.on("netLeaveSession", this.updateMultiplayerBar.bind(this));
+        this._connection.on("connectionError", this.updateMultiplayerBar.bind(this));
+        this._connection.state.on("enableMultiplayer", this.updateMultiplayerBar.bind(this));
+        this._connection.state.on("userListChanged", this.updateMultiplayerBar.bind(this));
+        this._connection.state.on("becamePilot", this.updateMultiplayerBar.bind(this));
+        this._connection.on("connectionChanged", this.updateMultiplayerBar.bind(this));
 
         this._connection.on("onInfoMessage", (payload) =>
         {
@@ -504,7 +520,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     this._connection.client.following = pilot.clientId;
                     this._jumpToCursor(pilot);
                 }
-                this.updateHtml();
+                this.updateMultiplayerBar();
                 notify(username + " the pilot");
             }
         });
