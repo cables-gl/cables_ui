@@ -18,6 +18,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
         }
 
+        this._pilotRequestTimeout = null;
+
         this._registerEventListeners();
     }
 
@@ -565,58 +567,69 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             {
                 if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
                 {
-                    let content = "<div> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
-                    content += "<div style='margin-top: 20px; text-align: center;'>";
-                    content += "<a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
-                    content += "<a class=\"button decline\">Decline</a>";
-                    content += "</div>";
-
-                    const options = {
-                        "title": msg.username + " wants to be the pilot",
-                        "html": content
-                    };
-                    const modal = new ModalDialog(options, false);
-                    const closeListener = () =>
+                    if (!this._pilotRequestTimeout)
                     {
-                        clearTimeout(requestTimeout);
-                        this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                    };
-                    const closeListenerId = modal.on("onClose", closeListener);
-                    modal.on("onShow", () =>
-                    {
-                        const modalElement = modal.getElement();
-                        const acceptButton = modalElement.querySelector(".button.accept");
-                        const declineButton = modalElement.querySelector(".button.decline");
+                        let content = "<div> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
+                        content += "<div style='margin-top: 20px; text-align: center;'>";
+                        content += "<a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
+                        content += "<a class=\"button decline\">Decline</a>";
+                        content += "</div>";
 
-                        if (acceptButton)
+                        const options = {
+                            "title": msg.username + " wants to be the pilot",
+                            "html": content
+                        };
+                        const modal = new ModalDialog(options, false);
+                        const closeListener = () =>
                         {
-                            acceptButton.addEventListener("pointerdown", () =>
-                            {
-                                clearTimeout(requestTimeout);
-                                modal.off(closeListenerId);
-                                this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                                modal.close();
-                            });
-                        }
-                        if (declineButton)
+                            clearTimeout(this._pilotRequestTimeout);
+                            this._pilotRequestTimeout = null;
+                            this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                        };
+                        const closeListenerId = modal.on("onClose", closeListener);
+                        modal.on("onShow", () =>
                         {
-                            declineButton.addEventListener("pointerdown", () =>
-                            {
-                                clearTimeout(requestTimeout);
-                                modal.off(closeListenerId);
-                                this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                                modal.close();
-                            });
-                        }
-                    });
+                            const modalElement = modal.getElement();
+                            const acceptButton = modalElement.querySelector(".button.accept");
+                            const declineButton = modalElement.querySelector(".button.decline");
 
-                    const requestTimeout = setTimeout(() =>
+                            if (acceptButton)
+                            {
+                                acceptButton.addEventListener("pointerdown", () =>
+                                {
+                                    clearTimeout(this._pilotRequestTimeout);
+                                    this._pilotRequestTimeout = null;
+                                    modal.off(closeListenerId);
+                                    this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                                    modal.close();
+                                });
+                            }
+                            if (declineButton)
+                            {
+                                declineButton.addEventListener("pointerdown", () =>
+                                {
+                                    clearTimeout(this._pilotRequestTimeout);
+                                    this._pilotRequestTimeout = null;
+                                    modal.off(closeListenerId);
+                                    this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                                    modal.close();
+                                });
+                            }
+                        });
+
+                        this._pilotRequestTimeout = setTimeout(() =>
+                        {
+                            modal.off(closeListenerId);
+                            this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
+                            modal.close();
+                        }, this._connection.state.PILOT_REQUEST_TIMEOUT);
+                        modal.show();
+                    }
+                    else
                     {
-                        modal.off(closeListenerId);
-                        this._connection.sendControl("pilotRequest", { "state": "accepted", "username": gui.user.usernameLowercase, "initiator": msg.clientId });
-                        modal.close();
-                    }, this._connection.state.PILOT_REQUEST_TIMEOUT);
-                    modal.show();
+                        // already waiting for pilot request approval/denial, deny other requests
+                        this._connection.sendControl("pilotRequest", { "state": "declined", "username": gui.user.usernameLowercase, "initiator": msg.clientId, "reason": "PENDING_REQUEST" });
+                    }
                 }
             }
             else if (msg.state === "accepted")
@@ -637,7 +650,9 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     if (this._connection.state && this._connection.state.hasPendingPilotSeatRequest())
                     {
                         this._connection.state.cancelPilotSeatRequest();
-                        notify(msg.username, "declined your pilot seat request");
+                        let reason = "declined your pilot seat request";
+                        if (msg.reason && msg.reason === "PENDING_REQUEST") reason = "already has a pending pilot seat request";
+                        notify(msg.username, reason);
                     }
                 }
             }
