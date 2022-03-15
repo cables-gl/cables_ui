@@ -421,9 +421,17 @@
 
     #multiplayerbar {
         display: none;
-        // &[data-multiplayer-follow] {
-        //     border-top: 5px solid var(--color-special) !important;
-        // }
+
+        &.syncing {
+            .sc-options {
+                .start-button, .join-button, .leave-button {
+                    display: none !important;
+                }
+                .loading-button {
+                    display: inline-block !important;
+                }
+            }
+        }
     }
 
     .nav-clientlist
@@ -570,7 +578,7 @@
             align-items: center;
 
             margin-left: 10px;
-            .start-button, .join-button, .leave-button {
+            .button-small {
                 display: none !important;
                 margin-top: 0;
 
@@ -598,7 +606,6 @@
         width:20px;
         height:20px;
         display: block;
-        background-size:100% 100%;
         position: absolute;
         z-index: 100;
     }
