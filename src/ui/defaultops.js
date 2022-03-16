@@ -33,6 +33,7 @@ export default
         "blueprint": "Ops.Dev.Blueprint",
         "subPatch": "Ops.Ui.SubPatch",
         "uiArea": "Ops.Ui.Area",
+        "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture"
     },
     "getOpsForPortLink": (p, l) =>
@@ -49,6 +50,8 @@ export default
     {
         const ops = [];
 
+        filename = filename.toLowerCase();
+
         if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
         else if (filename.endsWith(".3d.json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d);
@@ -57,6 +60,7 @@ export default
         else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
         else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
         else if (filename.endsWith(".exr")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpExr);
+        else if (filename.endsWith(".svg")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpSvg);
         return ops;
     },
     "getVarGetterOpNameByType": (type, port) =>
