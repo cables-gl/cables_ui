@@ -55,6 +55,15 @@ export default class Tracking
             this._trackLogEvent("oplogging", level, initiator, args);
             perf.finish();
         });
+
+        this.gui.on("uncaughtError", (report) =>
+        {
+            let initiator = "unknown";
+            if (report.url) initiator = report.url;
+            if (report.exception) initiator = report.exception.filename + ":" + report.exception.lineno;
+            if (report.opName) initiator = report.opName;
+            this._trackLogEvent("logging", "uncaught", initiator, report);
+        });
     }
 
     _trackLogEvent(actionName, level, initiator, args)

@@ -147,6 +147,7 @@ export default class ModalException
 
         if (!isCustomOp)
         {
+            gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
             str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
         }
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";

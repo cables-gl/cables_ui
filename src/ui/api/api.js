@@ -185,9 +185,10 @@ export default class Api
     }
 
 
-    sendErrorReport(err)
+    getErrorReport(err)
     {
         err = err || CABLES.lastError;
+
         const report = {};
         report.time = Date.now();
 
@@ -233,6 +234,14 @@ export default class Api
 
         report.opName = err.opName;
         report.errorLine = err.errorLine;
+
+        return report;
+    }
+
+    sendErrorReport(err)
+    {
+        err = err || CABLES.lastError;
+        const report = this.getErrorReport(err);
 
         this._log.log("error report sent.");
         this._log.log(report);
