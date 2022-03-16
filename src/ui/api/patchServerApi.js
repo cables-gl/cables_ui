@@ -64,7 +64,21 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     return;
                 }
 
-                if (this._serverDate != data.updated)
+                if (data.maintenance)
+                {
+                    const html =
+                        "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave this window open, and wait until we are finished with the update.<br/><br/>" +
+                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                    new ModalDialog(
+                        {
+                            "title": "Maintenance Mode",
+                            "html": html,
+                            "warning": true
+                        });
+
+                    gui.jobs().finish("checkupdated");
+                }
+                else if (this._serverDate != data.updated)
                 {
                     const html =
                         "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
@@ -443,7 +457,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     JSON.stringify(gui.corePatch().ops[i].getSerialized());
                 }
-                catch (e)
+                catch (e2)
                 {
                     found = true;
                     // this._log.log(e);

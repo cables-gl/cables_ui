@@ -43,8 +43,11 @@ export function notifyError(title, text, options = {})
     lastNotify = title;
     lastText = text;
 
+    const toastId = CABLES.uuid();
+
     iziToast.error(
         {
+            "id": toastId,
             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
             title,
@@ -54,6 +57,8 @@ export function notifyError(title, text, options = {})
             "close": closeable,
             "timeout": timeout
         });
+
+    return toastId;
 }
 
 /**
@@ -95,8 +100,11 @@ export function notify(title, text, options = {})
     lastNotify = title;
     lastText = text;
 
+    const toastId = CABLES.uuid();
+
     iziToast.show(
         {
+            "id": toastId,
             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
             title,
@@ -106,4 +114,11 @@ export function notify(title, text, options = {})
             "close": closeable,
             "timeout": timeout
         });
+    return toastId;
+}
+
+export function hideNotificaton(toastId)
+{
+    let toast = document.getElementById(toastId);
+    if (toast) iziToast.hide({}, toast);
 }
