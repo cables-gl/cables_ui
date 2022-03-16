@@ -6,6 +6,10 @@ export default class PacoConnector extends CABLES.EventTarget
         this._connection = connection;
         this._paco = paco;
         this.initialized = false;
+        this._delays = {};
+        this._delays[CABLES.PACO_PORT_ANIM_UPDATED] = 500;
+        this._delays[CABLES.PACO_VALUECHANGE] = 300;
+        this._timeouts = {};
     }
 
     send(event, vars)
@@ -16,7 +20,20 @@ export default class PacoConnector extends CABLES.EventTarget
         }
 
         const data = { "event": event, "vars": vars };
-        this._connection.sendPaco({ "data": data });
+        if (this._delays.hasOwnProperty(event))
+        {
+            if (this._timeouts[event]) return;
+
+            this._timeouts[event] = setTimeout(() =>
+            {
+                this._connection.sendPaco({ "data": data });
+                this._timeouts[event] = null;
+            }, this._delays[event]);
+        }
+        else
+        {
+            this._connection.sendPaco({ "data": data });
+        }
     }
 
     receive(pacoMsg)

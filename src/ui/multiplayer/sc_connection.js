@@ -47,8 +47,6 @@ export default class ScConnection extends CABLES.EventTarget
         });
     }
 
-    get paramPanelUpdateDelay() { return 300; }
-
     get netMouseCursorDelay() { return 100; }
 
     get chat() { return this._chat; }

@@ -12,7 +12,7 @@ export default class Jobs
     {
         this._listenerStarted = true;
 
-        if (gui.socket)
+        if (gui.socket && gui.socket.chat)
         {
             gui.socket.chat.addEventListener("updated", () =>
             {
