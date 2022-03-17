@@ -452,10 +452,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _registerEventListeners()
     {
-        this._connection.state.on("enableMultiplayer", () =>
+        this._connection.state.on("enableMultiplayer", (msg) =>
         {
-            const multiplayerBar = document.getElementById("multiplayerbar");
-            if (multiplayerBar) multiplayerBar.classList.add("syncing");
+            if (!msg.started)
+            {
+                const multiplayerBar = document.getElementById("multiplayerbar");
+                if (multiplayerBar) multiplayerBar.classList.add("syncing");
+            }
         });
         this._connection.state.on("startPatchSync", () =>
         {
