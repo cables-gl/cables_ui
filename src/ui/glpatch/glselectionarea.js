@@ -9,6 +9,7 @@ export default class GlSelectionArea
         this._selectRect.setColor(glUiConfig.colors.patchSelectionArea);
         this._selectRect.setSize(0, 0);
         this._selectRect.setPosition(0, 0, 1000);
+        this.previousOps = [];
 
         this._w = 0;
         this._h = 0;

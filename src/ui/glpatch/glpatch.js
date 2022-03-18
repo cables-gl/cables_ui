@@ -365,6 +365,12 @@ export default class GlPatch extends CABLES.EventTarget
     {
         this._dropInCircleRect = null;
 
+        if (e.shiftKey) this._pressedShiftKey = true;
+        else this._pressedShiftKey = false;
+
+        if (e.ctrlKey) this._pressedCtrlKey = true;
+        else this._pressedCtrlKey = false;
+
         this.emitEvent("mousemove", e);
 
         if (this._dropInCircleRect)
@@ -978,10 +984,38 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
         {
+            if (this._rectInstancer.interactive)
+                if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
+
             this._rectInstancer.interactive = false;
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
+
+            if (this._pressedShiftKey)
+            {
+                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                {
+                    this._selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                }
+            }
+            if (this._pressedCtrlKey)
+            {
+                let unselIds = [];
+
+                for (let i in this._selectedGlOps)
+                    unselIds.push(this._selectedGlOps[i].id);
+
+                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                {
+                    this._selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                }
+
+                for (let i = 0; i < unselIds.length; i++)
+                    this.unSelectOpId(unselIds[i]);
+            }
 
             gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
 
@@ -995,6 +1029,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._numSelectedGlOps = -1;
             if (this._selectionArea.isVisible())
             {
+                this._selectionArea.previousOps = [];
                 this._selectionArea.hideArea();
                 gui.emitEvent("hideSelectionArea");
             }
@@ -1092,10 +1127,19 @@ export default class GlPatch extends CABLES.EventTarget
         }
     }
 
+    unSelectOpId(id)
+    {
+        if (this._glOpz[id])
+        {
+            delete this._selectedGlOps[id];
+
+            this._glOpz[id].selected = false;
+            this._cachedNumSelectedOps--;
+        }
+    }
+
     _selectOpsInRect(xa, ya, xb, yb)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
-
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _selectOpsInRect");
