@@ -1,3 +1,4 @@
+import ele from "../utils/ele";
 import ModalDialog from "./modaldialog";
 
 /**
@@ -58,8 +59,13 @@ export default class ModalException
 
                 this._getFileSnippet(info[0].file, info[0].line, function (html)
                 {
-                    document.getElementById("stackFileContent").style.display = "block";
-                    document.getElementById("stackFileContent").innerHTML = html;
+                    const el = ele.byId("stackFileContent");
+
+                    if (el)
+                    {
+                        el.style.display = "block";
+                        el.innerHTML = html;
+                    }
                 });
             }
         }

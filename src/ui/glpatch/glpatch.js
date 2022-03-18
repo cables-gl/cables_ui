@@ -453,6 +453,8 @@ export default class GlPatch extends CABLES.EventTarget
             this._selectionArea.hideArea();
             gui.emitEvent("hideSelectionArea");
         }
+        CABLES.UI.hideToolTip();
+
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
         this.emitEvent("mouseleave", e);
