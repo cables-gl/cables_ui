@@ -530,7 +530,8 @@ export default class Gui
         if (this.mainTabs.getNumTabs() > 0) menupos += minmaxButtonSize;
         this._elMenubar.style.left = menupos + 10 + "px";
         const rMenuBar = this._elMenubar.getBoundingClientRect();
-        document.getElementById("multiplayerbar").style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
+        const mpMenuBar = document.getElementById("multiplayerbar");
+        if (mpMenuBar) mpMenuBar.style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
 
         this._elBreadcrumbNav.style.left = menupos + 5 + "px";
         this._elBreadcrumbNav.style.top = 60 + "px";

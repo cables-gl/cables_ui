@@ -1,6 +1,8 @@
-
 import ModalDialog from "../dialogs/modaldialog";
 import Logger from "../utils/logger";
+import { hideNotificaton, notifyError } from "../elements/notification";
+import ChangelogToast from "../dialogs/changelog";
+import userSettings from "../components/usersettings";
 
 export default class Api
 {
@@ -10,6 +12,7 @@ export default class Api
         this.cache = [];
         this.lastErrorReport = 0;
         this.pingTime = 0;
+        this.maintenanceModeWarning = null;
 
         setTimeout(this.ping.bind(this), 5000);
     }
@@ -21,8 +24,34 @@ export default class Api
             if (gui.corePatch().isPlaying())
             {
                 const startTime = performance.now();
-                this.request("POST", "ping", { "lastPing": this.pingTime }, () =>
+                this.request("POST", "ping", { "lastPing": this.pingTime }, (msg) =>
                 {
+                    if (msg.maintenance)
+                    {
+                        const notifyOptions = {
+                            "timeout": false,
+                            "closeable": true,
+                            "force": false
+                        };
+                        this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
+                    }
+                    else
+                    {
+                        if (this.maintenanceModeWarning)
+                        {
+                            hideNotificaton(this.maintenanceModeWarning);
+                            this.maintenanceModeWarning = false;
+                            const lastView = userSettings.get("changelogLastView");
+                            const cl = new ChangelogToast();
+                            cl.getHtml((clhtml) =>
+                            {
+                                if (clhtml !== null)
+                                {
+                                    cl.showNotification();
+                                }
+                            }, lastView);
+                        }
+                    }
                     this.pingTime = Math.round(performance.now() - startTime);
                     this._log.log("ping roundtrip", this.pingTime);
                 });
@@ -156,16 +185,14 @@ export default class Api
     }
 
 
-    sendErrorReport(err)
+    getErrorReport(err)
     {
         err = err || CABLES.lastError;
+
         const report = {};
         report.time = Date.now();
 
         this.lastErrorReport = Date.now();
-        if (window.gui)report.projectId = gui.project()._id;
-        if (window.gui)report.username = gui.user.username;
-        if (window.gui)report.userId = gui.user.id;
         report.url = document.location.href;
 
         report.infoPlatform = navigator.platform;
@@ -174,6 +201,13 @@ export default class Api
 
         if (window.gui)
         {
+            if (gui.project()) report.projectId = gui.project()._id;
+            if (gui.user)
+            {
+                report.username = gui.user.username;
+                report.userId = gui.user.id;
+            }
+
             try
             {
                 const dbgRenderInfo = gui.corePatch().cgl.gl.getExtension("WEBGL_debug_renderer_info");
@@ -185,13 +219,29 @@ export default class Api
             }
         }
 
-
-        report.exception = err.exception;
-        if (err.exception && err.exception.stack)
-            report.stack = err.exception.stack;
+        report.exception = {};
+        if (err.exception)
+        {
+            report.exception = {
+                "type": err.exception.type,
+                "error": err.exception.error,
+                "filename": err.exception.filename,
+                "lineno": err.exception.lineno,
+                "message": err.exception.message,
+            };
+            if (err.exception.stack) report.stack = err.exception.stack;
+        }
 
         report.opName = err.opName;
         report.errorLine = err.errorLine;
+
+        return report;
+    }
+
+    sendErrorReport(err)
+    {
+        err = err || CABLES.lastError;
+        const report = this.getErrorReport(err);
 
         this._log.log("error report sent.");
         this._log.log(report);
@@ -206,7 +256,10 @@ export default class Api
             html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "</center>";
 
-            CABLES.UI.MODAL.show(html, { "title": "" });
+            const modalOptions = {
+                "html": html
+            };
+            new ModalDialog(modalOptions);
             CABLES.lastError = null;
         });
     }

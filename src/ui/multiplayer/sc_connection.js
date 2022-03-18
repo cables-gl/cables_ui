@@ -39,15 +39,13 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (cfg) this._init((isActive) =>
         {
-            if (isActive)
+            if (isActive && this.multiplayerCapable)
             {
                 this._multiplayerUi = new ScUiMultiplayer(this);
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
             }
         });
     }
-
-    get paramPanelUpdateDelay() { return 300; }
 
     get netMouseCursorDelay() { return 100; }
 
@@ -601,34 +599,42 @@ export default class ScConnection extends CABLES.EventTarget
                 }
 
                 this._log.info("first paco message !");
-                gui.corePatch().clear();
                 this._paco = new PacoConnector(this, this._patchConnection);
                 this._patchConnection.connectors.push(this._paco);
-
-
+                this._synchronizePatch(msg.data);
+            }
+            else if (msg.data.event === CABLES.PACO_LOAD)
+            {
+                if (!foreignRequest)
+                {
+                    this._synchronizePatch(msg.data);
+                }
+            }
+            else
+            {
                 const perf = CABLES.UI.uiProfiler.start("[sc] paco receive");
                 this._paco.receive(msg.data);
                 perf.finish();
                 this._pacoSynced = true;
                 this.state.emitEvent("patchSynchronized");
             }
-            else if (msg.data.event === CABLES.PACO_LOAD)
-            {
-                if (!foreignRequest)
-                {
-                    gui.corePatch().clear();
-                    this._paco.receive(msg.data);
-                    this._pacoSynced = true;
-                    this.state.emitEvent("patchSynchronized");
-                }
-            }
-            else
-            {
-                this._paco.receive(msg.data);
-                this._pacoSynced = true;
-                this.state.emitEvent("patchSynchronized");
-            }
         }
+    }
+
+    _synchronizePatch(data)
+    {
+        if (!this._paco) return;
+        this.state.emitEvent("startPatchSync");
+        const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
+        const cbId = gui.corePatch().on("patchLoadEnd", () =>
+        {
+            gui.corePatch().off(cbId);
+            this._pacoSynced = true;
+            this.state.emitEvent("patchSynchronized");
+            perf.finish();
+        });
+        gui.corePatch().clear();
+        this._paco.receive(data);
     }
 
     _handleControlChannelMessage(msg)

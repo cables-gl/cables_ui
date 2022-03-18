@@ -440,11 +440,9 @@ export default class ScState extends CABLES.EventTarget
 
         gui.corePatch().on("pacoPortAnimUpdated", (port) =>
         {
+            if (!port.anim) return;
             if (!this._connection.inMultiplayerSession) return;
-            if (port.anim)
-            {
-                gui.metaKeyframes.showAnim(port.parent.id, port.name);
-            }
+            gui.metaKeyframes.showAnim(port.parent.id, port.name);
         });
 
         gui.on("portValueSetAnimated", (op, portIndex, targetState, defaultValue) =>
@@ -537,35 +535,29 @@ export default class ScState extends CABLES.EventTarget
 
         this._connection.on("onPortValueChanged", (vars) =>
         {
-            if (this._paramPanelTimeout) return;
             if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client.isRemoteClient) return;
             if (this._connection.client.isPilot) return;
 
-
-            this._paramPanelTimeout = setTimeout(() =>
+            const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
+            if (selectedOp)
             {
-                const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
-                if (selectedOp)
+                const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
+                if (portIndex)
                 {
-                    const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
-                    if (portIndex)
+                    const elePortId = "portval_" + portIndex;
+                    const elePort = document.getElementById(elePortId);
+                    if (elePort)
                     {
-                        const elePortId = "portval_" + portIndex;
-                        const elePort = document.getElementById(elePortId);
-                        if (elePort)
+                        gui.opParams.refreshDelayed();
+                        const elePortContainer = document.getElementById("tr_in_" + portIndex);
+                        if (elePortContainer)
                         {
-                            gui.opParams.refreshDelayed();
-                            const elePortContainer = document.getElementById("tr_in_" + portIndex);
-                            if (elePortContainer)
-                            {
-                                elePortContainer.scrollIntoView({ "block": "center" });
-                            }
+                            elePortContainer.scrollIntoView({ "block": "center" });
                         }
                     }
                 }
-                this._paramPanelTimeout = null;
-            }, this._connection.paramPanelUpdateDelay);
+            }
         });
     }
 

@@ -1094,6 +1094,8 @@ export default class GlPatch extends CABLES.EventTarget
 
     _selectOpsInRect(xa, ya, xb, yb)
     {
+        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _selectOpsInRect");
