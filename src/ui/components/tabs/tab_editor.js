@@ -263,8 +263,8 @@ function createEditor(id, val)
             "name": "outNumber",
         },
         {
-            "content": "outBool(\"${1:name}\")",
-            "name": "outBool",
+            "content": "outBoolNum(\"${1:name}\")",
+            "name": "outBoolNum",
         },
         {
             "content": "outString(\"${1:name}\")",
