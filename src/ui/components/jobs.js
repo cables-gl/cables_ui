@@ -123,7 +123,7 @@ export default class Jobs
     {
         clearTimeout(this.removeProgressTo);
         let prog = gui.corePatch().loading.getProgress();
-        console.log("loading progress", prog);
+        // console.log("loading progress", prog);
 
         const elContainer = ele.byId("uploadprogresscontainer");
         ele.byId("uploadprogress").style.width = prog * 100 + "%";
