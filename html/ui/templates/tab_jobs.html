@@ -1,0 +1,44 @@
+<script id="tab_jobs" type="text/x-handlebars-template">
+
+    <style>
+    </style>
+
+
+    <div class="tabContentScrollContainer">
+
+
+        <span class="button-small" onclick="CABLES.UI.logFilter.resetSettings()">Reset</span>
+
+        <br/><br/>
+
+        <table>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+            {{#each list}}
+                <tr>
+                    <td>
+                        {{#if finished}}
+                        <span class="icon icon-check"></span>
+                        {{else}}
+                        <span class="icon icon-loader"></span>
+                        {{/if}}
+
+                    </td>
+                    <td>{{type}}</td>
+                    <td>
+                        {{name}}
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+
+    </div>
+
+
+
+</script>
+
+

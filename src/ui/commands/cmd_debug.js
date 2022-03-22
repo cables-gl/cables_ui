@@ -173,4 +173,5 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.restrictFull,
         "icon": "command"
     }
+
 );

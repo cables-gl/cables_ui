@@ -334,6 +334,11 @@ function createEditor(id, val)
             "content": "CGL.Texture.PIXELFORMATS",
             "name": "CGL.Texture.PIXELFORMATS",
         },
+        {
+            "content": "op.setUiError(\"id\", \"text or null\");",
+            "name": "op.setUiError",
+        },
+
 
     );
     snippetManager.register(snippets, "javascript");

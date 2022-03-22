@@ -37,7 +37,7 @@ CABLES_CMD_PATCH.save = function (force)
         return;
     }
 
-    let dosave = true;
+    let doSave = true;
 
     if (!force)
     {
@@ -45,7 +45,7 @@ CABLES_CMD_PATCH.save = function (force)
         {
             if (gui.project().users.indexOf(gui.user.id) == -1)
             {
-                dosave = false;
+                doSave = false;
 
                 const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
                 + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
@@ -57,7 +57,7 @@ CABLES_CMD_PATCH.save = function (force)
         }
     }
 
-    if (dosave)
+    if (doSave)
     {
         if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
         {

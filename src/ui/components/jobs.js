@@ -1,3 +1,5 @@
+import ele from "../utils/ele";
+
 export default class Jobs
 {
     constructor()
@@ -98,7 +100,7 @@ export default class Jobs
 
     setProgress(jobId, progress)
     {
-        if (progress != 100)ele.byId("uploadprogresscontainer").classList.remove("hidden");
+        if (progress != 100) ele.byId("uploadprogresscontainer").classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
