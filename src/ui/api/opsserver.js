@@ -132,7 +132,9 @@ export default class ServerOps
                 this.load(() =>
                 {
                     gui.maintabPanel.show(true);
-                    this.edit(name);
+                    this.edit(name, false, null, true);
+                    // edit(opname, readOnly, cb, userInteraction)
+
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
@@ -505,7 +507,8 @@ export default class ServerOps
 
         const usernamespace = "Ops.User." + gui.user.usernameLowercase;
 
-        let html = "<h2>" + title + "</h2>";
+
+        let html = "";
         html += "Your op will be private. Only you can see and use it.<br/><br/>";
         html += "Enter a name:<br/><br/>";
         html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
@@ -515,7 +518,13 @@ export default class ServerOps
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
         html += "<br/><br/>";
 
-        CABLES.UI.MODAL.show(html);
+
+        new CABLES.UI.ModalDialog({
+            "title": title,
+            "text": html
+        });
+
+        // CABLES.UI.MODAL.show(html);
 
         document.getElementById("opNameDialogInput").focus();
         document.getElementById("opNameDialogInput").addEventListener("input", () =>

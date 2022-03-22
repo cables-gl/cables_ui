@@ -33,7 +33,6 @@ export default class Jobs
         {
             arr.push(this._jobs[i]);
         }
-        console.log("._finishedJobs", this._finishedJobs);
         arr = arr.concat(this._finishedJobs);
         return arr;
     }
@@ -43,26 +42,14 @@ export default class Jobs
         if (!window.gui) return;
 
         let str = "";
-        let indicator = null;
 
         if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
-
-        // for (const i in this._jobs)
-        // {
-        //     if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
-        //     str += "<div><i class=\"icon icon-loader\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
-        //     str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
-        //     str += "</div>";
-        // }
 
         if (this._jobs.length === 0)
         {
             str += "All server jobs finished...";
-            // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
             gui.showLoadingProgress(false);
         }
-
-        // ele.byId("jobs").innerHTML = str;
     }
 
     update(job, func)

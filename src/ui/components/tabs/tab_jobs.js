@@ -31,7 +31,7 @@ export default class JobsTab extends CABLES.EventTarget
         for (let i = 0; i < jobs.length; i++)
         {
             jobs[i].name = jobs[i].name || jobs[i].title;
-            jobs[i].id = jobs[i].id;
+            jobs[i].type = "editor";
             jobs[i].finished = false || jobs[i].finished;
             list.push(jobs[i]);
         }
