@@ -139,6 +139,8 @@ export default class Jobs
         {
             if (gui.corePatch().loading.getNumAssets() > 2)
                 elContainer.classList.remove("hidden");
+
+            setTimeout(this.updateAssetProgress.bind(this), 300);
         }
     }
 
