@@ -1,5 +1,6 @@
-import Tab from '../../elements/tabpanel/tab';
-import { getHandleBarHtml } from '../../utils/handlebars';
+import Tab from "../../elements/tabpanel/tab";
+import { getHandleBarHtml } from "../../utils/handlebars";
+
 export default class ItemManager
 {
     constructor(title, tabs)

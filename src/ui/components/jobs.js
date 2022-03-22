@@ -4,7 +4,10 @@ export default class Jobs
 {
     constructor()
     {
+        CABLES.EventTarget.apply(this);
+
         this._jobs = [];
+        this._finishedJobs = [];
         this._lastIndicator = null;
         this._jobsEle = ele.byId("jobs");
         this._listenerStarted = false;
@@ -21,6 +24,18 @@ export default class Jobs
                 if (this._jobsEle.style.display === "block") this.updateJobListing();
             });
         }
+    }
+
+    getList()
+    {
+        let arr = [];
+        for (const i in this._jobs)
+        {
+            arr.push(this._jobs[i]);
+        }
+        console.log("._finishedJobs", this._finishedJobs);
+        arr = arr.concat(this._finishedJobs);
+        return arr;
     }
 
     updateJobListing()
@@ -88,8 +103,11 @@ export default class Jobs
             this.updateJobListing();
         });
 
+        if (!job.timeStart) job.timeStart = Date.now();
+
         this._jobs.push(job);
         this.updateJobListing();
+        this.emitEvent("taskAdd");
 
         if (func)
         {
@@ -100,7 +118,8 @@ export default class Jobs
 
     setProgress(jobId, progress)
     {
-        if (progress != 100) ele.byId("uploadprogresscontainer").classList.remove("hidden");
+        const elContainer = ele.byId("uploadprogresscontainer");
+        if (progress != 100) elContainer.classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
@@ -122,8 +141,8 @@ export default class Jobs
             const prog = avg / avgCount;
             ele.byId("uploadprogress").style.width = prog + "%";
 
-            if (prog === 100) ele.byId("uploadprogresscontainer").classList.add("hidden");
-            else ele.byId("uploadprogresscontainer").classList.remove("hidden");
+            if (prog === 100) elContainer.classList.add("hidden");
+            else elContainer.classList.remove("hidden");
         }
     }
 
@@ -141,7 +160,13 @@ export default class Jobs
                         // CABLES.UI.fileSelect.load();
                         // gui.showFileManager();
                     }
+                    this._jobs[i].finished = true;
+                    this._jobs[i].timeEnd = Date.now();
+
+                    this._finishedJobs.push(this._jobs[i]);
                     this._jobs.splice(i, 1);
+                    this.emitEvent("taskFinish");
+
                     break;
                 }
             }
@@ -159,6 +184,7 @@ export default class Jobs
                 }
             }
             this.updateJobListing();
+            this.emitEvent("taskFinish");
         }, 150);
     }
 }
