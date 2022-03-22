@@ -6,26 +6,26 @@
         <span id="timelinetime" class="timelinetime" onclick="gui.timeLine().toggleTimeDisplayMode();"></span>
         <span id="timelineprogress" class="timelineprogress" onclick="gui.timeLine().setProjectLength();"></span>
 
-        <a class="button button-icon info" data-info="skip back" onclick="CABLES.CMD.TIMELINE.TimelineRewindStart();"><span class="icon icon-skip-back"></span></a>
-        <a class="button button-icon info" data-info="fast-forward" onclick="CABLES.CMD.TIMELINE.TimelineRewind();"><span class="icon icon-fast-forward" style="transform:rotate(180deg)"></span></a>
-        <a class="button button-icon info" data-info="play" id="timelineplay" onclick="CABLES.CMD.TIMELINE.togglePlay();"><span class="icon icon-play"></span></a>
-        <a class="button button-icon info" data-info="fast-forward" onclick="CABLES.CMD.TIMELINE.TimelineForward();"><span class="icon icon-fast-forward"></span></a>
+        <a class="button button-icon" onclick="CABLES.CMD.TIMELINE.TimelineRewindStart();"><span class="icon icon-skip-back info" data-info="skip back" ></span></a>
+        <a class="button button-icon" onclick="CABLES.CMD.TIMELINE.TimelineRewind();"><span class="icon icon-fast-forward info" style="transform:rotate(180deg)" data-info="fast-forward"></span></a>
+        <a class="button button-icon" id="timelineplay" onclick="CABLES.CMD.TIMELINE.togglePlay();"><span class="icon icon-play info" data-info="play"></span></a>
+        <a class="button button-icon" onclick="CABLES.CMD.TIMELINE.TimelineForward();"><span class="icon icon-fast-forward info" data-info="fast-forward"></span></a>
 
         <div id="keycontrols">
-            <span id="timeLineInsert" class="button button-icon info" data-info="add key at cursor"><span class="icon icon-plus"></span></span>
-            <a id="keymovemode" class="button button-icon info" data-info="key move mode" ><span class="icon icon-move-h"></span></a>
-            <a id="keyscaleheight" class="button button-icon info" tt data-info="scale vertical" ><span class="icon icon-more-vertical"></span></a>
-            <a id="keyscalewidth" class="button button-icon info" data-info="show all keys"><span class="icon icon-more-horizontal"></span></a>
-            <a id="centercursor" class="button button-icon info" data-info="scroll to cursor"><span class="icon icon-cursor"></span></a>
-            <a id="loop" class="button button-icon info" data-info="toggle loop"><span class="icon icon-repeat"></span></a>
+            <span id="timeLineInsert" class="button button-icon"><span class="icon icon-plus info" data-info="add key at cursor"></span></span>
+            <a id="keymovemode" class="button button-icon"><span class="icon icon-move-h info" data-info="key move mode"></span></a>
+            <a id="keyscaleheight" class="button button-icon"><span class="icon icon-more-vertical info" data-info="scale vertical"></span></a>
+            <a id="keyscalewidth" class="button button-icon"><span class="icon icon-more-horizontal info" data-info="show all keys"></span></a>
+            <a id="centercursor" class="button button-icon"><span class="icon icon-cursor info" data-info="scroll to cursor"></span></a>
+            <a id="loop" class="button button-icon"><span class="icon icon-repeat info" data-info="toggle loop"></span></a>
             <div class="fright clickable" style="padding:10px;" onclick="CABLES.CMD.TIMELINE.hideTimeline()">
                 <a class=" icon icon-x" ></a>
             </div>
             <a id="keyscalelength" class="fright button" onclick="CABLES.contextMenu.show({items:[{'title':'set timeline length',func:CABLES.CMD.TIMELINE.setLength}]},this);">length</a>
-            <a id="keyframe_previous" class="button button-icon info" data-info="previous keyframe"><span class="icon icon-keyframe_previous"></span></a>
-            <a id="keyframe_next" class="button button-icon info" data-info="next keyframe"><span class="icon icon-keyframe_next"></span></a>
+            <a id="keyframe_previous" class="button button-icon"><span class="icon icon-keyframe_previous info" data-info="previous keyframe"></span></a>
+            <a id="keyframe_next" class="button button-icon"><span class="icon icon-keyframe_next info" data-info="next keyframe"></span></a>
             &nbsp;&nbsp;
-            <a id="keyframe_meta" class="button button-icon info" data-info="open timing meta panel"><span class="icon icon-clock"></span></a>
+            <a id="keyframe_meta" class="button button-icon"><span class="icon icon-clock info" data-info="open timing meta panel"></span></a>
         </div>
     </div>
 

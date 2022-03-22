@@ -196,7 +196,6 @@ export default function TimeLineGui()
         }
     }
 
-
     this.isFocussed = function ()
     {
         ele.hasFocus(ele.byId("timeline"));
@@ -218,8 +217,6 @@ export default function TimeLineGui()
             {
                 if (!found && !anims[i].stayInTimeline && anims[i] != newanim)
                 {
-                    console.log("found one! " + i);
-
                     anims[i].removeUi();
                     if (anims.length == 1) anims.length = 0;
                     else anims = anims.slice(i, 1);
@@ -405,6 +402,7 @@ export default function TimeLineGui()
         cursorLine.attr({ "path": "M " + time + " -1000 L" + time + " " + 1110 });
         cursorLineDisplay.attr({ "path": "M " + time + " -1000 L" + time + " " + 30 });
         cursorLine.toFront();
+        gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
     }
 
     this.updateOverviewLine = function ()
@@ -597,14 +595,17 @@ export default function TimeLineGui()
 
     this.gotoZero = function ()
     {
-        // setCursor(0);
         gui.scene().timer.setTime(0);
-
         setCursor(0);
-
         self.centerCursor();
     };
 
+    this.gotoTime = function (time)
+    {
+        gui.scene().timer.setTime(time);
+        setCursor(time);
+        self.centerCursor();
+    };
 
     this.getCanvasCoordsSVG = function (query, evt)
     {
@@ -658,6 +659,7 @@ export default function TimeLineGui()
             self.updateTime();
 
             if (theKey.time > this.getTimeRight() || theKey.time < this.getTimeLeft()) this.centerCursor();
+            gui.emitEvent("timelineControl", "setTime", gui.scene().timer.getTime());
         }
     };
 
@@ -825,9 +827,23 @@ export default function TimeLineGui()
         return this.getTimeLeft() + viewBox.w / CABLES.ANIM.TIMESCALE;
     };
 
+    this.setLoop = function (targetState)
+    {
+        if (anim)
+        {
+            anim.setLoop(targetState);
+            gui.emitEvent("timelineControl", "setLoop", targetState);
+        }
+        updateKeyLine();
+    };
+
     this.toggleLoop = function ()
     {
-        if (anim) anim.setLoop(!anim.getLoop());
+        if (anim)
+        {
+            anim.setLoop(!anim.getLoop());
+            gui.emitEvent("timelineControl", "setLoop", anim.getLoop());
+        }
         updateKeyLine();
     };
 
@@ -888,7 +904,6 @@ export default function TimeLineGui()
         CABLES.ANIM.TIMESCALE = viewBox.w / (maxt - mint) * 1;
         const padding = padVal * CABLES.ANIM.TIMESCALE;
         viewBox.x = mint * CABLES.ANIM.TIMESCALE;
-        console.log("CABLES.ANIM.TIMESCALE ", mint, maxt, count);
 
         self.updateViewBox();
         updateTimeDisplay();
@@ -1071,8 +1086,11 @@ export default function TimeLineGui()
 
     ele.byId("timeLineInsert").addEventListener("click", function (e)
     {
-        anim.addKey(new CABLES.ANIM.Key({ paper, "time": cursorTime, "value": anim.getValue(cursorTime) }));
-        updateKeyLine();
+        if (anim)
+        {
+            anim.addKey(new CABLES.ANIM.Key({ paper, "time": cursorTime, "value": anim.getValue(cursorTime) }));
+            updateKeyLine();
+        }
     });
 
 
@@ -1150,6 +1168,7 @@ export default function TimeLineGui()
             gui.scene().timer.setTime(time);
             self.updateTime();
             ele.byId("timeline").focus();
+            gui.emitEvent("timelineControl", "scrollTime", time);
         }
     }
 
@@ -1719,6 +1738,7 @@ export default function TimeLineGui()
         if (l === null) return;
         projectLength = Math.floor((parseFloat(l)) / gui.timeLine().getFPS());
         self.redraw();
+        gui.emitEvent("timelineControl", "setLength", projectLength);
     };
 
 

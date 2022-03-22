@@ -49,6 +49,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     get netMouseCursorDelay() { return 100; }
 
+    get netTimelineScrollDelay() { return 100; }
+
     get chat() { return this._chat; }
 
     get state() { return this._state; }
@@ -251,6 +253,10 @@ export default class ScConnection extends CABLES.EventTarget
             };
             this._paco.send(CABLES.PACO_LOAD, payload);
             this._pacoSynced = true;
+            if (gui.scene().timer)
+            {
+                this.sendUi("timelineControl", { "command": "setPlay", "value": gui.scene().timer.isPlaying(), "time": gui.scene().timer.getTime() });
+            }
             this.state.emitEvent("patchSynchronized");
         }
     }
