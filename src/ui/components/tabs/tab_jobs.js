@@ -38,7 +38,6 @@ export default class JobsTab extends CABLES.EventTarget
 
         list.sort((a, b) => { return b.timeStart - a.timeStart; });
 
-        console.log(list);
         const html = getHandleBarHtml("tab_jobs", { "user": gui.user, "texts": text.preferences, "list": list });
         this._tab.html(html);
     }

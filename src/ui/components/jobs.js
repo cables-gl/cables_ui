@@ -47,13 +47,13 @@ export default class Jobs
 
         if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
 
-        for (const i in this._jobs)
-        {
-            if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
-            str += "<div><i class=\"icon icon-loader\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
-            str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
-            str += "</div>";
-        }
+        // for (const i in this._jobs)
+        // {
+        //     if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
+        //     str += "<div><i class=\"icon icon-loader\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
+        //     str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
+        //     str += "</div>";
+        // }
 
         if (this._jobs.length === 0)
         {
@@ -62,8 +62,7 @@ export default class Jobs
             gui.showLoadingProgress(false);
         }
 
-        ele.byId("jobs").innerHTML = str;
-        if (!this._listenerStarted) this.startListener();
+        // ele.byId("jobs").innerHTML = str;
     }
 
     update(job, func)
@@ -113,8 +112,35 @@ export default class Jobs
         {
             setTimeout(func, 30);
         }
+
+
+        gui.corePatch().loading.on("finishedTask", this.updateAssetProgress.bind(this));
+        gui.corePatch().loading.on("addTask", this.updateAssetProgress.bind(this));
+        gui.corePatch().loading.on("startTask", this.updateAssetProgress.bind(this));
     }
 
+    updateAssetProgress()
+    {
+        clearTimeout(this.removeProgressTo);
+        let prog = gui.corePatch().loading.getProgress();
+        console.log("loading progress", prog);
+
+        const elContainer = ele.byId("uploadprogresscontainer");
+        ele.byId("uploadprogress").style.width = prog * 100 + "%";
+
+        if (prog === 1)
+        {
+            this.removeProgressTo = setTimeout(() =>
+            {
+                elContainer.classList.add("hidden");
+            }, 100);
+        }
+        else
+        {
+            if (gui.corePatch().loading.getNumAssets() > 2)
+                elContainer.classList.remove("hidden");
+        }
+    }
 
     setProgress(jobId, progress)
     {
@@ -127,7 +153,7 @@ export default class Jobs
             if (this._jobs[i].id == jobId)
             {
                 this._jobs[i].progress = progress;
-                ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
+                // ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
             }
 
             if (this._jobs[i].progress)

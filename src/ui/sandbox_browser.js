@@ -195,7 +195,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
         CABLESUILOADER.talkerAPI.addEventListener("jobProgress", (options, next) =>
         {
-            gui.jobs().setProgress(options.id, options.progress);
+            gui.jobs().setProgress(options.progress);
         });
 
         CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>

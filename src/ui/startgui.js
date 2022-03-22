@@ -120,7 +120,6 @@ export default function startUi(cfg)
 
                 CABLES.UI.startIdleListeners();
 
-                gui.jobs().updateJobListing();
 
                 new HtmlInspector();
 
