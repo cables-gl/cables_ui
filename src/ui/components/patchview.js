@@ -147,6 +147,14 @@ export default class PatchView extends CABLES.EventTarget
 
         this.store.setServerDate(proj.updated);
 
+        /*
+        if (gui.isRemoteClient)
+        {
+            if (cb)cb();
+            return;
+        }
+         */
+
         gui.serverOps.loadProjectLibs(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
