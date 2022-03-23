@@ -563,18 +563,27 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this._active && this._connected)
         {
-            const finalPayload = {
-                "token": this._token,
-                "clientId": this.client.clientId,
-                "username": this.client.username,
-                topic,
-                ...payload,
-            };
+            try
+            {
+                // try to serialize payload to handle errors in scconnection early
+                JSON.stringify(payload);
+                const finalPayload = {
+                    "token": this._token,
+                    "clientId": this.client.clientId,
+                    "username": this.client.username,
+                    topic,
+                    ...payload,
+                };
 
-            this.emitEvent("netActivityOut");
-            const perf = CABLES.UI.uiProfiler.start("[sc] send");
-            this._socket.transmitPublish(this.channelName + "/" + topic, finalPayload);
-            perf.finish();
+                this.emitEvent("netActivityOut");
+                const perf = CABLES.UI.uiProfiler.start("[sc] send");
+                this._socket.transmitPublish(this.channelName + "/" + topic, finalPayload);
+                perf.finish();
+            }
+            catch (e)
+            {
+                this._log.info("failed to serialize object before send, ignoring", payload);
+            }
         }
     }
 
