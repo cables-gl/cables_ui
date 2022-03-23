@@ -897,7 +897,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
-                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(4).gl());
+                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
 
                 if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
                 {

@@ -79,7 +79,7 @@ export default
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
-
+            console.log("getVarGetterOpNameByType", port, port.uiAttribs.objType);
             if (port && port.uiAttribs.objType == "texture")
             {
                 opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTexture;

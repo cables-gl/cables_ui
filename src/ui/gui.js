@@ -384,6 +384,7 @@ export default class Gui
         this._elMenubar = this._elMenubar || ele.byId("menubar");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
         this._elInfoAreaParam = this._elInfoAreaParam || ele.byId("infoAreaParam");
+        this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
 
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
@@ -532,6 +533,11 @@ export default class Gui
         const rMenuBar = this._elMenubar.getBoundingClientRect();
         const mpMenuBar = document.getElementById("multiplayerbar");
         if (mpMenuBar) mpMenuBar.style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
+
+        this._elProgressbar.style.left = menupos + 10 + 8 + "px";
+        this._elProgressbar.style.top = rMenuBar.y + rMenuBar.height - 5 + "px";
+
+        // this._elProgressbar.style.left = menupos + 10 + "px";
 
         this._elBreadcrumbNav.style.left = menupos + 5 + "px";
         this._elBreadcrumbNav.style.top = 60 + "px";

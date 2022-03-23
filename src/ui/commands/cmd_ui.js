@@ -3,6 +3,7 @@ import Preferences from "../components/tabs/tab_preferences";
 import ChangelogToast from "../dialogs/changelog";
 import WatchVarTab from "../components/tabs/tab_watchvars";
 import userSettings from "../components/usersettings";
+import JobsTab from "../components/tabs/tab_jobs";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -303,9 +304,14 @@ CABLES_CMD_UI.zoomIn = function ()
 CABLES_CMD_UI.watchVars = function ()
 {
     new WatchVarTab(gui.mainTabs);
-
-    // gui.patchView.zoomStep(-1);
 };
+
+CABLES_CMD_UI.jobs = function ()
+{
+    new JobsTab(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 
 CMD_UI_COMMANDS.push(
     {
@@ -315,12 +321,6 @@ CMD_UI_COMMANDS.push(
         "icon": "settings",
         "infotext": "cmd_patchsettings"
     },
-    // {
-    //     cmd: "manage patch contributors",
-    //     category: "ui",
-    //     func: CABLES_CMD_UI.settingsContributors,
-    //     icon: 'settings'
-    // },
     {
         "cmd": "show files",
         "category": "ui",
@@ -413,6 +413,13 @@ CMD_UI_COMMANDS.push(
         "icon": "cables",
         "hotkey": "f"
     },
+    {
+        "cmd": "Jobs",
+        "category": "ui",
+        "func": CABLES_CMD_UI.jobs,
+        "icon": "cables"
+    },
+
     // {
     //     "cmd": "download patch svg",
     //     "category": "ui",

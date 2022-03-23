@@ -1,8 +1,13 @@
+import ele from "../utils/ele";
+
 export default class Jobs
 {
     constructor()
     {
+        CABLES.EventTarget.apply(this);
+
         this._jobs = [];
+        this._finishedJobs = [];
         this._lastIndicator = null;
         this._jobsEle = ele.byId("jobs");
         this._listenerStarted = false;
@@ -21,32 +26,30 @@ export default class Jobs
         }
     }
 
+    getList()
+    {
+        let arr = [];
+        for (const i in this._jobs)
+        {
+            arr.push(this._jobs[i]);
+        }
+        arr = arr.concat(this._finishedJobs);
+        return arr;
+    }
+
     updateJobListing()
     {
         if (!window.gui) return;
 
         let str = "";
-        let indicator = null;
 
         if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
-
-        for (const i in this._jobs)
-        {
-            if (this._jobs[i].indicator)indicator = this._jobs[i].indicator;
-            str += "<div><i class=\"icon icon-loader\"></i>&nbsp;&nbsp;" + this._jobs[i].title + "";
-            str += "<div id=\"jobprogress" + this._jobs[i].id + "\" style=\"width:" + (this._jobs[i].progress || 0) + "%;background-color:white;height:3px;margin-top:3px;margin-bottom:7px;\"></div>";
-            str += "</div>";
-        }
 
         if (this._jobs.length === 0)
         {
             str += "All server jobs finished...";
-            // document.querySelector(".cables-logo .icon-cables").classList.remove("blinkanim");
             gui.showLoadingProgress(false);
         }
-
-        ele.byId("jobs").innerHTML = str;
-        if (!this._listenerStarted) this.startListener();
     }
 
     update(job, func)
@@ -86,19 +89,52 @@ export default class Jobs
             this.updateJobListing();
         });
 
+        if (!job.timeStart) job.timeStart = Date.now();
+
         this._jobs.push(job);
         this.updateJobListing();
+        this.emitEvent("taskAdd");
 
         if (func)
         {
             setTimeout(func, 30);
         }
+
+
+        gui.corePatch().loading.on("finishedTask", this.updateAssetProgress.bind(this));
+        gui.corePatch().loading.on("addTask", this.updateAssetProgress.bind(this));
+        gui.corePatch().loading.on("startTask", this.updateAssetProgress.bind(this));
     }
 
+    updateAssetProgress()
+    {
+        clearTimeout(this.removeProgressTo);
+        let prog = gui.corePatch().loading.getProgress();
+        // console.log("loading progress", prog);
+
+        const elContainer = ele.byId("uploadprogresscontainer");
+        ele.byId("uploadprogress").style.width = prog * 100 + "%";
+
+        if (prog === 1)
+        {
+            this.removeProgressTo = setTimeout(() =>
+            {
+                elContainer.classList.add("hidden");
+            }, 100);
+        }
+        else
+        {
+            if (gui.corePatch().loading.getNumAssets() > 2)
+                elContainer.classList.remove("hidden");
+
+            setTimeout(this.updateAssetProgress.bind(this), 300);
+        }
+    }
 
     setProgress(jobId, progress)
     {
-        if (progress != 100)ele.byId("uploadprogresscontainer").classList.remove("hidden");
+        const elContainer = ele.byId("uploadprogresscontainer");
+        if (progress != 100) elContainer.classList.remove("hidden");
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
@@ -106,7 +142,7 @@ export default class Jobs
             if (this._jobs[i].id == jobId)
             {
                 this._jobs[i].progress = progress;
-                ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
+                // ele.byId("jobprogress" + this._jobs[i].id).style.width = progress + "%";
             }
 
             if (this._jobs[i].progress)
@@ -120,8 +156,8 @@ export default class Jobs
             const prog = avg / avgCount;
             ele.byId("uploadprogress").style.width = prog + "%";
 
-            if (prog === 100) ele.byId("uploadprogresscontainer").classList.add("hidden");
-            else ele.byId("uploadprogresscontainer").classList.remove("hidden");
+            if (prog === 100) elContainer.classList.add("hidden");
+            else elContainer.classList.remove("hidden");
         }
     }
 
@@ -139,7 +175,13 @@ export default class Jobs
                         // CABLES.UI.fileSelect.load();
                         // gui.showFileManager();
                     }
+                    this._jobs[i].finished = true;
+                    this._jobs[i].timeEnd = Date.now();
+
+                    this._finishedJobs.push(this._jobs[i]);
                     this._jobs.splice(i, 1);
+                    this.emitEvent("taskFinish");
+
                     break;
                 }
             }
@@ -157,6 +199,7 @@ export default class Jobs
                 }
             }
             this.updateJobListing();
+            this.emitEvent("taskFinish");
         }, 150);
     }
 }

@@ -42,7 +42,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         gui.jobs().start({
             "id": "checkupdated",
-            "title": "check if patch was updated",
+            "title": "check patch was updated",
             "indicator": "canvas"
         });
 
@@ -297,7 +297,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             if (ops[i].uiAttribs.uierrors) delete ops[i].uiAttribs.uierrors;
         }
 
-        gui.jobs().start({ "id": "projectsave", "title": "saving project", "indicator": "canvas" });
+        gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
 
         const currentProject = gui.project();
 
@@ -578,7 +578,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         thePatch.renderOneFrame();
         thePatch.renderOneFrame();
-        gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
+        gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
         cgl.screenShot((screenBlob) =>
         {
