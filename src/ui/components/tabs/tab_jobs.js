@@ -11,7 +11,6 @@ export default class JobsTab extends CABLES.EventTarget
 
         this._tab = new Tab("Jobs", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
-        this.data = { "cells": this.cells, "colNames": this.colNames };
 
         this._html();
 

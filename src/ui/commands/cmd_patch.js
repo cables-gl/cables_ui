@@ -2,6 +2,7 @@ import ModalDialog from "../dialogs/modaldialog";
 import Gui from "../gui";
 import { getHandleBarHtml } from "../utils/handlebars";
 import { notifyError } from "../elements/notification";
+import AnalyzePatchTab from "../components/tabs/tab_analyze";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -227,43 +228,9 @@ CABLES_CMD_PATCH.createVarNumber = function (next)
         } });
 };
 
-CABLES_CMD_PATCH.stats = function (force)
+CABLES_CMD_PATCH.analyze = function (force)
 {
-    let report = "";
-    const patch = gui.corePatch();
-
-    report += "<h3>Ops</h3>";
-
-    const opsCount = {};
-    for (let i = 0; i < patch.ops.length; i++)
-    {
-        opsCount[patch.ops[i].objName] = opsCount[patch.ops[i].objName] || 0;
-        opsCount[patch.ops[i].objName]++;
-    }
-
-    report += patch.ops.length + " Ops total<br/>";
-    report += Object.keys(opsCount).length + " unique ops<br/>";
-    report += "<br/>";
-
-    for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
-
-    // ---
-    report += "<hr/>";
-
-    report += "<h3>Subpatches</h3>";
-
-    const subpatchNumOps = {};
-    for (let i = 0; i < patch.ops.length; i++)
-    {
-        const key = patch.ops[i].uiAttribs.subPatch || "root";
-
-        subpatchNumOps[key] = subpatchNumOps[key] || 0;
-        subpatchNumOps[key]++;
-    }
-
-    for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
-
-    new ModalDialog({ "html": report, "title": "Stats" });
+    new AnalyzePatchTab();
 };
 
 CABLES_CMD_PATCH._createVariable = function (name, p, p2, value, next)
@@ -804,9 +771,9 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.findCommentedOps
     },
     {
-        "cmd": "patch statistics",
+        "cmd": "patch analysis",
         "category": "patch",
-        "func": CABLES_CMD_PATCH.stats
+        "func": CABLES_CMD_PATCH.analyze
     },
     // {
     //     "cmd": "analyze patch",
