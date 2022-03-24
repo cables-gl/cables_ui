@@ -13,6 +13,7 @@ export default class ScConnection extends CABLES.EventTarget
         super();
 
         this.PING_INTERVAL = 5000;
+        this.PING_ANSWER_INTERVAL = 2000;
         this.PINGS_TO_TIMEOUT = 2;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
@@ -20,7 +21,8 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
-        this._lastPing = Date.now();
+        this._lastPingReceived = Date.now();
+        this._lastPingSent = Date.now();
 
         this._socket = null;
         this._connected = false;
@@ -563,24 +565,38 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this._active && this._connected)
         {
-            const finalPayload = {
-                "token": this._token,
-                "clientId": this.client.clientId,
-                "username": this.client.username,
-                topic,
-                ...payload,
-            };
+            try
+            {
+                // try to serialize payload to handle errors in scconnection early
+                JSON.stringify(payload);
+                const finalPayload = {
+                    "token": this._token,
+                    "clientId": this.client.clientId,
+                    "username": this.client.username,
+                    topic,
+                    ...payload,
+                };
 
-            this.emitEvent("netActivityOut");
-            const perf = CABLES.UI.uiProfiler.start("[sc] send");
-            this._socket.transmitPublish(this.channelName + "/" + topic, finalPayload);
-            perf.finish();
+                this.emitEvent("netActivityOut");
+                const perf = CABLES.UI.uiProfiler.start("[sc] send");
+                const scTopic = this.channelName + "/" + topic;
+                this._log.verbose("send:", scTopic, payload);
+                this._socket.transmitPublish(scTopic, finalPayload);
+                perf.finish();
+            }
+            catch (e)
+            {
+                this._log.info("failed to serialize object before send, ignoring", payload);
+            }
         }
     }
 
     _handleChatChannelMsg(msg)
     {
         if (!this.client) return;
+
+        const { token, ...logMsg } = msg;
+        this._log.verbose("received:", logMsg);
 
         if (msg.name === "chatmsg")
         {
@@ -595,6 +611,8 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
+            const { token, ...logMsg } = msg;
+            this._log.verbose("received:", logMsg);
             const foreignRequest = (msg.data && msg.data.vars && msg.data.vars.requestedBy && this.client) && (msg.data.vars.requestedBy !== this.clientId);
 
             if (!this._paco)
@@ -647,6 +665,8 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (!this.client) return;
 
+        const { token, ...logMsg } = msg;
+        this._log.verbose("received:", logMsg);
         if (msg.name === "resync")
         {
             if (msg.clientId === this._socket.clientId) return;
@@ -660,20 +680,31 @@ export default class ScConnection extends CABLES.EventTarget
         {
             const timeOutSeconds = this.PING_INTERVAL * this.OWN_PINGS_TO_TIMEOUT;
             const pingOutTime = Date.now() - timeOutSeconds;
-            msg.lastPing = this._lastPing;
-            if (this._lastPing < pingOutTime)
+            msg.lastPing = this._lastPingReceived;
+            if (this._lastPingReceived < pingOutTime)
             {
                 msg.seconds = timeOutSeconds / 1000;
                 this.emitEvent("onPingTimeout", msg);
                 this._log.info("didn't receive ping for more than", msg.seconds, "seconds");
             }
-            this._sendPing();
+            if (msg.clientId !== this.clientId)
+            {
+                if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
+                {
+                    this._sendPing();
+                    this._lastPingSent = Date.now();
+                }
+            }
+            else
+            {
+                this._lastPingReceived = msg.lastSeen;
+            }
         }
         if (msg.name === "pingAnswer")
         {
             msg.lastSeen = Date.now();
-            this._lastPing = msg.lastSeen;
-            this.emitEvent("onPingAnswer", msg);
+            this._lastPingReceived = msg.lastSeen;
+            if (msg.clientId !== this.clientId) this.emitEvent("onPingAnswer", msg);
         }
         if (msg.name === "pilotRequest")
         {
@@ -691,6 +722,8 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (!this.client) return;
+        const { token, ...logMsg } = msg;
+        this._log.verbose("received:", logMsg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
@@ -699,6 +732,8 @@ export default class ScConnection extends CABLES.EventTarget
     _handleInfoChannelMsg(msg)
     {
         if (!this.client) return;
+        const { token, ...logMsg } = msg;
+        this._log.verbose("received:", logMsg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);
