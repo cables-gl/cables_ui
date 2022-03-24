@@ -421,11 +421,9 @@ export default class Gui
             this.rendererWidth = 0;
             this._showingEditor = false;
 
-
             this._elMenubar.style.zIndex = 40;
-
             const lis = ele.byQueryAll("#menubar li");
-            console.log(lis);
+
             lis[0].onclick = "";
             for (let i = 1; i < lis.length; i++)
             {
