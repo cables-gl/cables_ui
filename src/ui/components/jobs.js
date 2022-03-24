@@ -48,8 +48,12 @@ export default class Jobs
         if (this._jobs.length === 0)
         {
             str += "All server jobs finished...";
+            this._visibleJobAnim = false;
             gui.showLoadingProgress(false);
         }
+        else this._visibleJobAnim = true;
+
+        this._updateVisibility();
     }
 
     update(job, func)
@@ -106,6 +110,22 @@ export default class Jobs
         gui.corePatch().loading.on("startTask", this.updateAssetProgress.bind(this));
     }
 
+    _updateVisibility()
+    {
+        const elContainer = ele.byId("uploadprogresscontainer");
+        if (this._visibleProgressBar)
+            elContainer.classList.remove("hidden");
+        else
+            elContainer.classList.add("hidden");
+
+
+        if (gui.isRemoteClient)
+        {
+            if (!this._visibleJobAnim && !this._visibleProgressBar) ele.byId("menubar").classList.add("hidden");
+            else ele.byId("menubar").classList.remove("hidden");
+        }
+    }
+
     updateAssetProgress()
     {
         clearTimeout(this.removeProgressTo);
@@ -119,13 +139,17 @@ export default class Jobs
         {
             this.removeProgressTo = setTimeout(() =>
             {
-                elContainer.classList.add("hidden");
+                this._visibleProgressBar = false;
+                this._updateVisibility();
             }, 100);
         }
         else
         {
             if (gui.corePatch().loading.getNumAssets() > 2)
-                elContainer.classList.remove("hidden");
+            {
+                this._visibleProgressBar = true;
+                this._updateVisibility();
+            }
 
             setTimeout(this.updateAssetProgress.bind(this), 300);
         }
@@ -134,7 +158,8 @@ export default class Jobs
     setProgress(jobId, progress)
     {
         const elContainer = ele.byId("uploadprogresscontainer");
-        if (progress != 100) elContainer.classList.remove("hidden");
+        this._visibleProgressBar = progress != 100;
+
         let avg = 0;
         let avgCount = 0;
         for (const i in this._jobs)
@@ -156,9 +181,9 @@ export default class Jobs
             const prog = avg / avgCount;
             ele.byId("uploadprogress").style.width = prog + "%";
 
-            if (prog === 100) elContainer.classList.add("hidden");
-            else elContainer.classList.remove("hidden");
+            this._visibleProgressBar = prog != 100;
         }
+        this._updateVisibility();
     }
 
     finish(jobId)
@@ -185,7 +210,6 @@ export default class Jobs
                     break;
                 }
             }
-
 
             if (this._jobs.length === 0)
             {
