@@ -213,7 +213,7 @@ export default class Gui
             });
         }
 
-        gui.find().setClicked(idx);
+        if (gui.find()) gui.find().setClicked(idx);
     }
 
     find(str)

@@ -345,13 +345,9 @@ export default class FindTab
         {
             if (str == ":outdated")
             {
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-                    if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
-                        results.push({ "op": ops[i], "score": 1 });
-                }
+                FindTab.searchOutDated(ops, results);
             }
+
 
             if (str == ":recent")
             {
@@ -434,12 +430,7 @@ export default class FindTab
             }
             else if (str == ":user")
             {
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const op = ops[i];
-                    if (op.objName.indexOf("Ops.User") == 0)
-                        results.push({ op, "score": 1, "where": op.objName });
-                }
+                FindTab.searchUserOps(ops, results);
             }
             else if (str == ":dupassets")
             {
@@ -714,3 +705,25 @@ export default class FindTab
         }
     }
 }
+
+FindTab.searchOutDated = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+        if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
+            results.push({ "op": ops[i], "score": 1 });
+    }
+    return results;
+};
+
+FindTab.searchUserOps = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (op.objName.indexOf("Ops.User") == 0)
+            results.push({ op, "score": 1, "where": op.objName });
+    }
+    return results;
+};
