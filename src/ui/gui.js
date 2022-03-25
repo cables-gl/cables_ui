@@ -420,6 +420,15 @@ export default class Gui
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
             this._showingEditor = false;
+
+            this._elMenubar.style.zIndex = 40;
+            const lis = ele.byQueryAll("#menubar li");
+
+            lis[0].onclick = "";
+            for (let i = 1; i < lis.length; i++)
+            {
+                lis[i].classList.add("hidden");
+            }
         }
 
         if (this.rendererWidth === undefined || this.rendererHeight === undefined)
