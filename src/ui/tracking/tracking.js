@@ -34,12 +34,13 @@ export default class Tracking
 
         this.gui.on("logEvent", (initiator, level, args) =>
         {
-            if (!["error", "warn"].includes(level)) return;
+            if (!["error"].includes(level)) return;
             const perf = CABLES.UI.uiProfiler.start("logEvent");
             this._trackLogEvent("logging", level, initiator, args);
             perf.finish();
         });
 
+        /*
         this.gui.on("coreLogEvent", (initiator, level, args) =>
         {
             if (!["error", "warn"].includes(level)) return;
@@ -55,6 +56,7 @@ export default class Tracking
             this._trackLogEvent("oplogging", level, initiator, args);
             perf.finish();
         });
+         */
 
         this.gui.on("uncaughtError", (report) =>
         {
