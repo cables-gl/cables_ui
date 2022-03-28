@@ -509,7 +509,12 @@ export default class PatchView extends CABLES.EventTarget
         this.checkPatchErrors();
 
         const project = gui.project();
-        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += getHandleBarHtml("clonepatch", {});
+        const projectId = project.shortId || project._id;
+        html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+        {
+            html += getHandleBarHtml("clonepatch", {});
+        }
         html += gui.bookmarks.getHtml();
 
         // const views = document.getElementById("patchviews");
