@@ -1,4 +1,5 @@
 
+import userSettings from "../components/usersettings";
 import Logger from "../utils/logger";
 
 export default class VizLayer extends CABLES.EventTarget
@@ -12,11 +13,18 @@ export default class VizLayer extends CABLES.EventTarget
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
+        this.paused = userSettings.get("vizlayerpaused") || false;
 
         gui.on("uiloaded", () =>
         {
             this._updateSize();
         });
+
+        userSettings.on("onChange", (key, value) =>
+        {
+            if (key == "vizlayerpaused") this.paused = value;
+        });
+
         this._glPatch.on("resize", this._updateSize.bind(this));
 
         this._eleCanvas = document.createElement("canvas");
@@ -30,7 +38,6 @@ export default class VizLayer extends CABLES.EventTarget
         this._updateSize();
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
-
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
@@ -128,11 +135,26 @@ export default class VizLayer extends CABLES.EventTarget
             region.rect(pos[0], pos[1], size[0], size[1]);
             this._canvasCtx.clip(region);
 
+            const scale = 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5;
 
-            this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
+            if (this.paused)
+            {
+                this._canvasCtx.save();
+                this._canvasCtx.scale(scale, scale);
+
+                this._canvasCtx.font = "normal 6px sourceCodePro";
+                this._canvasCtx.fillStyle = "#ccc";
+
+                this._canvasCtx.textAlign = "center";
+                this._canvasCtx.fillText("paused", (pos[0] + size[0] / 2) / scale, (pos[1] + (size[1] / 2)) / scale);
+                this._canvasCtx.restore();
+            }
+            else
+            {
+                this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
+            }
+
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
-            // this._canvasCtx.restore();
-
 
             this._canvasCtx.restore();
             count++;

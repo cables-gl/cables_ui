@@ -313,6 +313,12 @@ CABLES_CMD_UI.jobs = function ()
 };
 
 
+CABLES_CMD_UI.togglePauseVizLayer = function ()
+{
+    userSettings.set("vizlayerpaused", !userSettings.get("vizlayerpaused"));
+};
+
+
 CMD_UI_COMMANDS.push(
     {
         "cmd": "show settings",
@@ -523,7 +529,12 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.profileGPU,
         "icon": "align-justify",
         "infotext": ""
+    },
+    {
+        "cmd": "Toggle Vizlayer Pause",
+        "category": "ui",
+        "func": CABLES_CMD_UI.togglePauseVizLayer,
+        "infotext": ""
     }
-
 
 );

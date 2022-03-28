@@ -25,6 +25,8 @@ export default class WatchVarTab extends CABLES.EventTarget
         });
 
         this._tabs.addTab(this._tab, true);
+        gui.maintabPanel.show(true);
+
 
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
