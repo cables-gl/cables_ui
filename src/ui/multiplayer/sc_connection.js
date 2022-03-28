@@ -18,6 +18,7 @@ export default class ScConnection extends CABLES.EventTarget
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
         this._log = new Logger("scconnection");
+        this._verboseLog = false;
 
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
@@ -122,6 +123,11 @@ export default class ScConnection extends CABLES.EventTarget
             if (!client.isRemoteClient) onlyRemoteClients = false;
         }
         return onlyRemoteClients;
+    }
+
+    enableVerboseLogging()
+    {
+        this._verboseLog = true;
     }
 
     isConnected()
@@ -487,7 +493,6 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 this._sendPing();
             }
-            this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
             {
                 this._socket.destroy();
@@ -580,7 +585,7 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("netActivityOut");
                 const perf = CABLES.UI.uiProfiler.start("[sc] send");
                 const scTopic = this.channelName + "/" + topic;
-                this._log.verbose("send:", scTopic, payload);
+                this._logVerbose("send:", scTopic, payload);
                 this._socket.transmitPublish(scTopic, finalPayload);
                 perf.finish();
             }
@@ -594,9 +599,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleChatChannelMsg(msg)
     {
         if (!this.client) return;
-
-        const { token, ...logMsg } = msg;
-        this._log.verbose("received:", logMsg);
+        this._logVerbose("received:", this.channelName + "/chat", msg);
 
         if (msg.name === "chatmsg")
         {
@@ -608,11 +611,10 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (!this.client) return;
         if (msg.clientId === this._socket.clientId) return;
+        this._logVerbose("received:", this.channelName + "/paco", msg);
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
-            const { token, ...logMsg } = msg;
-            this._log.verbose("received:", logMsg);
             const foreignRequest = (msg.data && msg.data.vars && msg.data.vars.requestedBy && this.client) && (msg.data.vars.requestedBy !== this.clientId);
 
             if (!this._paco)
@@ -664,9 +666,8 @@ export default class ScConnection extends CABLES.EventTarget
     _handleControlChannelMessage(msg)
     {
         if (!this.client) return;
+        this._logVerbose("received:", this.channelName + "/control", msg);
 
-        const { token, ...logMsg } = msg;
-        this._log.verbose("received:", logMsg);
         if (msg.name === "resync")
         {
             if (msg.clientId === this._socket.clientId) return;
@@ -722,8 +723,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (!this.client) return;
-        const { token, ...logMsg } = msg;
-        this._log.verbose("received:", logMsg);
+        this._logVerbose("received:", this.channelName + "/ui", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
@@ -732,10 +732,18 @@ export default class ScConnection extends CABLES.EventTarget
     _handleInfoChannelMsg(msg)
     {
         if (!this.client) return;
-        const { token, ...logMsg } = msg;
-        this._log.verbose("received:", logMsg);
+        this._logVerbose("received:", this.channelName + "/info", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);
+    }
+
+    _logVerbose(prefix, channel, msg)
+    {
+        if (this._verboseLog)
+        {
+            const { token, ...logMsg } = msg;
+            console.log("[sc_connection]", prefix, channel, logMsg);
+        }
     }
 }

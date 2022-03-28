@@ -44,11 +44,19 @@ export default class ModalException
 
         this._dialog = new ModalDialog(this.options);
 
+        let info = null;
         if (this._exception)
         {
             console.trace();
 
-            const info = stackinfo(this._exception);
+            try
+            {
+                info = stackinfo(this._exception);
+            }
+            catch (e)
+            {
+                // browser not supported, we don't care at this point
+            }
 
             console.log("exception:", this._exception, info);
 
@@ -70,14 +78,21 @@ export default class ModalException
             }
         }
 
+        let doTrack = true;
         if (this._opname)
         {
+            if (this._opname.startsWith("Ops.Cables.CustomOp")) doTrack = false;
+            if (this._opname.startsWith("Op.User.")) doTrack = false;
+
             const ops = gui.corePatch().getOpsByObjName(this._opname);
             for (let i = 0; i < ops.length; i++)
             {
                 ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
             }
         }
+
+        CABLES.lastError = { "exception": this._exception, "opname": this._opname, "stackInfo": info };
+        if (doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
     }
 
 
@@ -131,8 +146,6 @@ export default class ModalException
         }
         str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
-        CABLES.lastError = { "exception": this._exception, "opname": this._opname };
-
         let isCustomOp = false;
         if (this._opname)
         {
@@ -153,7 +166,6 @@ export default class ModalException
 
         if (!isCustomOp)
         {
-            gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
             str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
         }
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";

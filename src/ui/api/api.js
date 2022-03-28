@@ -235,6 +235,11 @@ export default class Api
         report.opName = err.opName;
         report.errorLine = err.errorLine;
 
+        if (err.stackInfo)
+        {
+            report.stackInfo = err.stackInfo;
+        }
+
         return report;
     }
 
