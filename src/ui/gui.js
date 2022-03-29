@@ -442,7 +442,6 @@ export default class Gui
             this.rendererHeight = window.innerHeight;
         }
 
-
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
