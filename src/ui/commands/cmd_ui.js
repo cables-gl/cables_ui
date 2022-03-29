@@ -516,13 +516,6 @@ CMD_UI_COMMANDS.push(
         "icon": "align-justify",
         "infotext": "cmd_watchvars"
     },
-    // {
-    //     "cmd": "test automaton",
-    //     "category": "ui",
-    //     "func": CABLES_CMD_UI.showAutomaton,
-    //     "icon": "align-justify",
-    //     "infotext": "cmd_watchvars"
-    // },
     {
         "cmd": "GPU Profiler",
         "category": "ui",
