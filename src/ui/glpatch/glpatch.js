@@ -545,8 +545,8 @@ export default class GlPatch extends CABLES.EventTarget
         if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
         {
             this.unselectAll();
-            gui.patchView.showDefaultPanel();
             gui.showInfo(text.patch);
+            gui.patchView.showDefaultPanel();
 
             if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }

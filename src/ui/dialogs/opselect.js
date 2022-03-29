@@ -493,7 +493,6 @@ export default class OpSelect
         else
         if (this._getQuery() == "")
         {
-            console.log("empty qyer", CABLES.UI.OPSELECT.linkNewLink, CABLES.UI.OPSELECT.linkNewOpToPort);
             this._eleSearchinfo.innerHTML = this.tree.html();
         }
 
