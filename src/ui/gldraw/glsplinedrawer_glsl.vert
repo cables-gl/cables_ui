@@ -89,7 +89,7 @@ void main()
     vec4 offset = vec4( mix(normal,normal2,m) * (pos.y), 0.0, 1.0 );
 
     finalPosition = mix(finalPosition,finalPosition2,pos.x);
-    fProgress=splineProgress;
+    fProgress=splineProgress;//*(zoom*300.0);
 
 
     finalPosition.xy += offset.xy;

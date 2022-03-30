@@ -23,7 +23,7 @@ void main()
     if(fspeed>=2.0)
     {
         float ffspeed=clamp(fspeed,0.,25.0);
-        darken=step(0.7,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0))+minOpacity;
+        darken=step(0.5,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0))+minOpacity;
         darken=clamp(darken,0.3,1.0);
     }
 
