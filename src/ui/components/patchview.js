@@ -508,7 +508,7 @@ export default class PatchView extends CABLES.EventTarget
         let html = "<div class=\"panel\">";
         this.checkPatchErrors();
 
-        if (ele.byId("patch_defaultpanel")) return;
+        if (ele.byId("patchsummary")) return;
 
         const project = gui.project();
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
