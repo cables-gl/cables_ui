@@ -30,7 +30,6 @@
         {{/if}}
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
-
             {{#compare port.uiAttribs.display '==' 'buttons' }}
             {{else}}
             {{#compare port.uiAttribs.display '==' 'button' }}
@@ -267,8 +266,9 @@
 
 
             {{#compare port.type '==' 0 }}
-
-                <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext portCopyClipboard watchPort linkedValue monospace watchPortValue_{{ port.watchId }}" >{{port.port.getValueForDisplay}}</span>
+                <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext portCopyClipboard watchPort linkedValue monospace watchPortValue_{{ port.watchId }}" >
+                    {{port.port.getValueForDisplay}}
+                </span>
             {{/compare}}
 
             {{#compare port.type '==' 5 }}
