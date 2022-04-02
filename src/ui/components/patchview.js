@@ -505,7 +505,7 @@ export default class PatchView extends CABLES.EventTarget
 
     showBookmarkParamsPanel()
     {
-        let html = "<div class=\"panel\">";
+        let html = "<div class=\"panel bookmarkpanel\">";
         this.checkPatchErrors();
 
         if (ele.byId("patchsummary")) return;
@@ -514,8 +514,8 @@ export default class PatchView extends CABLES.EventTarget
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
         {
             const projectId = project.shortId || project._id;
-            html += getHandleBarHtml("patch_summary", { "projectId": projectId });
             html += getHandleBarHtml("clonepatch", {});
+            html += getHandleBarHtml("patch_summary", { "projectId": projectId });
         }
         html += gui.bookmarks.getHtml();
 

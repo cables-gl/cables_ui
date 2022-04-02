@@ -623,11 +623,17 @@
     }
 
     .panel {
+        &.bookmarkpanel {
+          height: 90%;
+        }
         &.patch_summary {
             padding: 0;
+            margin-top: 10px;
+            height: 100%;
+            overflow-y: hidden;
             .iframe {
                 width: 100%;
-                min-height: 300px;
+                height: 100%;
                 border: none;
                 overflow-x: hidden;
             }
