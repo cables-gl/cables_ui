@@ -485,19 +485,28 @@ export default class ServerOps
 
     addAttachmentDialog(opname)
     {
-        const attName = prompt("Attachment name");
-
-        CABLESUILOADER.talkerAPI.send(
-            "opAttachmentAdd",
+        let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
+        // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
+        new CABLES.UI.ModalDialog({
+            "title": "Create attachment",
+            "text": html,
+            "prompt": true,
+            "promptOk": (attName) =>
             {
-                opname,
-                "name": attName,
-            },
-            (err, res) =>
-            {
-                gui.metaTabs.activateTabByName("code");
-            },
-        );
+                CABLESUILOADER.talkerAPI.send(
+                    "opAttachmentAdd",
+                    {
+                        opname,
+                        "name": attName,
+                    },
+                    (err, res) =>
+                    {
+                        this.editAttachment(opname, "att_" + attName);
+                        gui.metaTabs.activateTabByName("code");
+                    },
+                );
+            }
+        });
     }
 
     opNameDialog(title, name, cb)
