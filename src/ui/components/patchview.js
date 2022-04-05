@@ -514,8 +514,8 @@ export default class PatchView extends CABLES.EventTarget
         if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
         {
             const projectId = project.shortId || project._id;
-            html += getHandleBarHtml("clonepatch", {});
             html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+            html += getHandleBarHtml("clonepatch", {});
         }
         html += gui.bookmarks.getHtml();
 
@@ -531,13 +531,7 @@ export default class PatchView extends CABLES.EventTarget
 
         // html += "</div>";
 
-        const panelEle = ele.byId(gui.getParamPanelEleId());
-        const containerEle = panelEle.parentElement;
-        if (containerEle && containerEle.classList.contains("tabcontent") && !containerEle.offsetHeight)
-        {
-            containerEle.style.height = (containerEle.parentElement.clientHeight - containerEle.clientHeight - 3) + "px";
-        }
-        panelEle.innerHTML = html;
+        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }
 
     getSubPatchBounds(subPatch)
