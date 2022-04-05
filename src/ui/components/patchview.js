@@ -531,7 +531,13 @@ export default class PatchView extends CABLES.EventTarget
 
         // html += "</div>";
 
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+        const panelEle = ele.byId(gui.getParamPanelEleId());
+        const containerEle = panelEle.parentElement;
+        if (containerEle && containerEle.classList.contains("tabcontent") && !containerEle.offsetHeight)
+        {
+            containerEle.style.height = (containerEle.parentElement.clientHeight - containerEle.clientHeight - 3) + "px";
+        }
+        panelEle.innerHTML = html;
     }
 
     getSubPatchBounds(subPatch)
