@@ -1009,12 +1009,12 @@ export default class PatchView extends CABLES.EventTarget
         let selectedOps = this.getSelectedOps();
         const ops = [];
         const opIds = [];
-        let j = 0, k = 0;
 
         for (const i in selectedOps)
         {
             if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
             {
+                console.log(selectedOps[i]);
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
         }
@@ -1030,11 +1030,11 @@ export default class PatchView extends CABLES.EventTarget
         // remove links that are not fully copied...
         for (let i = 0; i < ops.length; i++)
         {
-            for (j = 0; j < ops[i].portsIn.length; j++)
+            for (let j = 0; j < ops[i].portsIn.length; j++)
             {
                 if (ops[i].portsIn[j].links)
                 {
-                    k = ops[i].portsIn[j].links.length;
+                    let k = ops[i].portsIn[j].links.length;
                     while (k--)
                     {
                         if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
@@ -1053,11 +1053,11 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
 
-            for (j = 0; j < ops[i].portsOut.length; j++)
+            for (let j = 0; j < ops[i].portsOut.length; j++)
             {
                 if (ops[i].portsOut[j].links)
                 {
-                    k = ops[i].portsOut[j].links.length;
+                    let k = ops[i].portsOut[j].links.length;
                     while (k--)
                     {
                         if (ops[i].portsOut[j].links[k] && ops[i].portsOut[j].links[k].objIn && ops[i].portsOut[j].links[k].objOut)
