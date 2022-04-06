@@ -133,7 +133,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             }
                         });
                 }
-            }.bind(this), function () { /* ignore errors */ }
+            }.bind(this), function (err)
+            {
+                console.log("error", err);
+                gui.jobs().finish("checkupdated");
+                /* ignore errors */
+            }
         );
     }
 
@@ -420,12 +425,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         this._savedPatchCallback = null;
 
 
-                        // trackEvent("ui", "savepatch", "savepatch",
-                        //     {
-                        //         "sizeCompressed": uint8data.length / 1024,
-                        //         "sizeOrig": origSize,
-                        //         "time": performance.now() - startTime
-                        //     });
+                        gui.socket.track("ui", "savepatch", "savepatch",
+                            {
+                                "sizeCompressed": uint8data.length / 1024,
+                                "sizeOrig": origSize,
+                                "time": performance.now() - startTime
+                            });
 
                         gui.jobs().finish("projectsave");
 
