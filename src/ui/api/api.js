@@ -81,24 +81,32 @@ export default class Api
         fetch(url, options)
             .then((response) =>
             {
-                if (response.json) response.json().then((_data) =>
+                if (response.json)
                 {
-                    if (doCache)
-                        this.cache.push({ url, method, _data });
-
-                    const tooktime = (performance.now() - startTime) / 1000;
-                    if (tooktime > 2.0)
+                    response.json().then((_data) =>
                     {
-                        this._log.warn("request took " + tooktime + "s: ", url);
-                    }
+                        if (doCache)
+                            this.cache.push({ url, method, _data });
 
-                    if (cbSuccess) cbSuccess(_data);
-                });
-                else this._log.error("[cables_ui] api fetch err", response);
+                        const tooktime = (performance.now() - startTime) / 1000;
+                        if (tooktime > 2.0)
+                        {
+                            this._log.warn("request took " + tooktime + "s: ", url);
+                        }
+
+                        if (cbSuccess) cbSuccess(_data);
+                    });
+                }
+                else
+                {
+                    this._log.error("[cables_ui] api fetch err", response);
+                    if (cbError) cbError(response);
+                }
             })
             .catch((response) =>
             {
                 if (response.json)
+                {
                     response.json().then((_data) =>
                     {
                         if (CABLES && CABLES.UI && CABLES.UI.MODAL)
@@ -111,8 +119,7 @@ export default class Api
                                     "html": "<br/>You are not logged in, so you can not save projects, or upload files. so all will be lost :/<br/><br/><br/><a class=\"bluebutton\" href=\"/signup\">sign up</a> <a class=\"bluebutton\" style=\"background-color:#222\" onclick=\"gui.closeModal()\">continue</a> <br/><br/> "
                                 });
                             }
-                            else
-                            if (_data.statusText == "Multiple Choices")
+                            else if (_data.statusText == "Multiple Choices")
                             {
                                 this._log.warn("Fetch unknown file response...");
                                 this._log.log(url);
@@ -127,10 +134,14 @@ export default class Api
                             }
                         }
 
-                        if (cbError)cbError(_data.responseJSON, _data);
+                        if (cbError) cbError(_data.responseJSON, _data);
                     });
+                }
                 else
+                {
                     this._log.error("[cables_ui] api fetch err", response);
+                    if (cbError) cbError(response);
+                }
             });
     }
 
