@@ -287,7 +287,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             return;
         }
 
-        const startTime = performance.now();
+        let startTime = performance.now();
 
         gui.corePatch().emitEvent("uiSavePatch");
 
@@ -377,9 +377,15 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                 const origSize = Math.round(data.length / 1024);
 
+                console.log("time prepare ", performance.now() - startTime);
+                startTime = performance.now();
+
                 // data = LZString.compress(data);
                 let uint8data = pako.deflate(data);
                 console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
+
+                console.log("time compress ", performance.now() - startTime);
+                startTime = performance.now();
 
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
@@ -406,13 +412,20 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             this._log.warn("[save patch error]", err);
                         }
 
+                        console.log("time server answer ", performance.now() - startTime);
+                        startTime = performance.now();
 
                         gui.setStateSaved();
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 
-                        console.log("took ", performance.now() - startTime);
 
+                        // trackEvent("ui", "savepatch", "savepatch",
+                        //     {
+                        //         "sizeCompressed": uint8data.length / 1024,
+                        //         "sizeOrig": origSize,
+                        //         "time": performance.now() - startTime
+                        //     });
 
                         gui.jobs().finish("projectsave");
 
