@@ -37,6 +37,11 @@ CABLES_CMD_PATCH.save = function (force)
         notifyError("Not allowed");
         return;
     }
+    if (gui.jobs().hasJob("projectsave"))
+    {
+        console.log("already saving...");
+        return;
+    }
 
     let doSave = true;
 
@@ -60,11 +65,11 @@ CABLES_CMD_PATCH.save = function (force)
 
     if (doSave)
     {
-        if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
-        {
-            gui.patchView.store.saveCurrentProject(undefined, undefined, undefined, force);
-            CABLES.UI.lastSave = Date.now();
-        }
+        // if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
+        // {
+        gui.patchView.store.saveCurrentProject(undefined, undefined, undefined, force);
+        // CABLES.UI.lastSave = Date.now();
+        // }
     }
 };
 
