@@ -152,7 +152,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     const electron = require("electron");
         //     const remote = electron.remote;
         //     const dialog = remote.dialog;
-        //     const data = gui.corePatch().serialize(true);
+        //     const data = gui.corePatch().serialize({ "asObject": true });
 
         //     data.ui = {
         //         "viewBox": {},
@@ -317,7 +317,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         let name = currentProject.name;
         if (_id) id = _id;
         if (_name) name = _name;
-        let data = gui.corePatch().serialize(true);
+        let data = gui.corePatch().serialize({ "asObject": true });
 
         data.ui = {
             "viewBox": {},
@@ -423,7 +423,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         gui.setStateSaved();
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
-
 
                         gui.socket.track("ui", "savepatch", "savepatch",
                             {
