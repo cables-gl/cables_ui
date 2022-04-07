@@ -69,6 +69,17 @@ export default class Jobs
         this.updateJobListing();
     }
 
+    hasJob(id)
+    {
+        for (const i in this._jobs)
+        {
+            if (this._jobs[i].id == id)
+            {
+                return true;
+            }
+        }
+    }
+
     start(job, func)
     {
         for (const i in this._jobs)
