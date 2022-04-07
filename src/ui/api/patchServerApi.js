@@ -292,8 +292,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
             return;
         }
 
-        let startTime = performance.now();
-
         gui.corePatch().emitEvent("uiSavePatch");
 
         if (gui.showGuestWarning()) return;
@@ -382,20 +380,18 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                 const origSize = Math.round(data.length / 1024);
 
-                console.log("time prepare ", performance.now() - startTime);
-                startTime = performance.now();
 
                 // data = LZString.compress(data);
                 let uint8data = pako.deflate(data);
-                console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
-                console.log("time compress ", performance.now() - startTime);
-                startTime = performance.now();
+                if (origSize > 1000)
+                    console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
 
+                const startTime = performance.now();
 
                 CABLES.sandbox.savePatch(
                     {
@@ -416,9 +412,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         {
                             this._log.warn("[save patch error]", err);
                         }
-
-                        console.log("time server answer ", performance.now() - startTime);
-                        startTime = performance.now();
 
                         gui.setStateSaved();
                         if (this._savedPatchCallback) this._savedPatchCallback();
