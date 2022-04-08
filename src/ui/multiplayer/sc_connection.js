@@ -254,7 +254,7 @@ export default class ScConnection extends CABLES.EventTarget
                 this._patchConnection.connectors.push(this._paco);
             }
 
-            const json = gui.corePatch().serialize(true);
+            const json = gui.corePatch().serialize({ "asObject": true });
             const payload = {
                 "patch": JSON.stringify(json),
                 "requestedBy": requestedBy

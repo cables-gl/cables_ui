@@ -403,7 +403,7 @@ export default class GlViewBox
         {
             if (ops[i].uiAttribs.subPatch != subp) continue;
 
-            if (ops[i].uiAttribs.translate)
+            if (ops[i].uiAttribs.translate && !ops[i].uiAttribs.hidden)
             {
                 bb.applyPos(
                     ops[i].uiAttribs.translate.x,

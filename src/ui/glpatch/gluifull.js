@@ -1,5 +1,5 @@
 
-export default function GlGuiFull ()
+export default function GlGuiFull()
 {
     const views = document.getElementById("patchviews");
     const ele = document.createElement("div");
@@ -11,7 +11,7 @@ export default function GlGuiFull ()
 
     if (!CABLES.patch.cgl.gl)
     {
-        console.log("yep,b0rken!!!!");
+        console.log("webgl not available! :/");
         return;
     }
 
@@ -26,4 +26,4 @@ export default function GlGuiFull ()
     {
         a.parentResized();
     });
-};
+}
