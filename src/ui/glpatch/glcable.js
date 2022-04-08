@@ -435,21 +435,21 @@ export default class GlCable
         // get distance to closest point
         distX = closestX - cx;
         distY = closestY - cy;
+
         const distance = Math.sqrt((distX * distX) + (distY * distY));
-
-
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
 
-        if (distance <= r && !mouseOverLineAndOpButNotDragging)
+        if (distance <= r && !mouseOverLineAndOpButNotDragging && !this._glPatch.isMouseOverOp())
         {
             const selectedOp = gui.patchView.getSelectedOps()[0];
             if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
 
-            if (this._glPatch.isDraggingOps() &&
+            if ((this._glPatch.isDraggingOps() &&
                 gui.patchView.getSelectedOps().length == 1 &&
-                (this._link._opIn.id == selectedOp.id || this._link._opOut.id == selectedOp.id))
+                (this._link._opIn.id == selectedOp.id || this._link._opOut.id == selectedOp.id)))
             {
                 // no self hovering/linking
+
                 this._buttonRect.visible =
                     this._buttonRect.interactive =
                     this._buttonRect._hovering = false;
@@ -459,12 +459,14 @@ export default class GlCable
 
             this.setColor();
 
+            // console.log("true");
+
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
 
-            if (this._glPatch._cablesHoverButtonRect) this._glPatch._cablesHoverButtonRect.visible = false;
+            if (this._glPatch._cablesHoverButtonRect != this._buttonRect && this._glPatch._cablesHoverButtonRect) this._glPatch._cablesHoverButtonRect.visible = false;
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
-            this._buttonRect.visible = true;
 
+            this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
@@ -473,6 +475,7 @@ export default class GlCable
 
             if (this._glPatch.cablesHoverText)
                 this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
+
             gui.showInfo(text.linkAddCircle);
 
             perf.finish();
