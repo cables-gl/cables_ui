@@ -439,6 +439,8 @@ export default class GlCable
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
 
+        console.log(distance <= r, mouseOverLineAndOpButNotDragging, this._glPatch.isMouseOverOp());
+
         if (distance <= r && !mouseOverLineAndOpButNotDragging && !this._glPatch.isMouseOverOp())
         {
             const selectedOp = gui.patchView.getSelectedOps()[0];
@@ -463,7 +465,7 @@ export default class GlCable
 
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
 
-            if (this._glPatch._cablesHoverButtonRect != this._buttonRect && this._glPatch._cablesHoverButtonRect) this._glPatch._cablesHoverButtonRect.visible = false;
+            // if (this._glPatch._cablesHoverButtonRect) this._glPatch._cablesHoverButtonRect.visible = false;
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
             this._buttonRect.visible = true;
