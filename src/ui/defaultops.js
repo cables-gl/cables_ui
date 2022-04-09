@@ -36,14 +36,24 @@ export default
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture"
     },
-    "getOpsForPortLink": (p, l) =>
+    "getVizOpsForPortLink": (p, l) =>
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.Ui.VizString"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable"];
+        }
+    },
+    "getOpsForPortLink": (p, l) =>
+    {
+        if (p && p.direction == CONSTANTS.PORT.PORT_DIR_IN)
+        {
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.String.StringEditor"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [CABLES.UI.DEFAULTOPNAMES.defaultOpImage];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return ["Ops.Html.DivElement_v2"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "shader") return ["Ops.Gl.Shader.CustomShader_v2"];
         }
     },
     "getOpsForFilename": (filename) =>
