@@ -394,7 +394,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                 let b64 = Buffer.from(uint8data).toString("base64");
 
-                // console.log("b64encoded", b64.length, b64);
+                console.log("b64encoded", b64.length);
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
