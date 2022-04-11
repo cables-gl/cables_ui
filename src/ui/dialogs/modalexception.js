@@ -14,7 +14,7 @@ export default class ModalException
     {
         this._exception = exception;
 
-        if (exception && exception.message && exception.message.indexOf("NetworkError") > -1 && exception.message.indexOf("/ace/worker") > -1)
+        if (this._exception && this._exception.message && this._exception.message.indexOf("NetworkError") > -1 && this._exception.message.indexOf("/ace/worker") > -1)
         {
             console.log("yay! suppressed nonsense ace editor exception... ");
             return;
@@ -47,17 +47,23 @@ export default class ModalException
         let info = null;
         if (this._exception)
         {
-            console.trace();
-
             try
             {
-                info = stackinfo(this._exception);
+                if (this._exception.error)
+                {
+                    info = stackinfo(this._exception.error);
+                }
+                else
+                {
+                    info = stackinfo(this._exception);
+                }
             }
             catch (e)
             {
                 // browser not supported, we don't care at this point
             }
 
+            console.trace();
             console.log("exception:", this._exception, info);
 
             if (info && info[0].file)
