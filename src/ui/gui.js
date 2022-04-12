@@ -1177,6 +1177,7 @@ export default class Gui
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {
+            e.preventDefault();
             const url = e.target.getAttribute("href");
             const win = window.open(url, "_blank");
             win.focus();
