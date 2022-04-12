@@ -388,8 +388,21 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
 
+                // let decoder = new TextDecoder("utf8");
+                // let b64encoded = btoa(decoder.decode(uint8data));
+                // console.log("buf!!", uint8data);
+
+                let b64 = Buffer.from(uint8data).toString("base64");
+
+                console.log("b64encoded", b64.length);
+
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
+
+
+                // let buf = new Buffer(b64, "base64"); // Ta-da
+                // console.log("buf!!", buf);
+
 
                 const startTime = performance.now();
 
@@ -398,7 +411,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         "id": id,
                         "name": name,
                         "namespace": currentProject.namespace,
-                        "data": uint8data,
+                        "dataB64": b64,
                         "fromBackup": !!CABLES.sandbox.getPatchVersion(),
                         "buildInfo":
                     {
@@ -515,7 +528,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     }
                 }
 
-                this._log.log(e);
+                console.log(e);
                 if (!found)
                     CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
             }
