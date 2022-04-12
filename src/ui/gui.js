@@ -1830,7 +1830,7 @@ export default class Gui
 
         this._corePatch.on("criticalError", function (title, msg)
         {
-            CABLES.UI.MODAL.showError(title, msg);
+            new ModalException(new Error(msg), {});
         });
 
         this._corePatch.on("renderDelayStart", function ()
