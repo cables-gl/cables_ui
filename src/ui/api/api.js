@@ -241,6 +241,7 @@ export default class Api
                 "message": err.exception.message,
             };
             if (err.exception.stack) report.stack = err.exception.stack;
+            if (err.exception.error && err.exception.error.stack) report.stack = err.exception.error.stack;
         }
 
         report.opName = err.opName;

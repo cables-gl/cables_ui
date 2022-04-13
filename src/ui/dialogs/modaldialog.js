@@ -44,14 +44,14 @@ export default class ModalDialog extends CABLES.EventTarget
 
         ele.byId("modalclose").style.display = "block";
 
-        gui.currentModal = this;
+        if (window.gui) gui.currentModal = this;
     }
 
     close()
     {
         this._ele.remove();
         this._bg.hide();
-        gui.currentModal = null;
+        if (window.gui) gui.currentModal = null;
         this.emitEvent("onClose", this);
     }
 

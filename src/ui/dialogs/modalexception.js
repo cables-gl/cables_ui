@@ -14,7 +14,7 @@ export default class ModalException
     {
         this._exception = exception;
 
-        if (exception && exception.message && exception.message.indexOf("NetworkError") > -1 && exception.message.indexOf("/ace/worker") > -1)
+        if (this._exception && this._exception.message && this._exception.message.indexOf("NetworkError") > -1 && this._exception.message.indexOf("/ace/worker") > -1)
         {
             console.log("yay! suppressed nonsense ace editor exception... ");
             return;
@@ -31,7 +31,7 @@ export default class ModalException
             }
         }
 
-        if (String(this._exception.stack).indexOf("file:blob:") == 0)
+        if (this._exception && String(this._exception.stack).indexOf("file:blob:") == 0)
         {
             console.log("ignore file blob exception...");
             return;
@@ -51,7 +51,30 @@ export default class ModalException
 
             try
             {
-                info = stackinfo(this._exception);
+                if (this._exception.error)
+                {
+                    info = stackinfo(this._exception.error);
+                }
+                else
+                {
+                    info = stackinfo(this._exception);
+                }
+                if (info && info[0].file)
+                {
+                    console.log("This is line " + (info[0].line + 1));
+                    console.log("This is file " + (info[0].file));
+
+                    this._getFileSnippet(info[0].file, info[0].line, function (html)
+                    {
+                        const el = ele.byId("stackFileContent");
+
+                        if (el)
+                        {
+                            el.style.display = "block";
+                            el.innerHTML = html;
+                        }
+                    });
+                }
             }
             catch (e)
             {
@@ -59,40 +82,26 @@ export default class ModalException
             }
 
             console.log("exception:", this._exception, info);
-
-            if (info && info[0].file)
-            {
-                console.log("This is line " + (info[0].line + 1));
-                console.log("This is file " + (info[0].file));
-
-                this._getFileSnippet(info[0].file, info[0].line, function (html)
-                {
-                    const el = ele.byId("stackFileContent");
-
-                    if (el)
-                    {
-                        el.style.display = "block";
-                        el.innerHTML = html;
-                    }
-                });
-            }
         }
 
         let doTrack = true;
         if (this._opname)
         {
             if (this._opname.startsWith("Ops.Cables.CustomOp")) doTrack = false;
-            if (this._opname.startsWith("Op.User.")) doTrack = false;
+            if (this._opname.startsWith("Ops.User.")) doTrack = false;
 
-            const ops = gui.corePatch().getOpsByObjName(this._opname);
-            for (let i = 0; i < ops.length; i++)
+            if (window.gui)
             {
-                ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
+                const ops = gui.corePatch().getOpsByObjName(this._opname);
+                for (let i = 0; i < ops.length; i++)
+                {
+                    ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
+                }
             }
         }
 
-        CABLES.lastError = { "exception": this._exception, "opname": this._opname, "stackInfo": info };
-        if (doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
+        CABLES.lastError = { "exception": this._exception, "opName": this._opname, "stackInfo": info };
+        if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
     }
 
 
@@ -157,7 +166,7 @@ export default class ModalException
             }
             else
             {
-                if (gui.user.isAdmin || this._opname.startsWith("Op.User." + gui.user.usernameLowercase))
+                if (window.gui && (gui.user.isAdmin || this._opname.startsWith("Ops.User." + gui.user.usernameLowercase)))
                 {
                     str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }
