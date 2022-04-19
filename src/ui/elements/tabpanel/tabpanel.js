@@ -332,11 +332,11 @@ export default class TabPanel extends CABLES.EventTarget
         iframeTab.contentEle.style.padding = "0px";
         if (options.gotoUrl)
         {
-            iframeTab.toolbarEle.innerHTML = "<a href=\"" + options.gotoUrl + "\" target=\"_blank\">open this in a new browser window</a>";
+            iframeTab.toolbarEle.innerHTML = "<a class=\"button-small\" href=\"" + options.gotoUrl + "\" target=\"_blank\">Open in new tab</a>";
         }
         else
         {
-            iframeTab.toolbarEle.innerHTML = "<a href=\"" + url + "\" target=\"_blank\">open this in a new browser window</a>";
+            iframeTab.toolbarEle.innerHTML = "<a class=\"button-small\" href=\"" + url + "\" target=\"_blank\">Open in new tab</a>";
         }
 
         const frame = document.getElementById("iframe" + id);
