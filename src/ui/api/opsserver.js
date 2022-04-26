@@ -688,6 +688,8 @@ export default class ServerOps
 
                                     gui.serverOps.execute(opname, () =>
                                     {
+                                        setTimeout(() => { gui.opParams.refresh(); }, 100);
+
                                         loadingModal.close();
                                     });
                                 },
