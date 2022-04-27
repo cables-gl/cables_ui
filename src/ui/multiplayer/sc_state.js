@@ -546,7 +546,7 @@ export default class ScState extends CABLES.EventTarget
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {
-                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+                op.setUiAttrib({ "translate": { "x": msg.x, "y": msg.y } });
             }
             else
             {
