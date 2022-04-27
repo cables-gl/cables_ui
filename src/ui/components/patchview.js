@@ -1502,6 +1502,7 @@ export default class PatchView extends CABLES.EventTarget
         const p = op2.getPort(portnames[0]);
         const numFitting = op1.countFittingPorts(p);
 
+
         if (numFitting > 1)
         {
             new SuggestPortDialog(op1, p, e, (suggport) =>
@@ -1528,8 +1529,38 @@ export default class PatchView extends CABLES.EventTarget
 
     linkPorts(opid, pid, op2id, p2id)
     {
-        const op1 = this._p.getOpById(opid);
-        const op2 = this._p.getOpById(op2id);
+        let op1 = this._p.getOpById(opid);
+        let op2 = this._p.getOpById(op2id);
+
+        {
+            // helper number2string auto insert....
+            let p1 = op1.getPortByName(pid);
+            let p2 = op2.getPortByName(p2id);
+
+            if ((p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
+                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING))
+
+            {
+                if (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING)
+                {
+                    const p = p1;
+                    const o = op1;
+                    p1 = p2;
+                    p2 = p;
+                    op1 = op2;
+                    op2 = o;
+                }
+
+                this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToString, { "onOpAdd": (newOp) =>
+                {
+                    this._p.link(op1, p1.getName(), newOp, "Number");
+                    this._p.link(op2, p2.getName(), newOp, "Result");
+
+                    newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                } });
+                return;
+            }
+        }
 
         this._p.link(op1, pid, op2, p2id);
     }

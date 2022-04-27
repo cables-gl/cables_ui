@@ -34,7 +34,8 @@ export default
         "subPatch": "Ops.Ui.SubPatch",
         "uiArea": "Ops.Ui.Area",
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
-        "defaultOpVizTexture": "Ops.Ui.VizTexture"
+        "defaultOpVizTexture": "Ops.Ui.VizTexture",
+        "convertNumberToString": "Ops.String.NumberToString_v2"
     },
     "getVizOpsForPortLink": (p, l) =>
     {
