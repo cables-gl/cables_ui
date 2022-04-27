@@ -1512,6 +1512,7 @@ export default class Gui
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
+        gui.metaTabs.loadCurrentTabUsersettings();
 
         gui.patchView.focus();
     }
