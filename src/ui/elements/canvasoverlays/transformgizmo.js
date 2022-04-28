@@ -314,7 +314,9 @@ export default class Gizmo
             let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
             if (e.shiftKey) v *= 0.025;
             self._dragSum += v;
-            self._draggingPort.set(self._origValue + self._dragSum);
+            const newValue = self._origValue + self._dragSum;
+            self._draggingPort.set(newValue);
+            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.parent.id, self._draggingPort.getName(), newValue);
         }
 
         function lockChange(e)
