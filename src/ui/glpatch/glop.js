@@ -178,10 +178,13 @@ export default class GlOp extends CABLES.EventTarget
 
     sendNetPos()
     {
-        gui.emitEvent("netOpPos", {
-            "opId": this._op.id,
-            "x": this._op.uiAttribs.translate.x,
-            "y": this._op.uiAttribs.translate.y });
+        if (this._op.uiAttribs && this._op.uiAttribs.translate)
+        {
+            gui.emitEvent("netOpPos", {
+                "opId": this._op.id,
+                "x": this._op.uiAttribs.translate.x,
+                "y": this._op.uiAttribs.translate.y });
+        }
     }
 
     _onBgRectDragEnd(rect)

@@ -519,6 +519,26 @@ export default class ScState extends CABLES.EventTarget
             this._sendSelectionArea(x, y, sizeX, sizeY, true);
         });
 
+        gui.on("gizmoMove", (opId, portName, newValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                if (opId && portName)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_VALUECHANGE,
+                        "vars": {
+                            "op": opId,
+                            "port": portName,
+                            "v": newValue
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
+            }
+        });
 
         this._connection.on("netOpPos", (msg) =>
         {
@@ -526,7 +546,7 @@ export default class ScState extends CABLES.EventTarget
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {
-                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+                op.setUiAttrib({ "translate": { "x": msg.x, "y": msg.y } });
             }
             else
             {

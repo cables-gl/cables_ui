@@ -191,20 +191,25 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
         // console.log("CABLES.editorSession", CABLES.editorSession);
-        if (CABLES.editorSession && CABLES.editorSession.loaded()) this.saveCurrentTabUsersettings();
+        if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
 
     loadCurrentTabUsersettings()
     {
-        // console.log("load current tab", userSettings.get("tabsLastTitle_" + this._eleId));
+        console.log("load current tab", this._eleId, this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
 
+        let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
-            // console.log(userSettings.get("tabsLastTitle_" + this._eleId), this._tabs[i].title, userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title);
-
             if (userSettings.get("tabsLastTitle_" + this._eleId) == this._tabs[i].title)
+            {
                 this.activateTab(this._tabs[i].id);
+                found = true;
+                break;
+            }
         }
+
+        if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
     }
 
     saveCurrentTabUsersettings()
@@ -219,7 +224,6 @@ export default class TabPanel extends CABLES.EventTarget
     {
         for (let i = 0; i < this._tabs.length; i++) if (this._tabs[i].dataId == dataId) return this._tabs[i];
     }
-
 
     getTabByTitle(title)
     {

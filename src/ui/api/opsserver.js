@@ -584,6 +584,10 @@ export default class ServerOps
     {
         if (gui.showGuestWarning()) return;
 
+        let name = "";
+        let parts = oldName.split(".");
+        if (parts)
+            name = parts[parts.length - 1];
         this.opNameDialog("Clone operator", name, (newname) =>
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;

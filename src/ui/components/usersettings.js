@@ -62,6 +62,9 @@ class UserSettings extends CABLES.EventTarget
 
     set(key, value)
     {
+        // console.log("usersetting", key, value);
+        // console.log((new Error()).stack);
+
         if (value === "true") value = true;
         else if (value === "false") value = false;
 
