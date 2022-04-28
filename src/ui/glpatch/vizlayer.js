@@ -41,7 +41,7 @@ export default class VizLayer extends CABLES.EventTarget
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
-            if (a.renderPreviewLayer)
+            if (a.renderVizLayer)
             {
                 let item = this._itemsLookup[a.id];
                 if (!item)
@@ -151,7 +151,15 @@ export default class VizLayer extends CABLES.EventTarget
             }
             else
             {
-                this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
+                const layer =
+                {
+                    "x": pos[0],
+                    "y": pos[1],
+                    "width": size[0],
+                    "height": size[1],
+                    "scale": 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5
+                };
+                this._items[i].op.renderVizLayer(this._canvasCtx, layer);
             }
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
