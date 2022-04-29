@@ -708,10 +708,8 @@ export default class Gui
         this._elInfoAreaParam.style.right = "0px";
         this._elInfoAreaParam.style.width = this.rendererWidth + "px";
 
-
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
-
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
