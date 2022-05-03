@@ -178,7 +178,7 @@ export default class GlOp extends CABLES.EventTarget
 
     sendNetPos()
     {
-        if (this._op.uiAttribs && this._op.uiAttribs.translate)
+        if (this._op && this._op.uiAttribs && this._op.uiAttribs.translate)
         {
             gui.emitEvent("netOpPos", {
                 "opId": this._op.id,
