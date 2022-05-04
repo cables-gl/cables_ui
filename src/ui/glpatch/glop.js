@@ -631,6 +631,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _setVisible(v)
     {
+        if (this._visible == v) return;
         if (v !== undefined) this._visible = v;
 
         let visi = this._visible;
