@@ -682,7 +682,8 @@ export default class GlPatch extends CABLES.EventTarget
                 // glOp.opUiAttribs = op.uiAttribs;
                 // glOp.update();
 
-                glOp.sendNetPos();
+                if (newAttribs && newAttribs.translate)
+                    glOp.sendNetPos();
 
                 if (newAttribs.hasOwnProperty("translate"))
                 {
