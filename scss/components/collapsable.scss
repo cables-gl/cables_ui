@@ -1,0 +1,57 @@
+
+.cablesCssUi
+{
+
+
+
+    .collapsable
+    {
+        user-select: none;
+        font-size: 18px;
+        cursor:pointer;
+        padding-left: 14px;
+        margin-top:10px;
+        margin-bottom:8px;
+        line-height: 20px;
+        min-height:10px;
+
+
+        .icon-chevron-down,.icon-chevron-up,.icon-chevron-right
+        {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        &:hover
+        {
+            color:white;
+            cursor:pointer;
+        }
+
+        background: linear-gradient(180deg,
+            rgba(0,0,0,0) calc(50% - 0px),
+            var(--color-04) calc(50%),
+            rgba(0,0,0,0) calc(50% + 2px)
+        );
+
+        text-shadow:
+            -6px 0px 1px var(--color-02),
+            -5px 0px 1px var(--color-02),
+            -4px 0px 1px var(--color-02),
+            -3px 0px 1px var(--color-02),
+            -2px 0px 1px var(--color-02),
+            -1px 0px 1px var(--color-02),
+            6px 0px 1px var(--color-02),
+            5px 0px 1px var(--color-02),
+            4px 0px 1px var(--color-02),
+            3px 0px 1px var(--color-02),
+            2px 0px 1px var(--color-02),
+            1px 0px 1px var(--color-02)
+            ;
+
+    }
+
+
+
+
+}
