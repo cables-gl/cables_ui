@@ -532,7 +532,12 @@ export default class GlPatch extends CABLES.EventTarget
         if (!this._canvasMouseDown) return;
         this._canvasMouseDown = false;
 
+
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
+
+
         this._removeDropInRect();
+
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -550,6 +555,8 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }
+
+        perf.finish();
 
         this._dropInCircleRect = null;
     }
@@ -1073,10 +1080,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     unselectAll()
     {
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] unselectAll");
+
         for (const i in this._glOpz) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
+
+        perf.finish();
     }
 
     getGlOp(op)
