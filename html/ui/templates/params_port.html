@@ -18,7 +18,13 @@
 
 {{#if groupSpacer}}
     <tr>
-        <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
+        <td colspan="11" >
+            <div class="groupSpacer">
+                <!--  onclick="gui.opParams.toggleGroup(this,'opportgroup_{{startGroup}}'); " -->
+                <!-- <span class="icon icon-chevron-down"></span> -->
+                {{startGroup}}
+            </div>
+        </td>
     </tr>
 {{/if}}
 
@@ -320,8 +326,8 @@
                 {{else}}
                     <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >
                     </span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
+                    <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                    <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}

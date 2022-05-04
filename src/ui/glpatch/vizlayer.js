@@ -157,7 +157,7 @@ export default class VizLayer extends CABLES.EventTarget
                     "y": pos[1],
                     "width": size[0],
                     "height": size[1],
-                    "scale": 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5
+                    "scale": size[0] / gui.patchView._patchRenderer.viewBox.zoom * 1.5
                 };
                 this._items[i].op.renderVizLayer(this._canvasCtx, layer);
             }
