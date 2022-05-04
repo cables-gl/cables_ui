@@ -426,7 +426,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -848,18 +848,6 @@ class OpParampanel extends CABLES.EventTarget
         }
         CABLES.contextMenu.show({ items }, el);
     }
-
-    // toggleGroup(parentEle, name)
-    // {
-    //     const els = ele.byClassAll(name);
-    //     for (let i = 0; i < els.length; i++)
-    //     {
-    //         els[i].classList.toggle("hidden");
-    //     }
-
-    //     parentEle.children[0].classList.toggle("icon-chevron-down");
-    //     parentEle.children[0].classList.toggle("icon-chevron-up");
-    // }
 }
 
 
