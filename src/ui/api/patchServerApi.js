@@ -299,12 +299,22 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
 
+        const blueprintIds = [];
         for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].uiAttribs.error) delete ops[i].uiAttribs.error;
             if (ops[i].uiAttribs.warning) delete ops[i].uiAttribs.warning;
             if (ops[i].uiAttribs.hint) delete ops[i].uiAttribs.hint;
             if (ops[i].uiAttribs.uierrors) delete ops[i].uiAttribs.uierrors;
+
+            const op = ops[i];
+            if (op.storage && op.storage.blueprint)
+            {
+                if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.storage.blueprint.subpatchInstance)
+                {
+                    blueprintIds.push(op.storage.blueprint.subpatchInstance);
+                }
+            }
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
@@ -316,6 +326,20 @@ export default class PatchSaveServer extends CABLES.EventTarget
         if (_id) id = _id;
         if (_name) name = _name;
         let data = gui.corePatch().serialize({ "asObject": true });
+
+        if (blueprintIds.length > 0)
+        {
+            let i = data.ops.length;
+            // iterate backwards so we can splice
+            while (i--)
+            {
+                const op = data.ops[i];
+                if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
+                {
+                    data.ops.splice(i, 1);
+                }
+            }
+        }
 
         data.ui = {
             "viewBox": {},
