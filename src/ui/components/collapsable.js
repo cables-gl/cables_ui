@@ -6,16 +6,23 @@ export default Collapsable;
 
 Collapsable.setup = function (parentEle, childEle, collapsed)
 {
-    if (!childEle || !parentEle) return;
+    if (!parentEle) return;
 
     parentEle.classList.add("collapsable");
+
+    if (!childEle)
+    {
+        if (parentEle.innerHTML.indexOf("icon-chevron") == -1)
+            parentEle.innerHTML = "<span class=\"icon icon-chevron-down\" style=\"opacity:0\"></span>" + parentEle.innerHTML;
+        return;
+    }
 
     if (parentEle.innerHTML.indexOf("icon-chevron") == -1)
         parentEle.innerHTML = "<span class=\"icon icon-chevron-down\"></span>" + parentEle.innerHTML;
 
     Collapsable._setGroupCollapsed(parentEle, childEle, collapsed);
 
-    if (!collapsed) Collapsable._toggleGroupElements(parentEle, childEle);
+    // Collapsable._setGroupCollapsed(parentEle, childEle);
 
     parentEle.addEventListener("click", () =>
     {
