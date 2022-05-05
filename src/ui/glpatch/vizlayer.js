@@ -99,6 +99,8 @@ export default class VizLayer extends CABLES.EventTarget
 
         this._updateSize();
 
+        const w = this._eleCanvas.width;
+
         let count = 0;
         for (let i = 0; i < this._items.length; i++)
         {
@@ -157,8 +159,9 @@ export default class VizLayer extends CABLES.EventTarget
                     "y": pos[1],
                     "width": size[0],
                     "height": size[1],
-                    "scale": 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5
+                    "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6
                 };
+
                 this._items[i].op.renderVizLayer(this._canvasCtx, layer);
             }
 

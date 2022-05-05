@@ -129,6 +129,8 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
+            if (!glop.visible) continue;
+
             if (glop) for (let ip = 0; ip < op.portsOut.length; ip++)
             {
                 const thePort = op.portsOut[ip];

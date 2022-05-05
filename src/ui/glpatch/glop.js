@@ -631,6 +631,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _setVisible(v)
     {
+        if (this._visible == v) return;
         if (v !== undefined) this._visible = v;
 
         let visi = this._visible;
@@ -962,6 +963,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (s != this.opUiAttribs.selected)
             {
+                // if (!s) delete this.opUiAttribs.selected;
                 this.opUiAttribs.selected = s;
                 this._updateColors();
             }

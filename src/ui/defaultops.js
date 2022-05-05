@@ -42,9 +42,11 @@ export default
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.Ui.VizString"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && p.uiAttribs.display == "bool") return ["Ops.Ui.VizBool", "Ops.Ui.VizNumber"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable", "Ops.Ui.VizObject"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return ["Ops.Ui.VizObject"];
         }
     },
     "getOpsForPortLink": (p, l) =>
@@ -90,7 +92,7 @@ export default
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
-            console.log("getVarGetterOpNameByType", port, port.uiAttribs.objType);
+
             if (port && port.uiAttribs.objType == "texture")
             {
                 opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTexture;
