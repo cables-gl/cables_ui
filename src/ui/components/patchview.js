@@ -1747,6 +1747,27 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
+    downGradeOp(opid, opname)
+    {
+        console.log(opname);
+        if (!gui.opDocs.getOpDocByName(opname))
+        {
+            CABLES.UI.notify("op has no versions....");
+            return;
+        }
+        const versions = gui.opDocs.getOpDocByName(opname).versions;
+        console.log(versions);
+        if (versions.length > 1)
+        {
+            this.replaceOp(opid, gui.opDocs.getOpDocByName(opname).versions[versions.length - 2].name);
+        }
+        else
+        {
+            CABLES.UI.notify("could not downgrade: has no previous version");
+        }
+    }
+
+
     replaceOpCheck(opid, newOpObjName)
     {
         this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
@@ -1851,8 +1872,11 @@ export default class PatchView extends CABLES.EventTarget
             {
                 for (const i in oldUiAttribs)
                 {
+                    if (i == "uierrors") continue;
                     const a = {};
+
                     a[i] = oldUiAttribs[i];
+
                     newOp.setUiAttrib(a);
                 }
             }, 100);

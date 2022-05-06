@@ -98,6 +98,7 @@ export default class Gui
             this.showOpCrash(portTriggered.parent);
         });
 
+
         this.patchView = new PatchView(this._corePatch);
 
         this._corePatch.gui = true;

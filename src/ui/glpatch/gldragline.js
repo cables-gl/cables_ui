@@ -124,6 +124,7 @@ export default class GlDragLine
                 const portnames = [];
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
+                    if (!this._startGlPorts[i]) continue;
                     opids.push(this._startGlPorts[i].glOp.id);
                     portnames.push(this._startGlPorts[i].name);
                 }
@@ -142,6 +143,7 @@ export default class GlDragLine
             //     opid,
             //     portName);
 
+            if (!this._startGlPorts) return;
             if (this._startGlPorts.length === 0)
             {
                 // left click
@@ -152,15 +154,18 @@ export default class GlDragLine
                 // right click
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
-                    if (!this._startGlPorts[i].glOp)
+                    if (this._startGlPorts[i])
                     {
-                        this._log.warn("glop unknown?", this._startGlPorts, this._startGlPorts[i]);
-                        return;
+                        if (!this._startGlPorts[i].glOp)
+                        {
+                            this._log.warn("glop unknown?", this._startGlPorts, this._startGlPorts[i]);
+                            return;
+                        }
+                        gui.patchView.linkPorts(opid,
+                            portName,
+                            this._startGlPorts[i].glOp.id,
+                            this._startGlPorts[i].name);
                     }
-                    gui.patchView.linkPorts(opid,
-                        portName,
-                        this._startGlPorts[i].glOp.id,
-                        this._startGlPorts[i].name);
                 }
             }
 
@@ -226,10 +231,11 @@ export default class GlDragLine
         }
 
 
-        if (this._startGlPorts.length)
+        if (this._startGlPorts && this._startGlPorts.length)
         {
             for (let i = 0; i < this._startGlPorts.length; i++)
             {
+                if (!this._startGlPorts[i]) continue;
                 if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._splineDrawer.getSplineIndex();
 
                 // this._lineDrawer.setColor(this._lineIndices[i], 0, 1, 0, 1);
