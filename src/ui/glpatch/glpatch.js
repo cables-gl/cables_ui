@@ -454,6 +454,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._pauseMouseUntilButtonUp = false;
             return;
         }
+
         if (this._selectionArea.active)
         {
             this._selectionArea.hideArea();
@@ -468,7 +469,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseEnter(e)
     {
-        if (this._mouseLeaveButtons != e.buttons && e.touchType == "mouse")
+        if (this._mouseLeaveButtons != e.buttons && e.pointerType == "mouse")
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
@@ -531,10 +532,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (!this._canvasMouseDown) return;
         this._canvasMouseDown = false;
-
-
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
-
 
         this._removeDropInRect();
 
@@ -982,7 +980,7 @@ export default class GlPatch extends CABLES.EventTarget
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
-        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
+        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
             if (this._rectInstancer.interactive)
                 if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
