@@ -73,7 +73,7 @@
                 {{#each coreLibs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
-            <select>
+            </select>
             <a class="button-small" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
         </div>
 
@@ -105,7 +105,7 @@
                 {{#each libs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
-            <select>
+            </select>
             <a class="button-small" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
         </div>
 
