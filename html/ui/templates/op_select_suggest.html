@@ -2,15 +2,28 @@
 <script id="op_select_sugggest" type="text/x-handlebars-template">
 
 
-    <h2>Suggestions</h2>
+    <h2 style="margin-top:0px;">Suggestions</h2>
 
+
+    {{#if ops}}
+    <h3>Ops</h3>
     {{#each ops}}
+
+        <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"> {{.}}</a><br/>
+
+    {{/each}}
+    {{/if}}
+
+    {{#if vizops}}
+    <h3>Visualize</h3>
+    {{#each vizops}}
 
         <a class="button-small" onclick="gui.opSelect().addOp('{{.}}');"><span class="icon icon-eye"></span> {{.}}</a><br/>
 
     {{/each}}
+    {{/if}}
 
-    <h2>Helper</h2>
+    <h3>Variables</h3>
 
     <span id="opselect_createTrigger">
         <a class="button-small" onclick="CABLES.CMD.PATCH.createTriggerSendReceive();">Create trigger send/receive</a>

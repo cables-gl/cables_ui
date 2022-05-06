@@ -72,6 +72,11 @@ CABLES_CMD_DEBUG.logging = function ()
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_DEBUG.logSocketCluster = function ()
+{
+    if (gui.socket) gui.socket.enableVerboseLogging();
+};
+
 CABLES_CMD_DEBUG.restrictRemoteView = () =>
 {
     gui.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
@@ -138,6 +143,12 @@ CMD_DEBUG_COMMANDS.push(
         "icon": "command"
     },
     {
+        "cmd": "log socketcluster traffic",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.logSocketCluster,
+        "icon": "command"
+    },
+    {
         "cmd": "glgui tab",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.glguiTab,
@@ -173,4 +184,5 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.restrictFull,
         "icon": "command"
     }
+
 );

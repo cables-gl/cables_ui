@@ -6,6 +6,7 @@ import CMD from "./commands/commands";
 import CanvasLens from "./components/canvaslens";
 import CanvasUi from "./components/canvasui";
 import helperMeshes from "./components/cgl_helpermeshes";
+import Collapsable from "./components/collapsable";
 import FileManager from "./components/filemanager";
 import DragNDrop from "./components/filemananager_dragdrop";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners";
@@ -99,12 +100,12 @@ CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
 CABLES.UI.DEFAULTOPS = defaultops;
-
 // expose global objects
 CABLES.api = new Api();
 CABLES.contextMenu = new ContextMenu();
 CABLES.fileUploader = new FileUploader();
 CABLES.editorSession = new EditorSession();
+CABLES.UI.Collapsable = Collapsable;
 
 CABLES.UI.TIPS = text.tips;
 CABLES.UI.TEXTS = text;

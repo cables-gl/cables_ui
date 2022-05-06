@@ -132,7 +132,9 @@ export default class ServerOps
                 this.load(() =>
                 {
                     gui.maintabPanel.show(true);
-                    this.edit(name);
+                    this.edit(name, false, null, true);
+                    // edit(opname, readOnly, cb, userInteraction)
+
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
@@ -547,19 +549,28 @@ export default class ServerOps
 
     addAttachmentDialog(opname)
     {
-        const attName = prompt("Attachment name");
-
-        CABLESUILOADER.talkerAPI.send(
-            "opAttachmentAdd",
+        let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
+        // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
+        new CABLES.UI.ModalDialog({
+            "title": "Create attachment",
+            "text": html,
+            "prompt": true,
+            "promptOk": (attName) =>
             {
-                opname,
-                "name": attName,
-            },
-            (err, res) =>
-            {
-                gui.metaTabs.activateTabByName("code");
-            },
-        );
+                CABLESUILOADER.talkerAPI.send(
+                    "opAttachmentAdd",
+                    {
+                        opname,
+                        "name": attName,
+                    },
+                    (err, res) =>
+                    {
+                        this.editAttachment(opname, "att_" + attName);
+                        gui.metaTabs.activateTabByName("code");
+                    },
+                );
+            }
+        });
     }
 
     opNameDialog(title, name, cb)
@@ -569,7 +580,8 @@ export default class ServerOps
 
         const usernamespace = "Ops.User." + gui.user.usernameLowercase;
 
-        let html = "<h2>" + title + "</h2>";
+
+        let html = "";
         html += "Your op will be private. Only you can see and use it.<br/><br/>";
         html += "Enter a name:<br/><br/>";
         html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
@@ -579,7 +591,13 @@ export default class ServerOps
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
         html += "<br/><br/>";
 
-        CABLES.UI.MODAL.show(html);
+
+        new CABLES.UI.ModalDialog({
+            "title": title,
+            "text": html
+        });
+
+        // CABLES.UI.MODAL.show(html);
 
         document.getElementById("opNameDialogInput").focus();
         document.getElementById("opNameDialogInput").addEventListener("input", () =>
@@ -630,6 +648,10 @@ export default class ServerOps
     {
         if (gui.showGuestWarning()) return;
 
+        let name = "";
+        let parts = oldName.split(".");
+        if (parts)
+            name = parts[parts.length - 1];
         this.opNameDialog("Clone operator", name, (newname) =>
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
@@ -734,6 +756,8 @@ export default class ServerOps
 
                                     gui.serverOps.execute(opname, () =>
                                     {
+                                        setTimeout(() => { gui.opParams.refresh(); }, 100);
+
                                         loadingModal.close();
                                     });
                                 },
@@ -817,7 +841,7 @@ export default class ServerOps
                                     loadingModal.close();
 
                                     if (res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
-                                    else setStatus("Error: " + err.msg || "Unknown error", false);
+                                    else setStatus("Error: " + err.msg || "Unknown error");
                                 }
                                 else
                                 {
@@ -830,7 +854,7 @@ export default class ServerOps
 
                                     gui.serverOps.execute(opname, () =>
                                     {
-                                        setStatus("saved " + opname, false, res.opFullCode);
+                                        setStatus("saved " + opname);
                                         editor.focus();
                                         setTimeout(() => { gui.opParams.refresh(); }, 100);
 
@@ -840,7 +864,7 @@ export default class ServerOps
                             },
                             (result) =>
                             {
-                                setStatus("ERROR: not saved - " + result.msg, false);
+                                setStatus("ERROR: not saved - " + result.msg);
                                 this._log.log("err result", result);
 
                                 loadingModal.close();

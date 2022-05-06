@@ -1,4 +1,5 @@
 
+import userSettings from "../components/usersettings";
 import Logger from "../utils/logger";
 
 export default class VizLayer extends CABLES.EventTarget
@@ -12,11 +13,18 @@ export default class VizLayer extends CABLES.EventTarget
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
+        this.paused = userSettings.get("vizlayerpaused") || false;
 
         gui.on("uiloaded", () =>
         {
             this._updateSize();
         });
+
+        userSettings.on("onChange", (key, value) =>
+        {
+            if (key == "vizlayerpaused") this.paused = value;
+        });
+
         this._glPatch.on("resize", this._updateSize.bind(this));
 
         this._eleCanvas = document.createElement("canvas");
@@ -31,10 +39,9 @@ export default class VizLayer extends CABLES.EventTarget
 
         gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
 
-
         gui.corePatch().on("onOpAdd", (a) =>
         {
-            if (a.renderPreviewLayer)
+            if (a.renderVizLayer)
             {
                 let item = this._itemsLookup[a.id];
                 if (!item)
@@ -92,6 +99,8 @@ export default class VizLayer extends CABLES.EventTarget
 
         this._updateSize();
 
+        const w = this._eleCanvas.width;
+
         let count = 0;
         for (let i = 0; i < this._items.length; i++)
         {
@@ -128,11 +137,35 @@ export default class VizLayer extends CABLES.EventTarget
             region.rect(pos[0], pos[1], size[0], size[1]);
             this._canvasCtx.clip(region);
 
+            const scale = 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5;
 
-            this._items[i].op.renderPreviewLayer(this._canvasCtx, pos, size);
+            if (this.paused)
+            {
+                this._canvasCtx.save();
+                this._canvasCtx.scale(scale, scale);
+
+                this._canvasCtx.font = "normal 6px sourceCodePro";
+                this._canvasCtx.fillStyle = "#ccc";
+
+                this._canvasCtx.textAlign = "center";
+                this._canvasCtx.fillText("paused", (pos[0] + size[0] / 2) / scale, (pos[1] + (size[1] / 2)) / scale);
+                this._canvasCtx.restore();
+            }
+            else
+            {
+                const layer =
+                {
+                    "x": pos[0],
+                    "y": pos[1],
+                    "width": size[0],
+                    "height": size[1],
+                    "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6
+                };
+
+                this._items[i].op.renderVizLayer(this._canvasCtx, layer);
+            }
+
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
-            // this._canvasCtx.restore();
-
 
             this._canvasCtx.restore();
             count++;

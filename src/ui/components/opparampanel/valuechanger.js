@@ -212,6 +212,8 @@ function valueChanger(eleId, focus, portName, opid)
             return;
         }
 
+        console.log(e);
+
         if (ele.hasFocus(eleInput)) return;
 
         gui.setStateUnsaved();

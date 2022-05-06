@@ -213,7 +213,7 @@ export default class Gui
             });
         }
 
-        gui.find().setClicked(idx);
+        if (gui.find()) gui.find().setClicked(idx);
     }
 
     find(str)
@@ -384,6 +384,7 @@ export default class Gui
         this._elMenubar = this._elMenubar || ele.byId("menubar");
         this._elInfoArea = this._elInfoArea || ele.byId("infoArea");
         this._elInfoAreaParam = this._elInfoAreaParam || ele.byId("infoAreaParam");
+        this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
 
         this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
@@ -419,6 +420,15 @@ export default class Gui
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
             this._showingEditor = false;
+
+            this._elMenubar.style.zIndex = 40;
+            const lis = ele.byQueryAll("#menubar li");
+
+            lis[0].onclick = "";
+            for (let i = 1; i < lis.length; i++)
+            {
+                lis[i].classList.add("hidden");
+            }
         }
 
         if (this.rendererWidth === undefined || this.rendererHeight === undefined)
@@ -431,7 +441,6 @@ export default class Gui
             this.rendererWidth = window.innerWidth;
             this.rendererHeight = window.innerHeight;
         }
-
 
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
@@ -530,7 +539,13 @@ export default class Gui
         if (this.mainTabs.getNumTabs() > 0) menupos += minmaxButtonSize;
         this._elMenubar.style.left = menupos + 10 + "px";
         const rMenuBar = this._elMenubar.getBoundingClientRect();
-        document.getElementById("multiplayerbar").style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
+        const mpMenuBar = document.getElementById("multiplayerbar");
+        if (mpMenuBar) mpMenuBar.style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
+
+        this._elProgressbar.style.left = menupos + 10 + 8 + "px";
+        this._elProgressbar.style.top = rMenuBar.y + rMenuBar.height - 5 + "px";
+
+        // this._elProgressbar.style.left = menupos + 10 + "px";
 
         this._elBreadcrumbNav.style.left = menupos + 5 + "px";
         this._elBreadcrumbNav.style.top = 60 + "px";
@@ -693,10 +708,8 @@ export default class Gui
         this._elInfoAreaParam.style.right = "0px";
         this._elInfoAreaParam.style.width = this.rendererWidth + "px";
 
-
         ele.byId("maintabs").style.top = menubarHeight + "px";
         ele.byId("maintabs").style.height = (window.innerHeight - menubarHeight - timelineHeight - infoAreaHeight) + "px";
-
 
         const tabPanelTop = ele.byQuery("#maintabs .tabpanel");
         let tabPanelTopHeight = 0;
@@ -1162,6 +1175,7 @@ export default class Gui
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {
+            e.preventDefault();
             const url = e.target.getAttribute("href");
             const win = window.open(url, "_blank");
             win.focus();
@@ -1213,6 +1227,8 @@ export default class Gui
 
     bindKeys()
     {
+        if (gui.isRemoteClient) return;
+
         // opens editor for 1st string port found on an op with shift+e
         this.keys.key("e", "shift-e editor", "down", null, { "cmdCtrl": false, "shiftKey": true, "ignoreInput": true }, (e) =>
         {
@@ -1277,7 +1293,11 @@ export default class Gui
             else e.dontPreventDefault = true;
         });
 
-        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { gui.patchView.store.saveAs(); });
+        this.keys.key("s", "Save patch as new patch", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) =>
+        {
+            gui.patchView.store.saveAs();
+        });
+
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
             if (this.patchView.hasFocus())
@@ -1417,7 +1437,10 @@ export default class Gui
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
         this.iconBarTimeline = new IconBar("sidebar_timeline");
 
-        if (userSettings.get("showTipps") && userSettings.get("introCompleted")) gui.tips.show();
+
+        if (this.getRestriction() != Gui.RESTRICT_MODE_REMOTEVIEW &&
+                userSettings.get("showTipps") &&
+                userSettings.get("introCompleted")) gui.tips.show();
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");
@@ -1487,6 +1510,7 @@ export default class Gui
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
+        gui.metaTabs.loadCurrentTabUsersettings();
 
         gui.patchView.focus();
     }
@@ -1515,8 +1539,9 @@ export default class Gui
         //     });
         // }
 
-        if (CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
-        if (CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
+
+        if (!gui.isRemoteClient && CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
+        if (!gui.isRemoteClient && CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
     }
 
     getOpDoc(opname, html, cb)
@@ -1804,7 +1829,7 @@ export default class Gui
 
         this._corePatch.on("criticalError", function (title, msg)
         {
-            CABLES.UI.MODAL.showError(title, msg);
+            new ModalException(new Error(msg), {});
         });
 
         this._corePatch.on("renderDelayStart", function ()

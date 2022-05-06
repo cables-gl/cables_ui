@@ -131,7 +131,7 @@ export default class EditorTab
 
     save()
     {
-        function onSaveCb(txt, hasErrorLine, newCode)
+        function onSaveCb(txt)
         {
             gui.jobs().finish("saveeditorcontent");
 
@@ -141,12 +141,7 @@ export default class EditorTab
                 CABLES.UI.notify(txt);
                 gui.mainTabs.setChanged(this._tab.id, false);
             }
-            if (newCode)
-            {
-                const posOld = this._editor.getCursorPosition();
-                this._editor.setValue(newCode, 1);
-                this._editor.gotoLine(posOld.row + 1, posOld.column);
-            }
+
             this._editor.focus();
             setTimeout(
                 function ()
@@ -268,8 +263,8 @@ function createEditor(id, val)
             "name": "outNumber",
         },
         {
-            "content": "outBool(\"${1:name}\")",
-            "name": "outBool",
+            "content": "outBoolNum(\"${1:name}\")",
+            "name": "outBoolNum",
         },
         {
             "content": "outString(\"${1:name}\")",
@@ -339,6 +334,11 @@ function createEditor(id, val)
             "content": "CGL.Texture.PIXELFORMATS",
             "name": "CGL.Texture.PIXELFORMATS",
         },
+        {
+            "content": "op.setUiError(\"id\", \"text or null\");",
+            "name": "op.setUiError",
+        },
+
 
     );
     snippetManager.register(snippets, "javascript");

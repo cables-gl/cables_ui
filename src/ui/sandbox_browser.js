@@ -100,33 +100,13 @@ export default class SandboxBrowser extends CABLES.EventTarget
     {
         const lastView = userSettings.get("changelogLastView");
         const cl = new ChangelogToast();
-
         cl.getHtml((clhtml) =>
         {
             if (clhtml !== null)
             {
-                iziToast.show({
-                    "position": "topRight",
-                    "theme": "dark",
-                    "title": "update",
-                    "message": "cables has been updated! ",
-                    "progressBar": false,
-                    "animateInside": false,
-                    "close": true,
-                    "timeout": false,
-                    "buttons": [
-                        [
-                            "<button>read more</button>",
-                            function (instance, toast)
-                            {
-                                CABLES.CMD.UI.showChangelog();
-                                iziToast.hide({}, toast);
-                            },
-                        ],
-                    ],
-                });
+                cl.showNotification();
             }
-        }, userSettings.get("changelogLastView"));
+        }, lastView);
     }
 
     showBrowserWarning(id)
@@ -215,7 +195,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
         CABLESUILOADER.talkerAPI.addEventListener("jobProgress", (options, next) =>
         {
-            gui.jobs().setProgress(options.id, options.progress);
+            gui.jobs().setProgress(options.progress);
         });
 
         CABLESUILOADER.talkerAPI.send("getPatch", {}, (err, r) =>

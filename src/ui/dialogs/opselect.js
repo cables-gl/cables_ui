@@ -47,7 +47,9 @@ export default class OpSelect
 
     _getQuery()
     {
-        return ele.byId("opsearch").value;
+        const el = ele.byId("opsearch");
+        if (!el) return "";
+        return el.value || "";
     }
 
     updateOptions(opname)
@@ -350,37 +352,49 @@ export default class OpSelect
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opname);
 
-        if (this._getQuery() == "" && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
+        if ((CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
         {
             let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+            let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
-            const html = getHandleBarHtml("op_select_sugggest", { "ops": ops });
+            const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops });
             this._eleSearchinfo.innerHTML = html;
 
             /*
-            var helper buttons / shortcuts
+                var helper buttons / shortcuts
 
-            case 1: pressing circle of an existing link on a "typed value" cable - show create button
-            case 2: pressing circle of an existing link on a "typed value" cable - show "existing var" button IF a var by that port type exists already
-            case 3: dragging out (or clicking title of) a "typed value" input port - show create button
-            case 4: dragging out (or clicking title of) a "typed value" input port - show "existing var" button IF a var by that port type exists already
-            case 5: pressing circle of an existing link on a trigger cable - show create button
-            case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
-            case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
-            case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
+                case 1: pressing circle of an existing link on a "typed value" cable - show create button
+                case 2: pressing circle of an existing link on a "typed value" cable - show "existing var" button IF a var by that port type exists already
+                case 3: dragging out (or clicking title of) a "typed value" input port - show create button
+                case 4: dragging out (or clicking title of) a "typed value" input port - show "existing var" button IF a var by that port type exists already
+                case 5: pressing circle of an existing link on a trigger cable - show create button
+                case 6: pressing circle of an existing link on a trigger cable - show "use existing" button IF already a triggersend exists
+                case 7: dragging out (or clicking title of) a trigger input port - show "receive existing trigger" button IF already a triggersend exists
+                case 8: dragging out (or clicking title of) a trigger output port - show "send existing trigger" button IF already a triggersend exists
 
-            [case9]: for now we dont set vars when dragging out an output "typed value"-port because the whole discussion if this should be a triggerVar op or not...
-
+                [case9]: for now we dont set vars when dragging out an output "typed value"-port because the whole discussion if this should be a triggerVar op or not...
             */
             const link = CABLES.UI.OPSELECT.linkNewLink;
-
-            if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION)) ele.show(ele.byId("opselect_createTrigger"));
+            let found = false;
+            if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_FUNCTION))
+            {
+                ele.show(ele.byId("opselect_createTrigger"));
+                found = true;
+            }
             else ele.hide(ele.byId("opselect_createTrigger"));
 
-            if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_ARRAY || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_OBJECT)) ele.show(ele.byId("opselect_createVar"));
+            if (CABLES.UI.OPSELECT.linkNewOpToPort && (CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_VALUE || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_STRING || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_ARRAY || CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_OBJECT))
+            {
+                ele.show(ele.byId("opselect_createVar"));
+                found = true;
+            }
             else ele.hide(ele.byId("opselect_createVar"));
 
-            if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING || link.portIn.type == CABLES.OP_PORT_TYPE_ARRAY || link.portIn.type == CABLES.OP_PORT_TYPE_OBJECT)) ele.show(ele.byId("opselect_replaceVar"));
+            if (link && link.portIn && (link.portIn.type == CABLES.OP_PORT_TYPE_VALUE || link.portIn.type == CABLES.OP_PORT_TYPE_STRING || link.portIn.type == CABLES.OP_PORT_TYPE_ARRAY || link.portIn.type == CABLES.OP_PORT_TYPE_OBJECT))
+            {
+                ele.show(ele.byId("opselect_replaceVar"));
+                found = true;
+            }
             else ele.hide(ele.byId("opselect_replaceVar"));
 
 
@@ -391,7 +405,11 @@ export default class OpSelect
                 const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
                 if (numExistingTriggers == 0) ele.hide(eleReplaceLinkWithExistingTrigger);
-                else ele.show(eleReplaceLinkWithExistingTrigger);
+                else
+                {
+                    ele.show(eleReplaceLinkWithExistingTrigger);
+                    found = true;
+                }
             }
             else ele.hide(eleReplaceLinkWithExistingTrigger);
 
@@ -407,7 +425,11 @@ export default class OpSelect
                     else eleTitle.innerText = "Send into existing trigger send";
 
                 if (numExistingTriggers == 0) ele.hide(eleCreateWithExistingTrigger);
-                else ele.show(eleCreateWithExistingTrigger);
+                else
+                {
+                    ele.show(eleCreateWithExistingTrigger);
+                    found = true;
+                }
             }
             else ele.hide(eleCreateWithExistingTrigger);
 
@@ -417,7 +439,11 @@ export default class OpSelect
             {
                 const existingVars = gui.corePatch().getVars(CABLES.UI.OPSELECT.linkNewOpToPort.type);
                 if (existingVars.length == 0) ele.hide(eleCreateWithExistingVar);
-                else ele.show(eleCreateWithExistingVar);
+                else
+                {
+                    ele.show(eleCreateWithExistingVar);
+                    found = true;
+                }
             }
             else ele.hide(eleCreateWithExistingVar);
 
@@ -427,9 +453,17 @@ export default class OpSelect
                 // show "replace with existing var button..."
                 const existingVars = gui.corePatch().getVars(link.portIn.type);
                 if (existingVars.length == 0) ele.hide(eleReplaceWithExistingVar);
-                else ele.show(eleReplaceWithExistingVar);
+                else
+                {
+                    ele.show(eleReplaceWithExistingVar);
+                    found = true;
+                }
             }
             else ele.hide(eleReplaceWithExistingVar);
+
+
+            if (!ops && !found)
+                this._eleSearchinfo.innerHTML = "";
         }
         else
         if (opname && this._currentSearchInfo != opname)
@@ -462,6 +496,7 @@ export default class OpSelect
         {
             this._eleSearchinfo.innerHTML = this.tree.html();
         }
+
         this._currentSearchInfo = opname;
     }
 
@@ -630,6 +665,7 @@ export default class OpSelect
             "linkNewLink": link
         };
 
+
         this._forceShowOldOps = userSettings.get("showOldOps") || false;
         this._searchInputEle = ele.byId("opsearch");
 
@@ -660,7 +696,6 @@ export default class OpSelect
 
         if (userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
-
 
         const eleOpsearch = ele.byId("opsearch");
         eleOpsearch.select();
@@ -707,6 +742,7 @@ export default class OpSelect
         setTimeout(() =>
         {
             this.updateInfo();
+
             eleOpsearch.focus();
         }, 50);
     }

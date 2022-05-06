@@ -351,11 +351,28 @@ export default class ScState extends CABLES.EventTarget
             if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client && this._connection.client.isPilot)
             {
-                const payload = {
-                    "command": command,
-                    "value": value
-                };
-                this._connection.sendUi("timelineControl", payload);
+                if (command !== "scrollTime")
+                {
+                    const payload = {
+                        "command": command,
+                        "value": value
+                    };
+                    this._connection.sendUi("timelineControl", payload);
+                }
+                else
+                {
+                    if (this._timelineTimeout) return;
+
+                    const payload = {
+                        "command": "setTime",
+                        "value": value
+                    };
+                    this._timelineTimeout = setTimeout(() =>
+                    {
+                        this._connection.sendUi("timelineControl", payload);
+                        this._timelineTimeout = null;
+                    }, this._connection.netTimelineScrollDelay);
+                }
             }
         });
 
@@ -387,26 +404,40 @@ export default class ScState extends CABLES.EventTarget
         {
             if (!this._connection.inMultiplayerSession) return;
             const timeline = gui.timeLine();
+            if (!timeline) return;
+
             switch (msg.command)
             {
-            case "goto":
-                if (!msg.value)
+            case "setTime":
+                if (msg.hasOwnProperty("value"))
                 {
-                    timeline.gotoZero();
-                }
-                else
-                {
-                    timeline.gotoOffset(Number(msg.value));
+                    gui.timeLine().gotoTime(msg.value);
                 }
                 break;
             case "setPlay":
                 const timer = gui.scene().timer;
-                const targetState = !!msg.value;
-                const isPlaying = timer.isPlaying();
-                if (targetState !== isPlaying)
+                if (timer)
                 {
-                    timeline.togglePlay();
+                    const targetState = !!msg.value;
+                    const isPlaying = timer.isPlaying();
+                    if (targetState !== isPlaying)
+                    {
+                        timeline.togglePlay();
+                    }
+                    if (msg.hasOwnProperty("time"))
+                    {
+                        gui.timeLine().gotoTime(msg.time);
+                    }
                 }
+                break;
+            case "setLoop":
+                timeline.setLoop(msg.value);
+                break;
+            case "setAnim":
+                timeline.setAnim(msg.value.newanim, msg.value.config);
+                break;
+            case "setLength":
+                timeline.setTimeLineLength(msg.value);
                 break;
             }
         });
@@ -440,11 +471,9 @@ export default class ScState extends CABLES.EventTarget
 
         gui.corePatch().on("pacoPortAnimUpdated", (port) =>
         {
+            if (!port.anim) return;
             if (!this._connection.inMultiplayerSession) return;
-            if (port.anim)
-            {
-                gui.metaKeyframes.showAnim(port.parent.id, port.name);
-            }
+            gui.metaKeyframes.showAnim(port.parent.id, port.name);
         });
 
         gui.on("portValueSetAnimated", (op, portIndex, targetState, defaultValue) =>
@@ -490,6 +519,26 @@ export default class ScState extends CABLES.EventTarget
             this._sendSelectionArea(x, y, sizeX, sizeY, true);
         });
 
+        gui.on("gizmoMove", (opId, portName, newValue) =>
+        {
+            if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client && this._connection.client.isPilot)
+            {
+                if (opId && portName)
+                {
+                    const payload = {};
+                    payload.data = {
+                        "event": CABLES.PACO_VALUECHANGE,
+                        "vars": {
+                            "op": opId,
+                            "port": portName,
+                            "v": newValue
+                        }
+                    };
+                    this._connection.sendPaco(payload);
+                }
+            }
+        });
 
         this._connection.on("netOpPos", (msg) =>
         {
@@ -497,7 +546,7 @@ export default class ScState extends CABLES.EventTarget
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {
-                op.setUiAttrib({ "fromNetwork": true, "translate": { "x": msg.x, "y": msg.y } });
+                op.setUiAttrib({ "translate": { "x": msg.x, "y": msg.y } });
             }
             else
             {
@@ -537,35 +586,29 @@ export default class ScState extends CABLES.EventTarget
 
         this._connection.on("onPortValueChanged", (vars) =>
         {
-            if (this._paramPanelTimeout) return;
             if (!this._connection.inMultiplayerSession) return;
             if (this._connection.client.isRemoteClient) return;
             if (this._connection.client.isPilot) return;
 
-
-            this._paramPanelTimeout = setTimeout(() =>
+            const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
+            if (selectedOp)
             {
-                const selectedOp = gui.patchView.getSelectedOps().find((op) => { return op.id === vars.op; });
-                if (selectedOp)
+                const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
+                if (portIndex)
                 {
-                    const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
-                    if (portIndex)
+                    const elePortId = "portval_" + portIndex;
+                    const elePort = document.getElementById(elePortId);
+                    if (elePort)
                     {
-                        const elePortId = "portval_" + portIndex;
-                        const elePort = document.getElementById(elePortId);
-                        if (elePort)
+                        gui.opParams.refreshDelayed();
+                        const elePortContainer = document.getElementById("tr_in_" + portIndex);
+                        if (elePortContainer)
                         {
-                            gui.opParams.refreshDelayed();
-                            const elePortContainer = document.getElementById("tr_in_" + portIndex);
-                            if (elePortContainer)
-                            {
-                                elePortContainer.scrollIntoView({ "block": "center" });
-                            }
+                            elePortContainer.scrollIntoView({ "block": "center" });
                         }
                     }
                 }
-                this._paramPanelTimeout = null;
-            }, this._connection.paramPanelUpdateDelay);
+            }
         });
     }
 

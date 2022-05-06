@@ -33,13 +33,13 @@ export default class Logger extends CABLES.EventTarget
     error(args)
     {
         console.error("[" + this.initiator + "]", ...arguments);
-        if (gui) gui.emitEvent("logEvent", this.initiator, "error", arguments);
+        if (window.gui) gui.emitEvent("logEvent", this.initiator, "error", arguments);
     }
 
     warn(args)
     {
         console.warn("[" + this.initiator + "]", ...arguments);
-        if (gui) gui.emitEvent("logEvent", this.initiator, "warn", arguments);
+        if (window.gui) gui.emitEvent("logEvent", this.initiator, "warn", arguments);
     }
 
 
@@ -47,21 +47,21 @@ export default class Logger extends CABLES.EventTarget
     {
         if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
             console.log("[" + this.initiator + "]", ...arguments);
-        if (gui) gui.emitEvent("logEvent", this.initiator, "verbose", arguments);
+        if (window.gui) gui.emitEvent("logEvent", this.initiator, "verbose", arguments);
     }
 
     log(args)
     {
         if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
             console.log("[" + this.initiator + "]", ...arguments);
-        if (gui) gui.emitEvent("logEvent", this.initiator, "log", arguments);
+        if (window.gui) gui.emitEvent("logEvent", this.initiator, "log", arguments);
     }
 
     info(args)
     {
         if (CABLES.UI && CABLES.UI.logFilter.shouldPrint(this.initiator, ...arguments))
             console.log("[" + this.initiator + "]", ...arguments);
-        if (gui) gui.emitEvent("logEvent", this.initiator, "info", arguments);
+        if (window.gui) gui.emitEvent("logEvent", this.initiator, "info", arguments);
     }
 
     userInteraction(text)

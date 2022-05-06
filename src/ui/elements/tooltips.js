@@ -162,7 +162,7 @@ export function updateHoverToolTip(event, port)
             val = port.get();
             if (val)
             {
-                txt += " (total:" + val.length + ") <span class=\"tooltip_value\"> [";
+                txt += " (total:" + val.length + ") <span class=\"tooltip_value\">";
                 for (let i = 0; i < Math.min(3, val.length); i++)
                 {
                     if (i != 0)txt += ", ";
@@ -176,7 +176,7 @@ export function updateHoverToolTip(event, port)
                     else JSON.stringify(val[i]);
                 }
 
-                txt += " ...] </span>";
+                txt += " ... </span>";
             }
             else txt += "<span class=\"tooltip_value\">null</span>";
         }

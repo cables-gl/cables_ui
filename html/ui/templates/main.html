@@ -96,21 +96,22 @@
 <div id="splitterTimeline" class="splitter"></div>
 <div id="splitterMaintabs" class="splitter"></div>
 
+<div id="uploadprogresscontainer" class="hidden">
+    <div id="uploadprogress"></div>
+</div>
 
 <div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
 
+
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
-            <li class="nav_logo main" >
+            <li class="nav_logo main" onclick="CABLES.CMD.UI.jobs();">
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
                 <span id="nav-logo" class="icon-empty icon">
                     <div id="nav-logo_idle"></div>
                     <div id="nav-loading"></div>
                 </span>
-                <div id="uploadprogresscontainer" class="hidden">
-                    <div id="uploadprogress"></div>
-                </div>
 
                 <ul class="nav-submenu">
                     <li id="nav_cablesweb">Open cables.gl</span></li>

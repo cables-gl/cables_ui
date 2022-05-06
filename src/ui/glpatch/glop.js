@@ -178,10 +178,13 @@ export default class GlOp extends CABLES.EventTarget
 
     sendNetPos()
     {
-        gui.emitEvent("netOpPos", {
-            "opId": this._op.id,
-            "x": this._op.uiAttribs.translate.x,
-            "y": this._op.uiAttribs.translate.y });
+        if (this._op && this._op.uiAttribs && this._op.uiAttribs.translate)
+        {
+            gui.emitEvent("netOpPos", {
+                "opId": this._op.id,
+                "x": this._op.uiAttribs.translate.x,
+                "y": this._op.uiAttribs.translate.y });
+        }
     }
 
     _onBgRectDragEnd(rect)
@@ -628,6 +631,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _setVisible(v)
     {
+        if (this._visible == v) return;
         if (v !== undefined) this._visible = v;
 
         let visi = this._visible;
@@ -897,7 +901,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
             {
-                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(4).gl());
+                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
 
                 if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
                 {
@@ -959,6 +963,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (s != this.opUiAttribs.selected)
             {
+                // if (!s) delete this.opUiAttribs.selected;
                 this.opUiAttribs.selected = s;
                 this._updateColors();
             }

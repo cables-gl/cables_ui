@@ -18,7 +18,13 @@
 
 {{#if groupSpacer}}
     <tr>
-        <td colspan="11" ><div class="groupSpacer">{{startGroup}}</div></td>
+        <td colspan="11" >
+            <div class="groupSpacer">
+                <!--  onclick="gui.opParams.toggleGroup(this,'opportgroup_{{startGroup}}'); " -->
+                <!-- <span class="icon icon-chevron-down"></span> -->
+                {{startGroup}}
+            </div>
+        </td>
     </tr>
 {{/if}}
 
@@ -30,7 +36,6 @@
         {{/if}}
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
-
             {{#compare port.uiAttribs.display '==' 'buttons' }}
             {{else}}
             {{#compare port.uiAttribs.display '==' 'button' }}
@@ -175,6 +180,12 @@
                                         <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="ele.byId('portval_{{ ../portnum }}').value=this.value;ele.byId('portval_{{ ../portnum }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
                                     {{/each}}
                                 </div>
+
+                                {{#if port.uiAttribs.info}}
+                                <br/>
+                                    {{port.uiAttribs.info}}
+                                {{/if}}
+
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'readonly' }}
                             {{ port.value }}
@@ -267,8 +278,9 @@
 
 
             {{#compare port.type '==' 0 }}
-
-                <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext portCopyClipboard watchPort linkedValue monospace watchPortValue_{{ port.watchId }}" >{{port.port.getValueForDisplay}}</span>
+                <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext portCopyClipboard watchPort linkedValue monospace watchPortValue_{{ port.watchId }}" >
+                    {{port.port.getValueForDisplay}}
+                </span>
             {{/compare}}
 
             {{#compare port.type '==' 5 }}
@@ -320,8 +332,8 @@
                 {{else}}
                     <span class="value valuetext watchPort watchPortValue_{{ port.watchId }} inspectable" >
                     </span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
-                    <span class="iconbutton info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
+                    <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJson('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+                    <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
                 {{/if}}
             {{/compare}}
         {{/if}}
@@ -329,7 +341,7 @@
 
     </td>
 
-    <td>
+    <td style="min-width:15px;">
         <!-- animation/variable button -->
 
         {{#if isInput}}

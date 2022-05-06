@@ -1,15 +1,15 @@
 
 #uploadprogresscontainer
 {
-    background-color:var(--color-07);
+    background-color:var(--color-06);
     position:absolute;
-    z-index:$zindex_high;
+    z-index:$zindex_highest;
     overflow:hidden;
 
     left:2px;
-    top:27px;
-    width:40px;
-    height:3px;
+    top:30px;
+    width:28px;
+    height:2px;
 }
 
 #uploadprogress

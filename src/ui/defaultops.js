@@ -33,21 +33,37 @@ export default
         "blueprint": "Ops.Dev.Blueprint",
         "subPatch": "Ops.Ui.SubPatch",
         "uiArea": "Ops.Ui.Area",
-        "defaultOpVizTexture": "Ops.Ui.VizTexture"
+        "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
+        "defaultOpVizTexture": "Ops.Ui.VizTexture",
+        "convertNumberToString": "Ops.String.NumberToString_v2"
     },
-    "getOpsForPortLink": (p, l) =>
+    "getVizOpsForPortLink": (p, l) =>
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.Ui.VizString"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && p.uiAttribs.display == "bool") return ["Ops.Ui.VizBool", "Ops.Ui.VizNumber"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Dev.VizArrayTable"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Dev.VizTextureTable", "Ops.Ui.VizObject"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return ["Ops.Ui.VizObject"];
+        }
+    },
+    "getOpsForPortLink": (p, l) =>
+    {
+        if (p && p.direction == CONSTANTS.PORT.PORT_DIR_IN)
+        {
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.String.StringEditor"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [CABLES.UI.DEFAULTOPNAMES.defaultOpImage];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return ["Ops.Html.DivElement_v2"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "shader") return ["Ops.Gl.Shader.CustomShader_v2"];
         }
     },
     "getOpsForFilename": (filename) =>
     {
         const ops = [];
+
+        filename = filename.toLowerCase();
 
         if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
@@ -57,6 +73,7 @@ export default
         else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
         else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultFont);
         else if (filename.endsWith(".exr")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpExr);
+        else if (filename.endsWith(".svg")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpSvg);
         return ops;
     },
     "getVarGetterOpNameByType": (type, port) =>

@@ -44,8 +44,34 @@ export default class ChangelogToast
         });
     }
 
+    showNotification()
+    {
+        iziToast.show({
+            "position": "topRight",
+            "theme": "dark",
+            "title": "update",
+            "message": "cables has been updated! ",
+            "progressBar": false,
+            "animateInside": false,
+            "close": true,
+            "timeout": false,
+            "buttons": [
+                [
+                    "<button>read more</button>",
+                    function (instance, toast)
+                    {
+                        CABLES.CMD.UI.showChangelog();
+                        iziToast.hide({}, toast);
+                    },
+                ],
+            ],
+        });
+    }
+
     show()
     {
+        if (gui.isRemoteClient) return;
+
         gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { "icon": "book-open", "closable": true }, true);
     }
 }

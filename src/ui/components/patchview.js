@@ -147,6 +147,12 @@ export default class PatchView extends CABLES.EventTarget
 
         this.store.setServerDate(proj.updated);
 
+        if (gui.isRemoteClient)
+        {
+            if (cb)cb();
+            return;
+        }
+
         gui.serverOps.loadProjectLibs(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
@@ -486,19 +492,31 @@ export default class PatchView extends CABLES.EventTarget
             gui.corePatch().emitEvent("warningErrorIconChange");
 
         clearTimeout(this._checkErrorTimeout);
-        if (this.hasUiErrors) ele.show(ele.byId("nav-item-error"));
-        else ele.hide(ele.byId("nav-item-error"));
+
+        const elError = ele.byId("nav-item-error");
+        const wasHidden = elError.classList.contains("hidden");
+        if (this.hasUiErrors) ele.show(elError);
+        else ele.hide(elError);
+
+        if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
 
         this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 
     showBookmarkParamsPanel()
     {
-        let html = "<div class=\"panel\">";
+        let html = "<div class=\"panel bookmarkpanel\">";
         this.checkPatchErrors();
 
+        if (ele.byId("patchsummary")) return;
+
         const project = gui.project();
-        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id)) html += getHandleBarHtml("clonepatch", {});
+        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+        {
+            const projectId = project.shortId || project._id;
+            html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+            html += getHandleBarHtml("clonepatch", {});
+        }
         html += gui.bookmarks.getHtml();
 
         // const views = document.getElementById("patchviews");
@@ -991,12 +1009,12 @@ export default class PatchView extends CABLES.EventTarget
         let selectedOps = this.getSelectedOps();
         const ops = [];
         const opIds = [];
-        let j = 0, k = 0;
 
         for (const i in selectedOps)
         {
             if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
             {
+                console.log(selectedOps[i]);
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
         }
@@ -1012,11 +1030,11 @@ export default class PatchView extends CABLES.EventTarget
         // remove links that are not fully copied...
         for (let i = 0; i < ops.length; i++)
         {
-            for (j = 0; j < ops[i].portsIn.length; j++)
+            for (let j = 0; j < ops[i].portsIn.length; j++)
             {
                 if (ops[i].portsIn[j].links)
                 {
-                    k = ops[i].portsIn[j].links.length;
+                    let k = ops[i].portsIn[j].links.length;
                     while (k--)
                     {
                         if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
@@ -1035,11 +1053,11 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
 
-            for (j = 0; j < ops[i].portsOut.length; j++)
+            for (let j = 0; j < ops[i].portsOut.length; j++)
             {
                 if (ops[i].portsOut[j].links)
                 {
-                    k = ops[i].portsOut[j].links.length;
+                    let k = ops[i].portsOut[j].links.length;
                     while (k--)
                     {
                         if (ops[i].portsOut[j].links[k] && ops[i].portsOut[j].links[k].objIn && ops[i].portsOut[j].links[k].objOut)
@@ -1484,6 +1502,7 @@ export default class PatchView extends CABLES.EventTarget
         const p = op2.getPort(portnames[0]);
         const numFitting = op1.countFittingPorts(p);
 
+
         if (numFitting > 1)
         {
             new SuggestPortDialog(op1, p, e, (suggport) =>
@@ -1510,8 +1529,38 @@ export default class PatchView extends CABLES.EventTarget
 
     linkPorts(opid, pid, op2id, p2id)
     {
-        const op1 = this._p.getOpById(opid);
-        const op2 = this._p.getOpById(op2id);
+        let op1 = this._p.getOpById(opid);
+        let op2 = this._p.getOpById(op2id);
+
+        {
+            // helper number2string auto insert....
+            let p1 = op1.getPortByName(pid);
+            let p2 = op2.getPortByName(p2id);
+
+            if ((p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
+                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING))
+
+            {
+                if (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING)
+                {
+                    const p = p1;
+                    const o = op1;
+                    p1 = p2;
+                    p2 = p;
+                    op1 = op2;
+                    op2 = o;
+                }
+
+                this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToString, { "onOpAdd": (newOp) =>
+                {
+                    this._p.link(op1, p1.getName(), newOp, "Number");
+                    this._p.link(op2, p2.getName(), newOp, "Result");
+
+                    newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                } });
+                return;
+            }
+        }
 
         this._p.link(op1, pid, op2, p2id);
     }

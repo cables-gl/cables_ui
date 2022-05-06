@@ -365,6 +365,12 @@ export default class GlPatch extends CABLES.EventTarget
     {
         this._dropInCircleRect = null;
 
+        if (e.shiftKey) this._pressedShiftKey = true;
+        else this._pressedShiftKey = false;
+
+        if (e.ctrlKey) this._pressedCtrlKey = true;
+        else this._pressedCtrlKey = false;
+
         this.emitEvent("mousemove", e);
 
         if (this._dropInCircleRect)
@@ -448,11 +454,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._pauseMouseUntilButtonUp = false;
             return;
         }
+
         if (this._selectionArea.active)
         {
             this._selectionArea.hideArea();
             gui.emitEvent("hideSelectionArea");
         }
+        CABLES.UI.hideToolTip();
+
         this._lastButton = 0;
         this._mouseLeaveButtons = e.buttons;
         this.emitEvent("mouseleave", e);
@@ -460,7 +469,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseEnter(e)
     {
-        if (this._mouseLeaveButtons != e.buttons && e.touchType == "mouse")
+        if (this._mouseLeaveButtons != e.buttons && e.pointerType == "mouse")
         {
             // reentering with mouse down already - basically block all interaction
             this._pauseMouseUntilButtonUp = true;
@@ -523,8 +532,10 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (!this._canvasMouseDown) return;
         this._canvasMouseDown = false;
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
         this._removeDropInRect();
+
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -537,11 +548,13 @@ export default class GlPatch extends CABLES.EventTarget
         if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
         {
             this.unselectAll();
-            gui.patchView.showDefaultPanel();
             gui.showInfo(text.patch);
+            gui.patchView.showDefaultPanel();
 
             if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }
+
+        perf.finish();
 
         this._dropInCircleRect = null;
     }
@@ -675,14 +688,7 @@ export default class GlPatch extends CABLES.EventTarget
                 // glOp.update();
 
                 if (newAttribs && newAttribs.translate)
-                {
-                    if (newAttribs.fromNetwork)
-                    {
-                        delete newAttribs.fromNetwork;
-                    }
-                    else
-                        glOp.sendNetPos();
-                }
+                    glOp.sendNetPos();
 
                 if (newAttribs.hasOwnProperty("translate"))
                 {
@@ -974,12 +980,40 @@ export default class GlPatch extends CABLES.EventTarget
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
-        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging)
+        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
+            if (this._rectInstancer.interactive)
+                if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
+
             this._rectInstancer.interactive = false;
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
+
+            if (this._pressedShiftKey)
+            {
+                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                {
+                    this._selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                }
+            }
+            if (this._pressedCtrlKey)
+            {
+                let unselIds = [];
+
+                for (let i in this._selectedGlOps)
+                    unselIds.push(this._selectedGlOps[i].id);
+
+                for (let i = 0; i < this._selectionArea.previousOps.length; i++)
+                {
+                    this._selectionArea.previousOps[i].selected = true;
+                    this.selectOpId(this._selectionArea.previousOps[i].id);
+                }
+
+                for (let i = 0; i < unselIds.length; i++)
+                    this.unSelectOpId(unselIds[i]);
+            }
 
             gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
 
@@ -993,6 +1027,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._numSelectedGlOps = -1;
             if (this._selectionArea.isVisible())
             {
+                this._selectionArea.previousOps = [];
                 this._selectionArea.hideArea();
                 gui.emitEvent("hideSelectionArea");
             }
@@ -1043,10 +1078,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     unselectAll()
     {
-        for (const i in this._glOpz) this._glOpz[i].selected = false;
+        const perf = CABLES.UI.uiProfiler.start("[glpatch] unselectAll");
+
+        for (const i in this._glOpz) this._glOpz[i].selected = false; //
         this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
+
+        perf.finish();
     }
 
     getGlOp(op)
@@ -1087,6 +1126,17 @@ export default class GlPatch extends CABLES.EventTarget
             if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
+        }
+    }
+
+    unSelectOpId(id)
+    {
+        if (this._glOpz[id])
+        {
+            delete this._selectedGlOps[id];
+
+            this._glOpz[id].selected = false;
+            this._cachedNumSelectedOps--;
         }
     }
 

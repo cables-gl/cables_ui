@@ -12,29 +12,37 @@ export default class ScConnection extends CABLES.EventTarget
     {
         super();
 
-        this._log = new Logger("scconnection");
         this.PING_INTERVAL = 5000;
+        this.PING_ANSWER_INTERVAL = 2000;
         this.PINGS_TO_TIMEOUT = 2;
         this.OWN_PINGS_TO_TIMEOUT = 5;
-        this._lastPing = Date.now();
-        this.channelName = null;
-        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
-        this._socket = null;
+
+        this._log = new Logger("scconnection");
+        this._verboseLog = false;
+
         this._scConfig = cfg;
+        this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
+        this._lastPingReceived = Date.now();
+        this._lastPingSent = Date.now();
+
+        this._socket = null;
         this._connected = false;
         this._connectedSince = null;
         this._inSessionSince = null;
+
         this._paco = null;
+        this._pacoEnabled = false;
         this._patchConnection = new CABLES.PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
+        this._pacoChannel = null;
+        this._pacoLoopReady = false;
 
+        this.channelName = this._scConfig.channel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
-        this._pacoEnabled = false;
-
 
         if (cfg) this._init((isActive) =>
         {
-            if (isActive)
+            if (isActive && this.multiplayerCapable)
             {
                 this._multiplayerUi = new ScUiMultiplayer(this);
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
@@ -42,9 +50,9 @@ export default class ScConnection extends CABLES.EventTarget
         });
     }
 
-    get paramPanelUpdateDelay() { return 300; }
-
     get netMouseCursorDelay() { return 100; }
+
+    get netTimelineScrollDelay() { return 100; }
 
     get chat() { return this._chat; }
 
@@ -67,6 +75,24 @@ export default class ScConnection extends CABLES.EventTarget
     }
 
     get inMultiplayerSession() { return this._pacoEnabled; }
+
+    get hasOtherMultiplayerCapableClients()
+    {
+        if (!this.state) return false;
+        let clientsInSession = false;
+        const clients = Object.values(this.clients);
+        for (let i = 0; i < clients.length; i++)
+        {
+            const client = clients[i];
+            if (client.clientId === this.clientId) continue;
+            if (client.multiplayerCapable)
+            {
+                clientsInSession = true;
+                break;
+            }
+        }
+        return clientsInSession;
+    }
 
     get runningMultiplayerSession()
     {
@@ -97,6 +123,11 @@ export default class ScConnection extends CABLES.EventTarget
             if (!client.isRemoteClient) onlyRemoteClients = false;
         }
         return onlyRemoteClients;
+    }
+
+    enableVerboseLogging()
+    {
+        this._verboseLog = true;
     }
 
     isConnected()
@@ -196,7 +227,7 @@ export default class ScConnection extends CABLES.EventTarget
     leaveMultiplayerSession()
     {
         this.client.isPilot = false;
-        this._socket.unsubscribe(this._socket.channelName + "/paco");
+        this._pacoChannel = this._socket.unsubscribe(this.channelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
         this.client.following = null;
@@ -223,13 +254,17 @@ export default class ScConnection extends CABLES.EventTarget
                 this._patchConnection.connectors.push(this._paco);
             }
 
-            const json = gui.corePatch().serialize(true);
+            const json = gui.corePatch().serialize({ "asObject": true });
             const payload = {
                 "patch": JSON.stringify(json),
                 "requestedBy": requestedBy
             };
             this._paco.send(CABLES.PACO_LOAD, payload);
             this._pacoSynced = true;
+            if (gui.scene().timer)
+            {
+                this.sendUi("timelineControl", { "command": "setPlay", "value": gui.scene().timer.isPlaying(), "time": gui.scene().timer.getTime() });
+            }
             this.state.emitEvent("patchSynchronized");
         }
     }
@@ -313,8 +348,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
-        this._socket.channelName = this._scConfig.channel;
-        this.channelName = this._socket.channelName;
+        this._socket.channelName = this.channelName;
 
         this._state = new ScState(this);
         if (this.multiplayerCapable)
@@ -332,14 +366,21 @@ export default class ScConnection extends CABLES.EventTarget
                 (async () =>
                 {
                     if (!this._pacoEnabled) return;
-
-                    const pacoChannel = this._socket.subscribe(this._socket.channelName + "/paco");
-                    for await (const msg of pacoChannel)
+                    if (!this._pacoChannel)
                     {
-                        this._handlePacoMessage(msg);
-                        this.emitEvent("netActivityIn");
+                        this._pacoChannel = this._socket.subscribe(this.channelName + "/paco");
+                        if (!this._pacoLoopReady)
+                        {
+                            this._pacoLoopReady = true;
+                            for await (const msg of this._pacoChannel)
+                            {
+                                this._handlePacoMessage(msg);
+                                this.emitEvent("netActivityIn");
+                            }
+                        }
                     }
                 })();
+
                 if (payload.started)
                 {
                     this._startPacoSend();
@@ -400,7 +441,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const controlChannel = this._socket.subscribe(this._socket.channelName + "/control");
+            const controlChannel = this._socket.subscribe(this.channelName + "/control");
 
             for await (const msg of controlChannel)
             {
@@ -411,7 +452,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const uiChannel = this._socket.subscribe(this._socket.channelName + "/ui");
+            const uiChannel = this._socket.subscribe(this.channelName + "/ui");
             for await (const msg of uiChannel)
             {
                 this._handleUiChannelMsg(msg);
@@ -421,7 +462,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const infoChannel = this._socket.subscribe(this._socket.channelName + "/info");
+            const infoChannel = this._socket.subscribe(this.channelName + "/info");
             for await (const msg of infoChannel)
             {
                 this._handleInfoChannelMsg(msg);
@@ -431,7 +472,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const chatChannel = this._socket.subscribe(this._socket.channelName + "/chat");
+            const chatChannel = this._socket.subscribe(this.channelName + "/chat");
             for await (const msg of chatChannel)
             {
                 this._handleChatChannelMsg(msg);
@@ -452,7 +493,6 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 this._sendPing();
             }
-            this._log.verbose("sc will disconnect!");
             if (this._socket && this._socket.destroy)
             {
                 this._socket.destroy();
@@ -530,22 +570,36 @@ export default class ScConnection extends CABLES.EventTarget
 
         if (this._active && this._connected)
         {
-            const finalPayload = {
-                "token": this._token,
-                "clientId": this.client.clientId,
-                "username": this.client.username,
-                topic,
-                ...payload,
-            };
+            try
+            {
+                // try to serialize payload to handle errors in scconnection early
+                JSON.stringify(payload);
+                const finalPayload = {
+                    "token": this._token,
+                    "clientId": this.client.clientId,
+                    "username": this.client.username,
+                    topic,
+                    ...payload,
+                };
 
-            this.emitEvent("netActivityOut");
-            this._socket.transmitPublish(this._socket.channelName + "/" + topic, finalPayload);
+                this.emitEvent("netActivityOut");
+                const perf = CABLES.UI.uiProfiler.start("[sc] send");
+                const scTopic = this.channelName + "/" + topic;
+                this._logVerbose("send:", scTopic, payload);
+                this._socket.transmitPublish(scTopic, finalPayload);
+                perf.finish();
+            }
+            catch (e)
+            {
+                this._log.info("failed to serialize object before send, ignoring", payload);
+            }
         }
     }
 
     _handleChatChannelMsg(msg)
     {
         if (!this.client) return;
+        this._logVerbose("received:", this.channelName + "/chat", msg);
 
         if (msg.name === "chatmsg")
         {
@@ -557,6 +611,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (!this.client) return;
         if (msg.clientId === this._socket.clientId) return;
+        this._logVerbose("received:", this.channelName + "/paco", msg);
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
@@ -570,37 +625,48 @@ export default class ScConnection extends CABLES.EventTarget
                 }
 
                 this._log.info("first paco message !");
-                gui.corePatch().clear();
                 this._paco = new PacoConnector(this, this._patchConnection);
                 this._patchConnection.connectors.push(this._paco);
-
-
-                this._paco.receive(msg.data);
-                this._pacoSynced = true;
-                this.state.emitEvent("patchSynchronized");
+                this._synchronizePatch(msg.data);
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {
                 if (!foreignRequest)
                 {
-                    gui.corePatch().clear();
-                    this._paco.receive(msg.data);
-                    this._pacoSynced = true;
-                    this.state.emitEvent("patchSynchronized");
+                    this._synchronizePatch(msg.data);
                 }
             }
             else
             {
+                const perf = CABLES.UI.uiProfiler.start("[sc] paco receive");
                 this._paco.receive(msg.data);
+                perf.finish();
                 this._pacoSynced = true;
                 this.state.emitEvent("patchSynchronized");
             }
         }
     }
 
+    _synchronizePatch(data)
+    {
+        if (!this._paco) return;
+        this.state.emitEvent("startPatchSync");
+        const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
+        const cbId = gui.corePatch().on("patchLoadEnd", () =>
+        {
+            gui.corePatch().off(cbId);
+            this._pacoSynced = true;
+            this.state.emitEvent("patchSynchronized");
+            perf.finish();
+        });
+        gui.corePatch().clear();
+        this._paco.receive(data);
+    }
+
     _handleControlChannelMessage(msg)
     {
         if (!this.client) return;
+        this._logVerbose("received:", this.channelName + "/control", msg);
 
         if (msg.name === "resync")
         {
@@ -615,19 +681,30 @@ export default class ScConnection extends CABLES.EventTarget
         {
             const timeOutSeconds = this.PING_INTERVAL * this.OWN_PINGS_TO_TIMEOUT;
             const pingOutTime = Date.now() - timeOutSeconds;
-            msg.lastPing = this._lastPing;
-            if (this._lastPing < pingOutTime)
+            msg.lastPing = this._lastPingReceived;
+            if (this._lastPingReceived < pingOutTime)
             {
                 msg.seconds = timeOutSeconds / 1000;
                 this.emitEvent("onPingTimeout", msg);
                 this._log.info("didn't receive ping for more than", msg.seconds, "seconds");
             }
-            this._sendPing();
+            if (msg.clientId !== this.clientId)
+            {
+                if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
+                {
+                    this._sendPing();
+                    this._lastPingSent = Date.now();
+                }
+            }
+            else
+            {
+                this._lastPingReceived = msg.lastSeen;
+            }
         }
         if (msg.name === "pingAnswer")
         {
             msg.lastSeen = Date.now();
-            this._lastPing = msg.lastSeen;
+            this._lastPingReceived = msg.lastSeen;
             this.emitEvent("onPingAnswer", msg);
         }
         if (msg.name === "pilotRequest")
@@ -646,6 +723,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (!this.client) return;
+        this._logVerbose("received:", this.channelName + "/ui", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
@@ -654,8 +732,18 @@ export default class ScConnection extends CABLES.EventTarget
     _handleInfoChannelMsg(msg)
     {
         if (!this.client) return;
+        this._logVerbose("received:", this.channelName + "/info", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);
+    }
+
+    _logVerbose(prefix, channel, msg)
+    {
+        if (this._verboseLog)
+        {
+            const { token, ...logMsg } = msg;
+            console.log("[sc_connection]", prefix, channel, logMsg);
+        }
     }
 }

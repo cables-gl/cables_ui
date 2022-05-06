@@ -43,7 +43,9 @@
         function incrementStartup()
         {
             CABLESUILOADER.startup.numEvents++;
-            document.getElementById("loadingstatusBar").style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
+
+            const loadingBarEle=document.getElementById("loadingstatusBar");
+            if(loadingBarEle) loadingBarEle.style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
         }
 
         function logStartup(title)

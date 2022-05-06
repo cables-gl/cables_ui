@@ -42,7 +42,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         gui.jobs().start({
             "id": "checkupdated",
-            "title": "check if patch was updated",
+            "title": "check patch was updated",
             "indicator": "canvas"
         });
 
@@ -64,7 +64,21 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     return;
                 }
 
-                if (this._serverDate != data.updated)
+                if (data.maintenance)
+                {
+                    const html =
+                        "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave this window open, and wait until we are finished with the update.<br/><br/>" +
+                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                    new ModalDialog(
+                        {
+                            "title": "Maintenance Mode",
+                            "html": html,
+                            "warning": true
+                        });
+
+                    gui.jobs().finish("checkupdated");
+                }
+                else if (this._serverDate != data.updated)
                 {
                     const html =
                         "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
@@ -119,7 +133,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             }
                         });
                 }
-            }.bind(this), function () { /* ignore errors */ }
+            }.bind(this), function (err)
+            {
+                console.log("error", err);
+                gui.jobs().finish("checkupdated");
+                /* ignore errors */
+            }
         );
     }
 
@@ -133,7 +152,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     const electron = require("electron");
         //     const remote = electron.remote;
         //     const dialog = remote.dialog;
-        //     const data = gui.corePatch().serialize(true);
+        //     const data = gui.corePatch().serialize({ "asObject": true });
 
         //     data.ui = {
         //         "viewBox": {},
@@ -267,6 +286,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
     _saveCurrentProject(cb, _id, _name)
     {
+        if (gui.jobs().hasJob("projectsave"))
+        {
+            console.log("already saving...");
+            return;
+        }
+
         gui.corePatch().emitEvent("uiSavePatch");
 
         if (gui.showGuestWarning()) return;
@@ -274,16 +299,25 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         this._savedPatchCallback = cb;
 
+        const blueprintIds = [];
         for (let i = 0; i < ops.length; i++)
         {
-            // this._log.log(ops[i]);
             if (ops[i].uiAttribs.error) delete ops[i].uiAttribs.error;
             if (ops[i].uiAttribs.warning) delete ops[i].uiAttribs.warning;
             if (ops[i].uiAttribs.hint) delete ops[i].uiAttribs.hint;
             if (ops[i].uiAttribs.uierrors) delete ops[i].uiAttribs.uierrors;
+
+            const op = ops[i];
+            if (op.storage && op.storage.blueprint)
+            {
+                if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.storage.blueprint.subpatchInstance)
+                {
+                    blueprintIds.push(op.storage.blueprint.subpatchInstance);
+                }
+            }
         }
 
-        gui.jobs().start({ "id": "projectsave", "title": "saving project", "indicator": "canvas" });
+        gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
 
         const currentProject = gui.project();
 
@@ -291,7 +325,21 @@ export default class PatchSaveServer extends CABLES.EventTarget
         let name = currentProject.name;
         if (_id) id = _id;
         if (_name) name = _name;
-        let data = gui.corePatch().serialize(true);
+        let data = gui.corePatch().serialize({ "asObject": true });
+
+        if (blueprintIds.length > 0)
+        {
+            let i = data.ops.length;
+            // iterate backwards so we can splice
+            while (i--)
+            {
+                const op = data.ops[i];
+                if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
+                {
+                    data.ops.splice(i, 1);
+                }
+            }
+        }
 
         data.ui = {
             "viewBox": {},
@@ -347,141 +395,167 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         CABLES.patch.namespace = currentProject.namespace;
 
-        try
+        setTimeout(() =>
         {
-            data = JSON.stringify(data);
-            gui.patchView.warnLargestPort();
+            try
+            {
+                data = JSON.stringify(data);
+                gui.patchView.warnLargestPort();
 
-            const origSize = Math.round(data.length / 1024);
-
-            // data = LZString.compress(data);
-            let uint8data = pako.deflate(data);
-            this._log.log("saving compressed data ", Math.round(uint8data.length / 1024) + " / " + origSize + "kb");
+                const origSize = Math.round(data.length / 1024);
 
 
-            document.getElementById("patchname").innerHTML = "Saving Patch";
-            document.getElementById("patchname").classList.add("blinking");
+                // data = LZString.compress(data);
+                let uint8data = pako.deflate(data);
+
+                if (origSize > 1000)
+                    console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
 
-            CABLES.sandbox.savePatch(
-                {
-                    "id": id,
-                    "name": name,
-                    "namespace": currentProject.namespace,
-                    "data": uint8data,
-                    "fromBackup": !!CABLES.sandbox.getPatchVersion(),
-                    "buildInfo": {
+                // let decoder = new TextDecoder("utf8");
+                // let b64encoded = btoa(decoder.decode(uint8data));
+                // console.log("buf!!", uint8data);
+
+                let b64 = Buffer.from(uint8data).toString("base64");
+
+                document.getElementById("patchname").innerHTML = "Saving Patch";
+                document.getElementById("patchname").classList.add("blinking");
+
+
+                // let buf = new Buffer(b64, "base64"); // Ta-da
+                // console.log("buf!!", buf);
+
+
+                const startTime = performance.now();
+
+                CABLES.sandbox.savePatch(
+                    {
+                        "id": id,
+                        "name": name,
+                        "namespace": currentProject.namespace,
+                        "dataB64": b64,
+                        "fromBackup": !!CABLES.sandbox.getPatchVersion(),
+                        "buildInfo":
+                    {
                         "core": CABLES.build,
                         "ui": CABLES.UI.build
                     }
-                },
-                (err, r) =>
-                {
-                    if (err)
+                    },
+                    (err, r) =>
                     {
-                        this._log.warn("[save patch error]", err);
-                    }
-
-                    gui.jobs().finish("projectsave");
-
-                    gui.setStateSaved();
-                    if (this._savedPatchCallback) this._savedPatchCallback();
-                    this._savedPatchCallback = null;
-
-                    if (!r || !r.success)
-                    {
-                        let msg = "no response";
-                        if (r)msg = r.msg;
-
-                        CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
-
-                        this._log.log(r);
-                        return;
-                    }
-                    else
-                    {
-                        CABLES.UI.notify("Patch saved");
-                        if (gui.socket)
+                        if (err)
                         {
-                            if (gui.user.usernameLowercase)
+                            this._log.warn("[save patch error]", err);
+                        }
+
+                        gui.setStateSaved();
+                        if (this._savedPatchCallback) this._savedPatchCallback();
+                        this._savedPatchCallback = null;
+
+                        gui.socket.track("ui", "savepatch", "savepatch",
                             {
-                                gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");
-                            }
-                            else
+                                "sizeCompressed": uint8data.length / 1024,
+                                "sizeOrig": origSize,
+                                "time": performance.now() - startTime
+                            });
+
+                        gui.jobs().finish("projectsave");
+
+                        if (!r || !r.success)
+                        {
+                            let msg = "no response";
+                            if (r)msg = r.msg;
+
+                            CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
+
+                            this._log.log(r);
+                            return;
+                        }
+                        else
+                        {
+                            CABLES.UI.notify("Patch saved");
+                            if (gui.socket)
                             {
-                                gui.socket.sendNotification("Patch saved in other window");
+                                if (gui.user.usernameLowercase)
+                                {
+                                    gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");
+                                }
+                                else
+                                {
+                                    gui.socket.sendNotification("Patch saved in other window");
+                                }
                             }
+                        }
+
+                        this._serverDate = r.updated;
+                        const thePatch = gui.corePatch();
+                        const cgl = thePatch.cgl;
+                        const doSaveScreenshot = gui.corePatch().isPlaying();
+
+                        if (CABLES.sandbox.manualScreenshot()) this._log.log("not sending screenshot...");
+
+                        if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot())
+                        {
+                            this.saveScreenshot();
+                        }
+                        else
+                        {
+                            this.finishAnimations();
                         }
                     }
 
-                    this._serverDate = r.updated;
-                    const thePatch = gui.corePatch();
-                    const cgl = thePatch.cgl;
-                    const doSaveScreenshot = gui.corePatch().isPlaying();
-
-                    if (CABLES.sandbox.manualScreenshot()) this._log.log("not sending screenshot...");
-
-                    if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot())
-                    {
-                        this.saveScreenshot();
-                    }
-                    else
-                    {
-                        this.finishAnimations();
-                    }
-                }
-
-            );
-        }
-        catch (e)
-        {
-            let found = false;
-
-            for (let i = 0; i < gui.corePatch().ops.length; i++)
-            {
-                try
-                {
-                    JSON.stringify(gui.corePatch().ops[i].getSerialized());
-                }
-                catch (e)
-                {
-                    found = true;
-                    // this._log.log(e);
-                    // this is the op!
-
-                    iziToast.error({
-                        "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-                        "theme": "dark",
-                        "title": "update",
-                        "message": "Error saving patch! ",
-                        "progressBar": false,
-                        "animateInside": false,
-                        "close": true,
-                        "timeout": false,
-                        "buttons": [
-                            [
-                                "<button>Go to op</button>",
-                                function (instance, toast)
-                                {
-                                    gui.patchView.focusOp(gui.corePatch().ops[i].id);
-                                    gui.patchView.centerSelectOp(gui.corePatch().ops[i].id);
-
-                                    iziToast.hide({}, toast);
-                                }
-                            ]
-                        ]
-                    });
-
-
-                    break;
-                }
+                );
             }
+            catch (e)
+            {
+                let found = false;
 
-            this._log.log(e);
-            if (!found)
-                CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
-        }
-        finally {}
+                for (let i = 0; i < gui.corePatch().ops.length; i++)
+                {
+                    try
+                    {
+                        JSON.stringify(gui.corePatch().ops[i].getSerialized());
+                    }
+                    catch (e2)
+                    {
+                        found = true;
+                        // this._log.log(e);
+                        // this is the op!
+
+                        iziToast.error({
+                            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+                            "theme": "dark",
+                            "title": "update",
+                            "message": "Error saving patch! ",
+                            "progressBar": false,
+                            "animateInside": false,
+                            "close": true,
+                            "timeout": false,
+                            "buttons": [
+                                [
+                                    "<button>Go to op</button>",
+                                    function (instance, toast)
+                                    {
+                                        gui.patchView.focusOp(gui.corePatch().ops[i].id);
+                                        gui.patchView.centerSelectOp(gui.corePatch().ops[i].id);
+
+                                        iziToast.hide({}, toast);
+                                    }
+                                ]
+                            ]
+                        });
+
+
+                        break;
+                    }
+                }
+
+                console.log(e);
+                if (!found)
+                    CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
+            }
+            finally {}
+        }, 100);
     }
 
 
@@ -564,7 +638,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         thePatch.renderOneFrame();
         thePatch.renderOneFrame();
-        gui.jobs().start({ "id": "screenshotsave", "title": "saving screenshot" });
+        gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
         cgl.screenShot((screenBlob) =>
         {

@@ -6,7 +6,7 @@ import text from "../../text";
 import ele from "../../utils/ele";
 
 
-export default class OpParampanel extends CABLES.EventTarget
+class OpParampanel extends CABLES.EventTarget
 {
     constructor()
     {
@@ -849,3 +849,6 @@ export default class OpParampanel extends CABLES.EventTarget
         CABLES.contextMenu.show({ items }, el);
     }
 }
+
+
+export default OpParampanel;

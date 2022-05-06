@@ -15,7 +15,7 @@ export default class Tracking
     {
         this.gui._corePatch.on("onOpAdd", (op, fromDeserialize) =>
         {
-            if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")) && !(op.uiAttribs && op.uiAttribs.fromNetwork))
+            if (!fromDeserialize && !(op.objName.startsWith("Ops.Ui.PatchInput") || op.objName.startsWith("Ops.Ui.PatchOutput")))
             {
                 // do not track patchload, multiplayer-session, subpatch and blueprint init
                 this._trackEvent("ui", "opAdd", op.objName, { "shortName": op._shortOpName });
@@ -34,12 +34,13 @@ export default class Tracking
 
         this.gui.on("logEvent", (initiator, level, args) =>
         {
-            if (!["error", "warn"].includes(level)) return;
+            if (!["error"].includes(level)) return;
             const perf = CABLES.UI.uiProfiler.start("logEvent");
             this._trackLogEvent("logging", level, initiator, args);
             perf.finish();
         });
 
+        /*
         this.gui.on("coreLogEvent", (initiator, level, args) =>
         {
             if (!["error", "warn"].includes(level)) return;
@@ -54,6 +55,16 @@ export default class Tracking
             const perf = CABLES.UI.uiProfiler.start("opLogEvent");
             this._trackLogEvent("oplogging", level, initiator, args);
             perf.finish();
+        });
+         */
+
+        this.gui.on("uncaughtError", (report) =>
+        {
+            let initiator = "unknown";
+            if (report.url) initiator = report.url;
+            if (report.exception) initiator = report.exception.filename + ":" + report.exception.lineno;
+            if (report.opName) initiator = report.opName;
+            this._trackLogEvent("logging", "uncaught", initiator, report);
         });
     }
 

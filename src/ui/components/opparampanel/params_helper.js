@@ -558,7 +558,7 @@ const paramsHelper =
                 op.portsIn[index].uiAttribs.display != "bool" &&
                 (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number"))
             {
-                if (isNaN(v) || v === "")
+                if (v.length >= 3 && (isNaN(v) || v === ""))
                 {
                     let mathParsed = v;
                     try

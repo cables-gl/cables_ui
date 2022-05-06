@@ -8,8 +8,10 @@ export default class WatchVarTab extends CABLES.EventTarget
         this._tabs = tabs;
         this._patch = patch || gui.corePatch();
 
-        this._patch.addEventListener("variablesChanged", this._html.bind(this));
-        this._patch.addEventListener("variableRename", this._html.bind(this));
+        this._varListeners = {};
+        this._patchListeners = [
+            this._patch.on("variablesChanged", this._html.bind(this)),
+            this._patch.on("variableRename", this._html.bind(this))];
 
         this._tab = new CABLES.UI.Tab("Variables", {
             "icon": "align-justify",
@@ -19,12 +21,17 @@ export default class WatchVarTab extends CABLES.EventTarget
 
         this._tab.on("close", () =>
         {
+            for (let i = 0; i < this._patchListeners.length; i++)
+                this._patch.off(this._patchListeners[i]);
+
             const vars = this._patch.getVars();
             for (const y in vars)
-                vars[y].removeListener(this._updateVar.bind(this));
+                vars[y].removeListener(this._varListeners[vars[y].getName()]);
         });
 
         this._tabs.addTab(this._tab, true);
+        gui.maintabPanel.show(true);
+
 
         this._id = "spread" + CABLES.uuid();
         this._tab.html("<div id='" + this._id + "'></div>");
@@ -94,7 +101,7 @@ export default class WatchVarTab extends CABLES.EventTarget
                 tdType.classList.add("rownumleft");
                 tr.appendChild(tdType);
 
-                theVar.addListener(this._updateVar.bind(this));
+                this._varListeners[theVar.getName()] = theVar.addListener(this._updateVar.bind(this));
             }
         }
     }

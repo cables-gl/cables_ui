@@ -345,13 +345,9 @@ export default class FindTab
         {
             if (str == ":outdated")
             {
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-                    if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
-                        results.push({ "op": ops[i], "score": 1 });
-                }
+                FindTab.searchOutDated(ops, results);
             }
+
 
             if (str == ":recent")
             {
@@ -418,10 +414,13 @@ export default class FindTab
                     {
                         if (op.portsOut[j].get() && op.portsOut[j].uiAttribs.objType === "texture")
                         {
-                            const texInfo = op.portsOut[j].get().getInfo();
-                            const strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
+                            if (op.portsOut[j].get())
+                            {
+                                const texInfo = op.portsOut[j].get().getInfo();
+                                const strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
 
-                            results.push({ op, "score": 1, "where": strtex });
+                                results.push({ op, "score": 1, "where": strtex });
+                            }
                         }
                     }
 
@@ -431,12 +430,7 @@ export default class FindTab
             }
             else if (str == ":user")
             {
-                for (let i = 0; i < ops.length; i++)
-                {
-                    const op = ops[i];
-                    if (op.objName.indexOf("Ops.User") == 0)
-                        results.push({ op, "score": 1, "where": op.objName });
-                }
+                FindTab.searchUserOps(ops, results);
             }
             else if (str == ":dupassets")
             {
@@ -711,3 +705,25 @@ export default class FindTab
         }
     }
 }
+
+FindTab.searchOutDated = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+        if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
+            results.push({ "op": ops[i], "score": 1 });
+    }
+    return results;
+};
+
+FindTab.searchUserOps = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (op.objName.indexOf("Ops.User") == 0)
+            results.push({ op, "score": 1, "where": op.objName });
+    }
+    return results;
+};

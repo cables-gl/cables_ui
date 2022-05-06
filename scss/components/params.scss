@@ -190,6 +190,11 @@
         {
             opacity:0.3 !important;
             pointer-events: none;
+
+            .numberinput-display
+            {
+                color:transparent;
+            }
         }
 
 
@@ -517,16 +522,35 @@
         background-color: var(--color-01);
     }
 
+    .groupSpacer,.groupSpacer h3
+    {
+        color: var(--color-13);
+    }
 
     .groupSpacer
     {
+        user-select: none;
+        font-size: 15px;
+
+        .icon-chevron-down,.icon-chevron-up
+        {
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        // &:hover
+        // {
+        //     // background-color: red;
+        //     color:white;
+        //     cursor:pointer;
+        // }
+
+
         background: linear-gradient(180deg,
             rgba(0,0,0,0) calc(50% - 0px),
             var(--color-04) calc(50%),
             rgba(0,0,0,0) calc(50% + 2px)
         );
-
-        text-shadow: 0 0 5px red;
 
         text-shadow:
             -6px 0px 1px var(--color-02),
@@ -543,9 +567,11 @@
             1px 0px 1px var(--color-02)
             ;
 
-        margin-bottom:3px;
-        color:var(--color-07);
-        text-align:center;
+        padding-left: 14px;
+        margin-top:10px;
+        margin-bottom:8px;
+        // color:var(--color-07);
+        // text-align:center;
         line-height: 20px;
         min-height:10px;
     }
@@ -620,5 +646,19 @@
             }
         }
 
+    }
+
+    .panel {
+        &.patch_summary {
+            padding: 0;
+            margin-top: 10px;
+            height: 100%;
+            .iframe {
+                width: 100%;
+                height: 320px;
+                border: none;
+                overflow-x: hidden;
+            }
+        }
     }
 }
