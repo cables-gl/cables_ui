@@ -107,7 +107,7 @@ export default class Gui
         this.cmdPallet = new CommandPallete();
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
-        this._gizmo = null;
+        this._gizmo = [];
         this._transformOverlay = new TransformsOverlay();
 
         this.opDocs = null;
@@ -1589,16 +1589,23 @@ export default class Gui
         return this._savedState;
     }
 
-    setTransformGizmo(params)
+    setTransformGizmo(params, idx)
     {
-        if (!this._gizmo) this._gizmo = new Gizmo(this.scene().cgl);
-        if (!userSettings.get("toggleHelperCurrentTransforms"))
+        if (params == null && idx === undefined)
         {
-            this._gizmo.set(null);
+            for (let i = 0; i < this._gizmo.length; i++) this._gizmo[i].set(params);
             return;
         }
 
-        this._gizmo.set(params);
+        idx = idx || 0;
+        if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.scene().cgl);
+        if (!userSettings.get("toggleHelperCurrentTransforms"))
+        {
+            this._gizmo[idx].set(null);
+            return;
+        }
+
+        this._gizmo[idx].set(params);
     }
 
     transformOverlay()
