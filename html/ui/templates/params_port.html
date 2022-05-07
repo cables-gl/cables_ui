@@ -180,6 +180,12 @@
                                         <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="ele.byId('portval_{{ ../portnum }}').value=this.value;ele.byId('portval_{{ ../portnum }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
                                     {{/each}}
                                 </div>
+
+                                {{#if port.uiAttribs.info}}
+                                <br/>
+                                    {{port.uiAttribs.info}}
+                                {{/if}}
+
                         {{/compare}}
                         {{#compare port.uiAttribs.display '==' 'readonly' }}
                             {{ port.value }}
@@ -335,7 +341,7 @@
 
     </td>
 
-    <td>
+    <td style="min-width:15px;">
         <!-- animation/variable button -->
 
         {{#if isInput}}
