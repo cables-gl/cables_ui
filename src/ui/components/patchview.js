@@ -250,6 +250,12 @@ export default class PatchView extends CABLES.EventTarget
         if (this._patchRenderer.focus) this._patchRenderer.focus();
     }
 
+    clearPatch()
+    {
+        this._patchRenderer.dispose();
+        this._p.clear();
+    }
+
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;

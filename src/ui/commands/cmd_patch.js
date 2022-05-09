@@ -85,7 +85,7 @@ CABLES_CMD_PATCH.createBackup = function ()
 
 CABLES_CMD_PATCH.clear = function ()
 {
-    gui.corePatch().clear();
+    gui.patchView.clearPatch();
 };
 
 CABLES_CMD_PATCH.createAreaFromSelection = function ()

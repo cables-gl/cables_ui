@@ -622,6 +622,21 @@ export default class GlPatch extends CABLES.EventTarget
         glop.dispose();
     }
 
+    dispose()
+    {
+        for (let i in this.links)
+        {
+            this.links[i].dispose();
+        }
+        for (let i in this._glOpz)
+        {
+            this._glOpz[i].dispose();
+        }
+        this.links = {};
+        this._glOpz = {};
+    }
+
+
     toggleOpsEnable()
     {
         let willDisable = true;
