@@ -426,7 +426,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -794,13 +794,13 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-        items.push({
-            "title": "Make resizable",
-            func()
-            {
-                gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
-            },
-        });
+        // items.push({
+        //     "title": "Make resizable",
+        //     func()
+        //     {
+        //         gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
+        //     },
+        // });
 
         items.push({
             "title": "Bookmark",

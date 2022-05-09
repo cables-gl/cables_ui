@@ -1749,22 +1749,30 @@ export default class PatchView extends CABLES.EventTarget
 
     downGradeOp(opid, opname)
     {
-        console.log(opname);
         if (!gui.opDocs.getOpDocByName(opname))
         {
             CABLES.UI.notify("op has no versions....");
             return;
         }
+
         const versions = gui.opDocs.getOpDocByName(opname).versions;
-        console.log(versions);
         if (versions.length > 1)
         {
-            this.replaceOp(opid, gui.opDocs.getOpDocByName(opname).versions[versions.length - 2].name);
+            let name = versions[0].name;
+            for (let i = 0; i < versions.length; i++)
+            {
+                if (versions[i].name == opname) break;
+                name = versions[i].name;
+            }
+
+            this.replaceOp(opid, name);
         }
         else
         {
             CABLES.UI.notify("could not downgrade: has no previous version");
         }
+
+        this.unselectAllOps();
     }
 
 
