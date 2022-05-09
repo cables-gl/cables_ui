@@ -536,7 +536,7 @@ const paramsHelper =
                         catch (ex)
                         {
                             // failed to parse math, use unparsed value
-                            mathParsed = e.target.value;
+                            mathParsed = e.target.value || 0;
                         }
                         e.target.value = mathParsed;
                         op.portsIn[index].set(mathParsed);
@@ -585,7 +585,7 @@ const paramsHelper =
                 else
                 {
                     el.classList.remove("invalid");
-                    v = parseFloat(v);
+                    v = parseFloat(v) || 0;
                 }
             }
 
@@ -599,7 +599,7 @@ const paramsHelper =
                 else
                 {
                     el.classList.remove("invalid");
-                    v = parseInt(v, 10);
+                    v = parseInt(v, 10) || 0;
                     // console.log("invalid int");
                 }
             }
@@ -655,7 +655,7 @@ const paramsHelper =
                 }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
             }
 
-            op.portsIn[index].set(v);
+            op.portsIn[index].set(v || 0);
 
             // update history on change
             if (!op.uiAttribs) op.uiAttribs = {};
