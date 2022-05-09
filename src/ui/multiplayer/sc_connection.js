@@ -656,7 +656,7 @@ export default class ScConnection extends CABLES.EventTarget
             this.state.emitEvent("patchSynchronized");
             perf.finish();
         });
-        gui.corePatch().clear();
+        gui.patchView.clearPatch();
         this._paco.receive(data);
     }
 
