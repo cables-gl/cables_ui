@@ -75,6 +75,11 @@ export default class Chat extends CABLES.EventTarget
         this._updateText();
     }
 
+    isOpen()
+    {
+        return this._tab && this._tab.active && this._tab.contentEle && this._tab.contentEle.offsetParent;
+    }
+
     _updateClientList()
     {
         const ele = document.getElementById("chat-clientlist");
