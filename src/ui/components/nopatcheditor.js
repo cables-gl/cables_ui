@@ -14,6 +14,8 @@ export default class NoPatchEditor extends CABLES.EventTarget
 
     clear() {}
 
+    dispose() {}
+
     setCurrentSubPatch() {}
 
     getCurrentSubPatch() { return 0; }
