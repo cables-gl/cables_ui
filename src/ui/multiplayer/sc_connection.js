@@ -650,6 +650,7 @@ export default class ScConnection extends CABLES.EventTarget
         const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>
         {
+            this._log.verbose("patchloadend in paco");
             gui.corePatch().off(cbId);
             this._pacoSynced = true;
             this.state.emitEvent("patchSynchronized");

@@ -377,7 +377,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _modalJoinMultiplayerSession()
     {
-        if (!gui.getSavedState())
+        if (!gui.getSavedState() && !this._connection.onlyRemoteClientsConnected)
         {
             let content = "Your unsaved changes will be lost, once you enter a multiplayer session.";
             const options = {
