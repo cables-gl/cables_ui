@@ -426,10 +426,6 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("connectionChanged");
 
                 // send me patch
-                if (!this.client.isRemoteClient)
-                {
-                    this.sendChat(gui.user.username + " joined");
-                }
                 this._updateMembers();
 
                 if (this.client.isRemoteClient)
