@@ -107,12 +107,11 @@ class OpParampanel extends CABLES.EventTarget
         this.refreshTimeout = setTimeout(() =>
         {
             this.show(this._currentOp);
-        }, 33);
+        }, 50);
     }
 
     show(op)
     {
-        clearTimeout(this.refreshTimeout);
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
