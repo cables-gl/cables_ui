@@ -12,7 +12,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         super();
 
-        this.PING_INTERVAL = 10000;
+        this.PING_INTERVAL = 5000;
         this.PING_ANSWER_INTERVAL = 5000;
         this.PINGS_TO_TIMEOUT = 2;
         this.OWN_PINGS_TO_TIMEOUT = 5;
