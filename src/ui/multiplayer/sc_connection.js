@@ -388,10 +388,6 @@ export default class ScConnection extends CABLES.EventTarget
                 else
                 {
                     this.requestPilotPatch();
-                    if (this._state.hasPilot())
-                    {
-                        this.state.emitEvent("pilotChanged", this.state.getPilot());
-                    }
                 }
             });
         }
