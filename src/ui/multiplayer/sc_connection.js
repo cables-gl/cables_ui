@@ -240,7 +240,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.client.isPilot)
         {
-            this._startPacoSend();
+            this._startPacoSend(this.clientId);
         }
     }
 
@@ -356,7 +356,7 @@ export default class ScConnection extends CABLES.EventTarget
             this._state.on("becamePilot", () =>
             {
                 this._sendPing();
-                this._startPacoSend();
+                this._startPacoSend(this.clientId);
             });
 
             this._state.on("enableMultiplayer", (payload) =>
@@ -383,7 +383,7 @@ export default class ScConnection extends CABLES.EventTarget
 
                 if (payload.started)
                 {
-                    this._startPacoSend();
+                    this._startPacoSend(this.clientId);
                 }
                 else
                 {
