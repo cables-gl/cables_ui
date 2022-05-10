@@ -500,11 +500,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     _updateMembers()
     {
-        const pingOutTime = Date.now() - this.PING_INTERVAL;
-        if (this._lastPingReceived < pingOutTime)
-        {
-            this.sendControl("pingMembers", {});
-        }
+        this.sendControl("pingMembers", {});
 
         setTimeout(() =>
         {
