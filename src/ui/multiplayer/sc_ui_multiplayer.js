@@ -377,7 +377,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _modalJoinMultiplayerSession()
     {
-        if (!gui.getSavedState())
+        if (!gui.getSavedState() && !this._connection.onlyRemoteClientsConnected)
         {
             let content = "Your unsaved changes will be lost, once you enter a multiplayer session.";
             const options = {
@@ -659,6 +659,33 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     }
                 }
             }
+        });
+
+        this._connection.on("onChatMessage", (payload) =>
+        {
+            if (payload.clientId === this._connection.clientId) return;
+            if (this._connection.chat && this._connection.chat.isOpen()) return;
+
+            // remove html, cut length
+            let text = payload.text;
+            const el = document.createElement("div");
+            el.innerHTML = text;
+            text = el.textContent || el.innerText || "";
+            const maxLength = 32;
+            if (text.length > maxLength)
+            {
+                text = text.substring(0, maxLength) + "...";
+            }
+
+            notify(payload.username + " says:", text, {
+                "closeable": true,
+                "buttons": [
+                    ["<button>Open Chat</button>", function ()
+                    {
+                        CABLES.CMD.UI.showChat();
+                    }]
+                ]
+            });
         });
     }
 }

@@ -107,12 +107,11 @@ class OpParampanel extends CABLES.EventTarget
         this.refreshTimeout = setTimeout(() =>
         {
             this.show(this._currentOp);
-        }, 33);
+        }, 50);
     }
 
     show(op)
     {
-        clearTimeout(this.refreshTimeout);
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
@@ -176,9 +175,6 @@ class OpParampanel extends CABLES.EventTarget
             doc = gui.opDocs.getOpDocByName(op.objName);
             hasExample = doc && doc.hasExample;
         }
-
-
-        // if (!currentOp) return;
 
         this.removePorts();
 
@@ -794,20 +790,20 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-        items.push({
-            "title": "Make resizable",
-            func()
-            {
-                gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
-            },
-        });
+        // items.push({
+        //     "title": "Make resizable",
+        //     func()
+        //     {
+        //         gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
+        //     },
+        // });
 
         items.push({
             "title": "Bookmark",
             func()
             {
                 gui.bookmarks.add();
-            },
+            }
         });
 
         items.push({
@@ -815,7 +811,7 @@ class OpParampanel extends CABLES.EventTarget
             func()
             {
                 gui.serverOps.cloneDialog(opname);
-            },
+            }
         });
 
         items.push({
@@ -823,7 +819,7 @@ class OpParampanel extends CABLES.EventTarget
             func()
             {
                 gui.serverOps.edit(opname, false, false, true);
-            },
+            }
         });
 
         if (gui.user.isAdmin)

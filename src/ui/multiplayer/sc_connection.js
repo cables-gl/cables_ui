@@ -426,10 +426,6 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("connectionChanged");
 
                 // send me patch
-                if (!this.client.isRemoteClient)
-                {
-                    this.sendChat(gui.user.username + " joined");
-                }
                 this._updateMembers();
 
                 if (this.client.isRemoteClient)
@@ -654,12 +650,13 @@ export default class ScConnection extends CABLES.EventTarget
         const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>
         {
+            this._log.verbose("patchloadend in paco");
             gui.corePatch().off(cbId);
             this._pacoSynced = true;
             this.state.emitEvent("patchSynchronized");
             perf.finish();
         });
-        gui.corePatch().clear();
+        gui.patchView.clearPatch();
         this._paco.receive(data);
     }
 

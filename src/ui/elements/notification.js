@@ -20,7 +20,7 @@ let lastText = "";
  * @param {NotificationDisplayOptions} options The option object.
  * @class
  * @example
- * new notifyError("error", "something broke",
+ * notifyError("error", "something broke",
  * {
  *     "timeout": false,
  *     "closeable": true,
@@ -70,7 +70,7 @@ export function notifyError(title, text, options = {})
  * @param {NotificationDisplayOptions} options The option object.
  * @class
  * @example
- * new notifyError("update", "cables has been updated",
+ * notify("update", "cables has been updated",
  * {
  *     "timeout": 1000,
  *     "closeable": false
@@ -112,7 +112,8 @@ export function notify(title, text, options = {})
             "progressBar": false,
             "animateInside": false,
             "close": closeable,
-            "timeout": timeout
+            "timeout": timeout,
+            "buttons": options.buttons || []
         });
     return toastId;
 }
