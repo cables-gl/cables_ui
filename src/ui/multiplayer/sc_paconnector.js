@@ -9,7 +9,10 @@ export default class PacoConnector extends CABLES.EventTarget
         this._delays = {};
         this._delays[CABLES.PACO_PORT_ANIM_UPDATED] = 500;
         this._delays[CABLES.PACO_VALUECHANGE] = 300;
+        this._delays[CABLES.PACO_UIATTRIBS] = 1000;
         this._timeouts = {};
+        this._lastEvent = null;
+        this._lastVars = null;
     }
 
     send(event, vars)
@@ -18,6 +21,10 @@ export default class PacoConnector extends CABLES.EventTarget
         {
             return;
         }
+
+        if ((event === this._lastEvent) && (vars === this._lastVars)) return;
+        this._lastEvent = event;
+        this._lastVars = vars;
 
         const data = { "event": event, "vars": vars };
         if (this._delays.hasOwnProperty(event))
