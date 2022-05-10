@@ -14,7 +14,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this.PING_INTERVAL = 5000;
         this.PING_ANSWER_INTERVAL = 5000;
-        this.PINGS_TO_TIMEOUT = 2;
+        this.PINGS_TO_TIMEOUT = 5;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
         this._log = new Logger("scconnection");
