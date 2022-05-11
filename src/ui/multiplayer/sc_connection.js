@@ -13,8 +13,8 @@ export default class ScConnection extends CABLES.EventTarget
         super();
 
         this.PING_INTERVAL = 5000;
-        this.PING_ANSWER_INTERVAL = 2000;
-        this.PINGS_TO_TIMEOUT = 2;
+        this.PING_ANSWER_INTERVAL = 5000;
+        this.PINGS_TO_TIMEOUT = 5;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
         this._log = new Logger("scconnection");
@@ -240,7 +240,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.client.isPilot)
         {
-            this._startPacoSend();
+            this._startPacoSend(this.clientId);
         }
     }
 
@@ -356,7 +356,7 @@ export default class ScConnection extends CABLES.EventTarget
             this._state.on("becamePilot", () =>
             {
                 this._sendPing();
-                this._startPacoSend();
+                this._startPacoSend(this.clientId);
             });
 
             this._state.on("enableMultiplayer", (payload) =>
@@ -383,15 +383,11 @@ export default class ScConnection extends CABLES.EventTarget
 
                 if (payload.started)
                 {
-                    this._startPacoSend();
+                    this._startPacoSend(this.clientId);
                 }
                 else
                 {
                     this.requestPilotPatch();
-                    if (this._state.hasPilot())
-                    {
-                        this.state.emitEvent("pilotChanged", this.state.getPilot());
-                    }
                 }
             });
         }
