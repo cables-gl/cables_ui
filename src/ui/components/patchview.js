@@ -250,6 +250,12 @@ export default class PatchView extends CABLES.EventTarget
         if (this._patchRenderer.focus) this._patchRenderer.focus();
     }
 
+    clearPatch()
+    {
+        this._patchRenderer.dispose();
+        this._p.clear();
+    }
+
     setPatchRenderer(id, pr)
     {
         this._pvRenderers[id] = pr;
@@ -1747,6 +1753,35 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
+    downGradeOp(opid, opname)
+    {
+        if (!gui.opDocs.getOpDocByName(opname))
+        {
+            CABLES.UI.notify("op has no versions....");
+            return;
+        }
+
+        const versions = gui.opDocs.getOpDocByName(opname).versions;
+        if (versions.length > 1)
+        {
+            let name = versions[0].name;
+            for (let i = 0; i < versions.length; i++)
+            {
+                if (versions[i].name == opname) break;
+                name = versions[i].name;
+            }
+
+            this.replaceOp(opid, name);
+        }
+        else
+        {
+            CABLES.UI.notify("could not downgrade: has no previous version");
+        }
+
+        this.unselectAllOps();
+    }
+
+
     replaceOpCheck(opid, newOpObjName)
     {
         this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
@@ -1851,8 +1886,11 @@ export default class PatchView extends CABLES.EventTarget
             {
                 for (const i in oldUiAttribs)
                 {
+                    if (i == "uierrors") continue;
                     const a = {};
+
                     a[i] = oldUiAttribs[i];
+
                     newOp.setUiAttrib(a);
                 }
             }, 100);

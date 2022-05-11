@@ -501,6 +501,7 @@ export default class GlOp extends CABLES.EventTarget
 
     dispose()
     {
+        this._disposed = true;
         if (this._glRectBg) this._glRectBg.dispose();
         if (this._glTitle) this._glTitle.dispose();
         if (this._glComment)
@@ -659,6 +660,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _updateErrorDots()
     {
+        if (this._disposed) return;
         if (!this.isInCurrentSubPatch())
         {
             if (this._glDotHint) this._glDotHint.visible = false;
@@ -737,12 +739,8 @@ export default class GlOp extends CABLES.EventTarget
 
     update()
     {
-        if (!this._wasInCurrentSubpatch)
-        {
-            this._setVisible();
-
-            return;
-        }
+        if (this._disposed) return;
+        if (!this._wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
 

@@ -146,8 +146,13 @@ export default function startUi(cfg)
 
                 document.getElementById("loadingstatusLog").style.display = "none";
 
+                let projectId = gui.patchId;
+                if (gui.project())
+                {
+                    projectId = gui.project().shortId || gui.project()._id;
+                }
                 new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + gui.patchId,
+                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -156,7 +161,7 @@ export default function startUi(cfg)
                 });
 
                 new QRCode(document.getElementById("patch_view_qr"), {
-                    "text": CABLES.sandbox.getCablesUrl() + "/p/" + gui.patchId,
+                    "text": CABLES.sandbox.getCablesUrl() + "/p/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",

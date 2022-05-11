@@ -35,24 +35,18 @@ export default class ScClient
     {
         let hash = 0;
         for (let i = 0; i < this.clientId.length; i++)
-        {
             hash = this.clientId.charCodeAt(i) + ((hash << 5) - hash);
-        }
-        let result = [];
-        for (let i = 0; i < 3; i++)
-        {
-            let value = (hash >> (i * 8)) & 0xFF;
-            result[i] = value / 255;
-        }
-        const color = {
-            "r": result[0],
-            "g": result[1],
-            "b": result[2],
-        };
-        color.rb = Math.round(255 * color.r);
-        color.gb = Math.round(255 * color.g);
-        color.bb = Math.round(255 * color.b);
 
-        return color;
+        const value = ((hash >> 8) & 0xFF) / 255;
+        const result = chroma(360 * value, 1, 0.6, "hsl").rgb();
+
+        return {
+            "r": result[0] / 255,
+            "g": result[1] / 255,
+            "b": result[2] / 255,
+            "rb": result[0],
+            "gb": result[1],
+            "bb": result[2],
+        };
     }
 }

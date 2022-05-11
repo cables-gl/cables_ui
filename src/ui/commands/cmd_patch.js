@@ -85,7 +85,7 @@ CABLES_CMD_PATCH.createBackup = function ()
 
 CABLES_CMD_PATCH.clear = function ()
 {
-    gui.corePatch().clear();
+    gui.patchView.clearPatch();
 };
 
 CABLES_CMD_PATCH.createAreaFromSelection = function ()
@@ -545,6 +545,13 @@ CABLES_CMD_PATCH.editOp = function (userInteraction)
     }
 };
 
+CABLES_CMD_PATCH.downGradeOp = function ()
+{
+    const selops = gui.patchView.getSelectedOps();
+    for (let i = 0; i < selops.length; i++)
+        gui.patchView.downGradeOp(selops[i].id, selops[i].name);
+};
+
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
     gui.patchView.patchRenderer._cgl.saveScreenshot("patchfield_" + performance.now(), () =>
@@ -826,6 +833,12 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "link two selected ops",
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "icon": "op"
+    },
+    {
+        "cmd": "downgrade selected op",
+        "func": CABLES_CMD_PATCH.downGradeOp,
+        "icon": "op"
     }
+
 
 );

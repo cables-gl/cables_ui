@@ -78,6 +78,16 @@
         }
     }
 
+    .modallist {
+        margin-top: 30px;
+        ul {
+            padding-left: 20px;
+            li {
+                margin-bottom: 0.5em;
+            }
+        }
+    }
+
     &.transparent {
         background-color: transparent !important;
         -webkit-box-shadow: none;

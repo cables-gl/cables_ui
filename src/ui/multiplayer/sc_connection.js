@@ -13,8 +13,8 @@ export default class ScConnection extends CABLES.EventTarget
         super();
 
         this.PING_INTERVAL = 5000;
-        this.PING_ANSWER_INTERVAL = 2000;
-        this.PINGS_TO_TIMEOUT = 2;
+        this.PING_ANSWER_INTERVAL = 5000;
+        this.PINGS_TO_TIMEOUT = 5;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
         this._log = new Logger("scconnection");
@@ -23,7 +23,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._lastPingReceived = Date.now();
-        this._lastPingSent = Date.now();
+        this._lastPingSent = null;
 
         this._socket = null;
         this._connected = false;
@@ -240,7 +240,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.client.isPilot)
         {
-            this._startPacoSend();
+            this._startPacoSend(this.clientId);
         }
     }
 
@@ -356,7 +356,7 @@ export default class ScConnection extends CABLES.EventTarget
             this._state.on("becamePilot", () =>
             {
                 this._sendPing();
-                this._startPacoSend();
+                this._startPacoSend(this.clientId);
             });
 
             this._state.on("enableMultiplayer", (payload) =>
@@ -383,15 +383,11 @@ export default class ScConnection extends CABLES.EventTarget
 
                 if (payload.started)
                 {
-                    this._startPacoSend();
+                    this._startPacoSend(this.clientId);
                 }
                 else
                 {
                     this.requestPilotPatch();
-                    if (this._state.hasPilot())
-                    {
-                        this.state.emitEvent("pilotChanged", this.state.getPilot());
-                    }
                 }
             });
         }
@@ -426,10 +422,6 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("connectionChanged");
 
                 // send me patch
-                if (!this.client.isRemoteClient)
-                {
-                    this.sendChat(gui.user.username + " joined");
-                }
                 this._updateMembers();
 
                 if (this.client.isRemoteClient)
@@ -504,7 +496,17 @@ export default class ScConnection extends CABLES.EventTarget
 
     _updateMembers()
     {
-        this.sendControl("pingMembers", {});
+        if (this._lastPingSent)
+        {
+            if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
+            {
+                this.sendControl("pingMembers", {});
+            }
+        }
+        else
+        {
+            this.sendControl("pingMembers", {});
+        }
 
         setTimeout(() =>
         {
@@ -650,16 +652,18 @@ export default class ScConnection extends CABLES.EventTarget
     _synchronizePatch(data)
     {
         if (!this._paco) return;
+        this._pacoSynced = false;
         this.state.emitEvent("startPatchSync");
         const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>
         {
+            this._log.verbose("patchloadend in paco");
             gui.corePatch().off(cbId);
             this._pacoSynced = true;
             this.state.emitEvent("patchSynchronized");
             perf.finish();
         });
-        gui.corePatch().clear();
+        gui.patchView.clearPatch();
         this._paco.receive(data);
     }
 
