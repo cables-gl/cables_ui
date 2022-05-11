@@ -70,7 +70,24 @@ export default class ModalDialog extends CABLES.EventTarget
         {
             html += "<br/><br/>";
             html += "<input id=\"modalpromptinput\" class=\"medium\" value=\"" + (this._options.promptValue || "") + "\"/>";
-            html += "<br/><br/>";
+            html += "<br/>";
+        }
+
+        if (this._options.notices && this._options.notices.length > 0)
+        {
+            html += "<div class=\"modallist notices\">";
+            html += "<ul>";
+            for (let i = 0; i < this._options.notices.length; i++)
+            {
+                const item = this._options.notices[i];
+                html += "<li>" + item + "</li>";
+            }
+            html += "</ul></div>";
+        }
+
+        if (this._options.prompt)
+        {
+            html += "<br/>";
             html += "<a class=\"bluebutton\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
         }
