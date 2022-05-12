@@ -522,8 +522,8 @@ export default class ServerOps
         html += "Enter a name:<br/><br/>";
         html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
         html += "<br/>";
-        html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\"></div>";
+        html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
         html += "<br/><br/>";
 
@@ -544,9 +544,10 @@ export default class ServerOps
                 this._log.log(res);
                 if (res.problems.length > 0)
                 {
-                    let htmlIssue = "<b>your op name has issues:</b><br/><ul>";
+                    let htmlIssue = "<br/><br/><b>your op name has issues:</b><br/><div class=\"modallist notices\">";
+                    htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul><br/><br/>";
+                    htmlIssue += "</ul></div>";
                     document.getElementById("opcreateerrors").innerHTML = htmlIssue;
                     document.getElementById("opNameDialogSubmit").style.display = "none";
                 }

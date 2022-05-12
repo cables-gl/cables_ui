@@ -23,7 +23,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._lastPingReceived = Date.now();
-        this._lastPingSent = Date.now();
+        this._lastPingSent = null;
 
         this._socket = null;
         this._connected = false;
@@ -496,7 +496,17 @@ export default class ScConnection extends CABLES.EventTarget
 
     _updateMembers()
     {
-        this.sendControl("pingMembers", {});
+        if (this._lastPingSent)
+        {
+            if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
+            {
+                this.sendControl("pingMembers", {});
+            }
+        }
+        else
+        {
+            this.sendControl("pingMembers", {});
+        }
 
         setTimeout(() =>
         {
@@ -642,6 +652,7 @@ export default class ScConnection extends CABLES.EventTarget
     _synchronizePatch(data)
     {
         if (!this._paco) return;
+        this._pacoSynced = false;
         this.state.emitEvent("startPatchSync");
         const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>
