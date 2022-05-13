@@ -458,18 +458,45 @@ export default class FileManager
                     {
                         delEle.addEventListener(
                             "click",
-                            function (e)
+                            (e) =>
                             {
+                                console.log("FILE", r);
+                                const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
-                                    "deleteFile",
-                                    { "fileid": r.fileDb._id },
-                                    function (errr, rr)
+                                    "checkNumAssetPatches",
+                                    { "filename": fullName },
+                                    (countErr, countRes) =>
                                     {
-                                        if (rr && rr.success) this._manager.removeItem(itemId);
-                                        else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
-                                    }.bind(this),
+                                        let content = "Really delete this file? It may be used in other patches.";
+                                        if (countRes && countRes.data && countRes.data.countPatches)
+                                        {
+                                            content = "Really delete this file? It is used in " + countRes.data.countPatches + " of your patches.<br/><br/>";
+                                            content += "You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
+                                        }
+
+                                        const options = {
+                                            "title": "Delete file",
+                                            "html": content,
+                                            "warning": true,
+                                            "choice": true
+                                        };
+
+                                        const modal = new ModalDialog(options);
+                                        modal.on("onSubmit", () =>
+                                        {
+                                            CABLESUILOADER.talkerAPI.send(
+                                                "deleteFile",
+                                                { "fileid": r.fileDb._id },
+                                                (errr, rr) =>
+                                                {
+                                                    if (rr && rr.success) this._manager.removeItem(itemId);
+                                                    else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
+                                                }
+                                            );
+                                        });
+                                    }
                                 );
-                            }.bind(this),
+                            }
                         );
                     }
                 }.bind(this),
