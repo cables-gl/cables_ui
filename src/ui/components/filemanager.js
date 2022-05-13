@@ -460,22 +460,35 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                console.log("FILE", r);
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
                                     { "filename": fullName },
                                     (countErr, countRes) =>
                                     {
-                                        let content = "Really delete this file? It may be used in other patches.";
-                                        if (countRes && countRes.data && countRes.data.countPatches)
+                                        let content = "";
+                                        if (countRes && countRes.data)
                                         {
-                                            content = "Really delete this file? It is used in " + countRes.data.countPatches + " of your patches.<br/><br/>";
-                                            content += "You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
+                                            let used = false;
+                                            if (countRes.data.countPatches)
+                                            {
+                                                content += "It is used in " + countRes.data.countPatches + " of your patches.<br/>";
+                                                used = true;
+                                            }
+                                            if (countRes.data.countOps)
+                                            {
+                                                content += "It is used in " + countRes.data.countOps + " of your ops.<br/>";
+                                                used = true;
+                                            }
+                                            if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
+                                        }
+                                        else
+                                        {
+                                            content += "It may be used in other patches.";
                                         }
 
                                         const options = {
-                                            "title": "Delete file",
+                                            "title": "Really delete this file?",
                                             "html": content,
                                             "warning": true,
                                             "choice": true
