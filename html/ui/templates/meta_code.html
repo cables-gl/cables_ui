@@ -80,7 +80,12 @@
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
 
-        <a class="button-small" style="text-align:right" onclick="gui.serverOps.selectLibFromAssets('{{op.objName}}');">select lib from patch files</a>
+        {{#if user.isStaff}}
+            {{#if canEditOp}}
+            <a class="button-small" style="text-align:right" onclick="gui.serverOps.selectLibFromAssets('{{op.objName}}');">select lib from patch files</a>
+            {{/if}}
+        {{/if}}
+
         <br/><br/>
         {{#if doc.libs}}
             <table class="table">
