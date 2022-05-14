@@ -460,7 +460,6 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                console.log("FILE", r);
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
