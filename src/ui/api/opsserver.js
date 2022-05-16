@@ -1023,6 +1023,11 @@ export default class ServerOps
         return false;
     }
 
+    isUserOp(opname)
+    {
+        return opname && opname.indexOf("Ops.User.") === 0;
+    }
+
     canEditOp(user, opName)
     {
         if (user.roles.includes("alwaysEditor"))
