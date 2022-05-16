@@ -5,6 +5,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
 import userSettings from "./usersettings";
+import ModalLoading from "../dialogs/modalloading";
 
 export default class FileManager
 {
@@ -460,12 +461,15 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
+                                const loadingModal = new ModalLoading("Checking asset dependencies");
+                                loadingModal.setTask("Check dependencies...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
                                     { "filename": fullName },
                                     (countErr, countRes) =>
                                     {
+                                        loadingModal.close();
                                         let content = "";
                                         let allowDelete = true;
                                         if (countRes && countRes.data)
