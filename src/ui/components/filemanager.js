@@ -462,7 +462,7 @@ export default class FileManager
                             (e) =>
                             {
                                 const loadingModal = new ModalLoading("Checking asset dependencies");
-                                loadingModal.setTask("Check dependencies...");
+                                loadingModal.setTask("Checking patches and ops...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
