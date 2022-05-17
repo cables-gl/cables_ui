@@ -73,7 +73,7 @@ class Ele
 
     getSelectValue(el)
     {
-        return el.options[el.selectedIndex].text;
+        return el.options[el.selectedIndex].value || el.options[el.selectedIndex].text;
     }
 
     show(el)
