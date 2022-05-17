@@ -341,6 +341,25 @@ export default class ServerOps
         );
     }
 
+    selectLibFromAssets(opName)
+    {
+        gui.showFileManager(() =>
+        {
+            gui.fileManager.setFilterType([".js"]);
+            gui.fileManager._manager.addEventListener("onItemsSelected", (items) =>
+            {
+                if (items && items.length > 0)
+                {
+                    const userLib = items[0];
+                    if (userLib.p)
+                    {
+                        this.addOpLib(opName, userLib.p);
+                    }
+                }
+            });
+        }, true);
+    }
+
     removeOpLib(opName, libName)
     {
         if (confirm("really remove library '" + libName + "' from op?"))
@@ -851,9 +870,10 @@ export default class ServerOps
         {
             if (this._ops[i].name == opname)
             {
+                let found = false;
+                const libs = [];
                 if (this._ops[i].libs)
                 {
-                    const libs = [];
                     for (let j = 0; j < this._ops[i].libs.length; j++)
                     {
                         const libName = this._ops[i].libs[j];
@@ -866,9 +886,10 @@ export default class ServerOps
                             libs.push(libName);
                         }
                     }
-
-                    return libs;
+                    found = true;
                 }
+
+                if (found) return libs;
             }
         }
         return [];
@@ -912,7 +933,6 @@ export default class ServerOps
             if (proj.ops[i])
             {
                 // if (this.getOpLibs(proj.ops[i].objName).length) this._log.log("op with libs:", proj.ops[i].objName, this.getOpLibs(proj.ops[i].objName));
-
                 libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
                 coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
             }
@@ -1001,6 +1021,11 @@ export default class ServerOps
         const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
         if (opname.indexOf(usernamespace) == 0) return true;
         return false;
+    }
+
+    isUserOp(opname)
+    {
+        return opname && opname.indexOf("Ops.User.") === 0;
     }
 
     canEditOp(user, opName)

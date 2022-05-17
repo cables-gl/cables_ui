@@ -5,6 +5,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
 import userSettings from "./usersettings";
+import ModalLoading from "../dialogs/modalloading";
 
 export default class FileManager
 {
@@ -460,39 +461,67 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
+                                const loadingModal = new ModalLoading("Checking asset dependencies");
+                                loadingModal.setTask("Checking patches and ops...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
                                     { "filename": fullName },
                                     (countErr, countRes) =>
                                     {
-                                        let content = "Really delete this file? It may be used in other patches.";
-                                        if (countRes && countRes.data && countRes.data.countPatches)
+                                        loadingModal.close();
+                                        let content = "";
+                                        let allowDelete = true;
+                                        if (countRes && countRes.data)
                                         {
-                                            content = "Really delete this file? It is used in " + countRes.data.countPatches + " of your patches.<br/><br/>";
-                                            content += "You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
+                                            let used = false;
+                                            if (countRes.data.countPatches)
+                                            {
+                                                content += "It is used in " + countRes.data.countPatches + " of your patches.<br/>";
+                                                used = true;
+                                            }
+                                            if (countRes.data.countOps)
+                                            {
+                                                content += "It is used in " + countRes.data.countOps + " of your ops.<br/>";
+                                                used = true;
+                                                allowDelete = false;
+                                            }
+                                            if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
+                                        }
+                                        else
+                                        {
+                                            content += "It may be used in other patches.";
+                                        }
+
+                                        let title = "Really delete this file?";
+                                        if (!allowDelete)
+                                        {
+                                            title = "You cannot delete this file!";
                                         }
 
                                         const options = {
-                                            "title": "Delete file",
+                                            "title": title,
                                             "html": content,
                                             "warning": true,
-                                            "choice": true
+                                            "choice": allowDelete
                                         };
 
                                         const modal = new ModalDialog(options);
-                                        modal.on("onSubmit", () =>
+                                        if (allowDelete)
                                         {
-                                            CABLESUILOADER.talkerAPI.send(
-                                                "deleteFile",
-                                                { "fileid": r.fileDb._id },
-                                                (errr, rr) =>
-                                                {
-                                                    if (rr && rr.success) this._manager.removeItem(itemId);
-                                                    else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
-                                                }
-                                            );
-                                        });
+                                            modal.on("onSubmit", () =>
+                                            {
+                                                CABLESUILOADER.talkerAPI.send(
+                                                    "deleteFile",
+                                                    { "fileid": r.fileDb._id },
+                                                    (errr, rr) =>
+                                                    {
+                                                        if (rr && rr.success) this._manager.removeItem(itemId);
+                                                        else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
+                                                    }
+                                                );
+                                            });
+                                        }
                                     }
                                 );
                             }

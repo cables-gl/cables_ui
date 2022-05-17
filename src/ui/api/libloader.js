@@ -79,7 +79,18 @@ export default class LibLoader
                 newScript.dataset.libname = elRef;
                 newScript.type = "text/javascript";
                 newScript.async = true;
-                newScript.src = this.basePath + name + "?nc=" + this.getCacheBusterNumber();
+                if (name.startsWith("/assets"))
+                {
+                    newScript.src = name + "?nc=" + this.getCacheBusterNumber();
+                    newScript.onload = () =>
+                    {
+                        CABLES.loadedLib(name);
+                    };
+                }
+                else
+                {
+                    newScript.src = this.basePath + name + "?nc=" + this.getCacheBusterNumber();
+                }
                 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newScript);
             }
         }
