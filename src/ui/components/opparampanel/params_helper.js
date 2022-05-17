@@ -234,9 +234,9 @@ const paramsHelper =
                     ele.byId("numberinputDisplay_in_" + (portNum + 2)).innerHTML =
                     inputElements[2].value = glRgb[2];
 
-                    inputElements[0].dispatchEvent(new Event("input"));
-                    inputElements[1].dispatchEvent(new Event("input"));
-                    inputElements[2].dispatchEvent(new Event("input"));
+                    inputElements[0].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
+                    inputElements[1].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
+                    inputElements[2].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                 },
                 "onStart": () =>
                 {
@@ -244,6 +244,9 @@ const paramsHelper =
                 },
                 "onEnd": () =>
                 {
+                    inputElements[0].dispatchEvent(new Event("input"));
+                    inputElements[1].dispatchEvent(new Event("input"));
+                    inputElements[2].dispatchEvent(new Event("input"));
                     undo.endGroup(undoGroup, "Change Color");
                 },
             });
@@ -628,6 +631,8 @@ const paramsHelper =
                                     gui.patchView.showDefaultPanel();
 
                                     p.set(oldv);
+                                    gui.emitEvent("portValueEdited", op, p, oldv);
+
                                     gui.opParams.show(uop);
                                     gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
@@ -644,6 +649,7 @@ const paramsHelper =
                                     gui.patchView.showDefaultPanel();
 
                                     p.set(newv);
+                                    gui.emitEvent("portValueEdited", op, p, newv);
                                     gui.opParams.show(rop);
                                     gui.patchView.focusOp(null);
                                     gui.patchView.focusOp(opid);
@@ -668,7 +674,10 @@ const paramsHelper =
             CABLES.UI.paramsHelper.checkDefaultValue(op, index);
             if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
-            gui.emitEvent("portValueEdited", op, op.portsIn[index], v);
+            if (!e.detail || !e.detail.ignorePaco)
+            {
+                gui.emitEvent("portValueEdited", op, op.portsIn[index], v);
+            }
         });
     }
 
