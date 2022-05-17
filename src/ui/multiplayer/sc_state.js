@@ -14,6 +14,8 @@ export default class ScState extends CABLES.EventTarget
 
         this._log = new Logger("scstate");
 
+        this._connection = connection;
+
         this._clients = {};
         this._clients[connection.clientId] = new ScClient({
             "username": gui.user.username,
@@ -21,10 +23,10 @@ export default class ScState extends CABLES.EventTarget
             "clientId": connection.clientId,
             "isMe": true,
             "isRemoteClient": gui.isRemoteClient,
+            "multiplayerCapable": this._connection.multiplayerCapable,
             "isPilot": false
         });
         this._followers = [];
-        this._connection = connection;
         this._colors = {};
         this._pilot = null;
 
