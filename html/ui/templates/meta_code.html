@@ -80,13 +80,6 @@
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
 
-        {{#if isUserOp}}
-        {{#if canEditOp}}
-        <a class="button-small" style="text-align:right" onclick="gui.serverOps.selectLibFromAssets('{{op.objName}}');">Select lib from patch files</a>
-        <br/><br/>
-        {{/if}}
-        {{/if}}
-
         {{#if doc.libs}}
             <table class="table">
                 <tr>
@@ -109,6 +102,11 @@
         <div class="libselect">
             <select id="addoplib">
                 <option value="">---</option>
+                {{#if isUserOp}}
+                {{#if canEditOp}}
+                <option value="asset_upload">use library from patch assets...</option>
+                {{/if}}
+                {{/if}}
                 {{#each libs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}

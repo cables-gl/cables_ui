@@ -39,7 +39,6 @@ export default class ScConnection extends CABLES.EventTarget
 
         this.channelName = this._scConfig.channel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
-
         if (cfg) this._init((isActive) =>
         {
             if (isActive && this.multiplayerCapable)
@@ -48,6 +47,11 @@ export default class ScConnection extends CABLES.EventTarget
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
             }
         });
+    }
+
+    get showGuestUsers()
+    {
+        return gui && gui.project() && gui.project() && gui.project().settings && gui.project().settings.isPublic;
     }
 
     get netMouseCursorDelay() { return 100; }
