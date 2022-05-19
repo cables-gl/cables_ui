@@ -376,7 +376,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         }
         else
         {
-            this._connection.joinMultiplayerSession();
+            if (this._connection.onlyRemoteClientsConnected)
+            {
+                this._connection.reconnectRemoteViewer();
+            }
+            else
+            {
+                this._connection.joinMultiplayerSession();
+            }
         }
     }
 
