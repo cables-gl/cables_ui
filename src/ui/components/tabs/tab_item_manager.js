@@ -94,6 +94,13 @@ export default class ItemManager
         for (let i = 0; i < this._items.length; i++) if (id === this._items[i].id) return this._items[i];
     }
 
+    getSelectedItems()
+    {
+        const selectedItems = [];
+        for (let i = 0; i < this._items.length; i++) if (this._items[i].selected) selectedItems.push(this._items[i]);
+        return selectedItems;
+    }
+
     updateSelectionHtml()
     {
         for (let i = 0; i < this._items.length; i++)

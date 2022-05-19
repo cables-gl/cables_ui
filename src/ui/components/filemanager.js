@@ -466,7 +466,7 @@ export default class FileManager
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
                                     "checkNumAssetPatches",
-                                    { "filename": fullName },
+                                    { "filenames": [fullName] },
                                     (countErr, countRes) =>
                                     {
                                         loadingModal.close();
@@ -567,40 +567,101 @@ export default class FileManager
             {
                 elDelMulti.addEventListener(
                     "click",
-                    function (e)
+                    (e) =>
                     {
+                        const selectedItems = this._manager.getSelectedItems();
                         this._manager.unselectAll();
 
-                        for (let i = 0; i < detailItems.length; i++)
+                        const selectedFileIds = [];
+                        const fullNames = [];
+                        for (let i = 0; i < selectedItems.length; i++)
                         {
-                            const detailItem = detailItems[i];
-
-                            CABLESUILOADER.talkerAPI.send(
-                                "deleteFile",
-                                {
-                                    "fileid": detailItem.id,
-                                },
-                                (err, r) =>
-                                {
-                                    if (r.success)
-                                    {
-                                        this._manager.removeItem(detailItem.id);
-                                    }
-                                    else
-                                    {
-                                        CABLES.UI.notifyError("error: could not delete file", err);
-                                        this._log.warn(err);
-                                    }
-
-                                    this._manager.unselectAll();
-                                },
-                                function (r)
-                                {
-                                    this._log.warn("api err", r);
-                                },
-                            );
+                            const detailItem = selectedItems[i];
+                            selectedFileIds.push(detailItem.id);
+                            fullNames.push(detailItem.p);
                         }
-                    }.bind(this),
+
+                        const loadingModal = new ModalLoading("Checking asset dependencies");
+                        loadingModal.setTask("Checking patches and ops...");
+                        CABLESUILOADER.talkerAPI.send(
+                            "checkNumAssetPatches",
+                            { "filenames": fullNames },
+                            (countErr, countRes) =>
+                            {
+                                loadingModal.close();
+                                let content = "";
+                                let allowDelete = true;
+                                if (countRes && countRes.data)
+                                {
+                                    let used = false;
+                                    if (countRes.data.countPatches)
+                                    {
+                                        content += "They are is used in " + countRes.data.countPatches + " of your patches.<br/>";
+                                        used = true;
+                                    }
+                                    if (countRes.data.countOps)
+                                    {
+                                        content += "They are used in " + countRes.data.countOps + " of your ops.<br/>";
+                                        used = true;
+                                        allowDelete = false;
+                                    }
+                                    if (used) content += "<br/>Try to delete them individually to check where they are used.";
+                                }
+                                else
+                                {
+                                    content += "They may be used in other patches.";
+                                }
+
+                                let title = "Really delete " + selectedFileIds.length + " files?";
+                                if (!allowDelete)
+                                {
+                                    title = "You cannot delete all of these files!";
+                                }
+
+                                const options = {
+                                    "title": title,
+                                    "html": content,
+                                    "warning": true,
+                                    "choice": allowDelete
+                                };
+
+                                const modal = new ModalDialog(options);
+                                if (allowDelete)
+                                {
+                                    modal.on("onSubmit", () =>
+                                    {
+                                        selectedFileIds.forEach((fileId) =>
+                                        {
+                                            CABLESUILOADER.talkerAPI.send(
+                                                "deleteFile",
+                                                {
+                                                    "fileid": fileId,
+                                                },
+                                                (err, r) =>
+                                                {
+                                                    if (r.success)
+                                                    {
+                                                        this._manager.removeItem(fileId);
+                                                    }
+                                                    else
+                                                    {
+                                                        CABLES.UI.notifyError("error: could not delete file", err);
+                                                        this._log.warn(err);
+                                                    }
+
+                                                    this._manager.unselectAll();
+                                                },
+                                                (r) =>
+                                                {
+                                                    this._log.warn("api err", r);
+                                                },
+                                            );
+                                        });
+                                    });
+                                }
+                            }
+                        );
+                    }
                 );
             }
         }
