@@ -664,8 +664,8 @@ const paramsHelper =
             }
 
 
-            if (op.portsIn[index].uiAttribs.type == "number") op.portsIn[index].set(v || 0);
             if (op.portsIn[index].uiAttribs.type == "string")op.portsIn[index].set(v || "");
+            else op.portsIn[index].set(v || 0);
 
             // update history on change
             if (!op.uiAttribs) op.uiAttribs = {};
