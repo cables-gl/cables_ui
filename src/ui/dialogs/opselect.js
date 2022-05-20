@@ -5,6 +5,7 @@ import ModalBackground from "./modalbg";
 import OpTreeList from "../components/opselect_treelist";
 import text from "../text";
 import userSettings from "../components/usersettings";
+import Gui from "../gui";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -644,6 +645,8 @@ export default class OpSelect
 
     show(options, linkOp, linkPort, link)
     {
+        if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
         // if(!this._escapeListener)this._escapeListener = gui.on("pressedEscape", ()=>
         //     {
         //         console.log("pressed esc!");
