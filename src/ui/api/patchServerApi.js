@@ -246,7 +246,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             "title": "Save As...",
             "text": prompt,
             "notices": modalNotices,
-            "promptValue": "copy of " + gui.corePatch().name,
+            "promptValue": "copy of " + gui.project().name,
             "promptOk": (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",

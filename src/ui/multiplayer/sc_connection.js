@@ -206,6 +206,17 @@ export default class ScConnection extends CABLES.EventTarget
         this._sendPing();
     }
 
+    reconnectRemoteViewer()
+    {
+        gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+        this.client.isPilot = true;
+        this.client.following = null;
+        this.client.inMultiplayerSession = true;
+        this._inSessionSince = Date.now();
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+        this._sendPing();
+    }
+
     startRemoteViewer(doneCallback)
     {
         const listener = () => { this._state.off(listenerId); doneCallback(); };
