@@ -116,6 +116,7 @@ class OpParampanel extends CABLES.EventTarget
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
+
         if (this._currentOp != op)
         {
             if (this._currentOp) this._stopListeners();
@@ -129,6 +130,10 @@ class OpParampanel extends CABLES.EventTarget
             this.removePorts();
             return;
         }
+
+        console.log("op.getTitle()", op.getTitle());
+
+
         op.emitEvent("uiParamPanel");
         if (op.id != self._oldOpParamsId)
         {
@@ -422,7 +427,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));

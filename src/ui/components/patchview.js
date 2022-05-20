@@ -1538,6 +1538,8 @@ export default class PatchView extends CABLES.EventTarget
         let op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(op2id);
 
+        if (!op1 || !op2) return;
+
         {
             // helper number2string auto insert....
             let p1 = op1.getPortByName(pid);
