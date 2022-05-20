@@ -23,7 +23,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
         this._lastPingReceived = Date.now();
-        this._lastPingSent = Date.now();
+        this._lastPingSent = null;
 
         this._socket = null;
         this._connected = false;
@@ -39,7 +39,6 @@ export default class ScConnection extends CABLES.EventTarget
 
         this.channelName = this._scConfig.channel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
-
         if (cfg) this._init((isActive) =>
         {
             if (isActive && this.multiplayerCapable)
@@ -48,6 +47,11 @@ export default class ScConnection extends CABLES.EventTarget
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
             }
         });
+    }
+
+    get showGuestUsers()
+    {
+        return gui && gui.project() && gui.project() && gui.project().settings && gui.project().settings.isPublic;
     }
 
     get netMouseCursorDelay() { return 100; }
@@ -195,6 +199,17 @@ export default class ScConnection extends CABLES.EventTarget
     {
         gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
         this.client.isPilot = false;
+        this.client.following = null;
+        this.client.inMultiplayerSession = true;
+        this._inSessionSince = Date.now();
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
+        this._sendPing();
+    }
+
+    reconnectRemoteViewer()
+    {
+        gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+        this.client.isPilot = true;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
         this._inSessionSince = Date.now();
@@ -496,7 +511,17 @@ export default class ScConnection extends CABLES.EventTarget
 
     _updateMembers()
     {
-        this.sendControl("pingMembers", {});
+        if (this._lastPingSent)
+        {
+            if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
+            {
+                this.sendControl("pingMembers", {});
+            }
+        }
+        else
+        {
+            this.sendControl("pingMembers", {});
+        }
 
         setTimeout(() =>
         {
@@ -642,6 +667,7 @@ export default class ScConnection extends CABLES.EventTarget
     _synchronizePatch(data)
     {
         if (!this._paco) return;
+        this._pacoSynced = false;
         this.state.emitEvent("startPatchSync");
         const perf = CABLES.UI.uiProfiler.start("[sc] paco sync");
         const cbId = gui.corePatch().on("patchLoadEnd", () =>

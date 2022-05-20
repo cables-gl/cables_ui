@@ -101,7 +101,15 @@ export default class PatchView extends CABLES.EventTarget
                     const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
                     if (newop)
                     {
-                        for (const i in oldValues) if (newop.getPortByName(i))newop.getPortByName(i).set(oldValues[i]);
+                        for (const i in oldValues)
+                        {
+                            const port = newop.getPortByName(i);
+                            if (port)
+                            {
+                                port.set(oldValues[i]);
+                                gui.emitEvent("portValueEdited", newop, port, oldValues[i]);
+                            }
+                        }
                     }
                 },
                 redo()
@@ -524,19 +532,6 @@ export default class PatchView extends CABLES.EventTarget
             html += getHandleBarHtml("clonepatch", {});
         }
         html += gui.bookmarks.getHtml();
-
-        // const views = document.getElementById("patchviews");
-        // if (views.children.length > 1)
-        // {
-        //     html += "<h3>Patchviews</h3>";
-        //     for (let i = 0; i < views.children.length; i++)
-        //     {
-        //         html += "<div class=\"list\" onclick=\"gui.patchView.switch('" + views.children[i].id + "')\"><div>" + views.children[i].id + "</div></div>";
-        //     }
-        // }
-
-        // html += "</div>";
-
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }
 

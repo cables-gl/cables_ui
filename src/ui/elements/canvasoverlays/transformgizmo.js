@@ -276,10 +276,12 @@ export default class Gizmo
                         undo()
                         {
                             p.set(oldValue);
+                            gui.emitEvent("portValueEdited", op, p, oldValue);
                         },
                         redo()
                         {
                             p.set(newValue);
+                            gui.emitEvent("portValueEdited", op, p, newValue);
                         }
                     });
                 }(

@@ -199,30 +199,54 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         let prompt = "Enter a name for the copy of this Project.";
 
+        const modalNotices = [];
+
         if (hasPrivateUserOps)
         {
-            prompt += "<br/><br/><b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue saving this patch, but probably some things will not work.";
+            modalNotices.push("<b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue saving this patch, but probably some things will not work.");
         }
 
-        if (copyCollaborators)
+        const hasCollaborators = project.userList.filter((u) => { return u !== gui.user.usernameLowercase; }).length > 0;
+        if (hasCollaborators)
         {
-            prompt += "<br/><br/>The following users will have access to the copy: ";
-            project.userList.forEach((name, i) =>
+            let collabText = "Collaborators will NOT be copied for public patches!";
+            if (copyCollaborators)
             {
-                if (i > 0) prompt += ", ";
-                prompt += name;
-            });
+                collabText = "The following users will have access to the copy:<br/>";
+                project.userList.forEach((name, i) =>
+                {
+                    if (i > 0) collabText += ", ";
+                    collabText += "<a href=\"/u/" + name + "\" target=\"blank\">" + name + "</a>";
+                });
+            }
+            modalNotices.push(collabText);
         }
-        else
+
+        if (project.userId !== gui.user.id)
         {
-            prompt += "<br/><br/>Collaborators will NOT be copied for public patches!";
+            let licenceText = "The author of the patch reserves all copyright on this work. Please respect this decision.";
+            if (project.settings && project.settings.licence)
+            {
+                let licenceName = project.settings.licence;
+                let licenceLink = null;
+                if (licenceName.startsWith("cc"))
+                {
+                    let licenceUrl = licenceName.split("cc-", 2)[1];
+                    if (licenceName === "cc0") licenceUrl = "cc0";
+                    licenceLink = "https://creativecommons.org/licenses/" + licenceUrl + "/4.0/";
+                    if (licenceLink) licenceName = "<a href=\"" + licenceLink + "\" target=\"_blank\">" + licenceName.toUpperCase() + "</a>";
+                    licenceText = "Patch has a " + licenceName + " Licence. Please respect the licence chosen by the author.";
+                }
+            }
+            modalNotices.push(licenceText);
         }
 
         const p = new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
-            "promptValue": "copy of " + gui.corePatch().name,
+            "notices": modalNotices,
+            "promptValue": "copy of " + gui.project().name,
             "promptOk": (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",

@@ -299,6 +299,11 @@ export default class ServerOps
     addOpLib(opName, libName)
     {
         if (libName === "---") return;
+        if (libName === "asset_upload")
+        {
+            gui.serverOps.selectLibFromAssets(opName);
+            return;
+        }
 
         CABLESUILOADER.talkerAPI.send(
             "opAddLib",
@@ -341,9 +346,29 @@ export default class ServerOps
         );
     }
 
+    selectLibFromAssets(opName)
+    {
+        gui.showFileManager(() =>
+        {
+            gui.fileManager.setFilterType([".js"]);
+            gui.fileManager._manager.addEventListener("onItemsSelected", (items) =>
+            {
+                if (items && items.length > 0)
+                {
+                    const userLib = items[0];
+                    if (userLib.p)
+                    {
+                        this.addOpLib(opName, userLib.p);
+                    }
+                }
+            });
+        }, true);
+    }
+
     removeOpLib(opName, libName)
     {
-        if (confirm("really remove library '" + libName + "' from op?"))
+        const modal = new ModalDialog({ "title": "Really remove library from op?", "text": "Delete " + libName + " from " + opName + "?", "choice": true });
+        modal.on("onSubmit", () =>
         {
             CABLESUILOADER.talkerAPI.send(
                 "opRemoveLib",
@@ -364,18 +389,14 @@ export default class ServerOps
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
                             html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                             html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
-
-                            CABLES.UI.MODAL.show(html, {
-                                "title": "library removed",
-                            });
+                            new ModalDialog({ "title": "Library removed", "text": html });
                         });
                     }
                 },
             );
-        }
+        });
     }
 
     addCoreLib(opName, libName)
@@ -423,7 +444,8 @@ export default class ServerOps
 
     removeCoreLib(opName, libName)
     {
-        if (confirm("really remove corelib '" + libName + "' from op?"))
+        const modal = new ModalDialog({ "title": "Really remove corelib from op?", "text": "Delete " + libName + " from " + opName + "?", "choice": true });
+        modal.on("onSubmit", () =>
         {
             CABLESUILOADER.talkerAPI.send(
                 "opRemoveCoreLib",
@@ -444,7 +466,6 @@ export default class ServerOps
                             gui.metaTabs.activateTabByName("code");
                             let html = "";
                             html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
                             html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
 
@@ -455,12 +476,13 @@ export default class ServerOps
                     }
                 },
             );
-        }
+        });
     }
 
     deleteAttachment(opName, attName)
     {
-        if (confirm("really ?"))
+        const modal = new ModalDialog({ "title": "Delete attachment from op?", "text": "Delete " + attName + " from " + opName + "?", "choice": true });
+        modal.on("onSubmit", () =>
         {
             CABLESUILOADER.talkerAPI.send(
                 "opAttachmentDelete",
@@ -480,7 +502,7 @@ export default class ServerOps
                     }
                 },
             );
-        }
+        });
     }
 
     addAttachmentDialog(opname)
@@ -522,8 +544,8 @@ export default class ServerOps
         html += "Enter a name:<br/><br/>";
         html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
         html += "<br/>";
-        html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\"></div>";
+        html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
         html += "<br/><br/>";
 
@@ -544,9 +566,10 @@ export default class ServerOps
                 this._log.log(res);
                 if (res.problems.length > 0)
                 {
-                    let htmlIssue = "<b>your op name has issues:</b><br/><ul>";
+                    let htmlIssue = "<br/><br/><b>your op name has issues:</b><br/><div class=\"modallist notices\">";
+                    htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul><br/><br/>";
+                    htmlIssue += "</ul></div>";
                     document.getElementById("opcreateerrors").innerHTML = htmlIssue;
                     document.getElementById("opNameDialogSubmit").style.display = "none";
                 }
@@ -850,9 +873,10 @@ export default class ServerOps
         {
             if (this._ops[i].name == opname)
             {
+                let found = false;
+                const libs = [];
                 if (this._ops[i].libs)
                 {
-                    const libs = [];
                     for (let j = 0; j < this._ops[i].libs.length; j++)
                     {
                         const libName = this._ops[i].libs[j];
@@ -865,9 +889,10 @@ export default class ServerOps
                             libs.push(libName);
                         }
                     }
-
-                    return libs;
+                    found = true;
                 }
+
+                if (found) return libs;
             }
         }
         return [];
@@ -911,7 +936,6 @@ export default class ServerOps
             if (proj.ops[i])
             {
                 // if (this.getOpLibs(proj.ops[i].objName).length) this._log.log("op with libs:", proj.ops[i].objName, this.getOpLibs(proj.ops[i].objName));
-
                 libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
                 coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
             }
@@ -1000,6 +1024,11 @@ export default class ServerOps
         const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
         if (opname.indexOf(usernamespace) == 0) return true;
         return false;
+    }
+
+    isUserOp(opname)
+    {
+        return opname && opname.indexOf("Ops.User.") === 0;
     }
 
     canEditOp(user, opName)

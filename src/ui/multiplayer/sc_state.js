@@ -14,6 +14,8 @@ export default class ScState extends CABLES.EventTarget
 
         this._log = new Logger("scstate");
 
+        this._connection = connection;
+
         this._clients = {};
         this._clients[connection.clientId] = new ScClient({
             "username": gui.user.username,
@@ -21,10 +23,10 @@ export default class ScState extends CABLES.EventTarget
             "clientId": connection.clientId,
             "isMe": true,
             "isRemoteClient": gui.isRemoteClient,
+            "multiplayerCapable": this._connection.multiplayerCapable,
             "isPilot": false
         });
         this._followers = [];
-        this._connection = connection;
         this._colors = {};
         this._pilot = null;
 
@@ -160,6 +162,12 @@ export default class ScState extends CABLES.EventTarget
 
     _cleanUpUserList()
     {
+        // wait for patch to be in a synced state to update userlist
+        if (!this._connection.synced)
+        {
+            return false;
+        }
+
         const timeOutSeconds = this._connection.PING_INTERVAL * this._connection.PINGS_TO_TIMEOUT;
 
         let cleanupChange = false;
@@ -196,18 +204,28 @@ export default class ScState extends CABLES.EventTarget
 
         if (!this.hasPilot() && this._connection.inMultiplayerSession)
         {
-            // connection has no pilot, try to find the longest connected client that is also in a multiplayer session
             let pilot = null;
             let earliestConnection = Date.now();
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
-                if (!client.isRemoteClient && client.inMultiplayerSession && client.inSessionSince && client.inSessionSince < earliestConnection)
-                {
-                    pilot = client;
-                    earliestConnection = client.inSessionSince;
-                }
+                if (client && client.isPilot) pilot = client;
             });
+
+            if (!pilot)
+            {
+                // connection has no pilot, try to find the longest connected client that is also in a multiplayer session
+                Object.keys(this._clients).forEach((key) =>
+                {
+                    const client = this._clients[key];
+                    if (!client.isRemoteClient && client.inMultiplayerSession && client.inSessionSince && client.inSessionSince < earliestConnection)
+                    {
+                        pilot = client;
+                        earliestConnection = client.inSessionSince;
+                    }
+                });
+            }
+
             if (pilot && !pilot.isRemoteClient)
             {
                 this._clients[pilot.clientId].isPilot = true;

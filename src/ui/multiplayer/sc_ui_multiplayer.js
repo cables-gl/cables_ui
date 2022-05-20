@@ -37,20 +37,22 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             document.querySelector(".nav_remote_viewer").classList.remove("hidden");
         }
 
-        if (this._connection.state.getNumClients() < 2)
+        let shownClients = Object.values(this._connection.clients).filter((c) => { return c.multiplayerCapable; });
+        if (this._connection.showGuestUsers) shownClients = Object.values(this._connection.clients);
+        const clientList = shownClients.sort((a, b) =>
+        {
+            if (!a.username) a.username = "";
+            if (!b.username) b.username = "";
+            return a.username.localeCompare(b.username);
+        });
+
+        if (clientList.length < 2)
         {
             document.getElementById("multiplayerbar").style.display = "none";
             document.getElementById("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             return;
         }
-
-        const clientList = Object.values(this._connection.clients).sort((a, b) =>
-        {
-            if (!a.username) a.username = "";
-            if (!b.username) b.username = "";
-            return a.username.localeCompare(b.username);
-        });
 
         const data = {
             "clients": clientList,
@@ -99,27 +101,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     ele.classList.remove("me");
                 }
-
-                /*
-               if (this._connection.followers.includes(itemId))
-               {
-                   ele.classList.add("follower");
-               }
-               else
-               {
-                   ele.classList.remove("follower");
-               }
-
-
-               if (this._connection.client.following && this._connection.client.following === ele.dataset.clientId)
-               {
-                   ele.classList.add("following");
-               }
-               else
-               {
-                   ele.classList.remove("following");
-               }
-                */
             }
 
             ele.addEventListener("pointerdown", (event) =>
@@ -395,7 +376,14 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         }
         else
         {
-            this._connection.joinMultiplayerSession();
+            if (this._connection.onlyRemoteClientsConnected)
+            {
+                this._connection.reconnectRemoteViewer();
+            }
+            else
+            {
+                this._connection.joinMultiplayerSession();
+            }
         }
     }
 
