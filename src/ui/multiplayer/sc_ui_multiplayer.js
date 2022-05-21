@@ -440,6 +440,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _registerEventListeners()
     {
+        if (this._connection.client.isRemoteClient) return;
+
         this._connection.state.on("enableMultiplayer", (msg) =>
         {
             if (!msg.started)

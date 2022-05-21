@@ -1,11 +1,11 @@
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 
 export default class MetaOpParams
 {
     constructor(tabs)
     {
         this._tabs = tabs;
-        this._tab = new Tab("op", { "icon": "op", "infotext": "tab_doc", "showTitle": false, "hideToolbar": true, "padding": false });
+        this._tab = new Tab("op", { "icon": "op", "infotext": "tab_op", "showTitle": false, "hideToolbar": true, "padding": false });
 
         this._op = null;
         this.html = "";

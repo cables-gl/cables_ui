@@ -116,6 +116,7 @@ class OpParampanel extends CABLES.EventTarget
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
+
         if (this._currentOp != op)
         {
             if (this._currentOp) this._stopListeners();
@@ -129,6 +130,7 @@ class OpParampanel extends CABLES.EventTarget
             this.removePorts();
             return;
         }
+
         op.emitEvent("uiParamPanel");
         if (op.id != self._oldOpParamsId)
         {

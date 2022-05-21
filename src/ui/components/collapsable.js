@@ -22,13 +22,10 @@ Collapsable.setup = function (parentEle, childEle, collapsed)
 
     Collapsable._setGroupCollapsed(parentEle, childEle, collapsed);
 
-    // Collapsable._setGroupCollapsed(parentEle, childEle);
-
-    parentEle.addEventListener("click", () =>
+    parentEle.addEventListener("click", (event) =>
     {
-        console.log("click....");
-
         Collapsable._toggleGroupElements(parentEle, childEle);
+        event.stopImmediatePropagation();
     });
 };
 
@@ -50,6 +47,7 @@ Collapsable._setGroupCollapsed = (parentEle, childEle, collapsed) =>
 
 Collapsable._toggleGroupElements = (parentEle, childEle) =>
 {
+    console.log(parentEle, childEle);
     // const els = ele.byClassAll(name);
     // for (let i = 0; i < els.length; i++)
     // {

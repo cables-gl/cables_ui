@@ -542,6 +542,7 @@ const paramsHelper =
                             mathParsed = e.target.value || 0;
                         }
                         e.target.value = mathParsed;
+
                         op.portsIn[index].set(mathParsed);
                         CABLES.UI.hideToolTip();
                     }
@@ -591,6 +592,7 @@ const paramsHelper =
                     v = parseFloat(v) || 0;
                 }
             }
+
 
             if (op.portsIn[index].uiAttribs.type == "int")
             {
@@ -661,7 +663,9 @@ const paramsHelper =
                 }(op.portsIn[index].get(), v, op.id, op.portsIn[index].name));
             }
 
-            op.portsIn[index].set(v || 0);
+
+            if (op.portsIn[index].uiAttribs.type == "string")op.portsIn[index].set(v || "");
+            else op.portsIn[index].set(v || 0);
 
             // update history on change
             if (!op.uiAttribs) op.uiAttribs = {};

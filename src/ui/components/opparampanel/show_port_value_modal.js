@@ -239,7 +239,13 @@ export default class ModalPortValue
         }
         catch (ex)
         {
-            console.log(ex);
+            let fullHTML = "";
+            fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
+            fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            fullHTML += "<br/><br/>";
+            fullHTML += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
+
+            modal.updateHtml(fullHTML);
         }
     }
 
@@ -264,6 +270,9 @@ export default class ModalPortValue
 
         try
         {
+            const thing = port.get();
+            const serializedThing = JSON.stringify(thing, null, 2);
+
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
             html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
@@ -273,7 +282,6 @@ export default class ModalPortValue
             html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
 
             html += "<br/><br/>";
-            const thing = port.get();
 
             if (thing && thing.constructor)
             {
@@ -284,7 +292,7 @@ export default class ModalPortValue
             }
 
             html += "<br/><br/>";
-            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">" + convertHTML(JSON.stringify(thing, null, 2)) + "</code></pre>";
+            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">" + convertHTML(serializedThing) + "</code></pre>";
 
             new ModalDialog({ "html": html });
 
@@ -297,7 +305,25 @@ export default class ModalPortValue
         }
         catch (ex)
         {
-            console.log(ex);
+            let html = "";
+            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
+            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            html += "<br/><br/>";
+
+            const thing = port.get();
+
+            if (thing && thing.constructor)
+            {
+                html += "" + thing.constructor.name + " \n";
+
+                if (thing.constructor.name === "Array") html += " - length: " + thing.length + "\n";
+                if (thing.constructor.name === "Float32Array") html += " - length: " + thing.length + "\n";
+            }
+
+            html += "<br/><br/>";
+            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
+
+            new ModalDialog({ "html": html });
         }
     }
 
