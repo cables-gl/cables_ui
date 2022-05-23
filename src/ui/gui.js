@@ -1434,6 +1434,9 @@ export default class Gui
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
+        CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms");
+        gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
+
         this.iconBarLeft = new IconBar("sidebar_left");
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
         this.iconBarTimeline = new IconBar("sidebar_timeline");
