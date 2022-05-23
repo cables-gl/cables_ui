@@ -143,10 +143,13 @@ export default class ModalException
 
         if (this._exception)
         {
-            str += "<div class=\"shaderErrorCode\">" + this._exception.message + "</div><br/>";
+            str += "<div class=\"shaderErrorCodeMsg\">" + this._exception.message + "</div><br/>";
             if (this._exception.stack)
             {
-                str += "<div class=\"shaderErrorCode\">" + this._exception.stack + "</div><br/>";
+                const stackClean = document.createElement("div");
+                stackClean.innerHTML = this._exception.stack;
+                str += "<div class=\"shaderErrorCode\">" + stackClean.innerText + "</div><br/>";
+                stackClean.remove();
             }
             if (this._exception.customMessage)
             {
