@@ -151,10 +151,11 @@
     -moz-user-select: text; /* Firefox all */
     -ms-user-select: text; /* IE 10+ */
     max-width: 800px;
-    overflow-x: scroll;
+    overflow: auto;
 
     .shaderErrorCode {
         padding: 0;
+        overflow: visible;
     }
 }
 
