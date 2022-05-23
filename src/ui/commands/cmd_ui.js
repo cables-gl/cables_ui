@@ -245,9 +245,9 @@ CABLES_CMD_UI.toggleHelper = function ()
 
 CABLES_CMD_UI.toggleTransformOverlay = function ()
 {
-    CABLES.UI.showCanvasTransforms = !CABLES.UI.showCanvasTransforms;
+    userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
+    CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms");
     gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
-    // CABLES_CMD_UI.updateCanvasIcons();
 };
 
 CABLES_CMD_UI.gradientTest = function ()
