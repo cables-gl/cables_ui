@@ -161,8 +161,10 @@ export default class ModalException
         str += "<div class=\"shaderErrorCodeContainer\">" + errorString + "</div><br/>";
 
         let isCustomOp = false;
+        let isUserOp = false;
         if (this._opname)
         {
+            isUserOp = this._opname.startsWith("Ops.User." + gui.user.usernameLowercase);
             isCustomOp = this._opname.startsWith("Ops.Cables.CustomOp");
             if (isCustomOp && this._op)
             {
@@ -171,14 +173,14 @@ export default class ModalException
             }
             else
             {
-                if (window.gui && (gui.user.isAdmin || this._opname.startsWith("Ops.User." + gui.user.usernameLowercase)))
+                if (window.gui && (gui.user.isAdmin || isUserOp))
                 {
                     str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }
             }
         }
 
-        if (!isCustomOp && !this._opname.startsWith("Ops.User." + gui.user.usernameLowercase))
+        if (!isCustomOp && !isUserOp)
         {
             str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
         }
