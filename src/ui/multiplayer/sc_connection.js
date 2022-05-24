@@ -13,7 +13,7 @@ export default class ScConnection extends CABLES.EventTarget
         super();
 
         this.PING_INTERVAL = 5000;
-        this.PING_ANSWER_INTERVAL = 5000;
+        this.PING_ANSWER_INTERVAL = 2500;
         this.PINGS_TO_TIMEOUT = 5;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
@@ -171,6 +171,11 @@ export default class ScConnection extends CABLES.EventTarget
         this._chat.show();
     }
 
+    setPacoPaused(paused)
+    {
+        if (this._paco) this._paco.paused = paused;
+    }
+
     startMultiplayerSession()
     {
         if (this.runningMultiplayerSession)
@@ -255,11 +260,11 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.client.isPilot)
         {
-            this._startPacoSend(this.clientId);
+            this._startPacoSend(this.clientId, true);
         }
     }
 
-    _startPacoSend(requestedBy)
+    _startPacoSend(requestedBy, forceResync = false)
     {
         if (this.inMultiplayerSession)
         {
@@ -272,7 +277,8 @@ export default class ScConnection extends CABLES.EventTarget
             const json = gui.corePatch().serialize({ "asObject": true });
             const payload = {
                 "patch": JSON.stringify(json),
-                "requestedBy": requestedBy
+                "requestedBy": requestedBy,
+                "forceResync": forceResync
             };
             this._paco.send(CABLES.PACO_LOAD, payload);
             this._pacoSynced = true;
@@ -648,7 +654,7 @@ export default class ScConnection extends CABLES.EventTarget
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {
-                if (!foreignRequest)
+                if (!foreignRequest || (msg.data.vars && msg.data.vars.forceResync))
                 {
                     this._synchronizePatch(msg.data);
                 }

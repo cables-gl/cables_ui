@@ -6,6 +6,7 @@ export default class PacoConnector extends CABLES.EventTarget
         this._connection = connection;
         this._paco = paco;
         this.initialized = false;
+        this.paused = false;
         this._delays = {};
         this._delays[CABLES.PACO_PORT_ANIM_UPDATED] = 500;
         this._delays[CABLES.PACO_VALUECHANGE] = 300;
@@ -14,10 +15,12 @@ export default class PacoConnector extends CABLES.EventTarget
 
     send(event, vars)
     {
-        if (!this._connection)
+        if (!this._connection || this._connection.client.isRemoteClient)
         {
             return;
         }
+
+        if (this.paused) return;
 
         const data = { "event": event, "vars": vars };
         if (this._delays.hasOwnProperty(event))
