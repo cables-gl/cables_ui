@@ -141,9 +141,10 @@ export default class ModalException
         if (this._opname)
             str += "Error in op: <b>" + this._opname + "</b><br/><br/>";
 
-        let errorString = this._exception.message;
+        let errorString = "unknown error...";
         if (this._exception)
         {
+            errorString = this._exception.message;
             if (this._exception.stack)
             {
                 const stackClean = document.createElement("div");
@@ -177,7 +178,7 @@ export default class ModalException
             }
         }
 
-        if (!isCustomOp)
+        if (!isCustomOp && !this._opname.startsWith("Ops.User." + gui.user.usernameLowercase))
         {
             str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
         }
