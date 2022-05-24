@@ -141,22 +141,23 @@ export default class ModalException
         if (this._opname)
             str += "Error in op: <b>" + this._opname + "</b><br/><br/>";
 
+        let errorString = this._exception.message;
         if (this._exception)
         {
-            str += "<div class=\"shaderErrorCodeMsg\">" + this._exception.message + "</div><br/>";
             if (this._exception.stack)
             {
                 const stackClean = document.createElement("div");
                 stackClean.innerHTML = this._exception.stack;
-                str += "<div class=\"shaderErrorCode\">" + stackClean.innerText + "</div><br/>";
+                errorString += "<div class=\"shaderErrorCode\">" + stackClean.innerText + "</div><br/>";
                 stackClean.remove();
             }
             if (this._exception.customMessage)
             {
-                str += "<div class=\"shaderErrorCode\">" + this._exception.customMessage + "</div><br/>";
+                errorString += "<div class=\"shaderErrorCode\">" + this._exception.customMessage + "</div><br/>";
             }
         }
-        str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
+        errorString += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
+        str += "<div class=\"shaderErrorCodeContainer\">" + errorString + "</div><br/>";
 
         let isCustomOp = false;
         if (this._opname)

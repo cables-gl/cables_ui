@@ -141,21 +141,25 @@
     }
 }
 
-.shaderErrorCodeMsg {
+.shaderErrorCodeContainer {
+
     font-family: SourceCodePro, monospace;
-    white-space: pre;
     background-color: var(--color-03);
+    white-space: pre;
     padding: 10px;
     user-select: text;
     -webkit-user-select: text; /* Chrome all / Safari all */
     -moz-user-select: text; /* Firefox all */
     -ms-user-select: text; /* IE 10+ */
     max-width: 800px;
+    max-height: 600px;
     overflow: auto;
 
     .shaderErrorCode {
         padding: 0;
         overflow: visible;
+        max-height: unset;
+        margin-top: 10px;
     }
 }
 
