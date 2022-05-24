@@ -134,13 +134,29 @@
     -moz-user-select: text; /* Firefox all */
     -ms-user-select: text; /* IE 10+ */
     max-width: 800px;
-    overflow: auto;
 
     .error {
         background-color: #400;
         width: 100%;
     }
+}
 
+.shaderErrorCodeMsg {
+    font-family: SourceCodePro, monospace;
+    white-space: pre;
+    background-color: var(--color-03);
+    padding: 10px;
+    user-select: text;
+    -webkit-user-select: text; /* Chrome all / Safari all */
+    -moz-user-select: text; /* Firefox all */
+    -ms-user-select: text; /* IE 10+ */
+    max-width: 800px;
+    overflow: auto;
+
+    .shaderErrorCode {
+        padding: 0;
+        overflow: visible;
+    }
 }
 
 .modalScrollContent {
