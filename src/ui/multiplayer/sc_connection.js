@@ -255,11 +255,11 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (this.client.isPilot)
         {
-            this._startPacoSend(this.clientId);
+            this._startPacoSend(this.clientId, true);
         }
     }
 
-    _startPacoSend(requestedBy)
+    _startPacoSend(requestedBy, forceResync = false)
     {
         if (this.inMultiplayerSession)
         {
@@ -272,7 +272,8 @@ export default class ScConnection extends CABLES.EventTarget
             const json = gui.corePatch().serialize({ "asObject": true });
             const payload = {
                 "patch": JSON.stringify(json),
-                "requestedBy": requestedBy
+                "requestedBy": requestedBy,
+                "forceResync": forceResync
             };
             this._paco.send(CABLES.PACO_LOAD, payload);
             this._pacoSynced = true;
@@ -648,7 +649,7 @@ export default class ScConnection extends CABLES.EventTarget
             }
             else if (msg.data.event === CABLES.PACO_LOAD)
             {
-                if (!foreignRequest)
+                if (!foreignRequest || (msg.data.vars && msg.data.vars.forceResync))
                 {
                     this._synchronizePatch(msg.data);
                 }
