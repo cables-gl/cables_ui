@@ -1,9 +1,18 @@
 
 .cablesCssUi
 {
+    #opparams
+    {
+        .button-small
+        {
+            margin-top:0px !important;
+        }
+    }
 
     .params
     {
+
+
 
         .toggle-bookmark-button
         {
@@ -216,6 +225,7 @@
             text-overflow: ellipsis;
             max-width: 135px;
             overflow: hidden;
+
         }
         /* 90 degree border */
 
@@ -354,7 +364,7 @@
 
             td
             {
-                padding-bottom: 3px;
+                // padding-bottom: 3px;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 padding-top: 3px;
@@ -592,8 +602,8 @@
     .radioToggle
     {
         border-radius:4px;
-        border:1px solid #222;
-        display:inline-block;
+        // border:1px solid #222;
+        display:inherit;
         background-color: var(--color-05);
 
         label
