@@ -171,6 +171,11 @@ export default class ScConnection extends CABLES.EventTarget
         this._chat.show();
     }
 
+    setPacoPaused(paused)
+    {
+        if (this._paco) this._paco.paused = paused;
+    }
+
     startMultiplayerSession()
     {
         if (this.runningMultiplayerSession)

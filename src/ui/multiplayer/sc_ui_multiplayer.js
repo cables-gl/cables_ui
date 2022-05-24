@@ -275,8 +275,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _restoreLastSavedPatchVersion()
     {
+        this._connection.setPacoPaused(true);
         CABLES.sandbox.reloadLastSavedVersion((err, project) =>
         {
+            this._connection.setPacoPaused(false);
             this._connection.sendCurrentVersion();
         });
     }
