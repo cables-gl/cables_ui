@@ -1724,6 +1724,11 @@ export default class Gui
 
         if (r < Gui.RESTRICT_MODE_FULL)
         {
+            const optionsPanel = ele.byId("options");
+            if (optionsPanel)
+            {
+                optionsPanel.classList.add("readonly");
+            }
             const tabpanel = ele.byId("metatabpanel");
             if (tabpanel)
             {
@@ -1743,6 +1748,11 @@ export default class Gui
         }
         else
         {
+            const optionsPanel = ele.byId("options");
+            if (optionsPanel)
+            {
+                optionsPanel.classList.remove("readonly");
+            }
             const tabpanel = ele.byId("metatabpanel");
             if (tabpanel)
             {

@@ -275,8 +275,10 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
     _restoreLastSavedPatchVersion()
     {
+        this._connection.setPacoPaused(true);
         CABLES.sandbox.reloadLastSavedVersion((err, project) =>
         {
+            this._connection.setPacoPaused(false);
             this._connection.sendCurrentVersion();
         });
     }
@@ -336,14 +338,17 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                         "iconClass": "icon icon-remoteviewer",
                         "func": () => {}
                     });
-                    items.push({
-                        "title": "send resync command",
-                        "iconClass": "icon icon-refresh",
-                        "func": () =>
-                        {
-                            this._sendForceResync(client);
-                        }
-                    });
+                    if (this._connection.client.isPilot)
+                    {
+                        items.push({
+                            "title": "send resync command",
+                            "iconClass": "icon icon-refresh",
+                            "func": () =>
+                            {
+                                this._sendForceResync(client);
+                            }
+                        });
+                    }
                 }
             }
         }

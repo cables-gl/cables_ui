@@ -1,9 +1,18 @@
 
 .cablesCssUi
 {
+    #opparams
+    {
+        .button-small
+        {
+            margin-top:0px !important;
+        }
+    }
 
     .params
     {
+
+
 
         .toggle-bookmark-button
         {
@@ -152,8 +161,6 @@
         overflow: auto;
         padding:10px;
 
-
-
         .colorbutton
         {
             width:20px;
@@ -216,6 +223,7 @@
             text-overflow: ellipsis;
             max-width: 135px;
             overflow: hidden;
+
         }
         /* 90 degree border */
 
@@ -250,7 +258,7 @@
         input.value,.linkedValue
         {
             background-color: $color-background-input;
-            border: 1px solid $background-color-brighter;
+            // border: 1px solid $background-color-brighter;
             float:left;
             font-family: SourceCodePro,monospace;
             font-size: var(--font-size-default);
@@ -354,7 +362,7 @@
 
             td
             {
-                padding-bottom: 3px;
+                // padding-bottom: 3px;
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 padding-top: 3px;
@@ -363,6 +371,8 @@
         }
 
     }
+
+
 
     .panelhead
     {
@@ -432,6 +442,17 @@
         td
         {
             vertical-align:top;
+        }
+
+        &.readonly .panel {
+            opacity: 0.6;
+            pointer-events: none !important;
+            user-select: none !important;
+
+            input {
+                pointer-events: none !important;
+                user-select: none !important;
+            }
         }
 
     }
@@ -592,8 +613,8 @@
     .radioToggle
     {
         border-radius:4px;
-        border:1px solid #222;
-        display:inline-block;
+        // border:1px solid #222;
+        display:inherit;
         background-color: var(--color-05);
 
         label
