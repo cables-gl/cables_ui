@@ -448,7 +448,7 @@ body
         }
     }
 
-    ::selection
+    ::selection, &::selection
     {
         background: var(--color-09);
         color: var(--color-13);
@@ -460,7 +460,7 @@ body
     $color-scrollbar-thumb: #2a2a2a;
     $color-scrollbar-background: transparent;
 
-    ::-webkit-scrollbar {
+    ::-webkit-scrollbar, &::-webkit-scrollbar {
         height: 12px;
         width: 12px;
         background: $color-scrollbar-background;
@@ -468,17 +468,15 @@ body
     }
 
 
-    ::-webkit-scrollbar-thumb {
+    ::-webkit-scrollbar-thumb, &::-webkit-scrollbar-thumb {
         background: $color-scrollbar-thumb;
         -webkit-border-radius: 1px;
         border-radius: 6px;
     }
 
-    ::-webkit-scrollbar-corner {
+    ::-webkit-scrollbar-corner, &::-webkit-scrollbar-corner {
         background: $color-scrollbar-background;
     }
-
-
 
     body,div
     {
