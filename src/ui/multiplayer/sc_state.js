@@ -176,7 +176,7 @@ export default class ScState extends CABLES.EventTarget
         {
             const client = this._clients[clientId];
 
-            if (client.lastSeen && (Date.now() - client.lastSeen) > timeOutSeconds)
+            if (client.lastSeen && (this._connection.getTimestamp() - client.lastSeen) > timeOutSeconds)
             {
                 if (this._connection.clientId !== clientId)
                 {
@@ -205,7 +205,7 @@ export default class ScState extends CABLES.EventTarget
         if (!this.hasPilot() && this._connection.inMultiplayerSession)
         {
             let pilot = null;
-            let earliestConnection = Date.now();
+            let earliestConnection = this._connection.getTimestamp();
             Object.keys(this._clients).forEach((key) =>
             {
                 const client = this._clients[key];
@@ -312,6 +312,7 @@ export default class ScState extends CABLES.EventTarget
         this._connection.on("onPingAnswer", this._onPingAnswer.bind(this));
         this._connection.on("netCursorPos", (msg) =>
         {
+            if (this._connection.client.isRemoteClient) return;
             if (this._clients[msg.clientId])
             {
                 this._clients[msg.clientId].x = msg.x;
@@ -340,6 +341,11 @@ export default class ScState extends CABLES.EventTarget
             {
                 // set patchsave state if not pilot after sync
                 gui.setStateSaved();
+            }
+            if (this._connection.client.isRemoteClient)
+            {
+                const menubar = document.getElementById("menubar");
+                if (menubar) menubar.classList.add("hidden");
             }
         });
 
@@ -561,6 +567,7 @@ export default class ScState extends CABLES.EventTarget
         this._connection.on("netOpPos", (msg) =>
         {
             if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.client.isRemoteClient) return;
             const op = gui.corePatch().getOpById(msg.opId);
             if (op)
             {

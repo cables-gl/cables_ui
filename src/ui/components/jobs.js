@@ -16,14 +16,6 @@ export default class Jobs
     startListener()
     {
         this._listenerStarted = true;
-
-        if (gui.socket && gui.socket.chat)
-        {
-            gui.socket.chat.addEventListener("updated", () =>
-            {
-                if (this._jobsEle.style.display === "block") this.updateJobListing();
-            });
-        }
     }
 
     getList()

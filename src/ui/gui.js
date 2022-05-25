@@ -1720,7 +1720,6 @@ export default class Gui
         {
             ele.byId("undev").style.display = "none";
             ele.byId("infoAreaContainer").style.display = "none";
-            ele.hide(ele.byId("menubar"));
         }
 
         if (r < Gui.RESTRICT_MODE_FULL)
@@ -1785,7 +1784,10 @@ export default class Gui
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
 
-        if (this.isRemoteClient) this.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        if (this.isRemoteClient)
+        {
+            this.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        }
         else this.setRestriction(Gui.RESTRICT_MODE_FULL);
 
         CABLES.UI.initSplitPanes();
