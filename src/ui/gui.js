@@ -1720,6 +1720,7 @@ export default class Gui
         {
             ele.byId("undev").style.display = "none";
             ele.byId("infoAreaContainer").style.display = "none";
+            ele.hide(ele.byId("menubar"));
         }
 
         if (r < Gui.RESTRICT_MODE_FULL)

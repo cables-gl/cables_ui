@@ -202,7 +202,10 @@ export default class ScConnection extends CABLES.EventTarget
 
     joinMultiplayerSession()
     {
-        gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        if (gui && !gui.isRemoteClient)
+        {
+            gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        }
         this.client.isPilot = false;
         this.client.following = null;
         this.client.inMultiplayerSession = true;

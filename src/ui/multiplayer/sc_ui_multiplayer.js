@@ -119,7 +119,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client && !this._connection.client.isPilot)
             {
-                gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                if (!this._connection.client.isRemoteClient) gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
 
                 if (this._connection.client.following)
                 {
