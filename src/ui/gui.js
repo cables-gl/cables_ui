@@ -1883,10 +1883,13 @@ export default class Gui
 
     setRestriction(r)
     {
-        this._restrictionMode = r;
-        this.hideElementsByRestriction(r);
-        this.emitEvent("restrictionChange", r);
-        this.setLayout();
+        if (this._restrictionMode !== r)
+        {
+            this._restrictionMode = r;
+            this.hideElementsByRestriction(r);
+            this.emitEvent("restrictionChange", r);
+            this.setLayout();
+        }
     }
 
     getRestriction()
