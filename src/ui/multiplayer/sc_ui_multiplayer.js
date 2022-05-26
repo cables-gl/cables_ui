@@ -119,7 +119,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client && !this._connection.client.isPilot)
             {
-                gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+                if (!this._connection.client.isRemoteClient) gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
 
                 if (this._connection.client.following)
                 {
@@ -545,7 +545,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
                 this._requestResync(msg.username + " changed " + opName, (next) =>
                 {
-                    const taskName = String(Date.now());
+                    const taskName = String(this._connection.getTimestamp());
                     loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName)], taskName);
 
                     const loadJsCallback = () =>

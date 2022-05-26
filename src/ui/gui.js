@@ -1784,7 +1784,10 @@ export default class Gui
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
 
-        if (this.isRemoteClient) this.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        if (this.isRemoteClient)
+        {
+            this.setRestriction(Gui.RESTRICT_MODE_REMOTEVIEW);
+        }
         else this.setRestriction(Gui.RESTRICT_MODE_FULL);
 
         CABLES.UI.initSplitPanes();
@@ -1883,10 +1886,13 @@ export default class Gui
 
     setRestriction(r)
     {
-        this._restrictionMode = r;
-        this.hideElementsByRestriction(r);
-        this.emitEvent("restrictionChange", r);
-        this.setLayout();
+        if (this._restrictionMode !== r)
+        {
+            this._restrictionMode = r;
+            this.hideElementsByRestriction(r);
+            this.emitEvent("restrictionChange", r);
+            this.setLayout();
+        }
     }
 
     getRestriction()

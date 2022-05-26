@@ -12,8 +12,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         super();
 
-        this.PING_INTERVAL = 2500;
-        this.PING_ANSWER_INTERVAL = 2500;
+        this.PING_INTERVAL = 5000;
         this.PINGS_TO_TIMEOUT = 5;
         this.OWN_PINGS_TO_TIMEOUT = 5;
 
@@ -22,7 +21,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._scConfig = cfg;
         this._active = cfg.hasOwnProperty("enabled") ? cfg.enabled : false;
-        this._lastPingReceived = Date.now();
+        this._lastPingReceived = this.getTimestamp();
         this._lastPingSent = null;
 
         this._socket = null;
@@ -41,12 +40,17 @@ export default class ScConnection extends CABLES.EventTarget
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
         if (cfg) this._init((isActive) =>
         {
-            if (isActive && this.multiplayerCapable)
+            if (isActive && this.multiplayerCapable && !gui.isRemoteClient)
             {
                 this._multiplayerUi = new ScUiMultiplayer(this);
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
             }
         });
+    }
+
+    getTimestamp()
+    {
+        return (performance.timing.navigationStart + performance.now());
     }
 
     get showGuestUsers()
@@ -192,7 +196,7 @@ export default class ScConnection extends CABLES.EventTarget
                     this.sendNotification(this.client.username + " just started a multiplayer session");
                     notify("YOU just started a multiplayer session");
                 }
-                this._inSessionSince = Date.now();
+                this._inSessionSince = this.getTimestamp();
                 this.client.inMultiplayerSession = true;
                 this._sendPing(true);
                 this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
@@ -202,11 +206,14 @@ export default class ScConnection extends CABLES.EventTarget
 
     joinMultiplayerSession()
     {
-        gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        if (gui && !gui.isRemoteClient)
+        {
+            gui.setRestriction(Gui.RESTRICT_MODE_FOLLOWER);
+        }
         this.client.isPilot = false;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
-        this._inSessionSince = Date.now();
+        this._inSessionSince = this.getTimestamp();
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
         this._sendPing();
     }
@@ -217,7 +224,7 @@ export default class ScConnection extends CABLES.EventTarget
         this.client.isPilot = true;
         this.client.following = null;
         this.client.inMultiplayerSession = true;
-        this._inSessionSince = Date.now();
+        this._inSessionSince = this.getTimestamp();
         this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
         this._sendPing();
     }
@@ -438,7 +445,7 @@ export default class ScConnection extends CABLES.EventTarget
                 this.emitEvent("netActivityIn");
                 this._log.verbose("sc connected!");
                 this._connected = true;
-                this._connectedSince = Date.now();
+                this._connectedSince = this.getTimestamp();
 
                 this.emitEvent("connectionChanged");
 
@@ -517,17 +524,8 @@ export default class ScConnection extends CABLES.EventTarget
 
     _updateMembers()
     {
-        if (this._lastPingSent)
-        {
-            if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
-            {
-                this.sendControl("pingMembers", {});
-            }
-        }
-        else
-        {
-            this.sendControl("pingMembers", {});
-        }
+        this.sendControl("pingMembers", {});
+        this._lastPingSent = this.getTimestamp();
 
         setTimeout(() =>
         {
@@ -573,7 +571,7 @@ export default class ScConnection extends CABLES.EventTarget
                 payload.scrollY = scrollY;
             }
         }
-        if (payload.isRemoteClient && CABLESUILOADER.talkerAPI)
+        if (payload.isRemoteClient && CABLESUILOADER.talkerAPI && !payload.isDisconnected)
         {
             CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
             {
@@ -705,8 +703,7 @@ export default class ScConnection extends CABLES.EventTarget
         if (msg.name === "pingMembers")
         {
             const timeOutSeconds = this.PING_INTERVAL * this.OWN_PINGS_TO_TIMEOUT;
-            const pingOutTime = Date.now() - timeOutSeconds;
-            msg.lastPing = this._lastPingReceived;
+            const pingOutTime = this.getTimestamp() - timeOutSeconds;
             if (this._lastPingReceived < pingOutTime)
             {
                 msg.seconds = timeOutSeconds / 1000;
@@ -715,11 +712,8 @@ export default class ScConnection extends CABLES.EventTarget
             }
             if (msg.clientId !== this.clientId)
             {
-                if (this._lastPingSent < (Date.now() - this.PING_ANSWER_INTERVAL))
-                {
-                    this._sendPing();
-                    this._lastPingSent = Date.now();
-                }
+                this._sendPing();
+                this._lastPingSent = this.getTimestamp();
             }
             else
             {
@@ -728,7 +722,7 @@ export default class ScConnection extends CABLES.EventTarget
         }
         if (msg.name === "pingAnswer")
         {
-            msg.lastSeen = Date.now();
+            msg.lastSeen = this.getTimestamp();
             this._lastPingReceived = msg.lastSeen;
             this.emitEvent("onPingAnswer", msg);
         }
