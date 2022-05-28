@@ -141,24 +141,24 @@ export default class ModalException
         if (this._opname)
             str += "Error in op: <b>" + this._opname + "</b><br/><br/>";
 
-        let errorString = "unknown error...";
         if (this._exception)
         {
-            errorString = this._exception.message;
+            str += this._exception.message;
             if (this._exception.stack)
             {
                 const stackClean = document.createElement("div");
                 stackClean.innerHTML = this._exception.stack;
-                errorString += "<div class=\"shaderErrorCode\">" + stackClean.innerText + "</div><br/>";
+                str += "<br/>stacktrace:<br/>";
+                str += "<div class=\"shaderErrorCode\">" + stackClean.innerText + "</div><br/>";
                 stackClean.remove();
             }
             if (this._exception.customMessage)
             {
-                errorString += "<div class=\"shaderErrorCode\">" + this._exception.customMessage + "</div><br/>";
+                str += "<br/><br/>";
+                str += "<div class=\"shaderErrorCode\">" + this._exception.customMessage + "</div><br/>";
             }
         }
-        errorString += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
-        str += "<div class=\"shaderErrorCodeContainer\">" + errorString + "</div><br/>";
+        str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
         let isCustomOp = false;
         let isUserOp = false;
