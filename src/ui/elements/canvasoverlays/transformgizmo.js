@@ -11,6 +11,7 @@ export default class Gizmo
         this._origValue = 0;
         this._dragSum = 0;
         this._dir = 1;
+        this.hidden = true;
     }
 
     getDir(x2, y2)
@@ -35,7 +36,7 @@ export default class Gizmo
             const x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
             const y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
 
-            return { x, y };
+            return { "x": x, "y": y };
         }
 
         function distance(x1, y1, x2, y2)
@@ -51,68 +52,81 @@ export default class Gizmo
         const transX = vec3.create();
         const transY = vec3.create();
         const transZ = vec3.create();
+        const identVec = vec3.create();
 
         mat4.translate(cgl.mvMatrix, cgl.mvMatrix, [params.posX.get(), params.posY.get(), params.posZ.get()]);
         mat4.multiply(m, cgl.vMatrix, cgl.mvMatrix);
 
-        vec3.transformMat4(pos, [0, 0, 0], m);
-        vec3.transformMat4(trans, pos, cgl.pMatrix);
-        const zero = toScreen(trans);
+        vec3.transformMat4(pos, identVec, m);
 
-        // normalize distance to gizmo handles
-        vec3.transformMat4(pos, [1, 0, 0], m);
-        vec3.transformMat4(transX, pos, cgl.pMatrix);
-        let screenDist = toScreen(transX);
-        const d1 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+        let tempParams = {};
 
-        vec3.transformMat4(pos, [0, 1, 0], m);
-        vec3.transformMat4(transX, pos, cgl.pMatrix);
-        screenDist = toScreen(transX);
-        const d2 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+        if (pos[2] > 0)
+        {
+            tempParams = null;
+        }
+        else
+        {
+            vec3.transformMat4(trans, pos, cgl.pMatrix);
+            const zero = toScreen(trans);
 
-        vec3.transformMat4(pos, [0, 0, 1], m);
-        vec3.transformMat4(transX, pos, cgl.pMatrix);
-        screenDist = toScreen(transX);
-        const d3 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
+            // normalize distance to gizmo handles
+            vec3.transformMat4(pos, [1, 0, 0], m);
+            vec3.transformMat4(transX, pos, cgl.pMatrix);
+            let screenDist = toScreen(transX);
+            const d1 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
-        const d = Math.max(d3, Math.max(d1, d2));
-        const w = (1 / (d + 0.00000001)) * 50;
-        this._multi = w;
+            vec3.transformMat4(pos, [0, 1, 0], m);
+            vec3.transformMat4(transX, pos, cgl.pMatrix);
+            screenDist = toScreen(transX);
+            const d2 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
-        vec3.transformMat4(pos, [w, 0, 0], m);
-        vec3.transformMat4(transX, pos, cgl.pMatrix);
+            vec3.transformMat4(pos, [0, 0, 1], m);
+            vec3.transformMat4(transX, pos, cgl.pMatrix);
+            screenDist = toScreen(transX);
+            const d3 = distance(zero.x, zero.y, screenDist.x, screenDist.y);
 
-        vec3.transformMat4(pos, [0, w, 0], m);
-        vec3.transformMat4(transY, pos, cgl.pMatrix);
+            const d = Math.max(d3, Math.max(d1, d2));
+            const w = (1 / (d + 0.00000001)) * 50;
+            this._multi = w;
 
-        vec3.transformMat4(pos, [0, 0, w], m);
-        vec3.transformMat4(transZ, pos, cgl.pMatrix);
+            vec3.transformMat4(pos, [w, 0, 0], m);
+            vec3.transformMat4(transX, pos, cgl.pMatrix);
 
-        const screenX = toScreen(transX);
-        const screenY = toScreen(transY);
-        const screenZ = toScreen(transZ);
+            vec3.transformMat4(pos, [0, w, 0], m);
+            vec3.transformMat4(transY, pos, cgl.pMatrix);
+
+            vec3.transformMat4(pos, [0, 0, w], m);
+            vec3.transformMat4(transZ, pos, cgl.pMatrix);
+
+            const screenX = toScreen(transX);
+            const screenY = toScreen(transY);
+            const screenZ = toScreen(transZ);
+
+            // console.log(screenZ);
+
+
+            tempParams.x = zero.x;
+            tempParams.y = zero.y;
+            tempParams.xx = screenX.x;
+            tempParams.xy = screenX.y;
+            tempParams.yx = screenY.x;
+            tempParams.yy = screenY.y;
+            tempParams.zx = screenZ.x;
+            tempParams.zy = screenZ.y;
+
+            tempParams.coord = trans;
+            tempParams.coordX = transX;
+            tempParams.coordY = transY;
+            tempParams.coordZ = transZ;
+
+            tempParams.posX = params.posX;
+            tempParams.posY = params.posY;
+            tempParams.posZ = params.posZ;
+            tempParams.dist = w;
+        }
 
         cgl.popModelMatrix();
-
-        const tempParams = {};
-        tempParams.x = zero.x;
-        tempParams.y = zero.y;
-        tempParams.xx = screenX.x;
-        tempParams.xy = screenX.y;
-        tempParams.yx = screenY.x;
-        tempParams.yy = screenY.y;
-        tempParams.zx = screenZ.x;
-        tempParams.zy = screenZ.y;
-
-        tempParams.coord = trans;
-        tempParams.coordX = transX;
-        tempParams.coordY = transY;
-        tempParams.coordZ = transZ;
-
-        tempParams.posX = params.posX;
-        tempParams.posY = params.posY;
-        tempParams.posZ = params.posZ;
-        tempParams.dist = w;
 
         this.setParams(tempParams);
     }
@@ -202,9 +216,11 @@ export default class Gizmo
 
         if (!params)
         {
+            if (this.hidden) return;
             const self = this;
             setTimeout(() =>
             {
+                this.hidden = true;
                 this._eleCenter.style.display = "none";
                 this._eleX.style.display = "none";
                 this._eleZ.style.display = "none";
@@ -217,6 +233,7 @@ export default class Gizmo
             return;
         }
 
+        this.hidden = false;
         this.lineX.show();
         this.lineZ.show();
         this.lineY.show();
