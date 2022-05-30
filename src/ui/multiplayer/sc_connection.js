@@ -225,8 +225,9 @@ export default class ScConnection extends CABLES.EventTarget
         this.client.following = null;
         this.client.inMultiplayerSession = true;
         this._inSessionSince = this.getTimestamp();
-        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": false });
-        this._sendPing();
+        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
+        this._sendPing(true);
+        this._startPacoSend(this.clientId, true);
     }
 
     startRemoteViewer(doneCallback)

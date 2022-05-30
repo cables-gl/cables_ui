@@ -175,11 +175,11 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             });
             if (this._connection.onlyRemoteClientsConnected)
             {
-                joinButton.textContent = "reconnect";
+                joinButton.textContent = "Reconnect";
             }
             else
             {
-                joinButton.textContent = "join";
+                joinButton.textContent = "Join";
             }
             if (this._connection.multiplayerCapable && this._connection.runningMultiplayerSession && !this._connection.inMultiplayerSession)
             {
