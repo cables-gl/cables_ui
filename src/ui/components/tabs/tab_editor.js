@@ -43,8 +43,16 @@ export default class EditorTab
         if (options.allowEdit)
         {
             if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
-            if (!options.hideFormatButton)
-                if (options.onSave) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+            let hideFormatButton = !!options.hideFormatButton;
+            if (!hideFormatButton && options.syntax && options.syntax === "js")
+            {
+                hideFormatButton = false;
+            }
+            else
+            {
+                hideFormatButton = true;
+            }
+            if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
         }
         else
         {
