@@ -424,7 +424,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const p = op.portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p, );
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p,);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -827,7 +827,7 @@ class OpParampanel extends CABLES.EventTarget
         if (gui.user.isAdmin)
         {
             items.push({
-                "title": "edit op ",
+                "title": "Edit op ",
                 "iconClass": "icon icon-lock",
                 func()
                 {
@@ -836,7 +836,7 @@ class OpParampanel extends CABLES.EventTarget
             });
 
             items.push({
-                "title": "rename op ",
+                "title": "Rename op ",
                 "iconClass": "icon icon-lock",
                 func()
                 {

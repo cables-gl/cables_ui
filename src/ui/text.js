@@ -1,5 +1,3 @@
-
-
 const text =
 {
     "save_screenshot": "## Save Screenshot\n\nDownload renderer output as an image file",
@@ -36,37 +34,37 @@ const text =
 
     "portDirIn": "## Input Port ",
     "portDirOut": "## Output Port",
-    "portMouseUnlink": "|| [RMB] unlink port || [DRAG_RMB] move cable || `DEL` delete link || [alt]+[DRAG_RMB] copy link",
-    "portMouseCreate": "|| [DRAG_LMB] create and link new op",
-    "portObjectSnapshot": "see an object data snapshot",
+    "portMouseUnlink": "|| [RMB] Unlink port || [DRAG_RMB] Move cable || `DEL` Delete link || [alt]+[DRAG_RMB] Copy link",
+    "portMouseCreate": "|| [DRAG_LMB] Create and link new op",
+    "portObjectSnapshot": "See an object data snapshot",
 
     "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
     "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
-    "projectSettingsPublic": "make patch public - everyone can see it",
+    "projectSettingsPublic": "Make patch public - Everyone can see it",
     "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
-    "projectSettingsExample": "ADMIN: patch will be listed as example",
+    "projectSettingsExample": "ADMIN: Patch will be listed as example",
 
-    "projectExportNotSaved": "Patch not saved - save patch before exporting",
-    "projectBackupNotSaved": "Patch not saved - save patch before creating a backup",
-    "projectNotSaved": "Patch not saved - save patch and try again",
+    "projectExportNotSaved": "Patch not saved - Save patch before exporting",
+    "projectBackupNotSaved": "Patch not saved - Save patch before creating a backup",
+    "projectNotSaved": "Patch not saved - Save patch and try again",
 
-    "editorTab": "## Editor \n\n* [LMB] activate tab [MMB] close tab ",
-    "searchResult": "|| [LMB] focus op || [shift][LMB] show op params",
+    "editorTab": "## Editor \n\n* [LMB] Activate tab [MMB] Close tab ",
+    "searchResult": "|| [LMB] Focus op || [shift][LMB] Show op params",
     "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create op!",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    "patch": "## Patchfield \n\n|| `ESC` add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
+    "patch": "## Patchfield \n\n|| `ESC` Add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
     "canvas": "## Canvas\n\n|| Visual output of your patch || [cmd_ctrl][enter] || Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
-    "undevLogo": "## UNDEV \n\nCables was made by **undefined development**, come visit us in our office in Berlin and have a coffee with us! ",
+    "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",
 
-    "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - minimize panel || [alt]`ESC` - unminimize panel",
+    "minimize_tabpanel": "## Minimize Panel\n\n`ESC` - Minimize panel || [alt]`ESC` - Unminimize panel",
 
     "tab_files": "## Files \n\nUpload and manage your files",
-    "tab_code": "## Code\n\noperator code",
-    "tab_doc": "## Documentation\n\noperator documentation",
-    "tab_preview": "## Preview\n\npreview you generated textures",
+    "tab_code": "## Code\n\nOperator code",
+    "tab_doc": "## Documentation\n\nOperator documentation",
+    "tab_preview": "## Preview\n\nPreview you generated textures",
     "tab_op": "## Op Parameters\n\n",
     "tab_history": "## History\n\n",
     "tab_keyframes": "## Keyframes\n\n",
@@ -81,30 +79,30 @@ const text =
     "minimapContainer": "## Minimap \n\nShows an overview over your patch. Click inside the map to navigate.",
     "timelineui": "## Timeline \n\nIn the timeline you can animate ports over time.",
     "op_background": "## Op \n\n",
-    "op_title": "## Op Title \n\n* click to edit title",
+    "op_title": "## Op Title \n\n* Click to edit title",
 
     "bookmark_added": "Bookmark added!",
     "bookmark_removed": "Bookmark removed!",
 
-    "timeline_overview": "## timeline overview \n\nshows the current visible area\n\ndrag borders to resize\n\n* [DRAG_LMB] move area\n* [DRAG_RMB] move area and change time\n* `double click` toggle show full project length",
-    "timeline_frames": "## timeline \n\n* [LMB] move cursor",
-    "timeline_time": "[LMB] jump to frame",
-    "timeline_progress": "`click` set project duration",
-    "timeline_keys": "## timeline  \n\n* [DRAG_RMB] move visible area\n* [DRAG_LMB] select keys\n* `h` center all keys\n* `j` / `k` jump to next/previous key\n* `DEL` delete selected keys",
+    "timeline_overview": "## Timeline overview \n\nShows the current visible area\n\ndrag borders to resize\n\n* [DRAG_LMB] move area\n* [DRAG_RMB] move area and change time\n* `double click` toggle show full project length",
+    "timeline_frames": "## Timeline \n\n* [LMB] move cursor",
+    "timeline_time": "[LMB] Jump to frame",
+    "timeline_progress": "`click` Set project duration",
+    "timeline_keys": "## Timeline  \n\n* [DRAG_RMB] Move visible area\n* [DRAG_LMB] Select keys\n* `h` Center all keys\n* `j` / `k` Jump to next/previous key\n* `DEL` Delete selected keys",
 
-    "usersettings": "## User Settings\n\nchange editor settings ",
-    "texpreview": "## Texture Preview\n\nshows result of last clicked texture outputing operator.\n\nclick to see focus operator\n\nclick patch background to hide",
+    "usersettings": "## User Settings\n\nChange editor settings ",
+    "texpreview": "## Texture Preview\n\nShows result of last clicked texture outputing operator.\n\nClick to see focus operator\n\nClick patch background to hide",
 
     "valueChangerHover": "## Number Input \n\n* [DRAG_LMB] change value \n* [alt] + [DRAG_LMB] change value fast\n* [shift] + [DRAG_LMB] change value slow",
     "valueChangerInput": "## Number Input Focussed \n\n* [updown][MW] change value +/- 0.1 \n* [shift][updown][MW] change value +/- 0.01\n* [alt][updown][MW] change value +/- 1",
     "open_new_window": "## View Patch\n\nopen patch viewer in new window",
     "settings": "## Patch Settings\n\nrename,publish your patch\n\ninvite users to collaborate",
 
-    "working_connected_to": "to work, this op needs to be a child of: ",
+    "working_connected_to": "To work, this op needs to be a child of: ",
     "working_connected_needs_connections_to": "This op can not do anything without at least connecting those ports: ",
 
     "notOptimizedBrowser_title": "oops!",
-    "notOptimizedBrowser_text": "cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",
+    "notOptimizedBrowser_text": "Cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",
 
     "filemanager_delete_file": "Delete file",
     "filemanager_file_search": "Search for ops that use this file",
@@ -117,7 +115,7 @@ const text =
     "editorSaveButton": "Save",
     "editorFormatButton": "Format",
 
-    "cmd_centerpatch": "`c` center patch or selected ops",
+    "cmd_centerpatch": "`c` Center patch or selected ops",
     "cmd_zoomin": "`+` Zoom In",
     "cmd_zoomout": "`-` Zoom Out",
     "cmd_savepatch": "[cmd_ctrl]`S` Save Patch",
@@ -130,8 +128,8 @@ const text =
     "guestHint": "Cables is in Demo mode and has only limited functionality. Please register, it's free!",
 
     "opselect_intro": "<br/><h2>&nbsp;Start typing!</h2><br/>You can search for multiple words at once, e.g.: \"interpolate array\"<br/><br/>Add spaces between words for better search results<br/><br/>Press <span class=\"icon icon-arrow-up\"></span> and <span class=\"icon icon-arrow-down\"></span> to navigate.<br/><br/>Finally press <span class=\"icon icon-corner-down-left\"></span> to create the selected op",
-    "opselect_typemore": "<h2>&nbsp;type some more!</h2>",
-    "opselect_notfound": "<h2>&nbsp;404 - op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui._opselect.close();gui.serverOps.createDialog(document.getElementById('opsearch').value);\">create your own op</a>",
+    "opselect_typemore": "<h2>&nbsp;Type some more!</h2>",
+    "opselect_notfound": "<h2>&nbsp;404 - Op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui._opselect.close();gui.serverOps.createDialog(document.getElementById('opsearch').value);\">create your own op</a>",
     "opselect_addop": "Add",
 
     "preferences":
