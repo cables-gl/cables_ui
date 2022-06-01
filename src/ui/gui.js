@@ -611,7 +611,7 @@ export default class Gui
             }
             else
             {
-                timelineHeight = 0;
+                timelineHeight = timelineUiHeight;
                 this._elTLoverviewtimeline.style.display = "none";
                 this._elTLtimetimeline.style.display = "none";
                 this._elTLkeycontrols.style.display = "none";
