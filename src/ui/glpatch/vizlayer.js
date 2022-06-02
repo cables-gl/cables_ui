@@ -130,7 +130,6 @@ export default class VizLayer extends CABLES.EventTarget
             this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
             this._canvasCtx.strokeStyle = "transparent";
 
-            // this._canvasCtx.save();
             this._canvasCtx.save();
 
             let region = new Path2D();
@@ -139,7 +138,7 @@ export default class VizLayer extends CABLES.EventTarget
 
             const scale = 1000 / gui.patchView._patchRenderer.viewBox.zoom * 1.5;
 
-            if (this.paused)
+            if (count > 10 || this.paused || Math.max(sizeOp[1], sizeOp[0]) < 20)
             {
                 this._canvasCtx.save();
                 this._canvasCtx.scale(scale, scale);

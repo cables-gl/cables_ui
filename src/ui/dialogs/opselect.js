@@ -93,10 +93,10 @@ export default class OpSelect
 
         if (num == 0 && gui.project().users.indexOf(gui.user.id) == -1)
         {
-            optionsHtml += "<span class=\"warning\">your user ops are hidden, you are not a collaborator of patch </span><br/>";
+            optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
         }
 
-        optionsHtml += "&nbsp;found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
+        optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
         // if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
         // {
@@ -120,7 +120,7 @@ export default class OpSelect
             if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
 
             optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="${scoredebug}">`;
-            optionsHtml += `score: ${score}`;
+            optionsHtml += `Score: ${score}`;
             optionsHtml += "</span>";
         }
 
@@ -948,7 +948,6 @@ export default class OpSelect
         ops.sort((a, b) => { return b.pop - a.pop; },
             // return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
         );
-
 
         return ops;
     }
