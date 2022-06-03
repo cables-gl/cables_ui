@@ -36,6 +36,7 @@ export default class OpSelect
         this._searching = false;
         this._bg = new ModalBackground();
         this._escapeListener = null;
+        this._typedSinceOpening = false;
     }
 
     close()
@@ -353,7 +354,9 @@ export default class OpSelect
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opname);
 
-        if ((CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
+        console.log("update info", opname);
+
+        if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
         {
             let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
             let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
@@ -467,7 +470,7 @@ export default class OpSelect
                 this._eleSearchinfo.innerHTML = "";
         }
         else
-        if (opname && this._currentSearchInfo != opname)
+        if (opname)
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
@@ -534,7 +537,7 @@ export default class OpSelect
         tinysort.defaults.order = "desc";
 
         tinysort(".searchresult", { "data": "score" });
-        this.Navigate(0);
+        this.navigate(0);
 
         if (this.itemHeight === 0)
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
@@ -543,8 +546,9 @@ export default class OpSelect
         perf.finish();
     }
 
-    Navigate(diff)
+    navigate(diff)
     {
+        this._typedSinceOpening = true;
         this.displayBoxIndex += diff;
 
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
@@ -647,6 +651,7 @@ export default class OpSelect
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
+        this._typedSinceOpening = false;
         // if(!this._escapeListener)this._escapeListener = gui.on("pressedEscape", ()=>
         //     {
         //         console.log("pressed esc!");
@@ -732,6 +737,8 @@ export default class OpSelect
 
         this.selectOp = function (name)
         {
+            this._typedSinceOpening = true;
+
             ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
 
             const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
@@ -759,7 +766,7 @@ export default class OpSelect
     onInput(e)
     {
         clearTimeout(this._keyTimeout);
-
+        this._typedSinceOpening = true;
         ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
         this._searching = true;
 
@@ -853,16 +860,17 @@ export default class OpSelect
 
             return true;
         case 38: // up
+
             if (eleSelected) eleSelected.classList.remove("selected");
             e.preventDefault();
-            this.Navigate(-1);
+            this.navigate(-1);
             break;
 
         case 40: // down
 
             if (eleSelected) eleSelected.classList.remove("selected");
             e.preventDefault();
-            this.Navigate(1);
+            this.navigate(1);
             break;
 
         default: return true; // exit this handler for other keys
