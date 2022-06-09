@@ -260,11 +260,11 @@ export default class Api
         err = err || CABLES.lastError;
         const report = this.getErrorReport(err);
 
-        this._log.log("error report sent.");
-        this._log.log(report);
-
-        CABLES.api.post("errorReport", report, (d) =>
+        const doneCallback = (d) =>
         {
+            this._log.log("error report sent.");
+            this._log.log(report);
+
             let html = "";
             html += "<center>";
             html += "<h2>thank you</h2>";
@@ -278,6 +278,19 @@ export default class Api
             };
             new ModalDialog(modalOptions);
             CABLES.lastError = null;
-        });
+        };
+
+        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+        {
+            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+            {
+                report.browserInfo = browserInfo;
+                CABLES.api.post("errorReport", report, doneCallback);
+            });
+        }
+        else
+        {
+            CABLES.api.post("errorReport", report, doneCallback);
+        }
     }
 }
