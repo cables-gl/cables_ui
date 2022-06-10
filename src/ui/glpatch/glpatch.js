@@ -434,6 +434,13 @@ export default class GlPatch extends CABLES.EventTarget
         {
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
+
+            if (gui.opParams.isCurrentOpId(ops[0].id))
+            {
+                console.log("ja!");
+                gui.metaTabs.activateTabByName("op");
+            }
+
             if (CABLES.UI.DEFAULTOPNAMES.subPatch == ops[0].objName)
             {
                 gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
