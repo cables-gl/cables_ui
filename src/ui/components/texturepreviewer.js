@@ -196,7 +196,7 @@ export default class TexturePreviewer
 
         if (!t) return;
 
-        CABLES.UI.showToolTip(e, t.getInfoOneLine());
+        if (t.getInfoOneLine) CABLES.UI.showToolTip(e, t.getInfoOneLine());
     }
 
     _getCanvasSize(port, tex, meta)
