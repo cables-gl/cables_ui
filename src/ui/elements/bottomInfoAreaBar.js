@@ -92,12 +92,12 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         txt = txt.replaceAll("[shift]", "<span class=\"key\">shift</span>");
         txt = txt.replaceAll("[enter]", "<span class=\"key\">enter</span>");
 
-        // if (navigator.appVersion.indexOf("Mac") != -1)
-        // {
-        //     txt = txt.replaceAll("[cmd_ctrl]", "<span class=\"key key_cmd\"></span>");
-        //     txt = txt.replaceAll("[alt]", "<span class=\"key key_option\"></span>");
-        // }
-        // else
+        if (navigator.appVersion.indexOf("Mac") != -1)
+        {
+            txt = txt.replaceAll("[cmd_ctrl]", "<span class=\"key key_cmd\"></span>");
+            txt = txt.replaceAll("[alt]", "<span class=\"key key_option\"></span>");
+        }
+        else
         {
             txt = txt.replaceAll("[cmd_ctrl]", "<span class=\"key\">CTRL</span>");
             txt = txt.replaceAll("[alt]", "<span class=\"key\">ALT</span>");
