@@ -10,6 +10,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
+        this._maintenanceWarningShown = false;
     }
 
     setProject(proj)
@@ -64,8 +65,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     return;
                 }
 
-                if (data.maintenance)
+                if (data.maintenance && !this._maintenanceWarningShown)
                 {
+                    this._maintenanceWarningShown = true;
                     const html =
                         "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave this window open, and wait until we are finished with the update.<br/><br/>" +
                         "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
