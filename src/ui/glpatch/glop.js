@@ -24,6 +24,7 @@ export default class GlOp extends CABLES.EventTarget
         this._visible = true;
         this._glPatch = glPatch;
         this._op = op;
+        this._objName = op.objName;
         this._glRectNames = [];
         this._instancer = instancer;
         this._width = GlUiConfig.opWidth;
@@ -358,7 +359,7 @@ export default class GlOp extends CABLES.EventTarget
 
     setTitle(title, textWriter)
     {
-        if (title == "") title = " ";
+        if (!title) title = CABLES.getShortOpName(this._objName);
         if (textWriter) this._textWriter = textWriter;
 
         if (!this._glTitle)
@@ -828,7 +829,7 @@ export default class GlOp extends CABLES.EventTarget
 
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
-        else if (this.opUiAttribs.title && this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
+        else if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
 
         if (this._titleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)

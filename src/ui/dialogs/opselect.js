@@ -354,8 +354,6 @@ export default class OpSelect
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opname);
 
-        console.log("update info", opname);
-
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
         {
             let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
