@@ -56,6 +56,8 @@ export default class OpSelect
 
     updateOptions(opname)
     {
+        this._hideUserOps = gui.project().isOpExample;
+
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
@@ -93,9 +95,10 @@ export default class OpSelect
         let optionsHtml = "";
 
         if (num == 0 && gui.project().users.indexOf(gui.user.id) == -1)
-        {
             optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
-        }
+
+        if (this._hideUserOps)
+            optionsHtml += "<span class=\"warning\">Your user ops are hidden, pach is an op example</span><br/>";
 
         optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
@@ -153,6 +156,12 @@ export default class OpSelect
                     points += 2;
                 }
             }
+
+            if (list[i].userOp && this._hideUserOps)
+            {
+                continue;
+            }
+
 
             if (list[i]._summary.indexOf(query) > -1)
             {
@@ -914,6 +923,7 @@ export default class OpSelect
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
+
 
                     if (isFunction && !hidden)
                     {
