@@ -594,6 +594,12 @@ export default class ServerOps
 
     createDialog(name)
     {
+        if (gui.project().isOpExample)
+        {
+            notifyError("Not possible in op example patch!");
+            return;
+        }
+
         this.opNameDialog("Create operator", name, (newname) =>
         {
             this.create("Ops.User." + gui.user.usernameLowercase + "." + newname, () =>
@@ -606,6 +612,13 @@ export default class ServerOps
     cloneDialog(oldName)
     {
         if (gui.showGuestWarning()) return;
+
+        if (gui.project().isOpExample)
+        {
+            notifyError("Not possible in op example patch!");
+            return;
+        }
+
 
         let name = "";
         let parts = oldName.split(".");

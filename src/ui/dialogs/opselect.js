@@ -56,6 +56,8 @@ export default class OpSelect
 
     updateOptions(opname)
     {
+        this._hideUserOps = gui.project().isOpExample;
+
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
@@ -93,21 +95,13 @@ export default class OpSelect
         let optionsHtml = "";
 
         if (num == 0 && gui.project().users.indexOf(gui.user.id) == -1)
-        {
             optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
-        }
+
+        if (this._hideUserOps)
+            optionsHtml += "<span class=\"warning\">Your user ops are hidden, pach is an op example</span><br/>";
 
         optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
 
-        // if (gui.user.isAdmin && this._getQuery() && (this._getQuery().startsWith("Ops.") || this._getQuery().startsWith("Op.")))
-        // {
-        //     optionsHtml += `&nbsp;&nbsp;<span class="icon icon-edit"></span> <a onclick="gui.serverOps.create('${this._getQuery()}');">create op</a>`;
-        // }
-
-        // if (opname && (gui.user.isAdmin || opname.startsWith(`Ops.User.${gui.user.username}`)) && gui.serverOps.isServerOp(opname))
-        // {
-        //     optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<span class="icon icon-lock"></span> <a onclick="gui.serverOps.edit('${opname}');">edit op</a>`;
-        // }
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");// .data('scoreDebug')
@@ -120,8 +114,8 @@ export default class OpSelect
 
             if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
 
-            optionsHtml += `&nbsp;&nbsp;|&nbsp;&nbsp;<span class="tt" data-tt="${scoredebug}">`;
-            optionsHtml += `Score: ${score}`;
+            optionsHtml += "&nbsp;&nbsp;|&nbsp;&nbsp;<span class=\"tt\" data-tt=\"" + scoredebug + "\">";
+            optionsHtml += "Score:" + score;
             optionsHtml += "</span>";
         }
 
@@ -139,7 +133,7 @@ export default class OpSelect
         {
             if (wordIndex > 0 && list[i].score == 0) continue; // when second word was found, but first was not
 
-            let scoreDebug = `<b>Query: ${query} </b><br/>`;
+            let scoreDebug = "<b>Query: " + query + " </b><br/>";
             let found = false;
             let points = 0;
 
@@ -154,25 +148,31 @@ export default class OpSelect
                 }
             }
 
+            if (list[i].userOp && this._hideUserOps)
+            {
+                continue;
+            }
+
+
             if (list[i]._summary.indexOf(query) > -1)
             {
                 found = true;
                 points += 1;
-                scoreDebug += `+1 found in summary (${query})<br/>`;
+                scoreDebug += "+1 found in summary (" + query + ")<br/>";
             }
 
             if (list[i]._nameSpace.indexOf(query) > -1)
             {
                 found = true;
                 points += 1;
-                scoreDebug += `+1 found in namespace (${query})<br/>`;
+                scoreDebug += "+1 found in namespace (" + query + ")<br/>";
             }
 
             if (list[i]._shortName.indexOf(query) > -1)
             {
                 found = true;
                 points += 4;
-                scoreDebug += `+4 found in shortname (${query})<br/>`;
+                scoreDebug += "+4 found in shortname (" + query + ")<br/>";
             }
 
             if (list[i]._shortName == query)
@@ -186,7 +186,7 @@ export default class OpSelect
             {
                 found = true;
                 points += 2;
-                scoreDebug += `+2 found full namespace (${query})<br/>`;
+                scoreDebug += "+2 found full namespace (" + query + ")<br/>";
             }
 
             if (points == 0)
@@ -195,7 +195,7 @@ export default class OpSelect
                 {
                     found = true;
                     points += 2;
-                    scoreDebug += `+2 found full namespace (${query})<br/>`;
+                    scoreDebug += "+2 found full namespace (" + query + ")<br/>";
                 }
             }
 
@@ -204,30 +204,30 @@ export default class OpSelect
                 if (list[i]._shortName.indexOf(query) === 0)
                 {
                     points += 2.5;
-                    scoreDebug += `+2.5 found in shortname at beginning (${query})<br/>`;
+                    scoreDebug += "+2.5 found in shortname at beginning (" + query + ")<br/>";
 
                     if (list[i]._shortName == query)
                     {
                         points += 2;
-                        scoreDebug += `+2 exact name (${query})<br/>`;
+                        scoreDebug += "+2 exact name (" + query + ")<br/>";
                     }
                 }
 
                 if (list[i]._summary.length > 0)
                 {
                     points += 0.5;
-                    scoreDebug += `+0.5 has summary (${query})<br/>`;
+                    scoreDebug += "+0.5 has summary (" + query + ")<br/>";
                 }
 
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
                 {
                     points += 1;
-                    scoreDebug += `+1 is math (${query})<br/>`;
+                    scoreDebug += "+1 is math (" + query + ")<br/>";
                 }
 
                 const shortnessPoints = Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
                 points += shortnessPoints;
-                scoreDebug += `+${shortnessPoints} shortness namespace<br/>`;
+                scoreDebug += shortnessPoints + " shortness namespace<br/>";
             }
 
             if (found && this._list[i].old)
@@ -248,7 +248,7 @@ export default class OpSelect
             if (points === 0 && list[i].score > 0) list[i].score = 0;
             else list[i].score += points;
 
-            list[i].scoreDebug = `${(list[i].scoreDebug || "") + scoreDebug}(${Math.round(points * 100) / 100} points)<br/><br/>`;
+            list[i].scoreDebug = (list[i].scoreDebug || "") + scoreDebug + " (" + Math.round(points * 100) / 100 + " points)<br/><br/>";
         }
 
         perf.finish();
@@ -303,7 +303,7 @@ export default class OpSelect
                     {
                         found = true;
                         queryParts.push(this._wordsDb[i]);
-                        q = `${q.substr(0, idx)} ${q.substr(idx + this._wordsDb[i].length, q.length - idx)}`;
+                        q = q.substr(0, idx) + " " + q.substr(idx + this._wordsDb[i].length, q.length - idx);
                         break;
                     }
                 }
@@ -313,7 +313,7 @@ export default class OpSelect
             if (queryParts.length > 0)
             {
                 let nquery = queryParts.join(" ");
-                nquery += ` ${q}`;
+                nquery += " " + q;
 
                 if (nquery != query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
 
@@ -595,8 +595,8 @@ export default class OpSelect
                 this._list[i]._summary = this._list[i].summary.toLowerCase();
                 this._list[i]._shortName = this._list[i].shortName.toLowerCase();
                 this._list[i]._lowerCaseName = this._list[i].name.toLowerCase();
-                this._list[i]._nameSpace = `${this._list[i].nameSpace.toLowerCase()}.`;
-                this._list[i]._nameSpaceFull = `${this._list[i].nameSpace.toLowerCase()}.${this._list[i].shortName.toLowerCase()}`;
+                this._list[i]._nameSpace = this._list[i].nameSpace.toLowerCase() + ".";
+                this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
 
                 const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
                 if (this._list[i]._lowerCaseName.indexOf("deprecated") > -1 || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
@@ -884,14 +884,14 @@ export default class OpSelect
             {
                 if (val.hasOwnProperty(propertyName))
                 {
-                    const opname = `${ns}.${parentname}${propertyName}`;
+                    const opname = ns + "." + parentname + propertyName;
                     const isOp = false;
                     let isFunction = false;
 
                     if (typeof (CABLES.Patch.getOpClass(opname)) === "function") isFunction = true;
 
                     const parts = opname.split(".");
-                    const lowercasename = `${opname.toLowerCase()}_${parts.join("").toLowerCase()}`;
+                    const lowercasename = opname.toLowerCase() + "_" + parts.join("").toLowerCase();
                     const opdoc = gui.opDocs.getOpDocByName(opname);
                     let shortName = parts[parts.length - 1];
                     let hidden = false;
@@ -914,6 +914,7 @@ export default class OpSelect
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
+
 
                     if (isFunction && !hidden)
                     {
