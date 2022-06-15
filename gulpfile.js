@@ -48,11 +48,6 @@ function _scripts_libs_ui(done)
     return task.pipe(gulp.dest("dist/js"));
 }
 
-function _scripts_lazyload_ui(done)
-{
-    return gulp.src(["libs/lazyload/**"]).pipe(gulp.dest("dist/lazyload"));
-}
-
 function _scripts_talkerapi(done)
 {
     let task = gulp.src(["src-talkerapi/*.js"]);
@@ -151,6 +146,7 @@ function _cleanup_scripts(done)
             "./dist/js/libs.core.min.js.map",
             "./dist/js/libs.ui.min.js.map",
             "./dist/js/talkerapi.js.map",
+            "./dist/js/cables.min.js.map",
             "./dist/js/babel.cables.min.js.map"
         ];
         filesToDelete.forEach((file) =>
@@ -243,7 +239,6 @@ gulp.task("default", gulp.series(
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
-    _scripts_lazyload_ui,
     _scripts_ops,
     _sass,
     _svgcss,
@@ -261,7 +256,6 @@ gulp.task("build", gulp.series(
     _svgcss,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_lazyload_ui,
     _scripts_ops,
     _scripts_core,
     _scripts_ui_webpack,
@@ -281,7 +275,6 @@ gulp.task("electron", gulp.series(
     _lint,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_lazyload_ui,
     _scripts_ops,
     _cleanup_scripts,
     _sass,
