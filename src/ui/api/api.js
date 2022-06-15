@@ -28,12 +28,15 @@ export default class Api
                 {
                     if (msg.maintenance)
                     {
-                        const notifyOptions = {
-                            "timeout": false,
-                            "closeable": true,
-                            "force": false
-                        };
-                        this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
+                        if (!this.maintenanceModeWarning)
+                        {
+                            const notifyOptions = {
+                                "timeout": false,
+                                "closeable": true,
+                                "force": false
+                            };
+                            this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
+                        }
                     }
                     else
                     {
