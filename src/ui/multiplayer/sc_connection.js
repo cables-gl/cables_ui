@@ -40,7 +40,11 @@ export default class ScConnection extends CABLES.EventTarget
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
         if (cfg) this._init((isActive) =>
         {
-            if (isActive && this.multiplayerCapable && !gui.isRemoteClient)
+            let showMultiplayerUi = (isActive && this.multiplayerCapable);
+            if (this.showGuestUsers) showMultiplayerUi = true;
+            if (gui.isRemoteClient) showMultiplayerUi = false;
+
+            if (showMultiplayerUi)
             {
                 this._multiplayerUi = new ScUiMultiplayer(this);
                 this._chat = new CABLES.UI.Chat(gui.mainTabs, this);
