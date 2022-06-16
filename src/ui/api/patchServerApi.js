@@ -10,7 +10,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         this._currentProject = null;
         this._log = new Logger("patchsaveserver");
         this._serverDate = 0;
-        this._maintenanceWarningShown = false;
     }
 
     setProject(proj)
@@ -32,7 +31,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         CABLES.CMD.PATCH.save(true);
     }
 
-    checkUpdated(cb)
+    checkUpdated(cb, fromSave = false)
     {
         if (!gui.project()) return;
         if (CABLES.sandbox.isOffline())
@@ -47,101 +46,98 @@ export default class PatchSaveServer extends CABLES.EventTarget
             "indicator": "canvas"
         });
 
-        // todo is this protected ?
-        CABLES.api.get("project/" + gui.project()._id + "/updated",
-            function (data)
-            {
-                if (gui.isRemoteClient)
-                {
-                    gui.jobs().finish("checkupdated");
-                    if (cb)cb(null);
-                    return;
-                }
-                else if (gui.socket && gui.socket.inMultiplayerSession)
-                {
-                    gui.jobs().finish("checkupdated");
-                    if (cb)cb(null);
-
-                    return;
-                }
-
-                if (data.maintenance && !this._maintenanceWarningShown)
-                {
-                    this._maintenanceWarningShown = true;
-                    const html =
-                        "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave this window open, and wait until we are finished with the update.<br/><br/>" +
-                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-                    new ModalDialog(
-                        {
-                            "title": "Maintenance Mode",
-                            "html": html,
-                            "warning": true
-                        });
-
-                    gui.jobs().finish("checkupdated");
-                }
-                else if (this._serverDate != data.updated)
-                {
-                    const html =
-                        "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
-                        "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;" +
-                        "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;" +
-                        "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-                    new ModalDialog(
-                        {
-                            "title": "Meanwhile...",
-                            "html": html
-                        });
-
-                    gui.jobs().finish("checkupdated");
-                }
-                else
-                {
-                    CABLESUILOADER.talkerAPI.send("getBuildInfo", {},
-                        (err, buildInfo) =>
-                        {
-                            let newCore = false;
-                            let newUi = false;
-                            let newApi = false;
-
-                            if (buildInfo.updateWarning)
-                            {
-                                if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
-                                if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
-                                if (CABLESUILOADER.buildInfo.api) newApi = buildInfo.api.timestamp > CABLESUILOADER.buildInfo.api.timestamp;
-                            }
-
-                            if (newCore || newUi)
-                            {
-                                const html =
-                                    "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
-                                    "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;" +
-                                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
-                                    "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-                                new ModalDialog(
-                                    {
-                                        "title": "Meanwhile...",
-                                        "html": html
-                                    });
-
-                                gui.jobs().finish("checkupdated");
-                            }
-                            else
-                            {
-                                gui.jobs().finish("checkupdated");
-                                if (cb)cb(null);
-                            }
-                        });
-                }
-            }.bind(this), function (err)
+        CABLESUILOADER.talkerAPI.send("checkProjectUpdated", { "projectId": gui.project()._id }, (err, data) =>
+        {
+            if (err)
             {
                 console.log("error", err);
                 gui.jobs().finish("checkupdated");
                 /* ignore errors */
+                return;
             }
-        );
+
+            if (gui.isRemoteClient)
+            {
+                gui.jobs().finish("checkupdated");
+                if (cb)cb(null);
+                return;
+            }
+            else if (gui.socket && gui.socket.inMultiplayerSession)
+            {
+                gui.jobs().finish("checkupdated");
+                if (cb)cb(null);
+
+                return;
+            }
+
+            if (fromSave && data.maintenance && data.disallowSave)
+            {
+                const html =
+                    "Cables is currently in maintenance mode, saving of patches is disallowed.<br/><br/>Leave the browser-window open, and wait until we are finished with the update.<br/><br/>" +
+                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                new ModalDialog(
+                    {
+                        "title": "Maintenance Mode",
+                        "html": html,
+                        "warning": true
+                    });
+
+                gui.jobs().finish("checkupdated");
+            }
+            else if (this._serverDate != data.updated)
+            {
+                const html =
+                    "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
+                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;" +
+                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;" +
+                    "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
+                new ModalDialog(
+                    {
+                        "title": "Meanwhile...",
+                        "html": html
+                    });
+
+                gui.jobs().finish("checkupdated");
+            }
+            else
+            {
+                CABLESUILOADER.talkerAPI.send("getBuildInfo", {},
+                    (buildInfoErr, buildInfo) =>
+                    {
+                        let newCore = false;
+                        let newUi = false;
+
+                        if (buildInfo.updateWarning)
+                        {
+                            if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
+                            if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
+                        }
+
+                        if (newCore || newUi)
+                        {
+                            const html =
+                                "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
+                                "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;" +
+                                "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
+                                "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
+                            new ModalDialog(
+                                {
+                                    "title": "Meanwhile...",
+                                    "html": html
+                                });
+
+                            gui.jobs().finish("checkupdated");
+                        }
+                        else
+                        {
+                            gui.jobs().finish("checkupdated");
+                            if (cb)cb(null);
+                        }
+                    });
+            }
+        });
     }
 
 
@@ -292,7 +288,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 function (err)
                 {
                     if (!err) this._saveCurrentProject(cb, _id, _name);
-                }.bind(this));
+                }.bind(this), true);
     }
 
     finishAnimations()

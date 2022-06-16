@@ -3,6 +3,7 @@ import Logger from "../utils/logger";
 import { hideNotificaton, notifyError } from "../elements/notification";
 import ChangelogToast from "../dialogs/changelog";
 import userSettings from "../components/usersettings";
+import Gui from "../gui";
 
 export default class Api
 {
@@ -28,12 +29,15 @@ export default class Api
                 {
                     if (msg.maintenance)
                     {
-                        const notifyOptions = {
-                            "timeout": false,
-                            "closeable": true,
-                            "force": false
-                        };
-                        this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
+                        if (!this.maintenanceModeWarning && gui.getRestriction() > Gui.RESTRICT_MODE_REMOTEVIEW)
+                        {
+                            const notifyOptions = {
+                                "timeout": false,
+                                "closeable": true,
+                                "force": false
+                            };
+                            this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
+                        }
                     }
                     else
                     {
