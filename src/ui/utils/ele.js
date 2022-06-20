@@ -86,6 +86,18 @@ class Ele
         if (el)el.classList.add("hidden");
     }
 
+    toggle(el)
+    {
+        if (el.classList.contains("hidden"))
+        {
+            if (el)el.classList.remove("hidden");
+        }
+        else
+        {
+            if (el)el.classList.add("hidden");
+        }
+    }
+
     create(n)
     {
         return document.createElement(n);
