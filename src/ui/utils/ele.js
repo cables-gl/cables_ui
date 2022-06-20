@@ -113,6 +113,11 @@ class Ele
         let style = window.getComputedStyle(el);
         return !(style.display === "none");
     }
+
+    append(ele, html)
+    {
+        ele.innerHTML += html;
+    }
 }
 
 export default new Ele();
