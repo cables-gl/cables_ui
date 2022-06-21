@@ -57,7 +57,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         const data = {
             "clients": clientList,
             "multiplayerCapable": this._connection.multiplayerCapable,
-            "showMoreOptions": this._connection.multiplayerCapable && this._connection.hasOtherMultiplayerCapableClients,
+            "showMoreOptions": true,
             "cablesurl": CABLES.sandbox.getCablesUrl()
         };
 
@@ -213,14 +213,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             moreOptions.addEventListener("pointerdown", (event) =>
             {
                 const items = [];
-                if (this._connection.hasOtherMultiplayerCapableClients)
-                {
-                    items.push({
-                        "title": "open chat",
-                        "iconClass": "icon icon-message",
-                        "func": () => { CABLES.CMD.UI.showChat(); }
-                    });
-                }
+
+                items.push({
+                    "title": "open chat",
+                    "iconClass": "icon icon-message",
+                    "func": () => { CABLES.CMD.UI.showChat(); }
+                });
+
 
                 if (this._connection.inMultiplayerSession && this._connection.client.isPilot)
                 {

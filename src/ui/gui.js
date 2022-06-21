@@ -1721,6 +1721,10 @@ export default class Gui
         {
             ele.byId("undev").style.display = "none";
             ele.byId("infoAreaContainer").style.display = "none";
+            ele.forEachClass("splitter", (el) =>
+            {
+                ele.hide(el);
+            });
         }
 
         if (r < Gui.RESTRICT_MODE_FULL)
