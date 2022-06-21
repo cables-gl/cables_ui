@@ -239,12 +239,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
             modalNotices.push(licenceText);
         }
 
+        let patchName = gui.project().name;
+        if (gui.corePatch() && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
         const p = new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
             "notices": modalNotices,
-            "promptValue": "copy of " + gui.project().name,
+            "promptValue": "copy of " + patchName,
             "promptOk": (name) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
