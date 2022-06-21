@@ -361,6 +361,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!title) title = this._op.getTitle();
         if (textWriter) this._textWriter = textWriter;
+        if (title === undefined)title = "";
 
         if (!this._glTitle)
         {
