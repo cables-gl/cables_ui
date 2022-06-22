@@ -959,7 +959,8 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
-        if (this._pauseMouseUntilButtonUp) return;
+        if (!this._portDragLine.isActive)
+            if (this._pauseMouseUntilButtonUp) return;
 
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
