@@ -531,13 +531,20 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        if (this._pauseMouseUntilButtonUp)
+        console.log("this._portDragLine.isActive", this._portDragLine.isActive);
+
+        if (!this._portDragLine.isActive)
         {
-            this._pauseMouseUntilButtonUp = false;
-            return;
+            if (this._pauseMouseUntilButtonUp)
+            {
+                this._pauseMouseUntilButtonUp = false;
+                return;
+            }
+
+            if (!this._canvasMouseDown) return;
         }
 
-        if (!this._canvasMouseDown) return;
+
         this._canvasMouseDown = false;
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
