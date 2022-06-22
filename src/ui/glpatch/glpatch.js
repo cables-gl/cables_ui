@@ -727,7 +727,7 @@ export default class GlPatch extends CABLES.EventTarget
         }
 
 
-        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
+        glOp.setTitle(op.uiAttribs.title, this._textWriter);
 
 
         if (!fromDeserialize)

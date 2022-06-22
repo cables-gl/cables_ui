@@ -2134,6 +2134,7 @@ export default class PatchView extends CABLES.EventTarget
             {
                 for (let j in this._p.ops[i].portsIn)
                 {
+                    if (this._p.ops[i].portsIn[j].uiAttribs.ignoreBigPort) continue;
                     ser = JSON.stringify(this._p.ops[i].portsIn[j].getSerialized());
                     if (ser.length > max)
                     {
@@ -2145,6 +2146,7 @@ export default class PatchView extends CABLES.EventTarget
                 }
                 for (let j in this._p.ops[i].portsOut)
                 {
+                    if (this._p.ops[i].portsOut[j].uiAttribs.ignoreBigPort) continue;
                     ser = JSON.stringify(this._p.ops[i].portsOut[j].getSerialized());
                     if (ser.length > max)
                     {
