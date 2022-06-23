@@ -437,7 +437,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (gui.opParams.isCurrentOpId(ops[0].id))
             {
-                console.log("ja!");
                 gui.metaTabs.activateTabByName("op");
             }
 
@@ -531,8 +530,6 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        console.log("this._portDragLine.isActive", this._portDragLine.isActive);
-
         if (!this._portDragLine.isActive)
         {
             if (this._pauseMouseUntilButtonUp)
@@ -543,7 +540,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (!this._canvasMouseDown) return;
         }
-
 
         this._canvasMouseDown = false;
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
@@ -634,20 +630,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         delete this._glOpz[opid];
         glop.dispose();
-    }
-
-    dispose()
-    {
-        for (let i in this.links)
-        {
-            this.links[i].dispose();
-        }
-        for (let i in this._glOpz)
-        {
-            this._glOpz[i].dispose();
-        }
-        this.links = {};
-        this._glOpz = {};
     }
 
 
@@ -1234,6 +1216,7 @@ export default class GlPatch extends CABLES.EventTarget
         return bounds;
     }
 
+
     dispose()
     {
         for (const i in this._glOpz)
@@ -1241,6 +1224,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._glOpz[i].dispose();
             delete this._glOpz[i];
         }
+
+        for (let i in this.links)
+        {
+            this.links[i].dispose();
+        }
+
+        this.links = {};
+        this._glOpz = {};
 
         if (this._rectInstancer) this._rectInstancer.dispose();
         if (this._lines) this._lines.dispose();

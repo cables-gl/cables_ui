@@ -29,9 +29,7 @@ export default class GlDragLine
 
         glpatch.on("mouseup", (e) =>
         {
-            console.log("mouseup dragline", this.isActive);
             if (!this.isActive) return;
-
 
             if (this._button == MouseState.BUTTON_LEFT)
             {
