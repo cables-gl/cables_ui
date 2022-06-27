@@ -189,6 +189,14 @@ function createEditor(id, val)
     if (!userSettings.get("theme-bright")) editor.setTheme("ace/theme/cables");
 
     editor.session.setMode("ace/mode/javascript");
+    editor.session.on("changeMode", (e, session) =>
+    {
+        if (session.getMode().$id !== "ace/mode/javascript") return;
+        if (session.$worker)
+        {
+            session.$worker.send("changeOptions", [{ "strict": false }]);
+        }
+    });
     editor.$blockScrolling = Infinity;
 
     editor.commands.bindKey("Ctrl-D", "selectMoreAfter");
