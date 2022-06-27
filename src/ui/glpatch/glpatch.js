@@ -437,7 +437,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             if (gui.opParams.isCurrentOpId(ops[0].id))
             {
-                console.log("ja!");
                 gui.metaTabs.activateTabByName("op");
             }
 
@@ -531,13 +530,17 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
-        if (this._pauseMouseUntilButtonUp)
+        if (!this._portDragLine.isActive)
         {
-            this._pauseMouseUntilButtonUp = false;
-            return;
+            if (this._pauseMouseUntilButtonUp)
+            {
+                this._pauseMouseUntilButtonUp = false;
+                return;
+            }
+
+            if (!this._canvasMouseDown) return;
         }
 
-        if (!this._canvasMouseDown) return;
         this._canvasMouseDown = false;
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
@@ -629,20 +632,6 @@ export default class GlPatch extends CABLES.EventTarget
         glop.dispose();
     }
 
-    dispose()
-    {
-        for (let i in this.links)
-        {
-            this.links[i].dispose();
-        }
-        for (let i in this._glOpz)
-        {
-            this._glOpz[i].dispose();
-        }
-        this.links = {};
-        this._glOpz = {};
-    }
-
 
     toggleOpsEnable()
     {
@@ -727,7 +716,7 @@ export default class GlPatch extends CABLES.EventTarget
         }
 
 
-        glOp.setTitle(op.uiAttribs.title || op.name.split(".")[op.name.split(".").length - 1], this._textWriter);
+        glOp.setTitle(op.uiAttribs.title, this._textWriter);
 
 
         if (!fromDeserialize)
@@ -952,7 +941,8 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
-        if (this._pauseMouseUntilButtonUp) return;
+        if (!this._portDragLine.isActive)
+            if (this._pauseMouseUntilButtonUp) return;
 
         if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
 
@@ -1226,6 +1216,7 @@ export default class GlPatch extends CABLES.EventTarget
         return bounds;
     }
 
+
     dispose()
     {
         for (const i in this._glOpz)
@@ -1233,6 +1224,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._glOpz[i].dispose();
             delete this._glOpz[i];
         }
+
+        for (let i in this.links)
+        {
+            this.links[i].dispose();
+        }
+
+        this.links = {};
+        this._glOpz = {};
 
         if (this._rectInstancer) this._rectInstancer.dispose();
         if (this._lines) this._lines.dispose();

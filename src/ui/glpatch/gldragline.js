@@ -31,7 +31,6 @@ export default class GlDragLine
         {
             if (!this.isActive) return;
 
-
             if (this._button == MouseState.BUTTON_LEFT)
             {
             }
@@ -85,6 +84,8 @@ export default class GlDragLine
         glpatch.on("mouseDownOverPort", (glport, opid, portName, e) =>
         {
             if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
+            // console.log("mousedownoverport", portName);
 
             this._button = e.buttons;
 
@@ -229,7 +230,6 @@ export default class GlDragLine
         {
             this._glPatch.setDrawableColorByType(this, this._glPort.type);
         }
-
 
         if (this._startGlPorts && this._startGlPorts.length)
         {
