@@ -519,6 +519,8 @@ export default class GlPatch extends CABLES.EventTarget
         if (!e.pointerType) return;
         this._removeDropInRect();
 
+        if (!this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
+
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 

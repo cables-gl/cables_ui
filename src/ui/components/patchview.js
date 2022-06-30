@@ -519,6 +519,7 @@ export default class PatchView extends CABLES.EventTarget
 
     showBookmarkParamsPanel()
     {
+        console.log("showBookmarkParamsPanel", gui.longPressConnector.isActive());
         let html = "<div class=\"panel bookmarkpanel\">";
 
         if (gui.longPressConnector.isActive())

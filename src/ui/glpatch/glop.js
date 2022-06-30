@@ -245,8 +245,8 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
-        console.log("gui.longPressConnector.isActive()", gui.longPressConnector.isActive(), this._op);
-        if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
+        // console.log("gui.longPressConnector.isActive()", gui.longPressConnector.isActive(), this._op);
+        // if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
 
         if (!this._op)
         {
@@ -294,7 +294,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._op && this._op.uiAttribs)
         {
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
-            gui.longPressConnector.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
+            gui.longPressConnector.longPressStart(this._op, e);
         }
 
         perf.finish();
