@@ -880,6 +880,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._cgl.pushDepthTest(true);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
+        gui.longPressConnector.glRender(this, this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
 
         if (this._showingOpCursor)
         {
@@ -989,6 +990,15 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
+
+
+        if (gui.longPressConnector.isActive())
+        {
+            // const ops = this._getGlOpsInRect(xa, ya, xb, yb);
+
+            const ops = this._getGlOpsInRect(x, y, x + 1, y + 1);
+            if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
+        }
 
         if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {

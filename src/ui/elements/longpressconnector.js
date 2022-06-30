@@ -1,5 +1,6 @@
 import GlLinedrawer from "../gldraw/gllinedrawer";
 import SuggestionDialog from "../components/suggestiondialog";
+import GlSplineDrawer from "../gldraw/glsplinedrawer";
 
 export default class LongPressConnector extends CABLES.EventTarget
 {
@@ -12,11 +13,16 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._longPressOp = null;
         this._longPress = false;
         this._longPressStartTime = 0;
-        // this._glLineDrawer = null;
+        this._glLineDrawer = null;
         this._glLineIdx = -1;
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
+    }
+
+    getStartOp()
+    {
+        return this._longPressOp;
     }
 
     isActive()
@@ -234,5 +240,26 @@ export default class LongPressConnector extends CABLES.EventTarget
 
         if (suggestions.length == 1) showSuggestions2(0);
         else new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
+    }
+
+
+    glRender(glpatch, cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
+    {
+        if (!this._longPress) return;
+
+        if (!this._glLineDrawer)
+        {
+            this._glLineDrawer = new GlSplineDrawer(cgl);
+            this._glLineIdx = this._glLineDrawer.getSplineIndex();
+        }
+
+        const coord = glpatch.viewBox.screenToPatchCoord(mouseX, mouseY);
+
+        this._glLineDrawer.setSpline(this._glLineIdx, [
+            this._longPressOp.uiAttribs.translate.x + 20, this._longPressOp.uiAttribs.translate.y + 10, 0,
+            coord[0], coord[1], 0
+        ]);
+        this._glLineDrawer.setSplineColor(this._glLineIdx, [1, 1, 1, 1]);
+        this._glLineDrawer.render(resX, resY, scrollX, scrollY, zoom);
     }
 }
