@@ -519,7 +519,6 @@ export default class PatchView extends CABLES.EventTarget
 
     showBookmarkParamsPanel()
     {
-        console.log("showBookmarkParamsPanel", gui.longPressConnector.isActive());
         let html = "<div class=\"panel bookmarkpanel\">";
 
         if (gui.longPressConnector.isActive())
@@ -937,7 +936,7 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ids.length; i++)
         {
             const theId = ids[i];
-            console.log(this.getSubPatchName(ids[i]));
+            // console.log(this.getSubPatchName(ids[i]));
             items.push({
                 "title": "› " + this.getSubPatchName(ids[i]),
                 "func": () =>
@@ -1025,7 +1024,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
             {
-                console.log(selectedOps[i]);
+                // console.log(selectedOps[i]);
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
         }
