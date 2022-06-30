@@ -1,7 +1,7 @@
 import GlLinedrawer from "../gldraw/gllinedrawer";
-import SuggestionDialog from '../components/suggestiondialog';
+import SuggestionDialog from "../components/suggestiondialog";
 
-export default class QuickLinkSuggestion extends CABLES.EventTarget
+export default class LongPressConnector extends CABLES.EventTarget
 {
     constructor(glPatch)
     {
@@ -11,7 +11,7 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
         this._quickAddOpStart = null;
         this._longPressOp = null;
         this._longPress = false;
-        this._glLineDrawer = null;
+        // this._glLineDrawer = null;
         this._glLineIdx = -1;
         this._startX = 0;
         this._startY = 0;
@@ -27,7 +27,9 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
         clearTimeout(this._longPressTimeout);
         this._longPress = true;
         this._quickAddOpStart = op;
-        gui.setCursor("copy");
+
+        gui.patchView.focusOp(op.id);
+        gui.patchView.showDefaultPanel();
     }
 
     longPressPrepare(op, startX, startY)
@@ -45,36 +47,35 @@ export default class QuickLinkSuggestion extends CABLES.EventTarget
 
     longPressCancel()
     {
+        if (!this._longPress) return;
+        let wasActive = this._longPress;
+
         this._longPressOp = null;
         if (this._longPress)gui.setCursor();
         clearTimeout(this._longPressTimeout);
         this._longPress = false;
+
+        if (wasActive)gui.patchView.showDefaultPanel();
     }
 
-    glRender(cgl, resX, resY, scrollX, scrollY, zoom, mouseX, mouseY)
+    getParamPanelHtml()
     {
-        if (!this._longPress) return;
+        let html = "here we go! <br/>now select any other op!";
 
-        if (!this._glLineDrawer)
-        {
-            this._glLineDrawer = new GlLinedrawer(cgl);
-            this._glLineIdx = this._glLineDrawer.getIndex();
-        }
-
-        const coord = this._glPatch.viewBox.screenToPatchCoord(mouseX, mouseY);
-
-        this._glLineDrawer.setColor(this._glLineIdx, 1, 0, 0, 1);
-        this._glLineDrawer.setLine(this._glLineIdx, this._startX, this._startY, coord[0], coord[1]);
-        this._glLineDrawer.render(resX, resY, scrollX, scrollY, zoom);
+        html += "<a onclick=\"gui.longPressConnector.longPressCancel();\" class=\"icon-button button-small \">cancel</a>";
+        return html;
     }
 
     finish(mouseEvent, op2)
     {
+        console.log("finisheing!");
+
+
         const op1 = this._longPressOp;
 
         const suggestions = [];
         if (!op1 || !op2) return;
-
+        this.longPressCancel();
         for (let j = 0; j < op1.portsOut.length; j++)
         {
             const p = op1.portsOut[j];

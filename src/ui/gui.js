@@ -33,6 +33,7 @@ import { showInfo } from "./elements/tooltips";
 import ele from "./utils/ele";
 import text from "./text";
 import userSettings from "./components/usersettings";
+import LongPressConnector from "./elements/longpressconnector";
 
 
 export default class Gui
@@ -50,6 +51,7 @@ export default class Gui
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
         this.opPortModal = new ModalPortValue();
+        this.longPressConnector = new LongPressConnector(this);
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
@@ -1327,11 +1329,13 @@ export default class Gui
         this.canvasUi.showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
+
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
 
-        if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
+        if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
+        else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
             {

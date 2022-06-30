@@ -520,18 +520,27 @@ export default class PatchView extends CABLES.EventTarget
     showBookmarkParamsPanel()
     {
         let html = "<div class=\"panel bookmarkpanel\">";
-        this.checkPatchErrors();
 
-        if (ele.byId("patchsummary")) return;
-
-        const project = gui.project();
-        if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+        if (gui.longPressConnector.isActive())
         {
-            const projectId = project.shortId || project._id;
-            html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-            html += getHandleBarHtml("clonepatch", {});
+            html += gui.longPressConnector.getParamPanelHtml();
         }
-        html += gui.bookmarks.getHtml();
+        else
+        {
+            this.checkPatchErrors();
+
+            if (ele.byId("patchsummary")) return;
+
+            const project = gui.project();
+            if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+            {
+                const projectId = project.shortId || project._id;
+                html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+                html += getHandleBarHtml("clonepatch", {});
+            }
+            html += gui.bookmarks.getHtml();
+        }
+
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
     }
 

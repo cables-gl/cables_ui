@@ -12,7 +12,6 @@ import GlCursor from "./glcursor";
 import glUiConfig from "./gluiconfig";
 import ShakeDetector from "./shakedetect";
 import SnapLines from "./snaplines";
-import QuickLinkSuggestion from "./quicklinksuggestion";
 import VizLayer from "./vizlayer";
 import Logger from "../utils/logger";
 import ele from "../utils/ele";
@@ -124,7 +123,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._cursor = CABLES.GLGUI.CURSOR_NORMAL;
 
-        this.quickLinkSuggestion = new QuickLinkSuggestion(this);
+
         // this._debugtext = new Text(this._textWriterOverlay, "hello");
 
         this._viewZoom = 0;
@@ -405,7 +404,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.profileMouseEvents = this.profileMouseEvents || 0;
         this.profileMouseEvents++;
 
-        if (!this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+        // if (!gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
     }
 
     _cycleDebug()
@@ -552,7 +551,7 @@ export default class GlPatch extends CABLES.EventTarget
         catch (er) { this._log.log(er); }
 
         this.emitEvent("mouseup", e);
-        this.quickLinkSuggestion.longPressCancel();
+        // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
         if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
@@ -880,9 +879,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
 
-        this.quickLinkSuggestion.glRender(this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
-
-
         if (this._showingOpCursor)
         {
             this._eleDropOp.style.top = this.viewBox.mouseY - 12 + "px";
@@ -944,9 +940,9 @@ export default class GlPatch extends CABLES.EventTarget
         if (!this._portDragLine.isActive)
             if (this._pauseMouseUntilButtonUp) return;
 
-        if ((this._lastMouseX != x || this._lastMouseY != y) && !this.quickLinkSuggestion.isActive()) this.quickLinkSuggestion.longPressCancel();
+        // if ((this._lastMouseX != x || this._lastMouseY != y) && !gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
-        let allowSelectionArea = !this.quickLinkSuggestion.isActive() && !this._portDragLine.isActive;
+        let allowSelectionArea = !this._portDragLine.isActive;
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 

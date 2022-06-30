@@ -245,6 +245,9 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
+        console.log("gui.longPressConnector.isActive()", gui.longPressConnector.isActive(), this._op);
+        if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
+
         if (!this._op)
         {
             console.warn("glop no op", this);
@@ -291,7 +294,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._op && this._op.uiAttribs)
         {
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
-            this._glPatch.quickLinkSuggestion.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
+            gui.longPressConnector.longPressPrepare(this._op, this.x + this.w / 2, this.y + this.h);
         }
 
         perf.finish();
@@ -302,8 +305,7 @@ export default class GlOp extends CABLES.EventTarget
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
-        if (this.isPassiveDrag()) return;
-        if (this._glPatch.quickLinkSuggestion.isActive()) this._glPatch.quickLinkSuggestion.finish(e, this._op);
+        // if (this.isPassiveDrag()) return;
     }
 
 
