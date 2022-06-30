@@ -101,34 +101,14 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._removelisteners();
         if (performance.now() - this._longPressStartTime > this._delay)
         {
-            // console.log("long press long");
         }
         else
         {
             this._longPressStartTime = 0;
             this._canceled = true;
-            console.log("long press too short");
-
             this.longPressCancel();
         }
     }
-
-    //     longPressPrepare(op, startX, startY)
-    //     {
-    //         this._startX = startX;
-    //         this._startY = startY;
-    //         this.longPressCancel();
-    //         this._longPressOp = op;
-
-    //         this._longPressTimeout = setTimeout(
-    //             () =>{
-
-    // document.addEventListener("pointerup",()=>{
-    //     this.longPressCancel();
-    // });
-    //                 this.longPressStart(op);
-    //             }, 300);
-    //     }
 
     longPressCancel()
     {
