@@ -139,6 +139,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _onBgRectDrag(rect)
     {
+        if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
