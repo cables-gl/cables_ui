@@ -231,35 +231,24 @@ helperMeshes.drawAxisMarker = function (op, size)
     helperMeshes.endFramebuffer(cgl);
 };
 
-helperMeshes.drawLineSourceDest = function ({
-    op, sourceX, sourceY, sourceZ, destX, destY, destZ,
-})
+helperMeshes.drawLineSourceDest = function (op, sourceX, sourceY, sourceZ, destX, destY, destZ)
 {
     const cgl = op.patch.cgl;
     if (!helperMeshes.ARROW_SRC_DST)
     {
         helperMeshes.ARROW_SRC_DST = {};
-        function bufferData()
-        {
-            // eslint-disable-line
-            const verts = [];
-            verts.push(sourceX, sourceY, sourceZ);
-            verts.push(destX, destY, destZ);
-            // verts.push(destX - 0.25, destY - 0.75, sourceZ);
-            // verts.push(destX, destY, destZ);
-            // verts.push(destX + 0.25, destY - 0.75, sourceZ);
-            // verts.push(destX, destY, destZ);
 
-            const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-            const geom = new CGL.Geometry("helpermesh");
-            geom.vertices = verts;
-            geom.setTexCoords(tc);
-            geom.vertexNormals = verts.slice();
-            helperMeshes.ARROW_SRC_DST.geom = geom;
-            helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
-        }
+        const verts = [];
+        verts.push(sourceX, sourceY, sourceZ);
+        verts.push(destX, destY, destZ);
 
-        bufferData();
+        const tc = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        const geom = new CGL.Geometry("helpermesh");
+        geom.vertices = verts;
+        geom.setTexCoords(tc);
+        geom.vertexNormals = verts.slice();
+        helperMeshes.ARROW_SRC_DST.geom = geom;
+        helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
     }
     else
     {
