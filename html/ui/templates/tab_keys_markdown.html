@@ -1,0 +1,14 @@
+<script id="tab_keys_markdown" type="text/x-handlebars-template">
+
+# Keyboard Shortcuts
+
+*`[mod]` is your operating system’s primary modifier key, on Mac OS X this is `[cmd]`, on Windows `[ctrl]`.*
+{{#each keys}}
+{{#if group}}
+
+## {{toUpperCase group}}
+{{/if}}
+- `{{#if options.cmdCtrl}}[mod] + {{/if}}{{#if options.shiftKey}}shift + {{/if}}{{{key}}}`: {{title}}
+{{/each}}
+
+</script>
