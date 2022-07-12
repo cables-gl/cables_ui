@@ -19,7 +19,38 @@ export default class KeyBindingsManager extends CABLES.EventTarget
         this._tab = new CABLES.UI.Tab("keyboard shortcuts", { "icon": "help", "infotext": "tab_keys", "padding": true, "singleton": true });
         gui.mainTabs.addTab(this._tab, true);
 
-        const k = JSON.parse(JSON.stringify(this._keys));
+        const k = this._prepareKeysForDisplay(this._keys);
+
+        let showDownloadButton = false;
+        if (gui && gui.user && (gui.user.isStaff || gui.user.isAdmin))
+        {
+            showDownloadButton = true;
+        }
+
+        const html = getHandleBarHtml("tab_keys", { "keys": k, "showDownloadButton": showDownloadButton });
+        this._tab.html(html);
+
+        gui.maintabPanel.show(true);
+    }
+
+    download()
+    {
+        const k = this._prepareKeysForDisplay(this._keys);
+
+        const markdown = getHandleBarHtml("tab_keys_markdown", { "keys": k });
+
+        let element = document.createElement("a");
+        element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(markdown));
+        element.setAttribute("download", "keys.md");
+        element.style.display = "none";
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+    }
+
+    _prepareKeysForDisplay(keys)
+    {
+        const k = JSON.parse(JSON.stringify(keys));
 
         k.sort(function (a, b)
         {
@@ -45,11 +76,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
 
             if (k[i].key == " ")k[i].key = "Space";
         }
-
-        const html = getHandleBarHtml("tab_keys", { "keys": k });
-        this._tab.html(html);
-
-        gui.maintabPanel.show(true);
+        return k;
     }
 
     _onKeyUp(e)

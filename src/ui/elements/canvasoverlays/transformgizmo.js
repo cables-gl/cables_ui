@@ -144,6 +144,7 @@ export default class Gizmo
             this._eleCenter.id = "gizmo";
 
             this._eleCenter.style.background = "#fff";
+            this._eleCenter.style.display = "none";
             this._eleCenter.style.opacity = "0.9";
             // this._eleCenter.style['border-radius']="1130px";
             // this._eleCenter.style.transform='scale(2)';
@@ -153,18 +154,21 @@ export default class Gizmo
             this._eleX = document.createElement("div");
             this._eleX.id = "gizmo";
             this._eleX.style.background = "#f00";
+            this._eleX.style.display = "none";
             this._eleX.classList.add("gizmo");
             container.appendChild(this._eleX);
 
             this._eleY = document.createElement("div");
             this._eleY.id = "gizmo";
             this._eleY.style.background = "#0f0";
+            this._eleY.style.display = "none";
             this._eleY.classList.add("gizmo");
             container.appendChild(this._eleY);
 
             this._eleZ = document.createElement("div");
             this._eleZ.id = "gizmo";
             this._eleZ.style.background = "#00f";
+            this._eleZ.style.display = "none";
             this._eleZ.classList.add("gizmo");
             container.appendChild(this._eleZ);
 
