@@ -50,7 +50,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
 
     _prepareKeysForDisplay(keys)
     {
-        const k = JSON.parse(JSON.stringify(keys));
+        let k = JSON.parse(JSON.stringify(keys));
 
         k.sort(function (a, b)
         {
@@ -76,6 +76,7 @@ export default class KeyBindingsManager extends CABLES.EventTarget
 
             if (k[i].key == " ")k[i].key = "Space";
         }
+        k = k.filter((key) => { return key.title !== ""; });
         return k;
     }
 
