@@ -208,7 +208,7 @@ export default class Api
         {
             history = undo.getCommands();
         }
-        console.log("HISTORY", history);
+        history = history.slice(-10);
         err = err || CABLES.lastError;
 
         const report = {};
