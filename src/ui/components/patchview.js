@@ -96,6 +96,9 @@ export default class PatchView extends CABLES.EventTarget
 
             undo.add({
                 "title": "delete op",
+                "context": {
+                    opname
+                },
                 undo()
                 {
                     const newop = gui.corePatch().addOp(opname, op.uiAttribs, _opid);
@@ -1403,6 +1406,9 @@ export default class PatchView extends CABLES.EventTarget
             const oldY = op.uiAttribs.translate.y;
             undo.add({
                 "title": "Move op",
+                "context": {
+                    "opname": op.name
+                },
                 undo()
                 {
                     op.setUiAttribs({ "translate": { "x": oldX, "y": oldY } });

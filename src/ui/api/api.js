@@ -4,6 +4,7 @@ import { hideNotificaton, notifyError } from "../elements/notification";
 import ChangelogToast from "../dialogs/changelog";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
+import undo from "../utils/undo";
 
 export default class Api
 {
@@ -202,10 +203,17 @@ export default class Api
 
     getErrorReport(err)
     {
+        let history = [];
+        if (undo)
+        {
+            history = undo.getCommands();
+        }
+        console.log("HISTORY", history);
         err = err || CABLES.lastError;
 
         const report = {};
         report.time = Date.now();
+        report.history = history;
 
         this.lastErrorReport = Date.now();
         report.url = document.location.href;
