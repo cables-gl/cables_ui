@@ -11,7 +11,7 @@ export default class GlText
 
         this._visible = true;
         this._textWriter = textWriter;
-        this._string = string;
+        this._string = string || "";
         this._x = 0;
         this._y = 0;
         this._z = 0;
