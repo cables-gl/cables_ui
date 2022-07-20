@@ -624,6 +624,9 @@ const paramsHelper =
                     if (oldv != newv)
                         undo.add({
                             "title": "Value change " + oldv + " to " + newv,
+                            "context": {
+                                portname
+                            },
                             undo()
                             {
                                 try

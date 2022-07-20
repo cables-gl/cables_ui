@@ -121,7 +121,7 @@ export default class ModalException
                 let html = "";
                 for (const i in sliced)
                 {
-                    if (i == linesAround)
+                    if (i === linesAround)
                     {
                         html += "<span class=\"error\">";
                         CABLES.lastError.errorLine = sliced[i];
@@ -164,7 +164,7 @@ export default class ModalException
         let isUserOp = false;
         if (this._opname)
         {
-            isUserOp = this._opname.startsWith("Ops.User." + gui.user.usernameLowercase);
+            isUserOp = this._opname.startsWith("Ops.User.");
             isCustomOp = this._opname.startsWith("Ops.Cables.CustomOp");
             if (isCustomOp && this._op)
             {
@@ -173,7 +173,7 @@ export default class ModalException
             }
             else
             {
-                if (window.gui && (gui.user.isAdmin || isUserOp))
+                if (window.gui && (gui.user.isAdmin || this._opname.startsWith("Ops.User." + gui.user.usernameLowercase)))
                 {
                     str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }

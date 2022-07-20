@@ -198,6 +198,10 @@ export default class GlPatchAPI
             {
                 undo.add({
                     "title": "Link port",
+                    "context": {
+                        p1Name,
+                        p2Name
+                    },
                     undo()
                     {
                         const op1 = patch.getOpById(op1Id);
@@ -239,6 +243,10 @@ export default class GlPatchAPI
         {
             undo.add({
                 "title": "Unlink port",
+                "context": {
+                    p1Name,
+                    p2Name
+                },
                 undo()
                 {
                     patch.link(patch.getOpById(op1Id), p1Name, patch.getOpById(op2Id), p2Name);
