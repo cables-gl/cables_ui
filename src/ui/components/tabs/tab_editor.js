@@ -76,11 +76,16 @@ export default class EditorTab
 
         this._editor.getSession().setUseWorker(true);
 
-        if (options.syntax == "md") this._editor.session.setMode("ace/mode/Markdown");
-        else if (options.syntax == "js") this._editor.session.setMode("ace/mode/javascript");
-        else if (options.syntax == "glsl") this._editor.session.setMode("ace/mode/glsl");
-        else if (options.syntax == "css") this._editor.session.setMode("ace/mode/css");
-        else if (options.syntax == "json") this._editor.session.setMode("ace/mode/json");
+        if (options.syntax === "md") this._editor.session.setMode("ace/mode/Markdown");
+        else if (options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
+        else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
+        else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
+        else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
+        else if (options.syntax === "inline-css")
+        {
+            this._editor.session.setMode("ace/mode/css");
+            this._editor.getSession().setUseWorker(false);
+        }
         else
         {
             this._editor.session.setMode("ace/mode/plain_text");
