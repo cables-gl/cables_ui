@@ -60,6 +60,7 @@ export default class Gui
         this.timingHeight = uiconfig.timingPanelHeight;
         this.rendererWidth = uiconfig.rendererDefaultWidth;
         this.rendererHeight = uiconfig.rendererDefaultHeight;
+        this.showingtwoMetaPanel = true;
 
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_FULLSCREEN = 2;
@@ -325,8 +326,8 @@ export default class Gui
         let r = true;
         if (this.rendererWidth < 700) r = false;
 
-        const haschanged = this._showingtwoMetaPanel != r;
-        this._showingtwoMetaPanel = r;
+        const haschanged = this.showingtwoMetaPanel != r;
+        this.showingtwoMetaPanel = r;
 
         if (haschanged)
             this.metaOpParams.updateVisibility(r);
