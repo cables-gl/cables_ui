@@ -90,7 +90,11 @@ export default class MainTabPanel extends CABLES.EventTarget
     toggle(userInteraction)
     {
         if (!CABLES.UI.loaded) return;
-        if (this._visible) this.hide();
+        if (this._visible)
+        {
+            this.hide();
+            gui.patchView.focus();
+        }
         else this.show(userInteraction);
     }
 }
