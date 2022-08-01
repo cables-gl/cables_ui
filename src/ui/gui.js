@@ -34,6 +34,7 @@ import ele from "./utils/ele";
 import text from "./text";
 import userSettings from "./components/usersettings";
 import LongPressConnector from "./elements/longpressconnector";
+import GlPatch from "./glpatch/glpatch";
 
 
 export default class Gui
@@ -1320,9 +1321,24 @@ export default class Gui
             }
         });
 
-        this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, (e) => { if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now(); });
+        this.keys.key(" ", "Play/Pause timeline", "down", null, { "ignoreInput": true }, (e) =>
+        {
+            if (document.activeElement.tagName == "BODY" || document.activeElement.tagName == "DIV") gui.timeLine().togglePlay();
 
-        this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); });
+            if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now();
+        });
+
+        gui.keys.key(" ", "Play/Pause timeline", "up", null, { "ignoreInput": true }, (e) =>
+        {
+            if (document.activeElement.tagName == "CANVAS")
+            {
+                const timeused = Date.now() - gui.spaceBarStart;
+                if (timeused < 500) gui.timeLine().togglePlay();
+            }
+            gui.spaceBarStart = 0;
+        });
+
+        // this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); gui.spaceBarStart = 0; });
     }
 
     pressedEscape(e)
