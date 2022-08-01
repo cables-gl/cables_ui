@@ -81,6 +81,7 @@ export default class EditorTab
         else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
         else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
         else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
+        else if (options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
         else if (options.syntax === "inline-css")
         {
             this._editor.session.setMode("ace/mode/css");
