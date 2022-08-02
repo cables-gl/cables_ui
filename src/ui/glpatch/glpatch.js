@@ -207,12 +207,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
 
-        gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
-        {
-            const timeused = Date.now() - gui.spaceBarStart;
-            if (timeused < 500) gui.timeLine().togglePlay();
-            gui.spaceBarStart = 0;
-        });
+        // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
         gui.on("uiloaded", () =>
         {
@@ -343,6 +338,7 @@ export default class GlPatch extends CABLES.EventTarget
     get selectedGlOps() { return this._selectedGlOps; }
 
     get subPatch() { return this._currentSubpatch; }
+
 
     zIndex()
     {
