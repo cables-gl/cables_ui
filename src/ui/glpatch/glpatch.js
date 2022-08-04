@@ -1332,7 +1332,7 @@ export default class GlPatch extends CABLES.EventTarget
                     this.selectOpId(ops[i].id);
                 }
 
-                gui.opParams.show(ops[ops.length - 1].id);
+                if (ops[ops.length - 1])gui.opParams.show(ops[ops.length - 1].id);
                 if (ops.length == 1) this.focusOpAnim(ops[0].id);
             });
     }
