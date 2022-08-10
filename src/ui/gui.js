@@ -1306,8 +1306,6 @@ export default class Gui
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            console.log("gui.maintabPanel.isVisible()", gui.maintabPanel.isVisible());
-
             if (!this.patchView.hasFocus() && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible())
             {
                 gui.mainTabs.getSaveButton().cb();
