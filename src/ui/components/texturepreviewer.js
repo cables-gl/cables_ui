@@ -23,6 +23,9 @@ export default class TexturePreviewer
         this._hoveringTexPort = false;
         this._listeningFrame = false;
         this._emptyCubemap = null;
+        this._timer = new CABLES.Timer();
+        this._timer.play();
+
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
@@ -89,6 +92,7 @@ export default class TexturePreviewer
                 this._shaderTexUniformW = new CGL.Uniform(this._shader, "f", "width", port.get().width);
                 this._shaderTexUniformH = new CGL.Uniform(this._shader, "f", "height", port.get().height);
                 this._shaderTypeUniform = new CGL.Uniform(this._shader, "f", "type", 0);
+                this._shaderTimeUniform = new CGL.Uniform(this._shader, "f", "time", 0);
             }
 
             cgl.pushPMatrix();
@@ -117,6 +121,9 @@ export default class TexturePreviewer
             // this._shader.toggleDefine("CUBEMAP", true);
 
             this._shaderTypeUniform.setValue(texType);
+
+            this._timer.update();
+            this._shaderTimeUniform.setValue(this._timer.get());
 
             this._mesh.render(this._shader);
             if (texType == 0) cgl.setTexture(texSlot, oldTex);
