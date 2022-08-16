@@ -37,6 +37,14 @@ export default
         "defaultOpVizTexture": "Ops.Ui.VizTexture",
         "convertNumberToString": "Ops.String.NumberToString_v2"
     },
+    "defaultMathOps":
+    {
+        "+": "Ops.Math.Sum",
+        "-": "Ops.Math.Subtract",
+        "/": "Ops.Math.Divide",
+        "*": "Ops.Math.Multiply",
+        "=": "Ops.Math.Equals",
+    },
     "getVizOpsForPortLink": (p, l) =>
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
