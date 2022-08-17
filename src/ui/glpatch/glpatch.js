@@ -18,6 +18,7 @@ import ele from "../utils/ele";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
+import glSpline from "./glSpline";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -72,6 +73,9 @@ export default class GlPatch extends CABLES.EventTarget
         this._selectionArea = new GlSelectionArea(this._overLayRects, this);
         this._lastMouseX = this._lastMouseY = -1;
         this._portDragLine = new GlDragLine(this._overlaySplines, this);
+
+        this._glTestSpline = new glSpline(this._overlaySplines, this._rectInstancer, this);
+
 
         this.cablesHoverText = new GlText(this._textWriter, "");
         this.cablesHoverText.setPosition(0, 0);
@@ -392,7 +396,6 @@ export default class GlPatch extends CABLES.EventTarget
             this._dropInOpBorder.visible = visible;
         }
         else this._dropInOpBorder.visible = false;
-
 
         this.debugData._onCanvasMouseMove = this.debugData._onCanvasMouseMove || 0;
         this.debugData._onCanvasMouseMove++;
