@@ -99,6 +99,7 @@ CABLES.GLGUI.GlGuiTab = GlGuiTab;
 CABLES.UI.getOpsForFilename = defaultops.getOpsForFilename;
 CABLES.UI.getVarGetterOpNameByType = defaultops.getVarGetterOpNameByType;
 CABLES.UI.DEFAULTOPNAMES = defaultops.defaultOpNames;
+CABLES.UI.DEFAULTMATHOPS = defaultops.defaultMathOps;
 CABLES.UI.DEFAULTOPS = defaultops;
 // expose global objects
 CABLES.api = new Api();

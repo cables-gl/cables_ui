@@ -256,6 +256,12 @@ export default class OpSelect
 
     _search(sq)
     {
+        for (let i in CABLES.UI.DEFAULTMATHOPS) if (sq === i)
+        {
+            sq = CABLES.UI.DEFAULTMATHOPS[i];
+            this._enterPressedEarly = true;
+        }
+
         if (!this._list || !this._html) this.prepare();
 
         this.firstTime = false;
