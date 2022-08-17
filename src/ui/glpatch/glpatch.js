@@ -18,7 +18,7 @@ import ele from "../utils/ele";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
-import glSpline from "./glSpline";
+import glSpline from "./glspline";
 
 
 export default class GlPatch extends CABLES.EventTarget
