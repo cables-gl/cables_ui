@@ -511,6 +511,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._greyOutRect = null;
             this._cgl.canvas.style.cursor = "auto";
         }
+
+        if (this.greyOutBlue && this._greyOutRect)
+        {
+            this._greyOutRect.setColor(
+                glUiConfig.colors.background[0] * 0.8,
+                glUiConfig.colors.background[1] * 1.5,
+                glUiConfig.colors.background[2] * 2.5, 0.25);
+        }
     }
 
     _onCanvasMouseDown(e)
