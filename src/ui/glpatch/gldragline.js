@@ -247,7 +247,10 @@ export default class GlDragLine
                         this._z,
                         this._x,
                         this._y,
-                        this._z
+                        this._z,
+                        this._x,
+                        this._y,
+                        this._z,
                     ]);
 
                 // this._lineDrawer.setLine(this._lineIndices[i],
@@ -271,7 +274,11 @@ export default class GlDragLine
                         this._z,
                         this._x,
                         this._y,
-                        this._z]);
+                        this._z,
+                        this._x,
+                        this._y,
+                        this._z,
+                    ]);
 
                 this._splineDrawer.setSplineColor(this._splineIdx, [1, 1, 1, 1]);
             }
