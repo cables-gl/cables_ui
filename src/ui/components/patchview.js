@@ -1008,7 +1008,13 @@ export default class PatchView extends CABLES.EventTarget
         {
             this._patchRenderer.greyOut =
             this._patchRenderer.greyOutBlue = true;
-            str += "<br/><br/><a >this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + names[0].blueprintPatchId + "\">open patch</a>";
+            let blueprintPatchId = names[0].blueprintPatchId;
+            if (!blueprintPatchId)
+            {
+                const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
+                if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
+            }
+            str += "<br/><br/><a >this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "\">open patch</a>";
         }
         else
         {
