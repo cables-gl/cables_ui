@@ -2149,6 +2149,16 @@ export default class PatchView extends CABLES.EventTarget
         gui.opParams.show(op);
     }
 
+
+    getSubPatchIdFromBlueprintOpId(opid)
+    {
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].storage && ops[i].storage.blueprint && ops[i].storage.blueprint.blueprintOpId == opid)
+                return ops[i].storage.blueprint.subpatchInstance;
+    }
+
+
     warnLargestPort()
     {
         let max = 0;

@@ -376,6 +376,10 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._rectBorder = 1;
             }
+            if (this._op.objName.indexOf(CABLES.UI.DEFAULTOPNAMES.blueprint) === 0)
+            {
+                this._rectBorder = 1;
+            }
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
