@@ -41,7 +41,6 @@
             display: none;
         }
 
-
         // old
         .warning ,.warning-experimental, .warning a, .warning-experimental a
         {
@@ -49,8 +48,11 @@
             font-size: var(--font-size-bigger);
         }
 
-
-        .warning-error, .warning-error a
+        .warning-error p
+        {
+            margin:0px;
+        }
+        .warning-error, .warning-error
         {
             text-align: left;
             border-color: transparent;
@@ -58,8 +60,6 @@
             border-radius: 5px;
             margin-bottom: 3px;;
         }
-
-
 
         .icon-link {
             position: relative;
@@ -81,15 +81,15 @@
         {
             text-align: center;
 
-                #opname {
-                    width: 77%;
-                    background-color: transparent;
-                    margin-bottom: 0;
+            #opname {
+                width: 77%;
+                background-color: transparent;
+                margin-bottom: 0;
 
-                    &:hover {
-                        background-color: var(--color-06);
-                    }
+                &:hover {
+                    background-color: var(--color-06);
                 }
+            }
 
             .summary
             {
@@ -108,7 +108,6 @@
                 text-align: center;
                 margin-bottom: 5px;
             }
-
 
         }
     }

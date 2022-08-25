@@ -6,7 +6,6 @@
 
         <div class="groupSpacer"><h3>Code</h3></div>
 
-
         <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
         <span class="button-small " onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-copy"></span>Clone op code</span>
 
@@ -16,6 +15,17 @@
             {{/if}}
         {{/if}}
 
+
+
+        {{#if warns}}
+            <div class="groupSpacer"><h3>Warnings</h3></div>
+            <div class="params">
+                {{#each warns}}
+                    <div class="warning-error warning-error-level1">{{{text}}}</div>
+                    <br/>
+                {{/each}}
+            </div>
+        {{/if}}
 
         <div class="groupSpacer"><h3>Attachments</h3></div>
 
