@@ -8,7 +8,6 @@ export default class GlRect extends CABLES.EventTarget
 
         this._log = new Logger("GlRect");
 
-
         if (!instancer || !instancer.getIndex)
             this._log.warn("no instancer given!");
 
