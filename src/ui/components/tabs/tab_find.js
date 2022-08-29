@@ -417,7 +417,7 @@ export default class FindTab
                             if (op.portsOut[j].get())
                             {
                                 let strtex = "unknown";
-                                if (op.portsOut[j].get())
+                                if (op.portsOut[j].get() && op.portsOut[j].get().getInfo)
                                 {
                                     const texInfo = op.portsOut[j].get().getInfo();
                                     strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
