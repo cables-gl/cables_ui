@@ -416,8 +416,12 @@ export default class FindTab
                         {
                             if (op.portsOut[j].get())
                             {
-                                const texInfo = op.portsOut[j].get().getInfo();
-                                const strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
+                                let strtex = "unknown";
+                                if (op.portsOut[j].get() && op.portsOut[j].get().getInfo)
+                                {
+                                    const texInfo = op.portsOut[j].get().getInfo();
+                                    strtex = op.portsOut[j].get().width + " x " + op.portsOut[j].get().height + " - " + texInfo.filter + " / " + texInfo.wrap + " / " + texInfo.textureType;
+                                }
 
                                 results.push({ op, "score": 1, "where": strtex });
                             }
