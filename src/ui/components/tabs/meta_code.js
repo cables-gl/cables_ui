@@ -106,8 +106,7 @@ export default class MetaCode
                             "opserialized": this._op.getSerialized()
                         });
 
-                    console.log(res.warns);// dfsdds
-
+                    // console.log(res.warns);
 
                     this._tab.html(html);
                     if (!canEditOp)
