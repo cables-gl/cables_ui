@@ -855,7 +855,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (ops[i].uiAttribs)
             {
-                if (ops[i].uiAttribs.subPatch && !(ops[i].storage && ops[i].storage.blueprint))
+                if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint))
                 {
                     // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
