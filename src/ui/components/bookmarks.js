@@ -34,7 +34,6 @@ export default class Bookmarks
     getHtml()
     {
         const subs = gui.patchView.getSubPatches(false);
-        console.log(subs);
         for (let i = 0; i < subs.length; i++)
         {
             subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
@@ -44,7 +43,6 @@ export default class Bookmarks
                 sortname = subs[i].path[j].id + "+" + sortname;
 
             subs[i].sortname = sortname;
-            // subs[i].name = sortname;
         }
 
         subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
