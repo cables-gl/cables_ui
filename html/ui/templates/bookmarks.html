@@ -19,7 +19,7 @@
     {{/if}}
 
     {{#if subPatches}}
-        <div class="panel" id="subpatchlist">
+        <div class="panel subpatchlist" id="subpatchlist">
             <h3>Subpatches</h3>
 
             <div class="list">
@@ -31,7 +31,7 @@
 
             {{#each subPatches}}
                 <div class="list">
-                    <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                    <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()" >
                         <h3 class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</h3>
                     </div>
                 </div>

@@ -52,7 +52,7 @@ export default class Bookmarks
             subs[i].indent = "";
             for (let j = 0; j < subs[i].path.length; j++)
             {
-                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;";
             }
         }
 
