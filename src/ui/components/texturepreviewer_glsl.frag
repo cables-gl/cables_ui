@@ -103,10 +103,8 @@ void main()
        float near = 0.1;
        float far = 50.;
        float depth = LinearizeDepth(colTex.r, near, far);
-       colTex.rgb = vec3(depth);
+       colTex = vec4(depth,depth,depth,1.0);
     }
-
-
 
     outColor = mix(col,colTex,colTex.a);
 }

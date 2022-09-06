@@ -826,7 +826,7 @@ export default class PatchView extends CABLES.EventTarget
                         "id": ops[i].patchId.get(),
                         "type": type
                     };
-                    if (ops[i].storage && ops[i].storage.blueprint)patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
+                    if (ops[i].storage && ops[i].storage.blueprint) patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
                     arr.push(patchInfo);
                     if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
@@ -857,19 +857,16 @@ export default class PatchView extends CABLES.EventTarget
             {
                 if (ops[i].uiAttribs.subPatch && !(ops[i].storage && ops[i].storage.blueprint))
                 {
-                    // find lost ops, which are in subpoatches, but no subpatch op exists for that subpatch..... :(
+                    // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
                     {
                         foundPatchIds.push(ops[i].uiAttribs.subPatch);
                     }
                 }
             }
-            if (ops[i].storage)
+            if (ops[i].storage && ops[i].storage.blueprint)
             {
-                if (ops[i].storage.blueprint)
-                {
-                    foundBlueprints[ops[i].storage.blueprint.id + "-" + ops[i].storage.blueprint.blueprintOpId] = ops[i].storage.blueprint;
-                }
+                foundBlueprints[ops[i].storage.blueprint.id + "-" + ops[i].storage.blueprint.blueprintOpId] = ops[i].storage.blueprint;
             }
         }
 
