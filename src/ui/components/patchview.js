@@ -855,7 +855,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (ops[i].uiAttribs)
             {
-                if (ops[i].uiAttribs.subPatch && !(ops[i].storage && ops[i].storage.blueprint))
+                if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
                 {
                     // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
@@ -1310,11 +1310,17 @@ export default class PatchView extends CABLES.EventTarget
 
         ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
 
-        let y = this.snapOpPosY(ops[0].uiAttribs.translate.y);
+        let y = 0;
+        for (let j = 0; j < ops.length; j++)
+        {
+            y += ops[j].uiAttribs.translate.y;
+        }
+        y = this.snapOpPosY(y / ops.length);
+
 
         for (let j = 0; j < ops.length; j++)
         {
-            if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
+            // if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
 
             y = this.snapOpPosY(y);
 
