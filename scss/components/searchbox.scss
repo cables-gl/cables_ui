@@ -111,9 +111,14 @@
         background-color: var(--color-05);
     }
 
-    .blueprint, .blueprint_subpatch
+    .blueprint, .blueprint_subpatch,.blueprintSub
     {
         opacity:0.5;
+    }
+
+    .blueprint, .blueprint_subpatch
+    {
+
 
         h3
         {

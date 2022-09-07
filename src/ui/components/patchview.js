@@ -800,6 +800,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (ops[i].uiAttribs.hidden) continue;
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 foundPatchIds.push(ops[i].patchId.get());
@@ -808,6 +809,9 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (ops[i].uiAttribs.hidden) continue;
+
+
             if (ops[i].uiAttribs)
             {
                 if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
@@ -831,18 +835,27 @@ export default class PatchView extends CABLES.EventTarget
             {
                 if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
+                    if (ops[j].uiAttribs.hidden)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                    const o = {
+                        "name": ops[j].name,
+                        "id": foundPatchIds[i]
+                    };
+
                     if (ops[j].storage && ops[j].storage.blueprint)
                     {
                         found = true;
+                        o.type = "blueprintSub";
                     }
-                    else
-                    {
-                        subPatches.push({
-                            "name": ops[j].name,
-                            "id": foundPatchIds[i]
-                        });
-                        found = true;
-                    }
+                    // else
+                    // {
+                    // }
+                    subPatches.push(o);
+                    found = true;
                 }
             }
 
