@@ -34,6 +34,7 @@ export default class Bookmarks
     getHtml()
     {
         const subs = gui.patchView.getSubPatches(false);
+
         for (let i = 0; i < subs.length; i++)
         {
             subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
@@ -63,12 +64,13 @@ export default class Bookmarks
 
             if (op)
             {
-                bm.push({
-                    "id": this._bookmarks[i],
-                    "name": op.name,
-                    "objName": op.objName,
-                    "class": defaultops.getNamespaceClassName(op.objName),
-                });
+                bm.push(
+                    {
+                        "id": this._bookmarks[i],
+                        "name": op.name,
+                        "objName": op.objName,
+                        "class": defaultops.getNamespaceClassName(op.objName),
+                    });
             }
             else
             {

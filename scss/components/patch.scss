@@ -246,10 +246,11 @@
 				background-color: var(--color_op_bg_active);
 		    }
 
-            &.blueprint, &.blueprint_subpatch {
-                opacity:0.8;
 
-                h3
+            &.blueprint, &.blueprint_subpatch
+            {
+                opacity:0.8;
+            h3
                 {
                     border-right: 5px solid var(--color_op_handle_default);
                 }

@@ -750,7 +750,6 @@ export default class PatchView extends CABLES.EventTarget
         this._p.emitEvent("subpatchCreated");
     }
 
-
     getSubPatchName(subpatch)
     {
         if (!subpatch) return "Main";
@@ -763,50 +762,6 @@ export default class PatchView extends CABLES.EventTarget
 
         if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
     }
-
-
-    // getSubPatchStructure()
-    // {
-    //     const structured = [{ "name": "Main", "id": 0, "childs": [] }];
-    //     const subs = [];
-    //     const ops = this._p.ops;
-
-    //     function findSub(id, root)
-    //     {
-    //         if (id == 0) return structured[0];
-    //         for (let i = 0; i < root.childs.length; i++)
-    //         {
-    //             if (root[i].id == id) return root[i];
-    //         }
-    //     }
-
-    //     for (let i = 0; i < ops.length; i++)
-    //     {
-    //         if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
-    //         {
-    //             const id = ops[i].patchId.get();
-    //             subs.push({ "name": ops[i].name, "id": id, "parent": ops[i].uiAttribs.subpatchId, "childs": [] });
-    //         }
-    //     }
-
-    //     for (let i = 0; i < subs.length; i++)
-    //     {
-    //         findSub(subs[i], structured[0]);
-    //         // if (subs.parent == 0)struct.push(subs[i]);
-    //         // else
-    //         // {
-    //         //     for (let j = 0; j < subs.length; j++)
-    //         //     {
-    //         //         const parent = findSub(subs[j].parent, struct[0]);
-    //         //         if (!parent)this._log.warn("parent not found!");
-    //         //         else
-    //         //         {
-    //         //             parent.childs.push(subs[j]);
-    //         //         }
-    //         //     }
-    //         // }
-    //     }
-    // }
 
     getSubpatchPathArray(subId, arr)
     {
@@ -845,6 +800,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (ops[i].uiAttribs.hidden) continue;
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 foundPatchIds.push(ops[i].patchId.get());
@@ -853,15 +809,15 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
+            if (ops[i].uiAttribs.hidden) continue;
+
+
             if (ops[i].uiAttribs)
             {
                 if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
                 {
                     // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
-                    if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1)
-                    {
-                        foundPatchIds.push(ops[i].uiAttribs.subPatch);
-                    }
+                    if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
             if (ops[i].storage && ops[i].storage.blueprint)
@@ -879,18 +835,27 @@ export default class PatchView extends CABLES.EventTarget
             {
                 if (ops[j].patchId != 0 && ops[j].patchId && ops[j].patchId.get() == foundPatchIds[i])
                 {
+                    if (ops[j].uiAttribs.hidden)
+                    {
+                        found = true;
+                        break;
+                    }
+
+                    const o = {
+                        "name": ops[j].name,
+                        "id": foundPatchIds[i]
+                    };
+
                     if (ops[j].storage && ops[j].storage.blueprint)
                     {
                         found = true;
+                        o.type = "blueprintSub";
                     }
-                    else
-                    {
-                        subPatches.push({
-                            "name": ops[j].name,
-                            "id": foundPatchIds[i]
-                        });
-                        found = true;
-                    }
+                    // else
+                    // {
+                    // }
+                    subPatches.push(o);
+                    found = true;
                 }
             }
 
@@ -903,7 +868,7 @@ export default class PatchView extends CABLES.EventTarget
             }
         }
 
-        Object.keys(foundBlueprints).forEach((blueprintId) =>
+        for (const blueprintId in foundBlueprints)
         {
             const blueprint = foundBlueprints[blueprintId];
             const blueprintName = blueprint.name || "unnamed";
@@ -912,7 +877,7 @@ export default class PatchView extends CABLES.EventTarget
                 "id": blueprint.subpatchInstance,
                 "type": "blueprint"
             });
-        });
+        }
 
         if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
@@ -936,7 +901,6 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ids.length; i++)
         {
             const theId = ids[i];
-            // console.log(this.getSubPatchName(ids[i]));
             items.push({
                 "title": "› " + this.getSubPatchName(ids[i]),
                 "func": () =>
@@ -1038,7 +1002,6 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
             {
-                // console.log(selectedOps[i]);
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
         }
@@ -2113,7 +2076,6 @@ export default class PatchView extends CABLES.EventTarget
         gui.opParams.show(op);
     }
 
-
     getSubPatchIdFromBlueprintOpId(opid)
     {
         const ops = gui.corePatch().ops;
@@ -2121,7 +2083,6 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[i].storage && ops[i].storage.blueprint && ops[i].storage.blueprint.blueprintOpId == opid)
                 return ops[i].storage.blueprint.subpatchInstance;
     }
-
 
     warnLargestPort()
     {
