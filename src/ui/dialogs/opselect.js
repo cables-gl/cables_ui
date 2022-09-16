@@ -365,7 +365,7 @@ export default class OpSelect
             let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
             let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
-            const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops });
+            const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
             this._eleSearchinfo.innerHTML = html;
 
             /*

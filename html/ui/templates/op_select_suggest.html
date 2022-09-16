@@ -37,12 +37,25 @@
         <br/>
     </span>
 
+    {{#compare port.direction '==' '0' }}
     <span id="opselect_createVar">
         <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
         <br/>
-        <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Existing variable</a>
+        <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Get variable</a>
         <br/>
     </span>
+    {{/compare}}
+
+    {{#compare port.direction '==' '1' }}
+    <span id="opselect_createVar">
+        <a class="button-small" onclick="CABLES.CMD.PATCH.createAutoVariable();">Create a variable</a>
+        <br/>
+        <a class="button-small" id="createLinkVariableExists" onclick="CABLES.CMD.PATCH.createLinkVariableExist();">Set variable</a>
+        <br/>
+        <a class="button-small" id="createLinkTriggerVariable" onclick="CABLES.CMD.PATCH.createLinkVariableExist(true);">Trigger variable</a>
+        <br/>
+    </span>
+    {{/compare}}
 
     <span id="opselect_replaceVar">
         Replace link with:
