@@ -3,6 +3,7 @@ import Gui from "../gui";
 import { getHandleBarHtml } from "../utils/handlebars";
 import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
+import { CONSTANTS } from "../../../../cables/src/core/constants";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -370,7 +371,7 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
 };
 
 
-CABLES_CMD_PATCH.createLinkVariableExist = function ()
+CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
 {
     gui.opSelect().close();
     const type = CABLES.UI.OPSELECT.linkNewOpToPort.type;
@@ -380,16 +381,32 @@ CABLES_CMD_PATCH.createLinkVariableExist = function ()
     const getsetOp = CABLES.UI.getVarGetterOpNameByType(type, p);
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
+    let opFunction = getsetOp.getter;
+    let newOpX = p.parent.uiAttribs.translate.x + 20;
+    let newOpY = p.parent.uiAttribs.translate.y - 40;
+    if (p.direction === CONSTANTS.PORT.PORT_DIR_OUT)
+    {
+        if (createTrigger)
+        {
+            opFunction = getsetOp.setTrigger;
+        }
+        else
+        {
+            opFunction = getsetOp.setter;
+        }
+        newOpY = p.parent.uiAttribs.translate.y + 40;
+    }
+
     gui.patchView.addOp(
-        getsetOp.getter,
+        opFunction,
         { "onOpAdd": (opGetter) =>
         {
             p.removeLinks();
             p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
 
             opGetter.uiAttr({ "translate": {
-                "x": p.parent.uiAttribs.translate.x + 20,
-                "y": p.parent.uiAttribs.translate.y - 40
+                "x": newOpX,
+                "y": newOpY
             } });
         } });
 };
