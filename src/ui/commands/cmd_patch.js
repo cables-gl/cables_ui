@@ -15,6 +15,20 @@ const patchCommands =
 
 export default patchCommands;
 
+CABLES_CMD_PATCH.gotoParentSubpatch = function ()
+{
+    const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
+
+    if (names.length == 0) return;
+    if (names.length == 1)
+    {
+        gui.patchView.setCurrentSubPatch(0);
+    }
+    else
+        gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
+};
+
+
 CABLES_CMD_PATCH.selectAllOps = function ()
 {
     gui.patchView.selectAllOpsSubPatch(gui.patchView.getCurrentSubPatch());
@@ -838,6 +852,10 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "downgrade selected op",
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
+    },
+    {
+        "cmd": "go to parent subpatch",
+        "func": CABLES_CMD_PATCH.gotoParentSubpatch,
     }
 
 
