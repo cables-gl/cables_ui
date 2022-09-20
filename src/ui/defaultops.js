@@ -18,14 +18,18 @@ export default
         "defaultOpJson": "Ops.Json.AjaxRequest_v2",
         "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
         "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
+        "VarTriggerNumber": "Ops.Vars.VarTriggerNumber",
         "VarGetNumber": "Ops.Vars.VarGetNumber_v2",
         "VarSetObject": "Ops.Vars.VarSetObject_v2",
+        "VarTriggerObject": "Ops.Vars.VarTriggerObject",
         "VarGetObject": "Ops.Vars.VarGetObject_v2",
         "VarSetTexture": "Ops.Vars.VarSetTexture_v2",
         "VarGetTexture": "Ops.Vars.VarGetTexture_v2",
         "VarSetArray": "Ops.Vars.VarSetArray_v2",
+        "VarTriggerArray": "Ops.Vars.VarTriggerArray",
         "VarGetArray": "Ops.Vars.VarGetArray_v2",
         "VarSetString": "Ops.Vars.VarSetString_v2",
+        "VarTriggerString": "Ops.Vars.VarTriggerString",
         "VarGetString": "Ops.Vars.VarGetString",
         "VarSetTrigger": "Ops.Trigger.TriggerSend",
         "VarGetTrigger": "Ops.Trigger.TriggerReceive",
@@ -97,15 +101,18 @@ export default
 
         let opSetterName = "unknown";
         let opGetterName = "unknown";
+        let opSetTriggerName = "unknown";
         if (type == CABLES.OP_PORT_TYPE_VALUE)
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetNumber;
+            opSetTriggerName = CABLES.UI.DEFAULTOPNAMES.VarTriggerNumber;
         }
         else if (type == CABLES.OP_PORT_TYPE_OBJECT)
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetObject;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetObject;
+            opSetTriggerName = CABLES.UI.DEFAULTOPNAMES.VarTriggerObject;
 
             if (port && port.uiAttribs.objType == "texture")
             {
@@ -117,11 +124,13 @@ export default
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetArray;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetArray;
+            opSetTriggerName = CABLES.UI.DEFAULTOPNAMES.VarTriggerArray;
         }
         else if (type == CABLES.OP_PORT_TYPE_STRING)
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetString;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetString;
+            opSetTriggerName = CABLES.UI.DEFAULTOPNAMES.VarTriggerString;
         }
         else if (type == CABLES.OP_PORT_TYPE_FUNCTION)
         {
@@ -130,6 +139,7 @@ export default
 
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetTrigger;
             opGetterName = CABLES.UI.DEFAULTOPNAMES.VarGetTrigger;
+            opSetTriggerName = opSetterName;
         }
         else
         {
@@ -141,6 +151,7 @@ export default
             "portNameOut": portNameOut,
             "setter": opSetterName,
             "getter": opGetterName,
+            "setTrigger": opSetTriggerName
         };
     },
 
