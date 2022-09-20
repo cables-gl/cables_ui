@@ -72,7 +72,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         this._geom = new CGL.Geometry("rectinstancer");
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
-        this._geom.verticesIndices = new Float32Array([2, 1, 0, 3, 1, 2]);
+        this._geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
         this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);
 
         if (this._cgl.glVersion == 1) this._shader.enableExtension("GL_OES_standard_derivatives");
