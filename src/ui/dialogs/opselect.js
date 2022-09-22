@@ -218,12 +218,6 @@ export default class OpSelect
                     }
                 }
 
-                if (list[i]._summary.length > 0)
-                {
-                    points += 0.5;
-                    scoreDebug += "+0.5 has summary (" + query + ")<br/>";
-                }
-
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
                 {
                     points += 1;
