@@ -504,7 +504,7 @@ helperMeshes.drawMarkerLayer = function (cgl, size)
             0, 0, 1
         ]);
 
-        fsGeom.verticesIndices = new Float32Array([
+        fsGeom.verticesIndices = new Uint16Array([
             0, 1, 2,
             3, 1, 2,
         ]);
