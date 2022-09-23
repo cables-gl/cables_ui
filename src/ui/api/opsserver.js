@@ -669,6 +669,7 @@ export default class ServerOps
                 const content = res.content || "";
                 let syntax = "text";
 
+                if (attachmentName.endsWith(".glsl")) syntax = "glsl";
                 if (attachmentName.endsWith(".frag")) syntax = "glsl";
                 if (attachmentName.endsWith(".vert")) syntax = "glsl";
                 if (attachmentName.endsWith(".json")) syntax = "json";
