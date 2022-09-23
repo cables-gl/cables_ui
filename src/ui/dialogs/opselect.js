@@ -123,7 +123,7 @@ export default class OpSelect
         perf.finish();
     }
 
-    _searchWord(wordIndex, orig, list, query, options)
+    _searchWord(wordIndex, orig, list, query)
     {
         if (!query || query == " " || query == "") return;
 
@@ -136,7 +136,6 @@ export default class OpSelect
             let scoreDebug = "<b>Query: " + query + " </b><br/>";
             let found = false;
             let points = 0;
-
 
             if (list[i].lowercasename.indexOf(query) > -1)
             {
@@ -152,7 +151,6 @@ export default class OpSelect
             {
                 continue;
             }
-
 
             if (list[i]._summary.indexOf(query) > -1)
             {
@@ -201,6 +199,13 @@ export default class OpSelect
 
             if (found)
             {
+                const opToLink = this._newOpOptions.linkNewOpToOp;
+                if (opToLink && opToLink.name.toLowerCase().startsWith(list[i]._nameSpace))
+                {
+                    points += 2;
+                    scoreDebug = "+2 is in same namespace as selected op<br/>";
+                }
+
                 if (list[i]._shortName.indexOf(query) === 0)
                 {
                     points += 2.5;
@@ -211,12 +216,6 @@ export default class OpSelect
                         points += 2;
                         scoreDebug += "+2 exact name (" + query + ")<br/>";
                     }
-                }
-
-                if (list[i]._summary.length > 0)
-                {
-                    points += 0.5;
-                    scoreDebug += "+0.5 has summary (" + query + ")<br/>";
                 }
 
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
@@ -327,7 +326,6 @@ export default class OpSelect
             }
             else document.getElementById("realsearch").innerHTML = "";
         }
-
         if (query.length > 1)
         {
             for (let i = 0; i < this._list.length; i++)
