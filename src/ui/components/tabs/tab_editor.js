@@ -249,11 +249,11 @@ function createEditor(id, val)
             "name": "inFloat",
         },
         {
-            "content": "inDropDown(\"${1:name}\",\${2:['option a','option b']}\)",
+            "content": "inDropDown(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\)",
             "name": "inDropDown",
         },
         {
-            "content": "inSwitch(\"${1:name}\",\${2:['option a','option b']}\,\${3:'default'}\)",
+            "content": "inSwitch(\"${1:name}\",\${2:[\"option a\",\"option b\"]}\,\${3:\"default\"}\)",
             "name": "inSwitch",
         },
         {

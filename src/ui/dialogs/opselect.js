@@ -200,7 +200,10 @@ export default class OpSelect
             if (found)
             {
                 const opToLink = this._newOpOptions.linkNewOpToOp;
-                if (opToLink && opToLink.name.toLowerCase().startsWith(list[i]._nameSpace))
+
+                if (
+                    (opToLink && opToLink.name.toLowerCase().startsWith(list[i]._nameSpace)) ||
+                    (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.parent.name.toLowerCase().startsWith(list[i]._nameSpace)))
                 {
                     points += 2;
                     scoreDebug = "+2 is in same namespace as selected op<br/>";
