@@ -13,7 +13,6 @@
     {
 
 
-
         .toggle-bookmark-button
         {
             position: absolute;
@@ -335,6 +334,18 @@
             padding-bottom:2px !important;
             padding-left: 7px !important;
         }
+
+        .objType
+        {
+            border-radius: 4px;
+            background-color: var(--color-04) !important;
+            padding: 2px;
+            font-size: 12px;
+            padding-left: 4px;
+            padding-right: 4px;
+            font-style: italic;
+        }
+
 
         table
         {

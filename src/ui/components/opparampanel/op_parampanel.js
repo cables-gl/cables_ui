@@ -697,8 +697,8 @@ class OpParampanel extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {
-                    if (thePort.get()) newValue = "Object";
-                    else newValue = "Object (null)";
+                    if (thePort.get()) newValue = "";
+                    else newValue = "null";
                 }
                 else
                 {
