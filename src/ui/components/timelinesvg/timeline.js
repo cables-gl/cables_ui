@@ -1526,11 +1526,12 @@ export default function TimeLineGui()
                 "y": start.y,
                 "width": end.x - start.x,
                 "height": end.y - start.y,
-                "stroke": CABLES.UI.uiConfig.colorRubberBand,
-                "fill": CABLES.UI.uiConfig.colorRubberBand,
+                "stroke": "#52FDE1",
+                "fill": "#52FDE1",
                 "stroke-width": 2,
                 "fill-opacity": 0.1
             });
+
 
             if (!enabled) return;
             let count = 0;
