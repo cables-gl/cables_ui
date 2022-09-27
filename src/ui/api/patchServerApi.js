@@ -349,12 +349,10 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         for (let i = 0; i < data.ops.length; i++)
         {
-            console.log(JSON.stringify(data.ops[i].uiAttribs.uierrors));
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
             if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
-            console.log("->", JSON.stringify(data.ops[i].uiAttribs.uierrors));
         }
 
         if (blueprintIds.length > 0)
