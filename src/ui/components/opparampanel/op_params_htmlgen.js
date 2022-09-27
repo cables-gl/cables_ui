@@ -2,8 +2,9 @@ import text from "../../text";
 
 class PortHtmlGenerator
 {
-    constructor()
+    constructor(panelId)
     {
+        this._panelId = panelId;
         this._templateHead = Handlebars.compile(document.getElementById("params_op_head").innerHTML);
         this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
         this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
@@ -48,6 +49,7 @@ class PortHtmlGenerator
 
         return this._templateHead({
             "op": op,
+            "panelid": this._panelId,
             "isBookmarked": isBookmarked,
             "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(op.objName),
             "texts": text,
@@ -98,6 +100,7 @@ class PortHtmlGenerator
 
             const tmplData = {
                 "port": ports[i],
+                "panelid": this._panelId,
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
@@ -154,6 +157,7 @@ class PortHtmlGenerator
             const tmplData = {
                 "port": ports[i],
                 "dirStr": "out",
+                "panelid": this._panelId,
                 "groupSpacer": groupSpacer,
                 "startGroup": startGroup,
                 "portnum": i,

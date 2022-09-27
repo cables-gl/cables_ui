@@ -12,13 +12,14 @@ class OpParampanel extends CABLES.EventTarget
     {
         super();
 
+        this._id = CABLES.simpleId();
         this._log = new Logger("OpParampanel");
+        this._htmlGen = new PortHtmlGenerator(this._id);
+
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
         this._watchStrings = [];
-
-        this._htmlGen = new PortHtmlGenerator();
 
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
@@ -65,10 +66,11 @@ class OpParampanel extends CABLES.EventTarget
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
     }
 
-    _onUiAttrChangePort(attr)
+    _onUiAttrChangePort(attr, port)
     {
         if (!attr) return;
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
+        // todo: only update this part of the html
     }
 
     _stopListeners(op)
@@ -78,8 +80,7 @@ class OpParampanel extends CABLES.EventTarget
 
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
 
-        for (let i = 0; i < op.portsIn.length; i++)
-            op.portsIn[i].off(this._eventPrefix);
+        for (let i = 0; i < op.portsIn.length; i++) op.portsIn[i].off(this._eventPrefix);
     }
 
     _startListeners(op)
@@ -115,7 +116,6 @@ class OpParampanel extends CABLES.EventTarget
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
-
         if (this._currentOp != op)
         {
             if (this._currentOp) this._stopListeners();
@@ -147,29 +147,28 @@ class OpParampanel extends CABLES.EventTarget
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
 
         // show first anim in timeline
-        if (self.timeLine)
-        {
-            let foundAnim = false;
-            for (let i = 0; i < op.portsIn.length; i++)
-            {
-                if (op.portsIn[i].isAnimated())
-                {
-                    self.timeLine.setAnim(op.portsIn[i].anim, {
-                        "name": op.portsIn[i].name,
-                    });
-                    foundAnim = true;
-                    continue;
-                }
-            }
-            if (!foundAnim) self.timeLine.setAnim(null);
-        }
+        // if (self.timeLine)
+        // {
+        //     let foundAnim = false;
+        //     for (let i = 0; i < op.portsIn.length; i++)
+        //     {
+        //         if (op.portsIn[i].isAnimated())
+        //         {
+        //             self.timeLine.setAnim(op.portsIn[i].anim, {
+        //                 "name": op.portsIn[i].name,
+        //             });
+        //             foundAnim = true;
+        //             continue;
+        //         }
+        //     }
+        //     if (!foundAnim) self.timeLine.setAnim(null);
+        // }
 
         this.removePorts();
 
         let html = this._htmlGen.getHtmlOpHeader(op);
 
         gui.showInfo(text.patchSelectedOp);
-
 
         if (op.portsIn.length > 0)
         {
@@ -234,7 +233,6 @@ class OpParampanel extends CABLES.EventTarget
                     ele.byId("portFilename_" + i).innerHTML = "<span class=\"button button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
             }
 
-
             const f = (e) =>
             {
                 if (!this._isPortLineDragDown) return;
@@ -280,7 +278,6 @@ class OpParampanel extends CABLES.EventTarget
                 });
             });
 
-            // document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; });
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
@@ -401,7 +398,6 @@ class OpParampanel extends CABLES.EventTarget
                 if (err.level == 1) str += "<b>Warning: </b>";
                 if (err.level == 2) str += "<b>Error: </b>";
                 str += err.txt;
-                // str += "(" + err.id + ")";
 
                 if (!div)
                 {
@@ -416,20 +412,6 @@ class OpParampanel extends CABLES.EventTarget
             }
             gui.patchView.checkPatchErrors();
         }
-
-
-        //     {{#if op.uiAttribs.uierrors }}
-        //     {{#each op.uiAttribs.uierrors}}
-        //         <div class="warning-error warning-error-level{{level}}"  >
-
-        //             {{#compare level '==' 0 }}Hint:{{/compare}}
-        //             {{#compare level '==' 1 }}Warning:{{/compare}}
-        //             {{#compare level '==' 2 }}Error:{{/compare}}
-
-        //             {{{txt}}}<br/>
-        //         </div>
-        //     {{/each}}
-        // {{/if}}
     }
 
     updateUiAttribs()
@@ -449,9 +431,6 @@ class OpParampanel extends CABLES.EventTarget
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] updateUiAttribs");
         let el = null;
-
-        // this.setCurrentOpTitle(this._currentOp.name);
-        // uiop.op.setTitle(t);
 
         el = document.getElementById("options_warning");
         if (el)
@@ -601,7 +580,6 @@ class OpParampanel extends CABLES.EventTarget
                     CABLES.UI.paramsHelper.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
                 }
 
-
                 this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());
             }
 
@@ -612,7 +590,6 @@ class OpParampanel extends CABLES.EventTarget
 
         setTimeout(this._updateWatchPorts.bind(this), CABLES.UI.uiConfig.watchValuesInterval);
     }
-
 
     setCurrentOpComment(v)
     {
@@ -665,14 +642,6 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-        // items.push({
-        //     "title": "Make resizable",
-        //     func()
-        //     {
-        //         gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
-        //     },
-        // });
-
         items.push({
             "title": "Bookmark",
             func()
@@ -707,15 +676,6 @@ class OpParampanel extends CABLES.EventTarget
                     gui.serverOps.edit(opname, false, false, true);
                 },
             });
-
-            // items.push({
-            //     "title": "Rename op ",
-            //     "iconClass": "icon icon-lock",
-            //     func()
-            //     {
-            //         window.open(CABLES.sandbox.getCablesUrl() + "/op/rename?op=" + opname + "&new=" + opname, "_blank");
-            //     },
-            // });
         }
         CABLES.contextMenu.show({ items }, el);
     }
