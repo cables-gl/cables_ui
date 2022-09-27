@@ -10,6 +10,22 @@ const timelineCommands =
 
 export default timelineCommands;
 
+CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
+{
+    const ops = gui.corePatch().ops;
+    for (let i = 0; i < ops.length; i++)
+    {
+        const inputs = ops[i].portsIn;
+        for (let j = 0; j < inputs.length; j++)
+        {
+            if (inputs[j].isAnimated())
+            {
+                console.log(inputs[j]);
+            }
+        }
+    }
+};
+
 
 CABLES_CMD_TIMELINE.TimelinePlay = function ()
 {
@@ -121,5 +137,11 @@ timelineCommands.commands.push(
         "category": "timeline",
         "func": CABLES_CMD_TIMELINE.setLength
     },
+    {
+        "cmd": "show all animated ports",
+        "category": "timeline",
+        "func": CABLES_CMD_TIMELINE.ListAnimatedPorts
+    },
+
 
 );
