@@ -248,10 +248,8 @@ export default class ServerOps
                     CABLES.UI.notify(num + " ops reloaded");
 
                     for (let i = 0; i < newOps.length; i++)
-                    {
                         if (newOps[i] && newOps[i].uiAttribs)
                             delete newOps[i].uiAttribs.uierrors;
-                    }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);

@@ -327,11 +327,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const blueprintIds = [];
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs.error) delete ops[i].uiAttribs.error;
-            if (ops[i].uiAttribs.warning) delete ops[i].uiAttribs.warning;
-            if (ops[i].uiAttribs.hint) delete ops[i].uiAttribs.hint;
-            if (ops[i].uiAttribs.uierrors) delete ops[i].uiAttribs.uierrors;
-
             const op = ops[i];
             if (op.storage && op.storage.blueprint)
             {
@@ -352,13 +347,23 @@ export default class PatchSaveServer extends CABLES.EventTarget
         if (_name) name = _name;
         let data = gui.corePatch().serialize({ "asObject": true });
 
+        for (let i = 0; i < data.ops.length; i++)
+        {
+            console.log(JSON.stringify(data.ops[i].uiAttribs.uierrors));
+            if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
+            if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
+            if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
+            if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
+            console.log("->", JSON.stringify(data.ops[i].uiAttribs.uierrors));
+        }
+
         if (blueprintIds.length > 0)
         {
             let i = data.ops.length;
             // iterate backwards so we can splice
             while (i--)
             {
-                const op = data.ops[i];
+                const op = data.data.ops[i];
                 if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
                 {
                     data.ops.splice(i, 1);
