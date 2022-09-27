@@ -6,7 +6,6 @@ import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 
-
 class OpParampanel extends CABLES.EventTarget
 {
     constructor()
