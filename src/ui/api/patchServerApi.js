@@ -361,7 +361,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
             // iterate backwards so we can splice
             while (i--)
             {
-                const op = data.data.ops[i];
                 if (op.uiAttribs && op.uiAttribs.subPatch && blueprintIds.includes(op.uiAttribs.subPatch))
                 {
                     data.ops.splice(i, 1);
