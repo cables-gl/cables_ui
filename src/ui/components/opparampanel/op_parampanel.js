@@ -16,10 +16,10 @@ class OpParampanel extends CABLES.EventTarget
     {
         super();
 
-        this.id = CABLES.simpleId();
+        this.panelId = CABLES.simpleId();
         this._eleId = eleid;
         this._log = new Logger("OpParampanel");
-        this._htmlGen = new PortHtmlGenerator(this.id);
+        this._htmlGen = new PortHtmlGenerator(this.panelId);
 
         this._watchPorts = [];
         this._watchAnimPorts = [];
@@ -348,7 +348,7 @@ class OpParampanel extends CABLES.EventTarget
             }(ipip));
         }
 
-        for (let ipii = 0; ipii < this._portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii, this.id);
+        for (let ipii = 0; ipii < this._portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii, this.panelId);
 
         for (const iwap in this._watchAnimPorts)
         {
@@ -367,13 +367,13 @@ class OpParampanel extends CABLES.EventTarget
                         });
                     }
                 });
-            }(thePort, this.id));
+            }(thePort, this.panelId));
         }
 
         for (const iwcp in this._watchColorPicker)
         {
             const thePort2 = this._watchColorPicker[iwcp];
-            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2);
+            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId);
         }
 
         this._watchPortVisualizer.bind();
@@ -527,7 +527,7 @@ class OpParampanel extends CABLES.EventTarget
                 if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && thePort.type != CABLES.OP_PORT_TYPE_STRING && thePort.type != CABLES.OP_PORT_TYPE_ARRAY && thePort.type != CABLES.OP_PORT_TYPE_OBJECT) continue;
 
                 let newValue = "";
-                const id = "watchPortValue_" + thePort.watchId + "_" + this.id;
+                const id = "watchPortValue_" + thePort.watchId + "_" + this.panelId;
 
                 if (thePort.isAnimated())
                 {
@@ -541,7 +541,7 @@ class OpParampanel extends CABLES.EventTarget
                             if (parseFloat(elVal.value) != parseFloat(valDisp)) elVal.value = valDisp;
                             else if (elVal.value != valDisp) elVal.value = valDisp;
 
-                        const elDisp = ele.byId("numberinputDisplay_" + thePort.watchId);
+                        const elDisp = ele.byId("numberinputDisplay_" + thePort.watchId + "_" + this.panelId);
                         if (elDisp) elDisp.innerHTML = valDisp;
                     }
                 }
