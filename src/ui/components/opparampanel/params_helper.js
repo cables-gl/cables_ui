@@ -148,13 +148,10 @@ const paramsHelper =
     },
 
 
-    "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid) =>
+    "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>
     {
-        console.log(1);
-        const id = "watchcolorpick_" + thePort.watchId + "_" + panelid;
-        const splits = id.split("_");
-        const portNum = parseInt(splits[splits.length - 1]);
-
+        const id = "watchcolorpick_in_" + idx + "_" + panelid;
+        const portNum = idx;
         const colEle = ele.byId(id);
 
         if (colEle && thePort1 && thePort && thePort2)
@@ -176,16 +173,9 @@ const paramsHelper =
             }
         }
     },
-    "watchColorPickerPort": (thePort, panelid) =>
+    "watchColorPickerPort": (thePort, panelid, idx) =>
     {
-        const id = "watchcolorpick_" + thePort.watchId + "_" + panelid;
-        const splits = id.split("_");
-        const portNum = parseInt(splits[splits.length - 1]);
-
-        const updateColorBox = () =>
-        {
-            colEle.style.backgroundColor = chroma(getCurrentColor()).hex();
-        };
+        const portNum = idx + 1;
 
         const inputElements =
         [
@@ -194,10 +184,9 @@ const paramsHelper =
             ele.byId("portval_" + (portNum + 2) + "_" + panelid)
         ];
 
-        const colEle = ele.byId(id);
-
         if (!inputElements[0] || !inputElements[1] || !inputElements[2])
         {
+            console.log("NOPEY", "portval_" + portNum + "_" + panelid, ele.byId("portval_" + portNum + "_" + panelid));
             return;
         }
 
@@ -207,6 +196,15 @@ const paramsHelper =
                 Math.round(255 * parseFloat(inputElements[0].value)),
                 Math.round(255 * parseFloat(inputElements[1].value)),
                 Math.round(255 * parseFloat(inputElements[2].value))];
+        };
+
+
+        const id = "watchcolorpick_in_" + portNum + "_" + panelid;
+        const colEle = ele.byId(id);
+
+        const updateColorBox = () =>
+        {
+            colEle.style.backgroundColor = chroma(getCurrentColor()).hex();
         };
 
         inputElements[0].addEventListener("input", updateColorBox);

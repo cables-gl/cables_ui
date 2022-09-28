@@ -373,7 +373,8 @@ class OpParampanel extends CABLES.EventTarget
         for (const iwcp in this._watchColorPicker)
         {
             const thePort2 = this._watchColorPicker[iwcp];
-            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId);
+
+            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId, parseInt(iwcp));
         }
 
         this._watchPortVisualizer.bind();
@@ -593,7 +594,10 @@ class OpParampanel extends CABLES.EventTarget
                 for (const iwcp in this._watchColorPicker)
                 {
                     const thePort2 = this._watchColorPicker[iwcp];
-                    CABLES.UI.paramsHelper.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
+                    const idx = thePort.parent.portsIn.indexOf(thePort2);
+                    CABLES.UI.paramsHelper.updateLinkedColorBoxes(
+                        thePort2,
+                        thePort.parent.portsIn[idx + 1], thePort.parent.portsIn[idx + 2], this.panelId, idx);
                 }
 
                 this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());
