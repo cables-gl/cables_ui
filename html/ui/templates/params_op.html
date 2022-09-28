@@ -82,22 +82,6 @@
 
             <div id="op_params_uierrors"></div>
 
-            <!--
-            {{#if op.uiAttribs.uierrors }}
-                {{#each op.uiAttribs.uierrors}}
-                    <div class="warning-error warning-error-level{{level}}"  >
-
-                        {{#compare level '==' 0 }}Hint:{{/compare}}
-                        {{#compare level '==' 1 }}Warning:{{/compare}}
-                        {{#compare level '==' 2 }}Error:{{/compare}}
-
-                        {{{txt}}}<br/>
-                    </div>
-                {{/each}}
-            {{/if}}
-            -->
-
-
             {{#if op.isExperimental }}
                 <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
             {{/if}}

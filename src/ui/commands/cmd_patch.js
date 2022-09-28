@@ -16,6 +16,17 @@ const patchCommands =
 
 export default patchCommands;
 
+CABLES_CMD_PATCH.openParamsTab = () =>
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (!ops.length) return;
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        // ops[i];
+    }
+};
+
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());
@@ -873,6 +884,10 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
+    },
+    {
+        "cmd": "open params in tab",
+        "func": CABLES_CMD_PATCH.openParamsTab,
     }
 
 

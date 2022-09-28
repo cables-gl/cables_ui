@@ -4,7 +4,7 @@ import Logger from "../../utils/logger";
 import WatchPortVisualizer from "./watchPortVisualizer";
 import text from "../../text";
 import ele from "../../utils/ele";
-
+import { PortHtmlGenerator } from "./op_params_htmlgen";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -12,19 +12,14 @@ class OpParampanel extends CABLES.EventTarget
     {
         super();
 
+        this._id = CABLES.simpleId();
         this._log = new Logger("OpParampanel");
+        this._htmlGen = new PortHtmlGenerator(this._id);
+
         this._watchPorts = [];
         this._watchAnimPorts = [];
         this._watchColorPicker = [];
         this._watchStrings = [];
-
-        this._templatePortGeneral = Handlebars.compile(document.getElementById("params_port_general").innerHTML);
-        this._templatePortGeneralEnd = Handlebars.compile(document.getElementById("params_port_general_end").innerHTML);
-        this._templatePortInput = Handlebars.compile(document.getElementById("params_port_input").innerHTML);
-        this._templatePortOutput = Handlebars.compile(document.getElementById("params_port_output").innerHTML);
-
-
-        this._templateHead = Handlebars.compile(document.getElementById("params_op_head").innerHTML);
 
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
@@ -71,10 +66,11 @@ class OpParampanel extends CABLES.EventTarget
         if (attr.hasOwnProperty("uierrors")) this.updateUiErrors();
     }
 
-    _onUiAttrChangePort(attr)
+    _onUiAttrChangePort(attr, port)
     {
         if (!attr) return;
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
+        // todo: only update this part of the html
     }
 
     _stopListeners(op)
@@ -84,8 +80,7 @@ class OpParampanel extends CABLES.EventTarget
 
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
 
-        for (let i = 0; i < op.portsIn.length; i++)
-            op.portsIn[i].off(this._eventPrefix);
+        for (let i = 0; i < op.portsIn.length; i++) op.portsIn[i].off(this._eventPrefix);
     }
 
     _startListeners(op)
@@ -121,7 +116,6 @@ class OpParampanel extends CABLES.EventTarget
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
-
         if (this._currentOp != op)
         {
             if (this._currentOp) this._stopListeners();
@@ -153,198 +147,66 @@ class OpParampanel extends CABLES.EventTarget
         op.isServerOp = gui.serverOps.isServerOp(op.objName);
 
         // show first anim in timeline
-        if (self.timeLine)
-        {
-            let foundAnim = false;
-            for (let i = 0; i < op.portsIn.length; i++)
-            {
-                if (op.portsIn[i].isAnimated())
-                {
-                    self.timeLine.setAnim(op.portsIn[i].anim, {
-                        "name": op.portsIn[i].name,
-                    });
-                    foundAnim = true;
-                    continue;
-                }
-            }
-            if (!foundAnim) self.timeLine.setAnim(null);
-        }
-
-        // for (var iops =0; iops<this.ops.length;iops++)
-        //     if (this.ops[iops].op == op)
-        //         currentOp = this.ops[iops];
-
-        let doc = null;
-        let hasExample = false;
-        if (gui.opDocs)
-        {
-            op.summary = gui.opDocs.getSummary(op.objName);
-            doc = gui.opDocs.getOpDocByName(op.objName);
-            hasExample = doc && doc.hasExample;
-        }
+        // if (self.timeLine)
+        // {
+        //     let foundAnim = false;
+        //     for (let i = 0; i < op.portsIn.length; i++)
+        //     {
+        //         if (op.portsIn[i].isAnimated())
+        //         {
+        //             self.timeLine.setAnim(op.portsIn[i].anim, {
+        //                 "name": op.portsIn[i].name,
+        //             });
+        //             foundAnim = true;
+        //             continue;
+        //         }
+        //     }
+        //     if (!foundAnim) self.timeLine.setAnim(null);
+        // }
 
         this.removePorts();
 
-        let ownsOp = false;
-        if (op.objName.startsWith("Ops.User." + gui.user.username)) ownsOp = true;
-        if (op.objName.startsWith("Ops.Deprecated."))
-        {
-            op.isDeprecated = true;
-            const notDeprecatedName = op.objName.replace("Deprecated.", "");
-            const alt = CABLES.Patch.getOpClass(notDeprecatedName);
-            if (alt) op.isDeprecatedAlternative = notDeprecatedName;
-        }
-        if (op.objName.startsWith("Ops.Exp.")) op.isExperimental = true;
-
-        let isBookmarked = false;
-        if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
-
-        let oldversion = false;
-        let newestVersion = false;
-        if (doc && doc.oldVersion)
-        {
-            oldversion = doc.oldVersion;
-            newestVersion = doc.newestVersion;
-        }
-
-        let html = this._templateHead({
-            op,
-            isBookmarked,
-            "colorClass": "op_color_" + CABLES.UI.DEFAULTOPS.getNamespaceClassName(op.objName),
-            "texts": text,
-            "user": gui.user,
-            "optitle": op.getTitle(),
-
-            ownsOp,
-            "oldVersion": oldversion,
-            "newestVersion": newestVersion,
-            "cablesUrl": CABLES.sandbox.getCablesUrl(),
-            "hasExample": hasExample,
-        });
+        let html = this._htmlGen.getHtmlOpHeader(op);
 
         gui.showInfo(text.patchSelectedOp);
 
         if (op.portsIn.length > 0)
         {
-            html += getHandleBarHtml("params_ports_head", {
-                "dirStr": "in",
-                "title": "Input",
-                "texts": text,
-            });
-
-            let lastGroup = null;
-            const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP");
+            const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP IN");
+            html += this._htmlGen.getHtmlHeaderPorts("in", "input");
+            html += this._htmlGen.getHtmlInputPorts(op.portsIn);
 
             for (let i = 0; i < op.portsIn.length; i++)
             {
-                let startGroup = null;
-                let groupSpacer = false;
-
-                const opGroup = op.portsIn[i].uiAttribs.group;
-
-                if (!op.portsIn[i].uiAttribs.hideParam)
-                {
-                    if (lastGroup != opGroup && !opGroup) groupSpacer = true;
-
-                    if (lastGroup != opGroup)
-                    {
-                        groupSpacer = true;
-                        lastGroup = opGroup;
-                        startGroup = lastGroup;
-                    }
-                }
-
-                op.portsIn[i].watchId = "in_" + i;
-                this._watchAnimPorts.push(op.portsIn[i]);
-
                 if (op.portsIn[i].getType() == CABLES.OP_PORT_TYPE_STRING) this._watchStrings.push(op.portsIn[i]);
                 if (op.portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(op.portsIn[i]);
                 if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) this._watchPorts.push(op.portsIn[i]);
-
-                const tmplData = {
-                    "port": op.portsIn[i],
-                    "startGroup": startGroup,
-                    "groupSpacer": groupSpacer,
-                    "dirStr": "in",
-                    "portnum": i,
-                    "isInput": true,
-                    "op": op,
-                    "texts": text,
-                    "vars": op.patch.getVars(op.portsIn[i].type)
-                };
-
-                html += this._templatePortGeneral(tmplData);
-                html += this._templatePortInput(tmplData);
-                html += this._templatePortGeneralEnd(tmplData);
+                this._watchAnimPorts.push(op.portsIn[i]);
             }
             perfLoop.finish();
         }
 
         if (op.portsOut.length > 0)
         {
-            html += getHandleBarHtml("params_ports_head", {
-                "dirStr": "out",
-                "title": "Output",
-                "op": op,
-                "texts": text,
-            });
+            html += this._htmlGen.getHtmlHeaderPorts("out", "output");
 
             const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
 
-            let foundPreview = false;
-            let lastGroup = null;
-            for (const i2 in op.portsOut)
+            html += this._htmlGen.getHtmlOutputPorts(op.portsOut);
+
+            for (const i in op.portsOut)
             {
                 if (
-                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_VALUE ||
-                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
-                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_STRING ||
-                    op.portsOut[i2].getType() == CABLES.OP_PORT_TYPE_OBJECT
-                )
-                {
-                    op.portsOut[i2].watchId = "out_" + i2;
-                    this._watchPorts.push(op.portsOut[i2]);
-                }
-
-                let startGroup = null;
-                let groupSpacer = false;
-
-                const opGroup = op.portsOut[i2].uiAttribs.group;
-                if (lastGroup != opGroup && !opGroup) groupSpacer = true;
-
-                if (lastGroup != opGroup)
-                {
-                    groupSpacer = true;
-                    lastGroup = opGroup;
-                    startGroup = lastGroup;
-                }
-
-                // set auto preview
-                if (!foundPreview && op.portsOut[i2].uiAttribs.preview)
-                {
-                    foundPreview = true;
-                    gui.texturePreview().selectTexturePort(op.portsOut[i2]);
-                }
-
-                const tmplData = {
-                    "port": op.portsOut[i2],
-                    "dirStr": "out",
-                    "groupSpacer": groupSpacer,
-                    "startGroup": startGroup,
-                    "portnum": i2,
-                    "isInput": false,
-                    "op": op
-                };
-                html += this._templatePortGeneral(tmplData);
-                html += this._templatePortOutput(tmplData);
-                html += this._templatePortGeneralEnd(tmplData);
+                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
+                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
+                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
+                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) this._watchPorts.push(op.portsOut[i]);
             }
-
             perfLoopOut.finish();
         }
 
         html += getHandleBarHtml("params_op_foot", {
-            op,
+            "op": op,
             "opserialized": op.getSerialized(),
             "user": gui.user,
         });
@@ -370,7 +232,6 @@ class OpParampanel extends CABLES.EventTarget
                 if (ele.byId("portFilename_" + i))
                     ele.byId("portFilename_" + i).innerHTML = "<span class=\"button button-small \" style=\"text-transform:none;\"><span class=\"icon icon-file\"></span>" + shortName + "</span>";
             }
-
 
             const f = (e) =>
             {
@@ -417,7 +278,6 @@ class OpParampanel extends CABLES.EventTarget
                 });
             });
 
-            // document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; });
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
@@ -538,7 +398,6 @@ class OpParampanel extends CABLES.EventTarget
                 if (err.level == 1) str += "<b>Warning: </b>";
                 if (err.level == 2) str += "<b>Error: </b>";
                 str += err.txt;
-                // str += "(" + err.id + ")";
 
                 if (!div)
                 {
@@ -553,20 +412,6 @@ class OpParampanel extends CABLES.EventTarget
             }
             gui.patchView.checkPatchErrors();
         }
-
-
-        //     {{#if op.uiAttribs.uierrors }}
-        //     {{#each op.uiAttribs.uierrors}}
-        //         <div class="warning-error warning-error-level{{level}}"  >
-
-        //             {{#compare level '==' 0 }}Hint:{{/compare}}
-        //             {{#compare level '==' 1 }}Warning:{{/compare}}
-        //             {{#compare level '==' 2 }}Error:{{/compare}}
-
-        //             {{{txt}}}<br/>
-        //         </div>
-        //     {{/each}}
-        // {{/if}}
     }
 
     updateUiAttribs()
@@ -586,9 +431,6 @@ class OpParampanel extends CABLES.EventTarget
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] updateUiAttribs");
         let el = null;
-
-        // this.setCurrentOpTitle(this._currentOp.name);
-        // uiop.op.setTitle(t);
 
         el = document.getElementById("options_warning");
         if (el)
@@ -738,7 +580,6 @@ class OpParampanel extends CABLES.EventTarget
                     CABLES.UI.paramsHelper.updateLinkedColorBoxes(thePort2, thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 1], thePort.parent.portsIn[thePort.parent.portsIn.indexOf(thePort2) + 2]);
                 }
 
-
                 this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());
             }
 
@@ -749,7 +590,6 @@ class OpParampanel extends CABLES.EventTarget
 
         setTimeout(this._updateWatchPorts.bind(this), CABLES.UI.uiConfig.watchValuesInterval);
     }
-
 
     setCurrentOpComment(v)
     {
@@ -802,14 +642,6 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-        // items.push({
-        //     "title": "Make resizable",
-        //     func()
-        //     {
-        //         gui.corePatch().getOpById(opid).setUiAttrib({ "resizable": !gui.corePatch().getOpById(opid).uiAttribs.resizable });
-        //     },
-        // });
-
         items.push({
             "title": "Bookmark",
             func()
@@ -844,15 +676,6 @@ class OpParampanel extends CABLES.EventTarget
                     gui.serverOps.edit(opname, false, false, true);
                 },
             });
-
-            // items.push({
-            //     "title": "Rename op ",
-            //     "iconClass": "icon icon-lock",
-            //     func()
-            //     {
-            //         window.open(CABLES.sandbox.getCablesUrl() + "/op/rename?op=" + opname + "&new=" + opname, "_blank");
-            //     },
-            // });
         }
         CABLES.contextMenu.show({ items }, el);
     }
