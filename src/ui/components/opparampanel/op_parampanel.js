@@ -1,3 +1,7 @@
+
+// todos
+
+
 import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
@@ -8,13 +12,14 @@ import { PortHtmlGenerator } from "./op_params_htmlgen";
 
 class OpParampanel extends CABLES.EventTarget
 {
-    constructor()
+    constructor(eleid)
     {
         super();
 
-        this._id = CABLES.simpleId();
+        this.id = CABLES.simpleId();
+        this._eleId = eleid;
         this._log = new Logger("OpParampanel");
-        this._htmlGen = new PortHtmlGenerator(this._id);
+        this._htmlGen = new PortHtmlGenerator(this.id);
 
         this._watchPorts = [];
         this._watchAnimPorts = [];
@@ -26,7 +31,15 @@ class OpParampanel extends CABLES.EventTarget
         this._isPortLineDragDown = false;
         this._watchPortVisualizer = new WatchPortVisualizer();
 
+        this._portsIn = [];
+        this._portsOut = [];
+
         this._updateWatchPorts();
+    }
+
+    setParentElementId(eleid)
+    {
+        this._eleId = eleid;
     }
 
     dispose()
@@ -80,7 +93,7 @@ class OpParampanel extends CABLES.EventTarget
 
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
 
-        for (let i = 0; i < op.portsIn.length; i++) op.portsIn[i].off(this._eventPrefix);
+        for (let i = 0; i < this._portsIn.length; i++) this._portsIn[i].off(this._eventPrefix);
     }
 
     _startListeners(op)
@@ -92,9 +105,9 @@ class OpParampanel extends CABLES.EventTarget
         }
 
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
-        for (let i = 0; i < op.portsIn.length; i++)
+        for (let i = 0; i < this._portsIn.length; i++)
         {
-            op.portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix);
+            this._portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix);
         }
     }
 
@@ -130,12 +143,15 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
+        this._portsIn = op.portsIn;
+        this._portsOut = op.portsOut;
+
         op.emitEvent("uiParamPanel");
-        if (op.id != self._oldOpParamsId)
-        {
-            if (gui.fileManager) gui.fileManager.setFilePort(null);
-            self._oldOpParamsId = op.id;
-        }
+        // if (op.id != self._oldOpParamsId)
+        // {
+        //     if (gui.fileManager) gui.fileManager.setFilePort(null);
+        //     self._oldOpParamsId = op.id;
+        // }
 
         const perfHtml = CABLES.UI.uiProfiler.start("[opparampanel] build html ");
 
@@ -150,12 +166,12 @@ class OpParampanel extends CABLES.EventTarget
         // if (self.timeLine)
         // {
         //     let foundAnim = false;
-        //     for (let i = 0; i < op.portsIn.length; i++)
+        //     for (let i = 0; i < this._portsIn.length; i++)
         //     {
-        //         if (op.portsIn[i].isAnimated())
+        //         if (this._portsIn[i].isAnimated())
         //         {
-        //             self.timeLine.setAnim(op.portsIn[i].anim, {
-        //                 "name": op.portsIn[i].name,
+        //             self.timeLine.setAnim(this._portsIn[i].anim, {
+        //                 "name": this._portsIn[i].name,
         //             });
         //             foundAnim = true;
         //             continue;
@@ -170,37 +186,37 @@ class OpParampanel extends CABLES.EventTarget
 
         gui.showInfo(text.patchSelectedOp);
 
-        if (op.portsIn.length > 0)
+        if (this._portsIn.length > 0)
         {
             const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP IN");
             html += this._htmlGen.getHtmlHeaderPorts("in", "input");
-            html += this._htmlGen.getHtmlInputPorts(op.portsIn);
+            html += this._htmlGen.getHtmlInputPorts(this._portsIn);
 
-            for (let i = 0; i < op.portsIn.length; i++)
+            for (let i = 0; i < this._portsIn.length; i++)
             {
-                if (op.portsIn[i].getType() == CABLES.OP_PORT_TYPE_STRING) this._watchStrings.push(op.portsIn[i]);
-                if (op.portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(op.portsIn[i]);
-                if (op.portsIn[i].isLinked() || op.portsIn[i].isAnimated()) this._watchPorts.push(op.portsIn[i]);
-                this._watchAnimPorts.push(op.portsIn[i]);
+                if (this._portsIn[i].getType() == CABLES.OP_PORT_TYPE_STRING) this._watchStrings.push(this._portsIn[i]);
+                if (this._portsIn[i].uiAttribs.colorPick) this._watchColorPicker.push(this._portsIn[i]);
+                if (this._portsIn[i].isLinked() || this._portsIn[i].isAnimated()) this._watchPorts.push(this._portsIn[i]);
+                this._watchAnimPorts.push(this._portsIn[i]);
             }
             perfLoop.finish();
         }
 
-        if (op.portsOut.length > 0)
+        if (this._portsOut.length > 0)
         {
             html += this._htmlGen.getHtmlHeaderPorts("out", "output");
 
             const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
 
-            html += this._htmlGen.getHtmlOutputPorts(op.portsOut);
+            html += this._htmlGen.getHtmlOutputPorts(this._portsOut);
 
-            for (const i in op.portsOut)
+            for (const i in this._portsOut)
             {
                 if (
-                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
-                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
-                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
-                    op.portsOut[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) this._watchPorts.push(op.portsOut[i]);
+                    this._portsOut[i].getType() == CABLES.OP_PORT_TYPE_VALUE ||
+                    this._portsOut[i].getType() == CABLES.OP_PORT_TYPE_ARRAY ||
+                    this._portsOut[i].getType() == CABLES.OP_PORT_TYPE_STRING ||
+                    this._portsOut[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) this._watchPorts.push(this._portsOut[i]);
             }
             perfLoopOut.finish();
         }
@@ -211,7 +227,7 @@ class OpParampanel extends CABLES.EventTarget
             "user": gui.user,
         });
 
-        const el = document.getElementById(gui.getParamPanelEleId());
+        const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
         if (el) el.innerHTML = html;
         else return;
@@ -222,11 +238,11 @@ class OpParampanel extends CABLES.EventTarget
 
         this.updateUiAttribs();
 
-        for (let i = 0; i < op.portsIn.length; i++)
+        for (let i = 0; i < this._portsIn.length; i++)
         {
-            if (op.portsIn[i].uiAttribs.display && op.portsIn[i].uiAttribs.display == "file")
+            if (this._portsIn[i].uiAttribs.display && this._portsIn[i].uiAttribs.display == "file")
             {
-                let shortName = String(op.portsIn[i].get() || "none");
+                let shortName = String(this._portsIn[i].get() || "none");
                 if (shortName.indexOf("/") > -1) shortName = shortName.substr(shortName.lastIndexOf("/") + 1);
 
                 if (ele.byId("portFilename_" + i))
@@ -243,10 +259,10 @@ class OpParampanel extends CABLES.EventTarget
 
                     if (glOp)
                     {
-                        const glPort = glOp.getGlPort(op.portsIn[i].name);
+                        const glPort = glOp.getGlPort(this._portsIn[i].name);
 
-                        if (op.portsIn[i].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsIn[i].name, e);
+                        if (this._portsIn[i].name == this._portLineDraggedName)
+                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, this._portsIn[i].name, e);
                     }
                 }
             };
@@ -283,7 +299,7 @@ class OpParampanel extends CABLES.EventTarget
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
 
-        for (const ipo in op.portsOut)
+        for (const ipo in this._portsOut)
         {
             this._showOpParamsCbPortDelete(ipo, op);
             (function (index)
@@ -291,7 +307,7 @@ class OpParampanel extends CABLES.EventTarget
                 const elem = ele.byId("portTitle_out_" + index);
                 if (elem)elem.addEventListener("click", (e) =>
                 {
-                    const p = op.portsOut[index];
+                    const p = this._portsOut[index];
                     if (!p.uiAttribs.hidePort)
                         gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p);
                 });
@@ -309,37 +325,37 @@ class OpParampanel extends CABLES.EventTarget
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
                     if (glOp)
                     {
-                        const glPort = glOp.getGlPort(op.portsOut[ipo].name);
-                        if (op.portsOut[ipo].name == this._portLineDraggedName)
-                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, op.portsOut[ipo].name, e);
+                        const glPort = glOp.getGlPort(this._portsOut[ipo].name);
+                        if (this._portsOut[ipo].name == this._portLineDraggedName)
+                            gui.patchView._patchRenderer.emitEvent("mouseDownOverPort", glPort, glOp.id, this._portsOut[ipo].name, e);
                     }
                 }
             });
         }
 
-        for (let ipi = 0; ipi < op.portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi);
+        for (let ipi = 0; ipi < this._portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi);
 
-        for (let ipip = 0; ipip < op.portsIn.length; ipip++)
+        for (let ipip = 0; ipip < this._portsIn.length; ipip++)
         {
             (function (index)
             {
                 const elm = ele.byId("portdelete_in_" + index);
                 if (elm)elm.addEventListener("click", (e) =>
                 {
-                    op.portsIn[index].removeLinks();
+                    this._portsIn[index].removeLinks();
                     gui.opParams.show(op);
                 });
             }(ipip));
         }
 
-        for (let ipii = 0; ipii < op.portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii);
+        for (let ipii = 0; ipii < this._portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii, this.id);
 
         for (const iwap in this._watchAnimPorts)
         {
             const thePort = this._watchAnimPorts[iwap];
-            (function (_thePort)
+            (function (_thePort, panelid)
             {
-                const id = "watchPortValue_" + _thePort.watchId;
+                const id = "watchPortValue_" + _thePort.watchId + "_" + panelid;
                 const elm = ele.byClass(id);
                 if (elm)elm.addEventListener("focus", () =>
                 {
@@ -351,7 +367,7 @@ class OpParampanel extends CABLES.EventTarget
                         });
                     }
                 });
-            }(thePort));
+            }(thePort, this.id));
         }
 
         for (const iwcp in this._watchColorPicker)
@@ -486,7 +502,7 @@ class OpParampanel extends CABLES.EventTarget
         const el = ele.byId("portdelete_out_" + index);
         if (el)el.addEventListener("click", (e) =>
         {
-            op.portsOut[index].removeLinks();
+            this._portsOut[index].removeLinks();
             this.show(op);
         });
     }
@@ -511,7 +527,7 @@ class OpParampanel extends CABLES.EventTarget
                 if (thePort.type != CABLES.OP_PORT_TYPE_VALUE && thePort.type != CABLES.OP_PORT_TYPE_STRING && thePort.type != CABLES.OP_PORT_TYPE_ARRAY && thePort.type != CABLES.OP_PORT_TYPE_OBJECT) continue;
 
                 let newValue = "";
-                const id = "watchPortValue_" + thePort.watchId;
+                const id = "watchPortValue_" + thePort.watchId + "_" + this.id;
 
                 if (thePort.isAnimated())
                 {

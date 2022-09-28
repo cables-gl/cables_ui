@@ -97,7 +97,6 @@ class PortHtmlGenerator
 
             ports[i].watchId = "in_" + i;
 
-
             const tmplData = {
                 "port": ports[i],
                 "panelid": this._panelId,

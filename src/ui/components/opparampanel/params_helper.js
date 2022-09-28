@@ -54,11 +54,11 @@ const paramsHelper =
     },
 
 
-    "checkDefaultValue": (op, index) =>
+    "checkDefaultValue": (op, index, panelid) =>
     {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
         {
-            const titleEl = ele.byId("portTitle_in_" + index);
+            const titleEl = ele.byId("portTitle_in_" + index + "_" + panelid);
             if (titleEl) titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
         }
     },
@@ -148,8 +148,9 @@ const paramsHelper =
     },
 
 
-    "updateLinkedColorBoxes": (thePort, thePort1, thePort2) =>
+    "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid) =>
     {
+        console.log(1);
         const id = "watchcolorpick_" + thePort.watchId;
         const splits = id.split("_");
         const portNum = parseInt(splits[splits.length - 1]);
@@ -160,9 +161,9 @@ const paramsHelper =
         {
             const inputElements =
             [
-                ele.byId("portval_" + portNum),
-                ele.byId("portval_" + (portNum + 1)),
-                ele.byId("portval_" + (portNum + 2))
+                ele.byId("portval_" + portNum + "_" + panelid),
+                ele.byId("portval_" + (portNum + 1) + "_" + panelid),
+                ele.byId("portval_" + (portNum + 2) + "_" + panelid)
             ];
 
             if (!inputElements[0] || !inputElements[1] || !inputElements[2])
@@ -177,6 +178,7 @@ const paramsHelper =
     },
     "watchColorPickerPort": (thePort) =>
     {
+        console.log(1);
         const id = "watchcolorpick_" + thePort.watchId;
         const splits = id.split("_");
         const portNum = parseInt(splits[splits.length - 1]);
@@ -510,15 +512,15 @@ const paramsHelper =
     },
 
 
-    "initPortInputListener": (op, index) =>
+    "initPortInputListener": (op, index, panelid) =>
     {
         if (!CABLES.UI.mathparser)CABLES.UI.mathparser = new MathParser();
-        CABLES.UI.paramsHelper.checkDefaultValue(op, index);
+        CABLES.UI.paramsHelper.checkDefaultValue(op, index, panelid);
 
         // added missing math constants
         CABLES.UI.mathparser.add("pi", function (n, m) { return Math.PI; });
 
-        const eleId = "portval_" + index;
+        const eleId = "portval_" + index + "_" + panelid;
 
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number" || op.portsIn[index].uiAttribs.type == "int")
         {
@@ -678,7 +680,7 @@ const paramsHelper =
                 "name": gui.user.usernameLowercase
             };
 
-            CABLES.UI.paramsHelper.checkDefaultValue(op, index);
+            CABLES.UI.paramsHelper.checkDefaultValue(op, index, panelid);
             if (op.portsIn[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
 
             if (!e.detail || !e.detail.ignorePaco)
