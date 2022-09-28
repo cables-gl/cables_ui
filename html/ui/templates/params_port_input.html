@@ -82,7 +82,8 @@
                     <input class="value hide" type="hidden" id="portval_{{ portnum }}_{{ panelid }}" style="width:40px;" value="{{port.value}}"/>
                     <div class="radioToggle">
                         {{#each port.uiAttribs.values}}
-                            <label><input type="radio" name="radio_portval_{{ ../portnum }}" value="{{ this }}" oninput="ele.byId('portval_{{ ../portnum }}').value=this.value;ele.byId('portval_{{ ../portnum }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
+                            <label><input type="radio" name="radio_portval_{{ ../portnum }}_{{ ../panelid }}" value="{{ this }}"
+                                oninput="ele.byId('portval_{{ ../portnum }}_{{ ../panelid }}').value=this.value;ele.byId('portval_{{ ../portnum }}_{{ ../panelid }}').dispatchEvent(new Event('input'));" {{#compare this '==' ../port.value }} CHECKED="CHECKED" {{/compare}}><span>{{ this }}</span></label>
                         {{/each}}
                     </div>
 

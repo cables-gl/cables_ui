@@ -151,7 +151,7 @@ const paramsHelper =
     "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid) =>
     {
         console.log(1);
-        const id = "watchcolorpick_" + thePort.watchId;
+        const id = "watchcolorpick_" + thePort.watchId + "_" + panelid;
         const splits = id.split("_");
         const portNum = parseInt(splits[splits.length - 1]);
 
@@ -178,7 +178,7 @@ const paramsHelper =
     },
     "watchColorPickerPort": (thePort, panelid) =>
     {
-        const id = "watchcolorpick_" + thePort.watchId;
+        const id = "watchcolorpick_" + thePort.watchId + "_" + panelid;
         const splits = id.split("_");
         const portNum = parseInt(splits[splits.length - 1]);
 
