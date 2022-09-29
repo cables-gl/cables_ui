@@ -331,7 +331,7 @@ class OpParampanel extends CABLES.EventTarget
             });
         }
 
-        for (let ipi = 0; ipi < this._portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi);
+        for (let ipi = 0; ipi < this._portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi, this.panelId);
 
         for (let ipip = 0; ipip < this._portsIn.length; ipip++)
         {

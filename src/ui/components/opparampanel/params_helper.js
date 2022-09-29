@@ -259,7 +259,7 @@ const paramsHelper =
     },
 
 
-    "initPortClickListener": (op, index) =>
+    "initPortClickListener": (op, index, panelid) =>
     {
         if (op.portsIn[index].isAnimated()) ele.byId("portanim_in_" + index).classList.add("timingbutton_active");
         if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) ele.byId("portgraph_in_" + index).classList.add("timingbutton_active");
@@ -289,8 +289,8 @@ const paramsHelper =
                 }
             });
 
-        if (ele.byId("portspreadsheet_in_" + index))
-            ele.byId("portspreadsheet_in_" + index).addEventListener("click", function (e)
+        if (ele.byId("portspreadsheet_in_" + index + "_" + panelid))
+            ele.byId("portspreadsheet_in_" + index + "_" + panelid).addEventListener("click", function (e)
             {
                 const thePort = op.portsIn[index];
 
@@ -303,7 +303,7 @@ const paramsHelper =
         // input text editor tab
         //
 
-        let el = ele.byId("portedit_in_" + index);
+        let el = ele.byId("portedit_in_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
             const thePort = op.portsIn[index];
@@ -314,7 +314,7 @@ const paramsHelper =
         //
         // input button click!!!!
         //
-        el = ele.byId("portbutton_" + index);
+        el = ele.byId("portbutton_" + index + "_" + panelid);
         if (el) el.addEventListener("click", function (e)
         {
             op.portsIn[index]._onTriggered();
@@ -324,7 +324,7 @@ const paramsHelper =
         {
             for (let i = 0; i < op.portsIn[index].value.length; i++)
             {
-                let eli = ele.byId("portbutton_" + index + "_" + i);
+                let eli = ele.byId("portbutton_" + index + "_" + panelid + "_" + i);
                 if (eli)eli.addEventListener("click", function (e)
                 {
                     const name = e.target.dataset.title;
@@ -332,7 +332,6 @@ const paramsHelper =
                 });
             }
         }
-
 
         //
 

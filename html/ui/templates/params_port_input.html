@@ -22,7 +22,7 @@
             {{#compare port.uiAttribs.display '==' 'bool' }}
                 </td><td>
                     <span class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
-                        <span id="portcheckbox_{{ portnum }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.paramsHelper.togglePortValBool('portval_{{ portnum }}_{{ panelid }}','portcheckbox_{{ portnum }}');" ></span>
+                        <span id="portcheckbox_{{ portnum }}_{{ panelid }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.paramsHelper.togglePortValBool('portval_{{ portnum }}_{{ panelid }}','portcheckbox_{{ portnum }}_{{ panelid }}');" ></span>
                     </span>
                 <input autocomplete="off" class="value hidden" id="portval_{{ portnum }}_{{ panelid }}" value="{{#if port.value }}true{{else}}false{{/if}}" style="display:none;"/>
             {{/compare}}
@@ -30,24 +30,24 @@
             {{#compare port.uiAttribs.display '==' 'buttons' }}
                 </td><td>
                     {{#each port.value}}
-                        <span class="button-small" id="portbutton_{{ ../portnum }}_{{@key}}" data-title="{{.}}">{{.}}</span>
+                        <span class="button-small" id="portbutton_{{ ../portnum }}_{{ ../panelid }}_{{@key}}" data-title="{{.}}">{{.}}</span>
                     {{/each}}
             {{/compare}}
 
             {{#compare port.uiAttribs.display '==' 'button' }}
             </td><td>
-                <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}" >
+                <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                     {{#if port.uiAttribs.buttonTitle }}{{port.uiAttribs.buttonTitle}}
                     {{else}}{{port.name}}{{/if}}
                 </span>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'editor' }}
             </td><td>
-                <a class="button-small" id="portedit_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-edit"></span>edit</a>
+                <a class="button-small" id="portedit_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>edit</a>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'spreadsheet' }}
             </td><td>
-                <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-edit"></span>edit</a>
+                <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>edit</a>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
                 </td><td>
