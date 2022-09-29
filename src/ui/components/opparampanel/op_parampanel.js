@@ -5,6 +5,7 @@ import WatchPortVisualizer from "./watchPortVisualizer";
 import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
+import ParamsListener from "./params_listener";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -12,7 +13,7 @@ class OpParampanel extends CABLES.EventTarget
     {
         super();
 
-        console.log("experimental parampanel branch!");
+        console.warn("experimental parampanel branch!");
 
         this.panelId = CABLES.simpleId();
         this._eleId = eleid;
@@ -31,6 +32,10 @@ class OpParampanel extends CABLES.EventTarget
 
         this._portsIn = [];
         this._portsOut = [];
+
+        this._paramsListener = new ParamsListener(this);
+
+        this._uiAttrListeners = [];
 
         this._updateWatchPorts();
     }
@@ -105,7 +110,7 @@ class OpParampanel extends CABLES.EventTarget
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
         for (let i = 0; i < this._portsIn.length; i++)
         {
-            this._portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix);
+            this._uiAttrListeners.push(this._portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix));
         }
     }
 
@@ -232,7 +237,7 @@ class OpParampanel extends CABLES.EventTarget
 
         perfHtml.finish();
 
-        CABLES.UI.paramsHelper.valueChangerInitSliders();
+        this._paramsListener.valueChangerInitSliders();
 
         this.updateUiAttribs();
 
@@ -269,10 +274,7 @@ class OpParampanel extends CABLES.EventTarget
             {
                 ell.addEventListener("click", (e) =>
                 {
-                    if (!navigator.clipboard)
-                    {
-                        return;
-                    }
+                    if (!navigator.clipboard) return;
 
                     const cop = gui.corePatch().getOpById(e.target.dataset.opid);
                     const port = cop.getPortByName(e.target.dataset.portname);
@@ -331,7 +333,7 @@ class OpParampanel extends CABLES.EventTarget
             });
         }
 
-        for (let ipi = 0; ipi < this._portsIn.length; ipi++) paramsHelper.initPortClickListener(op, ipi, this.panelId);
+        for (let ipi = 0; ipi < this._portsIn.length; ipi++) this._paramsListener.initPortClickListener(op, ipi, this.panelId);
 
         for (let ipip = 0; ipip < this._portsIn.length; ipip++)
         {
@@ -346,7 +348,7 @@ class OpParampanel extends CABLES.EventTarget
             }(ipip));
         }
 
-        for (let ipii = 0; ipii < this._portsIn.length; ipii++) CABLES.UI.paramsHelper.initPortInputListener(op, ipii, this.panelId);
+        for (let ipii = 0; ipii < this._portsIn.length; ipii++) this._paramsListener.initPortInputListener(op, ipii, this.panelId);
 
         for (const iwap in this._watchAnimPorts)
         {
@@ -371,10 +373,8 @@ class OpParampanel extends CABLES.EventTarget
         for (const iwcp in this._watchColorPicker)
         {
             const thePort2 = this._watchColorPicker[iwcp];
-
             const idx = this._portsIn.indexOf(thePort2);
-            console.log(parseInt(iwcp));
-            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId, idx);
+            this._paramsListener.watchColorPickerPort(thePort2, this.panelId, idx);
         }
 
         this._watchPortVisualizer.bind();
@@ -595,7 +595,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const thePort2 = this._watchColorPicker[iwcp];
                     const idx = thePort.parent.portsIn.indexOf(thePort2);
-                    CABLES.UI.paramsHelper.updateLinkedColorBoxes(
+                    paramsHelper.updateLinkedColorBoxes(
                         thePort2,
                         thePort.parent.portsIn[idx + 1], thePort.parent.portsIn[idx + 2], this.panelId, idx);
                 }
@@ -641,6 +641,7 @@ class OpParampanel extends CABLES.EventTarget
         if (!this._currentOp) return false;
         return this._currentOp.id == opid;
     }
+
 
     opContextMenu(el)
     {

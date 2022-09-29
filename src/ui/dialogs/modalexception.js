@@ -179,7 +179,7 @@ export default class ModalException
                 }
             }
         }
-
+        str += "<br/><br/>";
         if (!isCustomOp && !isUserOp)
         {
             str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";

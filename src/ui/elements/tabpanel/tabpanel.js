@@ -196,8 +196,6 @@ export default class TabPanel extends CABLES.EventTarget
 
     loadCurrentTabUsersettings()
     {
-        console.log("load current tab", this._eleId, this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
-
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
@@ -209,7 +207,7 @@ export default class TabPanel extends CABLES.EventTarget
             }
         }
 
-        if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
+        // if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
     }
 
     saveCurrentTabUsersettings()
