@@ -1,7 +1,3 @@
-
-// todos
-
-
 import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
@@ -15,6 +11,8 @@ class OpParampanel extends CABLES.EventTarget
     constructor(eleid)
     {
         super();
+
+        console.log("experimental parampanel branch!");
 
         this.panelId = CABLES.simpleId();
         this._eleId = eleid;
@@ -374,7 +372,9 @@ class OpParampanel extends CABLES.EventTarget
         {
             const thePort2 = this._watchColorPicker[iwcp];
 
-            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId, parseInt(iwcp));
+            const idx = this._portsIn.indexOf(thePort2);
+            console.log(parseInt(iwcp));
+            CABLES.UI.paramsHelper.watchColorPickerPort(thePort2, this.panelId, idx);
         }
 
         this._watchPortVisualizer.bind();

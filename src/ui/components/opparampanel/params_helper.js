@@ -175,18 +175,18 @@ const paramsHelper =
     },
     "watchColorPickerPort": (thePort, panelid, idx) =>
     {
-        const portNum = idx + 1;
+        // const portNum = idx 1;
 
         const inputElements =
         [
-            ele.byId("portval_" + portNum + "_" + panelid),
-            ele.byId("portval_" + (portNum + 1) + "_" + panelid),
-            ele.byId("portval_" + (portNum + 2) + "_" + panelid)
+            ele.byId("portval_" + idx + "_" + panelid),
+            ele.byId("portval_" + (idx + 1) + "_" + panelid),
+            ele.byId("portval_" + (idx + 2) + "_" + panelid)
         ];
 
         if (!inputElements[0] || !inputElements[1] || !inputElements[2])
         {
-            console.log("NOPEY", "portval_" + portNum + "_" + panelid, ele.byId("portval_" + portNum + "_" + panelid));
+            console.log("NOPEY", "portval_" + idx + "_" + panelid, ele.byId("portval_" + idx + "_" + panelid));
             return;
         }
 
@@ -199,8 +199,14 @@ const paramsHelper =
         };
 
 
-        const id = "watchcolorpick_in_" + portNum + "_" + panelid;
+        const id = "watchcolorpick_in_" + idx + "_" + panelid;
         const colEle = ele.byId(id);
+
+        if (!colEle)
+        {
+            console.log("color ele not found!", id);
+            return;
+        }
 
         const updateColorBox = () =>
         {
@@ -224,13 +230,13 @@ const paramsHelper =
                     updateColorBox();
                     const glRgb = col.gl();
 
-                    ele.byId("numberinputDisplay_in_" + portNum + "_" + panelid).innerHTML =
+                    ele.byId("numberinputDisplay_in_" + idx + "_" + panelid).innerHTML =
                     inputElements[0].value = glRgb[0];
 
-                    ele.byId("numberinputDisplay_in_" + (portNum + 1) + "_" + panelid).innerHTML =
+                    ele.byId("numberinputDisplay_in_" + (idx + 1) + "_" + panelid).innerHTML =
                     inputElements[1].value = glRgb[1];
 
-                    ele.byId("numberinputDisplay_in_" + (portNum + 2) + "_" + panelid).innerHTML =
+                    ele.byId("numberinputDisplay_in_" + (idx + 2) + "_" + panelid).innerHTML =
                     inputElements[2].value = glRgb[2];
 
                     inputElements[0].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
