@@ -89,7 +89,6 @@ export default function extendCore()
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
-        console.log("checkLinkTimeWarnings");
         function hasParent(op, type, name)
         {
             for (let i = 0; i < op.portsIn.length; i++)
@@ -132,7 +131,6 @@ export default function extendCore()
             if (!working) notWorkingMsg = text.working_connected_to + this._needsParentOp + "";
         }
 
-
         if (this._needsLinkedToWork.length > 0)
         {
             for (let i = 0; i < this._needsLinkedToWork.length; i++)
@@ -154,15 +152,43 @@ export default function extendCore()
             }
         }
 
+        const hadError = this.hasUiError("notworking");
+
+        if (hadError)console.log(this.name + " ");
+
         if (!working)
         {
-            this.setUiAttrib({ working, notWorkingMsg });
-            this.setUiError("notworking", notWorkingMsg, 1);
+            // console.log("ERRRRR");
+            // this.setUiAttrib({ working, notWorkingMsg });
+            this.setUiError("notworking", notWorkingMsg, 2);
         }
-        else if (!this.uiAttribs.working)
+        else if (hadError)
         {
-            this.setUiAttrib({ "working": true, "notWorkingMsg": null });
+            // this.setUiAttrib({ "working": true, "notWorkingMsg": null });
             this.setUiError("notworking", null);
+        }
+
+        if (!hadError && !working)
+        {
+
+        }
+
+        const broke = (!hadError && !working);
+        if ((hadError && working) || broke)
+        {
+            clearTimeout(CABLES.timeoutCheckLinkTimeWarning);
+            CABLES.timeoutCheckLinkTimeWarning = setTimeout(() =>
+            {
+                // check all ops for other follow up warnings to be resolved (possible optimization: check only ops under this one...)
+                const perf = CABLES.UI.uiProfiler.start("[coreOpExt] checkLinkTimeWarnings");
+                const ops = gui.corePatch().ops;
+
+                for (let i = 0; i < ops.length; i++)
+                    if (broke || (ops[i].id != this.id && ops[i].hasUiError("notworking")))
+                        ops[i].checkLinkTimeWarnings();
+
+                perf.finish();
+            }, 33);
         }
     };
 }
