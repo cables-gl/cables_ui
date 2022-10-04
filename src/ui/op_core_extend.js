@@ -154,8 +154,6 @@ export default function extendCore()
 
         const hadError = this.hasUiError("notworking");
 
-        if (hadError)console.log(this.name + " ");
-
         if (!working)
         {
             // console.log("ERRRRR");
