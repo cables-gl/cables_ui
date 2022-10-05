@@ -175,6 +175,9 @@ const text =
         "title_wheelmultiplier": "Wheel Speed",
         "subtitle_wheelmultiplier": "Mouse/Touchpad scrollwheel speed higher number - faster zooming, default is 1",
 
+        "title_disableLongPress": "Long Press Helper",
+        "subtitle_disableLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
+
 
         "title_noidlemode": "Idle Mode",
         "subtitle_noidlemode": "go into idle mode after some time (to save energy and less fan activity)",
