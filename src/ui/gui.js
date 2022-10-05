@@ -78,14 +78,12 @@ export default class Gui
         this._corePatch = CABLES.patch = new CABLES.Patch({
             "editorMode": true,
             "canvas":
-        {
-            "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
-            "alpha": true,
-            "premultipliedAlpha": true,
-        },
-            "variables":
-        {
-        }
+            {
+                "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
+                "alpha": true,
+                "premultipliedAlpha": true,
+            },
+            "variables": {}
         });
 
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",

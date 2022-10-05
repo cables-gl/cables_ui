@@ -279,6 +279,8 @@ export default class GlPatchAPI
         this._glPatch.addOp(op, fromDeserialize);
         if (!fromDeserialize) gui.patchView.testCollision(op);
 
+        if (op.checkLinkTimeWarnings)op.checkLinkTimeWarnings();
+
         op.on("onPortAdd", (p) =>
         {
             const glop = this._glPatch.getGlOp(op);
