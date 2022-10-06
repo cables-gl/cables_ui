@@ -189,4 +189,50 @@ export default function extendCore()
             }, 33);
         }
     };
+
+
+    CABLES.Op.prototype.hasLinks = function ()
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return true;
+        for (let i = 0; i < this.portsOut.length; i++) if (this.portsOut[i].isLinked()) return true;
+        return false;
+    };
+
+
+    CABLES.Op.prototype.hasFirstInAndOutPortLinked = function ()
+    {
+        return (this.portsIn.length > 0 && this.portsIn[0].isLinked() && this.portsOut.length > 0 && this.portsOut[0].isLinked());
+    };
+
+    CABLES.Op.prototype.hasFirstInLinked = function ()
+    {
+        return (this.portsIn.length > 0 && this.portsIn[0].isLinked());
+    };
+
+    CABLES.Op.prototype.hasFirstOutLinked = function ()
+    {
+        return (this.portsOut.length > 0 && this.portsOut[0].isLinked());
+    };
+    CABLES.Op.prototype.hasAnyOutLinked = function ()
+    {
+        for (let i = 0; i < this.portsOut.length; i++) if (this.portsOut[i].isLinked()) return true;
+    };
+    CABLES.Op.prototype.hasAnyInLinked = function ()
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return true;
+    };
+    CABLES.Op.prototype.getfirstLinkedInPort = function ()
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return this.portsIn[i];
+    };
+
+
+    CABLES.Op.prototype.getTempPosX = function ()
+    {
+        if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.x;
+    };
+    CABLES.Op.prototype.getTempPosY = function ()
+    {
+        if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.y;
+    };
 }
