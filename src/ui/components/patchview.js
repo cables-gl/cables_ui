@@ -299,7 +299,7 @@ export default class PatchView extends CABLES.EventTarget
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
 
-            coord.x = gui.patchView.snapOpPosX(coord.x);
+            coord.x = gui.patchView.snapOpPosX(coord.x, true);
             coord.y = gui.patchView.snapOpPosY(coord.y);
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };

@@ -1050,7 +1050,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (userSettings.get("snapToGrid"))
         {
-            x = this._glPatch.snapLines.snapX(x);
+            x = this._glPatch.snapLines.snapX(x, Math.abs(this._passiveDragStartX + x) > 10);
             y = this._glPatch.snapLines.snapY(y);
         }
 

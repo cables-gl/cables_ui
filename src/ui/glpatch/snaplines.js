@@ -54,22 +54,29 @@ export default class SnapLines extends CABLES.EventTarget
         if (!mouseDown) this.rect.visible = false;
     }
 
-    snapX(_x)
+    snapX(_x, forceSnap)
     {
         let x = gui.patchView.snapOpPosX(_x);
 
-        this.rect.visible = false;
-        for (let i = 0; i < this._xCoords.length; i++)
+        if (this.enabled)
         {
-            if (Math.abs(this._xCoords[i] - _x) <= CABLES.UI.uiConfig.snapX * 3)
+            if (gui.patchView.getSelectedOps().length == 1)
             {
-                x = this._xCoords[i];
-                this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
-                this.rect.visible = true;
-                break;
+                let dist = 1;
+                if (forceSnap) dist = 3;
+                this.rect.visible = false;
+                for (let i = 0; i < this._xCoords.length; i++)
+                {
+                    if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
+                    {
+                        x = this._xCoords[i];
+                        this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
+                        this.rect.visible = true;
+                        break;
+                    }
+                }
             }
         }
-
         return x;
     }
 
