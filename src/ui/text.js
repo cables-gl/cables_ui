@@ -178,6 +178,9 @@ const text =
         "title_disableLongPress": "Long Press Helper",
         "subtitle_disableLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
 
+        "title_disableSnapLines": "Vertical Snap Lines",
+        "subtitle_disableSnapLines": "Snap even earlier to x position of vertical groups of ops",
+
 
         "title_noidlemode": "Idle Mode",
         "subtitle_noidlemode": "go into idle mode after some time (to save energy and less fan activity)",

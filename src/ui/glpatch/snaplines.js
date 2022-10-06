@@ -1,3 +1,6 @@
+import userSettings from "../components/usersettings";
+import GlRect from "../gldraw/glrect";
+
 export default class SnapLines extends CABLES.EventTarget
 {
     constructor(cgl, glPatch, instancer)
@@ -7,85 +10,66 @@ export default class SnapLines extends CABLES.EventTarget
         this._glPatch = glPatch;
         this._xCoords = [];
         this._instancer = instancer;
+        this._timeout = null;
 
-        // this._rects = [];
-        // this._root = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-        // this._root.setSize(1, 1);
+        this._rectWidth = 1;
+        this.rect = new GlRect(this._instancer, { "interactive": false });
+        this.rect.setColor(0, 0, 0, 0.3);
+        this.rect.setPosition(0, -300000);
+        this.rect.setSize(this._rectWidth * 2, 1000000);
 
-
-        // const size = 100000;
-        // const hsize = size / 2;
-
-        // const drawRaster = true;
-        // if (drawRaster)
-        // {
-        //     for (let i = -300; i < 300; i++)
-        //     {
-        //         const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-        //         r.setSize(1, size);
-        //         r.setPosition(i * CABLES.UI.uiConfig.snapX, -hsize, 0.19);
-        //         r.setColor(0, 0, 0, 0.06);
-        //     }
-        //     for (let i = -300; i < 300; i++)
-        //     {
-        //         const r = new CABLES.GLGUI.GlRect(this._instancer, { "interactive": false });
-        //         r.setSize(size, 1);
-        //         r.setPosition(-hsize, i * CABLES.UI.uiConfig.snapY, 0.19);
-        //         r.setColor(0, 0, 0, 0.06);
-        //     }
-        // }
+        this.enabled = !userSettings.get("disableSnapLines");
     }
 
     update()
     {
-        // const hashmap = {};
-        // const ops = gui.corePatch().ops;
+        if (!this.enabled) return;
+        this._xCoords.length = 0;
+        clearTimeout(this._timeout);
+        this._timeout = setTimeout(() =>
+        {
+            const hashmap = {};
+            const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());// gui.corePatch().ops;
 
-        // const selOps = gui.patchView.getSelectedOps();
-        // let selOp = null;
-        // if (selOps.length == 1) selOp = selOps[0];
+            const selOps = gui.patchView.getSelectedOps();
+            let selOp = null;
+            if (selOps.length == 1) selOp = selOps[0];
 
-        // for (let i = 0; i < ops.length; i++)
-        // {
-        //     if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
-        //         hashmap[ops[i].uiAttribs.translate.x] = ops[i].uiAttribs.translate.x;
-        // }
+            for (let i = 0; i < ops.length; i++)
+                if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
+                    hashmap[ops[i].uiAttribs.translate.x] = (hashmap[ops[i].uiAttribs.translate.x] || 0) + 1;
 
-        // const coords = Object.values(hashmap);
-
-        // for (let i = 0; i < coords.length; i++)
-        // {
-        //     if (!this._rects[i])
-        //     {
-        //         this._rects[i] = new CABLES.GLGUI.GlRect(this._instancer, { "parent": this._root, "interactive": false });
-        //         this._rects[i].setColor(0, 0, 0, 0.15);
-        //     }
-
-        //     this._rects[i].setPosition(coords[i], -300000);
-        // }
-
-        // for (let i = 0; i < this._rects.length; i++)
-        // {
-        //     this._rects[i].setSize(1, 110);
-        // }
+            for (let i in hashmap)
+            {
+                const ii = parseInt(i);
+                if (hashmap[ii] > 1)
+                    this._xCoords.push(ii);
+            }
+        }, 50);
     }
 
-    render()
+    render(mouseDown)
     {
-        // this.update();
+        if (!this.enabled) return;
+        if (!mouseDown) this.rect.visible = false;
     }
 
     snapX(_x)
     {
-        const x = gui.patchView.snapOpPosX(_x);
-        // let found = -1;
+        let x = gui.patchView.snapOpPosX(_x);
 
-        // for (let i = 0; i < this._rects.length; i++)
-        // {
-        //     if (Math.abs(this._rects[i].x - x) <= CABLES.UI.uiConfig.snapX * 3) found = i;
-        // }
+        this.rect.visible = false;
+        for (let i = 0; i < this._xCoords.length; i++)
+        {
+            if (Math.abs(this._xCoords[i] - _x) <= CABLES.UI.uiConfig.snapX * 3)
+            {
+                x = this._xCoords[i];
+                this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
+                this.rect.visible = true;
+                break;
+            }
+        }
 
-        // if (found > -1) this._rects[found].setSize(1, 600000);
         return x;
     }
 
