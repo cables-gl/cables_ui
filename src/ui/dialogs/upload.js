@@ -55,8 +55,6 @@ export default class FileUploader
 
         if (el) openDialog = window.getComputedStyle(el).display === "none";
         if (openDialog) CABLES.CMD.PATCH.uploadFileDialog();
-
-        // jQuery.event.props.push("dataTransfer");
     }
 
     uploadDragLeave(event)
