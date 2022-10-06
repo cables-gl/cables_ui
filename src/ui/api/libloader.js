@@ -33,7 +33,7 @@ export default class LibLoader
 
     checkAllLoaded()
     {
-        if (this.libsToLoad.length == 0)
+        if (this.libsToLoad.length === 0)
         {
             if (this._cb) this._cb();
             gui.jobs().finish(this.id);
@@ -91,6 +91,13 @@ export default class LibLoader
                 {
                     newScript.src = this.basePath + name + "?nc=" + this.getCacheBusterNumber();
                 }
+                newScript.onerror = () =>
+                {
+                    const i = this.libsToLoad.indexOf(name);
+                    this.libsToLoad.splice(i, 1);
+                    this.checkAllLoaded();
+                    if (gui) gui.emitEvent("libLoadError", name);
+                };
                 (document.getElementsByTagName("head")[0] || document.getElementsByTagName("body")[0]).appendChild(newScript);
             }
         }
