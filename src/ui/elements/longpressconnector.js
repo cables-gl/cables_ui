@@ -1,13 +1,16 @@
 import GlLinedrawer from "../gldraw/gllinedrawer";
 import SuggestionDialog from "../components/suggestiondialog";
 import GlSplineDrawer from "../gldraw/glsplinedrawer";
+import userSettings from "../components/usersettings";
 
 export default class LongPressConnector extends CABLES.EventTarget
 {
-    constructor(glPatch)
+    constructor()
     {
         super();
-        this._glPatch = glPatch;
+
+        this._glOp = null;
+
         this._longPressTimeout = null;
         this._quickAddOpStart = null;
         this._longPressOp = null;
@@ -18,6 +21,7 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
+        this._enabled = !userSettings.get("disableLongPress");
     }
 
     getStartOp()
@@ -32,6 +36,7 @@ export default class LongPressConnector extends CABLES.EventTarget
 
     longPressStart(op, e)
     {
+        if (!this._enabled) return;
         if (this.isActive())
         {
             this.finish(e, op);
@@ -47,6 +52,7 @@ export default class LongPressConnector extends CABLES.EventTarget
 
         this._canceled = false;
         this._longPressOp = op;
+        this._glOp = null;
 
         this._longPressStartTime = performance.now();
 
@@ -74,6 +80,7 @@ export default class LongPressConnector extends CABLES.EventTarget
 
     _removelisteners()
     {
+        if (!this._enabled) return;
         if (this._listenerUp)
         {
             document.removeEventListener("pointerup", this._listenerUp);
@@ -88,16 +95,14 @@ export default class LongPressConnector extends CABLES.EventTarget
 
     _longpressmove(e)
     {
-        // console.log(this._startX - e.offsetX);
-
+        if (!this._enabled) return;
         if (Math.abs(this._startY - e.offsetY) > 2 || Math.abs(this._startX - e.offsetX) > 2)
-        {
             return this.longPressCancel();
-        }
     }
 
     _longpressup()
     {
+        if (!this._enabled) return;
         this._removelisteners();
         if (performance.now() - this._longPressStartTime > this._delay)
         {
@@ -233,11 +238,12 @@ export default class LongPressConnector extends CABLES.EventTarget
             this._glLineIdx = this._glLineDrawer.getSplineIndex();
         }
 
+        if (this._glOp === null) this._glOp = glpatch.getGlOp(this._longPressOp);
         const coord = glpatch.viewBox.screenToPatchCoord(mouseX, mouseY);
 
         this._glLineDrawer.setSpline(this._glLineIdx, [
-            this._longPressOp.uiAttribs.translate.x + 20, this._longPressOp.uiAttribs.translate.y + 10, 0,
-            coord[0], coord[1], 0
+            this._longPressOp.uiAttribs.translate.x + this._glOp._width / 2, this._longPressOp.uiAttribs.translate.y + this._glOp._height / 2, 0,
+            coord[0], coord[1], -1111.1
         ]);
         this._glLineDrawer.setSplineColor(this._glLineIdx, [1, 1, 1, 1]);
         this._glLineDrawer.render(resX, resY, scrollX, scrollY, zoom);

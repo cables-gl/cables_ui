@@ -899,7 +899,10 @@ export default class GlPatch extends CABLES.EventTarget
         this._cgl.pushDepthTest(true);
 
         this._textWriterOverlay.render(resX, resY, -0.98, 0.94, 600);
+
+        this._cgl.pushDepthTest(false);
         gui.longPressConnector.glRender(this, this._cgl, resX, resY, this.viewBox.scrollXZoom, this.viewBox.scrollYZoom, this.viewBox.zoom, this.viewBox.mouseX, this.viewBox.mouseY);
+        this._cgl.popDepthTest();
 
         if (this._showingOpCursor)
         {
