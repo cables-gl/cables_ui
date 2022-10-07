@@ -95,7 +95,7 @@ export default class OpSelect
 
         let optionsHtml = "";
 
-        if (num == 0 && gui.project().users.indexOf(gui.user.id) == -1)
+        if (num === 0 && (gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
             optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
 
         if (this._hideUserOps)

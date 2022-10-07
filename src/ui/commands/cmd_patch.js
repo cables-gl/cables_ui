@@ -75,7 +75,7 @@ CABLES_CMD_PATCH.save = function (force)
     {
         if (gui.user.isStaff || gui.user.isAdmin)
         {
-            if (gui.project().users.indexOf(gui.user.id) == -1)
+            if (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1)
             {
                 doSave = false;
 
@@ -204,11 +204,6 @@ CABLES_CMD_PATCH.patchWebsite = function ()
     // CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id
     window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
 };
-
-// CABLES_CMD_PATCH.analyzePatch = function ()
-// {
-//     CABLES.UI.analyzePatch();
-// };
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)
 {
@@ -675,6 +670,122 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
         } });
 };
 
+CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false, skipModal = false)
+{
+    const patch = gui.corePatch();
+    const ops = patch.ops;
+    const relevantOps = [];
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (op.storage && op.storage.blueprint)
+        {
+            if (op.storage.blueprint.blueprintOpId === blueprint.id)
+            {
+                relevantOps.push(op);
+            }
+        }
+    }
+    let hiddenSubPatchOp = null;
+    relevantOps.forEach((op) =>
+    {
+        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+        {
+            op.uiAttribs.translate = {
+                "x": blueprint.uiAttribs.translate.x,
+                "y": blueprint.uiAttribs.translate.y
+            };
+            op.portsIn.forEach((portIn) =>
+            {
+                const bpPort = blueprint.getPortByName(portIn.name);
+                if (!bpPort) return;
+                if (bpPort.isLinked())
+                {
+                    bpPort.links.forEach((bpLink) =>
+                    {
+                        const parent = bpLink.portOut.parent;
+                        const link = patch.link(parent, bpLink.portOut.name, op, portIn.name);
+                    });
+                }
+                else
+                {
+                    portIn.set(bpPort.get());
+                }
+            });
+            op.portsOut.forEach((portOut) =>
+            {
+                const bpPort = blueprint.getPortByName(portOut.name);
+                if (!bpPort) return;
+                if (bpPort.isLinked())
+                {
+                    bpPort.links.forEach((bpLink) =>
+                    {
+                        const parent = bpLink.portIn.parent;
+                        const link = patch.link(op, portOut.name, parent, bpLink.portIn.name);
+                    });
+                }
+                else
+                {
+                    portOut.set(bpPort.get());
+                }
+            });
+        }
+        else if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
+        {
+            CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
+        }
+        delete op.storage.blueprint;
+
+        if (op.uiAttribs && op.uiAttribs.hidden)
+        {
+            if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+            {
+                hiddenSubPatchOp = op;
+            }
+            delete op.uiAttribs.hidden;
+        }
+    });
+    patch.deleteOp(blueprint.id, false, false);
+    if (!skipSelection && hiddenSubPatchOp)
+    {
+        gui.patchView.unselectAllOps();
+        gui.patchView.selectOpId(hiddenSubPatchOp.id);
+    }
+    if (!skipModal)
+    {
+        let html = "";
+        html += "To initialize the patch properly, you need to save and reload.<br/><br/>";
+        html += "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;";
+        html += "<a class=\"button\" onclick=\"gui.patchView.store.saveCurrentProject((err) => { if(!err) window.location.reload()});\"><span class=\"icon icon-save\"></span>Save and reload</a>&nbsp;&nbsp;";
+        html += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>Save as a copy</a>&nbsp;&nbsp;";
+        new ModalDialog({ "title": "All Blueprints converted", "html": html });
+    }
+};
+
+CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
+{
+    if (!ops)
+    {
+        const patch = gui.corePatch();
+        ops = patch.ops;
+    }
+    const relevantOps = [];
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
+        {
+            if (!op.storage || !op.storage.blueprint)
+            {
+                relevantOps.push(op);
+            }
+        }
+    }
+    relevantOps.forEach((blueprint, index) =>
+    {
+        CABLES_CMD_PATCH.convertBlueprintToSubpatch(blueprint, false, index === relevantOps.length - 1);
+    });
+};
 
 CMD_PATCH_COMMANDS.push(
     {
@@ -829,11 +940,6 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "func": CABLES_CMD_PATCH.analyze
     },
-    // {
-    //     "cmd": "analyze patch",
-    //     "category": "patch",
-    //     "func": CABLES_CMD_PATCH.analyzePatch
-    // },
     {
         "cmd": "create number variable",
         "category": "patch",
@@ -850,13 +956,11 @@ CMD_PATCH_COMMANDS.push(
         "icon": "align-left"
     },
     {
-
         "cmd": "compress ops vertically",
         "func": CABLES_CMD_PATCH.compressOps,
         "icon": "list"
     },
     {
-
         "cmd": "add space x",
         "func": CABLES_CMD_PATCH.addSpaceX,
         "icon": "list"
@@ -888,7 +992,13 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "convert blueprints to subpatches",
+        "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
+        "category": "patch",
+        "icon": "op"
     }
-
-
 );
