@@ -112,8 +112,11 @@ function getPortDescription(thePort)
     str += thePort.getTypeString() + stride;
     str += "</span>";
 
-    if (objType)str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
-
+    if (objType)
+    {
+        objType = objType.charAt(0).toUpperCase() + objType.slice(1);
+        str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
+    }
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";

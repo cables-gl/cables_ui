@@ -113,7 +113,7 @@ export default function startUi(cfg)
                 gui.bindKeys();
 
                 const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
-                if (!gui.socket)
+                if (!gui.socket && socketClusterConfig.enabled)
                 {
                     gui.socket = new ScConnection(socketClusterConfig);
                 }

@@ -216,6 +216,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.on("uiloaded", () =>
         {
+            this.snapLines.update();
             // update remote cursor positions
             gui.on("netCursorPos", (msg) =>
             {
@@ -327,6 +328,8 @@ export default class GlPatch extends CABLES.EventTarget
                 for (let i in this.links)
                     this.links[i].updateLineStyle();
         });
+
+        this.snapLines.update();
     }
 
 
@@ -828,7 +831,7 @@ export default class GlPatch extends CABLES.EventTarget
         for (const i in this._glCursors)
             this._glCursors[i].updateAnim();
 
-        this.snapLines.render();
+        this.snapLines.render(this._canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         if (this._fadeOutRect.visible)
@@ -1404,6 +1407,7 @@ export default class GlPatch extends CABLES.EventTarget
         }, timeGrey * 1000);
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
+        this.snapLines.update();
     }
 
 
