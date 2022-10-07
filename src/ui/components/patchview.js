@@ -1313,18 +1313,19 @@ export default class PatchView extends CABLES.EventTarget
                 if (ops.indexOf(otherPort.parent) == -1) return;
 
                 let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
-
-                // if (op.getPosY() <= otherPort.parent.getPosY())
+                let extraLines = 1;
+                for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
                 {
-                    let extraLines = 1;
-                    // move op below
-                    changed = true;
-                    if (otherPort.links.length > 1)extraLines += 1;
-
-                    let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
-
-                    this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+                    if (otherPort == otherPort.parent.portsOut[j]) break;
+                    if (otherPort.parent.portsOut[j].isLinked())extraLines++;
                 }
+
+                changed = true;
+                if (otherPort.links.length > 1)extraLines++;
+
+                let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
+
+                this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
             }
         }
 
@@ -1352,7 +1353,13 @@ export default class PatchView extends CABLES.EventTarget
 
             this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
 
-            if (!ops[i].hasFirstInLinked() && ops[i].hasAnyOutLinked())
+            if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
+            {
+                entranceOps.push(ops[i]);
+                continue;
+            }
+
+            if (ops[i].isInLinkedToOpOutside(ops))
             {
                 entranceOps.push(ops[i]);
                 continue;

@@ -970,6 +970,8 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (this.selected != s || s != this.opUiAttribs.selected)
         {
+            console.log(s, this.selected, this.opUiAttribs.selected);
+
             if (s != this.opUiAttribs.selected)
             {
                 // if (!s) delete this.opUiAttribs.selected;
