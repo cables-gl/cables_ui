@@ -90,19 +90,22 @@ export default class OpSelect
         }
         else
         {
-            ele.hide(eleNoResults);// .classList.add("hidden");
+            ele.hide(eleNoResults);
         }
 
         let optionsHtml = "";
 
-        if (num == 0 && gui.project().users.indexOf(gui.user.id) == -1)
+        if (num === 0 && (gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
+        {
             optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
+        }
 
         if (this._hideUserOps)
+        {
             optionsHtml += "<span class=\"warning\">Your user ops are hidden, pach is an op example</span><br/>";
+        }
 
         optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
-
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");// .data('scoreDebug')

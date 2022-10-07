@@ -75,7 +75,7 @@ CABLES_CMD_PATCH.save = function (force)
     {
         if (gui.user.isStaff || gui.user.isAdmin)
         {
-            if (gui.project().users.indexOf(gui.user.id) == -1)
+            if (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1)
             {
                 doSave = false;
 
