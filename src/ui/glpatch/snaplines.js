@@ -28,8 +28,9 @@ export default class SnapLines extends CABLES.EventTarget
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
+            const perf = CABLES.UI.uiProfiler.start("snaplines.update");
             const hashmap = {};
-            const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());// gui.corePatch().ops;
+            const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());
 
             const selOps = gui.patchView.getSelectedOps();
             let selOp = null;
@@ -45,6 +46,7 @@ export default class SnapLines extends CABLES.EventTarget
                 if (hashmap[ii] > 1)
                     this._xCoords.push(ii);
             }
+            perf.finish();
         }, 50);
     }
 
@@ -62,6 +64,7 @@ export default class SnapLines extends CABLES.EventTarget
         {
             if (gui.patchView.getSelectedOps().length == 1)
             {
+                const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
                 let dist = 1;
                 if (forceSnap) dist = 3;
                 this.rect.visible = false;
@@ -75,6 +78,7 @@ export default class SnapLines extends CABLES.EventTarget
                         break;
                     }
                 }
+                perf.finish();
             }
         }
         return x;
