@@ -185,7 +185,7 @@ export default class GlDragLine
             this._splineDrawer.setSpline(this._splineIdx,
                 [
                     0, 0, 0,
-                    0, 0, 0
+                    0, 0, 0, 0, 0, 0
                 ]);
 
             return;
@@ -206,11 +206,11 @@ export default class GlDragLine
     {
         for (let i = 0; i < this._lineIndices.length; i++)
         {
-            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0]);
+            this._splineDrawer.setSpline(this._lineIndices[i], [0, 0, 0, 0, 0, 0, 0, 0, 0]);
             this._splineDrawer.setSplineColor(this._lineIndices[i], [0, 0, 0, 0]);
         }
         this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 0]);
-        this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0]);
+        this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
     }
 
     _update()
