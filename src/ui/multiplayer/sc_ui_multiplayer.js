@@ -475,7 +475,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (payload.name === "notify")
             {
-                notify(payload.title, payload.text);
+                notify(payload.title, payload.text, payload.options);
             }
         });
 
