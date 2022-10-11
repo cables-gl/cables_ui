@@ -1303,9 +1303,9 @@ export default class PatchView extends CABLES.EventTarget
     {
         let changed = false;
 
-        if (op.portsIn[0] && op.hasAnyInLinked())// op.portsIn[0].isLinked() )
+        if (op.portsIn[0] && op.hasAnyInLinked())
         {
-            const firstLinkedPort = op.getfirstLinkedInPort();
+            const firstLinkedPort = op.getFirstLinkedInPort();
             for (let i = 0; i < firstLinkedPort.links.length; i++)
             {
                 const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
