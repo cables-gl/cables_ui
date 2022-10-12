@@ -141,12 +141,12 @@ function _cleanup_scripts(done)
     {
         console.log("live build: deleting map/max files...");
         const filesToDelete = [
-            "./dist/js/cablesui.min.js.map",
             "./dist/js/stats.json",
-            "./dist/js/libs.core.min.js.map",
-            "./dist/js/libs.ui.min.js.map",
+            "./dist/js/cablesui.min.js.map",
             "./dist/js/talkerapi.js.map",
             "./dist/js/cables.min.js.map",
+            "./dist/js/libs.ui.min.js.map",
+            "./dist/js/libs.core.min.js.map",
             "./dist/js/babel.cables.min.js.map"
         ];
         filesToDelete.forEach((file) =>
@@ -155,6 +155,14 @@ function _cleanup_scripts(done)
             {
                 console.log("   deleting", file);
                 fs.unlinkSync(file);
+            }
+            const jsFile = file.slice(0, -4);
+            if (file.endsWith(".map") && fs.existsSync(jsFile))
+            {
+                let js = fs.readFileSync(jsFile, "utf-8");
+                const mapping = "# sourceMappingURL=";
+                js = js.replaceAll(mapping, "# originalSourceMappingURL=");
+                fs.writeFileSync(jsFile, js, { "encoding": "utf-8" });
             }
         });
     }
