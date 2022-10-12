@@ -64,16 +64,6 @@ function _scripts_core()
         .pipe(gulp.dest("dist/js/"));
 }
 
-function _scripts_ops(done)
-{
-    let task = gulp.src(["src/ops/*.js"]);
-    if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("cables.ops.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cables.ops.min.js"));
-    if (isLiveBuild) task = task.pipe(uglify());
-    if (isLiveBuild) task = task.pipe(sourcemaps.write("./"));
-    return task.pipe(gulp.dest("dist/js"));
-}
-
 function _scripts_ui_webpack(done)
 {
     return gulp.src(["src/ui/index.js"])
@@ -247,7 +237,6 @@ gulp.task("default", gulp.series(
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
-    _scripts_ops,
     _sass,
     _svgcss,
     _scripts_talkerapi,
@@ -264,7 +253,6 @@ gulp.task("build", gulp.series(
     _svgcss,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_ops,
     _scripts_core,
     _scripts_ui_webpack,
     _scripts_talkerapi,
@@ -283,7 +271,7 @@ gulp.task("electron", gulp.series(
     _lint,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_ops,
+    _cleanup_scripts,
     _cleanup_scripts,
     _sass,
     _electronapp,
