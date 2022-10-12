@@ -198,7 +198,6 @@ export default function extendCore()
         return false;
     };
 
-
     CABLES.Op.prototype.hasFirstInAndOutPortLinked = function ()
     {
         return (this.portsIn.length > 0 && this.portsIn[0].isLinked() && this.portsOut.length > 0 && this.portsOut[0].isLinked());
@@ -221,9 +220,19 @@ export default function extendCore()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return true;
     };
-    CABLES.Op.prototype.getfirstLinkedInPort = function ()
+    CABLES.Op.prototype.getFirstLinkedInPort = function ()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return this.portsIn[i];
+    };
+    CABLES.Op.prototype.isInLinkedToOpOutside = function (ops)
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
+        {
+            for (let j = 0; j < this.portsIn[i].links.length; j++)
+            {
+                if (ops.indexOf(this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).parent) == -1) return true;
+            }
+        }
     };
 
 

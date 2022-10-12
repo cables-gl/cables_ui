@@ -64,16 +64,6 @@ function _scripts_core()
         .pipe(gulp.dest("dist/js/"));
 }
 
-function _scripts_ops(done)
-{
-    let task = gulp.src(["src/ops/*.js"]);
-    if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("cables.ops.max.js")).pipe(gulp.dest("dist/js")).pipe(rename("cables.ops.min.js"));
-    if (isLiveBuild) task = task.pipe(uglify());
-    if (isLiveBuild) task = task.pipe(sourcemaps.write("./"));
-    return task.pipe(gulp.dest("dist/js"));
-}
-
 function _scripts_ui_webpack(done)
 {
     return gulp.src(["src/ui/index.js"])
@@ -141,12 +131,12 @@ function _cleanup_scripts(done)
     {
         console.log("live build: deleting map/max files...");
         const filesToDelete = [
-            "./dist/js/cablesui.min.js.map",
             "./dist/js/stats.json",
-            "./dist/js/libs.core.min.js.map",
-            "./dist/js/libs.ui.min.js.map",
+            "./dist/js/cablesui.min.js.map",
             "./dist/js/talkerapi.js.map",
             "./dist/js/cables.min.js.map",
+            "./dist/js/libs.ui.min.js.map",
+            "./dist/js/libs.core.min.js.map",
             "./dist/js/babel.cables.min.js.map"
         ];
         filesToDelete.forEach((file) =>
@@ -155,6 +145,14 @@ function _cleanup_scripts(done)
             {
                 console.log("   deleting", file);
                 fs.unlinkSync(file);
+            }
+            const jsFile = file.slice(0, -4);
+            if (file.endsWith(".map") && fs.existsSync(jsFile))
+            {
+                let js = fs.readFileSync(jsFile, "utf-8");
+                const mapping = "# sourceMappingURL=";
+                js = js.replaceAll(mapping, "# originalSourceMappingURL=");
+                fs.writeFileSync(jsFile, js, { "encoding": "utf-8" });
             }
         });
     }
@@ -239,7 +237,6 @@ gulp.task("default", gulp.series(
     _html_ui,
     _scripts_core,
     _scripts_libs_ui,
-    _scripts_ops,
     _sass,
     _svgcss,
     _scripts_talkerapi,
@@ -256,7 +253,6 @@ gulp.task("build", gulp.series(
     _svgcss,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_ops,
     _scripts_core,
     _scripts_ui_webpack,
     _scripts_talkerapi,
@@ -275,7 +271,7 @@ gulp.task("electron", gulp.series(
     _lint,
     _html_ui,
     _scripts_libs_ui,
-    _scripts_ops,
+    _cleanup_scripts,
     _cleanup_scripts,
     _sass,
     _electronapp,

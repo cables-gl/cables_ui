@@ -538,11 +538,14 @@ export default class PatchView extends CABLES.EventTarget
             if (ele.byId("patchsummary")) return;
 
             const project = gui.project();
-            if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+            if (project)
             {
-                const projectId = project.shortId || project._id;
-                html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-                html += getHandleBarHtml("clonepatch", {});
+                if (project.isOpExample || (!gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id)))
+                {
+                    const projectId = project.shortId || project._id;
+                    html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+                    html += getHandleBarHtml("clonepatch", {});
+                }
             }
             html += gui.bookmarks.getHtml();
         }
@@ -1303,9 +1306,9 @@ export default class PatchView extends CABLES.EventTarget
     {
         let changed = false;
 
-        if (op.portsIn[0] && op.hasAnyInLinked())// op.portsIn[0].isLinked() )
+        if (op.portsIn[0] && op.hasAnyInLinked())
         {
-            const firstLinkedPort = op.getfirstLinkedInPort();
+            const firstLinkedPort = op.getFirstLinkedInPort();
             for (let i = 0; i < firstLinkedPort.links.length; i++)
             {
                 const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
@@ -1313,18 +1316,19 @@ export default class PatchView extends CABLES.EventTarget
                 if (ops.indexOf(otherPort.parent) == -1) return;
 
                 let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
-
-                // if (op.getPosY() <= otherPort.parent.getPosY())
+                let extraLines = 1;
+                for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
                 {
-                    let extraLines = 1;
-                    // move op below
-                    changed = true;
-                    if (otherPort.links.length > 1)extraLines += 1;
-
-                    let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
-
-                    this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+                    if (otherPort == otherPort.parent.portsOut[j]) break;
+                    if (otherPort.parent.portsOut[j].isLinked())extraLines++;
                 }
+
+                changed = true;
+                if (otherPort.links.length > 1)extraLines++;
+
+                let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
+
+                this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
             }
         }
 
@@ -1352,7 +1356,13 @@ export default class PatchView extends CABLES.EventTarget
 
             this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
 
-            if (!ops[i].hasFirstInLinked() && ops[i].hasAnyOutLinked())
+            if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
+            {
+                entranceOps.push(ops[i]);
+                continue;
+            }
+
+            if (ops[i].isInLinkedToOpOutside(ops))
             {
                 entranceOps.push(ops[i]);
                 continue;
