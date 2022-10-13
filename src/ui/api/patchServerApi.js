@@ -480,7 +480,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 
-                        gui.socket.track("ui", "savepatch", "savepatch",
+                        if (gui.socket)
+                            gui.socket.track("ui", "savepatch", "savepatch",
                             {
                                 "sizeCompressed": uint8data.length / 1024,
                                 "sizeOrig": origSize,

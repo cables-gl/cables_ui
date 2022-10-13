@@ -225,19 +225,19 @@
         }
         /* 90 degree border */
 
-        td.portType_0 { box-shadow: inset 5px 0 0 var(--color_link_value) !important; }
-        td.portType_1 { box-shadow: inset 5px 0 0 var(--color_link_function) !important; }
-        td.portType_2 { box-shadow: inset 5px 0 0 var(--color_link_object) !important; }
-        td.portType_3 { box-shadow: inset 5px 0 0 var(--color_link_array) !important; }
-        td.portType_4 { box-shadow: inset 5px 0 0 var(--color_port_dynamic) !important; }
-        td.portType_5 { box-shadow: inset 5px 0 0 var(--color_link_string) !important; }
+        td.portType_0 { box-shadow: inset 6px 0 0 -1px var(--color_link_value) !important; }
+        td.portType_1 { box-shadow: inset 6px 0 0 -1px var(--color_link_function) !important; }
+        td.portType_2 { box-shadow: inset 6px 0 0 -1px var(--color_link_object) !important; }
+        td.portType_3 { box-shadow: inset 6px 0 0 -1px var(--color_link_array) !important; }
+        td.portType_4 { box-shadow: inset 6px 0 0 -1px var(--color_port_dynamic) !important; }
+        td.portType_5 { box-shadow: inset 6px 0 0 -1px var(--color_link_string) !important; }
 
-        td.portType_0_linked { box-shadow: inset 11px 0 0 var(--color_link_value) !important; }
-        td.portType_1_linked { box-shadow: inset 11px 0 0 var(--color_link_function) !important; }
-        td.portType_2_linked { box-shadow: inset 11px 0 0 var(--color_link_object) !important; }
-        td.portType_3_linked { box-shadow: inset 11px 0 0 var(--color_link_array) !important; }
-        td.portType_4_linked { box-shadow: inset 11px 0 0 var(--color_port_dynamic) !important; }
-        td.portType_5_linked { box-shadow: inset 11px 0 0 var(--color_link_string) !important; }
+        td.portType_0_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_value) !important; }
+        td.portType_1_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_function) !important; }
+        td.portType_2_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_object) !important; }
+        td.portType_3_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_array) !important; }
+        td.portType_4_linked { box-shadow: inset 12px 0 0 -1px var(--color_port_dynamic) !important; }
+        td.portType_5_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_string) !important; }
 
         textarea
         {

@@ -100,6 +100,10 @@ export default class Gui
             this.showOpCrash(portTriggered.parent);
         });
 
+        this.on("libLoadError", (libName) =>
+        {
+            this.showLibLoadError(libName);
+        });
 
         this.patchView = new PatchView(this._corePatch);
 
@@ -1305,7 +1309,7 @@ export default class Gui
 
         this.keys.key("s", "Save patch", "down", null, { "cmdCtrl": true }, (e) =>
         {
-            if (!this.patchView.hasFocus() && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible())
+            if (document.activeElement.classList.contains("ace_text-input") && gui.mainTabs.getSaveButton() && gui.maintabPanel.isVisible()) // && !this.patchView.hasFocus()
             {
                 gui.mainTabs.getSaveButton().cb();
             }
@@ -1417,6 +1421,20 @@ export default class Gui
                     CABLES.CMD.PATCH.reload();
                 }]
             ]
+        });
+    }
+
+    showLibLoadError(libName)
+    {
+        iziToast.error({
+            "position": "topRight",
+            "theme": "dark",
+            "title": "error",
+            "message": "failed to load library: " + libName,
+            "progressBar": false,
+            "animateInside": false,
+            "close": true,
+            "timeout": false
         });
     }
 

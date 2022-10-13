@@ -62,6 +62,7 @@ export default class Preferences
 
         this.setInputValue("wheelmultiplier", userSettings.get("wheelmultiplier") || 1);
         this.setSwitchValue("disableLongPress", userSettings.get("disableLongPress"));
+        this.setSwitchValue("disableSnapLines", userSettings.get("disableSnapLines"));
 
         this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
 

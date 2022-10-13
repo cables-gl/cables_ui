@@ -247,7 +247,10 @@ export default class PatchView extends CABLES.EventTarget
                 const b = gui.corePatch().ops[j];
                 if (b.deleted || b == op) continue;
 
-                if (b.uiAttribs.translate && op.uiAttribs.translate && op.uiAttribs.translate.x == b.uiAttribs.translate.x && op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+                if (b.uiAttribs.translate &&
+                    op.uiAttribs.translate &&
+                    (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
+                    op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
                     op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY } });
                     found = true;
@@ -299,7 +302,7 @@ export default class PatchView extends CABLES.EventTarget
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
 
-            coord.x = gui.patchView.snapOpPosX(coord.x);
+            coord.x = gui.patchView.snapOpPosX(coord.x, true);
             coord.y = gui.patchView.snapOpPosY(coord.y);
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
@@ -535,11 +538,14 @@ export default class PatchView extends CABLES.EventTarget
             if (ele.byId("patchsummary")) return;
 
             const project = gui.project();
-            if (!gui.user.isPatchOwner && !project.users.includes(gui.user.id))
+            if (project)
             {
-                const projectId = project.shortId || project._id;
-                html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-                html += getHandleBarHtml("clonepatch", {});
+                if (project.isOpExample || (!gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id)))
+                {
+                    const projectId = project.shortId || project._id;
+                    html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+                    html += getHandleBarHtml("clonepatch", {});
+                }
             }
             html += gui.bookmarks.getHtml();
         }
@@ -1267,32 +1273,156 @@ export default class PatchView extends CABLES.EventTarget
     {
         if (!ops || ops.length === 0) return;
 
+
         const undoGroup = undo.startGroup();
 
         this.saveUndoSelectedOpsPositions(ops);
 
-        ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
+        // ops.sort(function (a, b) { return a.uiAttribs.translate.y - b.uiAttribs.translate.y; });
 
-        let y = 0;
-        for (let j = 0; j < ops.length; j++)
-        {
-            y += ops[j].uiAttribs.translate.y;
-        }
-        y = this.snapOpPosY(y / ops.length);
+        // let y = 0;
+        // for (let j = 0; j < ops.length; j++)
+        // {
+        //     y += ops[j].uiAttribs.translate.y;
+        // }
+        // y = this.snapOpPosY(y / ops.length);
 
 
-        for (let j = 0; j < ops.length; j++)
-        {
-            // if (j > 0) y += (ops[j].uiAttribs.height || gluiconfig.opHeight) + 10;
+        // for (let j = 0; j < ops.length; j++)
+        // {
+        //     y = this.snapOpPosY(y);
 
-            y = this.snapOpPosY(y);
+        //     this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
+        //     this.testCollision(ops[j]);
+        // }
 
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
-            this.testCollision(ops[j]);
-        }
+        this.cleanOps(ops);
 
         undo.endGroup(undoGroup, "Compress Ops");
     }
+
+
+    _cleanOp(op, ops, theOpWidth)
+    {
+        let changed = false;
+
+        if (op.portsIn[0] && op.hasAnyInLinked())
+        {
+            const firstLinkedPort = op.getFirstLinkedInPort();
+            for (let i = 0; i < firstLinkedPort.links.length; i++)
+            {
+                const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
+
+                if (ops.indexOf(otherPort.parent) == -1) return;
+
+                let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
+                let extraLines = 1;
+                for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
+                {
+                    if (otherPort == otherPort.parent.portsOut[j]) break;
+                    if (otherPort.parent.portsOut[j].isLinked())extraLines++;
+                }
+
+                changed = true;
+                if (otherPort.links.length > 1)extraLines++;
+
+                let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
+
+                this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+            }
+        }
+
+        if (this.testCollision(op))changed = true;
+    }
+
+    cleanOps(ops)
+    {
+        if (ops.length == 0) return;
+        const entranceOps = [];
+        const unconnectedOps = [];
+        const otherOps = [];
+        let startPosX = ops[0].uiAttribs.translate.x;
+        let startPosY = ops[0].uiAttribs.translate.y;
+
+        let longestOpPorts = 0;
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            startPosX = Math.min(startPosX, ops[i].uiAttribs.translate.x);
+            startPosY = Math.min(startPosY, ops[i].uiAttribs.translate.y);
+
+            longestOpPorts = Math.max(longestOpPorts, ops[i].portsIn.length);
+            longestOpPorts = Math.max(longestOpPorts, ops[i].portsOut.length);
+
+            this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
+
+            if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
+            {
+                entranceOps.push(ops[i]);
+                continue;
+            }
+
+            if (ops[i].isInLinkedToOpOutside(ops))
+            {
+                entranceOps.push(ops[i]);
+                continue;
+            }
+
+            if (!ops[i].hasLinks())
+            {
+                unconnectedOps.push(ops[i]);
+                continue;
+            }
+            otherOps.push(ops[i]);
+        }
+
+
+        let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+
+        for (let i = 0; i < ops.length; i++)
+            this.setTempOpPos(ops[i], startPosX, startPosY);
+
+
+        let firstRowX = gui.patchView.snapOpPosX(startPosX);
+        startPosY = gui.patchView.snapOpPosY(startPosY);
+
+
+        for (let i = 0; i < entranceOps.length; i++)
+        {
+            this.setTempOpPos(entranceOps[i], firstRowX, startPosY);
+            firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        }
+
+        for (let i = 0; i < unconnectedOps.length; i++)
+        {
+            this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
+            firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        }
+
+
+        let count = 0;
+        let found = true;
+        while (count < 100 || found)
+        {
+            found = false;
+            count++;
+            for (let i = 0; i < otherOps.length; i++)
+                if (this._cleanOp(otherOps[i], ops, theOpWidth))found = true;
+        }
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
+            if (op.uiAttribs.translateTemp)
+            {
+                this.setOpPos(op, op.getTempPosX(), op.getTempPosY());
+                delete op.uiAttribs.translateTemp;
+            }
+        }
+
+        console.log(count + "iterations");
+    }
+
 
     alignSelectedOpsVert(ops)
     {
@@ -1339,6 +1469,16 @@ export default class PatchView extends CABLES.EventTarget
         return ops;
     }
 
+    setTempOpPos(op, x, y)
+    {
+        op.setUiAttribs({ "translateTemp":
+            {
+                "x": x,
+                "y": y
+            }
+        });
+    }
+
     setOpPos(op, x, y)
     {
         if (op && op.uiAttribs && op.uiAttribs.translate)
@@ -1361,7 +1501,7 @@ export default class PatchView extends CABLES.EventTarget
             });
         }
 
-        op.uiAttr({ "translate":
+        op.setUiAttribs({ "translate":
             {
                 "x": x,
                 "y": y
