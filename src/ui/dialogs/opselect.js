@@ -419,16 +419,22 @@ export default class OpSelect
 
         // case 7 / 8
         const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_FUNCTION)
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_FUNCTION)
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
+            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === CABLES.PORT_DIR_IN);
             const eleTitle = ele.byId("createLinkTriggerExists");
             if (eleTitle)
-                if (CABLES.UI.OPSELECT.linkNewOpToPort.direction == CABLES.PORT_DIR_IN) eleTitle.innerText = "Receive existing trigger send";
-                else eleTitle.innerText = "Send into existing trigger send";
+            {
+                if (inPort) eleTitle.innerText = "Receive from TriggerReceive";
+                else eleTitle.innerText = "Send into TriggerSend";
+            }
 
-            if (numExistingTriggers == 0) ele.hide(eleCreateWithExistingTrigger);
+            if (inPort && !numExistingTriggers)
+            {
+                ele.hide(eleCreateWithExistingTrigger);
+            }
             else
             {
                 ele.show(eleCreateWithExistingTrigger);
