@@ -95,14 +95,16 @@ export default class OpSelect
 
         let optionsHtml = "";
 
-        if (num === 0 && (gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
-        {
-            optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
-        }
-
         if (this._hideUserOps)
         {
-            optionsHtml += "<span class=\"warning\">Your user ops are hidden, pach is an op example</span><br/>";
+            optionsHtml += "<div class=\"warning\">Your user ops are hidden, pach is an op example</div>";
+        }
+        else
+        {
+            if (num === 0 && (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
+            {
+                optionsHtml += "<div class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </div>";
+            }
         }
 
         optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
