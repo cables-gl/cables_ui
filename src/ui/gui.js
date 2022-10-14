@@ -1251,7 +1251,7 @@ export default class Gui
                 const port = selectedOp[0].portsIn[i];
                 const type = port.getTypeString();
 
-                if (type === "String")
+                if (type === "String" && (port.uiAttribs && port.uiAttribs.display === "editor"))
                 {
                     portName = port.name;
                     break;
