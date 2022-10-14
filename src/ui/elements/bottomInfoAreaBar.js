@@ -75,8 +75,8 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
         txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
         txt = txt.replaceAll("[DRAG_RMB]", "<span class=\"icon icon-mouse_rmb_drag\"></span>");
         txt = txt.replaceAll("[DRAG_MMB]", "<span class=\"icon icon-mouse_mmb_drag\"></span>");
-        txt = txt.replaceAll("[RMB]", "<span class=\"icon icon-mouse_lmb\"></span>");
-        txt = txt.replaceAll("[LMB]", "<span class=\"icon icon-mouse_rmb\"></span>");
+        txt = txt.replaceAll("[RMB]", "<span class=\"icon icon-mouse_rmb\"></span>");
+        txt = txt.replaceAll("[LMB]", "<span class=\"icon icon-mouse_lmb\"></span>");
         txt = txt.replaceAll("[MMB]", "<span class=\"icon icon-mouse_mmb\"></span>");
         txt = txt.replaceAll("[MW]", "<span class=\"icon icon-mouse_wheel\"></span>");
 

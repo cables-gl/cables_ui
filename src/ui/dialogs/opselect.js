@@ -95,14 +95,16 @@ export default class OpSelect
 
         let optionsHtml = "";
 
-        if (num === 0 && (gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
-        {
-            optionsHtml += "<span class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </span><br/>";
-        }
-
         if (this._hideUserOps)
         {
-            optionsHtml += "<span class=\"warning\">Your user ops are hidden, pach is an op example</span><br/>";
+            optionsHtml += "<div class=\"warning\">Your user ops are hidden, pach is an op example</div>";
+        }
+        else
+        {
+            if (num === 0 && (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
+            {
+                optionsHtml += "<div class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </div>";
+            }
         }
 
         optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
@@ -417,16 +419,22 @@ export default class OpSelect
 
         // case 7 / 8
         const eleCreateWithExistingTrigger = ele.byId("opselect_createTriggerExists");
-        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type == CABLES.OP_PORT_TYPE_FUNCTION)
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_FUNCTION)
         {
             const numExistingTriggers = Object.keys(CABLES.patch.namedTriggers || {}).length;
 
+            const inPort = (CABLES.UI.OPSELECT.linkNewOpToPort.direction === CABLES.PORT_DIR_IN);
             const eleTitle = ele.byId("createLinkTriggerExists");
             if (eleTitle)
-                if (CABLES.UI.OPSELECT.linkNewOpToPort.direction == CABLES.PORT_DIR_IN) eleTitle.innerText = "Receive existing trigger send";
-                else eleTitle.innerText = "Send into existing trigger send";
+            {
+                if (inPort) eleTitle.innerText = "Receive from TriggerReceive";
+                else eleTitle.innerText = "Send into TriggerSend";
+            }
 
-            if (numExistingTriggers == 0) ele.hide(eleCreateWithExistingTrigger);
+            if (inPort && !numExistingTriggers)
+            {
+                ele.hide(eleCreateWithExistingTrigger);
+            }
             else
             {
                 ele.show(eleCreateWithExistingTrigger);
