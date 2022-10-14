@@ -392,7 +392,7 @@ export default class ServerOps
                             new ModalDialog({ "title": "Library removed", "text": html });
                         });
                     }
-                },
+                }
             );
         });
     }
@@ -465,7 +465,6 @@ export default class ServerOps
                             let html = "";
                             html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
                             html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
 
                             CABLES.UI.MODAL.show(html, {
                                 "title": "corelib removed",
