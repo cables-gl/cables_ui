@@ -314,6 +314,7 @@ export default class GlPatchAPI
         const pIn = opIn.getPortById(portIdIn);
         const opOut = gui.corePatch().getOpById(opIdOut);
         const pOut = opOut.getPortById(portIdOut);
+        if (!pOut) return;
         const l = pOut.getLinkTo(pIn);
 
         if (l) l.remove();
