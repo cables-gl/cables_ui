@@ -10,10 +10,19 @@ export default function setHtmlDefaultListeners()
         if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
 
         // if (ele.byId("cablescanvas").contains(e.target)) return;
-
-
         e.preventDefault();
     });
+
+    window.addEventListener("resize", () =>
+    {
+        gui.canvasUi.showCanvasModal(false);
+        const eleCanvas = ele.byId("glcanvas");
+        if (eleCanvas)eleCanvas.blur();
+
+        gui.mainTabs.emitEvent("resize");
+        gui.setLayout();
+        gui.setLayout(); // yes, twice....
+    }, false);
 
 
     window.addEventListener("error", (e) =>
