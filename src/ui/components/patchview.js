@@ -197,6 +197,18 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
+            let items = (e.clipboardData || e.originalEvent.clipboardData).items;
+            for (let index in items)
+            {
+                let item = items[index];
+                if (item.kind === "file")
+                {
+                    let blob = item.getAsFile();
+                    CABLES.fileUploader.uploadFile(blob, "paste_" + CABLES.shortId() + "_" + blob.name);
+                    return;
+                }
+            }
+
             if (this._patchRenderer.isFocussed()) this._patchRenderer.paste(e);
             else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
         });

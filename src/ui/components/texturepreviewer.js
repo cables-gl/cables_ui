@@ -29,10 +29,10 @@ export default class TexturePreviewer
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
-        this._ele.addEventListener("click", function ()
-        {
-            if (this._lastClicked && window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
-        }.bind(this));
+        // this._ele.addEventListener("click", function ()
+        // {
+        //     if (this._lastClicked && window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
+        // }.bind(this));
 
 
         userSettings.addEventListener("onChange", (key, v) =>

@@ -853,7 +853,8 @@ body
         position:absolute;
         // margin-right: 5px;
         z-index: $zindex_low;
-        cursor:pointer;
+        // cursor:pointer;
+        pointer-events: none;
     }
 
     .bgpreviewScale50

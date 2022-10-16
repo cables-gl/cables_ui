@@ -1219,15 +1219,6 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
-        window.addEventListener("resize", () =>
-        {
-            this.canvasUi.showCanvasModal(false);
-            const eleCanvas = ele.byId("glcanvas");
-            if (eleCanvas)eleCanvas.blur();
-            this.setLayout();
-            // this.patch().getViewBox().update();
-            this.mainTabs.emitEvent("resize");
-        }, false);
 
         cb();
     }
