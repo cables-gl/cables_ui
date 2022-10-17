@@ -271,7 +271,8 @@ export default class ModalPortValue
         try
         {
             const thing = port.get();
-            const serializedThing = JSON.stringify(thing, null, 2);
+            let serializedThing = thing;
+            if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
 
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";

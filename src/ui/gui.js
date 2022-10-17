@@ -1219,15 +1219,6 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
-        window.addEventListener("resize", () =>
-        {
-            this.canvasUi.showCanvasModal(false);
-            const eleCanvas = ele.byId("glcanvas");
-            if (eleCanvas)eleCanvas.blur();
-            this.setLayout();
-            // this.patch().getViewBox().update();
-            this.mainTabs.emitEvent("resize");
-        }, false);
 
         cb();
     }
@@ -1251,7 +1242,7 @@ export default class Gui
                 const port = selectedOp[0].portsIn[i];
                 const type = port.getTypeString();
 
-                if (type === "String")
+                if (type === "String" && (port.uiAttribs && port.uiAttribs.display === "editor"))
                 {
                     portName = port.name;
                     break;

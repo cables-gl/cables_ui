@@ -1,4 +1,4 @@
-import ModalDialog from '../dialogs/modaldialog';
+import ModalDialog from "../dialogs/modaldialog";
 
 
 const CABLES_CMD_RENDERER = {};
@@ -92,6 +92,7 @@ CABLES_CMD_RENDERER.scaleCanvas = function ()
 
 CABLES_CMD_RENDERER.changeSize = function ()
 {
+    gui.canvasUi.showCanvasModal(false);
     const p = new ModalDialog({
         "prompt": true,
         "title": "Change Canvas size",

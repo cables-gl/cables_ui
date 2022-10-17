@@ -17,7 +17,8 @@ export default class CommandPallete
             switch (e.which)
             {
             case 13:
-                ele.byId("result" + this._cursorIndex).click();
+                const el = ele.byId("result" + this._cursorIndex);
+                if (el)el.click();
                 break;
             case 27:
                 this.close();

@@ -349,10 +349,15 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         for (let i = 0; i < data.ops.length; i++)
         {
+            if (data.ops[i].uiAttribs.title == CABLES.getShortOpName(data.ops[i].objName)) delete data.ops[i].uiAttribs.title;
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
             if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
+
+
+            if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
+            if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
         }
 
         if (blueprintIds.length > 0)
@@ -482,11 +487,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                         if (gui.socket)
                             gui.socket.track("ui", "savepatch", "savepatch",
-                            {
-                                "sizeCompressed": uint8data.length / 1024,
-                                "sizeOrig": origSize,
-                                "time": performance.now() - startTime
-                            });
+                                {
+                                    "sizeCompressed": uint8data.length / 1024,
+                                    "sizeOrig": origSize,
+                                    "time": performance.now() - startTime
+                                });
 
                         gui.jobs().finish("projectsave");
 
