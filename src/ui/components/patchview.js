@@ -1028,6 +1028,11 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
+            if (selectedOps[i].storage && selectedOps[i].storage.blueprint) continue;
+            if (selectedOps[i].uiAttribs.hasOwnProperty("fromNetwork"))
+            {
+                delete selectedOps[i].uiAttribs.fromNetwork;
+            }
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
         }
