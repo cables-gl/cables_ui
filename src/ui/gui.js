@@ -412,7 +412,7 @@ export default class Gui
 
         this._elBreadcrumbNav = this._elBreadcrumbNav || ele.byId("breadcrumb_nav");
 
-        this._elCablesCanvas = this._elCablesCanvas || ele.byId("cablescanvas");
+        this._elCablesCanvasContainer = this._elCablesCanvasContainer || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
 
         let timelineHeight = this.timingHeight;
@@ -728,46 +728,46 @@ export default class Gui
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
-            this._elCablesCanvas.style.left = 0 + "px";
-            this._elCablesCanvas.style.right = "initial";
+            this._elCablesCanvasContainer.style.left = 0 + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
 
-            this._elCablesCanvas.style.width = this._elGlCanvasDom.style.width = window.innerWidth + "px";
-            this._elCablesCanvas.style.height = this._elGlCanvasDom.style.height = window.innerHeight + "px";
+            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width = window.innerWidth + "px";
+            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height = window.innerHeight + "px";
 
             this._elGlCanvasDom.setAttribute("width", window.innerWidth);
             this._elGlCanvasDom.setAttribute("height", window.innerHeight);
 
-            this._elCablesCanvas.style["z-index"] = 40;
+            this._elCablesCanvasContainer.style["z-index"] = 40;
         }
         else if (this._canvasMode == this.CANVASMODE_PATCHBG)
         {
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
 
-            this._elCablesCanvas.style.left = iconBarWidth + "px";
-            this._elCablesCanvas.style.right = "initial";
-            this._elCablesCanvas.style.top = "0px";
-            this._elCablesCanvas.style.width = this._elGlCanvasDom.style.width;
-            this._elCablesCanvas.style.height = this._elGlCanvasDom.style.height;
-            this._elCablesCanvas.style["z-index"] = 1;
+            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
+            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width;
+            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
+            this._elCablesCanvasContainer.style["z-index"] = 1;
         }
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
             const density = this._corePatch.cgl.pixelDensity;
 
-            this._elCablesCanvas.style["z-index"] = 10;
+            this._elCablesCanvasContainer.style["z-index"] = 10;
 
             this._elGlCanvasDom.setAttribute("width", this.rendererWidth * density);
             this._elGlCanvasDom.setAttribute("height", this.rendererHeight * density);
             this._elGlCanvasDom.style.width = this.rendererWidth + "px";
             this._elGlCanvasDom.style.height = this.rendererHeight + "px";
-            this._elCablesCanvas.style.width = this.rendererWidth + "px";
-            this._elCablesCanvas.style.height = this.rendererHeight + "px";
-            this._elCablesCanvas.style.right = "0px";
-            this._elCablesCanvas.style.left = "initial";
+            this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
+            this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
+            this._elCablesCanvasContainer.style.right = "0px";
+            this._elCablesCanvasContainer.style.left = "initial";
 
-            this._elCablesCanvas.style["transform-origin"] = "top right";
-            this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
+            this._elCablesCanvasContainer.style["transform-origin"] = "top right";
+            this._elCablesCanvasContainer.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
         // flashing canvas overlay when saving
@@ -780,6 +780,7 @@ export default class Gui
         this._elBgPreview.style.top = menubarHeight + "px";
 
         this._elBgPreviewButtonContainer.style.right = this.rightPanelWidth + "px";
+        // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
 
         this.emitEvent("setLayout");
 
@@ -1219,7 +1220,6 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
-
         cb();
     }
 
@@ -1326,6 +1326,17 @@ export default class Gui
             }
             gui.spaceBarStart = 0;
         });
+
+        window.addEventListener("resize", () =>
+        {
+            gui.canvasUi.showCanvasModal(false);
+            const eleCanvas = ele.byId("glcanvas");
+            if (eleCanvas)eleCanvas.blur();
+
+            gui.mainTabs.emitEvent("resize");
+            gui.setLayout();
+            gui.setLayout(); // yes, twice....
+        }, false);
 
         // this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); gui.spaceBarStart = 0; });
     }
