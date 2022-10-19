@@ -79,9 +79,15 @@
 <canvas id="bgpreview" data-info="texpreview" class="info">
 </canvas>
 
-<div id="bgpreviewButtonsContainer" class="hidden">
-    <div id="bgpreviewButtons">
-        <a class="icon-x icon fright iconhover" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
+
+<div id="bgpreviewButtonsContainer" class="hidden cbl_iconbarContainer cbl_iconbar_hor">
+    <div id="bgpreviewButtons" class="cbl_iconbar" style="">
+        <!-- <div class="item">
+            <span class="icon icon-1_25x fright iconhover icon-triple-dot " onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
+        </div> -->
+        <div class="item">
+            <span class="icon icon-1_25x fright iconhover icon-x" onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
+        </div>
     </div>
 </div>
 

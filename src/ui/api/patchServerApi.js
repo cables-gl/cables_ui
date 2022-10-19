@@ -358,6 +358,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
             if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
             if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
+
+            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork"))
+            {
+                delete data.ops[i].uiAttribs.fromNetwork;
+            }
         }
 
         if (blueprintIds.length > 0)
