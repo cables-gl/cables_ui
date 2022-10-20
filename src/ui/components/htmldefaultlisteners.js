@@ -13,17 +13,6 @@ export default function setHtmlDefaultListeners()
         e.preventDefault();
     });
 
-    window.addEventListener("resize", () =>
-    {
-        gui.canvasUi.showCanvasModal(false);
-        const eleCanvas = ele.byId("glcanvas");
-        if (eleCanvas)eleCanvas.blur();
-
-        gui.mainTabs.emitEvent("resize");
-        gui.setLayout();
-        gui.setLayout(); // yes, twice....
-    }, false);
-
 
     window.addEventListener("error", (e) =>
     {
