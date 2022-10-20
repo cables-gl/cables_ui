@@ -665,7 +665,9 @@ export default class PatchView extends CABLES.EventTarget
             "x": gui.patchView.snapOpPosX(bounds.minx - 0.8 * padding),
             "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding) };
 
-        const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
+        const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, {
+            "translate": trans,
+            "subPatch": this.getCurrentSubPatch(),
             "area": {
                 "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
                 "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
@@ -700,7 +702,7 @@ export default class PatchView extends CABLES.EventTarget
         const patchOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.subPatch, { "translate": trans });
         const patchId = patchOp.patchId.get();
 
-        patchOp.uiAttr({ "translate": trans });
+        patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
 
         for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 

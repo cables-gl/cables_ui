@@ -982,7 +982,7 @@ export default class Gui
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
     {
-        let els = ele.byClassAll("shortcut");
+        let els = ele.byQueryAll(".shortcut");
 
         for (let i in els)
         {
