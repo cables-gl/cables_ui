@@ -35,6 +35,7 @@ import text from "./text";
 import userSettings from "./components/usersettings";
 import LongPressConnector from "./elements/longpressconnector";
 import GlPatch from "./glpatch/glpatch";
+import CanvasManager from "./components/canvas/canvasmanager";
 
 
 export default class Gui
@@ -48,6 +49,8 @@ export default class Gui
         this.patchId = cfg.patchId;
         this._showTiming = false;
         this._showingEditor = false;
+
+        this.canvasManager = new CanvasManager();
 
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
@@ -460,7 +463,7 @@ export default class Gui
 
 
         const cgl = this._corePatch.cgl;
-        if (this.canvasUi) this.canvasUi.getCanvasSizeString(cgl);
+        // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
@@ -825,7 +828,7 @@ export default class Gui
         }
 
         this.setLayout();
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
     }
 
     cycleFullscreen()
@@ -847,7 +850,7 @@ export default class Gui
             this.notifiedFullscreen = true;
         }
 
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.setLayout();
     }
 
@@ -1160,6 +1163,8 @@ export default class Gui
 
     bind(cb)
     {
+        this.canvasManager.addContext(gui.corePatch().cgl);
+
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
@@ -1329,7 +1334,7 @@ export default class Gui
 
         window.addEventListener("resize", () =>
         {
-            gui.canvasUi.showCanvasModal(false);
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
             const eleCanvas = ele.byId("glcanvas");
             if (eleCanvas)eleCanvas.blur();
 
@@ -1343,7 +1348,7 @@ export default class Gui
 
     pressedEscape(e)
     {
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
 
@@ -1367,7 +1372,7 @@ export default class Gui
             this._showingEditor = this._oldShowingEditor;
             this._elGlCanvasDom.classList.remove("maximized");
             this.setLayout();
-            this.canvasUi.showCanvasModal(true);
+            this.canvasManager.getCanvasUiBar().showCanvasModal(true);
         }
         else if (CABLES.UI.suggestions)
         {
@@ -1819,7 +1824,7 @@ export default class Gui
 
     init(next)
     {
-        this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
+        // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
