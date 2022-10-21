@@ -38,4 +38,18 @@ export default class CanvasManager
             }
         }
     }
+
+    setSize(w, h)
+    {
+        for (let i = 0; i < this._contexts.length; i++)
+        {
+            const density = this._contexts[i].pixelDensity;
+            const el = this._contexts[i].canvas;
+
+            el.setAttribute("width", w * density);
+            el.setAttribute("height", h * density);
+            el.style.width = w + "px";
+            el.style.height = h + "px";
+        }
+    }
 }

@@ -462,7 +462,7 @@ export default class Gui
         if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
 
-        const cgl = this._corePatch.cgl;
+        // const cgl = this._corePatch.cgl;
         // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
@@ -756,19 +756,14 @@ export default class Gui
         }
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
-            const density = this._corePatch.cgl.pixelDensity;
-
             this._elCablesCanvasContainer.style["z-index"] = 10;
 
-            this._elGlCanvasDom.setAttribute("width", this.rendererWidth * density);
-            this._elGlCanvasDom.setAttribute("height", this.rendererHeight * density);
-            this._elGlCanvasDom.style.width = this.rendererWidth + "px";
-            this._elGlCanvasDom.style.height = this.rendererHeight + "px";
+            this.canvasManager.setSize(this.rendererWidth, this.rendererHeight);
+
             this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
             this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
             this._elCablesCanvasContainer.style.right = "0px";
             this._elCablesCanvasContainer.style.left = "initial";
-
             this._elCablesCanvasContainer.style["transform-origin"] = "top right";
             this._elCablesCanvasContainer.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
