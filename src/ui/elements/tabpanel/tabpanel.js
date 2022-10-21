@@ -102,12 +102,9 @@ export default class TabPanel extends CABLES.EventTarget
         {
             if (window.gui && this._eleId == "maintabs")
             {
-                console.log(this);
-
                 const t = this._tabs[i];
-                console.log("TAB", t.title);
 
-                const cmd = gui.cmdPallet.addDynamic("tab", "" + t.title,
+                const cmd = gui.cmdPallet.addDynamic("tab", "Tab " + t.title,
                     () =>
                     {
                         gui.maintabPanel.show(true);
@@ -168,9 +165,7 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
         if (!found)
-        {
             console.warn("[activateTabByName] could not find tab", name);
-        }
 
         this.updateHtml();
     }

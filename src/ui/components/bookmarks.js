@@ -171,12 +171,27 @@ export default class Bookmarks
         for (let i = 0; i < this._bookmarks.length; i++)
         {
             const op = gui.corePatch().getOpById(this._bookmarks[i]);
-            console.log(op, this._bookmarks[i]);
+
             if (!op) continue;
             const cmd = gui.cmdPallet.addDynamic("bookmark", "" + op.name, () =>
             {
                 gui.patchView.centerSelectOp(op.id);
             }, "bookmark");
+
+            this._dynCmds.push(cmd);
+        }
+
+
+        const subs = gui.patchView.getSubPatches(false);
+        for (let i = 0; i < subs.length; i++)
+        {
+            const sub = subs[i];
+
+            const cmd = gui.cmdPallet.addDynamic("subpatch", "" + sub.name, () =>
+            {
+                gui.patchView.setCurrentSubPatch(sub.id);
+                CABLES.CMD.UI.centerPatchOps();
+            }, "subpatch");
 
             this._dynCmds.push(cmd);
         }

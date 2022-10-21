@@ -126,14 +126,14 @@ export default class CommandPallete
         return this._bookmarkInactiveIcon;
     }
 
-    addResult(cmd, num)
+    addResult(cmd, num, idx)
     {
         let dynclass = "";
 
         if (cmd.dyn)dynclass = "dyn";
 
         let html = "";
-        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
+        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + idx + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
@@ -167,7 +167,7 @@ export default class CommandPallete
 
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
-                html += this.addResult(this.dynamicCmds[i], count);
+                html += this.addResult(this.dynamicCmds[i], count, i);
                 count++;
             }
         }
