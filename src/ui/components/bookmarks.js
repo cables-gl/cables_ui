@@ -132,6 +132,8 @@ export default class Bookmarks
             gui.patchView.centerSelectOp(id);
             CABLES.UI.notify(text.bookmark_added);
         }
+
+        console.log("add bookmark!");
     }
 
     goto(id)

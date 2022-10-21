@@ -114,6 +114,8 @@ export default class Gui
 
         this._jobs = new Jobs();
         this.cmdPallet = new CommandPallete();
+
+
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
         this._gizmo = [];

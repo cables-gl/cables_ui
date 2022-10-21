@@ -1,4 +1,5 @@
 import ele from "../utils/ele";
+import DemuxedConsumableStream from "../../../libs/ui/socketcluster-client";
 
 export default class CommandPallete
 {
@@ -11,6 +12,7 @@ export default class CommandPallete
         this._bookmarkActiveIcon = "icon-pin-filled";
         this._bookmarkInactiveIcon = "icon-pin-outline";
         this._defaultIcon = "square";
+        this.dynamicCmds = [];
 
         this.keyDown = (e) =>
         {
@@ -97,6 +99,8 @@ export default class CommandPallete
         const el = ev.target;
         const cmd = el.dataset.cmd;
         gui.cmdPallet.close();
+
+
         CABLES.CMD.exec(cmd);
     }
 
@@ -118,8 +122,12 @@ export default class CommandPallete
 
     addResult(cmd, num)
     {
+        let dynclass = "";
+
+        if (cmd.dyn)dynclass = "dyn";
+
         let html = "";
-        html += "<div class=\"result\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
+        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
@@ -146,6 +154,17 @@ export default class CommandPallete
         str = str.toLowerCase();
 
         let count = 0;
+
+        for (let i = 0; i < this.dynamicCmds.length; i++)
+        {
+            const cmd = this.dynamicCmds[i].cmd;
+
+            if (cmd.toLowerCase().indexOf(str) >= 0)
+            {
+                html += this.addResult(this.dynamicCmds[i], count);
+                count++;
+            }
+        }
 
         for (let i = 0; i < CABLES.CMD.commands.length; i++)
         {
@@ -191,5 +210,19 @@ export default class CommandPallete
         ele.byId("searchresult_cmd").innerHTML = "";
         document.getElementById("modalbg").style.display = "none";
         ele.hide(ele.byId("cmdpalette"));
+    }
+
+    addDynamic(category, title, func, icon)
+    {
+        const cmd = {
+            "cmd": title,
+            "category": category,
+            "func": func,
+            "icon": icon || "cables",
+            "dyn": true,
+            "id": CABLES.uuid()
+        };
+
+        this.dynamicCmds.push(cmd);
     }
 }

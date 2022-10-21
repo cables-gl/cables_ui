@@ -67,4 +67,14 @@
 			background-color: $color-background-input;
 		}
 	}
+
+
+    .dyn
+    {
+        .title
+        {
+            color: var(--color-special) !important;
+        }
+    }
+
 }

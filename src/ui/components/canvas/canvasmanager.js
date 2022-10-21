@@ -20,6 +20,9 @@ export default class CanvasManager
 
         this._contexts.push(c);
         console.log("canvasmanager added", c.getGApiName());
+
+
+        gui.cmdPallet.addDynamic("canvas", "canvas " + c.getGApiName(), () => { console.log(1); }, "cables");
     }
 
     getCanvasUiBar()
