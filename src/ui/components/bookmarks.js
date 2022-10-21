@@ -7,6 +7,7 @@ export default class Bookmarks
     constructor()
     {
         this._bookmarks = [];
+        this._dynCmds = [];
     }
 
     hasBookmarkWithId(id)
@@ -78,12 +79,14 @@ export default class Bookmarks
         }
 
         const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
+        this.updateDynamicCommands();
         return html;
     }
 
     set(arr)
     {
         if (arr) this._bookmarks = arr;
+        this.updateDynamicCommands();
     }
 
     remove(id)
@@ -133,7 +136,7 @@ export default class Bookmarks
             CABLES.UI.notify(text.bookmark_added);
         }
 
-        console.log("add bookmark!");
+        this.updateDynamicCommands();
     }
 
     goto(id)
@@ -158,5 +161,24 @@ export default class Bookmarks
         }
 
         return bm;
+    }
+
+    updateDynamicCommands()
+    {
+        for (let i = 0; i < this._dynCmds.length; i++)
+            gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+
+        for (let i = 0; i < this._bookmarks.length; i++)
+        {
+            const op = gui.corePatch().getOpById(this._bookmarks[i]);
+            console.log(op, this._bookmarks[i]);
+            if (!op) continue;
+            const cmd = gui.cmdPallet.addDynamic("bookmark", "" + op.name, () =>
+            {
+                gui.patchView.centerSelectOp(op.id);
+            }, "bookmark");
+
+            this._dynCmds.push(cmd);
+        }
     }
 }

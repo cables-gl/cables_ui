@@ -12,6 +12,7 @@ export default class TabPanel extends CABLES.EventTarget
         this._eleContentContainer = null;
         this._eleTabPanel = null;
         this.showTabListButton = false;
+        this._dynCmds = [];
 
         if (!this._eleTabPanel)
         {
@@ -95,8 +96,30 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
 
+        for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+
         for (let i = 0; i < this._tabs.length; i++)
         {
+            if (window.gui && this._eleId == "maintabs")
+            {
+                console.log(this);
+
+                const t = this._tabs[i];
+                console.log("TAB", t.title);
+
+                const cmd = gui.cmdPallet.addDynamic("tab", "" + t.title,
+                    () =>
+                    {
+                        gui.maintabPanel.show(true);
+
+                        this.activateTab(t.id, true);
+                    }, t.icon || "edit");
+                this._dynCmds.push(cmd);
+            }
+
+            // ----------------
+
+
             document.getElementById("editortab" + this._tabs[i].id).addEventListener(
                 "mousedown",
                 function (e)

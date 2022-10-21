@@ -94,6 +94,7 @@ export default class Gui
             {
                 this._corePatch.off(this._patchLoadEndiD);
                 this.setStateSaved();
+                gui.bookmarks.updateDynamicCommands();
 
                 logStartup("Patch loaded");
             });

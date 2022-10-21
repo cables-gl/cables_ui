@@ -22,7 +22,13 @@ export default class CanvasManager
         console.log("canvasmanager added", c.getGApiName());
 
 
-        gui.cmdPallet.addDynamic("canvas", "canvas " + c.getGApiName(), () => { console.log(1); }, "cables");
+        const ctx = c;
+        gui.cmdPallet.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
+        {
+            ctx.canvas.focus();
+
+            console.log(ctx.getGApiName());
+        }, "cables");
     }
 
     getCanvasUiBar()
@@ -37,8 +43,9 @@ export default class CanvasManager
             if (this._contexts[i].canvas == canv)
             {
                 this._curContextIdx = i;
-                console.log("this._curContextIdx", this._curContextIdx);
+                this._contexts[i].canvas.style["z-index"] = 0;
             }
+            else this._contexts[i].canvas.style["z-index"] = -1;
         }
     }
 

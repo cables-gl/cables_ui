@@ -100,8 +100,14 @@ export default class CommandPallete
         const cmd = el.dataset.cmd;
         gui.cmdPallet.close();
 
-
-        CABLES.CMD.exec(cmd);
+        if (el.classList.contains("dyn"))
+        {
+            this.dynamicCmds[el.dataset.index].func();
+        }
+        else
+        {
+            CABLES.CMD.exec(cmd);
+        }
     }
 
     isCmdInSidebar(cmdName)
@@ -127,7 +133,7 @@ export default class CommandPallete
         if (cmd.dyn)dynclass = "dyn";
 
         let html = "";
-        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
+        html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + num + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
         html += "<span class=\"category\"> – " + cmd.category + "</span>";
@@ -212,6 +218,17 @@ export default class CommandPallete
         ele.hide(ele.byId("cmdpalette"));
     }
 
+    removeDynamic(id)
+    {
+        for (let i = this.dynamicCmds.length - 1; i > 0; i--)
+        {
+            if (this.dynamicCmds[i].id == id)
+            {
+                this.dynamicCmds.splice(i, 1);
+            }
+        }
+    }
+
     addDynamic(category, title, func, icon)
     {
         const cmd = {
@@ -224,5 +241,6 @@ export default class CommandPallete
         };
 
         this.dynamicCmds.push(cmd);
+        return cmd.id;
     }
 }
