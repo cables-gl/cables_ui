@@ -1,4 +1,4 @@
-import ele from "../utils/ele";
+import ele from "../../utils/ele";
 
 export default class CanvasUi
 {
@@ -23,6 +23,7 @@ export default class CanvasUi
         }
         else ele.hide(this._elInfoVersion);
 
+        this.canvasEle = this._cgl.canvas;
 
         gui.corePatch().on("performance", (perf) =>
         {
@@ -35,11 +36,12 @@ export default class CanvasUi
             }
         });
 
-        ele.byId("glcanvas").setAttribute("tabindex", 3);
+        this.canvasEle.setAttribute("tabindex", 3);
 
-        ele.byId("glcanvas").addEventListener("focus", () =>
+        this.canvasEle.addEventListener("focus", () =>
         {
             this.showCanvasModal(true);
+            gui.canvasManager.setCurrentCanvas(this.canvasEle);
         });
 
         document.body.addEventListener("mousedown",
@@ -106,7 +108,7 @@ export default class CanvasUi
     {
         this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
 
-        let sizeStr = " " + Math.floor(100 * this._cgl.canvasWidth) / 100 + "x" + Math.floor(100 * this._cgl.canvasHeight) / 100;
+        let sizeStr = this._cgl.getGApiName() + " " + Math.floor(100 * this._cgl.canvasWidth) / 100 + "x" + Math.floor(100 * this._cgl.canvasHeight) / 100;
         if (this._cgl.canvasScale != 1) sizeStr += " Scale " + this._cgl.canvasScale + " ";
         if (this._cgl.pixelDensity != 1) sizeStr += " (" + Math.floor(100 * this._cgl.canvasWidth / this._cgl.pixelDensity) / 100 + "x" + Math.floor(100 * this._cgl.canvasHeight / this._cgl.pixelDensity) / 100 + "x" + this._cgl.pixelDensity + ")";
 

@@ -26,7 +26,7 @@ function initSplitPanes()
 
             gui.setLayout();
             gui.emitEvent("resizecanvas");
-            gui.canvasUi.updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
         }
 
         document.addEventListener("mousemove", mm);
@@ -80,7 +80,7 @@ function initSplitPanes()
             e.preventDefault();
             gui.rendererHeight = e.clientY * (1 / gui.corePatch().cgl.canvasScale);
             gui.setLayout();
-            gui.canvasUi.updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
         }
 
         document.addEventListener("mousemove", mm);
@@ -150,7 +150,7 @@ function initSplitPanes()
 
 
             gui.setLayout();
-            gui.canvasUi.updateCanvasIconBar();
+            gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
             document.getElementById("glcanvas").focus();
             gui.emitEvent("resizecanvas");
             e.preventDefault();

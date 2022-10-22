@@ -29,6 +29,7 @@ export default class Gizmo
         if (!params) return this.setParams(params);
 
         const cgl = this._cgl;
+        if (!cgl) return;
         cgl.pushModelMatrix();
         function toScreen(trans)
         {
@@ -134,7 +135,7 @@ export default class Gizmo
     setParams(params)
     {
         this._params = params;
-
+        if (!this._cgl) return;
         if (!this._eleCenter)
         {
             const container = this._cgl.canvas.parentElement;
