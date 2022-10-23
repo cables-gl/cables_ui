@@ -400,7 +400,7 @@ export default class Gui
         this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
 
-        this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
+        this._elGlCanvasDom = this.canvasManager.currentCanvas() || ele.byId("glcanvas");
 
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
@@ -1333,8 +1333,7 @@ export default class Gui
         window.addEventListener("resize", () =>
         {
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
-            const eleCanvas = ele.byId("glcanvas");
-            if (eleCanvas)eleCanvas.blur();
+            this.canvasManager.blur();
 
             gui.mainTabs.emitEvent("resize");
             gui.setLayout();

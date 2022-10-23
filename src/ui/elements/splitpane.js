@@ -151,7 +151,7 @@ function initSplitPanes()
 
             gui.setLayout();
             gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
-            document.getElementById("glcanvas").focus();
+            gui.canvasManager.focus();
             gui.emitEvent("resizecanvas");
             e.preventDefault();
         }

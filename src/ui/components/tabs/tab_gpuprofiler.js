@@ -1,4 +1,4 @@
-import Tab from '../../elements/tabpanel/tab';
+import Tab from "../../elements/tabpanel/tab";
 
 export default class GpuProfiler
 {
@@ -15,10 +15,7 @@ export default class GpuProfiler
         const glQueryExt = gui.corePatch().cgl.gl.getExtension("EXT_disjoint_timer_query_webgl2");
         if (glQueryExt)gui.corePatch().cgl.profileData.doProfileGlQuery = true;
 
-        // if (!this.intervalId) this.intervalId = setInterval(this.update.bind(this), 500);
         gui.corePatch().on("performance", this.update.bind(this));
-
-        // this.emitEvent("performance", this._perf);
 
         this.update();
     }
@@ -47,7 +44,7 @@ export default class GpuProfiler
                 arr[i].perc = arr[i].time / allTimes;
             }
 
-            arr.sort((a, b) => b.perc - a.perc);
+            arr.sort((a, b) => { return b.perc - a.perc; });
 
 
             html += "<div class=\"editor_spreadsheet\">";
