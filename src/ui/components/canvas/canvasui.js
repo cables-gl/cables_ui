@@ -71,8 +71,8 @@ export default class CanvasUi
         this._elCanvasIconbarContainer.style.left = left + 4 + "px";
 
 
-        if (gui._canvasMode == this.CANVASMODE_PATCHBG)
-            this._elCanvasIconbarContainer.style.top = 0;
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
+            this._elCanvasIconbarContainer.style.top = "0px";
         else
             this._elCanvasIconbarContainer.style.top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
 
@@ -135,12 +135,15 @@ export default class CanvasUi
     {
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
-        if (gui._canvasMode == this.CANVASMODE_PATCHBG)
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
-            this.isCanvasFocussed = false;
+            // this.isCanvasFocussed = false;
+            _show = true;
 
-            ele.hide(this._elCanvasModalDarkener);
+            console.log("show", _show);
+
+            // ele.hide(this._elCanvasModalDarkener);
 
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
@@ -154,7 +157,9 @@ export default class CanvasUi
 
         if (_show)
         {
-            ele.show(this._elCanvasModalDarkener);
+            if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)ele.hide(this._elCanvasModalDarkener);
+            else ele.show(this._elCanvasModalDarkener);
+
             ele.show(this._elCanvasIconbarContainer);
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
