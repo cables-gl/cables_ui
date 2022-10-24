@@ -8,6 +8,7 @@ export default class CanvasManager
 
     currentCanvas()
     {
+        if (!this._contexts[this._curContextIdx]) return null;
         return this._contexts[this._curContextIdx].canvas;
     }
 
@@ -19,21 +20,27 @@ export default class CanvasManager
         if (!c.canvasUi) c.canvasUi = new CABLES.UI.CanvasUi(c);
 
         this._contexts.push(c);
-        console.log("canvasmanager added", c.getGApiName());
-
-
         const ctx = c;
         gui.cmdPallet.addDynamic("canvas", "canvas " + ctx.getGApiName(), () =>
         {
             ctx.canvas.focus();
-
-            console.log(ctx.getGApiName());
         }, "cables");
     }
 
     getCanvasUiBar()
     {
+        if (!this._contexts[this._curContextIdx]) return null;
         return this._contexts[this._curContextIdx].canvasUi;
+    }
+
+    blur()
+    {
+        this.currentCanvas().blur();
+    }
+
+    focus()
+    {
+        this.currentCanvas().focus();
     }
 
     setCurrentCanvas(canv)
@@ -61,5 +68,22 @@ export default class CanvasManager
             el.style.width = w + "px";
             el.style.height = h + "px";
         }
+    }
+
+    menu(el)
+    {
+        let items = [];
+
+        for (let i = 0; i < this._contexts.length; i++)
+        {
+            const ctx = this._contexts[i];
+            items.push({ "title": ctx.getGApiName(),
+                "func": () =>
+                {
+                    ctx.canvas.focus();
+                } });
+        }
+
+        CABLES.contextMenu.show({ "items": items }, el);
     }
 }

@@ -119,6 +119,15 @@ CABLES_CMD_UI.toggleMaxRenderer = function ()
     gui.cycleFullscreen();
 };
 
+
+CABLES_CMD_UI.togglePatchBgPatchField = function ()
+{
+    if (gui && (gui.getCanvasMode() === gui.CANVASMODE_PATCHBG))
+    {
+        gui.patchView.toggleVisibility();
+    }
+};
+
 CABLES_CMD_UI.togglePatchBgRenderer = function ()
 {
     gui.cyclePatchBg();
@@ -375,15 +384,16 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.togglePatchBgRenderer,
         "icon": "canvas_patchbg",
-        "hotkey": "CMD + ENTER"
+        "hotkey": "CMD + SHIFT + ENTER"
+    },
+    {
+        "cmd": "patch background renderer",
+        "category": "ui",
+        "func": CABLES_CMD_UI.togglePatchBgPatchField,
+        "icon": "canvas_op",
+        "hotkey": "SHIFT + ENTER"
     },
 
-    {
-        "cmd": "show keyboard shortcutds",
-        "category": "ui",
-        "func": CABLES_CMD_UI.showKeys,
-        "icon": "command"
-    },
 
     {
         "cmd": "show command pallet",

@@ -21,7 +21,7 @@ import MetaHistory from "./components/tabs/meta_history";
 import Logger from "./utils/logger";
 import OpDocs from "./components/opdocs";
 import IconBar from "./elements/iconbar";
-import ModalException from "./dialogs/modalexception";
+import ModalError from "./dialogs/modalerror";
 import Tips from "./dialogs/tips";
 import PatchView from "./components/patchview";
 import TimeLineGui from "./components/timelinesvg/timeline";
@@ -70,6 +70,7 @@ export default class Gui
         this.CANVASMODE_FULLSCREEN = 2;
         this.CANVASMODE_PATCHBG = 1;
         this._canvasMode = this.CANVASMODE_NORMAL;
+
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
@@ -400,7 +401,7 @@ export default class Gui
         this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
 
-        this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
+        this._elGlCanvasDom = this.canvasManager.currentCanvas() || ele.byId("glcanvas");
 
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
@@ -794,6 +795,12 @@ export default class Gui
         this.emitEvent("canvasModeChange", m);
     }
 
+
+    getCanvasMode()
+    {
+        return this._canvasMode;
+    }
+
     _switchCanvasSizeNormal()
     {
         this._setCanvasMode(this.CANVASMODE_NORMAL);
@@ -801,9 +808,17 @@ export default class Gui
         this.rendererHeight = this._oldCanvasHeight;
     }
 
-    getCanvasMode()
+    _switchCanvasPatchBg()
     {
-        return this._canvasMode;
+        this._oldCanvasWidth = this.rendererWidth;
+        this._oldCanvasHeight = this.rendererHeight;
+        this.rightPanelWidth = this.rendererWidth;
+
+        this._setCanvasMode(this.CANVASMODE_PATCHBG);
+        userSettings.set("canvasMode", "patchbg");
+
+        this.rendererHeight = 100;
+        this.rightPanelWidth = this._oldCanvasWidth;
     }
 
     cyclePatchBg()
@@ -812,16 +827,11 @@ export default class Gui
 
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
-            this._oldCanvasWidth = this.rendererWidth;
-            this._oldCanvasHeight = this.rendererHeight;
-            this.rightPanelWidth = this.rendererWidth;
-
-            this._setCanvasMode(this.CANVASMODE_PATCHBG);
-            this.rendererHeight = 100;
-            this.rightPanelWidth = this._oldCanvasWidth;
+            this._switchCanvasPatchBg();
         }
         else
         {
+            userSettings.set("canvasMode", "");
             this._switchCanvasSizeNormal();
         }
 
@@ -1163,6 +1173,9 @@ export default class Gui
     {
         this.canvasManager.addContext(gui.corePatch().cgl);
 
+        if (userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
+
+
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
@@ -1284,6 +1297,10 @@ export default class Gui
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
+        this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
+        {
+            CABLES.CMD.UI.togglePatchBgPatchField();
+        });
 
         this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.UI.undo.undo(); });
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { CABLES.UI.undo.redo(); });
@@ -1333,8 +1350,7 @@ export default class Gui
         window.addEventListener("resize", () =>
         {
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
-            const eleCanvas = ele.byId("glcanvas");
-            if (eleCanvas)eleCanvas.blur();
+            this.canvasManager.blur();
 
             gui.mainTabs.emitEvent("resize");
             gui.setLayout();
@@ -1886,17 +1902,17 @@ export default class Gui
     {
         this._corePatch.on("exception", function (ex, op)
         {
-            new ModalException(ex, { "op": op });
+            new ModalError({ "exception": ex, "op": op });
         });
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalException(e, { "opname": objName, "op": op });
+            new ModalError({ "exception": e, "opname": objName, "op": op });
         });
 
-        this._corePatch.on("criticalError", function (title, msg)
+        this._corePatch.on("criticalError", function (options)
         {
-            new ModalException(new Error(msg), {});
+            new ModalError(options);
         });
 
         this._corePatch.on("renderDelayStart", function ()

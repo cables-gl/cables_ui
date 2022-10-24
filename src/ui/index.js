@@ -26,7 +26,7 @@ import defaultops from "./defaultops";
 import Exporter from "./dialogs/exporter";
 import GradientEditor from "./dialogs/gradienteditor";
 import ModalDialog from "./dialogs/modaldialog";
-import ModalException from "./dialogs/modalexception";
+import ModalError from "./dialogs/modalerror";
 import ModalLoading from "./dialogs/modalloading";
 import oldModalWrap from "./dialogs/modal_old_wrap";
 import FileUploader from "./dialogs/upload";
@@ -113,7 +113,7 @@ CABLES.UI.TEXTS = text;
 
 CABLES.UI.ModalDialog = ModalDialog; // needs to stay - is used in ops
 CABLES.UI.ModalLoading = ModalLoading;
-CABLES.UI.ModalException = ModalException;
+CABLES.UI.ModalError = ModalError;
 
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
