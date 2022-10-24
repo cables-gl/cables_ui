@@ -160,6 +160,9 @@ const text =
         "title_miniopselect": "Op Select Dialog Layout",
         "subtitle_miniopselect": "",
 
+        "title_canvaspos": "Canvas Position",
+        "subtitle_canvaspos": "Patchfield Background Rendering or top-right corner",
+
         "title_theme": "Theme",
         "subtitle_theme": "Bright theme is better when you work outside.",
 

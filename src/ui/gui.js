@@ -70,6 +70,7 @@ export default class Gui
         this.CANVASMODE_FULLSCREEN = 2;
         this.CANVASMODE_PATCHBG = 1;
         this._canvasMode = this.CANVASMODE_NORMAL;
+
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
@@ -794,6 +795,12 @@ export default class Gui
         this.emitEvent("canvasModeChange", m);
     }
 
+
+    getCanvasMode()
+    {
+        return this._canvasMode;
+    }
+
     _switchCanvasSizeNormal()
     {
         this._setCanvasMode(this.CANVASMODE_NORMAL);
@@ -801,9 +808,17 @@ export default class Gui
         this.rendererHeight = this._oldCanvasHeight;
     }
 
-    getCanvasMode()
+    _switchCanvasPatchBg()
     {
-        return this._canvasMode;
+        this._oldCanvasWidth = this.rendererWidth;
+        this._oldCanvasHeight = this.rendererHeight;
+        this.rightPanelWidth = this.rendererWidth;
+
+        this._setCanvasMode(this.CANVASMODE_PATCHBG);
+        userSettings.set("canvasMode", "patchbg");
+
+        this.rendererHeight = 100;
+        this.rightPanelWidth = this._oldCanvasWidth;
     }
 
     cyclePatchBg()
@@ -812,16 +827,11 @@ export default class Gui
 
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
-            this._oldCanvasWidth = this.rendererWidth;
-            this._oldCanvasHeight = this.rendererHeight;
-            this.rightPanelWidth = this.rendererWidth;
-
-            this._setCanvasMode(this.CANVASMODE_PATCHBG);
-            this.rendererHeight = 100;
-            this.rightPanelWidth = this._oldCanvasWidth;
+            this._switchCanvasPatchBg();
         }
         else
         {
+            userSettings.set("canvasMode", "");
             this._switchCanvasSizeNormal();
         }
 
@@ -1162,6 +1172,9 @@ export default class Gui
     bind(cb)
     {
         this.canvasManager.addContext(gui.corePatch().cgl);
+
+        if (userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
+
 
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
@@ -1894,7 +1907,7 @@ export default class Gui
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalError(e, { "exception": e, "opname": objName, "op": op });
+            new ModalError({ "exception": e, "opname": objName, "op": op });
         });
 
         this._corePatch.on("criticalError", function (options)

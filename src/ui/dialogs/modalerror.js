@@ -190,7 +190,6 @@ export default class ModalError
         return str;
     }
 
-
     close()
     {
         this._dialog.close();
