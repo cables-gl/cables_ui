@@ -21,7 +21,7 @@ import MetaHistory from "./components/tabs/meta_history";
 import Logger from "./utils/logger";
 import OpDocs from "./components/opdocs";
 import IconBar from "./elements/iconbar";
-import ModalException from "./dialogs/modalexception";
+import ModalError from "./dialogs/modalerror";
 import Tips from "./dialogs/tips";
 import PatchView from "./components/patchview";
 import TimeLineGui from "./components/timelinesvg/timeline";
@@ -1889,17 +1889,17 @@ export default class Gui
     {
         this._corePatch.on("exception", function (ex, op)
         {
-            new ModalException(ex, { "op": op });
+            new ModalError({ "exception": ex, "op": op });
         });
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalException(e, { "opname": objName, "op": op });
+            new ModalError(e, { "exception": e, "opname": objName, "op": op });
         });
 
-        this._corePatch.on("criticalError", function (title, msg)
+        this._corePatch.on("criticalError", function (options)
         {
-            new ModalException(new Error(msg), {});
+            new ModalError(options);
         });
 
         this._corePatch.on("renderDelayStart", function ()
