@@ -98,10 +98,10 @@ export default
     {
         let portName = "Value";
         let portNameOut = portName;
-
         let opSetterName = "unknown";
         let opGetterName = "unknown";
         let opSetTriggerName = "unknown";
+
         if (type == CABLES.OP_PORT_TYPE_VALUE)
         {
             opSetterName = CABLES.UI.DEFAULTOPNAMES.VarSetNumber;

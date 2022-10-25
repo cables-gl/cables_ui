@@ -741,8 +741,10 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
             if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
             {
                 hiddenSubPatchOp = op;
+                op.rebuildListeners();
             }
-            delete op.uiAttribs.hidden;
+
+            op.setUiAttrib({ "hidden": false });
         }
     });
     patch.deleteOp(blueprint.id, false, false);
@@ -751,15 +753,15 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
         gui.patchView.unselectAllOps();
         gui.patchView.selectOpId(hiddenSubPatchOp.id);
     }
-    if (!skipModal)
-    {
-        let html = "";
-        html += "To initialize the patch properly, you need to save and reload.<br/><br/>";
-        html += "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;";
-        html += "<a class=\"button\" onclick=\"gui.patchView.store.saveCurrentProject((err) => { if(!err) window.location.reload()});\"><span class=\"icon icon-save\"></span>Save and reload</a>&nbsp;&nbsp;";
-        html += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>Save as a copy</a>&nbsp;&nbsp;";
-        new ModalDialog({ "title": "All Blueprints converted", "html": html });
-    }
+    // if (!skipModal)
+    // {
+    //     let html = "";
+    //     html += "To initialize the patch properly, you need to save and reload.<br/><br/>";
+    //     html += "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;";
+    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveCurrentProject((err) => { if(!err) window.location.reload()});\"><span class=\"icon icon-save\"></span>Save and reload</a>&nbsp;&nbsp;";
+    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>Save as a copy</a>&nbsp;&nbsp;";
+    //     new ModalDialog({ "title": "All Blueprints converted", "html": html });
+    // }
 };
 
 CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
