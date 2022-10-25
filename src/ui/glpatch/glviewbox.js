@@ -396,7 +396,7 @@ export default class GlViewBox
             return;
         }
 
-        const bb = new CGL.BoundingBox();
+        const bb = new CABLES.CG.BoundingBox();
         const subp = this.glPatch.getCurrentSubPatch();
 
         for (let i = 0; i < ops.length; i++)

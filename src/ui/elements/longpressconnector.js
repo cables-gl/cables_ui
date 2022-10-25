@@ -58,17 +58,13 @@ export default class LongPressConnector extends CABLES.EventTarget
 
         setTimeout(() =>
         {
-            if (this._canceled)
-            {
-                return;
-            }
+            if (this._canceled) return;
 
             this._removelisteners();
 
             this._longPress = true;
             gui.patchView.focusOp(op.id);
 
-            console.log("timeour show panel");
             gui.patchView.showDefaultPanel();
         }, this._delay);
 
@@ -129,10 +125,7 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._longPress = false;
 
         if (wasActive)
-        {
-            console.log("show default after cancel...");
             gui.patchView.showDefaultPanel();
-        }
     }
 
     getParamPanelHtml()
@@ -148,8 +141,6 @@ export default class LongPressConnector extends CABLES.EventTarget
     {
         const op1 = this._longPressOp;
         const suggestions = [];
-
-        console.log("finishing!", op1, op2);
 
         if (!op1 || !op2) return;
 
@@ -209,8 +200,6 @@ export default class LongPressConnector extends CABLES.EventTarget
                     sugIn[0].p.name);
                 return;
             }
-
-            // op2rect.showFocus();
 
             new SuggestionDialog(sugIn, op2, mouseEvent, null,
                 function (sid)

@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
+import OpParampanel from "../components/opparampanel/op_parampanel";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -21,10 +22,18 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     const ops = gui.patchView.getSelectedOps();
     if (!ops.length) return;
 
-    for (let i = 0; i < ops.length; i++)
-    {
-        // ops[i];
-    }
+    const op = gui.patchView.getSelectedOps()[0];
+    const id = "params" + CABLES.uuid();
+
+    const tab = new CABLES.UI.Tab(op.name, { "icon": "op", "infotext": "tab_timeline", "padding": true, "singleton": false });
+    gui.mainTabs.addTab(tab, true);
+    gui.maintabPanel.show(true);
+    tab.html("<div id=\"" + id + "\"></div<");
+
+    const opParams = new OpParampanel();
+
+    opParams.setParentElementId(id);
+    opParams.show(op);
 };
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
@@ -888,6 +897,8 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
+        "icon": "op"
+
     }
 
 

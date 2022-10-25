@@ -41,6 +41,8 @@ CMD.exec = function (cmd)
             }
         }
     }
+
+
     if (!found)console.warn("command not found:" + cmd);
 };
 

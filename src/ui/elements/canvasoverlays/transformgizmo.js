@@ -135,7 +135,7 @@ export default class Gizmo
     setParams(params)
     {
         this._params = params;
-
+        if (!this._cgl) return;
         if (!this._eleCenter)
         {
             const container = this._cgl.canvas.parentElement;

@@ -2030,6 +2030,26 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
+    toggleVisibility()
+    {
+        gui.patchView.element.classList.toggle("hidden");
+        gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.toggle("hidden");
+    }
+
+    setVisibility(b)
+    {
+        if (b)
+        {
+            gui.patchView.element.classList.remove("hidden");
+            gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.remove("hidden");
+        }
+        else
+        {
+            gui.patchView.element.classList.add("hidden");
+            gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.add("hidden");
+        }
+    }
+
     setPortTitle(opId, portId, oldtitle)
     {
         new ModalDialog({

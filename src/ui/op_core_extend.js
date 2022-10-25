@@ -49,7 +49,7 @@ export default function extendCore()
                 this.portsOut[0].isLinked()
             )
             {
-                if (this.portsIn[0].getType() == this.portsOut[0].getType())
+                if (this.portsIn[0].getType() == this.portsOut[0].getType() && this.portsIn[0].links[0])
                 {
                     CABLES.Op.unLinkTempReLinkP1 = this.portsIn[0].links[0].getOtherPort(this.portsIn[0]);
                     CABLES.Op.unLinkTempReLinkP2 = this.portsOut[0].links[0].getOtherPort(this.portsOut[0]);

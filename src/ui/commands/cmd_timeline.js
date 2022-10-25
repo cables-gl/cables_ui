@@ -10,27 +10,27 @@ const timelineCommands =
 
 export default timelineCommands;
 
-// CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
-// {
-//     const ops = gui.corePatch().ops;
-//     const ports = [];
-//     for (let i = 0; i < ops.length; i++)
-//     {
-//         const inputs = ops[i].portsIn;
-//         for (let j = 0; j < inputs.length; j++)
-//             if (inputs[j].isAnimated())
-//                 ports.push(inputs[j]);
-//     }
-//     const htmlgen = new PortHtmlGenerator();
+CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
+{
+    const ops = gui.corePatch().ops;
+    const ports = [];
+    for (let i = 0; i < ops.length; i++)
+    {
+        const inputs = ops[i].portsIn;
+        for (let j = 0; j < inputs.length; j++)
+            if (inputs[j].isAnimated())
+                ports.push(inputs[j]);
+    }
+    const htmlgen = new PortHtmlGenerator();
 
-//     let html = "<div class=\"panel params\" ><table>";
+    let html = "<div class=\"panel params\" ><table>";
 
-//     html += htmlgen.getHtmlInputPorts(ports);
-//     html += "</table></div>";
-//     const tab = new CABLES.UI.Tab("Animated Ports", { "icon": "clock", "infotext": "tab_timeline", "padding": true, "singleton": true });
-//     gui.mainTabs.addTab(tab, true);
-//     tab.html(html);
-// };
+    html += htmlgen.getHtmlInputPorts(ports);
+    html += "</table></div>";
+    const tab = new CABLES.UI.Tab("Animated Ports", { "icon": "clock", "infotext": "tab_timeline", "padding": true, "singleton": true });
+    gui.mainTabs.addTab(tab, true);
+    tab.html(html);
+};
 
 
 CABLES_CMD_TIMELINE.TimelinePlay = function ()

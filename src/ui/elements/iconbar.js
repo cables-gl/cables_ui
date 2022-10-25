@@ -38,6 +38,7 @@ export default class IconBar
             if (gui && (gui.getCanvasMode() === gui.CANVASMODE_PATCHBG))
             {
                 items.push("patch background renderer");
+                items.push("hide patchfield");
             }
         }
 

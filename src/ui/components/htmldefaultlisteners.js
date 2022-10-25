@@ -20,7 +20,7 @@ export default function setHtmlDefaultListeners()
         {
             if (!CABLES.lastError)
             {
-                new CABLES.UI.ModalException(e);
+                new CABLES.UI.ModalError({ "exception": e });
             }
         }, 100);
     });
@@ -34,7 +34,6 @@ export default function setHtmlDefaultListeners()
             return false;
         }
     });
-
 
     // const ttObserver = new MutationObserver(function (mutations)
     // {

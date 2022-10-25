@@ -12,6 +12,7 @@ export default class TabPanel extends CABLES.EventTarget
         this._eleContentContainer = null;
         this._eleTabPanel = null;
         this.showTabListButton = false;
+        this._dynCmds = [];
 
         if (!this._eleTabPanel)
         {
@@ -95,8 +96,27 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
 
+        for (let i = 0; i < this._dynCmds.length; i++) gui.cmdPallet.removeDynamic(this._dynCmds[i]);
+
         for (let i = 0; i < this._tabs.length; i++)
         {
+            if (window.gui && this._eleId == "maintabs")
+            {
+                const t = this._tabs[i];
+
+                const cmd = gui.cmdPallet.addDynamic("tab", "Tab " + t.title,
+                    () =>
+                    {
+                        gui.maintabPanel.show(true);
+
+                        this.activateTab(t.id, true);
+                    }, t.icon || "edit");
+                this._dynCmds.push(cmd);
+            }
+
+            // ----------------
+
+
             document.getElementById("editortab" + this._tabs[i].id).addEventListener(
                 "mousedown",
                 function (e)
@@ -145,9 +165,7 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
         if (!found)
-        {
             console.warn("[activateTabByName] could not find tab", name);
-        }
 
         this.updateHtml();
     }
@@ -196,8 +214,6 @@ export default class TabPanel extends CABLES.EventTarget
 
     loadCurrentTabUsersettings()
     {
-        console.log("load current tab", this._eleId, this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
-
         let found = false;
         for (let i = 0; i < this._tabs.length; i++)
         {
@@ -209,7 +225,7 @@ export default class TabPanel extends CABLES.EventTarget
             }
         }
 
-        if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
+        // if (!found) console.log("tab usersettings not found...", this._eleId, userSettings.get("tabsLastTitle_" + this._eleId));
     }
 
     saveCurrentTabUsersettings()

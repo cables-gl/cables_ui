@@ -9,7 +9,7 @@ export default class CanvasLens
         this._origPixels = this._size / this._scale;
         this._origPixels2 = this._size / this._scale / 2;
 
-        this._origCanvas = ele || document.getElementById("glcanvas");
+        this._origCanvas = gui.canvasManager.currentCanvas();
         this._lensCanvas = document.createElement("canvas");
         this._lensCanvas.id = "canvaslens";
         this._lensCanvas.width = this._size;
