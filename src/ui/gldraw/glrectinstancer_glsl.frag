@@ -9,11 +9,33 @@
  UNI float time;
  UNI sampler2D tex;
  UNI float zoom;
+ UNI float msdfUnit;
 
  float median(float r, float g, float b)
  {
     return max(min(r, g), min(max(r, g), b));
  }
+
+ float median(vec3 rgb)
+ {
+    return max(min(rgb.r, rgb.g), min(max(rgb.r, rgb.g),rgb.b));
+ }
+
+ float screenPxRange() {
+    float pxRange=4.0;
+    vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));
+    vec2 screenTexSize = vec2(1.0)/fwidth(uv);
+    return max(0.5*dot(unitRange, screenTexSize), 1.0);
+}
+
+float contour(in float d, in float w) {
+    // smoothstep(lower edge0, upper edge1, x)
+    return smoothstep(0.5 - w, 0.5 + w, d);
+}
+float samp(in vec2 uv, float w) {
+    return contour(median(texture2D(tex, uv).rgb), w);
+}
+
 
  void main()
  {
@@ -25,16 +47,54 @@
     if(useTexture>=0.0)
     {
         #ifdef SDF_TEXTURE
-            vec4 smpl=texture(tex,uv);
-            float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;
-            // vec2 msdfUnit = vec2(1.0/pow(zoom,2.0))/10000.0;//8.0/vec2(1024);
-            // vec2 msdfUnit=vec2(1.0/zoom*200000.0);
-            vec2 msdfUnit=vec2(8.0/1024.0);
 
-            if(zoom<0.001)msdfUnit=vec2(8.0/1200.0);
 
-            sigDist *= dot(msdfUnit, 0.5/fwidth(uv));
-            float opacity = clamp(sigDist + 0.5, 0.0, 1.0);
+    float dist = median(texture2D(tex, uv).rgb);
+
+    // fwidth helps keep outlines a constant width irrespective of scaling
+    // GLSL's fwidth = abs(dFdx(uv)) + abs(dFdy(uv))
+    float width = fwidth(dist);
+    // Stefan Gustavson's fwidth
+    //float width = 0.7 * length(vec2(dFdx(dist), dFdy(dist)));
+
+// basic version
+    //float alpha = smoothstep(0.5 - width, 0.5 + width, dist);
+
+// supersampled version
+
+    float alpha = contour( dist, width );
+    //float alpha = aastep( 0.5, dist );
+
+    // ------- (comment this block out to get your original behavior)
+    // Supersample, 4 extra points
+    float dscale = 0.354; // half of 1/sqrt2; you can play with this
+    vec2 duv = dscale * (dFdx(uv) + dFdy(uv));
+    vec4 box = vec4(uv-duv, uv+duv);
+
+    float asum = samp( box.xy, width )
+               + samp( box.zw, width )
+               + samp( box.xw, width )
+               + samp( box.zy, width );
+
+    // weighted average, with 4 extra points having 0.5 weight each,
+    // so 1 + 0.5*4 = 3 is the divisor
+    float opacity = (alpha + 0.5 * asum) / 3.0;
+
+
+
+
+            // vec4 smpl=texture(tex,uv);
+            // float sigDist = median(smpl.r, smpl.g, smpl.b) - 0.5;
+            // // vec2 msdfUnit = vec2(1.0/pow(zoom,2.0))/10000.0;//8.0/vec2(1024);
+            // // vec2 msdfUnit=vec2(1.0/zoom*200000.0);
+            // // vec2 msdfUnit=vec2(8.0/1024.0);
+
+            // // if(1.0/zoom<500.)
+            // // msdfUnit=vec2(8.0/200.0);
+
+
+            // sigDist *= dot(msdfUnit, 0.5/fwidth(uv).x);
+            // float opacity = clamp(sigDist + 0.5, 0.0, 1.0);
             finalColor=vec4(finalColor.rgb, opacity);
         #endif
 

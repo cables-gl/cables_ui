@@ -67,6 +67,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._uniResY = new CGL.Uniform(this._shader, "f", "resY", 0);
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
+        this._unimsdfUnit = new CGL.Uniform(this._shader, "f", "msdfUnit", 8 / 1024);
 
         this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
@@ -258,6 +259,24 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
     render(resX, resY, scrollX, scrollY, zoom)
     {
+        // console.log(zoom);
+        if (zoom > 500 && zoom < 800)
+        {
+        }
+        // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(0);
+        gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / zoom);
+        // else if (zoom > 800 && zoom < 1100)
+        // {
+        //     console.log(2);
+        //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 450);
+        // }
+        // else if (zoom > 1100)
+        // {
+        //     console.log(3);
+        //     gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 250);
+        // }
+        // else gui.patchView._patchRenderer._textWriter._rectDrawer._unimsdfUnit.setValue(8 / 1000);
+
         if (this.doBulkUploads)
         {
             if (this._updateRangesMin[this.ATTR_POS] != this._DEFAULT_BIGNUM)
@@ -297,6 +316,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._uniscrollX.set(scrollX);
         this._uniscrollY.set(scrollY);
         this._uniZoom.set(1.0 / zoom);
+
 
         this._uniTime.set(performance.now() / 1000);
 
