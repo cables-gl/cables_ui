@@ -43,6 +43,8 @@ export default
     },
     "defaultMathOps":
     {
+        ">": "Ops.Math.Compare.GreaterThan",
+        "<": "Ops.Math.Compare.LessThan",
         "+": "Ops.Math.Sum",
         "-": "Ops.Math.Subtract",
         "/": "Ops.Math.Divide",
