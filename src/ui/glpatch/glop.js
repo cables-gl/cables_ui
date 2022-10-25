@@ -259,12 +259,13 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
-            this._glPatch._selectOpsInRect(
-                this.opUiAttribs.translate.x,
-                this.opUiAttribs.translate.y,
-                this.opUiAttribs.translate.x + this.opUiAttribs.area.w,
-                this.opUiAttribs.translate.y + this.opUiAttribs.area.h
-            );
+            if (this.opUiAttribs.translate)
+                this._glPatch._selectOpsInRect(
+                    this.opUiAttribs.translate.x,
+                    this.opUiAttribs.translate.y,
+                    this.opUiAttribs.translate.x + this.opUiAttribs.area.w,
+                    this.opUiAttribs.translate.y + this.opUiAttribs.area.h
+                );
         }
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);

@@ -55,6 +55,7 @@
 
         <span class="item"><span class="tt icon icon-triple-dot icon-1_25x" onclick="gui.rendererContextMenu(this)" data-tt="more options"></span></span>
 
+        <span class="item textButton info" data-info="canvas_size" id="canvasCtxSwitcher" onclick="gui.canvasManager.menu(this)">-</span>
         <span class="item textButton info" data-info="canvas_size" id="canvasInfoSize" onclick="CABLES.CMD.RENDERER.changeSize()"></span>
         <span class="item textButton info" data-info="canvas_aspect" id="canvasInfoAspect" onclick="gui.rendererAspectMenu(this)">Aspect</span>
         <span class="item nonInteractive info" data-info="canvas_zoom" id="canvasInfoZoom"></span>
@@ -79,9 +80,15 @@
 <canvas id="bgpreview" data-info="texpreview" class="info">
 </canvas>
 
-<div id="bgpreviewButtonsContainer" class="hidden">
-    <div id="bgpreviewButtons">
-        <a class="icon-x icon fright iconhover" onclick="gui.metaTexturePreviewer.pressedEscape();"></a>
+
+<div id="bgpreviewButtonsContainer" class="hidden cbl_iconbarContainer cbl_iconbar_hor">
+    <div id="bgpreviewButtons" class="cbl_iconbar" style="">
+        <!-- <div class="item">
+            <span class="icon icon-1_25x fright iconhover icon-triple-dot " onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
+        </div> -->
+        <div class="item">
+            <span class="icon icon-1_25x fright iconhover icon-x" onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
+        </div>
     </div>
 </div>
 

@@ -64,7 +64,7 @@ export default class FileUploader
     }
 
 
-    uploadFile(file)
+    uploadFile(file, filename)
     {
         if (gui.isRemoteClient) return;
 
@@ -76,7 +76,7 @@ export default class FileUploader
                 CABLESUILOADER.talkerAPI.send("fileUploadStr",
                     {
                         "fileStr": reader.result,
-                        "filename": file.name,
+                        "filename": filename || file.name,
                     },
                     (err, res) =>
                     {

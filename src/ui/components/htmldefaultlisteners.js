@@ -10,8 +10,6 @@ export default function setHtmlDefaultListeners()
         if (e.target.nodeName == "TEXTAREA" || e.target.nodeName == "INPUT") return;
 
         // if (ele.byId("cablescanvas").contains(e.target)) return;
-
-
         e.preventDefault();
     });
 
@@ -22,7 +20,7 @@ export default function setHtmlDefaultListeners()
         {
             if (!CABLES.lastError)
             {
-                new CABLES.UI.ModalException(e);
+                new CABLES.UI.ModalError({ "exception": e });
             }
         }, 100);
     });
@@ -36,7 +34,6 @@ export default function setHtmlDefaultListeners()
             return false;
         }
     });
-
 
     // const ttObserver = new MutationObserver(function (mutations)
     // {

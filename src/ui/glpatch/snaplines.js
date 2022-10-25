@@ -59,7 +59,6 @@ export default class SnapLines extends CABLES.EventTarget
     snapX(_x, forceSnap)
     {
         let x = gui.patchView.snapOpPosX(_x);
-
         if (this.enabled)
         {
             if (gui.patchView.getSelectedOps().length == 1)

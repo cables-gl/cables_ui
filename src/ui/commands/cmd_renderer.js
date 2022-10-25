@@ -1,4 +1,4 @@
-import ModalDialog from '../dialogs/modaldialog';
+import ModalDialog from "../dialogs/modaldialog";
 
 
 const CABLES_CMD_RENDERER = {};
@@ -70,7 +70,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
     }
 
     gui.setLayout();
-    gui.canvasUi.updateCanvasIconBar();
+    gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
 };
 
 CABLES_CMD_RENDERER.scaleCanvas = function ()
@@ -92,6 +92,7 @@ CABLES_CMD_RENDERER.scaleCanvas = function ()
 
 CABLES_CMD_RENDERER.changeSize = function ()
 {
+    gui.canvasManager.getCanvasUiBar().showCanvasModal(false);
     const p = new ModalDialog({
         "prompt": true,
         "title": "Change Canvas size",

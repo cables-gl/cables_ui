@@ -65,12 +65,12 @@ export default class GlLink
 
             if (this._buttonDown == MouseState.BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
             {
-                const
-                    opIn = gui.corePatch().getOpById(this._opIdInput),
-                    pIn = opIn.getPortById(this._portIdInput),
-                    opOut = gui.corePatch().getOpById(this._opIdOutput),
-                    pOut = opOut.getPortById(this._portIdOutput),
-                    llink = pOut.getLinkTo(pIn);
+                const opIn = gui.corePatch().getOpById(this._opIdInput);
+                const pIn = opIn.getPortById(this._portIdInput);
+                const opOut = gui.corePatch().getOpById(this._opIdOutput);
+                const pOut = opOut.getPortById(this._portIdOutput);
+                if (!pOut) return;
+                const llink = pOut.getLinkTo(pIn);
 
                 this._log.log("llink", llink);
 

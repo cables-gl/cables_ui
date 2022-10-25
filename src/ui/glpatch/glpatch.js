@@ -210,7 +210,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
-        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.previewLayer.addCurrentPort(); });
+        // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
 
         // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
@@ -318,7 +318,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._updateGreyout();
         });
 
-        this.previewLayer = new VizLayer(this);
+        this.vizLayer = new VizLayer(this);
 
 
         userSettings.on("onChange", (key, value) =>
@@ -1462,13 +1462,13 @@ export default class GlPatch extends CABLES.EventTarget
     pauseInteraction()
     {
         this._cgl.canvas.style["pointer-events"] = "none";
-        this.previewLayer.pauseInteraction();
+        this.vizLayer.pauseInteraction();
     }
 
     resumeInteraction()
     {
         this._cgl.canvas.style["pointer-events"] = "initial";
-        this.previewLayer.resumeInteraction();
+        this.vizLayer.resumeInteraction();
     }
 
     getSplineDrawer(subpatchId)

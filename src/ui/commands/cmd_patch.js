@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
+import OpParampanel from "../components/opparampanel/op_parampanel";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -21,10 +22,18 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     const ops = gui.patchView.getSelectedOps();
     if (!ops.length) return;
 
-    for (let i = 0; i < ops.length; i++)
-    {
-        // ops[i];
-    }
+    const op = gui.patchView.getSelectedOps()[0];
+    const id = "params" + CABLES.uuid();
+
+    const tab = new CABLES.UI.Tab(op.name, { "icon": "op", "infotext": "tab_timeline", "padding": true, "singleton": false });
+    gui.mainTabs.addTab(tab, true);
+    gui.maintabPanel.show(true);
+    tab.html("<div id=\"" + id + "\"></div<");
+
+    const opParams = new OpParampanel();
+
+    opParams.setParentElementId(id);
+    opParams.show(op);
 };
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
@@ -39,7 +48,6 @@ CABLES_CMD_PATCH.gotoParentSubpatch = function ()
     else
         gui.patchView.setCurrentSubPatch(names[names.length - 1].id);
 };
-
 
 CABLES_CMD_PATCH.selectAllOps = function ()
 {
@@ -119,7 +127,6 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
-
 CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
 {
     gui.patchView.createSubPatchFromSelection();
@@ -139,7 +146,6 @@ CABLES_CMD_PATCH.findUserOps = function ()
 {
     gui.find(":user");
 };
-
 
 CABLES_CMD_PATCH.createFile = function ()
 {
@@ -168,7 +174,6 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
         new ModalDialog({ "html": html });
     }
 };
-
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
@@ -390,7 +395,6 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
         } });
 };
 
-
 CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
 {
     gui.opSelect().close();
@@ -430,7 +434,6 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
             } });
         } });
 };
-
 
 CABLES_CMD_PATCH.replaceLinkVariable = function ()
 {
@@ -558,7 +561,6 @@ CABLES_CMD_PATCH.linkTwoSelectedOps = () =>
     else gui.patchView.suggestionBetweenTwoOps(a, b);
 };
 
-
 CABLES_CMD_PATCH.compressOps = () =>
 {
     gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps());
@@ -597,7 +599,6 @@ CABLES_CMD_PATCH.savePatchScreenshot = function ()
     });
 };
 
-
 CABLES_CMD_PATCH.setOpTitle = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -617,7 +618,6 @@ CABLES_CMD_PATCH.setOpTitle = function ()
             gui.opParams.setCurrentOpTitle(name);
         } });
 };
-
 
 CABLES_CMD_PATCH.resume = function ()
 {

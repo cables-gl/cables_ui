@@ -53,7 +53,7 @@ export default class GlUiCanvas
                 "glCanvasId": this.canvas.id,
                 "glCanvasResizeToParent": false,
                 "glCanvasResizeToWindow": false,
-                "canvas": { "alpha": true }
+                "canvas": { "alpha": true, "premultipliedAlpha": true }
             });
 
 

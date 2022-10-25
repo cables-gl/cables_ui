@@ -21,7 +21,7 @@ import MetaHistory from "./components/tabs/meta_history";
 import Logger from "./utils/logger";
 import OpDocs from "./components/opdocs";
 import IconBar from "./elements/iconbar";
-import ModalException from "./dialogs/modalexception";
+import ModalError from "./dialogs/modalerror";
 import Tips from "./dialogs/tips";
 import PatchView from "./components/patchview";
 import TimeLineGui from "./components/timelinesvg/timeline";
@@ -35,6 +35,7 @@ import text from "./text";
 import userSettings from "./components/usersettings";
 import LongPressConnector from "./elements/longpressconnector";
 import GlPatch from "./glpatch/glpatch";
+import CanvasManager from "./components/canvas/canvasmanager";
 
 
 export default class Gui
@@ -48,6 +49,8 @@ export default class Gui
         this.patchId = cfg.patchId;
         this._showTiming = false;
         this._showingEditor = false;
+
+        this.canvasManager = new CanvasManager();
 
         this.keys = new KeyBindingsManager();
         this.opParams = new OpParampanel();
@@ -67,6 +70,7 @@ export default class Gui
         this.CANVASMODE_FULLSCREEN = 2;
         this.CANVASMODE_PATCHBG = 1;
         this._canvasMode = this.CANVASMODE_NORMAL;
+
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
@@ -91,6 +95,7 @@ export default class Gui
             {
                 this._corePatch.off(this._patchLoadEndiD);
                 this.setStateSaved();
+                gui.bookmarks.updateDynamicCommands();
 
                 logStartup("Patch loaded");
             });
@@ -111,6 +116,8 @@ export default class Gui
 
         this._jobs = new Jobs();
         this.cmdPallet = new CommandPallete();
+
+
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
         this._gizmo = [];
@@ -394,7 +401,7 @@ export default class Gui
         this._elProgressbar = this._elProgressbar || ele.byId("uploadprogresscontainer");
 
 
-        this._elGlCanvasDom = this._elGlCanvasDom || ele.byId("glcanvas");
+        this._elGlCanvasDom = this.canvasManager.currentCanvas() || ele.byId("glcanvas");
 
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
@@ -412,7 +419,7 @@ export default class Gui
 
         this._elBreadcrumbNav = this._elBreadcrumbNav || ele.byId("breadcrumb_nav");
 
-        this._elCablesCanvas = this._elCablesCanvas || ele.byId("cablescanvas");
+        this._elCablesCanvasContainer = this._elCablesCanvasContainer || ele.byId("cablescanvas");
         this._elGlUiPreviewLayer = this._elGlUiPreviewLayer || ele.byId("gluiPreviewLayer");
 
         let timelineHeight = this.timingHeight;
@@ -459,8 +466,8 @@ export default class Gui
         if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
 
 
-        const cgl = this._corePatch.cgl;
-        if (this.canvasUi) this.canvasUi.getCanvasSizeString(cgl);
+        // const cgl = this._corePatch.cgl;
+        // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
@@ -728,46 +735,41 @@ export default class Gui
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
-            this._elCablesCanvas.style.left = 0 + "px";
-            this._elCablesCanvas.style.right = "initial";
+            this._elCablesCanvasContainer.style.left = 0 + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
 
-            this._elCablesCanvas.style.width = this._elGlCanvasDom.style.width = window.innerWidth + "px";
-            this._elCablesCanvas.style.height = this._elGlCanvasDom.style.height = window.innerHeight + "px";
+            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width = window.innerWidth + "px";
+            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height = window.innerHeight + "px";
 
             this._elGlCanvasDom.setAttribute("width", window.innerWidth);
             this._elGlCanvasDom.setAttribute("height", window.innerHeight);
 
-            this._elCablesCanvas.style["z-index"] = 40;
+            this._elCablesCanvasContainer.style["z-index"] = 40;
         }
         else if (this._canvasMode == this.CANVASMODE_PATCHBG)
         {
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
 
-            this._elCablesCanvas.style.left = iconBarWidth + "px";
-            this._elCablesCanvas.style.right = "initial";
-            this._elCablesCanvas.style.top = "0px";
-            this._elCablesCanvas.style.width = this._elGlCanvasDom.style.width;
-            this._elCablesCanvas.style.height = this._elGlCanvasDom.style.height;
-            this._elCablesCanvas.style["z-index"] = 1;
+            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
+            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.width = this._elGlCanvasDom.style.width;
+            this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
+            this._elCablesCanvasContainer.style["z-index"] = 1;
         }
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
-            const density = this._corePatch.cgl.pixelDensity;
+            this._elCablesCanvasContainer.style["z-index"] = 10;
 
-            this._elCablesCanvas.style["z-index"] = 10;
+            this.canvasManager.setSize(this.rendererWidth, this.rendererHeight);
 
-            this._elGlCanvasDom.setAttribute("width", this.rendererWidth * density);
-            this._elGlCanvasDom.setAttribute("height", this.rendererHeight * density);
-            this._elGlCanvasDom.style.width = this.rendererWidth + "px";
-            this._elGlCanvasDom.style.height = this.rendererHeight + "px";
-            this._elCablesCanvas.style.width = this.rendererWidth + "px";
-            this._elCablesCanvas.style.height = this.rendererHeight + "px";
-            this._elCablesCanvas.style.right = "0px";
-            this._elCablesCanvas.style.left = "initial";
-
-            this._elCablesCanvas.style["transform-origin"] = "top right";
-            this._elCablesCanvas.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
+            this._elCablesCanvasContainer.style.width = this.rendererWidth + "px";
+            this._elCablesCanvasContainer.style.height = this.rendererHeight + "px";
+            this._elCablesCanvasContainer.style.right = "0px";
+            this._elCablesCanvasContainer.style.left = "initial";
+            this._elCablesCanvasContainer.style["transform-origin"] = "top right";
+            this._elCablesCanvasContainer.style.transform = "scale(" + this._corePatch.cgl.canvasScale + ")";
         }
 
         // flashing canvas overlay when saving
@@ -780,6 +782,7 @@ export default class Gui
         this._elBgPreview.style.top = menubarHeight + "px";
 
         this._elBgPreviewButtonContainer.style.right = this.rightPanelWidth + "px";
+        // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
 
         this.emitEvent("setLayout");
 
@@ -792,6 +795,12 @@ export default class Gui
         this.emitEvent("canvasModeChange", m);
     }
 
+
+    getCanvasMode()
+    {
+        return this._canvasMode;
+    }
+
     _switchCanvasSizeNormal()
     {
         this._setCanvasMode(this.CANVASMODE_NORMAL);
@@ -799,9 +808,17 @@ export default class Gui
         this.rendererHeight = this._oldCanvasHeight;
     }
 
-    getCanvasMode()
+    _switchCanvasPatchBg()
     {
-        return this._canvasMode;
+        this._oldCanvasWidth = this.rendererWidth;
+        this._oldCanvasHeight = this.rendererHeight;
+        this.rightPanelWidth = this.rendererWidth;
+
+        this._setCanvasMode(this.CANVASMODE_PATCHBG);
+        userSettings.set("canvasMode", "patchbg");
+
+        this.rendererHeight = 100;
+        this.rightPanelWidth = this._oldCanvasWidth;
     }
 
     cyclePatchBg()
@@ -810,21 +827,16 @@ export default class Gui
 
         if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
-            this._oldCanvasWidth = this.rendererWidth;
-            this._oldCanvasHeight = this.rendererHeight;
-            this.rightPanelWidth = this.rendererWidth;
-
-            this._setCanvasMode(this.CANVASMODE_PATCHBG);
-            this.rendererHeight = 100;
-            this.rightPanelWidth = this._oldCanvasWidth;
+            this._switchCanvasPatchBg();
         }
         else
         {
+            userSettings.set("canvasMode", "");
             this._switchCanvasSizeNormal();
         }
 
         this.setLayout();
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
     }
 
     cycleFullscreen()
@@ -846,7 +858,7 @@ export default class Gui
             this.notifiedFullscreen = true;
         }
 
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.setLayout();
     }
 
@@ -981,7 +993,7 @@ export default class Gui
     /* Goes through all nav items and replaces "mod" with the OS-dependent modifier key */
     replaceNavShortcuts()
     {
-        let els = ele.byClassAll("shortcut");
+        let els = ele.byQueryAll(".shortcut");
 
         for (let i in els)
         {
@@ -1159,6 +1171,11 @@ export default class Gui
 
     bind(cb)
     {
+        this.canvasManager.addContext(gui.corePatch().cgl);
+
+        if (userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
+
+
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
@@ -1219,16 +1236,6 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
-        window.addEventListener("resize", () =>
-        {
-            this.canvasUi.showCanvasModal(false);
-            const eleCanvas = ele.byId("glcanvas");
-            if (eleCanvas)eleCanvas.blur();
-            this.setLayout();
-            // this.patch().getViewBox().update();
-            this.mainTabs.emitEvent("resize");
-        }, false);
-
         cb();
     }
 
@@ -1251,7 +1258,7 @@ export default class Gui
                 const port = selectedOp[0].portsIn[i];
                 const type = port.getTypeString();
 
-                if (type === "String")
+                if (type === "String" && (port.uiAttribs && port.uiAttribs.display === "editor"))
                 {
                     portName = port.name;
                     break;
@@ -1290,6 +1297,10 @@ export default class Gui
         this.keys.key("p", "Open Command Palette", "down", null, { "cmdCtrl": true }, (e) => { this.cmdPallet.show(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true }, (e) => { this.cycleFullscreen(); });
         this.keys.key("Enter", "Cycle size of renderer between normal and Fullscreen", "down", null, { "cmdCtrl": true, "shiftKey": true }, (e) => { this.cyclePatchBg(); });
+        this.keys.key("Enter", "Cycle patchfield visibility", "down", null, { "cmdCtrl": false, "shiftKey": true }, (e) =>
+        {
+            CABLES.CMD.UI.togglePatchBgPatchField();
+        });
 
         this.keys.key("z", "undo", "down", null, { "ignoreInput": true, "cmdCtrl": true }, (e) => { CABLES.UI.undo.undo(); });
         this.keys.key("z", "redo", "down", null, { "ignoreInput": true, "cmdCtrl": true, "shiftKey": true }, (e) => { CABLES.UI.undo.redo(); });
@@ -1336,12 +1347,22 @@ export default class Gui
             gui.spaceBarStart = 0;
         });
 
+        window.addEventListener("resize", () =>
+        {
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+            this.canvasManager.blur();
+
+            gui.mainTabs.emitEvent("resize");
+            gui.setLayout();
+            gui.setLayout(); // yes, twice....
+        }, false);
+
         // this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); gui.spaceBarStart = 0; });
     }
 
     pressedEscape(e)
     {
-        this.canvasUi.showCanvasModal(false);
+        this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
 
@@ -1365,7 +1386,7 @@ export default class Gui
             this._showingEditor = this._oldShowingEditor;
             this._elGlCanvasDom.classList.remove("maximized");
             this.setLayout();
-            this.canvasUi.showCanvasModal(true);
+            this.canvasManager.getCanvasUiBar().showCanvasModal(true);
         }
         else if (CABLES.UI.suggestions)
         {
@@ -1817,7 +1838,7 @@ export default class Gui
 
     init(next)
     {
-        this.canvasUi = new CABLES.UI.CanvasUi(this.corePatch().cgl);
+        // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
@@ -1881,17 +1902,17 @@ export default class Gui
     {
         this._corePatch.on("exception", function (ex, op)
         {
-            new ModalException(ex, { "op": op });
+            new ModalError({ "exception": ex, "op": op });
         });
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
-            new ModalException(e, { "opname": objName, "op": op });
+            new ModalError({ "exception": e, "opname": objName, "op": op });
         });
 
-        this._corePatch.on("criticalError", function (title, msg)
+        this._corePatch.on("criticalError", function (options)
         {
-            new ModalException(new Error(msg), {});
+            new ModalError(options);
         });
 
         this._corePatch.on("renderDelayStart", function ()
