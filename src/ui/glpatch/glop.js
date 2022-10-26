@@ -903,6 +903,7 @@ export default class GlOp extends CABLES.EventTarget
         else
         {
             this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            // this._glTitle.setColor(0.8, 0.8, 0.8);
         }
 
         this._glRectBg.setBorder(this._rectBorder);
