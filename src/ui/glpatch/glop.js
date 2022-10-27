@@ -307,6 +307,9 @@ export default class GlOp extends CABLES.EventTarget
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
+        this._passiveDragStartX = null;
+        this._passiveDragStartY = null;
+
         this.glPatch.snapLines.update();
         // if (this.isPassiveDrag()) return;
     }
