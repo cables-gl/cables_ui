@@ -20,6 +20,8 @@ export default class GlOpWatcher extends CABLES.EventTarget
         {
             this.setOp(gui.opParams.op);
         });
+
+        setInterval(this.rebuildHtml.bind(this), 100);
     }
 
 
@@ -55,10 +57,17 @@ export default class GlOpWatcher extends CABLES.EventTarget
 
             html += "<table>";
 
+            html += "<tr><td>_glRectBg._dragStartX</td><td>" + this._glop._glRectBg._dragStartX + "</td></tr>";
+            html += "<tr><td>_passiveDragStartX</td><td>" + this._glop._passiveDragStartX + "</td></tr>";
+
             html += "<tr><td>_glRectBg.dragOffsetX</td><td>" + this._glop._glRectBg.dragOffsetX + "</td></tr>";
             html += "<tr><td>_glRectBg.dragOffsetY</td><td>" + this._glop._glRectBg.dragOffsetY + "</td></tr>";
+            html += "<tr><td>_glRectBg._isDragging</td><td>" + this._glop._glRectBg._isDragging + "</td></tr>";
             html += "<tr><td>_glRectBg.x</td><td>" + this._glop._glRectBg.x + "</td></tr>";
             html += "<tr><td>_glRectBg.y</td><td>" + this._glop._glRectBg.y + "</td></tr>";
+            html += "<tr><td>isPassiveDrag</td><td>" + this._glop.isPassiveDrag() + "</td></tr>";
+
+
             html += "</table>";
 
             html += "<div><code><pre>";
