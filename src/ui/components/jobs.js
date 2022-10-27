@@ -146,6 +146,11 @@ export default class Jobs
                 this._updateVisibility();
             }, 100);
         }
+        if (prog == 100)
+        {
+            this._visibleProgressBar = false;
+            this._updateVisibility();
+        }
         else
         {
             if (gui.corePatch().loading.getNumAssets() > 2)

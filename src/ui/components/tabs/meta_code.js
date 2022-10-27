@@ -102,8 +102,7 @@ export default class MetaCode
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
-                            "warns": res.warns,
-                            "opserialized": this._op.getSerialized()
+                            "warns": res.warns
                         });
 
                     // console.log(res.warns);

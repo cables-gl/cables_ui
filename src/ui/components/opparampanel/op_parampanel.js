@@ -40,6 +40,11 @@ class OpParampanel extends CABLES.EventTarget
         this._updateWatchPorts();
     }
 
+    get op()
+    {
+        return this._currentOp;
+    }
+
     setParentElementId(eleid)
     {
         this._eleId = eleid;
@@ -149,7 +154,7 @@ class OpParampanel extends CABLES.EventTarget
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
 
-        op.emitEvent("uiParamPanel");
+        op.emitEvent("uiParamPanel", op);
         // if (op.id != self._oldOpParamsId)
         // {
         //     if (gui.fileManager) gui.fileManager.setFilePort(null);
@@ -224,11 +229,7 @@ class OpParampanel extends CABLES.EventTarget
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", {
-            "op": op,
-            "opserialized": op.getSerialized(),
-            "user": gui.user,
-        });
+        html += getHandleBarHtml("params_op_foot", { "op": op });
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
@@ -670,6 +671,15 @@ class OpParampanel extends CABLES.EventTarget
                 gui.bookmarks.add();
             }
         });
+
+        items.push({
+            "title": "Show Op Serialized",
+            func()
+            {
+                CABLES.CMD.PATCH.watchOpSerialized();
+            },
+        });
+
 
         items.push({
             "title": "Clone op code",
