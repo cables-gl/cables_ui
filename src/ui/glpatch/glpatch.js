@@ -101,6 +101,14 @@ export default class GlPatch extends CABLES.EventTarget
         this._focusRect.setColor(0, 1, 1, 1);
         this._focusRect.visible = false;
 
+
+        this._testAreaRect = this._overLayRects.createRect();
+        this._testAreaRect.setSize(1111, 1111);
+        this._testAreaRect.setShape(4);
+        this._testAreaRect.setColor(0, 0, 0, 0.4);
+        this._testAreaRect.visible = true;
+
+
         this._glCursors = {};
         this._localGlCursor = new GlCursor(this, this._overLayRects);
         this._localGlCursor.setColor(1, 1, 1, 1);
@@ -1171,6 +1179,15 @@ export default class GlPatch extends CABLES.EventTarget
             if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
+
+
+            const bounds = this._glOpz[id].op.getChildsBoundings(this);
+            if (bounds.maxx)
+            {
+                this._testAreaRect.setPosition(bounds.minx, bounds.miny, -1);
+                this._testAreaRect.setSize(bounds.maxx - bounds.minx, bounds.maxy - bounds.miny);
+            }
+            else this._testAreaRect.setSize(0, 0);
         }
     }
 
