@@ -6,6 +6,7 @@ import ModalDialog from "./modaldialog";
  *
  * options:
  * - title - will replace title
+ * - text
  * - codeText - will be shown as monospace font
  * - op: will add an "edit op" button
  * - opname: will show opname
