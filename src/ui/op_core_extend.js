@@ -216,6 +216,17 @@ export default function extendCore()
     {
         for (let i = 0; i < this.portsOut.length; i++) if (this.portsOut[i].isLinked()) return true;
     };
+
+    CABLES.Op.prototype.hasMultipleOutLinked = function ()
+    {
+        let count = 0;
+        for (let i = 0; i < this.portsOut.length; i++)
+        {
+            if (this.portsOut[i].links.length > 1) return true;
+            if (this.portsOut[i].isLinked()) { count++; if (count > 2) return true; }
+        }
+    };
+
     CABLES.Op.prototype.hasAnyInLinked = function ()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return true;
@@ -224,6 +235,42 @@ export default function extendCore()
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked()) return this.portsIn[i];
     };
+
+    CABLES.Op.prototype.getFirstLinkedInOp = function ()
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
+        {
+            const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+            return otherport.parent;
+        }
+    };
+
+    CABLES.Op.prototype.getLowestLinkedInOp = function ()
+    {
+        let maxY = -999999;
+        let lowestOp = null;
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
+        {
+            const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+
+            // maxY = Math.max(otherport.parent.getTempPosY, maxY);
+            if (otherport.parent.getTempPosY() > maxY)
+            {
+                maxY = otherport.parent.getTempPosY();
+                lowestOp = otherport.parent;
+            }
+        }
+
+        return lowestOp;
+
+        // for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
+        // {
+        //     const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+        //     return otherport.parent;
+        // }
+    };
+
+
     CABLES.Op.prototype.isInLinkedToOpOutside = function (ops)
     {
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
@@ -235,13 +282,110 @@ export default function extendCore()
         }
     };
 
-
     CABLES.Op.prototype.getTempPosX = function ()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.x;
+        else return this.uiAttribs.translate.x;
     };
+
     CABLES.Op.prototype.getTempPosY = function ()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.y;
+        else return this.uiAttribs.translate.y;
+    };
+
+    CABLES.Op.prototype.setTempOpPos = function (x, y, w, h)
+    {
+        const pos = {
+            "x": x,
+            "y": y
+        };
+        if (w !== undefined && h != undefined)
+        {
+            pos.w = w;
+            pos.h = h;
+        }
+        else
+        {
+            pos.w = this.uiAttribs.translateTemp.w;
+            pos.h = this.uiAttribs.translateTemp.h;
+        }
+
+
+        // console.log("settemppos", pos);
+
+        this.setUiAttribs({ "translateTemp": pos });
+    };
+
+    CABLES.Op.prototype.setTempOpPosY = function (y)
+    {
+        this.setTempOpPos(this.getTempPosX(), y);
+    };
+
+    CABLES.Op.prototype.setTempOpPosX = function (x)
+    {
+        this.setTempOpPos(x, this.getTempPosY());
+    };
+
+
+    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp)
+    {
+        s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
+
+
+        s.maxx = Math.max(s.maxx || -99999999999, this.getTempPosX() + this.getWidth(glpatch));
+        s.maxy = Math.max(s.maxy || -99999999999, this.getTempPosY() + this.getHeight(glpatch));
+
+        s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
+        s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
+
+        if (untilOp && this == untilOp) return s;
+
+        for (let i = 0; i < this.portsOut.length; i++)
+        {
+            for (let j = 0; j < this.portsOut[i].links.length; j++)
+            {
+                const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
+
+                s = p.parent.getChildsBoundings(glpatch, s, untilOp);
+            }
+        }
+        return s;
+    };
+
+    CABLES.Op.prototype.testTempCollision = function (ops, glpatch)
+    {
+        // console.log("testTempCollision");
+        for (let j = 0; j < ops.length; j++)
+        {
+            const b = ops[j];
+            if (b.deleted || b == this) continue;
+
+            // console.log(b.uiAttribs.translateTemp);
+
+            if (
+                (
+                    this.getTempPosX() >= b.getTempPosX() &&
+                    this.getTempPosX() <= b.getTempPosX() + b.getWidth(glpatch)
+                ) &&
+                (
+                    this.getTempPosY() >= b.getTempPosY() &&
+                    this.getTempPosY() <= b.getTempPosY() + b.getHeight(glpatch)
+                ))
+            {
+                // console.log("colliding!");
+                return b;
+            }
+        }
+    };
+
+    CABLES.Op.prototype.getWidth = function (glpatch)
+    {
+        return glpatch.getGlOp(this).w;
+    };
+
+    CABLES.Op.prototype.getHeight = function (glpatch)
+    {
+        return glpatch.getGlOp(this).h;
     };
 }
