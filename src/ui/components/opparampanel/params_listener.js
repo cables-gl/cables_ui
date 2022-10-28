@@ -330,6 +330,13 @@ class ParamsListener extends CABLES.EventTarget
 
         const eleId = "portval_" + index + "_" + panelid;
 
+        // if (op.portsIn[index].uiAttribs.type == "string")
+        // {
+        //     console.log("yes string...");
+
+        //     // el.addEventListener("keydown", tabKeyListener);
+        // }
+
         if (!op.portsIn[index].uiAttribs.type || op.portsIn[index].uiAttribs.type == "number" || op.portsIn[index].uiAttribs.type == "int")
         {
             const el = ele.byId(eleId);
