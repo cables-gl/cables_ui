@@ -98,7 +98,11 @@ CABLES_CMD_PATCH.save = function (force)
             html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
             html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
 
-            CABLES.UI.MODAL.showError("Saving Test", html);
+            new ModalDialog({
+                "warning": true,
+                "title": "Saving Test",
+                "html": html
+            });
         }
         else
         {
@@ -110,18 +114,18 @@ CABLES_CMD_PATCH.save = function (force)
                     + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
                     + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
 
-                CABLES.UI.MODAL.showError("Not Collaborator", html);
+                new ModalDialog({
+                    "warning": true,
+                    "title": "Not Collaborator",
+                    "html": html
+                });
             }
         }
     }
 
     if (doSave)
     {
-        // if (force || !CABLES.UI.lastSave || Date.now() - CABLES.UI.lastSave > 1000)
-        // {
         gui.patchView.store.saveCurrentProject(undefined, undefined, undefined, force);
-        // CABLES.UI.lastSave = Date.now();
-        // }
     }
 };
 
@@ -608,7 +612,6 @@ CABLES_CMD_PATCH.downGradeOp = function ()
     for (let i = 0; i < selops.length; i++)
         gui.patchView.downGradeOp(selops[i].id, selops[i].name);
 };
-
 
 CABLES_CMD_PATCH.watchGlOp = function ()
 {
