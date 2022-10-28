@@ -1180,7 +1180,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             this._glOpz[id].selected = true;
 
-
             const bounds = this._glOpz[id].op.getChildsBoundings(this);
             if (bounds.maxx)
             {
