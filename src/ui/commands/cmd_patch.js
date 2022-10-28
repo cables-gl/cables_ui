@@ -5,6 +5,8 @@ import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
+import OpSerialized from "../components/tabs/tab_opserialized";
+import GlOpWatcher from "../components/tabs/tab_glop";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -607,6 +609,19 @@ CABLES_CMD_PATCH.downGradeOp = function ()
         gui.patchView.downGradeOp(selops[i].id, selops[i].name);
 };
 
+
+CABLES_CMD_PATCH.watchGlOp = function ()
+{
+    new GlOpWatcher(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
+CABLES_CMD_PATCH.watchOpSerialized = function ()
+{
+    new OpSerialized(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
     gui.patchView.patchRenderer._cgl.saveScreenshot("patchfield_" + performance.now(), () =>
@@ -1018,5 +1033,18 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
         "category": "patch",
         "icon": "op"
-    }
+    },
+    {
+        "cmd": "show op serialized",
+        "func": CABLES_CMD_PATCH.watchOpSerialized,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "show glop information",
+        "func": CABLES_CMD_PATCH.watchGlOp,
+        "category": "patch",
+        "icon": "op"
+    },
+
 );

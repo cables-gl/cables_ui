@@ -7,8 +7,8 @@ export default class MetaOpParams
         this._tabs = tabs;
         this._tab = new Tab("op", { "icon": "op", "infotext": "tab_op", "showTitle": false, "hideToolbar": true, "padding": false });
 
-        this._op = null;
-        this.html = "";
+        // this._op = null;
+        // this.html = "";
 
         this._tab.addEventListener("onActivate", () =>
         {

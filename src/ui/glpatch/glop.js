@@ -307,6 +307,10 @@ export default class GlOp extends CABLES.EventTarget
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
+        // this._passiveDragStartX = null;
+        // this._passiveDragStartY = null;
+        this.endPassiveDrag();
+
         this.glPatch.snapLines.update();
         // if (this.isPassiveDrag()) return;
     }
@@ -1012,27 +1016,28 @@ export default class GlOp extends CABLES.EventTarget
 
     endPassiveDrag()
     {
-        if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
-        {
-            const undmove = (function (scope, newX, newY, oldX, oldY)
+        if (this._passiveDragStartX !== null && this._passiveDragStartY !== null)
+            if (this._passiveDragStartX != this.x || this._passiveDragStartY != this.y)
             {
-                undo.add({
-                    "title": "Move op",
-                    undo()
-                    {
-                        try
+                const undmove = (function (scope, newX, newY, oldX, oldY)
+                {
+                    undo.add({
+                        "title": "Move op",
+                        undo()
                         {
-                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": newX, "y": newY });
+                            try
+                            {
+                                scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": newX, "y": newY });
+                            }
+                            catch (e) {}
+                        },
+                        redo()
+                        {
+                            scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
                         }
-                        catch (e) {}
-                    },
-                    redo()
-                    {
-                        scope._glPatch.patchAPI.setOpUiAttribs(scope._id, "translate", { "x": oldX, "y": oldY });
-                    }
-                });
-            }(this, this._passiveDragStartX, this._passiveDragStartY, this.x, this.y));
-        }
+                    });
+                }(this, this._passiveDragStartX, this._passiveDragStartY, this.x, this.y));
+            }
 
         this._passiveDragStartX = null;
         this._passiveDragStartY = null;

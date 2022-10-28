@@ -11,6 +11,7 @@ import userSettings from "./usersettings";
 import Gui from "../gui";
 import undo from "../utils/undo";
 import SuggestionDialog from "./suggestiondialog";
+import opCleaner from "./cleanops";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -247,6 +248,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         return this._patchRenderer.isFocussed();
     }
+
 
     testCollision(op)
     {
@@ -1321,125 +1323,126 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    _cleanOp(op, ops, theOpWidth)
-    {
-        let changed = false;
+    // _cleanOp(op, ops, theOpWidth)
+    // {
+    //     let changed = false;
 
-        if (op.portsIn[0] && op.hasAnyInLinked())
-        {
-            const firstLinkedPort = op.getFirstLinkedInPort();
-            for (let i = 0; i < firstLinkedPort.links.length; i++)
-            {
-                const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
+    //     if (op.portsIn[0] && op.hasAnyInLinked())
+    //     {
+    //         const firstLinkedPort = op.getFirstLinkedInPort();
+    //         for (let i = 0; i < firstLinkedPort.links.length; i++)
+    //         {
+    //             const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
 
-                if (ops.indexOf(otherPort.parent) == -1) return;
+    //             if (ops.indexOf(otherPort.parent) == -1) return;
 
-                let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
-                let extraLines = 1;
-                for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
-                {
-                    if (otherPort == otherPort.parent.portsOut[j]) break;
-                    if (otherPort.parent.portsOut[j].isLinked())extraLines++;
-                }
+    //             let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
+    //             let extraLines = 1;
+    //             for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
+    //             {
+    //                 if (otherPort == otherPort.parent.portsOut[j]) break;
+    //                 if (otherPort.parent.portsOut[j].isLinked())extraLines++;
+    //             }
 
-                changed = true;
-                if (otherPort.links.length > 1)extraLines++;
+    //             changed = true;
+    //             if (otherPort.links.length > 1)extraLines++;
 
-                let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
+    //             let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
 
-                this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
-            }
-        }
+    //             this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+    //         }
+    //     }
 
-        if (this.testCollision(op))changed = true;
-    }
+    //     if (this.testCollision(op))changed = true;
+    // }
 
     cleanOps(ops)
     {
-        if (ops.length == 0) return;
-        const entranceOps = [];
-        const unconnectedOps = [];
-        const otherOps = [];
-        let startPosX = ops[0].uiAttribs.translate.x;
-        let startPosY = ops[0].uiAttribs.translate.y;
+        const c = new opCleaner(ops, this.patchRenderer);
+        // c.clean();
+        //     if (ops.length == 0) return
+        //     const entranceOps = [];
+        //     const unconnectedOps = [];
+        //     const otherOps = [];
+        //     let startPosX = ops[0].uiAttribs.translate.x;
+        //     let startPosY = ops[0].uiAttribs.translate.y;
 
-        let longestOpPorts = 0;
+        //     let longestOpPorts = 0;
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            startPosX = Math.min(startPosX, ops[i].uiAttribs.translate.x);
-            startPosY = Math.min(startPosY, ops[i].uiAttribs.translate.y);
+        //     for (let i = 0; i < ops.length; i++)
+        //     {
+        //         startPosX = Math.min(startPosX, ops[i].uiAttribs.translate.x);
+        //         startPosY = Math.min(startPosY, ops[i].uiAttribs.translate.y);
 
-            longestOpPorts = Math.max(longestOpPorts, ops[i].portsIn.length);
-            longestOpPorts = Math.max(longestOpPorts, ops[i].portsOut.length);
+        //         longestOpPorts = Math.max(longestOpPorts, ops[i].portsIn.length);
+        //         longestOpPorts = Math.max(longestOpPorts, ops[i].portsOut.length);
 
-            this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
+        //         this.setTempOpPos(ops[i], ops[i].uiAttribs.translate.x, ops[i].uiAttribs.translate.y);
 
-            if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
-            {
-                entranceOps.push(ops[i]);
-                continue;
-            }
+        //         if (!ops[i].hasAnyInLinked() && ops[i].hasAnyOutLinked())
+        //         {
+        //             entranceOps.push(ops[i]);
+        //             continue;
+        //         }
 
-            if (ops[i].isInLinkedToOpOutside(ops))
-            {
-                entranceOps.push(ops[i]);
-                continue;
-            }
+        //         if (ops[i].isInLinkedToOpOutside(ops))
+        //         {
+        //             entranceOps.push(ops[i]);
+        //             continue;
+        //         }
 
-            if (!ops[i].hasLinks())
-            {
-                unconnectedOps.push(ops[i]);
-                continue;
-            }
-            otherOps.push(ops[i]);
-        }
+        //         if (!ops[i].hasLinks())
+        //         {
+        //             unconnectedOps.push(ops[i]);
+        //             continue;
+        //         }
+        //         otherOps.push(ops[i]);
+        //     }
 
+        //     let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
 
-        let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
-
-        for (let i = 0; i < ops.length; i++)
-            this.setTempOpPos(ops[i], startPosX, startPosY);
-
-
-        let firstRowX = gui.patchView.snapOpPosX(startPosX);
-        startPosY = gui.patchView.snapOpPosY(startPosY);
+        //     for (let i = 0; i < ops.length; i++)
+        //         this.setTempOpPos(ops[i], startPosX, startPosY);
 
 
-        for (let i = 0; i < entranceOps.length; i++)
-        {
-            this.setTempOpPos(entranceOps[i], firstRowX, startPosY);
-            firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
-        }
-
-        for (let i = 0; i < unconnectedOps.length; i++)
-        {
-            this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
-            firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
-        }
+        // let firstRowX = gui.patchView.snapOpPosX(startPosX);
+        // startPosY = gui.patchView.snapOpPosY(startPosY);
 
 
-        let count = 0;
-        let found = true;
-        while (count < 100 || found)
-        {
-            found = false;
-            count++;
-            for (let i = 0; i < otherOps.length; i++)
-                if (this._cleanOp(otherOps[i], ops, theOpWidth))found = true;
-        }
+        // for (let i = 0; i < entranceOps.length; i++)
+        // {
+        //     this.setTempOpPos(entranceOps[i], firstRowX, startPosY);
+        //     firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        // }
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = ops[i];
-            if (op.uiAttribs.translateTemp)
-            {
-                this.setOpPos(op, op.getTempPosX(), op.getTempPosY());
-                delete op.uiAttribs.translateTemp;
-            }
-        }
+        // for (let i = 0; i < unconnectedOps.length; i++)
+        // {
+        //     this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
+        //     firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        // }
 
-        console.log(count + "iterations");
+
+        // let count = 0;
+        // let found = true;
+        // while (count < 100 || found)
+        // {
+        //     found = false;
+        //     count++;
+        //     for (let i = 0; i < otherOps.length; i++)
+        //         if (this._cleanOp(otherOps[i], ops, theOpWidth))found = true;
+        // }
+
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     const op = ops[i];
+        //     if (op.uiAttribs.translateTemp)
+        //     {
+        //         this.setOpPos(op, op.getTempPosX(), op.getTempPosY());
+        //         delete op.uiAttribs.translateTemp;
+        //     }
+        // }
+
+        // console.log(count + "iterations");
     }
 
 
@@ -1488,15 +1491,15 @@ export default class PatchView extends CABLES.EventTarget
         return ops;
     }
 
-    setTempOpPos(op, x, y)
-    {
-        op.setUiAttribs({ "translateTemp":
-            {
-                "x": x,
-                "y": y
-            }
-        });
-    }
+    // setTempOpPos(op, x, y)
+    // {
+    //     op.setUiAttribs({ "translateTemp":
+    //         {
+    //             "x": x,
+    //             "y": y
+    //         }
+    //     });
+    // }
 
     setOpPos(op, x, y)
     {
