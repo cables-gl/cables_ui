@@ -57,8 +57,18 @@
             {{#compare port.uiAttribs.display '==' 'range' }}
                 </td><td>
                 <!-- new value input2 !!! -->
-                <div class="numberinput valuesliderinput" id="portval_{{ portnum }}_{{ panelid }}-container" data-portnum="{{ portnum }}"  data-portname="{{ port.name }}" onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');" ontouchstart="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');" onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
-                {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
+                <div
+                    class="numberinput valuesliderinput tabable"
+                    id="portval_{{ portnum }}_{{ panelid }}-container"
+                    data-portnum="{{ portnum }}"
+                    data-panelid="{{ panelid }}"
+                    data-opid="{{op.id}}"
+                    data-portname="{{ port.name }}"
+                    onmousedown="new CABLES.UI.ParamTabInputListener(this);CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');"
+                    ontouchstart="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');new CABLES.UI.ParamTabInputListener(this);"
+                    onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);"
+                    {{#if port.uiAttribs.min}}data-min="{{port.uiAttribs.min}}"{{/if}} {{#if port.uiAttribs.max}}data-max="{{port.uiAttribs.max}}"{{/if}}>
+
                     <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
                     <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
                 </div>
@@ -127,8 +137,8 @@
             {{#compare port.type '==' '5' }}
                     </td>
                 <td>
-
-                <input class="value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} info" data-portnum="{{ portnum }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
+                <!-- string -->
+                <input onmousedown="new CABLES.UI.ParamTabInputListener(this);"  class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} info" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
             {{/compare}}
 
             {{#compare port.type '==' '1' }} </td><td>[trigger]
@@ -136,7 +146,16 @@
             {{#compare port.type '==' 0 }}
                 </td><td>
                         <!-- new value input2 -->
-                        <div class="numberinput valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-portnum="{{ portnum }}"   data-portname="{{ port.name }}" id="portval_{{ portnum }}_{{ panelid }}-container" onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');"  onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
+                        <div
+                            class="numberinput tabable valueinputtype-{{ port.uiAttribs.type }} {{#if port.uiAttribs.increment }}inc_int{{/if}}"
+                            data-portnum="{{ portnum }}"
+                            data-panelid="{{ panelid }}"
+                            data-opid="{{op.id}}"
+                            data-portname="{{ port.name }}"
+                            data-portname="{{ port.name }}"
+                            id="portval_{{ portnum }}_{{ panelid }}-container"
+                            onmousedown="CABLES.UI.valueChanger('portval_{{ portnum }}_{{ panelid }}',false,'{{port.name}}','{{op.id}}');new CABLES.UI.ParamTabInputListener(this);"
+                            onmouseover="gui.showInfo(CABLES.UI.TEXTS.valueChangerHover);">
                             <span class="numberinput-display" id="numberinputDisplay_{{ port.watchId }}_{{ panelid }}">{{ port.value }}</span>
                             <input autocomplete="off" class="numberinput-value hidden watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} {{#if port.uiAttribs.increment }}inc_int{{/if}}" data-valuetype="{{ port.uiAttribs.type }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{ port.value }}"/>
                         </div>

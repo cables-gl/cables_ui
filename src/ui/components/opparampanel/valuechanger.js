@@ -34,42 +34,52 @@ function valueChanger(eleId, focus, portName, opid)
         // elem.keydown(CABLES.UI.paramsHelper.inputListenerCursorKeys);
     }
 
-    function switchToNextInput(dir)
-    {
-        const portNum = parseInt(eleContainer.dataset.portnum);
-        let count = 0;
+    // function switchToNextInput(dir)
+    // {
+    //     console.log("switchToNextInput1");
+    //     const portNum = parseInt(eleContainer.dataset.portnum);
+    //     const panelid = parseInt(eleContainer.dataset.panelid);
 
-        dir = parseInt(dir);
-        while (count < 10)
-        {
-            const i = (portNum + dir) + count * dir;
-            const pEle = document.getElementById("portval_" + i + "-container");
 
-            if (pEle)
-            {
-                const portname = pEle.dataset.portname;
+    //     let count = 0;
 
-                setTextEdit(false);
-                // elem.unbind("keydown", tabKeyListener);
-                eleInput.removeEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
-                CABLES.UI.valueChanger("portval_" + i, true, portname, opid);
+    //     dir = parseInt(dir);
+    //     while (count < 10)
+    //     {
+    //         const i = (portNum + dir) + count * dir;
+    //         const id = "portval_" + i + "_" + panelid + "-container";
+    //         const pEle = document.getElementById(id);
 
-                return;
-            }
+    //         if (pEle)
+    //         {
+    //             const portname = pEle.dataset.portname;
 
-            count++;
-        }
-    }
+    //             setTextEdit(false);
+    //             // elem.unbind("keydown", tabKeyListener);
+    //             eleInput.removeEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
 
-    function tabKeyListener(event)
-    {
-        if (event.which == 9)
-        {
-            event.preventDefault();
-            if (event.shiftKey)switchToNextInput(-1);
-            else switchToNextInput(1);
-        }
-    }
+    //             CABLES.UI.valueChanger("portval_" + i + "_" + panelid, true, portname, opid);
+
+    //             return;
+    //         }
+    //         else
+    //         {
+    //             console.log("[switchToNextInput] next input not found.", id);
+    //         }
+
+    //         count++;
+    //     }
+    // }
+
+    // function tabKeyListener(event)
+    // {
+    //     if (event.which == 9) // tab key
+    //     {
+    //         event.preventDefault();
+    //         if (event.shiftKey)switchToNextInput(-1);
+    //         else switchToNextInput(1);
+    //     }
+    // }
 
     function setTextEdit(enabled)
     {
@@ -77,7 +87,8 @@ function valueChanger(eleId, focus, portName, opid)
 
         if (enabled)
         {
-            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+            if (eleContainer.classList.contains("valuesliderinput"))
+                eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
             ele.hide(eleNumInputDisplay);
 
             eleContainer.classList.add("numberinputFocussed");
@@ -86,12 +97,16 @@ function valueChanger(eleId, focus, portName, opid)
 
             const vv = eleInput.value;
             eleInput.setSelectionRange(0, vv.length);
-            // elem.bind("keydown", tabKeyListener);
-            eleInput.addEventListener("keydown", tabKeyListener);
+
+            // eleInput.addEventListener("keydown", tabKeyListener);
         }
         else
         {
-            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input", () => { CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer); });
+            if (eleContainer.classList.contains("valuesliderinput")) eleInput.addEventListener("input",
+                () =>
+                {
+                    CABLES.UI.paramsHelper.valueChangerSetSliderCSS(eleInput.value, eleContainer);
+                });
 
             ele.show(eleNumInputDisplay);
             ele.hide(eleInput);
@@ -107,7 +122,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (ele.hasFocus(eleInput)) return;
 
         eleInput.removeEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
-        eleInput.removeEventListener("keydown", tabKeyListener);
+        // eleInput.removeEventListener("keydown", tabKeyListener);
         eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
 

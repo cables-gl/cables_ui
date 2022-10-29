@@ -103,9 +103,9 @@ export default class GlPatch extends CABLES.EventTarget
 
 
         this._testAreaRect = this._overLayRects.createRect();
-        this._testAreaRect.setSize(1111, 1111);
+        this._testAreaRect.setSize(0, 0);
         this._testAreaRect.setShape(4);
-        this._testAreaRect.setColor(0, 0, 0, 0.4);
+        this._testAreaRect.setColor(0, 0, 0, 0.2);
         this._testAreaRect.visible = true;
 
 
@@ -1179,7 +1179,6 @@ export default class GlPatch extends CABLES.EventTarget
             if (this._cachedNumSelectedOps == 1) this._cachedFirstSelectedOp = this._glOpz[id];
 
             this._glOpz[id].selected = true;
-
 
             const bounds = this._glOpz[id].op.getChildsBoundings(this);
             if (bounds.maxx)

@@ -208,6 +208,7 @@ export default class GlCable
                                 posX, this._y, 0,
                                 posX, this._y, 0,
                                 posX, this._y, 0,
+                                posX, this._y, 0,
                                 posX2, this._y2, 0,
                                 posX2, this._y2, 0,
                                 posX2, this._y2, 0

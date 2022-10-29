@@ -13,8 +13,6 @@ class OpParampanel extends CABLES.EventTarget
     {
         super();
 
-        console.warn("experimental parampanel branch!");
-
         this.panelId = CABLES.simpleId();
         this._eleId = eleid;
         this._log = new Logger("OpParampanel");

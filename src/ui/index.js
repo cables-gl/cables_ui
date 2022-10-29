@@ -13,6 +13,7 @@ import setHtmlDefaultListeners from "./components/htmldefaultlisteners";
 import startIdleListeners from "./components/idlemode";
 import Keypresenter from "./components/keypresenter";
 import paramsHelper from "./components/opparampanel/params_helper";
+import ParamTabInputListener from "./components/opparampanel/param_inputtablistener";
 import valueChanger from "./components/opparampanel/valuechanger";
 import Chat from "./components/tabs/tab_chat";
 import FindTab from "./components/tabs/tab_find";
@@ -143,6 +144,7 @@ CABLES.GL_MARKER = helperMeshes;
 
 CABLES.UI.paramsHelper = paramsHelper;
 CABLES.UI.valueChanger = valueChanger;
+CABLES.UI.ParamTabInputListener = ParamTabInputListener;
 
 CABLES.UI.undo = undo;
 

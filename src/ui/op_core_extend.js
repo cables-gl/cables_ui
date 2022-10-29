@@ -332,6 +332,7 @@ export default function extendCore()
     {
         s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
 
+        if (!this.uiAttribs || !this.uiAttribs.translate) return s;
 
         s.maxx = Math.max(s.maxx || -99999999999, this.getTempPosX() + this.getWidth(glpatch));
         s.maxy = Math.max(s.maxy || -99999999999, this.getTempPosY() + this.getHeight(glpatch));

@@ -82,7 +82,6 @@ const paramsHelper =
         return r;
     },
 
-
     "checkDefaultValue": (op, index, panelid) =>
     {
         if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
@@ -91,7 +90,6 @@ const paramsHelper =
             if (titleEl) titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
         }
     },
-
 
     "togglePortValBool": (which, checkbox) =>
     {
@@ -117,7 +115,6 @@ const paramsHelper =
         inputEle.dispatchEvent(new Event("input"));
     },
 
-
     "openParamSpreadSheetEditor": (opid, portname, cb) =>
     {
         const op = gui.corePatch().getOpById(opid);
@@ -137,7 +134,6 @@ const paramsHelper =
                 }
             });
     },
-
 
     "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>
     {
@@ -164,7 +160,6 @@ const paramsHelper =
             }
         }
     },
-
 
     "setPortAnimated": (op, index, targetState, defaultValue) =>
     {
