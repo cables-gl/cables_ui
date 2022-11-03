@@ -275,19 +275,19 @@ class ParamsListener extends CABLES.EventTarget
         if (el)el.addEventListener("click", (e) =>
         {
             const targetState = !el.classList.contains("timingbutton_active");
-            const elVal = ele.byId("portval_" + index);
+            const elVal = ele.byId("portval_" + index + "_" + panelid);
 
             gui.setStateUnsaved();
-            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, elVal.value);
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, panelid, targetState, elVal.value);
             gui.emitEvent("portValueSetAnimated", op, index, targetState, elVal.value);
         });
     }
 
-    setPortAnimated(op, index, targetState, defaultValue)
+    setPortAnimated(op, index, panelid, targetState, defaultValue)
     {
         const isOpen = gui.patchView.getSelectedOps()[0] ? op.id === gui.patchView.getSelectedOps()[0].id : false;
 
-        const elVal = ele.byId("portval_" + index);
+        const elVal = ele.byId("portval_" + index + "_" + panelid);
 
         if (!targetState)
         {
