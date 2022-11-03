@@ -353,8 +353,9 @@ export default function extendCore()
     };
 
 
-    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp)
+    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
     {
+        if (count > 100000) return s;
         s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
 
         if (!this.uiAttribs || !this.uiAttribs.translate) return s;
@@ -365,6 +366,7 @@ export default function extendCore()
         s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
         s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
 
+
         if (untilOp && this == untilOp) return s;
 
         for (let i = 0; i < this.portsOut.length; i++)
@@ -373,7 +375,7 @@ export default function extendCore()
             {
                 const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
 
-                s = p.parent.getChildsBoundings(glpatch, s, untilOp);
+                s = p.parent.getChildsBoundings(glpatch, s, untilOp, count + 1);
             }
         }
         return s;
