@@ -355,7 +355,7 @@ export default function extendCore()
 
     CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
     {
-        if (count > 100000) return s;
+        if (count > 1000) return s;
         s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
 
         if (!this.uiAttribs || !this.uiAttribs.translate) return s;
