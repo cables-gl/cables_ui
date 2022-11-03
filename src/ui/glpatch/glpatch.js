@@ -1180,13 +1180,13 @@ export default class GlPatch extends CABLES.EventTarget
 
             this._glOpz[id].selected = true;
 
-            const bounds = this._glOpz[id].op.getChildsBoundings(this);
-            if (bounds.maxx)
-            {
-                this._testAreaRect.setPosition(bounds.minx, bounds.miny, -1);
-                this._testAreaRect.setSize(bounds.maxx - bounds.minx, bounds.maxy - bounds.miny);
-            }
-            else this._testAreaRect.setSize(0, 0);
+            // const bounds = this._glOpz[id].op.getChildsBoundings(this);
+            // if (bounds.maxx)
+            // {
+            //     this._testAreaRect.setPosition(bounds.minx, bounds.miny, -1);
+            //     this._testAreaRect.setSize(bounds.maxx - bounds.minx, bounds.maxy - bounds.miny);
+            // }
+            // else this._testAreaRect.setSize(0, 0);
         }
     }
 
