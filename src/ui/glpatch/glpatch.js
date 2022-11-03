@@ -102,11 +102,11 @@ export default class GlPatch extends CABLES.EventTarget
         this._focusRect.visible = false;
 
 
-        this._testAreaRect = this._overLayRects.createRect();
-        this._testAreaRect.setSize(0, 0);
-        this._testAreaRect.setShape(4);
-        this._testAreaRect.setColor(0, 0, 0, 0.2);
-        this._testAreaRect.visible = true;
+        // this._testAreaRect = this._overLayRects.createRect();
+        // this._testAreaRect.setSize(0, 0);
+        // this._testAreaRect.setShape(4);
+        // this._testAreaRect.setColor(0, 0, 0, 0.2);
+        // this._testAreaRect.visible = true;
 
 
         this._glCursors = {};
