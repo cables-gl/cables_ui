@@ -375,7 +375,7 @@ export default function extendCore()
             {
                 const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
 
-                s = p.parent.getChildsBoundings(glpatch, s, untilOp, count + 1);
+                s = p.parent.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
             }
         }
         return s;
