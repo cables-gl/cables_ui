@@ -32,6 +32,31 @@ export default function extendCore()
         CABLES.Op.unLinkTempReLinkP2 = null;
     };
 
+    CABLES.Op.prototype.countFittingPorts = function (otherPort)
+    {
+        let count = 0;
+        for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) count++;
+
+        for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) count++;
+
+        return count;
+    };
+
+    CABLES.Op.prototype.findFittingPort = function (otherPort, inPortsFirst = false)
+    {
+        if (inPortsFirst)
+        {
+            for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+            for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+        }
+        else
+        {
+            for (const ipo in this.portsOut) if (CABLES.Link.canLink(otherPort, this.portsOut[ipo])) return this.portsOut[ipo];
+            for (const ipi in this.portsIn) if (CABLES.Link.canLink(otherPort, this.portsIn[ipi])) return this.portsIn[ipi];
+        }
+    };
+
+
     CABLES.Op.prototype.unLinkTemporary = function ()
     {
         const tryRelink = true;
@@ -158,7 +183,7 @@ export default function extendCore()
         {
             // console.log("ERRRRR");
             // this.setUiAttrib({ working, notWorkingMsg });
-            this.setUiError("notworking", notWorkingMsg, 2);
+            this.setUiError("notworking", notWorkingMsg, 0);
         }
         else if (hadError)
         {
@@ -328,8 +353,9 @@ export default function extendCore()
     };
 
 
-    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp)
+    CABLES.Op.prototype.getChildsBoundings = function (glpatch, s, untilOp, count)
     {
+        if (count > 100) return s;
         s = s || { "maxx": null, "maxy": null, "minx": null, "miny": null };
 
         if (!this.uiAttribs || !this.uiAttribs.translate) return s;
@@ -340,6 +366,7 @@ export default function extendCore()
         s.minx = Math.min(s.minx || 99999999999, this.getTempPosX());
         s.miny = Math.min(s.miny || 99999999999, this.getTempPosY());
 
+
         if (untilOp && this == untilOp) return s;
 
         for (let i = 0; i < this.portsOut.length; i++)
@@ -348,7 +375,7 @@ export default function extendCore()
             {
                 const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
 
-                s = p.parent.getChildsBoundings(glpatch, s, untilOp);
+                s = p.parent.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
             }
         }
         return s;
