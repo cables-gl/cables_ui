@@ -123,7 +123,7 @@ export default class Gui
         this._gizmo = [];
         this._transformOverlay = new TransformsOverlay();
 
-        this.opDocs = null;
+        this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
 
         this.mainTabs = new TabPanel("maintabs");
@@ -1753,7 +1753,7 @@ export default class Gui
 
     reloadDocs(cb)
     {
-        gui.opDocs = new OpDocs();
+        gui.opDocs.addCoreOpDocs();
         if (cb)cb();
     }
 

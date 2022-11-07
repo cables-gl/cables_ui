@@ -24,7 +24,7 @@ export default class OpSelect
         this.displayBoxIndex = 0;
         this.itemHeight = 0;
         this.firstTime = true;
-        this.tree = new OpTreeList();
+        this.tree = null;
         this._sortTimeout = 0;
         this._backspaceDelay = -1;
         this._wordsDb = null;
@@ -492,8 +492,7 @@ export default class OpSelect
         {
             this._showSuggestionsInfo();
         }
-        else
-        if (opname)
+        else if (opname)
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
@@ -511,11 +510,6 @@ export default class OpSelect
             html += htmlFoot;
 
             this._eleSearchinfo.innerHTML = html;
-            // setTimeout(() =>
-            // {
-            // gui.opDocs.opLayoutSVG(opname, "opselect-layout"); /* create op-svg image inside #opselect-layout */
-            // }, 50);
-            //! 23
             perf.finish();
         }
         else
@@ -530,7 +524,6 @@ export default class OpSelect
     search()
     {
         const q = this._getQuery();
-        // if(q==this.lastQuery)return;
         this.lastQuery = q;
         this._search(q);
         let i = 0;
@@ -600,13 +593,15 @@ export default class OpSelect
     {
         this._list = null;
         this._html = null;
+        this._eleSearchinfo = null;
     }
 
     prepare()
     {
+        this.tree = new OpTreeList();
         if (!this._list)
         {
-            this._list = this.getOpList();
+            this._list = this.getList();
 
             let maxPop = 0;
 
@@ -649,20 +644,25 @@ export default class OpSelect
 
     _onClickAddButton(evt)
     {
-        gui.opSelect().addOp(evt.target.dataset.opname);
+        if (evt.target.dataset.itemType === "extension")
+        {
+            gui.opSelect().addExtension(evt.target.dataset.opname);
+        }
+        else
+        {
+            gui.opSelect().addOp(evt.target.dataset.opname);
+            this.close();
 
-        // gui.closeModal();
-        this.close();
-
-        if (evt.shiftKey)
-            setTimeout(() =>
-            {
-                gui.opSelect().show({
-                    "subPatch": gui.patchView.getCurrentSubPatch(),
-                    "x": 0,
-                    "y": 0
-                });
-            }, 50);
+            if (evt.shiftKey)
+                setTimeout(() =>
+                {
+                    gui.opSelect().show({
+                        "subPatch": gui.patchView.getCurrentSubPatch(),
+                        "x": 0,
+                        "y": 0
+                    });
+                }, 50);
+        }
     }
 
     isOpen()
@@ -675,11 +675,6 @@ export default class OpSelect
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
         this._typedSinceOpening = false;
-        // if(!this._escapeListener)this._escapeListener = gui.on("pressedEscape", ()=>
-        //     {
-        //         console.log("pressed esc!");
-        //         this.close();
-        //     });
 
         CABLES.UI.hideToolTip();
         this._enterPressedEarly = false;
@@ -816,6 +811,28 @@ export default class OpSelect
         }
     }
 
+    addExtension(name)
+    {
+        if (name && name.startsWith("Ops.Extension."))
+        {
+            CABLES.sandbox.loadExtensionOps(name, () =>
+            {
+                this.close();
+                this.reload();
+                this.prepare();
+                setTimeout(() =>
+                {
+                    gui.opSelect().show({
+                        "search": name,
+                        "subPatch": gui.patchView.getCurrentSubPatch(),
+                        "x": 0,
+                        "y": 0
+                    });
+                }, 50);
+            });
+        }
+    }
+
     addSelectedOp()
     {
         const selEle = ele.byClass("selected");
@@ -832,15 +849,6 @@ export default class OpSelect
 
         switch (e.which)
         {
-        // case 27:
-        //     this.close();
-        //     e.preventDefault();
-        // console.log("opselect input escape!");
-
-        // gui.pressedEscape();
-
-        // break;
-
         case 13:
 
             if (e.shiftKey)
@@ -955,10 +963,14 @@ export default class OpSelect
                             "name": opname,
                             "userOp": opname.startsWith("Ops.User"),
                             "devOp": opname.startsWith("Ops.Dev."),
+                            "extensionOp": opname.startsWith("Ops.Extension."),
+                            "isExtension": false,
                             "shortName": shortName,
                             "nameSpace": nameSpace,
                             "oldState": oldState,
                             "lowercasename": lowercasename,
+                            "buttonText": "add",
+                            "type": "op"
                         };
                         op.pop = gui.opDocs.getPopularity(opname);
                         op.summary = gui.opDocs.getSummary(opname);
@@ -972,15 +984,81 @@ export default class OpSelect
         return ops;
     }
 
-    getOpList()
+    _getextensions(existingOps = [])
     {
-        const ops = this._getop([], "Ops", Ops, "");
-        // getop('Op',CABLES.Op,'');
+        const extensions = gui.opDocs.getExtensions();
+        const extdocs = [];
+        if (extensions)
+        {
+            for (let i = 0; i < extensions.length; i++)
+            {
+                const ext = extensions[i];
+                const inUse = existingOps.find((op) => { return op.nameSpace === ext.nameSpace; });
+                if (inUse) continue;
 
-        ops.sort((a, b) => { return b.pop - a.pop; },
-            // return a.name.length - b.name.length; // ASC -> a - b; DESC -> b - a
-        );
+                const parts = ext.name.split(".");
+                const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
+                const extDoc = {
+                    "nscolor": defaultops.getNamespaceClassName(ext.name),
+                    "isOp": false,
+                    "name": ext.name,
+                    "userOp": false,
+                    "devOp": false,
+                    "extensionOp": false,
+                    "isExtension": true,
+                    "shortName": ext.shortName,
+                    "nameSpace": ext.nameSpace,
+                    "oldState": "",
+                    "lowercasename": lowercasename,
+                    "buttonText": "add extension",
+                    "type": "extension"
+                };
+                extDoc.pop = -1;
+                extDoc.summary = ext.summary || "";
+                extdocs.push(extDoc);
+            }
+        }
+        return extdocs;
+    }
 
-        return ops;
+    addToList(opDocs)
+    {
+        if (!opDocs) return;
+        if (!this._list) this._list = [];
+
+        opDocs.forEach((opDoc) =>
+        {
+            const parts = opDoc.name.split(".");
+            const lowercasename = opDoc.name.toLowerCase() + "_" + parts.join("").toLowerCase();
+            const op = {
+                "nscolor": defaultops.getNamespaceClassName(opDoc.name),
+                "isOp": true,
+                "name": opDoc.name,
+                "userOp": false,
+                "devOp": false,
+                "extensionOp": true,
+                "isExtension": false,
+                "shortName": opDoc.shortName,
+                "nameSpace": opDoc.namespace,
+                "oldState": "",
+                "lowercasename": lowercasename,
+                "buttonText": "add",
+                "type": "op"
+            };
+            op.pop = -1;
+            op.summary = opDoc.summary || "";
+            this._list.push(op);
+        });
+        this._list.sort((a, b) => { return b.pop - a.pop; });
+    }
+
+    getList()
+    {
+        let list = this._getop([], "Ops", Ops, "");
+        const extensions = this._getextensions(list);
+        list = list.concat(extensions);
+        list.sort((a, b) => { return b.pop - a.pop; });
+
+        return list;
     }
 }
