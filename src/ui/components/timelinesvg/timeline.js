@@ -340,6 +340,9 @@ export default function TimeLineGui()
             ele.hide(elTimelineTitle);
         }
 
+
+        console.log("config", config, config.defaultValue);
+
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
             anim.addKey(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
