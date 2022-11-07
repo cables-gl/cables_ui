@@ -341,8 +341,6 @@ export default function TimeLineGui()
         }
 
 
-        console.log("config", config, config.defaultValue);
-
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
             anim.addKey(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
@@ -1256,6 +1254,8 @@ export default function TimeLineGui()
         if (delta < 0)delta = -1;
         if (delta > 0)delta = 1;
         delta *= 5;
+
+        setCursor(cursorTime);
 
         if (e.metaKey)
         {
