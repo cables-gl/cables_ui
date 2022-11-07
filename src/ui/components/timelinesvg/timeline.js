@@ -589,7 +589,10 @@ export default function TimeLineGui()
 
     this.gotoOffset = function (off)
     {
-        gui.scene().timer.setOffset(off);
+        gui.scene().timer.setTime(
+            gui.scene().timer.getTime() + off
+        );
+
         self.updateTime();
         if (!self.isCursorVisible())self.centerCursor();
     };
