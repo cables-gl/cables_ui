@@ -30,7 +30,7 @@
 
         {{#each ops}}
           <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');gui.closeModal();">
-                <div class="button fright addbutton" data-opname="{{name}}" style="margin-top:10px;" >{{{../texts.opselect_addop}}}</div>
+                <div class="button fright addbutton" data-opname="{{name}}" data-item-type="{{type}}" style="margin-top:10px;" >{{buttonText}}</div>
                 <a>
                     {{oldState}}
                     {{#if userOp }}<span class="icon icon-user"></span>{{/if}}

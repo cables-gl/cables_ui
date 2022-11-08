@@ -625,8 +625,6 @@ export default class ServerOps
         {
             const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
             gui.serverOps.clone(oldName, opname);
-            // gui.opSelect().reload();
-            // gui.serverOps.execute(opname);
         });
     }
 
