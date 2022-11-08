@@ -340,6 +340,7 @@ export default function TimeLineGui()
             ele.hide(elTimelineTitle);
         }
 
+
         if (config && config.hasOwnProperty("defaultValue") && anim.keys.length === 0)
         {
             anim.addKey(new CABLES.ANIM.Key({ "time": cursorTime, "value": config.defaultValue }));
@@ -588,7 +589,10 @@ export default function TimeLineGui()
 
     this.gotoOffset = function (off)
     {
-        gui.scene().timer.setOffset(off);
+        gui.scene().timer.setTime(
+            gui.scene().timer.getTime() + off
+        );
+
         self.updateTime();
         if (!self.isCursorVisible())self.centerCursor();
     };
@@ -1253,6 +1257,8 @@ export default function TimeLineGui()
         if (delta < 0)delta = -1;
         if (delta > 0)delta = 1;
         delta *= 5;
+
+        setCursor(cursorTime);
 
         if (e.metaKey)
         {

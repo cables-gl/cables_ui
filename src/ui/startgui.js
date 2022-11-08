@@ -61,7 +61,7 @@ export default function startUi(cfg)
                 }, false);
 
                 incrementStartup();
-                gui.opDocs = new OpDocs();
+                gui.opDocs.addCoreOpDocs();
                 gui.opSelect().prepare();
                 userSettings.init();
                 incrementStartup();

@@ -44,9 +44,9 @@
             <!-- href="/op/{{op.objName}}"  -->
 
             <!-- <a onclick="gui.mainTabs.addIframeTab('doc {{op.objName}}','/op/{{op.objName}}?dark=1&hdl=1',{'icon':'settings','closable':true,'singleton':true});" style="text-decoration: underline;" target="_blank">view documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i> -->
-            <a href="{{cablesUrl}}/op/{{op.objName}}" style="text-decoration: underline;" target="_blank">View documentation</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank">View documentation</a>
             {{#if hasExample}}
-                | &nbsp; <a href="{{cablesUrl}}/op/example/{{op.objName}}" style="text-decoration: underline;" target="_blank">View example</a>&nbsp;&nbsp;<i class="icon icon-link"></i>
+                <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">View example</a>
             {{/if}}
             <br/><br/>
 

@@ -185,6 +185,7 @@ const paramsHelper =
             return;
         }
 
+
         const portAnimEle = ele.byId("portanim_in_" + index);
         if (isOpen && portAnimEle) portAnimEle.classList.add("timingbutton_active");
 

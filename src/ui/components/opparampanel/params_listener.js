@@ -260,7 +260,7 @@ class ParamsListener extends CABLES.EventTarget
                             }
                         },
                         {
-                            "title": "Set animated",
+                            "title": "Animate Parameter",
                             "func": () =>
                             {
                                 gui.setStateUnsaved();
@@ -275,11 +275,14 @@ class ParamsListener extends CABLES.EventTarget
         if (el)el.addEventListener("click", (e) =>
         {
             const targetState = !el.classList.contains("timingbutton_active");
-            const elVal = ele.byId("portval_" + index + "_" + panelid);
+            // const elVal = ele.byId("portval_" + index + "_" + panelid);
 
             gui.setStateUnsaved();
-            CABLES.UI.paramsHelper.setPortAnimated(op, index, panelid, targetState, elVal.value);
-            gui.emitEvent("portValueSetAnimated", op, index, targetState, elVal.value);
+
+            console.log("op.portsIn[index].get()", op.portsIn[index].get());
+
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, op.portsIn[index].get());
+            gui.emitEvent("portValueSetAnimated", op, index, targetState, op.portsIn[index].get());
         });
     }
 
