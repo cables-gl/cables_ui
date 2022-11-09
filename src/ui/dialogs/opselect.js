@@ -497,13 +497,21 @@ export default class OpSelect
 
             this._eleSearchinfo.innerHTML = "";
             const opDoc = gui.opDocs.get2(opname);
+            const listItem = this.getListItemByOpName(opname);
 
             let html = "<div id=\"opselect-layout\">";
 
             html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
 
             html += "</div>";
-            html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + "\" class=\"button-small\">View Documentation</a>";
+            if (listItem && listItem.isExtension)
+            {
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/extension/" + opname + "\" class=\"button-small\">View Documentation</a>";
+            }
+            else
+            {
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + "\" class=\"button-small\">View Documentation</a>";
+            }
 
             html += opDoc;
             html += htmlFoot;
@@ -1056,5 +1064,11 @@ export default class OpSelect
         list.sort((a, b) => { return b.pop - a.pop; });
 
         return list;
+    }
+
+    getListItemByOpName(opName)
+    {
+        if (!this._list) return null;
+        return this._list.find((item) => { return item.name === opName; });
     }
 }
