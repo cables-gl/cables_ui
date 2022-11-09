@@ -153,11 +153,6 @@ class OpParampanel extends CABLES.EventTarget
         this._portsOut = op.portsOut;
 
         op.emitEvent("uiParamPanel", op);
-        // if (op.id != self._oldOpParamsId)
-        // {
-        //     if (gui.fileManager) gui.fileManager.setFilePort(null);
-        //     self._oldOpParamsId = op.id;
-        // }
 
         const perfHtml = CABLES.UI.uiProfiler.start("[opparampanel] build html ");
 
@@ -259,7 +254,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
 
-                    if (glOp)
+                    if (glOp && this._portsIn[i])
                     {
                         const glPort = glOp.getGlPort(this._portsIn[i].name);
 
@@ -349,6 +344,8 @@ class OpParampanel extends CABLES.EventTarget
 
         for (let ipii = 0; ipii < this._portsIn.length; ipii++) this._paramsListener.initPortInputListener(op, ipii, this.panelId);
 
+
+        // watch anim ports... this should be in initPOrtInputListener !!
         for (const iwap in this._watchAnimPorts)
         {
             const thePort = this._watchAnimPorts[iwap];

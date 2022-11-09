@@ -134,7 +134,7 @@ class ParamsListener extends CABLES.EventTarget
     initPortClickListener(op, index, panelid)
     {
         if (op.portsIn[index].isAnimated()) ele.byId("portanim_in_" + index).classList.add("timingbutton_active");
-        if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) ele.byId("portgraph_in_" + index).classList.add("timingbutton_active");
+        // if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) ele.byId("portgraph_in_" + index).classList.add("timingbutton_active");
 
         if (ele.byId("portTitle_in_" + index))
             ele.byId("portTitle_in_" + index).addEventListener("click", function (e)
@@ -275,11 +275,8 @@ class ParamsListener extends CABLES.EventTarget
         if (el)el.addEventListener("click", (e) =>
         {
             const targetState = !el.classList.contains("timingbutton_active");
-            // const elVal = ele.byId("portval_" + index + "_" + panelid);
 
             gui.setStateUnsaved();
-
-            console.log("op.portsIn[index].get()", op.portsIn[index].get());
 
             CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, op.portsIn[index].get());
             gui.emitEvent("portValueSetAnimated", op, index, targetState, op.portsIn[index].get());
