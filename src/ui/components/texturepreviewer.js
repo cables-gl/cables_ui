@@ -274,11 +274,10 @@ export default class TexturePreviewer
             userSettings.set("bgpreviewMax", false);
 
             ele.byId("bgpreviewInfo").classList.add("hidden");
-            // ele.byId("bgpreviewMenu").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
 
-            ele.byId("bgpreview").classList.add("hidden");
+            this._ele.classList.add("hidden");
         }
         else
         {
@@ -286,11 +285,10 @@ export default class TexturePreviewer
 
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
-            // ele.byId("bgpreviewMenu").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
 
-            ele.byId("bgpreview").classList.remove("hidden");
+            this._ele.classList.remove("hidden");
 
             if (this._lastClicked) this.selectTexturePort(this._lastClickedP);
         }
@@ -467,8 +465,9 @@ export default class TexturePreviewer
         this._infoStr = str;
         ele.byId("bgpreviewInfo").innerText = str;
     }
+
+    gotoOp()
+    {
+        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.parent.id);
+    }
 }
-
-
-// CABLES.UI.TexturePreviewer.MODE_CLICKED = 0;
-// CABLES.UI.TexturePreviewer.MODE_ACTIVE = 1;
