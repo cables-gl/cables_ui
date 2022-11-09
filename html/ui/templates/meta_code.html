@@ -115,6 +115,11 @@
                 <option value="asset_upload">use library from patch assets...</option>
                 {{/if}}
                 {{/if}}
+                {{#if isExtensionOp}}
+                {{#if canEditOp}}
+                <option value="asset_upload">use library from patch assets...</option>
+                {{/if}}
+                {{/if}}
                 {{#each libs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}

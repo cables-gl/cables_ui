@@ -936,36 +936,40 @@ export default class ServerOps
         return [];
     }
 
-    loadProjectLibs(proj, _next)
+    loadProjectDependencies(proj, _next)
     {
-        let libsToLoad = [];
-        let coreLibsToLoad = [];
+        const extensionOps = proj.ops.filter((op) => { return this.isExtensionOp(op.objName); });
+        let extensionsToLoad = extensionOps.map((op) => { return this.getExtensionByOpName(op.objName); });
+        extensionsToLoad = CABLES.uniqueArray(extensionsToLoad);
 
-        for (let i = 0; i < proj.ops.length; i++)
+        this.loadExtensions(extensionsToLoad, () =>
         {
-            if (proj.ops[i])
+            if (gui && gui.opSelect())
             {
-                // if (this.getOpLibs(proj.ops[i].objName).length) this._log.log("op with libs:", proj.ops[i].objName, this.getOpLibs(proj.ops[i].objName));
-                libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-                coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
             }
-        }
 
-
-        libsToLoad = CABLES.uniqueArray(libsToLoad);
-        coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
-        if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
-        {
-            if (_next)_next();
-            return;
-        }
-
-        new CABLES.LibLoader(libsToLoad, () =>
-        {
-            new CoreLibLoader(coreLibsToLoad, () =>
+            let libsToLoad = [];
+            let coreLibsToLoad = [];
+            for (let i = 0; i < proj.ops.length; i++)
             {
-                if (_next)_next();
+                if (proj.ops[i])
+                {
+                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
+                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+                }
+            }
+
+            libsToLoad = CABLES.uniqueArray(libsToLoad);
+            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+
+            new CABLES.LibLoader(libsToLoad, () =>
+            {
+                new CoreLibLoader(coreLibsToLoad, () =>
+                {
+                    if (_next)_next();
+                });
             });
         });
     }
@@ -1041,6 +1045,16 @@ export default class ServerOps
         return opname && opname.indexOf("Ops.User.") === 0;
     }
 
+    isExtensionOp(opname)
+    {
+        return opname && opname.indexOf("Ops.Extension.") === 0;
+    }
+
+    getExtensionByOpName(opname)
+    {
+        return opname ? opname.split(".", 3).join(".") : null;
+    }
+
     canEditOp(user, opName)
     {
         if (user.roles.includes("alwaysEditor"))
@@ -1096,5 +1110,67 @@ export default class ServerOps
             }
         }
         return false;
+    }
+
+    loadExtensions(names, cb)
+    {
+        let count = names.length;
+        if (count === 0)
+        {
+            cb();
+        }
+        else
+        {
+            names.forEach((ext) =>
+            {
+                incrementStartup();
+                this.loadExtensionOps(ext, () =>
+                {
+                    logStartup(ext + " - Extension Ops loaded");
+                    count--;
+                    if (count === 0) cb();
+                });
+            });
+        }
+    }
+
+    loadExtensionOps(name, cb)
+    {
+        if (name && name.startsWith("Ops.Extension."))
+        {
+            const extensionName = name.split(".", 3).join(".");
+            const extensionOpUrl = [];
+            extensionOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/extension/" + extensionName));
+
+            const lid = "extensionops" + extensionName + CABLES.uuid();
+            loadjs.ready(lid, () =>
+            {
+                CABLESUILOADER.talkerAPI.send("getExtensionOpDocs", { "name": extensionName }, (err, res) =>
+                {
+                    if (!err && res && res.opDocs)
+                    {
+                        res.opDocs.forEach((opDoc) =>
+                        {
+                            const op = { "name": opDoc.name };
+                            if (opDoc.libs) op.libs = opDoc.libs;
+                            if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
+                            this._ops.push(op);
+                        });
+                        if (gui.opDocs)
+                        {
+                            gui.opDocs.addOpDocs(res.opDocs);
+                        }
+                    }
+                    incrementStartup();
+                    cb();
+                });
+            });
+            loadjs(extensionOpUrl, lid);
+        }
+        else
+        {
+            incrementStartup();
+            cb();
+        }
     }
 }
