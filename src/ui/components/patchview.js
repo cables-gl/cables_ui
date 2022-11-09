@@ -165,7 +165,7 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
-        gui.serverOps.loadProjectLibs(proj, () =>
+        gui.serverOps.loadProjectDependencies(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
             undo.clear();
@@ -1133,7 +1133,7 @@ export default class PatchView extends CABLES.EventTarget
         if (!json || !json.ops) return;
 
         let focusSubpatchop = null;
-        gui.serverOps.loadProjectLibs(json, () =>
+        gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
             json = CABLES.Patch.replaceOpIds(json);

@@ -362,7 +362,7 @@ export default class OpSelect
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
-        this._eleSearchinfo.innerHTML = html;
+        if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
         /*
             var helper buttons / shortcuts
@@ -472,8 +472,7 @@ export default class OpSelect
         else ele.hide(eleReplaceWithExistingVar);
 
 
-        if (!ops && !found)
-            this._eleSearchinfo.innerHTML = "";
+        if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
     }
 
     updateInfo()
@@ -813,24 +812,21 @@ export default class OpSelect
 
     addExtension(name)
     {
-        if (name && name.startsWith("Ops.Extension."))
+        gui.serverOps.loadExtensionOps(name, () =>
         {
-            CABLES.sandbox.loadExtensionOps(name, () =>
+            this.close();
+            this.reload();
+            this.prepare();
+            setTimeout(() =>
             {
-                this.close();
-                this.reload();
-                this.prepare();
-                setTimeout(() =>
-                {
-                    gui.opSelect().show({
-                        "search": name,
-                        "subPatch": gui.patchView.getCurrentSubPatch(),
-                        "x": 0,
-                        "y": 0
-                    });
-                }, 50);
-            });
-        }
+                gui.opSelect().show({
+                    "search": name,
+                    "subPatch": gui.patchView.getCurrentSubPatch(),
+                    "x": 0,
+                    "y": 0
+                });
+            }, 50);
+        });
     }
 
     addSelectedOp()

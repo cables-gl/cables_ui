@@ -202,12 +202,9 @@ export default class SandboxBrowser extends CABLES.EventTarget
         {
             this._cfg.patch = r;
             incrementStartup();
-            this.loadAllExtensionOps(() =>
+            this.loadUserOps(() =>
             {
-                this.loadUserOps(() =>
-                {
-                    if (cb) cb();
-                });
+                if (cb) cb();
             });
         });
     }
@@ -246,12 +243,9 @@ export default class SandboxBrowser extends CABLES.EventTarget
                             gui.corePatch().clear();
                             this._cfg.patch = project;
                             incrementStartup();
-                            this.loadAllExtensionOps(() =>
+                            this.loadUserOps(() =>
                             {
-                                this.loadUserOps(() =>
-                                {
-                                    if (cb) cb(null, project);
-                                });
+                                if (cb) cb(null, project);
                             });
                             modal.close();
                         });
@@ -338,61 +332,5 @@ export default class SandboxBrowser extends CABLES.EventTarget
         });
 
         loadjs(userOpsUrls, lid);
-    }
-
-    loadAllExtensionOps(cb)
-    {
-        const proj = this._cfg.patch;
-
-        const addedExtensions = [];
-        for (const i in proj.ops)
-        {
-            const op = proj.ops[i];
-            if (op.objName && op.objName.startsWith("Ops.Extension."))
-            {
-                const name = op.objName.split(".", 3).join(".");
-                if (!addedExtensions.includes(name))
-                {
-                    addedExtensions.push(name);
-                }
-            }
-        }
-
-        if (addedExtensions.length > 0)
-        {
-            let count = addedExtensions.length;
-            addedExtensions.forEach((ext) =>
-            {
-                incrementStartup();
-                this.loadExtensionOps(ext, () =>
-                {
-                    logStartup(ext + " - Extension Ops loaded");
-                    count--;
-                    if (count === 0) cb();
-                });
-            });
-        }
-        else
-        {
-            cb();
-        }
-    }
-
-    loadExtensionOps(name, cb)
-    {
-        const extensionOpUrl = [];
-        extensionOpUrl.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/extension/" + name));
-
-        const lid = "extensionops" + name + CABLES.generateUUID();
-        loadjs.ready(lid, () =>
-        {
-            CABLESUILOADER.talkerAPI.send("getExtensionOpDocs", { "name": name }, (err, res) =>
-            {
-                if (gui.opDocs) gui.opDocs.addOpDocs(res.opDocs);
-                incrementStartup();
-                cb();
-            });
-        });
-        loadjs(extensionOpUrl, lid);
     }
 }
