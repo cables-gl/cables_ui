@@ -778,8 +778,8 @@ export default class Gui
         this._elCanvasFlash.style.right = 0 + "px";
         this._elCanvasFlash.style.top = 0 + "px";
 
-        this._elBgPreview.style.right = this.rightPanelWidth + "px";
-        this._elBgPreview.style.top = menubarHeight + "px";
+        this._elBgPreview.style.right = (this.rightPanelWidth + 10) + "px";
+        this._elBgPreview.style.top = (menubarHeight + 55) + "px";
 
         this._elBgPreviewButtonContainer.style.right = this.rightPanelWidth + "px";
         // this._elBgPreviewButtonContainer.style.top = this._elBgPreview.height + "px";
