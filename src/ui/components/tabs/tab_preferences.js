@@ -76,7 +76,7 @@ export default class Preferences
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
         this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
-        this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
+        // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
     }
 
     show()

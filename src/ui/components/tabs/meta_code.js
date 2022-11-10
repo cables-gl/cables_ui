@@ -98,6 +98,7 @@ export default class MetaCode
                             "summary": summary,
                             "ownsOp": gui.serverOps.ownsOp(this._op.objName),
                             "isUserOp": gui.serverOps.isUserOp(this._op.objName),
+                            "isExtensionOp": gui.serverOps.isExtensionOp(this._op.objName),
                             "canEditOp": canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,

@@ -82,13 +82,23 @@
 
 
 <div id="bgpreviewButtonsContainer" class="hidden cbl_iconbarContainer cbl_iconbar_hor">
-    <div id="bgpreviewButtons" class="cbl_iconbar" style="">
-        <!-- <div class="item">
-            <span class="icon icon-1_25x fright iconhover icon-triple-dot " onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
-        </div> -->
-        <div class="item">
+    <div id="bgpreviewButtons" class="cbl_iconbar cbl_iconbar_hor">
+        <span class="item nonInteractive" style="float: left;" id="bgpreviewInfo"  onclick="gui.metaTexturePreviewer.gotoOp();">
+        </span>
+        <!-- <span class="item" id="bgpreviewInfo">
             <span class="icon icon-1_25x fright iconhover icon-x" onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
-        </div>
+        </span> -->
+        <!-- <span class="item" id="bgpreviewMenu" onclick="gui.metaTexturePreviewer.pressedEscape();">
+            <span class="icon icon-1_25x fright iconhover icon-three-dots" ></span>
+        </span> -->
+
+
+        <span class="item hidden" id="bgpreviewMax" onclick="gui.metaTexturePreviewer.enableBgPreview(true);">
+            <span class="icon icon-1_25x fright iconhover icon-chevron-left" ></span>
+        </span>
+        <span class="item" id="bgpreviewMin" onclick="gui.metaTexturePreviewer.enableBgPreview(false);">
+            <span class="icon icon-1_25x fright iconhover icon-chevron-right" ></span>
+        </span>
     </div>
 </div>
 

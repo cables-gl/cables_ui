@@ -1,9 +1,9 @@
 import Logger from "../utils/logger";
 import userSettings from "./usersettings";
-//
 
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
+import ele from "../utils/ele";
 
 
 export default class TexturePreviewer
@@ -40,6 +40,9 @@ export default class TexturePreviewer
             if (key == "texpreviewSize") this.setSize(v);
             if (key == "bgpreview") this.enableBgPreview(v);
         });
+
+
+        this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
 
     _renderTexture(tp, ele)
@@ -108,6 +111,8 @@ export default class TexturePreviewer
             if (port.get().cubemap) texType = 1;
             if (port.get().textureType == CGL.Texture.TYPE_DEPTH) texType = 2;
 
+            this._showInfo(port.get());
+
             if (texType == 0 || texType == 2)
             {
                 cgl.setTexture(texSlot, port.get().tex);
@@ -135,7 +140,6 @@ export default class TexturePreviewer
             // const containerEle=document.getElementById("preview_img_container"+id);
             // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
             // const h=w*(port.get().height/port.get().width);
-
 
             const s = this._getCanvasSize(port, port.get(), meta);
             if (s[0] == 0 || s[1] == 0) return;
@@ -180,31 +184,31 @@ export default class TexturePreviewer
         userSettings.set("texpreviewSize", size);
 
 
-        document.getElementById("bgpreviewButtons").addEventListener("pointerenter", (e) =>
-        {
-            this._showInfoToolTip(e);
-        });
+        // document.getElementById("bgpreviewButtons").addEventListener("pointerenter", (e) =>
+        // {
+        //     // this._showInfoToolTip(e);
+        // });
 
-        this._ele.addEventListener("pointerenter", (e) =>
-        {
-            this._showInfoToolTip(e);
-        });
-        this._ele.addEventListener("pointerleave", (e) =>
-        {
-            CABLES.UI.hideToolTip();
-        });
+        // this._ele.addEventListener("pointerenter", (e) =>
+        // {
+        //     // this._showInfoToolTip(e);
+        // });
+        // this._ele.addEventListener("pointerleave", (e) =>
+        // {
+        //     // CABLES.UI.hideToolTip();
+        // });
     }
 
-    _showInfoToolTip(e)
-    {
-        if (!this._lastClicked || !this._lastClicked.port) return;
+    // _showInfoToolTip(e)
+    // {
+    //     if (!this._lastClicked || !this._lastClicked.port) return;
 
-        const t = this._lastClicked.port.get();
+    //     const t = this._lastClicked.port.get();
 
-        if (!t) return;
+    //     if (!t) return;
 
-        if (t.getInfoOneLine) CABLES.UI.showToolTip(e, t.getInfoOneLine());
-    }
+    //     if (t.getInfoOneLine) CABLES.UI.showToolTip(e, t.getInfoOneLine());
+    // }
 
     _getCanvasSize(port, tex, meta)
     {
@@ -246,13 +250,6 @@ export default class TexturePreviewer
     }
 
 
-    hide()
-    {
-        ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
-        this._paused = true;
-        CABLES.UI.hideToolTip();
-    }
-
     showActivity()
     {
         for (let i = 0; i < this._texturePorts.length; i++)
@@ -273,24 +270,45 @@ export default class TexturePreviewer
         if (!enabled)
         {
             this.pressedEscape();
+
+            userSettings.set("bgpreviewMax", false);
+
+            ele.byId("bgpreviewInfo").classList.add("hidden");
+            ele.byId("bgpreviewMin").classList.add("hidden");
+            ele.byId("bgpreviewMax").classList.remove("hidden");
+
+            this._ele.classList.add("hidden");
         }
         else
         {
+            userSettings.set("bgpreviewMax", true);
+
+            this.paused = false;
+            ele.byId("bgpreviewInfo").classList.remove("hidden");
+            ele.byId("bgpreviewMin").classList.remove("hidden");
+            ele.byId("bgpreviewMax").classList.add("hidden");
+
+            this._ele.classList.remove("hidden");
+
             if (this._lastClicked) this.selectTexturePort(this._lastClickedP);
         }
     }
 
+    hide()
+    {
+        this._paused = true;
+        CABLES.UI.hideToolTip();
+    }
+
     pressedEscape()
     {
-        this._lastClicked = null;
-        const ele = document.getElementById("bgpreview");
-        if (ele)ele.style.display = "none";
+        // this._lastClicked = null;
         this.hide();
     }
 
     render()
     {
-        if (this._lastClicked)
+        if (!this.paused)
         {
             // this._ele=document.getElementById('bgpreview');
             this._ele.style.display = "block";
@@ -355,7 +373,6 @@ export default class TexturePreviewer
 
             return;
         }
-
 
         ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
         CABLES.UI.hideToolTip();
@@ -433,8 +450,24 @@ export default class TexturePreviewer
 
         return this._texturePorts[idx];
     }
+
+    _showInfo(tex)
+    {
+        let str = "";
+        if (tex)
+        {
+            str = tex.width + " x " + tex.height;
+            if (tex.textureType === CGL.Texture.TYPE_FLOAT) str += " 32bit";
+        }
+
+        if (this._infoStr == str) return;
+
+        this._infoStr = str;
+        ele.byId("bgpreviewInfo").innerText = str;
+    }
+
+    gotoOp()
+    {
+        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.parent.id);
+    }
 }
-
-
-// CABLES.UI.TexturePreviewer.MODE_CLICKED = 0;
-// CABLES.UI.TexturePreviewer.MODE_ACTIVE = 1;
