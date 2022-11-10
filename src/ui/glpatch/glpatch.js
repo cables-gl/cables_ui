@@ -179,7 +179,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             CABLES.UI.notify("Flow Visualization: ", modes[fm]);
 
-
             userSettings.set("glflowmode", fm);
         });
 

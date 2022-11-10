@@ -23,6 +23,7 @@ class UserSettings extends CABLES.EventTarget
 
     init()
     {
+        if (this.get("glflowmode") === null) this.set("glflowmode", 2);
         if (this.get("snapToGrid") === null) this.set("snapToGrid", true);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
