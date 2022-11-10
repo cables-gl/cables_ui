@@ -50,6 +50,8 @@ export default class Preferences
 
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
         this.setSwitchValue("texpreviewSize", userSettings.get("texpreviewSize"));
+        this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
+
         this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
         this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));
         this.setSwitchValue("presentationmode", userSettings.get("presentationmode"));
@@ -73,6 +75,7 @@ export default class Preferences
         this.setSwitchValue("showOldOps", userSettings.get("showOldOps"));
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
         this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
+
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
         this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);

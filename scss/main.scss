@@ -831,8 +831,9 @@ body
     #bgpreviewButtonsContainer
     {
         position:absolute;
-        z-index: $zindex_over;
+        z-index: $zindex_superlow;
     }
+
 
     // #bgpreviewButtonsContainer:hover
     #bgpreviewButtons
