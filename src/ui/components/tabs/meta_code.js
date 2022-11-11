@@ -106,9 +106,6 @@ export default class MetaCode
                             "user": gui.user,
                             "warns": res.warns
                         });
-
-                    // console.log(res.warns);
-
                     this._tab.html(html);
                     if (!canEditOp)
                     {

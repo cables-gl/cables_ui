@@ -1089,32 +1089,9 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
-        if (user.roles.includes("alwaysEditor"))
-        {
-            // users with "alwaysEditor" role are always allowed to edit everything
-            return true;
-        }
-        if (opName.startsWith("Ops.User."))
-        {
-            if (user.isAdmin || this.ownsOp(opName))
-            {
-                // admins may edit any userop, users are only allowed to edit their own userops
-                return true;
-            }
-        }
-        if (user.isAdmin)
-        {
-            // admins are only allowed to edit everything on dev
-            if (CABLES.sandbox.isDevEnv())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        return false;
+        const op = this._ops.find((o) => { return o.name === opName; });
+        if (!op) return false;
+        return op.allowEdit;
     }
 
     canEditAttachment(user, opName)
@@ -1205,7 +1182,7 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            const op = { "name": opDoc.name };
+                            const op = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) op.libs = opDoc.libs;
                             if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
                             this._ops.push(op);
@@ -1245,7 +1222,7 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            const op = { "name": opDoc.name };
+                            const op = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) op.libs = opDoc.libs;
                             if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
                             this._ops.push(op);
