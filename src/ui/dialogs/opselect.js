@@ -652,29 +652,7 @@ export default class OpSelect
 
     _onClickAddButton(evt)
     {
-        if (evt.target.dataset.itemType === "extension")
-        {
-            gui.opSelect().addExtension(evt.target.dataset.opname);
-        }
-        else if (evt.target.dataset.itemType === "teamnamespace")
-        {
-            gui.opSelect().addTeamOps(evt.target.dataset.opname);
-        }
-        else
-        {
-            gui.opSelect().addOp(evt.target.dataset.opname);
-            this.close();
-
-            if (evt.shiftKey)
-                setTimeout(() =>
-                {
-                    gui.opSelect().show({
-                        "subPatch": gui.patchView.getCurrentSubPatch(),
-                        "x": 0,
-                        "y": 0
-                    });
-                }, 50);
-        }
+        this.addOp(evt.currentTarget.parentNode.dataset.opname, evt.shiftKey, evt.currentTarget.parentNode.dataset.itemType);
     }
 
     isOpen()
@@ -799,18 +777,44 @@ export default class OpSelect
             this.search();
             ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
             this._searching = false;
-            if (this._enterPressedEarly) this.addSelectedOp();
+            if (this._enterPressedEarly)
+            {
+                this.addSelectedOp();
+            }
         }, 250);
     }
 
-    addOp(opname)
+    addOp(opname, reopenModal = false, itemType = "op")
     {
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;
 
-            this.close();
-            gui.patchView.addOp(opname, this._newOpOptions);
+            if (itemType === "extension")
+            {
+                gui.opSelect().addExtension(opname);
+            }
+            else if (itemType === "teamnamespace")
+            {
+                gui.opSelect().addTeamOps(opname);
+            }
+            else
+            {
+                if (reopenModal)
+                {
+                    setTimeout(() =>
+                    {
+                        gui.opSelect().show({
+                            "subPatch": gui.patchView.getCurrentSubPatch(),
+                            "x": 0,
+                            "y": 0
+                        });
+                    }, 50);
+                }
+
+                this.close();
+                gui.patchView.addOp(opname, this._newOpOptions);
+            }
         }
     }
 
@@ -852,13 +856,13 @@ export default class OpSelect
         });
     }
 
-    addSelectedOp()
+    addSelectedOp(reopenModal)
     {
         const selEle = ele.byClass("selected");
         if (selEle)
         {
             const opname = selEle.dataset.opname;
-            this.addOp(opname);
+            this.addOp(opname, reopenModal, selEle.dataset.itemType);
         }
     }
 
@@ -872,17 +876,7 @@ export default class OpSelect
 
             if (e.shiftKey)
             {
-                this.addSelectedOp();
-
-                setTimeout(() =>
-                {
-                    gui.opSelect().show({
-                        "subPatch": gui.patchView.getCurrentSubPatch(),
-                        "x": 0,
-                        "y": 0
-                    });
-                }, 50);
-
+                this.addSelectedOp(true);
                 return;
             }
 
@@ -891,24 +885,18 @@ export default class OpSelect
                 this._enterPressedEarly = true;
                 return;
             }
-            else this.addSelectedOp();
+            else
+            {
+                this.addSelectedOp();
+            }
 
             e.preventDefault();
             break;
 
         case 8:
-            // if (this._backspaceDelay)
-            // {
-            //     clearTimeout(this._backspaceDelay);
-            // }
-
-            // this._backspaceDelay = setTimeout(() =>
-            // {
-            // this._backspaceDelay = null;
             this.onInput();
-            // }, 300);
-
             return true;
+
         case 38: // up
 
             if (eleSelected) eleSelected.classList.remove("selected");
