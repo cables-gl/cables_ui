@@ -3,7 +3,7 @@
 
 export default class WatchPortVisualizer
 {
-    constructor(v, dv)
+    constructor()
     {
         this._canvasWidth = 300;
         this._canvasHeight = 120;
@@ -48,7 +48,15 @@ export default class WatchPortVisualizer
     {
         this._visible = true;
         this._ele = e.target;
+
         const offset = e.target.getBoundingClientRect();
+
+        if (offset.left == 0 && offset.top == 0)
+        {
+            this._visible = false;
+            this.canvas.style.display = "none";
+        }
+
         this.canvas.style.left = offset.left + "px";
         this.canvas.style.top = offset.top + 30 + "px";
     }
