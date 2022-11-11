@@ -84,7 +84,7 @@
 
 </td>
 
-<td style="min-width:15px;">
+<td class="contextmenuarea">
 <!-- animation/variable button -->
 
 {{#if isInput}}
@@ -108,7 +108,7 @@
                     {{#if port.uiAttribs.useVariable}}
                         <a class="icon-x icon iconhover" id="portremovevar_{{portnum}}" data-portid="{{port.id}}"></a>
                     {{else}}
-                        <a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a>
+                        <!-- <a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a> -->
                     {{/if}}
                 {{/if}}
 
@@ -116,8 +116,14 @@
             {{/compare}}
 
         {{/compare}}
-        {{/if}}
-        {{/if}}
+
+    {{/if}}
+
+
+{{/if}}
+
+<a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a>
+
 
 </td>
 </tr>

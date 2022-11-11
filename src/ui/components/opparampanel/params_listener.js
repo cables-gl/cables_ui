@@ -131,15 +131,18 @@ class ParamsListener extends CABLES.EventTarget
     }
 
 
-    initPortClickListener(op, index, panelid)
+    initPortClickListener(op, index, panelid, dirStr)
     {
-        if (op.portsIn[index].isAnimated()) ele.byId("portanim_in_" + index).classList.add("timingbutton_active");
-        // if (op.portsIn[index].isAnimated() && op.portsIn[index].anim.stayInTimeline) ele.byId("portgraph_in_" + index).classList.add("timingbutton_active");
+        let ports = op.portsIn;
+        if (dirStr == "out")ports = op.portsOut;
 
-        if (ele.byId("portTitle_in_" + index))
-            ele.byId("portTitle_in_" + index).addEventListener("click", function (e)
+        if (ports[index].isAnimated()) ele.byId("portanim_" + dirStr + "_" + index).classList.add("timingbutton_active");
+        // if (ports[index].isAnimated() && ports[index].anim.stayInTimeline) ele.byId("portgraph_"+dirStr+"_" + index).classList.add("timingbutton_active");
+
+        if (ele.byId("portTitle_" + dirStr + "_" + index))
+            ele.byId("portTitle_" + dirStr + "_" + index).addEventListener("click", function (e)
             {
-                const p = op.portsIn[index];
+                const p = ports[index];
                 if (!p.uiAttribs.hidePort)
                     gui.opSelect().show(
                         {
@@ -148,10 +151,10 @@ class ParamsListener extends CABLES.EventTarget
                         }, op, p);
             });
 
-        if (ele.byId("portCreateOp_in_" + index))
-            ele.byId("portCreateOp_in_" + index).addEventListener("click", function (e)
+        if (ele.byId("portCreateOp_" + dirStr + "_" + index))
+            ele.byId("portCreateOp_" + dirStr + "_" + index).addEventListener("click", function (e)
             {
-                const thePort = op.portsIn[index];
+                const thePort = ports[index];
                 if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
@@ -161,12 +164,12 @@ class ParamsListener extends CABLES.EventTarget
                 }
             });
 
-        if (ele.byId("portspreadsheet_in_" + index + "_" + panelid))
-            ele.byId("portspreadsheet_in_" + index + "_" + panelid).addEventListener("click", function (e)
+        if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
+            ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                const thePort = op.portsIn[index];
+                const thePort = ports[index];
 
-                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(op.id, op.portsIn[index].name);
+                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(op.id, ports[index].name);
             });
 
 
@@ -175,11 +178,11 @@ class ParamsListener extends CABLES.EventTarget
         // input text editor tab
         //
 
-        let el = ele.byId("portedit_in_" + index + "_" + panelid);
+        let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            const thePort = op.portsIn[index];
-            CABLES.UI.paramsHelper.openParamStringEditor(op.id, op.portsIn[index].name, null, true);
+            const thePort = ports[index];
+            CABLES.UI.paramsHelper.openParamStringEditor(op.id, ports[index].name, null, true);
         });
 
         // /////////////////////
@@ -189,33 +192,33 @@ class ParamsListener extends CABLES.EventTarget
         el = ele.byId("portbutton_" + index + "_" + panelid);
         if (el) el.addEventListener("click", function (e)
         {
-            op.portsIn[index]._onTriggered();
+            ports[index]._onTriggered();
         });
 
-        if (op.portsIn[index].uiAttribs.display === "buttons")
+        if (ports[index].uiAttribs.display === "buttons")
         {
-            for (let i = 0; i < op.portsIn[index].value.length; i++)
+            for (let i = 0; i < ports[index].value.length; i++)
             {
                 let eli = ele.byId("portbutton_" + index + "_" + panelid + "_" + i);
                 if (eli)eli.addEventListener("click", function (e)
                 {
                     const name = e.target.dataset.title;
-                    op.portsIn[index]._onTriggered(name);
+                    ports[index]._onTriggered(name);
                 });
             }
         }
 
         //
 
-        el = ele.byId("portgraph_in_" + index);
+        el = ele.byId("portgraph_" + dirStr + "_" + index);
         if (el)el.addEventListener("click", function (e)
         {
-            if (op.portsIn[index].isAnimated())
+            if (ports[index].isAnimated())
             {
-                op.portsIn[index].anim.stayInTimeline = !op.portsIn[index].anim.stayInTimeline;
+                ports[index].anim.stayInTimeline = !ports[index].anim.stayInTimeline;
 
-                gui.timeLine().setAnim(op.portsIn[index].anim, {
-                    "name": op.getTitle() + ": " + op.portsIn[index].name,
+                gui.timeLine().setAnim(ports[index].anim, {
+                    "name": op.getTitle() + ": " + ports[index].name,
                     "opid": op.id,
                     "defaultValue": parseFloat(ele.byId("portval_" + index).value)
                 });
@@ -242,44 +245,63 @@ class ParamsListener extends CABLES.EventTarget
             gui.setStateUnsaved();
         });
 
-        el = ele.byId("port_contextmenu_in_" + index);
+        el = ele.byId("port_contextmenu_" + dirStr + "_" + index);
         if (el) el.addEventListener("click", (e) =>
         {
             const port = op.getPortById(e.target.dataset.portid);
 
+            let items = [];
+            if (dirStr == "in")items.push({
+                "title": "Assign variable",
+                "func": () =>
+                {
+                    gui.setStateUnsaved();
+                    port.setVariable("unknown");
+                    port.parent.refreshParams();
+                }
+            });
+            if (dirStr == "in")items.push({
+                "title": "Animate Parameter",
+                "func": () =>
+                {
+                    gui.setStateUnsaved();
+                    el = ele.byId("portanim_" + dirStr + "_" + index);
+                    if (el)el.dispatchEvent(new Event("click"));
+                }
+            });
+
+            if (op.uiAttribs.extendTitlePort == port.name)
+                items.push({
+                    "title": "Remove extended title",
+                    "func": () =>
+                    {
+                        op.setUiAttrib({ "extendTitlePort": null });
+                    }
+                });
+
+            else
+                items.push({
+                    "title": "Set as extended title",
+                    "func": () =>
+                    {
+                        op.setUiAttrib({ "extendTitlePort": port.name });
+                    }
+                });
+
+
             CABLES.contextMenu.show(
-                { "items":
-                    [
-                        {
-                            "title": "Assign variable",
-                            "func": () =>
-                            {
-                                gui.setStateUnsaved();
-                                port.setVariable("unknown");
-                                port.parent.refreshParams();
-                            }
-                        },
-                        {
-                            "title": "Animate Parameter",
-                            "func": () =>
-                            {
-                                gui.setStateUnsaved();
-                                el = ele.byId("portanim_in_" + index);
-                                if (el)el.dispatchEvent(new Event("click"));
-                            }
-                        }
-                    ] }, e.target);
+                { "items": items }, e.target);
         });
 
-        el = ele.byId("portanim_in_" + index);
+        el = ele.byId("portanim_" + dirStr + "_" + index);
         if (el)el.addEventListener("click", (e) =>
         {
             const targetState = !el.classList.contains("timingbutton_active");
 
             gui.setStateUnsaved();
 
-            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, op.portsIn[index].get());
-            gui.emitEvent("portValueSetAnimated", op, index, targetState, op.portsIn[index].get());
+            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, ports[index].get());
+            gui.emitEvent("portValueSetAnimated", op, index, targetState, ports[index].get());
         });
     }
 

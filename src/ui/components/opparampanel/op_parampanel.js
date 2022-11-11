@@ -317,7 +317,7 @@ class OpParampanel extends CABLES.EventTarget
                 if (gui.patchView._patchRenderer.getOp)
                 {
                     const glOp = gui.patchView._patchRenderer.getOp(op.id);
-                    if (glOp)
+                    if (glOp && this._portsOut[ipo])
                     {
                         const glPort = glOp.getGlPort(this._portsOut[ipo].name);
                         if (this._portsOut[ipo].name == this._portLineDraggedName)
@@ -327,7 +327,8 @@ class OpParampanel extends CABLES.EventTarget
             });
         }
 
-        for (let ipi = 0; ipi < this._portsIn.length; ipi++) this._paramsListener.initPortClickListener(op, ipi, this.panelId);
+        for (let ipi = 0; ipi < this._portsIn.length; ipi++) this._paramsListener.initPortClickListener(op, ipi, this.panelId, "in");
+        for (let ipi = 0; ipi < this._portsOut.length; ipi++) this._paramsListener.initPortClickListener(op, ipi, this.panelId, "out");
 
         for (let ipip = 0; ipip < this._portsIn.length; ipip++)
         {
