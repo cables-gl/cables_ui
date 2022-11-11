@@ -20,6 +20,7 @@ export default class OpDocs
         logStartup("Op docs loaded");
         const res = CABLESUILOADER.preload.opDocsAll;
         this._extensions = res.extensions;
+        this._teamnamespaces = res.teamNamespaces;
         this.libs = res.libs;
         this.coreLibs = res.coreLibs;
 
@@ -138,6 +139,11 @@ export default class OpDocs
     getExtensions()
     {
         return this._extensions;
+    }
+
+    getTeamNamespaces()
+    {
+        return this._teamnamespaces;
     }
 
     getPopularity(opname)

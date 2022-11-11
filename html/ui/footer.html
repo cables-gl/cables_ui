@@ -132,21 +132,19 @@
                             incrementStartup();
                             logStartup('loaded ui');
 
-                            fetch(CABLESUILOADER.builtVersionUrl("core",
-                                cfg.urlCables+"/api/doc/ops/all"),{"dataType": "json"})
-                            .then(function (response)
+                            CABLESUILOADER.talkerAPI= CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
+                            CABLESUILOADER.talkerAPI.send("getOpDocsAll",{},(err, _data) =>
                             {
-                                response.json().then(function (_data)
-                                {
+                                if(err) {
+                                    console.error("preloading error",err);
+                                }else{
                                     CABLESUILOADER.preload.opDocsAll=_data;
-                                });
-                            })
-                            .catch(function (response)
-                            {
+                                }
+                            }, (response) => {
                                 console.error("preloading error",response);
                             });
 
-                            if(document.location.href.indexOf('https://cables.gl')==-1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
+                            if(document.location.href.indexOf('https://cables.gl') === -1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
                             else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
 
                             incrementStartup();
@@ -217,7 +215,7 @@
 
         document.addEventListener('DOMContentLoaded', function(event)
         {
-            CABLESUILOADER.talkerAPI=new CABLESUILOADER.TalkerAPI(window.parent);
+            CABLESUILOADER.talkerAPI= CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
             CABLESUILOADER.talkerAPI.send("requestPatchData",{},function(response)
             {
                 if(response.buildInfo) {
@@ -226,20 +224,6 @@
                 CABLESUILOADER.loadAll(response);
             });
         });
-
-        /*
-        CABLES.UI.talker.onMessage=function(msg)
-        {
-            console.log('startup talker',msg);
-            if(msg.namespace=="cables.config")
-            {
-                console.log(msg.data,msg.data.urlCables);
-                CABLES.loadAll(msg.data);
-
-            }
-        };
-        CABLES.UI.talker.send('cables', {"cmd":"sendConfig"} );
-        */
 
         if(! (function() { return !this; })() ) console.log('not in strict mode: footer html' );
 

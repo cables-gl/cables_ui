@@ -942,33 +942,40 @@ export default class ServerOps
         let extensionsToLoad = extensionOps.map((op) => { return this.getExtensionByOpName(op.objName); });
         extensionsToLoad = CABLES.uniqueArray(extensionsToLoad);
 
-        this.loadExtensions(extensionsToLoad, () =>
+        const teamOps = proj.ops.filter((op) => { return this.isTeamOp(op.objName); });
+        let teamOpsToLoad = teamOps.map((op) => { return this.getTeamNamespaceByOpName(op.objName); });
+        teamOpsToLoad = CABLES.uniqueArray(teamOpsToLoad);
+
+        this.loadTeamOps(teamOpsToLoad, () =>
         {
-            if (gui && gui.opSelect())
+            this.loadExtensions(extensionsToLoad, () =>
             {
-                gui.opSelect().reload();
-                gui.opSelect().prepare();
-            }
-
-            let libsToLoad = [];
-            let coreLibsToLoad = [];
-            for (let i = 0; i < proj.ops.length; i++)
-            {
-                if (proj.ops[i])
+                if (gui && gui.opSelect())
                 {
-                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+                    gui.opSelect().reload();
+                    gui.opSelect().prepare();
                 }
-            }
 
-            libsToLoad = CABLES.uniqueArray(libsToLoad);
-            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
-            new CABLES.LibLoader(libsToLoad, () =>
-            {
-                new CoreLibLoader(coreLibsToLoad, () =>
+                let libsToLoad = [];
+                let coreLibsToLoad = [];
+                for (let i = 0; i < proj.ops.length; i++)
                 {
-                    if (_next)_next();
+                    if (proj.ops[i])
+                    {
+                        libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
+                        coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+                    }
+                }
+
+                libsToLoad = CABLES.uniqueArray(libsToLoad);
+                coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+
+                new CABLES.LibLoader(libsToLoad, () =>
+                {
+                    new CoreLibLoader(coreLibsToLoad, () =>
+                    {
+                        if (_next)_next();
+                    });
                 });
             });
         });
@@ -1045,12 +1052,37 @@ export default class ServerOps
         return opname && opname.indexOf("Ops.User.") === 0;
     }
 
+    isAdminOp(opname)
+    {
+        return opname && opname.indexOf("Ops.Admin.") === 0;
+    }
+
+    isDeprecatedOp(opname)
+    {
+
+    }
+
+    isDevOp(opname)
+    {
+        return opname && opname.indexOf("Ops.Dev.") === 0;
+    }
+
     isExtensionOp(opname)
     {
         return opname && opname.indexOf("Ops.Extension.") === 0;
     }
 
+    isTeamOp(opname)
+    {
+        return opname && opname.indexOf("Ops.Team.") === 0;
+    }
+
     getExtensionByOpName(opname)
+    {
+        return opname ? opname.split(".", 3).join(".") : null;
+    }
+
+    getTeamNamespaceByOpName(opname)
     {
         return opname ? opname.split(".", 3).join(".") : null;
     }
@@ -1134,9 +1166,31 @@ export default class ServerOps
         }
     }
 
+    loadTeamOps(names, cb)
+    {
+        let count = names.length;
+        if (count === 0)
+        {
+            cb();
+        }
+        else
+        {
+            names.forEach((ext) =>
+            {
+                incrementStartup();
+                this.loadTeamNamespaceOps(ext, () =>
+                {
+                    logStartup(ext + " - Team Ops loaded");
+                    count--;
+                    if (count === 0) cb();
+                });
+            });
+        }
+    }
+
     loadExtensionOps(name, cb)
     {
-        if (name && name.startsWith("Ops.Extension."))
+        if (name && this.isExtensionOp(name))
         {
             const extensionName = name.split(".", 3).join(".");
             const extensionOpUrl = [];
@@ -1166,6 +1220,46 @@ export default class ServerOps
                 });
             });
             loadjs(extensionOpUrl, lid);
+        }
+        else
+        {
+            incrementStartup();
+            cb();
+        }
+    }
+
+    loadTeamNamespaceOps(name, cb)
+    {
+        if (name && this.isTeamOp(name))
+        {
+            const teamNamespaceName = name.split(".", 3).join(".");
+            const teamOpUrl = [];
+            teamOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/team/" + teamNamespaceName));
+
+            const lid = "teamops" + teamNamespaceName + CABLES.uuid();
+            loadjs.ready(lid, () =>
+            {
+                CABLESUILOADER.talkerAPI.send("getTeamNamespaceOpDocs", { "name": teamNamespaceName }, (err, res) =>
+                {
+                    if (!err && res && res.opDocs)
+                    {
+                        res.opDocs.forEach((opDoc) =>
+                        {
+                            const op = { "name": opDoc.name };
+                            if (opDoc.libs) op.libs = opDoc.libs;
+                            if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
+                            this._ops.push(op);
+                        });
+                        if (gui.opDocs)
+                        {
+                            gui.opDocs.addOpDocs(res.opDocs);
+                        }
+                    }
+                    incrementStartup();
+                    cb();
+                });
+            });
+            loadjs(teamOpUrl, lid);
         }
         else
         {
