@@ -38,6 +38,7 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     opParams.show(op);
 };
 
+
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
     const names = gui.patchView.getSubpatchPathArray(gui.patchView.getCurrentSubPatch());

@@ -488,8 +488,9 @@ export default function TimeLineGui()
     let delayedUpdateKeyLine = 0;
     function updateKeyLineDelayed()
     {
-        clearTimeout(delayedUpdateKeyLine);
-        delayedUpdateKeyLine = setTimeout(updateKeyLine, 10);
+        updateKeyLine();
+        // clearTimeout(delayedUpdateKeyLine);
+        // delayedUpdateKeyLine = setTimeout(updateKeyLine, 10);
     }
 
     function updateKeyLine()
@@ -918,7 +919,7 @@ export default function TimeLineGui()
     this.scaleHeightDelayed = function ()
     {
         clearTimeout(delayedScaleHeight);
-        delayedScaleHeight = setTimeout(self.scaleHeight, 150);
+        delayedScaleHeight = setTimeout(self.scaleHeight, 50);
     };
 
     let lastScaleHeightMax = 0;

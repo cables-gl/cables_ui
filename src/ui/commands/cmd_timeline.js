@@ -1,4 +1,5 @@
 import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen";
+import ParamsListener from "../components/opparampanel/params_listener";
 
 const CABLES_CMD_TIMELINE = {};
 
@@ -12,8 +13,10 @@ export default timelineCommands;
 
 CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
 {
+    const panelid = CABLES.uuid();
     const ops = gui.corePatch().ops;
     const ports = [];
+
     for (let i = 0; i < ops.length; i++)
     {
         const inputs = ops[i].portsIn;
@@ -21,7 +24,9 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
             if (inputs[j].isAnimated())
                 ports.push(inputs[j]);
     }
-    const htmlgen = new PortHtmlGenerator();
+
+
+    const htmlgen = new PortHtmlGenerator(panelid);
 
     let html = "<div class=\"panel params\" ><table>";
 
@@ -30,6 +35,9 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
     const tab = new CABLES.UI.Tab("Animated Ports", { "icon": "clock", "infotext": "tab_timeline", "padding": true, "singleton": true });
     gui.mainTabs.addTab(tab, true);
     tab.html(html);
+
+    const paramsListener = new ParamsListener(panelid);
+    paramsListener.init({ "portsIn": ports });
 };
 
 
