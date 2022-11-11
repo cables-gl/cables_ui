@@ -239,9 +239,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
             modalNotices.push(licenceText);
         }
 
-        console.log(this._currentProject);
         let patchName = gui.project().name;
         if (gui.corePatch() && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
+
+        console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
+        console.log("patch save as - atchName", patchName);
+
+
         const p = new ModalDialog({
             "prompt": true,
             "title": "Save As...",

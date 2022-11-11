@@ -29,15 +29,12 @@ export default class TexturePreviewer
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
-        // this._ele.addEventListener("click", function ()
-        // {
-        //     if (this._lastClicked && window.gui) gui.patchView.centerSelectOp(this._lastClicked.opid);
-        // }.bind(this));
 
 
         userSettings.addEventListener("onChange", (key, v) =>
         {
-            if (key == "texpreviewSize") this.setSize(v);
+            if (key == "texpreviewTransparent") this.setSize();
+            if (key == "texpreviewSize") this.setSize();
             if (key == "bgpreview") this.enableBgPreview(v);
         });
 
@@ -45,18 +42,20 @@ export default class TexturePreviewer
         this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
 
-    _renderTexture(tp, ele)
+    _renderTexture(tp, element)
     {
-        let port = tp.port;
-        if (!tp.port)port = tp;
+        if (!tp) return;
+        let port = tp;
+        if (tp.port)port = tp.port;
+
         const id = tp.id;
         const texSlot = 5;
         const texSlotCubemap = texSlot + 1;
 
         let meta = true;
-        if (ele)meta = false;
+        if (element)meta = false;
 
-        const previewCanvasEle = ele || document.getElementById("preview_img_" + id);
+        const previewCanvasEle = element || document.getElementById("preview_img_" + id);
 
         if (!previewCanvasEle)
         {
@@ -173,6 +172,10 @@ export default class TexturePreviewer
             size = userSettings.get("texpreviewSize");
             if (!size)size = 50;
         }
+
+        if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
+        else this._ele.style.opacity = 1;
+
 
         this._ele.classList.remove("bgpreviewScale25");
         this._ele.classList.remove("bgpreviewScale33");

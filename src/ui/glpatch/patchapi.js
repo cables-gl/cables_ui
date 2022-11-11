@@ -83,7 +83,7 @@ export default class GlPatchAPI
 
     updateFlowModeActivity()
     {
-        const flowMode = userSettings.get("glflowmode");
+        let flowMode = userSettings.get("glflowmode");
 
         if (flowMode == 0 && this._currentFlowMode != 0)
         {

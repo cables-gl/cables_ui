@@ -331,7 +331,7 @@ class OpParampanel extends CABLES.EventTarget
 
         for (let ipip = 0; ipip < this._portsIn.length; ipip++)
         {
-            (function (index)
+            ((index) =>
             {
                 const elm = ele.byId("portdelete_in_" + index);
                 if (elm)elm.addEventListener("click", (e) =>
@@ -339,7 +339,7 @@ class OpParampanel extends CABLES.EventTarget
                     this._portsIn[index].removeLinks();
                     gui.opParams.show(op);
                 });
-            }(ipip));
+            })(ipip);
         }
 
         for (let ipii = 0; ipii < this._portsIn.length; ipii++) this._paramsListener.initPortInputListener(op, ipii, this.panelId);
