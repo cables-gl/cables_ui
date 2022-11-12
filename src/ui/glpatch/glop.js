@@ -39,6 +39,11 @@ export default class GlOp extends CABLES.EventTarget
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
+
+        this._titleExtPortTimeout = null;
+        this._titleExtPortLastTime = null;
+        this._titleExtPort = null;
+        this._titleExtPortListener = null;
         this._titleExt = null;
         this._glRectNames.push("_titleExt");
 
@@ -322,6 +327,27 @@ export default class GlOp extends CABLES.EventTarget
         if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
 
         this.opUiAttribs = attr;
+
+
+        if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
+        {
+            if (this._titleExtPort)
+            {
+                this._titleExtPort.off(this._titleExtPortlister);
+                this._titleExtPort = null;
+            }
+            this._titleExtPort = this._op.getPort(this.opUiAttribs.extendTitlePort);
+            this._titleExtPortlister = this._titleExtPort.on("change", () =>
+            {
+                clearTimeout(this._titleExtPortTimeout);
+                if (performance.now() - this._titleExtPortLastTime < 50)
+                {
+                    this._titleExtPortTimeout = setTimeout(() => { this.update(); }, 50);
+                }
+                this.update();
+                this._titleExtPortLastTime = performance.now();
+            });
+        }
 
         if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
         if (attr.color) this._updateColors();
@@ -759,20 +785,24 @@ export default class GlOp extends CABLES.EventTarget
         if (!this._wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
-
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
         this._glRectNames.push("_glTitle");
 
-        if (this.opUiAttribs.hasOwnProperty("extendTitle") && !this._titleExt)
+        if (!this._titleExt &&
+            (
+                this.opUiAttribs.hasOwnProperty("extendTitle") ||
+                this.opUiAttribs.hasOwnProperty("extendTitlePort")))
         {
             this._titleExt = new GlText(this._textWriter, " ???");
             this._titleExt.setParentRect(this._glRectBg);
             this._titleExt.setColor(GlUiConfig.colors.opTitleExt);
             this._titleExt.visible = this.visible;
         }
-        if ((!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) && this._titleExt)
+        if (this._titleExt &&
+            (!this.opUiAttribs.hasOwnProperty("extendTitle") || !this.opUiAttribs.extendTitle) &&
+            (!this.opUiAttribs.hasOwnProperty("extendTitlePort") || !this.opUiAttribs.extendTitlePort))
         {
             this._titleExt.dispose();
             this._titleExt = null;
@@ -846,12 +876,30 @@ export default class GlOp extends CABLES.EventTarget
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
         else if (this.opUiAttribs.title != this._glTitle.text) this.setTitle(this.opUiAttribs.title);
 
-
-        if (this._titleExt && this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
+        if (this._titleExt)
         {
-            this._titleExt.text = " " + this.opUiAttribs.extendTitle || "!?!?!";
-            doUpdateSize = true;
+            if (this.opUiAttribs.hasOwnProperty("extendTitlePort") && this.opUiAttribs.extendTitlePort)
+            {
+                const str = " " + this.opUiAttribs.extendTitlePort + ": " + this._op.getPort(this.opUiAttribs.extendTitlePort).get();
+                if (str != this._titleExt.text)
+                {
+                    this._titleExt.text = str;
+                    doUpdateSize = true;
+                }
+            }
+            else
+            if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
+            {
+                const str = " " + this.opUiAttribs.extendTitle || "!?!?!";
+
+                if (this._titleExt.text != str)
+                {
+                    this._titleExt.text = str;
+                    doUpdateSize = true;
+                }
+            }
         }
+
 
         if (this.opUiAttribs.glPreviewTexture)
         {

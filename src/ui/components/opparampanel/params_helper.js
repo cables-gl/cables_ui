@@ -82,12 +82,12 @@ const paramsHelper =
         return r;
     },
 
-    "checkDefaultValue": (op, index, panelid) =>
+    "checkDefaultValue": (port, index, panelid) =>
     {
-        if (op.portsIn[index].defaultValue !== undefined && op.portsIn[index].defaultValue !== null)
+        if (port.defaultValue !== undefined && port.defaultValue !== null)
         {
             const titleEl = ele.byId("portTitle_in_" + index + "_" + panelid);
-            if (titleEl) titleEl.classList.toggle("nonDefaultValue", op.portsIn[index].get() != op.portsIn[index].defaultValue);
+            if (titleEl) titleEl.classList.toggle("nonDefaultValue", port.get() != port.defaultValue);
         }
     },
 

@@ -437,6 +437,12 @@
         // max-width: 190px;
     }
 
+    .contextmenuarea
+    {
+        min-width:15px;
+        text-align:right;
+    }
+
     #options
     {
         position:absolute;
@@ -445,9 +451,12 @@
         background-color: $background-color-dark;
         // z-index: 10;
 
-        &:focus {
-        border: 1px solid $highlight-color;
+        &:focus
+        {
+            border: 1px solid $highlight-color;
         }
+
+
 
         td
         {
