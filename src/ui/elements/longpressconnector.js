@@ -21,7 +21,7 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
-        this._enabled = !userSettings.get("disableLongPress");
+        this._enabled = userSettings.get("enableLongPress");
     }
 
     getStartOp()

@@ -1320,6 +1320,7 @@ export default function TimeLineGui()
         const start = (viewBox.x / CABLES.ANIM.TIMESCALE);
         const width = viewBox.w / CABLES.ANIM.TIMESCALE;
 
+
         if (width > 1.5)step = 5;
         if (width > 5.5)step = 10;
         if (width > 13)step = 20;
