@@ -16,13 +16,14 @@ export default function setHtmlDefaultListeners()
 
     window.addEventListener("error", (e) =>
     {
-        setTimeout(function ()
+        // setTimeout(function ()
+        // {
+        console.log("window cought error");
+        if (!CABLES.lastError)
         {
-            if (!CABLES.lastError)
-            {
-                new CABLES.UI.ModalError({ "exception": e });
-            }
-        }, 100);
+            new CABLES.UI.ModalError({ "exception": e });
+        }
+        // }, 100);
     });
 
 

@@ -21,6 +21,14 @@ export default class ModalError
     {
         this._options = options;
 
+        const s = gui.corePatch()._triggerStack;
+        let stackStr = "";
+        for (let i = 0; i < s.length; i++)
+        {
+            stackStr += "[" + s[i].parent.objName + " - " + s[i].name + "] ";
+            if (i != s.length - 1)stackStr += " -> ";
+        }
+
         if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("NetworkError") > -1 && this._options.exception.message.indexOf("/ace/worker") > -1)
         {
             console.log("yay! suppressed nonsense ace editor exception... ");
@@ -96,7 +104,11 @@ export default class ModalError
             }
         }
 
-        CABLES.lastError = { "exception": this._options.exception, "opName": this._options.opname, "stackInfo": info };
+        CABLES.lastError = { "exception": this._options.exception,
+            "opName": this._options.opname,
+            "opTriggerStack": stackStr,
+            "stackInfo": info,
+            "triggerStack": this._options.triggerStack };
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
     }
 

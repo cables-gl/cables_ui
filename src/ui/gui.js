@@ -1904,11 +1904,13 @@ export default class Gui
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
+            console.log("core error2");
             new ModalError({ "exception": e, "opname": objName, "op": op });
         });
 
         this._corePatch.on("criticalError", function (options)
         {
+            console.log("core error3");
             new ModalError(options);
         });
 
