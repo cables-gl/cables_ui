@@ -97,20 +97,13 @@
             {{else}}
             {{#compare port.uiAttribs.display '==' 'dropdown' }}
             {{else}}
-                <div style="{{#if port.uiAttribs.isAnimated}}{{else}}display:none;{{/if}}">
-                    <a class="info timingbutton " data-info="{{ texts.portAnimToggle }}" id="portanim_{{ dirStr }}_{{ portnum }}" >
-                        <span class="icon icon-clock"></span>
-                    </a>
-                </div>
 
                 {{#if port.uiAttribs.isAnimated}}
-                {{else}}
-                    {{#if port.uiAttribs.useVariable}}
-                        <a class="icon-x icon iconhover" id="portremovevar_{{portnum}}" data-portid="{{port.id}}"></a>
-                    {{else}}
-                        <!-- <a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a> -->
-                    {{/if}}
+                    <span class="button-small button-icon info" onclick="gui.metaKeyframes.showAnim('{{op.id}}','{{port.name}}');">
+                        <span class="icon icon-timeline"></span>
+                    </span>
                 {{/if}}
+
 
             {{/compare}}
             {{/compare}}
