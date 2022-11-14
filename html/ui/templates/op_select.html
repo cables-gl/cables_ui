@@ -29,12 +29,16 @@
     <div class="searchbrowser">
 
         {{#each ops}}
-          <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}');gui.closeModal();">
-                <div class="button fright addbutton" data-opname="{{name}}" data-item-type="{{type}}" style="margin-top:10px;" >{{buttonText}}</div>
+          <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" data-item-type="{{type}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}', false, '{{type}}');">
+                <div class="button fright addbutton" style="margin-top:10px;" >{{buttonText}}</div>
                 <a>
                     {{oldState}}
                     {{#if userOp }}<span class="icon icon-user"></span>{{/if}}
                     {{#if devOp }}<span class="icon icon-tool"></span>{{/if}}
+                    {{#if teamOp }}<span class="icon icon-users"></span>{{/if}}
+                    {{#if extensionOp }}<span class="icon icon-book-open"></span>{{/if}}
+                    {{#if isTeamNamespace }}<span class="icon icon-users"></span>{{/if}}
+                    {{#if isExtension }}<span class="icon icon-book-open"></span>{{/if}}
                     <span class="shortname op_color_{{ nscolor }}">{{shortName}}</span>
                     - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
                     </span>{{isFunction}}
