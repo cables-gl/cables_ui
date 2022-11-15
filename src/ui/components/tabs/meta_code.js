@@ -97,17 +97,15 @@ export default class MetaCode
                             "doc": doc,
                             "summary": summary,
                             "ownsOp": gui.serverOps.ownsOp(this._op.objName),
-                            "isUserOp": gui.serverOps.isUserOp(this._op.objName),
-                            "isExtensionOp": gui.serverOps.isExtensionOp(this._op.objName),
+                            "userOp": gui.serverOps.isUserOp(this._op.objName),
+                            "extensionOp": gui.serverOps.isExtensionOp(this._op.objName),
+                            "teamOp": gui.serverOps.isTeamOp(this._op.objName),
                             "canEditOp": canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,
                             "warns": res.warns
                         });
-
-                    // console.log(res.warns);
-
                     this._tab.html(html);
                     if (!canEditOp)
                     {

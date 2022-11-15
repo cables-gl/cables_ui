@@ -221,6 +221,7 @@ export default class Api
         report.infoPlatform = navigator.platform;
         report.infoLanguage = navigator.language;
         report.infoUserAgent = navigator.userAgent;
+        report.opTriggerStack = err.opTriggerStack;
 
         if (window.gui)
         {

@@ -59,7 +59,7 @@ export default class Gui
 
         this.socket = null;
         this.isRemoteClient = cfg.remoteClient;
-        this.spaceBarStart = 0;
+        this._spaceBarStart = 0;
 
         this.timingHeight = uiconfig.timingPanelHeight;
         this.rendererWidth = uiconfig.rendererDefaultWidth;
@@ -1334,17 +1334,17 @@ export default class Gui
         {
             if (document.activeElement.tagName == "BODY" || document.activeElement.tagName == "DIV") gui.timeLine().togglePlay();
 
-            if (gui.spaceBarStart === 0) gui.spaceBarStart = Date.now();
+            if (this._spaceBarStart === 0) this._spaceBarStart = Date.now();
         });
 
-        gui.keys.key(" ", "Play/Pause timeline", "up", null, { "ignoreInput": true }, (e) =>
+        this.keys.key(" ", "Play/Pause timeline", "up", null, { "ignoreInput": true }, (e) =>
         {
             if (document.activeElement.tagName == "CANVAS")
             {
-                const timeused = Date.now() - gui.spaceBarStart;
+                const timeused = Date.now() - this._spaceBarStart;
                 if (timeused < 500) gui.timeLine().togglePlay();
             }
-            gui.spaceBarStart = 0;
+            this._spaceBarStart = 0;
         });
 
         window.addEventListener("resize", () =>
@@ -1352,19 +1352,16 @@ export default class Gui
             this.canvasManager.getCanvasUiBar().showCanvasModal(false);
             this.canvasManager.blur();
 
-            gui.mainTabs.emitEvent("resize");
-            gui.setLayout();
-            gui.setLayout(); // yes, twice....
+            this.mainTabs.emitEvent("resize");
+            this.setLayout();
+            this.setLayout(); // yes, twice....
         }, false);
-
-        // this.keys.key(" ", "Timeline play/pause", "down", "timeline", { "ignoreInput": true }, (e) => { gui.timeLine().togglePlay(); gui.spaceBarStart = 0; });
     }
 
     pressedEscape(e)
     {
         this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
-
 
         if (this.fileManager) this.fileManager.setFilePort(null);
 
@@ -1907,11 +1904,13 @@ export default class Gui
 
         this._corePatch.on("exceptionOp", function (e, objName, op)
         {
+            console.log("core error2");
             new ModalError({ "exception": e, "opname": objName, "op": op });
         });
 
         this._corePatch.on("criticalError", function (options)
         {
+            console.log("core error3");
             new ModalError(options);
         });
 

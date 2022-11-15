@@ -239,11 +239,9 @@ class ParamsListener extends CABLES.EventTarget
 
     initPortClickListener(ports, index, panelid, dirStr)
     {
-        // let ports = op.portsIn;
-        // if (dirStr == "out")ports = op.portsOut;
+        const thePort = ports[index];
 
-        if (ports[index].isAnimated()) ele.byId("portanim_" + dirStr + "_" + index).classList.add("timingbutton_active");
-        // if (ports[index].isAnimated() && ports[index].anim.stayInTimeline) ele.byId("portgraph_"+dirStr+"_" + index).classList.add("timingbutton_active");
+        // if (ports[index].isAnimated()) ele.byId("portanim_" + dirStr + "_" + index).classList.add("timingbutton_active");
 
         if (ele.byId("portTitle_" + dirStr + "_" + index))
             ele.byId("portTitle_" + dirStr + "_" + index).addEventListener("click", function (e)
@@ -260,7 +258,6 @@ class ParamsListener extends CABLES.EventTarget
         if (ele.byId("portCreateOp_" + dirStr + "_" + index))
             ele.byId("portCreateOp_" + dirStr + "_" + index).addEventListener("click", function (e)
             {
-                const thePort = ports[index];
                 if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
@@ -273,21 +270,17 @@ class ParamsListener extends CABLES.EventTarget
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                const thePort = ports[index];
-
-                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(op.id, ports[index].name);
+                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(thePort.parent.id, thePort.name);
             });
-
 
         // /////////////////////
         //
         // input text editor tab
         //
-
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            CABLES.UI.paramsHelper.openParamStringEditor(op.id, ports[index].name, null, true);
+            CABLES.UI.paramsHelper.openParamStringEditor(thePort.parent.id, thePort.name, null, true);
         });
 
         // /////////////////////
@@ -297,7 +290,7 @@ class ParamsListener extends CABLES.EventTarget
         el = ele.byId("portbutton_" + index + "_" + panelid);
         if (el) el.addEventListener("click", function (e)
         {
-            ports[index]._onTriggered();
+            thePort._onTriggered();
         });
 
         if (ports[index].uiAttribs.display === "buttons")
@@ -315,25 +308,25 @@ class ParamsListener extends CABLES.EventTarget
 
         //
 
-        el = ele.byId("portgraph_" + dirStr + "_" + index);
-        if (el)el.addEventListener("click", function (e)
-        {
-            if (ports[index].isAnimated())
-            {
-                ports[index].anim.stayInTimeline = !ports[index].anim.stayInTimeline;
+        // el = ele.byId("portgraph_" + dirStr + "_" + index);
+        // if (el)el.addEventListener("click", function (e)
+        // {
+        //     if (ports[index].isAnimated())
+        //     {
+        //         ports[index].anim.stayInTimeline = !ports[index].anim.stayInTimeline;
 
-                gui.timeLine().setAnim(ports[index].anim, {
-                    "name": op.getTitle() + ": " + ports[index].name,
-                    "opid": op.id,
-                    "defaultValue": parseFloat(ele.byId("portval_" + index).value)
-                });
-            }
-        });
+        //         gui.timeLine().setAnim(ports[index].anim, {
+        //             "name": op.getTitle() + ": " + ports[index].name,
+        //             "opid": op.id,
+        //             "defaultValue": parseFloat(ele.byId("portval_" + index).value)
+        //         });
+        //     }
+        // });
 
         el = ele.byId("portsetvar_" + index);
         if (el)el.addEventListener("input", (e) =>
         {
-            const port = op.getPortById(e.target.dataset.portid);
+            const port = ports[index].parent.getPortById(e.target.dataset.portid);
 
             if (port) port.setVariable(e.target.value);
             else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
@@ -341,55 +334,74 @@ class ParamsListener extends CABLES.EventTarget
             gui.setStateUnsaved();
         });
 
-        el = ele.byId("portremovevar_" + index);
-        if (el)el.addEventListener("click", (e) =>
-        {
-            const port = op.getPortById(e.target.dataset.portid);
-            if (port) port.setVariable(null);
-            port.parent.refreshParams();
-            gui.setStateUnsaved();
-        });
+        // el = ele.byId("portremovevar_" + index);
+        // if (el)el.addEventListener("click", (e) =>
+        // {
+        //     const port = ports[index].parent.getPortById(e.target.dataset.portid);
+        //     if (port) port.setVariable(null);
+        //     port.parent.refreshParams();
+        //     gui.setStateUnsaved();
+        // });
 
         el = ele.byId("port_contextmenu_" + dirStr + "_" + index);
         if (el) el.addEventListener("click", (e) =>
         {
-            const port = op.getPortById(e.target.dataset.portid);
+            const port = thePort;// ports[index].parent.getPortById(e.target.dataset.portid);
+            if (!thePort) return;
 
             let items = [];
-            if (dirStr == "in")items.push({
-                "title": "Assign variable",
-                "func": () =>
-                {
-                    gui.setStateUnsaved();
-                    port.setVariable("unknown");
-                    port.parent.refreshParams();
-                }
-            });
-            if (dirStr == "in")items.push({
-                "title": "Animate Parameter",
-                "func": () =>
-                {
-                    gui.setStateUnsaved();
-                    el = ele.byId("portanim_" + dirStr + "_" + index);
-                    if (el)el.dispatchEvent(new Event("click"));
-                }
-            });
 
-            if (op.uiAttribs.extendTitlePort == port.name)
+
+            if (dirStr == "in" && !port.isAnimated())
+            {
+                const item = {
+                    "title": "Assign variable",
+                    "func": () =>
+                    {
+                        gui.setStateUnsaved();
+
+                        if (port.isBoundToVar()) port.setVariable(null);
+                        else port.setVariable("unknown");
+
+                        port.parent.refreshParams();
+                    }
+                };
+
+                if (port.isBoundToVar()) item.title = "Remove variable assignment";
+
+                items.push(item);
+            }
+
+            if (dirStr == "in" && !port.isBoundToVar())
+            {
+                let title = "Animate Parameter";
+                if (thePort.isAnimated()) title = "Remove Animation";
+                items.push({
+                    "title": title,
+                    "func": () =>
+                    {
+                        gui.setStateUnsaved();
+
+                        CABLES.UI.paramsHelper.setPortAnimated(thePort.parent, index, !thePort.isAnimated(), thePort.get());
+                    }
+                });
+            }
+
+            if (port.parent.uiAttribs.extendTitlePort == port.name)
                 items.push({
                     "title": "Remove extended title",
                     "func": () =>
                     {
-                        op.setUiAttrib({ "extendTitlePort": null });
+                        port.parent.setUiAttrib({ "extendTitlePort": null });
                     }
                 });
 
             else
                 items.push({
-                    "title": "Set as extended title",
+                    "title": "Extend title: \"" + port.name + ": x\"",
                     "func": () =>
                     {
-                        op.setUiAttrib({ "extendTitlePort": port.name });
+                        port.parent.setUiAttrib({ "extendTitlePort": port.name });
                     }
                 });
 
@@ -399,17 +411,17 @@ class ParamsListener extends CABLES.EventTarget
         });
         else console.log("contextmenu ele not found...", dirStr + "_" + index);
 
-        el = ele.byId("portanim_" + dirStr + "_" + index);
-        if (el)el.addEventListener("click", (e) =>
-        {
-            const targetState = !el.classList.contains("timingbutton_active");
+        // el = ele.byId("portanim_" + dirStr + "_" + index);
+        // if (el)el.addEventListener("click", (e) =>
+        // {
+        //     const targetState = !el.classList.contains("timingbutton_active");
 
-            gui.setStateUnsaved();
+        //     gui.setStateUnsaved();
 
-            CABLES.UI.paramsHelper.setPortAnimated(op, index, targetState, ports[index].get());
-            gui.emitEvent("portValueSetAnimated", op, index, targetState, ports[index].get());
-        });
-        else console.log("ele not found portanim...", dirStr + "_" + index);
+        //     CABLES.UI.paramsHelper.setPortAnimated(thePort.parent, index, targetState, thePort.get());
+        //     gui.emitEvent("portValueSetAnimated", thePort.parent, index, targetState, thePort.get());
+        // });
+        // else console.log("ele not found portanim...", dirStr + "_" + index);
     }
 
     setPortAnimated(op, index, panelid, targetState, defaultValue)

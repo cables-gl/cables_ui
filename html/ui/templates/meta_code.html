@@ -110,12 +110,17 @@
         <div class="libselect">
             <select id="addoplib">
                 <option value="">---</option>
-                {{#if isUserOp}}
+                {{#if userOp}}
                 {{#if canEditOp}}
                 <option value="asset_upload">use library from patch assets...</option>
                 {{/if}}
                 {{/if}}
-                {{#if isExtensionOp}}
+                {{#if extensionOp}}
+                {{#if canEditOp}}
+                <option value="asset_upload">use library from patch assets...</option>
+                {{/if}}
+                {{/if}}
+                {{#if teamOp}}
                 {{#if canEditOp}}
                 <option value="asset_upload">use library from patch assets...</option>
                 {{/if}}

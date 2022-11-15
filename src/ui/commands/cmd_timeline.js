@@ -35,6 +35,7 @@ CABLES_CMD_TIMELINE.ListAnimatedPorts = function ()
     const tab = new CABLES.UI.Tab("Animated Ports", { "icon": "clock", "infotext": "tab_timeline", "padding": true, "singleton": true });
     gui.mainTabs.addTab(tab, true);
     tab.html(html);
+    gui.maintabPanel.show(true);
 
     const paramsListener = new ParamsListener(panelid);
     paramsListener.init({ "portsIn": ports });
