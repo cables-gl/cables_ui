@@ -250,6 +250,8 @@ export default class GlOp extends CABLES.EventTarget
 
     _onMouseDown(e)
     {
+        CABLES.mouseButtonWheelDown = false;
+
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
 
@@ -301,18 +303,14 @@ export default class GlOp extends CABLES.EventTarget
             this._glPatch.selectOpId(this.id);
         }
 
+
         if (this._op && this._op.uiAttribs)
         {
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
 
-
-            if (gui.longPressConnector.isActive())
-            {
-                gui.longPressConnector.finish(e, this._op);
-            }
-            else
             if (e.buttons == MouseState.BUTTON_WHEEL)
             {
+                CABLES.mouseButtonWheelDown = true;
                 if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
             }
             else
@@ -326,15 +324,17 @@ export default class GlOp extends CABLES.EventTarget
 
     _onMouseUp(e)
     {
+        if (CABLES.mouseButtonWheelDown)
+        {
+            if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
+            this.mouseButtonWheelDown = false;
+        }
+
         this._glPatch.opShakeDetector.up();
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
-        // this._passiveDragStartX = null;
-        // this._passiveDragStartY = null;
         this.endPassiveDrag();
-
         this.glPatch.snapLines.update();
-        // if (this.isPassiveDrag()) return;
     }
 
 
