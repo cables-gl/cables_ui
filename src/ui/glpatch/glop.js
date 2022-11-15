@@ -8,6 +8,7 @@ import GlLinedrawer from "../gldraw/gllinedrawer";
 import GlLink from "./gllink";
 import undo from "../utils/undo";
 import Gui from "../gui";
+import MouseState from "./mousestate";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -251,6 +252,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
+
         // console.log("gui.longPressConnector.isActive()", gui.longPressConnector.isActive(), this._op);
         // if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
 
@@ -261,6 +263,7 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
+
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
@@ -301,7 +304,21 @@ export default class GlOp extends CABLES.EventTarget
         if (this._op && this._op.uiAttribs)
         {
             this._dragOldUiAttribs = JSON.stringify(this._op.uiAttribs);
-            gui.longPressConnector.longPressStart(this._op, e);
+
+
+            if (gui.longPressConnector.isActive())
+            {
+                gui.longPressConnector.finish(e, this._op);
+            }
+            else
+            if (e.buttons == MouseState.BUTTON_WHEEL)
+            {
+                if (userSettings.get("quickLinkMiddleMouse")) gui.longPressConnector.longPressStart(this._op, e, { "delay": 10 });
+            }
+            else
+            {
+                if (userSettings.get("quickLinkLongPress")) gui.longPressConnector.longPressStart(this._op, e);
+            }
         }
 
         perf.finish();
@@ -1007,8 +1024,8 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
-            this._glRectBg.setOpacity(1.0);
-            this._glTitle.setOpacity(1.0);
+            this._glRectBg.setOpacity(0.9);
+            this._glTitle.setOpacity(1);
         }
 
         if (this._hideBgRect)
