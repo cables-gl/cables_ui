@@ -938,44 +938,53 @@ export default class ServerOps
 
     loadProjectDependencies(proj, _next)
     {
-        const extensionOps = proj.ops.filter((op) => { return this.isExtensionOp(op.objName); });
-        let extensionsToLoad = extensionOps.map((op) => { return this.getExtensionByOpName(op.objName); });
-        extensionsToLoad = CABLES.uniqueArray(extensionsToLoad);
-
-        const teamOps = proj.ops.filter((op) => { return this.isTeamOp(op.objName); });
-        let teamOpsToLoad = teamOps.map((op) => { return this.getTeamNamespaceByOpName(op.objName); });
-        teamOpsToLoad = CABLES.uniqueArray(teamOpsToLoad);
-
-        this.loadTeamOps(teamOpsToLoad, () =>
+        const missingOps = [];
+        const missingOpsFound = [];
+        const opDocs = gui.opDocs.getOpDocs();
+        proj.ops.forEach((op) =>
         {
-            this.loadExtensions(extensionsToLoad, () =>
+            let opName = op.objName;
+            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
+
+            if (!missingOpsFound.includes(opName))
             {
-                if (gui && gui.opSelect())
+                const loaded = opDocs.find((opDoc) => { return opDoc.name === opName; });
+                if (!loaded)
                 {
-                    gui.opSelect().reload();
-                    gui.opSelect().prepare();
+                    missingOps.push({ "name": opName, "id": op.opId });
+                    missingOpsFound.push(opName);
                 }
+            }
+        });
 
-                let libsToLoad = [];
-                let coreLibsToLoad = [];
-                for (let i = 0; i < proj.ops.length; i++)
+        this.loadMissingOps(missingOps, () =>
+        {
+            if (gui && gui.opSelect())
+            {
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+            }
+
+            let libsToLoad = [];
+            let coreLibsToLoad = [];
+            for (let i = 0; i < proj.ops.length; i++)
+            {
+                if (proj.ops[i])
                 {
-                    if (proj.ops[i])
-                    {
-                        libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-                        coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
-                    }
+                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
+                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
                 }
+            }
 
-                libsToLoad = CABLES.uniqueArray(libsToLoad);
-                coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+            libsToLoad = CABLES.uniqueArray(libsToLoad);
+            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
-                new CABLES.LibLoader(libsToLoad, () =>
+            new CABLES.LibLoader(libsToLoad, () =>
+            {
+                new CoreLibLoader(coreLibsToLoad, () =>
                 {
-                    new CoreLibLoader(coreLibsToLoad, () =>
-                    {
-                        if (_next)_next();
-                    });
+                    if (_next)_next();
                 });
             });
         });
@@ -1121,21 +1130,21 @@ export default class ServerOps
         return false;
     }
 
-    loadExtensions(names, cb)
+    loadMissingOps(ops, cb)
     {
-        let count = names.length;
+        let count = ops.length;
         if (count === 0)
         {
             cb();
         }
         else
         {
-            names.forEach((ext) =>
+            ops.forEach((op) =>
             {
                 incrementStartup();
-                this.loadExtensionOps(ext, () =>
+                this.loadMissingOp(op, () =>
                 {
-                    logStartup(ext + " - Extension Ops loaded");
+                    logStartup(op.name + " - Missing Ops loaded");
                     count--;
                     if (count === 0) cb();
                 });
@@ -1143,25 +1152,46 @@ export default class ServerOps
         }
     }
 
-    loadTeamOps(names, cb)
+    loadMissingOp(op, cb)
     {
-        let count = names.length;
-        if (count === 0)
+        if (op)
         {
-            cb();
+            let lid = "missingop" + op.name + CABLES.uuid();
+            let talkerApiName = "getOpDocs";
+            const missingOpUrl = [];
+
+            let talkerData = op;
+            let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + talkerData.name);
+            if (talkerData.id && talkerData.id !== "undefined") url += "&id=" + talkerData.id;
+            missingOpUrl.push(url);
+            loadjs.ready(lid, () =>
+            {
+                CABLESUILOADER.talkerAPI.send(talkerApiName, talkerData, (err, res) =>
+                {
+                    if (!err && res && res.opDocs)
+                    {
+                        res.opDocs.forEach((opDoc) =>
+                        {
+                            const newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
+                            if (opDoc.libs) newOp.libs = opDoc.libs;
+                            if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
+                            this._ops.push(newOp);
+                        });
+                        if (gui.opDocs)
+                        {
+                            gui.opDocs.addOpDocs(res.opDocs);
+                        }
+                    }
+                    incrementStartup();
+                    cb();
+                });
+            });
+            loadjs(missingOpUrl, lid);
         }
         else
         {
-            names.forEach((ext) =>
-            {
-                incrementStartup();
-                this.loadTeamNamespaceOps(ext, () =>
-                {
-                    logStartup(ext + " - Team Ops loaded");
-                    count--;
-                    if (count === 0) cb();
-                });
-            });
+            incrementStartup();
+            cb();
         }
     }
 

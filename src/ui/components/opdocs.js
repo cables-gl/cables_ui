@@ -290,4 +290,9 @@ export default class OpDocs
         this._opDocs = this._opDocs.concat(opDocs);
         this.extendOpDocs(this._opDocs);
     }
+
+    getOpDocs()
+    {
+        return this._opDocs;
+    }
 }
