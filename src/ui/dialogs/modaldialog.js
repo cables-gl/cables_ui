@@ -188,6 +188,11 @@ export default class ModalDialog extends CABLES.EventTarget
 
         this._eleContent.innerHTML = this.html();
 
+        Array.from(document.querySelectorAll("pre code")).forEach(function (block)
+        {
+            hljs.highlightElement(block);
+        });
+
         this._addListeners();
 
         CABLES.UI.hideToolTip();
