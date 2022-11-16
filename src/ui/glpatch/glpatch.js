@@ -548,6 +548,7 @@ export default class GlPatch extends CABLES.EventTarget
         if (!e.pointerType) return;
         this._removeDropInRect();
 
+
         if (this.mouseState.buttonLeft && !this.isMouseOverOp() && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
         try { this._cgl.canvas.setPointerCapture(e.pointerId); }
@@ -592,6 +593,12 @@ export default class GlPatch extends CABLES.EventTarget
             gui.patchView.showDefaultPanel();
 
             // if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
+        }
+
+        if (CABLES.mouseButtonWheelDown)
+        {
+            CABLES.mouseButtonWheelDown = false;
+            if (this._hoverOps.length == 0 && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         }
 
         perf.finish();

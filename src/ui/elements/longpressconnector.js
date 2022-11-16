@@ -10,7 +10,6 @@ export default class LongPressConnector extends CABLES.EventTarget
         super();
 
         this._glOp = null;
-
         this._longPressTimeout = null;
         this._quickAddOpStart = null;
         this._longPressOp = null;
@@ -21,7 +20,7 @@ export default class LongPressConnector extends CABLES.EventTarget
         this._startX = 0;
         this._startY = 0;
         this._delay = 500;
-        this._enabled = userSettings.get("enableLongPress");
+        this._enabled = userSettings.get("quickLinkLongPress") || userSettings.get("quickLinkMiddleMouse");
     }
 
     getStartOp()
@@ -34,13 +33,13 @@ export default class LongPressConnector extends CABLES.EventTarget
         return this._longPress;
     }
 
-    longPressStart(op, e)
+    longPressStart(op, e, options)
     {
+        options = options || {};
         if (!this._enabled) return;
         if (this.isActive())
         {
             this.finish(e, op);
-            this._longPressStartTime = 0;
             return;
         }
         this._removelisteners();
@@ -66,7 +65,7 @@ export default class LongPressConnector extends CABLES.EventTarget
             gui.patchView.focusOp(op.id);
 
             gui.patchView.showDefaultPanel();
-        }, this._delay);
+        }, options.delay || this._delay);
 
         this._listenerUp = this._longpressup.bind(this);
         document.addEventListener("pointerup", this._listenerUp);
@@ -141,6 +140,8 @@ export default class LongPressConnector extends CABLES.EventTarget
     {
         const op1 = this._longPressOp;
         const suggestions = [];
+
+        this._longPressStartTime = 0;
 
         if (!op1 || !op2) return;
 
