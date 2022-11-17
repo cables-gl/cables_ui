@@ -293,11 +293,15 @@ export default class ModalPortValue
             }
 
             html += "<br/><br/>";
-            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">" + convertHTML(serializedThing) + "</code></pre>";
+            html += "<pre><code id=\"portvalue\" class=\"code hljs language-json\">" + convertHTML(serializedThing) + "</code></pre>";
 
             new ModalDialog({ "html": html });
 
-            hljs.highlightBlock(ele.byId("portvalue"));
+            const el = ele.byId("portvalue");
+            console.log("hljs ele:", el);
+            hljs.highlightElement(el);
+            console.log(hljs);
+
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {

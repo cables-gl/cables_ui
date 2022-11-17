@@ -178,12 +178,14 @@ const text =
         "title_wheelmultiplier": "Wheel Speed",
         "subtitle_wheelmultiplier": "Mouse/Touchpad scrollwheel speed higher number - faster zooming, default is 1",
 
-        "title_enableLongPress": "Long Press Helper",
-        "subtitle_enableLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
+        "title_quickLinkLongPress": "Long Press Quick Link",
+        "subtitle_quickLinkLongPress": "Long press an op and drag a line to another, helps with pen inputs or touchpads",
+
+        "title_quickLinkMiddleMouse": "Middle Mouse Quick Link",
+        "subtitle_quickLinkMiddleMouse": "Middle mouse click an op and drag a line to another",
 
         "title_disableSnapLines": "Vertical Snap Lines",
         "subtitle_disableSnapLines": "Snap even earlier to x position of vertical groups of ops",
-
 
         "title_noidlemode": "Idle Mode",
         "subtitle_noidlemode": "go into idle mode after some time (to save energy and less fan activity)",

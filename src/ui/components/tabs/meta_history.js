@@ -11,6 +11,7 @@ export default class MetaHistory
         undo.setCallback(this.update.bind(this));
 
         this.update();
+        this._tab.on("onActivate", () => { this.update(); });
     }
 
     update()
