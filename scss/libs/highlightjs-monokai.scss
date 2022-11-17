@@ -1,70 +1,60 @@
-/*
-Monokai style - ported by Luigi Maselli - http://grigio.org
-*/
+pre code.hljs
+{
 
-.hljs {
-  display: block;
-  overflow-x: auto;
-  padding: 0.5em;
-  background: #222; color: #ddd;
+    display:block;
+    overflow-x:auto;
+    padding:1em;
+    background-color: #222;
 }
-
-.hljs-tag,
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-strong,
-.hljs-name {
-  color: #f92672;
+code.hljs
+{
+    padding:3px 5px
 }
-
-.hljs-code {
-  color: #66d9ef;
+.hljs
+{
+    background:#23241f;color:#f8f8f2
 }
-
-.hljs-class .hljs-title {
-  color: white;
+.hljs-subst,.hljs-tag
+{
+    color:#f8f8f2
 }
-
-.hljs-attribute,
-.hljs-symbol,
-.hljs-regexp,
-.hljs-link {
-  color: #bf79db;
+.hljs-emphasis,.hljs-strong
+{
+    color:#a8a8a2
 }
-
-.hljs-string,
-.hljs-bullet,
-.hljs-subst,
-.hljs-title,
-.hljs-section,
-.hljs-emphasis,
-.hljs-type,
-.hljs-built_in,
-.hljs-builtin-name,
-.hljs-selector-attr,
-.hljs-selector-pseudo,
-.hljs-addition,
-.hljs-variable,
-.hljs-template-tag,
-.hljs-template-variable {
-  color: #a6e22e;
+.hljs-bullet,.hljs-link,.hljs-literal,.hljs-number,.hljs-quote,.hljs-regexp
+{
+    color:#5CB59E
 }
-
-.hljs-comment,
-.hljs-quote,
-.hljs-deletion,
-.hljs-meta {
-  color: #75715e;
+.hljs-code,.hljs-section,.hljs-selector-class,.hljs-title
+{
+    color:#a6e22e
 }
-
-.hljs-keyword,
-.hljs-selector-tag,
-.hljs-literal,
-.hljs-doctag,
-.hljs-title,
-.hljs-section,
-.hljs-type,
-.hljs-selector-id {
-  font-weight: bold;
+.hljs-strong
+{
+    font-weight:700
+}
+.hljs-emphasis
+{
+    font-style:italic
+}
+.hljs-attr,.hljs-keyword,.hljs-name,.hljs-selector-tag
+{
+    color:#e6db74
+}
+.hljs-attribute,.hljs-symbol
+{
+    color:#66d9ef
+}
+.hljs-class .hljs-title,.hljs-params,.hljs-title.class_
+{
+    color:#f8f8f2
+}
+.hljs-addition,.hljs-built_in,.hljs-selector-attr,.hljs-selector-id,.hljs-selector-pseudo,.hljs-string,.hljs-template-variable,.hljs-type,.hljs-variable
+{
+    color:#d57272
+}
+.hljs-comment,.hljs-deletion,.hljs-meta
+{
+    color:#75715e
 }
