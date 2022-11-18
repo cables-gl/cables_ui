@@ -338,6 +338,8 @@ export default class GlCable
 
     setPosition(x, y, x2, y2)
     {
+        if (!(this._x != x || this._y != y || this._x2 != x2 || this._y2 != y2)) return;
+
         this._x = x;
         this._y = y;
         this._x2 = x2;
@@ -346,13 +348,15 @@ export default class GlCable
         this._updateLinePos();
 
         // circle button
+
         this._buttonRect.setShape(1);
         this._buttonRect.setSize(this._buttonSize, this._buttonSize);
         this._buttonRect.setPosition(
             x + ((x2 - x) / 2) - this._buttonSize / 2,
             (y + this._buttonSize) + (((y2 - this._buttonSize) - (y + this._buttonSize)) / 2) - this._buttonSize / 2,
-            GlUiConfig.zPosCableButtonRect
-        );
+            GlUiConfig.zPosCableButtonRect);
+
+        this._buttonRect.visible = false;
     }
 
 
