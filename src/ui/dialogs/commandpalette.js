@@ -1,5 +1,4 @@
 import ele from "../utils/ele";
-import DemuxedConsumableStream from "../../../libs/ui/socketcluster-client";
 
 export default class CommandPallete
 {
