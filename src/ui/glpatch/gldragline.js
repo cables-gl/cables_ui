@@ -194,7 +194,8 @@ export default class GlDragLine
         if (!this.isActive) this._glPatch.showOpCursor(false);
         if (!this.isActive) return;
 
-        if (!this._glPatch.isMouseOverOp()) this._glPatch.showOpCursor(true);
+
+        if (!this._glPatch.isMouseOverOp() && (!this._glPatch._cablesHoverButtonRect || !this._glPatch._cablesHoverButtonRect._hovering)) this._glPatch.showOpCursor(true);
         else this._glPatch.showOpCursor(false);
 
         this._clearSpline();
@@ -207,8 +208,6 @@ export default class GlDragLine
             {
                 if (!this._startGlPorts[i]) continue;
                 if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._splineDrawer.getSplineIndex();
-
-                // this._lineDrawer.setColor(this._lineIndices[i], 0, 1, 0, 1);
 
                 this._splineDrawer.setSpline(this._lineIndices[i],
                     [

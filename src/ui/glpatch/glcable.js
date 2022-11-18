@@ -396,7 +396,10 @@ export default class GlCable
 
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
-        if (this._glPatch.isDraggingPort()) return;
+        // if (this._glPatch.isDraggingPort()) return;
+
+        // if (this._glPatch.isDraggingPort()) this._glPatch.showOpCursor(false);
+
         // canlink ???
 
         if (this._disposed)
@@ -443,7 +446,6 @@ export default class GlCable
 
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
-
 
         if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {

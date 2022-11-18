@@ -2,6 +2,8 @@ import GlUiConfig from "./gluiconfig";
 import GlCable from "./glcable";
 import Logger from "../utils/logger";
 import MouseState from "./mousestate";
+import OpsMathInterpolate
+    from "../../../../cables/src/ops/base/Ops.Math.Interpolate/Ops.Math.Interpolate.json";
 
 export default class GlLink
 {
@@ -36,7 +38,29 @@ export default class GlLink
 
         this._buttonRect.on("mouseup", (e) =>
         {
-            if (this._glPatch.isDraggingPort()) return;
+            if (this._glPatch.isDraggingPort())
+            {
+                if (this._glPatch._portDragLine.isActive)
+                {
+                    const fromOp = gui.corePatch().getOpById(this._glPatch._portDragLine._startPortOpId);
+                    const fromPort = fromOp.getPort(this._glPatch._portDragLine._startPortName);
+
+                    let otherPort = link.portOut;
+                    if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
+
+                    this._link.remove();
+                    this._glPatch._portDragLine.stop();
+
+                    gui.corePatch().link(
+                        fromOp, this._glPatch._portDragLine._startPortName,
+                        otherPort.parent, otherPort.name);
+
+                    return;
+                }
+
+                return;
+            }
+
 
             const pressTime = performance.now() - this._buttonDownTime;
 
@@ -48,6 +72,7 @@ export default class GlLink
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
+
 
             // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
             if (gui.patchView.getSelectedOps().length == 1)
@@ -292,9 +317,6 @@ export default class GlLink
 
     highlight(b)
     {
-        // if (b) this._cable.setColor(1, 1, 1, 1);
-        // else
-
         this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
     }
 }

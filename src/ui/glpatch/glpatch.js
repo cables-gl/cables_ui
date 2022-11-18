@@ -705,7 +705,6 @@ export default class GlPatch extends CABLES.EventTarget
         this.focusOpAnim(opid);
     }
 
-
     addOp(op, fromDeserialize)
     {
         if (!op) this._log.error("no op at addop", op);
