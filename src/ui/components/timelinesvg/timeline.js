@@ -384,17 +384,11 @@ export default function TimeLineGui()
             gui.scene().timer.setTime(self._loopBegin);
         }
 
-
         if (time < 0)time = 0;
         if (isNaN(time))time = 0;
 
-
         const pixel = ele.byId("timeline").clientWidth * (time / projectLength);
         cursorLineOverview.attr({ "path": "M " + pixel + " -1000 L" + pixel + " " + 100 });
-
-        // console.log('time',time);
-        // console.log('projectLength',projectLength);
-        // console.log('time/projectLength*100',time/projectLength*100);
 
         self.updateOverviewLine();
 
@@ -1745,7 +1739,7 @@ export default function TimeLineGui()
     {
         const l = prompt("project length in frames:", Math.floor(projectLength * gui.timeLine().getFPS()));
         if (l === null) return;
-        projectLength = Math.floor((parseFloat(l)) / gui.timeLine().getFPS());
+        projectLength = (parseFloat(l)) / gui.timeLine().getFPS();
         self.redraw();
         gui.emitEvent("timelineControl", "setLength", projectLength);
     };
