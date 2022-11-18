@@ -883,6 +883,8 @@ export default class ServerOps
         {
             if (this._ops[i].name == opname)
             {
+                console.log("MISSING GETTING LIBS FOR", opname);
+
                 let found = false;
                 const libs = [];
                 if (this._ops[i].libs)
@@ -958,8 +960,9 @@ export default class ServerOps
             }
         });
 
-        this.loadMissingOps(missingOps, () =>
+        this.loadMissingOps(missingOps, (newOps) =>
         {
+            console.log("MISSING SOME OPS", missingOps, newOps);
             if (gui && gui.opSelect())
             {
                 gui.opSelect().reload();
@@ -980,10 +983,13 @@ export default class ServerOps
             libsToLoad = CABLES.uniqueArray(libsToLoad);
             coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
+            console.log("MISSING LIBS TO LOAD", libsToLoad, coreLibsToLoad);
+
             new CABLES.LibLoader(libsToLoad, () =>
             {
                 new CoreLibLoader(coreLibsToLoad, () =>
                 {
+                    console.log("MISSING LIBS LOADED", libsToLoad, coreLibsToLoad);
                     if (_next)_next();
                 });
             });
@@ -1133,20 +1139,22 @@ export default class ServerOps
     loadMissingOps(ops, cb)
     {
         let count = ops.length;
+        const newOps = [];
         if (count === 0)
         {
-            cb();
+            cb(newOps);
         }
         else
         {
             ops.forEach((op) =>
             {
                 incrementStartup();
-                this.loadMissingOp(op, () =>
+                this.loadMissingOp(op, (newOp) =>
                 {
+                    if (newOp) newOps.push(newOp);
                     logStartup(op.name + " - Missing Ops loaded");
                     count--;
-                    if (count === 0) cb();
+                    if (count === 0) cb(newOps);
                 });
             });
         }
@@ -1157,24 +1165,25 @@ export default class ServerOps
         if (op)
         {
             let lid = "missingop" + op.name + CABLES.uuid();
-            let talkerApiName = "getOpDocs";
             const missingOpUrl = [];
 
-            let talkerData = op;
-            let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + talkerData.name);
-            if (talkerData.id && talkerData.id !== "undefined") url += "&id=" + talkerData.id;
+            let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + op.name);
+            if (op.id && op.id !== "undefined") url += "&id=" + op.id;
             missingOpUrl.push(url);
-            loadjs.ready(lid, () =>
+
+            CABLESUILOADER.talkerAPI.send("getOpDocs", op, (err, res) =>
             {
-                CABLESUILOADER.talkerAPI.send(talkerApiName, talkerData, (err, res) =>
+                loadjs.ready(lid, () =>
                 {
+                    let newOp = null;
                     if (!err && res && res.opDocs)
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            const newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
+                            newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) newOp.libs = opDoc.libs;
                             if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
+                            console.log("MISSING PUSHING NEW OP", newOp.name, newOp);
                             this._ops.push(newOp);
                         });
                         if (gui.opDocs)
@@ -1183,10 +1192,11 @@ export default class ServerOps
                         }
                     }
                     incrementStartup();
-                    cb();
+                    if (!newOp) console.log("MISSING SOMETHING", op.name, err, res, res.opDocs);
+                    cb(newOp);
                 });
+                loadjs(missingOpUrl, lid);
             });
-            loadjs(missingOpUrl, lid);
         }
         else
         {
