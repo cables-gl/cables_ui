@@ -106,7 +106,9 @@ export default class VizLayer extends CABLES.EventTarget
         {
             const item = this._items[i];
             const port = item.port;
-            if (!port) continue;
+            if (!port || !item.op ||
+                !item.op.uiAttribs ||
+                !item.op.uiAttribs.translate) continue;
 
             item.posX = item.op.uiAttribs.translate.x;
             item.posY = item.op.uiAttribs.translate.y;
