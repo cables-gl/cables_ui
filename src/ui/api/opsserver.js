@@ -1163,7 +1163,7 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
+                            newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit, "id": opDoc.id };
                             if (opDoc.libs) newOp.libs = opDoc.libs;
                             if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
                             this._ops.push(newOp);
