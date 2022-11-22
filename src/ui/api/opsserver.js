@@ -878,9 +878,12 @@ export default class ServerOps
 
     getOpLibs(op, checkLoaded)
     {
+        const opId = op.opId;
+        let opName = op.objName;
+        if (typeof op === "string") opName = op;
         for (let i = 0; i < this._ops.length; i++)
         {
-            if (this._ops[i].id === op.opId || this._ops[i].name === op.objName)
+            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
             {
                 let found = false;
                 const libs = [];
@@ -909,9 +912,13 @@ export default class ServerOps
 
     getCoreLibs(op, checkLoaded)
     {
+        const opId = op.opId;
+        let opName = op.objName;
+        if (typeof op === "string") opName = op;
+
         for (let i = 0; i < this._ops.length; i++)
         {
-            if (this._ops[i].id === op.opId || this._ops[i].name === op.objName)
+            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
             {
                 if (this._ops[i].coreLibs)
                 {
