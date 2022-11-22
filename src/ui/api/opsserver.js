@@ -1135,7 +1135,7 @@ export default class ServerOps
                 this.loadMissingOp(op, (newOp) =>
                 {
                     if (newOp) newOps.push(newOp);
-                    logStartup(op.name + " - Missing Ops loaded");
+                    logStartup(op.name + " - Missing Op loaded");
                     count--;
                     if (count === 0) cb(newOps);
                 });
