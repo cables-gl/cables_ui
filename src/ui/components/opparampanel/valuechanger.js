@@ -21,7 +21,10 @@ function valueChanger(eleId, focus, portName, opid)
     const startVal = eleInputValue();
     let incMode = 0;
     let mouseDownTime = 0;
-    const usePointerLock = true;
+
+    let usePointerLock = true;
+
+    if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) usePointerLock = false;
 
     document.addEventListener("mouseup", up);
     document.addEventListener("mousedown", down);
@@ -97,8 +100,6 @@ function valueChanger(eleId, focus, portName, opid)
 
             const vv = eleInput.value;
             eleInput.setSelectionRange(0, vv.length);
-
-            // eleInput.addEventListener("keydown", tabKeyListener);
         }
         else
         {
@@ -140,6 +141,10 @@ function valueChanger(eleId, focus, portName, opid)
 
             eleInput.requestPointerLock = eleInput.requestPointerLock || eleInput.mozRequestPointerLock || eleInput.webkitRequestPointerLock;
             if (eleInput.requestPointerLock) eleInput.requestPointerLock();
+        }
+        else
+        {
+            document.addEventListener("mousemove", move, false);
         }
 
         CABLES.mouseDraggingValue = true;

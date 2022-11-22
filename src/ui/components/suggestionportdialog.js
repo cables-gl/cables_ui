@@ -1,4 +1,4 @@
-import SuggestionDialog from './suggestiondialog';
+import SuggestionDialog from "./suggestiondialog";
 
 export default class SuggestPortDialog
 {
@@ -20,7 +20,7 @@ export default class SuggestPortDialog
             {
                 for (const i in this._suggestions)
                     if (this._suggestions[i].id == id)
-                        cb(this._suggestions[i].name);
+                        cb(this._suggestions[i].p.name);
             }, false, cbCancel);
     }
 
@@ -29,7 +29,7 @@ export default class SuggestPortDialog
         const name = p.name;
         this._suggestions.push({
             p,
-            "name": p.name,
+            "name": p.title,
             "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),
             "isAnimated": p.isAnimated()

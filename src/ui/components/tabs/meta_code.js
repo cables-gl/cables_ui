@@ -82,8 +82,8 @@ export default class MetaCode
                         doc.attachmentFiles = attachmentFiles;
                     }
 
-                    doc.libs = gui.serverOps.getOpLibs(this._op.objName, false);
-                    doc.coreLibs = gui.serverOps.getCoreLibs(this._op.objName, false);
+                    doc.libs = gui.serverOps.getOpLibs(this._op, false);
+                    doc.coreLibs = gui.serverOps.getCoreLibs(this._op, false);
                     summary = gui.opDocs.getSummary(this._op.objName);
 
                     const canEditOp = gui.serverOps.canEditOp(gui.user, this._op.objName);
