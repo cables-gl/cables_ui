@@ -882,8 +882,6 @@ export default class ServerOps
         {
             if (this._ops[i].id === op.opId || this._ops[i].name === op.objName)
             {
-                console.log("MISSING GETTING LIBS FOR", op.objName);
-
                 let found = false;
                 const libs = [];
                 if (this._ops[i].libs)
@@ -961,7 +959,6 @@ export default class ServerOps
 
         this.loadMissingOps(missingOps, (newOps) =>
         {
-            console.log("MISSING SOME OPS", missingOps, newOps);
             if (gui && gui.opSelect())
             {
                 gui.opSelect().reload();
@@ -985,13 +982,10 @@ export default class ServerOps
             libsToLoad = CABLES.uniqueArray(libsToLoad);
             coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
-            console.log("MISSING LIBS TO LOAD", libsToLoad, coreLibsToLoad);
-
             new CABLES.LibLoader(libsToLoad, () =>
             {
                 new CoreLibLoader(coreLibsToLoad, () =>
                 {
-                    console.log("MISSING LIBS LOADED", libsToLoad, coreLibsToLoad);
                     if (_next)_next();
                 });
             });
@@ -1172,7 +1166,6 @@ export default class ServerOps
                             newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) newOp.libs = opDoc.libs;
                             if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
-                            console.log("MISSING PUSHING NEW OP", newOp.name, newOp);
                             this._ops.push(newOp);
                         });
                         if (gui.opDocs)
@@ -1181,7 +1174,6 @@ export default class ServerOps
                         }
                     }
                     incrementStartup();
-                    if (!newOp) console.log("MISSING SOMETHING", op.name, err, res);
                     cb(newOp);
                 });
                 loadjs(missingOpUrl, lid);
