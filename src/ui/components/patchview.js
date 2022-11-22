@@ -2165,12 +2165,12 @@ export default class PatchView extends CABLES.EventTarget
                 if (numFitting == 1)
                 {
                     const p2 = op2.findFittingPort(p);
-                    addText = p2.name;
+                    addText = p2.title;
                 }
 
                 suggestions.push({
                     p,
-                    "name": p.name + "<span class=\"icon icon-arrow-right\"></span>" + addText,
+                    "name": p.title + "<span class=\"icon icon-arrow-right\"></span>" + addText,
                     "classname": "port_text_color_" + p.getTypeString().toLowerCase()
                 });
             }
@@ -2201,7 +2201,7 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     sugIn.push({
                         "p": op2.portsIn[i],
-                        "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].name,
+                        "name": "<span class=\"icon icon-arrow-right\"></span>" + op2.portsIn[i].title,
                         "classname": "port_text_color_" + op2.portsIn[i].getTypeString().toLowerCase()
                     });
                 }
