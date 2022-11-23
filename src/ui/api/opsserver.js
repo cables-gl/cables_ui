@@ -853,7 +853,6 @@ export default class ServerOps
                         "content": rslt.code,
                         "singleton": true,
                         "syntax": "js",
-
                         "allowEdit": this.canEditOp(gui.user, editorObj.name),
                         "onSave": save,
                         "editorObj": editorObj,
@@ -877,11 +876,14 @@ export default class ServerOps
     }
 
 
-    getOpLibs(opname, checkLoaded)
+    getOpLibs(op, checkLoaded)
     {
+        const opId = op.opId;
+        let opName = op.objName;
+        if (typeof op === "string") opName = op;
         for (let i = 0; i < this._ops.length; i++)
         {
-            if (this._ops[i].name == opname)
+            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
             {
                 let found = false;
                 const libs = [];
@@ -894,7 +896,7 @@ export default class ServerOps
                         {
                             libs.push(libName);
                         }
-                        else if (this._loadedLibs.indexOf(libName) == -1)
+                        else if (this._loadedLibs.indexOf(libName) === -1)
                         {
                             libs.push(libName);
                         }
@@ -908,11 +910,15 @@ export default class ServerOps
         return [];
     }
 
-    getCoreLibs(opname, checkLoaded)
+    getCoreLibs(op, checkLoaded)
     {
+        const opId = op.opId;
+        let opName = op.objName;
+        if (typeof op === "string") opName = op;
+
         for (let i = 0; i < this._ops.length; i++)
         {
-            if (this._ops[i].name == opname)
+            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
             {
                 if (this._ops[i].coreLibs)
                 {
@@ -924,7 +930,7 @@ export default class ServerOps
                         {
                             coreLibs.push(libName);
                         }
-                        else if (this._loadedCoreLibs.indexOf(libName) == -1)
+                        else if (this._loadedCoreLibs.indexOf(libName) === -1)
                         {
                             coreLibs.push(libName);
                         }
@@ -962,8 +968,8 @@ export default class ServerOps
                 {
                     if (proj.ops[i])
                     {
-                        libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i].objName));
-                        coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i].objName));
+                        libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
+                        coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                     }
                 }
 
@@ -987,14 +993,14 @@ export default class ServerOps
         return isloaded;
     }
 
-    opHasLibs(opName)
+    opHasLibs(op)
     {
-        return this.getOpLibs(opName).length !== 0;
+        return this.getOpLibs(op).length !== 0;
     }
 
-    opLibsLoaded(opName)
+    opLibsLoaded(op)
     {
-        const libsToLoad = this.getOpLibs(opName);
+        const libsToLoad = this.getOpLibs(op);
         for (let i = 0; i < libsToLoad.length; i++)
         {
             if (!this.isLibLoaded(libsToLoad[i])) return false;
@@ -1002,23 +1008,10 @@ export default class ServerOps
         return true;
     }
 
-    loadOpLibs(opName, finishedCb)
+    loadOpLibs(op, finishedCb)
     {
-        function libReady()
-        {
-            // this._log.log("finished loading libs for " + opName);
-
-            const libsToLoad = this.getOpLibs(opName);
-            for (let i = 0; i < libsToLoad.length; i++)
-            {
-                this._loadedLibs.push(libsToLoad[i]);
-            }
-
-            finishedCb();
-        }
-
-        const libsToLoad = this.getOpLibs(opName);
-        const coreLibsToLoad = this.getCoreLibs(opName);
+        const libsToLoad = this.getOpLibs(op);
+        const coreLibsToLoad = this.getCoreLibs(op);
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {
@@ -1182,7 +1175,7 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            const op = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
+                            const op = { "id": opDoc.id, "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) op.libs = opDoc.libs;
                             if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
                             this._ops.push(op);
@@ -1222,7 +1215,7 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            const op = { "name": opDoc.name, "allowEdit": opDoc.allowEdit };
+                            const op = { "id": opDoc.id, "name": opDoc.name, "allowEdit": opDoc.allowEdit };
                             if (opDoc.libs) op.libs = opDoc.libs;
                             if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
                             this._ops.push(op);
