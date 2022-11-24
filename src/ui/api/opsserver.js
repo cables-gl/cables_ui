@@ -805,7 +805,6 @@ export default class ServerOps
                                 let selOpTranslate = null;
                                 if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
 
-                                console.log(gui.patchView.getSelectedOps()[0]);
                                 if (!res || !res.success)
                                 {
                                     loadingModal.close();
