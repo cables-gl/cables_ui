@@ -228,13 +228,9 @@ export default class ServerOps
             let html = "";
             html += "<h1>can not execute op</h1>";
             html += "this op crashed before, you should reload the page.<br/><br/>";
-            // html += "<a class=\"button fa fa-refresh\" onclick=\"CABLES.CMD.PATCH.reload();\">reload patch</a>&nbsp;&nbsp;";
             html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
-
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
-
-            return;
         }
 
         const s = document.createElement("script");
@@ -805,6 +801,11 @@ export default class ServerOps
                             },
                             (err, res) =>
                             {
+                                const selOps = gui.patchView.getSelectedOps();
+                                let selOpTranslate = null;
+                                if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
+
+                                console.log(gui.patchView.getSelectedOps()[0]);
                                 if (!res || !res.success)
                                 {
                                     loadingModal.close();
@@ -825,7 +826,14 @@ export default class ServerOps
                                     {
                                         setStatus("saved " + opname);
                                         editor.focus();
-                                        setTimeout(() => { gui.opParams.refresh(); }, 100);
+
+                                        if (selOpTranslate)
+                                            for (let i = 0; i < gui.corePatch().ops.length; i++)
+                                                if (gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                                {
+                                                    gui.opParams.show(gui.corePatch().ops[i].id);
+                                                    gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
+                                                }
 
                                         loadingModal.close();
                                     });
