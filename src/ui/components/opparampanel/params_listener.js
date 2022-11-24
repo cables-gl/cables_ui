@@ -343,7 +343,7 @@ class ParamsListener extends CABLES.EventTarget
         //     gui.setStateUnsaved();
         // });
 
-        el = ele.byId("port_contextmenu_" + dirStr + "_" + panelid + "_" + index);
+        el = ele.byId("port_contextmenu_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", (e) =>
         {
             const port = thePort;// ports[index].parent.getPortById(e.target.dataset.portid);
@@ -409,7 +409,7 @@ class ParamsListener extends CABLES.EventTarget
             CABLES.contextMenu.show(
                 { "items": items }, e.target);
         });
-        else console.log("contextmenu ele not found...", dirStr + "_" + index);
+        else console.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
 
         // el = ele.byId("portanim_" + dirStr + "_" + index);
         // if (el)el.addEventListener("click", (e) =>
