@@ -95,17 +95,16 @@
 
             {{#compare port.uiAttribs.display '==' 'switch' }}
             {{else}}
-            {{#compare port.uiAttribs.display '==' 'dropdown' }}
-            {{else}}
+                {{#compare port.uiAttribs.display '==' 'dropdown' }}
+                {{else}}
 
-                {{#if port.uiAttribs.isAnimated}}
-                    <span class="button-small button-icon info" onclick="gui.metaKeyframes.showAnim('{{op.id}}','{{port.name}}');">
-                        <span class="icon icon-timeline"></span>
-                    </span>
-                {{/if}}
+                    {{#if port.uiAttribs.isAnimated}}
+                        <span class="button-small button-icon info" onclick="gui.metaKeyframes.showAnim('{{op.id}}','{{port.name}}');">
+                            <span class="icon icon-timeline"></span>
+                        </span>
+                    {{/if}}
 
-
-            {{/compare}}
+                {{/compare}}
             {{/compare}}
 
         {{/compare}}
@@ -115,7 +114,7 @@
 
 {{/if}}
 
-<a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}" data-portid="{{port.id}}"></a>
+<a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}_{{panelid}}" data-portid="{{port.id}}"></a>
 
 
 </td>

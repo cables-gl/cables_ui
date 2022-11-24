@@ -76,7 +76,7 @@ class ParamsListener extends CABLES.EventTarget
                 if (elm)elm.addEventListener("click", (e) =>
                 {
                     this._portsIn[index].removeLinks();
-                    gui.opParams.show(op);
+                    gui.opParams.show(this._portsIn[index].parent);
                 });
             })(ipip);
         }
@@ -343,7 +343,7 @@ class ParamsListener extends CABLES.EventTarget
         //     gui.setStateUnsaved();
         // });
 
-        el = ele.byId("port_contextmenu_" + dirStr + "_" + index);
+        el = ele.byId("port_contextmenu_" + dirStr + "_" + panelid + "_" + index);
         if (el) el.addEventListener("click", (e) =>
         {
             const port = thePort;// ports[index].parent.getPortById(e.target.dataset.portid);

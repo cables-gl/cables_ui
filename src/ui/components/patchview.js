@@ -1805,6 +1805,7 @@ export default class PatchView extends CABLES.EventTarget
         inp.parent.setUiError(id, null);
 
         if (!inp.isLinked()) return;
+        if (inp.uiAttribs.ignoreObjTypeErrors) return;
         if (outp.get() == null) return;
         if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
 

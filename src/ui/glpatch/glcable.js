@@ -359,7 +359,6 @@ export default class GlCable
         this._buttonRect.visible = false;
     }
 
-
     setColor(r, g, b, a)
     {
         if (r === undefined)
