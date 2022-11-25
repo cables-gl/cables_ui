@@ -274,6 +274,13 @@ export default class ModalPortValue
             let serializedThing = thing;
             if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
 
+            if (serializedThing == "{}")
+            {
+                serializedThing = "could not stringify object\n\n";
+                if (thing) for (let i in thing) serializedThing += "\n" + i + " (" + typeof thing[i] + ")";
+            }
+
+
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
             html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
@@ -299,10 +306,9 @@ export default class ModalPortValue
             new ModalDialog({ "html": html });
 
             const el = ele.byId("portvalue");
-            console.log("hljs ele:", el);
-            hljs.highlightElement(el);
-            console.log(hljs);
 
+
+            hljs.highlightElement(el);
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {
