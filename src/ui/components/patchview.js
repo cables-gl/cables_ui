@@ -640,7 +640,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         const undoGroup = undo.startGroup();
         const ops = this.getSelectedOps();
-        for (const i in ops) ops[i].unLinkTemporary();
+        for (const i in ops) ops[i].unLinkReconnectOthers();
         undo.endGroup(undoGroup, "Unlink selected Ops");
     }
 
@@ -1805,6 +1805,7 @@ export default class PatchView extends CABLES.EventTarget
         inp.parent.setUiError(id, null);
 
         if (!inp.isLinked()) return;
+        if (inp.uiAttribs.ignoreObjTypeErrors) return;
         if (outp.get() == null) return;
         if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
 

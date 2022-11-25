@@ -286,11 +286,12 @@ export default class ModalPortValue
 
             if (thing && thing.constructor)
             {
-                html += "" + thing.constructor.name + " \n";
+                html += "class name:" + thing.constructor.name + " \n";
 
                 if (thing.constructor.name == "Array") html += " - length: " + thing.length + "\n";
                 if (thing.constructor.name == "Float32Array") html += " - length: " + thing.length + "\n";
             }
+
 
             html += "<br/><br/>";
             html += "<pre><code id=\"portvalue\" class=\"code hljs language-json\">" + convertHTML(serializedThing) + "</code></pre>";
