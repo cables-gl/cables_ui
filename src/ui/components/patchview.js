@@ -640,7 +640,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         const undoGroup = undo.startGroup();
         const ops = this.getSelectedOps();
-        for (const i in ops) ops[i].unLinkTemporary();
+        for (const i in ops) ops[i].unLinkReconnectOthers();
         undo.endGroup(undoGroup, "Unlink selected Ops");
     }
 

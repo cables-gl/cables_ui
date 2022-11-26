@@ -32,6 +32,7 @@ export default function extendCore()
         CABLES.Op.unLinkTempReLinkP2 = null;
     };
 
+
     CABLES.Op.prototype.countFittingPorts = function (otherPort)
     {
         let count = 0;
@@ -57,13 +58,39 @@ export default function extendCore()
     };
 
 
+    /**
+     * disconnect all links
+     * @function
+     * @instance
+     * @memberof Op
+     */
+    CABLES.Op.prototype.unLink = function ()
+    {
+        for (let ipo = 0; ipo < this.portsOut.length; ipo++) this.portsOut[ipo].removeLinks();
+        for (let ipi = 0; ipi < this.portsIn.length; ipi++) this.portsIn[ipi].removeLinks();
+    };
+
+
+    CABLES.Op.prototype.unLinkReconnectOthers = function ()
+    {
+        this.unLinkOptions(true, false);
+    };
+
     CABLES.Op.prototype.unLinkTemporary = function ()
     {
-        const tryRelink = true;
+        this.unLinkOptions(true, true);
+    };
+
+
+    CABLES.Op.prototype.unLinkOptions = function (tryRelink, temporary)
+    {
         let i = 0;
 
         this.shakeLink = null;
         this.oldLinks = [];
+
+        CABLES.Op.unLinkTempReLinkP1 = null;
+        CABLES.Op.unLinkTempReLinkP2 = null;
 
         if (tryRelink)
         {
@@ -82,23 +109,27 @@ export default function extendCore()
             }
         }
 
-        for (let ipi = 0; ipi < this.portsIn.length; ipi++)
+        if (temporary)
         {
-            for (i = 0; i < this.portsIn[ipi].links.length; i++)
+            for (let ipi = 0; ipi < this.portsIn.length; ipi++)
             {
-                this.oldLinks.push({
-                    "in": this.portsIn[ipi].links[i].portIn,
-                    "out": this.portsIn[ipi].links[i].portOut
-                });
+                for (i = 0; i < this.portsIn[ipi].links.length; i++)
+                {
+                    this.oldLinks.push({
+                        "in": this.portsIn[ipi].links[i].portIn,
+                        "out": this.portsIn[ipi].links[i].portOut
+                    });
+                }
             }
+
+            for (let ipo = 0; ipo < this.portsOut.length; ipo++)
+                for (i = 0; i < this.portsOut[ipo].links.length; i++)
+                    this.oldLinks.push({
+                        "in": this.portsOut[ipo].links[i].portIn,
+                        "out": this.portsOut[ipo].links[i].portOut
+                    });
         }
 
-        for (let ipo = 0; ipo < this.portsOut.length; ipo++)
-            for (i = 0; i < this.portsOut[ipo].links.length; i++)
-                this.oldLinks.push({
-                    "in": this.portsOut[ipo].links[i].portIn,
-                    "out": this.portsOut[ipo].links[i].portOut
-                });
 
         this.unLink();
 
