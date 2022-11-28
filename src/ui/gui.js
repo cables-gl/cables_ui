@@ -1837,6 +1837,8 @@ export default class Gui
     {
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
+        hljs.configure({ "ignoreUnescapedHTML": true });
+
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
         this._timeLine = new TimeLineGui();
 
