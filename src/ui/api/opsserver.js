@@ -832,7 +832,7 @@ export default class ServerOps
 
                                         if (selOpTranslate)
                                             for (let i = 0; i < gui.corePatch().ops.length; i++)
-                                                if (gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                                if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
                                                 {
                                                     gui.opParams.show(gui.corePatch().ops[i].id);
                                                     gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
