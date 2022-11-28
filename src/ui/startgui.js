@@ -46,6 +46,8 @@ export default function startUi(cfg)
             return;
         }
 
+        gui.opDocs.addCoreOpDocs();
+
         gui.bind(() =>
         {
             incrementStartup();
@@ -61,7 +63,6 @@ export default function startUi(cfg)
                 }, false);
 
                 incrementStartup();
-                gui.opDocs.addCoreOpDocs();
                 gui.opSelect().prepare();
                 userSettings.init();
                 incrementStartup();
