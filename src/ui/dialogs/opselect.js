@@ -980,7 +980,6 @@ export default class OpSelect
                             "buttonText": "add",
                             "type": "op"
                         };
-                        op.pop = gui.opDocs.getPopularity(opname);
                         op.summary = gui.opDocs.getSummary(opname);
                         ops.push(op);
                     }

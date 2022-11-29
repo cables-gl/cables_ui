@@ -171,6 +171,8 @@ export default class ServerOps
                     "name": op.portsIn[i].name
                 };
 
+            if (op.portsIn[i].uiAttribs.title)l.uititle = op.portsIn[i].uiAttribs.title;
+
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
             if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
@@ -193,6 +195,8 @@ export default class ServerOps
                 "type": op.portsOut[i].type,
                 "name": op.portsOut[i].name,
             };
+
+            if (op.portsOut[i].uiAttribs.title)l.uititle = op.portsOut[i].uiAttribs.title;
 
             if (op.portsOut[i].uiAttribs.hidePort) continue;
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
@@ -828,7 +832,7 @@ export default class ServerOps
 
                                         if (selOpTranslate)
                                             for (let i = 0; i < gui.corePatch().ops.length; i++)
-                                                if (gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
+                                                if (gui.corePatch().ops[i].uiAttribs && gui.corePatch().ops[i].uiAttribs.translate && gui.corePatch().ops[i].uiAttribs.translate.x == selOpTranslate.x && gui.corePatch().ops[i].uiAttribs.translate.y == selOpTranslate.y)
                                                 {
                                                     gui.opParams.show(gui.corePatch().ops[i].id);
                                                     gui.patchView.setSelectedOpById(gui.corePatch().ops[i].id);
@@ -951,27 +955,39 @@ export default class ServerOps
 
     loadProjectDependencies(proj, _next)
     {
-        const extensionOps = proj.ops.filter((op) => { return this.isExtensionOp(op.objName); });
-        let extensionsToLoad = extensionOps.map((op) => { return this.getExtensionByOpName(op.objName); });
-        extensionsToLoad = CABLES.uniqueArray(extensionsToLoad);
-
-        const teamOps = proj.ops.filter((op) => { return this.isTeamOp(op.objName); });
-        let teamOpsToLoad = teamOps.map((op) => { return this.getTeamNamespaceByOpName(op.objName); });
-        teamOpsToLoad = CABLES.uniqueArray(teamOpsToLoad);
-
-        this.loadTeamOps(teamOpsToLoad, () =>
+        const missingOps = [];
+        const missingOpsFound = [];
+        const opDocs = gui.opDocs.getOpDocs();
+        proj.ops.forEach((op) =>
         {
-            this.loadExtensions(extensionsToLoad, () =>
-            {
-                if (gui && gui.opSelect())
-                {
-                    gui.opSelect().reload();
-                    gui.opSelect().prepare();
-                }
+            let opName = op.objName;
+            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
 
-                let libsToLoad = [];
-                let coreLibsToLoad = [];
-                for (let i = 0; i < proj.ops.length; i++)
+            if (!missingOpsFound.includes(opName))
+            {
+                const loaded = opDocs.find((opDoc) => { return opDoc.name === opName; });
+                if (!loaded)
+                {
+                    missingOps.push({ "name": opName, "id": op.opId });
+                    missingOpsFound.push(opName);
+                }
+            }
+        });
+
+        this.loadMissingOps(missingOps, (newOps) =>
+        {
+            if (gui && gui.opSelect())
+            {
+                gui.opSelect().reload();
+                gui.opSelect().prepare();
+            }
+
+            let libsToLoad = [];
+            let coreLibsToLoad = [];
+            for (let i = 0; i < proj.ops.length; i++)
+            {
+                if (proj.ops[i])
                 {
                     if (proj.ops[i])
                     {
@@ -979,16 +995,16 @@ export default class ServerOps
                         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                     }
                 }
+            }
 
-                libsToLoad = CABLES.uniqueArray(libsToLoad);
-                coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+            libsToLoad = CABLES.uniqueArray(libsToLoad);
+            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
-                new CABLES.LibLoader(libsToLoad, () =>
+            new CABLES.LibLoader(libsToLoad, () =>
+            {
+                new CoreLibLoader(coreLibsToLoad, () =>
                 {
-                    new CoreLibLoader(coreLibsToLoad, () =>
-                    {
-                        if (_next)_next();
-                    });
+                    if (_next)_next();
                 });
             });
         });
@@ -1121,47 +1137,70 @@ export default class ServerOps
         return false;
     }
 
-    loadExtensions(names, cb)
+    loadMissingOps(ops, cb)
     {
-        let count = names.length;
+        let count = ops.length;
+        const newOps = [];
         if (count === 0)
         {
-            cb();
+            cb(newOps);
         }
         else
         {
-            names.forEach((ext) =>
+            ops.forEach((op) =>
             {
                 incrementStartup();
-                this.loadExtensionOps(ext, () =>
+                this.loadMissingOp(op, (newOp) =>
                 {
-                    logStartup(ext + " - Extension Ops loaded");
+                    if (newOp) newOps.push(newOp);
+                    logStartup(op.name + " - Missing Op loaded");
                     count--;
-                    if (count === 0) cb();
+                    if (count === 0) cb(newOps);
                 });
             });
         }
     }
 
-    loadTeamOps(names, cb)
+    loadMissingOp(op, cb)
     {
-        let count = names.length;
-        if (count === 0)
+        if (op)
         {
-            cb();
+            let lid = "missingop" + op.name + CABLES.uuid();
+            const missingOpUrl = [];
+
+            let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + op.name);
+            if (op.id && op.id !== "undefined") url += "&id=" + op.id;
+            missingOpUrl.push(url);
+
+            CABLESUILOADER.talkerAPI.send("getOpDocs", op, (err, res) =>
+            {
+                loadjs.ready(lid, () =>
+                {
+                    let newOp = null;
+                    if (!err && res && res.opDocs)
+                    {
+                        res.opDocs.forEach((opDoc) =>
+                        {
+                            newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit, "id": opDoc.id };
+                            if (opDoc.libs) newOp.libs = opDoc.libs;
+                            if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
+                            this._ops.push(newOp);
+                        });
+                        if (gui.opDocs)
+                        {
+                            gui.opDocs.addOpDocs(res.opDocs);
+                        }
+                    }
+                    incrementStartup();
+                    cb(newOp);
+                });
+                loadjs(missingOpUrl, lid);
+            });
         }
         else
         {
-            names.forEach((ext) =>
-            {
-                incrementStartup();
-                this.loadTeamNamespaceOps(ext, () =>
-                {
-                    logStartup(ext + " - Team Ops loaded");
-                    count--;
-                    if (count === 0) cb();
-                });
-            });
+            incrementStartup();
+            cb();
         }
     }
 

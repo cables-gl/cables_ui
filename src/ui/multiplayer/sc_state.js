@@ -29,6 +29,7 @@ export default class ScState extends CABLES.EventTarget
         this._followers = [];
         this._colors = {};
         this._pilot = null;
+        this._timeoutRefresh = null;
 
         this._registerEventListeners();
     }
@@ -621,17 +622,24 @@ export default class ScState extends CABLES.EventTarget
                 const portIndex = selectedOp.portsIn.findIndex((port) => { return port.name === vars.port; });
                 if (portIndex)
                 {
-                    const elePortId = "portval_" + portIndex;
-                    const elePort = document.getElementById(elePortId);
-                    if (elePort)
+                    clearTimeout(this._timeoutRefresh);
+                    this._timeoutRefresh = setTimeout(() =>
                     {
-                        gui.opParams.refreshDelayed();
-                        const elePortContainer = document.getElementById("tr_in_" + portIndex);
-                        if (elePortContainer)
-                        {
-                            elePortContainer.scrollIntoView({ "block": "center" });
-                        }
-                    }
+                        selectedOp.refreshParams();
+                    }, 50);
+
+
+                    // const elePortId = "portval_" + portIndex;
+                    // const elePort = document.getElementById(elePortId);
+                    // if (elePort)
+                    // {
+                    //     gui.opParams.refreshDelayed();
+                    //     const elePortContainer = document.getElementById("tr_in_" + portIndex);
+                    //     if (elePortContainer)
+                    //     {
+                    //         elePortContainer.scrollIntoView({ "block": "center" });
+                    //     }
+                    // }
                 }
             }
         });

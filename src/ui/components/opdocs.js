@@ -146,15 +146,6 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
-    getPopularity(opname)
-    {
-        for (let i = 0; i < this._opDocs.length; i++)
-            if (this._opDocs[i].name == opname)
-                return this._opDocs[i].pop;
-
-        return 0;
-    }
-
     getAttachmentFiles(opname)
     {
         for (let i = 0; i < this._opDocs.length; i++)
@@ -227,22 +218,6 @@ export default class OpDocs
         return html;
     }
 
-
-    getSuggestions(objName, portName)
-    {
-        for (let i = 0; i < this._opDocs.length; i++)
-        {
-            if (this._opDocs[i].name == objName)
-            {
-                if (this._opDocs[i].portSuggestions && this._opDocs[i].portSuggestions[portName])
-                {
-                    const suggestions = this._opDocs[i].portSuggestions[portName].ops;
-                    return suggestions;
-                }
-            }
-        }
-    }
-
     showPortDoc(opname, portname)
     {
         const perf = CABLES.UI.uiProfiler.start("opdocs.portdoc");
@@ -289,5 +264,10 @@ export default class OpDocs
     {
         this._opDocs = this._opDocs.concat(opDocs);
         this.extendOpDocs(this._opDocs);
+    }
+
+    getOpDocs()
+    {
+        return this._opDocs;
     }
 }
