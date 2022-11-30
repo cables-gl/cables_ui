@@ -1112,29 +1112,7 @@ export default class ServerOps
 
     canEditAttachment(user, opName)
     {
-        if (user.roles.includes("alwaysEditor"))
-        {
-            // users with "alwaysEditor" role are always allowed to edit everything
-            return true;
-        }
-        if (this.ownsOp(opName))
-        {
-            // users are only allowed to edit attachments of their own userops
-            return true;
-        }
-        if (user.isAdmin)
-        {
-            // admins are only allowed to edit everything on dev
-            if (CABLES.sandbox.isDevEnv())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-        return false;
+        return this.canEditOp(user, opName);
     }
 
     loadMissingOps(ops, cb)
