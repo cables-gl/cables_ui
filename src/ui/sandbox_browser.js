@@ -314,10 +314,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
         const userOpsUrls = [];
         const proj = this._cfg.patch;
 
-        for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i])));
-
-        const lid = "userops" + proj._id + CABLES.generateUUID();
-        loadjs.ready(lid, () =>
+        const doneCallback = () =>
         {
             incrementStartup();
             logStartup("User Ops loaded");
@@ -329,8 +326,23 @@ export default class SandboxBrowser extends CABLES.EventTarget
                 gui.bookmarks.set(proj.ui.bookmarks);
                 document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
             }
-        });
+        };
 
-        loadjs(userOpsUrls, lid);
+        if (!gui || !gui.user || !proj.userList.includes(gui.user.username))
+        {
+            doneCallback();
+        }
+        else
+        {
+            for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i])));
+
+            const lid = "userops" + proj._id + CABLES.generateUUID();
+            loadjs.ready(lid, () =>
+            {
+                doneCallback();
+            });
+
+            loadjs(userOpsUrls, lid);
+        }
     }
 }
