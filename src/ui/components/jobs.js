@@ -134,7 +134,6 @@ export default class Jobs
 
     updateAssetProgress()
     {
-        console.log(1);
         clearTimeout(this.removeProgressTo);
         let prog = gui.corePatch().loading.getProgress();
 
