@@ -513,13 +513,11 @@ export default class PatchView extends CABLES.EventTarget
 
     checkPatchOutdated()
     {
-        console.log("check for old ops!", this._p.ops.length);
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
             if (doc && doc.oldVersion)
             {
-                console.log("hasOldOps!!!");
                 this.hasOldOps = true;
                 return;
             }
