@@ -107,10 +107,13 @@ export default class Jobs
             setTimeout(func, 30);
         }
 
-
-        gui.corePatch().loading.on("finishedTask", this.updateAssetProgress.bind(this));
-        gui.corePatch().loading.on("addTask", this.updateAssetProgress.bind(this));
-        gui.corePatch().loading.on("startTask", this.updateAssetProgress.bind(this));
+        if (!this.addedListeners)
+        {
+            this.addedListeners = true;
+            gui.corePatch().loading.on("finishedTask", this.updateAssetProgress.bind(this));
+            gui.corePatch().loading.on("addTask", this.updateAssetProgress.bind(this));
+            gui.corePatch().loading.on("startTask", this.updateAssetProgress.bind(this));
+        }
     }
 
     _updateVisibility()
@@ -133,7 +136,6 @@ export default class Jobs
     {
         clearTimeout(this.removeProgressTo);
         let prog = gui.corePatch().loading.getProgress();
-        // console.log("loading progress", prog);
 
         const elContainer = ele.byId("uploadprogresscontainer");
         ele.byId("uploadprogress").style.width = prog * 100 + "%";
@@ -159,7 +161,8 @@ export default class Jobs
                 this._updateVisibility();
             }
 
-            setTimeout(this.updateAssetProgress.bind(this), 300);
+            clearTimeout(this.timeout);
+            this.timeout = setTimeout(this.updateAssetProgress.bind(this), 300);
         }
     }
 
