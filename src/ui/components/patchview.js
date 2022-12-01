@@ -165,6 +165,7 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
+
         gui.serverOps.loadProjectDependencies(proj, () =>
         {
             gui.corePatch().deSerialize(proj);
@@ -182,6 +183,9 @@ export default class PatchView extends CABLES.EventTarget
                     ele.show(ele.byId("patchnavhelperEmpty"));
                 }
             }
+
+            gui.patchView.checkPatchOutdated();
+
             if (cb)cb();
         });
     }
@@ -507,8 +511,26 @@ export default class PatchView extends CABLES.EventTarget
         this.showSelectedOpsPanel();
     }
 
+    checkPatchOutdated()
+    {
+        console.log("check for old ops!", this._p.ops.length);
+        for (let i = 0; i < this._p.ops.length; i++)
+        {
+            const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
+            if (doc && doc.oldVersion)
+            {
+                console.log("hasOldOps!!!");
+                this.hasOldOps = true;
+                return;
+            }
+        }
+    }
+
+
     checkPatchErrors()
     {
+        const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
+
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
 
@@ -529,11 +551,16 @@ export default class PatchView extends CABLES.EventTarget
 
         const elError = ele.byId("nav-item-error");
         const wasHidden = elError.classList.contains("hidden");
-        if (this.hasUiErrors) ele.show(elError);
+        if (this.hasUiErrors || this.hasOldOps) ele.show(elError);
         else ele.hide(elError);
+
+        const elIcon = ele.byId("nav-item-error-icon");
+        if (this.hasUiErrors) elIcon.style["background-color"] = "red";
+        if (!this.hasUiErrors && this.hasOldOps) elIcon.style["background-color"] = "#999";
 
         if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
 
+        perf.finish();
         this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 

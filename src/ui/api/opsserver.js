@@ -171,7 +171,7 @@ export default class ServerOps
                     "name": op.portsIn[i].name
                 };
 
-            if (op.portsIn[i].uiAttribs.title)l.uititle = op.portsIn[i].uiAttribs.title;
+            if (op.portsIn[i].uiAttribs.title) l.uititle = op.portsIn[i].uiAttribs.title;
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
