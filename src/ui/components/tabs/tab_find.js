@@ -263,6 +263,7 @@ export default class FindTab
 
         html += "</h3>";
 
+        if (result.hint) html += "<div class=\"warning-error-level0\">" + result.hint + "</div>";
         if (result.error) html += "<div class=\"warning-error-level2\">" + result.error + "</div>";
         if (result.history) html += "<span class=\"search-history-item\">" + result.history + "</span><br/>";
         if (op.uiAttribs.comment) html += "<span style=\"color: var(--color-special);\"> // " + op.uiAttribs.comment + "</span><br/>";
@@ -343,6 +344,24 @@ export default class FindTab
 
         if (str.indexOf(":") == 0)
         {
+            if (str == ":attention")
+            {
+                FindTab.searchOutDated(ops, results);
+
+                for (let i = 0; i < results.length; i++)
+                    results[i].hint = "Newer version of op available!";
+
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+
+                    if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
+                        for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
+                            results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
+                }
+            }
+
+
             if (str == ":outdated")
             {
                 FindTab.searchOutDated(ops, results);
