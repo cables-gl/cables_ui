@@ -307,8 +307,7 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         const opname = ops[0];
-        const uiAttr = {};
-
+        const uiAttr = { "subPatch": this.getCurrentSubPatch() };
 
         if (event)
         {
