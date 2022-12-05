@@ -204,8 +204,10 @@ export default class OpSelect
             {
                 if (this._newOpOptions)
                 {
-                    const docs = gui.opDocs.getOpDocByName(list[i].name);
+                    const firstportfitspoints = 3;
+                    const firstportfitsText = "+3 First Port fits<br/>";
 
+                    const docs = gui.opDocs.getOpDocByName(list[i].name);
 
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
@@ -232,6 +234,15 @@ export default class OpSelect
                                 }
                             }
 
+                            if (
+                                docs.layout.portsIn[0].type == this._newOpOptions.linkNewLink.portOut.type &&
+                                docs.layout.portsOut[0].type == this._newOpOptions.linkNewLink.portIn.type
+                            )
+                            {
+                                points += firstportfitspoints;
+                                scoreDebug += firstportfitsText;
+                            }
+
                             if (!foundPortTypeOut && !foundPortTypeIn)
                             {
                                 points -= 5.0; // seems harsh, but is only used when dragging a port, so it should be fine...
@@ -245,6 +256,12 @@ export default class OpSelect
                             let foundPortType = false;
                             if (this._newOpOptions.linkNewOpToPort.direction === CABLES.PORT_DIR_OUT)
                             {
+                                if (docs.layout.portsIn[0].type == this._newOpOptions.linkNewOpToPort.type)
+                                {
+                                    points += firstportfitspoints;
+                                    scoreDebug += firstportfitsText;
+                                }
+
                                 for (let j = 0; j < docs.layout.portsIn.length; j++)
                                 {
                                     if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewOpToPort.type)
@@ -256,6 +273,13 @@ export default class OpSelect
                             }
                             else
                             {
+                                if (docs.layout.portsOut[0].type == this._newOpOptions.linkNewOpToPort.type)
+                                {
+                                    points += firstportfitspoints;
+                                    scoreDebug += firstportfitsText;
+                                }
+
+
                                 for (let j = 0; j < docs.layout.portsOut.length; j++)
                                 {
                                     if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewOpToPort.type)
@@ -295,7 +319,7 @@ export default class OpSelect
 
                 const shortnessPoints = Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
                 points += shortnessPoints;
-                scoreDebug += shortnessPoints + " shortness namespace<br/>";
+                scoreDebug += "+" + shortnessPoints + " shortness namespace<br/>";
             }
 
             if (found && this._list[i].old)
@@ -844,7 +868,7 @@ export default class OpSelect
             {
                 this.addSelectedOp();
             }
-        }, 250);
+        }, 100);
     }
 
     addOp(opname, reopenModal = false, itemType = "op")
