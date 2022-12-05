@@ -202,14 +202,77 @@ export default class OpSelect
 
             if (found)
             {
-                const opToLink = this._newOpOptions.linkNewOpToOp;
-
-                if (
-                    (opToLink && opToLink.name.toLowerCase().startsWith(list[i]._nameSpace)) ||
-                    (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.parent.name.toLowerCase().startsWith(list[i]._nameSpace)))
+                if (this._newOpOptions)
                 {
-                    points += 2;
-                    scoreDebug = "+2 is in same namespace as selected op<br/>";
+                    const docs = gui.opDocs.getOpDocByName(list[i].name);
+
+
+                    if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
+                    {
+                        // when inserting into link - find fitting ports
+                        if (this._newOpOptions.linkNewLink)
+                        {
+                            let foundPortTypeIn = false;
+                            for (let j = 0; j < docs.layout.portsIn.length; j++)
+                            {
+                                if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewLink.portIn.type)
+                                {
+                                    foundPortTypeIn = true;
+                                    break;
+                                }
+                            }
+
+                            let foundPortTypeOut = false;
+                            for (let j = 0; j < docs.layout.portsOut.length; j++)
+                            {
+                                if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewLink.portOut.type)
+                                {
+                                    foundPortTypeOut = true;
+                                    break;
+                                }
+                            }
+
+                            if (!foundPortTypeOut && !foundPortTypeIn)
+                            {
+                                points -= 5.0; // seems harsh, but is only used when dragging a port, so it should be fine...
+                                scoreDebug += "-5.0 no comparible port found<br/>";
+                            }
+                        }
+
+                        // when dragging a port - find fitting  input/output port
+                        if (this._newOpOptions.linkNewOpToPort)
+                        {
+                            let foundPortType = false;
+                            if (this._newOpOptions.linkNewOpToPort.direction === CABLES.PORT_DIR_OUT)
+                            {
+                                for (let j = 0; j < docs.layout.portsIn.length; j++)
+                                {
+                                    if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewOpToPort.type)
+                                    {
+                                        foundPortType = true;
+                                        break;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                for (let j = 0; j < docs.layout.portsOut.length; j++)
+                                {
+                                    if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewOpToPort.type)
+                                    {
+                                        foundPortType = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!foundPortType)
+                            {
+                                points -= 10.0; // seems harsh, but is only used when dragging a port, so it should be fine...
+                                scoreDebug += "-10.0 no comparible port found<br/>";
+                            }
+                        }
+                    }
                 }
 
                 if (list[i]._shortName.indexOf(query) === 0)

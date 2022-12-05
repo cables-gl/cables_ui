@@ -524,7 +524,6 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
-
     checkPatchErrors()
     {
         const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");

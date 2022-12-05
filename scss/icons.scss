@@ -111,13 +111,11 @@
         height: calc(12px + 0.75 * var(--font-size-off));
     }
 
-
     .button-small .icon
     {
         width: calc(15px + 0.75 * var(--font-size-off)) !important;
         height: calc(15px + 0.75 * var(--font-size-off)) !important;
     }
-
 
     @keyframes rotating {
         from {
@@ -131,7 +129,6 @@
     {
         animation: rotating 2s linear infinite;
         vertical-align: sub;
-
     }
 
 }
