@@ -143,13 +143,14 @@ export default class FileManager
 
         const item = {
             "title": file.n,
-            shortTitle,
+            "shortTitle": shortTitle,
             "id": file._id || "lib" + CABLES.uuid(),
             "p": file.p,
             "date": file.d,
             "dateFromNow": file.dfr,
             "sizeKb": size,
             "size": file.s,
+            "file": file
         };
 
         item.icon = "file";
