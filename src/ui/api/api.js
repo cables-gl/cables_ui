@@ -268,28 +268,32 @@ export default class Api
         return report;
     }
 
-    sendErrorReport(err)
+    sendErrorReport(err, showDoneModal = true)
     {
         err = err || CABLES.lastError;
         const report = this.getErrorReport(err);
 
-        const doneCallback = (d) =>
+        const doneCallback = () =>
         {
             this._log.log("error report sent.");
             this._log.log(report);
 
-            let html = "";
-            html += "<center>";
-            html += "<h2>thank you</h2>";
-            html += "we will look into it<br/>";
-            html += "<br/>";
-            html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
-            html += "</center>";
+            if (showDoneModal)
+            {
+                let html = "";
+                html += "<center>";
+                html += "<h2>thank you</h2>";
+                html += "we will look into it<br/>";
+                html += "<br/>";
+                html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+                html += "</center>";
 
-            const modalOptions = {
-                "html": html
-            };
-            new ModalDialog(modalOptions);
+                const modalOptions = {
+                    "html": html
+                };
+                new ModalDialog(modalOptions);
+            }
+
             CABLES.lastError = null;
         };
 
