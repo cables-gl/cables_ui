@@ -296,7 +296,15 @@ export default class Api
             CABLES.lastError = null;
         };
 
-        if(!manualSend && (this.lastErrorReport && (performance.now() - this.lastErrorReport) < 2000)) {
+        let sendReport = true;
+        if(!manualSend)
+        {
+            sendReport = (this.lastErrorReport && (performance.now() - this.lastErrorReport) < 2000);
+            if(gui && gui.user && gui.user.isAdmin) sendReport = false;
+        }
+
+        if(!sendReport)
+        {
             doneCallback();
         }
         else
