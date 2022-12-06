@@ -41,13 +41,6 @@ export default class ModalError
             return;
         }
 
-        const modalOptions = {
-            "title": this._options.title || "cablefail :/",
-            "html": this.getHtml()
-        };
-
-        this._dialog = new ModalDialog(modalOptions);
-
         let info = null;
         if (this._options.exception)
         {
@@ -110,6 +103,13 @@ export default class ModalError
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
+
+        const modalOptions = {
+            "title": this._options.title || "cablefail :/",
+            "html": this.getHtml()
+        };
+
+        this._dialog = new ModalDialog(modalOptions);
     }
 
 
@@ -193,12 +193,20 @@ export default class ModalError
                 }
             }
         }
-        str += "<br/><br/>";
+        str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+
         if (!isCustomOp && !isUserOp)
         {
-            str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv())
+            {
+                CABLES.api.sendErrorReport(CABLES.lastError, false);
+                str += "An automated error report has been created. We will look into it!";
+            }
+            else
+            {
+                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+            }
         }
-        str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
         return str;
     }

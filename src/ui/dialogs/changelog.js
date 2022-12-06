@@ -49,7 +49,7 @@ export default class ChangelogToast
         iziToast.show({
             "position": "topRight",
             "theme": "dark",
-            "title": "update",
+            "title": "UPDATE",
             "message": "cables has been updated! ",
             "progressBar": false,
             "animateInside": false,
@@ -57,7 +57,7 @@ export default class ChangelogToast
             "timeout": false,
             "buttons": [
                 [
-                    "<button>read more</button>",
+                    "<button>Read More</button>",
                     function (instance, toast)
                     {
                         CABLES.CMD.UI.showChangelog();
