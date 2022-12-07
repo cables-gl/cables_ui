@@ -26,7 +26,7 @@ export default class WatchVarTab extends CABLES.EventTarget
 
             const vars = this._patch.getVars();
             for (const y in vars)
-                vars[y].removeListener(this._varListeners[vars[y].getName()]);
+                vars[y].off(this._varListeners[vars[y].getName()]);
         });
 
         this._tabs.addTab(this._tab, true);
@@ -101,7 +101,7 @@ export default class WatchVarTab extends CABLES.EventTarget
                 tdType.classList.add("rownumleft");
                 tr.appendChild(tdType);
 
-                this._varListeners[theVar.getName()] = theVar.addListener(this._updateVar.bind(this));
+                this._varListeners[theVar.getName()] = theVar.on("change", this._updateVar.bind(this));
             }
         }
     }

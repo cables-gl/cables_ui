@@ -170,6 +170,11 @@ CABLES_CMD_PATCH.findUserOps = function ()
     gui.find(":user");
 };
 
+CABLES_CMD_PATCH.findOpsUsingExternalAssets = function ()
+{
+    gui.find(":extassets");
+};
+
 CABLES_CMD_PATCH.createFile = function ()
 {
     gui.showFileManager(function ()
@@ -987,6 +992,11 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "find commented ops",
         "category": "patch",
         "func": CABLES_CMD_PATCH.findCommentedOps
+    },
+    {
+        "cmd": "find external assets",
+        "category": "patch",
+        "func": CABLES_CMD_PATCH.findOpsUsingExternalAssets
     },
     {
         "cmd": "patch analysis",

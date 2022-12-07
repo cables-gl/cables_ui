@@ -12,7 +12,7 @@ export default class Api
     {
         this._log = new Logger("api");
         this.cache = [];
-        this.lastErrorReport = 0;
+        this.lastErrorReport = null;
         this.pingTime = 0;
         this.maintenanceModeWarning = null;
 
@@ -215,7 +215,6 @@ export default class Api
         report.time = Date.now();
         report.history = history;
 
-        this.lastErrorReport = Date.now();
         report.url = document.location.href;
 
         report.infoPlatform = navigator.platform;
@@ -268,7 +267,7 @@ export default class Api
         return report;
     }
 
-    sendErrorReport(err, showDoneModal = true)
+    sendErrorReport(err, manualSend = true)
     {
         err = err || CABLES.lastError;
         const report = this.getErrorReport(err);
@@ -278,7 +277,7 @@ export default class Api
             this._log.log("error report sent.");
             this._log.log(report);
 
-            if (showDoneModal)
+            if (manualSend)
             {
                 let html = "";
                 html += "<center>";
@@ -297,17 +296,33 @@ export default class Api
             CABLES.lastError = null;
         };
 
-        if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+        let sendReport = true;
+        if(!manualSend)
         {
-            CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
-            {
-                report.browserInfo = browserInfo;
-                CABLES.api.post("errorReport", report, doneCallback);
-            });
+            sendReport = (this.lastErrorReport && (performance.now() - this.lastErrorReport) < 2000);
+            if(gui && gui.user && gui.user.isAdmin) sendReport = false;
+        }
+
+        if(!sendReport)
+        {
+            doneCallback();
         }
         else
         {
-            CABLES.api.post("errorReport", report, doneCallback);
+            this.lastErrorReport = performance.now();
+            if (CABLESUILOADER && CABLESUILOADER.talkerAPI)
+            {
+                CABLESUILOADER.talkerAPI.send("sendBrowserInfo", {}, (browserInfo) =>
+                {
+                    report.browserInfo = browserInfo;
+                    CABLES.api.post("errorReport", report, doneCallback);
+                });
+            }
+            else
+            {
+                CABLES.api.post("errorReport", report, doneCallback);
+            }
         }
+
     }
 }
