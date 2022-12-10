@@ -953,6 +953,11 @@ export default class ServerOps
         return [];
     }
 
+    loadOpDependencies(opName, _next)
+    {
+        this.loadProjectDependencies({ "ops": [{ "objName": opName }] }, _next);
+    }
+
     loadProjectDependencies(proj, _next)
     {
         const missingOps = [];
