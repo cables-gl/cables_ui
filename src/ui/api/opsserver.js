@@ -962,7 +962,6 @@ export default class ServerOps
     {
         const missingOps = [];
         const missingOpsFound = [];
-        const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
             let opName = op.objName;
@@ -971,7 +970,7 @@ export default class ServerOps
 
             if (!missingOpsFound.includes(opName))
             {
-                const loaded = opDocs.find((opDoc) => { return opDoc.name === opName; });
+                const loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
                 if (!loaded)
                 {
                     missingOps.push({ "name": opName, "id": op.opId });
@@ -1068,6 +1067,13 @@ export default class ServerOps
         return false;
     }
 
+    getUserOpOwner(opname)
+    {
+        if (!this.isUserOp(opname)) return null;
+        const fields = opname.split(".", 3);
+        return fields[2];
+    }
+
     isUserOp(opname)
     {
         return opname && opname.indexOf("Ops.User.") === 0;
@@ -1080,7 +1086,7 @@ export default class ServerOps
 
     isDeprecatedOp(opname)
     {
-
+        return opname && opname.indexOf("Ops.Deprecated.") === 0;
     }
 
     isDevOp(opname)
@@ -1115,6 +1121,19 @@ export default class ServerOps
         return op.allowEdit;
     }
 
+    canReadOp(user, opName)
+    {
+        const project = gui.project();
+        if (project && project.settings && project.settings.isPublic) return true;
+        if (!this.isUserOp(opName)) return true;
+        if (this.isUserOp(opName))
+        {
+            const owner = this.getUserOpOwner(opName);
+            if (owner && project.userList && project.userList.includes(owner)) return true;
+        }
+        return false;
+    }
+
     canEditAttachment(user, opName)
     {
         return this.canEditOp(user, opName);
@@ -1146,12 +1165,13 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
-        if (op)
+        if (op && this.canReadOp(gui.user, op.name))
         {
             let lid = "missingop" + op.name + CABLES.uuid();
             const missingOpUrl = [];
 
             let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + op.name);
+            if (this.isUserOp(op.name)) url += "&p=" + this._patchId;
             if (op.id && op.id !== "undefined") url += "&id=" + op.id;
             missingOpUrl.push(url);
 
