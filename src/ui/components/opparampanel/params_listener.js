@@ -252,7 +252,7 @@ class ParamsListener extends CABLES.EventTarget
                         {
                             "x": p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
                             "y": p.parent.uiAttribs.translate.y - 50,
-                        }, op, p);
+                        }, thePort.parent, p);
             });
 
         if (ele.byId("portCreateOp_" + dirStr + "_" + index))
@@ -262,7 +262,7 @@ class ParamsListener extends CABLES.EventTarget
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
                     {
-                        gui.corePatch().link(op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+                        gui.corePatch().link(thePort.parent, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
                 }
             });
