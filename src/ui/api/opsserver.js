@@ -960,25 +960,7 @@ export default class ServerOps
 
     loadProjectDependencies(proj, _next)
     {
-        const missingOps = [];
-        const missingOpsFound = [];
-        const opDocs = gui.opDocs.getOpDocs();
-        proj.ops.forEach((op) =>
-        {
-            let opName = op.objName;
-            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
-            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
-
-            if (!missingOpsFound.includes(opName))
-            {
-                const loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
-                if (!loaded)
-                {
-                    missingOps.push({ "name": opName, "id": op.opId });
-                    missingOpsFound.push(opName);
-                }
-            }
-        });
+        const missingOps = this.getMissingOps(proj);
 
         this.loadMissingOps(missingOps, (newOps) =>
         {
@@ -1138,6 +1120,31 @@ export default class ServerOps
     canEditAttachment(user, opName)
     {
         return this.canEditOp(user, opName);
+    }
+
+    getMissingOps(proj)
+    {
+        const missingOps = [];
+        const missingOpsFound = [];
+        const opDocs = gui.opDocs.getOpDocs();
+        proj.ops.forEach((op) =>
+        {
+            let opName = op.objName;
+            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
+
+            if (!missingOpsFound.includes(opName))
+            {
+                let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
+                if (!loaded && this.isUserOp(opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                if (!loaded)
+                {
+                    missingOps.push({ "name": opName, "id": op.opId });
+                    missingOpsFound.push(opName);
+                }
+            }
+        });
+        return missingOps;
     }
 
     loadMissingOps(ops, cb)
