@@ -482,6 +482,23 @@ export default class FindTab
                     }
                 }
             }
+            else if (str == ":extassets")
+            {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    for (let k = 0; k < ops[i].portsIn.length; k++)
+                    {
+                        if (ops[i].portsIn[k].uiAttribs.display === "file")
+                        {
+                            const value = ops[i].portsIn[k].get();
+                            if ((value && value.startsWith("/assets/")) && !value.startsWith("/assets/" + gui.patchId ))
+                            {
+                                results.push({ "op": ops[i], "score": 1 });
+                            }
+                        }
+                    }
+                }
+            }
             else if (str.indexOf(":color=") == 0)
             {
                 const col = str.substr(7).toLowerCase();
