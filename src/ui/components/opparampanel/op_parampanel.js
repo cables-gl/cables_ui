@@ -28,7 +28,7 @@ class OpParampanel extends CABLES.EventTarget
 
         this._paramsListener = new ParamsListener(this.panelId);
 
-        this._uiAttrListeners = [];
+        this._portUiAttrListeners = [];
     }
 
     get op()
@@ -68,6 +68,7 @@ class OpParampanel extends CABLES.EventTarget
     {
         if (!attr) return;
         if (attr.hasOwnProperty("greyout")) this.refreshDelayed();
+
         // todo: only update this part of the html
     }
 
@@ -76,9 +77,13 @@ class OpParampanel extends CABLES.EventTarget
         op = op || this._currentOp;
         if (!op) return;
 
+        for (let i = 0; i < this._portUiAttrListeners.length; i++)
+        {
+            const listener = this._portUiAttrListeners[i];
+            listener.port.off(listener.listenId);
+        }
+        this._portUiAttrListeners.length = 0;
         this.onOpUiAttrChange = op.off(this.onOpUiAttrChange);
-
-        for (let i = 0; i < this._portsIn.length; i++) this._portsIn[i].off(this._eventPrefix);
     }
 
     _startListeners(op)
@@ -90,9 +95,14 @@ class OpParampanel extends CABLES.EventTarget
         }
 
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
+
         for (let i = 0; i < this._portsIn.length; i++)
         {
-            this._uiAttrListeners.push(this._portsIn[i].on("onUiAttrChange", this._onUiAttrChangePort.bind(this), this._eventPrefix));
+            const listenId = this._portsIn[i].on(
+                "onUiAttrChange",
+                this._onUiAttrChangePort.bind(this),
+                this._eventPrefix);
+            this._portUiAttrListeners.push({ "listenId": listenId, "port": this._portsIn[i] });
         }
     }
 
@@ -114,11 +124,11 @@ class OpParampanel extends CABLES.EventTarget
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
-        if (this._currentOp != op)
-        {
-            if (this._currentOp) this._stopListeners();
-            this._startListeners(op);
-        }
+        // if (this._currentOp != op)
+        // {
+        if (this._currentOp) this._stopListeners();
+
+        // }
 
         this._currentOp = op;
 
@@ -130,6 +140,8 @@ class OpParampanel extends CABLES.EventTarget
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
+
+        this._startListeners(this._currentOp);
 
         op.emitEvent("uiParamPanel", op);
 
