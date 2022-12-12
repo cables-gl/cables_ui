@@ -962,6 +962,7 @@ export default class ServerOps
     {
         const missingOps = [];
         const missingOpsFound = [];
+        const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
             let opName = op.objName;
@@ -970,7 +971,7 @@ export default class ServerOps
 
             if (!missingOpsFound.includes(opName))
             {
-                const loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                const loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
                 if (!loaded)
                 {
                     missingOps.push({ "name": opName, "id": op.opId });
