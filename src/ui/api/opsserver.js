@@ -1136,7 +1136,7 @@ export default class ServerOps
             if (!missingOpsFound.includes(opName))
             {
                 let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
-                if (!loaded && this.isUserOp(opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                if (!loaded && !this.canReadOp(gui.user, opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
                 if (!loaded)
                 {
                     missingOps.push({ "name": opName, "id": op.opId });
