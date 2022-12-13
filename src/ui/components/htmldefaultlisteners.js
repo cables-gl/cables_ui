@@ -36,6 +36,15 @@ export default function setHtmlDefaultListeners()
         }
     });
 
+    window.addEventListener("message", (event) =>
+    {
+        if (CABLESUILOADER.cfg && (event.origin !== CABLESUILOADER.cfg.urlCables)) return;
+        if (event.data && event.data.type === "hashchange")
+        {
+            window.location.hash = event.data.data;
+        }
+    }, false);
+
     // const ttObserver = new MutationObserver(function (mutations)
     // {
     //     mutations.forEach(function (mutation)
