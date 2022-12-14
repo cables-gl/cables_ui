@@ -587,7 +587,12 @@ export default class OpSelect
 
             if (listItem && listItem.isExtension)
             {
-                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+                html += "<i class=\"icon icon-book-open\"></i> Extension";
+                html += "<h2>" + listItem.shortName + "</h2>";
+
+                html += listItem.summary;
+                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can we loaded into the editor when needed.<br/><br/>";
+                // todo: here should be a description of the extension and list of ops etc...
             }
             else if (listItem && listItem.isTeamNamespace)
             {
@@ -601,7 +606,7 @@ export default class OpSelect
             html += "</div>";
             if (listItem && listItem.isExtension)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View Ops</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this Extension</a>";
             }
             else if (listItem && listItem.isTeamNamespace)
             {
