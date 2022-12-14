@@ -325,7 +325,7 @@ export default class PatchView extends CABLES.EventTarget
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
 
-        gui.serverOps.loadOpLibs(opname, function ()
+        gui.serverOps.loadOpDependencies(opname, function ()
         {
             const op = gui.corePatch().addOp(opname, uiAttr);
 

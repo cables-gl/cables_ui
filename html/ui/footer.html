@@ -222,13 +222,6 @@
                     CABLESUILOADER.buildInfo = response.buildInfo;
                 }
                 CABLESUILOADER.loadAll(response);
-
-                window.addEventListener("message", (event) => {
-                    if (CABLESUILOADER.cfg && (event.origin !== CABLESUILOADER.cfg.urlCables)) return;
-                    if(event.data && event.data.type === "hashchange") {
-                        window.location.hash = event.data.data;
-                    }
-                }, false);
             });
         });
 
