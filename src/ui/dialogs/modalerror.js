@@ -157,7 +157,7 @@ export default class ModalError
 
         if (this._options.exception)
         {
-            str += this._options.exception.message;
+            str += this._options.exception.message + "<br/>";
             if (this._options.exception.stack)
             {
                 const stackClean = document.createElement("div");

@@ -12,8 +12,7 @@ export default
         "number": "Ops.Value.Number",
         "defaultOpImage": "Ops.Gl.Texture_v2",
         "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
-        "defaultOpJson3d": "Ops.Json3d.Mesh3d",
-        "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v2",
+        "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
         "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v3",
         "defaultOpJson": "Ops.Json.AjaxRequest_v2",
         "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
@@ -87,7 +86,6 @@ export default
 
         if (filename.endsWith(".png") || filename.endsWith(".jpg") || filename.endsWith(".jpeg") || filename.endsWith(".jxl") || filename.endsWith(".webp")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpImage);
         else if (filename.endsWith(".ogg") || filename.endsWith(".wav") || filename.endsWith(".mp3") || filename.endsWith(".m4a") || filename.endsWith(".aac")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpAudio);
-        else if (filename.endsWith(".3d.json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson3d);
         else if (filename.endsWith(".mp4") || filename.endsWith(".m4a") || filename.endsWith(".mpg") || filename.endsWith(".webm") || filename.endsWith(".mkv") || filename.endsWith(".mov")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpVideo);
         else if (filename.endsWith(".glb")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpGltf);
         else if (filename.endsWith(".json")) ops.push(CABLES.UI.DEFAULTOPNAMES.defaultOpJson);
