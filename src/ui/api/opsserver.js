@@ -1082,7 +1082,17 @@ export default class ServerOps
         return opname && opname.indexOf("Ops.Extension.") === 0;
     }
 
+    isExtension(opname)
+    {
+        return opname && opname.indexOf("Ops.Extension.") === 0;
+    }
+
     isTeamOp(opname)
+    {
+        return opname && opname.indexOf("Ops.Team.") === 0;
+    }
+
+    isTeamNamespace(opname)
     {
         return opname && opname.indexOf("Ops.Team.") === 0;
     }

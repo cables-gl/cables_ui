@@ -246,7 +246,7 @@ export default class OpSelect
                             if (!foundPortTypeOut && !foundPortTypeIn)
                             {
                                 points -= 5.0; // seems harsh, but is only used when dragging a port, so it should be fine...
-                                scoreDebug += "-5.0 no comparible port found<br/>";
+                                scoreDebug += "-5.0 no compatible port found<br/>";
                             }
                         }
 
@@ -585,14 +585,25 @@ export default class OpSelect
 
             let html = "<div id=\"opselect-layout\">";
 
-            html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+            if (listItem && listItem.isExtension)
+            {
+                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+            }
+            else if (listItem && listItem.isTeamNamespace)
+            {
+                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+            }
+            else
+            {
+                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+            }
 
             html += "</div>";
             if (listItem && listItem.isExtension)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/extension/" + opname + "\" class=\"button-small\">View Documentation</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View Ops</a>";
             }
-            if (listItem && listItem.isTeamNamespace)
+            else if (listItem && listItem.isTeamNamespace)
             {
                 html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View Team</a>";
             }
