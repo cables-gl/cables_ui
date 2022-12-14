@@ -2025,15 +2025,14 @@ export default class PatchView extends CABLES.EventTarget
 
                 setTimeout(() =>
                 {
+                    const a = {};
                     for (const i in oldUiAttribs)
                     {
                         if (i == "uierrors") continue;
-                        const a = {};
-
                         a[i] = oldUiAttribs[i];
-
-                        newOp.setUiAttrib(a);
                     }
+                    newOp.setUiAttrib(a);
+                    this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
                 }, 100);
             } });
         });
