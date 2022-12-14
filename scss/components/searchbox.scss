@@ -55,6 +55,21 @@
             background-color: var(--color-06) !important;
         }
     }
+
+
+    .warning-error-level2,.warning-error-level0
+    {
+        display: inline-block;
+        opacity: 0.9;
+        padding:3px;
+        padding-left:8px;
+        padding-right:8px;
+        margin-top:10px;
+        border-radius: 4px;
+        border-bottom: 0;
+        border:1px solid #222;
+    }
+
 }
 
 #searchresult,.tabSearchResultsContainer {
