@@ -74,7 +74,6 @@ export default class Preferences
 
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
 
-        this.setSwitchValue("showOldOps", userSettings.get("showOldOps"));
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
         this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
