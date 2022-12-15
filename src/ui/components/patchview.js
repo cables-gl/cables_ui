@@ -1993,47 +1993,49 @@ export default class PatchView extends CABLES.EventTarget
 
     replaceOp(opid, newOpObjName)
     {
-        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
-            const origOp = this._p.getOpById(opid);
-
-            this.copyOpInputPorts(origOp, newOp);
-
-            for (let i = 0; i < origOp.portsIn.length; i++)
+            this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
             {
-                for (let j = 0; j < origOp.portsIn[i].links.length; j++)
-                {
-                    const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+                const origOp = this._p.getOpById(opid);
 
-                    this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                this.copyOpInputPorts(origOp, newOp);
+
+                for (let i = 0; i < origOp.portsIn.length; i++)
+                {
+                    for (let j = 0; j < origOp.portsIn[i].links.length; j++)
+                    {
+                        const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
+
+                        this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                    }
                 }
-            }
 
-            for (let i = 0; i < origOp.portsOut.length; i++)
-            {
-                for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                for (let i = 0; i < origOp.portsOut.length; i++)
                 {
-                    const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                    this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                    for (let j = 0; j < origOp.portsOut[i].links.length; j++)
+                    {
+                        const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
+                        this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                    }
                 }
-            }
 
-            const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
-            this._p.deleteOp(origOp.id);
+                const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
+                this._p.deleteOp(origOp.id);
 
-            setTimeout(() =>
-            {
-                for (const i in oldUiAttribs)
+                setTimeout(() =>
                 {
-                    if (i == "uierrors") continue;
                     const a = {};
-
-                    a[i] = oldUiAttribs[i];
-
+                    for (const i in oldUiAttribs)
+                    {
+                        if (i == "uierrors") continue;
+                        a[i] = oldUiAttribs[i];
+                    }
                     newOp.setUiAttrib(a);
-                }
-            }, 100);
-        } });
+                    this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
+                }, 100);
+            } });
+        });
     }
 
 

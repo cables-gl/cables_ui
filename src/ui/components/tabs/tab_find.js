@@ -349,7 +349,10 @@ export default class FindTab
                 FindTab.searchOutDated(ops, results);
 
                 for (let i = 0; i < results.length; i++)
-                    results[i].hint = "Newer version of op available!";
+                {
+                    if (results[i].op.objName.indexOf("Ops.Deprecated") > -1) results[i].hint = "Op is deprecated, should not be used anymore";
+                    else results[i].hint = "Newer version of op available! Please upgrade";
+                }
 
                 for (let i = 0; i < ops.length; i++)
                 {

@@ -199,16 +199,38 @@ export default class OpDocs
     get2(opName)
     {
         let opDoc = this.getOpDocByName(opName);
-
         if (!opDoc)
         {
-            opDoc =
-                {
-                    "name": opName,
-                    "summaryHtml": "No Op Documentation found",
-                    "summary": "No Op Documentation found",
-                    "userOp": opName.indexOf("Ops.User") == 0
-                };
+            if (gui.serverOps.isExtension(opName))
+            {
+                opDoc =
+                    {
+                        "name": "",
+                        "summaryHtml": "",
+                        "summary": "",
+                        "userOp": false
+                    };
+            }
+            else if (gui.serverOps.isTeamNamespace(opName))
+            {
+                opDoc =
+                    {
+                        "name": "",
+                        "summaryHtml": "",
+                        "summary": "",
+                        "userOp": false
+                    };
+            }
+            else
+            {
+                opDoc =
+                    {
+                        "name": opName,
+                        "summaryHtml": "No Op Documentation found",
+                        "summary": "No Op Documentation found",
+                        "userOp": opName.indexOf("Ops.User") == 0
+                    };
+            }
         }
 
         const html = getHandleBarHtml("op-doc-template", {

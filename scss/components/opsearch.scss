@@ -122,6 +122,12 @@
         padding: 15px 20px;
 		border-bottom: 1px solid var(--color-01);
         background-color: $background-color-brighter;
+
+        .icon
+        {
+            -webkit-mask-position-y: 2px;
+            mask-position-y: 2px;
+        }
     }
 
     .searchbrowser
