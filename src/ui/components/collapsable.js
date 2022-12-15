@@ -47,12 +47,7 @@ Collapsable._setGroupCollapsed = (parentEle, childEle, collapsed) =>
 
 Collapsable._toggleGroupElements = (parentEle, childEle) =>
 {
-    console.log(parentEle, childEle);
-    // const els = ele.byClassAll(name);
-    // for (let i = 0; i < els.length; i++)
-    // {
     childEle.classList.toggle("hidden");
-    // }
 
     parentEle.children[0].classList.toggle("icon-chevron-down");
     parentEle.children[0].classList.toggle("icon-chevron-right");

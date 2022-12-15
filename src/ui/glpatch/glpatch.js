@@ -951,21 +951,16 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
-        // this.performanceGraph.set(performance.now() - starttime); //
-
         if (this._cgl.profileData)
         {
             this.debugData.glPrimitives = this._cgl.profileData.profileMeshNumElements;
             this.debugData.glUpdateAttribs = this._cgl.profileData.profileMeshAttributes;
 
             for (let i in this._cgl.profileData.profileSingleMeshAttribute)
-            {
                 this.debugData["glUpdateAttribs " + i] = this._cgl.profileData.profileSingleMeshAttribute[i];
-            }
 
             this._cgl.profileData.clear();
         }
-
 
         this._cgl.popDepthTest();
         this._cgl.popDepthWrite();
