@@ -227,6 +227,36 @@ CABLES_CMD_PATCH.newPatch = function ()
     gui.createProject();
 };
 
+CABLES_CMD_PATCH.addOpByName = (name) =>
+{
+    new ModalDialog({
+        "prompt": true,
+        "title": "Add Op",
+        "text": "Enter full op name",
+        "promptValue": name,
+        "promptOk": (opname) =>
+        {
+            gui.serverOps.loadOpDependencies(opname, function ()
+            {
+                gui.patchView.addOp(opname, { "onOpAdd": (op) =>
+                {
+                    console.log("yey");
+                    op.setUiAttrib({
+                        "translate": {
+                            "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                            "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                    });
+
+                    if (op)
+                    {
+                        gui.patchView.focusOp(op.id);
+                    }
+                } });
+            });
+        }
+    });
+};
+
 CABLES_CMD_PATCH.addOp = function (x, y)
 {
     gui.opSelect().show({ "x": 0, "y": 0 });
@@ -939,6 +969,12 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.addOp,
         "icon": "op",
         "infotext": "cmd_addop"
+    },
+    {
+        "cmd": "add op by name",
+        "category": "patch",
+        "func": CABLES_CMD_PATCH.addOpByName,
+        "icon": "op"
     },
     {
         "cmd": "edit op",

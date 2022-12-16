@@ -1044,16 +1044,26 @@ export default class OpSelect
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        if (!this._forceShowOldOps) shortName = opdoc.shortNameDisplay;
+                        if (opdoc.oldVersion)
+                        {
+                            hidden = false;
+                        }
+                        else if (gui.serverOps.isDeprecatedOp(opname))
+                        {
+                            hidden = false;
+                        }
+                        else
+                        {
+                            shortName = opdoc.shortNameDisplay;
+                        }
                     }
 
                     if (hidden)
                     {
-                        if (this._forceShowOldOps) hidden = false;
-                        if (opname.indexOf("Ops.Admin") == 0 && !gui.user.isAdmin) hidden = true;
+                        if (gui.serverOps.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
                     }
 
-                    if (opname.indexOf("Ops.Dev.") == 0 && !CABLES.sandbox.isDevEnv()) hidden = true;
+                    if (gui.serverOps.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");

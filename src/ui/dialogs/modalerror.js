@@ -193,18 +193,20 @@ export default class ModalError
                 }
             }
         }
+
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+        str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
         if (!isCustomOp && !isUserOp)
         {
             if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv())
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
-                str += "An automated error report has been created. We will look into it!";
+                str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
             }
             else
             {
-                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
+                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Log</a>&nbsp;&nbsp;";
             }
         }
 
