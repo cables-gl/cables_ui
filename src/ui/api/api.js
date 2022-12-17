@@ -297,13 +297,13 @@ export default class Api
         };
 
         let sendReport = true;
-        if(!manualSend)
+        if (!manualSend)
         {
             sendReport = (this.lastErrorReport && (performance.now() - this.lastErrorReport) < 2000);
-            if(gui && gui.user && gui.user.isAdmin) sendReport = false;
+            if (gui && gui.user && gui.user.isAdmin) sendReport = false;
         }
 
-        if(!sendReport)
+        if (!sendReport)
         {
             doneCallback();
         }
@@ -323,6 +323,5 @@ export default class Api
                 CABLES.api.post("errorReport", report, doneCallback);
             }
         }
-
     }
 }

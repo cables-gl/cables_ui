@@ -1044,18 +1044,7 @@ export default class OpSelect
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        if (opdoc.oldVersion)
-                        {
-                            hidden = false;
-                        }
-                        else if (gui.serverOps.isDeprecatedOp(opname))
-                        {
-                            hidden = false;
-                        }
-                        else
-                        {
-                            shortName = opdoc.shortNameDisplay;
-                        }
+                        shortName = opdoc.shortNameDisplay;
                     }
 
                     if (hidden)
