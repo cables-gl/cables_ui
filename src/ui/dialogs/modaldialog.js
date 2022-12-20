@@ -222,4 +222,9 @@ export default class ModalDialog extends CABLES.EventTarget
         this._options.promptOk(elePromptInput.value);
         this.emitEvent("onSubmit", elePromptInput.value);
     }
+
+    persistInIdleMode()
+    {
+        return this._options.persistInIdleMode;
+    }
 }

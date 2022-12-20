@@ -25,6 +25,6 @@ export default class Exporter
 
         const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
 
-        new ModalDialog({ "html": html, "nopadding": true });
+        new ModalDialog({ "html": html, "nopadding": true, "persistInIdleMode": true });
     }
 }
