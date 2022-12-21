@@ -23,7 +23,10 @@ function startIdleMode()
     if (gui.socket && gui.socket.inMultiplayerSession) return;
 
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
-    idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
+    if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode()))
+    {
+        idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
+    }
 
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart", wasActiveSeconds);
