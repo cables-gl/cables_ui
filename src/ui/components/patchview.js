@@ -577,10 +577,14 @@ export default class PatchView extends CABLES.EventTarget
             const project = gui.project();
             if (project)
             {
-                if (project.isOpExample || (!gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id)))
+                const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
+                if (project.isOpExample || notCollab)
                 {
                     const projectId = project.shortId || project._id;
                     html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+                }
+                if (notCollab)
+                {
                     html += getHandleBarHtml("clonepatch", {});
                 }
             }
