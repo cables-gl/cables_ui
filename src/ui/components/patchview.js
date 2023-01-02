@@ -2063,6 +2063,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         gui.patchView.element.classList.toggle("hidden");
         gui.patchView.patchRenderer.vizLayer._eleCanvas.classList.toggle("hidden");
+        gui.emitEvent("canvasModeChange");
     }
 
     setVisibility(b)

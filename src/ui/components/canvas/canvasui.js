@@ -138,12 +138,7 @@ export default class CanvasUi
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
         {
             ele.show(this._elCanvasIconbarContainer);
-            // this.isCanvasFocussed = false;
             _show = true;
-
-            console.log("show", _show);
-
-            // ele.hide(this._elCanvasModalDarkener);
 
             this.updateCanvasIconBar();
             this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
