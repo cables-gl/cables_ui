@@ -662,7 +662,9 @@ CABLES_CMD_PATCH.downGradeOp = function ()
 {
     const selops = gui.patchView.getSelectedOps();
     for (let i = 0; i < selops.length; i++)
-        gui.patchView.downGradeOp(selops[i].id, selops[i].name);
+    {
+        gui.patchView.downGradeOp(selops[i].id, selops[i].objName);
+    }
 };
 
 CABLES_CMD_PATCH.watchGlOp = function ()
