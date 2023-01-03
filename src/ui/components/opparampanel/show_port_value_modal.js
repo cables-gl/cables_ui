@@ -369,14 +369,22 @@ export default class ModalPortValue
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
     {
         const op = gui.corePatch().getOpById(opId);
-        const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
+        // const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
+        console.log("joajoa");
+        gui.patchView.addOp(
+            "Ops.Json." + inputDataType + "Get" + dataType + "ByPath",
+            {
+                "subPatch": gui.patchView.getCurrentSubPatch(),
+                "onOpAdd": (newop) =>
+                {
+                    newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
 
-        newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
-
-        newop.getPort("Path").set(path);
-        op.patch.link(op, portName, newop, inputDataType);
-        gui.patchView.centerSelectOp(newop.id);
-        gui.closeModal();
+                    newop.getPort("Path").set(path);
+                    op.patch.link(op, portName, newop, inputDataType);
+                    gui.patchView.centerSelectOp(newop.id);
+                    gui.closeModal();
+                }
+            });
     }
 
     structureHelper_exposeArray(opId, portName, path, inputDataType = "Object")
