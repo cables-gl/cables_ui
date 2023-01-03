@@ -317,7 +317,7 @@ export default class OpSelect
                     scoreDebug += "+1 is math (" + query + ")<br/>";
                 }
 
-                const shortnessPoints = Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
+                const shortnessPoints = 2 * Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
                 points += shortnessPoints;
                 scoreDebug += "+" + shortnessPoints + " shortness namespace<br/>";
             }
