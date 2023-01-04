@@ -5,6 +5,7 @@ export default class GlDebugTab
     constructor(tabs)
     {
         this._count = 0;
+        this._timeout = null;
 
         this._tab = new Tab("gluidebug", { "icon": "pie-chart", "singleton": true, "infotext": "tab_profiler", "padding": true });
         tabs.addTab(this._tab, true);
@@ -17,8 +18,7 @@ export default class GlDebugTab
     {
         this._count++;
 
-        let html = "<table>";
-        // html = "!" + this._count;
+        let html = "<div class=\"tabContentScrollContainer\"><table>";
 
         for (const i in gui.patchView._patchRenderer._cgl.profileData.glQueryData)
         {
@@ -30,12 +30,13 @@ export default class GlDebugTab
         html += "<table>";
         for (const i in gui.patchView._patchRenderer.debugData)
         {
-            html += "<tr><td>" + i + ":</td><td><pre>" + gui.patchView._patchRenderer.debugData[i] + "</pre></td></tr>";
+            html += "<tr><td>" + i + ":</td><td>" + gui.patchView._patchRenderer.debugData[i] + "</td></tr>";
         }
 
-        html += "</table>";
+        html += "</table></div>";
 
         this._tab.html(html);
-        setTimeout(this.show.bind(this), 100);
+        clearTimeout(this._timeout);
+        this._timeout = setTimeout(this.show.bind(this), 300);
     }
 }

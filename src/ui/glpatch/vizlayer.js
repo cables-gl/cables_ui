@@ -124,6 +124,9 @@ export default class VizLayer extends CABLES.EventTarget
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
 
+            sizeOp[0] *= window.devicePixelRatio;
+            sizeOp[1] *= window.devicePixelRatio;
+
             size[0] *= window.devicePixelRatio;
             size[1] *= window.devicePixelRatio;
 
@@ -171,6 +174,8 @@ export default class VizLayer extends CABLES.EventTarget
             this._canvasCtx.restore();
             count++;
         }
+
+        this._glPatch.debugData.numVizLayers = count;
 
         perf.finish();
     }
