@@ -98,9 +98,8 @@
             incrementStartup();
 
             loadjs([
-                CABLESUILOADER.builtVersionUrl("core", 'js/libs.core.min.js'),
-                'js/ace/ace.js'
-            ], 'libs');
+                CABLESUILOADER.builtVersionUrl("core", 'js/libs.core.min.js')
+                    ], 'libs');
 
             var jsType='max';
             if(!cfg.isDevEnv) jsType='min';
@@ -110,12 +109,7 @@
                 incrementStartup();
                 logStartup('loaded libs');
 
-                loadjs(['js/ace/ext-language_tools.js','js/ace/theme-cables.js'],'ace');
 
-                loadjs.ready('ace', function()
-                {
-                    logStartup('loaded ace');
-                    incrementStartup();
                     loadjs([CABLESUILOADER.builtVersionUrl("core", 'js/cables.'+jsType+'.js')],'cables_core');
 
                     loadjs.ready('cables_core', function()
@@ -188,7 +182,6 @@
                             });
                         });
                     });
-                });
             });
         };
 
@@ -197,12 +190,6 @@
             if(!CABLESUILOADER.preload.opDocsAll)
             {
                 console.log("waiting for opDocsAll...");
-                setTimeout(waitForAce,100);
-            }
-            else
-            if(!window.ace || !ace.define || !ace.edit)
-            {
-                console.log("waiting for ace...");
                 setTimeout(waitForAce,100);
             }
             else

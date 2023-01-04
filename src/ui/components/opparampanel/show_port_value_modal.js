@@ -369,8 +369,6 @@ export default class ModalPortValue
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
     {
         const op = gui.corePatch().getOpById(opId);
-        // const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "Get" + dataType + "ByPath");
-        console.log("joajoa");
         gui.patchView.addOp(
             "Ops.Json." + inputDataType + "Get" + dataType + "ByPath",
             {
