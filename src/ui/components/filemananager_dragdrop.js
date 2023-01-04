@@ -10,7 +10,8 @@ DragNDrop.loadImage = function (_event, p)
     if (!CABLES.dragImage)
     {
         CABLES.dragImage = new Image();
-        CABLES.dragImage.src = "/ui/img/dragicon.png";
+        // image file: /ui/img/dragicon.png
+        CABLES.dragImage.src = "data:image;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAfCAQAAAC7DqDdAAABpUlEQVR4Ad3BO24bVxQA0HM5l6YUqbBV+FMEiJtsJa0b7yMrMwJVqbKMVAFS+wsHMEUNqXk3GMsT2ohq0Zxz8tc/Hz3ZfSqBwgO937zzwnNrlDBKg0vvvXShV8KttHPpo5X71XvkF50B3fnV67w4+8nm3BdlZWNh57Hn/rG3stYMHvvR2t4DvU5z35rOMytbYenDWW5d6Y1KoFwrC1sb1yhhNOiFsLVxbVQCg145hNIrO9zYSkIhhP8rgfK1Ugjh8MokU1oalcDSTiid1AmTpRuUtLS0t9QcTphkKYUSGpoyKqWUSdOMmqYJhVCa5nDKJC+lQgmj0PQe+t0fmkkJZeMHr6RSRqEENk4cRpjkW4OwV8Kp9M4gfOvUwhtN2Cvh1EI5rDxxl+bEXcqpu5RDCqQZKKRZKGkWQpqJNBNpJtJMpJlIM5FmIh2xUibpiIUwSbNQ0iyEdNTKJLcG4VsrC+UYhFEgf3ZmsLcw+MtW5/tXbhXyqQs7JZRA2vlb0/n+hb28duVGIYw6O+X4pM9CKaEQjlH6Tzg+ZZLWzn2CcqscnXPrfwGXq56tCOJVBgAAAABJRU5ErkJggg==";
     }
 };
 

@@ -601,7 +601,7 @@
 
     #nav-logo_idle
     {
-        background-image:url(/ui/img/logo.png);
+        background-image:url(data:image;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoCAQAAAAm93DmAAABu0lEQVR4Ac3BP0jUcRjH8Y9nWZCFNwktojTIiXAQQRFhf5bLJtGWjsYyIZAIrnaDmoSGxLmrJagIiZoauqglEDoIh2hqKa6gH3F24N07Hh7OjusXfA++g6+XdhwuUKHCLcXCfcx7xcI65rniYC8NzF3FwRncRcXBKqbJQcVAlgTzWnFwB1dUDEzyG/OJ3eoF/UxQYJo8A9rGIFXcrMIxygo12hLKTEoSu3iGe6RwLFKn2xa32cND3GeyCsUy//MF94u8QjFP2xozjDFCgTJb/NXgrEIxTILZZE4dOMF3XJ1zCscSrqgunKSJeaJesIGpKAUPMAkDCkWWFuaKUlDA5RWKHG5KKRjBTSsU47hTSsEYrqBQ7KeJuaYUzOAmFI51TJWM/sEapka/wlHCldSFOdyKwjHIC1yTG2S0jSKbmDqjCsUQ7+hU5TqnmWKBCm2LCsU+3uIatEi3rFBkeIr7wXFm+Ua3hHmFo4SrkZckhrjJB1qYFhssMaxw5Ghg6hxVBw4wTo6sesVL3CXFwBHcK/oUA6u4Y4qBDF8xbxQHh3ELioOruEOKg3uYn/QpDh5jPioWzlOmzGXtNH8AqmJyrxV/UAsAAAAASUVORK5CYII=);
         background-size:auto 100%;
         width:20px;
         height:20px;
@@ -609,9 +609,6 @@
         position: absolute;
         z-index: 100;
     }
-
-
-
 
     #nav-loading
     {
