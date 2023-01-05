@@ -10,7 +10,7 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         super();
         this._tabs = tabs || gui.mainTabs;
 
-        this._tab = new Tab("Jobs", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
+        this._tab = new Tab("Analyze", { "icon": "list", "infotext": "tab_logging", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
         gui.maintabPanel.show(true);
 
