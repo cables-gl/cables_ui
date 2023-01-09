@@ -922,18 +922,18 @@ export default class Gui
         else this.showFileManager(null, true);
     }
 
-    showFileManager(cb, unserInteraction)
+    showFileManager(cb, userInteraction)
     {
         if (this.fileManager)
         {
-            this.fileManager.show(unserInteraction);
+            this.fileManager.show(userInteraction);
             gui.mainTabs.activateTabByName("Files");
 
             if (cb)cb();
         }
         else
         {
-            this.fileManager = new CABLES.UI.FileManager(cb, unserInteraction);
+            this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
         }
     }
 
@@ -1610,7 +1610,7 @@ export default class Gui
         return this._metaCode;
     }
 
-    showSettings(unserInteraction)
+    showSettings(userInteraction)
     {
         window.onmessage = (e) =>
         {

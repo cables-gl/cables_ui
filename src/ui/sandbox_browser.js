@@ -54,30 +54,9 @@ export default class SandboxBrowser extends CABLES.EventTarget
         return ""; // no local ops in browser version
     }
 
-    getUrlDocOpsAll()
-    {
-        return "doc/ops/all";
-    }
-
-    getAssetPrefix()
-    {
-        const url = this._cfg.urlCables + "/assets/" + this._cfg.patchId + "/";
-        return url;
-    }
-
     getUrlApiPrefix()
     {
         return this._cfg.urlCables + "/api/";
-    }
-
-    getUrlOpsList()
-    {
-        return "ops/";
-    }
-
-    getPatchId()
-    {
-        return this._cfg.patchId;
     }
 
     getPatchVersion()
@@ -94,7 +73,6 @@ export default class SandboxBrowser extends CABLES.EventTarget
     {
         return this._cfg.isDevEnv;
     }
-
 
     showStartupChangelog()
     {
