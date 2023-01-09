@@ -29,7 +29,19 @@
 
         &.selected
         {
-            border:2px solid var(--color-special);
+            border:2px solid var(--color-special) !important;
+        }
+
+        &.reference {
+            border:2px solid var(--color-warning);
+        }
+
+        &.reference.blueprint {
+            border:2px solid var(--color-blueprint);
+        }
+
+        &.reference.library {
+            border:2px solid var(--color-hint);
         }
 
     }
@@ -139,6 +151,7 @@
 .filelistcontainer
 {
     height:calc(100% - 360px);
+    width: 100%;
     overflow-y:auto;
     position: absolute;
 }
