@@ -97,6 +97,8 @@ export default class Gui
                 this.setStateSaved();
                 gui.bookmarks.updateDynamicCommands();
 
+                gui.patchView.highlightExamplePatchOps();
+
                 logStartup("Patch loaded");
             });
 
@@ -178,6 +180,17 @@ export default class Gui
         gui.setProjectName(p.name || "unknown");
 
         ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id);
+
+
+        // if (p.settings.opExample)
+        //     for (let i = 0; i < p.settings.opExample.length; i++)
+        //     {
+        //         const ops = gui.corePatch().getOpsByName("Ops.Anim.Bang");
+        //         for (let j = 0; j < ops.length; j++)
+        //         {
+        //             ops[j].setUiAttr({ "color": "#5dc0fd" });
+        //         }
+        //     }
     }
 
     opSelect()
