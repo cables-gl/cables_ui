@@ -340,8 +340,6 @@ export default class FindTab
 
         results = results || [];
 
-        // gui.log.userInteraction("searches " + str);
-
         if (str.indexOf(":") == 0)
         {
             if (str == ":attention")
