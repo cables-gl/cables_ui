@@ -9,7 +9,7 @@ import ModalLoading from "../dialogs/modalloading";
 
 export default class FileManager
 {
-    constructor(cb, unserInteraction)
+    constructor(cb, userInteraction)
     {
         this._log = new Logger("filemanager");
         this._filterType = null;
@@ -21,7 +21,7 @@ export default class FileManager
         this._order = userSettings.get("filemanager_order") || "name";
         this._files = [];
 
-        gui.maintabPanel.show(unserInteraction);
+        gui.maintabPanel.show(userInteraction);
         userSettings.set("fileManagerOpened", true);
 
         CABLES.DragNDrop.loadImage();
@@ -42,9 +42,9 @@ export default class FileManager
         });
     }
 
-    show(unserInteraction)
+    show(userInteraction)
     {
-        gui.maintabPanel.show(unserInteraction);
+        gui.maintabPanel.show(userInteraction);
     }
 
     refresh()
@@ -93,37 +93,47 @@ export default class FileManager
 
         gui.jobs().start({ "id": "getFileList", "title": "Loading file list" });
 
+        this._getFilesFromSource(this._fileSource, (files) =>
+        {
+            if (!files)files = [];
+
+            if (this._firstTimeOpening && files.length == 0)
+            {
+                this._firstTimeOpening = false;
+                this._fileSource = "lib";
+                this.reload(cb);
+                return;
+            }
+
+            this._firstTimeOpening = false;
+            this._files = files;
+
+            this._buildHtml();
+
+            if (cb) cb();
+
+            gui.jobs().finish("getFileList");
+        });
+    }
+
+    _getFilesFromSource(source, cb)
+    {
         CABLESUILOADER.talkerAPI.send(
             "getFilelist",
             {
-                "source": this._fileSource,
+                "source": source,
             },
-            (err, files) =>
+            (err, remoteFiles) =>
             {
                 if (err)
                 {
                     this._log.error(err);
-                    return;
+                    cb([]);
                 }
-
-                if (!files)files = [];
-
-                if (this._firstTimeOpening && files.length == 0)
+                else
                 {
-                    this._firstTimeOpening = false;
-                    this._fileSource = "lib";
-                    this.reload(cb);
-                    return;
+                    if (cb) cb(remoteFiles);
                 }
-
-                this._firstTimeOpening = false;
-                this._files = files;
-
-                this._buildHtml();
-
-                if (cb) cb();
-
-                gui.jobs().finish("getFileList");
             },
         );
     }
@@ -150,7 +160,10 @@ export default class FileManager
             "dateFromNow": file.dfr,
             "sizeKb": size,
             "size": file.s,
-            "file": file
+            "file": file,
+            "isReference": file.isReference,
+            "viaBlueprint": file.viaBlueprint,
+            "isLibraryFile": file.isLibraryFile
         };
 
         item.icon = "file";
@@ -257,7 +270,7 @@ export default class FileManager
             this._createItem(items, this._files[i], this._filterType);
         }
 
-        this._manager.listHtmlOptions.showHeader = this._fileSource != "lib";
+        this._manager.listHtmlOptions.showHeader = this._fileSource !== "lib";
         this._manager.listHtmlOptions.order = this._order;
         this._manager.listHtmlOptions.orderReverse = this._orderReverse;
         this._manager.setItems(items);
@@ -305,7 +318,11 @@ export default class FileManager
 
     selectFile(filename)
     {
-        if (this._fileSource != "patch")
+        if (this._fileSource === "patch")
+        {
+            this._selectFile(filename);
+        }
+        else
         {
             if (filename.indexOf(gui.project()._id) > -1)
             {
@@ -317,10 +334,6 @@ export default class FileManager
                     },
                 );
             }
-        }
-        else
-        {
-            this._selectFile(filename);
         }
         gui.maintabPanel.show(true);
     }
@@ -386,29 +399,40 @@ export default class FileManager
         let html = "";
         document.getElementById("item_details").innerHTML = "";
 
-        if (detailItems.length == 1)
+        if (detailItems.length === 1)
         {
-            const itemId = detailItems[0].id;
+            const detailItem = detailItems[0];
+            const itemId = detailItem.id;
+            let projectId = gui.project()._id;
+            if (detailItem.isReference && detailItem.file) projectId = detailItem.file.projectId;
             CABLESUILOADER.talkerAPI.send(
                 "getFileDetails",
                 {
+                    "projectId": projectId,
                     "fileid": itemId,
                 },
                 function (err, r)
                 {
                     if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
-                    if (this._fileSource != "lib")
+                    if (this._fileSource !== "lib")
                     {
+                        if (detailItem.isReference)
+                        {
+                            delete r.converters;
+                        }
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
+                            "isReference": detailItem.isReference,
+                            "viaBlueprint": detailItem.viaBlueprint,
+                            "isLibraryFile": detailItem.isLibraryFile
                         });
                     }
                     else
                     {
                         // * it's a library file
-                        const item = detailItems[0];
+                        const item = detailItem;
 
                         const fileInfoPath = item.p.substring("/assets/library/".length);
 
@@ -478,12 +502,12 @@ export default class FileManager
                                             let used = false;
                                             if (countRes.data.countPatches)
                                             {
-                                                content += "It is used in " + countRes.data.countPatches + " of your patches.<br/>";
+                                                content += "It is used in " + countRes.data.countPatches + " other patch(es).<br/>";
                                                 used = true;
                                             }
                                             if (countRes.data.countOps)
                                             {
-                                                content += "It is used in " + countRes.data.countOps + " of your ops.<br/>";
+                                                content += "It is used in " + countRes.data.countOps + " op(s).<br/>";
                                                 used = true;
                                                 allowDelete = false;
                                             }
@@ -597,16 +621,17 @@ export default class FileManager
                                     let used = false;
                                     if (countRes.data.countPatches)
                                     {
-                                        content += "They are is used in " + countRes.data.countPatches + " of your patches.<br/>";
+                                        content += "They are is used in " + countRes.data.countPatches + " other patch(es).<br/>";
                                         used = true;
                                     }
                                     if (countRes.data.countOps)
                                     {
-                                        content += "They are used in " + countRes.data.countOps + " of your ops.<br/>";
+                                        content += "They are used in " + countRes.data.countOps + " op(s).<br/>";
                                         used = true;
                                         allowDelete = false;
                                     }
-                                    if (used) content += "<br/>Try to delete them individually to check where they are used.";
+                                    const projectId = gui.project().shortId || gui.project()._id;
+                                    if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">here</a>";
                                 }
                                 else
                                 {

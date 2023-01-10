@@ -29,8 +29,9 @@
 
         &.selected
         {
-            border:2px solid var(--color-special);
+            border:2px solid var(--color-special) !important;
         }
+
 
     }
 
@@ -139,6 +140,7 @@
 .filelistcontainer
 {
     height:calc(100% - 360px);
+    width: 100%;
     overflow-y:auto;
     position: absolute;
 }

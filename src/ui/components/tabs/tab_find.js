@@ -340,8 +340,6 @@ export default class FindTab
 
         results = results || [];
 
-        // gui.log.userInteraction("searches " + str);
-
         if (str.indexOf(":") == 0)
         {
             if (str == ":attention")
@@ -494,7 +492,7 @@ export default class FindTab
                         if (ops[i].portsIn[k].uiAttribs.display === "file")
                         {
                             const value = ops[i].portsIn[k].get();
-                            if ((value && value.startsWith("/assets/") && !value.startsWith("/assets/library/")) && !value.startsWith("/assets/" + gui.patchId))
+                            if (value && value.startsWith("/assets/") && !value.startsWith("/assets/" + gui.patchId))
                             {
                                 results.push({ "op": ops[i], "score": 1 });
                             }

@@ -197,7 +197,8 @@ const text =
         "subtitle_presentationmode": "Show all key presses on the screen",
 
         "title_fontsize": "Text Size",
-        "subtitle_fontsize": "Size Of Text and Icons in cables"
+        "subtitle_fontsize": "Size Of Text and Icons in cables",
+        "subtitle_fontsize_ace": "Font size in Text editor"
     },
     "tips":
     [

@@ -20,7 +20,7 @@ export default class SandboxElectron extends CABLES.EventTarget
             gui.patchView.setProject(patch);
 
             // gui.patch.filename = message.path; // store the path, so we can oversave it without a select-file prompt later
-            // const projectName = gui.patch.getProjectnameFromFilename(message.path);
+            const projectName = gui.patchView.store.getProjectnameFromFilename(message.path);
             gui.setProjectName(projectName);
         });
     }
@@ -41,9 +41,9 @@ export default class SandboxElectron extends CABLES.EventTarget
     }
 
     /**
- * Returns the local cables folder if it is set in user settings or the default one if not set
- * e.g. `Users/ulf/cables`
- */
+     * Returns the local cables folder if it is set in user settings or the default one if not set
+     * e.g. `Users/ulf/cables`
+     */
     getLocalCablesFolder()
     {
     // TODO: Let users define their cables-home dir
@@ -113,37 +113,8 @@ export default class SandboxElectron extends CABLES.EventTarget
         cb();
     }
 
-    getUrlDocOpsAll(id)
-    {
-        return "docops.json";
-    }
-
     getUrlApiPrefix(id)
     {
         return "";
-    }
-
-    // changelog = function() {
-    //     console.log('fake changelog called...'); // not called
-    // };
-
-    getUrlOpsList(id)
-    {
-        return "ops.json";
-    }
-
-
-    loadUser(cb, cbError)
-    {
-        if (cb)
-        {
-            cb(
-                {
-                    "username": "cables",
-                    "usernameLowercase": "cables",
-                    "isAdmin": true,
-                    "isStaff": true
-                });
-        }
     }
 }

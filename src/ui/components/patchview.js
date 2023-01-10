@@ -90,6 +90,9 @@ export default class PatchView extends CABLES.EventTarget
 
     _onDeleteOpUndo(op)
     {
+        this.checkPatchErrorsSoon();
+
+
         const undofunc = (function (opname, _opid)
         {
             const oldValues = {};
@@ -512,10 +515,13 @@ export default class PatchView extends CABLES.EventTarget
 
     checkPatchOutdated()
     {
+        this.hasOldOps = false;
+
         for (let i = 0; i < this._p.ops.length; i++)
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
-            if (doc && doc.oldVersion)
+
+            if ((doc && doc.oldVersion) || this._p.ops[i].objName.indexOf("Deprecated") > -1)
             {
                 this.hasOldOps = true;
                 return;
@@ -523,12 +529,24 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
+    checkPatchErrorsSoon()
+    {
+        setTimeout(() =>
+        {
+            clearTimeout(this._checkErrorTimeout);
+            this.checkPatchOutdated();
+            this.checkPatchErrors();
+        }, 500);
+    }
+
     checkPatchErrors()
     {
         const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
-
         const hadErrors = this.hasUiErrors;
         this.hasUiErrors = false;
+
+        if (!this._checkErrorTimeout)
+            gui.patchView.checkPatchOutdated(); // first time also check outdated ops..
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
@@ -547,8 +565,13 @@ export default class PatchView extends CABLES.EventTarget
 
         const elError = ele.byId("nav-item-error");
         const wasHidden = elError.classList.contains("hidden");
-        if (this.hasUiErrors || this.hasOldOps) ele.show(elError);
+        if (this.hasUiErrors || this.hasOldOps)
+        {
+            ele.show(elError);
+        }
         else ele.hide(elError);
+
+        console.log("show attent", this.hasUiErrors, this.hasOldOps);
 
         const elIcon = ele.byId("nav-item-error-icon");
         if (this.hasUiErrors) elIcon.style["background-color"] = "red";
@@ -2295,6 +2318,30 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
             if (ops[i].storage && ops[i].storage.blueprint && ops[i].storage.blueprint.blueprintOpId == opid)
                 return ops[i].storage.blueprint.subpatchInstance;
+    }
+
+    highlightExamplePatchOps()
+    {
+        const opDocs = gui.opDocs.getOpDocs();
+
+        let found = false;
+        for (let j = 0; j < opDocs.length; j++)
+        {
+            if (gui.project().shortId == opDocs[j].exampleProjectId)
+            {
+                if (!found)
+                {
+                    const ops = gui.corePatch().ops;
+                    for (let i = 0; i < ops.length; i++)
+                        ops[i].setUiAttribs({ "color": null });
+                }
+                found = true;
+
+                const ops = gui.corePatch().getOpsByObjName(opDocs[j].name);
+                for (let i = 0; i < ops.length; i++)
+                    ops[i].setUiAttribs({ "color": "#5dc0fd" });
+            }
+        }
     }
 
     warnLargestPort()
