@@ -162,8 +162,11 @@ export default class FileManager
             "size": file.s,
             "file": file,
             "isReference": file.isReference,
+            "hasReference": file.hasReference,
             "viaBlueprint": file.viaBlueprint,
-            "isLibraryFile": file.isLibraryFile
+            "isLibraryFile": file.isLibraryFile,
+            "referenceCount": file.referenceCount,
+            "projectId": file.projectId
         };
 
         item.icon = "file";
@@ -426,7 +429,9 @@ export default class FileManager
                             "source": this._fileSource,
                             "isReference": detailItem.isReference,
                             "viaBlueprint": detailItem.viaBlueprint,
-                            "isLibraryFile": detailItem.isLibraryFile
+                            "isLibraryFile": detailItem.isLibraryFile,
+                            "referenceCount": detailItem.referenceCount,
+                            "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId
                         });
                     }
                     else
