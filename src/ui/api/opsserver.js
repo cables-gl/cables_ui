@@ -90,7 +90,7 @@ export default class ServerOps
     {
         // this._log.log('show server op error message modal');
 
-        let msg = "<h2><span class=\"fa fa-exclamation-triangle\"></span> cablefail :/</h2>";
+        let msg = "<h2><span class=\"icon icon-alert-triangle\"></span> cablefail :/</h2>";
         msg += "error creating op: " + name;
         msg += "<br/><pre>" + e + "</pre><br/>";
 

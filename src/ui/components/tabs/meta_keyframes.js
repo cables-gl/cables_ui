@@ -26,12 +26,11 @@ export default class MetaKeyframes
     show()
     {
         const anims = [];
-        let i = 0;
 
         if (CABLES.UI && window.gui)
         {
             const ops = gui.corePatch().ops;
-            for (i = 0; i < ops.length; i++)
+            for (let i = 0; i < ops.length; i++)
             {
                 for (let j = 0; j < ops[i].portsIn.length; j++)
                 {
@@ -48,18 +47,18 @@ export default class MetaKeyframes
             }
         }
 
-        if (self.anim)
+        if (this.anim)
         {
-            for (i = 0; i < self.anim.keys.length; i++)
+            for (let i = 0; i < this.anim.keys.length; i++)
             {
-                self.anim.keys[i].frame = self.anim.keys[i].time * gui.timeLine().getFPS();
+                this.anim.keys[i].frame = this.anim.keys[i].time * gui.timeLine().getFPS();
             }
         }
 
         const html = getHandleBarHtml("meta_keyframes",
             {
-                "anim": self.anim,
-                anims
+                "anim": this.anim,
+                "anims": anims
             });
 
         this._tab.html(html);

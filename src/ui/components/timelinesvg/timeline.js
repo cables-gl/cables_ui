@@ -807,13 +807,6 @@ export default function TimeLineGui()
             ele.byQuery("#keymovemode span").classList.add("icon-move-v");
             ele.byQuery("#keymovemode span").classList.remove("icon-move-h");
         }
-        // if (CABLES.ANIM.MoveMode == 2)
-        // {
-        //     document.getElementById("keymovemode").innerHTML = "move free";
-        //     // document.getElementById("keymovemode").classList.add("fa-arrows");
-        //     // document.getElementById("keymovemode").classList.remove("fa-arrows-v");
-        //     // document.getElementById("keymovemode").classList.remove("fa-arrows-h");
-        // }
     }
 
     this.getTimeLeft = function ()
@@ -1463,13 +1456,13 @@ export default function TimeLineGui()
     {
         if (!gui.scene().timer.isPlaying())
         {
-            ele.byId("timelineplay").classList.remove("fa-pause");
-            ele.byId("timelineplay").classList.add("fa-play");
+            ele.byId("timelineplay").classList.remove("icon-pause");
+            ele.byId("timelineplay").classList.add("icon-play");
         }
         else
         {
-            ele.byId("timelineplay").classList.remove("fa-play");
-            ele.byId("timelineplay").classList.add("fa-pause");
+            ele.byId("timelineplay").classList.remove("icon-play");
+            ele.byId("timelineplay").classList.add("icon-pause");
         }
     };
 
