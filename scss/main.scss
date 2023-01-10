@@ -8,8 +8,6 @@ $border-radius-popups:12px;
 @import 'z-indexes';
 
 @import 'libs/introjs';
-@import 'libs/font-awesome.scss';
-
 @import 'components/patch';
 
 // import last
@@ -231,12 +229,12 @@ body
         padding: 5px 16px;
         cursor:pointer !important;
 
-        &.fa:before
-        {
+        // &.fa:before
+        // {
 
-            margin-right: 0px !important;
-            font-family: fontawesome;
-        }
+        //     margin-right: 0px !important;
+        //     font-family: fontawesome;
+        // }
 
         &:hover
         {
@@ -501,7 +499,7 @@ body
 
             &:before
             {
-                font-family: fontawesome,arial;
+                font-family: arial;
                 content:"\f08e";
                 margin-right: 5px;
                 display:inline-block;
