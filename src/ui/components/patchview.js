@@ -571,8 +571,6 @@ export default class PatchView extends CABLES.EventTarget
         }
         else ele.hide(elError);
 
-        console.log("show attent", this.hasUiErrors, this.hasOldOps);
-
         const elIcon = ele.byId("nav-item-error-icon");
         if (this.hasUiErrors) elIcon.style["background-color"] = "red";
         if (!this.hasUiErrors && this.hasOldOps) elIcon.style["background-color"] = "#999";
