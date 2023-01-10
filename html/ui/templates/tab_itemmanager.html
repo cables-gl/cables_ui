@@ -261,8 +261,10 @@
             <br/>
 
             {{#if isReference}}
-                <br/>
-                <a class="button-small" href="{{projectUrl}}" target="_blank"><span class="icon icon-file-symlink"></span>Original patch</b></a>
+                {{#if isLibraryFile}}{{else}}
+                    <br/>
+                    <a class="button-small" href="{{projectUrl}}" target="_blank"><span class="icon icon-file-symlink"></span>Original patch</b></a>
+                {{/if}}
             {{/if}}
             {{#if referenceCount}}
                 <br/>
