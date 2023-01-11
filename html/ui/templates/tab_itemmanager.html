@@ -261,13 +261,17 @@
             <br/>
 
             {{#if isReference}}
-                <br/>
-                <a class="button-small" onclick=""><span class="icon icon-file-symlink"></span>Original patch</b></a>
+                {{#if isLibraryFile}}{{else}}
+                    <br/>
+                    <a class="button-small" href="{{projectUrl}}" target="_blank"><span class="icon icon-file-symlink"></span>Original patch</b></a>
+                {{/if}}
             {{/if}}
-            <br/>
-            <a class="button-small" href="#" onclick="window.open(CABLES.sandbox.getCablesUrl() + '/asset/patches/?filename=/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}', '_blank').focus();">
-                <span class="icon icon-file-symlink"></span>
-                Show referencing patches</a>
+            {{#if referenceCount}}
+                <br/>
+                <a class="button-small" href="#" onclick="window.open(CABLES.sandbox.getCablesUrl() + '/asset/patches/?filename=/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}', '_blank').focus();">
+                    <span class="icon icon-file-symlink"></span>
+                    Show referencing patches</a>
+            {{/if}}
 
             {{#compare source '==' 'patch' }}
                 <br/><br/>

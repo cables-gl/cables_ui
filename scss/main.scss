@@ -8,8 +8,6 @@ $border-radius-popups:12px;
 @import 'z-indexes';
 
 @import 'libs/introjs';
-@import 'libs/font-awesome.scss';
-
 @import 'components/patch';
 
 // import last
@@ -231,12 +229,12 @@ body
         padding: 5px 16px;
         cursor:pointer !important;
 
-        &.fa:before
-        {
+        // &.fa:before
+        // {
 
-            margin-right: 0px !important;
-            font-family: fontawesome;
-        }
+        //     margin-right: 0px !important;
+        //     font-family: fontawesome;
+        // }
 
         &:hover
         {
@@ -298,20 +296,20 @@ body
 
 
 
-    .button.fa {
-    font: normal normal normal 14px/1 FontAwesome, arial;
-    //   background-color: var(--color-button-bg);
-    }
+    // .button.fa {
+    // font: normal normal normal 14px/1 FontAwesome, arial;
+    // //   background-color: var(--color-button-bg);
+    // }
 
-    a.button.fa-times:before {
-    margin-right: 0;
-    }
+    // a.button.fa-times:before {
+    // margin-right: 0;
+    // }
 
-    .fa-sort {
-    margin-left: 0px;
-    height: 25px;
-    background-color: var(--color-03);
-    }
+    // .fa-sort {
+    // margin-left: 0px;
+    // height: 25px;
+    // background-color: var(--color-03);
+    // }
 
     .bluebutton
     {
@@ -501,7 +499,7 @@ body
 
             &:before
             {
-                font-family: fontawesome,arial;
+                font-family: arial;
                 content:"\f08e";
                 margin-right: 5px;
                 display:inline-block;
@@ -905,13 +903,11 @@ body
         padding-right:5px;
     }
 
-    .fa-hide
-    {
-        opacity: 0;
-    }
+    // .fa-hide
+    // {
+    //     opacity: 0;
+    // }
 }
-
-
 
 
 
@@ -922,7 +918,6 @@ body
 @import 'components/modal.scss';
 @import 'components/cmdpalette.scss';
 @import 'components/project_settings.scss';
-@import 'libs/taggle-custom.scss';
 
 
 @import 'components/nav';
