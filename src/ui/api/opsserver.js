@@ -64,11 +64,8 @@ export default class ServerOps
         );
 
         this.loaded = false;
-        CABLESUILOADER.preload.opDocsAll.opDocs.forEach((opDoc) =>
+        CABLESUILOADER.preload.opDocsAll.opDocs.forEach((newOp) =>
         {
-            const newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit, "id": opDoc.id };
-            if (opDoc.libs) newOp.libs = opDoc.libs;
-            if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
             this._ops.push(newOp);
         });
         gui.opDocs.addCoreOpDocs();
@@ -86,11 +83,8 @@ export default class ServerOps
             {
                 if (err) this._log.error(err);
 
-                res.forEach((opDoc) =>
+                res.forEach((newOp) =>
                 {
-                    const newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit, "id": opDoc.id };
-                    if (opDoc.libs) newOp.libs = opDoc.libs;
-                    if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
                     this._ops.push(newOp);
                 });
                 if (gui.opDocs)
@@ -1221,10 +1215,8 @@ export default class ServerOps
                     {
                         res.opDocs.forEach((opDoc) =>
                         {
-                            newOp = { "name": opDoc.name, "allowEdit": opDoc.allowEdit, "id": opDoc.id };
-                            if (opDoc.libs) newOp.libs = opDoc.libs;
-                            if (opDoc.coreLibs) newOp.coreLibs = opDoc.coreLibs;
-                            this._ops.push(newOp);
+                            newOp = opDoc;
+                            this._ops.push(opDoc);
                         });
                         if (gui.opDocs)
                         {
@@ -1259,12 +1251,9 @@ export default class ServerOps
                 {
                     if (!err && res && res.opDocs)
                     {
-                        res.opDocs.forEach((opDoc) =>
+                        res.opDocs.forEach((newOp) =>
                         {
-                            const op = { "id": opDoc.id, "name": opDoc.name, "allowEdit": opDoc.allowEdit };
-                            if (opDoc.libs) op.libs = opDoc.libs;
-                            if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
-                            this._ops.push(op);
+                            this._ops.push(newOp);
                         });
                         if (gui.opDocs)
                         {
@@ -1299,12 +1288,9 @@ export default class ServerOps
                 {
                     if (!err && res && res.opDocs)
                     {
-                        res.opDocs.forEach((opDoc) =>
+                        res.opDocs.forEach((newOp) =>
                         {
-                            const op = { "id": opDoc.id, "name": opDoc.name, "allowEdit": opDoc.allowEdit };
-                            if (opDoc.libs) op.libs = opDoc.libs;
-                            if (opDoc.coreLibs) op.coreLibs = opDoc.coreLibs;
-                            this._ops.push(op);
+                            this._ops.push(newOp);
                         });
                         if (gui.opDocs)
                         {
