@@ -269,7 +269,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         gui.corePatch().settings.isExample = false;
                         gui.corePatch().settings.isTest = false;
                         gui.corePatch().settings.isFeatured = false;
-                        gui.corePatch().settings.opExample = "";
 
                         this.saveCurrentProject(
                             function ()

@@ -46,7 +46,6 @@ export default function startUi(cfg)
             return;
         }
 
-        gui.opDocs.addCoreOpDocs();
 
         gui.bind(() =>
         {

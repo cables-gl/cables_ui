@@ -162,8 +162,11 @@ export default class FileManager
             "size": file.s,
             "file": file,
             "isReference": file.isReference,
+            "hasReference": file.hasReference,
             "viaBlueprint": file.viaBlueprint,
-            "isLibraryFile": file.isLibraryFile
+            "isLibraryFile": file.isLibraryFile,
+            "referenceCount": file.referenceCount,
+            "projectId": file.projectId
         };
 
         item.icon = "file";
@@ -426,7 +429,9 @@ export default class FileManager
                             "source": this._fileSource,
                             "isReference": detailItem.isReference,
                             "viaBlueprint": detailItem.viaBlueprint,
-                            "isLibraryFile": detailItem.isLibraryFile
+                            "isLibraryFile": detailItem.isLibraryFile,
+                            "referenceCount": detailItem.referenceCount,
+                            "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId
                         });
                     }
                     else
@@ -500,14 +505,19 @@ export default class FileManager
                                         if (countRes && countRes.data)
                                         {
                                             let used = false;
-                                            if (countRes.data.countPatches)
+                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
+                                            if (otherCount)
                                             {
-                                                content += "It is used in " + countRes.data.countPatches + " other patch(es).<br/>";
+                                                content += "It is used in " + otherCount + " other patch";
+                                                if (otherCount > 1) content += "es";
+                                                content += "<br/>";
                                                 used = true;
                                             }
                                             if (countRes.data.countOps)
                                             {
-                                                content += "It is used in " + countRes.data.countOps + " op(s).<br/>";
+                                                content += "It is used in " + countRes.data.countOps + " op";
+                                                if (countRes.data.countOps > 1) content += "s";
+                                                content += "<br/>";
                                                 used = true;
                                                 allowDelete = false;
                                             }
