@@ -505,14 +505,19 @@ export default class FileManager
                                         if (countRes && countRes.data)
                                         {
                                             let used = false;
-                                            if (countRes.data.countPatches)
+                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
+                                            if (otherCount)
                                             {
-                                                content += "It is used in " + countRes.data.countPatches + " other patch(es).<br/>";
+                                                content += "It is used in " + otherCount + " other patch";
+                                                if (otherCount > 1) content += "es";
+                                                content += "<br/>";
                                                 used = true;
                                             }
                                             if (countRes.data.countOps)
                                             {
-                                                content += "It is used in " + countRes.data.countOps + " op(s).<br/>";
+                                                content += "It is used in " + countRes.data.countOps + " op";
+                                                if (countRes.data.countOps > 1) content += "s";
+                                                content += "<br/>";
                                                 used = true;
                                                 allowDelete = false;
                                             }
