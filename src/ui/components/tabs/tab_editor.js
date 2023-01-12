@@ -44,7 +44,6 @@ export default class EditorTab
                 this._editor = editor;
 
                 editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
-                console.log("fontsize.....", userSettings.get("fontsize_ace"));
 
                 if (options.allowEdit)
                 {

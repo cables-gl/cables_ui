@@ -391,7 +391,6 @@ export default class Gui
     {
         this.pauseProfiling();
         const perf = CABLES.UI.uiProfiler.start("gui.setlayout");
-        this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
 
         this._elAceEditor = ele.byId("ace_editors");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
@@ -653,21 +652,21 @@ export default class Gui
         if (this.timeLine()) this.timeLine().updateViewBox();
 
 
-        this._elCanvasIconbarBottom = this._elCanvasIconbarBottom || ele.byId("iconbar_sidebar_bottom");
-        if (this._elCanvasIconbarBottom)
+        this._elIconbarBottom = this._elIconbarBottom || ele.byId("iconbar_sidebar_bottom");
+        if (this._elIconbarBottom)
         {
-            this._elCanvasIconbarBottom.style.right = this.rendererWidthScaled + 20 + "px";
-            this._elCanvasIconbarBottom.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
+            this._elIconbarBottom.style.right = this.rendererWidthScaled + 20 + "px";
+            this._elIconbarBottom.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
         }
 
-        this._elCanvasIconbarTimeline = this._elCanvasIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
-        if (this._elCanvasIconbarTimeline)
+        this._elIconbarTimeline = this._elIconbarTimeline || ele.byId("iconbar_sidebar_timeline");
+        if (this._elIconbarTimeline)
         {
-            this._elCanvasIconbarTimeline.style.left = (patchWidth / 2) + "px";
-            this._elCanvasIconbarTimeline.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
+            this._elIconbarTimeline.style.left = (patchWidth / 2) + "px";
+            this._elIconbarTimeline.style.bottom = 10 + timelineHeight + infoAreaHeight + "px";
 
-            if (!this._showTiming) this._elCanvasIconbarTimeline.style.display = "none";
-            else this._elCanvasIconbarTimeline.style.display = "inline-block";
+            if (!this._showTiming) this._elIconbarTimeline.style.display = "none";
+            else this._elIconbarTimeline.style.display = "inline-block";
         }
 
         ele.byId("splitterTimeline").style.width = timelineWidth + "px";

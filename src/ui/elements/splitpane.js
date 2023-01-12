@@ -154,6 +154,8 @@ function initSplitPanes()
             gui.canvasManager.focus();
             gui.emitEvent("resizecanvas");
             e.preventDefault();
+
+            gui.canvasManager.getCanvasUiBar().updateSizeDisplay();
         }
 
         document.addEventListener("mousemove", mm);
