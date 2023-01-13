@@ -7,6 +7,7 @@ export default class CanvasUi
         this._cg = cg;
 
         this.isCanvasFocussed = false;
+        this.minimized = false;
 
         this._elCanvasIconbarContainer = this._elCanvasIconbarContainer || ele.byId("canvasicons");
         this._elCanvasIconbar = this._elCanvasIconbar || ele.byId("canvasIconBar");
@@ -14,6 +15,8 @@ export default class CanvasUi
         this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
         this._elSplitterPatch = this._elSplitterPatch || ele.byId("splitterPatch");
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
+        this._elCtxSwitcher = this._elCtxSwitcher || document.getElementById("canvasCtxSwitcher");
+
         this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
@@ -22,7 +25,7 @@ export default class CanvasUi
             this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
             this._elCanvasInfoVer.innerHTML = "WebGL 1";
         }
-        else ele.hide(this._elInfoVersion);
+        else this._elInfoVersion.remove();
 
         this.canvasEle = this._cg.canvas;
 
@@ -84,24 +87,24 @@ export default class CanvasUi
         this._elCanvasIconbar.style.transform = "translate(-50%)";
         this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
 
-        if (w < 400)
+
+        const r = this._elCanvasIconbar.getBoundingClientRect();
+
+        if (!this.minimized)
         {
-            // this._elCanvasIconbar.style.display = "none";
-            ele.hide(this._elCanvasIconbar);
+            this.fullWidth = r.width;
         }
-        else
+        this.minimized = w < this.fullWidth;
+
+        const hideeles = ele.byClassAll("canvasuihidable");
+        for (let i = 0; i < hideeles.length; i++)
         {
-            if (w < 600)
-            {
-                ele.hide(this._elCanvasInfoFps);
-                ele.hide(this._elCanvasInfoMs);
-            }
-            else
-            {
-                ele.show(this._elCanvasInfoFps);
-                ele.show(this._elCanvasInfoMs);
-            }
+            if (this.minimized)ele.hide(hideeles[i]);
+            else ele.show(hideeles[i]);
         }
+
+        if (this.minimized && w < r.width) ele.hide(this._elCanvasIconbar);
+        else ele.show(this._elCanvasIconbar);
     }
 
     getCanvasSizeString()
@@ -117,11 +120,11 @@ export default class CanvasUi
         this._elCanvasInfoSize.innerHTML = sizeStr;
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
 
-        const zoom = Math.round(window.devicePixelRatio * 100);
-        if (zoom != 100)
+        const zoom = Math.round(window.devicePixelRatio);
+        if (zoom != 1)
         {
-            ele.show(this._eleCanvasInfoZoom);
-            this._eleCanvasInfoZoom.innerHTML = "Zoom " + zoom + "% ";
+            if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
+            this._eleCanvasInfoZoom.innerHTML = "x" + zoom;
         }
         else
         {
@@ -129,6 +132,12 @@ export default class CanvasUi
         }
 
         return sizeStr;
+    }
+
+
+    updateSizeDisplay()
+    {
+        this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
     }
 
     showCanvasModal(_show)
@@ -141,7 +150,8 @@ export default class CanvasUi
             _show = true;
 
             this.updateCanvasIconBar();
-            this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
+            this.updateSizeDisplay();
+
             return;
         }
 
@@ -161,6 +171,7 @@ export default class CanvasUi
         }
         else
         {
+            if (this._elCanvasInfoFps) this._elCanvasInfoFps.style.opacity = 0.3;
             if (this._elCanvasInfoFps) this._elCanvasInfoFps.style.opacity = 0.3;
             if (this._elCanvasInfoMs) this._elCanvasInfoMs.style.opacity = 0.3;
 
