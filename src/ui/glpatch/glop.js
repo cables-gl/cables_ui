@@ -706,7 +706,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._resizableArea) this._resizableArea.visible = visi;
 
-        for (const i in this._links) this._links[i].visible = visi;
+        for (const i in this._links) this._links[i].visible = true;
 
         if (!visi) this._isHovering = false;
     }

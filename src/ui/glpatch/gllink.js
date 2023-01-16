@@ -26,7 +26,7 @@ export default class GlLink
         this._opIdOutput = opIdOutput;
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
-        this._subpatch = subpatch;
+        this._subPatch = subpatch;
 
         this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
@@ -160,8 +160,18 @@ export default class GlLink
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+        this._cableSub = null;
         this._glPatch.setDrawableColorByType(this._cable, this._type);
+
+
+        const op1 = gui.corePatch().getOpById(this._opIdInput);
+        const op2 = gui.corePatch().getOpById(this._opIdOutput);
+
+        if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
+        if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
+
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type);
 
         this._opIn = null;
         this._opOut = null;
@@ -193,15 +203,17 @@ export default class GlLink
 
     get portIdOut() { return this._portIdOutput; }
 
-    get subPatch() { return this._subpatch; }
+    get subPatch() { return this._subPatch; }
 
     updateLineStyle()
     {
         this._cable.dispose();
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+
         this._glPatch.setDrawableColorByType(this._cable, this._type);
         this.update();
     }
+
 
     updateVisible()
     {
@@ -209,7 +221,9 @@ export default class GlLink
 
     set visible(v)
     {
+        v = true;
         this._cable.visible = v;
+        if (this._cableSub) this._cableSub.visible = true;
         this._visible = v;
         this._updatePosition();
     }
@@ -218,20 +232,40 @@ export default class GlLink
     {
         if (this._visible)
         {
-            if (!this._opOut) this.update();
-
-            if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
+            if (!this._cableSub)
             {
-                const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
-                const pos1y = this._opIn.getUiAttribs().translate.y;
+                if (!this._opOut) this.update();
 
-                const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
-                const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
+                if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
+                {
+                    const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
+                    const pos1y = this._opIn.getUiAttribs().translate.y;
 
-                this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                    const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
+                    const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
+
+                    this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                    if (this._cableSub) this._cableSub.setPosition(pos1x, pos1y, pos2x, pos2y);
+                }
+            }
+            else
+            {
+                if (!this._subPatchInputOp)
+                {
+                    console.log(this._cable.subPatch);
+                    const subInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
+
+                    console.log("subInputOp", subInputOp);
+
+                    this._cable.setPosition(
+                        subInputOp.uiAttribs.translate.x,
+                        subInputOp.uiAttribs.translate.y,
+                        this._opIn.getUiAttribs().translate.x,
+                        this._opIn.getUiAttribs().translate.y
+                    );
+                }
             }
         }
-        else this._cable.setPosition(0, 0, 0, 0);
     }
 
 
@@ -318,5 +352,6 @@ export default class GlLink
     highlight(b)
     {
         this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
     }
 }

@@ -5,7 +5,7 @@ import userSettings from "../components/usersettings";
 
 export default class GlCable
 {
-    constructor(glPatch, splineDrawer, buttonRect, type, link)
+    constructor(glPatch, splineDrawer, buttonRect, type, link, subpatch)
     {
         this.LINETYPE_CURVED = 0;
         this.LINETYPE_STRAIGHT = 1;
@@ -17,6 +17,7 @@ export default class GlCable
         this._buttonSize = 12;
         this._linetype = this.LINETYPE_CURVED;
 
+        this._subPatch = subpatch;
         this._glPatch = glPatch;
         this._buttonRect = buttonRect;
         this._type = type;
@@ -44,6 +45,8 @@ export default class GlCable
 
         this.updateLineStyle();
     }
+
+    get subPatch() { return this._subPatch; }
 
     updateLineStyle()
     {
