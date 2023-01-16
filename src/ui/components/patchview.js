@@ -1004,15 +1004,12 @@ export default class PatchView extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.objName == CABLES.UI.DEFAULTOPNAMES.subPatch && op.patchId.get() == subPatchId)
-            {
                 return op;
-            }
         }
     }
 
     focusSubpatchOp(subPatchId)
     {
-        console.log("focussubpatchop");
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
 
         let parentSubId = gotoOp.uiAttribs.subPatch;
