@@ -250,16 +250,14 @@ export default class GlLink
             }
             else
             {
-                if (!this._subPatchInputOp)
+                if (this._opin == this._cableSub)
                 {
-                    console.log(this._cable.subPatch);
-                    const subInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
-
-                    console.log("subInputOp", subInputOp);
+                    if (!this._subPatchInputOp)
+                        this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
 
                     this._cable.setPosition(
-                        subInputOp.uiAttribs.translate.x,
-                        subInputOp.uiAttribs.translate.y,
+                        this._subPatchInputOp.uiAttribs.translate.x,
+                        this._subPatchInputOp.uiAttribs.translate.y,
                         this._opIn.getUiAttribs().translate.x,
                         this._opIn.getUiAttribs().translate.y
                     );
