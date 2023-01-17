@@ -34,15 +34,16 @@ export default class Bookmarks
 
     getHtml()
     {
-        const subs = gui.patchView.getSubPatches(false);
+        console.log("gethtml...");
+        const subs = gui.patchView.getSubPatches(true);
 
         for (let i = 0; i < subs.length; i++)
         {
-            subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id);
+            subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id, null, true);
             let sortname = "";
 
             for (let j = 0; j < subs[i].path.length; j++)
-                sortname = subs[i].path[j].id + "+" + sortname;
+                sortname = subs[i].path[j].name + "+" + sortname;
 
             subs[i].sortname = sortname;
         }
