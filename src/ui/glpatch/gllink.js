@@ -57,10 +57,8 @@ export default class GlLink
 
                     return;
                 }
-
                 return;
             }
-
 
             const pressTime = performance.now() - this._buttonDownTime;
 
@@ -72,7 +70,6 @@ export default class GlLink
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
             }
-
 
             // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
             if (gui.patchView.getSelectedOps().length == 1)
@@ -88,7 +85,8 @@ export default class GlLink
                 }
             }
 
-            if (this._buttonDown == MouseState.BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
+            if (this._buttonDown == MouseState.BUTTON_LEFT &&
+                pressTime < GlUiConfig.clickMaxDuration)
             {
                 const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
@@ -96,8 +94,6 @@ export default class GlLink
                 const pOut = opOut.getPortById(this._portIdOutput);
                 if (!pOut) return;
                 const llink = pOut.getLinkTo(pIn);
-
-                this._log.log("llink", llink);
 
                 gui.opSelect().show(
                     {

@@ -386,8 +386,6 @@ export default class GlCable
     isHoveredButtonRect()
     {
         if (this._glPatch.isDraggingPort()) return false;
-
-
         return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
@@ -399,9 +397,7 @@ export default class GlCable
     collideMouse(x1, y1, x2, y2, cx, cy, r)
     {
         // if (this._glPatch.isDraggingPort()) return;
-
         // if (this._glPatch.isDraggingPort()) this._glPatch.showOpCursor(false);
-
         // canlink ???
 
         if (this._disposed)
@@ -436,6 +432,7 @@ export default class GlCable
         // is this point actually on the line segment?
         // if so keep going, but if not, return false
         const onSegment = this._collideLinePoint(x1, y1, x2, y2, closestX, closestY);
+
         if (!onSegment)
         {
             perf.finish();
