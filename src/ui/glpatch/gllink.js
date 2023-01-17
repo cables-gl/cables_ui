@@ -255,6 +255,14 @@ export default class GlLink
                 if (!this._subPatchInputOp)
                     this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
 
+                if (!this._opIn || !this._opOut) this.update();
+
+
+                console.log(
+                    this._opIn.op.uiAttribs.subPatch,
+                    this._opOut.op.uiAttribs.subPatch);
+
+
                 // inner input port op to subpatch-input op
                 if (this._opIn &&
                     this._subPatchInputOp &&
@@ -277,11 +285,27 @@ export default class GlLink
                         this._opOut.getUiAttribs().translate.x,
                         this._opOut.getUiAttribs().translate.y,
                     );
+
+                console.log("outer out", this._opIn.op.uiAttribs.subPatch, this._cable.subPatch);
+                // outer input port op from subpatch op
+                // if (
+                //     this._subPatchOp &&
+                //     this._opIn.op.uiAttribs.subPatch == this._cable.subPatch)
+                // {
+                //     console.log("jAAAA");
+                //     this._cable.setPosition(
+                //         this._subPatchOp.uiAttribs.translate.x,
+                //         this._subPatchOp.uiAttribs.translate.y,
+                //         this._opIn.getUiAttribs().translate.x,
+                //         this._opIn.getUiAttribs().translate.y,
+                //     );
+                // }
             }
         }
     }
 
 
+    /* *|MARCADOR_CURSOR|* */
     update()
     {
         if (!this._opIn)
