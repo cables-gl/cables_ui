@@ -86,6 +86,8 @@ export default class GlCable
 
     _checkCollide(e)
     {
+        console.log(this._glPatch.isAreaSelecting);
+        if (this._glPatch.isAreaSelecting) return;
         if (!this._visible) return false;
 
 

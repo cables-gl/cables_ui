@@ -353,6 +353,8 @@ export default class GlPatch extends CABLES.EventTarget
 
     get subPatch() { return this._currentSubpatch; }
 
+    get isAreaSelecting() { return this._selectionArea.active; }
+
 
     zIndex()
     {
@@ -602,6 +604,8 @@ export default class GlPatch extends CABLES.EventTarget
         perf.finish();
 
         this._dropInCircleRect = null;
+
+        this._selectionArea.mouseUp();
     }
 
     _onKeyDelete(e)
@@ -963,6 +967,8 @@ export default class GlPatch extends CABLES.EventTarget
         // if ((this._lastMouseX != x || this._lastMouseY != y) && !gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
 
         let allowSelectionArea = !this._portDragLine.isActive;
+        if (this._selectionArea.active)allowSelectionArea = true;
+
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
