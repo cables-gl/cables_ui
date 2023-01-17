@@ -864,7 +864,6 @@ export default class GlPatch extends CABLES.EventTarget
             else this._log.log("no focusrectop");
         }
 
-
         this._cgl.pushDepthTest(true);
         this._cgl.pushDepthWrite(true);
 

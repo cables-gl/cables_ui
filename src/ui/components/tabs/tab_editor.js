@@ -256,7 +256,15 @@ function createEditor(id, val, cb)
 
         editor.setValue(val, -1);
 
-        const snippetManager = ace.require("ace/snippets").snippetManager;
+        const snipreq = ace.require("ace/snippets");
+
+        if (!snipreq)
+        {
+            console.error("ace - no snippetmanager ?!");
+            return;
+        }
+
+        const snippetManager = snipreq.snippetManager;
         const snippets = snippetManager.parseSnippetFile("");
 
         snippets.push(
