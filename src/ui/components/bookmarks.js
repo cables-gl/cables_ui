@@ -34,7 +34,6 @@ export default class Bookmarks
 
     getHtml()
     {
-        console.log("gethtml...");
         const subs = gui.patchView.getSubPatches(true);
 
         for (let i = 0; i < subs.length; i++)
