@@ -460,7 +460,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._attrBuffTexRect[idx * 4 + 2] = w;
         this._attrBuffTexRect[idx * 4 + 3] = h;
 
-
         if (this.doBulkUploads) this._setAttrRange(this.ATTR_TEXRECT, idx * 4, idx * 4 + 4);
         else this._mesh.setAttributeRange(this._meshAttrTexRect, this._attrBuffTexRect, idx * 4, idx * 4 + 4);
     }
@@ -578,10 +577,8 @@ export default class GlRectInstancer extends CABLES.EventTarget
         }
 
         for (let i = 0; i < this._rects.length; i++)
-        {
             if (!this._rects[i].parent)
                 this._rects[i].mouseMove(x, y, button);
-        }
 
         perf.finish();
     }
@@ -600,7 +597,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
     mouseUp(e)
     {
         if (!this._interactive) return;
-
         const perf = CABLES.UI.uiProfiler.start("[glrectinstancer] mouseup");
 
         for (let i = 0; i < this._rects.length; i++) this._rects[i].mouseUp(e);

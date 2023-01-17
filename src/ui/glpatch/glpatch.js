@@ -49,7 +49,6 @@ export default class GlPatch extends CABLES.EventTarget
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
-        this.activeButtonRect = null;
 
         this.greyOut = false;
         this._greyOutRect = null;
@@ -576,7 +575,6 @@ export default class GlPatch extends CABLES.EventTarget
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
         this._removeDropInRect();
-
         this._rectInstancer.mouseUp(e);
 
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
@@ -624,10 +622,6 @@ export default class GlPatch extends CABLES.EventTarget
         return this._hoverOps.length > 0;
     }
 
-    getOpAt(x, y)
-    {
-    }
-
     center(x, y)
     {
         if (x == undefined) this.viewBox.center();
@@ -657,7 +651,6 @@ export default class GlPatch extends CABLES.EventTarget
     deleteOp(opid) // should work  th opid...
     {
         const glop = this._glOpz[opid];
-
 
         if (!glop)
         {
@@ -724,23 +717,14 @@ export default class GlPatch extends CABLES.EventTarget
 
         op.on("onPortRemoved", () => { glOp.refreshPorts(); });
         op.on("onPortAdd", () => { glOp.refreshPorts(); });
-
         op.on("onEnabledChange", () => { glOp.update(); });
-
         op.on("onUiAttribsChange",
             (newAttribs) =>
             {
                 glOp.uiAttribs = op.uiAttribs;
-                // glOp.opUiAttribs = op.uiAttribs;
-                // glOp.update();
 
-                if (newAttribs && newAttribs.translate)
-                    glOp.sendNetPos();
-
-                if (newAttribs.hasOwnProperty("translate"))
-                {
-                    glOp.updatePosition();
-                }
+                if (newAttribs && newAttribs.translate) glOp.sendNetPos();
+                if (newAttribs.hasOwnProperty("translate")) glOp.updatePosition();
             });
 
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
@@ -1021,6 +1005,7 @@ export default class GlPatch extends CABLES.EventTarget
             this._hoverDragOp = null;
         }
 
+        if (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering()) allowSelectionArea = false;
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
 
