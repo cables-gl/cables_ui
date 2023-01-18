@@ -24,6 +24,11 @@ export default class GlSelectionArea
         return this._w != 0 || this._h != 0;
     }
 
+    mouseUp()
+    {
+        this._w = this._h = 0;
+    }
+
     setColor(rgba)
     {
         this._selectRect.setColor(rgba);

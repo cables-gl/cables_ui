@@ -194,7 +194,6 @@ export default class GlDragLine
         if (!this.isActive) this._glPatch.showOpCursor(false);
         if (!this.isActive) return;
 
-
         if (!this._glPatch.isMouseOverOp() && (!this._glPatch._cablesHoverButtonRect || !this._glPatch._cablesHoverButtonRect._hovering)) this._glPatch.showOpCursor(true);
         else this._glPatch.showOpCursor(false);
 
