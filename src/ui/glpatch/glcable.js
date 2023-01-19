@@ -83,7 +83,6 @@ export default class GlCable
         this._updateLinePos();
     }
 
-
     _checkCollide(e)
     {
         if (this._glPatch.isAreaSelecting) return;

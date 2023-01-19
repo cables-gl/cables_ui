@@ -251,6 +251,7 @@ export default class FindTab
 
         let hiddenClass = "";
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
+        if (op.storage && op.storage.blueprint)hiddenClass = "resultHiddenOp";
 
         html += "<div id=\"findresult" + idx + "\" class=\"info findresultop" + op.id + " " + hiddenClass + " \" data-info=\"" + info + "\" ";
         html += "onclick=\"gui.focusFindResult('" + String(idx) + "','" + op.id + "','" + op.uiAttribs.subPatch + "'," + op.uiAttribs.translate.x + "," + op.uiAttribs.translate.y + ");\">";
@@ -274,7 +275,11 @@ export default class FindTab
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-        if (op.uiAttribs.subPatch != 0) html += "<br/> subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
+        if (op.storage && op.storage.blueprint)
+            html += "<br/> Blueprint: <span class=\"\">" + op.storage.blueprint.name || "unnamed" + "</span>";
+        else
+        if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
+
 
         html += "</div>";
 
@@ -620,11 +625,15 @@ export default class FindTab
                     if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                     {
                         where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
+
+                        if (!op.portsIn[j].isLinked()) score += 2;
+                        else where += "linked ";
                         where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
                         score += 2;
                     }
                 }
 
+                if (op.storage && op.storage.blueprint) score -= 1;
                 if (score > 0 && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
                 if (score > 0) results.push({ "op": ops[i], score, where });
             }
