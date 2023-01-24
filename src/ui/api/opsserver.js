@@ -1032,6 +1032,11 @@ export default class ServerOps
         return true;
     }
 
+    opCodeLoaded(op)
+    {
+        return CABLES && CABLES.OPS && CABLES.OPS.hasOwnProperty(op.opId);
+    }
+
     loadOpLibs(op, finishedCb)
     {
         const libsToLoad = this.getOpLibs(op);
@@ -1161,6 +1166,7 @@ export default class ServerOps
             {
                 let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
                 if (!loaded && !this.canReadOp(gui.user, opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
                     missingOps.push({ "name": opName, "id": op.opId });
