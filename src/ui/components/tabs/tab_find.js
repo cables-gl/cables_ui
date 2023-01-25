@@ -622,7 +622,6 @@ export default class FindTab
                 const op = ops[i];
                 for (let j = 0; j < op.portsIn.length; j++)
                 {
-                    console.log("", op.portsIn[j].getVariableName());
                     if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
                     {
                         score += 2;
@@ -657,7 +656,6 @@ export default class FindTab
         this.setClicked(-1);
 
         const strs = str.split(" ");
-
         const startTime = performance.now();
 
         let html = "";
