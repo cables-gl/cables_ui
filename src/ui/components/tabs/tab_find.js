@@ -633,6 +633,7 @@ export default class FindTab
                     }
                 }
 
+                if (op.uiAttribs.hidden) score -= 5;
                 if (op.storage && op.storage.blueprint) score -= 1;
                 if (score > 0 && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
                 if (score > 0) results.push({ "op": ops[i], score, where });

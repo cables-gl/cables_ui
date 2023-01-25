@@ -181,7 +181,7 @@ export default class EditorTab
 
 function loadAce(cb)
 {
-    if (window.ace)
+    if (CABLES.loadedAce)
     {
         cb();
     }
@@ -205,6 +205,7 @@ function loadAce(cb)
         loadjs.ready("ace", () =>
         {
             gui.jobs().finish("acemisc");
+            CABLES.loadedAce = true;
             cb();
         });
 
@@ -224,6 +225,7 @@ function createEditor(id, val, cb)
 {
     loadAce(() =>
     {
+        console.log("CABLES.loadedAce", CABLES.loadedAce);
         const editor = ace.edit(id);
         editor.setValue(""); // need to do this
 
@@ -261,6 +263,7 @@ function createEditor(id, val, cb)
         if (!snipreq)
         {
             console.error("ace - no snippetmanager ?!");
+            alert("ace crash no snippetmanager....");
             return;
         }
 
