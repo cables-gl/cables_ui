@@ -38,6 +38,22 @@ CABLES_CMD_PATCH.openParamsTab = () =>
     opParams.show(op);
 };
 
+CABLES_CMD_PATCH.selectChilds = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+
+
+    if (!ops || ops.length == 0) return;
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = gui.corePatch().getOpById(ops[i].id);
+        op.selectChilds();
+    }
+
+    gui.patchView.showSelectedOpsPanel();
+};
+
 
 CABLES_CMD_PATCH.gotoParentSubpatch = function ()
 {
@@ -852,6 +868,36 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     // }
 };
 
+CABLES_CMD_PATCH.uncollideOps = function (ops)
+{
+    let found = true;
+    // while (found)
+
+    for (let i = 0; i < gui.corePatch().ops.length; i++)
+    {
+        const op = gui.corePatch().ops[i];
+
+        if (!op.uiAttribs.translate)
+            op.uiAttribs.translate = { "x": 0, "y": 0 };
+
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
+        {
+            const b = gui.corePatch().ops[j];
+            if (b.deleted || b == op) continue;
+
+            while (b.uiAttribs.translate &&
+                op.uiAttribs.translate &&
+                (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
+                op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+            {
+                op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                found = true;
+            }
+        }
+    }
+};
+
+
 CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
 {
     if (!ops)
@@ -1114,5 +1160,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
+    {
+        "cmd": "uncollide ops",
+        "func": CABLES_CMD_PATCH.uncollideOps,
+        "category": "patch",
+        "icon": "op"
+    },
+
 
 );
