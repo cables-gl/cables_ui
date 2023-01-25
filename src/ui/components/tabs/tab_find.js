@@ -622,6 +622,14 @@ export default class FindTab
                 const op = ops[i];
                 for (let j = 0; j < op.portsIn.length; j++)
                 {
+                    console.log("", op.portsIn[j].getVariableName());
+                    if (op.portsIn[j].getVariableName() && op.portsIn[j].getVariableName().toLowerCase().indexOf(str) > -1)
+                    {
+                        score += 2;
+                        where += "port \"" + op.portsIn[j].name + "\" assigned to var " + op.portsIn[j].getVariableName();
+                    }
+
+
                     if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                     {
                         where = "<span style=\"color:var(--color_port_" + op.portsIn[j].getTypeString().toLowerCase() + ");\">▩</span> ";
