@@ -183,10 +183,21 @@ export function updateHoverToolTip(event, port)
             }
             else txt += "<span class=\"tooltip_value\">null</span>";
         }
+        else if (port.type == CABLES.OP_PORT_TYPE_OBJECT)
+        {
+            if (!port.get())txt += "<span class=\"tooltip_value\">null</span>";
+            if (port.get())
+            {
+                if (port.get().getInfoOneLineShort)txt += "<span class=\"tooltip_value\">" + port.get().getInfoOneLineShort() + "</span>";
+                else if (port.get().getInfoOneLine)txt += "<span class=\"tooltip_value\">" + port.get().getInfoOneLine() + "</span>";
+            }
+        }
         else
         {
             txt += "&nbsp;&nbsp;";
         }
+
+        txt += "&nbsp;";
     }
 
     CABLES.UI.showToolTip(event, txt, true);
