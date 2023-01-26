@@ -307,13 +307,16 @@ export default function extendCore()
         let lowestOp = null;
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
         {
-            const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-
-            // maxY = Math.max(otherport.parent.getTempPosY, maxY);
-            if (otherport.parent.getTempPosY() > maxY)
+            if (this.portsIn[i].links[0])
             {
-                maxY = otherport.parent.getTempPosY();
-                lowestOp = otherport.parent;
+                const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+
+                // maxY = Math.max(otherport.parent.getTempPosY, maxY);
+                if (otherport.parent.getTempPosY() > maxY)
+                {
+                    maxY = otherport.parent.getTempPosY();
+                    lowestOp = otherport.parent;
+                }
             }
         }
 
