@@ -450,4 +450,26 @@ export default function extendCore()
     {
         return glpatch.getGlOp(this).h;
     };
+
+
+    CABLES.Op.prototype.selectChilds = function (options)
+    {
+        options = options || {};
+        if (!options.oplist)options.oplist = [];
+
+        if (options.oplist.indexOf(this.id) > -1) return;
+
+        options.oplist.push(this.id);
+
+        this.setUiAttrib({ "selected": true });
+        for (const ipo in this.portsOut)
+        {
+            for (const l in this.portsOut[ipo].links)
+            {
+                this.portsOut[ipo].parent.setUiAttrib({ "selected": true });
+                if (this.portsOut[ipo].links[l].portIn.parent != this)
+                    this.portsOut[ipo].links[l].portIn.parent.selectChilds(options);
+            }
+        }
+    };
 }
