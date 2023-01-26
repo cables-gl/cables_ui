@@ -1323,6 +1323,11 @@ export default class GlPatch extends CABLES.EventTarget
         return this._portDragLine.isActive;
     }
 
+    get dragLine()
+    {
+        return this._portDragLine;
+    }
+
     get allowDragging()
     {
         return this._rectInstancer.allowDragging;

@@ -158,6 +158,12 @@ export default class GlDragLine
     }
 
 
+    get glPort()
+    {
+        return this._glPort;
+    }
+
+
     setPort(p, opid, portName)
     {
         if (!p)
@@ -222,9 +228,6 @@ export default class GlDragLine
         {
             if (this._rect && this._glPort)
             {
-                // this._lineDrawer.setLine(this.-111_lineIdx111,
-
-
                 this._splineDrawer.setSpline(this._splineIdx,
                     [
                         this._glPort.glOp.x + this._rect.x + glUiConfig.portWidth / 2,

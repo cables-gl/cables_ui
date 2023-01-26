@@ -137,6 +137,8 @@ export function updateHoverToolTip(event, port)
 
     let txt = getPortDescription(port);
     let val = null;
+
+
     if (port)
     {
         if (port.type == CABLES.OP_PORT_TYPE_VALUE)
@@ -196,6 +198,16 @@ export function updateHoverToolTip(event, port)
         {
             txt += "&nbsp;&nbsp;";
         }
+
+
+        if (gui.patchView.patchRenderer.dragLine && gui.patchView.patchRenderer.dragLine.isActive)
+        {
+            if (!CABLES.Link.canLink(port, gui.patchView.patchRenderer.dragLine.glPort.port))
+            {
+                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + CABLES.Link.canLinkText(port, gui.patchView.patchRenderer.dragLine.glPort.port);
+            }
+        }
+
 
         txt += "&nbsp;";
     }
