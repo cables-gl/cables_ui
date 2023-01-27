@@ -164,6 +164,7 @@ export default class GlLink
         const op1 = gui.corePatch().getOpById(this._opIdInput);
         const op2 = gui.corePatch().getOpById(this._opIdOutput);
 
+
         if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
         if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
 
@@ -176,6 +177,7 @@ export default class GlLink
         this._offsetXOutput = 0;
 
         this._glPatch.addLink(this);
+        this.updateVisible();
         this.update();
     }
 
@@ -261,49 +263,98 @@ export default class GlLink
             else
             {
                 if (!this._subPatchOp)
-                    this._subPatchOp = gui.patchView.getSubPatchOuterOp(this._cable.subPatch);
+                {
+                    const a = gui.patchView.getSubPatchOuterOp(this._opIn.op.uiAttribs.subPatch);
+                    const b = gui.patchView.getSubPatchOuterOp(this._opOut.op.uiAttribs.subPatch);
+
+                    this._subPatchOp = a || b;
+                }
 
                 if (!this._subPatchInputOp)
                     this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
 
+                if (!this._subPatchOutputOp)
+                    this._subPatchOutputOp = gui.corePatch().getSubPatchOp(this._opOut.op.uiAttribs.subPatch, "Ops.Ui.PatchOutput");
+
                 if (!this._opIn || !this._opOut) this.update();
 
+
                 // inner input port op to subpatch-input op
-                if (this._opIn &&
+                if (
                     this._subPatchInputOp &&
                     this._opIn.uiAttribs.subPatch == this._cable.subPatch)
+                {
+                    this._cable.setColor(1, 0, 1, 1);
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
                         this._subPatchInputOp.uiAttribs.translate.x,
                         this._subPatchInputOp.uiAttribs.translate.y,
                     );
+                }
 
+                // console.log("---");
+                // console.log("in", this._opIn.op.name);
+                // console.log("out", this._opOut.op.name);
+                // console.log("this._subPatchOutputOp", this._subPatchOutputOp);
+                // if (this._subPatchOp)console.log("_subPatchOp", this._subPatchOp.name);
+                // if (this._subPatchOutputOp)console.log(this._subPatchOutputOp.uiAttribs.subPatch, this._opOut.uiAttribs.subPatch);
 
-                // outer output port op to subpatch op
+                // inner output port op to subpatch output op
+                if (
+                    this._subPatchOutputOp &&
+                    this._opOut.uiAttribs.subPatch == this._subPatchOutputOp.uiAttribs.subPatch)
+                {
+                    // console.log("",
+                    //     this._subPatchOutputOp.uiAttribs.subPatch,
+                    //     this._opOut.getUiAttribs().subPatch,
+                    //     this._cable.subPatch
+                    // );
+                    // console.log("AAA", this._subPatchOutputOp.name);
+                    // console.log(this._cableSub._splineIdx);
+                    this._cableSub.setColor(0, 0, 1, 1);
+                    this._cableSub.setPosition(
+                        this._opOut.getUiAttribs().translate.x + this._offsetXInput,
+                        this._opOut.getUiAttribs().translate.y + 30,
+                        this._subPatchOutputOp.uiAttribs.translate.x,
+                        this._subPatchOutputOp.uiAttribs.translate.y,
+                    );
+                }
+
+                // ----------------------
+                //
+                //
+                //
+                //
+                //
+                // outer output port op TO subpatch op
                 if (this._opOut &&
                     this._subPatchOp &&
-                    this._opOut.uiAttribs.subPatch != this._cable.subPatch)
+                    this._opOut.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
+                {
+                    this._cableSub.setColor(0, 1, 0, 1);
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x,
                         this._subPatchOp.uiAttribs.translate.y,
                         this._opOut.getUiAttribs().translate.x,
-                        this._opOut.getUiAttribs().translate.y,
+                        this._opOut.getUiAttribs().translate.y + 30,
                     );
+                }
 
 
-                // outer input port op from subpatch op
-                // if (
-                //     this._subPatchOp &&
-                //     this._opIn.op.uiAttribs.subPatch == this._cable.subPatch)
-                // {
-                //     this._cable.setPosition(
-                //         this._subPatchOp.uiAttribs.translate.x,
-                //         this._subPatchOp.uiAttribs.translate.y,
-                //         this._opIn.getUiAttribs().translate.x,
-                //         this._opIn.getUiAttribs().translate.y,
-                //     );
-                // }
+                // outer input port op FROM subpatch op
+                if (
+                    this._subPatchOp &&
+                    this._opIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
+                {
+                    this._cable.setColor(1, 0, 0, 1);
+                    this._cable.setPosition(
+                        this._subPatchOp.uiAttribs.translate.x,
+                        this._subPatchOp.uiAttribs.translate.y + 30,
+                        this._opIn.getUiAttribs().translate.x,
+                        this._opIn.getUiAttribs().translate.y,
+                    );
+                }
             }
         }
     }

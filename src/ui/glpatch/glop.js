@@ -369,30 +369,30 @@ export default class GlOp extends CABLES.EventTarget
         if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
         if (attr.color) this._updateColors();
 
-        if (attr.subPatch)
-        {
-            for (const i in this._links)
-            {
-                if (this._links[i].subPatch != attr.subPatch)
-                {
-                    const link = this._links[i].link;
+        // if (attr.subPatch)
+        // {
+        //     for (const i in this._links)
+        //     {
+        //         // if (this._links[i].subPatch != attr.subPatch)
+        //         // {
+        //         //     const link = this._links[i].link;
 
-                    this._links[i].dispose();
+        //         //     this._links[i].dispose();
 
-                    this._links[i] = new GlLink(
-                        this._glPatch,
-                        link,
-                        link.id,
-                        link.portIn.parent.id,
-                        link.portOut.parent.id,
-                        link.portIn.name,
-                        link.portOut.name,
-                        link.portIn.id,
-                        link.portOut.id,
-                        link.portIn.type, this.isInCurrentSubPatch(), link.portIn.parent.uiAttribs.subPatch);
-                }
-            }
-        }
+        //         // this._links[i] = new GlLink(
+        //         //     this._glPatch,
+        //         //     link,
+        //         //     link.id,
+        //         //     link.portIn.parent.id,
+        //         //     link.portOut.parent.id,
+        //         //     link.portIn.name,
+        //         //     link.portOut.name,
+        //         //     link.portIn.id,
+        //         //     link.portOut.id,
+        //         //     link.portIn.type, false, link.portIn.parent.uiAttribs.subPatch);
+        //         // }
+        //     }
+        // }
 
         this._needsUpdate = true;
     }
