@@ -1590,6 +1590,10 @@ export default class PatchView extends CABLES.EventTarget
         {
             const obj = {};
             obj.id = selectedOps[j].id;
+
+            if (!selectedOps[j].uiAttribs) selectedOps[j].uiAttribs = {};
+            if (!selectedOps[j].uiAttribs.translate)selectedOps[j].uiAttribs.translate = { "x": 0, "y": 0 };
+
             obj.x = selectedOps[j].uiAttribs.translate.x;
             obj.y = selectedOps[j].uiAttribs.translate.y;
             opPositions.push(obj);

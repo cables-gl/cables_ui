@@ -232,10 +232,10 @@
 
         <div style="padding:10px;">
 
-            <a class="iconbutton info" data-info="filemanager_file_download" download href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+            <a class="iconbutton info" data-info="filemanager_file_download" download href="{{downloadUrl}}">
                 <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}?rnd={{file.cachebuster}}">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{downloadUrl}}">
                 <span class="icon icon-1x icon-external"></span>
             </a>
             <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{file.fileDb.fileName}}')">

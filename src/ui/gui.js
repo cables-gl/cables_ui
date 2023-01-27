@@ -731,7 +731,13 @@ export default class Gui
 
         ele.byQuery("#maintabs .contentcontainer").style.height = window.innerHeight - menubarHeight - infoAreaHeight - timelineHeight - tabPanelTopHeight + "px";
 
-        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - menubarHeight + "px";
+        let metaTabPanelTabsHeight = 0;
+        const metaTabPanelTabs = ele.byQuery("#metatabpanel .tabpanel");
+        if (metaTabPanelTabs)metaTabPanelTabsHeight = metaTabPanelTabs.getBoundingClientRect().height;
+
+
+        ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
+        // console.log("tabPanelTopHeight", tabPanelTopHeight);
 
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {

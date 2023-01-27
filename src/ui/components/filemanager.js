@@ -423,6 +423,9 @@ export default class FileManager
                         {
                             delete r.converters;
                         }
+                        let downloadUrl = detailItem.p;
+                        if (detailItem.file && detailItem.file.cachebuster) downloadUrl += "?rnd=" + detailItem.file.cachebuster;
+
                         html = getHandleBarHtml("filemanager_details", {
                             "projectId": gui.project()._id,
                             "file": r,
@@ -431,7 +434,8 @@ export default class FileManager
                             "viaBlueprint": detailItem.viaBlueprint,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
-                            "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId
+                            "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId,
+                            "downloadUrl": downloadUrl
                         });
                     }
                     else

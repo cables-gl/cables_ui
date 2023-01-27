@@ -307,13 +307,16 @@ export default function extendCore()
         let lowestOp = null;
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
         {
-            const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-
-            // maxY = Math.max(otherport.parent.getTempPosY, maxY);
-            if (otherport.parent.getTempPosY() > maxY)
+            if (this.portsIn[i].links[0])
             {
-                maxY = otherport.parent.getTempPosY();
-                lowestOp = otherport.parent;
+                const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+
+                // maxY = Math.max(otherport.parent.getTempPosY, maxY);
+                if (otherport.parent.getTempPosY() > maxY)
+                {
+                    maxY = otherport.parent.getTempPosY();
+                    lowestOp = otherport.parent;
+                }
             }
         }
 
@@ -446,5 +449,27 @@ export default function extendCore()
     CABLES.Op.prototype.getHeight = function (glpatch)
     {
         return glpatch.getGlOp(this).h;
+    };
+
+
+    CABLES.Op.prototype.selectChilds = function (options)
+    {
+        options = options || {};
+        if (!options.oplist)options.oplist = [];
+
+        if (options.oplist.indexOf(this.id) > -1) return;
+
+        options.oplist.push(this.id);
+
+        this.setUiAttrib({ "selected": true });
+        for (const ipo in this.portsOut)
+        {
+            for (const l in this.portsOut[ipo].links)
+            {
+                this.portsOut[ipo].parent.setUiAttrib({ "selected": true });
+                if (this.portsOut[ipo].links[l].portIn.parent != this)
+                    this.portsOut[ipo].links[l].portIn.parent.selectChilds(options);
+            }
+        }
     };
 }
