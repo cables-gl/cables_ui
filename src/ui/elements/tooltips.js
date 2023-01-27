@@ -202,10 +202,12 @@ export function updateHoverToolTip(event, port)
 
         if (gui.patchView.patchRenderer.dragLine && gui.patchView.patchRenderer.dragLine.isActive)
         {
-            if (!CABLES.Link.canLink(port, gui.patchView.patchRenderer.dragLine.glPort.port))
-            {
-                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + CABLES.Link.canLinkText(port, gui.patchView.patchRenderer.dragLine.glPort.port);
-            }
+            let oport = gui.patchView.patchRenderer.dragLine.glPort.port;
+            if (gui.patchView.patchRenderer.dragLine._startGlPorts[0])
+                oport = gui.patchView.patchRenderer.dragLine._startGlPorts[0].port;
+
+            if (!CABLES.Link.canLink(port, oport))
+                txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + CABLES.Link.canLinkText(port, oport);
         }
 
 
