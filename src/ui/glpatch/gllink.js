@@ -210,18 +210,33 @@ export default class GlLink
         this.update();
     }
 
-
     updateVisible()
     {
+        const sub = this._glPatch.getCurrentSubPatch();
+
+        if (!this._opIn || !this._opOut) return;
+
+        //     if (this._opIn.op.uiAttribs.subPatch !=
+        // this._opOut.op.uiAttribs.subPatch)
+        //     {
+        //     }
+
+        if (this._cable.subPatch == sub) this._cable.visible = true;
+        if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
+        // v=sub
+        // this._opOut.op.uiAttribs.subPatch);
+        // if (this._cableSub) v;
+
+        this._cable.visible =
+        this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
+        this._updatePosition();
     }
 
     set visible(v)
     {
-        v = true;
-        this._cable.visible = v;
-        if (this._cableSub) this._cableSub.visible = true;
-        this._visible = v;
-        this._updatePosition();
+        // debugger;
+        this.updateVisible();
     }
 
     _updatePosition()
@@ -253,12 +268,6 @@ export default class GlLink
 
                 if (!this._opIn || !this._opOut) this.update();
 
-
-                console.log(
-                    this._opIn.op.uiAttribs.subPatch,
-                    this._opOut.op.uiAttribs.subPatch);
-
-
                 // inner input port op to subpatch-input op
                 if (this._opIn &&
                     this._subPatchInputOp &&
@@ -282,13 +291,12 @@ export default class GlLink
                         this._opOut.getUiAttribs().translate.y,
                     );
 
-                console.log("outer out", this._opIn.op.uiAttribs.subPatch, this._cable.subPatch);
+
                 // outer input port op from subpatch op
                 // if (
                 //     this._subPatchOp &&
                 //     this._opIn.op.uiAttribs.subPatch == this._cable.subPatch)
                 // {
-                //     console.log("jAAAA");
                 //     this._cable.setPosition(
                 //         this._subPatchOp.uiAttribs.translate.x,
                 //         this._subPatchOp.uiAttribs.translate.y,

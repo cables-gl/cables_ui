@@ -1,11 +1,7 @@
 <script id="params_port_input" type="text/x-handlebars-template">
 
-{{#if port.links}}
-    {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-    {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
-    {{else}}
     {{#if port.uiAttribs.useVariable}}
-        </td><td>
+</td><td>
             Var
             <select id="portsetvar_{{ portnum }}" data-portid="{{port.id}}">
                 {{#compare 'unknown' '==' port.uiAttribs.variableName }}
@@ -15,12 +11,23 @@
                     <option {{#compare _name '==' ../port.uiAttribs.variableName }} SELECTED="SELECTED" {{/compare}} value="{{ _name }}">#{{_name}}</option>
                 {{/each}}
             </select>
+
+            {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
+            {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
         </td>
+
+{{else}}
+{{#if port.links}}
+
+
+    {{#compare port.type '==' 5 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
+    {{#compare port.type '==' 0 }} <span class="value valuetext linkedValue monospace watchPort watchPortValue_{{ port.watchId }}_{{ panelid }}" >{{port.port.getValueForDisplay}}</span>{{/compare}}
     {{else}}
+
         {{#if port.uiAttribs.display}}
 
             {{#compare port.uiAttribs.display '==' 'bool' }}
-                </td><td>
+        </td><td>
                     <span class="checkbox-container {{#compare port.value '==' true }}checkbox-active{{/compare}}{{#compare port.value '==' false }}checkbox-inactive{{/compare}}">
                         <span id="portcheckbox_{{ portnum }}_{{ panelid }}" style="height:20px;width:20px;" class="ccheckbox icon icon-check" onclick="CABLES.UI.paramsHelper.togglePortValBool('portval_{{ portnum }}_{{ panelid }}','portcheckbox_{{ portnum }}_{{ panelid }}');" ></span>
                     </span>

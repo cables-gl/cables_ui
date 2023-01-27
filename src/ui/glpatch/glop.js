@@ -509,7 +509,8 @@ export default class GlOp extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id] = l;
-        l.visible = this.visible;
+        // l.visible = this.visible;
+        l.updateVisible();
     }
 
     isHovering()
