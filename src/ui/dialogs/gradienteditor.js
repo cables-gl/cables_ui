@@ -12,8 +12,9 @@ export default class GradientEditor
 
         this._keyWidth =
         this._keyHeight = 15;
-        this._dragDownDeleteThreshold = 40;
+        this._dragDownDeleteThreshold = 120;
         this._width = 500;
+        this._height = 100;
 
         this._keys = [];
         this._paper = null;
@@ -36,9 +37,10 @@ export default class GradientEditor
                 return;
             }
             this._ctx = canvas.getContext("2d");
+            this._imageData = this._ctx.createImageData(this._width, 1);
         }
 
-        const imageData = this._ctx.createImageData(500, 1);
+
         let keys = [];
         if (this._keys.length == 0)
         {
@@ -51,7 +53,12 @@ export default class GradientEditor
 
         for (let i = 0; i < keys.length - 1; i++)
         {
-            if (keys[i].rect)keys[i].rect.attr({ "fill": "rgba(" + Math.round(keys[i].r * 255) + "," + Math.round(keys[i].g * 255) + "," + Math.round(keys[i].b * 255) + ",1)" });
+            if (keys[i].rect)
+            {
+                keys[i].rect.attr({
+                    "fill": "rgba(" + Math.round(keys[i].r * 255) + "," + Math.round(keys[i].g * 255) + "," + Math.round(keys[i].b * 255) + ",1)",
+                    "stroke": this.getInvStrokeColor(keys[i].r, keys[i].g, keys[i].b) });
+            }
 
             const keyA = keys[i];
             const keyB = keys[i + 1];
@@ -62,17 +69,41 @@ export default class GradientEditor
 
                 p = CABLES.smoothStep(p);
 
-                imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
-                imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
-                imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
-                imageData.data[x * 4 + 3] = 255;
+                this._imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
+                this._imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
+                this._imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
+                this._imageData.data[x * 4 + 3] = 255;
             }
         }
 
-        for (let i = 0; i < 50; i++)
-        {
-            this._ctx.putImageData(imageData, 0, i);
-        }
+        for (let i = 0; i < this._height; i++)
+            this._ctx.putImageData(this._imageData, 0, i);
+
+        this._ctx.strokeStyle = "red";
+        this._ctx.lineWidth = 2;
+        this._ctx.beginPath();
+        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].r * this._height);
+        for (let i = 0; i < keys.length - 1; i++)
+            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].r * this._height);
+        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].r * this._height);
+        this._ctx.stroke();
+
+        this._ctx.strokeStyle = "green";
+        this._ctx.beginPath();
+        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].g * this._height);
+        for (let i = 0; i < keys.length - 1; i++)
+            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].g * this._height);
+        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].g * this._height);
+        this._ctx.stroke();
+
+        this._ctx.strokeStyle = "blue";
+        this._ctx.beginPath();
+        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].b * this._height);
+        for (let i = 0; i < keys.length - 1; i++)
+            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].b * this._height);
+        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].b * this._height);
+        this._ctx.stroke();
+
 
         if (this._opId && this._portName)
         {
@@ -98,7 +129,15 @@ export default class GradientEditor
         function compare(a, b) { return a.pos - b.pos; }
 
         this._keys.sort(compare);
-        this.updateCanvas();
+
+        clearTimeout(this._timeout);
+        this._timeout = setTimeout(
+            () =>
+            {
+                CABLES.GradientEditor.editor.updateCanvas();
+            }, 10);
+
+
         if (this._callback) this._callback();
     }
 
@@ -115,16 +154,31 @@ export default class GradientEditor
         document.getElementById("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
 
-    addKey(pos, r, g, b)
+    getInvStrokeColor(r, g, b)
     {
-        const rect = this._paper.rect(pos * this._width, 0, this._keyWidth, this._keyHeight).attr({ "stroke": "#000" });
+        let invCol = (r + g + b) / 3;
 
+        if (invCol < 0.5)invCol = 1.0;
+        else invCol = 0.0;
+
+        const s = "rgba(" + invCol * 255 + "," + invCol * 255 + "," + invCol * 255 + ",1.0)";
+        return s;
+    }
+
+    addKey(pos, posY, r, g, b)
+    {
         if (r == undefined)
         {
             r = Math.random();
             g = Math.random();
             b = Math.random();
         }
+
+        const rect = this._paper.rect(pos * this._width - this._keyWidth / 2, posY * this._height, this._keyWidth, this._keyHeight).attr({
+            "fill": "rgba(0,0,0,0)",
+            "stroke": this.getInvStrokeColor(r, g, b),
+            "strokeWidth": 3 });
+
 
         const key = { pos, rect, r, g, b };
 
@@ -139,17 +193,19 @@ export default class GradientEditor
             this.setCurrentKey(key);
             this._movingkey = true;
             const attribs = {};
-            attribs.stroke = "#000";
 
+            attribs.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
 
             if (e.target.tagName == "svg") // e.target == key.rect.node ||
             {
                 attribs.x = e.offsetX - (this._keyWidth / 2);
+                attribs.y = e.offsetY - (this._keyWidth / 2);
                 key.pos = (attribs.x + this._keyWidth / 2) / this._width;
+                key.posY = (attribs.y + this._keyWidth / 2) / this._height;
             }
 
 
-            if (Math.abs(this._startMouseY - y) > this._dragDownDeleteThreshold)
+            if (Math.abs(this._startMouseY - y) > this._dragDownDeleteThresho12d)
             {
                 attribs["fill-opacity"] = 0.3;
                 attribs.stroke = "#f00";
@@ -168,6 +224,11 @@ export default class GradientEditor
 
         function down(x, y, e)
         {
+            if (e.buttons == 2)
+            {
+                shouldDelete = true;
+            }
+
             this._startMouseY = y;
             this._movingkey = true;
             this.setCurrentKey(key);
@@ -180,14 +241,14 @@ export default class GradientEditor
                 this._movingkey = false;
             }.bind(this), 100);
 
-            if (shouldDelete)
+            if (shouldDelete && key.rect)
             {
                 key.rect.remove();
                 this.deleteKey(key);
             }
         }
 
-        rect.drag(move.bind(this), down.bind(this), up.bind(this));
+        if (rect)rect.drag(move.bind(this), down.bind(this), up.bind(this));
     }
 
     show(cb)
@@ -196,14 +257,14 @@ export default class GradientEditor
 
         const html = getHandleBarHtml("GradientEditor", {});
 
-        new ModalDialog({"html":html,"nopadding":true});
+        new ModalDialog({ "html": html, "nopadding": true });
 
         this._paper = Raphael("gradienteditorbar", 0, 0);
 
         document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
         {
             if (this._movingkey) return;
-            this.addKey(e.offsetX / this._width);
+            this.addKey(e.offsetX / this._width, e.offsetY / this._height);
             this.onChange();
         });
 
@@ -217,7 +278,7 @@ export default class GradientEditor
                 const keys = JSON.parse(data).keys;
                 for (let i = 1; i < keys.length - 1; i++)
                 {
-                    this.addKey(keys[i].pos, keys[i].r, keys[i].g, keys[i].b);
+                    this.addKey(keys[i].pos, keys[i].posY, keys[i].r, keys[i].g, keys[i].b);
                 }
             }
             catch (e)
@@ -228,8 +289,8 @@ export default class GradientEditor
 
         if (this._keys.length == 0)
         {
-            this.addKey(0.25, 0, 0, 0);
-            this.addKey(0.75, 1, 1, 1);
+            this.addKey(0, 0, 0, 0, 0);
+            this.addKey(1, 0, 1, 1, 1);
         }
 
         this.onChange();
@@ -247,10 +308,23 @@ export default class GradientEditor
             gui.closeModal();
         });
 
+        const colEleDel = document.getElementById("gradientColorDelete");
+        colEleDel.addEventListener("click", (e) =>
+        {
+            if (CABLES.currentKey)
+            {
+                CABLES.currentKey.rect.remove();
+                this.deleteKey(CABLES.currentKey);
+                CABLES.currentKey = this._keys[0];
+            }
+        });
+
+
         const colEle = document.getElementById("gradientColorInput");
 
         colEle.addEventListener("click", (e) =>
         {
+            if (!CABLES.currentKey) return;
             const cr = new ColorRick({
                 "ele": colEle,
                 "color": [parseInt(CABLES.currentKey.r * 255), parseInt(CABLES.currentKey.g * 255), parseInt(CABLES.currentKey.b * 255)], // "#ffffff",
@@ -264,7 +338,6 @@ export default class GradientEditor
 
                         CABLES.GradientEditor.editor._ctx = null;
                         CABLES.GradientEditor.editor.onChange();
-                        CABLES.GradientEditor.editor.updateCanvas();
 
                         colEle.style.backgroundColor = col.hex();
                     }
