@@ -51,10 +51,14 @@ export default class OpTreeList
 
     html()
     {
+        const perf = CABLES.UI.uiProfiler.start("opselect.treelist");
+
         let html = "";
 
         for (let i = 0; i < this.data.length; i++)
             html += this.itemHtml(this.data[i], html, 0);
+
+        perf.finish();
 
         return html;
     }

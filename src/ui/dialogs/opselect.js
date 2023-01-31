@@ -442,6 +442,8 @@ export default class OpSelect
 
     _showSuggestionsInfo()
     {
+        const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
+
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
@@ -557,6 +559,8 @@ export default class OpSelect
 
 
         if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
+
+        perf.finish();
     }
 
     updateInfo()
@@ -710,8 +714,12 @@ export default class OpSelect
     prepare()
     {
         this.tree = new OpTreeList();
+
+
         if (!this._list)
         {
+            const perf = CABLES.UI.uiProfiler.start("opselect.prepare.list");
+
             this._list = this.getList();
 
             let maxPop = 0;
@@ -734,10 +742,13 @@ export default class OpSelect
             }
 
             CABLES.UI.OPSELECT.maxPop = maxPop;
+            perf.finish();
         }
 
         if (!this._html)
         {
+            const perf = CABLES.UI.uiProfiler.start("opselect.html");
+
             const head = getHandleBarHtml("op_select");
 
             ele.byId("opsearchmodal").innerHTML = head;
@@ -750,6 +761,8 @@ export default class OpSelect
             {
                 e.addEventListener("click", this._onClickAddButton.bind(this));
             });
+
+            perf.finish();
         }
     }
 
@@ -766,6 +779,8 @@ export default class OpSelect
     show(options, linkOp, linkPort, link)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+
+        const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
         this._typedSinceOpening = false;
 
@@ -797,6 +812,7 @@ export default class OpSelect
         if (this.firstTime) this.search();
         if (!this._list || !this._html) this.prepare();
 
+
         ele.hide(ele.byId("search_noresults"));
 
 
@@ -815,45 +831,49 @@ export default class OpSelect
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
-        this.clear = function ()
-        {
-            let v = this._getQuery();
+        // this.clear = function ()
+        // {
+        //     let v = this._getQuery();
 
-            if (v.indexOf(".") > 0)
-            {
-                const arr = v.split(".");
-                arr.length -= 1;
-                v = arr.join(".");
+        //     if (v.indexOf(".") > 0)
+        //     {
+        //         const arr = v.split(".");
+        //         arr.length -= 1;
+        //         v = arr.join(".");
 
-                if (v === "Ops") v = "";
+        //         if (v === "Ops") v = "";
 
-                eleOpsearch.value = v;
-                this.search();
-            }
-            else
-            {
-                eleOpsearch.value = "";
-                this.search();
-            }
-        };
+        //         eleOpsearch.value = v;
+        //         this.search();
+        //     }
+        //     else
+        //     {
+        //         eleOpsearch.value = "";
+        //         this.search();
+        //     }
+        // };
 
-        this.selectOp = function (name)
-        {
-            this._typedSinceOpening = true;
+        // this.selectOp = function (name)
+        // {
+        //     this._typedSinceOpening = true;
 
-            ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
+        //     ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
 
-            const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
-            el.classList.add("selected");
+        //     const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
+        //     el.classList.add("selected");
 
-            this.updateInfo();
-        };
+        //     this.updateInfo();
+        // };
+
 
         this.updateOptions();
+
 
         setTimeout(() =>
         {
             this.updateInfo();
+
+            perf.finish();
 
             eleOpsearch.focus();
         }, 50);
@@ -1177,6 +1197,7 @@ export default class OpSelect
         if (!opDocs) return;
         if (!this._list) this._list = [];
 
+        const perf = CABLES.UI.uiProfiler.start("opselect.addtolist");
         opDocs.forEach((opDoc) =>
         {
             const parts = opDoc.name.split(".");
@@ -1203,10 +1224,12 @@ export default class OpSelect
             this._list.push(op);
         });
         this._list.sort((a, b) => { return b.pop - a.pop; });
+        perf.finish();
     }
 
     getList()
     {
+        const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
         let list = this._getop([], "Ops", Ops, "");
         const extensions = this._getextensions(list);
         list = list.concat(extensions);
@@ -1214,6 +1237,7 @@ export default class OpSelect
         list = list.concat(teamnamespaces);
         list.sort((a, b) => { return b.pop - a.pop; });
 
+        perf.finish();
         return list;
     }
 
