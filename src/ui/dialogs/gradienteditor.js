@@ -28,11 +28,16 @@ export default class GradientEditor
         this._previousContent = "";
     }
 
+    selectKey(i)
+    {
+        this.setCurrentKey(this._keys[i]);
+    }
+
     updateCanvas()
     {
         if (!this._ctx)
         {
-            const canvas = document.getElementById("gradientEditorCanvas");
+            const canvas = ele.byId("gradientEditorCanvas");
             if (!canvas)
             {
                 this._log.error("[gradienteditor] no canvas found");
@@ -125,6 +130,19 @@ export default class GradientEditor
 
         this._keys.sort(compare);
 
+
+        let html = "";
+        for (let i = 0; i < this._keys.length; i++)
+        {
+            this._keys[i].pos = Math.min(1.0, Math.max(this._keys[i].pos, 0));
+            this._keys[i].posy = Math.min(1.0, Math.max(this._keys[i].posy, 0));
+
+            html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex smallbutton\">" + i + "</a> ";
+        }
+
+        ele.byId("gradienteditorKeys").innerHTML = html;
+
+
         // clearTimeout(this._timeout);
         this._timeout = setTimeout(
             () =>
@@ -146,7 +164,7 @@ export default class GradientEditor
     {
         CABLES.currentKey = key;
 
-        document.getElementById("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
+        ele.byId("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
 
     getInvStrokeColor(r, g, b)
@@ -191,16 +209,16 @@ export default class GradientEditor
             attribs.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
 
             // e.target == key.rect.node || //|| e.target.tagName == "circle"
+            if (e.target.tagName == "svg" || e.target.tagName == "circle" || e.target.tagName == "ellipse")
             {
                 let rx = e.offsetX - (this._keyWidth / 2);
                 let ry = e.offsetY - (this._keyWidth / 2);
 
-                if (e.target.tagName != "svg" && e.target.tagName != "circle" && e.target.tagName != "ellipse")
-                {
-                    if (key.posy > 0.5)ry = this._height;
-                    else if (key.posy < 0.5)ry = 0;
-                    // if (dy > this._height)ry = 1;
-                }
+                // if (key.posy > 0.5)ry = this._height;
+                // else if (key.posy < 0.5)ry = 0;
+                // if (key.pos > 0.5)rx = this._width;
+                // else if (key.pos < 0.5)rx = 0;
+                // if (dy > this._height)ry = 1;
 
                 attribs.cx = rx;
                 attribs.cy = ry;
@@ -278,25 +296,25 @@ export default class GradientEditor
         if (this._keys.length == 0)
         {
             this.addKey(0, 0.5, 0, 0, 0);
-            this.addKey(0, 0.5, 1, 1, 1);
+            this.addKey(1, 0.5, 1, 1, 1);
         }
 
         this.onChange();
         CABLES.GradientEditor.editor = this;
 
-        document.getElementById("gradientSaveButton").addEventListener("click", () =>
+        ele.byId("gradientSaveButton").addEventListener("click", () =>
         {
             gui.closeModal();
         });
 
-        document.getElementById("gradientCancelButton").addEventListener("click", () =>
+        ele.byId("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(this._previousContent);
             gui.closeModal();
         });
 
-        const colEleDel = document.getElementById("gradientColorDelete");
+        const colEleDel = ele.byId("gradientColorDelete");
         colEleDel.addEventListener("click", (e) =>
         {
             if (CABLES.currentKey)
@@ -308,7 +326,7 @@ export default class GradientEditor
         });
 
 
-        const colEle = document.getElementById("gradientColorInput");
+        const colEle = ele.byId("gradientColorInput");
 
         colEle.addEventListener("click", (e) =>
         {
