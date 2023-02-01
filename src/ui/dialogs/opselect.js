@@ -442,6 +442,8 @@ export default class OpSelect
 
     _showSuggestionsInfo()
     {
+        const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
+
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
@@ -557,6 +559,8 @@ export default class OpSelect
 
 
         if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
+
+        perf.finish();
     }
 
     updateInfo()
@@ -710,8 +714,12 @@ export default class OpSelect
     prepare()
     {
         this.tree = new OpTreeList();
+
+
         if (!this._list)
         {
+            const perf = CABLES.UI.uiProfiler.start("opselect.prepare.list");
+
             this._list = this.getList();
 
             let maxPop = 0;
@@ -734,10 +742,13 @@ export default class OpSelect
             }
 
             CABLES.UI.OPSELECT.maxPop = maxPop;
+            perf.finish();
         }
 
         if (!this._html)
         {
+            const perf = CABLES.UI.uiProfiler.start("opselect.html");
+
             const head = getHandleBarHtml("op_select");
 
             ele.byId("opsearchmodal").innerHTML = head;
@@ -750,6 +761,8 @@ export default class OpSelect
             {
                 e.addEventListener("click", this._onClickAddButton.bind(this));
             });
+
+            perf.finish();
         }
     }
 
@@ -767,13 +780,24 @@ export default class OpSelect
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
+        const perf = CABLES.UI.uiProfiler.start("opselect.show");
+
+
+        let startTime = performance.now();
+
+        console.log("1", performance.now() - startTime);
+
         this._typedSinceOpening = false;
 
         CABLES.UI.hideToolTip();
+        console.log("2", performance.now() - startTime);
+
         this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
+
+        console.log("3", performance.now() - startTime);
 
         this._newOpOptions =
         {
@@ -786,7 +810,12 @@ export default class OpSelect
 
 
         this._forceShowOldOps = userSettings.get("showOldOps") || false;
+
+        console.log("4", performance.now() - startTime);
+
         this._searchInputEle = ele.byId("opsearch");
+
+        console.log("5", performance.now() - startTime);
 
         if (options.search)
         {
@@ -794,68 +823,101 @@ export default class OpSelect
             this.search();
         }
 
+        console.log("6", performance.now() - startTime);
+
         if (this.firstTime) this.search();
+
+        console.log("7", performance.now() - startTime);
+
         if (!this._list || !this._html) this.prepare();
+
+        console.log("8", performance.now() - startTime);
+
 
         ele.hide(ele.byId("search_noresults"));
 
+        console.log("9", performance.now() - startTime);
+
 
         this._bg.show();
+
+        console.log("10", performance.now() - startTime);
+
         ele.show(ele.byId("opsearchmodal"));
+
+        console.log("11", performance.now() - startTime);
 
 
         if (userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
+
+        console.log("12", performance.now() - startTime);
+
         const eleOpsearch = ele.byId("opsearch");
-        eleOpsearch.select();
-        eleOpsearch.focus();
+
+        console.log("13", performance.now() - startTime);
+
+
+        console.log("14", performance.now() - startTime);
 
         eleOpsearch.removeEventListener("keydown", this._boundKeydown);
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
-        this.clear = function ()
-        {
-            let v = this._getQuery();
+        console.log("15", performance.now() - startTime);
 
-            if (v.indexOf(".") > 0)
-            {
-                const arr = v.split(".");
-                arr.length -= 1;
-                v = arr.join(".");
+        // this.clear = function ()
+        // {
+        //     let v = this._getQuery();
 
-                if (v === "Ops") v = "";
+        //     if (v.indexOf(".") > 0)
+        //     {
+        //         const arr = v.split(".");
+        //         arr.length -= 1;
+        //         v = arr.join(".");
 
-                eleOpsearch.value = v;
-                this.search();
-            }
-            else
-            {
-                eleOpsearch.value = "";
-                this.search();
-            }
-        };
+        //         if (v === "Ops") v = "";
 
-        this.selectOp = function (name)
-        {
-            this._typedSinceOpening = true;
+        //         eleOpsearch.value = v;
+        //         this.search();
+        //     }
+        //     else
+        //     {
+        //         eleOpsearch.value = "";
+        //         this.search();
+        //     }
+        // };
 
-            ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
+        // this.selectOp = function (name)
+        // {
+        //     this._typedSinceOpening = true;
 
-            const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
-            el.classList.add("selected");
+        //     ele.forEachClass("searchresult", (e) => { e.classList.remove("selected"); });
 
-            this.updateInfo();
-        };
+        //     const el = ele.byQuery(".searchresult[data-opname=\"" + name + "\"]");
+        //     el.classList.add("selected");
+
+        //     this.updateInfo();
+        // };
+
 
         this.updateOptions();
+
+        console.log("16", performance.now() - startTime);
 
         setTimeout(() =>
         {
             this.updateInfo();
+            console.log("17", performance.now() - startTime);
 
+            perf.finish();
+            console.log("18", performance.now() - startTime);
+
+            eleOpsearch.select();
             eleOpsearch.focus();
+
+            console.log("19", performance.now() - startTime);
         }, 50);
     }
 
@@ -1177,6 +1239,7 @@ export default class OpSelect
         if (!opDocs) return;
         if (!this._list) this._list = [];
 
+        const perf = CABLES.UI.uiProfiler.start("opselect.addtolist");
         opDocs.forEach((opDoc) =>
         {
             const parts = opDoc.name.split(".");
@@ -1203,10 +1266,12 @@ export default class OpSelect
             this._list.push(op);
         });
         this._list.sort((a, b) => { return b.pop - a.pop; });
+        perf.finish();
     }
 
     getList()
     {
+        const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
         let list = this._getop([], "Ops", Ops, "");
         const extensions = this._getextensions(list);
         list = list.concat(extensions);
@@ -1214,6 +1279,7 @@ export default class OpSelect
         list = list.concat(teamnamespaces);
         list.sort((a, b) => { return b.pop - a.pop; });
 
+        perf.finish();
         return list;
     }
 
