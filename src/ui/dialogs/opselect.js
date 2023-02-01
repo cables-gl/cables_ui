@@ -639,13 +639,13 @@ export default class OpSelect
     search()
     {
         const q = this._getQuery();
+
         this.lastQuery = q;
         this._search(q);
-        let i = 0;
 
         const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
-        for (i = 0; i < this._list.length; i++)
+        for (let i = 0; i < this._list.length; i++)
         {
             this._list[i].element = this._list[i].element || ele.byId("result_" + this._list[i].id);
 
