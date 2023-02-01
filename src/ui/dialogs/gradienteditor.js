@@ -11,9 +11,11 @@ export default class GradientEditor
         this._portName = portname;
 
         this._keyWidth =
-        this._keyHeight = 15;
+        this._keyHeight = 7;
+        this._keyStrokeWidth = 3;
+        this._keyOpacity = 1;
         this._dragDownDeleteThreshold = 120;
-        this._width = 500;
+        this._width = 512;
         this._height = 100;
 
         this._keys = [];
@@ -44,19 +46,19 @@ export default class GradientEditor
         let keys = [];
         if (this._keys.length == 0)
         {
-            keys.push({ "pos": 0, "r": 0, "g": 0, "b": 0 });
+            keys.push({ "posy": 0.5, "pos": 0, "r": 0, "g": 0, "b": 0 });
         }
-        else keys = [{ "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
+        else keys = [{ "posy": this._keys[0].posy, "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
 
         const last = keys[keys.length - 1];
-        keys.push({ "pos": 1, "r": last.r, "g": last.g, "b": last.b });
+        keys.push({ "posy": last.posy, "pos": 1, "r": last.r, "g": last.g, "b": last.b });
 
         for (let i = 0; i < keys.length - 1; i++)
         {
             if (keys[i].rect)
             {
                 keys[i].rect.attr({
-                    "fill": "rgba(" + Math.round(keys[i].r * 255) + "," + Math.round(keys[i].g * 255) + "," + Math.round(keys[i].b * 255) + ",1)",
+                    "fill": "rgba(" + Math.round(keys[i].r * 255) + "," + Math.round(keys[i].g * 255) + "," + Math.round(keys[i].b * 255) + "," + this._keyOpacity + ")",
                     "stroke": this.getInvStrokeColor(keys[i].r, keys[i].g, keys[i].b) });
             }
 
@@ -65,6 +67,7 @@ export default class GradientEditor
 
             for (let x = keyA.pos * this._width; x < keyB.pos * this._width; x++)
             {
+                x = Math.round(x);
                 let p = CABLES.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
 
                 p = CABLES.smoothStep(p);
@@ -76,32 +79,21 @@ export default class GradientEditor
             }
         }
 
-        for (let i = 0; i < this._height; i++)
-            this._ctx.putImageData(this._imageData, 0, i);
+        for (let i = 0; i < this._height; i++) this._ctx.putImageData(this._imageData, 0, i);
 
-        this._ctx.strokeStyle = "red";
+        this._ctx.strokeStyle = "black";
         this._ctx.lineWidth = 2;
         this._ctx.beginPath();
-        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].r * this._height);
-        for (let i = 0; i < keys.length - 1; i++)
-            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].r * this._height);
-        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].r * this._height);
-        this._ctx.stroke();
+        this._ctx.moveTo(keys[0].pos * this._width, keys[0].posy * this._height - this._keyWidth / 2);
 
-        this._ctx.strokeStyle = "green";
-        this._ctx.beginPath();
-        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].g * this._height);
-        for (let i = 0; i < keys.length - 1; i++)
-            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].g * this._height);
-        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].g * this._height);
-        this._ctx.stroke();
 
-        this._ctx.strokeStyle = "blue";
-        this._ctx.beginPath();
-        this._ctx.moveTo(keys[0].pos * this._width, this._height - keys[0].b * this._height);
         for (let i = 0; i < keys.length - 1; i++)
-            this._ctx.lineTo(keys[i].pos * this._width, this._height - keys[i].b * this._height);
-        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, this._height - keys[keys.length - 1].b * this._height);
+            this._ctx.lineTo(
+                keys[i].pos * this._width - this._keyWidth / 2,
+                keys[i].posy * this._height - this._keyWidth / 2
+            );
+
+        this._ctx.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
         this._ctx.stroke();
 
 
@@ -113,6 +105,7 @@ export default class GradientEditor
                 keyData[i] =
                 {
                     "pos": keys[i].pos,
+                    "posy": keys[i].posy,
                     "r": keys[i].r,
                     "g": keys[i].g,
                     "b": keys[i].b
@@ -121,6 +114,8 @@ export default class GradientEditor
 
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(JSON.stringify({ "keys": keyData }));
+
+            // console.log(JSON.stringify({ "keys": keyData }));
         }
     }
 
@@ -130,12 +125,12 @@ export default class GradientEditor
 
         this._keys.sort(compare);
 
-        clearTimeout(this._timeout);
+        // clearTimeout(this._timeout);
         this._timeout = setTimeout(
             () =>
             {
-                CABLES.GradientEditor.editor.updateCanvas();
-            }, 10);
+                if (CABLES.GradientEditor.editor)CABLES.GradientEditor.editor.updateCanvas();
+            }, 3);
 
 
         if (this._callback) this._callback();
@@ -165,7 +160,7 @@ export default class GradientEditor
         return s;
     }
 
-    addKey(pos, posY, r, g, b)
+    addKey(pos, posy, r, g, b)
     {
         if (r == undefined)
         {
@@ -174,15 +169,14 @@ export default class GradientEditor
             b = Math.random();
         }
 
-        const rect = this._paper.rect(pos * this._width - this._keyWidth / 2, posY * this._height, this._keyWidth, this._keyHeight).attr({
-            "fill": "rgba(0,0,0,0)",
+        const rect = this._paper.ellipse(pos * this._width - this._keyWidth / 2, posy * this._height, this._keyWidth, this._keyHeight).attr({
             "stroke": this.getInvStrokeColor(r, g, b),
-            "strokeWidth": 3 });
+            "strokeWidth": this._keyStrokeWidth });
 
 
-        const key = { pos, rect, r, g, b };
+        const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
 
-        rect.attr({ "fill": "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ",1)" });
+        rect.attr({ "fill": "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + "," + this._keyOpacity + ")" });
 
         this._keys.push(key);
         let shouldDelete = false;
@@ -196,27 +190,24 @@ export default class GradientEditor
 
             attribs.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
 
-            if (e.target.tagName == "svg") // e.target == key.rect.node ||
+            // e.target == key.rect.node || //|| e.target.tagName == "circle"
             {
-                attribs.x = e.offsetX - (this._keyWidth / 2);
-                attribs.y = e.offsetY - (this._keyWidth / 2);
-                key.pos = (attribs.x + this._keyWidth / 2) / this._width;
-                key.posY = (attribs.y + this._keyWidth / 2) / this._height;
-            }
+                let rx = e.offsetX - (this._keyWidth / 2);
+                let ry = e.offsetY - (this._keyWidth / 2);
 
+                if (e.target.tagName != "svg" && e.target.tagName != "circle" && e.target.tagName != "ellipse")
+                {
+                    if (key.posy > 0.5)ry = this._height;
+                    else if (key.posy < 0.5)ry = 0;
+                    // if (dy > this._height)ry = 1;
+                }
 
-            if (Math.abs(this._startMouseY - y) > this._dragDownDeleteThresho12d)
-            {
-                attribs["fill-opacity"] = 0.3;
-                attribs.stroke = "#f00";
-                shouldDelete = true;
-            }
-            else
-            {
-                attribs["fill-opacity"] = 1.0;
-                shouldDelete = false;
-            }
+                attribs.cx = rx;
+                attribs.cy = ry;
 
+                key.pos = (rx + this._keyWidth / 2) / this._width;
+                key.posy = (ry + this._keyWidth / 2) / this._height;
+            }
 
             rect.attr(attribs);
             this.onChange();
@@ -224,10 +215,7 @@ export default class GradientEditor
 
         function down(x, y, e)
         {
-            if (e.buttons == 2)
-            {
-                shouldDelete = true;
-            }
+            if (e.buttons == 2) shouldDelete = true;
 
             this._startMouseY = y;
             this._movingkey = true;
@@ -278,7 +266,7 @@ export default class GradientEditor
                 const keys = JSON.parse(data).keys;
                 for (let i = 1; i < keys.length - 1; i++)
                 {
-                    this.addKey(keys[i].pos, keys[i].posY, keys[i].r, keys[i].g, keys[i].b);
+                    this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
                 }
             }
             catch (e)
@@ -289,8 +277,8 @@ export default class GradientEditor
 
         if (this._keys.length == 0)
         {
-            this.addKey(0, 0, 0, 0, 0);
-            this.addKey(1, 0, 1, 1, 1);
+            this.addKey(0, 0.5, 0, 0, 0);
+            this.addKey(0, 0.5, 1, 1, 1);
         }
 
         this.onChange();
