@@ -425,7 +425,6 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
         getset,
         { "onOpAdd": (op) =>
         {
-            p.removeLinks();
             let off = -40;
 
             if (p.direction == CABLES.PORT_DIR_IN)
