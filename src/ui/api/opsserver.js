@@ -978,7 +978,7 @@ export default class ServerOps
 
         this.loadMissingOps(missingOps, (newOps) =>
         {
-            if (gui && gui.opSelect())
+            if (gui && gui.opSelect() && newOps.length > 0)
             {
                 gui.opSelect().reload();
                 gui.opSelect().prepare();
@@ -1128,6 +1128,7 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
+        if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });
         if (!op) return false;
         return op.allowEdit;

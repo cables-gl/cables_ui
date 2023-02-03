@@ -225,7 +225,6 @@ function createEditor(id, val, cb)
 {
     loadAce(() =>
     {
-        console.log("CABLES.loadedAce", CABLES.loadedAce);
         const editor = ace.edit(id);
         editor.setValue(""); // need to do this
 

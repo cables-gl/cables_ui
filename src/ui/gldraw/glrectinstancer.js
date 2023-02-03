@@ -62,7 +62,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
         this._shader.ignoreMissingUniforms = true;
 
-
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
         this._uniZoom = new CGL.Uniform(this._shader, "f", "zoom", 0);
         this._uniResX = new CGL.Uniform(this._shader, "f", "resX", 0);

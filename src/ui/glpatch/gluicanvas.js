@@ -64,7 +64,7 @@ export default class GlUiCanvas
         this.patchApi.reset();
 
 
-        this.patch.cgl.pixelDensity = window.devicePixelRatio;
+        this.patch.cgl.pixelDensity = window.devicePixelRatio || 1;
         this.patch.cgl.updateSize();
 
         this.setSize(100, 100);
