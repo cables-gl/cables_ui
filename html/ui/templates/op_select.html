@@ -29,7 +29,7 @@
     <div class="searchbrowser">
 
         {{#each ops}}
-          <div id="result_{{id}}" class="searchresult clickable searchable" data-opname="{{name}}" data-item-type="{{type}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}', false, '{{type}}');">
+          <div id="result_{{id}}" class="searchresult clickable hidden searchable" data-opname="{{name}}" data-item-type="{{type}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}', false, '{{type}}');">
                 <div class="button fright addbutton" style="margin-top:10px;" >{{buttonText}}</div>
                 <a>
                     {{oldState}}

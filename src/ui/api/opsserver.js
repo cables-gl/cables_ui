@@ -978,7 +978,7 @@ export default class ServerOps
 
         this.loadMissingOps(missingOps, (newOps) =>
         {
-            if (gui && gui.opSelect())
+            if (gui && gui.opSelect() && newOps.length > 0)
             {
                 gui.opSelect().reload();
                 gui.opSelect().prepare();
