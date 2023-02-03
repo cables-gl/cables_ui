@@ -357,6 +357,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
             if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
+            if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
 
 
             if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
@@ -440,14 +441,16 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             try
             {
-                data = JSON.stringify(data);
+                console.log(data);
+                const datastr = JSON.stringify(data);
                 gui.patchView.warnLargestPort();
+
 
                 const origSize = Math.round(data.length / 1024);
 
 
                 // data = LZString.compress(data);
-                let uint8data = pako.deflate(data);
+                let uint8data = pako.deflate(datastr);
 
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");

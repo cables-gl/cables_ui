@@ -43,11 +43,11 @@
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'editor' }}
             </td><td>
-                <a class="button-small" id="portedit_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>edit</a>
+                <a class="button-small" id="portedit_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'spreadsheet' }}
             </td><td>
-                <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>edit</a>
+                <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
                 </td><td>
@@ -109,7 +109,8 @@
             {{#compare port.uiAttribs.display '==' 'gradient' }}
                 </td>
                 <td>
-                    <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">edit</span>
+                    <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">
+                        <span class="icon icon-edit"></span>Edit</span>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'texture' }}
                 </td>

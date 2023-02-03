@@ -1258,22 +1258,22 @@ export default class Gui
             const selectedOpId = selectedOp[0].id;
 
             let portName = null;
+            let port = null;
 
             for (let i = 0; i < selectedOp[0].portsIn.length; i++)
             {
-                const port = selectedOp[0].portsIn[i];
+                port = selectedOp[0].portsIn[i];
                 const type = port.getTypeString();
 
-                if (type === "String" && (port.uiAttribs && port.uiAttribs.display === "editor"))
-                {
-                    portName = port.name;
-                    break;
-                }
+                if (port.uiAttribs && port.uiAttribs.editShortcut) break;
             }
 
-            if (portName)
+            if (port)
             {
-                CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, portName, null, true);
+                if (port.uiAttribs.display === "editor")
+                    CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
+                if (port.uiAttribs.display === "gradient")
+                    (new CABLES.GradientEditor(selectedOpId, port.name)).show();
             }
         });
 
