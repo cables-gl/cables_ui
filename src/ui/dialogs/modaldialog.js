@@ -36,6 +36,7 @@ export default class ModalDialog extends CABLES.EventTarget
 
         if (window.gui && gui.currentModal) gui.currentModal.close();
         this._options = options;
+        this._options.okButton = this._options.okButton || { "text": "ok", "cssClasses": "bluebutton" };
         this._ele = null;
         this._eleContent = null;
         this._bg = new ModalBackground();
@@ -88,20 +89,20 @@ export default class ModalDialog extends CABLES.EventTarget
         if (this._options.prompt)
         {
             html += "<br/>";
-            html += "<a class=\"bluebutton\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.choice)
         {
             html += "<br/><br/>";
-            html += "<a class=\"bluebutton\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
             html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.showOkButton)
         {
-            html += "<br/><br/><a class=\"bluebutton\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+            html += "<br/><br/><a class=\"" + this._options.okButton.cssClasses + "\" id=\"modalClose\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         return html;

@@ -91,11 +91,15 @@ export default class FileManager
             return;
         }
 
-        gui.jobs().start({ "id": "getFileList", "title": "Loading file list" });
+        gui.jobs()
+        .start({
+            "id": "getFileList",
+            "title": "Loading file list"
+        });
 
         this._getFilesFromSource(this._fileSource, (files) =>
         {
-            if (!files)files = [];
+            if (!files) files = [];
 
             if (this._firstTimeOpening && files.length == 0)
             {
@@ -112,7 +116,8 @@ export default class FileManager
 
             if (cb) cb();
 
-            gui.jobs().finish("getFileList");
+            gui.jobs()
+            .finish("getFileList");
         });
     }
 
@@ -121,7 +126,7 @@ export default class FileManager
         CABLESUILOADER.talkerAPI.send(
             "getFilelist",
             {
-                "source": source,
+                "source": source
             },
             (err, remoteFiles) =>
             {
@@ -134,7 +139,7 @@ export default class FileManager
                 {
                     if (cb) cb(remoteFiles);
                 }
-            },
+            }
         );
     }
 
@@ -188,7 +193,7 @@ export default class FileManager
         else if (file.t == "audio") item.icon = "headphones";
         else if (file.t == "dir") item.divider = file.n;
 
-        if (!filterType)items.push(item);
+        if (!filterType) items.push(item);
         else
         {
             if (this._compareFilter(file, filterType)) items.push(item);
@@ -199,7 +204,7 @@ export default class FileManager
                 for (let i = 0; i < file.c.length; i++)
                 {
                     if (this._compareFilter(file.c[i], filterType))
-                    // if (file.c[i].t == filterType) //sss
+                        // if (file.c[i].t == filterType) //sss
                     {
                         items.push(item);
                         break;
@@ -224,7 +229,8 @@ export default class FileManager
             {
                 for (let i = 0; i < filterType.length; i++)
                 {
-                    if (file.n.toLowerCase().indexOf(filterType[i].toLowerCase()) > 0) return true;
+                    if (file.n.toLowerCase()
+                    .indexOf(filterType[i].toLowerCase()) > 0) return true;
                 }
             }
         }
@@ -255,14 +261,16 @@ export default class FileManager
         {
             this._files.sort(function (a, b)
             {
-                return (a.name || "").toLowerCase().localeCompare((b.name || "").toLowerCase());
+                return (a.name || "").toLowerCase()
+                .localeCompare((b.name || "").toLowerCase());
             });
         }
         if (this._order == "type")
         {
             this._files.sort(function (a, b)
             {
-                return (a.t || "").toLowerCase().localeCompare((b.t || "").toLowerCase());
+                return (a.t || "").toLowerCase()
+                .localeCompare((b.t || "").toLowerCase());
             });
         }
 
@@ -334,7 +342,7 @@ export default class FileManager
                     () =>
                     {
                         this._selectFile(filename);
-                    },
+                    }
                 );
             }
         }
@@ -353,7 +361,7 @@ export default class FileManager
     {
         if (gui.isGuestEditor())
         {
-            if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (text.guestHint);
+            if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (text.guestHint);
             return;
         }
 
@@ -366,7 +374,7 @@ export default class FileManager
             "filter": this._manager.titleFilter
 
         });
-        if (ele.byId("itemmanager_header"))ele.byId("itemmanager_header").innerHTML = (html);
+        if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (html);
 
         const elSwitchIcons = document.getElementById("switch-display-icons");
         const elSwitchList = document.getElementById("switch-display-list");
@@ -377,10 +385,10 @@ export default class FileManager
                 "click",
                 function ()
                 {
-                // elSwitchIcons.classList.add("switch-active");
-                // elSwitchList.classList.remove("switch-active");
+                    // elSwitchIcons.classList.add("switch-active");
+                    // elSwitchList.classList.remove("switch-active");
                     this.setDisplay("icons");
-                }.bind(this),
+                }.bind(this)
             );
         }
         if (elSwitchList)
@@ -389,10 +397,10 @@ export default class FileManager
                 "click",
                 () =>
                 {
-                // elSwitchList.classList.add("switch-active");
-                // elSwitchIcons.classList.remove("switch-active");
+                    // elSwitchList.classList.add("switch-active");
+                    // elSwitchIcons.classList.remove("switch-active");
                     this.setDisplay("list");
-                },
+                }
             );
         }
     }
@@ -412,11 +420,11 @@ export default class FileManager
                 "getFileDetails",
                 {
                     "projectId": projectId,
-                    "fileid": itemId,
+                    "fileid": itemId
                 },
                 function (err, r)
                 {
-                    if (r.fileDb)r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
+                    if (r.fileDb) r.ops = CABLES.UI.getOpsForFilename(r.fileDb.fileName);
                     if (this._fileSource !== "lib")
                     {
                         if (detailItem.isReference)
@@ -467,8 +475,7 @@ export default class FileManager
                                         "file": item,
                                         "fileInfo": itemInfo
                                     });
-                                }
-                                catch (e)
+                                } catch (e)
                                 {
                                     // * use default template
                                     html = getHandleBarHtml("filemanager_details_lib", {
@@ -508,24 +515,20 @@ export default class FileManager
                                         let allowDelete = true;
                                         if (countRes && countRes.data)
                                         {
-                                            let used = false;
-                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
+                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1:0;
                                             if (otherCount)
                                             {
-                                                content += "It is used in " + otherCount + " other patch";
-                                                if (otherCount > 1) content += "es";
-                                                content += "<br/>";
-                                                used = true;
+                                                let linkText = otherCount + " other patch";
+                                                if (otherCount > 1) linkText += "es";
+                                                content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                             }
                                             if (countRes.data.countOps)
                                             {
-                                                content += "It is used in " + countRes.data.countOps + " op";
+                                                let linkText = countRes.data.countOps + " op";
                                                 if (countRes.data.countOps > 1) content += "s";
-                                                content += "<br/>";
-                                                used = true;
+                                                content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                                 allowDelete = false;
                                             }
-                                            if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">here</a>";
                                         }
                                         else
                                         {
@@ -533,16 +536,25 @@ export default class FileManager
                                         }
 
                                         let title = "Really delete this file?";
+                                        let okButton = null;
                                         if (!allowDelete)
                                         {
                                             title = "You cannot delete this file!";
+                                        }
+                                        else
+                                        {
+                                            okButton = {
+                                                "text": "really delete",
+                                                "cssClasses": "redbutton"
+                                            };
                                         }
 
                                         const options = {
                                             "title": title,
                                             "html": content,
                                             "warning": true,
-                                            "choice": allowDelete
+                                            "choice": allowDelete,
+                                            "okButton": okButton
                                         };
 
                                         const modal = new ModalDialog(options);
@@ -566,7 +578,7 @@ export default class FileManager
                             }
                         );
                     }
-                }.bind(this),
+                }.bind(this)
             );
 
             if (this._filePortEle)
@@ -675,7 +687,7 @@ export default class FileManager
                                             CABLESUILOADER.talkerAPI.send(
                                                 "deleteFile",
                                                 {
-                                                    "fileid": fileId,
+                                                    "fileid": fileId
                                                 },
                                                 (err, r) =>
                                                 {
@@ -694,7 +706,7 @@ export default class FileManager
                                                 (r) =>
                                                 {
                                                     this._log.warn("api err", r);
-                                                },
+                                                }
                                             );
                                         });
                                     });
