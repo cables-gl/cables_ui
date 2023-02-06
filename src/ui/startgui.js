@@ -170,6 +170,8 @@ export default function startUi(cfg)
                 });
 
                 CABLES.UI.loaded = true;
+                CABLES.UI.loadedTime = performance.now();
+
                 setTimeout(() =>
                 {
                     window.gui.emitEvent("uiloaded");
