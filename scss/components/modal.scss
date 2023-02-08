@@ -94,6 +94,10 @@
         -moz-box-shadow: none;
         box-shadow: none;
     }
+
+    a {
+        color: var(--color-special);
+    }
 }
 
 #modalcontent {
