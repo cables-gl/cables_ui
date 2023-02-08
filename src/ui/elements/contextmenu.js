@@ -73,7 +73,6 @@ export default class ContextMenu
                 if (obj.items[i].iconClass)
                 {
                     const icon = document.createElement("span");
-                    // icon.classList.add("fa");
                     icon.classList.add("cm_icon");
                     const classes = obj.items[i].iconClass.split(" ");
                     for (const ii in classes) icon.classList.add(classes[ii]);
