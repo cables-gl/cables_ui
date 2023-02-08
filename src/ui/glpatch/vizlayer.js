@@ -74,8 +74,8 @@ export default class VizLayer extends CABLES.EventTarget
         if (this._eleCanvas.width != this._glPatch._cgl.canvasWidth ||
             this._eleCanvas.height != this._glPatch._cgl.canvasHeight)
         {
-            this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / this._glPatch._cgl.devicePixelRatio + "px";
-            this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / this._glPatch._cgl.devicePixelRatio + "px";
+            this._eleCanvas.style.width = this._glPatch._cgl.canvas.width / window.devicePixelRatio + "px";
+            this._eleCanvas.style.height = this._glPatch._cgl.canvas.height / window.devicePixelRatio + "px";
 
             this._eleCanvas.width = this._glPatch._cgl.canvasWidth;
             this._eleCanvas.height = this._glPatch._cgl.canvasHeight;
@@ -116,19 +116,19 @@ export default class VizLayer extends CABLES.EventTarget
             const pos = this._glPatch.viewBox.patchToScreenCoords(item.posX, item.posY);
             pos[1] += paddingY;
 
-            pos[0] *= this._glPatch._cgl.devicePixelRatio;
-            pos[1] *= this._glPatch._cgl.devicePixelRatio;
+            pos[0] *= window.devicePixelRatio;
+            pos[1] *= window.devicePixelRatio;
 
             const glop = this._glPatch.getGlOp(item.op);
             if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
             const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
 
-            sizeOp[0] *= this._glPatch._cgl.devicePixelRatio;
-            sizeOp[1] *= this._glPatch._cgl.devicePixelRatio;
+            sizeOp[0] *= window.devicePixelRatio;
+            sizeOp[1] *= window.devicePixelRatio;
 
-            size[0] *= this._glPatch._cgl.devicePixelRatio;
-            size[1] *= this._glPatch._cgl.devicePixelRatio;
+            size[0] *= window.devicePixelRatio;
+            size[1] *= window.devicePixelRatio;
 
             if (pos[0] < -sizeOp[0] || pos[1] < -sizeOp[1] || pos[0] > this._eleCanvas.width || pos[1] > this._eleCanvas.height) continue;
 
