@@ -178,8 +178,10 @@ export default class GlUiCanvas
         this.canvas.width = this.width * window.devicePixelRatio;
         this.canvas.height = this.height * window.devicePixelRatio;
 
-        if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width, this.height);
-        this.glPatch.emitEvent("resize", this._parentEle.clientWidth, this._parentEle.clientHeight);
+        this.patch.cgl.pixelDensity = window.devicePixelRatio;
+
+        if (this.patch.isPlaying()) this.patch.cgl.setSize(this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
+        this.glPatch.emitEvent("resize", this.width * window.devicePixelRatio, this.height * window.devicePixelRatio);
     }
 
     dispose()
