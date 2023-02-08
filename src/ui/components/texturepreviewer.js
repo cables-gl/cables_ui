@@ -25,6 +25,8 @@ export default class TexturePreviewer
         this._emptyCubemap = null;
         this._timer = new CABLES.Timer();
         this._timer.play();
+        this._currentHeight = -1;
+        this._currentWidth = -1;
 
 
         this._ele = document.getElementById("bgpreview");
@@ -145,13 +147,17 @@ export default class TexturePreviewer
 
 
             if (texType == 1)s[0] *= 1.33;
-            previewCanvasEle.width = s[0];
-            previewCanvasEle.height = s[1];
+
+            if (this._currentWidth != previewCanvasEle.width || this._currentHeight != previewCanvasEle.height)
+            {
+                this._currentWidth = previewCanvasEle.width = s[0];
+                this._currentHeight = previewCanvasEle.height = s[1];
+            }
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
-            previewCanvas.clearRect(0, 0, previewCanvasEle.width, previewCanvasEle.height);
-            previewCanvas.drawImage(cgl.canvas, 0, 0, previewCanvasEle.width, previewCanvasEle.height);
+            previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
+            previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
 
             perf2.finish();
 
