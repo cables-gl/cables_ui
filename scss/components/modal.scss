@@ -10,11 +10,15 @@
     z-index: $zindex_highest - 1;
 
     background-color: var(--color-05);
-    // opacity: 0.45;
 
     animation:animModalBgFadeIn 0.15s normal forwards ease-out;
     animation-iteration-count: 1
 }
+
+.modalbgtransparent {
+    background-color: transparent !important;
+}
+
 
 @keyframes animModalBgFadeIn
 {
