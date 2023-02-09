@@ -9,6 +9,7 @@ import ScConnection from "./multiplayer/sc_connection";
 import text from "./text";
 import ele from "./utils/ele";
 import userSettings from "./components/usersettings";
+import ModalError from "./dialogs/modalerror";
 
 export default function startUi(cfg)
 {
@@ -38,11 +39,10 @@ export default function startUi(cfg)
 
         if (!gui.corePatch().cgl.gl)
         {
-            // console.log("yep,b0rken!.............");
             ele.byId("loadingstatus").remove();
             ele.byId("loadingstatusLog").remove();
 
-            new ModalDialog({ "html": "could not initialize webgl. try to restart your browser, or try another one" });
+            new ModalDialog({ "title": "GL Error", "html": "Could not initialize webgl, or it crashed. Try to restart your browser, or try another one..." });
             return;
         }
 

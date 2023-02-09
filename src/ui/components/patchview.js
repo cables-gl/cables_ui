@@ -996,26 +996,30 @@ export default class PatchView extends CABLES.EventTarget
             }, el);
     }
 
-    focusSubpatchOp(subPatchId)
+
+    getSubPatchOuterOp(subPatchId)
     {
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];
             if (op.objName == CABLES.UI.DEFAULTOPNAMES.subPatch && op.patchId.get() == subPatchId)
-            {
-                let gotoOp = ops[i].uiAttribs.subPatch;
-                if (op.storage && op.storage.blueprint) gotoOp = op.storage.blueprint.blueprintOpId;
-                this.setCurrentSubPatch(gotoOp, () =>
-                {
-                    this.focus();
-                    this.focusOp(gotoOp);
-                    this.centerSelectOp(gotoOp);
-                });
-
-                return;
-            }
+                return op;
         }
+    }
+
+    focusSubpatchOp(subPatchId)
+    {
+        let gotoOp = this.getSubPatchOuterOp(subPatchId);
+
+        let parentSubId = gotoOp.uiAttribs.subPatch;
+        if (gotoOp.storage && op.storage.blueprint) gotoOp = gotoOp.storage.blueprint.blueprintOpId;
+        this.setCurrentSubPatch(parentSubId, () =>
+        {
+            this.focus();
+            this.focusOp(gotoOp.id);
+            this.centerSelectOp(gotoOp.id);
+        });
     }
 
     updateSubPatchBreadCrumb(currentSubPatch)

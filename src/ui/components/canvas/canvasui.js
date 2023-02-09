@@ -89,10 +89,11 @@ export default class CanvasUi
 
 
         const r = this._elCanvasIconbar.getBoundingClientRect();
+        const widthResizeIcon = 30;
 
         if (!this.minimized)
         {
-            this.fullWidth = r.width;
+            this.fullWidth = r.width + widthResizeIcon;
         }
         this.minimized = w < this.fullWidth;
 
@@ -103,7 +104,7 @@ export default class CanvasUi
             else ele.show(hideeles[i]);
         }
 
-        if (this.minimized && w < r.width) ele.hide(this._elCanvasIconbar);
+        if (this.minimized && w < r.width + widthResizeIcon) ele.hide(this._elCanvasIconbar);
         else ele.show(this._elCanvasIconbar);
     }
 

@@ -17,6 +17,7 @@ export default class GlLink
         this._link = link;
         this._visible = visible;
         this._cable = null;
+        this._debugColor = false;
 
         this._glPatch = glpatch;
         this._type = type;
@@ -26,10 +27,11 @@ export default class GlLink
         this._opIdOutput = opIdOutput;
         this._portIdInput = portIdInput;
         this._portIdOutput = portIdOutput;
-        this._subpatch = subpatch;
+        this._subPatch = subpatch;
 
         this._buttonDown = MouseState.BUTTON_NONE;
         this._buttonDownTime = 0;
+        this.crossSubpatch = false;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
         this._buttonRect.colorHoverMultiply = 1.0;
@@ -156,8 +158,20 @@ export default class GlLink
             this._buttonDownTime = performance.now();
         });
 
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+        this._cableSub = null;
         this._glPatch.setDrawableColorByType(this._cable, this._type);
+
+
+        const op1 = gui.corePatch().getOpById(this._opIdInput);
+        const op2 = gui.corePatch().getOpById(this._opIdOutput);
+
+        if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch) this.crossSubpatch = true;
+
+        if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
+        if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
+
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type);
 
         this._opIn = null;
         this._opOut = null;
@@ -166,6 +180,7 @@ export default class GlLink
         this._offsetXOutput = 0;
 
         this._glPatch.addLink(this);
+        this.updateVisible();
         this.update();
     }
 
@@ -189,48 +204,160 @@ export default class GlLink
 
     get portIdOut() { return this._portIdOutput; }
 
-    get subPatch() { return this._subpatch; }
+    get subPatch() { return this._subPatch; }
 
     updateLineStyle()
     {
         this._cable.dispose();
-        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subpatch), this._buttonRect, this._type, this);
+        this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
+
         this._glPatch.setDrawableColorByType(this._cable, this._type);
         this.update();
     }
 
     updateVisible()
     {
+        const sub = this._glPatch.getCurrentSubPatch();
+
+        if (!this._opIn || !this._opOut) return;
+
+        //     if (this._opIn.op.uiAttribs.subPatch !=
+        // this._opOut.op.uiAttribs.subPatch)
+        //     {
+        //     }
+
+        if (this._cable.subPatch == sub) this._cable.visible = true;
+        if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
+        // v=sub
+        // this._opOut.op.uiAttribs.subPatch);
+        // if (this._cableSub) v;
+
+        this._cable.visible =
+        this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
+        this._updatePosition();
     }
 
     set visible(v)
     {
-        this._cable.visible = v;
-        this._visible = v;
-        this._updatePosition();
+        // debugger;
+        this.updateVisible();
     }
 
     _updatePosition()
     {
         if (this._visible)
         {
-            if (!this._opOut) this.update();
-
-            if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
+            if (!this.crossSubpatch)
             {
-                const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
-                const pos1y = this._opIn.getUiAttribs().translate.y;
+                if (!this._opOut) this.update();
 
-                const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
-                const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
+                if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
+                {
+                    const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
+                    const pos1y = this._opIn.getUiAttribs().translate.y;
 
-                this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                    const pos2x = this._opOut.getUiAttribs().translate.x + this._offsetXOutput;
+                    const pos2y = this._opOut.getUiAttribs().translate.y + this._opOut.h;
+
+                    this._cable.setPosition(pos1x, pos1y, pos2x, pos2y);
+                }
+            }
+            else
+            {
+                if (!this._subPatchOp)
+                {
+                    const a = gui.patchView.getSubPatchOuterOp(this._opIn.op.uiAttribs.subPatch);
+                    const b = gui.patchView.getSubPatchOuterOp(this._opOut.op.uiAttribs.subPatch);
+
+                    this._subPatchOp = a || b;
+                    if (this._subPatchOp) this._subPatchOp.on("move", () => { this.update(); });
+                }
+
+                if (!this._subPatchInputOp)
+                {
+                    this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
+                    if (this._subPatchInputOp) this._subPatchInputOp.on("move", () => { this.update(); });
+                }
+
+                if (!this._subPatchOutputOp)
+                {
+                    this._subPatchOutputOp = gui.corePatch().getSubPatchOp(this._opOut.op.uiAttribs.subPatch, "Ops.Ui.PatchOutput");
+
+                    if (this._subPatchOutputOp) this._subPatchOutputOp.on("move", () => { this.update(); });
+                }
+
+                if (!this._opIn || !this._opOut) this.update();
+
+
+                // inner input port op to subpatch-input op
+                if (
+                    this._subPatchInputOp &&
+                    this._opIn.uiAttribs.subPatch == this._cable.subPatch)
+                {
+                    if (this._debugColor) this._cable.setColor(1, 0, 1, 1);
+                    this._cable.setPosition(
+                        this._opIn.getUiAttribs().translate.x + this._offsetXInput,
+                        this._opIn.getUiAttribs().translate.y,
+                        this._subPatchInputOp.uiAttribs.translate.x,
+                        this._subPatchInputOp.uiAttribs.translate.y + 30,
+                    );
+                }
+
+                // inner output port op to subpatch output op
+                if (
+                    this._subPatchOutputOp &&
+                    this._opOut.uiAttribs.subPatch == this._subPatchOutputOp.uiAttribs.subPatch)
+                {
+                    if (this._debugColor) this._cableSub.setColor(0, 0, 1, 1);
+                    this._cableSub.setPosition(
+                        this._subPatchOutputOp.uiAttribs.translate.x,
+                        this._subPatchOutputOp.uiAttribs.translate.y,
+                        this._opOut.getUiAttribs().translate.x + this._offsetXOutput,
+                        this._opOut.getUiAttribs().translate.y + 30,
+                    );
+                }
+
+                // ----------------------
+                //
+                //
+                //
+                //
+                //
+                // outer output port op TO subpatch op
+                if (this._opOut &&
+                    this._subPatchOp &&
+                    this._opOut.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
+                {
+                    if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1);
+                    this._cableSub.setPosition(
+                        this._subPatchOp.uiAttribs.translate.x,
+                        this._subPatchOp.uiAttribs.translate.y,
+                        this._opOut.getUiAttribs().translate.x + this._offsetXOutput,
+                        this._opOut.getUiAttribs().translate.y + 30,
+                    );
+                }
+
+
+                // outer input port op FROM subpatch op
+                if (
+                    this._subPatchOp &&
+                    this._opIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
+                {
+                    if (this._debugColor) this._cable.setColor(1, 0, 0, 1);
+                    this._cable.setPosition(
+                        this._opIn.getUiAttribs().translate.x + this._offsetXInput,
+                        this._opIn.getUiAttribs().translate.y,
+                        this._subPatchOp.uiAttribs.translate.x,
+                        this._subPatchOp.uiAttribs.translate.y + 30,
+                    );
+                }
             }
         }
-        else this._cable.setPosition(0, 0, 0, 0);
     }
 
 
+    /* *|MARCADOR_CURSOR|* */
     update()
     {
         if (!this._opIn)
@@ -270,11 +397,10 @@ export default class GlLink
         if (this._opOut) this._opOut.removeLink(this._id);
         if (this._opIn) this._opIn.removeLink(this._id);
 
-        if (this._cable) this._cable.dispose();
-        this._cable = null;
+        if (this._cable) this._cable = this._cable.dispose();
+        if (this._cableSub) this._cableSub = this._cableSub.dispose();
 
-        if (this._buttonRect) this._buttonRect.dispose();
-        this._buttonRect = null;
+        if (this._buttonRect) this._buttonRect = this._buttonRect.dispose();
     }
 
     _singleValueToString(v)
@@ -309,10 +435,13 @@ export default class GlLink
 
         this._cable.setText(r);
         this._cable.setSpeed(act);
+        if (this._cableSub) this._cableSub.setText(r);
+        if (this._cableSub) this._cableSub.setSpeed(act);
     }
 
     highlight(b)
     {
         this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
     }
 }

@@ -18,6 +18,7 @@ export default class GradientEditor
         this._width = 512;
         this._height = 100;
 
+        this._oldKeys = [];
         this._keys = [];
         this._paper = null;
 
@@ -103,9 +104,9 @@ export default class GradientEditor
                 }
             }
 
-            for (let i = 0; i < this._height; i++) this._ctx.putImageData(this._imageData, 0, i);
+            // for (let i = 0; i < this._height; i++)
+            this._ctx.putImageData(this._imageData, 0, 0);
         }
-
 
         if (this._opId && this._portName)
         {
@@ -122,11 +123,7 @@ export default class GradientEditor
                 };
             }
 
-
             this._port.set(JSON.stringify({ "keys": keyData }));
-
-
-            // console.log(JSON.stringify({ "keys": keyData }));
         }
     }
 
@@ -231,20 +228,20 @@ export default class GradientEditor
             // e.target == key.rect.node || //|| e.target.tagName == "circle"
             if (e.target.tagName == "svg" || e.target.tagName == "circle" || e.target.tagName == "ellipse")
             {
-                let rx = e.offsetX - (this._keyWidth / 2);
-                let ry = e.offsetY - (this._keyWidth / 2);
+                let eX = e.offsetX - (this._keyWidth / 2);
+                let eY = e.offsetY - (this._keyWidth / 2);
 
-                // if (key.posy > 0.5)ry = this._height;
-                // else if (key.posy < 0.5)ry = 0;
-                // if (key.pos > 0.5)rx = this._width;
-                // else if (key.pos < 0.5)rx = 0;
-                // if (dy > this._height)ry = 1;
+                eX = Math.max(eX, 0);
+                eY = Math.max(eY, 0);
+                eX = Math.min(eX, this._width);
+                eY = Math.min(eY, this._height);
 
-                attribs.cx = rx;
-                attribs.cy = ry;
 
-                key.pos = (rx + this._keyWidth / 2) / this._width;
-                key.posy = (ry + this._keyWidth / 2) / this._height;
+                attribs.cx = eX;
+                attribs.cy = eY;
+
+                key.pos = (eX + this._keyWidth / 2) / this._width;
+                key.posy = (eY + this._keyWidth / 2) / this._height;
             }
 
             rect.attr(attribs);
@@ -253,6 +250,9 @@ export default class GradientEditor
 
         function down(x, y, e)
         {
+            try { e.target.setPointerCapture(e.pointerId); }
+            catch (_e) {}
+
             if (e.buttons == 2) shouldDelete = true;
 
             this._startMouseY = y;
@@ -262,6 +262,9 @@ export default class GradientEditor
 
         function up(e)
         {
+            try { e.target.releasePointerCapture(e.pointerId); }
+            catch (_e) {}
+
             setTimeout(function ()
             {
                 this._movingkey = false;
@@ -287,6 +290,21 @@ export default class GradientEditor
 
         this._paper = Raphael("gradienteditorbar", 0, 0);
 
+
+        document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
+        {
+            try { e.target.setPointerCapture(e.pointerId); }
+            catch (_e) {}
+        });
+
+
+        document.querySelector("#gradienteditorbar svg").addEventListener("pointerup", (e) =>
+        {
+            try { e.target.releasePointerCapture(e.pointerId); }
+            catch (_e) {}
+        });
+
+
         document.querySelector("#gradienteditorbar svg").addEventListener("click", (e) =>
         {
             if (this._movingkey) return;
@@ -303,9 +321,7 @@ export default class GradientEditor
                 this._previousContent = data;
                 const keys = JSON.parse(data).keys;
                 for (let i = 1; i < keys.length - 1; i++)
-                {
                     this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
-                }
             }
             catch (e)
             {

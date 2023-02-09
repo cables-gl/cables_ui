@@ -65,6 +65,7 @@ export default class GlText
 
     set visible(v)
     {
+        if (this._visible === v) return;
         this._visible = v;
         for (let i = 0; i < this._rects.length; i++)
             if (this._rects[i]) this._rects[i].visible = v;
@@ -173,9 +174,7 @@ export default class GlText
     {
         for (let i = 0; i < this._rects.length; i++)
             if (this._rects[i])
-            {
                 this._rects[i].dispose();
-            }
 
         this._rects.length = 0;
         this._string = "";

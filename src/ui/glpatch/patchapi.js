@@ -45,7 +45,7 @@ export default class GlPatchAPI
                 {
                     const link = op.portsIn[ip].links[il];
 
-                    let visible = link.portIn.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+                    let visible = true;// link.portIn.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
 
                     const l = new GlLink(
                         this._glPatch,
@@ -227,8 +227,7 @@ export default class GlPatchAPI
             ));
         }
 
-        let visible = p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
-
+        let visible = true;// p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
         const l = new GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
             p1.name, p2.name,
             p1.id, p2.id,

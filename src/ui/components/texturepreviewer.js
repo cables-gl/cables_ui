@@ -25,11 +25,11 @@ export default class TexturePreviewer
         this._emptyCubemap = null;
         this._timer = new CABLES.Timer();
         this._timer.play();
-
+        this._currentHeight = -1;
+        this._currentWidth = -1;
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
-
 
         userSettings.addEventListener("onChange", (key, v) =>
         {
@@ -37,7 +37,6 @@ export default class TexturePreviewer
             if (key == "texpreviewSize") this.setSize();
             if (key == "bgpreview") this.enableBgPreview(v);
         });
-
 
         this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
@@ -100,7 +99,6 @@ export default class TexturePreviewer
             cgl.pushPMatrix();
 
             mat4.ortho(cgl.pMatrix, -1, 1, 1, -1, 0.001, 11);
-            // if(port.get().oldTexFlip) mat4.ortho(cgl.pMatrix,-1,1,-1,1,0.001,11);
 
             const oldTex = cgl.getTexture(texSlot);
             const oldTexCubemap = cgl.getTexture(texSlotCubemap);
@@ -122,8 +120,6 @@ export default class TexturePreviewer
                 cgl.setTexture(texSlotCubemap, port.get().cubemap, cgl.gl.TEXTURE_CUBE_MAP);
             }
 
-            // this._shader.toggleDefine("CUBEMAP", true);
-
             this._shaderTypeUniform.setValue(texType);
 
             this._timer.update();
@@ -136,22 +132,22 @@ export default class TexturePreviewer
             cgl.popPMatrix();
             cgl.resetViewPort();
 
-            // const containerEle=document.getElementById("preview_img_container"+id);
-            // const w=Math.min(containerEle.offsetWidth,port.get().width||256);
-            // const h=w*(port.get().height/port.get().width);
-
             const s = this._getCanvasSize(port, port.get(), meta);
             if (s[0] == 0 || s[1] == 0) return;
 
 
             if (texType == 1)s[0] *= 1.33;
-            previewCanvasEle.width = s[0];
-            previewCanvasEle.height = s[1];
+
+            if (this._currentWidth != previewCanvasEle.width || this._currentHeight != previewCanvasEle.height)
+            {
+                this._currentWidth = previewCanvasEle.width = s[0];
+                this._currentHeight = previewCanvasEle.height = s[1];
+            }
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
-            previewCanvas.clearRect(0, 0, previewCanvasEle.width, previewCanvasEle.height);
-            previewCanvas.drawImage(cgl.canvas, 0, 0, previewCanvasEle.width, previewCanvasEle.height);
+            previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
+            previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
 
             perf2.finish();
 
@@ -159,9 +155,6 @@ export default class TexturePreviewer
             cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
             perf.finish();
-        }
-        else
-        {
         }
     }
 
@@ -185,33 +178,7 @@ export default class TexturePreviewer
         this._ele.classList.add("bgpreviewScale" + size);
 
         userSettings.set("texpreviewSize", size);
-
-
-        // document.getElementById("bgpreviewButtons").addEventListener("pointerenter", (e) =>
-        // {
-        //     // this._showInfoToolTip(e);
-        // });
-
-        // this._ele.addEventListener("pointerenter", (e) =>
-        // {
-        //     // this._showInfoToolTip(e);
-        // });
-        // this._ele.addEventListener("pointerleave", (e) =>
-        // {
-        //     // CABLES.UI.hideToolTip();
-        // });
     }
-
-    // _showInfoToolTip(e)
-    // {
-    //     if (!this._lastClicked || !this._lastClicked.port) return;
-
-    //     const t = this._lastClicked.port.get();
-
-    //     if (!t) return;
-
-    //     if (t.getInfoOneLine) CABLES.UI.showToolTip(e, t.getInfoOneLine());
-    // }
 
     _getCanvasSize(port, tex, meta)
     {
@@ -251,7 +218,6 @@ export default class TexturePreviewer
                 "size": o.port.get().width + " x " + o.port.get().height
             };
     }
-
 
     showActivity()
     {
@@ -305,7 +271,6 @@ export default class TexturePreviewer
 
     pressedEscape()
     {
-        // this._lastClicked = null;
         this.hide();
     }
 
@@ -313,7 +278,6 @@ export default class TexturePreviewer
     {
         if (!this.paused)
         {
-            // this._ele=document.getElementById('bgpreview');
             this._ele.style.display = "block";
             this._renderTexture(this._lastClicked, this._ele);
 
@@ -328,7 +292,6 @@ export default class TexturePreviewer
     selectTexturePortId(opid, portid)
     {
         if (!window.gui) return;
-
 
         const op = gui.corePatch().getOpById(opid);
         if (!op) return;
@@ -411,13 +374,11 @@ export default class TexturePreviewer
 
     setMode(m)
     {
-        // this.clear();
         this._mode = m;
     }
 
     updateTexturePort(port)
     {
-        // if(this._paused || port!=this._lastClicked)return;
         let doUpdateHtml = false;
         const p = port;
         let idx = -1;
