@@ -247,43 +247,13 @@ export default class GlLink
                 this._opOut.uiAttribs.subPatch != this._cableSub.subPatch
             )
         )
-        {
+        { // redo everything when ops were moved into another subpatch
             this._subPatch = this._opIn.uiAttribs.subPatch;
-            console.log("wrong subpatch link!!!!!");
-
-
-            console.log("---");
-            console.log(this._opIn.uiAttribs.subPatch);
-            console.log(this._opOut.uiAttribs.subPatch);
-            console.log(this._cable.subPatch);
-
-            console.log("---");
-            console.log(this._opIn.uiAttribs.subPatch);
-            console.log(this._opOut.uiAttribs.subPatch);
-            if (this._cableSub)console.log(this._cableSub.subPatch);
-
-
             this._initSubCables();
-
-
-            // console.log(
-            //     this._opIn.uiAttribs.subPatch,
-            //     this._opOut.uiAttribs.subPatch,
-            //     this._cableSub.subPatch
-            // );
         }
-
-        //     if (this._opIn.op.uiAttribs.subPatch !=
-        // this._opOut.op.uiAttribs.subPatch)
-        //     {
-        //     }
 
         if (this._cable.subPatch == sub) this._cable.visible = true;
         if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
-
-        // v=sub
-        // this._opOut.op.uiAttribs.subPatch);
-        // if (this._cableSub) v;
 
         this._cable.visible =
         this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
