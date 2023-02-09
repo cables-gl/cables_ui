@@ -773,7 +773,7 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
         } });
 };
 
-CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false, skipModal = false)
+CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false)
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
