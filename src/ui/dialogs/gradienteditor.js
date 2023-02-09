@@ -13,7 +13,8 @@ export default class GradientEditor
 
         this._keyWidth =
         this._keyHeight = 7;
-        this._keyStrokeWidth = 3;
+        this._keyStrokeWidth = 2;
+        // this._keyStrokeWidth = 3;
         this._keyOpacity = 1;
         this._dragDownDeleteThreshold = 120;
         this._width = 512;
@@ -219,7 +220,7 @@ export default class GradientEditor
 
         const rect = this._paper.ellipse(pos * this._width - this._keyWidth / 2, posy * this._height - this._keyWidth / 2, this._keyWidth, this._keyHeight).attr({
             "stroke": this.getInvStrokeColor(r, g, b),
-            "strokeWidth": this._keyStrokeWidth });
+            "stroke-width": this._keyStrokeWidth });
 
 
         const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
