@@ -274,7 +274,7 @@ export default class GlLink
             {
                 if (!this._opOut) this.update();
 
-                if (this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
+                if (this._cable && this._opOut && this._opIn && this._opIn.getUiAttribs().translate && this._opOut.getUiAttribs().translate)
                 {
                     const pos1x = this._opIn.getUiAttribs().translate.x + this._offsetXInput;
                     const pos1y = this._opIn.getUiAttribs().translate.y;
@@ -334,7 +334,7 @@ export default class GlLink
                     this._subPatchOutputOp &&
                     this._opOut.uiAttribs.subPatch == this._subPatchOutputOp.uiAttribs.subPatch)
                 {
-                    if (!this._opIn.getUiAttribs().translate) return;
+                    if (!this._opOut.getUiAttribs().translate) return;
                     if (this._debugColor) this._cableSub.setColor(0, 0, 1, 1);
                     this._cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x,
@@ -355,6 +355,7 @@ export default class GlLink
                     this._subPatchOp &&
                     this._opOut.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
                 {
+                    if (!this._opOut.getUiAttribs().translate) return;
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1);
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x,
