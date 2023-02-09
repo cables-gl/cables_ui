@@ -90,7 +90,7 @@ export default class GradientEditor
             for (let i = 0; i < keys.length - 1; i++)
                 this._ctxCurve.lineTo(
                     keys[i].pos * this._width - this._keyWidth / 2,
-                    keys[i].posy * this._height - this._keyWidth / 2
+                    keys[i].posy * this._height - this._keyWidth / 2 + 1
                 );
 
             this._ctxCurve.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
