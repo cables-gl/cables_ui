@@ -72,6 +72,7 @@ export default class GlOp extends CABLES.EventTarget
         this._dragOldUiAttribs = null;
         this._rectBorder = 0;
 
+        this._glDotNotWorking = null;
         this._glDotError = null;
         this._glDotWarning = null;
         this._glDotHint = null;
@@ -502,6 +503,8 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
 
+        if (this._glDotNotWorking) this._glDotNotWorking.setSize(this._width, this._height);
+
         this._updateCommentPosition();
         this._updateSizeRightHandle();
     }
@@ -550,12 +553,10 @@ export default class GlOp extends CABLES.EventTarget
 
     _disposeDots()
     {
-        if (this._glDotError) this._glDotError.dispose();
-        if (this._glDotWarning) this._glDotWarning.dispose();
-        if (this._glDotHint) this._glDotHint.dispose();
-        this._glDotError = null;
-        this._glDotWarning = null;
-        this._glDotHint = null;
+        if (this._glDotError) this._glDotError = this._glDotError.dispose();
+        if (this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+        if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+        if (this._glDotNotWorking) this._glDotNotWorking = this._glDotNotWorking.dispose();
     }
 
     dispose()
