@@ -251,10 +251,31 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
     createBackup()
     {
+        const showBackupDialog = () =>
+        {
+            new ModalDialog({
+                "prompt": true,
+                "title": "New Backup",
+                "text": "Enter a name for the backup",
+                "promptValue": "Manual Backup",
+                "promptOk": function (name)
+                {
+                    CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
+                    {
+                        if (result.success)
+                            CABLES.UI.notify("Backup created!");
+                    });
+                } });
+        };
+
         if (!gui.getSavedState())
         {
             new ModalDialog({
-                "showOkButton": true,
+                "choice": true,
+                "cancelButton": {
+                    "text": "Backup last saved state",
+                    "callback": showBackupDialog
+                },
                 "title": "Backup",
                 "warning": true,
                 "text": text.projectBackupNotSaved,
@@ -263,19 +284,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
             return;
         }
 
-        new ModalDialog({
-            "prompt": true,
-            "title": "New Backup",
-            "text": "Enter a name for the backup",
-            "promptValue": "Manual Backup",
-            "promptOk": function (name)
-            {
-                CABLESUILOADER.talkerAPI.send("patchCreateBackup", { "title": name || "" }, (err, result) =>
-                {
-                    if (result.success)
-                        CABLES.UI.notify("Backup created!");
-                });
-            } });
+        showBackupDialog();
     }
 
     sanitizeUsername(name)
