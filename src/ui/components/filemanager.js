@@ -82,6 +82,7 @@ export default class FileManager
     reload(cb)
     {
         this._manager.clear();
+
         this._fileSource = this._fileSource || "lib";
         if (this._firstTimeOpening) this._fileSource = "patch";
 
@@ -91,8 +92,7 @@ export default class FileManager
             return;
         }
 
-        gui.jobs()
-        .start({
+        gui.jobs().start({
             "id": "getFileList",
             "title": "Loading file list"
         });
@@ -100,8 +100,8 @@ export default class FileManager
         this._getFilesFromSource(this._fileSource, (files) =>
         {
             if (!files) files = [];
-
-            if (this._firstTimeOpening && files.length == 0)
+            const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
+            if (this._firstTimeOpening && patchFiles.length === 0)
             {
                 this._firstTimeOpening = false;
                 this._fileSource = "lib";
@@ -116,8 +116,7 @@ export default class FileManager
 
             if (cb) cb();
 
-            gui.jobs()
-            .finish("getFileList");
+            gui.jobs().finish("getFileList");
         });
     }
 
@@ -204,7 +203,6 @@ export default class FileManager
                 for (let i = 0; i < file.c.length; i++)
                 {
                     if (this._compareFilter(file.c[i], filterType))
-                        // if (file.c[i].t == filterType) //sss
                     {
                         items.push(item);
                         break;
@@ -229,8 +227,7 @@ export default class FileManager
             {
                 for (let i = 0; i < filterType.length; i++)
                 {
-                    if (file.n.toLowerCase()
-                    .indexOf(filterType[i].toLowerCase()) > 0) return true;
+                    if (file.n.toLowerCase().indexOf(filterType[i].toLowerCase()) > 0) return true;
                 }
             }
         }
@@ -262,7 +259,7 @@ export default class FileManager
             this._files.sort(function (a, b)
             {
                 return (a.name || "").toLowerCase()
-                .localeCompare((b.name || "").toLowerCase());
+                    .localeCompare((b.name || "").toLowerCase());
             });
         }
         if (this._order == "type")
@@ -270,7 +267,7 @@ export default class FileManager
             this._files.sort(function (a, b)
             {
                 return (a.t || "").toLowerCase()
-                .localeCompare((b.t || "").toLowerCase());
+                    .localeCompare((b.t || "").toLowerCase());
             });
         }
 
@@ -475,7 +472,8 @@ export default class FileManager
                                         "file": item,
                                         "fileInfo": itemInfo
                                     });
-                                } catch (e)
+                                }
+                                catch (e)
                                 {
                                     // * use default template
                                     html = getHandleBarHtml("filemanager_details_lib", {
@@ -515,7 +513,7 @@ export default class FileManager
                                         let allowDelete = true;
                                         if (countRes && countRes.data)
                                         {
-                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1:0;
+                                            const otherCount = countRes.data.countPatches ? countRes.data.countPatches - 1 : 0;
                                             if (otherCount)
                                             {
                                                 let linkText = otherCount + " other patch";
