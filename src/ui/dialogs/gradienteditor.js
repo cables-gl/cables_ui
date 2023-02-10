@@ -1,10 +1,11 @@
 import { getHandleBarHtml } from "../utils/handlebars";
 import Logger from "../utils/logger";
+import ModalBackground from "./modalbg";
 import ModalDialog from "./modaldialog";
 
 export default class GradientEditor
 {
-    constructor(opid, portname)
+    constructor(opid, portname, options)
     {
         this._log = new Logger("gradienteditor");
         this._opId = opid;
@@ -12,7 +13,8 @@ export default class GradientEditor
 
         this._keyWidth =
         this._keyHeight = 7;
-        this._keyStrokeWidth = 3;
+        this._keyStrokeWidth = 2;
+        // this._keyStrokeWidth = 3;
         this._keyOpacity = 1;
         this._dragDownDeleteThreshold = 120;
         this._width = 512;
@@ -30,7 +32,22 @@ export default class GradientEditor
         this._port = this._op.getPort(this._portName);
         this.type = this._port.uiAttribs.gradientType || "gradient";
 
+        this._elContainer = null;
+        this._bg = new ModalBackground();
+        this._bg.on("click", () =>
+        {
+            this.close();
+        });
+
         this._previousContent = "";
+
+        this._openerEle = (options || {}).openerEle;
+    }
+
+    close()
+    {
+        this._bg.hide();
+        this._elContainer.remove();
     }
 
     selectKey(i)
@@ -43,21 +60,19 @@ export default class GradientEditor
         if (!this._ctx)
         {
             const canvas = ele.byId("gradientEditorCanvas");
+            const canvasCurve = ele.byId("gradientEditorCanvasCurve");
             if (!canvas)
             {
                 this._log.error("[gradienteditor] no canvas found");
                 return;
             }
             this._ctx = canvas.getContext("2d");
+            this._ctxCurve = canvasCurve.getContext("2d");
             this._imageData = this._ctx.createImageData(this._width, 1);
         }
 
-
         let keys = [];
-        if (this._keys.length == 0)
-        {
-            keys.push({ "posy": 0.5, "pos": 0, "r": 0, "g": 0, "b": 0 });
-        }
+        if (this._keys.length == 0) keys.push({ "posy": 0.5, "pos": 0, "r": 0, "g": 0, "b": 0 });
         else keys = [{ "posy": this._keys[0].posy, "pos": 0, "r": this._keys[0].r, "g": this._keys[0].g, "b": this._keys[0].b }].concat(this._keys);
 
         const last = keys[keys.length - 1];
@@ -65,22 +80,22 @@ export default class GradientEditor
 
         if (this.type == "curve")
         {
-            this._ctx.fillStyle = "#444";
-            this._ctx.fillRect(0, 0, this._width, this._height);
+            this._ctxCurve.fillStyle = "#444";
+            this._ctxCurve.fillRect(0, 0, this._width, this._height);
 
-            this._ctx.strokeStyle = "white";
-            this._ctx.lineWidth = 2;
-            this._ctx.beginPath();
-            this._ctx.moveTo(keys[0].pos * this._width, keys[0].posy * this._height - this._keyWidth / 2);
+            this._ctxCurve.strokeStyle = "white";
+            this._ctxCurve.lineWidth = 2;
+            this._ctxCurve.beginPath();
+            this._ctxCurve.moveTo(keys[0].pos * this._width, keys[0].posy * this._height - this._keyWidth / 2);
 
             for (let i = 0; i < keys.length - 1; i++)
-                this._ctx.lineTo(
+                this._ctxCurve.lineTo(
                     keys[i].pos * this._width - this._keyWidth / 2,
-                    keys[i].posy * this._height - this._keyWidth / 2
+                    keys[i].posy * this._height - this._keyWidth / 2 + 1
                 );
 
-            this._ctx.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
-            this._ctx.stroke();
+            this._ctxCurve.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
+            this._ctxCurve.stroke();
         }
         else
         {
@@ -104,7 +119,6 @@ export default class GradientEditor
                 }
             }
 
-            // for (let i = 0; i < this._height; i++)
             this._ctx.putImageData(this._imageData, 0, 0);
         }
 
@@ -206,7 +220,7 @@ export default class GradientEditor
 
         const rect = this._paper.ellipse(pos * this._width - this._keyWidth / 2, posy * this._height - this._keyWidth / 2, this._keyWidth, this._keyHeight).attr({
             "stroke": this.getInvStrokeColor(r, g, b),
-            "strokeWidth": this._keyStrokeWidth });
+            "stroke-width": this._keyStrokeWidth });
 
 
         const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
@@ -284,12 +298,35 @@ export default class GradientEditor
     {
         this._callback = cb;
 
+        if (window.gui && gui.currentModal) gui.currentModal.close();
+
         const html = getHandleBarHtml("GradientEditor", { "name": this._portName });
 
-        new ModalDialog({ "html": html, "nopadding": true });
+        this._bg.show(true);
+
+        this._elContainer = document.createElement("div");
+        this._elContainer.classList.add("gradientEditorContainer");
+        this._elContainer.classList.add("cablesCssUi");
+
+        document.body.appendChild(this._elContainer);
+        this._elContainer.innerHTML = html;
+
+
+        if (this._openerEle)
+        {
+            const r = this._openerEle.getBoundingClientRect();
+            const rge = this._elContainer.getBoundingClientRect();
+
+            this._elContainer.style.left = r.x - rge.width - 20 + "px";
+            this._elContainer.style.top = r.y + "px";
+        }
+        else
+        {
+            this._elContainer.style.left = 100 + "px";
+            this._elContainer.style.top = 100 + "px";
+        }
 
         this._paper = Raphael("gradienteditorbar", 0, 0);
-
 
         document.querySelector("#gradienteditorbar svg").addEventListener("pointerdown", (e) =>
         {
@@ -340,14 +377,14 @@ export default class GradientEditor
 
         ele.byId("gradientSaveButton").addEventListener("click", () =>
         {
-            gui.closeModal();
+            this.close();
         });
 
         ele.byId("gradientCancelButton").addEventListener("click", () =>
         {
             const op = gui.corePatch().getOpById(this._opId);
             op.getPort(this._portName).set(this._previousContent);
-            gui.closeModal();
+            this.close();
         });
 
         const colEleDel = ele.byId("gradientColorDelete");

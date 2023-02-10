@@ -1,0 +1,44 @@
+.gradientEditorContainer
+{
+    z-index: 9999;
+    background-color: #111;
+    position: absolute;
+    width: 640px;
+    border-radius: 10px;
+}
+
+#gradienteditorbar
+{
+    width:512px;
+    height:100px;
+    overflow:hidden;
+    cursor:pointer;
+    background-color: transparent;
+}
+
+#gradientEditorCanvas
+{
+    transform:scale(1,100);
+    transform-origin: top left;
+    position: absolute;
+}
+
+#gradientEditorCanvasCurve
+{
+    position: absolute;
+}
+
+#gradienteditorKeys
+{
+    position: absolute;
+}
+
+#gradientColorInput
+{
+    position:absolute;
+    left:550px;
+    width:48px;
+    height:48px;
+    border-radius:5px;
+    border: 1px solid #AAAAAA;
+}

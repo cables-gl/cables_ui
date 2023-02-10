@@ -281,7 +281,7 @@ body
     {
         color: var(--color-02);
         background-color: var(--color-special) !important;
-        padding: 10px 20px;
+        padding: 5px 16px;
         margin-right:10px;
 
         &:hover
@@ -874,7 +874,7 @@ body
 @import 'components/iconbar.scss';
 @import 'components/colorrick.scss';
 @import 'components/collapsable.scss';
-
+@import 'components/gradienteditor.scss';
 
 
 .hidden { display:none !important;}

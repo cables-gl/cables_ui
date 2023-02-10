@@ -5,9 +5,14 @@ export default class ModalBackground extends CABLES.EventTarget
         super();
         this._eleBg = document.getElementById("modalbg");
         this.showing = false;
+
+        this._eleBg.addEventListener("pointerdown", () =>
+        {
+            this.emitEvent("click");
+        });
     }
 
-    show()
+    show(transparent)
     {
         if (!this.showing)
         {
@@ -15,6 +20,9 @@ export default class ModalBackground extends CABLES.EventTarget
             this.emitEvent("show");
         }
         this._eleBg.style.display = "block";
+
+        if (transparent) this._eleBg.classList.add("modalbgtransparent");
+        else this._eleBg.classList.remove("modalbgtransparent");
     }
 
     hide()

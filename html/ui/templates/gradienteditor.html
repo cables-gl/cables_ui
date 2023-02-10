@@ -3,29 +3,24 @@
 <script id="GradientEditor" type="text/x-handlebars-template">
     <div style="padding:20px;padding-top:0px;">
 
-        <style>
-            #gradienteditorbar
-            {
-                cursor:pointer;
-                background-color: transparent;
-            }
-        </style>
 
         <h3>{{name}} Editor</h3>
 
-        <div id="gradientColorInput" style="position:absolute;left:550px;width:48px;height:48px;border-radius:5px;border: 1px solid #AAAAAA"></div>
+
+
+        <div id="gradientColorInput"></div>
         <a class="iconbutton" style="position:absolute;left:550px;top:117px;" id="gradientColorDelete"><span class="icon icon-x"></span></a>
 
-        <canvas id="gradientEditorCanvas" width="512" height="1" style="transform:scale(1,100);transform-origin: top left;"></canvas>
+        <canvas id="gradientEditorCanvas" width="512" height="1" ></canvas>
+        <canvas id="gradientEditorCanvasCurve" width="512" height="100" ></canvas>
 
-        <div id="gradienteditorbar" style="width:512px;height:100px;overflow:hidden;margin-top: -5px;">
-        </div>
+        <div id="gradienteditorbar" ></div>
 
         <br/>
 
         <div id="gradienteditorKeys"></div>
 
-        <br/>
+        <br/><br/>
         <a id="gradientSaveButton" class="bluebutton">Save</a>
         <a id="gradientCancelButton"class="button">Cancel</a>
 

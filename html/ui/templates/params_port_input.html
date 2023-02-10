@@ -116,7 +116,7 @@
             {{#compare port.uiAttribs.display '==' 'gradient' }}
                 </td>
                 <td>
-                    <span class="button" onclick="var ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}');ge.show();">
+                    <span class="button gradienteditbutton" onclick="const ge=new CABLES.GradientEditor('{{op.id}}','{{port.name}}',{'openerEle':this});ge.show();">
                         <span class="icon icon-edit"></span>Edit</span>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'texture' }}
