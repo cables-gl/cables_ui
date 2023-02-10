@@ -735,12 +735,14 @@ export default class GlOp extends CABLES.EventTarget
             let hasHints = false;
             let hasWarnings = false;
             let hasErrors = false;
+            let notworking = false;
 
             for (let i = 0; i < this.opUiAttribs.uierrors.length; i++)
             {
                 if (this.opUiAttribs.uierrors[i].level == 0) hasHints = true;
                 if (this.opUiAttribs.uierrors[i].level == 1) hasWarnings = true;
                 if (this.opUiAttribs.uierrors[i].level == 2) hasErrors = true;
+                if (this.opUiAttribs.uierrors[i].level == 3) notworking = true;
             }
 
             let dotX = 0 - GlUiConfig.OpErrorDotSize / 2;
@@ -762,6 +764,13 @@ export default class GlOp extends CABLES.EventTarget
                 this._glDotError.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
                 this._glDotError.setColor(GlUiConfig.colors.opError);
                 this._glDotError.setShape(6);
+                this._glDotError.interactive = false;
+
+                this._glDotNotWorking = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glDotNotWorking.setSize(this._width, this._height);
+                this._glDotNotWorking.setColor(0.0, 0, 0, 0.25);
+                this._glDotNotWorking.setShape(7);
+                this._glDotNotWorking.interactive = false;
             }
 
             if (hasHints)
@@ -787,6 +796,13 @@ export default class GlOp extends CABLES.EventTarget
                 dotX += 2;
             }
             else this._glDotError.visible = false;
+
+            if (notworking)
+            {
+                this._glDotNotWorking.setPosition(0, 0);
+                this._glDotNotWorking.visible = true;
+            }
+            else this._glDotNotWorking.visible = false;
         }
 
         if (

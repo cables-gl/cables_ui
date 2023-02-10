@@ -214,7 +214,7 @@ export default function extendCore()
         {
             // console.log("ERRRRR");
             // this.setUiAttrib({ working, notWorkingMsg });
-            this.setUiError("notworking", notWorkingMsg, 0);
+            this.setUiError("notworking", notWorkingMsg, 3);
         }
         else if (hadError)
         {
