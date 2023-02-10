@@ -727,6 +727,7 @@ export default class GlOp extends CABLES.EventTarget
             if (this._glDotHint) this._glDotHint.visible = false;
             if (this._glDotWarnings) this._glDotWarnings.visible = false;
             if (this._glDotError) this._glDotError.visible = false;
+            if (this._glDotNotWorking) this._glDotNotWorking.visible = false;
 
             return;
         }
