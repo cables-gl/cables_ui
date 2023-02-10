@@ -149,7 +149,7 @@ float samp(in vec2 uv, float w) {
 
         float a= length(p-clamp(p.x+p.y,0.0,l*1.414235)*0.5) - r;
 
-        finalColor.a=0.5*(1.0-smoothstep(0.0,0.001,a));
+        finalColor.a=0.5*(1.0-smoothstep(0.0,fwidth(uv.x)*5.5,a));
         // finalColor.a+=0.1;
 
         // float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
