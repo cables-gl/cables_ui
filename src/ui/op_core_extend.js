@@ -208,6 +208,30 @@ export default function extendCore()
             }
         }
 
+        this.setUiError("wrongstride", null);
+        for (let i = 0; i < this.portsIn.length; i++)
+        {
+            if (this.portsIn[i].type == CABLES.OP_PORT_TYPE_ARRAY && this.portsIn[i].links.length)
+            {
+                const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
+                if (
+                    otherPort.uiAttribs.stride != undefined &&
+                    this.portsIn[i] != undefined &&
+                    otherPort.uiAttribs.stride != this.portsIn[i].uiAttribs.stride)
+                {
+                    // console.log("wrong port!");
+
+                    this.setUiError("wrongstride", "Port \"" + this.portsIn[i].name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + this.portsIn[i].uiAttribs.stride, 1);
+                    // notWorkingMsg += this.portsIn[i].name + "connected to different stride";
+                }
+
+                // {
+                //     if(op.portIn[i].uiAttribs.stride!=op.portIn[i].uiAttribs.stride)
+                // }
+            }
+        }
+
+
         const hadError = this.hasUiError("notworking");
 
         if (!working)
