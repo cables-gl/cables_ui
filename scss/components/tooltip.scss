@@ -267,6 +267,10 @@
         // opacity: 0.96;
         border-radius: $iconbar-borderradius;
 
+        .tooltip_value
+        {
+            text-transform: none !important;
+        }
         &:hover {
             display: none;
         }
