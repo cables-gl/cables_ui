@@ -770,7 +770,7 @@ export default class GlOp extends CABLES.EventTarget
 
                 this._glDotNotWorking = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotNotWorking.setSize(this._width, this._height);
-                this._glDotNotWorking.setColor(0.0, 0, 0, 0.25);
+                this._glDotNotWorking.setColor(0.1, 0.1, 0.1, 1.0);
                 this._glDotNotWorking.setShape(7);
                 this._glDotNotWorking.interactive = false;
             }
@@ -1046,6 +1046,12 @@ export default class GlOp extends CABLES.EventTarget
             this._glRectBg.setOpacity(0.9);
             this._glTitle.setOpacity(1);
         }
+
+        if (this._glDotNotWorking)
+        {
+            this._glTitle.setOpacity(0.7);
+        }
+
 
         if (this._hideBgRect)
         {
