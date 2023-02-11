@@ -251,6 +251,11 @@ export default class ServerOps
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
         }
 
+        const oldOps = gui.corePatch().getOpsByObjName(name);
+        for (let i = 0; i < oldOps.length; i++)
+            if (oldOps[i].uiAttribs)
+                delete oldOps[i].uiAttribs.uierrors;
+
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = () =>
@@ -262,8 +267,9 @@ export default class ServerOps
                     CABLES.UI.notify(num + " ops reloaded");
 
                     for (let i = 0; i < newOps.length; i++)
-                        if (newOps[i] && newOps[i].uiAttribs)
-                            delete newOps[i].uiAttribs.uierrors;
+                    {
+                        newOps[i].checkLinkTimeWarnings();
+                    }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);

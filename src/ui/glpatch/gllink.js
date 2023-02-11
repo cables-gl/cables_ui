@@ -213,8 +213,6 @@ export default class GlLink
         if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
         if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
 
-        console.log("subbi", op1.uiAttribs.subPatch, op2.uiAttribs.subPatch);
-
         if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type);
     }
 
@@ -353,6 +351,7 @@ export default class GlLink
                 // outer output port op TO subpatch op
                 if (this._opOut &&
                     this._subPatchOp &&
+                    this._opOut.getUiAttribs().translate &&
                     this._opOut.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
                 {
                     if (!this._opOut.getUiAttribs().translate) return;
@@ -369,6 +368,7 @@ export default class GlLink
                 // outer input port op FROM subpatch op
                 if (
                     this._subPatchOp &&
+                    this._opIn.getUiAttribs().translate &&
                     this._opIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
                 {
                     if (this._debugColor) this._cable.setColor(1, 0, 0, 1);

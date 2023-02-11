@@ -441,20 +441,15 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             try
             {
-                console.log(data);
                 const datastr = JSON.stringify(data);
                 gui.patchView.warnLargestPort();
 
-
                 const origSize = Math.round(data.length / 1024);
 
-
-                // data = LZString.compress(data);
                 let uint8data = pako.deflate(datastr);
 
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
-
 
                 // let decoder = new TextDecoder("utf8");
                 // let b64encoded = btoa(decoder.decode(uint8data));
