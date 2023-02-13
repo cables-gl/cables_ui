@@ -36,7 +36,15 @@ export default class ModalDialog extends CABLES.EventTarget
 
         if (window.gui && gui.currentModal) gui.currentModal.close();
         this._options = options;
-        this._options.okButton = this._options.okButton || { "text": "ok", "cssClasses": "bluebutton" };
+        this._options.okButton = this._options.okButton || {};
+        if (!this._options.okButton.text) this._options.okButton.text = "Ok";
+        if (!this._options.okButton.cssClasses) this._options.okButton.cssClasses = "bluebutton";
+
+        this._options.cancelButton = this._options.cancelButton || {};
+        if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
+        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "greybutton";
+        if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
+
         this._ele = null;
         this._eleContent = null;
         this._bg = new ModalBackground();
@@ -97,7 +105,7 @@ export default class ModalDialog extends CABLES.EventTarget
         {
             html += "<br/><br/>";
             html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"choice_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"" + this._options.cancelButton.cssClasses + "\" id=\"choice_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.showOkButton)
@@ -144,7 +152,14 @@ export default class ModalDialog extends CABLES.EventTarget
         }
 
         const eleChoiceCancel = ele.byId("choice_cancel");
-        if (eleChoiceCancel) eleChoiceCancel.addEventListener("pointerdown", this.close.bind(this));
+        if (eleChoiceCancel)
+        {
+            eleChoiceCancel.addEventListener("pointerdown", () =>
+            {
+                this.close.bind(this);
+                if (this._options.cancelButton.callback) this._options.cancelButton.callback();
+            });
+        }
 
         const eleModalOk = ele.byId("modalClose");
         if (eleModalOk)

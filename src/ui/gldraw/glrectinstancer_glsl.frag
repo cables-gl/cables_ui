@@ -140,6 +140,23 @@ float samp(in vec2 uv, float w) {
         // f(finalColor.a==0.0)discard;
     }
 
+
+    if(shape==7.0) // cross
+    {
+        float r=0.025;
+        float l=1.0;
+        vec2 p = abs((uv)-0.5);
+
+        float a= length(p-clamp(p.x+p.y,0.0,l*1.414235)*0.5) - r;
+
+        finalColor.a=0.5*(1.0-smoothstep(0.0,fwidth(uv.x)*5.0,a));
+        // finalColor.a+=0.1;
+
+        // float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
+        // finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);
+    }
+
+
     if(shape==4.0) // fram
     {
         float outlinefrag=0.003;

@@ -28,6 +28,9 @@ export default class GradientEditor
         this._callback = null;
         this._ctx = null;
 
+        this._currentKey = null;
+        this._oldCurrentKey = null;
+
         this._op = gui.corePatch().getOpById(this._opId);
         this._port = this._op.getPort(this._portName);
         this.type = this._port.uiAttribs.gradientType || "gradient";
@@ -39,8 +42,13 @@ export default class GradientEditor
             this.close();
         });
 
-        this._previousContent = "";
+        this._options = {};
+        this._options.smoothStep = this._port.uiAttribs.gradEditSmoothstep;
+        this._options.step = this._port.uiAttribs.gradEditStep;
+        this._options.oklab = this._port.uiAttribs.gradOklab;
 
+
+        this._previousContent = "";
         this._openerEle = (options || {}).openerEle;
     }
 
@@ -110,12 +118,38 @@ export default class GradientEditor
                     x = Math.round(x);
                     let p = CABLES.map(x, keyA.pos * this._width, keyB.pos * this._width, 0, 1);
 
-                    p = CABLES.smoothStep(p);
+                    if (this._options.smoothStep)p = CABLES.smoothStep(p);
+                    if (this._options.step)p = Math.round(p);
 
-                    this._imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
-                    this._imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
-                    this._imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
-                    this._imageData.data[x * 4 + 3] = 255;
+                    if (this._options.oklab)
+                    {
+                        const klabA = this.rgbToOklab(keyA.r, keyA.g, keyA.b);
+                        const labA_r = klabA[0];
+                        const labA_g = klabA[1];
+                        const labA_b = klabA[2];
+
+                        const klabB = this.rgbToOklab(keyB.r, keyB.g, keyB.b);
+                        const labB_r = klabB[0];
+                        const labB_g = klabB[1];
+                        const labB_b = klabB[2];
+
+                        const l = ((p * labB_r + (1.0 - p) * labA_r));
+                        const a = ((p * labB_g + (1.0 - p) * labA_g));
+                        const b = ((p * labB_b + (1.0 - p) * labA_b));
+
+                        const pixCol = this.oklabToRGB(l, a, b);
+                        this._imageData.data[x * 4 + 0] = Math.round(pixCol[0] * 255);
+                        this._imageData.data[x * 4 + 1] = Math.round(pixCol[1] * 255);
+                        this._imageData.data[x * 4 + 2] = Math.round(pixCol[2] * 255);
+                        this._imageData.data[x * 4 + 3] = 255;
+                    }
+                    else
+                    {
+                        this._imageData.data[x * 4 + 0] = ((p * keyB.r) + (1.0 - p) * (keyA.r)) * 255;
+                        this._imageData.data[x * 4 + 1] = ((p * keyB.g) + (1.0 - p) * (keyA.g)) * 255;
+                        this._imageData.data[x * 4 + 2] = ((p * keyB.b) + (1.0 - p) * (keyA.b)) * 255;
+                        this._imageData.data[x * 4 + 3] = 255;
+                    }
                 }
             }
 
@@ -143,14 +177,22 @@ export default class GradientEditor
 
     _setKeyStyle(key)
     {
+        const attr = {};
+
         if (key.rect)
         {
             if (this.type == "curve")
-                key.rect.attr({ "fill": "#888", "stroke": "#fff" });
+            {
+                attr.fill = "#888";
+                attr.stroke = "#fff";
+            }
             else
-                key.rect.attr({
-                    "fill": "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + "," + this._keyOpacity + ")",
-                    "stroke": this.getInvStrokeColor(key.r, key.g, key.b) });
+            {
+                attr.fill = "rgba(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + "," + this._keyOpacity + ")";
+                attr.stroke = this.getInvStrokeColor(key.r, key.g, key.b);
+            }
+
+            key.rect.attr(attr);
         }
     }
 
@@ -172,8 +214,6 @@ export default class GradientEditor
 
         ele.byId("gradienteditorKeys").innerHTML = html;
 
-
-        // clearTimeout(this._timeout);
         this._timeout = setTimeout(
             () =>
             {
@@ -192,14 +232,18 @@ export default class GradientEditor
 
     setCurrentKey(key)
     {
-        CABLES.currentKey = key;
+        if (this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth });
+        this._currentKey = key;
+
+        if (key == this._currentKey) this._currentKey.rect.attr({ "stroke-width": this._keyStrokeWidth * 2 });
+
 
         ele.byId("gradientColorInput").style.backgroundColor = "rgb(" + Math.round(key.r * 255) + "," + Math.round(key.g * 255) + "," + Math.round(key.b * 255) + ")";
     }
 
     getInvStrokeColor(r, g, b)
     {
-        if (this._type == "curve") return "rgba(255,255,255,1)";
+        if (this.type == "curve") return "rgba(255,255,255,1)";
         let invCol = (r + g + b) / 3;
 
         if (invCol < 0.5)invCol = 1.0;
@@ -222,7 +266,6 @@ export default class GradientEditor
             "stroke": this.getInvStrokeColor(r, g, b),
             "stroke-width": this._keyStrokeWidth });
 
-
         const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
 
         this._setKeyStyle(key);
@@ -231,7 +274,7 @@ export default class GradientEditor
         let shouldDelete = false;
         this.setCurrentKey(key);
 
-        function move(dx, dy, x, y, e)
+        const move = (dx, dy, x, y, e) =>
         {
             this.setCurrentKey(key);
             this._movingkey = true;
@@ -250,7 +293,6 @@ export default class GradientEditor
                 eX = Math.min(eX, this._width);
                 eY = Math.min(eY, this._height);
 
-
                 attribs.cx = eX;
                 attribs.cy = eY;
 
@@ -260,9 +302,9 @@ export default class GradientEditor
 
             rect.attr(attribs);
             this.onChange();
-        }
+        };
 
-        function down(x, y, e)
+        const down = (x, y, e) =>
         {
             try { e.target.setPointerCapture(e.pointerId); }
             catch (_e) {}
@@ -272,26 +314,26 @@ export default class GradientEditor
             this._startMouseY = y;
             this._movingkey = true;
             this.setCurrentKey(key);
-        }
+        };
 
-        function up(e)
+        const up = (e) =>
         {
             try { e.target.releasePointerCapture(e.pointerId); }
             catch (_e) {}
 
-            setTimeout(function ()
+            setTimeout(() =>
             {
                 this._movingkey = false;
-            }.bind(this), 100);
+            }, 100);
 
             if (shouldDelete && key.rect)
             {
                 key.rect.remove();
                 this.deleteKey(key);
             }
-        }
+        };
 
-        if (rect)rect.drag(move.bind(this), down.bind(this), up.bind(this));
+        if (rect)rect.drag(move, down, up);
     }
 
     show(cb)
@@ -390,30 +432,32 @@ export default class GradientEditor
         const colEleDel = ele.byId("gradientColorDelete");
         colEleDel.addEventListener("click", (e) =>
         {
-            if (CABLES.currentKey)
+            if (this._currentKey)
             {
-                CABLES.currentKey.rect.remove();
-                this.deleteKey(CABLES.currentKey);
-                CABLES.currentKey = this._keys[0];
+                this._currentKey.rect.remove();
+                this.deleteKey(this._currentKey);
+                this._currentKey = this._keys[0];
             }
         });
 
+        if (this.type == "curve")ele.byId("gradientColorInput").classList.add("hidden");
+        else ele.byId("gradientColorInput").classList.remove("hidden");
 
         const colEle = ele.byId("gradientColorInput");
 
         colEle.addEventListener("click", (e) =>
         {
-            if (!CABLES.currentKey) return;
+            if (!this._currentKey) return;
             const cr = new ColorRick({
                 "ele": colEle,
-                "color": [parseInt(CABLES.currentKey.r * 255), parseInt(CABLES.currentKey.g * 255), parseInt(CABLES.currentKey.b * 255)], // "#ffffff",
+                "color": [parseInt(this._currentKey.r * 255), parseInt(this._currentKey.g * 255), parseInt(this._currentKey.b * 255)], // "#ffffff",
                 "onChange": (col) =>
                 {
-                    if (CABLES.currentKey)
+                    if (this._currentKey)
                     {
-                        CABLES.currentKey.r = col.gl()[0];
-                        CABLES.currentKey.g = col.gl()[1];
-                        CABLES.currentKey.b = col.gl()[2];
+                        this._currentKey.r = col.gl()[0];
+                        this._currentKey.g = col.gl()[1];
+                        this._currentKey.b = col.gl()[2];
 
                         CABLES.GradientEditor.editor._ctx = null;
                         CABLES.GradientEditor.editor.onChange();
@@ -423,5 +467,37 @@ export default class GradientEditor
                 }
             });
         });
+    }
+
+
+    rgbToOklab(r, g, b)
+    {
+        let l = 0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b;
+        let m = 0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b;
+        let s = 0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b;
+        l = Math.cbrt(l); m = Math.cbrt(m); s = Math.cbrt(s);
+        return [
+            l * +0.2104542553 + m * +0.7936177850 + s * -0.0040720468,
+            l * +1.9779984951 + m * -2.4285922050 + s * +0.4505937099,
+            l * +0.0259040371 + m * +0.7827717662 + s * -0.8086757660
+        ];
+    }
+
+    clamp(value, min, max)
+    {
+        return Math.max(Math.min(value, max), min);
+    }
+
+    oklabToRGB(L, a, b)
+    {
+        let l = L + a * +0.3963377774 + b * +0.2158037573;
+        let m = L + a * -0.1055613458 + b * -0.0638541728;
+        let s = L + a * -0.0894841775 + b * -1.2914855480;
+        l **= 3; m **= 3; s **= 3;
+        let rgb_r = l * +4.0767416621 + m * -3.3077115913 + s * +0.2309699292;
+        let rgb_g = l * -1.2684380046 + m * +2.6097574011 + s * -0.3413193965;
+        let rgb_b = l * -0.0041960863 + m * -0.7034186147 + s * +1.7076147010;
+        rgb_r = CABLES.clamp(rgb_r, 0, 1); rgb_g = CABLES.clamp(rgb_g, 0, 1); rgb_b = CABLES.clamp(rgb_b, 0, 1);
+        return [rgb_r, rgb_g, rgb_b];
     }
 }
