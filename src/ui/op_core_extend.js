@@ -216,21 +216,13 @@ export default function extendCore()
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
                 if (
                     otherPort.uiAttribs.stride != undefined &&
-                    this.portsIn[i] != undefined &&
+                    this.portsIn[i].uiAttribs.stride != undefined &&
                     otherPort.uiAttribs.stride != this.portsIn[i].uiAttribs.stride)
                 {
-                    // console.log("wrong port!");
-
                     this.setUiError("wrongstride", "Port \"" + this.portsIn[i].name + "\" : Incompatible Array" + otherPort.uiAttribs.stride + " to Array" + this.portsIn[i].uiAttribs.stride, 1);
-                    // notWorkingMsg += this.portsIn[i].name + "connected to different stride";
                 }
-
-                // {
-                //     if(op.portIn[i].uiAttribs.stride!=op.portIn[i].uiAttribs.stride)
-                // }
             }
         }
-
 
         const hadError = this.hasUiError("notworking");
 
