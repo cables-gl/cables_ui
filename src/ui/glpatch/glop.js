@@ -374,6 +374,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             for (const i in this._links)
             {
+                console.log("update gllink...");
                 this._links[i].updateVisible();
                 // if (this._links[i].subPatch != attr.subPatch)
                 // {
