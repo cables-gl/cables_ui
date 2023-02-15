@@ -217,7 +217,9 @@ export default class OpSelect
                             let foundPortTypeIn = false;
                             for (let j = 0; j < docs.layout.portsIn.length; j++)
                             {
-                                if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewLink.portIn.type)
+                                if (docs.layout.portsIn[j] &&
+                                    this._newOpOptions.linkNewLink.portIn &&
+                                    docs.layout.portsIn[j].type == this._newOpOptions.linkNewLink.portIn.type)
                                 {
                                     foundPortTypeIn = true;
                                     break;
