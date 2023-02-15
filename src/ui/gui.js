@@ -1282,8 +1282,10 @@ export default class Gui
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
             (e) =>
             {
-                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA"))
-                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
+                if (
+                    !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
+                    (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) ||
+                    (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
