@@ -1192,7 +1192,6 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
-            console.log("REPLACE BECAUSE PASTE");
             json = CABLES.Patch.replaceOpIds(json, oldSub);
 
             for (const i in json.ops)
