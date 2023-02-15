@@ -201,7 +201,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
                 let content = "<div>Do you want to restore your patch to the last version saved " + saveText + "</div>";
                 content += "<div style='margin-top: 20px; text-align: center;'>";
                 content += "<a class=\"button bluebutton accept\">Ok</a>&nbsp;&nbsp;";
-                content += "<a class=\"button greybutton decline\">Cancel</a>";
+                content += "<a class=\"button decline\">Cancel</a>";
                 content += "</div>";
 
                 const modal = new ModalDialog({

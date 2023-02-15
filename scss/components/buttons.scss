@@ -1,0 +1,91 @@
+
+.cablesCssUi
+{
+    // all buttons
+    .button,.button-small
+    {
+        display:inline-block !important;
+        user-select: none;
+        cursor:pointer;
+        color: var(--color-12);
+        background-color: var(--color-04) !important;
+
+        &:hover
+        {
+            background-color:var(--color-button-bg-hover) !important;
+            color:var(--color-special) !important;
+            *
+            {
+                background-color:var(--color-special) !important;
+            }
+        }
+
+        &:active {
+            background-color: var(--color-button-bg-active) !important;
+        }
+    }
+
+
+    .button-small
+    {
+        background-size: 50%;
+        padding: 10px;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        margin-right: 4px;
+
+        background-position: center;
+        border-radius: 4px;
+        margin-top: 3px;
+        font-size: var(--font-size-default);
+    }
+
+
+    // bigger button styles
+    .button, .redbutton, .bluebutton
+    {
+        padding: 5px 16px;
+        margin-right:10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 2px;
+
+        &.warn
+        {
+            background-color: var(--color-warning);
+        }
+    }
+
+    .bluebutton
+    {
+        color: var(--color-02);
+        background-color: var(--color-special) !important;
+
+        &:hover
+        {
+            color:var(--color-04) !important;
+            background-color: #06da7a !important;
+        }
+    }
+
+    .redbutton
+    {
+        color: var(--color-01);
+        background-color: var(--color-error) !important;
+
+        &:hover
+        {
+            color:white !important;
+        }
+    }
+
+    .button_colorpick
+    {
+        width: 15px;
+        height: 8px;
+        padding: 5px !important;
+        border-radius: 4px;
+        border:1px solid var(--color-09);
+    }
+
+}

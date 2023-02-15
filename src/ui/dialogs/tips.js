@@ -52,7 +52,7 @@ export default class Tips
 
         html += "<div style=\"clear:both;padding:20px;\">";
         html += "  <a id=\"modalClose\" class=\"bluebutton\">close</a>";
-        html += "  <a onclick=\"gui.tips.next();\" class=\"greybutton\">next tip</a>";
+        html += "  <a onclick=\"gui.tips.next();\" class=\"button\">next tip</a>";
 
         html += "  <div style=\"float:right;\"><br/>";
         if (userSettings.get("showTipps")) html += "<a onclick=\"gui.tips.neverShow();\" class=\"button-small\">do not show this on startup</a>";

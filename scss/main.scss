@@ -141,184 +141,15 @@ body
 
     .valuetext
     {
-        // width:75px !important;
         overflow: hidden;
         text-overflow: ellipsis;
         float:left;
-        // width:auto;
         min-width:80%;
         margin-right:5px;
     }
 
     .valuetext.inspectable {
         min-width: 60%;
-    }
-
-    .button{
-        user-select: none;
-
-    }
-    .button_colorpick
-    {
-        width: 15px;
-        height: 8px;
-        padding: 5px !important;
-        border-radius: 4px;
-
-        // position: absolute;
-        // right: 0px;
-        // margin-top: -17px;
-
-        cursor:pointer;
-        border:1px solid var(--color-09);
-    }
-
-    .button-small
-    {
-        user-select: none;
-        display:inline-block !important;
-        background-size: 50%;
-        padding: 10px;
-        padding-bottom: 3px;
-        padding-top: 3px;
-        margin-right: 4px;
-
-        background-position: center;
-        border-radius: 4px;
-        margin-top: 3px;
-        cursor:pointer;
-        font-size: var(--font-size-default);
-        background-color: var(--color-04);
-
-
-        &:hover
-        {
-            background-color:var(--color-button-bg-hover) !important;
-
-            // background-color: var(--color-05);
-            color:var(--color-special) !important;
-            *
-            {
-                background-color:var(--color-special) !important;
-            }
-        }
-
-        &.fa:before
-        {
-        }
-
-        &:active {
-            background-color: var(--color-button-bg-active) !important;
-        }
-    }
-
-    .button,.redbutton,.bluebutton,.greybutton,.smallbutton
-    {
-        display:inline-block;
-        // text-transform: capitalize;
-        text-align: center;
-        margin-bottom: 2px;
-        color: var(--color-12);
-        // background-color: var(--color-02);
-
-        background-color: var(--color-04) !important;;
-        border-radius: 5px;
-
-        padding: 5px 16px;
-        cursor:pointer !important;
-
-        &:hover
-        {
-            cursor:pointer !important;
-            background-color:var(--color-button-bg-hover) !important;
-            color:var(--color-button-text-hover);
-        }
-
-        &.warn
-        {
-            background-color: var(--color-warning);
-        }
-
-        &:active {
-            background-color: var(--color-button-bg-active) !important;
-        }
-    }
-
-    .button--with-icon {
-        .icon {
-            position: relative;
-            width: 12px;
-            height: 12px;
-            top: 2px;
-            margin-left: 4px;
-            background-color: var(--color-07);
-        }
-
-        &:hover {
-            .icon {
-                background-color: var(--color-10);
-            }
-        }
-
-        &:active {
-            background-color: var(--color-button-bg-active) !important;
-        }
-    }
-
-
-    .smallbutton
-    {
-        padding:1px 4px !important;
-        border-radius:3px;
-        font-size:--font-size-small;
-        border-width: 2px;
-        &:active {
-            background-color: var(--color-button-bg-active) !important;
-        }
-    }
-
-    .bluebutton
-    {
-        color: var(--color-02);
-        background-color: var(--color-special) !important;
-        padding: 5px 16px;
-        margin-right:10px;
-
-        &:hover
-        {
-            cursor:pointer !important;
-            background-color: var(--color-01);
-            // color: var(--color-13);
-        }
-    }
-
-    .redbutton
-    {
-        color: var(--color-01);
-        background-color: var(--color-error) !important;
-        padding: 5px 16px;
-        margin-right:10px;
-
-        &:hover
-        {
-            cursor:pointer !important;
-            background-color: var(--color-01);
-        }
-    }
-
-    .greybutton
-    {
-        color: var(--color-12);
-        background-color: var(--color-05);
-        padding: 5px 16px;
-        margin-right:10px;
-
-        &:hover
-        {
-            cursor:pointer !important;
-            background-color: var(--color-06);
-            color: var(--color-13);
-        }
     }
 
 
@@ -875,6 +706,7 @@ body
 @import 'components/colorrick.scss';
 @import 'components/collapsable.scss';
 @import 'components/gradienteditor.scss';
+@import 'components/buttons.scss';
 
 
 .hidden { display:none !important;}
