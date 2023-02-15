@@ -135,6 +135,7 @@ export default class Gui
 
         this.metaTabs = new TabPanel("metatabpanel");
         this._savedState = true;
+        this._savedStateChangesSubPatches = {};
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
@@ -1714,8 +1715,13 @@ export default class Gui
         }
     }
 
-    setStateUnsaved()
+    setStateUnsaved(options)
     {
+        let subPatch = this.patchView.getCurrentSubPatch();
+        if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
+
+        this._savedStateChangesSubPatches[subPatch] = true;
+
         if (this._savedState)
         {
             let title = "";
@@ -1748,6 +1754,7 @@ export default class Gui
     setStateSaved()
     {
         this._savedState = true;
+        this._savedStateChangesSubPatches = {};
         this._favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 
