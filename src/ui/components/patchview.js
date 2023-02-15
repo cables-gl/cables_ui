@@ -1299,8 +1299,7 @@ export default class PatchView extends CABLES.EventTarget
             gui.corePatch().deSerialize(json, false);
             this.isPasting = false;
 
-            console.log("focusSubpatchop", focusSubpatchop);
-            this.patchRenderer.focusOpAnim(focusSubpatchop.id);
+            if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             next(json.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");
