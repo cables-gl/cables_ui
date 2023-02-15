@@ -85,7 +85,7 @@ $color-searchInputContainer: var(--color-02);
 :root
 {
     --color_op_bg: var(--color-04);
-    --color_op_bg_active: var(--color-06);
+    --color_op_bg_active: var(--color-05);
     --color_op_text: var(--color-12);
     --color_op_text_active: var(--color-13);
 
@@ -122,7 +122,6 @@ $color-searchInputContainer: var(--color-02);
     --color-button-bg:var(--color_op_bg_active);
     --color-button-bg-active: var(--color-07);
 
-    --color-button-text-hover: var(--color_op_text_active);
     --color-button-bg-hover: var(--color-06);
 
 }

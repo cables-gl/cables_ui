@@ -209,7 +209,7 @@ export default class GradientEditor
             this._keys[i].pos = Math.min(1.0, Math.max(this._keys[i].pos, 0));
             this._keys[i].posy = Math.min(1.0, Math.max(this._keys[i].posy, 0));
 
-            html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex smallbutton\">" + i + "</a> ";
+            html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex button-small\">" + i + "</a> ";
         }
 
         ele.byId("gradienteditorKeys").innerHTML = html;

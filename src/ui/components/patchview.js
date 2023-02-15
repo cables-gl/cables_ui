@@ -357,6 +357,8 @@ export default class PatchView extends CABLES.EventTarget
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
 
+            if (!uiAttribs.subPatch)uiAttribs.subPatch = this.getCurrentSubPatch();
+
             const op = this._p.addOp(opname, uiAttribs);
 
             if (!op) return;
@@ -1248,8 +1250,7 @@ export default class PatchView extends CABLES.EventTarget
             gui.corePatch().deSerialize(json, false);
             this.isPasting = false;
 
-            console.log("focusSubpatchop", focusSubpatchop);
-            this.patchRenderer.focusOpAnim(focusSubpatchop.id);
+            if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             next(json.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");

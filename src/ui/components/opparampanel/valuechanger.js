@@ -15,6 +15,8 @@ function valueChanger(eleId, focus, portName, opid)
     const eleNumInputDisplay = document.querySelector("#" + eleId + "-container .numberinput-display");
 
     const theOp = gui.corePatch().getOpById(opid);
+    if (!theOp) return;
+
     const thePort = theOp.getPort(portName);
 
     let isDown = false;

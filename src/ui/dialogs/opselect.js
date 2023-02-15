@@ -1106,7 +1106,7 @@ export default class OpSelect
                             "nameSpace": nameSpace,
                             "oldState": oldState,
                             "lowercasename": lowercasename,
-                            "buttonText": "add",
+                            "buttonText": "Add",
                             "type": "op"
                         };
                         op.summary = gui.opDocs.getSummary(opname);
@@ -1223,7 +1223,7 @@ export default class OpSelect
                 "nameSpace": opDoc.namespace,
                 "oldState": "",
                 "lowercasename": lowercasename,
-                "buttonText": "add",
+                "buttonText": "Add",
                 "type": "op"
             };
             op.pop = -1;
