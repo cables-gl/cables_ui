@@ -357,6 +357,8 @@ export default class PatchView extends CABLES.EventTarget
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
 
+            if (!uiAttribs.subPatch)uiAttribs.subPatch = this.getCurrentSubPatch();
+
             const op = this._p.addOp(opname, uiAttribs);
 
             if (!op) return;
