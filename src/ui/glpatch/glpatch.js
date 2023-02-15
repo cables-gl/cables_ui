@@ -691,6 +691,8 @@ export default class GlPatch extends CABLES.EventTarget
     focusOpAnim(opid)
     {
         this._focusRectOp = this._glOpz[opid];
+
+
         this._focusRectAnim.clear();
         this._focusRectAnim.setValue(this._time, 0);
         this._focusRectAnim.setValue(this._time + 0.5, 1);
@@ -748,12 +750,13 @@ export default class GlPatch extends CABLES.EventTarget
             glOp.update();
             this.unselectAll();
 
-            if (CABLES.UI.loaded)
-            {
-                this.selectOpId(op.id);
-                gui.opParams.show(op.id);
-                this.focusOp(op.id);
-            }
+            // if (CABLES.UI.loaded)
+            // {
+            //     this.selectOpId(op.id);
+            //     gui.opParams.show(op.id);
+            //     this.focusOp(op.id);
+            // }
+
             if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
             {
                 glOp.sendNetPos();
