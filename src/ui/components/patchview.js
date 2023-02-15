@@ -1783,7 +1783,7 @@ export default class PatchView extends CABLES.EventTarget
 
     setUnsaved()
     {
-        gui.setStateUnsaved();
+        gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
     }
 
 
