@@ -331,11 +331,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];
-            if (op.storage && op.storage.blueprint)
+            if (op.uiAttribs)
             {
-                if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.storage.blueprint.subpatchInstance)
+                if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.uiAttribs.blueprintSubpatch)
                 {
-                    blueprintIds.push(op.storage.blueprint.subpatchInstance);
+                    blueprintIds.push(op.uiAttribs.blueprintSubpatch);
                 }
             }
         }

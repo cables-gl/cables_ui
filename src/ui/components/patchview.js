@@ -893,9 +893,9 @@ export default class PatchView extends CABLES.EventTarget
             }
             if (ops[i].objName.startsWith("Ops.Dev.Blueprint") && ops[i].uiAttribs)
             {
-                foundBlueprints[ops[i].uiAttribs.subpatchInstance] = {
+                foundBlueprints[ops[i].uiAttribs.blueprintSubpatch] = {
                     "name": ops[i].uiAttribs.extendTitle,
-                    "subpatchInstance": ops[i].uiAttribs.subpatchInstance
+                    "blueprintSubpatch": ops[i].uiAttribs.blueprintSubpatch
                 };
             }
         }
@@ -948,7 +948,7 @@ export default class PatchView extends CABLES.EventTarget
             const blueprintName = blueprint.name || "unnamed";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
-                "id": blueprint.subpatchInstance,
+                "id": blueprint.blueprintSubpatch,
                 "type": "blueprint"
             });
         }
@@ -1017,7 +1017,7 @@ export default class PatchView extends CABLES.EventTarget
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
 
         let parentSubId = gotoOp.uiAttribs.subPatch;
-        if (gotoOp.storage && op.storage.blueprint) gotoOp = gotoOp.storage.blueprint.blueprintOpId;
+        if (gotoOp.uiAttribs.blueprintOpId) gotoOp = gotoOp.blueprintOpId;
         this.setCurrentSubPatch(parentSubId, () =>
         {
             this.focus();
@@ -1192,6 +1192,7 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
+            console.log("REPLACE BECAUSE PASTE");
             json = CABLES.Patch.replaceOpIds(json, oldSub);
 
             for (const i in json.ops)
@@ -2270,8 +2271,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-            if (ops[i].uiAttribs && ops[i].uiAttribs.subpatchInstance && ops[i].id == opid)
-                return ops[i].uiAttribs.subpatchInstance;
+            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
+                return ops[i].uiAttribs.blueprintSubpatch;
     }
 
     highlightExamplePatchOps()
