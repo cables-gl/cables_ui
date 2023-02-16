@@ -2018,6 +2018,15 @@ export default class PatchView extends CABLES.EventTarget
             }, 100);
 
 
+            // if (CABLES.UI.loaded)
+            // {
+            //     this.selectOpId(op.id);
+            gui.opParams.show(origOp.id);
+            this.renderer.focusOpAnim(origOp.id);
+            //     this.focusOp(op.id);
+            // }
+
+
             // CABLES.UI.MODAL.show(html);
             new ModalDialog({ "html": html });
         } });

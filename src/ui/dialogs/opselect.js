@@ -37,6 +37,7 @@ export default class OpSelect
         this._bg = new ModalBackground();
         this._escapeListener = null;
         this._typedSinceOpening = false;
+        this.lastOpObjName = "";
     }
 
     close()
