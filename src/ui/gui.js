@@ -135,6 +135,7 @@ export default class Gui
 
         this.metaTabs = new TabPanel("metatabpanel");
         this._savedState = true;
+        this._savedStateChangesSubPatches = {};
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
@@ -281,7 +282,7 @@ export default class Gui
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                text.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"greybutton\">Close</a>"
+                text.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
             );
             return true;
         }
@@ -1282,8 +1283,10 @@ export default class Gui
         this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
             (e) =>
             {
-                if (!(document.activeElement && !document.activeElement.classList.contains("ace_text-input") && (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA"))
-                || (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
+                if (
+                    !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
+                    (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) ||
+                    (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
                 {
                     this.pressedEscape(e);
                     this.patchView.focus();
@@ -1712,8 +1715,13 @@ export default class Gui
         }
     }
 
-    setStateUnsaved()
+    setStateUnsaved(options)
     {
+        let subPatch = this.patchView.getCurrentSubPatch();
+        if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
+
+        this._savedStateChangesSubPatches[subPatch] = true;
+
         if (this._savedState)
         {
             let title = "";
@@ -1746,6 +1754,7 @@ export default class Gui
     setStateSaved()
     {
         this._savedState = true;
+        this._savedStateChangesSubPatches = {};
         this._favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 

@@ -132,7 +132,7 @@ export default class LongPressConnector extends CABLES.EventTarget
         if (!this.isActive()) return "nah";
         let html = "here we go! <br/>now select any other op!";
 
-        html += "<a onclick=\"gui.longPressConnector.longPressCancel();\" class=\"icon-button button-small \">cancel</a>";
+        html += "<a onclick=\"gui.longPressConnector.longPressCancel();\" class=\"icon-button button-small \">Cancel</a>";
         return html;
     }
 

@@ -772,7 +772,7 @@ export default class GlOp extends CABLES.EventTarget
 
                 this._glDotNotWorking = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotNotWorking.setSize(this._width, this._height);
-                this._glDotNotWorking.setColor(0.1, 0.1, 0.1, 1.0);
+                this._glDotNotWorking.setColor(0.5, 0.5, 0.5, 1.0);
                 this._glDotNotWorking.setShape(7);
                 this._glDotNotWorking.interactive = false;
             }

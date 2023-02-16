@@ -284,7 +284,7 @@ export default class Api
                 html += "<h2>thank you</h2>";
                 html += "we will look into it<br/>";
                 html += "<br/>";
-                html += "&nbsp;&nbsp;<a class=\"greybutton\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
+                html += "&nbsp;&nbsp;<a class=\"button\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
                 html += "</center>";
 
                 const modalOptions = {

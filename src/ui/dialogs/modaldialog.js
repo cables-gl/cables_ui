@@ -42,7 +42,7 @@ export default class ModalDialog extends CABLES.EventTarget
 
         this._options.cancelButton = this._options.cancelButton || {};
         if (!this._options.cancelButton.text) this._options.cancelButton.text = "Cancel";
-        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "greybutton";
+        if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "button";
         if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
 
         this._ele = null;
@@ -98,7 +98,7 @@ export default class ModalDialog extends CABLES.EventTarget
         {
             html += "<br/>";
             html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"greybutton\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;cancel&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"button\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;Cancel&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.choice)

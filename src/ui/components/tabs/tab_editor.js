@@ -33,7 +33,7 @@ export default class EditorTab
         }
 
         this._tab.editorObj = options.editorObj;
-        gui.mainTabs.addTab(this._tab, CABLES.UI.tabsAutoActivate);
+        gui.mainTabs.addTab(this._tab);
 
         const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
         this._tab.html(html);
@@ -112,6 +112,7 @@ export default class EditorTab
                 setTimeout(() =>
                 {
                     this._editor.focus();
+                    if (options.onFinished)options.onFinished();
                 }, 100);
             });
     }

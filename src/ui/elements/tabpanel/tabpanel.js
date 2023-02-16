@@ -154,6 +154,7 @@ export default class TabPanel extends CABLES.EventTarget
     activateTabByName(name)
     {
         let found = false;
+
         for (let i = 0; i < this._tabs.length; i++)
         {
             if (this._tabs[i].options.name == name)

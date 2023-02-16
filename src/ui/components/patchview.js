@@ -357,6 +357,8 @@ export default class PatchView extends CABLES.EventTarget
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
 
+            if (!uiAttribs.subPatch)uiAttribs.subPatch = this.getCurrentSubPatch();
+
             const op = this._p.addOp(opname, uiAttribs);
 
             if (!op) return;
@@ -1191,19 +1193,14 @@ export default class PatchView extends CABLES.EventTarget
             json = CABLES.Patch.replaceOpIds(json);
 
             for (const i in json.ops)
-            {
                 json.ops[i].uiAttribs.pasted = true;
-            }
 
             // set correct subpatch and remove blueprint info
             const subpatchIds = [];
             const fixedSubPatches = [];
             for (let i = 0; i < json.ops.length; i++)
             {
-                if (json.ops[i].storage && json.ops[i].storage.blueprint)
-                {
-                    delete json.ops[i].storage.blueprint;
-                }
+                if (json.ops[i].storage && json.ops[i].storage.blueprint) delete json.ops[i].storage.blueprint;
 
                 if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
                 {
@@ -1257,7 +1254,7 @@ export default class PatchView extends CABLES.EventTarget
 
                 for (const i in json.ops)
                 {
-                    if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                    if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate && json.ops[i].uiAttribs.subPatch == this.getCurrentSubPatch())
                     {
                         minx = Math.min(minx, json.ops[i].uiAttribs.translate.x);
                         miny = Math.min(miny, json.ops[i].uiAttribs.translate.y);
@@ -1303,6 +1300,8 @@ export default class PatchView extends CABLES.EventTarget
             notify("Pasted " + json.ops.length + " ops");
             gui.corePatch().deSerialize(json, false);
             this.isPasting = false;
+
+            if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
             next(json.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");
@@ -1835,7 +1834,7 @@ export default class PatchView extends CABLES.EventTarget
 
     setUnsaved()
     {
-        gui.setStateUnsaved();
+        gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
     }
 
 

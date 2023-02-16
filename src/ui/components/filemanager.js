@@ -542,7 +542,7 @@ export default class FileManager
                                         else
                                         {
                                             okButton = {
-                                                "text": "really delete",
+                                                "text": "Really delete",
                                                 "cssClasses": "redbutton"
                                             };
                                         }

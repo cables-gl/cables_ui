@@ -208,9 +208,7 @@ const paramsHelper =
         const port = op.getPortByName(portname);
         if (!port) return console.warn("paramedit port not found", portname);
 
-        let name = op.name + " " + port.name;
-
-        name = gui.mainTabs.getUniqueTitle(name);
+        let name = gui.mainTabs.getUniqueTitle(op.name + " " + port.name);
 
         const dataId = opid + portname;
         const existingTab = gui.mainTabs.getTabByDataId(dataId);
@@ -249,6 +247,10 @@ const paramsHelper =
                     "onChange": function (e)
                     {
                         gui.setStateUnsaved();
+                    },
+                    "onFinished": () =>
+                    {
+                        gui.mainTabs.activateTabByName(name);
                     }
                 });
         }
