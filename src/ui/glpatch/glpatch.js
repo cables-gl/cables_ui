@@ -217,7 +217,6 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
-
         // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
         gui.on("uiloaded", () =>
@@ -710,6 +709,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
+
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -750,12 +750,12 @@ export default class GlPatch extends CABLES.EventTarget
             glOp.update();
             this.unselectAll();
 
-            if (CABLES.UI.loaded)
-            {
-                this.selectOpId(op.id);
-                gui.opParams.show(op.id);
-                this.focusOp(op.id);
-            }
+            // if (CABLES.UI.loaded)
+            // {
+            //     this.selectOpId(op.id);
+            //     gui.opParams.show(op.id);
+            //     this.focusOp(op.id);
+            // }
 
             if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
             {
@@ -1492,6 +1492,20 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
             return this._splineDrawers[subpatchId];
+        }
+    }
+
+    checkLinks()
+    {
+        for (let i in this._glOpz)
+        {
+            if (this._glOpz[i].isInCurrentSubPatch())
+                for (let j in this._glOpz[i]._links)
+                {
+                    // console.log(i, j);
+                    this._glOpz[i]._links[j].check();
+                    this._glOpz[i]._links[j].update();
+                }
         }
     }
 }

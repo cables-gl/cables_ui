@@ -81,6 +81,7 @@ export default class GlCable
 
     set visible(v)
     {
+        // is this even needed ? all cables are drawn because the splinedrawer is bound to a specific subpatch anyway....
         if (this._visible != v) this._oldx = null;
         this._visible = v;
         this._updateLinePos();
@@ -90,6 +91,7 @@ export default class GlCable
     {
         if (this._glPatch.isAreaSelecting) return;
         if (!this._visible) return false;
+        if (this.subPatch != this._glPatch.getCurrentSubPatch()) return false;
 
         if (this._glPatch.isDraggingOps())
         {
@@ -474,6 +476,9 @@ export default class GlCable
             this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
+
+            if (this._buttonRect.visible)console.log(this);
+
 
             this._glPatch.hoverLink = this._link;
             this._glPatch._dropInCircleRect = this._buttonRect;
