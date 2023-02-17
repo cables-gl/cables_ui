@@ -49,16 +49,20 @@ export default class GlLink
                     const fromPort = fromOp.getPort(this._glPatch._portDragLine._startPortName);
 
                     let otherPort = link.portOut;
-                    if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
 
-                    this._link.remove();
-                    this._glPatch._portDragLine.stop();
+                    if (fromPort.type == otherPort.type)
+                    {
+                        if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
 
-                    gui.corePatch().link(
-                        fromOp, this._glPatch._portDragLine._startPortName,
-                        otherPort.parent, otherPort.name);
+                        this._link.remove();
+                        this._glPatch._portDragLine.stop();
 
-                    return;
+                        gui.corePatch().link(
+                            fromOp, this._glPatch._portDragLine._startPortName,
+                            otherPort.parent, otherPort.name);
+
+                        return;
+                    }
                 }
                 return;
             }
