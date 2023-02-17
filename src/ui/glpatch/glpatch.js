@@ -1494,18 +1494,4 @@ export default class GlPatch extends CABLES.EventTarget
             return this._splineDrawers[subpatchId];
         }
     }
-
-    checkLinks()
-    {
-        for (let i in this._glOpz)
-        {
-            if (this._glOpz[i].isInCurrentSubPatch())
-                for (let j in this._glOpz[i]._links)
-                {
-                    // console.log(i, j);
-                    this._glOpz[i]._links[j].check();
-                    this._glOpz[i]._links[j].update();
-                }
-        }
-    }
 }
