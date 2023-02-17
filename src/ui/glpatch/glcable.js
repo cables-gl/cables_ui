@@ -466,19 +466,13 @@ export default class GlCable
 
             this.setColor();
 
-            // console.log("true");
-
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
 
-            // if (this._glPatch._cablesHoverButtonRect) this._glPatch._cablesHoverButtonRect.visible = false;
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
             this._buttonRect.visible = true;
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
-
-            if (this._buttonRect.visible)console.log(this);
-
 
             this._glPatch.hoverLink = this._link;
             this._glPatch._dropInCircleRect = this._buttonRect;
