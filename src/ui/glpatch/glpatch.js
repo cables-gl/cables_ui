@@ -750,12 +750,12 @@ export default class GlPatch extends CABLES.EventTarget
             glOp.update();
             this.unselectAll();
 
-            // if (CABLES.UI.loaded)
-            // {
-            //     this.selectOpId(op.id);
-            //     gui.opParams.show(op.id);
-            //     this.focusOp(op.id);
-            // }
+            if (CABLES.UI.loaded)
+            {
+                this.selectOpId(op.id);
+                gui.opParams.show(op.id);
+                this.focusOp(op.id);
+            }
 
             if (op.uiAttribs.translate && op.uiAttribs.createdLocally)
             {

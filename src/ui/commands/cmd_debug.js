@@ -109,6 +109,82 @@ CABLES_CMD_DEBUG.testAllOps = function ()
     }
 };
 
+CABLES_CMD_DEBUG.testOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        for (let j = 0; j < 100; j++)
+        {
+            for (let ip = 0; ip < ops[i].portsIn.length; ip++)
+            {
+                const p = ops[i].portsIn[ip];
+
+                if (p.type == CABLES.OP_PORT_TYPE_ARRAY)
+                {
+                    const tests = [
+                        () => { p.set([]); },
+                        () => { p.set(null); },
+                        () => { p.set(undefined); },
+                        () => { p.set([0]); },
+                        () => { p.set([0, 1]); },
+                        () => { p.set([0, 1, 2]); },
+                        () => { p.set([-0, -1, -2]); },
+                        () => { p.set([0, 1, 2, 3]); },
+                        () => { p.set([0, 1, 2, 3, 4]); },
+                        () => { p.set([0, 1, null, 3, 4]); },
+                        () => { p.set([0, "hallo", 2, 3, 4]); },
+                    ];
+                    tests[Math.floor(tests.length * Math.random())]();
+                }
+                if (p.type == CABLES.OP_PORT_TYPE_VALUE)
+                {
+                    const tests = [
+                        () => { p.set(0); },
+                        () => { p.set(1); },
+                        () => { p.set(1.2); },
+                        () => { p.set(100); },
+                        () => { p.set(-100); },
+                    ];
+                    tests[Math.floor(tests.length * Math.random())]();
+                }
+                if (p.type == CABLES.OP_PORT_TYPE_STRING)
+                {
+                    const tests = [
+                        () => { p.set("hello"); },
+                        () => { p.set(""); },
+                        () => { p.set(null); },
+                        () => { p.set(undefined); }
+                    ];
+                    tests[Math.floor(tests.length * Math.random())]();
+                }
+                if (p.type == CABLES.OP_PORT_TYPE_OBJECT)
+                {
+                    const tests = [
+                        () => { p.set(null); },
+                        () => { p.set(undefined); },
+                        () => { p.set({ "a": () => { console.log(1); } }); },
+                        () => { p.set({ "a": 1234 }); },
+                        () => { p.set({ "b": null }); }
+                    ];
+                    tests[Math.floor(tests.length * Math.random())]();
+                }
+                if (p.type == CABLES.OP_PORT_TYPE_TRIGGER)
+                {
+                    const tests = [
+                        () => { p.trigger(); },
+                        () => { },
+                    ];
+                    tests[Math.floor(tests.length * Math.random())]();
+                }
+            }
+        }
+    }
+
+    console.log("op test finished!");
+};
+
 function load(opname)
 {
     gui.serverOps.loadOpLibs(opname, function ()
@@ -183,6 +259,12 @@ CMD_DEBUG_COMMANDS.push(
         "category": "debug",
         "func": CABLES_CMD_DEBUG.restrictFull,
         "icon": "command"
+    },
+    {
+        "cmd": "test op",
+        "category": "debug",
+        "func": CABLES_CMD_DEBUG.testOp,
+        "icon": "op"
     }
 
 );

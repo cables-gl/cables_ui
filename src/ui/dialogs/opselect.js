@@ -37,6 +37,7 @@ export default class OpSelect
         this._bg = new ModalBackground();
         this._escapeListener = null;
         this._typedSinceOpening = false;
+        this.lastOpObjName = "";
     }
 
     close()
@@ -190,6 +191,7 @@ export default class OpSelect
                 scoreDebug += "+2 found full namespace (" + query + ")<br/>";
             }
 
+
             if (points == 0)
             {
                 if (list[i]._lowerCaseName.indexOf(query) > -1)
@@ -301,12 +303,12 @@ export default class OpSelect
                     }
                 }
 
-                if (list[i]._shortName.indexOf(query) === 0)
+                if (list[i]._shortName.indexOf(orig) === 0)
                 {
                     points += 2.5;
                     scoreDebug += "+2.5 found in shortname at beginning (" + query + ")<br/>";
 
-                    if (list[i]._shortName == query)
+                    if (list[i]._shortName == orig)
                     {
                         points += 2;
                         scoreDebug += "+2 exact name (" + query + ")<br/>";
