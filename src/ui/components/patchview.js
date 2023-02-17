@@ -2020,7 +2020,7 @@ export default class PatchView extends CABLES.EventTarget
 
             // if (CABLES.UI.loaded)
             // {
-            //     this.selectOpId(op.id);
+            this.selectOpId(op.id);
             gui.opParams.show(origOp.id);
             this.renderer.focusOpAnim(origOp.id);
             //     this.focusOp(op.id);
