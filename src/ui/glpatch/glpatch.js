@@ -217,7 +217,6 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
-
         // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);
 
         gui.on("uiloaded", () =>
@@ -710,6 +709,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (!fromDeserialize && !op.uiAttribs.hasOwnProperty("subPatch")) op.uiAttribs.subPatch = this._currentSubpatch;
 
+
         let glOp = this._glOpz[op.id];
         if (!glOp)
         {
@@ -750,7 +750,7 @@ export default class GlPatch extends CABLES.EventTarget
             glOp.update();
             this.unselectAll();
 
-            if (CABLES.UI.loaded)
+            if (CABLES.UI.loaded && op.uiAttribs.subPatch == this.getCurrentSubPatch())
             {
                 this.selectOpId(op.id);
                 gui.opParams.show(op.id);

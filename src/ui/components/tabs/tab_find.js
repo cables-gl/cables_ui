@@ -363,7 +363,7 @@ export default class FindTab
 
                     if (op.uiAttribs && op.uiAttribs.uierrors && op.uiAttribs.uierrors.length > 0)
                         for (let j = 0; j < op.uiAttribs.uierrors.length; j++) if (op.uiAttribs.uierrors[j].level == 2)
-                            results.push({ op, "score": 1, "error": op.uiAttribs.uierrors[j].txt });
+                            results.push({ op, "score": 2, "error": op.uiAttribs.uierrors[j].txt });
                 }
             }
 
