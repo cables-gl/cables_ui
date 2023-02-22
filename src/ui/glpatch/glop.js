@@ -608,6 +608,12 @@ export default class GlOp extends CABLES.EventTarget
     _setupPorts(ports)
     {
         let count = 0;
+
+        ports = ports.sort((a, b) =>
+        {
+            return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
+        });
+
         for (let i = 0; i < ports.length; i++)
         {
             if (ports[i].uiAttribs.display == "dropdown") continue;

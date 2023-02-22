@@ -49,16 +49,20 @@ export default class GlLink
                     const fromPort = fromOp.getPort(this._glPatch._portDragLine._startPortName);
 
                     let otherPort = link.portOut;
-                    if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
 
-                    this._link.remove();
-                    this._glPatch._portDragLine.stop();
+                    if (fromPort.type == otherPort.type)
+                    {
+                        if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
 
-                    gui.corePatch().link(
-                        fromOp, this._glPatch._portDragLine._startPortName,
-                        otherPort.parent, otherPort.name);
+                        this._link.remove();
+                        this._glPatch._portDragLine.stop();
 
-                    return;
+                        gui.corePatch().link(
+                            fromOp, this._glPatch._portDragLine._startPortName,
+                            otherPort.parent, otherPort.name);
+
+                        return;
+                    }
                 }
                 return;
             }
@@ -225,6 +229,14 @@ export default class GlLink
         this.update();
     }
 
+    isInCurrentSubPatch()
+    {
+        const sub = this._glPatch.getCurrentSubPatch();
+        if (this._cable.subPatch == sub || this._cableSub.subPatch == sub) return true;
+
+        return false;
+    }
+
     updateVisible()
     {
         const sub = this._glPatch.getCurrentSubPatch();
@@ -246,6 +258,7 @@ export default class GlLink
             )
         )
         { // redo everything when ops were moved into another subpatch
+            console.log("move link to other subpatch");
             this._subPatch = this._opIn.uiAttribs.subPatch;
             this._initSubCables();
         }
@@ -253,8 +266,8 @@ export default class GlLink
         if (this._cable.subPatch == sub) this._cable.visible = true;
         if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
 
-        this._cable.visible =
-        this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
+        // this._cable.visible =
+        // this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
         this._updatePosition();
     }
 
@@ -384,7 +397,6 @@ export default class GlLink
     }
 
 
-    /* *|MARCADOR_CURSOR|* */
     update()
     {
         if (!this._opIn)

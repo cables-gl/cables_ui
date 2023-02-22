@@ -73,9 +73,6 @@ export default class Bookmarks
                         "class": defaultops.getNamespaceClassName(op.objName),
                     });
             }
-            else
-            {
-            }
         }
 
         const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
