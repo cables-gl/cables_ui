@@ -145,8 +145,6 @@ class OpParampanel extends CABLES.EventTarget
 
         if (defaultops.isSubPatchOp(op.objName))
         {
-            console.log("hellyeah");
-
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
             {

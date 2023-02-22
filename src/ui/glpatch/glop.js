@@ -92,15 +92,8 @@ export default class GlOp extends CABLES.EventTarget
 
                 this._op.patch.on("subpatchExpose", (subpatchid) =>
                 {
-                    console.log(subpatchid);
-                    if (this._op.patchId.get() === subpatchid)
-                    {
-                        console.log("glports before", this._glPorts.length);
-                        console.log("yes its me");
+                    if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
                         this.refreshPorts();
-
-                        console.log("glports after", this._glPorts.length);
-                    }
                 });
             }
             else if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
@@ -282,9 +275,6 @@ export default class GlOp extends CABLES.EventTarget
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
 
-        // console.log("gui.longPressConnector.isActive()", gui.longPressConnector.isActive(), this._op);
-        // if (gui.longPressConnector.isActive()) gui.longPressConnector.finish(e, this._op);
-
         if (!this._op)
         {
             console.warn("glop no op", this);
@@ -400,7 +390,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             for (const i in this._links)
             {
-                console.log("update gllink...");
                 this._links[i].updateVisible();
                 // if (this._links[i].subPatch != attr.subPatch)
                 // {
@@ -630,10 +619,7 @@ export default class GlOp extends CABLES.EventTarget
         let portsIn = [];
         let portsOut = [];
 
-        console.log(portsIn.length);
         portsIn = portsIn.concat(this._op.portsIn);
-
-        console.log(portsIn.length);
 
         if (this._displayType === this.DISPLAY_SUBPATCH)
         {
@@ -652,12 +638,6 @@ export default class GlOp extends CABLES.EventTarget
                 if (portsOut.indexOf(ports[i]) == -1)portsOut.push(ports[i]);
         }
 
-
-        console.log(portsIn.length);
-        console.log("----");
-        for (let i = 0; i < portsIn.length; i++)
-            console.log(portsIn[i].name);
-        console.log("-------------");
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
@@ -678,7 +658,6 @@ export default class GlOp extends CABLES.EventTarget
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
 
-            console.log("setup ", ports[i].name);
             this._setupPort(count, ports[i]);
             count++;
         }

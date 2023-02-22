@@ -2362,9 +2362,6 @@ export default class PatchView extends CABLES.EventTarget
                     if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         }
 
-
-        console.log("foundPorts", foundPorts.length);
-
         return foundPorts;
     }
 
