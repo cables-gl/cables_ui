@@ -19,6 +19,7 @@ import text from "../text";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
 import glEditableSpline from "./gleditablespline";
+import defaultops from "../defaultops";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -43,6 +44,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.isAnimated = false;
 
         this._mouseLeaveButtons = 0;
+
 
         this._glOpz = {};
         this._hoverOps = [];
@@ -215,6 +217,19 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(1); });
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
+
+        gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            if (!this.isMouseOverOp()) return;
+
+            console.log(this._hoverOps[0]);
+            if (defaultops.isSubPatchOp(this._hoverOps[0].objName))
+            {
+                console.log("jo...");
+                gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
+            }
+        });
+
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
         // gui.keys.key(" ", "Play/Pause timeline", "up", cgl.canvas.id, { "displayGroup": "editor" }, this.spaceButtonUp);

@@ -124,6 +124,8 @@ export default class GlOp extends CABLES.EventTarget
         this._wasInited = true;
     }
 
+    get objName() { return this._objName; }
+
     get glPatch() { return this._glPatch; }
 
     get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; else return false; }

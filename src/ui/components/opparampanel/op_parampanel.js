@@ -6,6 +6,7 @@ import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
+import defaultops from "../../defaultops";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -140,6 +141,19 @@ class OpParampanel extends CABLES.EventTarget
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
+
+
+        if (defaultops.isSubPatchOp(op.objName))
+        {
+            console.log("hellyeah");
+
+            const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
+            for (let i = 0; i < ports.length; i++)
+            {
+                if (ports[i].direction === CABLES.PORT_DIR_IN && this._portsIn.indexOf(ports[i]) == -1) this._portsIn.push(ports[i]);
+                if (ports[i].direction === CABLES.PORT_DIR_OUT && this._portsOut.indexOf(ports[i]) == -1) this._portsOut.push(ports[i]);
+            }
+        }
 
         this._startListeners(this._currentOp);
 

@@ -2334,6 +2334,33 @@ export default class PatchView extends CABLES.EventTarget
                 return ops[i].storage.blueprint.subpatchInstance;
     }
 
+
+    getAllSubPatchOps(subid)
+    {
+        const foundOps = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+        return foundOps;
+    }
+
+    getSubPatchExposedPorts(subid)
+    {
+        const foundPorts = [];
+        const ops = this.getAllSubPatchOps(subid);
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            for (let j = 0; j < ops[i].portsIn.length; j++)
+                if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
+
+            for (let j = 0; j < ops[i].portsOut.length; j++)
+                if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
+        }
+
+        return foundPorts;
+    }
+
     highlightExamplePatchOps()
     {
         const opDocs = gui.opDocs.getOpDocs();

@@ -395,7 +395,6 @@ class ParamsListener extends CABLES.EventTarget
                         port.parent.setUiAttrib({ "extendTitlePort": null });
                     }
                 });
-
             else
                 items.push({
                     "title": "Extend title: \"" + port.name + ": x\"",
@@ -404,6 +403,21 @@ class ParamsListener extends CABLES.EventTarget
                         port.parent.setUiAttrib({ "extendTitlePort": port.name });
                     }
                 });
+
+
+            if (gui.patchView.getCurrentSubPatch() != 0)
+            {
+                let title = "Subpatch: Expose Port";
+                if (port.uiAttribs.expose)title = "Subpatch: Remove Exposed Port";
+
+                items.push({
+                    "title": title,
+                    "func": () =>
+                    {
+                        port.setUiAttribs({ "expose": !port.uiAttribs.expose });
+                    }
+                });
+            }
 
 
             CABLES.contextMenu.show(
