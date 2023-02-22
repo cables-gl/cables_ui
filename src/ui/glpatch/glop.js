@@ -9,6 +9,7 @@ import GlLink from "./gllink";
 import undo from "../utils/undo";
 import Gui from "../gui";
 import MouseState from "./mousestate";
+import defaultops from "../defaultops";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -80,15 +81,38 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._op)
         {
-            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0) this._displayType = this.DISPLAY_SUBPATCH;
-            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
-            if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
+            if (defaultops.isSubPatchOp(this._op.objName))
+            {
+                this._displayType = this.DISPLAY_SUBPATCH;
+
+                this.emitEvent("patchLoadEnd", () =>
+                {
+                    this.refreshPorts();
+                });
+
+                this._op.patch.on("subpatchExpose", (subpatchid) =>
+                {
+                    console.log(subpatchid);
+                    if (this._op.patchId.get() === subpatchid)
+                    {
+                        console.log("glports before", this._glPorts.length);
+                        console.log("yes its me");
+                        this.refreshPorts();
+
+                        console.log("glports after", this._glPorts.length);
+                    }
+                });
+            }
+            else if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
+            else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
         }
         this._wasInited = false;
 
         this._wasInCurrentSubpatch = false;
 
         this._initGl();
+
+        if (this._displayType === this.DISPLAY_SUBPATCH) setTimeout(() => { this.refreshPorts(); }, 1000);
     }
 
     _initWhenFirstInCurrentSubpatch()
@@ -603,8 +627,40 @@ export default class GlOp extends CABLES.EventTarget
         for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].dispose();
         this._glPorts.length = 0;
 
-        if (this._op) this._setupPorts(this._op.portsIn);
-        if (this._op) this._setupPorts(this._op.portsOut);
+        let portsIn = [];
+        let portsOut = [];
+
+        console.log(portsIn.length);
+        portsIn = portsIn.concat(this._op.portsIn);
+
+        console.log(portsIn.length);
+
+        if (this._displayType === this.DISPLAY_SUBPATCH)
+        {
+            const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
+            for (let i = 0; i < ports.length; i++)
+                if (portsIn.indexOf(ports[i]) == -1)portsIn.push(ports[i]);
+        }
+
+
+        portsOut = portsOut.concat(this._op.portsOut);
+
+        if (this._displayType === this.DISPLAY_SUBPATCH)
+        {
+            const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_OUT));
+            for (let i = 0; i < ports.length; i++)
+                if (portsOut.indexOf(ports[i]) == -1)portsOut.push(ports[i]);
+        }
+
+
+        console.log(portsIn.length);
+        console.log("----");
+        for (let i = 0; i < portsIn.length; i++)
+            console.log(portsIn[i].name);
+        console.log("-------------");
+
+        this._setupPorts(portsIn);
+        this._setupPorts(portsOut);
     }
 
     _setupPorts(ports)
@@ -622,6 +678,7 @@ export default class GlOp extends CABLES.EventTarget
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
 
+            console.log("setup ", ports[i].name);
             this._setupPort(count, ports[i]);
             count++;
         }

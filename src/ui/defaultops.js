@@ -203,6 +203,11 @@ export default
     "isSubPatchOp": (opname) =>
     {
         if (opname.indexOf("Ops.Ui.SubPatch") > -1) return true;
-    }
+    },
+    "isSubPatchOp2": (opname) =>
+    {
+        if (opname.indexOf("Ops.Dev.SubpatchNew") > -1) return true;
+    },
+
 
 };

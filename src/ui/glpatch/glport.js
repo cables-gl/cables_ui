@@ -6,7 +6,7 @@ import Logger from "../utils/logger";
 
 export default class GlPort
 {
-    constructor(glpatch, glop, rectInstancer, p, i, oprect)
+    constructor(glpatch, glop, rectInstancer, p, poxIdx, oprect)
     {
         this._log = new Logger("glPort");
 
@@ -27,7 +27,7 @@ export default class GlPort
 
         this._mouseButtonRightTimeDown = 0;
 
-        this._posX = i * (GlUiConfig.portWidth + GlUiConfig.portPadding);
+        this._posX = poxIdx * (GlUiConfig.portWidth + GlUiConfig.portPadding);
 
 
         if (!this._parent) this._log.warn("no parent rect given");

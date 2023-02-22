@@ -2346,19 +2346,24 @@ export default class PatchView extends CABLES.EventTarget
         return foundOps;
     }
 
-    getSubPatchExposedPorts(subid)
+    getSubPatchExposedPorts(subid, dir)
     {
         const foundPorts = [];
         const ops = this.getAllSubPatchOps(subid);
 
         for (let i = 0; i < ops.length; i++)
         {
-            for (let j = 0; j < ops[i].portsIn.length; j++)
-                if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
+            if (dir == undefined || dir === CABLES.PORT_DIR_IN)
+                for (let j = 0; j < ops[i].portsIn.length; j++)
+                    if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
 
-            for (let j = 0; j < ops[i].portsOut.length; j++)
-                if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
+            if (dir == undefined || dir === CABLES.PORT_DIR_OUT)
+                for (let j = 0; j < ops[i].portsOut.length; j++)
+                    if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         }
+
+
+        console.log("foundPorts", foundPorts.length);
 
         return foundPorts;
     }
