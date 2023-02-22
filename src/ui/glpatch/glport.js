@@ -59,7 +59,7 @@ export default class GlPort
     _updateColor()
     {
         if (!this._rect) return;
-        const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
+        const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated || this._port.uiAttribs.expose;
         if (!this._rectAssigned && isAssigned)
         {
             this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": true });

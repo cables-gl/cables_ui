@@ -198,6 +198,11 @@ export default
         if (opName.startsWith("Ops.Math")) return "math";
         if (opName.startsWith("Ops.User")) return "user";
         return "default";
+    },
+
+    "isSubPatchOp": (opname) =>
+    {
+        if (opname.indexOf("Ops.Ui.SubPatch") > -1) return true;
     }
 
 };

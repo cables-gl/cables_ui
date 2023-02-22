@@ -1,3 +1,4 @@
+import defaultops from "../defaultops";
 import SuggestionDialog from "./suggestiondialog";
 
 export default class SuggestPortDialog
@@ -15,12 +16,22 @@ export default class SuggestPortDialog
             if (CABLES.Link.canLink(op.portsOut[i], port))
                 this._addPort(op.portsOut[i]);
 
+        if (defaultops.isSubPatchOp(op.objName))
+        {
+            const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
+            for (let i = 0; i < ports.length; i++)
+            {
+                if (CABLES.Link.canLink(ports[i], port)) this._addPort(ports[i]);
+            }
+        }
+
+
         new SuggestionDialog(this._suggestions, op, mouseEvent, cb,
             (id) =>
             {
                 for (const i in this._suggestions)
                     if (this._suggestions[i].id == id)
-                        cb(this._suggestions[i].p.name);
+                        cb(this._suggestions[i].p.name, this._suggestions[i].op);
             }, false, cbCancel);
     }
 
@@ -28,7 +39,8 @@ export default class SuggestPortDialog
     {
         const name = p.name;
         this._suggestions.push({
-            p,
+            "p": p,
+            "op": p.parent.id,
             "name": p.title,
             "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),
