@@ -625,8 +625,11 @@ export default class GlOp extends CABLES.EventTarget
         if (this._displayType === this.DISPLAY_SUBPATCH)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
+
+            // this.fakePorts=[]
+
             for (let i = 0; i < ports.length; i++)
-                if (portsIn.indexOf(ports[i]) == -1)portsIn.push(ports[i]);
+                if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
         }
 
 
@@ -636,10 +639,8 @@ export default class GlOp extends CABLES.EventTarget
         {
             const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_OUT));
             for (let i = 0; i < ports.length; i++)
-                if (portsOut.indexOf(ports[i]) == -1)portsOut.push(ports[i]);
+                if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }
-
-        // console.log(portsIn);
 
 
         this._setupPorts(portsIn);
@@ -660,9 +661,24 @@ export default class GlOp extends CABLES.EventTarget
         {
             // console.log(ports[i]);
 
-            if (ports[i].uiAttribs.glPortIndex != count) emit = true;
 
-            ports[i].setUiAttribs({ "glPortIndex": count });
+            // console.log("this.op.getSubPatch() != ports[i].parent.id", this.op.getSubPatch(), ports[i].parent.id);
+
+            if (this.op.getSubPatch() != ports[i].parent.getSubPatch())
+            {
+                // console.log("yeas");
+                const key = "glPortIndex_" + this.op.id;
+                const o = {};
+                o[key] = count;
+
+                ports[i].setUiAttribs(o);
+            }
+            else
+            {
+                // console.log("noe");
+                if (ports[i].uiAttribs.glPortIndex != count) emit = true;
+                ports[i].setUiAttribs({ "glPortIndex": count });
+            }
 
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
@@ -693,7 +709,7 @@ export default class GlOp extends CABLES.EventTarget
 
         for (let i = 0; i < ports.length; i++)
         {
-            ports[i].uiAttribs.glPortIndex = i;
+            // ports[i].uiAttribs.glPortIndex = i;
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;

@@ -311,7 +311,7 @@ export default class GlLink
                     if (this._subPatchOp) this._subPatchOp.on("move", () => { this.update(); });
                 }
 
-                if (!this._subPatchInputOp)
+                if (!this._subPatchInputOp && this._cable)
                 {
                     this._subPatchInputOp = gui.corePatch().getSubPatchOp(this._cable.subPatch, "Ops.Ui.PatchInput");
                     // this._glSubPatchInputOp = this._glPatch.getOp(this._subPatchInputOp.id);
@@ -338,7 +338,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
-                        this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._subPatchInputOp.name),
+                        this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._portNameInput, this._subPatchInputOp.id),
                         this._subPatchInputOp.uiAttribs.translate.y + 30,
                     );
                 }
@@ -380,7 +380,7 @@ export default class GlLink
 
 
                     this._cableSub.setPosition(
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y,
                         this._opOut.getUiAttribs().translate.x + this._offsetXOutput,
                         this._opOut.getUiAttribs().translate.y + 30,
@@ -399,7 +399,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this.portNameIn),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
                 }
