@@ -35,7 +35,6 @@ export default function extendCore()
         CABLES.Op.unLinkTempReLinkP2 = null;
     };
 
-
     CABLES.Op.prototype.countFittingPorts = function (otherPort)
     {
         let count = 0;
@@ -502,17 +501,19 @@ export default function extendCore()
         return this.uiAttribs.subPatch || 0;
     };
 
-    CABLES.Op.prototype.getPortPosX = function (name)
+    CABLES.Op.prototype.getPortPosX = function (name, opid)
     {
         for (let i = 0; i < this.portsIn.length; i++)
         {
             if (this.portsIn[i].name == name)
             {
-                if (name == "b")
+                if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
                 {
-                    console.log(this.portsIn[i].uiAttribs.glPortIndex);
+                    console.log(this.portsIn[i].name, "!!!");
                 }
-                return (this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+
+
+                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
 
@@ -521,15 +522,6 @@ export default function extendCore()
             if (this.portsOut[i].name == name)
             {
                 return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
-            }
-        }
-
-        if (name == "b")
-        {
-            console.log("getPortPosX COULD NOT FIND", name, this.name, this.portsIn.length);
-            for (let i = 0; i < this.portsIn.length; i++)
-            {
-                console.log(this.portsIn[i].name);
             }
         }
 

@@ -59,12 +59,12 @@ export default class GlPort
     _updateColor()
     {
         if (!this._rect) return;
-        const isAssigned = this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
-        (this._port.uiAttribs.expose && this._port.parent.id == this._glop._op.id);
+        const isAssigned =
+            this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
+            (this._port.uiAttribs.expose && this._port.parent.id == this._glop._op.id);
+
         if (!this._rectAssigned && isAssigned)
         {
-            // console.log(this._port.parent.id, this._glop._op.id);
-
             this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": true });
             this._rectAssigned.setShape(6);
             this._rectAssigned.setColor(1, 1, 1, 1);
