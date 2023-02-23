@@ -688,11 +688,6 @@ CABLES_CMD_PATCH.watchGlOp = function ()
     gui.maintabPanel.show(true);
 };
 
-CABLES_CMD_PATCH.watchOpSerialized = function ()
-{
-    new OpSerialized(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
 
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
@@ -1144,12 +1139,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "convert blueprints to subpatches",
         "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "show op serialized",
-        "func": CABLES_CMD_PATCH.watchOpSerialized,
         "category": "patch",
         "icon": "op"
     },

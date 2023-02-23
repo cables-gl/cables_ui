@@ -1,5 +1,7 @@
 import GlDebugTab from "../components/tabs/tab_debugglui";
 import LoggingTab from "../components/tabs/tab_logging";
+import OpSerialized from "../components/tabs/tab_opserialized";
+import OpWatchUiAttribs from "../components/tabs/tab_uiattribs";
 import Gui from "../gui";
 
 const CABLES_CMD_DEBUG = {};
@@ -193,6 +195,20 @@ function load(opname)
     });
 }
 
+CABLES_CMD_DEBUG.watchOpSerialized = function ()
+{
+    new OpSerialized(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
+
+CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
+{
+    new OpWatchUiAttribs(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
+
 CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "glui debug",
@@ -265,6 +281,18 @@ CMD_DEBUG_COMMANDS.push(
         "category": "debug",
         "func": CABLES_CMD_DEBUG.testOp,
         "icon": "op"
-    }
+    },
+    {
+        "cmd": "show op serialized",
+        "func": CABLES_CMD_DEBUG.watchOpSerialized,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "show op uiattribs",
+        "func": CABLES_CMD_DEBUG.watchOpUiAttribs,
+        "category": "patch",
+        "icon": "op"
+    },
 
 );

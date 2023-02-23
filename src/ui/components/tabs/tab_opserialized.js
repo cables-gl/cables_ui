@@ -9,7 +9,6 @@ export default class OpSerialized extends CABLES.EventTarget
         this._tab = new CABLES.UI.Tab("Serialized Op", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
-
         this._id = "hljs" + CABLES.uuid();
 
         this._op = null;
@@ -50,7 +49,8 @@ export default class OpSerialized extends CABLES.EventTarget
     {
         if (this._op)
         {
-            this._tab.html("<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._op.getSerialized(), false, 4) + "</code></pre></div>");
+            let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._op.getSerialized(), false, 4) + "</code></pre></div>";
+            this._tab.html(html);
         }
         else
         {
