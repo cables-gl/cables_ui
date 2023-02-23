@@ -157,12 +157,10 @@ export default class GlDragLine
         });
     }
 
-
     get glPort()
     {
         return this._glPort;
     }
-
 
     setPort(p, opid, portName)
     {

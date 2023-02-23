@@ -31,9 +31,9 @@ export default class SnapLines extends CABLES.EventTarget
             const perf = CABLES.UI.uiProfiler.start("snaplines.update");
             const hashmap = {};
             const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());
-
             const selOps = gui.patchView.getSelectedOps();
             let selOp = null;
+
             if (selOps.length == 1) selOp = selOps[0];
 
             for (let i = 0; i < ops.length; i++)

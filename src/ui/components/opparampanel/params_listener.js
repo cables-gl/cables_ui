@@ -351,8 +351,10 @@ class ParamsListener extends CABLES.EventTarget
 
             let items = [];
 
-
-            if (dirStr == "in" && !port.isAnimated())
+            if (
+                !port.uiAttribs.expose &&
+                dirStr == "in" &&
+                !port.isAnimated())
             {
                 const item = {
                     "title": "Assign variable",
@@ -372,7 +374,11 @@ class ParamsListener extends CABLES.EventTarget
                 items.push(item);
             }
 
-            if (dirStr == "in" && !port.isBoundToVar())
+
+            if (
+                !port.uiAttribs.expose &&
+                !port.isBoundToVar() &&
+                dirStr == "in")
             {
                 let title = "Animate Parameter";
                 if (thePort.isAnimated()) title = "Remove Animation";
@@ -387,23 +393,38 @@ class ParamsListener extends CABLES.EventTarget
                 });
             }
 
-            if (port.parent.uiAttribs.extendTitlePort == port.name)
-                items.push({
-                    "title": "Remove extended title",
-                    "func": () =>
-                    {
-                        port.parent.setUiAttrib({ "extendTitlePort": null });
-                    }
-                });
+            if (!port.uiAttribs.expose)
+                if (port.parent.uiAttribs.extendTitlePort == port.name)
+                    items.push({
+                        "title": "Remove extended title",
+                        "func": () =>
+                        {
+                            port.parent.setUiAttrib({ "extendTitlePort": null });
+                        }
+                    });
+                else
+                    items.push({
+                        "title": "Extend title: \"" + port.name + ": x\"",
+                        "func": () =>
+                        {
+                            port.parent.setUiAttrib({ "extendTitlePort": port.name });
+                        }
+                    });
 
-            else
+
+            if (gui.patchView.getCurrentSubPatch() != 0 && !port.isAnimated())
+            {
+                let title = "Subpatch: Expose Port";
+                if (port.uiAttribs.expose)title = "Subpatch: Remove Exposed Port";
+
                 items.push({
-                    "title": "Extend title: \"" + port.name + ": x\"",
+                    "title": title,
                     "func": () =>
                     {
-                        port.parent.setUiAttrib({ "extendTitlePort": port.name });
+                        port.setUiAttribs({ "expose": !port.uiAttribs.expose });
                     }
                 });
+            }
 
 
             CABLES.contextMenu.show(
