@@ -82,7 +82,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._op)
         {
-            if (defaultops.isSubPatchOp(this._op.objName))
+            if (defaultops.isSubPatchOpName(this._op.objName))
             {
                 this._displayType = this.DISPLAY_SUBPATCH;
 
@@ -440,7 +440,7 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setParentRect(this._glRectBg);
             this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
 
-            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
+            if (this._displayType === this.DISPLAY_SUBPATCH)
             {
                 this._rectBorder = 1;
             }

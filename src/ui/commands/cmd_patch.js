@@ -166,9 +166,9 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
-CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
+CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
 {
-    gui.patchView.createSubPatchFromSelection();
+    gui.patchView.createSubPatchFromSelection(version);
 };
 
 CABLES_CMD_PATCH.findCommentedOps = function ()

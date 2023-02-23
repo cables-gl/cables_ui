@@ -223,7 +223,7 @@ export default class GlPatch extends CABLES.EventTarget
             if (!this.isMouseOverOp()) return;
 
             console.log(this._hoverOps[0]);
-            if (defaultops.isSubPatchOp(this._hoverOps[0].objName))
+            if (defaultops.isSubPatchOpName(this._hoverOps[0].objName))
             {
                 console.log("jo...");
                 gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
@@ -464,7 +464,7 @@ export default class GlPatch extends CABLES.EventTarget
             //     gui.metaTabs.activateTabByName("op");
             // }
 
-            if (CABLES.UI.DEFAULTOPNAMES.subPatch == ops[0].objName)
+            if (ops[0].isSubpatchOp())// CABLES.UI.DEFAULTOPNAMES.subPatch == ops[0].objName)
             {
                 gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
                 gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());

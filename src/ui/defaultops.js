@@ -35,6 +35,7 @@ export default
         "defaultFont": "Ops.Html.FontFile_v2",
         "blueprint": "Ops.Dev.Blueprint",
         "subPatch": "Ops.Ui.SubPatch",
+        "subPatch2": "Ops.Dev.SubpatchNew",
         "uiArea": "Ops.Ui.Area",
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture",
@@ -200,9 +201,9 @@ export default
         return "default";
     },
 
-    "isSubPatchOp": (opname) =>
+    "isSubPatchOpName": (opname) =>
     {
-        if (opname.indexOf("Ops.Ui.SubPatch") > -1) return true;
+        return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
     }
 
 

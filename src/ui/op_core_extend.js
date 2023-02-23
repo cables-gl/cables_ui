@@ -2,6 +2,7 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import defaultops from "./defaultops";
 import gluiconfig from "./glpatch/gluiconfig";
 import text from "./text";
 import uiconfig from "./uiconfig";
@@ -532,6 +533,11 @@ export default function extendCore()
             }
         }
 
-        return -20;
+        return -4;
+    };
+
+    CABLES.Op.prototype.isSubpatchOp = function ()
+    {
+        return (this.objName == "Ops.Ui.SubPatch" || this.objName == "Ops.Dev.SubpatchNew");
     };
 }

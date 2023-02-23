@@ -376,7 +376,7 @@ export default class GlLink
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
 
 
-                    console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput));
+                    // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput));
 
 
                     this._cableSub.setPosition(
