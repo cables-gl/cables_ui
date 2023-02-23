@@ -1,3 +1,4 @@
+import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
 import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
@@ -38,8 +39,6 @@ class ParamsListener extends CABLES.EventTarget
             this._portsIn = options.portsIn || [];
             this._portsOut = options.portsOut || [];
         }
-        // if (!this._portsIn && ) return;
-
 
         if (this._portsIn.length > 0)
         {
@@ -63,7 +62,6 @@ class ParamsListener extends CABLES.EventTarget
                     this._portsOut[i].getType() == CABLES.OP_PORT_TYPE_OBJECT) this._watchPorts.push(this._portsOut[i]);
             }
         }
-
 
         for (let ipi = 0; ipi < this._portsIn.length; ipi++) this.initPortClickListener(this._portsIn, ipi, this.panelId, "in");
         for (let ipi = 0; ipi < this._portsOut.length; ipi++) this.initPortClickListener(this._portsOut, ipi, this.panelId, "out");
@@ -241,8 +239,6 @@ class ParamsListener extends CABLES.EventTarget
     {
         const thePort = ports[index];
 
-        // if (ports[index].isAnimated()) ele.byId("portanim_" + dirStr + "_" + index).classList.add("timingbutton_active");
-
         if (ele.byId("portTitle_" + dirStr + "_" + index))
             ele.byId("portTitle_" + dirStr + "_" + index).addEventListener("click", function (e)
             {
@@ -393,56 +389,47 @@ class ParamsListener extends CABLES.EventTarget
                 });
             }
 
-            if (!port.uiAttribs.expose)
-                if (port.parent.uiAttribs.extendTitlePort == port.name)
-                    items.push({
-                        "title": "Remove extended title",
-                        "func": () =>
-                        {
-                            port.parent.setUiAttrib({ "extendTitlePort": null });
-                        }
-                    });
-                else
-                    items.push({
-                        "title": "Extend title: \"" + port.name + ": x\"",
-                        "func": () =>
-                        {
-                            port.parent.setUiAttrib({ "extendTitlePort": port.name });
-                        }
-                    });
 
-
-            if (gui.patchView.getCurrentSubPatch() != 0 && !port.isAnimated())
-            {
-                let title = "Subpatch: Expose Port";
-                if (port.uiAttribs.expose)title = "Subpatch: Remove Exposed Port";
-
+            if (port.parent.uiAttribs.extendTitlePort == port.name)
                 items.push({
-                    "title": title,
+                    "title": "Remove extended title",
                     "func": () =>
                     {
-                        port.setUiAttribs({ "expose": !port.uiAttribs.expose });
+                        port.parent.setUiAttrib({ "extendTitlePort": null });
                     }
                 });
+            else
+                items.push({
+                    "title": "Extend title: \"" + port.name + ": x\"",
+                    "func": () =>
+                    {
+                        port.parent.setUiAttrib({ "extendTitlePort": port.name });
+                    }
+                });
+
+
+            if (
+                (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.parent.uiAttribs.subPatch) &&
+                !port.isAnimated())
+            {
+                let title = "Subpatch: Expose Port";
+                if (port.uiAttribs.expose) title = "Subpatch: Remove Exposed Port";
+
+                items.push(
+                    {
+                        "title": title,
+                        "func": () =>
+                        {
+                            const subOp = gui.patchView.getSubPatchOuterOp(port.parent.uiAttribs.subPatch);
+                            subOp.removePort(port);
+                            port.setUiAttribs({ "expose": !port.uiAttribs.expos });
+                        }
+                    });
             }
 
-
-            CABLES.contextMenu.show(
-                { "items": items }, e.target);
+            CABLES.contextMenu.show({ "items": items }, e.target);
         });
         else console.log("contextmenu ele not found...", dirStr + "_" + panelid + "_" + index);
-
-        // el = ele.byId("portanim_" + dirStr + "_" + index);
-        // if (el)el.addEventListener("click", (e) =>
-        // {
-        //     const targetState = !el.classList.contains("timingbutton_active");
-
-        //     gui.setStateUnsaved();
-
-        //     CABLES.UI.paramsHelper.setPortAnimated(thePort.parent, index, targetState, thePort.get());
-        //     gui.emitEvent("portValueSetAnimated", thePort.parent, index, targetState, thePort.get());
-        // });
-        // else console.log("ele not found portanim...", dirStr + "_" + index);
     }
 
     setPortAnimated(op, index, panelid, targetState, defaultValue)

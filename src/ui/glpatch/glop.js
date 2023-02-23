@@ -638,6 +638,8 @@ export default class GlOp extends CABLES.EventTarget
                 if (portsOut.indexOf(ports[i]) == -1)portsOut.push(ports[i]);
         }
 
+        console.log(portsIn);
+
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);

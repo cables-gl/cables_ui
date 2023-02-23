@@ -95,6 +95,24 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
+
+        if (!this.hasExposeListener)
+        {
+            this.hasExposeListener = gui.corePatch().on("subpatchExpose",
+                (subpatchid) =>
+                {
+                    if (
+                        op &&
+                        defaultops.isSubPatchOp(op.objName) &&
+                        op.patchId.get() === subpatchid
+                    )
+                    {
+                        op.refreshParams();
+                        console.log("refresh");
+                    }
+                });
+        }
+
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
 
         for (let i = 0; i < this._portsIn.length; i++)
