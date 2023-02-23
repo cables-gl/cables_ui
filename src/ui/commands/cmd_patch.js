@@ -166,9 +166,9 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
-CABLES_CMD_PATCH.createSubPatchFromSelection = function ()
+CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
 {
-    gui.patchView.createSubPatchFromSelection();
+    gui.patchView.createSubPatchFromSelection(version);
 };
 
 CABLES_CMD_PATCH.findCommentedOps = function ()
@@ -688,11 +688,6 @@ CABLES_CMD_PATCH.watchGlOp = function ()
     gui.maintabPanel.show(true);
 };
 
-CABLES_CMD_PATCH.watchOpSerialized = function ()
-{
-    new OpSerialized(gui.mainTabs);
-    gui.maintabPanel.show(true);
-};
 
 CABLES_CMD_PATCH.savePatchScreenshot = function ()
 {
@@ -792,7 +787,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     let hiddenSubPatchOp = null;
     relevantOps.forEach((op) =>
     {
-        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+        if (op.objName && op.isSubpatchOp())
         {
             op.uiAttribs.translate = {
                 "x": blueprint.uiAttribs.translate.x,
@@ -842,7 +837,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
 
         if (op.uiAttribs && op.uiAttribs.hidden)
         {
-            if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+            if (op.objName && op.isSubpatchOp())
             {
                 hiddenSubPatchOp = op;
                 op.rebuildListeners();
@@ -1136,12 +1131,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "convert blueprints to subpatches",
         "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "show op serialized",
-        "func": CABLES_CMD_PATCH.watchOpSerialized,
         "category": "patch",
         "icon": "op"
     },

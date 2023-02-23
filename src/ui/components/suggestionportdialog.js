@@ -16,7 +16,7 @@ export default class SuggestPortDialog
             if (CABLES.Link.canLink(op.portsOut[i], port))
                 this._addPort(op.portsOut[i]);
 
-        if (defaultops.isSubPatchOp(op.objName))
+        if (defaultops.isSubPatchOpName(op.objName))
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
