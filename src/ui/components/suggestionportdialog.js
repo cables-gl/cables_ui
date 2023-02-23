@@ -31,7 +31,14 @@ export default class SuggestPortDialog
             {
                 for (const i in this._suggestions)
                     if (this._suggestions[i].id == id)
+                    {
+                        if (port.parent.uiAttribs.subPatch != this._suggestions[i].p.parent.uiAttribs.subPatch)
+                        {
+                            this._suggestions[i].p.setUiAttribs({ "expose": true });
+                        }
+
                         cb(this._suggestions[i].p.name, this._suggestions[i].op);
+                    }
             }, false, cbCancel);
     }
 
