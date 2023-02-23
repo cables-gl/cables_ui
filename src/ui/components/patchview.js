@@ -845,7 +845,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
+            if (ops[i].isSubpatchOp() && ops[i].patchId)
                 this._cachedSubpatchNames[ops[i].patchId.get()] = ops[i].name;
 
         if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
@@ -857,7 +857,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch && ops[i].patchId)
+            if (ops[i].isSubpatchOp() && ops[i].patchId)
             {
                 if (ops[i].patchId.get() == subId)
                 {
@@ -979,7 +979,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
+            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubpatchOp())
             {
                 ids.push(ops[i].patchId.get());
             }
@@ -1092,7 +1092,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].objName == CABLES.UI.DEFAULTOPNAMES.subPatch)
+            if (selectedOps[i].isSubpatchOp())
             {
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
@@ -1218,7 +1218,7 @@ export default class PatchView extends CABLES.EventTarget
             {
                 if (json.ops[i].storage && json.ops[i].storage.blueprint) delete json.ops[i].storage.blueprint;
 
-                if (CABLES.Op.isSubpatchOp(json.ops[i].objName))
+                if (defaultops.isSubPatchOpName(json.ops[i].objName))
                 {
                     for (const k in json.ops[i].portsIn)
                     {
@@ -1291,10 +1291,12 @@ export default class PatchView extends CABLES.EventTarget
                         json.ops[i].uiAttribs.translate.x = x;
                         json.ops[i].uiAttribs.translate.y = y;
 
-                        gui.emitEvent("netOpPos", {
-                            "opId": json.ops[i].id,
-                            "x": json.ops[i].uiAttribs.translate.x,
-                            "y": json.ops[i].uiAttribs.translate.y });
+                        gui.emitEvent(
+                            "netOpPos", {
+                                "opId": json.ops[i].id,
+                                "x": json.ops[i].uiAttribs.translate.x,
+                                "y": json.ops[i].uiAttribs.translate.y
+                            });
                     }
 
                     const undofunc = (function (opid)

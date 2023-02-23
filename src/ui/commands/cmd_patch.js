@@ -787,7 +787,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     let hiddenSubPatchOp = null;
     relevantOps.forEach((op) =>
     {
-        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+        if (op.objName && op.isSubpatchOp())
         {
             op.uiAttribs.translate = {
                 "x": blueprint.uiAttribs.translate.x,
@@ -836,7 +836,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
 
         if (op.uiAttribs && op.uiAttribs.hidden)
         {
-            if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.subPatch))
+            if (op.objName && op.isSubpatchOp())
             {
                 hiddenSubPatchOp = op;
                 op.rebuildListeners();
