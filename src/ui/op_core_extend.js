@@ -2,7 +2,10 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
+import defaultops from "./defaultops";
+import gluiconfig from "./glpatch/gluiconfig";
 import text from "./text";
+import uiconfig from "./uiconfig";
 
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
@@ -31,7 +34,6 @@ export default function extendCore()
         CABLES.Op.unLinkTempReLinkP1 = null;
         CABLES.Op.unLinkTempReLinkP2 = null;
     };
-
 
     CABLES.Op.prototype.countFittingPorts = function (otherPort)
     {
@@ -487,5 +489,47 @@ export default function extendCore()
                     this.portsOut[ipo].links[l].portIn.parent.selectChilds(options);
             }
         }
+    };
+
+    CABLES.Op.prototype.getUiAttribs = function ()
+    {
+        return this.uiAttribs || {};
+    };
+
+    CABLES.Op.prototype.getSubPatch = function ()
+    {
+        return this.uiAttribs.subPatch || 0;
+    };
+
+    CABLES.Op.prototype.getPortPosX = function (name, opid)
+    {
+        for (let i = 0; i < this.portsIn.length; i++)
+        {
+            if (this.portsIn[i].name == name)
+            {
+                if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
+                {
+                    console.log(this.portsIn[i].name, "!!!");
+                }
+
+
+                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+            }
+        }
+
+        for (let i = 0; i < this.portsOut.length; i++)
+        {
+            if (this.portsOut[i].name == name)
+            {
+                return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+            }
+        }
+
+        return -4;
+    };
+
+    CABLES.Op.prototype.isSubpatchOp = function ()
+    {
+        return (this.objName == "Ops.Ui.SubPatch" || this.objName == "Ops.Dev.SubpatchNew");
     };
 }

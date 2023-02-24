@@ -10,6 +10,7 @@ import undo from "../utils/undo";
 import Gui from "../gui";
 import MouseState from "./mousestate";
 import defaultops from "../defaultops";
+import uiconfig from "../uiconfig";
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -81,7 +82,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._op)
         {
-            if (defaultops.isSubPatchOp(this._op.objName))
+            if (defaultops.isSubPatchOpName(this._op.objName))
             {
                 this._displayType = this.DISPLAY_SUBPATCH;
 
@@ -439,7 +440,7 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setParentRect(this._glRectBg);
             this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
 
-            if (this._op.objName.indexOf("Ops.Ui.SubPatch") === 0)
+            if (this._displayType === this.DISPLAY_SUBPATCH)
             {
                 this._rectBorder = 1;
             }
@@ -624,8 +625,11 @@ export default class GlOp extends CABLES.EventTarget
         if (this._displayType === this.DISPLAY_SUBPATCH)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
+
+            // this.fakePorts=[]
+
             for (let i = 0; i < ports.length; i++)
-                if (portsIn.indexOf(ports[i]) == -1)portsIn.push(ports[i]);
+                if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
         }
 
 
@@ -635,7 +639,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             const ports = portsOut.concat(gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_OUT));
             for (let i = 0; i < ports.length; i++)
-                if (portsOut.indexOf(ports[i]) == -1)portsOut.push(ports[i]);
+                if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }
 
 
@@ -643,17 +647,69 @@ export default class GlOp extends CABLES.EventTarget
         this._setupPorts(portsOut);
     }
 
-    _setupPorts(ports)
-    {
-        let count = 0;
 
+    _setPortIndexAttribs(ports)
+    {
         ports = ports.sort((a, b) =>
         {
             return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
         });
 
+        let count = 0;
+        let emit = false;
         for (let i = 0; i < ports.length; i++)
         {
+            // console.log(ports[i]);
+
+
+            // console.log("this.op.getSubPatch() != ports[i].parent.id", this.op.getSubPatch(), ports[i].parent.id);
+
+            if (this.op.getSubPatch() != ports[i].parent.getSubPatch())
+            {
+                // console.log("yeas");
+                const key = "glPortIndex_" + this.op.id;
+                const o = {};
+                o[key] = count;
+
+                ports[i].setUiAttribs(o);
+            }
+            else
+            {
+                // console.log("noe");
+                if (ports[i].uiAttribs.glPortIndex != count) emit = true;
+                ports[i].setUiAttribs({ "glPortIndex": count });
+            }
+
+            if (ports[i].uiAttribs.display == "dropdown") continue;
+            if (ports[i].uiAttribs.display == "readonly") continue;
+            if (ports[i].uiAttribs.hidePort) continue;
+            count++;
+        }
+
+
+        // if (ports[0])console.log(ports[0].parent.objName);
+
+        // for (let i = 0; i < ports.length; i++)
+        // {
+        //     console.log(i, ports[i].name, ports[i].uiAttribs.glPortIndex);
+        // }
+
+        if (emit)
+        {
+            ports[0].parent.emitEvent("glportOrderChanged");
+        }
+        return ports;
+    }
+
+    _setupPorts(ports)
+    {
+        let count = 0;
+
+        ports = this._setPortIndexAttribs(ports);
+
+        for (let i = 0; i < ports.length; i++)
+        {
+            // ports[i].uiAttribs.glPortIndex = i;
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
@@ -1124,25 +1180,44 @@ export default class GlOp extends CABLES.EventTarget
 
     getPortPos(id)
     {
+        // console.log(".//////");
         // for cable position
-        let count = 0;
+
+        if (!this._op) return;
+
+        this._setPortIndexAttribs(this._op.portsIn);
+
+        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].parent.objName);
+
         for (let i = 0; i < this._op.portsIn.length; i++)
         {
-            if (this._op.portsIn[i].id == id) return count * (GlUiConfig.portWidth + GlUiConfig.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
-            if (this._op.portsIn[i].isHidden() ||
-                this._op.portsIn[i].uiAttribs.display == "dropdown" ||
-                this._op.portsIn[i].uiAttribs.display == "readonly" ||
-                this._op.portsIn[i].uiAttribs.hidePort) continue;
-
-            count++;
+            // console.log(i, this._op.portsIn[i].name, this._op.portsIn[i].uiAttribs.glPortIndex, this._op.portsIn[i].id);
         }
 
-        for (let i = 0; i < this._op.portsOut.length; i++)
-        {
-            if (this._op.portsOut[i].id == id) return i * (GlUiConfig.portWidth + GlUiConfig.portPadding) + CABLES.UI.uiConfig.portSize * 0.5;
-        }
+        return this._op.getPortPosX(id);
 
-        return 100;
+        // let count = 0;
+        // for (let i = 0; i < this._op.portsIn.length; i++)
+        // {
+        //     if (this._op.portsIn[i].name == id ||
+        //         this._op.portsIn[i].id == id) return (this._op.portsIn[i].uiAttribs.glPortIndex || count) * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
+
+        //     if (this._op.portsIn[i].isHidden() ||
+        //         this._op.portsIn[i].uiAttribs.display == "dropdown" ||
+        //         this._op.portsIn[i].uiAttribs.display == "readonly" ||
+        //         this._op.portsIn[i].uiAttribs.hidePort) continue;
+
+        //     count++;
+        // }
+
+        // for (let i = 0; i < this._op.portsOut.length; i++)
+        // {
+        //     if (this._op.portsOut[i].name == id || this._op.portsOut[i].id == id) return i * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
+        // }
+
+        // console.log("not found port pos");
+
+        // return -10;
     }
 
     isPassiveDrag()

@@ -95,6 +95,24 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
+
+        if (!this.hasExposeListener)
+        {
+            this.hasExposeListener = gui.corePatch().on("subpatchExpose",
+                (subpatchid) =>
+                {
+                    if (
+                        op &&
+                        defaultops.isSubPatchOpName(op.objName) &&
+                        op.patchId.get() === subpatchid
+                    )
+                    {
+                        op.refreshParams();
+                        console.log("refresh");
+                    }
+                });
+        }
+
         this.onOpUiAttrChange = op.on("onUiAttribsChange", this._onUiAttrChangeOp.bind(this));
 
         for (let i = 0; i < this._portsIn.length; i++)
@@ -143,7 +161,7 @@ class OpParampanel extends CABLES.EventTarget
         this._portsOut = op.portsOut;
 
 
-        if (defaultops.isSubPatchOp(op.objName))
+        if (defaultops.isSubPatchOpName(op.objName))
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
