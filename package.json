@@ -4,7 +4,7 @@
     "description": "",
     "main": "gulpfile.js",
     "engines": {
-        "node": "16.7.0"
+        "node": "18.14.2"
     },
     "browserslist": [
         "last 2 versions"
@@ -30,9 +30,9 @@
         "webpack-stream": "5.2.1"
     },
     "scripts": {
-        "start": "gulp",
-        "build": "gulp build",
-        "build:live": "gulp build"
+        "start": "gulp --openssl-legacy-provider",
+        "build": "gulp --openssl-legacy-provider build",
+        "build:live": "gulp --openssl-legacy-provider build"
     },
     "repository": {
         "type": "git",
