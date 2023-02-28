@@ -138,7 +138,7 @@ export default class TexturePreviewer
 
             if (texType == 1)s[0] *= 1.33;
 
-            if (this._currentWidth != previewCanvasEle.width || this._currentHeight != previewCanvasEle.height)
+            if (this._currentWidth != s[0] || this._currentHeight != s[1])
             {
                 this._currentWidth = previewCanvasEle.width = s[0];
                 this._currentHeight = previewCanvasEle.height = s[1];
