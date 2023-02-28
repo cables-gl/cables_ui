@@ -147,7 +147,7 @@ float samp(in vec2 uv, float w) {
         float l = 1.0;
         vec2 p = abs((uv)-0.5);
         float a = length(p-clamp(p.x+p.y,0.0,l)*0.5) - r;
-        finalColor.a = 0.5*(1.0-smoothstep(0.0,fwidth(uv.x)+0.06,a));
+        finalColor.a = (1.0-smoothstep(0.0,fwidth(uv.x)+0.1,a));
     }
 
 

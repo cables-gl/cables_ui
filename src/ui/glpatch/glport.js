@@ -72,7 +72,9 @@ export default class GlPort
             let size = GlUiConfig.portHeight * 0.75;
 
             if (this._port.uiAttribs.notWorking)
-                this._rectAssigned.setColor(0.3, 0.3, 0.3, 1);
+            {
+                this._rectAssigned.setColor(0.2, 0.2, 0.2, 1);
+            }
 
             this._rectAssigned.setSize(size, size);
             this._rectAssigned.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
