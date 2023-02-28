@@ -899,7 +899,6 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (ops[i].uiAttribs.hidden) continue;
 
-
             if (ops[i].uiAttribs)
             {
                 if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
@@ -908,9 +907,13 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (ops[i].storage && ops[i].storage.blueprint)
+            if (ops[i].objName.startsWith("Ops.Dev.Blueprint") && ops[i].uiAttribs)
             {
-                foundBlueprints[ops[i].storage.blueprint.id + "-" + ops[i].storage.blueprint.blueprintOpId] = ops[i].storage.blueprint;
+                foundBlueprints[ops[i].id] = {
+                    "opId": ops[i].id,
+                    "name": ops[i].uiAttribs.extendTitle,
+                    "blueprintSubpatch": ops[i].uiAttribs.blueprintSubpatch
+                };
             }
         }
 
@@ -930,6 +933,7 @@ export default class PatchView extends CABLES.EventTarget
                     }
 
                     const o = {
+                        "opId": ops[j].id,
                         "name": ops[j].name,
                         "id": foundPatchIds[i]
                     };
@@ -950,6 +954,7 @@ export default class PatchView extends CABLES.EventTarget
             if (!found && foundPatchIds[i] != 0)
             {
                 subPatches.push({
+                    "opId": null,
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
                 });
@@ -959,10 +964,11 @@ export default class PatchView extends CABLES.EventTarget
         for (const blueprintId in foundBlueprints)
         {
             const blueprint = foundBlueprints[blueprintId];
-            const blueprintName = blueprint.name || "unnamed";
+            const blueprintName = blueprint.name || "loading...";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
-                "id": blueprint.subpatchInstance,
+                "id": blueprint.blueprintSubpatch,
+                "opId": blueprint.opId,
                 "type": "blueprint"
             });
         }
@@ -1031,7 +1037,7 @@ export default class PatchView extends CABLES.EventTarget
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
 
         let parentSubId = gotoOp.uiAttribs.subPatch;
-        if (gotoOp.storage && op.storage.blueprint) gotoOp = gotoOp.storage.blueprint.blueprintOpId;
+        if (gotoOp.uiAttribs.blueprintOpId) gotoOp = gotoOp.blueprintOpId;
         this.setCurrentSubPatch(parentSubId, () =>
         {
             this.focus();
@@ -1206,63 +1212,10 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
-            json = CABLES.Patch.replaceOpIds(json);
+            json = CABLES.Patch.replaceOpIds(json, oldSub);
 
             for (const i in json.ops)
                 json.ops[i].uiAttribs.pasted = true;
-
-            // set correct subpatch and remove blueprint info
-            const subpatchIds = [];
-            const fixedSubPatches = [];
-            for (let i = 0; i < json.ops.length; i++)
-            {
-                if (json.ops[i].storage && json.ops[i].storage.blueprint) delete json.ops[i].storage.blueprint;
-
-                if (defaultops.isSubPatchOpName(json.ops[i].objName))
-                {
-                    for (const k in json.ops[i].portsIn)
-                    {
-                        if (json.ops[i].portsIn[k].name == "patchId")
-                        {
-                            const oldSubPatchId = json.ops[i].portsIn[k].value;
-                            const newSubPatchId = json.ops[i].portsIn[k].value = CABLES.generateUUID();
-
-                            subpatchIds.push(newSubPatchId);
-
-                            focusSubpatchop = json.ops[i];
-
-                            for (let j = 0; j < json.ops.length; j++)
-                            {
-                                if (json.ops[j].uiAttribs.subPatch == oldSubPatchId)
-                                {
-                                    json.ops[j].uiAttribs.subPatch = newSubPatchId;
-                                    fixedSubPatches.push(json.ops[j].id);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            for (const kk in json.ops)
-            {
-                let found = false;
-                for (let j = 0; j < fixedSubPatches.length; j++)
-                {
-                    if (json.ops[kk].id == fixedSubPatches[j])
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    json.ops[kk].uiAttribs.subPatch = oldSub;
-                }
-            }
-
-            // for (const i in subpatchIds) this.setCurrentSubPatch(subpatchIds[i]);
-
 
             { // change position of ops to paste
                 let minx = Number.MAX_VALUE;
@@ -2350,8 +2303,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-            if (ops[i].storage && ops[i].storage.blueprint && ops[i].storage.blueprint.blueprintOpId == opid)
-                return ops[i].storage.blueprint.subpatchInstance;
+            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].id == opid)
+                return ops[i].uiAttribs.blueprintSubpatch;
     }
 
 

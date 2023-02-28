@@ -768,7 +768,7 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
         } });
 };
 
-CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false, skipModal = false)
+CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false)
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
@@ -776,9 +776,9 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (op.storage && op.storage.blueprint)
+        if (op.uiAttribs)
         {
-            if (op.storage.blueprint.blueprintOpId === blueprint.id)
+            if (op.uiAttribs.blueprintOpId === blueprint.id)
             {
                 relevantOps.push(op);
             }
@@ -802,7 +802,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     bpPort.links.forEach((bpLink) =>
                     {
                         const parent = bpLink.portOut.parent;
-                        const link = patch.link(parent, bpLink.portOut.name, op, portIn.name);
+                        patch.link(parent, bpLink.portOut.name, op, portIn.name);
                     });
                 }
                 else
@@ -832,7 +832,8 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
         {
             CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
         }
-        delete op.storage.blueprint;
+        if (op.storage) delete op.storage.blueprint;
+        delete op.uiAttribs.blueprintOpId;
 
         if (op.uiAttribs && op.uiAttribs.hidden)
         {
@@ -851,15 +852,6 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
         gui.patchView.unselectAllOps();
         gui.patchView.selectOpId(hiddenSubPatchOp.id);
     }
-    // if (!skipModal)
-    // {
-    //     let html = "";
-    //     html += "To initialize the patch properly, you need to save and reload.<br/><br/>";
-    //     html += "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;";
-    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveCurrentProject((err) => { if(!err) window.location.reload()});\"><span class=\"icon icon-save\"></span>Save and reload</a>&nbsp;&nbsp;";
-    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>Save as a copy</a>&nbsp;&nbsp;";
-    //     new ModalDialog({ "title": "All Blueprints converted", "html": html });
-    // }
 };
 
 CABLES_CMD_PATCH.uncollideOps = function (ops)
