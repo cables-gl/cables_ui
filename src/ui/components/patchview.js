@@ -907,7 +907,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (ops[i].objName.startsWith("Ops.Dev.Blueprint") && ops[i].uiAttribs)
+            if (gui.serverOps.isBlueprintOp(ops[i].objName) && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = {
                     "opId": ops[i].id,
@@ -2334,6 +2334,26 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         return foundPorts;
+    }
+
+    replacePortValues(ops, portName, valueNew, valueOld = undefined)
+    {
+        ops.forEach((op) =>
+        {
+            const port = op.getPortByName(portName);
+            if (port)
+            {
+                const value = port.get();
+                if (valueOld === undefined)
+                {
+                    port.set(valueNew);
+                }
+                else
+                {
+                    if (value === valueOld) port.set(valueNew);
+                }
+            }
+        });
     }
 
     highlightExamplePatchOps()
