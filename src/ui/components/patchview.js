@@ -964,7 +964,7 @@ export default class PatchView extends CABLES.EventTarget
         for (const blueprintId in foundBlueprints)
         {
             const blueprint = foundBlueprints[blueprintId];
-            const blueprintName = blueprint.name || "failed to load!";
+            const blueprintName = blueprint.name || "loading...";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
                 "id": blueprint.blueprintSubpatch,
