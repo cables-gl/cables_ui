@@ -909,7 +909,8 @@ export default class PatchView extends CABLES.EventTarget
             }
             if (ops[i].objName.startsWith("Ops.Dev.Blueprint") && ops[i].uiAttribs)
             {
-                foundBlueprints[ops[i].uiAttribs.blueprintSubpatch] = {
+                foundBlueprints[ops[i].id] = {
+                    "opId": ops[i].id,
                     "name": ops[i].uiAttribs.extendTitle,
                     "blueprintSubpatch": ops[i].uiAttribs.blueprintSubpatch
                 };
@@ -932,6 +933,7 @@ export default class PatchView extends CABLES.EventTarget
                     }
 
                     const o = {
+                        "opId": ops[j].id,
                         "name": ops[j].name,
                         "id": foundPatchIds[i]
                     };
@@ -952,6 +954,7 @@ export default class PatchView extends CABLES.EventTarget
             if (!found && foundPatchIds[i] != 0)
             {
                 subPatches.push({
+                    "opId": null,
                     "name": "lost patch " + foundPatchIds[i],
                     "id": foundPatchIds[i]
                 });
@@ -961,10 +964,11 @@ export default class PatchView extends CABLES.EventTarget
         for (const blueprintId in foundBlueprints)
         {
             const blueprint = foundBlueprints[blueprintId];
-            const blueprintName = blueprint.name || "unnamed";
+            const blueprintName = blueprint.name || "failed to load!";
             subPatches.push({
                 "name": "Blueprint: " + blueprintName,
                 "id": blueprint.blueprintSubpatch,
+                "opId": blueprint.opId,
                 "type": "blueprint"
             });
         }
