@@ -47,7 +47,7 @@ export default class GlPort
 
         p.on("onUiAttrChange", (attribs) =>
         {
-            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable")) this._updateColor();
+            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
         });
 
         this.setFlowModeActivity(0);
@@ -63,22 +63,28 @@ export default class GlPort
             this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
             (this._port.uiAttribs.expose && this._port.parent.id == this._glop._op.id);
 
-        if (!this._rectAssigned && isAssigned)
+        if (!this._rectAssigned &&
+            (isAssigned || this._port.uiAttribs.notWorking))
         {
-            this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": true });
+            this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
             this._rectAssigned.setShape(6);
             this._rectAssigned.setColor(1, 1, 1, 1);
-            const size = GlUiConfig.portHeight * 0.5;
+            let size = GlUiConfig.portHeight * 0.75;
+
+            if (this._port.uiAttribs.notWorking)
+                this._rectAssigned.setColor(0.3, 0.3, 0.3, 1);
+
             this._rectAssigned.setSize(size, size);
             this._rectAssigned.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
             this._rect.addChild(this._rectAssigned);
         }
 
-        if (this._rectAssigned && !isAssigned)
+        if (this._rectAssigned && !isAssigned && !this._port.uiAttribs.notWorking)
         {
             this._rectAssigned.dispose();
             this._rectAssigned = null;
         }
+
         this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
     }
 

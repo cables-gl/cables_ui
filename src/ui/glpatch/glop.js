@@ -877,7 +877,8 @@ export default class GlOp extends CABLES.EventTarget
                 this._glDotError.interactive = false;
 
                 this._glDotNotWorking = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotNotWorking.setSize(this._width, this._height);
+                // this._glDotNotWorking.setSize(this._width, this._height);
+                this._glDotNotWorking.setSize(this._height * 0.3, this._height * 0.3);
                 this._glDotNotWorking.setColor(0.5, 0.5, 0.5, 1.0);
                 this._glDotNotWorking.setShape(7);
                 this._glDotNotWorking.interactive = false;
@@ -909,7 +910,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (notworking)
             {
-                this._glDotNotWorking.setPosition(0, 0);
+                this._glDotNotWorking.setPosition(-(this._height * 0.15), (this._height * 0.35));
                 this._glDotNotWorking.visible = true;
             }
             else this._glDotNotWorking.visible = false;
