@@ -31,9 +31,15 @@
 
             {{#each subPatches}}
                 <div class="list">
+                    {{#if id}}
                     <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()" >
                         <h3 class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</h3>
                     </div>
+                    {{else}}
+                    <div class="info {{type}}" onclick="gui.patchView.focusOp('{{opId}}');gui.patchView.centerSelectOp('{{opId}}');gui.patchView.showBookmarkParamsPanel();" >
+                        <h3 class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</h3>
+                    </div>
+                    {{/if}}
                 </div>
             {{/each}}
 

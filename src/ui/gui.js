@@ -1243,6 +1243,17 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
+
+        window.addEventListener("resize", () =>
+        {
+            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
+            this.canvasManager.blur();
+
+            this.mainTabs.emitEvent("resize");
+            this.setLayout();
+            this.setLayout(); // yes, twice....
+        }, false);
+
         cb();
     }
 
@@ -1357,16 +1368,6 @@ export default class Gui
             }
             this._spaceBarStart = 0;
         });
-
-        window.addEventListener("resize", () =>
-        {
-            this.canvasManager.getCanvasUiBar().showCanvasModal(false);
-            this.canvasManager.blur();
-
-            this.mainTabs.emitEvent("resize");
-            this.setLayout();
-            this.setLayout(); // yes, twice....
-        }, false);
     }
 
     pressedEscape(e)

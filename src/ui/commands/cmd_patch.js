@@ -5,7 +5,6 @@ import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
-import OpSerialized from "../components/tabs/tab_opserialized";
 import GlOpWatcher from "../components/tabs/tab_glop";
 
 const CABLES_CMD_PATCH = {};
@@ -768,7 +767,7 @@ CABLES_CMD_PATCH.replaceFilePath = function ()
         } });
 };
 
-CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false, skipModal = false)
+CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection = false)
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
@@ -776,9 +775,9 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (op.storage && op.storage.blueprint)
+        if (op.uiAttribs)
         {
-            if (op.storage.blueprint.blueprintOpId === blueprint.id)
+            if (op.uiAttribs.blueprintOpId === blueprint.id)
             {
                 relevantOps.push(op);
             }
@@ -802,7 +801,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     bpPort.links.forEach((bpLink) =>
                     {
                         const parent = bpLink.portOut.parent;
-                        const link = patch.link(parent, bpLink.portOut.name, op, portIn.name);
+                        patch.link(parent, bpLink.portOut.name, op, portIn.name);
                     });
                 }
                 else
@@ -832,7 +831,8 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
         {
             CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
         }
-        delete op.storage.blueprint;
+        if (op.storage) delete op.storage.blueprint;
+        delete op.uiAttribs.blueprintOpId;
 
         if (op.uiAttribs && op.uiAttribs.hidden)
         {
@@ -851,15 +851,6 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
         gui.patchView.unselectAllOps();
         gui.patchView.selectOpId(hiddenSubPatchOp.id);
     }
-    // if (!skipModal)
-    // {
-    //     let html = "";
-    //     html += "To initialize the patch properly, you need to save and reload.<br/><br/>";
-    //     html += "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;";
-    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveCurrentProject((err) => { if(!err) window.location.reload()});\"><span class=\"icon icon-save\"></span>Save and reload</a>&nbsp;&nbsp;";
-    //     html += "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>Save as a copy</a>&nbsp;&nbsp;";
-    //     new ModalDialog({ "title": "All Blueprints converted", "html": html });
-    // }
 };
 
 CABLES_CMD_PATCH.uncollideOps = function (ops)
@@ -915,6 +906,43 @@ CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
     {
         CABLES_CMD_PATCH.convertBlueprintToSubpatch(blueprint, false, index === relevantOps.length - 1);
     });
+};
+
+CABLES_CMD_PATCH.localizeBlueprints = () =>
+{
+    const patch = gui.corePatch();
+    const ops = patch.ops;
+    const relevantOps = ops.filter((op) =>
+    {
+        if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+        const port = op.getPortByName("externalPatchId");
+        if (port)
+        {
+            const portValue = port.get();
+            if (portValue !== gui.patchId && portValue !== gui.project().shortId) return true;
+        }
+        return false;
+    });
+
+    const localizable = [];
+    relevantOps.forEach((op) =>
+    {
+        const port = op.getPortByName("subPatchId");
+        if (port && port.get())
+        {
+            const subpatchExists = ops.some((subpatchOp) =>
+            {
+                if (!subpatchOp.isSubpatchOp()) return false;
+                const subpatchPort = subpatchOp.getPortByName("patchId");
+                return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
+            });
+            if (subpatchExists)
+            {
+                localizable.push(op);
+            }
+        }
+    });
+    gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
 };
 
 CMD_PATCH_COMMANDS.push(
@@ -1139,6 +1167,12 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "convert blueprints to subpatches",
         "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "point blueprints to local patch",
+        "func": CABLES_CMD_PATCH.localizeBlueprints,
         "category": "patch",
         "icon": "op"
     },

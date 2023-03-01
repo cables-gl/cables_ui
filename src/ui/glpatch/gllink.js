@@ -376,8 +376,8 @@ export default class GlLink
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
 
 
-                    // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput));
-
+                    console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
+                    console.log(this._subPatchOp);
 
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
@@ -395,7 +395,7 @@ export default class GlLink
                     this._opIn.getUiAttribs().translate &&
                     this._opIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
                 {
-                    if (this._debugColor) this._cable.setColor(1, 0, 0, 1);
+                    if (this._debugColor) this._cable.setColor(1, 0, 0, 1); // red
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
@@ -450,6 +450,24 @@ export default class GlLink
                 this.update();
             });
             if (this._opOut) this._opOut._op.on("glportOrderChanged", () =>
+            {
+                // console.log("glport order changed!@!!");
+                this.update();
+            });
+
+            if (this._subPatchOp) this._subPatchOp.on("glportOrderChanged", () =>
+            {
+                console.log("this._subPatchOp --- glport order changed!@!!");
+                this.update();
+            });
+
+            if (this._subPatchInputOp) this._subPatchInputOp.on("glportOrderChanged", () =>
+            {
+                // console.log("glport order changed!@!!");
+                this.update();
+            });
+
+            if (this._subPatchOutputOp) this._subPatchOutputOp.on("glportOrderChanged", () =>
             {
                 // console.log("glport order changed!@!!");
                 this.update();
