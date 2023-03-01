@@ -773,6 +773,7 @@ export default class PatchView extends CABLES.EventTarget
             for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 
             if (version < 2)
+            {
                 for (let i = 0; i < selectedOps.length; i++)
                 {
                     for (let j = 0; j < selectedOps[i].portsIn.length; j++)
@@ -832,6 +833,7 @@ export default class PatchView extends CABLES.EventTarget
                         }
                     }
                 }
+            }
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
             this._p.emitEvent("subpatchCreated");
