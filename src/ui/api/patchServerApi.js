@@ -2,6 +2,27 @@
 import Logger from "../utils/logger";
 import ModalDialog from "../dialogs/modaldialog";
 
+
+
+export function bytesArrToBase64(arr) {
+    const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; // base64 alphabet
+    const bin = n => n.toString(2).padStart(8,0); // convert num to 8-bit binary string
+    const l = arr.length
+    let result = '';
+  
+    for(let i=0; i<=(l-1)/3; i++) {
+      let c1 = i*3+1>=l; // case when "=" is on end
+      let c2 = i*3+2>=l; // case when "=" is on end
+      let chunk = bin(arr[3*i]) + bin(c1? 0:arr[3*i+1]) + bin(c2? 0:arr[3*i+2]);
+      let r = chunk.match(/.{1,6}/g).map((x,j)=> j==3&&c2 ? '=' :(j==2&&c1 ? '=':abc[+('0b'+x)]));  
+      result += r.join('');
+    }
+  
+    return result;
+  }
+
+  
+
 export default class PatchSaveServer extends CABLES.EventTarget
 {
     constructor()
@@ -30,6 +51,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         gui.closeModal();
         CABLES.CMD.PATCH.save(true);
     }
+
 
     checkUpdated(cb, fromSave = false)
     {
@@ -451,11 +473,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
-                // let decoder = new TextDecoder("utf8");
-                // let b64encoded = btoa(decoder.decode(uint8data));
-                // console.log("buf!!", uint8data);
 
-                let b64 = Buffer.from(uint8data).toString("base64");
+
+                  
+                // let b64 = Buffer.from(uint8data).toString("base64");
+// bytesArrToBase
+                let b64 = bytesArrToBase64(uint8data);
+
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
