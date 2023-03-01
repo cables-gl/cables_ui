@@ -268,14 +268,31 @@ export default class PatchSaveServer extends CABLES.EventTarget
         console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
         console.log("patch save as - patchName", patchName);
 
+        const checkboxes = [];
+        const localBlueprints = gui.corePatch().ops.filter((op) =>
+        {
+            if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+            const port = op.getPortByName("externalPatchId");
+            if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
+            return false;
+        });
+        if (localBlueprints.length > 0)
+        {
+            checkboxes.push({
+                "name": "keepLocalBlueprints",
+                "title": "point local blueprints to new patch",
+                "checked": true
+            });
+        }
 
-        const p = new ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
             "notices": modalNotices,
             "promptValue": "copy of " + patchName,
-            "promptOk": (name) =>
+            "checkboxes": checkboxes,
+            "promptOk": (name, checkboxStates) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
                     {
@@ -292,6 +309,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         gui.corePatch().settings.isExample = false;
                         gui.corePatch().settings.isTest = false;
                         gui.corePatch().settings.isFeatured = false;
+
+                        if (checkboxStates && checkboxStates.keepLocalBlueprints)
+                        {
+                            gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
+                        }
 
                         this.saveCurrentProject(
                             function ()
