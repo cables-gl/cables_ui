@@ -206,7 +206,10 @@ export default function extendCore()
                     if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_to;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
+
+                    p.setUiAttribs({ "notWorking": true });
                 }
+                else p.setUiAttribs({ "notWorking": false });
             }
         }
 
@@ -507,11 +510,10 @@ export default function extendCore()
         {
             if (this.portsIn[i].name == name)
             {
-                if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
-                {
-                    console.log(this.portsIn[i].name, "!!!");
-                }
-
+                // if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
+                // {
+                //     console.log(this.portsIn[i].name, "!!!");
+                // }
 
                 return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }

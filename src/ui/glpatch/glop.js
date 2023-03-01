@@ -106,7 +106,14 @@ export default class GlOp extends CABLES.EventTarget
 
         this._initGl();
 
-        if (this._displayType === this.DISPLAY_SUBPATCH) setTimeout(() => { this.refreshPorts(); }, 1000);
+
+        // this.refreshPorts();
+        // if (this._displayType === this.DISPLAY_SUBPATCH)
+        //     this._op.patch.on("patchLoadEnd", () =>
+        //     {
+        //         this.refreshPorts();
+        //     });
+        if (this._displayType === this.DISPLAY_SUBPATCH) setTimeout(() => { this.refreshPorts(); }, 100); // nooooooooo!
     }
 
     _initWhenFirstInCurrentSubpatch()
@@ -626,8 +633,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             const ports = gui.patchView.getSubPatchExposedPorts(this._op.patchId.get(), CABLES.PORT_DIR_IN);
 
-            // this.fakePorts=[]
-
             for (let i = 0; i < ports.length; i++)
                 if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
         }
@@ -660,8 +665,6 @@ export default class GlOp extends CABLES.EventTarget
         for (let i = 0; i < ports.length; i++)
         {
             // console.log(ports[i]);
-
-
             // console.log("this.op.getSubPatch() != ports[i].parent.id", this.op.getSubPatch(), ports[i].parent.id);
 
             if (this.op.getSubPatch() != ports[i].parent.getSubPatch())
@@ -670,6 +673,8 @@ export default class GlOp extends CABLES.EventTarget
                 const key = "glPortIndex_" + this.op.id;
                 const o = {};
                 o[key] = count;
+
+                if (ports[i].uiAttribs[key] != count) emit = true;
 
                 ports[i].setUiAttribs(o);
             }
@@ -697,6 +702,7 @@ export default class GlOp extends CABLES.EventTarget
         if (emit)
         {
             ports[0].parent.emitEvent("glportOrderChanged");
+            if (this.op.getSubPatch() != ports[0].parent.getSubPatch()) this._op.emitEvent("glportOrderChanged");
         }
         return ports;
     }
@@ -871,7 +877,8 @@ export default class GlOp extends CABLES.EventTarget
                 this._glDotError.interactive = false;
 
                 this._glDotNotWorking = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotNotWorking.setSize(this._width, this._height);
+                // this._glDotNotWorking.setSize(this._width, this._height);
+                this._glDotNotWorking.setSize(this._height * 0.25, this._height * 0.25);
                 this._glDotNotWorking.setColor(0.5, 0.5, 0.5, 1.0);
                 this._glDotNotWorking.setShape(7);
                 this._glDotNotWorking.interactive = false;
@@ -903,7 +910,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (notworking)
             {
-                this._glDotNotWorking.setPosition(0, 0);
+                this._glDotNotWorking.setPosition(-(this._height * 0.15), (this._height * 0.375));
                 this._glDotNotWorking.visible = true;
             }
             else this._glDotNotWorking.visible = false;

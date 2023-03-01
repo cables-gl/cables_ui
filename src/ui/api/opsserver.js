@@ -1122,6 +1122,11 @@ export default class ServerOps
         return opname && opname.indexOf("Ops.Team.") === 0;
     }
 
+    isBlueprintOp(opname)
+    {
+        return opname && opname.startsWith("Ops.Dev.Blueprint");
+    }
+
     getExtensionByOpName(opname)
     {
         return opname ? opname.split(".", 3).join(".") : null;
