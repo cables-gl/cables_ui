@@ -869,7 +869,16 @@ export default class PatchView extends CABLES.EventTarget
                         "id": ops[i].patchId.get(),
                         "type": type
                     };
-                    if (ops[i].storage && ops[i].storage.blueprint) patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
+                    if (ops[i].storage && ops[i].storage.blueprint)
+                    {
+                        patchInfo.blueprintPatchId = ops[i].storage.blueprint.patchId;
+                        const bpOp = gui.corePatch().getOpById(ops[i].uiAttribs.blueprintOpId);
+                        if (bpOp)
+                        {
+                            const port = bpOp.getPortByName("subPatchId");
+                            if (port && port.get()) patchInfo.blueprintLocalSubpatch = port.get();
+                        }
+                    }
                     arr.push(patchInfo);
                     if (ops[i].uiAttribs.subPatch !== 0) this.getSubpatchPathArray(ops[i].uiAttribs.subPatch, arr);
                 }
@@ -907,7 +916,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (ops[i].objName.startsWith("Ops.Dev.Blueprint") && ops[i].uiAttribs)
+            if (gui.serverOps.isBlueprintOp(ops[i].objName) && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = {
                     "opId": ops[i].id,
@@ -1073,7 +1082,14 @@ export default class PatchView extends CABLES.EventTarget
                 const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
                 if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
             }
-            str += "<br/><br/><a >this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "\">open patch</a>";
+            let bpText = "goto blueprint";
+            let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
+            if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
+            {
+                let subpatchId = names[0].blueprintLocalSubpatch;
+                if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
+            }
+            str += "<br/><br/><a style='margin-left: 5px;'>this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
         }
         else
         {
@@ -2334,6 +2350,26 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         return foundPorts;
+    }
+
+    replacePortValues(ops, portName, valueNew, valueOld = undefined)
+    {
+        ops.forEach((op) =>
+        {
+            const port = op.getPortByName(portName);
+            if (port)
+            {
+                const value = port.get();
+                if (valueOld === undefined)
+                {
+                    port.set(valueNew);
+                }
+                else
+                {
+                    if (value === valueOld) port.set(valueNew);
+                }
+            }
+        });
     }
 
     highlightExamplePatchOps()

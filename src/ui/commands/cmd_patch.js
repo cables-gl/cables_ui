@@ -5,7 +5,6 @@ import { notifyError } from "../elements/notification";
 import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
-import OpSerialized from "../components/tabs/tab_opserialized";
 import GlOpWatcher from "../components/tabs/tab_glop";
 
 const CABLES_CMD_PATCH = {};
@@ -909,6 +908,43 @@ CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
     });
 };
 
+CABLES_CMD_PATCH.localizeBlueprints = () =>
+{
+    const patch = gui.corePatch();
+    const ops = patch.ops;
+    const relevantOps = ops.filter((op) =>
+    {
+        if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+        const port = op.getPortByName("externalPatchId");
+        if (port)
+        {
+            const portValue = port.get();
+            if (portValue !== gui.patchId && portValue !== gui.project().shortId) return true;
+        }
+        return false;
+    });
+
+    const localizable = [];
+    relevantOps.forEach((op) =>
+    {
+        const port = op.getPortByName("subPatchId");
+        if (port && port.get())
+        {
+            const subpatchExists = ops.some((subpatchOp) =>
+            {
+                if (!subpatchOp.isSubpatchOp()) return false;
+                const subpatchPort = subpatchOp.getPortByName("patchId");
+                return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
+            });
+            if (subpatchExists)
+            {
+                localizable.push(op);
+            }
+        }
+    });
+    gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
@@ -1131,6 +1167,12 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "convert blueprints to subpatches",
         "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "point blueprints to local patch",
+        "func": CABLES_CMD_PATCH.localizeBlueprints,
         "category": "patch",
         "icon": "op"
     },
