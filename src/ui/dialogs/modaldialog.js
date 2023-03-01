@@ -45,6 +45,8 @@ export default class ModalDialog extends CABLES.EventTarget
         if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "button";
         if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
 
+        this._checkboxes = this._options.checkboxes || [];
+
         this._ele = null;
         this._eleContent = null;
         this._bg = new ModalBackground();
@@ -82,6 +84,24 @@ export default class ModalDialog extends CABLES.EventTarget
             html += "<br/>";
         }
 
+        if (this._checkboxes.length > 0)
+        {
+            html += "<br/>";
+            this._checkboxes.forEach((checkbox) =>
+            {
+                const id = "modal_checkbox_" + checkbox.name;
+                const checkboxEle = document.createElement("input");
+                checkboxEle.classList.add("modalcheckbox");
+                checkboxEle.setAttribute("id", id);
+                checkboxEle.setAttribute("type", "checkbox");
+                if (checkbox.name) checkboxEle.setAttribute("name", checkbox.name);
+                if (checkbox.checked) checkboxEle.setAttribute("checked", "checked");
+                html += checkboxEle.outerHTML;
+                if (checkbox.title) html += "<label for=\"" + id + "\">" + checkbox.title + "</label>";
+                html += "<br/>";
+            });
+        }
+
         if (this._options.notices && this._options.notices.length > 0)
         {
             html += "<div class=\"modallist notices\">";
@@ -98,7 +118,7 @@ export default class ModalDialog extends CABLES.EventTarget
         {
             html += "<br/>";
             html += "<a class=\"" + this._options.okButton.cssClasses + "\" id=\"prompt_ok\">&nbsp;&nbsp;&nbsp;" + this._options.okButton.text + "&nbsp;&nbsp;&nbsp;</a>";
-            html += "&nbsp;&nbsp;<a class=\"button\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;Cancel&nbsp;&nbsp;&nbsp;</a>";
+            html += "&nbsp;&nbsp;<a class=\"button\" id=\"prompt_cancel\">&nbsp;&nbsp;&nbsp;" + this._options.cancelButton.text + "&nbsp;&nbsp;&nbsp;</a>";
         }
 
         if (this._options.choice)
@@ -223,8 +243,9 @@ export default class ModalDialog extends CABLES.EventTarget
 
     _choiceSubmit()
     {
+        const states = this._getCheckboxStates();
         this.close();
-        this.emitEvent("onSubmit");
+        this.emitEvent("onSubmit", null, states);
     }
 
     _promptSubmit()
@@ -234,13 +255,25 @@ export default class ModalDialog extends CABLES.EventTarget
         if (!elePromptInput) return this._log.warn("modal prompt but no input...?!");
         if (!this._options.promptOk) return this._log.warn("modal prompt but no promptOk callback!");
 
+        const states = this._getCheckboxStates();
         this.close();
-        this._options.promptOk(elePromptInput.value);
-        this.emitEvent("onSubmit", elePromptInput.value);
+        this._options.promptOk(elePromptInput.value, states);
+        this.emitEvent("onSubmit", elePromptInput.value, states);
     }
 
     persistInIdleMode()
     {
         return this._options.persistInIdleMode;
+    }
+
+    _getCheckboxStates()
+    {
+        const checkboxes = ele.byQueryAll(".modalcheckbox");
+        const checkboxStates = {};
+        checkboxes.forEach((checkbox) =>
+        {
+            checkboxStates[checkbox.getAttribute("name")] = checkbox.checked;
+        });
+        return checkboxStates;
     }
 }

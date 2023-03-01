@@ -10,6 +10,7 @@ export default class VizLayer extends CABLES.EventTarget
 
         this._log = new Logger("VizLayer");
 
+        this._usingGl = false;
         this._items = [];
         this._itemsLookup = {};
         this._glPatch = glPatch;
@@ -37,7 +38,18 @@ export default class VizLayer extends CABLES.EventTarget
 
         this._updateSize();
 
-        gui.corePatch().cgl.on("beginFrame", this.renderGl.bind(this));
+        gui.corePatch().cgl.on("beginFrame", () =>
+        {
+            this._usingGl = true;
+            this.renderGl();
+        });
+        gui.corePatch().on("reqAnimFrame", () =>
+        {
+            if (!this._usingGl)
+            {
+                this.renderGl();
+            }
+        });
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
@@ -46,14 +58,10 @@ export default class VizLayer extends CABLES.EventTarget
                 let item = this._itemsLookup[a.id];
                 if (!item)
                 {
-                    // a.uiAttribs.translate = a.uiAttribs.translate || { "x": 0, "y": 0 };
-
                     item = {
                         "op": a,
                         "port": a.portsIn[0],
-                        "ports": a.portsIn,
-                        // "posX": a.uiAttribs.translate.x,
-                        // "posY": a.uiAttribs.translate.y,
+                        "ports": a.portsIn
                     };
 
                     this._itemsLookup[a.id] = item;
@@ -90,6 +98,12 @@ export default class VizLayer extends CABLES.EventTarget
 
     renderGl()
     {
+        if (!gui.corePatch().cgl.hasFrameStarted() && this._usingGl)
+        {
+            this._usingGl = false;
+            return;
+        }
+
         if (this._items.length == 0) return;
         this._canvasCtx.fillStyle = "#222222";
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
@@ -163,7 +177,8 @@ export default class VizLayer extends CABLES.EventTarget
                     "y": pos[1],
                     "width": size[0],
                     "height": size[1],
-                    "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6
+                    "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6,
+                    "useGl": this._usingGl
                 };
 
                 this._items[i].op.renderVizLayer(this._canvasCtx, layer);

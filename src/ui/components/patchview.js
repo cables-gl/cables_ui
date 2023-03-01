@@ -773,6 +773,7 @@ export default class PatchView extends CABLES.EventTarget
             for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 
             if (version < 2)
+            {
                 for (let i = 0; i < selectedOps.length; i++)
                 {
                     for (let j = 0; j < selectedOps[i].portsIn.length; j++)
@@ -832,6 +833,7 @@ export default class PatchView extends CABLES.EventTarget
                         }
                     }
                 }
+            }
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
             this._p.emitEvent("subpatchCreated");
@@ -1082,10 +1084,11 @@ export default class PatchView extends CABLES.EventTarget
                 const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
                 if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
             }
-            let bpText = "goto blueprint";
+            let bpText = "<span class=\"icon icon-external\"></span> open patch";
             let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
             if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
             {
+                bpText = "goto subpatch";
                 let subpatchId = names[0].blueprintLocalSubpatch;
                 if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
             }
@@ -2006,17 +2009,10 @@ export default class PatchView extends CABLES.EventTarget
                 this.setSelectedOpById(origOp.id);
             }, 100);
 
+            this.selectOpId(newOp.id);
+            gui.opParams.show(newOp.id);
+            this._patchRenderer.focusOpAnim(newOp.id);
 
-            // if (CABLES.UI.loaded)
-            // {
-            this.selectOpId(origOp.id);
-            gui.opParams.show(origOp.id);
-            this._patchRenderer.focusOpAnim(origOp.id);
-            //     this.focusOp(op.id);
-            // }
-
-
-            // CABLES.UI.MODAL.show(html);
             new ModalDialog({ "html": html });
         } });
     }
@@ -2449,5 +2445,42 @@ export default class PatchView extends CABLES.EventTarget
         {
 
         }
+    }
+
+    localizeBlueprints()
+    {
+        const patch = gui.corePatch();
+        const ops = patch.ops;
+        const relevantOps = ops.filter((op) =>
+        {
+            if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+            const port = op.getPortByName("externalPatchId");
+            if (port)
+            {
+                const portValue = port.get();
+                if (portValue !== gui.patchId && portValue !== gui.project().shortId) return true;
+            }
+            return false;
+        });
+
+        const localizable = [];
+        relevantOps.forEach((op) =>
+        {
+            const port = op.getPortByName("subPatchId");
+            if (port && port.get())
+            {
+                const subpatchExists = ops.some((subpatchOp) =>
+                {
+                    if (!subpatchOp.isSubpatchOp()) return false;
+                    const subpatchPort = subpatchOp.getPortByName("patchId");
+                    return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
+                });
+                if (subpatchExists)
+                {
+                    localizable.push(op);
+                }
+            }
+        });
+        gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
     }
 }

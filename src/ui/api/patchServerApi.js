@@ -3,25 +3,25 @@ import Logger from "../utils/logger";
 import ModalDialog from "../dialogs/modaldialog";
 
 
-
-export function bytesArrToBase64(arr) {
+export function bytesArrToBase64(arr)
+{
     const abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"; // base64 alphabet
-    const bin = n => n.toString(2).padStart(8,0); // convert num to 8-bit binary string
-    const l = arr.length
-    let result = '';
-  
-    for(let i=0; i<=(l-1)/3; i++) {
-      let c1 = i*3+1>=l; // case when "=" is on end
-      let c2 = i*3+2>=l; // case when "=" is on end
-      let chunk = bin(arr[3*i]) + bin(c1? 0:arr[3*i+1]) + bin(c2? 0:arr[3*i+2]);
-      let r = chunk.match(/.{1,6}/g).map((x,j)=> j==3&&c2 ? '=' :(j==2&&c1 ? '=':abc[+('0b'+x)]));  
-      result += r.join('');
-    }
-  
-    return result;
-  }
+    const bin = (n) => { return n.toString(2).padStart(8, 0); }; // convert num to 8-bit binary string
+    const l = arr.length;
+    let result = "";
 
-  
+    for (let i = 0; i <= (l - 1) / 3; i++)
+    {
+        let c1 = i * 3 + 1 >= l; // case when "=" is on end
+        let c2 = i * 3 + 2 >= l; // case when "=" is on end
+        let chunk = bin(arr[3 * i]) + bin(c1 ? 0 : arr[3 * i + 1]) + bin(c2 ? 0 : arr[3 * i + 2]);
+        let r = chunk.match(/.{1,6}/g).map((x, j) => { return (j == 3 && c2 ? "=" : (j == 2 && c1 ? "=" : abc[+("0b" + x)])); });
+        result += r.join("");
+    }
+
+    return result;
+}
+
 
 export default class PatchSaveServer extends CABLES.EventTarget
 {
@@ -262,19 +262,37 @@ export default class PatchSaveServer extends CABLES.EventTarget
         }
 
         let patchName = gui.project().name;
-        if (gui.corePatch() && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
+        if (gui.corePatch() && gui.corePatch().name && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
 
+        console.log("patch save as - gui.project().name", gui.project().name);
         console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
-        console.log("patch save as - atchName", patchName);
+        console.log("patch save as - patchName", patchName);
 
+        const checkboxes = [];
+        const localBlueprints = gui.corePatch().ops.filter((op) =>
+        {
+            if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+            const port = op.getPortByName("externalPatchId");
+            if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
+            return false;
+        });
+        if (localBlueprints.length > 0)
+        {
+            checkboxes.push({
+                "name": "keepLocalBlueprints",
+                "title": "point local blueprints to new patch",
+                "checked": true
+            });
+        }
 
-        const p = new ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
             "notices": modalNotices,
             "promptValue": "copy of " + patchName,
-            "promptOk": (name) =>
+            "checkboxes": checkboxes,
+            "promptOk": (name, checkboxStates) =>
             {
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
                     {
@@ -291,6 +309,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         gui.corePatch().settings.isExample = false;
                         gui.corePatch().settings.isTest = false;
                         gui.corePatch().settings.isFeatured = false;
+
+                        if (checkboxStates && checkboxStates.keepLocalBlueprints)
+                        {
+                            gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
+                        }
 
                         this.saveCurrentProject(
                             function ()
@@ -474,10 +497,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
 
-
-                  
                 // let b64 = Buffer.from(uint8data).toString("base64");
-// bytesArrToBase
+                // bytesArrToBase
                 let b64 = bytesArrToBase64(uint8data);
 
 
