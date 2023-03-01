@@ -26,8 +26,8 @@
         "merge-stream": "2.0.0",
         "raw-loader": "^4.0.2",
         "sass": "1.58.3",
-        "webpack": "4.44.1",
-        "webpack-stream": "5.2.1"
+        "webpack": "5.75.0",
+        "webpack-stream": "7.0.0"
     },
     "scripts": {
         "start": "gulp --openssl-legacy-provider",
