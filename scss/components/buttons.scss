@@ -1,174 +1,91 @@
-// remove button default style
-.button-medium,
-input[type=button].button-round,
-// button.button-round,
-input[type=button].button-small,
-button.button-small {
 
-    outline: 0;
-
-    &:focus {
-        outline: 0;
-    }
-}
-
-
-.button-small:hover .icon
+.cablesCssUi
 {
-    background-color: var(--highlight-color-fill) !important;
-
-}
-
-
-// .button
-// {
-//     font-weight: 500;
-//     font-style: normal;
-//     text-decoration: none;
-//     // color: var(--dark-grey);
-//     border: 1px solid;
-//     border-color: var(--highlight-color);
-//     padding:5px;
-//     padding-left:7px;
-//     padding-right:7px;
-//     cursor:pointer;
-
-//     &:hover
-//     {
-//       text-decoration: none;
-//       background-color: var(--highlight-color);
-//       color: var(--white);
-//       $button-hover-bg-transition-time: 150ms;
-//       /* background-color */
-//       -webkit-transition: background-color $button-hover-bg-transition-time linear;
-//       -moz-transition: background-color $button-hover-bg-transition-time linear;
-//       -o-transition: background-color $button-hover-bg-transition-time linear;
-//       -ms-transition: background-color $button-hover-bg-transition-time linear;
-//       transition: background-color $button-hover-bg-transition-time linear;
-//     }
-// }
-
-.button,.button-primary  {
-    border-radius: 20px;
-    display: inline-block;
-    padding:5px;
-
-    padding-left: 20px;
-    padding-right: 20px;
-    // background-color: var(--light-tinted-grey);
-    color: var(--dark-grey) !important; /* needed because when used a a link (a-element) it gets overwritten */
-    text-decoration: none;
-    // text-transform: capitalize;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    border: 2px solid var(--light-grey);
-
-    &.active {
-        border: 2px solid var(--highlight-color-fill);
-    }
-
-    &:not(.inactive) {
-        cursor: pointer;
-    }
-
-    &:hover {
-        &:not(.inactive) {
-            // background-color: var(--light-tinted-grey);
-            text-decoration: none;
-            opacity:0.9;
-            border: 2px solid var(--highlight-color-fill);
-        }
-    }
-
-
-    // &.button-big {
-    //     padding: 10px 23px;
-    //     border-radius: 30px;
-    //     font-size: 23px;
-    // }
-
-    // &.button-medium {
-    //     padding: 8px 18px;
-    // }
-
-    &.button-primary {
-        color: var(--black) !important;
-        border: 2px solid var(--highlight-color-fill);
-
-        &:hover {
-            background-color: var(--highlight-color-fill);
-            color:black !important;
-        }
-    }
-}
-
-
-.button-small {
-
-    display:inline-block !important;
-    user-select: none;
-    cursor:pointer;
-    color: var(--black);
-    background-color: var(--color-tag);
-    padding: 5px 16px;
-    margin-right:10px;
-    border-radius: 5px;
-    text-align: center;
-    margin-bottom: 2px;
-
-    &:hover
+    // all buttons
+    .button,.button-small
     {
-        background-color: var(--color-tag);
-        color:var(--highlight-color) !important;
-        text-decoration: none;
-        border:none !important;
+        display:inline-block !important;
+        user-select: none;
+        cursor:pointer;
+        color: var(--color-12);
+        background-color: var(--color-04) !important;
 
-        *
+        &:hover
         {
-            background-color:var(--color-special) !important;
+            background-color:var(--color-button-bg-hover) !important;
+            color:var(--color-special) !important;
+            *
+            {
+                background-color:var(--color-special) !important;
+            }
+        }
+
+        &:active {
+            background-color: var(--color-button-bg-active) !important;
         }
     }
 
-    &:active {
-        background-color: var(--color-button-bg-active) !important;
-    }
 
-}
-
-.button-delete
-{
-    background-color: var(--red);
-    color:white;
-    // border:2px solid var(--red) !important;
-}
-
-
-
-.button-small__sub-menu {
-    position: absolute;
-    bottom: 75px;
-    right: 10px;
-
-    padding-left: 22px;
-    background-color: var(--white);
-    padding:20px;
-    z-index: 1000;
-
-    &.visible
+    .button-small
     {
-        display: block;
+        background-size: 50%;
+        padding: 10px;
+        padding-bottom: 3px;
+        padding-top: 3px;
+        margin-right: 4px;
+
+        background-position: center;
+        border-radius: 4px;
+        margin-top: 3px;
+        font-size: var(--font-size-default);
     }
 
-    a
+
+    // bigger button styles
+    .button, .redbutton, .bluebutton
     {
-        display: block;
+        padding: 5px 16px;
+        margin-right:10px;
+        border-radius: 5px;
+        text-align: center;
+        margin-bottom: 2px;
+
+        &.warn
+        {
+            background-color: var(--color-warning);
+        }
     }
-}
 
+    .bluebutton
+    {
+        color: var(--color-02);
+        background-color: var(--color-special) !important;
 
-.buttonSavingAnim
-{
-    pointer-events: none;
+        &:hover
+        {
+            color:var(--color-04) !important;
+            background-color: #06da7a !important;
+        }
+    }
+
+    .redbutton
+    {
+        color: var(--color-01);
+        background-color: var(--color-error) !important;
+
+        &:hover
+        {
+            color:white !important;
+        }
+    }
+
+    .button_colorpick
+    {
+        width: 15px;
+        height: 8px;
+        padding: 5px !important;
+        border-radius: 4px;
+        border:1px solid var(--color-09);
+    }
+
 }
