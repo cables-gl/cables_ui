@@ -280,7 +280,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             checkboxes.push({
                 "name": "keepLocalBlueprints",
-                "title": "point local blueprints to new patch",
+                "title": "Point local blueprints to new patch",
                 "checked": true
             });
         }

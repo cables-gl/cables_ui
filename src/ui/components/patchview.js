@@ -2483,4 +2483,12 @@ export default class PatchView extends CABLES.EventTarget
         });
         gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
     }
+
+    updateBlueprints(blueprintOps = [])
+    {
+        blueprintOps.forEach((blueprintOp) =>
+        {
+            blueprintOp.updateBlueprint();
+        });
+    }
 }

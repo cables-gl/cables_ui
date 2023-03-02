@@ -1977,6 +1977,11 @@ export default class Gui
     {
         return this._restrictionMode;
     }
+
+    getSavedStateChangesSubPatches()
+    {
+        return this._savedStateChangesSubPatches;
+    }
 }
 
 Gui.RESTRICT_MODE_LOADING = 0;

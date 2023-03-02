@@ -913,6 +913,34 @@ CABLES_CMD_PATCH.localizeBlueprints = () =>
     gui.patchView.localizeBlueprints();
 };
 
+CABLES_CMD_PATCH.updateAllBlueprints = () =>
+{
+    const patch = gui.corePatch();
+    const ops = patch.ops;
+    const relevantOps = ops.filter((op) => { return gui.serverOps.isBlueprintOp(op.objName); });
+    gui.patchView.updateBlueprints(relevantOps);
+};
+
+CABLES_CMD_PATCH.updateLocalChangedBlueprints = () =>
+{
+    const patch = gui.corePatch();
+    const ops = patch.ops;
+    const subpatchChanges = gui.getSavedStateChangesSubPatches();
+    const relevantOps = ops.filter((op) =>
+    {
+        if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+        const port = op.getPortByName("subPatchId");
+        if (port)
+        {
+            const portValue = port.get();
+            return (portValue && subpatchChanges.hasOwnProperty(portValue) && subpatchChanges[portValue]);
+        }
+        return false;
+    });
+
+    gui.patchView.updateBlueprints(relevantOps);
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
@@ -1141,6 +1169,18 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "point blueprints to local patch",
         "func": CABLES_CMD_PATCH.localizeBlueprints,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "update all blueprints",
+        "func": CABLES_CMD_PATCH.updateAllBlueprints,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "update local blueprints with changes",
+        "func": CABLES_CMD_PATCH.updateLocalChangedBlueprints,
         "category": "patch",
         "icon": "op"
     },
