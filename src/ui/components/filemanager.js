@@ -170,27 +170,13 @@ export default class FileManager
             "viaBlueprint": file.viaBlueprint,
             "isLibraryFile": file.isLibraryFile,
             "referenceCount": file.referenceCount,
-            "projectId": file.projectId
+            "projectId": file.projectId,
+            "icon": file.icon || "file"
         };
 
-        item.icon = "file";
-
-        if (file.t == "SVG")
-        {
-            item.preview = file.p;
-            item.icon = "pen-tool";
-        }
-        else if (file.t == "image")
-        {
-            item.preview = file.p;
-            item.icon = "image";
-        }
-        else if (file.t == "gltf" || file.t == "3d json") item.icon = "cube";
-        else if (file.t == "video") item.icon = "film";
-        else if (file.t == "font") item.icon = "type";
-        else if (file.t == "JSON") item.icon = "code";
-        else if (file.t == "audio") item.icon = "headphones";
-        else if (file.t == "dir") item.divider = file.n;
+        if (file.t === "SVG") item.preview = file.p;
+        else if (file.t === "image") item.preview = file.p;
+        else if (file.t === "dir") item.divider = file.n;
 
         if (!filterType) items.push(item);
         else
@@ -440,7 +426,8 @@ export default class FileManager
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
                             "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId,
-                            "downloadUrl": downloadUrl
+                            "downloadUrl": downloadUrl,
+                            "assetPageUrl": CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
                         });
                     }
                     else
@@ -463,26 +450,22 @@ export default class FileManager
                             {
                                 const itemInfo = _r;
                                 const templateName = "filemanager_details_lib_" + itemInfo.type;
+                                const templateOptions = {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                };
 
                                 try
                                 {
                                     // * use file-type specific template
-                                    html = getHandleBarHtml(templateName, {
-                                        "filename": item.p,
-                                        "file": item,
-                                        "fileInfo": itemInfo
-                                    });
+                                    html = getHandleBarHtml(templateName, templateOptions);
                                 }
                                 catch (e)
                                 {
                                     // * use default template
-                                    html = getHandleBarHtml("filemanager_details_lib", {
-                                        "filename": item.p,
-                                        "file": item,
-                                        "fileInfo": itemInfo
-                                    });
+                                    html = getHandleBarHtml("filemanager_details_lib", templateOptions);
                                 }
-
 
                                 if (document.getElementById("item_details"))
                                     document.getElementById("item_details").innerHTML = html;

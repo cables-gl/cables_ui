@@ -43,17 +43,12 @@
             <span class="icon icon-x"></span>
         </span>
     {{/if}}
-
-
-
 </script>
 
 
 <script id="tab_itemmanager" type="text/x-handlebars-template">
     <div id="filemanagercontainer" style="height:99%">
-
         <div id="itemmanager_header" class=""></div>
-
         <div class="filelistcontainer">
             {{#each items}}
                 {{#if divider}}
@@ -90,19 +85,14 @@
             {{/each}}
             <div style="clear:both"></div>
         </div>
-
         <div id="item_details"></div>
     </div>
 </script>
 
 
 <script id="tab_itemmanager_list" type="text/x-handlebars-template">
-
     <div id="itemmanager_header"></div>
-
     <div class="filelistcontainer">
-
-
         <table class="table">
             {{#if showHeader}}
             <tr>
@@ -145,7 +135,6 @@
         </table>
     </div>
     <div id="item_details"></div>
-
 </script>
 
 
@@ -156,9 +145,6 @@
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
                 <span class="icon icon-1x icon-download" ></span>
-            </a>
-            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{filename}}">
-                <span class="icon icon-1x icon-external"></span>
             </a>
             <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{filename}}')">
                 <a class="icon icon-1x icon-search"></a>
@@ -184,10 +170,7 @@
         <div style="padding:10px;">
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
-                <span class="icon icon-1x icon-download" ></span>
-            </a>
-            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{filename}}">
-                <span class="icon icon-1x icon-external"></span>
+                <span class="icon icon-1x icon-download"></span>
             </a>
             <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{filename}}')">
                 <a class="icon icon-1x icon-search"></a>
@@ -196,7 +179,7 @@
         </div>
     </div>
 
-        <div class="filemanager-detail-element">
+    <div class="filemanager-detail-element">
         <div style="padding:10px;">
             <div class=""><b>Artist:</b> {{fileInfo.artist}}</div>
             <div class=""><b>Title:</b> {{fileInfo.title}}</div>
@@ -235,7 +218,7 @@
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{downloadUrl}}">
                 <span class="icon icon-1x icon-download" ></span>
             </a>
-            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{downloadUrl}}">
+            <a class="iconbutton info" data-info="filemanager_file_open" target="_blank" href="{{assetPageUrl}}">
                 <span class="icon icon-1x icon-external"></span>
             </a>
             <span class="iconbutton info" data-info="filemanager_file_search" onclick="gui.find('{{file.fileDb.fileName}}')">
