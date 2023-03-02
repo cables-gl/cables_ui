@@ -626,17 +626,17 @@ export default class FileManager
                                 if (countRes && countRes.data)
                                 {
                                     const projectId = gui.project().shortId || gui.project()._id;
-                                    if (countRes.data.countPatches)
+                                    if (countRes.data.countPatches > 1)
                                     {
                                         let linkText = countRes.data.countPatches + " other patch";
                                         if (countRes.data.countPatches > 1) linkText += "es";
-                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/?filename=" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                     }
                                     if (countRes.data.countOps)
                                     {
                                         let linkText = countRes.data.countPatches + " op";
                                         if (countRes.data.countPatches > 1) linkText += "s";
-                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/?filename=" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                         allowDelete = false;
                                     }
                                 }
