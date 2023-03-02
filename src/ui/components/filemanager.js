@@ -625,20 +625,20 @@ export default class FileManager
                                 let allowDelete = true;
                                 if (countRes && countRes.data)
                                 {
-                                    let used = false;
+                                    const projectId = gui.project().shortId || gui.project()._id;
                                     if (countRes.data.countPatches)
                                     {
-                                        content += "They are is used in " + countRes.data.countPatches + " other patch(es).<br/>";
-                                        used = true;
+                                        let linkText = countRes.data.countPatches + " other patch";
+                                        if (countRes.data.countPatches > 1) linkText += "es";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/?filename=" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                     }
                                     if (countRes.data.countOps)
                                     {
-                                        content += "They are used in " + countRes.data.countOps + " op(s).<br/>";
-                                        used = true;
+                                        let linkText = countRes.data.countPatches + " op";
+                                        if (countRes.data.countPatches > 1) linkText += "s";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/?filename=" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                         allowDelete = false;
                                     }
-                                    const projectId = gui.project().shortId || gui.project()._id;
-                                    if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">here</a>";
                                 }
                                 else
                                 {
@@ -655,7 +655,11 @@ export default class FileManager
                                     "title": title,
                                     "html": content,
                                     "warning": true,
-                                    "choice": allowDelete
+                                    "choice": allowDelete,
+                                    "okButton": {
+                                        "text": "Really delete",
+                                        "cssClasses": "redbutton"
+                                    }
                                 };
 
                                 const modal = new ModalDialog(options);
