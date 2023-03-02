@@ -206,7 +206,10 @@ export default function extendCore()
                     if (!notWorkingMsg) notWorkingMsg = text.working_connected_needs_connections_to;
                     else notWorkingMsg += ", ";
                     notWorkingMsg += p.name.toUpperCase();
+
+                    p.setUiAttribs({ "notWorking": true });
                 }
+                else p.setUiAttribs({ "notWorking": false });
             }
         }
 

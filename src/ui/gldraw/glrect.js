@@ -43,6 +43,7 @@ export default class GlRect extends CABLES.EventTarget
         this._dragOffsetY = 0;
         this.draggableMove = false;
         this.interactive = true;
+        if (options.hasOwnProperty("interactive")) this.interactive = options.interactive;
         if (options.parent) this.setParent(options.parent);
     }
 

@@ -8,7 +8,7 @@ module.exports = (isLiveBuild, buildInfo) =>
         "entry": [
             path.join(__dirname, "src", "ui", "index.js"),
         ],
-        "devtool": isLiveBuild ? "source-map" : "cheap-module-eval-source-map",
+        "devtool": isLiveBuild ? "source-map" : "eval-cheap-module-source-map",
         "output": {
             "path": path.join(__dirname, "build"),
             "filename": isLiveBuild ? "cablesui.min.js" : "cablesui.max.js",

@@ -910,39 +910,7 @@ CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
 
 CABLES_CMD_PATCH.localizeBlueprints = () =>
 {
-    const patch = gui.corePatch();
-    const ops = patch.ops;
-    const relevantOps = ops.filter((op) =>
-    {
-        if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
-        const port = op.getPortByName("externalPatchId");
-        if (port)
-        {
-            const portValue = port.get();
-            if (portValue !== gui.patchId && portValue !== gui.project().shortId) return true;
-        }
-        return false;
-    });
-
-    const localizable = [];
-    relevantOps.forEach((op) =>
-    {
-        const port = op.getPortByName("subPatchId");
-        if (port && port.get())
-        {
-            const subpatchExists = ops.some((subpatchOp) =>
-            {
-                if (!subpatchOp.isSubpatchOp()) return false;
-                const subpatchPort = subpatchOp.getPortByName("patchId");
-                return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
-            });
-            if (subpatchExists)
-            {
-                localizable.push(op);
-            }
-        }
-    });
-    gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
+    gui.patchView.localizeBlueprints();
 };
 
 CMD_PATCH_COMMANDS.push(
