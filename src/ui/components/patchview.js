@@ -2009,14 +2009,9 @@ export default class PatchView extends CABLES.EventTarget
                 this.setSelectedOpById(origOp.id);
             }, 100);
 
-
-            // if (CABLES.UI.loaded)
-            // {
             this.selectOpId(newOp.id);
             gui.opParams.show(newOp.id);
             this._patchRenderer.focusOpAnim(newOp.id);
-            // }
-
 
             new ModalDialog({ "html": html });
         } });
@@ -2487,5 +2482,13 @@ export default class PatchView extends CABLES.EventTarget
             }
         });
         gui.patchView.replacePortValues(localizable, "externalPatchId", gui.project().shortId);
+    }
+
+    updateBlueprints(blueprintOps = [])
+    {
+        blueprintOps.forEach((blueprintOp) =>
+        {
+            blueprintOp.updateBlueprint();
+        });
     }
 }

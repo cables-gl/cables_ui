@@ -170,27 +170,13 @@ export default class FileManager
             "viaBlueprint": file.viaBlueprint,
             "isLibraryFile": file.isLibraryFile,
             "referenceCount": file.referenceCount,
-            "projectId": file.projectId
+            "projectId": file.projectId,
+            "icon": file.icon || "file"
         };
 
-        item.icon = "file";
-
-        if (file.t == "SVG")
-        {
-            item.preview = file.p;
-            item.icon = "pen-tool";
-        }
-        else if (file.t == "image")
-        {
-            item.preview = file.p;
-            item.icon = "image";
-        }
-        else if (file.t == "gltf" || file.t == "3d json") item.icon = "cube";
-        else if (file.t == "video") item.icon = "film";
-        else if (file.t == "font") item.icon = "type";
-        else if (file.t == "JSON") item.icon = "code";
-        else if (file.t == "audio") item.icon = "headphones";
-        else if (file.t == "dir") item.divider = file.n;
+        if (file.t === "SVG") item.preview = file.p;
+        else if (file.t === "image") item.preview = file.p;
+        else if (file.t === "dir") item.divider = file.n;
 
         if (!filterType) items.push(item);
         else
@@ -440,7 +426,8 @@ export default class FileManager
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
                             "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId,
-                            "downloadUrl": downloadUrl
+                            "downloadUrl": downloadUrl,
+                            "assetPageUrl": CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
                         });
                     }
                     else
@@ -463,26 +450,22 @@ export default class FileManager
                             {
                                 const itemInfo = _r;
                                 const templateName = "filemanager_details_lib_" + itemInfo.type;
+                                const templateOptions = {
+                                    "filename": item.p,
+                                    "file": item,
+                                    "fileInfo": itemInfo
+                                };
 
                                 try
                                 {
                                     // * use file-type specific template
-                                    html = getHandleBarHtml(templateName, {
-                                        "filename": item.p,
-                                        "file": item,
-                                        "fileInfo": itemInfo
-                                    });
+                                    html = getHandleBarHtml(templateName, templateOptions);
                                 }
                                 catch (e)
                                 {
                                     // * use default template
-                                    html = getHandleBarHtml("filemanager_details_lib", {
-                                        "filename": item.p,
-                                        "file": item,
-                                        "fileInfo": itemInfo
-                                    });
+                                    html = getHandleBarHtml("filemanager_details_lib", templateOptions);
                                 }
-
 
                                 if (document.getElementById("item_details"))
                                     document.getElementById("item_details").innerHTML = html;
@@ -642,20 +625,20 @@ export default class FileManager
                                 let allowDelete = true;
                                 if (countRes && countRes.data)
                                 {
-                                    let used = false;
-                                    if (countRes.data.countPatches)
+                                    const projectId = gui.project().shortId || gui.project()._id;
+                                    if (countRes.data.countPatches > 1)
                                     {
-                                        content += "They are is used in " + countRes.data.countPatches + " other patch(es).<br/>";
-                                        used = true;
+                                        let linkText = countRes.data.countPatches + " other patch";
+                                        if (countRes.data.countPatches > 1) linkText += "es";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                     }
                                     if (countRes.data.countOps)
                                     {
-                                        content += "They are used in " + countRes.data.countOps + " op(s).<br/>";
-                                        used = true;
+                                        let linkText = countRes.data.countPatches + " op";
+                                        if (countRes.data.countPatches > 1) linkText += "s";
+                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                         allowDelete = false;
                                     }
-                                    const projectId = gui.project().shortId || gui.project()._id;
-                                    if (used) content += "<br/>You can check which ones <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">here</a>";
                                 }
                                 else
                                 {
@@ -672,7 +655,11 @@ export default class FileManager
                                     "title": title,
                                     "html": content,
                                     "warning": true,
-                                    "choice": allowDelete
+                                    "choice": allowDelete,
+                                    "okButton": {
+                                        "text": "Really delete",
+                                        "cssClasses": "redbutton"
+                                    }
                                 };
 
                                 const modal = new ModalDialog(options);

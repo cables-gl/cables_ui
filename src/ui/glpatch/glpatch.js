@@ -829,6 +829,10 @@ export default class GlPatch extends CABLES.EventTarget
                 glUiConfig.colors.background[3]);
 
 
+        this._cgl.pushCullFace(false);
+        this._cgl.pushCullFaceFacing(this._cgl.gl.BACK);
+
+
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
 
         // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
@@ -972,6 +976,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._updateGreyout();
         perf.finish();
+
+        this._cgl.pushCullFace(false);
 
         this._cgl.profileData.clearGlQuery();
     }
