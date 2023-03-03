@@ -1052,8 +1052,12 @@ export default class PatchView extends CABLES.EventTarget
         this.setCurrentSubPatch(parentSubId, () =>
         {
             this.focus();
-            this.focusOp(gotoOp.id);
-            this.centerSelectOp(gotoOp.id);
+            if(gotoOp)
+            {
+                this.focusOp(gotoOp.id);
+                this.centerSelectOp(gotoOp.id);
+            }
+            else console.log("[focusSubpatchOp] goto op not found")
         });
     }
 
@@ -1084,7 +1088,7 @@ export default class PatchView extends CABLES.EventTarget
                 const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
                 if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
             }
-            let bpText = "<span class=\"icon icon-external\"></span> open patch";
+            let bpText = "<span class=\"icon icon-external\"></span> Open patch";
             let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
             if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
             {
