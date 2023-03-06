@@ -706,5 +706,19 @@
     {
         padding:3px;
     }
+
+    .subpatchlist
+    {
+        .lostsubpatch
+        {
+            background-color: var(--color-bg-error) !important;
+            color:white !important;
+
+            // color:red !important;
+        }
+    
+    
+    }
+
 }
 
