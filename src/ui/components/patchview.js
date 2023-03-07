@@ -954,9 +954,7 @@ export default class PatchView extends CABLES.EventTarget
                         found = true;
                         o.type = "blueprintSub";
                     }
-                    // else
-                    // {
-                    // }
+
                     subPatches.push(o);
                     found = true;
                 }
@@ -966,8 +964,9 @@ export default class PatchView extends CABLES.EventTarget
             {
                 subPatches.push({
                     "opId": null,
-                    "name": "lost patch " + foundPatchIds[i],
-                    "id": foundPatchIds[i]
+                    "name": "Lost subpatch " + foundPatchIds[i],
+                    "id": foundPatchIds[i],
+                    "type": "lostsubpatch"
                 });
             }
         }
