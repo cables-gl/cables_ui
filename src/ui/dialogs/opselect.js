@@ -104,10 +104,10 @@ export default class OpSelect
             }
         }
 
-        optionsHtml += "&nbsp;Found " + num + " ops.";// in '+(Math.round(this._timeUsed)||0)+'ms ';
+        optionsHtml += "&nbsp;Found " + num + " ops.";
 
         let score = 0;
-        const selected = document.getElementsByClassName("selected");// .data('scoreDebug')
+        const selected = document.getElementsByClassName("selected");
 
         if (selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
 
@@ -148,6 +148,17 @@ export default class OpSelect
                     scoreDebug += "+2 vip op<br/>";
                     points += 2;
                 }
+            }
+
+
+            if (list[i].abbrev.indexOf(orig) == 0)
+            {
+                found = true;
+                let p = 2;
+                if (orig.length == 2)p = 6;
+                if (orig.length == 3)p = 4;
+                scoreDebug += "+" + p + " abbreviation<br/>";
+                points += p;
             }
 
             if (list[i].userOp && this._hideUserOps)
@@ -377,13 +388,22 @@ export default class OpSelect
             for (let i = 0; i < this._list.length; i++)
             {
                 const res = this._list[i].name.split(/(?=[A-Z,0-9,/.])/);
+
                 for (let j = 0; j < res.length; j++)
                 {
-                    if (res[j][res[j].length - 2] == "_")res[j] = res[j].substr(0, res[j].length - 2);
+                    if (res[j][res[j].length - 2] == "_") res[j] = res[j].substr(0, res[j].length - 2);
                     if (res[j][0] == ".") res[j] = res[j].substr(1);
                     if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
                 }
+
+
+                let shortName = "";
+                const ccParts = this._list[i].shortName.split(/(?=[A-Z,0-9,/.])/);
+                for (let j = 0; j < ccParts.length; j++)
+                    shortName += ccParts[j].substr(0, 1);
+                this._list[i].abbrev = shortName.toLocaleLowerCase();
             }
+
 
             this._wordsDb = Object.keys(buildWordDB);
             this._wordsDb.sort((a, b) => { return b.length - a.length; });

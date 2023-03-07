@@ -100,24 +100,24 @@ export default class ServerOps
         );
     }
 
-    showOpInstancingError(name, e)
-    {
-        // this._log.log('show server op error message modal');
+    // showOpInstancingError(name, e)
+    // {
+    //     // this._log.log('show server op error message modal');
 
-        let msg = "<h2><span class=\"icon icon-alert-triangle\"></span> cablefail :/</h2>";
-        msg += "error creating op: " + name;
-        msg += "<br/><pre>" + e + "</pre><br/>";
+    //     let msg = "<h2><span class=\"icon icon-alert-triangle\"></span> cablefail :/</h2>";
+    //     msg += "error creating op: " + name;
+    //     msg += "<br/><pre>" + e + "</pre><br/>";
 
-        if (this.isServerOp(name))
-        {
-            msg += "<a class=\"bluebutton\" onclick=\"gui.showEditor();gui.serverOps.edit('" + name + "')\">edit op</a>";
-        }
-        if (gui.user.isAdmin)
-        {
-            msg += " <a class=\"bluebutton\" onclick=\"gui.serverOps.pullOp('" + name + "')\">try to pull</a>";
-        }
-        CABLES.UI.MODAL.show(msg);
-    }
+    //     if (this.isServerOp(name))
+    //     {
+    //         msg += "<a class=\"bluebutton\" onclick=\"gui.showEditor();gui.serverOps.edit('" + name + "')\">Edit op</a>";
+    //     }
+    //     if (gui.user.isAdmin)
+    //     {
+    //         msg += " <a class=\"bluebutton\" onclick=\"gui.serverOps.pullOp('" + name + "')\">try to pull</a>";
+    //     }
+    //     CABLES.UI.MODAL.show(msg);
+    // }
 
     isServerOp(name)
     {
@@ -725,13 +725,14 @@ export default class ServerOps
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
-                                    opname,
+                                    "opname": opname,
                                     "name": attachmentName,
                                     "content": _content,
                                 },
                                 (errr, re) =>
                                 {
                                     if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+
 
                                     if (errr)
                                     {
@@ -742,11 +743,19 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
-
                                     gui.serverOps.execute(opname, () =>
                                     {
-                                        setTimeout(() => { gui.opParams.refresh(); }, 100);
+                                        setTimeout(() =>
+                                        {
+                                            gui.opParams.refresh();
 
+                                            // console.log(gui.opParams.op);
+                                            // if (gui.opParams.op)
+                                            // {
+                                            //     console.log(gui.opParams.op.opId);
+                                            //     gui.patchView.focusOpAnim(gui.opParams.op.id);
+                                            // }
+                                        }, 100);
                                         loadingModal.close();
                                     });
                                 },
@@ -847,7 +856,7 @@ export default class ServerOps
 
                                     gui.serverOps.execute(opname, () =>
                                     {
-                                        setStatus("saved " + opname);
+                                        setStatus("Saved " + opname);
                                         editor.focus();
 
                                         if (selOpTranslate)
