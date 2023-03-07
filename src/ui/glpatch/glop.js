@@ -528,8 +528,6 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
 
-        if (this._glDotNotWorking) this._glDotNotWorking.setSize(this._width, this._height);
-
         this._updateCommentPosition();
         this._updateSizeRightHandle();
     }
