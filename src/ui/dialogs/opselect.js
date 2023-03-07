@@ -150,7 +150,6 @@ export default class OpSelect
                 }
             }
 
-
             if (list[i].abbrev.indexOf(orig) == 0)
             {
                 found = true;
