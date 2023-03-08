@@ -211,6 +211,11 @@ export default
         return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
     },
 
+    "isSubPatchOpNameV2": (opname) =>
+    {
+        return opname == "Ops.Dev.SubpatchNew";
+    },
+
     "getPatchOpsPrefix": () =>
     {
         return "Ops.Patch.P";

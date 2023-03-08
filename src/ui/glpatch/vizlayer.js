@@ -66,7 +66,7 @@ export default class VizLayer extends CABLES.EventTarget
 
                     this._itemsLookup[a.id] = item;
 
-                    item.op.on("onDelete", (op) =>
+                    item.op.on("delete", (op) =>
                     {
                         this._removeOpItem(op);
                     });

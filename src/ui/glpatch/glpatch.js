@@ -45,9 +45,9 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._mouseLeaveButtons = 0;
 
-
         this._glOpz = {};
         this._hoverOps = [];
+        this._hoverOpLongStartTime=0;
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
@@ -218,17 +218,17 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
 
-        gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
-        {
-            if (!this.isMouseOverOp()) return;
+        // gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        // {
+        //     if (!this.isMouseOverOp()) return;
 
-            console.log(this._hoverOps[0]);
-            if (defaultops.isSubPatchOpName(this._hoverOps[0].objName))
-            {
-                console.log("jo...");
-                gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
-            }
-        });
+        //     console.log(this._hoverOps[0]);
+        //     if (defaultops.isSubPatchOpName(this._hoverOps[0].objName))
+        //     {
+        //         console.log("jo...");
+        //         gui.patchView.setCurrentSubPatch(this._hoverOps[0]._op.patchId.get());
+        //     }
+        // });
 
 
         // gui.keys.key("p", "Preview", "down", cgl.canvas.id, { }, (e) => { this.vizLayer.addCurrentPort(); });
@@ -830,16 +830,34 @@ export default class GlPatch extends CABLES.EventTarget
                 glUiConfig.colors.background[2],
                 glUiConfig.colors.background[3]);
 
-
-        // this._cgl.pushCullFace(false);
-        // this._cgl.pushCullFaceFacing(this._cgl.gl.BACK);
-
+        if (
+            this._portDragLine.isActive && 
+            this._hoverOps.length==1 && 
+            this._hoverOpLongStartTime!=0 && 
+            performance.now() -this._hoverOpLongStartTime>1000 && 
+            defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
+        {
+            gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get())
+        }
 
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
 
-        // this._log.log(Object.keys(this._glOpz).length, gui.corePatch().ops.length);
         if (Object.keys(this._glOpz).length != gui.corePatch().ops.length)
+        {
+            // for(let i in this._glOpz)
+            // {
+                for(let j=0;j < gui.corePatch().ops.length;j++)
+                {
+                    if(!this._glOpz[gui.corePatch().ops[j].id])
+                    {
+                        console.log("missing glop in glpatch: ",gui.corePatch().ops[j].name)
+                    }
+                }
+            // }
+            // console.log(this._glOpz,gui.corePatch().ops)
+
             this._log.error("BROKEN");
+        }
 
         this.hasFocus = ele.hasFocus(this._cgl.canvas);
         this.debugData.splineUpdate = 0;
@@ -981,8 +999,14 @@ export default class GlPatch extends CABLES.EventTarget
 
         // this._cgl.pushCullFace(false);
 
+
+
+
+
         this._cgl.profileData.clearGlQuery();
     }
+
+    
 
     mouseMove(x, y)
     {
@@ -1001,7 +1025,14 @@ export default class GlPatch extends CABLES.EventTarget
 
         // if (!this.mouseState.isDragging)
         // else this._hoverOps = [];
+
+        let preId=-1;
+        if(this._hoverOps.length) preId=this._hoverOps[0].id;
+        
         this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
+        
+        if(this._hoverOps.length && this._hoverOps[0].id!=preId) this._hoverOpLongStartTime=performance.now();
+        if(!this._hoverOps.length) this._hoverOpLongStartTime=0;
 
         if (this.mouseState.isButtonDown())
         {
