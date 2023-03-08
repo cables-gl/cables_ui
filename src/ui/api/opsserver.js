@@ -563,7 +563,7 @@ export default class ServerOps
         html += "<br/>";
         html += "<div id=\"opcreateerrors\"></div>";
         html += "<br/><br/>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
+        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">Create</a>";
         html += "<br/><br/>";
 
 
