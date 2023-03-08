@@ -1192,15 +1192,6 @@ export default class Gui
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
         ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
-        // ele.byQueryAll(".nav_create_from_template").forEach((el) =>
-        // {
-        //     const href = el.dataset.href;
-        //     el.addEventListener("click", () =>
-        //     {
-        //         const win = window.open(CABLES.sandbox.getCablesUrl() + href, "_blank");
-        //         win.focus();
-        //     });
-        // });
 
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
@@ -1233,7 +1224,9 @@ export default class Gui
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
 
-        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(); });
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "user"); });
+        ele.byId("nav_op_createPatchOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "patch"); });
+
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(null, true); });
 
         ele.byId("nav_timeline").addEventListener("click", (event) =>

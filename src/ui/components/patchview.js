@@ -186,6 +186,11 @@ export default class PatchView extends CABLES.EventTarget
                     this._showingNavHelperEmpty = true;
                     ele.show(ele.byId("patchnavhelperEmpty"));
                 }
+
+                if (gui.project() && gui.project().userId === gui.user.id)
+                {
+                    ele.show(ele.byId("nav_op_createPatchOp"));
+                }
             }
 
             gui.patchView.checkPatchOutdated();
