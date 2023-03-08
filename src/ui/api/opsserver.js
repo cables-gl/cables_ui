@@ -581,7 +581,10 @@ export default class ServerOps
         document.getElementById("opNameDialogInput").addEventListener("input", () =>
         {
             const v = document.getElementById("opNameDialogInput").value;
-            CABLES.api.get("op/checkname/" + namespace + v, (res) =>
+            CABLESUILOADER.talkerAPI.send("checkOpName", {
+                "namespace": namespace,
+                "v": v
+            }, (res) =>
             {
                 this._log.log(res);
                 if (res.problems.length > 0)
