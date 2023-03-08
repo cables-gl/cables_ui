@@ -1080,7 +1080,7 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
-        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\">...</a>";
+        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
 
         if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
