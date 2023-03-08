@@ -60,7 +60,7 @@ export default
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.Ui.VizString", "Ops.Ui.VizStringLong"];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && p.uiAttribs.display == "bool") return ["Ops.Ui.VizBool", "Ops.Ui.VizNumber"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return ["Ops.Ui.VizBool", "Ops.Ui.VizNumber"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Ui.VizNumber", "Ops.Ui.VizGraph", "Ops.Ui.VizNumberBar"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return ["Ops.Ui.VizArrayTable"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return ["Ops.Ui.VizTexture", "Ops.Ui.VizTextureTable", "Ops.Ui.VizObject"];
