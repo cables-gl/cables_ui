@@ -202,13 +202,28 @@ export default
         if (opName.startsWith("Ops.Sidebar.")) return "html";
         if (opName.startsWith("Ops.Math.")) return "math";
         if (opName.startsWith("Ops.User.")) return "user";
-        if (opName.startsWith("Ops.Patch.")) return "patch";
+        if (opName.startsWith("Ops.Patch.P")) return "patch";
         return "default";
     },
 
     "isSubPatchOpName": (opname) =>
     {
         return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
+    },
+
+    "getPatchOpsPrefix": () =>
+    {
+        return "Ops.Patch.P";
+    },
+
+    "getTeamOpsPrefix": () =>
+    {
+        return "Ops.Team.";
+    },
+
+    "getExtensionOpsPrefix": () =>
+    {
+        return "Ops.Extension.";
     }
 
 

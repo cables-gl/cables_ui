@@ -148,7 +148,7 @@ export default class OpDocs
 
     getPatchOpsNamespace()
     {
-        return "Ops.Patch." + gui.project().shortId + ".";
+        return defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
     }
 
     getNamespaceDocs(namespace)

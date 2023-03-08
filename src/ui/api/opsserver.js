@@ -6,6 +6,7 @@ import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import { notifyError } from "../elements/notification";
+import defaultops from "../defaultops";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -620,7 +621,7 @@ export default class ServerOps
         }
 
         let namespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        if (type === "patch") namespace = "Ops.Patch." + gui.project().shortId + ".";
+        if (type === "patch") namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
 
         this.opNameDialog("Create operator", name, type, namespace, (newname) =>
         {
@@ -1118,32 +1119,32 @@ export default class ServerOps
 
     isExtensionOp(opname)
     {
-        return opname && opname.indexOf("Ops.Extension.") === 0;
+        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
     }
 
     isPatchOp(opname)
     {
-        return opname && opname.indexOf("Ops.Patch.") === 0;
+        return opname && opname.indexOf(defaultops.getPatchOpsPrefix()) === 0;
     }
 
     isExtension(opname)
     {
-        return opname && opname.indexOf("Ops.Extension.") === 0;
+        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
     }
 
     isTeamOp(opname)
     {
-        return opname && opname.indexOf("Ops.Team.") === 0;
+        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
     }
 
     isTeamNamespace(opname)
     {
-        return opname && opname.indexOf("Ops.Team.") === 0;
+        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
     }
 
     isBlueprintOp(opname)
     {
-        return opname && opname.startsWith("Ops.Dev.Blueprint");
+        return opname && opname.startsWith(defaultops.defaultOpNames.blueprint);
     }
 
     getExtensionByOpName(opname)
