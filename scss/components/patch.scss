@@ -243,7 +243,9 @@
 
 			&:hover
 		    {
-				background-color: var(--color_op_bg_active);
+				
+                background-color: var(--color-06)!important;
+                color:var(--color-special) !important;
 		    }
 
 

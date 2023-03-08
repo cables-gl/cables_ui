@@ -706,8 +706,6 @@ export default class GlPatch extends CABLES.EventTarget
     {
         this._focusRectOp = this._glOpz[opid];
 
-        console.log("focusOpAnim", opid);
-
         this._focusRectAnim.clear();
         this._focusRectAnim.setValue(this._time, 0);
         this._focusRectAnim.setValue(this._time + 0.5, 1);
@@ -715,8 +713,6 @@ export default class GlPatch extends CABLES.EventTarget
 
     focusOp(opid)
     {
-        console.log("focusOp", opid);
-        this._log.stack("a");
         gui.opParams.show(opid);
         this.focusOpAnim(opid);
     }

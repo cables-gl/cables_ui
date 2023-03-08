@@ -421,8 +421,9 @@ class ParamsListener extends CABLES.EventTarget
                         "func": () =>
                         {
                             const subOp = gui.patchView.getSubPatchOuterOp(port.parent.uiAttribs.subPatch);
+                            port.removeLinks();
                             subOp.removePort(port);
-                            port.setUiAttribs({ "expose": !port.uiAttribs.expos });
+                            port.setUiAttribs({ "expose": !port.uiAttribs.expose });
                         }
                     });
             }
