@@ -625,6 +625,8 @@ export default class GlOp extends CABLES.EventTarget
         let portsIn = [];
         let portsOut = [];
 
+        if(!this._op)return;
+
         portsIn = portsIn.concat(this._op.portsIn);
 
         if (this._displayType === this.DISPLAY_SUBPATCH)
