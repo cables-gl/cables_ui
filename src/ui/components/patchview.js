@@ -1051,12 +1051,12 @@ export default class PatchView extends CABLES.EventTarget
         this.setCurrentSubPatch(parentSubId, () =>
         {
             this.focus();
-            if(gotoOp)
+            if (gotoOp)
             {
                 this.focusOp(gotoOp.id);
                 this.centerSelectOp(gotoOp.id);
             }
-            else console.log("[focusSubpatchOp] goto op not found")
+            else console.log("[focusSubpatchOp] goto op not found");
         });
     }
 
@@ -1810,6 +1810,7 @@ export default class PatchView extends CABLES.EventTarget
         this.setSelectedOpById(opid);
         this.focus();
 
+
         // if (op && op.uiAttribs && op.uiAttribs.translate)
         this.centerView(); // op.uiAttribs.translate.x, op.uiAttribs.translate.y
     }
@@ -2493,5 +2494,10 @@ export default class PatchView extends CABLES.EventTarget
         {
             blueprintOp.updateBlueprint();
         });
+    }
+
+    focusOpAnim(opid)
+    {
+        this._patchRenderer.focusOpAnim(opid);
     }
 }
