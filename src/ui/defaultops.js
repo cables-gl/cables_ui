@@ -195,13 +195,14 @@ export default
     "getNamespaceClassName": (opName) =>
     {
         if (!opName) return "default";
-        if (opName.startsWith("Ops.Gl")) return "gl";
-        if (opName.startsWith("Ops.WebAudio")) return "audio";
-        if (opName.startsWith("Ops.Devices")) return "devices";
-        if (opName.startsWith("Ops.Html")) return "html";
-        if (opName.startsWith("Ops.Sidebar")) return "html";
-        if (opName.startsWith("Ops.Math")) return "math";
-        if (opName.startsWith("Ops.User")) return "user";
+        if (opName.startsWith("Ops.Gl.")) return "gl";
+        if (opName.startsWith("Ops.WebAudio.")) return "audio";
+        if (opName.startsWith("Ops.Devices.")) return "devices";
+        if (opName.startsWith("Ops.Html.")) return "html";
+        if (opName.startsWith("Ops.Sidebar.")) return "html";
+        if (opName.startsWith("Ops.Math.")) return "math";
+        if (opName.startsWith("Ops.User.")) return "user";
+        if (opName.startsWith("Ops.Patch.")) return "patch";
         return "default";
     },
 

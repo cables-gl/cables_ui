@@ -146,6 +146,16 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
+    getPatchOpsNamespace()
+    {
+        return "Ops.Patch." + gui.project().shortId + ".";
+    }
+
+    getNamespaceDocs(namespace)
+    {
+        return this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
+    }
+
     getAttachmentFiles(opname)
     {
         for (let i = 0; i < this._opDocs.length; i++)

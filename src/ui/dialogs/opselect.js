@@ -150,7 +150,7 @@ export default class OpSelect
                 }
             }
 
-            if (list[i].abbrev.indexOf(orig) == 0)
+            if (list[i].abbrev && list[i].abbrev.indexOf(orig) == 0)
             {
                 found = true;
                 let p = 2;
@@ -948,6 +948,26 @@ export default class OpSelect
             {
                 gui.opSelect().addTeamOps(opname);
             }
+            else if (itemType === "patchop")
+            {
+                gui.serverOps.loadOpDependencies(opname, () =>
+                {
+                    if (reopenModal)
+                    {
+                        setTimeout(() =>
+                        {
+                            gui.opSelect().show({
+                                "subPatch": gui.patchView.getCurrentSubPatch(),
+                                "x": 0,
+                                "y": 0
+                            });
+                        }, 50);
+                    }
+
+                    this.close();
+                    gui.patchView.addOp(opname, this._newOpOptions);
+                });
+            }
             else
             {
                 if (reopenModal)
@@ -1004,6 +1024,11 @@ export default class OpSelect
                 });
             }, 50);
         });
+    }
+
+    addPatchOp(name)
+    {
+
     }
 
     addSelectedOp(reopenModal)
@@ -1140,6 +1165,53 @@ export default class OpSelect
         return ops;
     }
 
+    _getpatchops(existingOps = [])
+    {
+        const namespace = gui.opDocs.getPatchOpsNamespace();
+        const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
+        const extdocs = [];
+        patchOpDocs.forEach((opDoc) =>
+        {
+            const opname = opDoc.name;
+
+            const parts = opname.split(".");
+            const lowercasename = opname.toLowerCase() + "_" + parts.join("").toLowerCase();
+            const opdoc = gui.opDocs.getOpDocByName(opname);
+            let shortName = parts[parts.length - 1];
+
+            if (opdoc)
+            {
+                shortName = opdoc.shortNameDisplay;
+            }
+
+            parts.length -= 1;
+            const nameSpace = parts.join(".");
+
+            let oldState = "";
+            const op = {
+                "nscolor": defaultops.getNamespaceClassName(opname),
+                "isOp": true,
+                "name": opname,
+                "userOp": false,
+                "devOp": false,
+                "extensionOp": false,
+                "teamOp": false,
+                "patchOp": true,
+                "isExtension": false,
+                "shortName": shortName,
+                "nameSpace": nameSpace,
+                "oldState": oldState,
+                "lowercasename": lowercasename,
+                "buttonText": "Add",
+                "type": "patchop"
+            };
+            op.summary = gui.opDocs.getSummary(opname);
+
+            extdocs.push(op);
+        });
+        return extdocs;
+    }
+
     _getteamnamespaces(existingOps = [])
     {
         const namespaces = gui.opDocs.getTeamNamespaces();
@@ -1168,7 +1240,7 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": "add extension",
+                    "buttonText": "Show ops",
                     "type": "teamnamespace",
                     "teamLink": ext.teamLink
                 };
@@ -1208,7 +1280,7 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": "add extension",
+                    "buttonText": "Show ops",
                     "type": "extension"
                 };
                 extDoc.pop = -1;
@@ -1219,41 +1291,6 @@ export default class OpSelect
         return extdocs;
     }
 
-    addToList(opDocs)
-    {
-        if (!opDocs) return;
-        if (!this._list) this._list = [];
-
-        const perf = CABLES.UI.uiProfiler.start("opselect.addtolist");
-        opDocs.forEach((opDoc) =>
-        {
-            const parts = opDoc.name.split(".");
-            const lowercasename = opDoc.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-            const op = {
-                "nscolor": defaultops.getNamespaceClassName(opDoc.name),
-                "isOp": true,
-                "name": opDoc.name,
-                "userOp": false,
-                "devOp": false,
-                "extensionOp": true,
-                "teamOp": false,
-                "isExtension": false,
-                "isTeamNamespace": false,
-                "shortName": opDoc.shortName,
-                "nameSpace": opDoc.namespace,
-                "oldState": "",
-                "lowercasename": lowercasename,
-                "buttonText": "Add",
-                "type": "op"
-            };
-            op.pop = -1;
-            op.summary = opDoc.summary || "";
-            this._list.push(op);
-        });
-        this._list.sort((a, b) => { return b.pop - a.pop; });
-        perf.finish();
-    }
-
     getList()
     {
         const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
@@ -1262,6 +1299,8 @@ export default class OpSelect
         list = list.concat(extensions);
         const teamnamespaces = this._getteamnamespaces(list);
         list = list.concat(teamnamespaces);
+        const patchops = this._getpatchops(list);
+        list = list.concat(patchops);
         list.sort((a, b) => { return b.pop - a.pop; });
 
         perf.finish();
