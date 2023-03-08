@@ -584,7 +584,7 @@ export default class ServerOps
             CABLESUILOADER.talkerAPI.send("checkOpName", {
                 "namespace": namespace,
                 "v": v
-            }, (res) =>
+            }, (err, res) =>
             {
                 this._log.log(res);
                 if (res.problems.length > 0)
