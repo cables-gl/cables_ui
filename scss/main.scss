@@ -49,7 +49,6 @@ body
     color:var(--text-color);
 }
 
-
 .cablesCssUi
 {
     p
@@ -65,13 +64,11 @@ body
         height:1px;
     }
 
-
     canvas
     {
         -webkit-user-select: none;
         user-select: none;
     }
-
 
     .selectable
     {
