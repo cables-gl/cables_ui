@@ -220,6 +220,27 @@ export default class GlLink
         if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
 
         if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type);
+
+        if(this.crossSubpatch)
+        {
+
+            const opIn = gui.corePatch().getOpById(this._opIdInput);
+            const pIn = opIn.getPortById(this._portIdInput);
+            const opOut = gui.corePatch().getOpById(this._opIdOutput);
+            const pOut = opOut.getPortById(this._portIdOutput);
+
+            if(opOut.uiAttribs.subPatch!=this._subPatch)
+            {
+                pIn.setUiAttribs({"expose":true})
+            }
+            
+            if(opIn.uiAttribs.subPatch!=this._subPatch)
+            {
+                pOut.setUiAttribs({"expose":true})
+            }
+
+            // this._subPatch
+        }
     }
 
     updateLineStyle()
@@ -375,9 +396,8 @@ export default class GlLink
                     if (!this._opOut.getUiAttribs().translate) return;
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
 
-
-                    console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
-                    console.log(this._subPatchOp);
+                    // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
+                    // console.log(this._subPatchOp);
 
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),

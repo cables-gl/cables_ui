@@ -186,6 +186,11 @@ export default class PatchView extends CABLES.EventTarget
                     this._showingNavHelperEmpty = true;
                     ele.show(ele.byId("patchnavhelperEmpty"));
                 }
+
+                if (gui.project() && gui.project().userId === gui.user.id)
+                {
+                    ele.show(ele.byId("nav_op_createPatchOp"));
+                }
             }
 
             gui.patchView.checkPatchOutdated();
@@ -1075,7 +1080,7 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
-        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\">...</a>";
+        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
 
         if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
@@ -1091,11 +1096,11 @@ export default class PatchView extends CABLES.EventTarget
             let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
             if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
             {
-                bpText = "goto subpatch";
+                bpText = "Goto subpatch";
                 let subpatchId = names[0].blueprintLocalSubpatch;
                 if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
             }
-            str += "<br/><br/><a style='margin-left: 5px;'>this is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+            str += "<br/><br/><a style='margin-left: 5px;'>This is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
         }
         else
         {

@@ -48,6 +48,8 @@ export default class GlPort
         p.on("onUiAttrChange", (attribs) =>
         {
             if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
+            if (attribs.hasOwnProperty("expose"))this._updateColor();
+
         });
 
         this.setFlowModeActivity(0);

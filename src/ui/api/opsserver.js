@@ -6,6 +6,7 @@ import ModalDialog from "../dialogs/modaldialog";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import { notifyError } from "../elements/notification";
+import defaultops from "../defaultops";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -548,22 +549,26 @@ export default class ServerOps
         });
     }
 
-    opNameDialog(title, name, cb)
+    opNameDialog(title, name, type, namespace, cb)
     {
         let newName = name || "";
         if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
 
-        const usernamespace = "Ops.User." + gui.user.usernameLowercase;
-
-
         let html = "";
-        html += "Your op will be private. Only you can see and use it.<br/><br/>";
+        if (type === "patch")
+        {
+            html += "Your op will be only available in this patch. <br/>People with access to the patch will be able to see and edit it..<br/><br/>";
+        }
+        else
+        {
+            html += "Your op will be private. Only you can see and use it.<br/><br/>";
+        }
         html += "Enter a name:<br/><br/>";
-        html += "<div class=\"clone\"><span>" + usernamespace + ".&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
+        html += "<div class=\"clone\"><span>" + namespace + "&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
         html += "<br/>";
         html += "<div id=\"opcreateerrors\"></div>";
         html += "<br/><br/>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">create</a>";
+        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">Create</a>";
         html += "<br/><br/>";
 
 
@@ -572,13 +577,14 @@ export default class ServerOps
             "text": html
         });
 
-        // CABLES.UI.MODAL.show(html);
-
         document.getElementById("opNameDialogInput").focus();
         document.getElementById("opNameDialogInput").addEventListener("input", () =>
         {
             const v = document.getElementById("opNameDialogInput").value;
-            CABLES.api.get("op/checkname/" + usernamespace + "." + v, (res) =>
+            CABLESUILOADER.talkerAPI.send("checkOpName", {
+                "namespace": namespace,
+                "v": v
+            }, (err, res) =>
             {
                 this._log.log(res);
                 if (res.problems.length > 0)
@@ -600,7 +606,7 @@ export default class ServerOps
 
         document.getElementById("opNameDialogSubmit").addEventListener("click", (event) =>
         {
-            if (document.getElementById("opNameDialogInput").value == "")
+            if (document.getElementById("opNameDialogInput").value === "")
             {
                 alert("please enter a name for your op!");
                 return;
@@ -609,7 +615,7 @@ export default class ServerOps
         });
     }
 
-    createDialog(name)
+    createDialog(name, type = "user")
     {
         if (gui.project().isOpExample)
         {
@@ -617,9 +623,12 @@ export default class ServerOps
             return;
         }
 
-        this.opNameDialog("Create operator", name, (newname) =>
+        let namespace = "Ops.User." + gui.user.usernameLowercase + ".";
+        if (type === "patch") namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+
+        this.opNameDialog("Create operator", name, type, namespace, (newname) =>
         {
-            this.create("Ops.User." + gui.user.usernameLowercase + "." + newname, () =>
+            this.create(namespace + newname, () =>
             {
                 gui.closeModal();
             });
@@ -639,11 +648,11 @@ export default class ServerOps
 
         let name = "";
         let parts = oldName.split(".");
-        if (parts)
-            name = parts[parts.length - 1];
-        this.opNameDialog("Clone operator", name, (newname) =>
+        if (parts) name = parts[parts.length - 1];
+        const namespace = "Ops.User." + gui.user.usernameLowercase + ".";
+        this.opNameDialog("Clone operator", name, "user", namespace, (newname) =>
         {
-            const opname = "Ops.User." + gui.user.usernameLowercase + "." + newname;
+            const opname = namespace + "." + newname;
             gui.serverOps.clone(oldName, opname);
         });
     }
@@ -1113,27 +1122,32 @@ export default class ServerOps
 
     isExtensionOp(opname)
     {
-        return opname && opname.indexOf("Ops.Extension.") === 0;
+        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
+    }
+
+    isPatchOp(opname)
+    {
+        return opname && opname.indexOf(defaultops.getPatchOpsPrefix()) === 0;
     }
 
     isExtension(opname)
     {
-        return opname && opname.indexOf("Ops.Extension.") === 0;
+        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
     }
 
     isTeamOp(opname)
     {
-        return opname && opname.indexOf("Ops.Team.") === 0;
+        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
     }
 
     isTeamNamespace(opname)
     {
-        return opname && opname.indexOf("Ops.Team.") === 0;
+        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
     }
 
     isBlueprintOp(opname)
     {
-        return opname && opname.startsWith("Ops.Dev.Blueprint");
+        return opname && opname.startsWith(defaultops.defaultOpNames.blueprint);
     }
 
     getExtensionByOpName(opname)
