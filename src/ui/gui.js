@@ -135,7 +135,7 @@ export default class Gui
 
         this.metaTabs = new TabPanel("metatabpanel");
         this._savedState = true;
-        this._savedStateChangesSubPatches = {};
+        this._savedStateChangesBlueprintSubPatches = [];
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
@@ -1236,6 +1236,7 @@ export default class Gui
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
 
+        ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
         window.addEventListener("resize", () =>
         {
@@ -1714,7 +1715,7 @@ export default class Gui
         let subPatch = this.patchView.getCurrentSubPatch();
         if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
 
-        this._savedStateChangesSubPatches[subPatch] = true;
+        this.setSavedStateChangesBlueprintSubPatches(subPatch, true);
 
         if (this._savedState)
         {
@@ -1748,7 +1749,7 @@ export default class Gui
     setStateSaved()
     {
         this._savedState = true;
-        this._savedStateChangesSubPatches = {};
+        this.resetSavedStateChangesBlueprintSubPatches();
         this._favIconLink.href = "/favicon/favicon.ico";
         document.getElementById("patchname").classList.remove("warning");
 
@@ -1971,9 +1972,30 @@ export default class Gui
         return this._restrictionMode;
     }
 
-    getSavedStateChangesSubPatches()
+    getSavedStateChangesBlueprintSubPatches()
     {
-        return this._savedStateChangesSubPatches;
+        return this._savedStateChangesBlueprintSubPatches;
+    }
+
+    resetSavedStateChangesBlueprintSubPatches()
+    {
+        this._savedStateChangesBlueprintSubPatches = [];
+    }
+
+    setSavedStateChangesBlueprintSubPatches(subPatchId)
+    {
+        const oldLength = this._savedStateChangesBlueprintSubPatches.length;
+        if (!this._savedStateChangesBlueprintSubPatches.includes(subPatchId)) this._savedStateChangesBlueprintSubPatches.push(subPatchId);
+        const newLength = this._savedStateChangesBlueprintSubPatches.length;
+        if (newLength > oldLength)
+        {
+            const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches([subPatchId], true);
+            if (blueprintOps.length > 0)
+            {
+                const reloadIcon = ele.byId("nav-item-bpReload");
+                if (reloadIcon) ele.show(reloadIcon);
+            }
+        }
     }
 }
 
@@ -1985,4 +2007,3 @@ Gui.RESTRICT_MODE_REMOTEVIEW = 10;
 Gui.RESTRICT_MODE_FOLLOWER = 20;
 Gui.RESTRICT_MODE_EXPLORER = 30;
 Gui.RESTRICT_MODE_FULL = 40;
-
