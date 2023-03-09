@@ -6,6 +6,7 @@ import AnalyzePatchTab from "../components/tabs/tab_analyze";
 import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
+import ele from "../utils/ele";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -279,7 +280,6 @@ CABLES_CMD_PATCH.addOp = function (x, y)
 
 CABLES_CMD_PATCH.patchWebsite = function ()
 {
-    // CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id
     window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
 };
 
@@ -923,22 +923,12 @@ CABLES_CMD_PATCH.updateAllBlueprints = () =>
 
 CABLES_CMD_PATCH.updateLocalChangedBlueprints = () =>
 {
-    const patch = gui.corePatch();
-    const ops = patch.ops;
-    const subpatchChanges = gui.getSavedStateChangesSubPatches();
-    const relevantOps = ops.filter((op) =>
-    {
-        if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
-        const port = op.getPortByName("subPatchId");
-        if (port)
-        {
-            const portValue = port.get();
-            return (portValue && subpatchChanges.hasOwnProperty(portValue) && subpatchChanges[portValue]);
-        }
-        return false;
-    });
-
-    gui.patchView.updateBlueprints(relevantOps);
+    const subPatchIds = gui.getSavedStateChangesBlueprintSubPatches();
+    const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches(subPatchIds, true);
+    gui.patchView.updateBlueprints(blueprintOps);
+    gui.resetSavedStateChangesBlueprintSubPatches();
+    const reloadIcon = ele.byId("nav-item-bpReload");
+    if (reloadIcon) ele.hide(reloadIcon);
 };
 
 CMD_PATCH_COMMANDS.push(
