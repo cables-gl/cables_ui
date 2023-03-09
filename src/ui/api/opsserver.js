@@ -653,7 +653,7 @@ export default class ServerOps
         const namespace = "Ops.User." + gui.user.usernameLowercase + ".";
         this.opNameDialog("Clone operator", name, "user", namespace, (newname) =>
         {
-            const opname = namespace + "." + newname;
+            const opname = namespace + newname;
             gui.serverOps.clone(oldName, opname);
         });
     }
