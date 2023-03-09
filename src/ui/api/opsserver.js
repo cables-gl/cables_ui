@@ -609,7 +609,7 @@ export default class ServerOps
         {
             if (ele.byId("opNameDialogInput").value === "")
             {
-                alert("please enter a name for your op!");
+                alert("Please enter a name for your op!");
                 return;
             }
             cb(ele.byId("opNameDialogInput").value);

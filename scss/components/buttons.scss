@@ -66,6 +66,10 @@
             color:var(--color-04) !important;
             background-color: #06da7a !important;
         }
+
+        &:active {
+            background-color: white !important;
+        }
     }
 
     .redbutton
