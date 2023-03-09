@@ -1,6 +1,7 @@
 
 import Logger from "../utils/logger";
 import ModalDialog from "../dialogs/modaldialog";
+import defaultops from "../defaultops";
 
 
 export function bytesArrToBase64(arr)
@@ -242,6 +243,13 @@ export default class PatchSaveServer extends CABLES.EventTarget
             modalNotices.push(collabText);
         }
 
+        const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
+        if (usedPatchOps.length > 0)
+        {
+            let patchOpsText = "Patch ops used in this patch will be copied to the new patch.";
+            modalNotices.push(patchOpsText);
+        }
+
         if (project.userId !== gui.user.id)
         {
             let licenceText = "The author of the patch reserves all copyright on this work. Please respect this decision.";
@@ -285,7 +293,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             });
         }
 
-        new ModalDialog({
+        const saveAsModal = new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
@@ -302,24 +310,54 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     },
                     (err, d) =>
                     {
-                        const newProjectId = d.shortId ? d.shortId : d._id;
-                        gui.corePatch().settings = gui.corePatch().settings || {};
-                        gui.corePatch().settings.isPublic = false;
-                        gui.corePatch().settings.secret = "";
-                        gui.corePatch().settings.isExample = false;
-                        gui.corePatch().settings.isTest = false;
-                        gui.corePatch().settings.isFeatured = false;
-
-                        if (checkboxStates && checkboxStates.keepLocalBlueprints)
+                        if (!err)
                         {
-                            gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
-                        }
+                            const newProjectId = d.shortId ? d.shortId : d._id;
+                            gui.corePatch().settings = gui.corePatch().settings || {};
+                            gui.corePatch().settings.isPublic = false;
+                            gui.corePatch().settings.secret = "";
+                            gui.corePatch().settings.isExample = false;
+                            gui.corePatch().settings.isTest = false;
+                            gui.corePatch().settings.isFeatured = false;
 
-                        this.saveCurrentProject(
-                            function ()
+                            if (checkboxStates && checkboxStates.keepLocalBlueprints)
                             {
-                                CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId });
-                            }, d._id, d.name, true);
+                                gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
+                            }
+
+                            if (usedPatchOps.length > 0)
+                            {
+                                let replacedOps = 0;
+                                const doneReplaceCallback = () =>
+                                {
+                                    replacedOps++;
+                                    if (replacedOps === usedPatchOps.length)
+                                    {
+                                        this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
+                                    }
+                                };
+                                usedPatchOps.forEach((patchOp) =>
+                                {
+                                    const oldId = patchOp.id;
+                                    const newName = patchOp.objName.replace(defaultops.getPatchOpsPrefix() + gui.project().shortId + ".", defaultops.getPatchOpsPrefix() + d.shortId + ".");
+                                    console.log("NEWNAME", patchOp.objName, newName);
+                                    gui.patchView.replaceOp(oldId, newName, doneReplaceCallback);
+                                });
+                            }
+                            else
+                            {
+                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
+                            }
+                        }
+                        else
+                        {
+                            new ModalDialog({
+                                "warning": true,
+                                "title": "Could not clone patch",
+                                "text": err.msg,
+                                "showOkButton": true
+                            });
+                        }
                     });
             }
         });

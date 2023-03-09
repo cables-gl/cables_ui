@@ -2026,7 +2026,7 @@ export default class PatchView extends CABLES.EventTarget
         } });
     }
 
-    replaceOp(opid, newOpObjName)
+    replaceOp(opid, newOpObjName, cb = null)
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
@@ -2068,6 +2068,7 @@ export default class PatchView extends CABLES.EventTarget
                     }
                     newOp.setUiAttrib(a);
                     this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
+                    if (cb) cb();
                 }, 100);
             } });
         });
@@ -2537,6 +2538,16 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
             return false;
+        });
+    }
+
+    getPatchOpsUsedInPatch()
+    {
+        const patch = gui.corePatch();
+        const ops = patch.ops;
+        return ops.filter((op) =>
+        {
+            return defaultops.isPatchOpName(op.objName);
         });
     }
 }
