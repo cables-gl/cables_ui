@@ -2026,7 +2026,7 @@ export default class PatchView extends CABLES.EventTarget
         } });
     }
 
-    replaceOp(opid, newOpObjName)
+    replaceOp(opid, newOpObjName, cb = null)
     {
         gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
@@ -2068,6 +2068,7 @@ export default class PatchView extends CABLES.EventTarget
                     }
                     newOp.setUiAttrib(a);
                     this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
+                    if (cb) cb();
                 }, 100);
             } });
         });
@@ -2504,5 +2505,49 @@ export default class PatchView extends CABLES.EventTarget
     focusOpAnim(opid)
     {
         this._patchRenderer.focusOpAnim(opid);
+    }
+
+    getBlueprintOpsForSubPatches(subpatchIds, localOnly = false)
+    {
+        const patch = gui.corePatch();
+        const ops = patch.ops;
+        return ops.filter((op) =>
+        {
+            if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+            let isLocal = false;
+            if (localOnly)
+            {
+                const patchIdPort = op.getPortByName("externalPatchId");
+                if (patchIdPort)
+                {
+                    const patchId = patchIdPort.get();
+                    isLocal = (patchId && ((patchId === gui.project().shortId) || (patchId === gui.project()._id)));
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            if (!localOnly || (localOnly && isLocal))
+            {
+                const port = op.getPortByName("subPatchId");
+                if (port)
+                {
+                    const portValue = port.get();
+                    return (portValue && subpatchIds.includes(portValue));
+                }
+            }
+            return false;
+        });
+    }
+
+    getPatchOpsUsedInPatch()
+    {
+        const patch = gui.corePatch();
+        const ops = patch.ops;
+        return ops.filter((op) =>
+        {
+            return defaultops.isPatchOpName(op.objName);
+        });
     }
 }

@@ -7,6 +7,7 @@ import text from "../text";
 import userSettings from "../components/usersettings";
 import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
+import ele from "../utils/ele";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -577,10 +578,10 @@ export default class ServerOps
             "text": html
         });
 
-        document.getElementById("opNameDialogInput").focus();
-        document.getElementById("opNameDialogInput").addEventListener("input", () =>
+        ele.byId("opNameDialogInput").focus();
+        ele.byId("opNameDialogInput").addEventListener("input", () =>
         {
-            const v = document.getElementById("opNameDialogInput").value;
+            const v = ele.byId("opNameDialogInput").value;
             CABLESUILOADER.talkerAPI.send("checkOpName", {
                 "namespace": namespace,
                 "v": v
@@ -593,25 +594,25 @@ export default class ServerOps
                     htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
                     htmlIssue += "</ul></div>";
-                    document.getElementById("opcreateerrors").innerHTML = htmlIssue;
-                    document.getElementById("opNameDialogSubmit").style.display = "none";
+                    ele.byId("opcreateerrors").innerHTML = htmlIssue;
+                    ele.byId("opNameDialogSubmit").classList.add("hidden");
                 }
                 else
                 {
-                    document.getElementById("opcreateerrors").innerHTML = "";
-                    document.getElementById("opNameDialogSubmit").style.display = "block";
+                    ele.byId("opcreateerrors").innerHTML = "";
+                    ele.byId("opNameDialogSubmit").classList.remove("hidden");
                 }
             });
         });
 
-        document.getElementById("opNameDialogSubmit").addEventListener("click", (event) =>
+        ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
         {
-            if (document.getElementById("opNameDialogInput").value === "")
+            if (ele.byId("opNameDialogInput").value === "")
             {
-                alert("please enter a name for your op!");
+                alert("Please enter a name for your op!");
                 return;
             }
-            cb(document.getElementById("opNameDialogInput").value);
+            cb(ele.byId("opNameDialogInput").value);
         });
     }
 
@@ -652,7 +653,7 @@ export default class ServerOps
         const namespace = "Ops.User." + gui.user.usernameLowercase + ".";
         this.opNameDialog("Clone operator", name, "user", namespace, (newname) =>
         {
-            const opname = namespace + "." + newname;
+            const opname = namespace + newname;
             gui.serverOps.clone(oldName, opname);
         });
     }

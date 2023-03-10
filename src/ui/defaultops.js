@@ -229,7 +229,10 @@ export default
     "getExtensionOpsPrefix": () =>
     {
         return "Ops.Extension.";
+    },
+
+    "isPatchOpName": (opname) =>
+    {
+        return opname && opname.startsWith("Ops.Patch.P");
     }
-
-
 };
