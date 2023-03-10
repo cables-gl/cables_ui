@@ -207,12 +207,14 @@ export default class GlDragLine
 
         if (this._startGlPorts && this._startGlPorts.length)
         {
+            let count = 0;
             for (let i = 0; i < this._startGlPorts.length; i++)
             {
                 if (!this._startGlPorts[i]) continue;
-                if (i > this._lineIndices.length - 1) this._lineIndices[i] = this._splineDrawer.getSplineIndex();
+                if (count > this._lineIndices.length - 1) this._lineIndices[count] = this._splineDrawer.getSplineIndex();
 
-                this._splineDrawer.setSpline(this._lineIndices[i],
+                this._splineDrawer.setSpline(
+                    this._lineIndices[count],
                     [
                         this._startGlPorts[i].glOp.x + this._startGlPorts[i].rect.x + glUiConfig.portWidth / 2,
                         this._startGlPorts[i].glOp.y + this._startGlPorts[i].rect.y + glUiConfig.portHeight / 2,
@@ -220,6 +222,8 @@ export default class GlDragLine
                         this._x, this._y, this._z,
                         this._x, this._y, this._z,
                     ]);
+
+                count++;
             }
         }
         else
@@ -265,9 +269,7 @@ export default class GlDragLine
     setColor(r, g, b, a)
     {
         for (let i = 0; i < this._lineIndices.length; i++)
-        {
             this._splineDrawer.setSplineColor(this._lineIndices[i], [r, g, b, a]);
-        }
 
         this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
     }

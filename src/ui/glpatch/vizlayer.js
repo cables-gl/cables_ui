@@ -197,6 +197,7 @@ export default class VizLayer extends CABLES.EventTarget
 
     _removeOpItem(op)
     {
+        if (!op) return;
         const it = this._itemsLookup[op.id];
 
         let idx = this._items.indexOf(it);
