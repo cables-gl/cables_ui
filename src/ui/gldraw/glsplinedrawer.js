@@ -178,6 +178,12 @@ export default class GlSplineDrawer
 
     setSpline(idx, points)
     {
+        if (idx === undefined || idx === null)
+        {
+            console.log("idx not defined");
+            return;
+        }
+
         let isDifferent = true;
         let isDifferentLength = false;
 

@@ -2116,7 +2116,7 @@ export default class PatchView extends CABLES.EventTarget
         }
     }
 
-    setPortTitle(opId, portId, oldtitle)
+    setPortTitle(opId, portName, oldtitle)
     {
         new ModalDialog({
             "prompt": true,
@@ -2126,7 +2126,7 @@ export default class PatchView extends CABLES.EventTarget
             "promptOk": function (name)
             {
                 const op = gui.corePatch().getOpById(opId);
-                const p = op.getPort(portId);
+                const p = op.getPort(portName);
                 p.setUiAttribs({ "title": name });
 
                 gui.opParams.show(opId);
