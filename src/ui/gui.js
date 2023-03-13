@@ -36,6 +36,7 @@ import userSettings from "./components/usersettings";
 import LongPressConnector from "./elements/longpressconnector";
 import GlPatch from "./glpatch/glpatch";
 import CanvasManager from "./components/canvas/canvasmanager";
+import GuiRestrictions from "./components/guirestrictions";
 
 
 export default class Gui
@@ -74,6 +75,7 @@ export default class Gui
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
         this._cursor = "";
+        this.restriction = new GuiRestrictions();
         this._restrictionMode = Gui.RESTRICT_MODE_LOADING;
 
         if (!cfg) cfg = {};
@@ -460,6 +462,7 @@ export default class Gui
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
+
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
@@ -502,6 +505,11 @@ export default class Gui
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
+
+
+        ele.byId("restriction_message").style.left = (patchLeft + patchWidth / 2) + "px";
+        ele.byId("restriction_message").style.top = (patchHeight - 60) + "px";
+
 
         if (this.maintabPanel.isVisible())
         {

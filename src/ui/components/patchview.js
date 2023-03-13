@@ -1100,10 +1100,14 @@ export default class PatchView extends CABLES.EventTarget
                 let subpatchId = names[0].blueprintLocalSubpatch;
                 if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
             }
-            str += "<br/><br/><a style='margin-left: 5px;'>This is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+            str += "<br/><br/><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+
+
+            gui.restriction.setMessage("blueprint", "This is a blueprint subpatch, changes will not be saved!");
         }
         else
         {
+            gui.restriction.setMessage("blueprint", null);
             this._patchRenderer.greyOutBlue =
             this._patchRenderer.greyOut = false;
         }
