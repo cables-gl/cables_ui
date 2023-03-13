@@ -1,6 +1,7 @@
 # cables UI
 
-*For instructions on how to set up cables on your own see the readme in the [cables_api](https://bitbucket.org/undev/cables_api) repository.*
+* the preferred way of developing cables locally is using the cables_dev repository: https://github.com/undev-studio/cables_dev
+* that repo contains scripts that do the described work for you
 
 ## Dev notes
 
