@@ -365,7 +365,11 @@ class ParamsListener extends CABLES.EventTarget
                     }
                 };
 
-                if (port.isBoundToVar()) item.title = "Remove variable assignment";
+                if (port.isBoundToVar())
+                {
+                    item.title = "Remove variable assignment";
+                    item.iconClass = "icon icon-x";
+                }
 
                 items.push(item);
             }
@@ -377,9 +381,15 @@ class ParamsListener extends CABLES.EventTarget
                 dirStr == "in")
             {
                 let title = "Animate Parameter";
-                if (thePort.isAnimated()) title = "Remove Animation";
+                let icon = "";
+                if (thePort.isAnimated())
+                {
+                    title = "Remove Animation";
+                    icon = "icon icon-x";
+                }
                 items.push({
                     "title": title,
+                    "iconClass": icon,
                     "func": () =>
                     {
                         gui.setStateUnsaved();
@@ -393,6 +403,7 @@ class ParamsListener extends CABLES.EventTarget
             if (port.parent.uiAttribs.extendTitlePort == port.name)
                 items.push({
                     "title": "Remove extended title",
+                    "iconClass": "icon icon-x",
                     "func": () =>
                     {
                         port.parent.setUiAttrib({ "extendTitlePort": null });
@@ -427,6 +438,30 @@ class ParamsListener extends CABLES.EventTarget
                         }
                     });
             }
+
+
+            let strEditTitle = "Edit title";
+            let icon = "";
+            if (port.uiAttribs.title)
+            {
+                strEditTitle = "Remove Custom title";
+                icon = "icon icon-x";
+            }
+            items.push(
+                {
+                    "title": strEditTitle,
+                    "iconClass": icon,
+                    "func": () =>
+                    {
+                        if (port.uiAttribs.title)
+                        {
+                            port.setUiAttribs({ "title": null });
+                            gui.opParams.show(port.parent.id);
+                        }
+                        else gui.patchView.setPortTitle(port.parent.id, port.name, port.title);
+                    }
+                });
+
 
             CABLES.contextMenu.show({ "items": items }, e.target);
         });

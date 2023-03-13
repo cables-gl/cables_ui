@@ -9,12 +9,22 @@ export default class SuggestPortDialog
 
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
-            if (CABLES.Link.canLink(op.portsIn[i], port))
-                this._addPort(op.portsIn[i]);
+        {
+            const theport = op.portsIn[i];
+            if (
+                !theport.uiAttribs.hideParam &&
+                !theport.uiAttribs.readOnly &&
+                CABLES.Link.canLink(theport, port)) this._addPort(theport);
+        }
 
         for (let i = 0; i < op.portsOut.length; i++)
-            if (CABLES.Link.canLink(op.portsOut[i], port))
-                this._addPort(op.portsOut[i]);
+        {
+            const theport = op.portsOut[i];
+            if (
+                !theport.uiAttribs.hideParam &&
+                !theport.uiAttribs.readOnly &&
+                CABLES.Link.canLink(theport, port)) this._addPort(theport);
+        }
 
         if (defaultops.isSubPatchOpName(op.objName))
         {
