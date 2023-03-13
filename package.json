@@ -30,9 +30,9 @@
         "webpack-stream": "7.0.0"
     },
     "scripts": {
-        "start": "gulp --openssl-legacy-provider",
-        "build": "gulp --openssl-legacy-provider build",
-        "build:live": "gulp --openssl-legacy-provider build"
+        "start": "gulp",
+        "build": "gulp build",
+        "build:live": "gulp build"
     },
     "repository": {
         "type": "git",
