@@ -139,13 +139,15 @@ export function updateHoverToolTip(event, port)
     let val = null;
 
 
-    if (port)
+    if (port && !port.uiAttribs.hideParam && !port.uiAttribs.hidePort)
     {
         if (port.type == CABLES.OP_PORT_TYPE_VALUE)
         {
             val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
             // else val = "\"" + val + "\"";
+
+
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
         else if (port.type == CABLES.OP_PORT_TYPE_STRING)
@@ -209,10 +211,8 @@ export function updateHoverToolTip(event, port)
             if (!CABLES.Link.canLink(port, oport))
                 txt = "<span class=\"icon icon-alert-triangle icon-warning icon-near-text fleft\"></span> &nbsp;" + CABLES.Link.canLinkText(port, oport);
         }
-
-
-        txt += "&nbsp;";
     }
+    txt += "&nbsp;";
 
     CABLES.UI.showToolTip(event, txt, true);
 

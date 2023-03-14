@@ -1,4 +1,5 @@
 
+import ModalBackground from "../dialogs/modalbg";
 import ModalDialog from "../dialogs/modaldialog";
 import Logger from "../utils/logger";
 
@@ -25,7 +26,10 @@ function startIdleMode()
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
     if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode()))
     {
-        idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
+        // idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
+        gui.restriction.setMessage("idlemode", "cables is paused! Click to resume");
+        idleModal = new ModalBackground();
+        idleModal.show();
     }
 
     gui.corePatch().pause();
@@ -56,7 +60,12 @@ function stopIdleMode()
     logger.log("idled for ", idleSeconds + " seconds");
 
     gui.corePatch().resume();
-    if (idleModal) idleModal.close();
+    // if (idleModal) idleModal.close();
+    if (idleModal)
+    {
+        idleModal.hide();
+        gui.restriction.setMessage("idlemode", null);
+    }
     // gui.closeModal();
     idling = false;
     clearTimeout(idleTimeout);

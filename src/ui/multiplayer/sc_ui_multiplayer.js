@@ -2,6 +2,7 @@ import { notify } from "../elements/notification";
 import { getHandleBarHtml } from "../utils/handlebars";
 import ModalDialog from "../dialogs/modaldialog";
 import Gui from "../gui";
+import ele from "../utils/ele";
 
 export default class ScUiMultiplayer extends CABLES.EventTarget
 {
@@ -27,8 +28,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
     {
         if (!this._connection.isConnected())
         {
-            document.getElementById("multiplayerbar").style.display = "none";
-            document.getElementById("multiplayer_message_nav").style.display = "none";
+            ele.byId("multiplayerbar").style.display = "none";
+            // ele.byId("multiplayer_message_nav").style.display = "none";
             return;
         }
 
@@ -48,8 +49,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         if (clientList.length < 2)
         {
-            document.getElementById("multiplayerbar").style.display = "none";
-            document.getElementById("multiplayer_message_nav").style.display = "none";
+            ele.byId("multiplayerbar").style.display = "none";
+            // ele.byId("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             return;
         }
@@ -62,7 +63,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         };
 
         const html = getHandleBarHtml("sc_userlist", data);
-        const userList = document.getElementById("nav-clientlist");
+        const userList = ele.byId("nav-clientlist");
         userList.innerHTML = html;
 
         const userListItems = userList.querySelectorAll(".item");
@@ -112,8 +113,8 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
             });
         });
 
-        const messageNav = document.getElementById("multiplayer_message_nav");
-        const messageBox = document.getElementById("multiplayer_message");
+        // const messageNav = ele.byId("multiplayer_message_nav");
+        // const messageBox = ele.byId("multiplayer_message");
 
         if (this._connection.inMultiplayerSession)
         {
@@ -125,25 +126,26 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     let userName = "someone";
                     if (this._connection.clients[this._connection.client.following]) userName = this._connection.clients[this._connection.client.following].username;
-                    messageBox.innerHTML = "you are following  " + userName + " in a multiplayer session - editing is restricted";
+                    gui.restriction.setMessage("You are following  " + userName + " in a multiplayer session - editing is restricted");
                 }
                 else
                 {
-                    messageBox.innerHTML = "you are NOT the pilot in this multiplayer session - changes will not be saved";
+                    gui.restriction.setMessage("You are NOT the pilot in this multiplayer session - changes will not be saved");
                 }
             }
             else
             {
-                messageBox.innerHTML = "you are the pilot in this multiplayer session - changes will be sent to others";
+                gui.restriction.setMessage("You are the pilot in this multiplayer session - changes will be sent to others");
                 gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             }
-            messageBox.style.display = "block";
-            messageNav.style.display = "block";
+            // messageBox.style.display = "block";
+            // messageNav.style.display = "block";
         }
         else
         {
-            messageBox.style.display = "none";
-            messageNav.style.display = "none";
+            // messageBox.style.display = "none";
+            // messageNav.style.display = "none";
+            gui.restriction.setMessage(null);
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
         }
 
@@ -236,7 +238,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 }
             });
         }
-        const mpBar = document.getElementById("multiplayerbar");
+        const mpBar = ele.byId("multiplayerbar");
         if (mpBar) mpBar.style.display = "block";
     }
 
@@ -450,18 +452,18 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (!msg.started)
             {
-                const multiplayerBar = document.getElementById("multiplayerbar");
+                const multiplayerBar = ele.byId("multiplayerbar");
                 if (multiplayerBar) multiplayerBar.classList.add("syncing");
             }
         });
         this._connection.state.on("startPatchSync", () =>
         {
-            const multiplayerBar = document.getElementById("multiplayerbar");
+            const multiplayerBar = ele.byId("multiplayerbar");
             if (multiplayerBar) multiplayerBar.classList.add("syncing");
         });
         this._connection.state.on("patchSynchronized", () =>
         {
-            const multiplayerBar = document.getElementById("multiplayerbar");
+            const multiplayerBar = ele.byId("multiplayerbar");
             if (multiplayerBar) multiplayerBar.classList.remove("syncing");
         });
         this._connection.on("netLeaveSession", this.updateMultiplayerBar.bind(this));
@@ -528,7 +530,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         {
             if (this._connection.client.following && this._connection.client.following === msg.clientId)
             {
-                const multiPlayerBar = document.getElementById("multiplayerbar");
+                const multiPlayerBar = ele.byId("multiplayerbar");
                 if (multiPlayerBar) delete multiPlayerBar.dataset.multiplayerFollow;
                 this._connection.client.following = null;
             }
@@ -566,11 +568,9 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 {
                     if (!this._pilotRequestTimeout)
                     {
-                        let content = "<div> you have 20 seconds to react to this request, if you do not react, the request will be accepted</div>";
-                        content += "<div style='margin-top: 20px; text-align: center;'>";
+                        let content = "You have 20 seconds to react to this request, if you do not react, the request will be accepted<br/><br/>";
                         content += "<a class=\"button accept\">Accept</a>&nbsp;&nbsp;";
                         content += "<a class=\"button decline\">Decline</a>";
-                        content += "</div>";
 
                         const options = {
                             "title": msg.username + " wants to be the pilot",
