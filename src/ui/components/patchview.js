@@ -681,8 +681,8 @@ export default class PatchView extends CABLES.EventTarget
     getSelectedOps()
     {
         const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
-
         const ops = [];
+
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i].uiAttribs.selected)
                 ops.push(this._p.ops[i]);

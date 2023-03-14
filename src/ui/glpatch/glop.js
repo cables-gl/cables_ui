@@ -66,7 +66,7 @@ export default class GlOp extends CABLES.EventTarget
         this.opUiAttribs = {};
         this._links = {};
         this._transparent = false;
-        this.uiAttribs = op.uiAttribs;
+        this.setUiAttribs({}, op.uiAttribs);
         this._visPort = null;
         this._glRectContent = null;
         this._passiveDragStartX = null;
@@ -363,12 +363,17 @@ export default class GlOp extends CABLES.EventTarget
     }
 
 
-    set uiAttribs(attr)
+    setUiAttribs(newAttribs, attr)
     {
-        if (attr.selected) this._glPatch.selectOpId(this._id);
-        if (attr && !this.opUiAttribs.selected && attr.selected) this._glPatch.selectOpId(this._id);
+        if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
+        if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
 
-        this.opUiAttribs = attr;
+        let subPatchChanged = false;
+
+        if (newAttribs.subPatch && newAttribs.subPatch != this.opUiAttribs.subPatch) subPatchChanged = true;
+
+
+        this.opUiAttribs = JSON.parse(JSON.stringify(attr));
 
 
         if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
@@ -391,32 +396,36 @@ export default class GlOp extends CABLES.EventTarget
             });
         }
 
-        if (attr && attr.hasOwnProperty("hidden")) this.updateVisible();
-        if (attr.color) this._updateColors();
+        if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();
+        if (newAttribs.color) this._updateColors();
 
-        if (attr.subPatch != this.opUiAttribs.subPatch)
+        if (newAttribs && newAttribs.translate) this.sendNetPos();
+        if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
+
+        if (subPatchChanged)
         {
+            console.log("subpatch changeeeeeeeddd!");
             for (const i in this._links)
             {
                 this._links[i].updateVisible();
-                // if (this._links[i].subPatch != attr.subPatch)
-                // {
-                //     const link = this._links[i].link;
+                if (this._links[i].subPatch != attr.subPatch)
+                {
+                    const link = this._links[i].link;
 
-                //     this._links[i].dispose();
+                    this._links[i].dispose();
 
-                // this._links[i] = new GlLink(
-                //     this._glPatch,
-                //     link,
-                //     link.id,
-                //     link.portIn.parent.id,
-                //     link.portOut.parent.id,
-                //     link.portIn.name,
-                //     link.portOut.name,
-                //     link.portIn.id,
-                //     link.portOut.id,
-                //     link.portIn.type, false, link.portIn.parent.uiAttribs.subPatch);
-                // }
+                    this._links[i] = new GlLink(
+                        this._glPatch,
+                        link,
+                        link.id,
+                        link.portIn.parent.id,
+                        link.portOut.parent.id,
+                        link.portIn.name,
+                        link.portOut.name,
+                        link.portIn.id,
+                        link.portOut.id,
+                        link.portIn.type, false, link.portIn.parent.uiAttribs.subPatch);
+                }
             }
         }
 
@@ -1172,8 +1181,9 @@ export default class GlOp extends CABLES.EventTarget
             if (s != this.opUiAttribs.selected)
             {
                 // if (!s) delete this.opUiAttribs.selected;
-                this.opUiAttribs.selected = s;
-                this._updateColors();
+                // this.opUiAttribs.selected = s;
+                this.op.setUiAttribs({ "selected": s });
+                // this._updateColors();
             }
             this.updatePosition();
         }
