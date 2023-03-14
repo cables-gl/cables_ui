@@ -347,35 +347,41 @@ class ParamsListener extends CABLES.EventTarget
 
             let items = [];
 
-            if (
-                !port.uiAttribs.expose &&
-                dirStr == "in" &&
-                !port.isAnimated())
+            if (!port.uiAttribs.display || port.uiAttribs.display != "readonly")
             {
-                const item = {
-                    "title": "Assign variable",
-                    "func": () =>
-                    {
-                        gui.setStateUnsaved();
-
-                        if (port.isBoundToVar()) port.setVariable(null);
-                        else port.setVariable("unknown");
-
-                        port.parent.refreshParams();
-                    }
-                };
-
-                if (port.isBoundToVar())
+                if (
+                    port.type != CABLES.OP_PORT_TYPE_FUNCTION &&
+                    !port.uiAttribs.expose &&
+                    dirStr == "in" &&
+                    !port.isAnimated())
                 {
-                    item.title = "Remove variable assignment";
-                    item.iconClass = "icon icon-x";
-                }
+                    const item =
+                    {
+                        "title": "Assign variable",
+                        "func": () =>
+                        {
+                            gui.setStateUnsaved();
 
-                items.push(item);
+                            if (port.isBoundToVar()) port.setVariable(null);
+                            else port.setVariable("unknown");
+
+                            port.parent.refreshParams();
+                        }
+                    };
+
+                    if (port.isBoundToVar())
+                    {
+                        item.title = "Remove variable assignment";
+                        item.iconClass = "icon icon-x";
+                    }
+
+                    items.push(item);
+                }
             }
 
 
             if (
+                port.type == CABLES.OP_PORT_TYPE_VALUE &&
                 !port.uiAttribs.expose &&
                 !port.isBoundToVar() &&
                 dirStr == "in")
@@ -399,36 +405,44 @@ class ParamsListener extends CABLES.EventTarget
                 });
             }
 
-
-            if (port.parent.uiAttribs.extendTitlePort == port.name)
-                items.push({
-                    "title": "Remove extended title",
-                    "iconClass": "icon icon-x",
-                    "func": () =>
-                    {
-                        port.parent.setUiAttrib({ "extendTitlePort": null });
-                    }
-                });
-            else
-                items.push({
-                    "title": "Extend title: \"" + port.name + ": x\"",
-                    "func": () =>
-                    {
-                        port.parent.setUiAttrib({ "extendTitlePort": port.name });
-                    }
-                });
+            if (port.type == CABLES.OP_PORT_TYPE_STRING || port.type == CABLES.OP_PORT_TYPE_VALUE)
+            {
+                if (port.parent.uiAttribs.extendTitlePort == port.name)
+                    items.push({
+                        "title": "Remove extended title",
+                        "iconClass": "icon icon-x",
+                        "func": () =>
+                        {
+                            port.parent.setUiAttrib({ "extendTitlePort": null });
+                        }
+                    });
+                else
+                    items.push({
+                        "title": "Extend title: \"" + port.name + ": x\"",
+                        "func": () =>
+                        {
+                            port.parent.setUiAttrib({ "extendTitlePort": port.name });
+                        }
+                    });
+            }
 
 
             if (
                 (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.parent.uiAttribs.subPatch) &&
                 !port.isAnimated())
             {
-                let title = "Subpatch: Expose Port";
-                if (port.uiAttribs.expose) title = "Subpatch: Remove Exposed Port";
+                let title = "Subpatch Expose Port ";
+                let icon = "";
+                if (port.uiAttribs.expose)
+                {
+                    title = "Subpatch Remove Exposed Port";
+                    icon = "icon icon-x";
+                }
 
                 items.push(
                     {
                         "title": title,
+                        "iconClass": icon,
                         "func": () =>
                         {
                             const subOp = gui.patchView.getSubPatchOuterOp(port.parent.uiAttribs.subPatch);
