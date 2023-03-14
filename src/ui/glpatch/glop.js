@@ -1182,7 +1182,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 // if (!s) delete this.opUiAttribs.selected;
                 // this.opUiAttribs.selected = s;
-                this.op.setUiAttribs({ "selected": s });
+                this._op.setUiAttribs({ "selected": s });
                 // this._updateColors();
             }
             this.updatePosition();
