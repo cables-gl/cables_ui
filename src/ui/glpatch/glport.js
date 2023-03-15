@@ -22,7 +22,7 @@ export default class GlPort
         this._glPatch = glpatch;
         this._rectInstancer = rectInstancer;
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
-        this._rectAssigned = null;
+        this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
 
         this._mouseButtonRightTimeDown = 0;
@@ -48,8 +48,7 @@ export default class GlPort
         p.on("onUiAttrChange", (attribs) =>
         {
             if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
-            if (attribs.hasOwnProperty("expose"))this._updateColor();
-
+            if (attribs.hasOwnProperty("expose")) this._updateColor();
         });
 
         this.setFlowModeActivity(0);
@@ -65,28 +64,28 @@ export default class GlPort
             this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
             (this._port.uiAttribs.expose && this._port.parent.id == this._glop._op.id);
 
-        if (!this._rectAssigned &&
+        if (!this._dot &&
             (isAssigned || this._port.uiAttribs.notWorking))
         {
-            this._rectAssigned = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
-            this._rectAssigned.setShape(6);
-            this._rectAssigned.setColor(1, 1, 1, 1);
+            this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
+            this._dot.setShape(6);
+            this._dot.setColor(1, 1, 1, 1);
             let size = GlUiConfig.portHeight * 0.75;
 
             if (this._port.uiAttribs.notWorking)
             {
-                this._rectAssigned.setColor(0.2, 0.2, 0.2, 1);
+                this._dot.setColor(0.2, 0.2, 0.2, 1);
             }
 
-            this._rectAssigned.setSize(size, size);
-            this._rectAssigned.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
-            this._rect.addChild(this._rectAssigned);
+            this._dot.setSize(size, size);
+            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
+            this._rect.addChild(this._dot);
         }
 
-        if (this._rectAssigned && !isAssigned && !this._port.uiAttribs.notWorking)
+        if (this._dot && !isAssigned && !this._port.uiAttribs.notWorking)
         {
-            this._rectAssigned.dispose();
-            this._rectAssigned = null;
+            this._dot.dispose();
+            this._dot = null;
         }
 
         this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
@@ -212,7 +211,7 @@ export default class GlPort
             this._rect.off(this._mouseEvents[i]);
 
         this._mouseEvents.length = 0;
-        this._rect.dispose();
-        this._rect = null;
+        if (this._rect) this._rect = this._rect.dispose();
+        if (this._dot) this._dot = this._dot.dispose();
     }
 }
