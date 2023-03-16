@@ -172,7 +172,7 @@ CABLES_CMD_DEBUG.testOp = function ()
                     ];
                     tests[Math.floor(tests.length * Math.random())]();
                 }
-                if (p.type == CABLES.OP_PORT_TYPE_TRIGGER)
+                if (p.type == CABLES.OP_PORT_TYPE_FUNCTION)
                 {
                     const tests = [
                         () => { p.trigger(); },

@@ -681,8 +681,8 @@ export default class PatchView extends CABLES.EventTarget
     getSelectedOps()
     {
         const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
-
         const ops = [];
+
         for (let i = 0; i < this._p.ops.length; i++)
             if (this._p.ops[i].uiAttribs.selected)
                 ops.push(this._p.ops[i]);
@@ -1020,7 +1020,7 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         items.push({
-            "title": "Goto op",
+            "title": "Go to op",
             "func": () =>
             {
                 gui.patchView.focusSubpatchOp(id);
@@ -1079,7 +1079,6 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
-        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
 
         if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
@@ -1095,17 +1094,22 @@ export default class PatchView extends CABLES.EventTarget
             let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
             if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
             {
-                bpText = "Goto subpatch";
+                bpText = "Go to subpatch";
                 let subpatchId = names[0].blueprintLocalSubpatch;
                 if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
             }
-            str += "<br/><br/><a style='margin-left: 5px;'>This is a blueprint subpatch, changes will not be saved!</a><a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+            str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+
+            gui.restriction.setMessage("blueprint", "This is a blueprint subpatch, changes will not be saved!");
         }
         else
         {
+            gui.restriction.setMessage("blueprint", null);
             this._patchRenderer.greyOutBlue =
             this._patchRenderer.greyOut = false;
         }
+
+        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }

@@ -47,7 +47,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._glOpz = {};
         this._hoverOps = [];
-        this._hoverOpLongStartTime=0;
+        this._hoverOpLongStartTime = 0;
         this._patchAPI = null;
         this._showRedrawFlash = 0;
         this.debugData = {};
@@ -600,13 +600,11 @@ export default class GlPatch extends CABLES.EventTarget
         // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if ((gui.patchView.getSelectedOps() == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
+        if ((gui.patchView.getSelectedOps().length == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
         {
             this.unselectAll();
             gui.showInfo(text.patch);
             gui.patchView.showDefaultPanel();
-
-            // if (userSettings.get("bgpreviewTemp"))gui.texturePreview().pressedEscape();
         }
 
         if (CABLES.mouseButtonWheelDown)
@@ -741,10 +739,7 @@ export default class GlPatch extends CABLES.EventTarget
         op.on("onUiAttribsChange",
             (newAttribs) =>
             {
-                glOp.uiAttribs = op.uiAttribs;
-
-                if (newAttribs && newAttribs.translate) glOp.sendNetPos();
-                if (newAttribs.hasOwnProperty("translate")) glOp.updatePosition();
+                glOp.setUiAttribs(newAttribs, op.uiAttribs);
             });
 
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
@@ -827,13 +822,13 @@ export default class GlPatch extends CABLES.EventTarget
                 glUiConfig.colors.background[3]);
 
         if (
-            this._portDragLine.isActive && 
-            this._hoverOps.length==1 && 
-            this._hoverOpLongStartTime!=0 && 
-            performance.now() -this._hoverOpLongStartTime>1000 && 
+            this._portDragLine.isActive &&
+            this._hoverOps.length == 1 &&
+            this._hoverOpLongStartTime != 0 &&
+            performance.now() - this._hoverOpLongStartTime > 1000 &&
             defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
         {
-            gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get())
+            gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get());
         }
 
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
@@ -842,13 +837,13 @@ export default class GlPatch extends CABLES.EventTarget
         {
             // for(let i in this._glOpz)
             // {
-                for(let j=0;j < gui.corePatch().ops.length;j++)
+            for (let j = 0; j < gui.corePatch().ops.length; j++)
+            {
+                if (!this._glOpz[gui.corePatch().ops[j].id])
                 {
-                    if(!this._glOpz[gui.corePatch().ops[j].id])
-                    {
-                        console.log("missing glop in glpatch: ",gui.corePatch().ops[j].name)
-                    }
+                    console.log("missing glop in glpatch: ", gui.corePatch().ops[j].name);
                 }
+            }
             // }
             // console.log(this._glOpz,gui.corePatch().ops)
 
@@ -996,13 +991,9 @@ export default class GlPatch extends CABLES.EventTarget
         // this._cgl.pushCullFace(false);
 
 
-
-
-
         this._cgl.profileData.clearGlQuery();
     }
 
-    
 
     mouseMove(x, y)
     {
@@ -1022,13 +1013,13 @@ export default class GlPatch extends CABLES.EventTarget
         // if (!this.mouseState.isDragging)
         // else this._hoverOps = [];
 
-        let preId=-1;
-        if(this._hoverOps.length) preId=this._hoverOps[0].id;
-        
+        let preId = -1;
+        if (this._hoverOps.length) preId = this._hoverOps[0].id;
+
         this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
-        
-        if(this._hoverOps.length && this._hoverOps[0].id!=preId) this._hoverOpLongStartTime=performance.now();
-        if(!this._hoverOps.length) this._hoverOpLongStartTime=0;
+
+        if (this._hoverOps.length && this._hoverOps[0].id != preId) this._hoverOpLongStartTime = performance.now();
+        if (!this._hoverOps.length) this._hoverOpLongStartTime = 0;
 
         if (this.mouseState.isButtonDown())
         {

@@ -150,28 +150,30 @@ body
     }
 
 
+    // all text input color, border and focus border / sizes can be individual for each and are defined wherever...
+    input.medium,.opsearchInput,input[type=text], input[type=search],#commentTextarea
+    {
+        outline:none;
+        background-color: var(--color-05);
+        color:$mainColor;
+        border: 1px solid transparent !important;
+        border-radius: 2px;
+
+        &:focus
+        {
+            background-color: var(--color-05);
+            color: var(--color-13);
+            border-bottom: 1px solid var(--color-special) !important;
+            outline: none;
+        }
+    }
+
     input.medium
     {
         font-size: 18px;
         padding:5px;
         width:100%;
-        border:none;
-        border-radius: 3px;
-        outline: none;
-        background-color: var(--color-03);
-        color:$mainColor;
 
-        &:focus
-        {
-            background-color: var(--color-06);
-            outline: none;
-            color: var(--color-13);
-        }
-    }
-
-
-    input[type=search] {
-        border-radius: 4px;
     }
 
     input[type=search]::-webkit-search-cancel-button {
@@ -186,9 +188,9 @@ body
 
     input[type=text], input[type=search]
     {
-        background-color: $text-input-background-color;
-        color: $text-input-color;
-        border: 1px solid $text-input-border-color;
+        // background-color: $text-input-background-color;
+        // color: $text-input-color;
+        // border: 1px solid $text-input-border-color;
         padding: 8px 9px !important; // TODO: Correct, looks bad in op settings
         width: 100%;
 
