@@ -404,7 +404,6 @@ export default class GlOp extends CABLES.EventTarget
 
         if (subPatchChanged)
         {
-            console.log("subpatch changeeeeeeeddd!");
             for (const i in this._links)
             {
                 this._links[i].updateVisible();
