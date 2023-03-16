@@ -68,8 +68,6 @@ export default class GlDragLine
         {
             if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
 
-            // console.log("mousedownoverport", portName);
-
             this._button = e.buttons;
 
             if (this._button == MouseState.BUTTON_LEFT)
