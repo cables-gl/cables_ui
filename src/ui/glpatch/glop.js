@@ -1176,6 +1176,7 @@ export default class GlOp extends CABLES.EventTarget
 
     set selected(s)
     {
+        if (!this._op) return;
         if (this.selected != s || s != this.opUiAttribs.selected)
         {
             if (s != this.opUiAttribs.selected)
