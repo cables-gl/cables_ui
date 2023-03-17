@@ -146,7 +146,7 @@
                     </td>
                 <td>
                 <!-- string -->
-                <input onmousedown="new CABLES.UI.ParamTabInputListener(this);"  class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} info" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
+                <input onmousedown="new CABLES.UI.ParamTabInputListener(this);" spellcheck="false" class="tabable value watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} info" data-portnum="{{ portnum }}" data-panelid="{{ panelid }}" id="portval_{{ portnum }}_{{ panelid }}" value="{{port.value}}" style="width:90%;"/>
             {{/compare}}
 
             {{#compare port.type '==' '1' }} </td><td>[trigger]

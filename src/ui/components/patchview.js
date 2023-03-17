@@ -1035,7 +1035,6 @@ export default class PatchView extends CABLES.EventTarget
             }, el);
     }
 
-
     getSubPatchOuterOp(subPatchId)
     {
         const ops = gui.corePatch().ops;

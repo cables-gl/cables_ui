@@ -223,21 +223,27 @@ export default class GlLink
 
         if (this.crossSubpatch)
         {
-            const opIn = gui.corePatch().getOpById(this._opIdInput);
-            const pIn = opIn.getPortById(this._portIdInput);
-            const opOut = gui.corePatch().getOpById(this._opIdOutput);
-            const pOut = opOut.getPortById(this._portIdOutput);
+            // ops[i].isSubpatchOp()
+            const subpatchop = gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) || gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
 
-            if (opOut.uiAttribs.subPatch != this._subPatch)
+            console.log(subpatchop.uiAttribs);
+            if (subpatchop.uiAttribs.subPatchOp)
             {
-                pIn.setUiAttribs({ "expose": true });
-            }
+                const opIn = gui.corePatch().getOpById(this._opIdInput);
+                const pIn = opIn.getPortById(this._portIdInput);
+                const opOut = gui.corePatch().getOpById(this._opIdOutput);
+                const pOut = opOut.getPortById(this._portIdOutput);
 
-            if (opIn.uiAttribs.subPatch != this._subPatch)
-            {
-                pOut.setUiAttribs({ "expose": true });
-            }
+                if (opOut.uiAttribs.subPatch != this._subPatch)
+                {
+                    pIn.setUiAttribs({ "expose": true });
+                }
 
+                if (opIn.uiAttribs.subPatch != this._subPatch)
+                {
+                    pOut.setUiAttribs({ "expose": true });
+                }
+            }
             // this._subPatch
         }
     }
