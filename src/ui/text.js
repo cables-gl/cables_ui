@@ -38,8 +38,8 @@ const text =
     "portMouseCreate": "|| [DRAG_LMB] Create and link new op",
     "portObjectSnapshot": "See an object data snapshot",
 
-    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their childs\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical sptng\n* `DEL` delete selcted ops\n* [cmd_ctrl]`c` Copy selected op ",
-    "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and childs\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
+    "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their children\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical spacing\n* `DEL` delete selected ops\n* [cmd_ctrl]`c` copy selected op ",
+    "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and children\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
     "projectSettingsPublic": "Make patch public - Everyone can see it",
     "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
