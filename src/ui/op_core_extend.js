@@ -151,7 +151,7 @@ export default function extendCore()
         {
             for (let i = 0; i < op.portsIn.length; i++)
             {
-                if (op.portsIn[i].type == type && op.portsIn[i].isLinked())
+                if ((!type || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
                 {
                     const pi = op.portsIn[i];
                     for (let li = 0; li < pi.links.length; li++)
@@ -183,9 +183,15 @@ export default function extendCore()
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
 
+        if (this._needsNotChildOfOp && working)
+        {
+            working = !hasParent(this, null, this._needsNotChildOfOp);
+            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._needsNotChildOfOp + "";
+        }
+
         if (this._needsParentOp && working)
         {
-            working = hasParent(this, CABLES.OP_PORT_TYPE_OBJECT, this._needsParentOp);
+            working = hasParent(this, null, this._needsParentOp);
             if (!working) notWorkingMsg = text.working_connected_to + this._needsParentOp + "";
         }
 
