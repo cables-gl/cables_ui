@@ -149,7 +149,8 @@ export default function extendCore()
     {
         function hasParent(op, type, name, count)
         {
-            count = count || 0;
+            count = count || 1;
+            count++;
             if (count == 1000) return;
             for (let i = 0; i < op.portsIn.length; i++)
             {
@@ -160,7 +161,7 @@ export default function extendCore()
                     {
                         if (!pi.links[li]) continue;
                         if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
-                        if (hasParent(pi.links[li].portOut.parent, type, name, count++)) return true;
+                        if (hasParent(pi.links[li].portOut.parent, type, name, count)) return true;
                     }
                 }
             }
