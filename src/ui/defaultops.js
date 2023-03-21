@@ -202,9 +202,8 @@ export default
         if (opName.startsWith("Ops.Sidebar.")) return "html";
         if (opName.startsWith("Ops.Math.")) return "math";
         if (opName.startsWith("Ops.User.")) return "user";
-        if (opName.startsWith("Ops.Team.")) return "user";
+        if (opName.startsWith("Ops.Team.")) return "team";
         if (opName.startsWith("Ops.Patch.")) return "user";
-        if (opName.startsWith("Ops.Patch.P")) return "patch";
         return "default";
     },
 
