@@ -147,8 +147,10 @@ export default function extendCore()
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
-        function hasParent(op, type, name)
+        function hasParent(op, type, name, count)
         {
+            count = count || 0;
+            if (count == 1000) return;
             for (let i = 0; i < op.portsIn.length; i++)
             {
                 if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
@@ -158,7 +160,7 @@ export default function extendCore()
                     {
                         if (!pi.links[li]) continue;
                         if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
-                        if (hasParent(pi.links[li].portOut.parent, type, name)) return true;
+                        if (hasParent(pi.links[li].portOut.parent, type, name, count++)) return true;
                     }
                 }
             }
