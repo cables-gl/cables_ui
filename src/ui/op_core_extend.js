@@ -183,23 +183,23 @@ export default function extendCore()
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
 
-        if (this._needsNotChildOfOp && working)
+        if (this._linkTimeRules.forbiddenParent && working)
         {
-            working = !hasParent(this, null, this._needsNotChildOfOp);
-            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._needsNotChildOfOp + "";
+            working = !hasParent(this, this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
+            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._linkTimeRules.forbiddenParent + "";
         }
 
-        if (this._needsParentOp && working)
+        if (this._linkTimeRules.needsParentOp && working)
         {
-            working = hasParent(this, null, this._needsParentOp);
-            if (!working) notWorkingMsg = text.working_connected_to + this._needsParentOp + "";
+            working = hasParent(this, null, this._linkTimeRules.needsParentOp);
+            if (!working) notWorkingMsg = text.working_connected_to + this._linkTimeRules.needsParentOp + "";
         }
 
-        if (this._needsLinkedToWork.length > 0)
+        if (this._linkTimeRules.needsLinkedToWork.length > 0)
         {
-            for (let i = 0; i < this._needsLinkedToWork.length; i++)
+            for (let i = 0; i < this._linkTimeRules.needsLinkedToWork.length; i++)
             {
-                const p = this._needsLinkedToWork[i];
+                const p = this._linkTimeRules.needsLinkedToWork[i];
                 if (!p)
                 {
                     console.warn("[needsLinkedToWork] port not found");
