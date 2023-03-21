@@ -154,7 +154,7 @@ export default function extendCore()
             if (count >= 1000)
             {
                 console.log("hasparent loop....");
-                return;
+                return false;
             }
             for (let i = 0; i < op.portsIn.length; i++)
             {
