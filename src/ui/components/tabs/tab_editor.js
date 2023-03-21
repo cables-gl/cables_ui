@@ -592,7 +592,7 @@ function createEditor(id, val, cb)
                     "onTriggered=",
                     "onLinkChanged=",
                     "op.toWorkNeedsParent",
-                    // "op.toWorkPortsNeedToBeLinked",
+                    "op.toWorkShouldNotBeChild",
                     "setUiAttribs",
                     "op.patch.cgl",
                     "CABLES.shuffleArray(arr);",

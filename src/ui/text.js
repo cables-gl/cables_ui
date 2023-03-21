@@ -100,6 +100,7 @@ const text =
 
     "working_connected_to": "To work, this op needs to be a child of: ",
     "working_connected_needs_connections_to": "These ports should be connected: ",
+    "working_shouldNotBeChildOf": "Should not be a child of ",
 
     "notOptimizedBrowser_title": "oops!",
     "notOptimizedBrowser_text": "Cables is optimized for firefox and chrome, you are using something else<br/>feel free to continue, but be warned, it might behave strange",
