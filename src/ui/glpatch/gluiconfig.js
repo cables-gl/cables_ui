@@ -34,7 +34,9 @@ class GlUiConfig
                 "Ops.Devices": [245 / 255, 146 / 255, 89 / 255], // #f59259';
                 // "Ops.Html": [],//#61bbf1';
                 "Ops.Math": [68 / 255, 212 / 255, 200 / 255], // #44d4c8';
-                "Ops.User": [1, 1, 1], // '#ffffff';
+                "Ops.User": [1, 1, 1],
+                "Ops.Team": [1, 1, 1],
+                "Ops.Patch": [1, 1, 1],
                 "Ops.Ui": [0.75, 0.75, 0.75]
             },
 
