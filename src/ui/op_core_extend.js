@@ -151,7 +151,7 @@ export default function extendCore()
         {
             for (let i = 0; i < op.portsIn.length; i++)
             {
-                if ((!type || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
+                if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
                 {
                     const pi = op.portsIn[i];
                     for (let li = 0; li < pi.links.length; li++)
