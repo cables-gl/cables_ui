@@ -151,7 +151,11 @@ export default function extendCore()
         {
             count = count || 1;
             count++;
-            if (count >= 1000) return;
+            if (count >= 1000)
+            {
+                console.log("hasparent loop....");
+                return;
+            }
             for (let i = 0; i < op.portsIn.length; i++)
             {
                 if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
