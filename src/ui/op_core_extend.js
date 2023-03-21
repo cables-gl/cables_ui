@@ -145,32 +145,58 @@ export default function extendCore()
     };
 
 
-    CABLES.Op.prototype.checkLinkTimeWarnings = function ()
+    CABLES.Op.prototype.hasParent = function (type, name, count)
     {
-        function hasParent(op, type, name, count)
+        count = count || 1;
+        count++;
+        if (count >= 1000)
         {
-            count = count || 1;
-            count++;
-            if (count >= 1000)
-            {
-                console.log("hasparent loop....");
-                return false;
-            }
-            for (let i = 0; i < op.portsIn.length; i++)
-            {
-                if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
-                {
-                    const pi = op.portsIn[i];
-                    for (let li = 0; li < pi.links.length; li++)
-                    {
-                        if (!pi.links[li]) continue;
-                        if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
-                        if (hasParent(pi.links[li].portOut.parent, type, name, count)) return true;
-                    }
-                }
-            }
+            console.log("hasparent loop....");
             return false;
         }
+        for (let i = 0; i < this.portsIn.length; i++)
+        {
+            if (((type === undefined || type === null) || this.portsIn[i].type == type) && this.portsIn[i].isLinked())
+            {
+                const pi = this.portsIn[i];
+                for (let li = 0; li < pi.links.length; li++)
+                {
+                    if (!pi.links[li]) continue;
+                    if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
+                    if (pi.links[li].portOut.parent.hasParent(type, name, count)) return true;
+                }
+            }
+        }
+        return false;
+    };
+
+
+    CABLES.Op.prototype.checkLinkTimeWarnings = function ()
+    {
+        // function hasParent(op, type, name, count)
+        // {
+        //     count = count || 1;
+        //     count++;
+        //     if (count >= 1000)
+        //     {
+        //         console.log("hasparent loop....");
+        //         return false;
+        //     }
+        //     for (let i = 0; i < op.portsIn.length; i++)
+        //     {
+        //         if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
+        //         {
+        //             const pi = op.portsIn[i];
+        //             for (let li = 0; li < pi.links.length; li++)
+        //             {
+        //                 if (!pi.links[li]) continue;
+        //                 if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
+        //                 if (hasParent(pi.links[li].portOut.parent, type, name, count)) return true;
+        //             }
+        //         }
+        //     }
+        //     return false;
+        // }
 
         function hasTriggerInput(op)
         {
@@ -184,21 +210,21 @@ export default function extendCore()
         if (working && this.objName.indexOf("Ops.Gl.TextureEffects") == 0 && hasTriggerInput(this) && this.objName.indexOf("TextureEffects.ImageCompose") == -1)
         {
             working =
-                hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
-                hasParent(this, CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
+                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose") ||
+                this.hasParent(CABLES.OP_PORT_TYPE_FUNCTION, "TextureEffects.ImageCompose_v2");
 
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
 
         if (this._linkTimeRules.forbiddenParent && working)
         {
-            working = !hasParent(this, this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
+            working = !this.hasParent(this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
             if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._linkTimeRules.forbiddenParent + "";
         }
 
         if (this._linkTimeRules.needsParentOp && working)
         {
-            working = hasParent(this, null, this._linkTimeRules.needsParentOp);
+            working = this.hasParent(null, this._linkTimeRules.needsParentOp);
             if (!working) notWorkingMsg = text.working_connected_to + this._linkTimeRules.needsParentOp + "";
         }
 
