@@ -1226,6 +1226,7 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
+                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1240,7 +1241,7 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": "Show ops",
+                    "buttonText": buttonText,
                     "type": "teamnamespace",
                     "teamLink": ext.teamLink
                 };
@@ -1266,6 +1267,7 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
+                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1280,7 +1282,7 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": "Show ops",
+                    "buttonText": buttonText,
                     "type": "extension"
                 };
                 extDoc.pop = -1;
