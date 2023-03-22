@@ -421,6 +421,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
                 }
             }
+            if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
 
         gui.jobs().start({ "id": "projectsave", "title": "save patch", "indicator": "canvas" });
@@ -435,7 +436,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         for (let i = 0; i < data.ops.length; i++)
         {
-            if (data.ops[i].uiAttribs.title == CABLES.getShortOpName(data.ops[i].objName)) delete data.ops[i].uiAttribs.title;
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
             if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
