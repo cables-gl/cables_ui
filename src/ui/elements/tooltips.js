@@ -13,14 +13,19 @@ export function showToolTip(e, txt, nopadding)
 
     eleTooltip.classList.toggle("tooltip_nopadding", nopadding);
 
+    // console.log(e.target.id);
+
     if (e)
         if (e.style)
         {
             eleTooltip.style.top = e.getBoundingClientRect().top + 25 + "px";
             eleTooltip.style.left = e.getBoundingClientRect().left + "px";
+
+            // console.log(e.getBoundingClientRect().top);
         }
         else
         {
+            // console.log(e.clientY);
             eleTooltip.style.top = e.clientY + 12 + "px";
             eleTooltip.style.left = e.clientX + 25 + "px";
         }
@@ -98,7 +103,7 @@ function isMultilineString(str)
     return ((str.match(/\n/g) || []).length > 0);
 }
 
-function getPortDescription(thePort)
+function getPortDescription(thePort, overlink)
 {
     let str = "";
 
@@ -120,24 +125,27 @@ function getPortDescription(thePort)
 
     if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
     else str += " <b>" + thePort.getName() + "</b> ";
-    let strInfo = "";
 
-    if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += text.portDirIn;
-    if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += text.portDirOut;
-    if (thePort.isLinked()) strInfo += text.portMouseUnlink;
-    else strInfo += text.portMouseCreate;
-    gui.showInfo(strInfo);
+    if (!overlink)
+    {
+        let strInfo = "";
+
+        if (thePort.direction == CABLES.PORT_DIR_IN) strInfo += text.portDirIn;
+        if (thePort.direction == CABLES.PORT_DIR_OUT) strInfo += text.portDirOut;
+        if (thePort.isLinked()) strInfo += text.portMouseUnlink;
+        else strInfo += text.portMouseCreate;
+        gui.showInfo(strInfo);
+    }
 
     return str;
 }
 
-export function updateHoverToolTip(event, port)
+export function updateHoverToolTip(event, port, overlink)
 {
     if (!port) return;
 
-    let txt = getPortDescription(port);
+    let txt = getPortDescription(port, overlink);
     let val = null;
-
 
     if (port && !port.uiAttribs.hideParam && !port.uiAttribs.hidePort)
     {
@@ -145,8 +153,6 @@ export function updateHoverToolTip(event, port)
         {
             val = port.getValueForDisplay();
             if (CABLES.UTILS.isNumeric(val))val = Math.round(val * 1000) / 1000;
-            // else val = "\"" + val + "\"";
-
 
             txt += "<span class=\"tooltip_value\">" + val + "</span>";
         }
@@ -216,10 +222,16 @@ export function updateHoverToolTip(event, port)
 
     CABLES.UI.showToolTip(event, txt, true);
 
+    if (overlink)
+    {
+        clearInterval(CABLES.UI.hoverInterval);
+        CABLES.UI.hoverInterval = -1;
+    }
+
     if (CABLES.UI.hoverInterval == -1)
         CABLES.UI.hoverInterval = setInterval(
             () =>
             {
-                updateHoverToolTip(event, port);
+                updateHoverToolTip(event, port, overlink);
             }, 50);
 }

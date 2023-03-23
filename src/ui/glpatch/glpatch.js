@@ -1535,4 +1535,33 @@ export default class GlPatch extends CABLES.EventTarget
             return this._splineDrawers[subpatchId];
         }
     }
+
+    setHoverLink(e, link)
+    {
+        // console.log(link);
+
+        if (link && e)
+        {
+            clearTimeout(this._ttTImeout);
+            CABLES.UI.updateHoverToolTip(e, link._link.portOut, true);
+            // console.log(e.offsetY);
+            // console.log("show!");
+        }
+        // if(!link) CABLES.UI.hideToolTip();
+
+
+        // console.log(link);
+
+        if (!link)
+        {
+            clearTimeout(this._ttTImeout);
+
+            this._ttTImeout = setTimeout(() =>
+            {
+                console.log("hide!");
+                CABLES.UI.hideToolTip();
+            }, 100);
+        }
+        // console.log(link);
+    }
 }
