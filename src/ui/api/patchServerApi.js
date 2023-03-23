@@ -325,29 +325,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
                             }
 
-                            if (usedPatchOps.length > 0)
-                            {
-                                let replacedOps = 0;
-                                const doneReplaceCallback = () =>
-                                {
-                                    replacedOps++;
-                                    if (replacedOps === usedPatchOps.length)
-                                    {
-                                        this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
-                                    }
-                                };
-                                usedPatchOps.forEach((patchOp) =>
-                                {
-                                    const oldId = patchOp.id;
-                                    const newName = patchOp.objName.replace(defaultops.getPatchOpsPrefix() + gui.project().shortId + ".", defaultops.getPatchOpsPrefix() + d.shortId + ".");
-                                    console.log("NEWNAME", patchOp.objName, newName);
-                                    gui.patchView.replaceOp(oldId, newName, doneReplaceCallback);
-                                });
-                            }
-                            else
-                            {
-                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
-                            }
+                            this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
                         }
                         else
                         {

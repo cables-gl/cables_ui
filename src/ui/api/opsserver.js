@@ -1240,16 +1240,21 @@ export default class ServerOps
     {
         if (op && this.canReadOp(gui.user, op.name))
         {
-            let lid = "missingop" + op.name + CABLES.uuid();
-            const missingOpUrl = [];
-
-            let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + op.name);
-            if (this.isUserOp(op.name)) url += "&p=" + this._patchId;
-            if (op.id && op.id !== "undefined") url += "&id=" + op.id;
-            missingOpUrl.push(url);
-
-            CABLESUILOADER.talkerAPI.send("getOpDocs", op, (err, res) =>
+            const options = {
+                "op": op
+            };
+            if (this.isUserOp(op.name) || this.isPatchOp(op.name)) options.projectId = gui.project().shortId;
+            CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
+                let opName = res.newPatchOp || op.name;
+                let lid = "missingop" + opName + CABLES.uuid();
+                const missingOpUrl = [];
+
+                let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
+                if (this.isUserOp(opName) || this.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
+                if (op.id && op.id !== "undefined") url += "&id=" + op.id;
+                missingOpUrl.push(url);
+
                 loadjs.ready(lid, () =>
                 {
                     let newOp = null;
