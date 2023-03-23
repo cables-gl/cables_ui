@@ -1167,7 +1167,7 @@ export default class GlPatch extends CABLES.EventTarget
     {
         const perf = CABLES.UI.uiProfiler.start("[glpatch] unselectAll");
 
-        for (const i in this._glOpz) this._glOpz[i].selected = false;
+        for (const i in this._glOpz) if (this._glOpz[i].selected) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;

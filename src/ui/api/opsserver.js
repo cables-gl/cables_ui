@@ -1238,6 +1238,7 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
+        console.log(op);
         if (op && this.canReadOp(gui.user, op.name))
         {
             let lid = "missingop" + op.name + CABLES.uuid();
