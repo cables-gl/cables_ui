@@ -194,6 +194,7 @@ export default class ServerOps
             if (op.portsIn[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if (op.portsIn[i].uiAttribs.display == "bool") l.subType = "boolean";
+                else if (op.portsIn[i].uiAttribs.display == "boolnum") l.subType = "boolean";
                 else if (op.portsIn[i].uiAttribs.type == "string") l.subType = "string";
                 else if (op.portsIn[i].uiAttribs.increment == "integer") l.subType = "integer";
                 else if (op.portsIn[i].uiAttribs.display == "dropdown") l.subType = "select box";
@@ -218,6 +219,7 @@ export default class ServerOps
             if (op.portsOut[i].type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 if (op.portsOut[i].uiAttribs.display == "bool") l.subType = "boolean";
+                else if (op.portsOut[i].uiAttribs.display == "boolnum") l.subType = "boolean";
                 else if (op.portsOut[i].uiAttribs.type == "string") l.subType = "string";
                 else if (op.portsOut[i].uiAttribs.display == "dropdown") l.subType = "dropdown";
                 else if (op.portsOut[i].uiAttribs.display == "file") l.subType = "url";
