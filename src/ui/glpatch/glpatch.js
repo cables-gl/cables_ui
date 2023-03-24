@@ -1167,7 +1167,7 @@ export default class GlPatch extends CABLES.EventTarget
     {
         const perf = CABLES.UI.uiProfiler.start("[glpatch] unselectAll");
 
-        for (const i in this._glOpz) this._glOpz[i].selected = false;
+        for (const i in this._glOpz) if (this._glOpz[i].selected) this._glOpz[i].selected = false;
         this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
@@ -1534,5 +1534,34 @@ export default class GlPatch extends CABLES.EventTarget
             this._splineDrawers[subpatchId] = new GlSplineDrawer(this._cgl, "patchCableSplines_" + subpatchId);
             return this._splineDrawers[subpatchId];
         }
+    }
+
+    setHoverLink(e, link)
+    {
+        // console.log(link);
+
+        if (link && e)
+        {
+            clearTimeout(this._ttTImeout);
+            CABLES.UI.updateHoverToolTip(e, link._link.portOut, true);
+            // console.log(e.offsetY);
+            // console.log("show!");
+        }
+        // if(!link) CABLES.UI.hideToolTip();
+
+
+        // console.log(link);
+
+        if (!link)
+        {
+            clearTimeout(this._ttTImeout);
+
+            this._ttTImeout = setTimeout(() =>
+            {
+                console.log("hide!");
+                CABLES.UI.hideToolTip();
+            }, 100);
+        }
+        // console.log(link);
     }
 }

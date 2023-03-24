@@ -111,7 +111,8 @@ export default class GlCable
             }
         }
 
-        const r = this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+
+        const r = this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
@@ -386,7 +387,7 @@ export default class GlCable
     isHoveredButtonRect()
     {
         if (this._glPatch.isDraggingPort()) return false;
-        return this.collideMouse(this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        return this.collideMouse(null, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     setSpeed(speed)
@@ -394,7 +395,7 @@ export default class GlCable
         this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
     }
 
-    collideMouse(x1, y1, x2, y2, cx, cy, r)
+    collideMouse(e, x1, y1, x2, y2, cx, cy, r)
     {
         // if (this._glPatch.isDraggingPort()) return;
         // if (this._glPatch.isDraggingPort()) this._glPatch.showOpCursor(false);
@@ -474,11 +475,10 @@ export default class GlCable
             this._buttonRect.interactive = true;
             this._buttonRect._hovering = true;
 
-            this._glPatch.hoverLink = this._link;
+            this._glPatch.setHoverLink(e, this._link);
             this._glPatch._dropInCircleRect = this._buttonRect;
 
-            if (this._glPatch.cablesHoverText)
-                this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
+            if (this._glPatch.cablesHoverText) this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
             gui.showInfo(text.linkAddCircle);
 
@@ -487,6 +487,7 @@ export default class GlCable
         }
         else
         {
+            if (this._buttonRect.visible) this._glPatch.setHoverLink(e, null);
             this._buttonRect.interactive = false;
             this._buttonRect.visible = false;
             this._buttonRect._hovering = false;
