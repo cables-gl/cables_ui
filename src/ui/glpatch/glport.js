@@ -51,7 +51,7 @@ export default class GlPort
             if (attribs.hasOwnProperty("expose")) this._updateColor();
         });
 
-        this.setFlowModeActivity(0);
+        this.setFlowModeActivity(1);
         this.updateSize();
         this._updateColor();
     }
