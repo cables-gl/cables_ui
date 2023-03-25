@@ -155,11 +155,12 @@ export default class GlRect extends CABLES.EventTarget
         this._rectInstancer.setColor(this._attrIndex, this.color);
     }
 
-    setOpacity(a)
+    setOpacity(a, childs)
     {
         this.setColor(this.color[0], this.color[1], this.color[2], a);
 
-        for (let i = 0; i < this.childs.length; i++) this.childs[i].setOpacity(a);
+        if (childs !== false)
+            for (let i = 0; i < this.childs.length; i++) this.childs[i].setOpacity(a);
     }
 
     setTexRect(x, y, w, h)

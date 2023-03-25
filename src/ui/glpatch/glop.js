@@ -198,7 +198,7 @@ export default class GlOp extends CABLES.EventTarget
         if (gui.patchView.getSelectedOps().length == 1)
         {
             this._glTitle.setOpacity(0.5);
-            this._glRectBg.setOpacity(0.8);
+            this._glRectBg.setOpacity(0.8, false);
             this._preDragPosZ = this._glRectBg.z;
             // this._posZ = -0.5;
             this.updatePosition();
@@ -1152,24 +1152,24 @@ export default class GlOp extends CABLES.EventTarget
         else
         if (!this._op.enabled)
         {
-            this._glRectBg.setOpacity(0.2);
+            this._glRectBg.setOpacity(0.2, false);
             this._glTitle.setOpacity(0.2);
         }
         else
         {
-            this._glRectBg.setOpacity(0.9);
+            this._glRectBg.setOpacity(0.9, false);
             this._glTitle.setOpacity(1);
         }
 
         if (this._glNotWorkingCross)
         {
-            this._glTitle.setOpacity(0.7);
+            this._glTitle.setOpacity(0.7, false);
         }
 
 
         if (this._hideBgRect)
         {
-            this._glRectBg.setOpacity(0.0);
+            this._glRectBg.setOpacity(0.0, true);
         }
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
         if (this._resizableArea) this._resizableArea._updateColor();
