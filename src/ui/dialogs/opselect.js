@@ -1124,7 +1124,7 @@ export default class OpSelect
                         if (gui.serverOps.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
                     }
 
-                    if (gui.serverOps.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
+                    if (defaultops.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
@@ -1143,7 +1143,7 @@ export default class OpSelect
                             "isOp": isOp,
                             "name": opname,
                             "userOp": gui.serverOps.isUserOp(opname),
-                            "devOp": gui.serverOps.isDevOp(opname),
+                            "devOp": defaultops.isDevOp(opname),
                             "extensionOp": gui.serverOps.isExtensionOp(opname),
                             "teamOp": gui.serverOps.isTeamOp(opname),
                             "isExtension": false,

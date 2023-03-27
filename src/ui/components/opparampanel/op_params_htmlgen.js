@@ -33,7 +33,7 @@ class PortHtmlGenerator
             const alt = CABLES.Patch.getOpClass(notDeprecatedName);
             if (alt) op.isDeprecatedAlternative = notDeprecatedName;
         }
-        if (op.objName.startsWith("Ops.Dev.")) op.isExperimental = true;
+        if (defaultops.isDevOp(op.objName)) op.isExperimental = true;
 
         if (gui.opDocs)
         {

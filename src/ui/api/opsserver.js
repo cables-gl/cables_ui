@@ -664,7 +664,7 @@ export default class ServerOps
                     alert("Please enter a name for your op!");
                     return;
                 }
-                cb(ele.byId("opNameDialogInput").value);
+                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
             });
         });
     }
@@ -680,9 +680,9 @@ export default class ServerOps
         let namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
         if (type === "user") namespace = "Ops.User." + gui.user.usernameLowercase + ".";
 
-        this.opNameDialog("Create operator", name, type, namespace, (newname) =>
+        this.opNameDialog("Create operator", name, type, namespace, (newNamespace, newName) =>
         {
-            this.create(namespace + newname, () =>
+            this.create(newNamespace + newName, () =>
             {
                 gui.closeModal();
             });
@@ -704,9 +704,9 @@ export default class ServerOps
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         const namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
-        this.opNameDialog("Clone operator", name, "patch", namespace, (newname) =>
+        this.opNameDialog("Clone operator", name, "patch", namespace, (newNamespace, newName) =>
         {
-            const opname = namespace + newname;
+            const opname = newNamespace + newName;
             gui.serverOps.clone(oldName, opname);
         });
     }
@@ -1167,11 +1167,6 @@ export default class ServerOps
     isDeprecatedOp(opname)
     {
         return opname && opname.indexOf("Ops.Deprecated.") === 0;
-    }
-
-    isDevOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Dev.") === 0;
     }
 
     isExtensionOp(opname)

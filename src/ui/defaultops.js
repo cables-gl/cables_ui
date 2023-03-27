@@ -235,5 +235,10 @@ export default
     "isPatchOpName": (opname) =>
     {
         return opname && opname.startsWith("Ops.Patch.P");
+    },
+
+    "isDevOp": (opname) =>
+    {
+        return opname && opname.includes(".Dev.");
     }
 };
