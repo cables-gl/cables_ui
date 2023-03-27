@@ -614,15 +614,24 @@ export default class OpSelect
             if (listItem && listItem.isExtension)
             {
                 html += "<i class=\"icon icon-book-open\"></i> Extension";
+                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
                 html += "<h2>" + listItem.shortName + "</h2>";
 
                 html += listItem.summary;
-                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can we loaded into the editor when needed.<br/><br/>";
+                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can be loaded into the editor when needed.<br/><br/>";
                 // todo: here should be a description of the extension and list of ops etc...
             }
             else if (listItem && listItem.isTeamNamespace)
             {
-                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+                html += "<i class=\"icon icon-users\"></i> Team Namespace";
+                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
+                html += "<h2>" + listItem.shortName + "</h2>";
+
+                if (listItem.teamName) html += "Maintained by team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
+                if (listItem.teamDescription) html += "<br/>" + listItem.teamDescription;
+
+                html += listItem.summary;
+                html += "<br/><br/>Teams can share and publish ops for their members to use. They can be loaded into the editor when needed.<br/><br/>";
             }
             else
             {
@@ -1227,7 +1236,6 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1242,9 +1250,12 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": buttonText,
+                    "buttonText": "Load",
                     "type": "teamnamespace",
-                    "teamLink": ext.teamLink
+                    "teamName": ext.teamName,
+                    "teamDescription": ext.teamDescription,
+                    "teamLink": ext.teamLink,
+                    "numOps": ext.numOps
                 };
                 extDoc.pop = -1;
                 extDoc.summary = ext.summary || "";
@@ -1268,7 +1279,6 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1283,8 +1293,9 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": buttonText,
-                    "type": "extension"
+                    "buttonText": "Load",
+                    "type": "extension",
+                    "numOps": ext.numOps
                 };
                 extDoc.pop = -1;
                 extDoc.summary = ext.summary || "";
