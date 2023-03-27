@@ -417,13 +417,14 @@ body
         height:38px;
         line-height: 40px;
         text-align: right;
+        display: flex;
 
         span
         {
             margin-top: 10px;
         }
 
-        input
+        input, select
         {
             font-size: var(--font-size-default);
             // padding:10px;
@@ -433,6 +434,15 @@ body
             // background-color: var(--color-02);
             // color: var(--color-12);
             // float:right
+        }
+
+        select {
+            padding: 8px 9px !important;
+            height: 56px;
+            line-height: 56px;
+            border: 1px solid transparent !important;
+            border-radius: 2px;
+            margin-right: 5px;
         }
     }
 

@@ -950,23 +950,7 @@ export default class OpSelect
             }
             else if (itemType === "patchop")
             {
-                gui.serverOps.loadOpDependencies(opname, () =>
-                {
-                    if (reopenModal)
-                    {
-                        setTimeout(() =>
-                        {
-                            gui.opSelect().show({
-                                "subPatch": gui.patchView.getCurrentSubPatch(),
-                                "x": 0,
-                                "y": 0
-                            });
-                        }, 50);
-                    }
-
-                    this.close();
-                    gui.patchView.addOp(opname, this._newOpOptions);
-                });
+                gui.opSelect().addPatchOp(opname, reopenModal);
             }
             else
             {
@@ -1026,9 +1010,25 @@ export default class OpSelect
         });
     }
 
-    addPatchOp(name)
+    addPatchOp(name, reopenModal)
     {
+        gui.serverOps.loadOpDependencies(name, () =>
+        {
+            if (reopenModal)
+            {
+                setTimeout(() =>
+                {
+                    gui.opSelect().show({
+                        "subPatch": gui.patchView.getCurrentSubPatch(),
+                        "x": 0,
+                        "y": 0
+                    });
+                }, 50);
+            }
 
+            this.close();
+            gui.patchView.addOp(name, this._newOpOptions);
+        });
     }
 
     addSelectedOp(reopenModal)
@@ -1170,8 +1170,10 @@ export default class OpSelect
         const namespace = gui.opDocs.getPatchOpsNamespace();
         const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
         const extdocs = [];
-        patchOpDocs.forEach((opDoc) =>
+
+        for (let i = 0; i < patchOpDocs.length; i++)
         {
+            const opDoc = patchOpDocs[i];
             const opname = opDoc.name;
 
             const parts = opname.split(".");
@@ -1187,7 +1189,6 @@ export default class OpSelect
             parts.length -= 1;
             const nameSpace = parts.join(".");
 
-            let oldState = "";
             const op = {
                 "nscolor": defaultops.getNamespaceClassName(opname),
                 "isOp": true,
@@ -1200,15 +1201,15 @@ export default class OpSelect
                 "isExtension": false,
                 "shortName": shortName,
                 "nameSpace": nameSpace,
-                "oldState": oldState,
+                "oldState": "",
                 "lowercasename": lowercasename,
                 "buttonText": "Add",
-                "type": "patchop"
+                "type": "patchop",
+                "summary": gui.opDocs.getSummary(opname)
             };
-            op.summary = gui.opDocs.getSummary(opname);
 
             extdocs.push(op);
-        });
+        }
         return extdocs;
     }
 
