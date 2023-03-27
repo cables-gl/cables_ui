@@ -582,7 +582,7 @@ export default class ServerOps
             {
                 if (res.problems.length > 0)
                 {
-                    let htmlIssue = "<b>Issues:</b><br/>";
+                    let htmlIssue = "<h3>Issues</h3>";
                     htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
                     htmlIssue += "</ul>";
