@@ -558,10 +558,11 @@ export default class ServerOps
         if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
 
         let html = "";
-        html += "<span id=\"opNameDialogConsequences\"></span>";
-        html += "Enter a name:<br/><br/>";
-        html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
-        html += "<div id=\"opcreateerrors\"></div>";
+        html += "New op name:<br/><br/>";
+        html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
+        html += "<br/><br/>";
+        html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
+        html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create</a>";
         html += "<br/><br/>";
@@ -575,22 +576,24 @@ export default class ServerOps
                 consequencesHtml += "<li>" + consequence + "</li>";
             });
             if (consequencesHtml) consequencesHtml += "</ul>";
-            ele.byId("opNameDialogConsequences").innerHTML = consequencesHtml;
+            ele.byId("opNameDialogConsequences").innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
 
             if (newOpName)
             {
                 if (res.problems.length > 0)
                 {
-                    let htmlIssue = "<br/><br/><b>Your op name has issues:</b><br/><div class=\"modallist notices\">";
+                    let htmlIssue = "<b>Issues:</b><br/>";
                     htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul></div>";
+                    htmlIssue += "</ul>";
                     ele.byId("opcreateerrors").innerHTML = htmlIssue;
                     ele.hide(ele.byId("opNameDialogSubmit"));
+                    ele.byId("opcreateerrors").classList.remove("hidden");
                 }
                 else
                 {
                     ele.byId("opcreateerrors").innerHTML = "";
+                    ele.byId("opcreateerrors").classList.add("hidden");
                     ele.show(ele.byId("opNameDialogSubmit"));
                 }
             }
