@@ -552,73 +552,127 @@ export default class ServerOps
         });
     }
 
-    opNameDialog(title, name, type, namespace, cb)
+    opNameDialog(title, name, type, suggestedNamespace, cb)
     {
         let newName = name || "";
         if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
 
         let html = "";
-        if (type === "patch")
-        {
-            html += "Your op will be only available in this patch. <br/>People with access to the patch will be able to see and edit it..<br/><br/>";
-        }
-        else
-        {
-            html += "Your op will be private. Only you can see and use it.<br/><br/>";
-        }
-        html += "Enter a name:<br/><br/>";
-        html += "<div class=\"clone\"><span>" + namespace + "&nbsp;&nbsp;</span><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\"/></div></div>";
-        html += "<br/>";
-        html += "<div id=\"opcreateerrors\"></div>";
+        html += "New op name:<br/><br/>";
+        html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
         html += "<br/><br/>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton \">Create</a>";
+        html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
+        html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
+        html += "<br/><br/>";
+        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create</a>";
         html += "<br/><br/>";
 
-
-        new CABLES.UI.ModalDialog({
-            "title": title,
-            "text": html
-        });
-
-        ele.byId("opNameDialogInput").focus();
-        ele.byId("opNameDialogInput").addEventListener("input", () =>
+        const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
-            const v = ele.byId("opNameDialogInput").value;
-            CABLESUILOADER.talkerAPI.send("checkOpName", {
-                "namespace": namespace,
-                "v": v
-            }, (err, res) =>
+            let consequencesHtml = "";
+            if (res.consequences.length > 0) consequencesHtml += "<ul>";
+            res.consequences.forEach((consequence) =>
             {
-                this._log.log(res);
+                consequencesHtml += "<li>" + consequence + "</li>";
+            });
+            if (consequencesHtml) consequencesHtml += "</ul>";
+            ele.byId("opNameDialogConsequences").innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
+
+            if (newOpName)
+            {
                 if (res.problems.length > 0)
                 {
-                    let htmlIssue = "<br/><br/><b>your op name has issues:</b><br/><div class=\"modallist notices\">";
+                    let htmlIssue = "<h3>Issues</h3>";
                     htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
-                    htmlIssue += "</ul></div>";
+                    htmlIssue += "</ul>";
                     ele.byId("opcreateerrors").innerHTML = htmlIssue;
-                    ele.byId("opNameDialogSubmit").classList.add("hidden");
+                    ele.hide(ele.byId("opNameDialogSubmit"));
+                    ele.byId("opcreateerrors").classList.remove("hidden");
                 }
                 else
                 {
                     ele.byId("opcreateerrors").innerHTML = "";
-                    ele.byId("opNameDialogSubmit").classList.remove("hidden");
+                    ele.byId("opcreateerrors").classList.add("hidden");
+                    ele.show(ele.byId("opNameDialogSubmit"));
                 }
-            });
-        });
-
-        ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
-        {
-            if (ele.byId("opNameDialogInput").value === "")
-            {
-                alert("Please enter a name for your op!");
-                return;
             }
-            cb(ele.byId("opNameDialogInput").value);
+
+            const namespaceEle = ele.byId("opNameDialogNamespace");
+            namespaceEle.innerHTML = "";
+            const pleaseSelect = document.createElement("option");
+            pleaseSelect.value = "";
+            pleaseSelect.text = "please select";
+            if (!newNamespace) pleaseSelect.selected = true;
+            if (type === "patch")
+            {
+                const patchOpNs = document.createElement("option");
+                patchOpNs.value = suggestedNamespace;
+                patchOpNs.text = suggestedNamespace;
+                namespaceEle.add(patchOpNs);
+            }
+            namespaceEle.add(pleaseSelect);
+
+            res.namespaces.forEach((ns) =>
+            {
+                const option = document.createElement("option");
+                option.value = ns;
+                option.text = ns;
+                if (newNamespace && ns === newNamespace) option.selected = true;
+                namespaceEle.add(option);
+            });
+
+            ele.byId("opNameDialogInput").focus();
+        };
+
+        CABLESUILOADER.talkerAPI.send("checkOpName", {
+            "namespace": suggestedNamespace,
+            "v": newName
+        }, (initialErr, initialRes) =>
+        {
+            new CABLES.UI.ModalDialog({
+                "title": title,
+                "text": html
+            });
+
+            _updateFormFromApi(initialRes, newName, suggestedNamespace);
+
+            const _nameChangeListener = () =>
+            {
+                const newNamespace = ele.byId("opNameDialogNamespace").value;
+                const v = ele.byId("opNameDialogInput").value;
+                if (v)
+                {
+                    CABLESUILOADER.talkerAPI.send("checkOpName", {
+                        "namespace": newNamespace,
+                        "v": v
+                    }, (err, res) =>
+                    {
+                        _updateFormFromApi(res, v, newNamespace);
+                    });
+                }
+                else
+                {
+                    ele.hide(ele.byId("opNameDialogSubmit"));
+                }
+            };
+
+            ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
+            ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
+
+            ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
+            {
+                if (!ele.byId("opNameDialogInput").value)
+                {
+                    alert("Please enter a name for your op!");
+                    return;
+                }
+                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
+            });
         });
     }
 
-    createDialog(name, type = "user")
+    createDialog(name, type = "patch")
     {
         if (gui.project().isOpExample)
         {
@@ -626,12 +680,12 @@ export default class ServerOps
             return;
         }
 
-        let namespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        if (type === "patch") namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        let namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        if (type === "user") namespace = "Ops.User." + gui.user.usernameLowercase + ".";
 
-        this.opNameDialog("Create operator", name, type, namespace, (newname) =>
+        this.opNameDialog("Create operator", name, type, namespace, (newNamespace, newName) =>
         {
-            this.create(namespace + newname, () =>
+            this.create(newNamespace + newName, () =>
             {
                 gui.closeModal();
             });
@@ -652,10 +706,10 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        const namespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        this.opNameDialog("Clone operator", name, "user", namespace, (newname) =>
+        const namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        this.opNameDialog("Clone operator", name, "patch", namespace, (newNamespace, newName) =>
         {
-            const opname = namespace + newname;
+            const opname = newNamespace + newName;
             gui.serverOps.clone(oldName, opname);
         });
     }
@@ -1118,11 +1172,6 @@ export default class ServerOps
         return opname && opname.indexOf("Ops.Deprecated.") === 0;
     }
 
-    isDevOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Dev.") === 0;
-    }
-
     isExtensionOp(opname)
     {
         return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
@@ -1240,7 +1289,6 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
-        console.log(op);
         if (op && this.canReadOp(gui.user, op.name))
         {
             const options = {

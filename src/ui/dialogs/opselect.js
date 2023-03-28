@@ -614,15 +614,24 @@ export default class OpSelect
             if (listItem && listItem.isExtension)
             {
                 html += "<i class=\"icon icon-book-open\"></i> Extension";
+                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
                 html += "<h2>" + listItem.shortName + "</h2>";
 
                 html += listItem.summary;
-                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can we loaded into the editor when needed.<br/><br/>";
+                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can be loaded into the editor when needed.<br/><br/>";
                 // todo: here should be a description of the extension and list of ops etc...
             }
             else if (listItem && listItem.isTeamNamespace)
             {
-                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+                html += "<i class=\"icon icon-users\"></i> Team Namespace";
+                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
+                html += "<h2>" + listItem.shortName + "</h2>";
+
+                if (listItem.teamName) html += "Maintained by team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
+                if (listItem.teamDescription) html += "<br/>" + listItem.teamDescription;
+
+                html += listItem.summary;
+                html += "<br/><br/>Teams can share and publish ops for their members to use. They can be loaded into the editor when needed.<br/><br/>";
             }
             else
             {
@@ -950,23 +959,7 @@ export default class OpSelect
             }
             else if (itemType === "patchop")
             {
-                gui.serverOps.loadOpDependencies(opname, () =>
-                {
-                    if (reopenModal)
-                    {
-                        setTimeout(() =>
-                        {
-                            gui.opSelect().show({
-                                "subPatch": gui.patchView.getCurrentSubPatch(),
-                                "x": 0,
-                                "y": 0
-                            });
-                        }, 50);
-                    }
-
-                    this.close();
-                    gui.patchView.addOp(opname, this._newOpOptions);
-                });
+                gui.opSelect().addPatchOp(opname, reopenModal);
             }
             else
             {
@@ -1026,9 +1019,25 @@ export default class OpSelect
         });
     }
 
-    addPatchOp(name)
+    addPatchOp(name, reopenModal)
     {
+        gui.serverOps.loadOpDependencies(name, () =>
+        {
+            if (reopenModal)
+            {
+                setTimeout(() =>
+                {
+                    gui.opSelect().show({
+                        "subPatch": gui.patchView.getCurrentSubPatch(),
+                        "x": 0,
+                        "y": 0
+                    });
+                }, 50);
+            }
 
+            this.close();
+            gui.patchView.addOp(name, this._newOpOptions);
+        });
     }
 
     addSelectedOp(reopenModal)
@@ -1124,7 +1133,7 @@ export default class OpSelect
                         if (gui.serverOps.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
                     }
 
-                    if (gui.serverOps.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
+                    if (defaultops.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
 
                     parts.length -= 1;
                     const nameSpace = parts.join(".");
@@ -1143,7 +1152,7 @@ export default class OpSelect
                             "isOp": isOp,
                             "name": opname,
                             "userOp": gui.serverOps.isUserOp(opname),
-                            "devOp": gui.serverOps.isDevOp(opname),
+                            "devOp": defaultops.isDevOp(opname),
                             "extensionOp": gui.serverOps.isExtensionOp(opname),
                             "teamOp": gui.serverOps.isTeamOp(opname),
                             "isExtension": false,
@@ -1170,8 +1179,10 @@ export default class OpSelect
         const namespace = gui.opDocs.getPatchOpsNamespace();
         const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
         const extdocs = [];
-        patchOpDocs.forEach((opDoc) =>
+
+        for (let i = 0; i < patchOpDocs.length; i++)
         {
+            const opDoc = patchOpDocs[i];
             const opname = opDoc.name;
 
             const parts = opname.split(".");
@@ -1187,7 +1198,6 @@ export default class OpSelect
             parts.length -= 1;
             const nameSpace = parts.join(".");
 
-            let oldState = "";
             const op = {
                 "nscolor": defaultops.getNamespaceClassName(opname),
                 "isOp": true,
@@ -1200,15 +1210,15 @@ export default class OpSelect
                 "isExtension": false,
                 "shortName": shortName,
                 "nameSpace": nameSpace,
-                "oldState": oldState,
+                "oldState": "",
                 "lowercasename": lowercasename,
                 "buttonText": "Add",
-                "type": "patchop"
+                "type": "patchop",
+                "summary": gui.opDocs.getSummary(opname)
             };
-            op.summary = gui.opDocs.getSummary(opname);
 
             extdocs.push(op);
-        });
+        }
         return extdocs;
     }
 
@@ -1226,7 +1236,6 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1241,9 +1250,12 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": buttonText,
+                    "buttonText": "Load",
                     "type": "teamnamespace",
-                    "teamLink": ext.teamLink
+                    "teamName": ext.teamName,
+                    "teamDescription": ext.teamDescription,
+                    "teamLink": ext.teamLink,
+                    "numOps": ext.numOps
                 };
                 extDoc.pop = -1;
                 extDoc.summary = ext.summary || "";
@@ -1267,7 +1279,6 @@ export default class OpSelect
 
                 const parts = ext.name.split(".");
                 const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                let buttonText = ext.hasOwnProperty("numOps") ? "Show " + ext.numOps + " ops" : "Show ops";
                 const extDoc = {
                     "nscolor": defaultops.getNamespaceClassName(ext.name),
                     "isOp": false,
@@ -1282,8 +1293,9 @@ export default class OpSelect
                     "nameSpace": ext.nameSpace,
                     "oldState": "",
                     "lowercasename": lowercasename,
-                    "buttonText": buttonText,
-                    "type": "extension"
+                    "buttonText": "Load",
+                    "type": "extension",
+                    "numOps": ext.numOps
                 };
                 extDoc.pop = -1;
                 extDoc.summary = ext.summary || "";

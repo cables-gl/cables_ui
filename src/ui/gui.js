@@ -1232,9 +1232,7 @@ export default class Gui
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
 
-        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "user"); });
-        ele.byId("nav_op_createPatchOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "patch"); });
-
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "patch"); });
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(null, true); });
 
         ele.byId("nav_timeline").addEventListener("click", (event) =>
