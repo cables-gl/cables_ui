@@ -469,7 +469,7 @@ export default class OpSelect
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
-        if (!ops && !vizops)
+        if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
             this._eleSearchinfo.innerHTML = this.tree.html();
             return;
@@ -669,7 +669,7 @@ export default class OpSelect
             console.log("emnpty query!!!! show tree");
 
             // console.log(html);
-            this._eleSearchinfo.innerHTML = this.tree.html();
+            if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
         }
 
         this._currentSearchInfo = opname;
