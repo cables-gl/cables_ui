@@ -646,11 +646,12 @@ export default class OpSelect
             html += "</div>";
             if (listItem && listItem.isExtension)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this Extension</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this extension</a>";
             }
             else if (listItem && listItem.isTeamNamespace)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View Team</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View team</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops by this team</a>";
             }
             else
             {
