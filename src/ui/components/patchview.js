@@ -687,11 +687,35 @@ export default class PatchView extends CABLES.EventTarget
         return ops;
     }
 
-    unlinkSelectedOps()
+    unlinkSelectedOps(firstOnly)
     {
         const undoGroup = undo.startGroup();
         const ops = this.getSelectedOps();
-        for (const i in ops) ops[i].unLinkReconnectOthers();
+        if (firstOnly)
+        {
+            for (const i in ops)
+            {
+                if (ops[i].portsIn.length > 0 &&
+                    ops[i].portsOut.length > 0 &&
+                    ops[i].portsOut[0].isLinked() &&
+                    ops[i].portsIn[0].isLinked() &&
+                    ops[i].portsOut[0].type == ops[i].portsIn[0].type)
+                {
+                    const outerIn = ops[i].portsOut[0].links[0].getOtherPort(ops[i].portsOut[0]);
+                    const outerOut = ops[i].portsIn[0].links[0].getOtherPort(ops[i].portsIn[0]);
+
+                    ops[i].portsOut[0].removeLinks();
+                    ops[i].portsIn[0].removeLinks();
+
+                    ops[i].patch.link(outerIn.parent, outerIn.getName(), outerOut.parent, outerOut.getName());
+                }
+                // ops[i].unLinkReconnectOthers();
+            }
+        }
+        else
+        {
+            for (const i in ops) ops[i].unLinkReconnectOthers();
+        }
         undo.endGroup(undoGroup, "Unlink selected Ops");
     }
 

@@ -471,7 +471,7 @@ export default class OpSelect
 
         if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
-            this._eleSearchinfo.innerHTML = this.tree.html();
+            if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
         }
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
@@ -666,12 +666,7 @@ export default class OpSelect
         }
         else
         if (this._getQuery() == "")
-        {
-            console.log("emnpty query!!!! show tree");
-
-            // console.log(html);
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
-        }
 
         this._currentSearchInfo = opname;
     }

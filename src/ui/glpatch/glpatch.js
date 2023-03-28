@@ -195,6 +195,8 @@ export default class GlPatch extends CABLES.EventTarget
         });
         gui.keys.key("x", "Unlink selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(); });
 
+        gui.keys.key("x", "Unlink selected ops first ports only", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.unlinkSelectedOps(true); });
+
         gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.gotoParentSubpatch(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
