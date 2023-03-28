@@ -469,6 +469,11 @@ export default class OpSelect
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
+        if (!ops && !vizops)
+        {
+            this._eleSearchinfo.innerHTML = this.tree.html();
+            return;
+        }
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
@@ -580,7 +585,7 @@ export default class OpSelect
         else ele.hide(eleReplaceWithExistingVar);
 
 
-        if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
+        // if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
 
         perf.finish();
     }
@@ -662,6 +667,9 @@ export default class OpSelect
         else
         if (this._getQuery() == "")
         {
+            console.log("emnpty query!!!! show tree");
+
+            // console.log(html);
             this._eleSearchinfo.innerHTML = this.tree.html();
         }
 
