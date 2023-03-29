@@ -469,6 +469,11 @@ export default class OpSelect
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
+        if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
+        {
+            if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
+            return;
+        }
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
@@ -580,7 +585,7 @@ export default class OpSelect
         else ele.hide(eleReplaceWithExistingVar);
 
 
-        if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
+        // if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
 
         perf.finish();
     }
@@ -641,11 +646,12 @@ export default class OpSelect
             html += "</div>";
             if (listItem && listItem.isExtension)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this Extension</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this extension</a>";
             }
             else if (listItem && listItem.isTeamNamespace)
             {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View Team</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View team</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops by this team</a>";
             }
             else
             {
@@ -660,9 +666,7 @@ export default class OpSelect
         }
         else
         if (this._getQuery() == "")
-        {
-            this._eleSearchinfo.innerHTML = this.tree.html();
-        }
+            if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
 
         this._currentSearchInfo = opname;
     }
