@@ -5,8 +5,7 @@
 
 import { CONSTANTS } from "../../../cables/src/core/constants";
 
-export default
-{
+const defaultOps = {
     "defaultOpNames":
     {
         "number": "Ops.Value.Number",
@@ -232,13 +231,54 @@ export default
         return "Ops.Extension.";
     },
 
-    "isPatchOpName": (opname) =>
-    {
-        return opname && opname.startsWith("Ops.Patch.P");
-    },
-
     "isDevOp": (opname) =>
     {
         return opname && opname.includes(".Dev.");
+    },
+
+    "isAdminOp": (opname) =>
+    {
+        return opname && opname.indexOf("Ops.Admin.") === 0;
+    },
+
+    "isUserOp": (opname) =>
+    {
+        return opname && opname.indexOf("Ops.User.") === 0;
+    },
+
+    "isDeprecatedOp": (opname) =>
+    {
+        return opname && opname.indexOf("Ops.Deprecated.") === 0;
+    },
+
+    "isExtensionOp": (opname) =>
+    {
+        return opname && opname.indexOf(defaultOps.getExtensionOpsPrefix()) === 0;
+    },
+
+    "isPatchOp": (opname) =>
+    {
+        return opname && opname.indexOf(defaultOps.getPatchOpsPrefix()) === 0;
+    },
+
+    "isExtension": (opname) =>
+    {
+        return opname && opname.indexOf(defaultOps.getExtensionOpsPrefix()) === 0;
+    },
+
+    "isTeamOp": (opname) =>
+    {
+        return opname && opname.indexOf(defaultOps.getTeamOpsPrefix()) === 0;
+    },
+
+    "isTeamNamespace": (opname) =>
+    {
+        return opname && opname.indexOf(defaultOps.getTeamOpsPrefix()) === 0;
+    },
+
+    "isBlueprintOp": (opname) =>
+    {
+        return opname && opname.startsWith(defaultOps.defaultOpNames.blueprint);
     }
 };
+export default defaultOps;

@@ -1134,7 +1134,7 @@ export default class OpSelect
 
                     if (hidden)
                     {
-                        if (gui.serverOps.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
+                        if (defaultops.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
                     }
 
                     if (defaultops.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
@@ -1148,17 +1148,18 @@ export default class OpSelect
                         let oldState = "";
                         if (hidden)oldState = "OLD";
                         if (opdocHidden)oldState = "OLD";
-                        if (gui.serverOps.isDeprecatedOp(opname)) oldState = "DEPREC";
-                        if (gui.serverOps.isAdminOp(opname)) oldState = "ADMIN";
+                        if (defaultops.isDeprecatedOp(opname)) oldState = "DEPREC";
+                        if (defaultops.isAdminOp(opname)) oldState = "ADMIN";
 
                         const op = {
                             "nscolor": defaultops.getNamespaceClassName(opname),
                             "isOp": isOp,
                             "name": opname,
-                            "userOp": gui.serverOps.isUserOp(opname),
+                            "userOp": defaultops.isUserOp(opname),
                             "devOp": defaultops.isDevOp(opname),
-                            "extensionOp": gui.serverOps.isExtensionOp(opname),
-                            "teamOp": gui.serverOps.isTeamOp(opname),
+                            "extensionOp": defaultops.isExtensionOp(opname),
+                            "teamOp": defaultops.isTeamOp(opname),
+                            "patchOp": defaultops.isPatchOp(opname),
                             "isExtension": false,
                             "shortName": shortName,
                             "nameSpace": nameSpace,
@@ -1188,6 +1189,9 @@ export default class OpSelect
         {
             const opDoc = patchOpDocs[i];
             const opname = opDoc.name;
+
+            const inUse = existingOps.some((op) => { return op.name === opDoc.name; });
+            if (inUse) continue;
 
             const parts = opname.split(".");
             const lowercasename = opname.toLowerCase() + "_" + parts.join("").toLowerCase();

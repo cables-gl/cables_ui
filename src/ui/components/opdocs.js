@@ -211,7 +211,7 @@ export default class OpDocs
         let opDoc = this.getOpDocByName(opName);
         if (!opDoc)
         {
-            if (gui.serverOps.isExtension(opName))
+            if (defaultops.isExtension(opName))
             {
                 opDoc =
                     {
@@ -221,7 +221,7 @@ export default class OpDocs
                         "userOp": false
                     };
             }
-            else if (gui.serverOps.isTeamNamespace(opName))
+            else if (defaultops.isTeamNamespace(opName))
             {
                 opDoc =
                     {
