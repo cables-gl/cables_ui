@@ -279,7 +279,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const checkboxes = [];
         const localBlueprints = gui.corePatch().ops.filter((op) =>
         {
-            if (!gui.serverOps.isBlueprintOp(op.objName)) return false;
+            if (!defaultops.isBlueprintOp(op.objName)) return false;
             const port = op.getPortByName("externalPatchId");
             if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
             return false;

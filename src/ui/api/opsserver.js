@@ -1146,60 +1146,15 @@ export default class ServerOps
     ownsOp(opname)
     {
         const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        if (opname.indexOf(usernamespace) == 0) return true;
+        if (opname.indexOf(usernamespace) === 0) return true;
         return false;
     }
 
     getUserOpOwner(opname)
     {
-        if (!this.isUserOp(opname)) return null;
+        if (!defaultops.isUserOp(opname)) return null;
         const fields = opname.split(".", 3);
         return fields[2];
-    }
-
-    isUserOp(opname)
-    {
-        return opname && opname.indexOf("Ops.User.") === 0;
-    }
-
-    isAdminOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Admin.") === 0;
-    }
-
-    isDeprecatedOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Deprecated.") === 0;
-    }
-
-    isExtensionOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
-    }
-
-    isPatchOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getPatchOpsPrefix()) === 0;
-    }
-
-    isExtension(opname)
-    {
-        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
-    }
-
-    isTeamOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
-    }
-
-    isTeamNamespace(opname)
-    {
-        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
-    }
-
-    isBlueprintOp(opname)
-    {
-        return opname && opname.startsWith(defaultops.defaultOpNames.blueprint);
     }
 
     getExtensionByOpName(opname)
@@ -1224,8 +1179,8 @@ export default class ServerOps
     {
         const project = gui.project();
         if (project && project.settings && project.settings.isPublic) return true;
-        if (!this.isUserOp(opName)) return true;
-        if (this.isUserOp(opName))
+        if (!defaultops.isUserOp(opName)) return true;
+        if (defaultops.isUserOp(opName))
         {
             const owner = this.getUserOpOwner(opName);
             if (owner && project.userList && project.userList.includes(owner)) return true;
@@ -1246,8 +1201,8 @@ export default class ServerOps
         proj.ops.forEach((op) =>
         {
             let opName = op.objName;
-            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
-            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
+            if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
 
             if (!missingOpsFound.includes(opName))
             {
@@ -1294,7 +1249,7 @@ export default class ServerOps
             const options = {
                 "op": op
             };
-            if (this.isUserOp(op.name) || this.isPatchOp(op.name)) options.projectId = gui.project().shortId;
+            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 let opName = res.newPatchOp || op.name;
@@ -1302,7 +1257,7 @@ export default class ServerOps
                 const missingOpUrl = [];
 
                 let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
-                if (this.isUserOp(opName) || this.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
+                if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
                 if (op.id && op.id !== "undefined") url += "&id=" + op.id;
                 missingOpUrl.push(url);
 
@@ -1336,7 +1291,7 @@ export default class ServerOps
 
     loadExtensionOps(name, cb)
     {
-        if (name && this.isExtensionOp(name))
+        if (name && defaultops.isExtensionOp(name))
         {
             const extensionName = name.split(".", 3).join(".");
             const extensionOpUrl = [];
@@ -1373,7 +1328,7 @@ export default class ServerOps
 
     loadTeamNamespaceOps(name, cb)
     {
-        if (name && this.isTeamOp(name))
+        if (name && defaultops.isTeamOp(name))
         {
             const teamNamespaceName = name.split(".", 3).join(".");
             const teamOpUrl = [];
