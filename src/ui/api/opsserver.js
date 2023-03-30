@@ -729,12 +729,15 @@ export default class ServerOps
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
 
+        const apiParams = {
+            "opname": opname,
+            "name": attachmentName,
+        };
+        if (defaultops.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
-            {
-                opname,
-                "name": attachmentName,
-            },
+            apiParams,
             (err, res) =>
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
