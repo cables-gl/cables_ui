@@ -1207,7 +1207,7 @@ export default class ServerOps
             if (!missingOpsFound.includes(opName))
             {
                 let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
-                if (!loaded && !this.canReadOp(gui.user, opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
@@ -1244,7 +1244,7 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
-        if (op && this.canReadOp(gui.user, op.name))
+        if (op)
         {
             const options = {
                 "op": op
@@ -1252,34 +1252,44 @@ export default class ServerOps
             if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
-                let opName = res.newPatchOp || op.name;
-                let lid = "missingop" + opName + CABLES.uuid();
-                const missingOpUrl = [];
-
-                let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
-                if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
-                if (op.id && op.id !== "undefined") url += "&id=" + op.id;
-                missingOpUrl.push(url);
-
-                loadjs.ready(lid, () =>
+                if (err)
                 {
-                    let newOp = null;
-                    if (!err && res && res.opDocs)
+                    const title = err.msg.title || "Failed to load op";
+                    let html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
+                    html += "<br/>";
+                    new ModalDialog({ "title": title, "showOkButton": true, "html": html });
+                }
+                else
+                {
+                    let opName = res.newPatchOp || op.name;
+                    let lid = "missingop" + opName + CABLES.uuid();
+                    const missingOpUrl = [];
+
+                    let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
+                    if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
+                    if (op.id && op.id !== "undefined") url += "&id=" + op.id;
+                    missingOpUrl.push(url);
+
+                    loadjs.ready(lid, () =>
                     {
-                        res.opDocs.forEach((opDoc) =>
+                        let newOp = null;
+                        if (!err && res && res.opDocs)
                         {
-                            newOp = opDoc;
-                            this._ops.push(opDoc);
-                        });
-                        if (gui.opDocs)
-                        {
-                            gui.opDocs.addOpDocs(res.opDocs);
+                            res.opDocs.forEach((opDoc) =>
+                            {
+                                newOp = opDoc;
+                                this._ops.push(opDoc);
+                            });
+                            if (gui.opDocs)
+                            {
+                                gui.opDocs.addOpDocs(res.opDocs);
+                            }
                         }
-                    }
-                    incrementStartup();
-                    cb(newOp);
-                });
-                loadjs(missingOpUrl, lid);
+                        incrementStartup();
+                        cb(newOp);
+                    });
+                    loadjs(missingOpUrl, lid);
+                }
             });
         }
         else

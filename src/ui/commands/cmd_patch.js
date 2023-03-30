@@ -257,13 +257,11 @@ CABLES_CMD_PATCH.addOpByName = (name) =>
             {
                 gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                 {
-                    console.log("yey");
                     op.setUiAttrib({
                         "translate": {
                             "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
                             "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
                     });
-
                     if (op)
                     {
                         gui.patchView.focusOp(op.id);
