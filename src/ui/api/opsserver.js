@@ -1256,8 +1256,8 @@ export default class ServerOps
                 {
                     const title = err.msg.title || "Failed to load op";
                     let html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
-                    html += "<br/>";
-                    new ModalDialog({ "title": title, "showOkButton": true, "html": html });
+                    html += "<br/><br/>";
+                    new ModalDialog({ "title": title, "showOkButton": false, "html": html });
                 }
                 else
                 {
