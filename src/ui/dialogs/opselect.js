@@ -327,8 +327,19 @@ export default class OpSelect
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
                 {
                     points += 1;
-                    scoreDebug += "+1 is math (" + query + ")<br/>";
+                    scoreDebug += "+1 is math op (" + query + ")<br/>";
                 }
+                else if (list[i]._nameSpace.indexOf("ops.patch") > -1)
+                {
+                    points += 3;
+                    scoreDebug += "+1 is patch op (" + query + ")<br/>";
+                }
+                else if (list[i]._nameSpace.indexOf("ops.team") > -1)
+                {
+                    points += 2;
+                    scoreDebug += "+2 is team op (" + query + ")<br/>";
+                }
+
 
                 const shortnessPoints = 2 * Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
                 points += shortnessPoints;
@@ -773,6 +784,7 @@ export default class OpSelect
                 this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
 
                 const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
+                console.log(opdoc);
                 if (this._list[i]._lowerCaseName.indexOf("deprecated") > -1 || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
             }
 
@@ -868,32 +880,7 @@ export default class OpSelect
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
-
-        // this.clear = function ()
-        // {
-        //     let v = this._getQuery();
-
-        //     if (v.indexOf(".") > 0)
-        //     {
-        //         const arr = v.split(".");
-        //         arr.length -= 1;
-        //         v = arr.join(".");
-
-        //         if (v === "Ops") v = "";
-
-        //         eleOpsearch.value = v;
-        //         this.search();
-        //     }
-        //     else
-        //     {
-        //         eleOpsearch.value = "";
-        //         this.search();
-        //     }
-        // };
-
-
         this.updateOptions();
-
 
         setTimeout(() =>
         {
@@ -917,7 +904,6 @@ export default class OpSelect
 
         this.updateInfo();
     }
-
 
     searchFor(what)
     {
