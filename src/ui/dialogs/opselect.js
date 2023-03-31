@@ -1115,7 +1115,11 @@ export default class OpSelect
                     {
                         opdocHidden = opdoc.hidden;
                         hidden = opdoc.hidden;
-                        shortName = opdoc.shortNameDisplay;
+
+                        if (defaultops.isNonCoreOp(opname))
+                            shortName = opdoc.shortName;
+                        else
+                            shortName = opdoc.shortNameDisplay;
                     }
 
                     if (hidden)
