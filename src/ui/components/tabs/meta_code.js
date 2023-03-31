@@ -2,6 +2,7 @@ import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import { hideToolTip, showToolTip } from "../../elements/tooltips";
+import defaultops from "../../defaultops";
 
 export default class MetaCode
 {
@@ -97,9 +98,9 @@ export default class MetaCode
                             "doc": doc,
                             "summary": summary,
                             "ownsOp": gui.serverOps.ownsOp(this._op.objName),
-                            "userOp": gui.serverOps.isUserOp(this._op.objName),
-                            "extensionOp": gui.serverOps.isExtensionOp(this._op.objName),
-                            "teamOp": gui.serverOps.isTeamOp(this._op.objName),
+                            "userOp": defaultops.isUserOp(this._op.objName),
+                            "extensionOp": defaultops.isExtensionOp(this._op.objName),
+                            "teamOp": defaultops.isTeamOp(this._op.objName),
                             "canEditOp": canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,

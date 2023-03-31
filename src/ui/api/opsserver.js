@@ -773,12 +773,15 @@ export default class ServerOps
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
 
+        const apiParams = {
+            "opname": opname,
+            "name": attachmentName,
+        };
+        if (defaultops.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
-            {
-                opname,
-                "name": attachmentName,
-            },
+            apiParams,
             (err, res) =>
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
@@ -1190,60 +1193,15 @@ export default class ServerOps
     ownsOp(opname)
     {
         const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        if (opname.indexOf(usernamespace) == 0) return true;
+        if (opname.indexOf(usernamespace) === 0) return true;
         return false;
     }
 
     getUserOpOwner(opname)
     {
-        if (!this.isUserOp(opname)) return null;
+        if (!defaultops.isUserOp(opname)) return null;
         const fields = opname.split(".", 3);
         return fields[2];
-    }
-
-    isUserOp(opname)
-    {
-        return opname && opname.indexOf("Ops.User.") === 0;
-    }
-
-    isAdminOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Admin.") === 0;
-    }
-
-    isDeprecatedOp(opname)
-    {
-        return opname && opname.indexOf("Ops.Deprecated.") === 0;
-    }
-
-    isExtensionOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
-    }
-
-    isPatchOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getPatchOpsPrefix()) === 0;
-    }
-
-    isExtension(opname)
-    {
-        return opname && opname.indexOf(defaultops.getExtensionOpsPrefix()) === 0;
-    }
-
-    isTeamOp(opname)
-    {
-        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
-    }
-
-    isTeamNamespace(opname)
-    {
-        return opname && opname.indexOf(defaultops.getTeamOpsPrefix()) === 0;
-    }
-
-    isBlueprintOp(opname)
-    {
-        return opname && opname.startsWith(defaultops.defaultOpNames.blueprint);
     }
 
     getExtensionByOpName(opname)
@@ -1268,8 +1226,8 @@ export default class ServerOps
     {
         const project = gui.project();
         if (project && project.settings && project.settings.isPublic) return true;
-        if (!this.isUserOp(opName)) return true;
-        if (this.isUserOp(opName))
+        if (!defaultops.isUserOp(opName)) return true;
+        if (defaultops.isUserOp(opName))
         {
             const owner = this.getUserOpOwner(opName);
             if (owner && project.userList && project.userList.includes(owner)) return true;
@@ -1290,13 +1248,13 @@ export default class ServerOps
         proj.ops.forEach((op) =>
         {
             let opName = op.objName;
-            if (this.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
-            if (this.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
+            if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
 
             if (!missingOpsFound.includes(opName))
             {
                 let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
-                if (!loaded && !this.canReadOp(gui.user, opName)) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
@@ -1333,42 +1291,52 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
-        if (op && this.canReadOp(gui.user, op.name))
+        if (op)
         {
             const options = {
                 "op": op
             };
-            if (this.isUserOp(op.name) || this.isPatchOp(op.name)) options.projectId = gui.project().shortId;
+            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
-                let opName = res.newPatchOp || op.name;
-                let lid = "missingop" + opName + CABLES.uuid();
-                const missingOpUrl = [];
-
-                let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
-                if (this.isUserOp(opName) || this.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
-                if (op.id && op.id !== "undefined") url += "&id=" + op.id;
-                missingOpUrl.push(url);
-
-                loadjs.ready(lid, () =>
+                if (err)
                 {
-                    let newOp = null;
-                    if (!err && res && res.opDocs)
+                    const title = err.msg.title || "Failed to load op";
+                    let html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
+                    html += "<br/><br/>";
+                    new ModalDialog({ "title": title, "showOkButton": false, "html": html });
+                }
+                else
+                {
+                    let opName = res.newPatchOp || op.name;
+                    let lid = "missingop" + opName + CABLES.uuid();
+                    const missingOpUrl = [];
+
+                    let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
+                    if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
+                    if (op.id && op.id !== "undefined") url += "&id=" + op.id;
+                    missingOpUrl.push(url);
+
+                    loadjs.ready(lid, () =>
                     {
-                        res.opDocs.forEach((opDoc) =>
+                        let newOp = null;
+                        if (!err && res && res.opDocs)
                         {
-                            newOp = opDoc;
-                            this._ops.push(opDoc);
-                        });
-                        if (gui.opDocs)
-                        {
-                            gui.opDocs.addOpDocs(res.opDocs);
+                            res.opDocs.forEach((opDoc) =>
+                            {
+                                newOp = opDoc;
+                                this._ops.push(opDoc);
+                            });
+                            if (gui.opDocs)
+                            {
+                                gui.opDocs.addOpDocs(res.opDocs);
+                            }
                         }
-                    }
-                    incrementStartup();
-                    cb(newOp);
-                });
-                loadjs(missingOpUrl, lid);
+                        incrementStartup();
+                        cb(newOp);
+                    });
+                    loadjs(missingOpUrl, lid);
+                }
             });
         }
         else
@@ -1380,7 +1348,7 @@ export default class ServerOps
 
     loadExtensionOps(name, cb)
     {
-        if (name && this.isExtensionOp(name))
+        if (name && defaultops.isExtensionOp(name))
         {
             const extensionName = name.split(".", 3).join(".");
             const extensionOpUrl = [];
@@ -1417,7 +1385,7 @@ export default class ServerOps
 
     loadTeamNamespaceOps(name, cb)
     {
-        if (name && this.isTeamOp(name))
+        if (name && defaultops.isTeamOp(name))
         {
             const teamNamespaceName = name.split(".", 3).join(".");
             const teamOpUrl = [];

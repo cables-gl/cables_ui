@@ -7,6 +7,7 @@ import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
+import defaultops from "../defaultops";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -256,13 +257,11 @@ CABLES_CMD_PATCH.addOpByName = (name) =>
             {
                 gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                 {
-                    console.log("yey");
                     op.setUiAttrib({
                         "translate": {
                             "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
                             "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
                     });
-
                     if (op)
                     {
                         gui.patchView.focusOp(op.id);
@@ -917,7 +916,7 @@ CABLES_CMD_PATCH.updateAllBlueprints = () =>
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
-    const relevantOps = ops.filter((op) => { return gui.serverOps.isBlueprintOp(op.objName); });
+    const relevantOps = ops.filter((op) => { return defaultops.isBlueprintOp(op.objName); });
     gui.patchView.updateBlueprints(relevantOps);
 };
 
