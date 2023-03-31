@@ -284,7 +284,7 @@ export default class ServerOps
         document.body.appendChild(s);
     }
 
-    clone(oldname, name)
+    clone(oldname, name, cb)
     {
         this._log.log("clone", name, oldname);
 
@@ -294,7 +294,7 @@ export default class ServerOps
             "opClone",
             {
                 "opname": oldname,
-                name,
+                "name": name,
             },
             (err, res) =>
             {
@@ -313,6 +313,7 @@ export default class ServerOps
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
+                    if (cb)cb();
                 });
             },
         );
@@ -552,7 +553,7 @@ export default class ServerOps
         });
     }
 
-    opNameDialog(title, name, type, suggestedNamespace, cb)
+    opNameDialog(title, name, type, suggestedNamespace, cb, showReplace)
     {
         let newName = name || "";
         if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
@@ -560,11 +561,15 @@ export default class ServerOps
         let html = "";
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
+
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
-        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create</a>";
+        html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
+        if (showReplace) html += "<a id=\"opNameDialogSubmitReplace\" class=\"button\">Create and replace existing</a>";
+
+
         html += "<br/><br/>";
 
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
@@ -588,6 +593,7 @@ export default class ServerOps
                     htmlIssue += "</ul>";
                     ele.byId("opcreateerrors").innerHTML = htmlIssue;
                     ele.hide(ele.byId("opNameDialogSubmit"));
+                    if (showReplace) ele.hide(ele.byId("opNameDialogSubmitReplace"));
                     ele.byId("opcreateerrors").classList.remove("hidden");
                 }
                 else
@@ -595,6 +601,7 @@ export default class ServerOps
                     ele.byId("opcreateerrors").innerHTML = "";
                     ele.byId("opcreateerrors").classList.add("hidden");
                     ele.show(ele.byId("opNameDialogSubmit"));
+                    if (showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
                 }
             }
 
@@ -662,12 +669,12 @@ export default class ServerOps
 
             ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
             {
-                if (!ele.byId("opNameDialogInput").value)
-                {
-                    alert("Please enter a name for your op!");
-                    return;
-                }
                 cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
+            });
+
+            if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
+            {
+                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value, true);
             });
         });
     }
@@ -689,7 +696,7 @@ export default class ServerOps
             {
                 gui.closeModal();
             });
-        });
+        }, false);
     }
 
     cloneDialog(oldName)
@@ -707,11 +714,48 @@ export default class ServerOps
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         const namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
-        this.opNameDialog("Clone operator", name, "patch", namespace, (newNamespace, newName) =>
+
+        this.opNameDialog("Clone operator", name, "patch", namespace, (newNamespace, newName, replace) =>
         {
+            console.log("replace", replace);
+
+
             const opname = newNamespace + newName;
-            gui.serverOps.clone(oldName, opname);
-        });
+            gui.serverOps.clone(oldName, opname,
+                () =>
+                {
+                    gui.serverOps.loadOpDependencies(opname, function ()
+                    {
+                        if (replace)
+                        {
+                            // replace existing ops
+                            const ops = gui.corePatch().getOpsByObjName(oldName);
+                            console.log(ops);
+                            for (let i = 0; i < ops.length; i++)
+                            {
+                                gui.patchView.replaceOp(ops[i].id, opname);
+                            }
+                        }
+                        else
+                        {
+                            // add new op
+                            gui.patchView.addOp(opname, { "onOpAdd": (op) =>
+                            {
+                                op.setUiAttrib({
+                                    "translate": {
+                                        "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                                        "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                                });
+
+                                if (op)
+                                {
+                                    gui.patchView.focusOp(op.id);
+                                }
+                            } });
+                        }
+                    });
+                });
+        }, true);
     }
 
     editAttachment(opname, attachmentName, readOnly, cb, fromListener = false)
