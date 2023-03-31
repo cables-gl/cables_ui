@@ -1184,10 +1184,10 @@ export default class OpSelect
             const opdoc = gui.opDocs.getOpDocByName(opname);
             let shortName = parts[parts.length - 1];
 
-            if (opdoc)
-            {
-                shortName = opdoc.shortNameDisplay;
-            }
+            // if (opdoc)
+            // {
+            //     shortName = opdoc.shortNameDisplay;
+            // }
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
