@@ -256,6 +256,11 @@ const defaultOps = {
         return opname && opname.indexOf(defaultOps.getExtensionOpsPrefix()) === 0;
     },
 
+    "isNonCoreOp": (opname) =>
+    {
+        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+    },
+
     "isPatchOp": (opname) =>
     {
         return opname && opname.indexOf(defaultOps.getPatchOpsPrefix()) === 0;

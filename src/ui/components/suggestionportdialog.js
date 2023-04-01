@@ -12,7 +12,7 @@ export default class SuggestPortDialog
         {
             const theport = op.portsIn[i];
             if (
-                !theport.uiAttribs.hideParam &&
+                !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
                 CABLES.Link.canLink(theport, port)) this._addPort(theport);
         }
@@ -21,7 +21,7 @@ export default class SuggestPortDialog
         {
             const theport = op.portsOut[i];
             if (
-                !theport.uiAttribs.hideParam &&
+                !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
                 CABLES.Link.canLink(theport, port)) this._addPort(theport);
         }

@@ -239,6 +239,8 @@
         td.portType_4_linked { box-shadow: inset 12px 0 0 -1px var(--color_port_dynamic) !important; }
         td.portType_5_linked { box-shadow: inset 12px 0 0 -1px var(--color_link_string) !important; }
 
+        td.disp_switch { box-shadow: inset 6px 0 0 -1px var(--color_link_value) !important; } // overwrite: string port switch should be displayed as number because input port is index number
+
         textarea
         {
             background-color: $color-background-input;
@@ -716,8 +718,8 @@
 
             // color:red !important;
         }
-    
-    
+
+
     }
 
 }
