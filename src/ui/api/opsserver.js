@@ -573,6 +573,27 @@ export default class ServerOps
 
         html += "<br/><br/>";
 
+        const _nameChangeListener = () =>
+        {
+            const newNamespace = ele.byId("opNameDialogNamespace").value;
+            const v = ele.byId("opNameDialogInput").value;
+            if (v)
+            {
+                CABLESUILOADER.talkerAPI.send("checkOpName", {
+                    "namespace": newNamespace,
+                    "v": v
+                }, (err, res) =>
+                {
+                    _updateFormFromApi(res, v, newNamespace);
+                });
+            }
+            else
+            {
+                ele.hide(ele.byId("opNameDialogSubmit"));
+                ele.hide(ele.byId("opNameDialogSubmitReplace"));
+            }
+        };
+
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
             let consequencesHtml = "";
@@ -592,10 +613,25 @@ export default class ServerOps
                     htmlIssue += "<ul>";
                     for (let i = 0; i < res.problems.length; i++) htmlIssue += "<li>" + res.problems[i] + "</li>";
                     htmlIssue += "</ul>";
-                    ele.byId("opcreateerrors").innerHTML = htmlIssue;
+                    const errorsEle = ele.byId("opcreateerrors");
+                    errorsEle.innerHTML = htmlIssue;
                     ele.hide(ele.byId("opNameDialogSubmit"));
                     ele.hide(ele.byId("opNameDialogSubmitReplace"));
-                    ele.byId("opcreateerrors").classList.remove("hidden");
+                    errorsEle.classList.remove("hidden");
+
+                    const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
+                    console.log("HERE", versionSuggestions);
+                    versionSuggestions.forEach((suggest) =>
+                    {
+                        if (suggest.dataset.shortName)
+                        {
+                            suggest.addEventListener("pointerdown", (e) =>
+                            {
+                                ele.byId("opNameDialogInput").value = suggest.dataset.shortName;
+                                _nameChangeListener();
+                            });
+                        }
+                    });
                 }
                 else
                 {
@@ -638,27 +674,6 @@ export default class ServerOps
 
             _updateFormFromApi(initialRes, newName, suggestedNamespace);
 
-            const _nameChangeListener = () =>
-            {
-                const newNamespace = ele.byId("opNameDialogNamespace").value;
-                const v = ele.byId("opNameDialogInput").value;
-                if (v)
-                {
-                    CABLESUILOADER.talkerAPI.send("checkOpName", {
-                        "namespace": newNamespace,
-                        "v": v
-                    }, (err, res) =>
-                    {
-                        _updateFormFromApi(res, v, newNamespace);
-                    });
-                }
-                else
-                {
-                    ele.hide(ele.byId("opNameDialogSubmit"));
-                    ele.hide(ele.byId("opNameDialogSubmitReplace"));
-                }
-            };
-
             ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
             ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
 
@@ -674,7 +689,7 @@ export default class ServerOps
         });
     }
 
-    createDialog(name, type = "patch")
+    createDialog(name)
     {
         if (gui.project().isOpExample)
         {
@@ -682,10 +697,8 @@ export default class ServerOps
             return;
         }
 
-        let namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
-        if (type === "user") namespace = "Ops.User." + gui.user.usernameLowercase + ".";
-
-        this.opNameDialog("Create operator", name, type, namespace, (newNamespace, newName) =>
+        let suggestedNamespace = defaultops.getPatchOpsNamespace();
+        this.opNameDialog("Create operator", name, "patch", suggestedNamespace, (newNamespace, newName) =>
         {
             const opname = newNamespace + newName;
 
@@ -734,7 +747,7 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        let suggestedNamespace = defaultops.getPatchOpsNamespace();
         if (defaultops.isPrivateOp(oldName))
         {
             suggestedNamespace = defaultops.getNamespace(oldName);
