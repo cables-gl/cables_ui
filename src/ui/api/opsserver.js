@@ -567,7 +567,7 @@ export default class ServerOps
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
         html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
-        if (showReplace) html += "<a id=\"opNameDialogSubmitReplace\" class=\"button\">Create and replace existing</a>";
+        html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
 
 
         html += "<br/><br/>";
@@ -593,7 +593,7 @@ export default class ServerOps
                     htmlIssue += "</ul>";
                     ele.byId("opcreateerrors").innerHTML = htmlIssue;
                     ele.hide(ele.byId("opNameDialogSubmit"));
-                    if (showReplace) ele.hide(ele.byId("opNameDialogSubmitReplace"));
+                    ele.hide(ele.byId("opNameDialogSubmitReplace"));
                     ele.byId("opcreateerrors").classList.remove("hidden");
                 }
                 else
@@ -661,6 +661,7 @@ export default class ServerOps
                 else
                 {
                     ele.hide(ele.byId("opNameDialogSubmit"));
+                    ele.hide(ele.byId("opNameDialogSubmitReplace"));
                 }
             };
 
