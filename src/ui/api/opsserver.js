@@ -154,6 +154,7 @@ export default class ServerOps
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
+                    if (cb)cb();
                 });
             },
         );
@@ -693,9 +694,35 @@ export default class ServerOps
 
         this.opNameDialog("Create operator", name, type, namespace, (newNamespace, newName) =>
         {
-            this.create(newNamespace + newName, () =>
+            const opname = newNamespace + newName;
+
+            console.log("create0", opname);
+
+
+            this.create(opname, () =>
             {
                 gui.closeModal();
+                console.log("create1");
+
+                gui.serverOps.loadOpDependencies(opname, function ()
+                {
+                    // add new op
+                    gui.patchView.addOp(opname,
+                        {
+
+                            "onOpAdd": (op) =>
+                            {
+                                console.log("create2", op);
+                                op.setUiAttrib({
+                                    "translate": {
+                                        "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                                        "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                                });
+
+                                if (op) gui.patchView.focusOp(op.id);
+                            }
+                        });
+                });
             });
         }, false);
     }
