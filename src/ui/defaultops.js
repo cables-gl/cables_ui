@@ -206,6 +206,14 @@ const defaultOps = {
         return "default";
     },
 
+    "getNamespace": (opname) =>
+    {
+        if (!opname) return "";
+        const parts = opname.split(".");
+        parts.length -= 1;
+        return parts.join(".") + ".";
+    },
+
     "isSubPatchOpName": (opname) =>
     {
         return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
@@ -259,6 +267,11 @@ const defaultOps = {
     "isNonCoreOp": (opname) =>
     {
         return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+    },
+
+    "isPrivateOp": (opname) =>
+    {
+        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname);
     },
 
     "isPatchOp": (opname) =>

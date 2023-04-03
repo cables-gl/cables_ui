@@ -612,13 +612,6 @@ export default class ServerOps
             pleaseSelect.value = "";
             pleaseSelect.text = "please select";
             if (!newNamespace) pleaseSelect.selected = true;
-            if (type === "patch")
-            {
-                const patchOpNs = document.createElement("option");
-                patchOpNs.value = suggestedNamespace;
-                patchOpNs.text = suggestedNamespace;
-                namespaceEle.add(patchOpNs);
-            }
             namespaceEle.add(pleaseSelect);
 
             res.namespaces.forEach((ns) =>
@@ -741,9 +734,13 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        const namespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        let suggestedNamespace = defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
+        if (defaultops.isPrivateOp(oldName))
+        {
+            suggestedNamespace = defaultops.getNamespace(oldName);
+        }
 
-        this.opNameDialog("Clone operator", name, "patch", namespace, (newNamespace, newName, replace) =>
+        this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
         {
             console.log("replace", replace);
 
