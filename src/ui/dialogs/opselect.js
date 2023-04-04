@@ -221,7 +221,7 @@ export default class OpSelect
 
                     const docs = gui.opDocs.getOpDocByName(list[i].name);
 
-                    if (docs.hasOwnProperty("version"))
+                    if (docs && docs.hasOwnProperty("version"))
                     {
                         const p = docs.version * 0.01;
                         points += p;
