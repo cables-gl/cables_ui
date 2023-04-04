@@ -206,6 +206,14 @@ const defaultOps = {
         return "default";
     },
 
+    "getNamespace": (opname) =>
+    {
+        if (!opname) return "";
+        const parts = opname.split(".");
+        parts.length -= 1;
+        return parts.join(".") + ".";
+    },
+
     "isSubPatchOpName": (opname) =>
     {
         return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
@@ -219,6 +227,19 @@ const defaultOps = {
     "getPatchOpsPrefix": () =>
     {
         return "Ops.Patch.P";
+    },
+
+    "getPatchOpsNamespace": () =>
+    {
+        const PATCHOPS_ID_REPLACEMENTS = {
+            "-": "___"
+        };
+        let namespace = gui.project().shortId;
+        Object.keys(PATCHOPS_ID_REPLACEMENTS).forEach((key) =>
+        {
+            namespace = namespace.replaceAll(key, PATCHOPS_ID_REPLACEMENTS[key]);
+        });
+        return defaultOps.getPatchOpsPrefix() + namespace + ".";
     },
 
     "getTeamOpsPrefix": () =>
@@ -259,6 +280,11 @@ const defaultOps = {
     "isNonCoreOp": (opname) =>
     {
         return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+    },
+
+    "isPrivateOp": (opname) =>
+    {
+        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname);
     },
 
     "isPatchOp": (opname) =>

@@ -1170,7 +1170,7 @@ export default class OpSelect
 
     _getpatchops(existingOps = [])
     {
-        const namespace = gui.opDocs.getPatchOpsNamespace();
+        const namespace = defaultops.getPatchOpsNamespace();
         const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
         const extdocs = [];
 

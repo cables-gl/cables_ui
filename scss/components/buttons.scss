@@ -4,7 +4,7 @@
     // all buttons
     .button,.button-small
     {
-        display:inline-block !important;
+        display:inline-block;
         user-select: none;
         cursor:pointer;
         color: var(--color-12);

@@ -146,11 +146,6 @@ export default class OpDocs
         return this._teamnamespaces;
     }
 
-    getPatchOpsNamespace()
-    {
-        return defaultops.getPatchOpsPrefix() + gui.project().shortId + ".";
-    }
-
     getNamespaceDocs(namespace)
     {
         return this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
