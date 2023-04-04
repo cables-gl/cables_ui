@@ -222,11 +222,12 @@ export default class PatchView extends CABLES.EventTarget
             else if (gui.timeLine().isFocussed()) gui.timeLine().paste(e);
         });
 
-        document.addEventListener("cut", (e) =>
-        {
-            if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
-            else if (gui.timeLine().isFocussed()) gui.timeLine().cut(e);
-        });
+        document.addEventListener("cut",
+            (e) =>
+            {
+                if (this._patchRenderer.isFocussed()) this._patchRenderer.cut(e);
+                else if (gui.timeLine().isFocussed()) gui.timeLine().cut(e);
+            });
     }
 
     switch(id)
@@ -1927,7 +1928,7 @@ export default class PatchView extends CABLES.EventTarget
 
     snapOpPosX(posX)
     {
-        return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX) || 1;
+        return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX);
     }
 
     snapOpPosY(posY)
