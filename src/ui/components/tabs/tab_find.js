@@ -276,7 +276,10 @@ export default class FindTab
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
         if (op.storage && op.storage.blueprint)
-            html += "<br/> Blueprint: <span class=\"\">" + op.uiAttribs.extendTitle + "</span>";
+        {
+            console.log(op.storage);
+            html += "<br/> Blueprint: <span class=\"\">" + (op.uiAttribs.extendTitle || gui.patchView.getSubPatchName(op.uiAttribs.subPatch)) + "</span>";
+        }
         else
         if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
 

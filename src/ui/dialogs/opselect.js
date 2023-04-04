@@ -211,6 +211,7 @@ export default class OpSelect
                 }
             }
 
+
             if (found)
             {
                 if (this._newOpOptions)
@@ -219,6 +220,14 @@ export default class OpSelect
                     const firstportfitsText = "+3 First Port fits<br/>";
 
                     const docs = gui.opDocs.getOpDocByName(list[i].name);
+
+                    if (docs.hasOwnProperty("version"))
+                    {
+                        const p = docs.version * 0.01;
+                        points += p;
+                        scoreDebug += "+" + p + " version<br/>";
+                    }
+
 
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
