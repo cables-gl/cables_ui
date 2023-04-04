@@ -221,8 +221,14 @@ function valueChanger(eleId, focus, portName, opid)
 
     function eleInputValue()
     {
-        let v = parseFloat(eleInput.value);
+        eleInput.value = eleInput.value.replaceAll(",", ".");
+
+        let str = eleInput.value;
+
+        let v = parseFloat(str);
         if (v != v)v = 0;
+
+
         return v;
     }
 
@@ -317,6 +323,9 @@ function valueChanger(eleId, focus, portName, opid)
                     const p = op.getPort(portName);
 
                     let mathParsed = eleInput.value;
+
+                    mathParsed = mathParsed.replaceAll(",", ".");
+
                     try
                     {
                         mathParsed = CABLES.UI.mathparser.parse(eleInput.value);
@@ -334,6 +343,7 @@ function valueChanger(eleId, focus, portName, opid)
             }
         }
 
+        CABLES.UI.hideToolTip();
         eleInput.removeEventListener("focusout", blur);
         eleNumInputDisplay.innerHTML = eleInput.value;
         setTextEdit(false);
