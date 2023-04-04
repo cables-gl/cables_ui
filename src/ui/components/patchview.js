@@ -524,7 +524,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
 
-            if ((doc && doc.oldVersion) || this._p.ops[i].objName.indexOf("Deprecated") > -1)
+            if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
                 return;

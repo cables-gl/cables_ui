@@ -1639,8 +1639,8 @@ export default class Gui
             }
         };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settings" }, true);
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settingsiframe";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
     setCursor(str)

@@ -784,7 +784,7 @@ export default class OpSelect
                 this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
 
                 const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
-                if (this._list[i]._lowerCaseName.indexOf("deprecated") > -1 || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
+                if (defaultops.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
             }
 
             CABLES.UI.OPSELECT.maxPop = maxPop;
