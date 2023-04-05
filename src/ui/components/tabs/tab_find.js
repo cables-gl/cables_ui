@@ -396,9 +396,8 @@ export default class FindTab
 
                     let activity = 0;
                     for (let k = 0; k < ops[i].portsIn.length; k++) activity += ops[i].portsIn[k].activityCounter;
-                    for (let k = 0; k < ops[i].portsOut.length; k++) activity += ops[i].portsOut[k].activityCounter;
 
-                    if (activity) results.push({ op, "score": activity });
+                    if (activity) results.push({ op, "score": activity }); // "where": "activity: " + activity
                 }
             }
             else

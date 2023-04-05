@@ -128,8 +128,7 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            
-            if (glop) 
+            if (glop)
             {
                 if (!glop.visible) continue;
 
