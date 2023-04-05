@@ -130,7 +130,7 @@ const text =
 
     "opselect_intro": "<br/><h2>&nbsp;Start typing!</h2><br/>You can search for multiple words at once, e.g.: \"interpolate array\"<br/><br/>Add spaces between words for better search results<br/><br/>Press <span class=\"icon icon-arrow-up\"></span> and <span class=\"icon icon-arrow-down\"></span> to navigate.<br/><br/>Finally press <span class=\"icon icon-corner-down-left\"></span> to create the selected op",
     "opselect_typemore": "<h2>&nbsp;Type some more!</h2>",
-    "opselect_notfound": "<h2>&nbsp;404 - Op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui._opselect.close();gui.serverOps.createDialog(document.getElementById('opsearch').value, 'patch');\">Code a new op</a>",
+    "opselect_notfound": "<h2>&nbsp;404 - Op not found</h2><br/><br/><a class=\"bluebutton\" onclick=\"gui._opselect.close();gui.serverOps.createDialog(document.getElementById('opsearch').value);\">Code a new op</a>",
     "opselect_addop": "Add",
 
     "preferences":

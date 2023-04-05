@@ -1232,7 +1232,7 @@ export default class Gui
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
         ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
 
-        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null, "patch"); });
+        ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null); });
         ele.byId("nav_filemanager").addEventListener("click", (event) => { gui.showFileManager(null, true); });
 
         ele.byId("nav_timeline").addEventListener("click", (event) =>
@@ -1639,8 +1639,8 @@ export default class Gui
             }
         };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settingsiframe";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project()._id + "/settings" }, true);
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settingsiframe";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
     setCursor(str)

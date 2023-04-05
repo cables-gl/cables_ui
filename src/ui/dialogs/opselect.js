@@ -211,6 +211,7 @@ export default class OpSelect
                 }
             }
 
+
             if (found)
             {
                 if (this._newOpOptions)
@@ -219,6 +220,14 @@ export default class OpSelect
                     const firstportfitsText = "+3 First Port fits<br/>";
 
                     const docs = gui.opDocs.getOpDocByName(list[i].name);
+
+                    if (docs && docs.hasOwnProperty("version"))
+                    {
+                        const p = docs.version * 0.01;
+                        points += p;
+                        scoreDebug += "+" + p + " version<br/>";
+                    }
+
 
                     if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
                     {
@@ -784,7 +793,7 @@ export default class OpSelect
                 this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
 
                 const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
-                if (this._list[i]._lowerCaseName.indexOf("deprecated") > -1 || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
+                if (defaultops.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
             }
 
             CABLES.UI.OPSELECT.maxPop = maxPop;
@@ -1170,7 +1179,7 @@ export default class OpSelect
 
     _getpatchops(existingOps = [])
     {
-        const namespace = gui.opDocs.getPatchOpsNamespace();
+        const namespace = defaultops.getPatchOpsNamespace();
         const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
         const extdocs = [];
 
