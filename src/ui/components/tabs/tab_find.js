@@ -277,7 +277,6 @@ export default class FindTab
 
         if (op.storage && op.storage.blueprint)
         {
-            console.log(op.storage);
             html += "<br/> Blueprint: <span class=\"\">" + (op.uiAttribs.extendTitle || gui.patchView.getSubPatchName(op.uiAttribs.subPatch)) + "</span>";
         }
         else
