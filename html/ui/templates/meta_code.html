@@ -111,16 +111,7 @@
             <select id="addoplib">
                 <option value="">---</option>
                 {{#if canEditOp}}
-                {{#if userOp}}
-                    <option value="asset_upload">use library from patch assets...</option>
-                {{/if}}
-                {{#if extensionOp}}
-                    <option value="asset_upload">use library from patch assets...</option>
-                {{/if}}
-                {{#if teamOp}}
-                    <option value="asset_upload">use library from patch assets...</option>
-                {{/if}}
-                {{#if patchOp}}
+                {{#if showPatchLibSelect}}
                     <option value="asset_upload">use library from patch assets...</option>
                 {{/if}}
                 {{/if}}

@@ -42,6 +42,8 @@ const paramsHelper =
 
     "inputListenerCursorKeys": (e) =>
     {
+        e.target.value = e.target.value.replaceAll(",", ".");
+
         switch (e.which)
         {
         case 38: // up

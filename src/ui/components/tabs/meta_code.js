@@ -92,15 +92,14 @@ export default class MetaCode
                     if (this._op.objName.indexOf("User.") == -1)
                         this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + this._op.objName;
 
+                    const showPatchLibSelect = defaultops.isUserOp(this._op.objName) || defaultops.isExtensionOp(this._op.objName) || defaultops.isTeamOp(this._op.objName) || defaultops.isPatchOp(this._op.objName);
                     const html = getHandleBarHtml("meta_code",
                         {
                             "op": this._op,
                             "doc": doc,
                             "summary": summary,
                             "ownsOp": gui.serverOps.ownsOp(this._op.objName),
-                            "userOp": defaultops.isUserOp(this._op.objName),
-                            "extensionOp": defaultops.isExtensionOp(this._op.objName),
-                            "teamOp": defaultops.isTeamOp(this._op.objName),
+                            "showPatchLibSelect": showPatchLibSelect,
                             "canEditOp": canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,

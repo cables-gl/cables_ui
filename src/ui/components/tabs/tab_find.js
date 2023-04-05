@@ -35,7 +35,7 @@ export default class FindTab
             if (!op) continue;
             if (op.uiAttribs.error)
             {
-                if (op.objName.toLowerCase().indexOf("Deprecated") > -1)op.isDeprecated = true;
+                if (defaultops.isDeprecatedOp(op.objName)) op.isDeprecated = true;
             }
             if (op.uiAttribs.warning) warnOps.push(op);
             if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
@@ -276,7 +276,10 @@ export default class FindTab
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
         if (op.storage && op.storage.blueprint)
-            html += "<br/> Blueprint: <span class=\"\">" + op.uiAttribs.extendTitle + "</span>";
+        {
+            console.log(op.storage);
+            html += "<br/> Blueprint: <span class=\"\">" + (op.uiAttribs.extendTitle || gui.patchView.getSubPatchName(op.uiAttribs.subPatch)) + "</span>";
+        }
         else
         if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
 
@@ -353,7 +356,7 @@ export default class FindTab
 
                 for (let i = 0; i < results.length; i++)
                 {
-                    if (results[i].op.objName.indexOf("Ops.Deprecated") > -1) results[i].hint = "Op is deprecated, should not be used anymore";
+                    if (defaultops.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
                     else results[i].hint = "Newer version of op available! Please upgrade";
                 }
 
@@ -768,7 +771,7 @@ FindTab.searchOutDated = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        if ((doc && doc.oldVersion) || ops[i].objName.toLowerCase().indexOf("deprecated") > -1)
+        if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
     }
     return results;

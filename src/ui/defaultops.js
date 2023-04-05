@@ -264,17 +264,22 @@ const defaultOps = {
 
     "isUserOp": (opname) =>
     {
-        return opname && opname.indexOf("Ops.User.") === 0;
+        return opname && opname.startsWith("Ops.User.");
+    },
+
+    "isCurrentUserOp": (opname) =>
+    {
+        return opname && opname.startsWith("Ops.User." + gui.user.username);
     },
 
     "isDeprecatedOp": (opname) =>
     {
-        return opname && opname.indexOf("Ops.Deprecated.") === 0;
+        return opname && opname.includes(".Deprecated.");
     },
 
     "isExtensionOp": (opname) =>
     {
-        return opname && opname.indexOf(defaultOps.getExtensionOpsPrefix()) === 0;
+        return opname && opname.startsWith(defaultOps.getExtensionOpsPrefix());
     },
 
     "isNonCoreOp": (opname) =>

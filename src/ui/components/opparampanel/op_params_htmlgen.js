@@ -25,8 +25,8 @@ class PortHtmlGenerator
 
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
-        if (op.objName.startsWith("Ops.User." + gui.user.username)) ownsOp = true;
-        if (op.objName.startsWith("Ops.Deprecated."))
+        if (defaultops.isCurrentUserOp(op.objName)) ownsOp = true;
+        if (defaultops.isDeprecatedOp(op.objName))
         {
             op.isDeprecated = true;
             const notDeprecatedName = op.objName.replace("Deprecated.", "");

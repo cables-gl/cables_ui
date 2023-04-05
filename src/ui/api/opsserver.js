@@ -644,12 +644,6 @@ export default class ServerOps
 
             const namespaceEle = ele.byId("opNameDialogNamespace");
             namespaceEle.innerHTML = "";
-            const pleaseSelect = document.createElement("option");
-            pleaseSelect.value = "";
-            pleaseSelect.text = "please select";
-            if (!newNamespace) pleaseSelect.selected = true;
-            namespaceEle.add(pleaseSelect);
-
             res.namespaces.forEach((ns) =>
             {
                 const option = document.createElement("option");
