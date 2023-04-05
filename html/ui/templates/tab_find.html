@@ -21,6 +21,8 @@
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':extassets';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">External Assets</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':textures';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Textures</a>
         <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':history';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">History</a>
+        <a class="button-small" onclick="document.getElementById('{{inputid}}').value=':activity';document.getElementById('{{inputid}}').dispatchEvent(new Event('input'));">Activity</a>
+
 
         {{#each colors}}
         &nbsp;<a onclick="gui.find(':color={{.}}')" style="background-color:{{.}};color:black;" class="button-small">color</a>

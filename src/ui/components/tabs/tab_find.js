@@ -385,6 +385,20 @@ export default class FindTab
                 }
             }
 
+            if (str == ":activity")
+            {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+
+                    let activity = 0;
+                    for (let k = 0; k < ops[i].portsIn.length; k++) activity += ops[i].portsIn[k].activityCounter;
+                    for (let k = 0; k < ops[i].portsOut.length; k++) activity += ops[i].portsOut[k].activityCounter;
+
+                    if (activity) results.push({ op, "score": activity });
+                }
+            }
+            else
             if (str == ":error")
             {
                 for (let i = 0; i < ops.length; i++)
