@@ -277,7 +277,6 @@ export default class FindTab
 
         if (op.storage && op.storage.blueprint)
         {
-            console.log(op.storage);
             html += "<br/> Blueprint: <span class=\"\">" + (op.uiAttribs.extendTitle || gui.patchView.getSubPatchName(op.uiAttribs.subPatch)) + "</span>";
         }
         else
@@ -388,6 +387,19 @@ export default class FindTab
                 }
             }
 
+            if (str == ":activity")
+            {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+
+                    let activity = 0;
+                    for (let k = 0; k < ops[i].portsIn.length; k++) activity += ops[i].portsIn[k].activityCounter;
+
+                    if (activity) results.push({ op, "score": activity }); // "where": "activity: " + activity
+                }
+            }
+            else
             if (str == ":error")
             {
                 for (let i = 0; i < ops.length; i++)

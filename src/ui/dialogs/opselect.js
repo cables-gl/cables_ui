@@ -648,15 +648,15 @@ export default class OpSelect
             }
             else if (listItem && listItem.isTeamNamespace)
             {
-                html += "<i class=\"icon icon-users\"></i> Team Namespace";
-                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
-                html += "<h2>" + listItem.shortName + "</h2>";
+                html += "<h2><i class=\"icon icon-users\"></i> " + listItem.shortName + "</h2>";
 
                 if (listItem.teamName) html += "Maintained by team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
                 if (listItem.teamDescription) html += "<br/>" + listItem.teamDescription;
 
                 html += listItem.summary;
-                html += "<br/><br/>Teams can share and publish ops for their members to use. They can be loaded into the editor when needed.<br/><br/>";
+                html += "<br/><br/>";
+                if (listItem.numOps) html += listItem.numOps + " ops";
+                html += "<br/><br/>";
             }
             else
             {

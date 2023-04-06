@@ -128,8 +128,10 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            
-            if (glop) 
+            for (let ip = 0; ip < op.portsOut.length; ip++) op.portsOut[ip].activityCounter = 0;
+            for (let ip = 0; ip < op.portsIn.length; ip++) op.portsIn[ip].activityCounter = 0;
+
+            if (glop)
             {
                 if (!glop.visible) continue;
 
@@ -145,13 +147,14 @@ export default class GlPatchAPI
             for (let ip = 0; ip < op.portsIn.length; ip++)
             {
                 const thePort = op.portsIn[ip];
+                thePort.activityCounter = 0;
+
                 if (glop)
                 {
                     const glp = glop.getGlPort(thePort.name);
                     if (glp)glp.setFlowModeActivity(thePort.activityCounter);
                 }
 
-                thePort.activityCounter = 0;
 
                 for (let il = 0; il < thePort.links.length; il++)
                 {
