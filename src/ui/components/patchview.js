@@ -1928,7 +1928,7 @@ export default class PatchView extends CABLES.EventTarget
 
     snapOpPosX(posX)
     {
-        return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX);
+        return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX) || 1;
     }
 
     snapOpPosY(posY)
