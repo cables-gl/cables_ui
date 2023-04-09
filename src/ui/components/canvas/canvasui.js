@@ -20,12 +20,15 @@ export default class CanvasUi
         this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
-        if (this._cg.glVersion == 1)
+        if (this._elInfoVersion)
         {
-            this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
-            this._elCanvasInfoVer.innerHTML = "WebGL 1";
+            if (this._cg.glVersion == 1)
+            {
+                this._elCanvasInfoVer = this._elCanvasInfoVer || document.getElementById("canvasInfoVersion");
+                this._elCanvasInfoVer.innerHTML = "WebGL 1";
+            }
+            else this._elInfoVersion.remove();
         }
-        else this._elInfoVersion.remove();
 
         this.canvasEle = this._cg.canvas;
 
