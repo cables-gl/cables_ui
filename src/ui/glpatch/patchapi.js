@@ -24,6 +24,8 @@ export default class GlPatchAPI
 
         this._patch.addEventListener("onLink", this._onLink.bind(this));
         this._patch.addEventListener("onUnLink", this._onUnLink.bind(this));
+
+        this._updateCounter = 0;
     }
 
     _initPatch()
@@ -123,8 +125,11 @@ export default class GlPatchAPI
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
 
-        for (let i = 0; i < this._patch.ops.length; i++)
+        const numUpdates = Math.min(500, this._patch.ops.length);
+
+        for (let ii = 0; ii < numUpdates; ii++)
         {
+            let i = (ii + this._updateCounter) % this._patch.ops.length;
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
@@ -175,6 +180,7 @@ export default class GlPatchAPI
                 }
             }
         }
+        this._updateCounter += numUpdates;
         perf.finish();
     }
 
