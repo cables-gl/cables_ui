@@ -999,6 +999,10 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
+        if (this._oldMouseMoveX == x && this._oldMouseMoveY == y) return;
+
+        this._oldMouseMoveX = x;
+        this._oldMouseMoveY = y;
         if (!this._portDragLine.isActive)
             if (this._pauseMouseUntilButtonUp) return;
 
