@@ -1279,19 +1279,19 @@ export default class ServerOps
         const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
-            let opName = op.objName;
-            if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
-            if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
+            let opId = op.opId;
+            // if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
+            // if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
 
-            if (!missingOpsFound.includes(opName))
+            if (!missingOpsFound.includes(opId))
             {
-                let loaded = opDocs.find((loadedOp) => { return loadedOp.name === opName; });
-                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.name === opName; });
+                let loaded = opDocs.find((loadedOp) => { return loadedOp.opId === opId; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.opId === opId; });
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
-                    missingOps.push({ "name": opName, "id": op.opId });
-                    missingOpsFound.push(opName);
+                    missingOps.push({ "id": op.opId });
+                    missingOpsFound.push(opId);
                 }
             }
         });
