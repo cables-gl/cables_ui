@@ -1330,7 +1330,7 @@ export default class ServerOps
             const options = {
                 "op": op
             };
-            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name)) options.projectId = gui.project().shortId;
+            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name) || defaultops.isTeamOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 if (err)
