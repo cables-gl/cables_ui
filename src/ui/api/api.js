@@ -300,7 +300,7 @@ export default class Api
         if (!manualSend)
         {
             sendReport = (this.lastErrorReport && (performance.now() - this.lastErrorReport) < 2000);
-            if (gui && gui.user && gui.user.isAdmin) sendReport = false;
+            if (gui && gui.user && gui.user.isStaff) sendReport = false;
         }
 
         if (!sendReport)
