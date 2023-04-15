@@ -55,6 +55,8 @@ export default class MetaKeyframes
             }
         }
 
+        console.log("this anim", this.anim);
+
         const html = getHandleBarHtml("meta_keyframes",
             {
                 "anim": this.anim,
@@ -72,6 +74,7 @@ export default class MetaKeyframes
         const p = op.getPort(portname);
 
         if (p.anim) gui.timeLine().setAnim(p.anim);
+        this.show();
     }
 
 
@@ -89,9 +92,10 @@ export default class MetaKeyframes
 
     setAnim(anim)
     {
+        if (!anim) return;
+        this.anim = anim;
         if (userSettings.get("metatab") == "keyframes")
         {
-            self.anim = anim;
             this.show();
         }
     }
