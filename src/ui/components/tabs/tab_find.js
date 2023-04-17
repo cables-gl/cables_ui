@@ -386,6 +386,22 @@ export default class FindTab
                     results.push({ op, "score": 1 });
                 }
             }
+            if (str == ":notcoreops")
+            {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+                    if (
+                        op.objName.indexOf("Ops.User.") == 0 ||
+                        op.objName.indexOf("Ops.Team.") == 0 ||
+                        op.objName.indexOf("Ops.Extension.") == 0 ||
+                        op.objName.indexOf("Ops.Patch.") == 0
+                    )
+                    {
+                        results.push({ op });
+                    }
+                }
+            }
 
             if (str == ":activity")
             {
