@@ -17,14 +17,14 @@ export default class Exporter
             return;
         }
 
-        let url = CABLES.sandbox.getCablesUrl() + "/export/" + this._project._id;
+        let url = CABLES.sandbox.getCablesUrl() + "/exportiframe/" + this._project._id;
+
         if (this._versionId)
         {
             url += "?version=" + this._versionId;
         }
 
         const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
-
         new ModalDialog({ "html": html, "nopadding": true, "persistInIdleMode": true });
     }
 }

@@ -809,6 +809,8 @@ export default class OpSelect
             ele.byId("opsearchmodal").innerHTML = head;
 
             this._html = getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": text });
+
+
             ele.byId("searchbrowserContainer").innerHTML = this._html;
             ele.byId("opsearch").addEventListener("input", this.onInput.bind(this));
 
