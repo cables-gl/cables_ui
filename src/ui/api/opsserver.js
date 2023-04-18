@@ -644,6 +644,8 @@ export default class ServerOps
 
             const namespaceEle = ele.byId("opNameDialogNamespace");
             namespaceEle.innerHTML = "";
+            const patchOpsNamespace = defaultops.getPatchOpsNamespace();
+            if (!res.namespaces.includes(patchOpsNamespace)) res.namespaces.unshift(patchOpsNamespace);
             res.namespaces.forEach((ns) =>
             {
                 const option = document.createElement("option");
@@ -742,7 +744,7 @@ export default class ServerOps
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
-        if (defaultops.isPrivateOp(oldName))
+        if (defaultops.isTeamOp(oldName))
         {
             suggestedNamespace = defaultops.getNamespace(oldName);
         }
@@ -1328,7 +1330,7 @@ export default class ServerOps
             const options = {
                 "op": op
             };
-            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name)) options.projectId = gui.project().shortId;
+            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name) || defaultops.isTeamOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 if (err)
