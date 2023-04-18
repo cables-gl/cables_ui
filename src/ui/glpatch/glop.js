@@ -368,13 +368,10 @@ export default class GlOp extends CABLES.EventTarget
         if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
 
-        let subPatchChanged = false;
-
-        if (newAttribs.subPatch && newAttribs.subPatch != this.opUiAttribs.subPatch) subPatchChanged = true;
-
+        // let subPatchChanged = false;
+        // if (newAttribs.subPatch && newAttribs.subPatch != this.opUiAttribs.subPatch) subPatchChanged = true;
 
         this.opUiAttribs = JSON.parse(JSON.stringify(attr));
-
 
         if (this.opUiAttribs.extendTitlePort && (!this._titleExtPort || this._titleExtPort.name != this.opUiAttribs.extendTitlePort))
         {

@@ -823,15 +823,15 @@ export default class GlPatch extends CABLES.EventTarget
                 glUiConfig.colors.background[2],
                 glUiConfig.colors.background[3]);
 
-        if (
-            this._portDragLine.isActive &&
-            this._hoverOps.length == 1 &&
-            this._hoverOpLongStartTime != 0 &&
-            performance.now() - this._hoverOpLongStartTime > 1000 &&
-            defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
-        {
-            gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get());
-        }
+        // if (
+        //     this._portDragLine.isActive &&
+        //     this._hoverOps.length == 1 &&
+        //     this._hoverOpLongStartTime != 0 &&
+        //     performance.now() - this._hoverOpLongStartTime > 1000 &&
+        //     defaultops.isSubPatchOpNameV2(this._hoverOps[0].objName))
+        // {
+        //     gui.patchView.setCurrentSubPatch(this._hoverOps[0].op.patchId.get());
+        // }
 
         this._cgl.gl.clear(this._cgl.gl.COLOR_BUFFER_BIT | this._cgl.gl.DEPTH_BUFFER_BIT);
 
