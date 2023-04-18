@@ -1137,7 +1137,6 @@ export default class ServerOps
     loadProjectDependencies(proj, _next)
     {
         const missingOps = this.getMissingOps(proj);
-
         this.loadMissingOps(missingOps, (newOps) =>
         {
             if (gui && gui.opSelect() && newOps.length > 0)
@@ -1282,13 +1281,14 @@ export default class ServerOps
         proj.ops.forEach((op) =>
         {
             let opId = op.opId;
+
             // if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
             // if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
 
             if (!missingOpsFound.includes(opId))
             {
-                let loaded = opDocs.find((loadedOp) => { return loadedOp.opId === opId; });
-                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.opId === opId; });
+                let loaded = opDocs.find((loadedOp) => { return loadedOp.id === opId; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.id === opId; });
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
@@ -1342,13 +1342,12 @@ export default class ServerOps
                 }
                 else
                 {
-                    let opName = res.newPatchOp || op.name;
+                    let opName = res.newPatchOp || op.id;
                     let lid = "missingop" + opName + CABLES.uuid();
                     const missingOpUrl = [];
 
                     let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
                     if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
-                    if (op.id && op.id !== "undefined") url += "&id=" + op.id;
                     missingOpUrl.push(url);
 
                     loadjs.ready(lid, () =>
@@ -1391,7 +1390,7 @@ export default class ServerOps
             const lid = "extensionops" + extensionName + CABLES.uuid();
             loadjs.ready(lid, () =>
             {
-                CABLESUILOADER.talkerAPI.send("getExtensionOpDocs", { "name": extensionName }, (err, res) =>
+                CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": extensionName }, (err, res) =>
                 {
                     if (!err && res && res.opDocs)
                     {
@@ -1428,7 +1427,7 @@ export default class ServerOps
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
             loadjs.ready(lid, () =>
             {
-                CABLESUILOADER.talkerAPI.send("getTeamNamespaceOpDocs", { "name": teamNamespaceName }, (err, res) =>
+                CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
                 {
                     if (!err && res && res.opDocs)
                     {
