@@ -1695,6 +1695,8 @@ export default class PatchView extends CABLES.EventTarget
 
     linkPortsToOp(e, opid, opids, portnames)
     {
+        if (!opids || opids.length == 0 || !portnames || portnames.length == 0) return;
+
         const op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(opids[0]);
         const p = op2.getPort(portnames[0]);

@@ -56,6 +56,10 @@ export default class GlPort
         this._updateColor();
     }
 
+    get port()
+    {
+        return this._port;
+    }
 
     _updateColor()
     {

@@ -17,7 +17,7 @@ export default class GlDragLine
         this._glPatch = glpatch;
 
         this._startPortOpId = null;
-        this._startPortName = null;
+        this._startPortId = null;
 
         this._startGlPorts = [];
         this._lineIndices = [];
@@ -96,7 +96,7 @@ export default class GlDragLine
                 gui.patchView.linkPortToOp(
                     e,
                     this._startPortOpId,
-                    this._startPortName,
+                    this._startPortId,
                     opid);
             }
             else
@@ -122,7 +122,7 @@ export default class GlDragLine
             let portId = port.id;
             // this._log.log("mouseUpOverPort",
             //     this._startPortOpId,
-            //     this._startPortName,
+            //     this._startPortId,
             //     opid,
             //     portName);
 
@@ -130,7 +130,7 @@ export default class GlDragLine
             if (this._startGlPorts.length === 0)
             {
                 // left click
-                gui.patchView.linkPorts(this._startPortOpId, this._startPortName, opid, portId);
+                gui.patchView.linkPorts(this._startPortOpId, this._startPortId, port.parent.id, portId);
             }
             else
             {
@@ -161,20 +161,19 @@ export default class GlDragLine
         return this._glPort;
     }
 
-    setPort(p, opid, portName)
+    setPort(glp)
     {
-        if (!p)
+        if (!glp)
         {
             this._glPort = this._rect = null;
             this._splineDrawer.setSpline(this._splineIdx, [0, 0, 0, 0, 0, 0, 0, 0, 0]);
             return;
         }
 
-        this._startPortOpId = opid;
-        this._startPortName = portName;
-
-        this._rect = p.rect;
-        this._glPort = p;
+        this._startPortOpId = glp.port.parent.id;
+        this._startPortId = glp.port.id;
+        this._rect = glp.rect;
+        this._glPort = glp;
 
         this._glPatch.allowDragging = false;
 
