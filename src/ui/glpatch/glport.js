@@ -140,7 +140,7 @@ export default class GlPort
                 return;
             }
         }
-        this._glPatch.emitEvent("mouseUpOverPort", this._glop.id, this._port.name);
+        this._glPatch.emitEvent("mouseUpOverPort", this._port.parent.id, this._port);
     }
 
     _getBrightness()

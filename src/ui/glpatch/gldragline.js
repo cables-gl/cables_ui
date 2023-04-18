@@ -103,22 +103,23 @@ export default class GlDragLine
             {
                 // right click
                 const opids = [];
-                const portnames = [];
+                const portIds = [];
                 for (let i = 0; i < this._startGlPorts.length; i++)
                 {
                     if (!this._startGlPorts[i]) continue;
                     opids.push(this._startGlPorts[i].glOp.id);
-                    portnames.push(this._startGlPorts[i].name);
+                    portIds.push(this._startGlPorts[i].id);
                 }
 
-                gui.patchView.linkPortsToOp(e, opid, opids, portnames);
+                gui.patchView.linkPortsToOp(e, opid, opids, portIds);
             }
             this.stop();
         });
 
 
-        glpatch.on("mouseUpOverPort", (opid, portName) =>
+        glpatch.on("mouseUpOverPort", (opid, port) =>
         {
+            let portId = port.id;
             // this._log.log("mouseUpOverPort",
             //     this._startPortOpId,
             //     this._startPortName,
@@ -129,7 +130,7 @@ export default class GlDragLine
             if (this._startGlPorts.length === 0)
             {
                 // left click
-                gui.patchView.linkPorts(this._startPortOpId, this._startPortName, opid, portName);
+                gui.patchView.linkPorts(this._startPortOpId, this._startPortName, opid, portId);
             }
             else
             {
@@ -144,7 +145,7 @@ export default class GlDragLine
                             return;
                         }
                         gui.patchView.linkPorts(opid,
-                            portName,
+                            portId,
                             this._startGlPorts[i].glOp.id,
                             this._startGlPorts[i].name);
                     }
