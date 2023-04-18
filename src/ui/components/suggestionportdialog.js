@@ -47,7 +47,7 @@ export default class SuggestPortDialog
                             this._suggestions[i].p.setUiAttribs({ "expose": true });
                         }
 
-                        cb(this._suggestions[i].p.name, this._suggestions[i].op);
+                        cb(this._suggestions[i].p, this._suggestions[i].op);
                     }
             }, false, cbCancel);
     }
