@@ -172,7 +172,7 @@ float samp(in vec2 uv, float w) {
         finalColor.a=smoothstep(0.2+fwidth(uvRot.x),0.2,outer);
         finalColor.rgb=mix(vec3(0.25,0.25,0.25), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uvRot.x),0.1,inner));
 
-        if(uvRot.x>0.0 || uvRot.y>0.0) finalColor.a=0.0;
+        if(uvRot.x>0.0 || uvRot.y>0.0) discard;//finalColor.a=0.0;
     }
 
     if(border==1.0) // borde
