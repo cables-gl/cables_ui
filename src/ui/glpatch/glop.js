@@ -854,7 +854,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (!this._glLoadingIndicator)
             {
-                // console.log("show loading!");
                 this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glLoadingIndicator.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
                 this._glLoadingIndicator.setColor(GlUiConfig.colors.opErrorHint);
@@ -862,7 +861,7 @@ export default class GlOp extends CABLES.EventTarget
 
                 this._glLoadingIndicator.setColor(1, 1, 1, 1);
 
-                this._glLoadingIndicator.setPosition(-(this._height * 0.15), (this._height * 0.375));
+                this._glLoadingIndicator.setPosition(-(this._height * 0.125), (this._height * 0.375), -0.05);
                 this._glLoadingIndicator.visible = true;
             }
         }
@@ -941,7 +940,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (notworking)
             {
-                this._glNotWorkingCross.setPosition(-(this._height * 0.15), (this._height * 0.375));
+                this._glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
                 this._glNotWorkingCross.visible = true;
             }
             else this._glNotWorkingCross.visible = false;
