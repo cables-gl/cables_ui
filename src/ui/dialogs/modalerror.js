@@ -1,5 +1,6 @@
 import ele from "../utils/ele";
 import ModalDialog from "./modaldialog";
+import defaultops from "../defaultops";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -84,9 +85,7 @@ export default class ModalError
         let doTrack = true;
         if (this._options.opname)
         {
-            if (this._options.opname.startsWith("Ops.Cables.CustomOp")) doTrack = false;
-            if (this._options.opname.startsWith("Ops.User.")) doTrack = false;
-
+            if (defaultops.isPrivateOp(this._options.opname)) doTrack = false;
             if (window.gui)
             {
                 const ops = gui.corePatch().getOpsByObjName(this._options.opname);
@@ -175,11 +174,11 @@ export default class ModalError
         str += "<div class=\"shaderErrorCode hidden\" id=\"stackFileContent\"></div><br/>";
 
         let isCustomOp = false;
-        let isUserOp = false;
+        let isPrivateOp = false;
         if (this._options.opname)
         {
-            isUserOp = this._options.opname.startsWith("Ops.User.");
-            isCustomOp = this._options.opname.startsWith("Ops.Cables.CustomOp");
+            isPrivateOp = defaultops.isPrivateOp(this._options.opname);
+            isCustomOp = defaultops.isCustomOp(this._options.opname);
             if (isCustomOp && this._op)
             {
                 const codePortName = "JavaScript";
@@ -187,7 +186,7 @@ export default class ModalError
             }
             else
             {
-                if (window.gui && (gui.user.isAdmin || this._options.opname.startsWith("Ops.User." + gui.user.usernameLowercase)))
+                if (window.gui && (gui.user.isStaff || defaultops.isCurrentUserOp(this._options.opname)))
                 {
                     str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this._options.opname + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }
@@ -197,7 +196,7 @@ export default class ModalError
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
-        if (!isCustomOp && !isUserOp)
+        if (!isCustomOp && !isPrivateOp)
         {
             if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff)
             {
