@@ -125,10 +125,13 @@ export default class GlOp extends CABLES.EventTarget
 
         this.refreshPorts();
 
-        this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
-        this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
-        this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
-        this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+        if (this._glRectBg)
+        {
+            this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
+            this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
+            this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
+            this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+        }
 
         this._needsUpdate = true;
 
