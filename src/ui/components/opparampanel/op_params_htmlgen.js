@@ -104,6 +104,7 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
+                "cablesUrl": CABLES.sandbox.getCablesUrl(),
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].parent,

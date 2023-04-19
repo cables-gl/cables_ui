@@ -127,7 +127,9 @@
                 </td>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'file' }}
-                    <a class="icon icon-external iconhover" href="{{ port.value }}" target="_blank"></a>
+
+
+                    <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
                     <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
                 </td>
                 <td>
