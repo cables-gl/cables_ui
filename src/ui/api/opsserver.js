@@ -1137,6 +1137,7 @@ export default class ServerOps
     loadProjectDependencies(proj, _next)
     {
         const missingOps = this.getMissingOps(proj);
+        console.log("MISSING", missingOps);
         this.loadMissingOps(missingOps, (newOps) =>
         {
             if (gui && gui.opSelect() && newOps.length > 0)
@@ -1292,7 +1293,7 @@ export default class ServerOps
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
-                    missingOps.push({ "id": op.opId });
+                    missingOps.push({ "id": op.opId, "objName": op.objName });
                     missingOpsFound.push(opId);
                 }
             }
@@ -1328,9 +1329,9 @@ export default class ServerOps
         if (op)
         {
             const options = {
-                "op": op
+                "op": op,
+                "projectId": gui.project().shortId
             };
-            if (defaultops.isUserOp(op.name) || defaultops.isPatchOp(op.name) || defaultops.isTeamOp(op.name)) options.projectId = gui.project().shortId;
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 if (err)
@@ -1342,12 +1343,11 @@ export default class ServerOps
                 }
                 else
                 {
-                    let opName = res.newPatchOp || op.id;
-                    let lid = "missingop" + opName + CABLES.uuid();
+                    let identifier = res.newPatchOp || op.id || op.objName;
+                    let lid = "missingop" + identifier + CABLES.uuid();
                     const missingOpUrl = [];
 
-                    let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName);
-                    if (defaultops.isUserOp(opName) || defaultops.isPatchOp(opName)) url += "&p=" + gui.project().shortId;
+                    let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "&p=" + gui.project().shortId;
                     missingOpUrl.push(url);
 
                     loadjs.ready(lid, () =>
