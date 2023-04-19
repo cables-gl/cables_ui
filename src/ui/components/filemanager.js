@@ -399,6 +399,7 @@ export default class FileManager
             const itemId = detailItem.id;
             let projectId = gui.project()._id;
             if (detailItem.isReference && detailItem.file) projectId = detailItem.file.projectId;
+
             CABLESUILOADER.talkerAPI.send(
                 "getFileDetails",
                 {
