@@ -256,7 +256,7 @@ function createEditor(id, val, cb)
         editor.commands.bindKey("Cmd-Ctrl-Up", "movelinesup");
         editor.commands.bindKey("Cmd-Ctrl-Down", "movelinesdown");
 
-        editor.setValue(val, -1);
+        editor.setValue(String(val), -1);
 
         const snipreq = ace.require("ace/snippets");
 

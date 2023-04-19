@@ -74,7 +74,10 @@ export default class GlOp extends CABLES.EventTarget
         this._dragOldUiAttribs = null;
         this._rectBorder = 0;
 
+        this._glLoadingIndicator = null;
         this._glNotWorkingCross = null;
+        this._glNotWorkingCross = null;
+
         this._glDotError = null;
         this._glDotWarning = null;
         this._glDotHint = null;
@@ -125,10 +128,13 @@ export default class GlOp extends CABLES.EventTarget
 
         this.refreshPorts();
 
-        this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
-        this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
-        this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
-        this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+        if (this._glRectBg)
+        {
+            this._glRectBg.on("drag", this._onBgRectDrag.bind(this));
+            this._glRectBg.on("dragEnd", this._onBgRectDragEnd.bind(this));
+            this._glRectBg.on("mousedown", this._onMouseDown.bind(this));
+            this._glRectBg.on("mouseup", this._onMouseUp.bind(this));
+        }
 
         this._needsUpdate = true;
 
@@ -396,7 +402,7 @@ export default class GlOp extends CABLES.EventTarget
         if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
-        if (newAttribs && newAttribs.translate) this.sendNetPos();
+        if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
 
@@ -744,7 +750,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
-        this._updateErrorDots();
+        this._updateIndicators();
         for (const i in this._links) if (this._links[i]) this._links[i].update();
     }
 
@@ -815,7 +821,7 @@ export default class GlOp extends CABLES.EventTarget
             if (this[this._glRectNames[i]])
                 this[this._glRectNames[i]].visible = visi;
 
-        this._updateErrorDots();
+        this._updateIndicators();
 
         if (this._resizableArea) this._resizableArea.visible = visi;
 
@@ -830,7 +836,7 @@ export default class GlOp extends CABLES.EventTarget
         return this._visible;
     }
 
-    _updateErrorDots()
+    _updateIndicators()
     {
         if (this._disposed) return;
         if (!this.isInCurrentSubPatch())
@@ -839,8 +845,31 @@ export default class GlOp extends CABLES.EventTarget
             if (this._glDotWarnings) this._glDotWarnings.visible = false;
             if (this._glDotError) this._glDotError.visible = false;
             if (this._glNotWorkingCross) this._glNotWorkingCross.visible = false;
+            if (this._glLoadingIndicator) this._glLoadingIndicator.visible = false;
 
             return;
+        }
+
+        if (this.opUiAttribs.loading)
+        {
+            if (!this._glLoadingIndicator)
+            {
+                // console.log("show loading!");
+                this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+                this._glLoadingIndicator.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
+                this._glLoadingIndicator.setColor(GlUiConfig.colors.opErrorHint);
+                this._glLoadingIndicator.setShape(8);
+
+                this._glLoadingIndicator.setColor(1, 1, 1, 1);
+
+                this._glLoadingIndicator.setPosition(-(this._height * 0.15), (this._height * 0.375));
+                this._glLoadingIndicator.visible = true;
+            }
+        }
+        if (!this.opUiAttribs.loading && this._glLoadingIndicator)
+        {
+            this._glLoadingIndicator = this._glLoadingIndicator.dispose();
+            // console.log("stop loading!", this._glLoadingIndicator);
         }
 
         if (this.opUiAttribs.uierrors && this.opUiAttribs.uierrors.length > 0)
@@ -1077,7 +1106,7 @@ export default class GlOp extends CABLES.EventTarget
         if (doUpdateSize) this.updateSize();
         this.updatePosition();
         this._updateColors();
-        this._updateErrorDots();
+        this._updateIndicators();
 
         for (const i in this._links) if (this._links[i]) this._links[i].update();
         this._glPatch.needsRedraw = true;

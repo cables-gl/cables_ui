@@ -1850,9 +1850,8 @@ export default class PatchView extends CABLES.EventTarget
         this.setSelectedOpById(opid);
         this.focus();
 
-
-        // if (op && op.uiAttribs && op.uiAttribs.translate)
-        this.centerView(); // op.uiAttribs.translate.x, op.uiAttribs.translate.y
+        if (op && op.uiAttribs && op.uiAttribs.translate)
+            this.centerView(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
     }
 
     setSelectedOpById(opid)
@@ -1872,7 +1871,6 @@ export default class PatchView extends CABLES.EventTarget
     {
         gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
     }
-
 
     _portValidate(p1, p2)
     {
@@ -2076,7 +2074,6 @@ export default class PatchView extends CABLES.EventTarget
                     for (let j = 0; j < origOp.portsIn[i].links.length; j++)
                     {
                         const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-
                         this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
                     }
                 }

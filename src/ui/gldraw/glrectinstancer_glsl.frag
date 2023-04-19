@@ -120,38 +120,14 @@ float samp(in vec2 uv, float w) {
         finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);
         finalColor.rgb=mix(vec3(0.25,0.25,0.25), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uv.x),0.1,inner));
     }
-
-    if(shape==2.0) // trianglebotto
+    else
+    if(shape==2.0) // trianglebottom
     {
         if(uv.x+(1.0-uv.y) > 1.0)finalColor.a=1.0;
         else finalColor.a=0.0;
     }
-
-    if(shape==5.0) // curso
-    {
-        if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;
-        else finalColor.a=0.0;
-    }
-
-    if(shape==6.0) // filled circl
-    {
-        float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
-        finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);
-        // f(finalColor.a==0.0)discard;
-    }
-
-
-    if(shape==7.0) // cross
-    {
-        float r = 0.00001;
-        float l = 1.0;
-        vec2 p = abs((uv)-0.5);
-        float a = length(p-clamp(p.x+p.y,0.0,l)*0.5) - r;
-        finalColor.a = (1.0-smoothstep(0.0,fwidth(uv.x)+0.1,a));
-    }
-
-
-    if(shape==4.0) // fram
+    else
+    if(shape==4.0) // frame
     {
         float outlinefrag=0.003;
         float add=(1.0-step(outlinefrag,posSize.x));
@@ -160,7 +136,44 @@ float samp(in vec2 uv, float w) {
         if(add==0.0) add=(1.0-step(outlinefrag,posSize.w));
         if(add==0.0) finalColor.a=0.0;
     }
+    else
+    if(shape==5.0) // cursor
+    {
+        if(1.0-uv.x > uv.y && 1.0-uv.y<0.8-uv.x*0.3)finalColor.a=1.0;
+        else finalColor.a=0.0;
+    }
+    else
+    if(shape==6.0) // filled circle
+    {
+        float outer = ((uv.x-0.5)*(uv.x-0.5) + (uv.y-0.5)*(uv.y-0.5));
+        finalColor.a=smoothstep(0.2+fwidth(uv.x),0.2,outer);
+        // f(finalColor.a==0.0)discard;
+    }
+    else
+    if(shape==7.0) // cross
+    {
+        float r = 0.00001;
+        float l = 1.0;
+        vec2 p = abs((uv)-0.5);
+        float a = length(p-clamp(p.x+p.y,0.0,l)*0.5) - r;
+        finalColor.a = (1.0-smoothstep(0.0,fwidth(uv.x)+0.1,a));
+    }
+    else
+    if(shape==8.0) // loading indicator...
+    {
+        float s = sin(time*10.0);
+        float c = cos(time*10.0);
+        mat2 m = mat2(c, -s, s, c);
+        vec2 uvRot=m*(uv-0.5);
 
+        float outer = ((uvRot.x)*(uvRot.x) + (uvRot.y)*(uvRot.y));
+        float inner = ((uvRot.x)*(uvRot.x) + (uvRot.y)*(uvRot.y));
+
+        finalColor.a=smoothstep(0.2+fwidth(uvRot.x),0.2,outer);
+        finalColor.rgb=mix(vec3(0.25,0.25,0.25), vec3(finalColor),1.0-smoothstep(0.1+fwidth(uvRot.x),0.1,inner));
+
+        if(uvRot.x>0.0 || uvRot.y>0.0) discard;//finalColor.a=0.0;
+    }
 
     if(border==1.0) // borde
     {

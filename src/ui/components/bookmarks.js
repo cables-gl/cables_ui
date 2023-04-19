@@ -75,6 +75,9 @@ export default class Bookmarks
             }
         }
 
+        bm.sort(function (a, b) { return a.name.localeCompare(b.name); });
+
+
         const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         this.updateDynamicCommands();
         return html;

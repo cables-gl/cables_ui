@@ -210,7 +210,7 @@ class OpParampanel extends CABLES.EventTarget
         if (this._portsIn.length > 0)
         {
             const perfLoop = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP IN");
-            html += this._htmlGen.getHtmlHeaderPorts("in", "input");
+            html += this._htmlGen.getHtmlHeaderPorts("in", "Input");
             html += this._htmlGen.getHtmlInputPorts(this._portsIn);
 
             perfLoop.finish();
@@ -218,7 +218,7 @@ class OpParampanel extends CABLES.EventTarget
 
         if (this._portsOut.length > 0)
         {
-            html += this._htmlGen.getHtmlHeaderPorts("out", "output");
+            html += this._htmlGen.getHtmlHeaderPorts("out", "Output");
 
             const perfLoopOut = CABLES.UI.uiProfiler.start("[opparampanel] _showOpParamsLOOP OUT");
 

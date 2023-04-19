@@ -145,7 +145,7 @@ export default class ItemManager
 
     setTitleFilter(f)
     {
-        this.titleFilter = f;
+        this.titleFilter = String(f).toLowerCase();
         this.filterItems();
     }
 
