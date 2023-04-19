@@ -242,6 +242,11 @@ const defaultOps = {
         return defaultOps.getPatchOpsPrefix() + namespace + ".";
     },
 
+    "getUserOpsPrefix": () =>
+    {
+        return "Ops.User.";
+    },
+
     "getTeamOpsPrefix": () =>
     {
         return "Ops.Team.";
@@ -269,7 +274,7 @@ const defaultOps = {
 
     "isCurrentUserOp": (opname) =>
     {
-        return opname && opname.startsWith("Ops.User." + gui.user.username);
+        return opname && opname.startsWith("Ops.User." + gui.user.usernameLowercase);
     },
 
     "isDeprecatedOp": (opname) =>
@@ -285,6 +290,11 @@ const defaultOps = {
     "isNonCoreOp": (opname) =>
     {
         return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+    },
+
+    "isCustomOp": (opname) =>
+    {
+        return opname.startsWith("Ops.Cables.CustomOp");
     },
 
     "isPrivateOp": (opname) =>
