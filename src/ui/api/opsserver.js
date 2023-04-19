@@ -1137,8 +1137,7 @@ export default class ServerOps
     loadProjectDependencies(proj, _next)
     {
         const missingOps = this.getMissingOps(proj);
-        console.log("MISSING", missingOps);
-        this.loadMissingOps(missingOps, (newOps) =>
+        this.loadMissingOps(missingOps, (newOps, newIds) =>
         {
             if (gui && gui.opSelect() && newOps.length > 0)
             {
@@ -1154,6 +1153,10 @@ export default class ServerOps
                 {
                     if (proj.ops[i])
                     {
+                        if (newIds.hasOwnProperty(proj.ops[i].opId))
+                        {
+                            proj.ops[i].opId = newIds[proj.ops[i].opId];
+                        }
                         libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
                         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                     }
@@ -1305,6 +1308,7 @@ export default class ServerOps
     {
         let count = ops.length;
         const newOps = [];
+        const newIds = {};
         if (count === 0)
         {
             cb(newOps);
@@ -1316,9 +1320,16 @@ export default class ServerOps
                 incrementStartup();
                 this.loadMissingOp(op, (newOp) =>
                 {
-                    if (newOp) newOps.push(newOp);
+                    if (newOp)
+                    {
+                        if (op.id !== newOp.id)
+                        {
+                            newIds[op.id] = newOp.id;
+                        }
+                        newOps.push(newOp);
+                    }
                     count--;
-                    if (count === 0) cb(newOps);
+                    if (count === 0) cb(newOps, newIds);
                 });
             });
         }
@@ -1343,7 +1354,7 @@ export default class ServerOps
                 }
                 else
                 {
-                    let identifier = res.newPatchOp || op.id || op.objName;
+                    let identifier = res.newOpId || op.id || op.objName;
                     let lid = "missingop" + identifier + CABLES.uuid();
                     const missingOpUrl = [];
 
