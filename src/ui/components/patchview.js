@@ -1678,11 +1678,12 @@ export default class PatchView extends CABLES.EventTarget
 
         if (numFitting > 1)
         {
-            new SuggestPortDialog(op2, p, e, (p2n, op2id) =>
+            new SuggestPortDialog(op2, p, e, (thePort, newOpId) =>
             {
-                op2 = this._p.getOpById(op2id);
+                console.log("p2n", thePort.id);
+                op2 = this._p.getOpById(newOpId);
 
-                this._p.link(op1, pid, op2, p2n);
+                this._p.link(op1, pid, op2, thePort.id);
             });
         }
         else
@@ -1694,6 +1695,8 @@ export default class PatchView extends CABLES.EventTarget
 
     linkPortsToOp(e, opid, opids, portnames)
     {
+        if (!opids || opids.length == 0 || !portnames || portnames.length == 0) return;
+
         const op1 = this._p.getOpById(opid);
         let op2 = this._p.getOpById(opids[0]);
         const p = op2.getPort(portnames[0]);
@@ -1707,7 +1710,7 @@ export default class PatchView extends CABLES.EventTarget
                 for (let i = 0; i < portnames.length; i++)
                 {
                     op2 = this._p.getOpById(opids[i]);
-                    this._p.link(op2, portnames[i], op1, suggport);
+                    this._p.link(op2, portnames[i], op1, suggport.id);
                 }
             });
         }
@@ -1735,6 +1738,15 @@ export default class PatchView extends CABLES.EventTarget
             // helper number2string auto insert....
             let p1 = op1.getPortByName(pid);
             let p2 = op2.getPortByName(p2id);
+
+
+            if (!p1 || !p2)
+            {
+                console.log("COULD NOT FIND PORT!");
+                console.log(op1.name, p1, pid);
+                console.log(op2.name, p2, p2id);
+                return;
+            }
 
             if ((p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
                 (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING))

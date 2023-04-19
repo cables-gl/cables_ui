@@ -6,7 +6,7 @@ export default class SuggestPortDialog
     constructor(op, port, mouseEvent, cb, cbCancel)
     {
         this._suggestions = [];
-
+        console.log("SuggestPortDialog");
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
         {
@@ -14,7 +14,10 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
-                CABLES.Link.canLink(theport, port)) this._addPort(theport);
+                CABLES.Link.canLink(theport, port))
+            {
+                this._addPort(theport);
+            }
         }
 
         for (let i = 0; i < op.portsOut.length; i++)
@@ -31,7 +34,10 @@ export default class SuggestPortDialog
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
             {
-                if (CABLES.Link.canLink(ports[i], port)) this._addPort(ports[i]);
+                if (CABLES.Link.canLink(ports[i], port))
+                {
+                    this._addPort(ports[i]);
+                }
             }
         }
 
@@ -47,14 +53,16 @@ export default class SuggestPortDialog
                             this._suggestions[i].p.setUiAttribs({ "expose": true });
                         }
 
-                        cb(this._suggestions[i].p.name, this._suggestions[i].op);
+                        cb(this._suggestions[i].p, this._suggestions[i].op);
                     }
             }, false, cbCancel);
     }
 
     _addPort(p)
     {
-        const name = p.name;
+        for (let i = 0; i < this._suggestions.length; i++)
+            if (this._suggestions[i].p == p) return;
+
         this._suggestions.push({
             "p": p,
             "op": p.parent.id,
