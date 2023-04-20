@@ -393,12 +393,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.uiAttribs)
-            {
                 if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.uiAttribs.blueprintSubpatch)
-                {
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
-                }
-            }
+
             if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
 
@@ -419,6 +416,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
             if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
             if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
+            if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
 
 
             if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;

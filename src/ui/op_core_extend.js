@@ -152,7 +152,7 @@ export default function extendCore()
         if (count >= 1000)
         {
             console.log("hasparent loop....", name);
-            this.removeLinks();
+            // this.removeLinks();
             return false;
         }
         for (let i = 0; i < this.portsIn.length; i++)

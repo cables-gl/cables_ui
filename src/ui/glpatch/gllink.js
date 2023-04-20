@@ -51,6 +51,12 @@ export default class GlLink
 
                     let otherPort = link.portOut;
 
+                    if (!otherPort || !fromPort)
+                    {
+                        this._log.warn("port not found");
+                        return;
+                    }
+
                     if (fromPort.type == otherPort.type)
                     {
                         if (fromPort.direction != link.portIn.direction)otherPort = link.portIn;
