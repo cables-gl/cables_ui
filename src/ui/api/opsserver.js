@@ -1284,16 +1284,18 @@ export default class ServerOps
         const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
-            let opId = op.opId;
-            if (!missingOpsFound.includes(opId))
+            const opIdentifier = op.opId || op.objName;
+            if (!missingOpsFound.includes(opIdentifier))
             {
-                let loaded = opDocs.find((loadedOp) => { return loadedOp.id === opId; });
-                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.id === opId; });
+                let loaded = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!loaded) loaded = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!loaded) loaded = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
                 if (loaded) loaded = this.opCodeLoaded(op);
                 if (!loaded)
                 {
                     missingOps.push({ "id": op.opId, "objName": op.objName });
-                    missingOpsFound.push(opId);
+                    missingOpsFound.push(opIdentifier);
                 }
             }
         });
@@ -1318,7 +1320,7 @@ export default class ServerOps
                 {
                     if (newOp)
                     {
-                        if (op.id !== newOp.id)
+                        if (op.id && newOp.id && (op.id !== newOp.id))
                         {
                             newIds[op.id] = newOp.id;
                         }
@@ -1351,6 +1353,7 @@ export default class ServerOps
                 else
                 {
                     let identifier = res.newOpId || op.id || op.objName;
+
                     let lid = "missingop" + identifier + CABLES.uuid();
                     const missingOpUrl = [];
 
