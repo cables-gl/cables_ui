@@ -1285,10 +1285,6 @@ export default class ServerOps
         proj.ops.forEach((op) =>
         {
             let opId = op.opId;
-
-            // if (defaultops.isExtensionOp(opName)) opName = this.getExtensionByOpName(opName);
-            // if (defaultops.isTeamOp(opName)) opName = this.getTeamNamespaceByOpName(opName);
-
             if (!missingOpsFound.includes(opId))
             {
                 let loaded = opDocs.find((loadedOp) => { return loadedOp.id === opId; });
@@ -1311,7 +1307,7 @@ export default class ServerOps
         const newIds = {};
         if (count === 0)
         {
-            cb(newOps);
+            cb(newOps, newIds);
         }
         else
         {
