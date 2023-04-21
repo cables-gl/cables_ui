@@ -97,11 +97,12 @@ export default class Gui
             {
                 this._corePatch.off(this._patchLoadEndiD);
                 this.setStateSaved();
+                if (window.logStartup) logStartup("patch loaded 2");
                 gui.bookmarks.updateDynamicCommands();
 
                 gui.patchView.highlightExamplePatchOps();
 
-                logStartup("Patch loaded");
+                if (window.logStartup) logStartup("Patch loaded");
             });
 
         this._corePatch.on("opcrash", (portTriggered) =>
