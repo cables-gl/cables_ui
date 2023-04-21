@@ -304,9 +304,11 @@ export default class SandboxBrowser extends CABLES.EventTarget
         const doneCallback = () =>
         {
             incrementStartup();
-            logStartup("User Ops loaded");
+            if (window.logStartup) logStartup("User Ops loaded");
 
+            if (window.logStartup) logStartup("set project");
             gui.patchView.setProject(proj, cb);
+
 
             if (proj.ui)
             {

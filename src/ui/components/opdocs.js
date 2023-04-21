@@ -17,7 +17,7 @@ export default class OpDocs
 
     addCoreOpDocs()
     {
-        logStartup("Op docs loaded");
+        if(window.logStartup) logStartup("Op docs loaded");
         const res = CABLESUILOADER.preload.opDocsAll;
         this._extensions = res.extensions;
         this._teamnamespaces = res.teamNamespaces;

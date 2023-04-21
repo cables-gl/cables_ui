@@ -174,6 +174,7 @@ export default function extendCore()
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
+        if (!CABLES.UI.loaded) return;
         // function hasParent(op, type, name, count)
         // {
         //     count = count || 1;
@@ -217,11 +218,11 @@ export default function extendCore()
             if (!working) notWorkingMsg = text.working_connected_to + "ImageCompose";
         }
 
-        // if (this._linkTimeRules.forbiddenParent && working)
-        // {
-        //     working = !this.hasParent(this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
-        //     if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._linkTimeRules.forbiddenParent + "";
-        // }
+        if (this._linkTimeRules.forbiddenParent && working)
+        {
+            working = !this.hasParent(this._linkTimeRules.forbiddenParentType || null, this._linkTimeRules.forbiddenParent);
+            if (!working) notWorkingMsg = text.working_shouldNotBeChildOf + this._linkTimeRules.forbiddenParent + "";
+        }
 
         if (this._linkTimeRules.needsParentOp && working)
         {

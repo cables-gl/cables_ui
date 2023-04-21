@@ -94,7 +94,7 @@ export default class ServerOps
                     gui.opDocs.addOpDocs(res);
                 }
 
-                logStartup("Ops loaded");
+                if (window.logStartup) logStartup("Ops loaded");
                 if (cb) cb(this._ops);
                 that.loaded = true;
                 incrementStartup();
