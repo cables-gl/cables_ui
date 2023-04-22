@@ -1564,7 +1564,6 @@ export default class GlPatch extends CABLES.EventTarget
 
             this._ttTImeout = setTimeout(() =>
             {
-                console.log("hide!");
                 CABLES.UI.hideToolTip();
             }, 100);
         }

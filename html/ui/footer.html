@@ -80,7 +80,7 @@
         }
 
         incrementStartup();
-        logStartup("Start");
+        if(window.logStartup) logStartup("Start");
         const numRetries=5;
 
         CABLESUILOADER.loadAll=function(cfg)
@@ -172,9 +172,9 @@
                                 const coreBuild = CABLESUILOADER.buildInfo.core;
                                 const apiBuild = CABLESUILOADER.buildInfo.api;
 
-                                if(uiBuild && uiBuild.git) logStartup("UI buildmessage: " + uiBuild.git.message);
-                                if(coreBuild && coreBuild.git) logStartup("CORE buildmessage: " + coreBuild.git.message);
-                                if(apiBuild && apiBuild.git)  logStartup("API buildmessage: " + apiBuild.git.message);
+                                if(uiBuild && uiBuild.git) if(window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
+                                if(coreBuild && coreBuild.git) if(window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
+                                if(apiBuild && apiBuild.git)  if(window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
 
 
 

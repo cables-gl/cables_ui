@@ -13,7 +13,7 @@ import ModalError from "./dialogs/modalerror";
 
 export default function startUi(cfg)
 {
-    logStartup("Init UI");
+    if (window.logStartup) logStartup("Init UI");
     CABLES.UI.initHandleBarsHelper();
 
     window.gui = new Gui(cfg);
@@ -128,7 +128,7 @@ export default function startUi(cfg)
 
                 gui.maintabPanel.init();
 
-                logStartup("finished loading cables");
+                if (window.logStartup) logStartup("finished loading cables");
 
                 setTimeout(() =>
                 {
@@ -183,5 +183,5 @@ export default function startUi(cfg)
         });
     });
 
-    logStartup("Init UI done");
+    if (window.logStartup) logStartup("Init UI done");
 }

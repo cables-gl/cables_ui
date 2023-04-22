@@ -137,6 +137,8 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
+        if (window.logStartup) logStartup("setProject 1");
+
         if (proj && proj.ui)
         {
             this.store.setProject(proj);
@@ -158,8 +160,13 @@ export default class PatchView extends CABLES.EventTarget
             gui.timeLine().setTimeLineLength(proj.ui.timeLineLength);
         }
 
+        if (window.logStartup) logStartup("setProject 2");
         gui.setProject(proj);
+
+        if (window.logStartup) logStartup("setProject renderer");
+
         this._patchRenderer.setProject(proj);
+        if (window.logStartup) logStartup("setProject renderer done");
 
         this.store.setServerDate(proj.updated);
 
@@ -169,10 +176,16 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
-
+        if (window.logStartup) logStartup("loadProjectDependencies...");
         gui.serverOps.loadProjectDependencies(proj, () =>
         {
+            if (window.logStartup) logStartup("loadProjectDependencies done");
+
+            if (window.logStartup) logStartup("deserialize...");
             gui.corePatch().deSerialize(proj);
+
+            if (window.logStartup) logStartup("deserialize done");
+
             undo.clear();
 
             const ops = gui.corePatch().ops;

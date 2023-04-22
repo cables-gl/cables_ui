@@ -91,7 +91,9 @@ export default class GlOp extends CABLES.EventTarget
 
                 this.emitEvent("patchLoadEnd", () =>
                 {
+                    console.log("refreshing ports...");
                     this.refreshPorts();
+                    console.log("refreshing ports... done");
                 });
 
                 this._op.patch.on("subpatchExpose", (subpatchid) =>
@@ -646,7 +648,6 @@ export default class GlOp extends CABLES.EventTarget
                 if (portsIn.indexOf(ports[i]) == -1) portsIn.push(ports[i]);
         }
 
-
         portsOut = portsOut.concat(this._op.portsOut);
 
         if (this._displayType === this.DISPLAY_SUBPATCH)
@@ -655,7 +656,6 @@ export default class GlOp extends CABLES.EventTarget
             for (let i = 0; i < ports.length; i++)
                 if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }
-
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
@@ -724,7 +724,6 @@ export default class GlOp extends CABLES.EventTarget
 
         for (let i = 0; i < ports.length; i++)
         {
-            // ports[i].uiAttribs.glPortIndex = i;
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
