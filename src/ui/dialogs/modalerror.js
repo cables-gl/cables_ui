@@ -49,6 +49,7 @@ export default class ModalError
 
             try
             {
+                console.log(this._options);
                 if (this._options.exception.error)
                 {
                     info = stackinfo(this._options.exception.error);
@@ -96,8 +97,9 @@ export default class ModalError
             }
         }
 
-        CABLES.lastError = { "exception": this._options.exception,
-            "opName": this._options.opname,
+        CABLES.lastError = {
+            "exception": this._options.exception,
+            "opName": this._options.op.objName,
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
