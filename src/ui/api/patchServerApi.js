@@ -760,10 +760,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     (error, re) =>
                     {
                         if (error)
-                        {
                             this._log.warn("[screenshot save error]", error);
-                        }
-                        // this._log.log("screenshot saved!");
+
                         gui.jobs().finish("screenshotsave");
                         if (gui.onSaveProject) gui.onSaveProject();
                         if (cb)cb();

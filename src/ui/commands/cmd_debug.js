@@ -208,6 +208,12 @@ CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_DEBUG.saveWithOutObjnames = () =>
+{
+    gui.corePatch().storeObjNames = false;
+    CABLES.CMD.PATCH.save();
+};
+
 
 CMD_DEBUG_COMMANDS.push(
     {
@@ -294,5 +300,12 @@ CMD_DEBUG_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
+    {
+        "cmd": "save without objnames",
+        "func": CABLES_CMD_DEBUG.saveWithOutObjnames,
+        "category": "patch",
+        "icon": "op"
+    },
+
 
 );

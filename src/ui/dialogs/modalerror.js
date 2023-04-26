@@ -84,8 +84,10 @@ export default class ModalError
         }
 
         let doTrack = true;
+        let opName = "";
         if (this._options.opname)
         {
+            opName = this._options.opname;
             if (defaultops.isPrivateOp(this._options.opname)) doTrack = false;
             if (window.gui)
             {
@@ -97,9 +99,11 @@ export default class ModalError
             }
         }
 
+        if (this._options.op && this._options.op.objName) opName = this._options.op.objName;
+
         CABLES.lastError = {
             "exception": this._options.exception,
-            "opName": this._options.op.objName,
+            "opName": opName,
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
