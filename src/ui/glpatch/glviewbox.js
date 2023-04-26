@@ -35,9 +35,9 @@ export default class GlViewBox
 
         this._defaultEasing = CABLES.EASING_EXPO_OUT;
 
-        this._animScrollX = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
-        this._animScrollY = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
-        this._animZoom = new CABLES.TL.Anim({ "defaultEasing": this._defaultEasing });
+        this._animScrollX = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
+        this._animScrollY = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
+        this._animZoom = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
 
         cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
         cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this));
