@@ -36,6 +36,7 @@ export default class Bookmarks
 
     getHtml()
     {
+        console.log("bookmark html");
         if (!this._subs)
         {
             gui.corePatch().on("subpatchCreated", () => { this.needRefreshSubs = true; });
@@ -98,8 +99,15 @@ export default class Bookmarks
         perf.finish();
 
 
+        const perf2 = CABLES.UI.uiProfiler.start("bookmarks handlebars");
         const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
+        perf2.finish();
+
+        const perf3 = CABLES.UI.uiProfiler.start("update dynamic commands");
         this.updateDynamicCommands();
+        perf3.finish();
+
+
         return html;
     }
 
