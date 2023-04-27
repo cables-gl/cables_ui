@@ -103,10 +103,12 @@ export default class ModalError
 
         CABLES.lastError = {
             "exception": this._options.exception,
-            "opName": opName,
+            "opName": opName || this._options.opName,
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
+
+        if (this._options.op) CABLES.lastError.opName = this._options.op.objName;
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
 
         const modalOptions = {

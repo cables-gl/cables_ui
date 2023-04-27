@@ -95,7 +95,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
 
-        this._focusRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._focusRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
         this._focusRect.setSize(1, 1);
         this._focusRect.setShape(4);
@@ -126,7 +126,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-        this._fadeOutRectAnim = new CABLES.TL.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
