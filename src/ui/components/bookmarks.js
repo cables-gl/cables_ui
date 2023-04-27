@@ -8,6 +8,8 @@ export default class Bookmarks
     {
         this._bookmarks = [];
         this._dynCmds = [];
+        this.needRefreshSubs = true;
+        this._subs = null;
     }
 
     hasBookmarkWithId(id)
@@ -34,29 +36,46 @@ export default class Bookmarks
 
     getHtml()
     {
-        const subs = gui.patchView.getSubPatches(true);
-
-        for (let i = 0; i < subs.length; i++)
+        if (!this._subs)
         {
-            subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id, null, true);
-            let sortname = "";
-
-            for (let j = 0; j < subs[i].path.length; j++)
-                sortname = subs[i].path[j].name + "+" + sortname;
-
-            subs[i].sortname = sortname;
+            gui.corePatch().on("subpatchCreated", () => { this.needRefreshSubs = true; });
+            gui.corePatch().on("patchLoadEnd", () => { this.needRefreshSubs = true; });
         }
 
-        subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
-
-        for (let i = 0; i < subs.length; i++)
+        if (this.needRefreshSubs)
         {
-            subs[i].indent = "";
-            for (let j = 0; j < subs[i].path.length; j++)
+            const subs = gui.patchView.getSubPatches(true);
+            const perf = CABLES.UI.uiProfiler.start("bookmark panel subpatches");
+
+            this.needRefreshSubs = false;
+            for (let i = 0; i < subs.length; i++)
             {
-                subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;";
+                subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id, null, true);
+                let sortname = "";
+
+                for (let j = 0; j < subs[i].path.length; j++)
+                    sortname = subs[i].path[j].name + "+" + sortname;
+
+                subs[i].sortname = sortname;
             }
+
+            subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
+
+            for (let i = 0; i < subs.length; i++)
+            {
+                subs[i].indent = "";
+                for (let j = 0; j < subs[i].path.length; j++)
+                {
+                    subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;";
+                }
+            }
+            this._subs = subs;
+
+            perf.finish();
         }
+
+
+        const perf = CABLES.UI.uiProfiler.start("bookmarks");
 
         const bm = [];
         for (const i in this._bookmarks)
@@ -74,11 +93,12 @@ export default class Bookmarks
                     });
             }
         }
-
         bm.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
+        perf.finish();
 
-        const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
+
+        const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         this.updateDynamicCommands();
         return html;
     }
