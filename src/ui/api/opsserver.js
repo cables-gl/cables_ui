@@ -620,7 +620,6 @@ export default class ServerOps
                     errorsEle.classList.remove("hidden");
 
                     const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
-                    console.log("HERE", versionSuggestions);
                     versionSuggestions.forEach((suggest) =>
                     {
                         if (suggest.dataset.shortName)
@@ -698,13 +697,9 @@ export default class ServerOps
         {
             const opname = newNamespace + newName;
 
-            console.log("create0", opname);
-
-
             this.create(opname, () =>
             {
                 gui.closeModal();
-                console.log("create1");
 
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {
@@ -714,7 +709,6 @@ export default class ServerOps
 
                             "onOpAdd": (op) =>
                             {
-                                console.log("create2", op);
                                 op.setUiAttrib({
                                     "translate": {
                                         "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
@@ -751,9 +745,6 @@ export default class ServerOps
 
         this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
         {
-            console.log("replace", replace);
-
-
             const opname = newNamespace + newName;
             gui.serverOps.clone(oldName, opname,
                 () =>
@@ -764,7 +755,6 @@ export default class ServerOps
                         {
                             // replace existing ops
                             const ops = gui.corePatch().getOpsByObjName(oldName);
-                            console.log(ops);
                             for (let i = 0; i < ops.length; i++)
                             {
                                 gui.patchView.replaceOp(ops[i].id, opname);
@@ -895,13 +885,6 @@ export default class ServerOps
                                         setTimeout(() =>
                                         {
                                             gui.opParams.refresh();
-
-                                            // console.log(gui.opParams.op);
-                                            // if (gui.opParams.op)
-                                            // {
-                                            //     console.log(gui.opParams.op.opId);
-                                            //     gui.patchView.focusOpAnim(gui.opParams.op.id);
-                                            // }
                                         }, 100);
                                         loadingModal.close();
                                     });
@@ -1287,11 +1270,12 @@ export default class ServerOps
             const opIdentifier = op.opId || op.objName;
             if (!missingOpsFound.includes(opIdentifier))
             {
-                let loaded = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
-                if (!loaded) loaded = this._ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
+                let loaded = opDocs.some((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!loaded) loaded = opDocs.some((loadedOp) => { return loadedOp.objName === opIdentifier; });
+                if (!loaded) loaded = this._ops.some((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!loaded) loaded = this._ops.some((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
                 if (loaded) loaded = this.opCodeLoaded(op);
+
                 if (!loaded)
                 {
                     missingOps.push({ "id": op.opId, "objName": op.objName });
