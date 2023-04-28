@@ -17,7 +17,7 @@ export default class OpDocs
 
     addCoreOpDocs()
     {
-        if(window.logStartup) logStartup("Op docs loaded");
+        if (window.logStartup) logStartup("Op docs loaded");
         const res = CABLESUILOADER.preload.opDocsAll;
         this._extensions = res.extensions;
         this._teamnamespaces = res.teamNamespaces;
@@ -148,7 +148,10 @@ export default class OpDocs
 
     getNamespaceDocs(namespace)
     {
-        return this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
+        let docs = this._opDocs.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); });
+        docs = docs.concat(this._extensions.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
+        docs = docs.concat(this._teamnamespaces.filter((opDoc) => { return opDoc.name && opDoc.name.startsWith(namespace); }));
+        return docs;
     }
 
     getAttachmentFiles(opname)
@@ -192,6 +195,20 @@ export default class OpDocs
             if (this._opDocs[i].name === opName)
             {
                 return this._opDocs[i];
+            }
+        }
+        for (let i = 0; i < this._extensions.length; i++)
+        {
+            if (this._extensions[i].name === opName)
+            {
+                return this._extensions[i];
+            }
+        }
+        for (let i = 0; i < this._teamnamespaces.length; i++)
+        {
+            if (this._teamnamespaces[i].name === opName)
+            {
+                return this._teamnamespaces[i];
             }
         }
     }
