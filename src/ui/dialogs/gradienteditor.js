@@ -1,3 +1,5 @@
+import { Anim } from "../../../../cables/src/core/anim";
+import { CONSTANTS } from "../../../../cables/src/core/constants";
 import { getHandleBarHtml } from "../utils/handlebars";
 import Logger from "../utils/logger";
 import ModalBackground from "./modalbg";
@@ -34,6 +36,10 @@ export default class GradientEditor
         this._op = gui.corePatch().getOpById(this._opId);
         this._port = this._op.getPort(this._portName);
         this.type = this._port.uiAttribs.gradientType || "gradient";
+
+        this._anim = new CABLES.Anim();
+
+        this._anim.defaultEasing = CONSTANTS.ANIM.EASING_SMOOTHSTEP;
 
         this._elContainer = null;
         this._bg = new ModalBackground();
@@ -91,18 +97,45 @@ export default class GradientEditor
             this._ctxCurve.fillStyle = "#444";
             this._ctxCurve.fillRect(0, 0, this._width, this._height);
 
-            this._ctxCurve.strokeStyle = "white";
-            this._ctxCurve.lineWidth = 2;
+
+            // --------- 0.5 line...
+
+            this._ctxCurve.strokeStyle = "#333";
+            this._ctxCurve.beginPath();
+            this._ctxCurve.moveTo(0, this._height / 2);
+            this._ctxCurve.lineTo(this._width, this._height / 2);
+            this._ctxCurve.stroke();
+
+            // --------- linear
+
+            this._ctxCurve.strokeStyle = "#777";
+            this._ctxCurve.lineWidth = 1;
             this._ctxCurve.beginPath();
             this._ctxCurve.moveTo(keys[0].pos * this._width, keys[0].posy * this._height - this._keyWidth / 2);
 
             for (let i = 0; i < keys.length - 1; i++)
                 this._ctxCurve.lineTo(
-                    keys[i].pos * this._width - this._keyWidth / 2,
-                    keys[i].posy * this._height - this._keyWidth / 2 + 1
+                    Math.floor(keys[i].pos * this._width - this._keyWidth / 2),
+                    Math.floor(keys[i].posy * this._height - this._keyWidth / 2 + 1)
                 );
 
             this._ctxCurve.lineTo(keys[keys.length - 1].pos * this._width, keys[keys.length - 1].posy * this._height - this._keyWidth / 2);
+            this._ctxCurve.stroke();
+
+            // smoothed...
+
+            this._ctxCurve.strokeStyle = "#aaa";
+            this._ctxCurve.beginPath();
+            this._ctxCurve.lineWidth = 2;
+            let numSteps = 250;
+            for (let i = 0; i < numSteps + 2; i++)
+            {
+                let x = Math.floor(i / numSteps * this._width);
+                let y = Math.floor(this._anim.getValue(i / numSteps) * this._height) - 1;
+
+                if (i == 0) this._ctxCurve.moveTo(x, y);
+                else this._ctxCurve.lineTo(x, y);
+            }
             this._ctxCurve.stroke();
         }
         else
@@ -203,6 +236,7 @@ export default class GradientEditor
         this._keys.sort(compare);
 
 
+        this._anim.clear();
         let html = "";
         for (let i = 0; i < this._keys.length; i++)
         {
@@ -210,6 +244,8 @@ export default class GradientEditor
             this._keys[i].posy = Math.min(1.0, Math.max(this._keys[i].posy, 0));
 
             html += "<a data-index=\"" + i + "\" onclick=\"CABLES.GradientEditor.editor.selectKey(" + i + ")\" class=\"keyindex button-small\">" + i + "</a> ";
+
+            this._anim.setValue(this._keys[i].pos, this._keys[i].posy);
         }
 
         ele.byId("gradienteditorKeys").innerHTML = html;
@@ -262,9 +298,16 @@ export default class GradientEditor
             b = Math.random();
         }
 
-        const rect = this._paper.ellipse(pos * this._width - this._keyWidth / 2, posy * this._height - this._keyWidth / 2, this._keyWidth, this._keyHeight).attr({
-            "stroke": this.getInvStrokeColor(r, g, b),
-            "stroke-width": this._keyStrokeWidth });
+        const rect = this._paper.ellipse(
+            pos * this._width - this._keyWidth / 2,
+            posy * this._height - this._keyWidth / 2,
+            this._keyWidth,
+            this._keyHeight).attr(
+            {
+                "fill": "transparent",
+                "stroke": this.getInvStrokeColor(r, g, b),
+                "stroke-width": this._keyStrokeWidth
+            });
 
         const key = { "posy": posy, "pos": pos, "rect": rect, "r": r, "g": g, "b": b };
 
@@ -296,8 +339,8 @@ export default class GradientEditor
                 attribs.cx = eX;
                 attribs.cy = eY;
 
-                key.pos = (eX + this._keyWidth / 2) / this._width;
-                key.posy = (eY + this._keyWidth / 2) / this._height;
+                key.pos = (eX + (this._keyWidth / 2)) / this._width;
+                key.posy = (eY + (this._keyWidth / 2)) / this._height;
             }
 
             rect.attr(attribs);
@@ -398,7 +441,7 @@ export default class GradientEditor
             try
             {
                 this._previousContent = data;
-                const keys = JSON.parse(data).keys;
+                const keys = JSON.parse(data).keys || [];
                 for (let i = 1; i < keys.length - 1; i++)
                     this.addKey(keys[i].pos, keys[i].posy, keys[i].r, keys[i].g, keys[i].b);
             }
