@@ -97,12 +97,6 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
-        if (!this._startedGlobalListeners)
-        {
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
-        }
-
 
         if (!this.hasExposeListener)
         {
@@ -144,6 +138,14 @@ class OpParampanel extends CABLES.EventTarget
 
     show(op)
     {
+        if (!this._startedGlobalListeners)
+        {
+            console.log("_startedGlobalListeners");
+            this._startedGlobalListeners = true;
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+        }
+
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
