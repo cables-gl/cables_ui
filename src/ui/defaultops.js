@@ -309,17 +309,30 @@ const defaultOps = {
 
     "isExtension": (opname) =>
     {
-        return opname && opname.indexOf(defaultOps.getExtensionOpsPrefix()) === 0;
+        if (!opname) return false;
+        if (!opname.startsWith(defaultOps.getExtensionOpsPrefix())) return false;
+        if (!opname.endsWith(".")) opname += ".";
+        const parts = opname.split(".");
+        return parts.length < 5;
+    },
+
+    "isCollection": (opname) =>
+    {
+        return opname && (defaultOps.isExtension(opname) || defaultOps.isTeamNamespace(opname));
     },
 
     "isTeamOp": (opname) =>
     {
-        return opname && opname.indexOf(defaultOps.getTeamOpsPrefix()) === 0;
+        return opname && opname.startsWith(defaultOps.getTeamOpsPrefix());
     },
 
     "isTeamNamespace": (opname) =>
     {
-        return opname && opname.indexOf(defaultOps.getTeamOpsPrefix()) === 0;
+        if (!opname) return false;
+        if (!opname.startsWith(defaultOps.getTeamOpsPrefix())) return false;
+        if (!opname.endsWith(".")) opname += ".";
+        const parts = opname.split(".");
+        return parts.length < 5;
     },
 
     "isBlueprintOp": (opname) =>

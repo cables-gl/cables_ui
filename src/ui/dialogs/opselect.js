@@ -25,17 +25,13 @@ export default class OpSelect
         this.itemHeight = 0;
         this.firstTime = true;
         this.tree = null;
-        this._sortTimeout = 0;
-        this._backspaceDelay = -1;
         this._wordsDb = null;
         this._eleSearchinfo = null;
-        this._forceShowOldOps = userSettings.get("showOldOps") || false;
         this._newOpOptions = {};
         this._searchInputEle = null;
         this._enterPressedEarly = false;
         this._searching = false;
         this._bg = new ModalBackground();
-        this._escapeListener = null;
         this._typedSinceOpening = false;
     }
 
@@ -54,7 +50,7 @@ export default class OpSelect
         return el.value || "";
     }
 
-    updateOptions(opname)
+    updateOptions()
     {
         this._hideUserOps = gui.project().isOpExample;
 
@@ -68,7 +64,7 @@ export default class OpSelect
 
         if (query.length === 0)
         {
-            ele.show(eleTypeStart);// .classList.remove("hidden");
+            ele.show(eleTypeStart);
             this._showSuggestionsInfo();
 
             for (let i = 0; i < this._list.length; i++)
@@ -94,7 +90,7 @@ export default class OpSelect
 
         if (this._hideUserOps)
         {
-            optionsHtml += "<div class=\"warning\">Your user ops are hidden, pach is an op example</div>";
+            optionsHtml += "<div class=\"warning\">Your user ops are hidden, patch is an op example</div>";
         }
         else
         {
@@ -368,7 +364,6 @@ export default class OpSelect
             }
 
             if (!found) points = 0;
-            // if(points && wordIndex>0 && list[i].score==0) points=0; // e.g. when second word was found, but first was not
 
             if (points === 0 && list[i].score > 0) list[i].score = 0;
             else list[i].score += points;
@@ -410,8 +405,8 @@ export default class OpSelect
 
                 for (let j = 0; j < res.length; j++)
                 {
-                    if (res[j][res[j].length - 2] == "_") res[j] = res[j].substr(0, res[j].length - 2);
-                    if (res[j][0] == ".") res[j] = res[j].substr(1);
+                    if (res[j][res[j].length - 2] === "_") res[j] = res[j].substr(0, res[j].length - 2);
+                    if (res[j][0] === ".") res[j] = res[j].substr(1);
                     if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
                 }
 
@@ -455,7 +450,7 @@ export default class OpSelect
                 let nquery = queryParts.join(" ");
                 nquery += " " + q;
 
-                if (nquery != query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
+                if (nquery !== query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
 
                 query = nquery;
             }
@@ -581,7 +576,7 @@ export default class OpSelect
         if (CABLES.UI.OPSELECT.linkNewOpToPort)
         {
             const existingVars = gui.corePatch().getVars(CABLES.UI.OPSELECT.linkNewOpToPort.type);
-            if (existingVars.length == 0) ele.hide(eleCreateWithExistingVar);
+            if (existingVars.length === 0) ele.hide(eleCreateWithExistingVar);
             else
             {
                 ele.show(eleCreateWithExistingVar);
@@ -595,7 +590,7 @@ export default class OpSelect
         {
             // show "replace with existing var button..."
             const existingVars = gui.corePatch().getVars(link.portIn.type);
-            if (existingVars.length == 0) ele.hide(eleReplaceWithExistingVar);
+            if (existingVars.length === 0) ele.hide(eleReplaceWithExistingVar);
             else
             {
                 ele.show(eleReplaceWithExistingVar);
@@ -694,10 +689,7 @@ export default class OpSelect
     search()
     {
         const q = this._getQuery();
-
-        this.lastQuery = q;
         this._search(q);
-
         const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
         for (let i = 0; i < this._list.length; i++)
@@ -708,21 +700,19 @@ export default class OpSelect
             {
                 this._list[i].element.dataset.score = this._list[i].score;
                 this._list[i].element.dataset.scoreDebug = this._list[i].scoreDebug;
-                // this._list[i].element.style.display = "block";
                 ele.show(this._list[i].element);
             }
             else
             {
-                this._list[i].element.dataset.score = 0.0;
+                this._list[i].element.dataset.score = "0.0";
                 this._list[i].element.dataset.scoreDebug = "???";
-                // this._list[i].element.style.display = "none";
                 ele.hide(this._list[i].element);
             }
         }
 
         tinysort.defaults.order = "desc";
-
         tinysort(".searchresult", { "data": "score" });
+
         this.navigate(0);
 
         if (this.itemHeight === 0)
@@ -775,7 +765,7 @@ export default class OpSelect
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.prepare.list");
 
-            this._list = this.getList();
+            this._buildList();
 
             let maxPop = 0;
 
@@ -839,8 +829,6 @@ export default class OpSelect
 
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
-        let startTime = performance.now();
-
         this._typedSinceOpening = false;
 
         CABLES.UI.hideToolTip();
@@ -859,8 +847,6 @@ export default class OpSelect
             "linkNewLink": link
         };
 
-
-        this._forceShowOldOps = userSettings.get("showOldOps") || false;
         this._searchInputEle = ele.byId("opsearch");
 
         if (options.search)
@@ -1100,7 +1086,146 @@ export default class OpSelect
         // prevent the default action (scroll / move caret)
     }
 
-    _getop(ops, ns, val, parentname)
+    _buildList()
+    {
+        const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
+
+        const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
+        this._list = this._createListItemsByNames(coreOpNames);
+
+        const extensionNames = gui.opDocs.getExtensions().map((ext) => { return ext.name; });
+        this._list = this._list.concat(this._createListItemsByNames(extensionNames));
+
+        const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
+        this._list = this._list.concat(this._createListItemsByNames(teamNamespaces));
+
+        const namespace = defaultops.getPatchOpsNamespace();
+        const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
+        this._list = this._list.concat(this._createListItemsByNames(patchOpNames));
+
+        this._list.sort((a, b) => { return b.pop - a.pop; });
+        perf.finish();
+    }
+
+    getListItemByOpName(opName)
+    {
+        if (!this._list) return null;
+        return this._list.find((item) => { return item.name === opName; });
+    }
+
+    _createListItemsByNames(opNames)
+    {
+        if (!opNames) return;
+        const items = [];
+        opNames.forEach((opName) =>
+        {
+            const parts = opName.split(".");
+            const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
+            const opDoc = gui.opDocs.getOpDocByName(opName);
+            let shortName = parts[parts.length - 1];
+            let hidden = false;
+            let opDocHidden = false;
+
+            if (opDoc)
+            {
+                opDocHidden = opDoc.hidden;
+                hidden = opDoc.hidden;
+
+                if (defaultops.isNonCoreOp(opName))
+                {
+                    shortName = opDoc.shortName;
+                }
+                else
+                {
+                    shortName = opDoc.shortNameDisplay;
+                }
+            }
+
+            if (hidden)
+            {
+                if (defaultops.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
+            }
+
+            if (defaultops.isDevOp(opName) && !CABLES.sandbox.isDevEnv()) hidden = true;
+
+            parts.length -= 1;
+            const nameSpace = parts.join(".");
+
+            if (defaultops.isCollection(opName))
+            {
+                const inUse = this._list.some((op) => { return op.name.startsWith(opName); });
+                if (inUse)
+                {
+                    hidden = true;
+                }
+            }
+
+            if (!hidden)
+            {
+                let oldState = "";
+                if (hidden)oldState = "OLD";
+                if (opDocHidden)oldState = "OLD";
+                if (defaultops.isDeprecatedOp(opName)) oldState = "DEPREC";
+                if (defaultops.isAdminOp(opName)) oldState = "ADMIN";
+
+                let popularity = -1;
+                let summary = gui.opDocs.getSummary(opName);
+                let type = "op";
+                if (defaultops.isTeamNamespace(opName)) type = "teamnamespace";
+                if (defaultops.isExtension(opName)) type = "extension";
+                if (defaultops.isPatchOp(opName)) type = "patchop";
+
+                const op = {
+                    "name": opName,
+                    "summary": summary,
+                    "nscolor": defaultops.getNamespaceClassName(opName),
+                    "isOp": true,
+                    "userOp": defaultops.isUserOp(opName),
+                    "devOp": defaultops.isDevOp(opName),
+                    "extensionOp": defaultops.isExtensionOp(opName),
+                    "teamOp": defaultops.isTeamOp(opName),
+                    "patchOp": defaultops.isPatchOp(opName),
+                    "isExtension": defaultops.isExtension(opName),
+                    "isTeamNamespace": defaultops.isTeamNamespace(opName),
+                    "shortName": shortName,
+                    "nameSpace": nameSpace,
+                    "oldState": oldState,
+                    "lowercasename": lowerCaseName,
+                    "buttonText": defaultops.isCollection(opName) ? "Load" : "Add",
+                    "type": type,
+                    "pop": popularity,
+
+                };
+                if (defaultops.isCollection(opName))
+                {
+                    const collectionOps = gui.opDocs.getNamespaceDocs(opName);
+                    const collectionDoc = collectionOps.find((collectionOp) => { return collectionOp.name === opName; });
+                    let numOps = collectionDoc ? collectionDoc.numOps : 0;
+                    op.isOp = false;
+                    op.numOps = numOps;
+                    op.pop = 1;
+                    if (opDoc)
+                    {
+                        if (defaultops.isTeamOp(opName))
+                        {
+                            op.summary = opDoc.summary;
+                            op.teamName = opDoc.teamName;
+                            op.teamDescription = opDoc.teamDescription;
+                            op.teamLink = opDoc.teamLink;
+                        }
+                        if (defaultops.isExtension(opName))
+                        {
+                            op.summary = opDoc.summary;
+                        }
+                    }
+                }
+                items.push(op);
+            }
+        });
+        return items;
+    }
+
+    _getOpsNamesFromCode(opNames, ns, val, parentname)
     {
         if (Object.prototype.toString.call(val) === "[object Object]")
         {
@@ -1108,230 +1233,12 @@ export default class OpSelect
             {
                 if (val.hasOwnProperty(propertyName))
                 {
-                    const opname = ns + "." + parentname + propertyName;
-                    const isOp = false;
-                    let isFunction = false;
-
-                    if (typeof (CABLES.Patch.getOpClass(opname)) === "function") isFunction = true;
-
-                    const parts = opname.split(".");
-                    const lowercasename = opname.toLowerCase() + "_" + parts.join("").toLowerCase();
-                    const opdoc = gui.opDocs.getOpDocByName(opname);
-                    let shortName = parts[parts.length - 1];
-                    let hidden = false;
-                    let opdocHidden = false;
-
-                    if (opdoc)
-                    {
-                        opdocHidden = opdoc.hidden;
-                        hidden = opdoc.hidden;
-
-                        if (defaultops.isNonCoreOp(opname))
-                            shortName = opdoc.shortName;
-                        else
-                            shortName = opdoc.shortNameDisplay;
-                    }
-
-                    if (hidden)
-                    {
-                        if (defaultops.isAdminOp(opname) && !gui.user.isAdmin) hidden = true;
-                    }
-
-                    if (defaultops.isDevOp(opname) && !CABLES.sandbox.isDevEnv()) hidden = true;
-
-                    parts.length -= 1;
-                    const nameSpace = parts.join(".");
-
-
-                    if (isFunction && !hidden)
-                    {
-                        let oldState = "";
-                        if (hidden)oldState = "OLD";
-                        if (opdocHidden)oldState = "OLD";
-                        if (defaultops.isDeprecatedOp(opname)) oldState = "DEPREC";
-                        if (defaultops.isAdminOp(opname)) oldState = "ADMIN";
-
-                        const op = {
-                            "nscolor": defaultops.getNamespaceClassName(opname),
-                            "isOp": isOp,
-                            "name": opname,
-                            "userOp": defaultops.isUserOp(opname),
-                            "devOp": defaultops.isDevOp(opname),
-                            "extensionOp": defaultops.isExtensionOp(opname),
-                            "teamOp": defaultops.isTeamOp(opname),
-                            "patchOp": defaultops.isPatchOp(opname),
-                            "isExtension": false,
-                            "shortName": shortName,
-                            "nameSpace": nameSpace,
-                            "oldState": oldState,
-                            "lowercasename": lowercasename,
-                            "buttonText": "Add",
-                            "type": "op"
-                        };
-                        op.summary = gui.opDocs.getSummary(opname);
-                        ops.push(op);
-                    }
-
-                    ops = this._getop(ops, ns, val[propertyName], parentname + propertyName + ".");
+                    const opName = ns + "." + parentname + propertyName;
+                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opNames.push(opName);
+                    opNames = this._getOpsNamesFromCode(opNames, ns, val[propertyName], parentname + propertyName + ".");
                 }
             }
         }
-        return ops;
-    }
-
-    _getpatchops(existingOps = [])
-    {
-        const namespace = defaultops.getPatchOpsNamespace();
-        const patchOpDocs = gui.opDocs.getNamespaceDocs(namespace);
-        const extdocs = [];
-
-        for (let i = 0; i < patchOpDocs.length; i++)
-        {
-            const opDoc = patchOpDocs[i];
-            const opname = opDoc.name;
-
-            const inUse = existingOps.some((op) => { return op.name === opDoc.name; });
-            if (inUse) continue;
-
-            const parts = opname.split(".");
-            const lowercasename = opname.toLowerCase() + "_" + parts.join("").toLowerCase();
-            const opdoc = gui.opDocs.getOpDocByName(opname);
-            let shortName = parts[parts.length - 1];
-
-            // if (opdoc)
-            // {
-            //     shortName = opdoc.shortNameDisplay;
-            // }
-
-            parts.length -= 1;
-            const nameSpace = parts.join(".");
-
-            const op = {
-                "nscolor": defaultops.getNamespaceClassName(opname),
-                "isOp": true,
-                "name": opname,
-                "userOp": false,
-                "devOp": false,
-                "extensionOp": false,
-                "teamOp": false,
-                "patchOp": true,
-                "isExtension": false,
-                "shortName": shortName,
-                "nameSpace": nameSpace,
-                "oldState": "",
-                "lowercasename": lowercasename,
-                "buttonText": "Add",
-                "type": "patchop",
-                "summary": gui.opDocs.getSummary(opname)
-            };
-
-            extdocs.push(op);
-        }
-        return extdocs;
-    }
-
-    _getteamnamespaces(existingOps = [])
-    {
-        const namespaces = gui.opDocs.getTeamNamespaces();
-        const extdocs = [];
-        if (namespaces)
-        {
-            for (let i = 0; i < namespaces.length; i++)
-            {
-                const ext = namespaces[i];
-                const inUse = existingOps.find((op) => { return op.nameSpace === ext.nameSpace; });
-                if (inUse) continue;
-
-                const parts = ext.name.split(".");
-                const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                const extDoc = {
-                    "nscolor": defaultops.getNamespaceClassName(ext.name),
-                    "isOp": false,
-                    "name": ext.name,
-                    "userOp": false,
-                    "devOp": false,
-                    "extensionOp": false,
-                    "teamOp": false,
-                    "isTeamNamespace": true,
-                    "isExtension": false,
-                    "shortName": ext.shortName,
-                    "nameSpace": ext.nameSpace,
-                    "oldState": "",
-                    "lowercasename": lowercasename,
-                    "buttonText": "Load",
-                    "type": "teamnamespace",
-                    "teamName": ext.teamName,
-                    "teamDescription": ext.teamDescription,
-                    "teamLink": ext.teamLink,
-                    "numOps": ext.numOps
-                };
-                extDoc.pop = -1;
-                extDoc.summary = ext.summary || "";
-                extdocs.push(extDoc);
-            }
-        }
-        return extdocs;
-    }
-
-    _getextensions(existingOps = [])
-    {
-        const extensions = gui.opDocs.getExtensions();
-        const extdocs = [];
-        if (extensions)
-        {
-            for (let i = 0; i < extensions.length; i++)
-            {
-                const ext = extensions[i];
-                const inUse = existingOps.find((op) => { return op.nameSpace === ext.nameSpace; });
-                if (inUse) continue;
-
-                const parts = ext.name.split(".");
-                const lowercasename = ext.name.toLowerCase() + "_" + parts.join("").toLowerCase();
-                const extDoc = {
-                    "nscolor": defaultops.getNamespaceClassName(ext.name),
-                    "isOp": false,
-                    "name": ext.name,
-                    "userOp": false,
-                    "devOp": false,
-                    "extensionOp": false,
-                    "teamOp": false,
-                    "isExtension": true,
-                    "isTeamNamespace": false,
-                    "shortName": ext.shortName,
-                    "nameSpace": ext.nameSpace,
-                    "oldState": "",
-                    "lowercasename": lowercasename,
-                    "buttonText": "Load",
-                    "type": "extension",
-                    "numOps": ext.numOps
-                };
-                extDoc.pop = -1;
-                extDoc.summary = ext.summary || "";
-                extdocs.push(extDoc);
-            }
-        }
-        return extdocs;
-    }
-
-    getList()
-    {
-        const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
-        let list = this._getop([], "Ops", Ops, "");
-        const extensions = this._getextensions(list);
-        list = list.concat(extensions);
-        const teamnamespaces = this._getteamnamespaces(list);
-        list = list.concat(teamnamespaces);
-        const patchops = this._getpatchops(list);
-        list = list.concat(patchops);
-        list.sort((a, b) => { return b.pop - a.pop; });
-
-        perf.finish();
-        return list;
-    }
-
-    getListItemByOpName(opName)
-    {
-        if (!this._list) return null;
-        return this._list.find((item) => { return item.name === opName; });
+        return opNames;
     }
 }
