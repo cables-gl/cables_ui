@@ -53,6 +53,7 @@
         }
         .warning-error, .warning-error
         {
+            margin-top:10px;
             text-align: left;
             border-color: transparent;
             font-size: var(--font-size-bigger);
@@ -79,6 +80,7 @@
         .params_op_head
         {
             text-align: center;
+            padding-bottom: 0px;
 
             #opname {
                 width: 77%;
@@ -93,7 +95,7 @@
             .summary
             {
                 font-size: var(--font-size-bigger);
-                padding:5px;
+                padding:2px;
                 margin: 10px 0;
             }
 
@@ -567,6 +569,8 @@
     .groupSpacer,.groupSpacer h3
     {
         color: var(--color-13);
+        margin-top:0px;
+        text-transform: uppercase;
     }
 
     .groupSpacer

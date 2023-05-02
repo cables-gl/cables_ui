@@ -30,6 +30,8 @@ class OpParampanel extends CABLES.EventTarget
         this._paramsListener = new ParamsListener(this.panelId);
 
         this._portUiAttrListeners = [];
+
+        this._startedGlobalListeners = false;
     }
 
     get op()
@@ -93,6 +95,12 @@ class OpParampanel extends CABLES.EventTarget
         {
             this._stopListeners();
             return;
+        }
+
+        if (!this._startedGlobalListeners)
+        {
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
         }
 
 
