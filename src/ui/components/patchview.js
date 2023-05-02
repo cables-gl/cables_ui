@@ -1029,46 +1029,46 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    subpatchContextMenu(id, el)
-    {
-        const ids = [];
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-        {
-            if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubpatchOp())
-            {
-                ids.push(ops[i].patchId.get());
-            }
-        }
+    // subpatchContextMenu(id, el)
+    // {
+    //     const ids = [];
+    //     const ops = gui.corePatch().ops;
+    //     for (let i = 0; i < ops.length; i++)
+    //     {
+    //         if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubpatchOp())
+    //         {
+    //             ids.push(ops[i].patchId.get());
+    //         }
+    //     }
 
-        const items = [];
-        for (let i = 0; i < ids.length; i++)
-        {
-            const theId = ids[i];
-            items.push({
-                "title": "› " + this.getSubPatchName(ids[i]),
-                "func": () =>
-                {
-                    gui.patchView.setCurrentSubPatch(theId);
-                }
-            });
-        }
+    //     const items = [];
+    //     for (let i = 0; i < ids.length; i++)
+    //     {
+    //         const theId = ids[i];
+    //         items.push({
+    //             "title": "› " + this.getSubPatchName(ids[i]),
+    //             "func": () =>
+    //             {
+    //                 gui.patchView.setCurrentSubPatch(theId);
+    //             }
+    //         });
+    //     }
 
-        items.push({
-            "title": "Go to op",
-            "func": () =>
-            {
-                gui.patchView.focusSubpatchOp(id);
-            }
+    //     items.push({
+    //         "title": "Go to op",
+    //         "func": () =>
+    //         {
+    //             gui.patchView.focusSubpatchOp(id);
+    //         }
 
 
-        });
+    //     });
 
-        CABLES.contextMenu.show(
-            {
-                "items": items,
-            }, el);
-    }
+    //     CABLES.contextMenu.show(
+    //         {
+    //             "items": items,
+    //         }, el);
+    // }
 
     getSubPatchOuterOp(subPatchId)
     {
@@ -1084,8 +1084,8 @@ export default class PatchView extends CABLES.EventTarget
     focusSubpatchOp(subPatchId)
     {
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
-
         let parentSubId = gotoOp.uiAttribs.subPatch;
+
         if (gotoOp.uiAttribs.blueprintOpId) gotoOp = gotoOp.blueprintOpId;
         this.setCurrentSubPatch(parentSubId, () =>
         {
@@ -1144,7 +1144,7 @@ export default class PatchView extends CABLES.EventTarget
             this._patchRenderer.greyOut = false;
         }
 
-        str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
+        // str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }

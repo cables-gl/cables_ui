@@ -506,6 +506,30 @@ class OpParampanel extends CABLES.EventTarget
     }
 
 
+    subPatchContextMenu(el)
+    {
+        console.log("subpartchjontextmenu", el.dataset.id,
+
+            gui.patchView.getSubPatchOuterOp(el.dataset.id)
+        );
+
+        const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+
+
+        let title = "Goto Subpatch Op";
+        if (outer.storage && outer.storage.blueprint)title = "Goto Blueprint Op";
+
+        const items = [];
+        items.push({
+            "title": title,
+            func()
+            {
+                gui.patchView.focusSubpatchOp(el.dataset.id);
+            },
+        });
+        CABLES.contextMenu.show({ items }, el);
+    }
+
     opContextMenu(el)
     {
         const items = [];
