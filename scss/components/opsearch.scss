@@ -134,6 +134,10 @@
     {
         height:465px;
         overflow:auto;
+
+        .not-usable .addbutton {
+            display: none;
+        }
     }
 
     .searchinfo
