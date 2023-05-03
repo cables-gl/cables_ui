@@ -1201,7 +1201,7 @@ export default class OpSelect
                     "pop": popularity,
 
                 };
-                if (opDoc.notUsable)
+                if (opDoc && opDoc.notUsable)
                 {
                     op.notUsable = true;
                     op.notUsableReasons = opDoc.notUsableReasons;
