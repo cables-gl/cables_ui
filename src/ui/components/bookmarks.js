@@ -36,13 +36,6 @@ export default class Bookmarks
 
     getHtml()
     {
-        console.log("bookmark html");
-        if (!this._subs)
-        {
-            gui.corePatch().on("subpatchCreated", () => { this.needRefreshSubs = true; });
-            gui.corePatch().on("patchLoadEnd", () => { this.needRefreshSubs = true; });
-        }
-
         if (this.needRefreshSubs)
         {
             const subs = gui.patchView.getSubPatches(true);

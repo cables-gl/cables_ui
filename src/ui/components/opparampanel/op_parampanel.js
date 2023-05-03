@@ -30,6 +30,8 @@ class OpParampanel extends CABLES.EventTarget
         this._paramsListener = new ParamsListener(this.panelId);
 
         this._portUiAttrListeners = [];
+
+        this._startedGlobalListeners = false;
     }
 
     get op()
@@ -136,6 +138,14 @@ class OpParampanel extends CABLES.EventTarget
 
     show(op)
     {
+        if (!this._startedGlobalListeners)
+        {
+            console.log("_startedGlobalListeners");
+            this._startedGlobalListeners = true;
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+        }
+
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
@@ -495,6 +505,30 @@ class OpParampanel extends CABLES.EventTarget
         return this._currentOp.id == opid;
     }
 
+
+    subPatchContextMenu(el)
+    {
+        console.log("subpartchjontextmenu", el.dataset.id,
+
+            gui.patchView.getSubPatchOuterOp(el.dataset.id)
+        );
+
+        const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+
+
+        let title = "Goto Subpatch Op";
+        if (outer.storage && outer.storage.blueprint)title = "Goto Blueprint Op";
+
+        const items = [];
+        items.push({
+            "title": title,
+            func()
+            {
+                gui.patchView.focusSubpatchOp(el.dataset.id);
+            },
+        });
+        CABLES.contextMenu.show({ items }, el);
+    }
 
     opContextMenu(el)
     {
