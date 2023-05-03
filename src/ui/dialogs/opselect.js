@@ -1037,7 +1037,12 @@ export default class OpSelect
         if (selEle)
         {
             const opname = selEle.dataset.opname;
-            this.addOp(opname, reopenModal, selEle.dataset.itemType);
+            const listItem = this.getListItemByOpName(opname);
+            // prevent adding of ops that are not usable
+            if (!(listItem && listItem.notUsable))
+            {
+                this.addOp(opname, reopenModal, selEle.dataset.itemType);
+            }
         }
     }
 
