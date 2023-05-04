@@ -107,7 +107,7 @@ export default class OpSelect
 
         if (selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
 
-        if (score && score == score)
+        if (score && score === score)
         {
             let scoredebug = "";
 
@@ -124,13 +124,13 @@ export default class OpSelect
 
     _searchWord(wordIndex, orig, list, query)
     {
-        if (!query || query == " " || query == "") return;
+        if (!query || query === " " || query === "") return;
 
         const perf = CABLES.UI.uiProfiler.start("opselect._searchWord");
 
         for (let i = 0; i < list.length; i++)
         {
-            if (wordIndex > 0 && list[i].score == 0) continue; // when second word was found, but first was not
+            if (wordIndex > 0 && list[i].score === 0) continue; // when second word was found, but first was not
 
             let scoreDebug = "<b>Query: " + query + " </b><br/>";
             let found = false;
@@ -138,7 +138,7 @@ export default class OpSelect
 
             if (list[i].lowercasename.indexOf(query) > -1)
             {
-                if (list[i].name == "Ops.Gl.MainLoop")
+                if (list[i].name === "Ops.Gl.MainLoop")
                 {
                     found = true;
                     scoreDebug += "+2 vip op<br/>";
@@ -146,12 +146,12 @@ export default class OpSelect
                 }
             }
 
-            if (list[i].abbrev && list[i].abbrev.indexOf(orig) == 0)
+            if (list[i].abbrev && list[i].abbrev.indexOf(orig) === 0)
             {
                 found = true;
                 let p = 2;
-                if (orig.length == 2)p = 6;
-                if (orig.length == 3)p = 4;
+                if (orig.length === 2)p = 6;
+                if (orig.length === 3)p = 4;
                 scoreDebug += "+" + p + " abbreviation<br/>";
                 points += p;
             }
@@ -357,10 +357,15 @@ export default class OpSelect
                 scoreDebug += "-1 outdated<br/>";
             }
 
-
             if (found && list[i].pop > 0)
             {
                 points += (list[i].pop || 2) / CABLES.UI.OPSELECT.maxPop || 1;
+            }
+
+            if (found && this._list[i].notUsable)
+            {
+                points = 0.1;
+                scoreDebug += "0.1 not usable<br/>";
             }
 
             if (!found) points = 0;
@@ -937,11 +942,11 @@ export default class OpSelect
 
             if (itemType === "extension")
             {
-                gui.opSelect().addExtension(opname);
+                gui.opSelect().loadExtension(opname);
             }
             else if (itemType === "teamnamespace")
             {
-                gui.opSelect().addTeamOps(opname);
+                gui.opSelect().loadTeamOps(opname);
             }
             else if (itemType === "patchop")
             {
@@ -967,7 +972,7 @@ export default class OpSelect
         }
     }
 
-    addExtension(name)
+    loadExtension(name)
     {
         gui.serverOps.loadExtensionOps(name, () =>
         {
@@ -986,7 +991,7 @@ export default class OpSelect
         });
     }
 
-    addTeamOps(name)
+    loadTeamOps(name)
     {
         gui.serverOps.loadTeamNamespaceOps(name, () =>
         {
@@ -1032,7 +1037,12 @@ export default class OpSelect
         if (selEle)
         {
             const opname = selEle.dataset.opname;
-            this.addOp(opname, reopenModal, selEle.dataset.itemType);
+            const listItem = this.getListItemByOpName(opname);
+            // prevent adding of ops that are not usable
+            if (!(listItem && listItem.notUsable))
+            {
+                this.addOp(opname, reopenModal, selEle.dataset.itemType);
+            }
         }
     }
 
@@ -1196,6 +1206,11 @@ export default class OpSelect
                     "pop": popularity,
 
                 };
+                if (opDoc && opDoc.notUsable)
+                {
+                    op.notUsable = true;
+                    op.notUsableReasons = opDoc.notUsableReasons;
+                }
                 if (defaultops.isCollection(opName))
                 {
                     const collectionOps = gui.opDocs.getNamespaceDocs(opName);

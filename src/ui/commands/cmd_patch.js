@@ -101,7 +101,7 @@ CABLES_CMD_PATCH.save = function (force)
 
     if (!force)
     {
-        const alwaysSave = (gui.user.isStaff || gui.user.isAdmin);
+        const alwaysSave = gui.user.isAdmin;
         const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
         if (gui.project().settings.isTest)
         {
