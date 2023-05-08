@@ -144,17 +144,17 @@ export default class ServerOps
                 if (err) this._log.error(err);
 
                 loadingModal.setTask("Loading Op");
-
-                this.load(() =>
+                this.loadMissingOp(res, () =>
                 {
-                    gui.maintabPanel.show(true);
-                    this.edit(name, false, null, true);
-                    // edit(opname, readOnly, cb, userInteraction)
-
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    loadingModal.close();
-                    if (cb)cb();
+                    this.load(() =>
+                    {
+                        gui.maintabPanel.show(true);
+                        this.edit(name, false, null, true);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        loadingModal.close();
+                        if (cb)cb();
+                    });
                 });
             },
         );
