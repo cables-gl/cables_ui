@@ -2597,4 +2597,14 @@ export default class PatchView extends CABLES.EventTarget
             return defaultops.isPatchOp(op.objName);
         });
     }
+
+    getUserOpsUsedInPatch()
+    {
+        const patch = gui.corePatch();
+        const ops = patch.ops;
+        return ops.filter((op) =>
+        {
+            return defaultops.isUserOp(op.objName);
+        });
+    }
 }
