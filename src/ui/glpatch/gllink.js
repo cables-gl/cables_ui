@@ -138,8 +138,16 @@ export default class GlLink
             {
                 const
                     opIn = gui.corePatch().getOpById(this._opIdInput),
+                    opOut = gui.corePatch().getOpById(this._opIdOutput);
+
+                if (!opIn || !opOut)
+                {
+                    console.log("[gllink] no in/out op");
+                    return;
+                }
+
+                const
                     pIn = opIn.getPortById(this._portIdInput),
-                    opOut = gui.corePatch().getOpById(this._opIdOutput),
                     pOut = opOut.getPortById(this._portIdOutput);
 
                 const distOut = Math.sqrt(Math.pow(opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
