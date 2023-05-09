@@ -29,17 +29,22 @@
     <div class="searchbrowser">
 
         {{#each ops}}
-          <div id="result_{{id}}" class="searchresult clickable hidden searchable {{#if notUsable}}not-usable{{/if}}" data-opname="{{name}}" data-item-type="{{type}}" onclick="gui.opSelect().selectOp('{{ name }}')" ondblclick="gui.opSelect().addOp('{{name}}', false, '{{type}}');"
-          style="{{#if old}}opacity:0.5{{/if}}">
+        <div id="result_{{id}}"
+            class="searchresult clickable hidden searchable {{#if notUsable}}not-usable{{/if}} {{#if isCollection }}collection{{/if}}"
+            data-opname="{{name}}"
+            data-item-type="{{type}}"
+            onclick="gui.opSelect().selectOp('{{ name }}')"
+            ondblclick="gui.opSelect().addOp('{{name}}', false, '{{type}}');"
+            style="{{#if old}}opacity:0.5{{/if}}">
                 <div class="button fright addbutton" style="margin-top:10px;" >{{buttonText}}</div>
 
                 <a>
                     {{#if notUsable}}
-                        <span class="icon icon-lock"></span>
+                        <span class="icon icon-x"></span>
                     {{else}}
                         {{#if userOp }}<span class="icon icon-user"></span>{{/if}}
                         {{#if devOp }}<span class="icon icon-tool"></span>{{/if}}
-                        {{#if patchOp }}<span class="icon icon-subpatch"></span>{{/if}}
+                        {{#if patchOp }}<span class="icon icon-op"></span>{{/if}}
                         {{#if isTeamNamespace }}<span class="icon icon-users"></span>{{/if}}
                         {{#if isExtension }}<span class="icon icon-book-open"></span>{{/if}}
                     {{/if}}

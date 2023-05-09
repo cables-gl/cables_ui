@@ -1185,6 +1185,8 @@ export default class OpSelect
                 if (defaultops.isExtension(opName)) type = "extension";
                 if (defaultops.isPatchOp(opName)) type = "patchop";
 
+                const isCollection = defaultops.isCollection(opName);
+
                 const op = {
                     "name": opName,
                     "summary": summary,
@@ -1196,12 +1198,13 @@ export default class OpSelect
                     "teamOp": defaultops.isTeamOp(opName),
                     "patchOp": defaultops.isPatchOp(opName),
                     "isExtension": defaultops.isExtension(opName),
-                    "isTeamNamespace": defaultops.isTeamNamespace(opName),
+                    "isTeamNamespace": defaultops.isTeamOp(opName),
                     "shortName": shortName,
                     "nameSpace": nameSpace,
                     "oldState": oldState,
                     "lowercasename": lowerCaseName,
-                    "buttonText": defaultops.isCollection(opName) ? "Load" : "Add",
+                    "isCollection": isCollection,
+                    "buttonText": isCollection ? "Load" : "Add",
                     "type": type,
                     "pop": popularity,
 
