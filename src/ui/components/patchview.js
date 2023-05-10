@@ -1095,7 +1095,7 @@ export default class PatchView extends CABLES.EventTarget
                 this.focusOp(gotoOp.id);
                 this.centerSelectOp(gotoOp.id);
             }
-            else console.log("[focusSubpatchOp] goto op not found");
+            else console.warn("[focusSubpatchOp] goto op not found");
         });
     }
 
@@ -1113,7 +1113,6 @@ export default class PatchView extends CABLES.EventTarget
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
-
 
         if (names.length > 0 && names[0].type == "blueprint_subpatch")
         {
@@ -1861,6 +1860,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         const op = this._p.getOpById(opid);
 
+        console.log("centerSelectOp", opid);
         this.focusOp(opid);
         this.setSelectedOpById(opid);
         this.focus();
