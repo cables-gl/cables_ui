@@ -631,7 +631,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         if (!r || !r.success)
                         {
                             let msg = "no response";
-                            if (r)msg = r.msg;
+                            if (r && r.msg) msg = r.msg;
 
                             CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
 
