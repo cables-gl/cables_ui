@@ -144,17 +144,17 @@ export default class ServerOps
                 if (err) this._log.error(err);
 
                 loadingModal.setTask("Loading Op");
-
-                this.load(() =>
+                this.loadMissingOp(res, () =>
                 {
-                    gui.maintabPanel.show(true);
-                    this.edit(name, false, null, true);
-                    // edit(opname, readOnly, cb, userInteraction)
-
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    loadingModal.close();
-                    if (cb)cb();
+                    this.load(() =>
+                    {
+                        gui.maintabPanel.show(true);
+                        this.edit(name, false, null, true);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        loadingModal.close();
+                        if (cb)cb();
+                    });
                 });
             },
         );
@@ -1382,11 +1382,12 @@ export default class ServerOps
             extensionOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/extension/" + extensionName));
 
             const lid = "extensionops" + extensionName + CABLES.uuid();
-            loadjs.ready(lid, () =>
+
+            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": extensionName }, (err, res) =>
             {
-                CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": extensionName }, (err, res) =>
+                if (!err && res && res.opDocs)
                 {
-                    if (!err && res && res.opDocs)
+                    loadjs.ready(lid, () =>
                     {
                         res.opDocs.forEach((newOp) =>
                         {
@@ -1396,10 +1397,15 @@ export default class ServerOps
                         {
                             gui.opDocs.addOpDocs(res.opDocs);
                         }
-                    }
+                        incrementStartup();
+                        cb();
+                    });
+                }
+                else
+                {
                     incrementStartup();
                     cb();
-                });
+                }
             });
             loadjs(extensionOpUrl, lid);
         }
@@ -1419,11 +1425,12 @@ export default class ServerOps
             teamOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/team/" + teamNamespaceName));
 
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
-            loadjs.ready(lid, () =>
+
+            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName, "projectId": gui.project().shortId }, (err, res) =>
             {
-                CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
+                if (!err && res && res.opDocs)
                 {
-                    if (!err && res && res.opDocs)
+                    loadjs.ready(lid, () =>
                     {
                         res.opDocs.forEach((newOp) =>
                         {
@@ -1433,10 +1440,15 @@ export default class ServerOps
                         {
                             gui.opDocs.addOpDocs(res.opDocs);
                         }
-                    }
+                        incrementStartup();
+                        cb();
+                    });
+                }
+                else
+                {
                     incrementStartup();
                     cb();
-                });
+                }
             });
             loadjs(teamOpUrl, lid);
         }

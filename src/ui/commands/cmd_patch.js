@@ -101,7 +101,7 @@ CABLES_CMD_PATCH.save = function (force)
 
     if (!force)
     {
-        const alwaysSave = (gui.user.isStaff || gui.user.isAdmin);
+        const alwaysSave = gui.user.isAdmin;
         const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
         if (gui.project().settings.isTest)
         {
@@ -222,14 +222,15 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
+    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settingsiframe#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
-        CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settingsiframe#t=versions",
+        url,
         {
             "icon": "settings",
             "closable": true,
             "singleton": true,
-            "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#t=versions"
+            "gotoUrl": url
         }, true);
 };
 
