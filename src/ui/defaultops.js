@@ -242,6 +242,11 @@ const defaultOps = {
         return defaultOps.getPatchOpsPrefix() + namespace + ".";
     },
 
+    "getOpsPrefix": () =>
+    {
+        return "Ops.";
+    },
+
     "getUserOpsPrefix": () =>
     {
         return "Ops.User.";

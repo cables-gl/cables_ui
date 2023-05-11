@@ -22,7 +22,7 @@ export default class ModalError
     {
         this._options = options;
 
-        const s = gui.corePatch()._triggerStack;
+        const s = typeof gui !== "undefined" ? gui.corePatch()._triggerStack : [];
         let stackStr = "";
         for (let i = 0; i < s.length; i++)
         {
@@ -43,20 +43,22 @@ export default class ModalError
         }
 
         let info = null;
+        let stack = null;
         if (this._options.exception)
         {
             console.trace();
-
             try
             {
                 console.log(this._options);
                 if (this._options.exception.error)
                 {
                     info = stackinfo(this._options.exception.error);
+                    stack = this._options.exception.error.stack;
                 }
                 else
                 {
                     info = stackinfo(this._options.exception);
+                    stack = this._options.exception.stack;
                 }
                 if (info && info[0].file)
                 {
@@ -79,19 +81,31 @@ export default class ModalError
             {
                 // browser not supported, we don't care at this point
             }
-
             console.log("exception:", this._options.exception, info);
         }
 
         let doTrack = true;
+
+        // try to get opname:
+        // try to get opname from stracktrace, if given
+        // if an acual op is given use the objName of that op
+        // otherwise try to use the opname given in options, if set
         let opName = "";
-        if (this._options.opname)
+        if (stack && stack.startsWith(defaultops.getOpsPrefix()))
         {
-            opName = this._options.opname;
-            if (defaultops.isPrivateOp(this._options.opname)) doTrack = false;
+            opName = stack.split("/", 1)[0];
+            opName = opName.substring(0, 128);
+        }
+        if (this._options.opname) opName = this._options.opname;
+        if (this._options.op && this._options.op.objName) opName = this._options.op.objName;
+
+        if (opName)
+        {
+            // do not track errors in patchops/userops/teamops
+            if (defaultops.isPrivateOp(opName)) doTrack = false;
             if (window.gui)
             {
-                const ops = gui.corePatch().getOpsByObjName(this._options.opname);
+                const ops = gui.corePatch().getOpsByObjName(opName);
                 for (let i = 0; i < ops.length; i++)
                 {
                     ops[i].uiAttr({ "error": "exception occured - op stopped - reload to run again" });
@@ -99,16 +113,14 @@ export default class ModalError
             }
         }
 
-        if (this._options.op && this._options.op.objName) opName = this._options.op.objName;
-
         CABLES.lastError = {
             "exception": this._options.exception,
-            "opName": opName || this._options.opName,
+            "opName": opName,
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
 
-        if (this._options.op) CABLES.lastError.opName = this._options.op.objName;
+        if (this._options.op) CABLES.lastError.opName = opName;
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
 
         const modalOptions = {
