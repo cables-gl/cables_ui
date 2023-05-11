@@ -285,16 +285,10 @@ export default class Api
 
             if (manualSend)
             {
-                let html = "";
-                html += "<center>";
-                html += "<h2>thank you</h2>";
-                html += "we will look into it<br/>";
-                html += "<br/>";
-                html += "&nbsp;&nbsp;<a class=\"button\" onclick=\"gui.closeModal()\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a>";
-                html += "</center>";
-
                 const modalOptions = {
-                    "html": html
+                    "title": "Thank you",
+                    "showOkButton": true,
+                    "text": "We will look into it"
                 };
                 new ModalDialog(modalOptions);
             }
