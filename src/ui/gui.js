@@ -990,8 +990,8 @@ export default class Gui
         new ModalDialog({
             "prompt": true,
             "title": "New Project",
-            "text": "Enter a name for your new Project",
-            "promptValue": "My new Project",
+            "text": "Enter a name for your new project",
+            "promptValue": "new project",
             "promptOk": (name) =>
             {
                 if (name)

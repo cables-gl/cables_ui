@@ -1236,6 +1236,7 @@ export default class ServerOps
 
     canEditOp(user, opName)
     {
+        if (!user) return false;
         if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });
         if (!op) return false;
