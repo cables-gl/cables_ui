@@ -46,7 +46,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
     getUrlOpsCode()
     {
-        return "/api/ops/code";
+        return this._cfg.urlCables + "/api/ops/code";
     }
 
     getLocalOpCode()
