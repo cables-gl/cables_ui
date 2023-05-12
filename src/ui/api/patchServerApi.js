@@ -211,36 +211,82 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         const project = gui.project();
         let hasPrivateUserOps = false;
-        if (!project.userList.includes(gui.user.usernameLowercase))
+        if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
         {
             hasPrivateUserOps = project.ops.find((op) => { return op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
         }
 
         const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches
 
-        let prompt = "Enter a name for the copy of this Project.";
+        let prompt = "Enter a name for the copy of this patch.";
 
         const modalNotices = [];
 
         if (hasPrivateUserOps)
         {
-            modalNotices.push("<b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue saving this patch, but probably some things will not work.");
+            modalNotices.push("<b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue cloning this patch, but probably some things will not work.");
         }
 
-        const hasCollaborators = project.userList.filter((u) => { return u !== gui.user.usernameLowercase; }).length > 0;
+        const checkboxGroups = [];
+
+        const hasCollaborators = project.userList.filter((u) => { return u.username !== gui.user.username; }).length > 0;
+        const hasTeams = true;
         if (hasCollaborators)
         {
-            let collabText = "Collaborators will NOT be copied for public patches!";
+            const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();
             if (copyCollaborators)
             {
-                collabText = "The following users will have access to the copy:<br/>";
-                project.userList.forEach((name, i) =>
+                const checkboxGroup = { "title": "The following collaborators will have access to the copy:", "checkboxes": [] };
+                project.userList.forEach((user, i) =>
                 {
-                    if (i > 0) collabText += ", ";
-                    collabText += "<a href=\"/u/" + name + "\" target=\"blank\">" + name + "</a>";
+                    if (user._id !== gui.user.id)
+                    {
+                        const link = CABLES.sandbox.getCablesUrl() + "/u/" + user.username;
+                        const checkboxData = {
+                            "name": "copy-collab-user-" + i,
+                            "value": user._id,
+                            "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
+                            "checked": true,
+                        };
+                        if (userOpsUsed.some((userOp) => { return defaultops.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
+                        {
+                            checkboxData.disabled = true;
+                            checkboxData.tooltip = "Collaborator cannot be removed, their userops are used in the patch";
+                        }
+                        checkboxGroup.checkboxes.push(checkboxData);
+                    }
                 });
+                if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
             }
-            modalNotices.push(collabText);
+            else
+            {
+                modalNotices.push("Collaborators will NOT be copied for public patches!");
+            }
+        }
+
+        if (hasTeams)
+        {
+            if (copyCollaborators)
+            {
+                const checkboxGroup = { "title": "Add teams to the copy:", "checkboxes": [] };
+                project.teams.forEach((team, i) =>
+                {
+                    const link = CABLES.sandbox.getCablesUrl() + team.link;
+                    checkboxGroup.checkboxes.push({
+                        "name": "copy-collab-team-" + i,
+                        "value": team._id,
+                        "title": "<a href=\"" + link + "\" target=\"blank\">" + team.name + "</a>",
+                        "checked": false,
+                        "disabled": false
+                    });
+                });
+                if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
+            }
+            else
+            {
+                let teamsText = "Teams will NOT be copied for public patches!";
+                modalNotices.push(teamsText);
+            }
         }
 
         const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
@@ -276,7 +322,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
         console.log("patch save as - patchName", patchName);
 
-        const checkboxes = [];
         const localBlueprints = gui.corePatch().ops.filter((op) =>
         {
             if (!defaultops.isBlueprintOp(op.objName)) return false;
@@ -286,27 +331,50 @@ export default class PatchSaveServer extends CABLES.EventTarget
         });
         if (localBlueprints.length > 0)
         {
-            checkboxes.push({
-                "name": "keepLocalBlueprints",
-                "title": "Point local blueprints to new patch",
-                "checked": true
+            checkboxGroups.push({
+                "title": "Blueprints:",
+                "checkboxes": [
+                    {
+                        "name": "keepLocalBlueprints",
+                        "title": "Point local blueprints to new patch",
+                        "checked": true
+                    }
+                ]
             });
         }
 
-        const saveAsModal = new ModalDialog({
+        new ModalDialog({
             "prompt": true,
             "title": "Save As...",
             "text": prompt,
             "notices": modalNotices,
             "promptValue": "copy of " + patchName,
-            "checkboxes": checkboxes,
+            "checkboxGroups": checkboxGroups,
             "promptOk": (name, checkboxStates) =>
             {
+                const collabUsers = [];
+                const collabTeams = [];
+
+                if (checkboxStates)
+                {
+                    const keys = Object.keys(checkboxStates);
+                    keys.forEach((key) =>
+                    {
+                        const value = checkboxStates[key];
+                        if (value)
+                        {
+                            if (key.startsWith("copy-collab-team")) collabTeams.push(value);
+                            if (key.startsWith("copy-collab-user")) collabUsers.push(value);
+                        }
+                    });
+                }
                 CABLESUILOADER.talkerAPI.send("saveProjectAs",
                     {
                         "name": name,
                         "originalId": gui.project()._id,
-                        "copyCollaborators": copyCollaborators
+                        "copyCollaborators": copyCollaborators,
+                        "collabUsers": collabUsers,
+                        "collabTeams": collabTeams
                     },
                     (err, d) =>
                     {
@@ -563,7 +631,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         if (!r || !r.success)
                         {
                             let msg = "no response";
-                            if (r)msg = r.msg;
+                            if (r && r.msg) msg = r.msg;
 
                             CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
 

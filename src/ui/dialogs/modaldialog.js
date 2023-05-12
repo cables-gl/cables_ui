@@ -45,7 +45,7 @@ export default class ModalDialog extends CABLES.EventTarget
         if (!this._options.cancelButton.cssClasses) this._options.cancelButton.cssClasses = "button";
         if (!this._options.cancelButton.callback) this._options.cancelButton.callback = null;
 
-        this._checkboxes = this._options.checkboxes || [];
+        this._checkboxGroups = this._options.checkboxGroups || [];
 
         this._ele = null;
         this._eleContent = null;
@@ -84,21 +84,38 @@ export default class ModalDialog extends CABLES.EventTarget
             html += "<br/>";
         }
 
-        if (this._checkboxes.length > 0)
+        if (this._checkboxGroups.length > 0)
         {
-            html += "<br/>";
-            this._checkboxes.forEach((checkbox) =>
+            this._checkboxGroups.forEach((group) =>
             {
-                const id = "modal_checkbox_" + checkbox.name;
-                const checkboxEle = document.createElement("input");
-                checkboxEle.classList.add("modalcheckbox");
-                checkboxEle.setAttribute("id", id);
-                checkboxEle.setAttribute("type", "checkbox");
-                if (checkbox.name) checkboxEle.setAttribute("name", checkbox.name);
-                if (checkbox.checked) checkboxEle.setAttribute("checked", "checked");
-                html += checkboxEle.outerHTML;
-                if (checkbox.title) html += "<label for=\"" + id + "\">" + checkbox.title + "</label>";
-                html += "<br/>";
+                html += "<div class=\"checkbox_group_title\">" + group.title + "</div>";
+                group.checkboxes.forEach((checkbox) =>
+                {
+                    const id = "modal_checkbox_" + checkbox.name;
+                    const checkboxContainer = document.createElement("div");
+                    checkboxContainer.style.display = "flex";
+                    checkboxContainer.style.alignItems = "center";
+
+                    const checkboxEle = document.createElement("input");
+                    checkboxEle.classList.add("modalcheckbox");
+                    checkboxEle.setAttribute("id", id);
+                    checkboxEle.setAttribute("type", "checkbox");
+                    if (checkbox.name) checkboxEle.setAttribute("name", checkbox.name);
+                    if (checkbox.value) checkboxEle.setAttribute("value", checkbox.value);
+                    if (checkbox.checked) checkboxEle.setAttribute("checked", "checked");
+                    if (checkbox.disabled) checkboxEle.setAttribute("disabled", "disabled");
+                    if (checkbox.tooltip)
+                    {
+                        checkboxEle.classList.add("tt", "tt-info");
+                        checkboxEle.dataset.tt = checkbox.tooltip;
+                    }
+                    checkboxContainer.appendChild(checkboxEle);
+                    if (checkbox.title)
+                    {
+                        checkboxContainer.innerHTML += "<label for=\"" + id + "\">" + checkbox.title + "</label>";
+                    }
+                    html += checkboxContainer.outerHTML;
+                });
             });
         }
 
@@ -272,7 +289,15 @@ export default class ModalDialog extends CABLES.EventTarget
         const checkboxStates = {};
         checkboxes.forEach((checkbox) =>
         {
-            checkboxStates[checkbox.getAttribute("name")] = checkbox.checked;
+            let state = checkbox.checked;
+            if (state)
+            {
+                if (checkbox.value && (checkbox.value !== "on"))
+                {
+                    state = checkbox.value;
+                }
+            }
+            checkboxStates[checkbox.getAttribute("name")] = state;
         });
         return checkboxStates;
     }
