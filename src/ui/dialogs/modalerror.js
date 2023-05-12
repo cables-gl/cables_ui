@@ -32,13 +32,13 @@ export default class ModalError
 
         if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("NetworkError") > -1 && this._options.exception.message.indexOf("/ace/worker") > -1)
         {
-            console.log("yay! suppressed nonsense ace editor exception... ");
+            // yay! suppressed nonsense ace editor exception...
             return;
         }
 
         if (this._options.exception && String(this._options.exception.stack).indexOf("file:blob:") == 0)
         {
-            console.log("ignore file blob exception...");
+            // ignore file blob exception...
             return;
         }
 
