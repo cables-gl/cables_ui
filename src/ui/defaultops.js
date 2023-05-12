@@ -279,7 +279,12 @@ const defaultOps = {
 
     "isCurrentUserOp": (opname) =>
     {
-        return opname && opname.startsWith("Ops.User." + gui.user.usernameLowercase);
+        return defaultOps.isUserOpOfUser(opname, gui.user.usernameLowercase);
+    },
+
+    "isUserOpOfUser": (opname, userNameLowercase) =>
+    {
+        return opname && opname.startsWith(defaultOps.getUserOpsPrefix() + userNameLowercase);
     },
 
     "isDeprecatedOp": (opname) =>

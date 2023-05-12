@@ -317,13 +317,13 @@ export default class SandboxBrowser extends CABLES.EventTarget
             }
         };
 
-        if (!gui || !gui.user || !proj.userList.includes(gui.user.username))
+        if (!gui || !gui.user || !proj.userList.some((u) => { return u.username === gui.user.username; }))
         {
             doneCallback();
         }
         else
         {
-            for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i])));
+            for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i].username)));
 
             const lid = "userops" + proj._id + CABLES.generateUUID();
             loadjs.ready(lid, () =>
