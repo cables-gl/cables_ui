@@ -231,7 +231,7 @@
     .tooltip {
         position: absolute;
         pointer-events: none;
-        z-index: $zindex_highest;
+        z-index: $zindex_highest+1;
         background-color: var(--color-03);
         border-radius: 5px;
         text-transform: capitalize;

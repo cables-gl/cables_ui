@@ -1243,19 +1243,6 @@ export default class ServerOps
         return op.allowEdit;
     }
 
-    canReadOp(user, opName)
-    {
-        const project = gui.project();
-        if (project && project.settings && project.settings.isPublic) return true;
-        if (!defaultops.isUserOp(opName)) return true;
-        if (defaultops.isUserOp(opName))
-        {
-            const owner = this.getUserOpOwner(opName);
-            if (owner && project.userList && project.userList.includes(owner)) return true;
-        }
-        return false;
-    }
-
     canEditAttachment(user, opName)
     {
         return this.canEditOp(user, opName);
