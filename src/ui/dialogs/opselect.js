@@ -1101,18 +1101,28 @@ export default class OpSelect
         const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
 
         const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
-        this._list = this._createListItemsByNames(coreOpNames);
+        let items = this._createListItemsByNames(coreOpNames);
 
         const extensionNames = gui.opDocs.getExtensions().map((ext) => { return ext.name; });
-        this._list = this._list.concat(this._createListItemsByNames(extensionNames));
+        items = items.concat(this._createListItemsByNames(extensionNames));
 
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
-        this._list = this._list.concat(this._createListItemsByNames(teamNamespaces));
+        items = items.concat(this._createListItemsByNames(teamNamespaces));
 
         const namespace = defaultops.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
-        this._list = this._list.concat(this._createListItemsByNames(patchOpNames));
+        items = items.concat(this._createListItemsByNames(patchOpNames));
 
+        const newList = {};
+        items.forEach((item) =>
+        {
+            if (!newList.hasOwnProperty(item.opId))
+            {
+                newList[item.opId] = item;
+            }
+        });
+
+        this._list = Object.values(newList);
         this._list.sort((a, b) => { return b.pop - a.pop; });
         perf.finish();
     }
@@ -1135,9 +1145,11 @@ export default class OpSelect
             let shortName = parts[parts.length - 1];
             let hidden = false;
             let opDocHidden = false;
+            let opId = null;
 
             if (opDoc)
             {
+                opId = opDoc.id;
                 opDocHidden = opDoc.hidden;
                 hidden = opDoc.hidden;
 
@@ -1163,7 +1175,7 @@ export default class OpSelect
 
             if (defaultops.isCollection(opName))
             {
-                const inUse = this._list.some((op) => { return op.name.startsWith(opName); });
+                const inUse = this._list && this._list.some((op) => { return op.name.startsWith(opName); });
                 if (inUse)
                 {
                     hidden = true;
@@ -1188,6 +1200,7 @@ export default class OpSelect
                 const isCollection = defaultops.isCollection(opName);
 
                 const op = {
+                    "opId": opId || CABLES.simpleId(),
                     "name": opName,
                     "summary": summary,
                     "nscolor": defaultops.getNamespaceClassName(opName),

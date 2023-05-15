@@ -146,15 +146,12 @@ export default class ServerOps
                 loadingModal.setTask("Loading Op");
                 this.loadMissingOp(res, () =>
                 {
-                    this.load(() =>
-                    {
-                        gui.maintabPanel.show(true);
-                        this.edit(name, false, null, true);
-                        gui.serverOps.execute(name);
-                        gui.opSelect().reload();
-                        loadingModal.close();
-                        if (cb)cb();
-                    });
+                    gui.maintabPanel.show(true);
+                    this.edit(name, false, null, true);
+                    gui.serverOps.execute(name);
+                    gui.opSelect().reload();
+                    loadingModal.close();
+                    if (cb)cb();
                 });
             },
         );
@@ -308,7 +305,7 @@ export default class ServerOps
 
                     return;
                 }
-                this.load(() =>
+                this.loadMissingOp(res, () =>
                 {
                     this.edit(name);
                     gui.serverOps.execute(name);
