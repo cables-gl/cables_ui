@@ -271,21 +271,19 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 const checkboxGroup = { "title": "Add teams to the copy:", "checkboxes": [] };
                 project.teams.forEach((team, i) =>
                 {
-                    const link = CABLES.sandbox.getCablesUrl() + team.link;
-                    checkboxGroup.checkboxes.push({
-                        "name": "copy-collab-team-" + i,
-                        "value": team._id,
-                        "title": "<a href=\"" + link + "\" target=\"blank\">" + team.name + "</a>",
-                        "checked": false,
-                        "disabled": false
-                    });
+                    if (team.allowEdit)
+                    {
+                        const link = CABLES.sandbox.getCablesUrl() + team.link;
+                        checkboxGroup.checkboxes.push({
+                            "name": "copy-collab-team-" + i,
+                            "value": team._id,
+                            "title": "<a href=\"" + link + "\" target=\"blank\">" + team.name + "</a>",
+                            "checked": false,
+                            "disabled": false
+                        });
+                    }
                 });
                 if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
-            }
-            else
-            {
-                let teamsText = "Teams will NOT be copied for public patches!";
-                modalNotices.push(teamsText);
             }
         }
 
