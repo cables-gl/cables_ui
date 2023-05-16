@@ -206,14 +206,13 @@ class ParamsListener extends CABLES.EventTarget
                     updateColorBox();
                     const glRgb = col.gl();
 
-                    ele.byId("numberinputDisplay_in_" + idx + "_" + panelid).innerHTML =
-                    inputElements[0].value = glRgb[0];
+                    const elR = ele.byId("numberinputDisplay_in_" + idx + "_" + panelid);
+                    const elG = ele.byId("numberinputDisplay_in_" + (idx + 1) + "_" + panelid);
+                    const elB = ele.byId("numberinputDisplay_in_" + (idx + 2) + "_" + panelid);
 
-                    ele.byId("numberinputDisplay_in_" + (idx + 1) + "_" + panelid).innerHTML =
-                    inputElements[1].value = glRgb[1];
-
-                    ele.byId("numberinputDisplay_in_" + (idx + 2) + "_" + panelid).innerHTML =
-                    inputElements[2].value = glRgb[2];
+                    if (elR)elR.innerHTML = inputElements[0].value = glRgb[0];
+                    if (elG)elG.innerHTML = inputElements[1].value = glRgb[1];
+                    if (elB)elB.innerHTML = inputElements[2].value = glRgb[2];
 
                     inputElements[0].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                     inputElements[1].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));

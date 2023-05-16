@@ -1023,12 +1023,16 @@ export default class PatchView extends CABLES.EventTarget
         {
             const blueprint = foundBlueprints[blueprintId];
             const blueprintName = blueprint.name || "loading...";
-            subPatches.push({
-                "name": "Blueprint: " + blueprintName,
-                "id": blueprint.blueprintSubpatch,
-                "opId": blueprint.opId,
-                "type": "blueprint"
-            });
+            subPatches.push(
+                {
+                    "name": "Blueprint: " + blueprintName,
+                    "id": blueprint.blueprintSubpatch,
+                    "opId": blueprint.opId,
+                    "type": "blueprint"
+                });
+
+            if (!blueprint.name)
+                setTimeout(() => { gui.corePatch().emitEvent("subpatchesChanged"); }, 500);
         }
 
         if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });

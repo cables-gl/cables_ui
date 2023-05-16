@@ -140,10 +140,10 @@ class OpParampanel extends CABLES.EventTarget
     {
         if (!this._startedGlobalListeners)
         {
-            console.log("_startedGlobalListeners");
             this._startedGlobalListeners = true;
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
@@ -492,6 +492,12 @@ class OpParampanel extends CABLES.EventTarget
     setCurrentOpTitle(t)
     {
         if (this._currentOp) this._currentOp.setTitle(t);
+
+
+        if (defaultops.isSubPatchOpName(this._currentOp.objName))
+        {
+            this._currentOp.patch.emitEvent("subpatchesChanged");
+        }
     }
 
     isCurrentOp(op)
