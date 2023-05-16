@@ -521,18 +521,44 @@ class OpParampanel extends CABLES.EventTarget
 
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-
-        let title = "Goto Subpatch Op";
-        if (outer.storage && outer.storage.blueprint)title = "Goto Blueprint Op";
-
         const items = [];
-        items.push({
-            "title": title,
-            func()
-            {
-                gui.patchView.focusSubpatchOp(el.dataset.id);
-            },
-        });
+        if (outer.storage && outer.storage.blueprint)
+        {
+            items.push({
+                "title": "Goto Blueprint Op",
+                func()
+                {
+                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                },
+            });
+            items.push({
+                "title": "Update Blueprint",
+                func()
+                {
+                    const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(el.dataset.id);
+                    if (bp) gui.patchView.updateBlueprints([bp]);
+                },
+            });
+            items.push({
+                "title": "Open Patch",
+                "iconClass": "icon icon-external",
+                func()
+                {
+                    const url = CABLES.sandbox.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
+                    window.open(url, "_blank");
+                },
+            });
+        }
+        else
+        {
+            items.push({
+                "title": "Goto Subpatch Op",
+                func()
+                {
+                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                },
+            });
+        }
         CABLES.contextMenu.show({ items }, el);
     }
 
