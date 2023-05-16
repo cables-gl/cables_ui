@@ -306,7 +306,15 @@ export default class OpDocs
 
     addOpDocs(opDocs = [])
     {
-        this._opDocs = this._opDocs.concat(opDocs);
+        const newOpDocs = [];
+        opDocs.forEach((doc) =>
+        {
+            if (!this._opDocs.some((d) => { return d.id === doc.id; }))
+            {
+                newOpDocs.push(doc);
+            }
+        });
+        this._opDocs = this._opDocs.concat(newOpDocs);
         this.extendOpDocs(this._opDocs);
     }
 
