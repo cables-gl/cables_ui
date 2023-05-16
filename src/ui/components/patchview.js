@@ -2383,6 +2383,13 @@ export default class PatchView extends CABLES.EventTarget
                 return ops[i].uiAttribs.blueprintSubpatch;
     }
 
+    getBlueprintOpFromBlueprintSubpatchId(bpSubpatchId)
+    {
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch && ops[i].uiAttribs.blueprintSubpatch == bpSubpatchId)
+                return ops[i];
+    }
 
     getAllSubPatchOps(subid)
     {
