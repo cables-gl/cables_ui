@@ -140,10 +140,10 @@ class OpParampanel extends CABLES.EventTarget
     {
         if (!this._startedGlobalListeners)
         {
-            console.log("_startedGlobalListeners");
             this._startedGlobalListeners = true;
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) this.refresh(); });
+            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
@@ -492,6 +492,12 @@ class OpParampanel extends CABLES.EventTarget
     setCurrentOpTitle(t)
     {
         if (this._currentOp) this._currentOp.setTitle(t);
+
+
+        if (defaultops.isSubPatchOpName(this._currentOp.objName))
+        {
+            this._currentOp.patch.emitEvent("subpatchesChanged");
+        }
     }
 
     isCurrentOp(op)
@@ -515,18 +521,44 @@ class OpParampanel extends CABLES.EventTarget
 
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-
-        let title = "Goto Subpatch Op";
-        if (outer.storage && outer.storage.blueprint)title = "Goto Blueprint Op";
-
         const items = [];
-        items.push({
-            "title": title,
-            func()
-            {
-                gui.patchView.focusSubpatchOp(el.dataset.id);
-            },
-        });
+        if (outer.storage && outer.storage.blueprint)
+        {
+            items.push({
+                "title": "Goto Blueprint Op",
+                func()
+                {
+                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                },
+            });
+            items.push({
+                "title": "Update Blueprint",
+                func()
+                {
+                    const bp = gui.patchView.getBlueprintOpFromBlueprintSubpatchId(el.dataset.id);
+                    if (bp) gui.patchView.updateBlueprints([bp]);
+                },
+            });
+            items.push({
+                "title": "Open Patch",
+                "iconClass": "icon icon-external",
+                func()
+                {
+                    const url = CABLES.sandbox.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
+                    window.open(url, "_blank");
+                },
+            });
+        }
+        else
+        {
+            items.push({
+                "title": "Goto Subpatch Op",
+                func()
+                {
+                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                },
+            });
+        }
         CABLES.contextMenu.show({ items }, el);
     }
 
