@@ -2009,74 +2009,77 @@ export default class PatchView extends CABLES.EventTarget
 
     replaceOpCheck(opid, newOpObjName)
     {
-        this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
+        gui.serverOps.loadOpDependencies(newOpObjName, () =>
         {
-            const origOp = this._p.getOpById(opid);
-
-            let allFine = true;
-            let html = "<h3>Replacing Op</h3>";
-
-            html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
-
-            let htmlList = "";
-            htmlList += "<table>";
-            for (let i = 0; i < origOp.portsIn.length; i++)
+            this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
             {
-                let found = false;
+                const origOp = this._p.getOpById(opid);
 
-                htmlList += "<tr>";
-                htmlList += "<td>Port " + origOp.portsIn[i].name + "</td>";
+                let allFine = true;
+                let html = "<h3>Replacing Op</h3>";
 
-                for (let j = 0; j < newOp.portsIn.length; j++)
+                html += "Replacing <b>" + origOp.objName + "</b> with <b>" + newOp.objName + "</b><br/><br/>";
+
+                let htmlList = "";
+                htmlList += "<table>";
+                for (let i = 0; i < origOp.portsIn.length; i++)
                 {
-                    if (newOp.portsIn[j] && origOp.portsIn[i])
+                    let found = false;
+
+                    htmlList += "<tr>";
+                    htmlList += "<td>Port " + origOp.portsIn[i].name + "</td>";
+
+                    for (let j = 0; j < newOp.portsIn.length; j++)
                     {
-                        if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                        if (newOp.portsIn[j] && origOp.portsIn[i])
                         {
-                            found = true;
-                            break;
+                            if (newOp.portsIn[j].name.toLowerCase() == origOp.portsIn[i].name.toLowerCase())
+                            {
+                                found = true;
+                                break;
+                            }
                         }
                     }
+
+                    htmlList += "<td>";
+                    if (!found)
+                    {
+                        htmlList += "NOT FOUND in new version!";
+                        allFine = false;
+                    }
+
+                    htmlList += "</td>";
+                    htmlList += "</tr>";
                 }
 
-                htmlList += "<td>";
-                if (!found)
+                this._p.deleteOp(newOp.id);
+                htmlList += "</table>";
+
+                if (allFine)
                 {
-                    htmlList += "NOT FOUND in new version!";
-                    allFine = false;
+                    html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                }
+                else
+                {
+                    html += "Not all old Ports are available in never version of the op. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                    html += htmlList;
                 }
 
-                htmlList += "</td>";
-                htmlList += "</tr>";
-            }
+                html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
+                html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
 
-            this._p.deleteOp(newOp.id);
-            htmlList += "</table>";
+                setTimeout(() =>
+                {
+                    this.setSelectedOpById(origOp.id);
+                }, 100);
 
-            if (allFine)
-            {
-                html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
-            }
-            else
-            {
-                html += "Not all old Ports are available in never version of the op. Make sure you test if it behaves the same, very accurately.<br/><br/>";
-                html += htmlList;
-            }
+                this.selectOpId(newOp.id);
+                gui.opParams.show(newOp.id);
+                this._patchRenderer.focusOpAnim(newOp.id);
 
-            html += "<br/><a onClick=\"gui.patchView.replaceOp('" + opid + "','" + newOpObjName + "');gui.closeModal();\" class=\"bluebutton\">Really Upgrade</a>";
-            html += "<a onClick=\"gui.closeModal();\" class=\"button\">Cancel</a>";
-
-            setTimeout(() =>
-            {
-                this.setSelectedOpById(origOp.id);
-            }, 100);
-
-            this.selectOpId(newOp.id);
-            gui.opParams.show(newOp.id);
-            this._patchRenderer.focusOpAnim(newOp.id);
-
-            new ModalDialog({ "html": html });
-        } });
+                new ModalDialog({ "html": html });
+            } });
+        });
     }
 
     replaceOp(opid, newOpObjName, cb = null)
