@@ -162,7 +162,7 @@ export default class GlViewBox
         if (Math.abs(this._zoom - GlUiConfig.zoomDefault) < 200)
         {
             this.glPatch.unselectAll();
-            this.center();
+            this.centerSelectedOps();
         }
         else
         {
@@ -278,18 +278,12 @@ export default class GlViewBox
     {
         const time = this.glPatch.time;
         if (!this._animZoom.isFinished(time)) this._zoom = this._animZoom.getValue(time);
-        // if (!this._animScrollX.isFinished(time))
         this._scrollX = this._animScrollX.getValue(time);
-        // if (!this._animScrollY.isFinished(time))
         this._scrollY = this._animScrollY.getValue(time);
 
-        if (this._zoom != this._zoom)
-        {
-            this._zoom = 400;
-        }
+        if (this._zoom != this._zoom) this._zoom = 400;
 
         this.setMousePos(this._mouseX, this._mouseY);
-
 
         if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
@@ -306,7 +300,6 @@ export default class GlViewBox
             this._opsBoundingRect.visible = bounds.changed;
             this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
             this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
-
 
             if (gui.corePatch().ops.length > 1)
             {
@@ -331,14 +324,6 @@ export default class GlViewBox
                 }
             }
 
-
-            // console.log(
-            //     this.scrollX, scMax[0], (this._viewResX / 2)
-            //     // this.scrollX - (this._viewResX / 2) < scMax[0],
-
-            //     // this.scrollY + (this._viewResY / 2) > sc[1],
-            //     // this.scrollY - (this._viewResY / 2) < scMax[1],
-            // );
         }
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
@@ -357,12 +342,13 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
+        console.log("animscrollto",x,y);
+
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;
         if (p != p)p = 0;
 
         dur = dur || 0.2;
-
 
         this._animScrollX.clear(this.glPatch.time);
         this._animScrollX.setValue(this.glPatch.time + dur, x - p);
@@ -385,12 +371,14 @@ export default class GlViewBox
         gui.patchView.emitEvent("viewBoxChange");
     }
 
-    center(noAnim)
+    centerSelectedOps(noAnim)
     {
         let ops = gui.patchView.getSelectedOps();
         if (ops.length == 0) ops = gui.corePatch().ops;
+
         if (ops.length == 0)
         {
+            // no ops in patch at all
             this._zoom = 400;
             this.scrollTo(0, 0);
             return;
@@ -418,7 +406,6 @@ export default class GlViewBox
             }
         }
 
-
         bb.calcCenterSize();
         const padding = 1.05;
 
@@ -440,6 +427,7 @@ export default class GlViewBox
 
         if (cy != cy) cy = 0;
 
+
         this.animateScrollTo(bb.center[0], cy);
     }
 
@@ -448,25 +436,12 @@ export default class GlViewBox
         let x = _x;
         let y = _y;
 
-        // x += this._scrollX;
-        // y += this._scrollY;
-
-        // x += this._subPatchViewBoxes[this._currentSubPatchId].x;
-        // y -= this._subPatchViewBoxes[this._currentSubPatchId].y;
-
         const asp = this._viewResY / this._viewResX;
         const zx = 1 / ((this._viewResX / 2) / this.zoom);
         let zy = zx;
 
-
-        // y -= this._scrollY * asp;
-
         x /= zx;
         y /= zy;
-
-        // x += (this._viewResX / 2);
-        // y += (this._viewResY / 2);
-
 
         return [x, y];
     }
@@ -505,7 +480,7 @@ export default class GlViewBox
         const mouseAbsX = (x - (this._viewResX / 2)) * zx - (this.scrollX);
         const mouseAbsY = (y - (this._viewResY / 2)) * zy + (this.scrollY * asp);
 
-        if (mouseAbsY != mouseAbsY) this.center(true);
+        if (mouseAbsY != mouseAbsY) this.centerSelectedOps(true);
 
         return [mouseAbsX, mouseAbsY];
     }
@@ -522,7 +497,7 @@ export default class GlViewBox
         dataui = dataui || {};
         if (!dataui.viewBoxesGl)
         {
-            this.center();
+            this.centerSelectedOps();
             this._storeCurrentSubPatch();
         }
         else this._subPatchViewBoxes = dataui.viewBoxesGl;
@@ -546,7 +521,7 @@ export default class GlViewBox
         else
         {
             this._storeCurrentSubPatch();
-            this.center(true);
+            this.centerSelectedOps(true);
         }
     }
 
@@ -555,16 +530,12 @@ export default class GlViewBox
         this._storeCurrentSubPatch();
 
         const zoomFactor = 0.03;
-        // const _timeVisibleagain = this.glPatch.time + timeVisibleAgain + dur * 2;
 
         this._animZoom.clear();
         this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
         this._animZoom.setValue(this.glPatch.time, this._zoom);
         this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
 
-        // setTimeout(
-        // () =>
-        // {
         this._animZoom.defaultEasing = this._defaultEasing;
         this._restoreSubPatch(sub);
 
@@ -573,7 +544,6 @@ export default class GlViewBox
         this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
 
         if (next)next();
-        // }, timeGrey * 1000 + 10);
     }
 
     zoomStep(s)

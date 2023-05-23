@@ -18,7 +18,7 @@ export default class GlLinedrawer
         this._dists = new Float32Array(2 * this._num);
         this._speeds = new Float32Array(2 * this._num);
 
-        this._shader = new CGL.Shader(cgl, "Linedrawer");
+        this._shader = new CGL.Shader(cgl, "SplineDrawer");
         this._shader.ignoreMissingUniforms = true;
         this._shader.glPrimitive = cgl.gl.LINES;
         this._shader.setSource(""

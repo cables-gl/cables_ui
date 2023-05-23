@@ -226,9 +226,13 @@ export default class Gui
         {
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
-                this.patchView.focus();
-                this.patchView.focusOp(opid);
-                this.patchView.centerSelectOp(opid);
+                // this.patchView.focus();
+                this.patchView.selectOpId(opid);
+
+                this.patchView.focusOpAnim(opid);
+                this.patchView.patchRenderer.viewBox.centerSelectedOps();
+                // this.patchView.centerSelectOp(opid);
+
             });
         }
 

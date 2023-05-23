@@ -189,7 +189,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("e", "Edit op code", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.editOp(true); });
         gui.keys.key("c", "Center Selected Ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
         {
-            this.viewBox.center();
+            this.viewBox.centerSelectedOps();
             if (gui.patchView.getSelectedOps().length == 1)
                 this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         });
@@ -642,7 +642,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     center(x, y)
     {
-        if (x == undefined) this.viewBox.center();
+        if (x === undefined) this.viewBox.centerSelectedOps();
         else this.viewBox.animateScrollTo(x, y, 0, false);
     }
 
