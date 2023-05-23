@@ -514,11 +514,6 @@ class OpParampanel extends CABLES.EventTarget
 
     subPatchContextMenu(el)
     {
-        console.log("subpartchjontextmenu", el.dataset.id,
-
-            gui.patchView.getSubPatchOuterOp(el.dataset.id)
-        );
-
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
         const items = [];
