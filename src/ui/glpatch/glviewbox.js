@@ -342,7 +342,7 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        console.log("animscrollto",x,y);
+        // console.log("animscrollto",x,y);
 
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;

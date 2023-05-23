@@ -224,10 +224,11 @@ export default class Gui
         }
         else
         {
+            this.patchView.unselectAllOps();
+            this.patchView.selectOpId(opid);
             this.patchView.setCurrentSubPatch(subpatch, () =>
             {
                 // this.patchView.focus();
-                this.patchView.selectOpId(opid);
 
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();
