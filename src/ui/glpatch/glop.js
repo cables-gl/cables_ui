@@ -404,6 +404,7 @@ export default class GlOp extends CABLES.EventTarget
         if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
+        if (newAttribs && newAttribs.translate) this.sendNetPos();
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
