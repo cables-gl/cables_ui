@@ -1246,7 +1246,7 @@ export default class PatchView extends CABLES.EventTarget
         const objStr = JSON.stringify({
             "ops": ops
         });
-        notify("Copied " + selectedOps.length + " ops");
+        notify("Copied " + ops.length + " ops");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();
