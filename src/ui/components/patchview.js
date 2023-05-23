@@ -371,11 +371,16 @@ export default class PatchView extends CABLES.EventTarget
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
 
-            if (!uiAttribs.subPatch)uiAttribs.subPatch = this.getCurrentSubPatch();
+            if (!uiAttribs.subPatch)
+            {
+                uiAttribs.subPatch = this.getCurrentSubPatch();
+            }
 
             const op = this._p.addOp(opname, uiAttribs);
 
             if (!op) return;
+
+            this.addBlueprintInfo(op, this.getSubPatchOuterOp(uiAttribs.subPatch));
 
             if (this._showingNavHelperEmpty)
             {
@@ -1250,6 +1255,7 @@ export default class PatchView extends CABLES.EventTarget
     clipboardPaste(e, oldSub, mouseX, mouseY, next)
     {
         const currentSubPatch = this.getCurrentSubPatch();
+
         this.isPasting = true;
         if (e.clipboardData.types.indexOf("text/plain") == -1)
         {
@@ -1284,9 +1290,12 @@ export default class PatchView extends CABLES.EventTarget
         {
             // change ids
             json = CABLES.Patch.replaceOpIds(json, oldSub);
-
+            const outerOp = this.getSubPatchOuterOp(currentSubPatch);
             for (const i in json.ops)
+            {
                 json.ops[i].uiAttribs.pasted = true;
+                this.addBlueprintInfo(json.ops[i], outerOp);
+            }
 
             { // change position of ops to paste
                 let minx = Number.MAX_VALUE;
@@ -2628,5 +2637,26 @@ export default class PatchView extends CABLES.EventTarget
         {
             return defaultops.isUserOp(op.objName);
         });
+    }
+
+    addBlueprintInfo(op, outerOp)
+    {
+        if (!op || !outerOp) return;
+        if (outerOp)
+        {
+            if (outerOp.uiAttribs && outerOp.uiAttribs.blueprintOpId)
+            {
+                op.uiAttribs.blueprintOpId = outerOp.uiAttribs.blueprintOpId;
+            }
+            if (outerOp.storage && outerOp.storage.blueprint)
+            {
+                op.storage = {
+                    "blueprint": {
+                        "patchId": outerOp.storage.blueprint.patchId
+                    }
+                };
+            }
+        }
+        return op;
     }
 }
