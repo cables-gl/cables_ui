@@ -610,9 +610,8 @@ export default class PatchView extends CABLES.EventTarget
         {
             this.checkPatchErrors();
 
-            if (ele.byId("patchsummary")) return;
-            if (ele.byId("bookmarkpanel")) return;
-
+            if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
+            if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
             const project = gui.project();
             if (project)
@@ -1030,9 +1029,6 @@ export default class PatchView extends CABLES.EventTarget
                     "opId": blueprint.opId,
                     "type": "blueprint"
                 });
-
-            if (!blueprint.name)
-                setTimeout(() => { gui.corePatch().emitEvent("subpatchesChanged"); }, 500);
         }
 
         if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
