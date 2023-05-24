@@ -48,9 +48,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
     checkUpdatedSaveForce(updated)
     {
         this._serverDate = updated;
-        // gui.closeModal();
         gui.closeModal();
-        CABLES.CMD.PATCH.save(true);
+        CABLES.CMD.PATCH.save(true, () =>
+        {
+            if (CABLES.sandbox.getPatchVersion())
+            {
+                CABLESUILOADER.talkerAPI.send("reload", { "patchId": gui.project().shortId });
+            }
+        });
     }
 
 

@@ -84,7 +84,7 @@ CABLES_CMD_PATCH.reload = function ()
     CABLESUILOADER.talkerAPI.send("reload");
 };
 
-CABLES_CMD_PATCH.save = function (force)
+CABLES_CMD_PATCH.save = function (force, cb)
 {
     if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL)
     {
@@ -143,7 +143,7 @@ CABLES_CMD_PATCH.save = function (force)
 
     if (doSave)
     {
-        gui.patchView.store.saveCurrentProject(undefined, undefined, undefined, force);
+        gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
     }
 };
 
@@ -231,7 +231,8 @@ CABLES_CMD_PATCH.showBackups = () =>
             "closable": true,
             "singleton": true,
             "gotoUrl": url
-        }, true);
+        },
+        true);
 };
 
 CABLES_CMD_PATCH.export = function ()
