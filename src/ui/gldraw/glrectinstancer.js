@@ -58,7 +58,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this.ATTR_DECO = "instDeco";
 
 
-        this._shader = new CGL.Shader(cgl, "rectinstancer");
+        this._shader = new CGL.Shader(cgl, "rectinstancer "+this._name);
         this._shader.setSource(srcShaderGlRectInstancerVert, srcShaderGlRectInstancerFrag);
         this._shader.ignoreMissingUniforms = true;
 
@@ -72,7 +72,7 @@ export default class GlRectInstancer extends CABLES.EventTarget
 
         this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
-        this._geom = new CGL.Geometry("rectinstancer");
+        this._geom = new CGL.Geometry("rectinstancer "+this._name);
         this._geom.vertices = new Float32Array([1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0]);
         this._geom.verticesIndices = new Uint16Array([2, 1, 0, 3, 1, 2]);
         this._geom.texCoords = new Float32Array([1, 1, 0, 1, 1, 0, 0, 0]);

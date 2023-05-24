@@ -149,6 +149,7 @@ class OpParampanel extends CABLES.EventTarget
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
+        // if(op)console.log(op.name+" ",op.uiAttribs.translate.x,op.uiAttribs.translate.y)
 
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
@@ -514,11 +515,6 @@ class OpParampanel extends CABLES.EventTarget
 
     subPatchContextMenu(el)
     {
-        console.log("subpartchjontextmenu", el.dataset.id,
-
-            gui.patchView.getSubPatchOuterOp(el.dataset.id)
-        );
-
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
         const items = [];
