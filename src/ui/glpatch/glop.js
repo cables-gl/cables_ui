@@ -491,6 +491,7 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
+            if (this._glTitle.text == String(title))console.log("dupe settitle...");
             this._glTitle.text = String(title);
         }
 
