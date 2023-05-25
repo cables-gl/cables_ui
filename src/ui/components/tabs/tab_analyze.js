@@ -38,11 +38,33 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         {
             let arr = FindTab.searchOutDated(gui.corePatch().ops, []);
-            report += arr.length + " outdated ops <a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':outdated');\">find</a><br/>";
+            report += arr.length + " outdated ops ";
+            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':outdated');\">find</a>";
+            report += "<br/>";
+        }
+        {
+            let arr = FindTab.searchPatchOps(gui.corePatch().ops, []);
+            report += arr.length + " patch ops ";
+            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops patch');\">find</a>";
+            report += "<br/>";
         }
         {
             let arr = FindTab.searchUserOps(gui.corePatch().ops, []);
-            report += arr.length + " user ops<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':user');\">find</a><br/>";
+            report += arr.length + " user ops ";
+            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':user');\">find</a>";
+            report += "<br/>";
+        }
+        {
+            let arr = FindTab.searchTeamOps(gui.corePatch().ops, []);
+            report += arr.length + " team ops ";
+            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops team');\">find</a>";
+            report += "<br/>";
+        }
+        {
+            let arr = FindTab.searchExtensionOps(gui.corePatch().ops, []);
+            report += arr.length + " extension ops ";
+            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops extension');\">find</a>";
+            report += "<br/>";
         }
 
         report += "<h3>Vars</h3>";

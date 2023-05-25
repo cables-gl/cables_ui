@@ -38,7 +38,6 @@ export default class GpuProfiler
                 allTimes += (glQueryData[i].time || 0);
             }
 
-
             for (let i = 0; i < arr.length; i++)
             {
                 arr[i].perc = arr[i].time / allTimes;

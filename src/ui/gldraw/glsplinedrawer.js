@@ -38,7 +38,7 @@ export default class GlSplineDrawer
                 // }
             ];
 
-        this._shader = new CGL.Shader(cgl, "Linedrawer");
+        this._shader = new CGL.Shader(cgl, "glSplineDrawer "+name);
         this._shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
 
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);

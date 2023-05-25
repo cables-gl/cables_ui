@@ -48,9 +48,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
     checkUpdatedSaveForce(updated)
     {
         this._serverDate = updated;
-        // gui.closeModal();
         gui.closeModal();
-        CABLES.CMD.PATCH.save(true);
+        CABLES.CMD.PATCH.save(true, () =>
+        {
+            if (CABLES.sandbox.getPatchVersion())
+            {
+                CABLESUILOADER.talkerAPI.send("reload", { "patchId": gui.project().shortId });
+            }
+        });
     }
 
 
@@ -109,11 +114,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
             else if (this._serverDate != data.updated)
             {
-                const html =
+                let html =
                     "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
-                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;" +
-                    "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;" +
-                    "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                    "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+                if (!gui.getSavedState()) html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
+                html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                 new ModalDialog(
                     {
@@ -125,40 +130,39 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
             else
             {
-                CABLESUILOADER.talkerAPI.send("getBuildInfo", {},
-                    (buildInfoErr, buildInfo) =>
+                CABLESUILOADER.talkerAPI.send("getBuildInfo", {}, (buildInfoErr, buildInfo) =>
+                {
+                    let newCore = false;
+                    let newUi = false;
+
+                    if (buildInfo.updateWarning)
                     {
-                        let newCore = false;
-                        let newUi = false;
+                        if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
+                        if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
+                    }
 
-                        if (buildInfo.updateWarning)
-                        {
-                            if (CABLESUILOADER.buildInfo.core) newCore = buildInfo.core.timestamp > CABLESUILOADER.buildInfo.core.timestamp;
-                            if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
-                        }
-
-                        if (newCore || newUi)
-                        {
-                            const html =
+                    if (newCore || newUi)
+                    {
+                        const html =
                                 "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
                                 "<a class=\"button\" id=\"modalClose\">Close</a>&nbsp;&nbsp;" +
                                 "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
                                 "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
-                            new ModalDialog(
-                                {
-                                    "title": "Meanwhile...",
-                                    "html": html
-                                });
+                        new ModalDialog(
+                            {
+                                "title": "Meanwhile...",
+                                "html": html
+                            });
 
-                            gui.jobs().finish("checkupdated");
-                        }
-                        else
-                        {
-                            gui.jobs().finish("checkupdated");
-                            if (cb)cb(null);
-                        }
-                    });
+                        gui.jobs().finish("checkupdated");
+                    }
+                    else
+                    {
+                        gui.jobs().finish("checkupdated");
+                        if (cb)cb(null);
+                    }
+                });
             }
         });
     }
@@ -459,7 +463,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.uiAttribs)
-                if (op.objName && op.objName.startsWith("Ops.Ui.SubPatch") && op.uiAttribs.blueprintSubpatch)
+                if (defaultops.isBlueprintOp(op.objName) && op.uiAttribs.blueprintSubpatch)
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 
             if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
@@ -617,12 +621,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         this._savedPatchCallback = null;
 
                         if (gui.socket)
-                            gui.socket.track("ui", "savepatch", "savepatch",
-                                {
-                                    "sizeCompressed": uint8data.length / 1024,
-                                    "sizeOrig": origSize,
-                                    "time": performance.now() - startTime
-                                });
+                            gui.socket.track("ui", "savepatch", "savepatch", {
+                                "sizeCompressed": uint8data.length / 1024,
+                                "sizeOrig": origSize,
+                                "time": performance.now() - startTime
+                            });
 
                         gui.jobs().finish("projectsave");
 

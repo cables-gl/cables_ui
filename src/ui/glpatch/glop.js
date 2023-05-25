@@ -404,6 +404,7 @@ export default class GlOp extends CABLES.EventTarget
         if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
+        if (newAttribs && newAttribs.translate) this.sendNetPos();
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
@@ -490,6 +491,7 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
+            if (this._glTitle.text == String(title))console.log("dupe settitle...");
             this._glTitle.text = String(title);
         }
 

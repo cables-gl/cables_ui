@@ -111,6 +111,13 @@ CABLES_CMD_DEBUG.testAllOps = function ()
     }
 };
 
+CABLES_CMD_DEBUG.focusOpAnim = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if(ops.length>0)
+        gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
+}
+
 CABLES_CMD_DEBUG.testOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -291,21 +298,25 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "show op serialized",
         "func": CABLES_CMD_DEBUG.watchOpSerialized,
-        "category": "patch",
+        "category": "debug",
         "icon": "op"
     },
     {
         "cmd": "show op uiattribs",
         "func": CABLES_CMD_DEBUG.watchOpUiAttribs,
-        "category": "patch",
+        "category": "debug",
         "icon": "op"
     },
     {
         "cmd": "save without objnames",
         "func": CABLES_CMD_DEBUG.saveWithOutObjnames,
-        "category": "patch",
+        "category": "debug",
         "icon": "op"
     },
-
+    {
+        "cmd": "glui focusOpAnim",
+        "func": CABLES_CMD_DEBUG.focusOpAnim,
+        "category": "debug",
+    },
 
 );
