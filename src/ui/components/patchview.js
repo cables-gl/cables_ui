@@ -609,9 +609,8 @@ export default class PatchView extends CABLES.EventTarget
         {
             this.checkPatchErrors();
 
-            if (ele.byId("patchsummary")) return;
-            if (ele.byId("bookmarkpanel")) return;
-
+            if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
+            if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
             const project = gui.project();
             if (project)
