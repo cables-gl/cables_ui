@@ -1870,15 +1870,10 @@ export default class PatchView extends CABLES.EventTarget
 
     centerSelectOp(opid)
     {
-        const op = this._p.getOpById(opid);
-
-        console.log("centerSelectOp", opid);
-        this.focusOp(opid);
         this.setSelectedOpById(opid);
-        this.focus();
+        this._patchRenderer.viewBox.center();
 
-        if (op && op.uiAttribs && op.uiAttribs.translate)
-            this.centerView(op.uiAttribs.translate.x, op.uiAttribs.translate.y);
+        if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
     }
 
     setSelectedOpById(opid)

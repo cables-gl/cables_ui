@@ -45,9 +45,8 @@ export default class UiProfiler
             const lastTime = Math.round(this._measures[i].times[this._measures[i].times.length - 1] * 1000) / 1000;
             let avg = 0;
             for (let j = 0; j < this._measures[i].times.length; j++)
-            {
                 avg += this._measures[i].times[j];
-            }
+
             avg /= this._measures[i].times.length;
             avg = Math.round(avg * 1000) / 1000;
 
@@ -63,12 +62,12 @@ export default class UiProfiler
 
             data.push(
                 {
-                    "name": i,
-                    color,
-                    "count": this._measures[i].count,
                     "highlight": this._measures[i].highlight,
+                    "color": color,
+                    "name": i,
+                    "count": this._measures[i].count,
                     "last": lastTime,
-                    avg
+                    "avg": avg
                 });
         }
 
