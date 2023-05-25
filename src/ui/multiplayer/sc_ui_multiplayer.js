@@ -49,7 +49,7 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         if (clientList.length < 2)
         {
-            ele.byId("multiplayerbar").style.display = "none";
+            if (!this._connection.client.isPilot) ele.byId("multiplayerbar").style.display = "none";
             // ele.byId("multiplayer_message_nav").style.display = "none";
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             return;

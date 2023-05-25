@@ -233,7 +233,7 @@ export default class Gui
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();
                 // this.patchView.centerSelectOp(opid);
-
+                gui.opParams.show(opid);
             });
         }
 
@@ -300,7 +300,7 @@ export default class Gui
     {
         if (!CABLES.sandbox.getPatchVersion()) return false;
 
-        const html = "You are overwriting your current patch with a backup! Are you sure?<br/><br/>" +
+        const html = "You are overwriting your original patch with a backup! Are you sure?<br/><br/>Saving will redirect back to the original patch.<br/><br/>" +
             "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('');\"><span class=\"icon icon-save\"></span>Yes, save</a>&nbsp;&nbsp;" +
             "<a class=\"button\" onclick=\"gui.patchView.store.saveAs();\"><span class=\"icon icon-save\"></span>No, save as a copy</a>&nbsp;&nbsp;" +
             "<a class=\"button\" onclick=\"gui.closeModal();\">Cancel</a>&nbsp;&nbsp;";
@@ -1297,27 +1297,26 @@ export default class Gui
             }
         });
 
-        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {},
-            (e) =>
-            {
-                if (
-                    !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
+        this.keys.key(["Escape", "Tab"], "Open \"Op Create\" dialog (or close current dialog)", "down", null, {}, (e) =>
+        {
+            if (
+                !(document.activeElement && !document.activeElement.classList.contains("ace_text-input") &&
                     (document.activeElement.tagName == "INPUT" || document.activeElement.tagName == "TEXTAREA")) ||
                     (document.activeElement && document.activeElement.classList.contains("notIgnoreEscape")))
+            {
+                this.pressedEscape(e);
+                this.patchView.focus();
+            }
+            else
+            {
+                if (e.target.hasAttribute("data-portnum"))
                 {
-                    this.pressedEscape(e);
-                    this.patchView.focus();
+                    const n = e.target.dataset.portnum;
+                    const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
+                    if (nextInputEle) nextInputEle.focus();
                 }
-                else
-                {
-                    if (e.target.hasAttribute("data-portnum"))
-                    {
-                        const n = e.target.dataset.portnum;
-                        const nextInputEle = ele.byId("portval_" + (parseInt(n) + 1));
-                        if (nextInputEle) nextInputEle.focus();
-                    }
-                }
-            });
+            }
+        });
 
         this.keys.key(["Escape"], "Toggle Tab Area", "down", null, { "altKey": true }, (e) => { this.maintabPanel.toggle(true); this.setLayout(); });
 
