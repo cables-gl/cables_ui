@@ -2502,6 +2502,7 @@ export default class PatchView extends CABLES.EventTarget
         }
         catch (e)
         {
+            // TEST GIT SHIT
             this._log.error(e);
         }
         finally
