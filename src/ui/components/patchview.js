@@ -1,18 +1,17 @@
-import ele from "../utils/ele";
-import Logger from "../utils/logger";
 import PatchSaveServer from "../api/patchServerApi";
-import { notify, notifyError } from "../elements/notification";
-import gluiconfig from "../glpatch/gluiconfig";
-import { getHandleBarHtml } from "../utils/handlebars";
-import ModalDialog from "../dialogs/modaldialog";
-import SuggestPortDialog from "./suggestionportdialog";
-import text from "../text";
-import userSettings from "./usersettings";
-import Gui from "../gui";
-import undo from "../utils/undo";
-import SuggestionDialog from "./suggestiondialog";
-import opCleaner from "./cleanops";
 import defaultops from "../defaultops";
+import ModalDialog from "../dialogs/modaldialog";
+import { notify, notifyError } from "../elements/notification";
+import Gui from "../gui";
+import text from "../text";
+import ele from "../utils/ele";
+import { getHandleBarHtml } from "../utils/handlebars";
+import Logger from "../utils/logger";
+import undo from "../utils/undo";
+import opCleaner from "./cleanops";
+import SuggestionDialog from "./suggestiondialog";
+import SuggestPortDialog from "./suggestionportdialog";
+import userSettings from "./usersettings";
 
 export default class PatchView extends CABLES.EventTarget
 {
@@ -1096,19 +1095,17 @@ export default class PatchView extends CABLES.EventTarget
     focusSubpatchOp(subPatchId)
     {
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
-        let parentSubId = gotoOp.uiAttribs.subPatch;
-
-        if (gotoOp.uiAttribs.blueprintOpId) gotoOp = gotoOp.blueprintOpId;
-        this.setCurrentSubPatch(parentSubId, () =>
-        {
-            this.focus();
-            if (gotoOp)
+        let parentSubId = gotoOp.uiAttribs.subPatch || 0;
+        let gotoOpId = gotoOp.id;
+        if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;
+        if (gotoOpId)
+            this.setCurrentSubPatch(parentSubId, () =>
             {
-                this.focusOp(gotoOp.id);
-                this.centerSelectOp(gotoOp.id);
-            }
-            else console.warn("[focusSubpatchOp] goto op not found");
-        });
+                this.focus();
+                this.focusOp(gotoOpId);
+                this.centerSelectOp(gotoOpId);
+            });
+        else console.warn("[focusSubpatchOp] goto op not found");
     }
 
     updateSubPatchBreadCrumb(currentSubPatch)
