@@ -18,6 +18,7 @@ export default class PatchView extends CABLES.EventTarget
     constructor(corepatch)
     {
         super();
+        // wurst
         this._p = corepatch;
         this._log = new Logger("patchview");
         this._element = null;
