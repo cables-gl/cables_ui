@@ -1871,7 +1871,7 @@ export default class PatchView extends CABLES.EventTarget
     centerSelectOp(opid)
     {
         this.setSelectedOpById(opid);
-        this._patchRenderer.viewBox.center();
+        this._patchRenderer.viewBox.centerSelectedOps();
 
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
     }
@@ -2220,12 +2220,16 @@ export default class PatchView extends CABLES.EventTarget
             {
                 gui.corePatch().link(
                     op,
-                    op.portsIn[0].getName(), portOut.parent, portOut.getName()
+                    op.portsIn[0].getName(),
+                    portOut.parent,
+                    portOut.getName()
                 );
 
                 gui.corePatch().link(
                     op,
-                    op.portsOut[0].getName(), portIn.parent, portIn.getName()
+                    op.portsOut[0].getName(),
+                    portIn.parent,
+                    portIn.getName()
                 );
 
                 op.setUiAttrib({ "translate": { "x": x, "y": y } });
@@ -2233,8 +2237,7 @@ export default class PatchView extends CABLES.EventTarget
             else
             {
                 gui.corePatch().link(
-                    portIn.parent, portIn.getName(),
-                    portOut.parent, portOut.getName());
+                    portIn.parent, portIn.getName(), portOut.parent, portOut.getName());
             }
         }
     }
@@ -2334,15 +2337,14 @@ export default class PatchView extends CABLES.EventTarget
                 return;
             }
 
-            new SuggestionDialog(sugIn, op2, mouseEvent, null,
-                function (sid)
-                {
-                    gui.corePatch().link(
-                        p.parent,
-                        p.name,
-                        sugIn[sid].p.parent,
-                        sugIn[sid].p.name);
-                });
+            new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid)
+            {
+                gui.corePatch().link(
+                    p.parent,
+                    p.name,
+                    sugIn[sid].p.parent,
+                    sugIn[sid].p.name);
+            });
         };
 
         new SuggestionDialog(suggestions, op1, mouseEvent, null, showSuggestions2, false);
