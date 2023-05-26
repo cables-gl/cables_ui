@@ -328,7 +328,7 @@ export default class OpDocs
             }
         });
         this._opDocs = this._opDocs.concat(newOpDocs);
-        this.extendOpDocs(this._opDocs);
+        // this.extendOpDocs(this._opDocs);
         perf.finish();
     }
 
