@@ -392,10 +392,10 @@ export default class FindTab
                 {
                     const op = ops[i];
                     if (
-                        op.objName.indexOf("Ops.User.") == 0 ||
-                        op.objName.indexOf("Ops.Team.") == 0 ||
-                        op.objName.indexOf("Ops.Extension.") == 0 ||
-                        op.objName.indexOf("Ops.Patch.") == 0
+                        defaultops.isPatchOp(op.objName) ||
+                        defaultops.isUserOp(op.objName) ||
+                        defaultops.isTeamOp(op.objName) ||
+                        defaultops.isExtensionOp(op.objName)
                     )
                     {
                         results.push({ op });
@@ -810,7 +810,40 @@ FindTab.searchUserOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (op.objName.indexOf("Ops.User") == 0)
+        if (defaultops.isUserOp(op.objName))
+            results.push({ op, "score": 1, "where": op.objName });
+    }
+    return results;
+};
+
+FindTab.searchPatchOps = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (defaultops.isPatchOp(op.objName))
+            results.push({ op, "score": 1, "where": op.objName });
+    }
+    return results;
+};
+
+FindTab.searchTeamOps = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (defaultops.isTeamOp(op.objName))
+            results.push({ op, "score": 1, "where": op.objName });
+    }
+    return results;
+};
+
+FindTab.searchExtensionOps = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        const op = ops[i];
+        if (defaultops.isExtensionOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
