@@ -162,11 +162,9 @@ export default class OpDocs
         return [];
     }
 
-
     getPortDoc(op_docs, portname, type)
     {
         let html = "";
-
 
         const className = defaultops.getPortTypeClassHtml(type);
         html += "<li>";
@@ -306,6 +304,7 @@ export default class OpDocs
 
     addOpDocs(opDocs = [])
     {
+        const startTime = performance.now();
         const newOpDocs = [];
         opDocs.forEach((doc) =>
         {
@@ -316,6 +315,9 @@ export default class OpDocs
         });
         this._opDocs = this._opDocs.concat(newOpDocs);
         this.extendOpDocs(this._opDocs);
+
+        const used = performance.now() - startTime;
+        console.log((used / 1000) + "extend opdocs");
     }
 
     getOpDocs()
