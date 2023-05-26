@@ -967,16 +967,12 @@ export default class PatchView extends CABLES.EventTarget
                 if (ops[i].uiAttribs.subPatch) // && !(ops[i].storage && ops[i].storage.blueprint)
                 {
                     // find lost ops, which are in subpatches, but no subpatch op exists for that subpatch..... :(
-                    if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) == -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
+                    if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
             if (defaultops.isBlueprintOp(ops[i].objName) && ops[i].uiAttribs)
             {
-                foundBlueprints[ops[i].id] = {
-                    "opId": ops[i].id,
-                    "name": ops[i].uiAttribs.extendTitle,
-                    "blueprintSubpatch": ops[i].uiAttribs.blueprintSubpatch
-                };
+                foundBlueprints[ops[i].id] = ops[i];
             }
         }
 
@@ -1025,13 +1021,13 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const blueprintId in foundBlueprints)
         {
-            const blueprint = foundBlueprints[blueprintId];
-            const blueprintName = blueprint.name || "loading...";
+            const blueprintOp = foundBlueprints[blueprintId];
+            const blueprintName = blueprintOp.uiAttribs.extendTitle || "loading...";
             subPatches.push(
                 {
                     "name": "Blueprint: " + blueprintName,
-                    "id": blueprint.blueprintSubpatch,
-                    "opId": blueprint.opId,
+                    "id": blueprintOp.uiAttribs ? blueprintOp.uiAttribs.blueprintSubpatch : null,
+                    "opId": blueprintOp.id,
                     "type": "blueprint"
                 });
         }
