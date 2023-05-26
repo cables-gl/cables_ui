@@ -3,6 +3,7 @@ import ele from "../utils/ele";
 
 let tooltipTimeout = null;
 let eleTooltip = null;
+let inited = false;
 
 export function showToolTip(e, txt, nopadding)
 {
@@ -13,7 +14,15 @@ export function showToolTip(e, txt, nopadding)
 
     eleTooltip.classList.toggle("tooltip_nopadding", nopadding);
 
-    // console.log(e.target.id);
+    if (!inited)
+    {
+        eleTooltip.addEventListener("mouseover", function (evt)
+        {
+            hideToolTip();
+        }, true);
+
+        inited = true;
+    }
 
     if (e)
         if (e.style)
