@@ -3,6 +3,7 @@ import ele from "../utils/ele";
 
 let tooltipTimeout = null;
 let eleTooltip = null;
+let inited = false;
 
 export function showToolTip(e, txt, nopadding)
 {
@@ -13,22 +14,29 @@ export function showToolTip(e, txt, nopadding)
 
     eleTooltip.classList.toggle("tooltip_nopadding", nopadding);
 
-    // console.log(e.target.id);
+    if (!inited)
+    {
+        eleTooltip.addEventListener("mouseover", function (evt)
+        {
+            hideToolTip();
+        }, true);
+
+        inited = true;
+    }
 
     if (e)
+    {
         if (e.style)
         {
             eleTooltip.style.top = e.getBoundingClientRect().top + 25 + "px";
             eleTooltip.style.left = e.getBoundingClientRect().left + "px";
-
-            // console.log(e.getBoundingClientRect().top);
         }
         else
         {
-            // console.log(e.clientY);
             eleTooltip.style.top = e.clientY + 12 + "px";
             eleTooltip.style.left = e.clientX + 25 + "px";
         }
+    }
 
     eleTooltip.innerHTML = txt;
 }

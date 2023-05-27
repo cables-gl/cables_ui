@@ -53,14 +53,17 @@ export default class OpDocs
     getPortDocText(port, opDoc)
     {
         if (!port || !opDoc || !opDoc.docs || !opDoc.docs.ports) { return; }
+
+        const perf = CABLES.UI.uiProfiler.start("[opdocs] portdocs inner");
         for (let i = 0; i < opDoc.docs.ports.length; i++)
         {
             if (opDoc.docs.ports[i].name === port.name)
             {
-                const html = mmd(opDoc.docs.ports[i].text.trim()); // parse markdown
+                const html = this.parseMarkdown(opDoc.docs.ports[i].text.trim()); // parse markdown
                 return html;
             }
         }
+        perf.finish();
     }
 
     /**
@@ -88,8 +91,11 @@ export default class OpDocs
 
     parseMarkdown(mdText)
     {
+        const perf = CABLES.UI.uiProfiler.start("[opdocs] parse markdown");
         if (!mdText) { return ""; }
-        return mmd(mdText);
+        const s = mmd(mdText);
+        perf.finish();
+        return s;
     }
 
     /**
@@ -162,11 +168,9 @@ export default class OpDocs
         return [];
     }
 
-
     getPortDoc(op_docs, portname, type)
     {
         let html = "";
-
 
         const className = defaultops.getPortTypeClassHtml(type);
         html += "<li>";
@@ -221,6 +225,8 @@ export default class OpDocs
     get2(opName)
     {
         let opDoc = this.getOpDocByName(opName);
+
+
         if (!opDoc)
         {
             if (defaultops.isExtension(opName))
@@ -253,6 +259,12 @@ export default class OpDocs
                         "userOp": opName.indexOf("Ops.User") == 0
                     };
             }
+        }
+
+        if (!opDoc.isExtended)
+        {
+            this.extendOpDocs([opDoc]);
+            opDoc.isExtended = true;
         }
 
         const html = getHandleBarHtml("op-doc-template", {
@@ -306,6 +318,7 @@ export default class OpDocs
 
     addOpDocs(opDocs = [])
     {
+        const perf = CABLES.UI.uiProfiler.start("[opdocs] addOpDocs");
         const newOpDocs = [];
         opDocs.forEach((doc) =>
         {
@@ -315,7 +328,8 @@ export default class OpDocs
             }
         });
         this._opDocs = this._opDocs.concat(newOpDocs);
-        this.extendOpDocs(this._opDocs);
+        // this.extendOpDocs(this._opDocs);
+        perf.finish();
     }
 
     getOpDocs()
