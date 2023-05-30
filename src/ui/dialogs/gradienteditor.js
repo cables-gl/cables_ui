@@ -123,20 +123,18 @@ export default class GradientEditor
             this._ctxCurve.stroke();
 
             // smoothed...
-
-            this._ctxCurve.strokeStyle = "#aaa";
-            this._ctxCurve.beginPath();
-            this._ctxCurve.lineWidth = 2;
-            let numSteps = 250;
-            for (let i = 0; i < numSteps + 2; i++)
-            {
-                let x = Math.floor(i / numSteps * this._width);
-                let y = Math.floor(this._anim.getValue(i / numSteps) * this._height) - 1;
-
-                if (i == 0) this._ctxCurve.moveTo(x, y);
-                else this._ctxCurve.lineTo(x, y);
-            }
-            this._ctxCurve.stroke();
+            // this._ctxCurve.strokeStyle = "#aaa";
+            // this._ctxCurve.beginPath();
+            // this._ctxCurve.lineWidth = 2;
+            // let numSteps = 250;
+            // for (let i = 0; i < numSteps + 2; i++)
+            // {
+            //     let x = Math.floor(i / numSteps * this._width);
+            //     let y = Math.floor(this._anim.getValue(i / numSteps) * this._height) - 1;
+            //     if (i == 0) this._ctxCurve.moveTo(x, y);
+            //     else this._ctxCurve.lineTo(x, y);
+            // }
+            // this._ctxCurve.stroke();
         }
         else
         {
