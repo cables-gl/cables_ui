@@ -144,6 +144,9 @@ export default class ServerOps
                 if (err) this._log.error(err);
 
                 loadingModal.setTask("Loading Op");
+
+                // FIXME: api needs to deliver opId, not id, for consistency...i guess
+                res.opId = res.id;
                 this.loadMissingOp(res, () =>
                 {
                     gui.maintabPanel.show(true);
@@ -305,6 +308,8 @@ export default class ServerOps
 
                     return;
                 }
+                // FIXME: api needs to deliver opId, not id, for consistency...i guess
+                res.opId = res.id;
                 this.loadMissingOp(res, () =>
                 {
                     this.edit(name);
@@ -743,39 +748,38 @@ export default class ServerOps
         this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
         {
             const opname = newNamespace + newName;
-            gui.serverOps.clone(oldName, opname,
-                () =>
+            gui.serverOps.clone(oldName, opname, () =>
+            {
+                gui.serverOps.loadOpDependencies(opname, function ()
                 {
-                    gui.serverOps.loadOpDependencies(opname, function ()
+                    if (replace)
                     {
-                        if (replace)
+                        // replace existing ops
+                        const ops = gui.corePatch().getOpsByObjName(oldName);
+                        for (let i = 0; i < ops.length; i++)
                         {
-                            // replace existing ops
-                            const ops = gui.corePatch().getOpsByObjName(oldName);
-                            for (let i = 0; i < ops.length; i++)
-                            {
-                                gui.patchView.replaceOp(ops[i].id, opname);
-                            }
+                            gui.patchView.replaceOp(ops[i].id, opname);
                         }
-                        else
+                    }
+                    else
+                    {
+                        // add new op
+                        gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                         {
-                            // add new op
-                            gui.patchView.addOp(opname, { "onOpAdd": (op) =>
-                            {
-                                op.setUiAttrib({
-                                    "translate": {
-                                        "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
-                                        "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
-                                });
+                            op.setUiAttrib({
+                                "translate": {
+                                    "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                                    "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                            });
 
-                                if (op)
-                                {
-                                    gui.patchView.focusOp(op.id);
-                                }
-                            } });
-                        }
-                    });
+                            if (op)
+                            {
+                                gui.patchView.focusOp(op.id);
+                            }
+                        } });
+                    }
                 });
+            });
         }, true);
     }
 
@@ -1245,25 +1249,32 @@ export default class ServerOps
         return this.canEditOp(user, opName);
     }
 
+    isLoadedOp(op)
+    {
+        const opIdentifier = op.opId || op.objName;
+        const opDocs = gui.opDocs.getOpDocs();
+        opDocs.some((loadedOp) => { return loadedOp.id === opIdentifier; });
+        let loaded = false;
+        if (!loaded) loaded = opDocs.some((loadedOp) => { return loadedOp.objName === opIdentifier; });
+        if (!loaded) loaded = this._ops.some((loadedOp) => { return loadedOp.id === opIdentifier; });
+        if (!loaded) loaded = this._ops.some((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
+        if (loaded) loaded = this.opCodeLoaded(op);
+        return loaded;
+    }
+
     getMissingOps(proj)
     {
         const missingOps = [];
         const missingOpsFound = [];
-        const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
             const opIdentifier = op.opId || op.objName;
             if (!missingOpsFound.includes(opIdentifier))
             {
-                let loaded = opDocs.some((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = opDocs.some((loadedOp) => { return loadedOp.objName === opIdentifier; });
-                if (!loaded) loaded = this._ops.some((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = this._ops.some((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
-                if (loaded) loaded = this.opCodeLoaded(op);
-
+                let loaded = this.isLoadedOp(op);
                 if (!loaded)
                 {
-                    missingOps.push({ "id": op.opId, "objName": op.objName });
+                    missingOps.push({ "opId": op.opId, "objName": op.objName });
                     missingOpsFound.push(opIdentifier);
                 }
             }
@@ -1304,6 +1315,14 @@ export default class ServerOps
 
     loadMissingOp(op, cb)
     {
+        if (op && this.isLoadedOp(op))
+        {
+            const opIdentifier = op.opId || op.objName;
+            const loadedOp = this._ops.find((lop) => { return op.objName && lop.objName === opIdentifier; });
+            incrementStartup();
+            cb(loadedOp);
+            return;
+        }
         if (op)
         {
             const options = {
@@ -1321,7 +1340,7 @@ export default class ServerOps
                 }
                 else
                 {
-                    let identifier = res.newOpId || op.id || op.objName;
+                    let identifier = res.newOpId || op.opId || op.objName;
 
                     let lid = "missingop" + identifier + CABLES.uuid();
                     const missingOpUrl = [];
