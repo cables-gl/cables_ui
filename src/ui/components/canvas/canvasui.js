@@ -37,7 +37,7 @@ export default class CanvasUi
             if (this.isCanvasFocussed)
             {
                 this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
-                this._elCanvasInfoMs.innerHTML = perf.ms + " MS";
+                this._elCanvasInfoMs.innerHTML = op.patch.cgl.profileData.profileOnAnimFrameOps + " MS";
                 this._elCanvasInfoFps.style.opacity = 1;
                 this._elCanvasInfoMs.style.opacity = 1;
             }
@@ -59,7 +59,8 @@ export default class CanvasUi
                     !e.target.classList.contains("icon") &&
                     e.target != this.canvasEle
                 ) this.showCanvasModal(false);
-            }, true);
+            },
+            true);
     }
 
     get canvasMode()
