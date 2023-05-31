@@ -406,13 +406,17 @@ export default function extendCore()
     CABLES.Op.prototype.getTempPosX = function ()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.x;
-        else return this.uiAttribs.translate.x;
+        if (this.uiAttribs.translate) return this.uiAttribs.translate.x;
+
+        console.log("no uiattribs ?!", this);
     };
 
     CABLES.Op.prototype.getTempPosY = function ()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.y;
-        else return this.uiAttribs.translate.y;
+        if (this.uiAttribs.translate) return this.uiAttribs.translate.y;
+
+        console.log("no uiattribs ?!", this);
     };
 
     CABLES.Op.prototype.setTempOpPos = function (x, y, w, h)
