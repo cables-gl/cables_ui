@@ -181,7 +181,7 @@ export default class VizLayer extends CABLES.EventTarget
                     "useGl": this._usingGl
                 };
 
-                this._items[i].op.renderVizLayer(this._canvasCtx, layer);
+                if (pos[0] === pos[0] && size[0] === size[0]) this._items[i].op.renderVizLayer(this._canvasCtx, layer);
             }
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
