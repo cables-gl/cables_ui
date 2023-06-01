@@ -743,39 +743,38 @@ export default class ServerOps
         this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
         {
             const opname = newNamespace + newName;
-            gui.serverOps.clone(oldName, opname,
-                () =>
+            gui.serverOps.clone(oldName, opname, () =>
+            {
+                gui.serverOps.loadOpDependencies(opname, function ()
                 {
-                    gui.serverOps.loadOpDependencies(opname, function ()
+                    if (replace)
                     {
-                        if (replace)
+                        // replace existing ops
+                        const ops = gui.corePatch().getOpsByObjName(oldName);
+                        for (let i = 0; i < ops.length; i++)
                         {
-                            // replace existing ops
-                            const ops = gui.corePatch().getOpsByObjName(oldName);
-                            for (let i = 0; i < ops.length; i++)
-                            {
-                                gui.patchView.replaceOp(ops[i].id, opname);
-                            }
+                            gui.patchView.replaceOp(ops[i].id, opname);
                         }
-                        else
+                    }
+                    else
+                    {
+                        // add new op
+                        gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                         {
-                            // add new op
-                            gui.patchView.addOp(opname, { "onOpAdd": (op) =>
-                            {
-                                op.setUiAttrib({
-                                    "translate": {
-                                        "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
-                                        "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
-                                });
+                            op.setUiAttrib({
+                                "translate": {
+                                    "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                                    "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                            });
 
-                                if (op)
-                                {
-                                    gui.patchView.focusOp(op.id);
-                                }
-                            } });
-                        }
-                    });
+                            if (op)
+                            {
+                                gui.patchView.focusOp(op.id);
+                            }
+                        } });
+                    }
                 });
+            });
         }, true);
     }
 
@@ -1263,7 +1262,9 @@ export default class ServerOps
 
                 if (!loaded)
                 {
-                    missingOps.push({ "id": op.opId, "objName": op.objName });
+                    const opInfo = { "id": op.opId, "objName": op.objName };
+                    if (op.storage && op.storage.blueprint) opInfo.parentProject = op.storage.blueprint.patchId;
+                    missingOps.push(opInfo);
                     missingOpsFound.push(opIdentifier);
                 }
             }
@@ -1308,7 +1309,7 @@ export default class ServerOps
         {
             const options = {
                 "op": op,
-                "projectId": gui.project().shortId
+                "projectId": op.parentProject || gui.project().shortId
             };
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
