@@ -538,7 +538,8 @@ export default class GlPatch extends CABLES.EventTarget
             this._greyOutRect.setColor(
                 glUiConfig.colors.background[0],
                 glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2], 0.25);
+                glUiConfig.colors.background[2],
+                0.25);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
 
@@ -556,7 +557,8 @@ export default class GlPatch extends CABLES.EventTarget
             this._greyOutRect.setColor(
                 glUiConfig.colors.background[0] * 0.8,
                 glUiConfig.colors.background[1] * 1.5,
-                glUiConfig.colors.background[2] * 2.5, 0.25);
+                glUiConfig.colors.background[2] * 2.5,
+                0.25);
         }
     }
 
@@ -732,7 +734,7 @@ export default class GlPatch extends CABLES.EventTarget
         }
         else
         {
-            glOp.uiAttribs = op.uiAttribs;
+            glOp.uiAttribs = op.uiAttribs || {};
         }
 
         op.on("onPortRemoved", () => { glOp.refreshPorts(); });
@@ -1413,18 +1415,17 @@ export default class GlPatch extends CABLES.EventTarget
 
     paste(e)
     {
-        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY,
-            (ops, focusSubpatchop) =>
+        gui.patchView.clipboardPaste(e, this._currentSubpatch, this.viewBox.mousePatchX, this.viewBox.mousePatchY, (ops, focusSubpatchop) =>
+        {
+            this.unselectAll();
+            for (let i = 0; i < ops.length; i++)
             {
-                this.unselectAll();
-                for (let i = 0; i < ops.length; i++)
-                {
-                    this.selectOpId(ops[i].id);
-                }
+                this.selectOpId(ops[i].id);
+            }
 
-                if (ops[ops.length - 1])gui.opParams.show(ops[ops.length - 1].id);
-                if (ops.length == 1) this.focusOpAnim(ops[0].id);
-            });
+            if (ops[ops.length - 1])gui.opParams.show(ops[ops.length - 1].id);
+            if (ops.length == 1) this.focusOpAnim(ops[0].id);
+        });
     }
 
     getCurrentSubPatch()

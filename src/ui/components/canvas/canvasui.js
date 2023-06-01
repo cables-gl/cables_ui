@@ -37,7 +37,7 @@ export default class CanvasUi
             if (this.isCanvasFocussed)
             {
                 this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
-                this._elCanvasInfoMs.innerHTML = this._cg.profileData.profileOnAnimFrameOps + " MS";
+                this._elCanvasInfoMs.innerHTML = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100 + " MS";
                 this._elCanvasInfoFps.style.opacity = 1;
                 this._elCanvasInfoMs.style.opacity = 1;
             }
