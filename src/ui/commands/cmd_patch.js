@@ -776,68 +776,66 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (op.uiAttribs)
-        {
-            if (op.uiAttribs.blueprintOpId === blueprint.id)
-            {
-                relevantOps.push(op);
-            }
-        }
+        if (op.uiAttribs && op.uiAttribs.blueprintOpId === blueprint.id) relevantOps.push(op);
     }
+
     let hiddenSubPatchOp = null;
     relevantOps.forEach((op) =>
     {
-        if (op.objName && op.isSubpatchOp())
+        if (op.objName && op.isSubPatchOp())
         {
             op.uiAttribs.translate = {
                 "x": blueprint.uiAttribs.translate.x,
                 "y": blueprint.uiAttribs.translate.y
             };
-            op.portsIn.forEach((portIn) =>
-            {
-                const bpPort = blueprint.getPortByName(portIn.name);
-                if (!bpPort) return;
-                if (bpPort.isLinked())
+            op.portsIn.forEach(
+                (portIn) =>
                 {
-                    bpPort.links.forEach((bpLink) =>
+                    const bpPort = blueprint.getPortByName(portIn.name);
+                    if (!bpPort) return;
+                    if (bpPort.isLinked())
                     {
-                        const parent = bpLink.portOut.parent;
-                        patch.link(parent, bpLink.portOut.name, op, portIn.name);
-                    });
-                }
-                else
-                {
-                    portIn.set(bpPort.get());
-                }
-            });
-            op.portsOut.forEach((portOut) =>
-            {
-                const bpPort = blueprint.getPortByName(portOut.name);
-                if (!bpPort) return;
-                if (bpPort.isLinked())
-                {
-                    bpPort.links.forEach((bpLink) =>
+                        bpPort.links.forEach((bpLink) =>
+                        {
+                            const parent = bpLink.portOut.parent;
+                            patch.link(parent, bpLink.portOut.name, op, portIn.name);
+                        });
+                    }
+                    else
                     {
-                        const parent = bpLink.portIn.parent;
-                        const link = patch.link(op, portOut.name, parent, bpLink.portIn.name);
-                    });
-                }
-                else
+                        portIn.set(bpPort.get());
+                    }
+                });
+            op.portsOut.forEach(
+                (portOut) =>
                 {
-                    portOut.set(bpPort.get());
-                }
-            });
+                    const bpPort = blueprint.getPortByName(portOut.name);
+                    if (!bpPort) return;
+                    if (bpPort.isLinked())
+                    {
+                        bpPort.links.forEach((bpLink) =>
+                        {
+                            const parent = bpLink.portIn.parent;
+                            const link = patch.link(op, portOut.name, parent, bpLink.portIn.name);
+                        });
+                    }
+                    else
+                    {
+                        portOut.set(bpPort.get());
+                    }
+                });
         }
         else if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
         {
             CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
         }
+
         if (op.storage) delete op.storage.blueprint;
         delete op.uiAttribs.blueprintOpId;
 
         if (op.uiAttribs && op.uiAttribs.hidden)
         {
-            if (op.objName && op.isSubpatchOp())
+            if (op.objName && op.isSubPatchOp())
             {
                 hiddenSubPatchOp = op;
                 op.rebuildListeners();

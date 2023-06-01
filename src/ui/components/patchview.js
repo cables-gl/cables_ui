@@ -899,7 +899,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
-            if (ops[i].isSubpatchOp() && ops[i].patchId)
+            if (ops[i].isSubPatchOp() && ops[i].patchId)
                 this._cachedSubpatchNames[ops[i].patchId.get()] = ops[i].name;
 
         if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
@@ -911,7 +911,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].isSubpatchOp() && ops[i].patchId)
+            if (ops[i].isSubPatchOp() && ops[i].patchId)
             {
                 if (ops[i].patchId.get() == subId)
                 {
@@ -1044,7 +1044,7 @@ export default class PatchView extends CABLES.EventTarget
     //     const ops = gui.corePatch().ops;
     //     for (let i = 0; i < ops.length; i++)
     //     {
-    //         if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubpatchOp())
+    //         if (ops[i].uiAttribs && ops[i].uiAttribs.subPatch == id && ops[i].isSubPatchOp())
     //         {
     //             ids.push(ops[i].patchId.get());
     //         }
@@ -1085,7 +1085,7 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];
-            if (op.isSubpatchOp() && op.patchId.get() == subPatchId)
+            if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
                 return op;
         }
     }
@@ -1169,7 +1169,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].isSubpatchOp())
+            if (selectedOps[i].isSubPatchOp())
             {
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
@@ -2554,7 +2554,7 @@ export default class PatchView extends CABLES.EventTarget
             {
                 const subpatchExists = ops.some((subpatchOp) =>
                 {
-                    if (!subpatchOp.isSubpatchOp()) return false;
+                    if (!subpatchOp.isSubPatchOp()) return false;
                     const subpatchPort = subpatchOp.getPortByName("patchId");
                     return subpatchPort && subpatchPort.get() && port.get() === subpatchPort.get();
                 });
@@ -2645,11 +2645,11 @@ export default class PatchView extends CABLES.EventTarget
             }
             if (outerOp.storage && outerOp.storage.blueprint)
             {
-                op.storage = {
-                    "blueprint": {
-                        "patchId": outerOp.storage.blueprint.patchId
-                    }
-                };
+                op.setStorage({ "blueprint": { "patchId": outerOp.storage.blueprint.patchId } });
+                // op.storage = op.storage || {};
+                // op.storage.blueprint = {
+                //     "patchId": outerOp.storage.blueprint.patchId
+                // };
             }
         }
         return op;

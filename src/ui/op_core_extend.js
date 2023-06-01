@@ -575,8 +575,8 @@ export default function extendCore()
         return -4;
     };
 
-    CABLES.Op.prototype.isSubpatchOp = function ()
-    {
-        return (this.objName == "Ops.Ui.SubPatch" || this.objName == "Ops.Dev.SubpatchNew");
-    };
+    // CABLES.Op.prototype.isSubPatchOp = function ()
+    // {
+    //     return (this.objName == "Ops.Ui.SubPatch" || this.objName == "Ops.Dev.SubpatchNew");
+    // };
 }

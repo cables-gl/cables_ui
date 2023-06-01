@@ -66,6 +66,16 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
             if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops extension');\">find</a>";
             report += "<br/>";
         }
+        {
+            let numHidden = 0;
+            for (let i = 0; i < patch.ops.length; i++)
+            {
+                if (patch.ops[i].uiAttribs.hidden)
+                    numHidden++;
+            }
+            report += numHidden + " hidden ops ";
+            report += "<br/>";
+        }
 
         report += "<h3>Vars</h3>";
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";

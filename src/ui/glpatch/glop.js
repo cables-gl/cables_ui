@@ -85,24 +85,37 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._op)
         {
-            if (defaultops.isSubPatchOpName(this._op.objName))
+            this._op.on("onStorageChange", () =>
             {
-                this._displayType = this.DISPLAY_SUBPATCH;
-
-                this.emitEvent("patchLoadEnd", () =>
+                if (this._op.storage && this._op.storage.subPatchVer)
                 {
-                    console.log("refreshing ports...");
+                    this._displayType = this.DISPLAY_SUBPATCH;
+                    this._rectBorder = 1;
+                    this._updateColors();
                     this.refreshPorts();
-                    console.log("refreshing ports... done");
-                });
+                    // setTimeout(() => { this.refreshPorts(); }, 100); // nooooooooo!
 
-                this._op.patch.on("subpatchExpose", (subpatchid) =>
-                {
-                    if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
-                        this.refreshPorts();
-                });
-            }
-            else if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
+                    this._op.patch.on("subpatchExpose", (subpatchid) =>
+                    {
+                        if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
+                            this.refreshPorts();
+                    });
+                }
+            });
+
+            // if (defaultops.isSubPatchOpName(this._op.objName))
+            // if (this._op.storage && this._op.storage.subPatchVer)
+            // {
+            //     this._displayType = this.DISPLAY_SUBPATCH;
+
+            //     // this.emitEvent("patchLoadEnd", () =>
+            //     // {
+            //     //     console.log("refreshing ports...");
+            //     //     this.refreshPorts();
+            //     //     console.log("refreshing ports... done");
+            //     // });
+            // }
+            if (this._op.objName.indexOf("Ops.Ui.Comment") === 0) this._displayType = this.DISPLAY_COMMENT;// todo: better use uiattr comment_title
             else if (this._op.objName.indexOf("Ops.Ui.Area") === 0) this._displayType = this.DISPLAY_UI_AREA;
         }
         this._wasInited = false;
@@ -118,7 +131,6 @@ export default class GlOp extends CABLES.EventTarget
         //     {
         //         this.refreshPorts();
         //     });
-        if (this._displayType === this.DISPLAY_SUBPATCH) setTimeout(() => { this.refreshPorts(); }, 100); // nooooooooo!
     }
 
     _initWhenFirstInCurrentSubpatch()
@@ -464,14 +476,13 @@ export default class GlOp extends CABLES.EventTarget
             this._glTitle.setParentRect(this._glRectBg);
             this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
 
-            if (this._displayType === this.DISPLAY_SUBPATCH)
-            {
-                this._rectBorder = 1;
-            }
-            if (this._op.objName.indexOf(CABLES.UI.DEFAULTOPNAMES.blueprint) === 0)
-            {
-                this._rectBorder = 1;
-            }
+            // if (this._displayType === this.DISPLAY_SUBPATCH)
+            // {
+            //     this._rectBorder = 1;
+            // }
+            // if (this._op.objName.indexOf(CABLES.UI.DEFAULTOPNAMES.blueprint) === 0)
+
+            if (this._op.storage && this._op.storage.blueprint) this._rectBorder = 1;
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {

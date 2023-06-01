@@ -29,7 +29,7 @@ export default class SuggestPortDialog
                 CABLES.Link.canLink(theport, port)) this._addPort(theport);
         }
 
-        if (defaultops.isSubPatchOpName(op.objName))
+        if (op.storage && op.storage.subPatchVer)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
@@ -42,20 +42,19 @@ export default class SuggestPortDialog
         }
 
 
-        new SuggestionDialog(this._suggestions, op, mouseEvent, cb,
-            (id) =>
-            {
-                for (const i in this._suggestions)
-                    if (this._suggestions[i].id == id)
+        new SuggestionDialog(this._suggestions, op, mouseEvent, cb, (id) =>
+        {
+            for (const i in this._suggestions)
+                if (this._suggestions[i].id == id)
+                {
+                    if (port.parent.uiAttribs.subPatch != this._suggestions[i].p.parent.uiAttribs.subPatch)
                     {
-                        if (port.parent.uiAttribs.subPatch != this._suggestions[i].p.parent.uiAttribs.subPatch)
-                        {
-                            this._suggestions[i].p.setUiAttribs({ "expose": true });
-                        }
-
-                        cb(this._suggestions[i].p, this._suggestions[i].op);
+                        this._suggestions[i].p.setUiAttribs({ "expose": true });
                     }
-            }, false, cbCancel);
+
+                    cb(this._suggestions[i].p, this._suggestions[i].op);
+                }
+        }, false, cbCancel);
     }
 
     _addPort(p)
