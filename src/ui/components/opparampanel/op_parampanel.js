@@ -105,7 +105,8 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     if (
                         op &&
-                        defaultops.isSubPatchOpName(op.objName) &&
+                        // defaultops.isSubPatchOpName(op.objName) &&
+                        op.storage && op.storage.subPatchVer &&
                         op.patchId.get() === subpatchid
                     )
                     {
@@ -172,7 +173,8 @@ class OpParampanel extends CABLES.EventTarget
         this._portsOut = op.portsOut;
 
 
-        if (defaultops.isSubPatchOpName(op.objName))
+        // if (defaultops.isSubPatchOpName(op.objName))
+        if (op.storage && op.storage.subPatchVer)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
             for (let i = 0; i < ports.length; i++)
@@ -495,7 +497,8 @@ class OpParampanel extends CABLES.EventTarget
         if (this._currentOp) this._currentOp.setTitle(t);
 
 
-        if (defaultops.isSubPatchOpName(this._currentOp.objName))
+        // if (defaultops.isSubPatchOpName(this._currentOp.objName))
+        if (this._currentOp.storage && this._currentOp.storage.subPatchVer)
         {
             this._currentOp.patch.emitEvent("subpatchesChanged");
         }
