@@ -606,6 +606,7 @@ export default class FindTab
             for (let i = 0; i < ops.length; i++)
             {
                 let score = 0;
+                let found = false;
 
                 if (str.length > 5)
                 {
@@ -620,6 +621,7 @@ export default class FindTab
                 {
                     where = "name: " + this.highlightWord(str, ops[i].objName);
                     score += 1;
+                    found = true;
                 }
 
 
@@ -629,6 +631,7 @@ export default class FindTab
                 {
                     where = "title: " + this.highlightWord(str, ops[i].uiAttribs.extendTitle);
                     score += 1;
+                    found = true;
                 }
 
                 if (
@@ -637,6 +640,7 @@ export default class FindTab
                 {
                     where = "comment: " + this.highlightWord(str, ops[i].uiAttribs.comment);
                     score += 1;
+                    found = true;
                 }
 
                 if (String(ops[i].name || "").toLowerCase().indexOf(str) > -1)
@@ -647,8 +651,8 @@ export default class FindTab
 
                     where = "name: " + this.highlightWord(str, ops[i].name);
                     score += 2;
+                    found = true;
                 }
-
 
                 const op = ops[i];
                 for (let j = 0; j < op.portsIn.length; j++)
@@ -657,8 +661,8 @@ export default class FindTab
                     {
                         score += 2;
                         where += "port \"" + op.portsIn[j].name + "\" assigned to var " + op.portsIn[j].getVariableName();
+                        found = true;
                     }
-
 
                     if ((op.portsIn[j].get() + "").toLowerCase().indexOf(str) > -1)
                     {
@@ -668,13 +672,14 @@ export default class FindTab
                         else where += "linked ";
                         where += op.portsIn[j].name + ": " + this.highlightWord(str, op.portsIn[j].get());
                         score += 2;
+                        found = true;
                     }
                 }
 
                 if (op.uiAttribs.hidden) score -= 5;
                 if (op.storage && op.storage.blueprint) score -= 1;
-                if (score > 0 && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
-                if (score > 0) results.push({ "op": ops[i], score, where });
+                if (found && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) score++;
+                if (found) results.push({ "op": ops[i], score, where });
             }
         }
         return results;

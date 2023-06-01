@@ -65,8 +65,7 @@ export default class GlLink
                         this._glPatch._portDragLine.stop();
 
                         gui.corePatch().link(
-                            fromOp, this._glPatch._portDragLine._startPortName,
-                            otherPort.parent, otherPort.name);
+                            fromOp, this._glPatch._portDragLine._startPortName, otherPort.parent, otherPort.name);
 
                         return;
                     }
@@ -115,8 +114,8 @@ export default class GlLink
                         "y": 0,
                         "onOpAdd": (op) =>
                         {
-                            const distOut = Math.sqrt(Math.pow(opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
-                            const distIn = Math.sqrt(Math.pow(opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+                            const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+                            const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
 
                             let x = opOut.uiAttribs.translate.x;
                             if (distIn < distOut)x = opIn.uiAttribs.translate.x;
@@ -150,8 +149,8 @@ export default class GlLink
                     pIn = opIn.getPortById(this._portIdInput),
                     pOut = opOut.getPortById(this._portIdOutput);
 
-                const distOut = Math.sqrt(Math.pow(opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
-                const distIn = Math.sqrt(Math.pow(opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX, 2) + Math.pow(opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY, 2));
+                const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+                const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
 
                 if (distIn < distOut)
                 {
@@ -237,7 +236,7 @@ export default class GlLink
 
         if (this.crossSubpatch)
         {
-            // ops[i].isSubpatchOp()
+            // ops[i].isSubPatchOp()
             const subpatchop = gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) || gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
 
             console.log(subpatchop.uiAttribs);
