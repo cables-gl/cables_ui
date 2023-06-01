@@ -1150,8 +1150,6 @@ export default class PatchView extends CABLES.EventTarget
             this._patchRenderer.greyOut = false;
         }
 
-        // str += "<a style=\"margin-left:5px;\" onclick=\"gui.patchView.subpatchContextMenu('" + currentSubPatch + "',this);\"><span class=\"tt icon icon-triple-dot iconhover info\" style=\"margin: -2px;\"></span></a>";
-
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
     }
 
@@ -1848,6 +1846,8 @@ export default class PatchView extends CABLES.EventTarget
             });
         }
         else this._log.warn("patchRenderer has no function setCurrentSubPatch");
+
+        gui.corePatch().emitEvent("subpatchesChanged");
     }
 
     focusOp(opid)
