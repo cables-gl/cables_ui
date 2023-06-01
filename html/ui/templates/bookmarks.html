@@ -22,25 +22,38 @@
             <h3>Subpatches</h3>
 
             <div class="list">
-                <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
-                    <h3 class="op_color_default">Main</h3>
-                </div>
-            </div>
+                <table style="cell-spacing:0;">
+                    <tr>
+                        <td class="nopadding">
+                            <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                                <h3 class="op_color_default">Main</h3>
+                            </div>
+                        </td>
+                    </tr>
 
-            {{#each subPatches}}
-                <div class="list">
-                    {{#if id}}
-                        <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
-                            <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
-                            <a onclick="gui.opParams.subPatchContextMenu(this)" data-id="{{id}}" class="icon fright icon-triple-dot iconhover"></a>
-                        </div>
-                    {{else}}
-                        <div class="info {{type}}" onclick="gui.patchView.focusOp('{{opId}}');gui.patchView.centerSelectOp('{{opId}}');gui.patchView.showBookmarkParamsPanel();" >
-                            <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
-                        </div>
-                    {{/if}}
-                </div>
-            {{/each}}
+                    {{#each subPatches}}
+                        <tr>
+                            {{#if id}}
+                                <td class="nopadding">
+                                    <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                                        <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
+                                    </div>
+                                </td>
+                                <td class="nopadding">
+                                    <a onclick="gui.opParams.subPatchContextMenu(this)" data-id="{{id}}" class="icon icon-three-dots iconhover"></a>
+                                </td>
+                            {{else}}
+                                <td class="nopadding">
+                                    <div class="info {{type}}" onclick="gui.patchView.focusOp('{{opId}}');gui.patchView.centerSelectOp('{{opId}}');gui.patchView.showBookmarkParamsPanel();" >
+                                        <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
+                                    </div>
+                                </td>
+                                <td class="nopadding"></td>
+                            {{/if}}
+                        </tr>
+                    {{/each}}
+                </table>
+            </div>
 
         </div>
     {{/if}}
