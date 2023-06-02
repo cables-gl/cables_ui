@@ -58,6 +58,12 @@ export default class ItemManager
         this._items.splice(idx, 1);
 
         const ele = document.getElementById("item" + id);
+        const eleRow = document.getElementById("itemrow" + id);
+
+        if (eleRow)
+        {
+            eleRow.remove();
+        }
         if (ele)
         {
             ele.remove();
