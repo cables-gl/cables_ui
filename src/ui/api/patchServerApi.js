@@ -602,7 +602,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         "name": name,
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
-                        "fromBackup": !!CABLES.sandbox.getPatchVersion(),
+                        "fromBackup": CABLES.sandbox.getPatchVersion() || false,
                         "buildInfo":
                     {
                         "core": CABLES.build,
