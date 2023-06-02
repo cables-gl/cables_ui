@@ -326,7 +326,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         const localBlueprints = gui.corePatch().ops.filter((op) =>
         {
-            if (!defaultops.isBlueprintOp(op.objName)) return false;
+            if (!defaultops.isBlueprintOp(op)) return false;
             const port = op.getPortByName("externalPatchId");
             if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
             return false;
@@ -463,7 +463,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.uiAttribs)
-                if (defaultops.isBlueprintOp(op.objName) && op.uiAttribs.blueprintSubpatch)
+                if (defaultops.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 
             if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
