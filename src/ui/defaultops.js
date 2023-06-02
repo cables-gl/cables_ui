@@ -214,15 +214,15 @@ const defaultOps = {
         return parts.join(".") + ".";
     },
 
-    "isSubPatchOpName": (opname) =>
-    {
-        return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
-    },
+    // "isSubPatchOpName": (opname) =>
+    // {
+    //     return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
+    // },
 
-    "isSubPatchOpNameV2": (opname) =>
-    {
-        return opname == "Ops.Dev.SubpatchNew";
-    },
+    // "isSubPatchOpNameV2": (opname) =>
+    // {
+    //     return opname == "Ops.Dev.SubpatchNew";
+    // },
 
     "getPatchOpsPrefix": () =>
     {
@@ -345,9 +345,9 @@ const defaultOps = {
         return parts.length < 5;
     },
 
-    "isBlueprintOp": (opname) =>
+    "isBlueprintOp": (op) =>
     {
-        return opname && opname.startsWith(defaultOps.defaultOpNames.blueprint);
+        return op.storage && op.storage.blueprintVer;// opname && opname.startsWith(defaultOps.defaultOpNames.blueprint);
     }
 };
 export default defaultOps;

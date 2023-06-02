@@ -916,7 +916,7 @@ CABLES_CMD_PATCH.updateAllBlueprints = () =>
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
-    const relevantOps = ops.filter((op) => { return defaultops.isBlueprintOp(op.objName); });
+    const relevantOps = ops.filter((op) => { return defaultops.isBlueprintOp(op); });
     gui.patchView.updateBlueprints(relevantOps);
 };
 

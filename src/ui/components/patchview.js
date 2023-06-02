@@ -970,7 +970,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultops.isBlueprintOp(ops[i].objName) && ops[i].uiAttribs)
+            if (defaultops.isBlueprintOp(ops[i]) && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -2536,7 +2536,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         const relevantOps = ops.filter((op) =>
         {
-            if (!defaultops.isBlueprintOp(op.objName)) return false;
+            if (!defaultops.isBlueprintOp(op)) return false;
             const port = op.getPortByName("externalPatchId");
             if (port)
             {
@@ -2586,7 +2586,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            if (!defaultops.isBlueprintOp(op.objName)) return false;
+            if (!defaultops.isBlueprintOp(op)) return false;
             let isLocal = false;
             if (localOnly)
             {
