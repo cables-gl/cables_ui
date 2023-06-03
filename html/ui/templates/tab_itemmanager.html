@@ -121,7 +121,7 @@
                         </td>
                     </tr>
                 {{else}}
-                    <tr class="fileFilterable" data-searchable="{{title}}">
+                    <tr class="fileFilterable" data-searchable="{{title}}" id="itemrow{{id}}">
                         <td><span class="icon icon-{{icon}} "></span></td>
                         <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}" >{{title}}</div>
                         </td>

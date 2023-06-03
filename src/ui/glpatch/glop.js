@@ -87,19 +87,22 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._op.on("onStorageChange", () =>
             {
-                if (this._op.storage && this._op.storage.subPatchVer)
+                if (this._op.isSubPatchOp())
                 {
                     this._displayType = this.DISPLAY_SUBPATCH;
                     this._rectBorder = 1;
                     this._updateColors();
                     this.refreshPorts();
-                    // setTimeout(() => { this.refreshPorts(); }, 100); // nooooooooo!
 
                     this._op.patch.on("subpatchExpose", (subpatchid) =>
                     {
                         if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
                             this.refreshPorts();
                     });
+                }
+                if (this._op.storage && this._op.storage.blueprintVer)
+                {
+                    this._rectBorder = 1;
                 }
             });
 
@@ -482,7 +485,6 @@ export default class GlOp extends CABLES.EventTarget
             // }
             // if (this._op.objName.indexOf(CABLES.UI.DEFAULTOPNAMES.blueprint) === 0)
 
-            if (this._op.storage && this._op.storage.blueprint) this._rectBorder = 1;
 
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
