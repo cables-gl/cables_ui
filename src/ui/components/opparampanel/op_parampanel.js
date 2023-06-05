@@ -521,7 +521,7 @@ class OpParampanel extends CABLES.EventTarget
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
         const items = [];
-        if (outer.storage && outer.storage.blueprint)
+        if (outer && outer.storage && outer.storage.blueprint)
         {
             items.push({
                 "title": "Goto Blueprint Op",
