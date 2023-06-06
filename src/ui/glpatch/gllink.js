@@ -239,8 +239,8 @@ export default class GlLink
             // ops[i].isSubPatchOp()
             const subpatchop = gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) || gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
 
-            console.log(subpatchop.uiAttribs);
-            if (subpatchop.uiAttribs.subPatchOp)
+
+            if (subpatchop && subpatchop.uiAttribs && subpatchop.uiAttribs.subPatchOp)
             {
                 const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
