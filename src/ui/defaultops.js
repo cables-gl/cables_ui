@@ -4,7 +4,6 @@
  */
 
 import { CONSTANTS } from "../../../cables/src/core/constants";
-import { Op } from "../../../cables/src/core/core_op";
 
 const defaultOps = {
     "defaultOpNames":
