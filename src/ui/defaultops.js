@@ -4,6 +4,7 @@
  */
 
 import { CONSTANTS } from "../../../cables/src/core/constants";
+import { Op } from "../../../cables/src/core/core_op";
 
 const defaultOps = {
     "defaultOpNames":
@@ -347,7 +348,12 @@ const defaultOps = {
 
     "isBlueprintOp": (op) =>
     {
-        return op.storage && op.storage.blueprintVer;// opname && opname.startsWith(defaultOps.defaultOpNames.blueprint);
+        return op.storage && op.storage.blueprintVer;
+    },
+
+    "isInBlueprint": (op) =>
+    {
+        return op.storage && op.storage.hasOwnProperty("blueprint");
     }
 };
 export default defaultOps;
