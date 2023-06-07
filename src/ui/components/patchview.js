@@ -93,7 +93,6 @@ export default class PatchView extends CABLES.EventTarget
     {
         this.checkPatchErrorsSoon();
 
-
         const undofunc = (function (opname, _opid)
         {
             const oldValues = {};
