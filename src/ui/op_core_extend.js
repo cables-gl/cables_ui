@@ -147,12 +147,14 @@ export default function extendCore()
 
     CABLES.Op.prototype.hasParent = function (type, name, count)
     {
+        if (this._ignoreParentChecks) return false;
         count = count || 1;
         count++;
         if (count >= 1000)
         {
             console.log("hasparent loop....", name);
             // this.removeLinks();
+            this._ignoreParentChecks = true;
             return false;
         }
         for (let i = 0; i < this.portsIn.length; i++)

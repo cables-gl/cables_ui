@@ -217,7 +217,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         let hasPrivateUserOps = false;
         if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
         {
-            hasPrivateUserOps = project.ops.find((op) => { return op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
+            hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
         }
 
         const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches

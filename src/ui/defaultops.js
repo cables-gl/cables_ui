@@ -347,7 +347,12 @@ const defaultOps = {
 
     "isBlueprintOp": (op) =>
     {
-        return op.storage && op.storage.blueprintVer;// opname && opname.startsWith(defaultOps.defaultOpNames.blueprint);
+        return op.storage && op.storage.blueprintVer;
+    },
+
+    "isInBlueprint": (op) =>
+    {
+        return op.storage && op.storage.hasOwnProperty("blueprint");
     }
 };
 export default defaultOps;
