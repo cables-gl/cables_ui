@@ -178,10 +178,11 @@ export default class VizLayer extends CABLES.EventTarget
                     "width": size[0],
                     "height": size[1],
                     "scale": w / gui.patchView._patchRenderer.viewBox.zoom * 0.6,
-                    "useGl": this._usingGl
+                    "useGl": this._usingGl,
+                    "vizLayer": this
                 };
 
-                if (pos[0] === pos[0] && size[0] === size[0]) this._items[i].op.renderVizLayer(this._canvasCtx, layer);
+                if (pos[0] === pos[0] && size[0] === size[0]) this._items[i].op.renderVizLayer(this._canvasCtx, layer, this);
             }
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
@@ -218,5 +219,69 @@ export default class VizLayer extends CABLES.EventTarget
     resumeInteraction()
     {
         this._eleCanvas.style["pointer-events"] = "none";
+    }
+
+
+
+    renderText(ctx, layer, lines, options)
+    {
+        let indent = "";
+
+        let fs = Math.max(1, options.fontSize);
+        if (options.zoomText)fs *= (1.0 / layer.scale);
+        let padding = fs * 0.25;
+        const lineHeight = fs + padding;
+        let numLines = Math.floor(layer.height / layer.scale / lineHeight);
+
+        let offset = Math.floor(options.scroll * lines.length);
+
+        offset = Math.max(offset, 0);
+        offset = Math.min(offset, lines.length - numLines);
+        if (lines.length < numLines)offset = 0;
+
+        ctx.font = "normal " + fs + "px sourceCodePro";
+        ctx.fillStyle = "#ccc";
+
+        if (options.showLineNum) for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
+
+        ctx.fillStyle = "#ccc";
+
+        for (let i = offset; i < offset + numLines; i += 1)
+        {
+            if (i >= lines.length || i < 0) continue;
+
+            if (options.showLineNum)
+            {
+                ctx.fillStyle = "#888";
+                ctx.fillText(i,
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+                ctx.fillStyle = "#ccc";
+            }
+
+            ctx.fillText(indent + lines[i],
+                layer.x / layer.scale + padding,
+                layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+        }
+
+        const gradHeight = 30;
+
+        if (offset > 0)
+        {
+            const radGrad = ctx.createLinearGradient(0, layer.y / layer.scale + 5, 0, layer.y / layer.scale + gradHeight);
+            radGrad.addColorStop(0, "#222");
+            radGrad.addColorStop(1, "rgba(34,34,34,0.0)");
+            ctx.fillStyle = radGrad;
+            ctx.fillRect(layer.x / layer.scale, layer.y / layer.scale, layer.width, gradHeight);
+        }
+
+        if (offset + numLines < lines.length)
+        {
+            const radGrad = ctx.createLinearGradient(0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + 5, 0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + gradHeight);
+            radGrad.addColorStop(1, "#222");
+            radGrad.addColorStop(0, "rgba(34,34,34,0.0)");
+            ctx.fillStyle = radGrad;
+            ctx.fillRect(layer.x / layer.scale, layer.y / layer.scale + layer.height / layer.scale - gradHeight, layer.width, gradHeight);
+        }
     }
 }
