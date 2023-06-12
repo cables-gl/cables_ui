@@ -1089,7 +1089,6 @@ export default class OpSelect
             if (eleSelected) eleSelected.classList.remove("selected");
             e.preventDefault();
             this.navigate(1);
-            this.navigate(1);
             break;
 
         default: return true; // exit this handler for other keys
