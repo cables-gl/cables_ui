@@ -251,7 +251,7 @@
             {{/if}}
             {{#if referenceCount}}
                 <br/>
-                <a class="button-small" href="#" onclick="window.open(CABLES.sandbox.getCablesUrl() + '/asset/patches/?filename=/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}', '_blank').focus();">
+                <a class="button-small" href="{{assetPageUrl}}" target="_blank">
                     <span class="icon icon-file-symlink"></span>
                     Show referencing patches</a>
             {{/if}}
