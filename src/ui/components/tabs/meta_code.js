@@ -95,6 +95,7 @@ export default class MetaCode
                     const showPatchLibSelect = defaultops.isUserOp(this._op.objName) || defaultops.isExtensionOp(this._op.objName) || defaultops.isTeamOp(this._op.objName) || defaultops.isPatchOp(this._op.objName);
                     const html = getHandleBarHtml("meta_code",
                         {
+                            "url": CABLES.sandbox.getCablesUrl(),
                             "op": this._op,
                             "doc": doc,
                             "summary": summary,
