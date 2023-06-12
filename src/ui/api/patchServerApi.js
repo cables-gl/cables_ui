@@ -213,201 +213,203 @@ export default class PatchSaveServer extends CABLES.EventTarget
         //     return;
         // }
 
-        const project = gui.project();
-        let hasPrivateUserOps = false;
-        if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
+        CABLESUILOADER.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
-            hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
-        }
-
-        const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches
-
-        let prompt = "Enter a name for the copy of this patch.";
-
-        const modalNotices = [];
-
-        if (hasPrivateUserOps)
-        {
-            modalNotices.push("<b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue cloning this patch, but probably some things will not work.");
-        }
-
-        const checkboxGroups = [];
-
-        const hasCollaborators = project.userList.filter((u) => { return u.username !== gui.user.username; }).length > 0;
-        const hasTeams = true;
-        if (hasCollaborators)
-        {
-            const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();
-            if (copyCollaborators)
+            let hasPrivateUserOps = false;
+            if (!project.userList.some((u) => { return u.usernameLowercase === gui.user.usernameLowercase; }))
             {
-                const checkboxGroup = { "title": "The following collaborators will have access to the copy:", "checkboxes": [] };
-                project.userList.forEach((user, i) =>
+                hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
+            }
+
+            const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches
+
+            let prompt = "Enter a name for the copy of this patch.";
+
+            const modalNotices = [];
+
+            if (hasPrivateUserOps)
+            {
+                modalNotices.push("<b>THIS PATCH HAS PRIVATE OPS.</b><br/>You can continue cloning this patch, but probably some things will not work.");
+            }
+
+            const checkboxGroups = [];
+
+            const hasCollaborators = project.userList.filter((u) => { return u.username !== gui.user.username; }).length > 0;
+            const hasTeams = true;
+            if (hasCollaborators)
+            {
+                const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();
+                if (copyCollaborators)
                 {
-                    if (user._id !== gui.user.id)
+                    const checkboxGroup = { "title": "The following collaborators will have access to the copy:", "checkboxes": [] };
+                    project.userList.forEach((user, i) =>
                     {
-                        const link = CABLES.sandbox.getCablesUrl() + "/u/" + user.username;
-                        const checkboxData = {
-                            "name": "copy-collab-user-" + i,
-                            "value": user._id,
-                            "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
-                            "checked": true,
-                        };
-                        if (userOpsUsed.some((userOp) => { return defaultops.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
+                        if (user._id !== gui.user.id)
                         {
-                            checkboxData.disabled = true;
-                            checkboxData.tooltip = "Collaborator cannot be removed, their userops are used in the patch";
-                        }
-                        checkboxGroup.checkboxes.push(checkboxData);
-                    }
-                });
-                if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
-            }
-            else
-            {
-                modalNotices.push("Collaborators will NOT be copied for public patches!");
-            }
-        }
-
-        if (hasTeams)
-        {
-            if (copyCollaborators)
-            {
-                const checkboxGroup = { "title": "Add teams to the copy:", "checkboxes": [] };
-                project.teams.forEach((team, i) =>
-                {
-                    if (team.allowEdit)
-                    {
-                        const link = CABLES.sandbox.getCablesUrl() + team.link;
-                        checkboxGroup.checkboxes.push({
-                            "name": "copy-collab-team-" + i,
-                            "value": team._id,
-                            "title": "<a href=\"" + link + "\" target=\"blank\">" + team.name + "</a>",
-                            "checked": false,
-                            "disabled": false
-                        });
-                    }
-                });
-                if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
-            }
-        }
-
-        const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
-        if (usedPatchOps.length > 0)
-        {
-            let patchOpsText = "Patch ops used in this patch will be copied to the new patch.";
-            modalNotices.push(patchOpsText);
-        }
-
-        if (project.userId !== gui.user.id)
-        {
-            let licenceText = "The author of the patch reserves all copyright on this work. Please respect this decision.";
-            if (project.settings && project.settings.licence)
-            {
-                let licenceName = project.settings.licence;
-                let licenceLink = null;
-                if (licenceName.startsWith("cc"))
-                {
-                    let licenceUrl = licenceName.split("cc-", 2)[1];
-                    if (licenceName === "cc0") licenceUrl = "cc0";
-                    licenceLink = "https://creativecommons.org/licenses/" + licenceUrl + "/4.0/";
-                    if (licenceLink) licenceName = "<a href=\"" + licenceLink + "\" target=\"_blank\">" + licenceName.toUpperCase() + "</a>";
-                    licenceText = "Patch has a " + licenceName + " Licence. Please respect the licence chosen by the author.";
-                }
-            }
-            modalNotices.push(licenceText);
-        }
-
-        let patchName = gui.project().name;
-        if (gui.corePatch() && gui.corePatch().name && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
-
-        console.log("patch save as - gui.project().name", gui.project().name);
-        console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
-        console.log("patch save as - patchName", patchName);
-
-        const localBlueprints = gui.corePatch().ops.filter((op) =>
-        {
-            if (!defaultops.isBlueprintOp(op)) return false;
-            const port = op.getPortByName("externalPatchId");
-            if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
-            return false;
-        });
-        if (localBlueprints.length > 0)
-        {
-            checkboxGroups.push({
-                "title": "Blueprints:",
-                "checkboxes": [
-                    {
-                        "name": "keepLocalBlueprints",
-                        "title": "Point local blueprints to new patch",
-                        "checked": true
-                    }
-                ]
-            });
-        }
-
-        new ModalDialog({
-            "prompt": true,
-            "title": "Save As...",
-            "text": prompt,
-            "notices": modalNotices,
-            "promptValue": "copy of " + patchName,
-            "checkboxGroups": checkboxGroups,
-            "promptOk": (name, checkboxStates) =>
-            {
-                const collabUsers = [];
-                const collabTeams = [];
-
-                if (checkboxStates)
-                {
-                    const keys = Object.keys(checkboxStates);
-                    keys.forEach((key) =>
-                    {
-                        const value = checkboxStates[key];
-                        if (value)
-                        {
-                            if (key.startsWith("copy-collab-team")) collabTeams.push(value);
-                            if (key.startsWith("copy-collab-user")) collabUsers.push(value);
+                            const link = CABLES.sandbox.getCablesUrl() + "/u/" + user.username;
+                            const checkboxData = {
+                                "name": "copy-collab-user-" + i,
+                                "value": user._id,
+                                "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
+                                "checked": true,
+                            };
+                            if (userOpsUsed.some((userOp) => { return defaultops.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
+                            {
+                                checkboxData.disabled = true;
+                                checkboxData.tooltip = "Collaborator cannot be removed, their userops are used in the patch";
+                            }
+                            checkboxGroup.checkboxes.push(checkboxData);
                         }
                     });
+                    if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
                 }
-                CABLESUILOADER.talkerAPI.send("saveProjectAs",
-                    {
-                        "name": name,
-                        "originalId": gui.project()._id,
-                        "copyCollaborators": copyCollaborators,
-                        "collabUsers": collabUsers,
-                        "collabTeams": collabTeams
-                    },
-                    (err, d) =>
-                    {
-                        if (!err)
-                        {
-                            const newProjectId = d.shortId ? d.shortId : d._id;
-                            gui.corePatch().settings = gui.corePatch().settings || {};
-                            gui.corePatch().settings.isPublic = false;
-                            gui.corePatch().settings.secret = "";
-                            gui.corePatch().settings.isExample = false;
-                            gui.corePatch().settings.isTest = false;
-                            gui.corePatch().settings.isFeatured = false;
+                else
+                {
+                    modalNotices.push("Collaborators will NOT be copied for public patches!");
+                }
+            }
 
-                            if (checkboxStates && checkboxStates.keepLocalBlueprints)
-                            {
-                                gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
-                            }
-
-                            this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
-                        }
-                        else
+            if (hasTeams)
+            {
+                if (copyCollaborators)
+                {
+                    const checkboxGroup = { "title": "Add teams to the copy:", "checkboxes": [] };
+                    project.teams.forEach((team, i) =>
+                    {
+                        if (team.allowEdit)
                         {
-                            new ModalDialog({
-                                "warning": true,
-                                "title": "Could not clone patch",
-                                "text": err.msg,
-                                "showOkButton": true
+                            const link = CABLES.sandbox.getCablesUrl() + team.link;
+                            checkboxGroup.checkboxes.push({
+                                "name": "copy-collab-team-" + i,
+                                "value": team._id,
+                                "title": "<a href=\"" + link + "\" target=\"blank\">" + team.name + "</a>",
+                                "checked": false,
+                                "disabled": false
                             });
                         }
                     });
+                    if (checkboxGroup.checkboxes.length > 0) checkboxGroups.push(checkboxGroup);
+                }
             }
+
+            const usedPatchOps = gui.patchView.getPatchOpsUsedInPatch();
+            if (usedPatchOps.length > 0)
+            {
+                let patchOpsText = "Patch ops used in this patch will be copied to the new patch.";
+                modalNotices.push(patchOpsText);
+            }
+
+            if (project.userId !== gui.user.id)
+            {
+                let licenceText = "The author of the patch reserves all copyright on this work. Please respect this decision.";
+                if (project.settings && project.settings.licence)
+                {
+                    let licenceName = project.settings.licence;
+                    let licenceLink = null;
+                    if (licenceName.startsWith("cc"))
+                    {
+                        let licenceUrl = licenceName.split("cc-", 2)[1];
+                        if (licenceName === "cc0") licenceUrl = "cc0";
+                        licenceLink = "https://creativecommons.org/licenses/" + licenceUrl + "/4.0/";
+                        if (licenceLink) licenceName = "<a href=\"" + licenceLink + "\" target=\"_blank\">" + licenceName.toUpperCase() + "</a>";
+                        licenceText = "Patch has a " + licenceName + " Licence. Please respect the licence chosen by the author.";
+                    }
+                }
+                modalNotices.push(licenceText);
+            }
+
+            let patchName = gui.project().name;
+            if (gui.corePatch() && gui.corePatch().name && gui.corePatch().name !== patchName) patchName = gui.corePatch().name;
+
+            console.log("patch save as - gui.project().name", gui.project().name);
+            console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
+            console.log("patch save as - patchName", patchName);
+
+            const localBlueprints = gui.corePatch().ops.filter((op) =>
+            {
+                if (!defaultops.isBlueprintOp(op)) return false;
+                const port = op.getPortByName("externalPatchId");
+                if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
+                return false;
+            });
+            if (localBlueprints.length > 0)
+            {
+                checkboxGroups.push({
+                    "title": "Blueprints:",
+                    "checkboxes": [
+                        {
+                            "name": "keepLocalBlueprints",
+                            "title": "Point local blueprints to new patch",
+                            "checked": true
+                        }
+                    ]
+                });
+            }
+
+            new ModalDialog({
+                "prompt": true,
+                "title": "Save As...",
+                "text": prompt,
+                "notices": modalNotices,
+                "promptValue": "copy of " + patchName,
+                "checkboxGroups": checkboxGroups,
+                "promptOk": (name, checkboxStates) =>
+                {
+                    const collabUsers = [];
+                    const collabTeams = [];
+
+                    if (checkboxStates)
+                    {
+                        const keys = Object.keys(checkboxStates);
+                        keys.forEach((key) =>
+                        {
+                            const value = checkboxStates[key];
+                            if (value)
+                            {
+                                if (key.startsWith("copy-collab-team")) collabTeams.push(value);
+                                if (key.startsWith("copy-collab-user")) collabUsers.push(value);
+                            }
+                        });
+                    }
+                    CABLESUILOADER.talkerAPI.send("saveProjectAs",
+                        {
+                            "name": name,
+                            "originalId": gui.project()._id,
+                            "copyCollaborators": copyCollaborators,
+                            "collabUsers": collabUsers,
+                            "collabTeams": collabTeams
+                        },
+                        (err, d) =>
+                        {
+                            if (!err)
+                            {
+                                const newProjectId = d.shortId ? d.shortId : d._id;
+                                gui.corePatch().settings = gui.corePatch().settings || {};
+                                gui.corePatch().settings.isPublic = false;
+                                gui.corePatch().settings.secret = "";
+                                gui.corePatch().settings.isExample = false;
+                                gui.corePatch().settings.isTest = false;
+                                gui.corePatch().settings.isFeatured = false;
+
+                                if (checkboxStates && checkboxStates.keepLocalBlueprints)
+                                {
+                                    gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
+                                }
+
+                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
+                            }
+                            else
+                            {
+                                new ModalDialog({
+                                    "warning": true,
+                                    "title": "Could not clone patch",
+                                    "text": err.msg,
+                                    "showOkButton": true
+                                });
+                            }
+                        });
+                }
+            });
         });
     }
 
