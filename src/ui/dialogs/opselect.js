@@ -1103,15 +1103,18 @@ export default class OpSelect
         const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
         let items = this._createListItemsByNames(coreOpNames);
 
+        const docOpName = gui.opDocs.getOpDocs().map((ext) => { return ext.name; });
+        items = items.concat(this._createListItemsByNames(docOpName, items));
+
         const extensionNames = gui.opDocs.getExtensions().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(extensionNames));
+        items = items.concat(this._createListItemsByNames(extensionNames, items));
 
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(teamNamespaces));
+        items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
         const namespace = defaultops.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(patchOpNames));
+        items = items.concat(this._createListItemsByNames(patchOpNames, items));
 
         const newList = {};
         items.forEach((item) =>
@@ -1133,7 +1136,7 @@ export default class OpSelect
         return this._list.find((item) => { return item.name === opName; });
     }
 
-    _createListItemsByNames(opNames)
+    _createListItemsByNames(opNames, listItems = [])
     {
         if (!opNames) return;
         const items = [];
@@ -1175,7 +1178,7 @@ export default class OpSelect
 
             if (defaultops.isCollection(opName))
             {
-                const inUse = this._list && this._list.some((op) => { return op.name.startsWith(opName); });
+                const inUse = listItems && listItems.some((op) => { return op.name.startsWith(opName); });
                 if (inUse)
                 {
                     hidden = true;

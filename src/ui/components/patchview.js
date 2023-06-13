@@ -362,7 +362,7 @@ export default class PatchView extends CABLES.EventTarget
                 this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
             }
         }, 500);
-        gui.serverOps.loadOpLibs(opname, () =>
+        gui.serverOps.loadOpDependencies(opname, () =>
         {
             hadCallback = true;
             const uiAttribs = {};
@@ -801,8 +801,7 @@ export default class PatchView extends CABLES.EventTarget
         let opname = defaultops.defaultOpNames.subPatch;
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
 
-
-        gui.serverOps.loadOpLibs(opname, () =>
+        gui.serverOps.loadOpDependencies(opname, () =>
         {
             const selectedOps = this.getSelectedOps();
             const bounds = this.getSelectionBounds();

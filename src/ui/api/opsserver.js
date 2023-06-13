@@ -1178,7 +1178,7 @@ export default class ServerOps
 
     opCodeLoaded(op)
     {
-        return CABLES && CABLES.OPS && CABLES.OPS.hasOwnProperty(op.opId);
+        return CABLES && CABLES.OPS && (CABLES.OPS.hasOwnProperty(op.opId) || CABLES.OPS.hasOwnProperty(op.id));
     }
 
     loadOpLibs(op, finishedCb)
@@ -1254,11 +1254,14 @@ export default class ServerOps
             const opIdentifier = op.opId || op.objName;
             if (!missingOpsFound.includes(opIdentifier))
             {
-                let loaded = opDocs.some((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = opDocs.some((loadedOp) => { return loadedOp.objName === opIdentifier; });
-                if (!loaded) loaded = this._ops.some((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!loaded) loaded = this._ops.some((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
-                if (loaded) loaded = this.opCodeLoaded(op);
+                let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
+                if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
+                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
+                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
+                let loaded = false;
+                if (foundOp) loaded = this.opCodeLoaded(foundOp);
 
                 if (!loaded)
                 {

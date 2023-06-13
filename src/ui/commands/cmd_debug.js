@@ -114,9 +114,8 @@ CABLES_CMD_DEBUG.testAllOps = function ()
 CABLES_CMD_DEBUG.focusOpAnim = function ()
 {
     const ops = gui.patchView.getSelectedOps();
-    if(ops.length>0)
-        gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
-}
+    if (ops.length > 0) gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
+};
 
 CABLES_CMD_DEBUG.testOp = function ()
 {
@@ -196,7 +195,7 @@ CABLES_CMD_DEBUG.testOp = function ()
 
 function load(opname)
 {
-    gui.serverOps.loadOpLibs(opname, function ()
+    gui.serverOps.loadOpDependencies(opname, function ()
     {
         gui.corePatch().addOp(opname);
     });
