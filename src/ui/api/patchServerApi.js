@@ -639,6 +639,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
 
                             this._log.log(r);
+                            this.finishAnimations();
                             return;
                         }
                         else
@@ -647,31 +648,18 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)
-                                {
                                     gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");
-                                }
                                 else
-                                {
                                     gui.socket.sendNotification("Patch saved in other window");
-                                }
                             }
+
+                            this._serverDate = r.updated;
                         }
 
-                        this._serverDate = r.updated;
-                        const thePatch = gui.corePatch();
-                        const cgl = thePatch.cgl;
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                        if (CABLES.sandbox.manualScreenshot()) this._log.log("not sending screenshot...");
-
-                        if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot())
-                        {
-                            this.saveScreenshot();
-                        }
-                        else
-                        {
-                            this.finishAnimations();
-                        }
+                        if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot()) this.saveScreenshot();
+                        else this.finishAnimations();
                     }
 
                 );

@@ -16,6 +16,25 @@ const debugCommands =
 
 export default debugCommands;
 
+
+CABLES_CMD_DEBUG.testBlueprint2 = function ()
+{
+    const p = gui.corePatch();
+
+    const sub = gui.patchView.getCurrentSubPatch();
+
+    let ops = p.getSubPatchOps(sub, true);
+    console.log(ops);
+    const serOps = [];
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        serOps.push(ops[i].getSerialized());
+    }
+
+    console.log(JSON.stringify(serOps));
+};
+
 CABLES_CMD_DEBUG.globalVarDump = function ()
 {
     CABLES.GlobalVarTester.after(window);
@@ -317,5 +336,11 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.focusOpAnim,
         "category": "debug",
     },
+    {
+        "cmd": "test blueprint2",
+        "func": CABLES_CMD_DEBUG.testBlueprint2,
+        "category": "debug",
+    },
+
 
 );
