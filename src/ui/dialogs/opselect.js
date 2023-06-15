@@ -1143,6 +1143,7 @@ export default class OpSelect
         for (let i = 0; i < opNames.length; i++)
         {
             const opName = opNames[i];
+            if (!opName) continue;
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
             const opDoc = gui.opDocs.getOpDocByName(opName);
