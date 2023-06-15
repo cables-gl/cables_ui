@@ -140,8 +140,11 @@
             display: none;
         }
 
-
-
+        .collection
+        {
+            border: 2px solid var(--color-07);
+            margin-bottom: 3px;
+        }
     }
 
     .searchinfo
@@ -201,13 +204,6 @@
     .score
     {
         color:var(--text-color);
-    }
-
-
-    .collection
-    {
-        border: 2px solid var(--color-07);
-        margin-bottom: 3px;
     }
 
     .selected
