@@ -650,7 +650,7 @@ export default class OpSelect
             {
                 html += "<h2><i class=\"icon icon-users\"></i> " + listItem.shortName + "</h2>";
 
-                if (listItem.teamName) html += "Maintained by team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
+                if (listItem.teamName) html += "Maintained by Team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
                 if (listItem.teamDescription) html += "<br/>" + listItem.teamDescription;
 
                 html += listItem.summary;
@@ -1140,8 +1140,9 @@ export default class OpSelect
     {
         if (!opNames) return;
         const items = [];
-        opNames.forEach((opName) =>
+        for (let i = 0; i < opNames.length; i++)
         {
+            const opName = opNames[i];
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
             const opDoc = gui.opDocs.getOpDocByName(opName);
@@ -1255,7 +1256,7 @@ export default class OpSelect
                 }
                 items.push(op);
             }
-        });
+        }
         return items;
     }
 
