@@ -132,7 +132,7 @@ export default function startUi(cfg)
 
                 setTimeout(() =>
                 {
-                    if (userSettings.get("forceWebGl1")) CABLES.UI.notify("Forcing WebGl v1 ");
+                    if (userSettings.get("forceWebGl1")) CABLES.UI.notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
                 if (window.module) module = window.module; // electronn workaround/fix
