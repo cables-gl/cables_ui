@@ -94,4 +94,41 @@ export function initHandleBarsHelper()
         }
         return "";
     });
+
+    Handlebars.registerHelper("logdate", (str) =>
+    {
+        if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
+        let date = str;
+        if (moment) date = moment(str).format("YYYY-MM-DD HH:mm");
+        return new Handlebars.SafeString("<span title=\"" + date + "\">" + date + "</span>");
+    });
+
+    Handlebars.registerHelper("displaydate", (str) =>
+    {
+        if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
+        let date = str;
+        let displayDate = str;
+        if (moment)
+        {
+            const m = moment(str);
+            date = m.format("YYYY-MM-DD HH:mm");
+            displayDate = m.format("MMM D, YYYY [at] HH:mm");
+        }
+        return new Handlebars.SafeString("<span title=\"" + date + "\">" + displayDate + "</span>");
+    });
+
+    Handlebars.registerHelper("relativedate", (str) =>
+    {
+        if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
+        let date = str;
+        let displayDate = str;
+        if (moment)
+        {
+            const m = moment(str);
+            displayDate = m.fromNow();
+            if (m.isBefore(moment().subtract(7, "days"))) displayDate = moment(date).format("MMM D, YYYY [at] HH:mm");
+            date = m.format("MMM D, YYYY [at] HH:mm");
+        }
+        return new Handlebars.SafeString("<span title=\"" + date + "\">" + displayDate + "</span>");
+    });
 }

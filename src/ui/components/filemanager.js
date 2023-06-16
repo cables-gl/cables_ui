@@ -161,7 +161,6 @@ export default class FileManager
             "id": file._id || "lib" + CABLES.uuid(),
             "p": file.p,
             "date": file.d,
-            "dateFromNow": file.dfr,
             "sizeKb": size,
             "size": file.s,
             "file": file,
