@@ -1622,7 +1622,7 @@ export default class Gui
 
     getOpDoc(opname, html, cb)
     {
-        cb(this.opDocs.get2(opname));
+        cb(this.opDocs.getHtml(opname));
     }
 
     metaCode()

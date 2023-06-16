@@ -629,35 +629,13 @@ export default class OpSelect
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
             this._eleSearchinfo.innerHTML = "";
-            const opDoc = gui.opDocs.get2(opName);
             const listItem = this.getListItemByOpName(opName);
-
+            const opDocHtml = gui.opDocs.getHtml(opName, listItem);
 
             let html = "";
             if (listItem && listItem.isCollection)
             {
-                html = "<div id=\"opselect-layout\" class=\"collection\">";
-                let numOpsDisplay = "";
-                if (listItem.numOps) numOpsDisplay = " - " + listItem.numOps + " ops";
-                if (listItem.isExtension) html += "<h2><i class=\"icon icon-book-open\"></i> " + listItem.shortName + " Extension" + numOpsDisplay + "</h2>";
-                if (listItem.isTeamNamespace) html += "<h2><i class=\"icon icon-users\"></i> " + listItem.shortName + numOpsDisplay + "</h2>";
-
-                if (listItem.teamName) html += "Maintained by Team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a><br/><br/>";
-                if (listItem.summary) html += listItem.summary + "<br/><br/>";
-                if (listItem.description) html += listItem.description + "<br/><br/>";
-
-                if (listItem.teamLink) html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View team</a>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opName + "\" class=\"button-small\">View ops in this namespace</a>";
-
-                if (listItem.ops && listItem.ops.length > 0)
-                {
-                    html += "<br/><br/>";
-                    listItem.ops.forEach((name) =>
-                    {
-                        html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + name + "\"/>";
-                    });
-                }
-                html += "</div>";
+                html += opDocHtml;
             }
             else
             {
@@ -665,7 +643,7 @@ export default class OpSelect
                 html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
                 html += "</div>";
                 html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
-                html += opDoc;
+                html += opDocHtml;
             }
             this._eleSearchinfo.innerHTML = html;
             perf.finish();
