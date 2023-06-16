@@ -674,10 +674,11 @@ export default class ServerOps
                 cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
             });
 
-            if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
-            {
-                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value, true);
-            });
+            if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
+                (event) =>
+                {
+                    cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value, true);
+                });
         });
     }
 
