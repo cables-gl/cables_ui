@@ -2095,7 +2095,16 @@ export default class PatchView extends CABLES.EventTarget
             this.addOp(newOpObjName, { "onOpAdd": (newOp) =>
             {
                 const origOp = this._p.getOpById(opid);
+                const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
 
+                const theUiAttribs = {};
+                for (const i in oldUiAttribs)
+                {
+                    if (i == "uierrors") continue;
+                    theUiAttribs[i] = oldUiAttribs[i];
+                }
+
+                newOp.setUiAttrib(theUiAttribs);
                 this.copyOpInputPorts(origOp, newOp);
 
                 for (let i = 0; i < origOp.portsIn.length; i++)
@@ -2116,18 +2125,11 @@ export default class PatchView extends CABLES.EventTarget
                     }
                 }
 
-                const oldUiAttribs = JSON.parse(JSON.stringify(origOp.uiAttribs));
                 this._p.deleteOp(origOp.id);
 
                 setTimeout(() =>
                 {
-                    const a = {};
-                    for (const i in oldUiAttribs)
-                    {
-                        if (i == "uierrors") continue;
-                        a[i] = oldUiAttribs[i];
-                    }
-                    newOp.setUiAttrib(a);
+                    newOp.setUiAttrib(theUiAttribs);
                     this.setCurrentSubPatch(oldUiAttribs.subPatch || 0);
                     if (cb) cb();
                 }, 100);
