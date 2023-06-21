@@ -6,7 +6,8 @@
 
         <div class="groupSpacer"><h3>Code</h3></div>
 
-        <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
+        <!-- <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span> -->
+        <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}');"><span class="icon icon-edit"></span>Edit code</span>
         <span class="button-small " onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-copy"></span>Clone op code</span>
 
         {{#if user.isStaff}}
