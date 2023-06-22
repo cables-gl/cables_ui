@@ -9,17 +9,6 @@
         </div>
 
 
-<<<<<<< HEAD
-        <!-- <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span> -->
-        <span class="button-small " onclick="gui.serverOps.edit('{{op.objName}}');"><span class="icon icon-edit"></span>Edit code</span>
-        <span class="button-small " onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-copy"></span>Clone op code</span>
-
-        {{#if user.isStaff}}
-            {{#if op.github}}
-                <a class="button-small" href="{{op.github}}" target="_blank">View on github</a>
-            {{/if}}
-        {{/if}}
-=======
         <a class="button-small" target="_blank" href="{{url}}/op/{{op.objName}}"><span class="icon icon-op"></span>Op Page</a>
         <br/>
         <span class="button-small" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
@@ -29,7 +18,6 @@
         <a class="button-small" target="_blank" href="{{url}}/op/rename?op={{op.objName}}&new={{op.objName}}"><span class="icon icon-op"></span>Rename Op</a>
         <br/>
         <br/>
->>>>>>> 507d456c3579fb41ae4b02ab4f9946d79b44c93b
 
         {{#if warns}}
             <div class="groupSpacer"><h3>Warnings</h3></div>
