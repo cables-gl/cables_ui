@@ -1,4 +1,3 @@
-
 import defaultops from "../defaultops";
 import Logger from "../utils/logger";
 import { getHandleBarHtml } from "../utils/handlebars";
@@ -100,7 +99,7 @@ export default class OpDocs
 
     /**
      * Adds some properties to each doc in the op docs array
-     * @param {array} opDocs - The array of op docs
+     * @param {array} _opDocs - The array of op docs
      */
     extendOpDocs(_opDocs)
     {
@@ -109,6 +108,7 @@ export default class OpDocs
         {
             const opDoc = _opDocs[i];
             opDoc.category = defaultops.getNamespaceClassName(opDoc.name);
+            let summaryParsed = false;
             if (opDoc.layout)
             {
                 if (opDoc.layout.portsIn)
@@ -116,13 +116,27 @@ export default class OpDocs
                     this.addTypeStringToPorts(opDoc.layout.portsIn);
                     this.setPortDocTexts(opDoc.layout.portsIn, opDoc);
                     opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
+                    summaryParsed = true;
                 }
                 if (opDoc.layout.portsOut)
                 {
                     this.addTypeStringToPorts(opDoc.layout.portsOut);
                     this.setPortDocTexts(opDoc.layout.portsOut, opDoc);
-                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
+                    if (!summaryParsed)
+                    {
+                        opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
+                        summaryParsed = true;
+                    }
                 }
+            }
+            if (defaultops.isCollection(opDoc.name))
+            {
+                if (!summaryParsed)
+                {
+                    opDoc.summaryHtml = this.parseMarkdown(opDoc.summary);
+                    summaryParsed = true;
+                }
+                opDoc.descriptionHtml = this.parseMarkdown(opDoc.description);
             }
         }
     }
@@ -219,27 +233,19 @@ export default class OpDocs
 
     /**
      * Returns the documentation for an op as Html
-     * Does not render the op-svg (layout).
-     * @param {string} opName - The name of the op to get the documantation as Html for
+     * @param {string} opName - The name of the op to get the documentation as Html for
      */
-    get2(opName)
+    getHtml(opName, collectionInfo = {})
     {
         let opDoc = this.getOpDocByName(opName);
+        console.log("GET2", opName, opDoc);
 
-
+        let template = "op-doc-template";
+        if (defaultops.isExtension(opName)) template = "op-doc-collection-template-extension";
+        if (defaultops.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
         if (!opDoc)
         {
-            if (defaultops.isExtension(opName))
-            {
-                opDoc =
-                    {
-                        "name": "",
-                        "summaryHtml": "",
-                        "summary": "",
-                        "userOp": false
-                    };
-            }
-            else if (defaultops.isTeamNamespace(opName))
+            if (defaultops.isCollection(opName))
             {
                 opDoc =
                     {
@@ -267,11 +273,12 @@ export default class OpDocs
             opDoc.isExtended = true;
         }
 
-        const html = getHandleBarHtml("op-doc-template", {
-            "opDoc": opDoc
-        });
+        console.log("THINGS", opDoc, collectionInfo);
 
-        return html;
+        return getHandleBarHtml(template, {
+            "opDoc": opDoc,
+            "collectionInfo": collectionInfo
+        });
     }
 
     showPortDoc(opname, portname)

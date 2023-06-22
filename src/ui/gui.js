@@ -437,13 +437,16 @@ export default class Gui
 
         let patchHeight = window.innerHeight;
 
-        if (this.isRemoteClient)
+        if (window.innerWidth <= 480 || this.isRemoteClient)
         {
             this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
             this._showingEditor = false;
+        }
 
+        if (this.isRemoteClient)
+        {
             this._elMenubar.style.zIndex = 40;
             const lis = ele.byQueryAll("#menubar li");
 
@@ -1619,7 +1622,7 @@ export default class Gui
 
     getOpDoc(opname, html, cb)
     {
-        cb(this.opDocs.get2(opname));
+        cb(this.opDocs.getHtml(opname));
     }
 
     metaCode()

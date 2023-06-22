@@ -161,7 +161,6 @@ export default class FileManager
             "id": file._id || "lib" + CABLES.uuid(),
             "p": file.p,
             "date": file.d,
-            "dateFromNow": file.dfr,
             "sizeKb": size,
             "size": file.s,
             "file": file,
@@ -503,12 +502,14 @@ export default class FileManager
                                                 let linkText = otherCount + " other patch";
                                                 if (otherCount > 1) linkText += "es";
                                                 content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                if (countRes.data.viaBlueprint) content += ". " + countRes.data.viaBlueprint + " times via blueprint.";
                                             }
                                             if (countRes.data.countOps)
                                             {
                                                 let linkText = countRes.data.countOps + " op";
                                                 if (countRes.data.countOps > 1) content += "s";
                                                 content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                if (countRes.data.viaBlueprint) content += ". " + countRes.data.viaBlueprint + " times via blueprint.";
                                                 allowDelete = false;
                                             }
                                         }

@@ -126,7 +126,7 @@
                         <td><div id="item{{id}}" draggable="true" ondragstart="CABLES.DragNDrop.startDragLibraryFile(event,'{{p}}');" class="draggable listitem item {{#if selected}} selected {{/if}} {{#if isLibraryFile}} library{{/if}}" >{{title}}</div>
                         </td>
                         <td>{{sizeKb}}</td>
-                        <td>{{dateFromNow}}</td>
+                        <td>{{relativedate date}}</td>
                         <td>{{#if isReference}}reference{{/if}}</td>
 
                     </tr>
@@ -251,7 +251,7 @@
             {{/if}}
             {{#if referenceCount}}
                 <br/>
-                <a class="button-small" href="#" onclick="window.open(CABLES.sandbox.getCablesUrl() + '/asset/patches/?filename=/assets/{{file.fileDb.projectId}}/{{file.fileDb.fileName}}', '_blank').focus();">
+                <a class="button-small" href="{{assetPageUrl}}" target="_blank">
                     <span class="icon icon-file-symlink"></span>
                     Show referencing patches</a>
             {{/if}}
@@ -265,8 +265,7 @@
                 {{/if}}
 
                 <br/><br/>
-                last change: {{file.readableDateSince}}<br/>
-                {{file.readableDate}}
+                last change: {{relativedate file.fileDb.updated}}<br/>
                 <br/><br/>
             {{/compare}}
         </div>

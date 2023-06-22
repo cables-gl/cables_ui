@@ -612,75 +612,39 @@ export default class OpSelect
 
     updateInfo()
     {
-        const htmlFoot = "";
-
-        let opname = "";
+        let opName = "";
         const selectedEle = ele.byClass("selected");
 
-        if (selectedEle)opname = selectedEle.dataset.opname;
+        if (selectedEle)opName = selectedEle.dataset.opname;
 
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
-        this.updateOptions(opname);
+        this.updateOptions(opName);
 
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
         {
             this._showSuggestionsInfo();
         }
-        else if (opname)
+        else if (opName)
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
             this._eleSearchinfo.innerHTML = "";
-            const opDoc = gui.opDocs.get2(opname);
-            const listItem = this.getListItemByOpName(opname);
+            const listItem = this.getListItemByOpName(opName);
+            const opDocHtml = gui.opDocs.getHtml(opName, listItem);
 
-            let html = "<div id=\"opselect-layout\">";
-
-            if (listItem && listItem.isExtension)
+            let html = "";
+            if (listItem && listItem.isCollection)
             {
-                html += "<i class=\"icon icon-book-open\"></i> Extension";
-                if (listItem.numOps) html += " - " + listItem.numOps + " ops";
-                html += "<h2>" + listItem.shortName + "</h2>";
-
-                html += listItem.summary;
-                html += "<br/><br/>An extension is a collection of ops, that is not contained in the default cables core. They can be loaded into the editor when needed.<br/><br/>";
-                // todo: here should be a description of the extension and list of ops etc...
-            }
-            else if (listItem && listItem.isTeamNamespace)
-            {
-                html += "<h2><i class=\"icon icon-users\"></i> " + listItem.shortName + "</h2>";
-
-                if (listItem.teamName) html += "Maintained by team <a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\">" + listItem.teamName + "</a>";
-                if (listItem.teamDescription) html += "<br/>" + listItem.teamDescription;
-
-                html += listItem.summary;
-                html += "<br/><br/>";
-                if (listItem.numOps) html += listItem.numOps + " ops";
-                html += "<br/><br/>";
+                html += opDocHtml;
             }
             else
             {
-                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opname + "\"/>";
+                html = "<div id=\"opselect-layout\" class=\"op\">";
+                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+                html += "</div>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+                html += opDocHtml;
             }
-
-            html += "</div>";
-            if (listItem && listItem.isExtension)
-            {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops in this extension</a>";
-            }
-            else if (listItem && listItem.isTeamNamespace)
-            {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + listItem.teamLink + "\" class=\"button-small\">View team</a>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/ops/" + opname + "\" class=\"button-small\">View ops by this team</a>";
-            }
-            else
-            {
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opname + "\" class=\"button-small\">View Documentation</a>";
-            }
-
-            html += opDoc;
-            html += htmlFoot;
-
             this._eleSearchinfo.innerHTML = html;
             perf.finish();
         }
@@ -688,7 +652,7 @@ export default class OpSelect
         if (this._getQuery() == "")
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
 
-        this._currentSearchInfo = opname;
+        this._currentSearchInfo = opName;
     }
 
     search()
@@ -1103,15 +1067,18 @@ export default class OpSelect
         const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
         let items = this._createListItemsByNames(coreOpNames);
 
+        const docOpName = gui.opDocs.getOpDocs().map((ext) => { return ext.name; });
+        items = items.concat(this._createListItemsByNames(docOpName, items));
+
         const extensionNames = gui.opDocs.getExtensions().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(extensionNames));
+        items = items.concat(this._createListItemsByNames(extensionNames, items));
 
         const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(teamNamespaces));
+        items = items.concat(this._createListItemsByNames(teamNamespaces, items));
 
         const namespace = defaultops.getPatchOpsNamespace();
         const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(patchOpNames));
+        items = items.concat(this._createListItemsByNames(patchOpNames, items));
 
         const newList = {};
         items.forEach((item) =>
@@ -1133,12 +1100,14 @@ export default class OpSelect
         return this._list.find((item) => { return item.name === opName; });
     }
 
-    _createListItemsByNames(opNames)
+    _createListItemsByNames(opNames, listItems = [])
     {
         if (!opNames) return;
         const items = [];
-        opNames.forEach((opName) =>
+        for (let i = 0; i < opNames.length; i++)
         {
+            const opName = opNames[i];
+            if (!opName) continue;
             const parts = opName.split(".");
             const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
             const opDoc = gui.opDocs.getOpDocByName(opName);
@@ -1175,7 +1144,7 @@ export default class OpSelect
 
             if (defaultops.isCollection(opName))
             {
-                const inUse = this._list && this._list.some((op) => { return op.name.startsWith(opName); });
+                const inUse = listItems && listItems.some((op) => { return op.name.startsWith(opName); });
                 if (inUse)
                 {
                     hidden = true;
@@ -1204,7 +1173,7 @@ export default class OpSelect
                     "name": opName,
                     "summary": summary,
                     "nscolor": defaultops.getNamespaceClassName(opName),
-                    "isOp": true,
+                    "isOp": !defaultops.isCollection(opName),
                     "userOp": defaultops.isUserOp(opName),
                     "devOp": defaultops.isDevOp(opName),
                     "extensionOp": defaultops.isExtensionOp(opName),
@@ -1229,30 +1198,21 @@ export default class OpSelect
                 }
                 if (defaultops.isCollection(opName))
                 {
-                    const collectionOps = gui.opDocs.getNamespaceDocs(opName);
-                    const collectionDoc = collectionOps.find((collectionOp) => { return collectionOp.name === opName; });
-                    let numOps = collectionDoc ? collectionDoc.numOps : 0;
                     op.isOp = false;
-                    op.numOps = numOps;
                     op.pop = 1;
                     if (opDoc)
                     {
-                        if (defaultops.isTeamOp(opName))
-                        {
-                            op.summary = opDoc.summary;
-                            op.teamName = opDoc.teamName;
-                            op.teamDescription = opDoc.teamDescription;
-                            op.teamLink = opDoc.teamLink;
-                        }
-                        if (defaultops.isExtension(opName))
-                        {
-                            op.summary = opDoc.summary;
-                        }
+                        op.summary = opDoc.summary;
+                        op.description = opDoc.description;
+                        op.teamName = opDoc.teamName;
+                        op.teamLink = opDoc.teamLink;
+                        op.numOps = opDoc.numOps;
+                        op.ops = opDoc.ops || [];
                     }
                 }
                 items.push(op);
             }
-        });
+        }
         return items;
     }
 

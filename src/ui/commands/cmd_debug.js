@@ -16,6 +16,25 @@ const debugCommands =
 
 export default debugCommands;
 
+
+CABLES_CMD_DEBUG.testBlueprint2 = function ()
+{
+    const p = gui.corePatch();
+
+    const sub = gui.patchView.getCurrentSubPatch();
+
+    let ops = p.getSubPatchOps(sub, true);
+    console.log(ops);
+    const serOps = [];
+
+    for (let i = 0; i < ops.length; i++)
+    {
+        serOps.push(ops[i].getSerialized());
+    }
+
+    console.log(JSON.stringify(serOps));
+};
+
 CABLES_CMD_DEBUG.globalVarDump = function ()
 {
     CABLES.GlobalVarTester.after(window);
@@ -114,9 +133,8 @@ CABLES_CMD_DEBUG.testAllOps = function ()
 CABLES_CMD_DEBUG.focusOpAnim = function ()
 {
     const ops = gui.patchView.getSelectedOps();
-    if(ops.length>0)
-        gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
-}
+    if (ops.length > 0) gui.patchView.patchRenderer.focusOpAnim(ops[0].id);
+};
 
 CABLES_CMD_DEBUG.testOp = function ()
 {
@@ -196,7 +214,7 @@ CABLES_CMD_DEBUG.testOp = function ()
 
 function load(opname)
 {
-    gui.serverOps.loadOpLibs(opname, function ()
+    gui.serverOps.loadOpDependencies(opname, function ()
     {
         gui.corePatch().addOp(opname);
     });
@@ -318,5 +336,11 @@ CMD_DEBUG_COMMANDS.push(
         "func": CABLES_CMD_DEBUG.focusOpAnim,
         "category": "debug",
     },
+    {
+        "cmd": "test blueprint2",
+        "func": CABLES_CMD_DEBUG.testBlueprint2,
+        "category": "debug",
+    },
+
 
 );
