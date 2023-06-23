@@ -238,7 +238,6 @@ export default class OpDocs
     getHtml(opName, collectionInfo = {})
     {
         let opDoc = this.getOpDocByName(opName);
-        console.log("GET2", opName, opDoc);
 
         let template = "op-doc-template";
         if (defaultops.isExtension(opName)) template = "op-doc-collection-template-extension";
@@ -272,8 +271,6 @@ export default class OpDocs
             this.extendOpDocs([opDoc]);
             opDoc.isExtended = true;
         }
-
-        console.log("THINGS", opDoc, collectionInfo);
 
         return getHandleBarHtml(template, {
             "opDoc": opDoc,
