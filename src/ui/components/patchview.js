@@ -968,7 +968,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultops.isBlueprintOp(ops[i]) && ops[i].uiAttribs)
+            if (defaultops.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -1831,6 +1831,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         this._patchRenderer.serialize(dataUi);
     }
+
 
     setCurrentSubPatch(subpatch, next)
     {

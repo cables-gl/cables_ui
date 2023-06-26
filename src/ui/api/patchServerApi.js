@@ -500,6 +500,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
         }
 
+
+        // delete subpatch 2 ops
+        let isu = data.ops.length;
+        while (isu--)
+            if (data.ops[isu].uiAttribs.blueprintSubpatch2)
+                data.ops.splice(isu, 1);
+
+
         if (blueprintIds.length > 0)
         {
             let i = data.ops.length;
@@ -513,6 +521,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 }
             }
         }
+
 
         data.ui = {
             "viewBox": {},
