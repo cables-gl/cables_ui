@@ -989,11 +989,14 @@ export default class PatchView extends CABLES.EventTarget
                         break;
                     }
 
+
                     const o = {
                         "opId": ops[j].id,
                         "name": ops[j].name,
                         "id": foundPatchIds[i]
                     };
+
+                    o.subPatchVer = ops[j].storage.subPatchVer;
 
                     if (ops[j].storage && ops[j].storage.blueprint)
                     {
