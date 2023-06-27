@@ -557,6 +557,17 @@ class OpParampanel extends CABLES.EventTarget
                     gui.patchView.focusSubpatchOp(el.dataset.id);
                 },
             });
+
+            if (el.dataset.subpatchver == "2")
+                items.push({
+                    "title": "Create op from subpatch",
+                    func()
+                    {
+                        console.log(1);
+                        gui.serverOps.createBlueprintOp(el.dataset.id);
+                        // gui.patchView.focusSubpatchOp(el.dataset.id);
+                    },
+                });
         }
         CABLES.contextMenu.show({ items }, el);
     }

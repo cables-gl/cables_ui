@@ -968,7 +968,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultops.isBlueprintOp(ops[i]) && ops[i].uiAttribs)
+            if (defaultops.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -989,11 +989,14 @@ export default class PatchView extends CABLES.EventTarget
                         break;
                     }
 
+
                     const o = {
                         "opId": ops[j].id,
                         "name": ops[j].name,
                         "id": foundPatchIds[i]
                     };
+
+                    o.subPatchVer = ops[j].storage.subPatchVer;
 
                     if (ops[j].storage && ops[j].storage.blueprint)
                     {
@@ -1831,6 +1834,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         this._patchRenderer.serialize(dataUi);
     }
+
 
     setCurrentSubPatch(subpatch, next)
     {

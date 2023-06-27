@@ -128,7 +128,87 @@ export default class ServerOps
         return false;
     }
 
-    create(name, cb)
+    createBlueprintOp(subid)
+    {
+        this.createDialog(null,
+            {
+                "showEditor": false,
+                "cb": (newOp) =>
+                {
+                    console.log("new op created");
+
+                    CABLESUILOADER.talkerAPI.send(
+                        "getOpCode",
+                        {
+                            "opname": "Ops.Dev.FirstStepBlueprint2",
+                            "projectId": this._patchId
+                        },
+                        (er, rslt) =>
+                        {
+                            console.log("newOp.objName", newOp.objName);
+                            console.log("rslt", rslt);
+
+                            CABLESUILOADER.talkerAPI.send(
+                                "saveOpCode",
+                                {
+                                    "opname": newOp.objName,
+                                    "code": rslt.code
+                                },
+                                (err, res) =>
+                                {
+                                    const ops = gui.patchView.getAllSubPatchOps(subid);
+                                    const o = { "ops": [] };
+                                    const subId = CABLES.shortId();
+                                    ops.forEach((op) =>
+                                    {
+                                        const ser = op.getSerialized();
+
+                                        ser.uiAttribs.subPatch = subId;
+                                        o.ops.push(ser);
+                                        //
+                                        // op.setUiAttrib({ "subPatch": CABLES.shortId() });
+                                    });
+
+                                    CABLES.Patch.replaceOpIds(o, subId);
+
+                                    CABLESUILOADER.talkerAPI.send(
+                                        "opAttachmentSave",
+                                        {
+                                            "opname": newOp.objName,
+                                            "name": "att_subpatch_json",
+                                            "content": JSON.stringify(o),
+                                        },
+                                        (errr, re) =>
+                                        {
+                                            console.log("attachment subpatch json content");
+
+                                            this.execute(newOp.objName, () =>
+                                            {
+                                                console.log("op re rexecuted...");
+                                            });
+
+
+
+                                            // const s = document.createElement("script");
+                                            // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + newOp.objName));
+                                            // s.onload = () =>
+                                            // {
+                                            //     gui.corePatch().reloadOp(
+                                            //         newOp.objName,
+                                            //         (num, newOps) =>
+                                            //         {
+                                            //             console.log("op reloaded...");
+                                            //         });
+                                            // };
+                                        });
+                                }
+                            );
+                        });
+                }
+            });
+    }
+
+    create(name, cb, opendEditor)
     {
         const loadingModal = new ModalLoading("Creating op...");
 
@@ -147,7 +227,8 @@ export default class ServerOps
                 this.loadMissingOp(res, () =>
                 {
                     gui.maintabPanel.show(true);
-                    this.edit(name, false, null, true);
+                    if (opendEditor)
+                        this.edit(name, false, null, true);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
@@ -538,7 +619,7 @@ export default class ServerOps
                 CABLESUILOADER.talkerAPI.send(
                     "opAttachmentAdd",
                     {
-                        opname,
+                        "opname": opname,
                         "name": attName,
                     },
                     (err, res) =>
@@ -682,7 +763,7 @@ export default class ServerOps
         });
     }
 
-    createDialog(name)
+    createDialog(name, options)
     {
         if (gui.project().isOpExample)
         {
@@ -714,8 +795,10 @@ export default class ServerOps
                                 });
 
                                 if (op) gui.patchView.focusOp(op.id);
+                                if (options.cb)options.cb(op);
                             }
-                        });
+                        },
+                        options.showEditor);
                 });
             });
         }, false);
