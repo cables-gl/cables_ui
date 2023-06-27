@@ -128,7 +128,7 @@ export default class ServerOps
         return false;
     }
 
-    createBlueprintOp(subid)
+    createBlueprintOp(oldSubid)
     {
         this.createDialog(null,
             {
@@ -156,7 +156,7 @@ export default class ServerOps
                                 },
                                 (err, res) =>
                                 {
-                                    const ops = gui.patchView.getAllSubPatchOps(subid);
+                                    const ops = gui.patchView.getAllSubPatchOps(oldSubid);
                                     const o = { "ops": [] };
                                     const subId = CABLES.shortId();
                                     ops.forEach((op) =>
