@@ -227,6 +227,7 @@ export default class GlLink
         const op1 = gui.corePatch().getOpById(this._opIdInput);
         const op2 = gui.corePatch().getOpById(this._opIdOutput);
 
+        if (!op1 || !op1.uiAttribs || !op2 || !op2.uiAttribs) return;
         this.crossSubpatch = op1.uiAttribs.subPatch != op2.uiAttribs.subPatch;
 
         if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
