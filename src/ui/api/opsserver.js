@@ -32,7 +32,6 @@ export default class ServerOps
                     gui.mainTabs.activateTabByName(lastTab);
                     userSettings.set("editortab", lastTab);
                     CABLES.editorSession.finishLoadingTab();
-                    // gui.jobs().finish("open op editor" + name);
                 });
             }
         );
@@ -128,15 +127,62 @@ export default class ServerOps
         return false;
     }
 
-    createBlueprintOp(oldSubid)
+
+    updateBluePrint2Attachment(newOp, oldSubid)
+    {
+        const ops = gui.patchView.getAllSubPatchOps(oldSubid);
+        const o = { "ops": [] };
+        const subId = CABLES.shortId();
+        ops.forEach((op) =>
+        {
+            const ser = op.getSerialized();
+
+            ser.uiAttribs.subPatch = subId;
+            o.ops.push(ser);
+        });
+
+        CABLES.Patch.replaceOpIds(o, subId);
+
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentSave",
+            {
+                "opname": newOp.objName,
+                "name": "att_subpatch_json",
+                "content": JSON.stringify(o),
+            },
+            (errr, re) =>
+            {
+                console.log("attachment subpatch json content");
+
+                this.execute(newOp.objName, () =>
+                {
+                    console.log("op re rexecuted...");
+                });
+
+
+
+                // const s = document.createElement("script");
+                // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + newOp.objName));
+                // s.onload = () =>
+                // {
+                //     gui.corePatch().reloadOp(
+                //         newOp.objName,
+                //         (num, newOps) =>
+                //         {
+                //             console.log("op reloaded...");
+                //         });
+                // };
+            });
+    }
+
+    createBlueprint2Op(oldSubid)
     {
         this.createDialog(null,
             {
                 "showEditor": false,
-                "cb": (newOp) =>
+                "cb":
+                (newOp) =>
                 {
-                    console.log("new op created");
-
                     CABLESUILOADER.talkerAPI.send(
                         "getOpCode",
                         {
@@ -145,9 +191,6 @@ export default class ServerOps
                         },
                         (er, rslt) =>
                         {
-                            console.log("newOp.objName", newOp.objName);
-                            console.log("rslt", rslt);
-
                             CABLESUILOADER.talkerAPI.send(
                                 "saveOpCode",
                                 {
@@ -156,51 +199,7 @@ export default class ServerOps
                                 },
                                 (err, res) =>
                                 {
-                                    const ops = gui.patchView.getAllSubPatchOps(oldSubid);
-                                    const o = { "ops": [] };
-                                    const subId = CABLES.shortId();
-                                    ops.forEach((op) =>
-                                    {
-                                        const ser = op.getSerialized();
-
-                                        ser.uiAttribs.subPatch = subId;
-                                        o.ops.push(ser);
-                                        //
-                                        // op.setUiAttrib({ "subPatch": CABLES.shortId() });
-                                    });
-
-                                    CABLES.Patch.replaceOpIds(o, subId);
-
-                                    CABLESUILOADER.talkerAPI.send(
-                                        "opAttachmentSave",
-                                        {
-                                            "opname": newOp.objName,
-                                            "name": "att_subpatch_json",
-                                            "content": JSON.stringify(o),
-                                        },
-                                        (errr, re) =>
-                                        {
-                                            console.log("attachment subpatch json content");
-
-                                            this.execute(newOp.objName, () =>
-                                            {
-                                                console.log("op re rexecuted...");
-                                            });
-
-
-
-                                            // const s = document.createElement("script");
-                                            // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + newOp.objName));
-                                            // s.onload = () =>
-                                            // {
-                                            //     gui.corePatch().reloadOp(
-                                            //         newOp.objName,
-                                            //         (num, newOps) =>
-                                            //         {
-                                            //             console.log("op reloaded...");
-                                            //         });
-                                            // };
-                                        });
+                                    this.updateBluePrint2Attachment(newOp, oldSubid);
                                 }
                             );
                         });
@@ -785,7 +784,6 @@ export default class ServerOps
                     // add new op
                     gui.patchView.addOp(opname,
                         {
-
                             "onOpAdd": (op) =>
                             {
                                 op.setUiAttrib({
@@ -814,15 +812,11 @@ export default class ServerOps
             return;
         }
 
-
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
-        if (defaultops.isTeamOp(oldName))
-        {
-            suggestedNamespace = defaultops.getNamespace(oldName);
-        }
+        if (defaultops.isTeamOp(oldName)) suggestedNamespace = defaultops.getNamespace(oldName);
 
         this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
         {
@@ -867,15 +861,12 @@ export default class ServerOps
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
-
         const userInteraction = !fromListener;
-
 
         let editorObj = null;
         CABLES.api.clearCache();
 
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
-
 
         const apiParams = {
             "opname": opname,
@@ -909,7 +900,6 @@ export default class ServerOps
                 if (attachmentName.endsWith(".js")) syntax = "js";
                 if (attachmentName.endsWith(".css")) syntax = "css";
 
-
                 if (editorObj)
                 {
                     const lastTab = userSettings.get("editortab");
@@ -925,9 +915,9 @@ export default class ServerOps
                     new EditorTab({
                         "title": title,
                         "name": editorObj.name,
-                        content,
-                        syntax,
-                        editorObj,
+                        "content": content,
+                        "syntax": syntax,
+                        "editorObj": editorObj,
                         "allowEdit": this.canEditAttachment(gui.user, opname),
                         "inactive": inactive,
                         "onClose": (which) =>
@@ -962,10 +952,10 @@ export default class ServerOps
                                     _setStatus("saved");
                                     gui.serverOps.execute(opname, () =>
                                     {
-                                        setTimeout(() =>
-                                        {
-                                            gui.opParams.refresh();
-                                        }, 100);
+                                        // setTimeout(() =>
+                                        // {
+                                        gui.opParams.refresh();
+                                        // }, 100);
                                         loadingModal.close();
                                     });
                                 },

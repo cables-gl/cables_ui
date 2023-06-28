@@ -1004,6 +1004,11 @@ export default class PatchView extends CABLES.EventTarget
                         o.type = "blueprintSub";
                     }
 
+                    // if (defaultops.isBlueprintOp(ops[j]) == 2)
+                    // {
+                    o.blueprintVer = ops[j].storage.blueprintVer;
+                    // }
+
                     subPatches.push(o);
                     found = true;
                 }
