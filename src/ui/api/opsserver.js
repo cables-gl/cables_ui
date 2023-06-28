@@ -154,10 +154,12 @@ export default class ServerOps
             {
                 console.log("attachment subpatch json content");
 
-                this.execute(newOp.objName, () =>
-                {
-                    console.log("op re rexecuted...");
-                });
+                CABLES.UI.notify("blueprint op updated");
+
+                // this.execute(newOp.objName, () =>
+                // {
+                //     console.log("op re rexecuted...");
+                // });
 
 
 
