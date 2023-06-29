@@ -59,7 +59,9 @@ export default class GlPatchAPI
                         link.portOut.name,
                         link.portIn.id,
                         link.portOut.id,
-                        link.portIn.type, visible, link.portIn.parent.uiAttribs.subPatch);
+                        link.portIn.type,
+                        visible,
+                        link.portIn.parent.uiAttribs.subPatch);
                 }
             }
         }
@@ -240,10 +242,7 @@ export default class GlPatchAPI
         }
 
         let visible = true;// p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
-        const l = new GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
-            p1.name, p2.name,
-            p1.id, p2.id,
-            p1.type, visible, p1.parent.uiAttribs.subPatch);
+        const l = new GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id, p1.name, p2.name, p1.id, p2.id, p1.type, visible, p1.parent.uiAttribs.subPatch);
     }
 
     _onUnLink(a, b, link)
@@ -303,11 +302,18 @@ export default class GlPatchAPI
     {
         if (!undo.paused()) gui.setStateUnsaved();
 
+        let updateSubs = false;
+
+        if (op.storage && (op.storage.subPatchVer || op.storage.blueprintVer)) updateSubs = true;
+
         this._glPatch.deleteOp(op.id);
 
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
         CABLES.UI.hideToolTip();
+
+        if (updateSubs)
+            gui.bookmarks.needRefreshSubs = true;
     }
 
     showOpParams(opid)

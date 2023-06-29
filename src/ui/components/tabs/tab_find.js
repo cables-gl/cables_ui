@@ -643,6 +643,21 @@ export default class FindTab
                     found = true;
                 }
 
+                if (ops[i].opId.indexOf(str) > -1)
+                {
+                    where = "opid: " + ops[i].opid;
+                    score += 1;
+                    found = true;
+                }
+
+                if (ops[i].id.indexOf(str) > -1)
+                {
+                    where = "id: " + ops[i].id;
+                    score += 1;
+                    found = true;
+                }
+
+
                 if (String(ops[i].name || "").toLowerCase().indexOf(str) > -1)
                 {
                     if (ops[i].objName.indexOf(ops[i].name) == -1) score += 2; // extra points if non default name

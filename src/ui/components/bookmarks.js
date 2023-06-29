@@ -10,18 +10,14 @@ export default class Bookmarks
         this._dynCmds = [];
         this.needRefreshSubs = true;
         this._subs = null;
+        this._subpatchOps = {};
     }
 
     hasBookmarkWithId(id)
     {
         for (let i = 0; i < this._bookmarks.length; i++)
-        {
-            const bm = this._bookmarks[i];
-            if (bm === id)
-            {
-                return true;
-            }
-        }
+            if (this._bookmarks[i] === id) return true;
+
         return false;
     }
 
@@ -44,7 +40,9 @@ export default class Bookmarks
             this.needRefreshSubs = false;
             for (let i = 0; i < subs.length; i++)
             {
-                subs[i].path = gui.patchView.getSubpatchPathArray(subs[i].id, null, true);
+                const subPatchId = subs[i].id;
+
+                subs[i].path = gui.patchView.getSubpatchPathArray(subPatchId, null, true);
                 let sortname = "";
 
                 for (let j = 0; j < subs[i].path.length; j++)
