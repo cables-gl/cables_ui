@@ -1295,7 +1295,7 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
-            json = CABLES.Patch.replaceOpIds(json, oldSub);
+            json = CABLES.Patch.replaceOpIds(json, { "parentSubPatchId": oldSub });
             const outerOp = this.getSubPatchOuterOp(currentSubPatch);
             for (const i in json.ops)
             {

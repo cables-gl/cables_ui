@@ -8,6 +8,7 @@ import userSettings from "../components/usersettings";
 import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
+import gluiconfig from "../glpatch/gluiconfig";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -145,7 +146,7 @@ export default class ServerOps
             o.ops.push(ser);
         });
 
-        if (options.replaceIds) CABLES.Patch.replaceOpIds(o, subId, newOp.shortName);
+        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "prefixHash": newOp.shortName });
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -179,6 +180,8 @@ export default class ServerOps
 
     createBlueprint2Op(oldSubId)
     {
+        const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
+
         this.createDialog(null,
             {
                 "showEditor": false,
@@ -201,16 +204,19 @@ export default class ServerOps
                                 },
                                 (err, res) =>
                                 {
-                                    this.updateBluePrint2Attachment(newOp, {
-                                        "oldSubId": oldSubId,
-                                        "replaceIds": true,
-                                        "next": () =>
+                                    this.updateBluePrint2Attachment(newOp,
                                         {
-                                            this.execute(newOp.objName, () =>
+                                            "oldSubId": oldSubId,
+                                            "replaceIds": true,
+                                            "next": () =>
                                             {
-                                                console.log("op re rexecuted...");
-                                            });
-                                        } });
+                                                this.execute(newOp.objName,
+                                                    (newOps) =>
+                                                    {
+                                                        if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
+                                                    });
+                                            }
+                                        });
                                 });
                         });
                 }
@@ -365,7 +371,7 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);
-                    if (next)next();
+                    if (next)next(newOps);
                 },
             );
         };
@@ -960,7 +966,7 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
-                                    gui.serverOps.execute(opname, () =>
+                                    gui.serverOps.execute(opname, (newOps) =>
                                     {
                                         // setTimeout(() =>
                                         // {

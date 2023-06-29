@@ -7,6 +7,7 @@ import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
 import defaultops from "../../defaultops";
+import userSettings from "../usersettings";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -240,7 +241,7 @@ class OpParampanel extends CABLES.EventTarget
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", { "op": op });
+        html += getHandleBarHtml("params_op_foot", { "op": op, "showDevInfos": userSettings.get("devinfos") });
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
