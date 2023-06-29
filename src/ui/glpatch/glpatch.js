@@ -34,6 +34,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._log = new Logger("glpatch");
         this.paused = false;
+        this.blueprint = false;
 
         this.clear = true;
         this._cgl = cgl;
@@ -823,11 +824,13 @@ export default class GlPatch extends CABLES.EventTarget
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG || !this.clear)
             this._cgl.gl.clearColor(0, 0, 0, 0);
         else
+        {
             this._cgl.gl.clearColor(
                 glUiConfig.colors.background[0],
                 glUiConfig.colors.background[1],
                 glUiConfig.colors.background[2],
                 glUiConfig.colors.background[3]);
+        }
 
         // if (
         //     this._portDragLine.isActive &&

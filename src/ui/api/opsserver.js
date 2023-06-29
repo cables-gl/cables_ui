@@ -159,24 +159,9 @@ export default class ServerOps
             },
             (errr, re) =>
             {
-                console.log("attachment subpatch json content");
-
-                CABLES.UI.notify("blueprint op updated");
+                CABLES.UI.notify("blueprint op saved");
 
                 if (options.next)options.next();
-
-
-                // const s = document.createElement("script");
-                // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + newOp.objName));
-                // s.onload = () =>
-                // {
-                //     gui.corePatch().reloadOp(
-                //         newOp.objName,
-                //         (num, newOps) =>
-                //         {
-                //             console.log("op reloaded...");
-                //         });
-                // };
             });
     }
 
