@@ -146,7 +146,9 @@ export default class ServerOps
             o.ops.push(ser);
         });
 
-        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "prefixHash": newOp.shortName });
+        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
+
+        console.log(o);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -188,37 +190,43 @@ export default class ServerOps
                 "cb":
                 (newOp) =>
                 {
-                    CABLESUILOADER.talkerAPI.send(
-                        "getOpCode",
-                        {
-                            "opname": "Ops.Dev.FirstStepBlueprint2",
-                            "projectId": this._patchId
-                        },
-                        (er, rslt) =>
-                        {
-                            CABLESUILOADER.talkerAPI.send(
-                                "saveOpCode",
-                                {
-                                    "opname": newOp.objName,
-                                    "code": rslt.code
-                                },
-                                (err, res) =>
-                                {
-                                    this.updateBluePrint2Attachment(newOp,
-                                        {
-                                            "oldSubId": oldSubId,
-                                            "replaceIds": true,
-                                            "next": () =>
+                    console.log(newOp);
+
+
+                    this.addCoreLib(newOp.objName, "subpatchop", () =>
+                    {
+                        CABLESUILOADER.talkerAPI.send(
+                            "getOpCode",
+                            {
+                                "opname": "Ops.Dev.FirstStepBlueprint2",
+                                "projectId": this._patchId
+                            },
+                            (er, rslt) =>
+                            {
+                                CABLESUILOADER.talkerAPI.send(
+                                    "saveOpCode",
+                                    {
+                                        "opname": newOp.objName,
+                                        "code": rslt.code
+                                    },
+                                    (err, res) =>
+                                    {
+                                        this.updateBluePrint2Attachment(newOp,
                                             {
-                                                this.execute(newOp.objName,
-                                                    (newOps) =>
-                                                    {
-                                                        if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
-                                                    });
-                                            }
-                                        });
-                                });
-                        });
+                                                "oldSubId": oldSubId,
+                                                "replaceIds": true,
+                                                "next": () =>
+                                                {
+                                                    this.execute(newOp.objName,
+                                                        (newOps) =>
+                                                        {
+                                                            if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
+                                                        });
+                                                }
+                                            });
+                                    });
+                            });
+                    });
                 }
             });
     }
@@ -242,8 +250,7 @@ export default class ServerOps
                 this.loadMissingOp(res, () =>
                 {
                     gui.maintabPanel.show(true);
-                    if (openEditor)
-                        this.edit(name, false, null, true);
+                    if (openEditor) this.edit(name, false, null, true);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
@@ -516,7 +523,7 @@ export default class ServerOps
         });
     }
 
-    addCoreLib(opName, libName)
+    addCoreLib(opName, libName, next)
     {
         if (libName === "---") return;
 
@@ -555,6 +562,7 @@ export default class ServerOps
                         new ModalDialog({ "title": "new library added", "html": html });
                     });
                 }
+                if (next)next();
             },
         );
     }
