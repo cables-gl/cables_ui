@@ -178,14 +178,16 @@ float samp(in vec2 uv, float w) {
         finalColor.a*=v;
     }
 
-    if(border==1.0) // borde
+    if(border>=1.0) // border
     {
        float outlinefrag=0.004;
        float add=(1.0-step(outlinefrag,posSize.x));
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));
-       finalColor.rgb+=vec3(add*0.1);
+
+       if(border==2.0)finalColor.rgb+=vec3(0.0,add*0.2,add*0.5);
+       else finalColor.rgb+=vec3(add*0.1);
     }
 
     if(selected==1.0) // stripe
