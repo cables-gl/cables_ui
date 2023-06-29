@@ -27,6 +27,8 @@ export default class ServerOps
                 // gui.jobs().start("open op editor" + name);
                 CABLES.editorSession.startLoadingTab();
                 const lastTab = userSettings.get("editortab");
+
+                console.log("op listemner...?!");
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
@@ -128,27 +130,29 @@ export default class ServerOps
     }
 
 
-    updateBluePrint2Attachment(newOp, oldSubid)
+    updateBluePrint2Attachment(newOp, options)
     {
-        const ops = gui.patchView.getAllSubPatchOps(oldSubid);
+        const oldSubId = options.oldSubId;
+        const ops = gui.patchView.getAllSubPatchOps(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
         ops.forEach((op) =>
         {
             const ser = op.getSerialized();
 
+            delete ser.uiAttribs.history;
             ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
         });
 
-        CABLES.Patch.replaceOpIds(o, subId);
+        if (options.replaceIds) CABLES.Patch.replaceOpIds(o, subId, newOp.shortName);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
                 "opname": newOp.objName,
                 "name": "att_subpatch_json",
-                "content": JSON.stringify(o),
+                "content": JSON.stringify(o, null, "    "),
             },
             (errr, re) =>
             {
@@ -156,11 +160,7 @@ export default class ServerOps
 
                 CABLES.UI.notify("blueprint op updated");
 
-                // this.execute(newOp.objName, () =>
-                // {
-                //     console.log("op re rexecuted...");
-                // });
-
+                if (options.next)options.next();
 
 
                 // const s = document.createElement("script");
@@ -177,7 +177,7 @@ export default class ServerOps
             });
     }
 
-    createBlueprint2Op(oldSubid)
+    createBlueprint2Op(oldSubId)
     {
         this.createDialog(null,
             {
@@ -201,15 +201,23 @@ export default class ServerOps
                                 },
                                 (err, res) =>
                                 {
-                                    this.updateBluePrint2Attachment(newOp, oldSubid);
-                                }
-                            );
+                                    this.updateBluePrint2Attachment(newOp, {
+                                        "oldSubId": oldSubId,
+                                        "replaceIds": true,
+                                        "next": () =>
+                                        {
+                                            this.execute(newOp.objName, () =>
+                                            {
+                                                console.log("op re rexecuted...");
+                                            });
+                                        } });
+                                });
                         });
                 }
             });
     }
 
-    create(name, cb, opendEditor)
+    create(name, cb, openEditor)
     {
         const loadingModal = new ModalLoading("Creating op...");
 
@@ -228,7 +236,7 @@ export default class ServerOps
                 this.loadMissingOp(res, () =>
                 {
                     gui.maintabPanel.show(true);
-                    if (opendEditor)
+                    if (openEditor)
                         this.edit(name, false, null, true);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
@@ -894,13 +902,13 @@ export default class ServerOps
                 const content = res.content || "";
                 let syntax = "text";
 
-                if (attachmentName.endsWith(".wgsl")) syntax = "glsl";
-                if (attachmentName.endsWith(".glsl")) syntax = "glsl";
-                if (attachmentName.endsWith(".frag")) syntax = "glsl";
-                if (attachmentName.endsWith(".vert")) syntax = "glsl";
-                if (attachmentName.endsWith(".json")) syntax = "json";
-                if (attachmentName.endsWith(".js")) syntax = "js";
-                if (attachmentName.endsWith(".css")) syntax = "css";
+                if (attachmentName.endsWith(".wgsl") || attachmentName.endsWith("_wgsl")) syntax = "glsl";
+                if (attachmentName.endsWith(".glsl") || attachmentName.endsWith("_glsl")) syntax = "glsl";
+                if (attachmentName.endsWith(".frag") || attachmentName.endsWith("_frag")) syntax = "glsl";
+                if (attachmentName.endsWith(".vert") || attachmentName.endsWith("_vert")) syntax = "glsl";
+                if (attachmentName.endsWith(".json") || attachmentName.endsWith("_json")) syntax = "json";
+                if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
+                if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
                 if (editorObj)
                 {

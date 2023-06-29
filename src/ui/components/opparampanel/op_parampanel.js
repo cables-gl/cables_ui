@@ -563,7 +563,6 @@ class OpParampanel extends CABLES.EventTarget
                     "title": "Create op from subpatch",
                     func()
                     {
-                        console.log(1);
                         gui.serverOps.createBlueprint2Op(el.dataset.id);
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
                     },
@@ -577,7 +576,7 @@ class OpParampanel extends CABLES.EventTarget
                     {
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-                        gui.serverOps.updateBluePrint2Attachment(op, el.dataset.id);
+                        gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
                     },
                 });
