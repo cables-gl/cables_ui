@@ -127,7 +127,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_LINEAR });
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
@@ -879,17 +879,20 @@ export default class GlPatch extends CABLES.EventTarget
         this.snapLines.render(this._canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
-        if (this._fadeOutRect.visible)
-        {
-            this.isAnimated = true;
-            const v = this._fadeOutRectAnim.getValue(this._time);
+        // if (this._fadeOutRect.visible)
+        // {
+        //     this.isAnimated = true;
+        //     const v = this._fadeOutRectAnim.getValue(this._time);
 
-            this._fadeOutRect.setColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                v);
-        }
+        // this.subPatchAnim = 1.0 - this._fadeOutRectAnim.getValue(this._time);
+        // console.log(this.subPatchAnim);
+
+        //     this._fadeOutRect.setColor(
+        //         glUiConfig.colors.background[0],
+        //         glUiConfig.colors.background[1],
+        //         glUiConfig.colors.background[2],
+        //         v);
+        // }
 
 
         this._focusRect.visible = !this._focusRectAnim.isFinished(this._time);
@@ -1455,25 +1458,25 @@ export default class GlPatch extends CABLES.EventTarget
         if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
 
-        const dur = 0.0;
+        const dur = 0.3;
         const timeGrey = dur * 1.5;
         const timeVisibleAgain = dur * 3.0;
 
-        this._fadeOutRectAnim.clear();
-        this._fadeOutRectAnim.setValue(this._time, 0);
-        this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
-        this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
-        this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+        // this._fadeOutRectAnim.clear();
+        // this._fadeOutRectAnim.setValue(this._time, 0);
+        // this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
+        // this._fadeOutRectAnim.setValue(this._time + timeGrey + 2, 1);
+        // this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
 
         gui.patchView.updateSubPatchBreadCrumb(sub);
 
-        setTimeout(() =>
+        // setTimeout(() =>
+        // {
+        for (const i in this._glOpz)
         {
-            for (const i in this._glOpz)
-            {
-                this._glOpz[i].updateVisible();
-            }
-        }, timeGrey * 1000);
+            this._glOpz[i].updateVisible();
+        }
+        // }, timeGrey * 1000);
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
         this.snapLines.update();

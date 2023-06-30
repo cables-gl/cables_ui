@@ -145,7 +145,8 @@ export default class GlViewBox
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
-                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY, true);
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY,
+                true);
         }
     }
 
@@ -244,13 +245,16 @@ export default class GlViewBox
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], dur, true);
+                y - mouseAfterZoom[1],
+                dur,
+                true);
         }
         else
         {
             this.scrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], true);
+                y - mouseAfterZoom[1],
+                true);
         }
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -323,7 +327,6 @@ export default class GlViewBox
                     else ele.show(ele.byId("patchnavhelperBounds"));
                 }
             }
-
         }
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
@@ -529,19 +532,21 @@ export default class GlViewBox
     {
         this._storeCurrentSubPatch();
 
-        const zoomFactor = 0.03;
+        const zoomFactor = 0.1;
 
-        this._animZoom.clear();
-        this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
-        this._animZoom.setValue(this.glPatch.time, this._zoom);
-        this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
+        dur = 0.5;
 
-        this._animZoom.defaultEasing = this._defaultEasing;
+        // this._animZoom.clear();
+        // this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
+        // this._animZoom.setValue(this.glPatch.time, this._zoom);
+        // this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
+
+        // this._animZoom.defaultEasing = this._defaultEasing;
         this._restoreSubPatch(sub);
 
         this._animZoom.clear();
         this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
-        this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
+        this._animZoom.setValue(this.glPatch.time + dur, this._zoom);
 
         if (next)next();
     }

@@ -1858,12 +1858,13 @@ export default class PatchView extends CABLES.EventTarget
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
-            this._patchRenderer.setCurrentSubPatch(subpatch, () =>
-            {
-                gui.patchView.updateSubPatchBreadCrumb(subpatch);
-                if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
-                if (next) next();
-            });
+            this._patchRenderer.setCurrentSubPatch(subpatch,
+                () =>
+                {
+                    gui.patchView.updateSubPatchBreadCrumb(subpatch);
+                    if (ele.byId("subpatchlist")) this.showDefaultPanel(); // update subpatchlist because its already visible
+                    if (next) next();
+                });
         }
         else this._log.warn("patchRenderer has no function setCurrentSubPatch");
 
