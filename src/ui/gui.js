@@ -37,6 +37,7 @@ import LongPressConnector from "./elements/longpressconnector";
 import GlPatch from "./glpatch/glpatch";
 import CanvasManager from "./components/canvas/canvasmanager";
 import GuiRestrictions from "./components/guirestrictions";
+import defaultOps from "./defaultops";
 
 
 export default class Gui
@@ -1356,6 +1357,12 @@ export default class Gui
             }
             else
             {
+                if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
+                {
+                    gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch()), { "oldSubId": gui.patchView.getCurrentSubPatch() });
+                }
+
+
                 CABLES.CMD.PATCH.save();
             }
         });

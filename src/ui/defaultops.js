@@ -347,7 +347,8 @@ const defaultOps = {
 
     "isBlueprintOp": (op) =>
     {
-        return op.storage && op.storage.blueprintVer;
+        if (op && op.storage)
+            return op.storage.blueprintVer || 0;
     },
 
     "isInBlueprint": (op) =>

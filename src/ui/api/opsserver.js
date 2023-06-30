@@ -8,6 +8,7 @@ import userSettings from "../components/usersettings";
 import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
+import gluiconfig from "../glpatch/gluiconfig";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -27,6 +28,8 @@ export default class ServerOps
                 // gui.jobs().start("open op editor" + name);
                 CABLES.editorSession.startLoadingTab();
                 const lastTab = userSettings.get("editortab");
+
+                console.log("op listemner...?!");
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
@@ -128,88 +131,92 @@ export default class ServerOps
     }
 
 
-    updateBluePrint2Attachment(newOp, oldSubid)
+    updateBluePrint2Attachment(newOp, options)
     {
-        const ops = gui.patchView.getAllSubPatchOps(oldSubid);
+        const oldSubId = options.oldSubId;
+        const ops = gui.patchView.getAllSubPatchOps(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
         ops.forEach((op) =>
         {
             const ser = op.getSerialized();
 
+            delete ser.uiAttribs.history;
             ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
         });
 
-        CABLES.Patch.replaceOpIds(o, subId);
+        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
+
+        console.log(o);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
                 "opname": newOp.objName,
                 "name": "att_subpatch_json",
-                "content": JSON.stringify(o),
+                "content": JSON.stringify(o, null, "    "),
             },
             (errr, re) =>
             {
-                console.log("attachment subpatch json content");
+                CABLES.UI.notify("blueprint op saved");
 
-                CABLES.UI.notify("blueprint op updated");
-
-                // this.execute(newOp.objName, () =>
-                // {
-                //     console.log("op re rexecuted...");
-                // });
-
-
-
-                // const s = document.createElement("script");
-                // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + newOp.objName));
-                // s.onload = () =>
-                // {
-                //     gui.corePatch().reloadOp(
-                //         newOp.objName,
-                //         (num, newOps) =>
-                //         {
-                //             console.log("op reloaded...");
-                //         });
-                // };
+                if (options.next)options.next();
             });
     }
 
-    createBlueprint2Op(oldSubid)
+    createBlueprint2Op(oldSubId)
     {
+        const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
+
         this.createDialog(null,
             {
                 "showEditor": false,
                 "cb":
                 (newOp) =>
                 {
-                    CABLESUILOADER.talkerAPI.send(
-                        "getOpCode",
-                        {
-                            "opname": "Ops.Dev.FirstStepBlueprint2",
-                            "projectId": this._patchId
-                        },
-                        (er, rslt) =>
-                        {
-                            CABLESUILOADER.talkerAPI.send(
-                                "saveOpCode",
-                                {
-                                    "opname": newOp.objName,
-                                    "code": rslt.code
-                                },
-                                (err, res) =>
-                                {
-                                    this.updateBluePrint2Attachment(newOp, oldSubid);
-                                }
-                            );
-                        });
+                    console.log(newOp);
+
+
+                    this.addCoreLib(newOp.objName, "subpatchop", () =>
+                    {
+                        CABLESUILOADER.talkerAPI.send(
+                            "getOpCode",
+                            {
+                                "opname": "Ops.Dev.FirstStepBlueprint2",
+                                "projectId": this._patchId
+                            },
+                            (er, rslt) =>
+                            {
+                                CABLESUILOADER.talkerAPI.send(
+                                    "saveOpCode",
+                                    {
+                                        "opname": newOp.objName,
+                                        "code": rslt.code
+                                    },
+                                    (err, res) =>
+                                    {
+                                        this.updateBluePrint2Attachment(newOp,
+                                            {
+                                                "oldSubId": oldSubId,
+                                                "replaceIds": true,
+                                                "next": () =>
+                                                {
+                                                    this.execute(newOp.objName,
+                                                        (newOps) =>
+                                                        {
+                                                            if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
+                                                        });
+                                                }
+                                            });
+                                    });
+                            });
+                    });
                 }
             });
     }
 
-    create(name, cb, opendEditor)
+    create(name, cb, openEditor)
     {
         const loadingModal = new ModalLoading("Creating op...");
 
@@ -228,8 +235,7 @@ export default class ServerOps
                 this.loadMissingOp(res, () =>
                 {
                     gui.maintabPanel.show(true);
-                    if (opendEditor)
-                        this.edit(name, false, null, true);
+                    if (openEditor) this.edit(name, false, null, true);
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
@@ -357,7 +363,7 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);
-                    if (next)next();
+                    if (next)next(newOps);
                 },
             );
         };
@@ -502,7 +508,7 @@ export default class ServerOps
         });
     }
 
-    addCoreLib(opName, libName)
+    addCoreLib(opName, libName, next)
     {
         if (libName === "---") return;
 
@@ -541,6 +547,7 @@ export default class ServerOps
                         new ModalDialog({ "title": "new library added", "html": html });
                     });
                 }
+                if (next)next();
             },
         );
     }
@@ -894,13 +901,13 @@ export default class ServerOps
                 const content = res.content || "";
                 let syntax = "text";
 
-                if (attachmentName.endsWith(".wgsl")) syntax = "glsl";
-                if (attachmentName.endsWith(".glsl")) syntax = "glsl";
-                if (attachmentName.endsWith(".frag")) syntax = "glsl";
-                if (attachmentName.endsWith(".vert")) syntax = "glsl";
-                if (attachmentName.endsWith(".json")) syntax = "json";
-                if (attachmentName.endsWith(".js")) syntax = "js";
-                if (attachmentName.endsWith(".css")) syntax = "css";
+                if (attachmentName.endsWith(".wgsl") || attachmentName.endsWith("_wgsl")) syntax = "glsl";
+                if (attachmentName.endsWith(".glsl") || attachmentName.endsWith("_glsl")) syntax = "glsl";
+                if (attachmentName.endsWith(".frag") || attachmentName.endsWith("_frag")) syntax = "glsl";
+                if (attachmentName.endsWith(".vert") || attachmentName.endsWith("_vert")) syntax = "glsl";
+                if (attachmentName.endsWith(".json") || attachmentName.endsWith("_json")) syntax = "json";
+                if (attachmentName.endsWith(".js") || attachmentName.endsWith("_js")) syntax = "js";
+                if (attachmentName.endsWith(".css") || attachmentName.endsWith("_css")) syntax = "css";
 
                 if (editorObj)
                 {
@@ -952,7 +959,7 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
-                                    gui.serverOps.execute(opname, () =>
+                                    gui.serverOps.execute(opname, (newOps) =>
                                     {
                                         // setTimeout(() =>
                                         // {

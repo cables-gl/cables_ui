@@ -111,7 +111,9 @@
 
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'readonly' }}
-                {{ port.value }}
+            </td>
+            <td>
+                <span class="value monospace valuetext linkedValue">{{ port.value }}</span>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'gradient' }}
                 </td>

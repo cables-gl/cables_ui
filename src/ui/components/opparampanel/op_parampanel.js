@@ -7,6 +7,7 @@ import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
 import defaultops from "../../defaultops";
+import userSettings from "../usersettings";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -240,7 +241,7 @@ class OpParampanel extends CABLES.EventTarget
             perfLoopOut.finish();
         }
 
-        html += getHandleBarHtml("params_op_foot", { "op": op });
+        html += getHandleBarHtml("params_op_foot", { "op": op, "showDevInfos": userSettings.get("devinfos") });
 
         const el = document.getElementById(this._eleId || gui.getParamPanelEleId());
 
@@ -563,7 +564,6 @@ class OpParampanel extends CABLES.EventTarget
                     "title": "Create op from subpatch",
                     func()
                     {
-                        console.log(1);
                         gui.serverOps.createBlueprint2Op(el.dataset.id);
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
                     },
@@ -577,7 +577,7 @@ class OpParampanel extends CABLES.EventTarget
                     {
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
-                        gui.serverOps.updateBluePrint2Attachment(op, el.dataset.id);
+                        gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);
                     },
                 });

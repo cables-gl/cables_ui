@@ -266,10 +266,10 @@
 		    }
 
 
-            &.blueprint, &.blueprint_subpatch
+            &.blueprint, &.blueprint_subpatch, &.blueprint_subpatch2
             {
                 // opacity:0.8;
-                background-color: var(--color_port_array);
+                background-color: var(--color_blueprint);
 
                 h3
                 {

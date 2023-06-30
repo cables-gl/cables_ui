@@ -4,6 +4,7 @@ import Logger from "../utils/logger";
 import MouseState from "./mousestate";
 import OpsMathInterpolate
     from "../../../../cables/src/ops/base/Ops.Math.Interpolate/Ops.Math.Interpolate.json";
+import userSettings from "../components/usersettings";
 
 export default class GlLink
 {
@@ -17,7 +18,7 @@ export default class GlLink
         this._link = link;
         this._visible = visible;
         this._cable = null;
-        this._debugColor = true;
+        this._debugColor = userSettings.get("devinfos");
 
         this._glPatch = glpatch;
         this._type = type;

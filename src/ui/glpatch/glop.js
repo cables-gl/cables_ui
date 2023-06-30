@@ -87,23 +87,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._op.on("onStorageChange", () =>
             {
-                if (this._op.isSubPatchOp())
-                {
-                    this._displayType = this.DISPLAY_SUBPATCH;
-                    this._rectBorder = 1;
-                    this._updateColors();
-                    this.refreshPorts();
-
-                    this._op.patch.on("subpatchExpose", (subpatchid) =>
-                    {
-                        if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
-                            this.refreshPorts();
-                    });
-                }
-                if (this._op.storage && this._op.storage.blueprintVer)
-                {
-                    this._rectBorder = 1;
-                }
+                this._storageChanged();
             });
 
             // if (defaultops.isSubPatchOpName(this._op.objName))
@@ -136,6 +120,26 @@ export default class GlOp extends CABLES.EventTarget
         //     });
     }
 
+    _storageChanged()
+    {
+        if (this._op.isSubPatchOp())
+        {
+            this._displayType = this.DISPLAY_SUBPATCH;
+            this._rectBorder = 1;
+
+            if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = 2;
+            console.log(this._op.storage.blueprintVer);
+            this._updateColors();
+            this.refreshPorts();
+
+            this._op.patch.on("subpatchExpose", (subpatchid) =>
+            {
+                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
+                    this.refreshPorts();
+            });
+        }
+    }
+
     _initWhenFirstInCurrentSubpatch()
     {
         if (this._wasInCurrentSubpatch) return;
@@ -143,6 +147,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._wasInCurrentSubpatch = true;
 
+        this._storageChanged();
         this.refreshPorts();
 
         if (this._glRectBg)
@@ -759,6 +764,9 @@ export default class GlOp extends CABLES.EventTarget
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
 
+
+        this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
+        this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);

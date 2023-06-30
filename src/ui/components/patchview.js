@@ -916,6 +916,8 @@ export default class PatchView extends CABLES.EventTarget
                     let type = "subpatch";
                     if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
 
+                    if (ops[i].storage && ops[i].storage.blueprintVer == 2) type = "blueprint_subpatch2";
+
                     const patchInfo = {
                         "name": ops[i].name,
                         "id": ops[i].patchId.get(),
@@ -1127,27 +1129,34 @@ export default class PatchView extends CABLES.EventTarget
             str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
-        if (names.length > 0 && names[0].type == "blueprint_subpatch")
+        if (names.length > 0)
         {
-            this._patchRenderer.greyOut =
-            this._patchRenderer.greyOutBlue = true;
-            let blueprintPatchId = names[0].blueprintPatchId;
-            if (!blueprintPatchId)
+            if (names[0].type == "blueprint_subpatch2")
             {
-                const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
-                if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
-            }
-            let bpText = "<span class=\"icon icon-external\"></span> Open patch";
-            let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
-            if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
-            {
-                bpText = "Go to subpatch";
-                let subpatchId = names[0].blueprintLocalSubpatch;
-                if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
-            }
-            str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
 
-            gui.restriction.setMessage("blueprint", "This is a blueprint subpatch, changes will not be saved!");
+            }
+            else if (names[0].type == "blueprint_subpatch")
+            {
+                this._patchRenderer.greyOut =
+                this._patchRenderer.greyOutBlue = true;
+                let blueprintPatchId = names[0].blueprintPatchId;
+                if (!blueprintPatchId)
+                {
+                    const firstBlueprint = names.find((name) => { return name.blueprintPatchId; });
+                    if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
+                }
+                let bpText = "<span class=\"icon icon-external\"></span> Open patch";
+                let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
+                if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
+                {
+                    bpText = "Go to subpatch";
+                    let subpatchId = names[0].blueprintLocalSubpatch;
+                    if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
+                }
+                str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
+
+                gui.restriction.setMessage("blueprint", "This is a blueprint subpatch, changes will not be saved!");
+            }
         }
         else
         {
@@ -1295,7 +1304,7 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadProjectDependencies(json, () =>
         {
             // change ids
-            json = CABLES.Patch.replaceOpIds(json, oldSub);
+            json = CABLES.Patch.replaceOpIds(json, { "parentSubPatchId": oldSub });
             const outerOp = this.getSubPatchOuterOp(currentSubPatch);
             for (const i in json.ops)
             {
@@ -1355,7 +1364,7 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
             notify("Pasted " + json.ops.length + " ops");
-            gui.corePatch().deSerialize(json, false);
+            gui.corePatch().deSerialize(json);
             this.isPasting = false;
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
