@@ -1192,6 +1192,10 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
+            if (selectedOps[i].uiAttribs.blueprintSubpatch2)
+            {
+                continue;
+            }
             if (selectedOps[i].storage && selectedOps[i].storage.blueprint)
             {
                 delete selectedOps[i].storage.blueprint;
