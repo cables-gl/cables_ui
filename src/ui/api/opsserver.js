@@ -137,6 +137,7 @@ export default class ServerOps
         const ops = gui.patchView.getAllSubPatchOps(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
+
         ops.forEach((op) =>
         {
             const ser = op.getSerialized();
@@ -147,8 +148,6 @@ export default class ServerOps
         });
 
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
-
-        console.log(o);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
