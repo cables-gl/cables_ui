@@ -588,7 +588,7 @@ export default function extendCore()
         }
 
 
-        console.log("could not find port posx ", name, opid);
+        // console.log("could not find port posx ", name, opid);
 
         return -4;
     };
