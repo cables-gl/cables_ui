@@ -244,7 +244,7 @@ export default class ServerOps
                     loadingModal.close();
                     if (cb)cb();
                 });
-            },
+            }
         );
     }
 
