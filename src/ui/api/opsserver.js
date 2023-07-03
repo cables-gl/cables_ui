@@ -773,6 +773,9 @@ export default class ServerOps
 
     createDialog(name, options)
     {
+        options = options || {};
+        if (!options.hasOwnProperty("showEditor"))options.showEditor = true;
+
         if (gui.project().isOpExample)
         {
             notifyError("Not possible in op example patch!");
