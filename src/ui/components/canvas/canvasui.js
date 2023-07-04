@@ -118,7 +118,7 @@ export default class CanvasUi
 
         let sizeStr = Math.floor(100 * this._cg.canvasWidth) / 100 + "x" + Math.floor(100 * this._cg.canvasHeight) / 100;
         if (this._cg.canvasScale != 1) sizeStr += " Scale " + this._cg.canvasScale + " ";
-        if (this._cg.pixelDensity != 1) sizeStr += " (" + Math.floor(100 * this._cg.canvasWidth / this._cg.pixelDensity) / 100 + "x" + Math.floor(100 * this._cg.canvasHeight / this._cg.pixelDensity) / 100 + "x" + this._cg.pixelDensity + ")";
+        if (this._cg.pixelDensity != 1) sizeStr += " (" + Math.floor(100 * this._cg.canvasWidth / this._cg.pixelDensity) / 100 + "x" + Math.floor(100 * this._cg.canvasHeight / this._cg.pixelDensity) / 100 + "x" + Math.round(this._cg.pixelDensity * 100) / 100 + ")";
 
         this._elcanvasCtxSwitcher.innerHTML = this._cg.getGApiName();
 

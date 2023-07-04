@@ -553,6 +553,19 @@ export default function extendCore()
 
     CABLES.Op.prototype.getPortPosX = function (name, opid)
     {
+        if (this.isSubPatchOp() == 2)
+        {
+            const ports = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
+
+            for (let i = 0; i < ports.length; i++)
+            {
+                if (ports[i].name == name)
+                {
+                    return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                }
+            }
+        }
+
         for (let i = 0; i < this.portsIn.length; i++)
         {
             if (this.portsIn[i].name == name)
@@ -573,6 +586,9 @@ export default function extendCore()
                 return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
+
+
+        // console.log("could not find port posx ", name, opid);
 
         return -4;
     };

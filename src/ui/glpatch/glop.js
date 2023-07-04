@@ -128,7 +128,6 @@ export default class GlOp extends CABLES.EventTarget
             this._rectBorder = 1;
 
             if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = 2;
-            console.log(this._op.storage.blueprintVer);
             this._updateColors();
             this.refreshPorts();
 

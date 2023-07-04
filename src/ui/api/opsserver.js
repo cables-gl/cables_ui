@@ -137,6 +137,7 @@ export default class ServerOps
         const ops = gui.patchView.getAllSubPatchOps(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
+
         ops.forEach((op) =>
         {
             const ser = op.getSerialized();
@@ -147,8 +148,6 @@ export default class ServerOps
         });
 
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
-
-        console.log(o);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -211,7 +210,7 @@ export default class ServerOps
                                             });
                                     });
                             });
-                    });
+                    }, { "showReloadInfo": false });
                 }
             });
     }
@@ -234,14 +233,17 @@ export default class ServerOps
                 loadingModal.setTask("Loading Op");
                 this.loadMissingOp(res, () =>
                 {
-                    gui.maintabPanel.show(true);
-                    if (openEditor) this.edit(name, false, null, true);
+                    if (openEditor)
+                    {
+                        gui.maintabPanel.show(true);
+                        this.edit(name, false, null, true);
+                    }
                     gui.serverOps.execute(name);
                     gui.opSelect().reload();
                     loadingModal.close();
                     if (cb)cb();
                 });
-            },
+            }
         );
     }
 
@@ -445,6 +447,7 @@ export default class ServerOps
                     {
                         this._log.log("docs reloaded");
                         gui.metaTabs.activateTabByName("code");
+
                         let html = "";
                         html += "to initialize the new library, you should reload the patch.<br/><br/>";
                         html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
@@ -541,10 +544,14 @@ export default class ServerOps
                     gui.reloadDocs(() =>
                     {
                         gui.metaTabs.activateTabByName("code");
-                        let html = "";
-                        html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-                        new ModalDialog({ "title": "new library added", "html": html });
+
+                        if (CABLES.UI.loadedCoreLibs.indexOf(libName) === -1)
+                        {
+                            let html = "";
+                            html += "to initialize the new library, you should reload the patch.<br/><br/>";
+                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
+                            new ModalDialog({ "title": "new library added", "html": html });
+                        }
                     });
                 }
                 if (next)next();
@@ -773,6 +780,9 @@ export default class ServerOps
 
     createDialog(name, options)
     {
+        options = options || {};
+        if (!options.hasOwnProperty("showEditor"))options.showEditor = true;
+
         if (gui.project().isOpExample)
         {
             notifyError("Not possible in op example patch!");
@@ -804,10 +814,9 @@ export default class ServerOps
                                 if (op) gui.patchView.focusOp(op.id);
                                 if (options.cb)options.cb(op);
                             }
-                        },
-                        options.showEditor);
+                        });
                 });
-            });
+            }, options.showEditor);
         }, false);
     }
 
