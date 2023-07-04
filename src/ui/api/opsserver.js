@@ -182,7 +182,7 @@ export default class ServerOps
                         CABLESUILOADER.talkerAPI.send(
                             "getOpCode",
                             {
-                                "opname": "Ops.Dev.FirstStepBlueprint2",
+                                "opname": "Ops.Templates.Blueprint2",
                                 "projectId": this._patchId
                             },
                             (er, rslt) =>
