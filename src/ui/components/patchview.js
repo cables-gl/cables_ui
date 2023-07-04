@@ -1946,6 +1946,7 @@ export default class PatchView extends CABLES.EventTarget
         if (inp.uiAttribs.ignoreObjTypeErrors) return;
         if (outp.get() == null) return;
         if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
+        if (p1.uiAttribs.objType.indexOf("sg_") == 0 && p2.uiAttribs.objType.indexOf("sg_") == 0) return;
 
         const errorMsg = "Object in port <b>" + inp.name + "</b> is not of type " + inp.uiAttribs.objType;
 
