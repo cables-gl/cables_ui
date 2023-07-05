@@ -812,8 +812,8 @@ export default class PatchView extends CABLES.EventTarget
             // let opname = defaultops.defaultOpNames.subPatch;
             // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
 
-            console.log("OPNAME", defaultops.defaultOpNames.subPatch);
-            console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
+            // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
+            // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
 
             const patchOp = this._p.addOp(opname, { "translate": trans });
             const patchId = patchOp.patchId.get();
@@ -883,6 +883,37 @@ export default class PatchView extends CABLES.EventTarget
                         }
                     }
                 }
+            }
+            else
+            {
+                for (let i = 0; i < selectedOps.length; i++)
+                {
+                    for (let j = 0; j < selectedOps[i].portsIn.length; j++)
+                    {
+                        const port1 = selectedOps[i].portsIn[j];
+                        const op1 = selectedOps[i];
+
+                        for (let k = 0; k < op1.portsIn[j].links.length; k++)
+                        {
+                            const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
+                            const op2 = port2.parent;
+
+                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                            {
+                                // relinking is lazy and dirty but there is no easy way to rebuild
+                                op1.portsIn[j].links[k].remove();
+                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+
+                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
+                                else port1.setUiAttribs({ "expose": true });
+                            }
+                        }
+                    }
+                    this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                    this._p.emitEvent("subpatchExpose", patchId);
+                }
+
+                gui.patchView.setCurrentSubPatch(patchId);
             }
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
@@ -1945,8 +1976,12 @@ export default class PatchView extends CABLES.EventTarget
         if (!inp.isLinked()) return;
         if (inp.uiAttribs.ignoreObjTypeErrors) return;
         if (outp.get() == null) return;
-        if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
-        if (p1.uiAttribs.objType.indexOf("sg_") == 0 && p2.uiAttribs.objType.indexOf("sg_") == 0) return;
+
+        if (p1.uiAttribs.objType && p2.uiAttribs.objType)
+        {
+            if (p1.uiAttribs.objType == p2.uiAttribs.objType) return;
+            if (p1.uiAttribs.objType.indexOf("sg_") == 0 && p2.uiAttribs.objType.indexOf("sg_") == 0) return;
+        }
 
         const errorMsg = "Object in port <b>" + inp.name + "</b> is not of type " + inp.uiAttribs.objType;
 
