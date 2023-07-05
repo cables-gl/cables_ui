@@ -1034,7 +1034,7 @@ export default class PatchView extends CABLES.EventTarget
 
                     const o = {
                         "opId": ops[j].id,
-                        "name": ops[j].name,
+                        "name": ops[j].getTitle(),
                         "id": foundPatchIds[i]
                     };
 
