@@ -552,12 +552,22 @@ class OpParampanel extends CABLES.EventTarget
         else
         {
             items.push({
+                "title": "Rename",
+                func()
+                {
+                    gui.patchView.focusSubpatchOp(el.dataset.id);
+                    CABLES.CMD.PATCH.setOpTitle();
+                },
+            });
+
+            items.push({
                 "title": "Goto Subpatch Op",
                 func()
                 {
                     gui.patchView.focusSubpatchOp(el.dataset.id);
                 },
             });
+
 
             if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
                 items.push({

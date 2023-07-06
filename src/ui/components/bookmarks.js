@@ -192,7 +192,7 @@ export default class Bookmarks
             const op = gui.corePatch().getOpById(this._bookmarks[i]);
 
             if (!op) continue;
-            const cmd = gui.cmdPallet.addDynamic("bookmark", "" + op.name, () =>
+            const cmd = gui.cmdPallet.addDynamic("bookmark", "" + op.getTitle(), () =>
             {
                 gui.patchView.centerSelectOp(op.id);
             }, "bookmark");

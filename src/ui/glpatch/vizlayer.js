@@ -246,6 +246,8 @@ export default class VizLayer extends CABLES.EventTarget
 
         ctx.fillStyle = "#ccc";
 
+        let hl = options.syntax && options.syntax != "text";
+
         for (let i = offset; i < offset + numLines; i += 1)
         {
             if (i >= lines.length || i < 0) continue;
@@ -259,10 +261,54 @@ export default class VizLayer extends CABLES.EventTarget
                 ctx.fillStyle = "#ccc";
             }
 
-            ctx.fillText(indent + lines[i],
-                layer.x / layer.scale + padding,
-                layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+            if (hl)
+            {
+                const data = hljs.highlight(lines[i], { "language": "glsl" });
+
+                let fake = "";
+                for (let j = 0; j < data._emitter.rootNode.children.length; j++)
+                {
+                    const child = data._emitter.rootNode.children[j];
+                    if (typeof child == "string")
+                    {
+                        ctx.fillStyle = "#ccc";
+                        ctx.fillText(indent + fake + child,
+                            layer.x / layer.scale + padding,
+                            layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+                        for (let k = 0; k < child.length; k++) fake += " ";
+                    }
+                    else
+                    {
+                        if (child.scope && child.children)
+                        {
+                            if (child.scope == "built_in")ctx.fillStyle = "#418ce9"; // blue
+                            else if (child.scope == "comment")ctx.fillStyle = "#0b0"; // green
+                            else if (child.scope == "number")ctx.fillStyle = "#49d6b2"; // cyan
+                            else if (child.scope == "meta" || child.scope == "keyword" || child.scope == "type")ctx.fillStyle = "#ecce64"; // yello
+                            else
+                            {
+                                // console.log("unknown", child.scope);
+                                ctx.fillStyle = "#d00";
+                            }
+                            for (let l = 0; l < child.children.length; l++)
+                            {
+                                ctx.fillText(indent + fake + child.children[l],
+                                    layer.x / layer.scale + padding,
+                                    layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+                                for (let k = 0; k < child.children[l].length; k++) fake += " ";
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                ctx.fillText(indent + lines[i],
+                    layer.x / layer.scale + padding,
+                    layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+            }
         }
+
 
         const gradHeight = 30;
 
