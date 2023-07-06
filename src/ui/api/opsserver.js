@@ -29,7 +29,6 @@ export default class ServerOps
                 CABLES.editorSession.startLoadingTab();
                 const lastTab = userSettings.get("editortab");
 
-                console.log("op listemner...?!");
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
@@ -174,9 +173,6 @@ export default class ServerOps
                 "cb":
                 (newOp) =>
                 {
-                    console.log(newOp);
-
-
                     this.addCoreLib(newOp.objName, "subpatchop", () =>
                     {
                         CABLESUILOADER.talkerAPI.send(
@@ -805,8 +801,6 @@ export default class ServerOps
                         {
                             "onOpAdd": (op) =>
                             {
-                                console.log("hellow werlt", gui.patchView.patchRenderer.viewBox.mousePatchX);
-
                                 op.setUiAttrib({
                                     "translate": {
                                         "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
@@ -860,8 +854,6 @@ export default class ServerOps
                         // add new op
                         gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                         {
-                            console.log(gui.patchView.patchRenderer.viewBox.mousePatchX);
-
                             op.setUiAttrib({
                                 "translate": {
                                     "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
