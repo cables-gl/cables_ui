@@ -805,6 +805,8 @@ export default class ServerOps
                         {
                             "onOpAdd": (op) =>
                             {
+                                console.log("hellow werlt", gui.patchView.patchRenderer.viewBox.mousePatchX);
+
                                 op.setUiAttrib({
                                     "translate": {
                                         "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
@@ -812,6 +814,7 @@ export default class ServerOps
                                 });
 
                                 if (op) gui.patchView.focusOp(op.id);
+                                if (op)gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                                 if (options.cb)options.cb(op);
                             }
                         });
@@ -857,6 +860,8 @@ export default class ServerOps
                         // add new op
                         gui.patchView.addOp(opname, { "onOpAdd": (op) =>
                         {
+                            console.log(gui.patchView.patchRenderer.viewBox.mousePatchX);
+
                             op.setUiAttrib({
                                 "translate": {
                                     "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
@@ -866,6 +871,7 @@ export default class ServerOps
                             if (op)
                             {
                                 gui.patchView.focusOp(op.id);
+                                gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                             }
                         } });
                     }
