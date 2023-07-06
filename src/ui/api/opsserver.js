@@ -1047,6 +1047,7 @@ export default class ServerOps
                             {
                                 "opname": opname,
                                 "code": content,
+                                "format": userSettings.get("formatcode") || false
                             },
                             (err, res) =>
                             {
