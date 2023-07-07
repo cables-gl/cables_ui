@@ -668,7 +668,7 @@ CABLES_CMD_PATCH.editOp = function (userInteraction)
     {
         for (let i = 0; i < selops.length; i++)
         {
-            gui.serverOps.edit(selops[i].objName, false, null, userInteraction);
+            gui.serverOps.edit(selops[i], false, null, userInteraction);
         }
     }
 };

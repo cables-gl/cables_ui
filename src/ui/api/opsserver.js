@@ -30,6 +30,11 @@ export default class ServerOps
                 const lastTab = userSettings.get("editortab");
 
                 console.log("op listemner...?!");
+                if (data && data.opId)
+                {
+                    name = { "opId": data.opId, "objName": name };
+                }
+
                 this.edit(name, false, () =>
                 {
                     gui.mainTabs.activateTabByName(lastTab);
@@ -899,7 +904,7 @@ export default class ServerOps
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
-                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname }, true);
+                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { "opname": opname }, true);
 
                 if (err || !res || res.content == undefined)
                 {
@@ -1003,12 +1008,25 @@ export default class ServerOps
     }
 
     // Shows the editor and displays the code of an op in it
-    edit(opname, readOnly, cb, userInteraction)
+    edit(op, readOnly, cb, userInteraction)
     {
         if (gui.isGuestEditor())
         {
             CABLES.UI.MODAL.showError("Demo Editor", text.guestHint);
             return;
+        }
+
+        let opid = op;
+        let opname = opid;
+
+        if (typeof op == "object")
+        {
+            opid = op.opId;
+            opname = op.objName;
+        }
+        else
+        {
+            console.log("deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1023,12 +1041,17 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send(
             "getOpCode",
             {
-                "opname": opname,
+                "opname": opid,
                 "projectId": this._patchId
             },
             (er, rslt) =>
             {
-                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
+                if (er)
+                {
+                    notifyError("Error receiving op code!");
+                    return;
+                }
+                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname, { "opId": opid });
                 gui.jobs().finish("load_opcode_" + opname);
 
                 // var html = '';
@@ -1047,7 +1070,7 @@ export default class ServerOps
                         CABLESUILOADER.talkerAPI.send(
                             "saveOpCode",
                             {
-                                "opname": opname,
+                                "opname": opid,
                                 "code": content,
                             },
                             (err, res) =>

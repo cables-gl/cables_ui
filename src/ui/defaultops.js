@@ -72,14 +72,14 @@ const defaultOps = {
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.String.String_v2", "Ops.String.StringEditor"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Value.Number"];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Sequence"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Trigger.Sequence"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [CABLES.UI.DEFAULTOPNAMES.defaultOpImage];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return ["Ops.Html.DivElement_v2"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "shader") return ["Ops.Gl.Shader.CustomShader_v2"];
         }
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Sequence"];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Trigger.Sequence"];
         }
     },
     "getOpsForFilename": (filename) =>
