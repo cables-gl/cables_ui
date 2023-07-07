@@ -910,6 +910,11 @@ export default class ServerOps
             apiParams,
             (err, res) =>
             {
+                if (err)
+                {
+                    console.log("[editAttachment1]", err);
+                    return;
+                }
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
                 editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { "opname": opname }, true);
