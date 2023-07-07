@@ -29,7 +29,6 @@ export default class ServerOps
                 CABLES.editorSession.startLoadingTab();
                 const lastTab = userSettings.get("editortab");
 
-                console.log("op listemner...?!");
                 if (data && data.opId)
                 {
                     name = { "opId": data.opId, "objName": name };
@@ -879,8 +878,18 @@ export default class ServerOps
         }, true);
     }
 
-    editAttachment(opname, attachmentName, readOnly, cb, fromListener = false)
+    editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
     {
+        let opname = op;
+        let opId = opname;
+
+        if (typeof opname == "object")
+        {
+            opname = op.objName;
+            opId = op.opId;
+        }
+
+
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
@@ -892,7 +901,7 @@ export default class ServerOps
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
         const apiParams = {
-            "opname": opname,
+            "opname": opId,
             "name": attachmentName,
         };
         if (defaultops.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;

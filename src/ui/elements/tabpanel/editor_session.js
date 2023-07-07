@@ -102,9 +102,7 @@ export default class EditorSession
         this._openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-        {
             userSettings.set("editortab", name);
-        }
 
         return obj;
     }
