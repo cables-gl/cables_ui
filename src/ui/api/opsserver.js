@@ -596,7 +596,7 @@ export default class ServerOps
         });
     }
 
-    deleteAttachment(opName, attName)
+    deleteAttachment(opName, opId, attName)
     {
         const modal = new ModalDialog({ "title": "Delete attachment from op?", "text": "Delete " + attName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
@@ -604,7 +604,7 @@ export default class ServerOps
             CABLESUILOADER.talkerAPI.send(
                 "opAttachmentDelete",
                 {
-                    "opname": opName,
+                    "opname": opId,
                     "name": attName,
                 },
                 (err, res) =>
