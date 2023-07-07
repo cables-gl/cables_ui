@@ -178,9 +178,6 @@ export default class ServerOps
                 "cb":
                 (newOp) =>
                 {
-                    console.log(newOp);
-
-
                     this.addCoreLib(newOp.objName, "subpatchop", () =>
                     {
                         CABLESUILOADER.talkerAPI.send(
@@ -816,6 +813,7 @@ export default class ServerOps
                                 });
 
                                 if (op) gui.patchView.focusOp(op.id);
+                                if (op)gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                                 if (options.cb)options.cb(op);
                             }
                         });
@@ -870,6 +868,7 @@ export default class ServerOps
                             if (op)
                             {
                                 gui.patchView.focusOp(op.id);
+                                gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                             }
                         } });
                     }
@@ -1081,6 +1080,7 @@ export default class ServerOps
                             {
                                 "opname": opid,
                                 "code": content,
+                                "format": userSettings.get("formatcode") || false
                             },
                             (err, res) =>
                             {
