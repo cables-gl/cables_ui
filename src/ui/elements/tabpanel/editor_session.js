@@ -93,7 +93,7 @@ export default class EditorSession
     {
         for (let i = 0; i < this._openEditors.length; i++)
         {
-            if (this._openEditors[i].name == name && this._openEditors[i].type == type) // && this._openEditors[i].uuid == uuid
+            if (this._openEditors[i].name == name && this._openEditors[i].type == type)
             {
                 return;
             }
@@ -102,9 +102,7 @@ export default class EditorSession
         this._openEditors.push(obj);
         this.store();
         if (!skipSetEditorTab)
-        {
             userSettings.set("editortab", name);
-        }
 
         return obj;
     }
