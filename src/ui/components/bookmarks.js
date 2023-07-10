@@ -1,6 +1,7 @@
 import defaultops from "../defaultops";
 import text from "../text";
 import { getHandleBarHtml } from "../utils/handlebars";
+import TreeView from "./treeview";
 
 export default class Bookmarks
 {
@@ -91,13 +92,25 @@ export default class Bookmarks
 
 
         const perf2 = CABLES.UI.uiProfiler.start("bookmarks handlebars");
-        const html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
+        let html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         perf2.finish();
 
         const perf3 = CABLES.UI.uiProfiler.start("update dynamic commands");
         this.updateDynamicCommands();
         perf3.finish();
 
+        const subTree = new TreeView(
+        );
+
+        html += subTree.html(
+            [
+                { "title": "Title1" },
+                [
+                    { "title": "Title1_1" },
+                    { "title": "Title1_2" }
+                ],
+                { "title": "Title2" }
+            ]);
 
         return html;
     }
