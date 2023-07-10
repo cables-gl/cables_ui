@@ -1623,6 +1623,9 @@ export default class Gui
         // }
 
 
+        // if (document.location.hostname != "cables.gl" && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
+        // if (document.location.hostname != "cables.gl" && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
+
         if (!gui.isRemoteClient && CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
         if (!gui.isRemoteClient && CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
     }
