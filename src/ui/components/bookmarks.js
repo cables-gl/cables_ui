@@ -99,21 +99,12 @@ export default class Bookmarks
         this.updateDynamicCommands();
         perf3.finish();
 
-        const subTree = new TreeView(
-        );
+        const subTree = new TreeView();
 
-        html += subTree.html(
-            [
-                { "title": "Main" },
-                [
-                    { "title": "Title1" },
-                    [
-                        { "title": "Title1_1" },
-                        { "title": "Title1_2" }
-                    ],
-                    { "title": "Title2" }
-                ]
-            ]);
+        const su = gui.patchView.getSubPatchesHierarchy();
+        console.log(su);
+        html += subTree.html(su);
+
 
         return html;
     }
