@@ -90,7 +90,6 @@ export default class Bookmarks
 
         perf.finish();
 
-
         const perf2 = CABLES.UI.uiProfiler.start("bookmarks handlebars");
         let html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         perf2.finish();
@@ -102,9 +101,7 @@ export default class Bookmarks
         const subTree = new TreeView();
 
         const su = gui.patchView.getSubPatchesHierarchy();
-        console.log(su);
         html += subTree.html(su);
-
 
         return html;
     }

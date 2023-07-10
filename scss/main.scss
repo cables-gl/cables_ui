@@ -90,6 +90,17 @@ body
     .text-center { text-align: center; }
     .text-right { text-align: right; }
 
+
+    a.link
+    {
+        // text-decoration: underline !important;
+
+    }
+    a.link:hover
+    {
+        color:var(--color-special);
+    }
+
     a
     {
         color:$color-text-link;

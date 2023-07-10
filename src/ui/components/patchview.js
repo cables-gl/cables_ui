@@ -984,7 +984,7 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
-        let sub = { "title": "Main!!", "subPatchId": 0, "childs": [] };
+        let sub = { "title": "Main", "subPatchId": 0, "childs": [] };
         let subs = [sub];
 
         if (patchId)
