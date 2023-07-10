@@ -104,12 +104,15 @@ export default class Bookmarks
 
         html += subTree.html(
             [
-                { "title": "Title1" },
+                { "title": "Main" },
                 [
-                    { "title": "Title1_1" },
-                    { "title": "Title1_2" }
-                ],
-                { "title": "Title2" }
+                    { "title": "Title1" },
+                    [
+                        { "title": "Title1_1" },
+                        { "title": "Title1_2" }
+                    ],
+                    { "title": "Title2" }
+                ]
             ]);
 
         return html;

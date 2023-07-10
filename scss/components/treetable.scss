@@ -3,6 +3,28 @@
     .treetable
     {
 
+        tr:nth-child(odd) {
+            td
+            {
+
+                background-color: #262626;
+            }
+        }
+        tr:nth-child(even) {
+            td
+            {
+
+                background-color: #1e1e1e;
+            }
+        }
+        tr:hover
+        {
+            td{
+                background-color: #444;
+            }
+        }
+
+
 
         .treebutton
         {
