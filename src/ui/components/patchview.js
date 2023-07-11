@@ -880,8 +880,10 @@ export default class PatchView extends CABLES.EventTarget
                                 op1.portsIn[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                else port1.setUiAttribs({ "expose": true });
+                                if (op1.uiAttribs.subPatch != patchId)
+                                    port2.setUiAttribs({ "expose": true });
+                                else
+                                    port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }
@@ -905,8 +907,10 @@ export default class PatchView extends CABLES.EventTarget
                                 op1.portsOut[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                else port1.setUiAttribs({ "expose": true });
+                                if (op1.uiAttribs.subPatch != patchId)
+                                    port2.setUiAttribs({ "expose": true });
+                                else
+                                    port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }

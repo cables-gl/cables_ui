@@ -561,10 +561,22 @@ export default function extendCore()
             {
                 if (ports[i].name == name)
                 {
-                    return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                }
+            }
+
+
+            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
+
+            for (let i = 0; i < portsOut.length; i++)
+            {
+                if (portsOut[i].name == name)
+                {
+                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
                 }
             }
         }
+
 
         for (let i = 0; i < this.portsIn.length; i++)
         {
@@ -583,7 +595,7 @@ export default function extendCore()
         {
             if (this.portsOut[i].name == name)
             {
-                return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
 

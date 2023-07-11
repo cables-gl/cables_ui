@@ -249,15 +249,15 @@ export default class GlLink
                 const opOut = gui.corePatch().getOpById(this._opIdOutput);
                 const pOut = opOut.getPortById(this._portIdOutput);
 
-                if (opOut.uiAttribs.subPatch != this._subPatch)
-                {
-                    pIn.setUiAttribs({ "expose": true });
-                }
+                // if (opOut.uiAttribs.subPatch != this._subPatch)
+                // {
+                //     pIn.setUiAttribs({ "expose": true });
+                // }
 
-                if (opIn.uiAttribs.subPatch != this._subPatch)
-                {
-                    pOut.setUiAttribs({ "expose": true });
-                }
+                // if (opIn.uiAttribs.subPatch != this._subPatch)
+                // {
+                //     pOut.setUiAttribs({ "expose": true });
+                // }
             }
             // this._subPatch
         }
