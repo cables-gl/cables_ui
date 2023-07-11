@@ -2,6 +2,7 @@ import PatchSaveServer from "../api/patchServerApi";
 import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";
+import gluiconfig from "../glpatch/gluiconfig";
 import Gui from "../gui";
 import text from "../text";
 import ele from "../utils/ele";
@@ -914,8 +915,27 @@ export default class PatchView extends CABLES.EventTarget
                 this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                 this._p.emitEvent("subpatchExpose", patchId);
 
+
+
+                setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
+                {
+                    // set positions of input/output
+                    let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
+                    let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+
+                    const b = this.getSubPatchBounds(patchId);
+
+                    if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
+                    if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+
+                    this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                    this._p.emitEvent("subpatchExpose", patchId);
+                }, 100);
+
                 gui.patchView.setCurrentSubPatch(patchId);
             }
+
+
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
             this._p.emitEvent("subpatchCreated");
