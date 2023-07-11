@@ -12,15 +12,28 @@ export default class PatchPanel extends CABLES.EventTarget
         this._subTree.on("title_click",
             (item) =>
             {
-                gui.patchView.setCurrentSubPatch(item.subPatchId);
-                gui.patchParamPanel.show();
+                if (item.subPatchId)
+                {
+                    gui.patchView.setCurrentSubPatch(item.subPatchId);
+                    gui.patchParamPanel.show();
+                }
+                else if (item.opid)
+                {
+                    gui.patchView.centerSelectOp(item.opid);
+                }
+                else console.log(item);
             });
 
         this._subTree.on("icon_click",
             (item) =>
             {
                 console.log("icon click", item);
-                gui.patchView.focusSubpatchOp(item.subPatchId);
+                if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
+                else if (item.opid)
+                {
+                    gui.patchView.centerSelectOp(item.opid);
+                }
+                else console.log(item);
             });
     }
 

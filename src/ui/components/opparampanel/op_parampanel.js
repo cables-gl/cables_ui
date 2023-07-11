@@ -129,6 +129,7 @@ class OpParampanel extends CABLES.EventTarget
         }
     }
 
+
     refreshDelayed()
     {
         clearTimeout(this.refreshTimeout);
