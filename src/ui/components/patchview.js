@@ -884,9 +884,35 @@ export default class PatchView extends CABLES.EventTarget
                             }
                         }
                     }
-                    this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                    this._p.emitEvent("subpatchExpose", patchId);
                 }
+
+                for (let i = 0; i < selectedOps.length; i++)
+                {
+                    for (let j = 0; j < selectedOps[i].portsOut.length; j++)
+                    {
+                        const port1 = selectedOps[i].portsOut[j];
+                        const op1 = selectedOps[i];
+
+                        for (let k = 0; k < op1.portsOut[j].links.length; k++)
+                        {
+                            const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
+                            const op2 = port2.parent;
+
+                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                            {
+                                // relinking is lazy and dirty but there is no easy way to rebuild
+                                op1.portsOut[j].links[k].remove();
+                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+
+                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
+                                else port1.setUiAttribs({ "expose": true });
+                            }
+                        }
+                    }
+                }
+
+                this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                this._p.emitEvent("subpatchExpose", patchId);
 
                 gui.patchView.setCurrentSubPatch(patchId);
             }
