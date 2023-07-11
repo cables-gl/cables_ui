@@ -140,6 +140,7 @@ class OpParampanel extends CABLES.EventTarget
 
     show(op)
     {
+        if (!CABLES.UI.loaded) return;
         if (!this._startedGlobalListeners)
         {
             this._startedGlobalListeners = true;
