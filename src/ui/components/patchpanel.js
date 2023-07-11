@@ -1,3 +1,4 @@
+import { getHandleBarHtml } from "../utils/handlebars";
 import TreeView from "./treeview";
 
 export default class PatchPanel extends CABLES.EventTarget
