@@ -143,9 +143,9 @@ class OpParampanel extends CABLES.EventTarget
         if (!this._startedGlobalListeners)
         {
             this._startedGlobalListeners = true;
-            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");

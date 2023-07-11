@@ -26,7 +26,7 @@
                 <table style="cell-spacing:0;">
                     <tr>
                         <td class="nopadding">
-                            <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()">
+                            <div class="{{#compare currentSubPatch '==' 0 }}lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch(0);CABLES.CMD.UI.centerPatchOps();gui.patchParamPanel.show();">
                                 <h3 class="op_color_default">Main</h3>
                             </div>
                         </td>
@@ -36,7 +36,7 @@
                         <tr>
                             {{#if id}}
                                 <td class="nopadding">
-                                    <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');gui.patchView.showBookmarkParamsPanel()">
+                                    <div data-info="{{id}}" class="info {{type}}{{#compare ../currentSubPatch '==' id }} lastClicked{{/compare}}" onclick="gui.patchView.setCurrentSubPatch('{{id}}');gui.patchParamPanel.show();">
                                         <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
                                     </div>
                                 </td>
@@ -45,7 +45,7 @@
                                 </td>
                             {{else}}
                                 <td class="nopadding">
-                                    <div class="info {{type}}" onclick="gui.patchView.focusOp('{{opId}}');gui.patchView.centerSelectOp('{{opId}}');gui.patchView.showBookmarkParamsPanel();" >
+                                    <div class="info {{type}}" onclick="gui.patchView.focusOp('{{opId}}');gui.patchView.centerSelectOp('{{opId}}');gui.patchParamPanel.show();;" >
                                         <span class="op_color_default" style="pointer-events:none;">{{{indent}}}{{name}}</span>
                                     </div>
                                 </td>

@@ -98,10 +98,6 @@ export default class Bookmarks
         this.updateDynamicCommands();
         perf3.finish();
 
-        const subTree = new TreeView();
-
-        const su = gui.patchView.getSubPatchesHierarchy();
-        html += subTree.html(su);
 
         return html;
     }

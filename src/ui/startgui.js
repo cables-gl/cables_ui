@@ -172,7 +172,8 @@ export default function startUi(cfg)
                 CABLES.UI.loaded = true;
                 CABLES.UI.loadedTime = performance.now();
 
-                gui.patchView.showBookmarkParamsPanel();
+                // gui.patchView.showBookmarkParamsPanel();
+                gui.patchParamPanel.show();
 
                 setTimeout(() =>
                 {
