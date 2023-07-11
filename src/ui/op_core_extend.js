@@ -567,7 +567,7 @@ export default function extendCore()
 
 
             const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
-
+            console.log("portsout", portsOut);
             for (let i = 0; i < portsOut.length; i++)
             {
                 if (portsOut[i].name == name)
@@ -600,9 +600,9 @@ export default function extendCore()
         }
 
 
-        // console.log("could not find port posx ", name, opid);
+        // console.log("could not find port posx ", name, this.getTitle(), opid);
 
-        return -4;
+        return 2;
     };
 
     // CABLES.Op.prototype.isSubPatchOp = function ()

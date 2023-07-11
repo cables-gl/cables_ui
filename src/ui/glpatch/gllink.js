@@ -439,7 +439,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
                 }
