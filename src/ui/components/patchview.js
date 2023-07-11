@@ -965,7 +965,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs.hidden) continue;
+            // if (ops[i].uiAttribs.hidden) continue;
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 sub.childs.push(this.getSubPatchesHierarchy(ops[i].patchId.get()));
@@ -1135,6 +1135,7 @@ export default class PatchView extends CABLES.EventTarget
     focusSubpatchOp(subPatchId)
     {
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
+        if (!gotoOp) return;
         let parentSubId = gotoOp.uiAttribs.subPatch || 0;
         let gotoOpId = gotoOp.id;
         if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;

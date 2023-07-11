@@ -41,15 +41,17 @@ export default class TreeView extends CABLES.EventTarget
                     else html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;;\"></span>";
             }
 
-            html += "<span class=\"icon icon-op iconhover\"></span>";
+            const icon = "op";
 
+            html += "<span id=\"icon_" + item.id + "\" data-eletype=\"icon\" class=\"icon icon-" + icon + " iconhover\"></span>";
 
             html += "&nbsp;&nbsp;";
 
-            html += "<a id=\"title_" + item.id + "\" data-id=\"" + item.id + "\" class=\"link\" >";
+            html += "<a id=\"title_" + item.id + "\" data-eletype=\"title\" class=\"link\" >";
             html += item.title;
             html += "</a>";
 
+            this._clickListenerIds["icon_" + item.id] = data[i];
             this._clickListenerIds["title_" + item.id] = data[i];
 
             html += "</td>";
@@ -57,7 +59,6 @@ export default class TreeView extends CABLES.EventTarget
             html += "<span class=\"icon icon-three-dots iconhover\"></span>";
             html += "</td>";
             html += "</tr>";
-
 
             if (item.hasOwnProperty("childs") && item.childs.length > 0)
             {
@@ -70,15 +71,11 @@ export default class TreeView extends CABLES.EventTarget
             html += "</table>";
         }
 
-
-
         return html;
     }
 
     _bindListeners()
     {
-        console.log(this._clickListenerIds);
-        // for (let i = 0; i < this._clickListenerIds.length; i++)
         for (const i in this._clickListenerIds)
         {
             const el = ele.byId(i);
@@ -87,7 +84,8 @@ export default class TreeView extends CABLES.EventTarget
                     (event) =>
                     {
                         const ele = event.target;
-                        this.emitEvent("click", this._clickListenerIds[i]);
+                        const eletype = ele.dataset.eletype;
+                        this.emitEvent(eletype + "_click", this._clickListenerIds[i]);
                     });
             else
                 console.log("ele not found", this._clickListenerIds[i]);

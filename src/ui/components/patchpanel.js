@@ -8,14 +8,20 @@ export default class PatchPanel extends CABLES.EventTarget
 
         this._subTree = new TreeView();
 
-        this._subTree.on("click",
+        this._subTree.on("title_click",
             (item) =>
             {
                 gui.patchView.setCurrentSubPatch(item.subPatchId);
                 gui.patchParamPanel.show();
             });
-    }
 
+        this._subTree.on("icon_click",
+            (item) =>
+            {
+                console.log("icon click", item);
+                gui.patchView.focusSubpatchOp(item.subPatchId);
+            });
+    }
 
     show()
     {
@@ -48,8 +54,6 @@ export default class PatchPanel extends CABLES.EventTarget
             }
             html += gui.bookmarks.getHtml();
         }
-
-
 
         html += "<div id=\"tree\"></div>";
 
