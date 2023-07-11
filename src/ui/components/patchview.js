@@ -982,7 +982,34 @@ export default class PatchView extends CABLES.EventTarget
         return arr;
     }
 
-    getSubPatches(sort)
+    getSubPatchesHierarchy(patchId = 0)
+    {
+        let sub = { "title": "Main", "subPatchId": 0, "childs": [] };
+        let subs = [sub];
+
+        if (patchId)
+        {
+            const subOp = this.getSubPatchOuterOp(patchId);
+            sub.title = subOp.getTitle();
+            sub.subPatchId = patchId;
+        }
+
+        const ops = this.getAllSubPatchOps(patchId || 0);
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs.hidden) continue;
+            if (ops[i].patchId && ops[i].patchId.get() !== 0)
+            {
+                sub.childs.push(this.getSubPatchesHierarchy(ops[i].patchId.get()));
+            }
+        }
+
+        if (patchId == 0) return subs;
+        else return sub;
+    }
+
+    getSubPatches(sort) // flat list
     {
         let foundPatchIds = [];
         const foundBlueprints = {};
