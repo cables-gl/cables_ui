@@ -25,6 +25,7 @@ export default class PatchPanel extends CABLES.EventTarget
 
     show()
     {
+        if (!CABLES.UI.loaded) return;
         let html = "<div class=\"panel bookmarkpanel\">";
 
         if (gui.longPressConnector.isActive())
