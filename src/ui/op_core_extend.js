@@ -567,7 +567,7 @@ export default function extendCore()
 
 
             const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
-            console.log("portsout", portsOut);
+
             for (let i = 0; i < portsOut.length; i++)
             {
                 if (portsOut[i].name == name)
@@ -582,11 +582,6 @@ export default function extendCore()
         {
             if (this.portsIn[i].name == name)
             {
-                // if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
-                // {
-                //     console.log(this.portsIn[i].name, "!!!");
-                // }
-
                 return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
@@ -598,7 +593,6 @@ export default function extendCore()
                 return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
-
 
         // console.log("could not find port posx ", name, this.getTitle(), opid);
 
