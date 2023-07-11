@@ -969,8 +969,6 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            console.log("bookm", ops[i].uiAttribs.bookmarked);
-            // if (ops[i].uiAttribs.hidden) continue;
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 sub.childs.push(this.getSubPatchesHierarchy(ops[i].patchId.get()));
@@ -978,11 +976,14 @@ export default class PatchView extends CABLES.EventTarget
             else
             if (ops[i].uiAttribs.bookmarked)
             {
-                sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
-            }
-            else if (ops[i].objName == "Ops.Ui.Area")
-            {
-                sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
+                if (ops[i].objName == "Ops.Ui.Area")
+                {
+                    sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
+                }
+                else
+                {
+                    sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
+                }
             }
         }
 

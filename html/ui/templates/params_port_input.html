@@ -56,11 +56,13 @@
             </td><td>
                 <a class="button-small" id="portspreadsheet_{{ dirStr }}_{{ portnum }}_{{ panelid }}" ><span class="icon icon-edit"></span>Edit</a>
             {{/compare}}
-            {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
+
+
+            <!-- {{#compare port.uiAttribs.display '==' 'createOpHelper' }}
                 </td><td>
 
                 <a class="button-small" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-plus-circle"></span></a>
-            {{/compare}}
+            {{/compare}} -->
             {{#compare port.uiAttribs.display '==' 'range' }}
                 </td><td>
                 <!-- new value input2 !!! -->
@@ -124,8 +126,14 @@
             {{#compare port.uiAttribs.display '==' 'texture' }}
                 </td>
                 <td>
-                    <a class="button-small button-icon"  onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage,'{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
+                    <a class="button-small button-icon" onclick="gui.patchView.addOpAndLink(CABLES.UI.DEFAULTOPNAMES.defaultOpImage,'{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
 
+                </td>
+            {{/compare}}
+            {{#compare port.uiAttribs.display '==' 'sg_vec' }}
+                </td>
+                <td>
+                    <a class="button-small button-icon" onclick="gui.patchView.addOpAndLink('Ops.Team.ShaderGraph.Input','{{op.id}}','{{port.name}}');"><span class="icon icon-plus-circle"></span></a>
                 </td>
             {{/compare}}
             {{#compare port.uiAttribs.display '==' 'file' }}
