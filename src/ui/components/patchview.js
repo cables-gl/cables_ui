@@ -2,6 +2,7 @@ import PatchSaveServer from "../api/patchServerApi";
 import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";
+import gluiconfig from "../glpatch/gluiconfig";
 import Gui from "../gui";
 import text from "../text";
 import ele from "../utils/ele";
@@ -521,7 +522,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         gui.setTransformGizmo(null);
         gui.opParams.clear();
-        this.showBookmarkParamsPanel();
+        gui.patchParamPanel.show();
     }
 
     selectAllOpsSubPatch(subPatch, noUnselect)
@@ -611,40 +612,6 @@ export default class PatchView extends CABLES.EventTarget
         this._checkErrorTimeout = setTimeout(this.checkPatchErrors.bind(this), 5000);
     }
 
-    showBookmarkParamsPanel()
-    {
-        let html = "<div class=\"panel bookmarkpanel\">";
-
-        if (gui.longPressConnector.isActive())
-        {
-            html += gui.longPressConnector.getParamPanelHtml();
-        }
-        else
-        {
-            this.checkPatchErrors();
-
-            if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
-            if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
-
-            const project = gui.project();
-            if (project)
-            {
-                const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
-                if (project.isOpExample || notCollab)
-                {
-                    const projectId = project.shortId || project._id;
-                    html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-                }
-                if (notCollab)
-                {
-                    html += getHandleBarHtml("clonepatch", {});
-                }
-            }
-            html += gui.bookmarks.getHtml();
-        }
-
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
-    }
 
     getSubPatchBounds(subPatch)
     {
@@ -913,17 +880,66 @@ export default class PatchView extends CABLES.EventTarget
                                 op1.portsIn[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                else port1.setUiAttribs({ "expose": true });
+                                if (op1.uiAttribs.subPatch != patchId)
+                                    port2.setUiAttribs({ "expose": true });
+                                else
+                                    port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }
+                }
+
+                for (let i = 0; i < selectedOps.length; i++)
+                {
+                    for (let j = 0; j < selectedOps[i].portsOut.length; j++)
+                    {
+                        const port1 = selectedOps[i].portsOut[j];
+                        const op1 = selectedOps[i];
+
+                        for (let k = 0; k < op1.portsOut[j].links.length; k++)
+                        {
+                            const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
+                            const op2 = port2.parent;
+
+                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                            {
+                                // relinking is lazy and dirty but there is no easy way to rebuild
+                                op1.portsOut[j].links[k].remove();
+                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+
+                                if (op1.uiAttribs.subPatch != patchId)
+                                    port2.setUiAttribs({ "expose": true });
+                                else
+                                    port1.setUiAttribs({ "expose": true });
+                            }
+                        }
+                    }
+                }
+
+                this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                this._p.emitEvent("subpatchExpose", patchId);
+
+
+
+                setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
+                {
+                    // set positions of input/output
+                    let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
+                    let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+
+                    const b = this.getSubPatchBounds(patchId);
+
+                    if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
+                    if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+
                     this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                     this._p.emitEvent("subpatchExpose", patchId);
-                }
+                }, 100);
 
                 gui.patchView.setCurrentSubPatch(patchId);
             }
+
+
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
             this._p.emitEvent("subpatchCreated");
@@ -984,7 +1000,11 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
-        let sub = { "title": "Main", "subPatchId": 0, "childs": [] };
+        let sub = { "title": "Main",
+            "id": "0",
+            "subPatchId": "0",
+            "childs": [],
+            "icon": "op" };
         let subs = [sub];
 
         if (patchId)
@@ -992,16 +1012,28 @@ export default class PatchView extends CABLES.EventTarget
             const subOp = this.getSubPatchOuterOp(patchId);
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
+            sub.id = subOp.id;
         }
 
         const ops = this.getAllSubPatchOps(patchId || 0);
 
         for (let i = 0; i < ops.length; i++)
         {
-            if (ops[i].uiAttribs.hidden) continue;
             if (ops[i].patchId && ops[i].patchId.get() !== 0)
             {
                 sub.childs.push(this.getSubPatchesHierarchy(ops[i].patchId.get()));
+            }
+            else
+            if (ops[i].uiAttribs.bookmarked)
+            {
+                if (ops[i].objName == "Ops.Ui.Area")
+                {
+                    sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
+                }
+                else
+                {
+                    sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
+                }
             }
         }
 
@@ -1168,6 +1200,7 @@ export default class PatchView extends CABLES.EventTarget
     focusSubpatchOp(subPatchId)
     {
         let gotoOp = this.getSubPatchOuterOp(subPatchId);
+        if (!gotoOp) return;
         let parentSubId = gotoOp.uiAttribs.subPatch || 0;
         let gotoOpId = gotoOp.id;
         if (gotoOp.uiAttribs.blueprintOpId) gotoOpId = gotoOp.uiAttribs.blueprintOpId;
@@ -1218,7 +1251,7 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     bpText = "Go to subpatch";
                     let subpatchId = names[0].blueprintLocalSubpatch;
-                    if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchView.showBookmarkParamsPanel()";
+                    if (subpatchId) bpClick = "gui.patchView.setCurrentSubPatch('" + subpatchId + "');CABLES.CMD.UI.centerPatchOps();gui.patchParamPanel.show();";
                 }
                 str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + bpClick + "\">" + bpText + "</a>";
 

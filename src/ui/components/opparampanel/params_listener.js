@@ -253,6 +253,13 @@ class ParamsListener extends CABLES.EventTarget
         if (ele.byId("portCreateOp_" + dirStr + "_" + index))
             ele.byId("portCreateOp_" + dirStr + "_" + index).addEventListener("click", function (e)
             {
+                if (thePort.objType && thePort.objType.indexOf("sg_"))
+                {
+                    gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, function (newop)
+                    {
+                        gui.corePatch().link(thePort.parent, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+                    });
+                }
                 if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
@@ -794,7 +801,10 @@ class ParamsListener extends CABLES.EventTarget
                     const idx = thePort.parent.portsIn.indexOf(thePort2);
                     paramsHelper.updateLinkedColorBoxes(
                         thePort2,
-                        thePort.parent.portsIn[idx + 1], thePort.parent.portsIn[idx + 2], this.panelId, idx);
+                        thePort.parent.portsIn[idx + 1],
+                        thePort.parent.portsIn[idx + 2],
+                        this.panelId,
+                        idx);
                 }
 
                 this._watchPortVisualizer.update(id, thePort.watchId, thePort.get());

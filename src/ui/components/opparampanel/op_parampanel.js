@@ -20,7 +20,6 @@ class OpParampanel extends CABLES.EventTarget
         this._log = new Logger("OpParampanel");
         this._htmlGen = new PortHtmlGenerator(this.panelId);
 
-
         this._currentOp = null;
         this._eventPrefix = CABLES.uuid();
         this._isPortLineDragDown = false;
@@ -31,7 +30,6 @@ class OpParampanel extends CABLES.EventTarget
         this._paramsListener = new ParamsListener(this.panelId);
 
         this._portUiAttrListeners = [];
-
         this._startedGlobalListeners = false;
     }
 
@@ -98,7 +96,6 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
-
         if (!this.hasExposeListener)
         {
             this.hasExposeListener = gui.corePatch().on("subpatchExpose",
@@ -106,13 +103,11 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     if (
                         op &&
-                        // defaultops.isSubPatchOpName(op.objName) &&
                         op.storage && op.storage.subPatchVer &&
                         op.patchId.get() === subpatchid
                     )
                     {
                         op.refreshParams();
-                        console.log("refresh");
                     }
                 });
         }
@@ -129,6 +124,7 @@ class OpParampanel extends CABLES.EventTarget
         }
     }
 
+
     refreshDelayed()
     {
         clearTimeout(this.refreshTimeout);
@@ -140,27 +136,24 @@ class OpParampanel extends CABLES.EventTarget
 
     show(op)
     {
+        if (!CABLES.UI.loaded) return;
         if (!this._startedGlobalListeners)
         {
             this._startedGlobalListeners = true;
-            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchView.showBookmarkParamsPanel(); });
+            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
-        // if(op)console.log(op.name+" ",op.uiAttribs.translate.x,op.uiAttribs.translate.y)
 
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
-        // if (this._currentOp != op)
-        // {
-        if (this._currentOp) this._stopListeners();
 
-        // }
+        if (this._currentOp) this._stopListeners();
 
         this._currentOp = op;
 
@@ -173,8 +166,6 @@ class OpParampanel extends CABLES.EventTarget
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
 
-
-        // if (defaultops.isSubPatchOpName(op.objName))
         if (op.storage && op.storage.subPatchVer)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());

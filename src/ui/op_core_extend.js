@@ -561,20 +561,27 @@ export default function extendCore()
             {
                 if (ports[i].name == name)
                 {
-                    return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                }
+            }
+
+
+            const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
+
+            for (let i = 0; i < portsOut.length; i++)
+            {
+                if (portsOut[i].name == name)
+                {
+                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
                 }
             }
         }
+
 
         for (let i = 0; i < this.portsIn.length; i++)
         {
             if (this.portsIn[i].name == name)
             {
-                // if (opid && this.portsIn[i].uiAttribs["glPortIndex_" + opid])
-                // {
-                //     console.log(this.portsIn[i].name, "!!!");
-                // }
-
                 return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
@@ -583,14 +590,13 @@ export default function extendCore()
         {
             if (this.portsOut[i].name == name)
             {
-                return (i) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
             }
         }
 
+        // console.log("could not find port posx ", name, this.getTitle(), opid);
 
-        // console.log("could not find port posx ", name, opid);
-
-        return -4;
+        return 2;
     };
 
     // CABLES.Op.prototype.isSubPatchOp = function ()

@@ -98,24 +98,32 @@ export default class Bookmarks
         this.updateDynamicCommands();
         perf3.finish();
 
-        const subTree = new TreeView();
-
-        const su = gui.patchView.getSubPatchesHierarchy();
-        html += subTree.html(su);
 
         return html;
     }
 
     set(arr)
     {
+        for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], false);
+
         if (arr) this._bookmarks = arr;
+
+
         this.updateDynamicCommands();
+    }
+
+    setBoookmarkUiAttr(id, bookmarked)
+    {
+        console.log(id);
+        const op = gui.corePatch().getOpById(id);
+        if (op)op.setUiAttrib({ "bookmarked": bookmarked });
     }
 
     remove(id)
     {
         if (id)
         {
+            this.setBoookmarkUiAttr(id, false);
             for (const i in this._bookmarks)
             {
                 if (this._bookmarks[i] == id) this._bookmarks[i] = null;
@@ -129,6 +137,7 @@ export default class Bookmarks
     {
         if (id)
         {
+            this.setBoookmarkUiAttr(id, true);
             for (const i in this._bookmarks)
             {
                 if (this._bookmarks[i] == id)
@@ -188,6 +197,8 @@ export default class Bookmarks
 
     updateDynamicCommands()
     {
+        for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], true);
+
         for (let i = 0; i < this._dynCmds.length; i++)
             gui.cmdPallet.removeDynamic(this._dynCmds[i]);
 

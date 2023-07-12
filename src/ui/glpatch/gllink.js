@@ -249,15 +249,15 @@ export default class GlLink
                 const opOut = gui.corePatch().getOpById(this._opIdOutput);
                 const pOut = opOut.getPortById(this._portIdOutput);
 
-                if (opOut.uiAttribs.subPatch != this._subPatch)
-                {
-                    pIn.setUiAttribs({ "expose": true });
-                }
+                // if (opOut.uiAttribs.subPatch != this._subPatch)
+                // {
+                //     pIn.setUiAttribs({ "expose": true });
+                // }
 
-                if (opIn.uiAttribs.subPatch != this._subPatch)
-                {
-                    pOut.setUiAttribs({ "expose": true });
-                }
+                // if (opIn.uiAttribs.subPatch != this._subPatch)
+                // {
+                //     pOut.setUiAttribs({ "expose": true });
+                // }
             }
             // this._subPatch
         }
@@ -439,7 +439,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
                 }

@@ -38,6 +38,7 @@ import GlPatch from "./glpatch/glpatch";
 import CanvasManager from "./components/canvas/canvasmanager";
 import GuiRestrictions from "./components/guirestrictions";
 import defaultOps from "./defaultops";
+import PatchPanel from "./components/patchpanel";
 
 
 export default class Gui
@@ -67,6 +68,8 @@ export default class Gui
         this.rendererWidth = uiconfig.rendererDefaultWidth;
         this.rendererHeight = uiconfig.rendererDefaultHeight;
         this.showingtwoMetaPanel = true;
+
+        this.patchParamPanel = new PatchPanel();
 
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_FULLSCREEN = 2;
@@ -1623,8 +1626,8 @@ export default class Gui
         // }
 
 
-        // if (document.location.hostname != "cables.gl" && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
-        // if (document.location.hostname != "cables.gl" && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
+        if (document.location.hostname != "cables.gl" && CABLES.build && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
+        if (document.location.hostname != "cables.gl" && CABLES.UI.build && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
 
         if (!gui.isRemoteClient && CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
         if (!gui.isRemoteClient && CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
