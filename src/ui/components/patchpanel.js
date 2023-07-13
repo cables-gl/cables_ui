@@ -9,6 +9,13 @@ export default class PatchPanel extends CABLES.EventTarget
 
         this._subTree = new TreeView();
 
+        this._subTree.on("threedots_click",
+            (item, el) =>
+            {
+                // console.log("threedots!", item);
+                this.subPatchContextMenu(item, el);
+            });
+
         this._subTree.on("title_click",
             (item) =>
             {
@@ -77,5 +84,46 @@ export default class PatchPanel extends CABLES.EventTarget
         const su = gui.patchView.getSubPatchesHierarchy();
         // html += this._subTree.html(su);
         this._subTree.insert(ele.byId("tree"), su);
+    }
+
+    subPatchContextMenu(item, el)
+    {
+        console.log(item);
+        const outer = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+
+        const items = [];
+        items.push({
+            "title": "Rename",
+            func()
+            {
+                gui.patchView.focusSubpatchOp(item.subPatchId);
+                CABLES.CMD.PATCH.setOpTitle();
+            },
+        });
+
+        if (item.subPatchVer == "2" && item.blueprintVer != 2)
+            items.push({
+                "title": "Create op from subpatch",
+                func()
+                {
+                    gui.serverOps.createBlueprint2Op(item.subPatchId);
+                    // gui.patchView.focusSubpatchOp(item.subPatchId);
+                },
+            });
+
+        if (item.blueprintver == 2)
+        {
+            items.push({
+                "title": "Save Blueprint Op",
+                func()
+                {
+                    const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+
+                    gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
+                    // gui.patchView.focusSubpatchOp(item.subPatchId);
+                },
+            });
+        }
+        CABLES.contextMenu.show({ items }, el);
     }
 }

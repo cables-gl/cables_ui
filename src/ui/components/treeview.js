@@ -4,20 +4,16 @@ export default class TreeView extends CABLES.EventTarget
     constructor()
     {
         super();
-
         this._clickListenerIds = [];
     }
-
 
     insert(ele, data)
     {
         this._clickListenerIds = [];
-
         this._data = data;
         ele.innerHTML = this._html(data);
         this._bindListeners();
     }
-
 
     _html(data = [], level = 0, html = "")
     {
@@ -52,12 +48,10 @@ export default class TreeView extends CABLES.EventTarget
             html += item.title;
             html += "</a>";
 
-            this._clickListenerIds["icon_" + item.id] = data[i];
-            this._clickListenerIds["title_" + item.id] = data[i];
 
             html += "</td>";
             html += "<td>";
-            html += "<span class=\"icon icon-three-dots iconhover\"></span>";
+            html += "<span id=\"threedots_" + item.id + "\" data-eletype=\"threedots\" class=\"icon icon-three-dots iconhover\"></span>";
             html += "</td>";
             html += "</tr>";
 
@@ -65,6 +59,10 @@ export default class TreeView extends CABLES.EventTarget
             {
                 html += this._html(item.childs, level + 1);
             }
+
+            this._clickListenerIds["icon_" + item.id] = data[i];
+            this._clickListenerIds["title_" + item.id] = data[i];
+            this._clickListenerIds["threedots_" + item.id] = data[i];
         }
 
         if (level == 0)
@@ -86,7 +84,7 @@ export default class TreeView extends CABLES.EventTarget
                     {
                         const ele = event.target;
                         const eletype = ele.dataset.eletype;
-                        this.emitEvent(eletype + "_click", this._clickListenerIds[i]);
+                        this.emitEvent(eletype + "_click", this._clickListenerIds[i], ele);
                     });
             else
                 console.log("ele not found", this._clickListenerIds[i]);

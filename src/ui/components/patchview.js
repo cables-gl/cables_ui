@@ -1013,6 +1013,9 @@ export default class PatchView extends CABLES.EventTarget
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
             sub.id = subOp.id;
+
+            sub.subPatchVer = subOp.storage.subPatchVer || 0;
+            if (subOp.storage.blueprintVer)sub.blueprintVer = subOp.storage.blueprintVer;
         }
 
         const ops = this.getAllSubPatchOps(patchId || 0);
