@@ -626,7 +626,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = this._p.ops;
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].objName.indexOf("Ops.Ui.") == -1)
+            if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
             {
                 if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
                     if (ops[j].uiAttribs.subPatch == subPatch)
