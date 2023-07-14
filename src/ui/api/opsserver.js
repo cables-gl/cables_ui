@@ -130,10 +130,8 @@ export default class ServerOps
     isServerOp(name)
     {
         for (let i = 0; i < this._ops.length; i++) if (this._ops[i].name == name) return true;
-
         return false;
     }
-
 
     updateBluePrint2Attachment(newOp, options)
     {
@@ -196,7 +194,8 @@ export default class ServerOps
                                     },
                                     (err, res) =>
                                     {
-                                        this.updateBluePrint2Attachment(newOp,
+                                        this.updateBluePrint2Attachment(
+                                            newOp,
                                             {
                                                 "oldSubId": oldSubId,
                                                 "replaceIds": true,
