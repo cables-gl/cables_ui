@@ -37,7 +37,6 @@ export default class TreeView extends CABLES.EventTarget
                     else html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;;\"></span>";
             }
 
-            // const icon = "op";
             const icon = data[i].icon || "empty";
 
             html += "<span id=\"icon_" + item.id + "\" data-eletype=\"icon\" class=\"icon icon-" + icon + " iconhover\"></span>";

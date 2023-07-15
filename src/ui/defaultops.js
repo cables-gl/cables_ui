@@ -297,9 +297,14 @@ const defaultOps = {
         return opname && opname.startsWith(defaultOps.getExtensionOpsPrefix());
     },
 
+    "isCoreOp": (opname) =>
+    {
+        return !defaultOps.isNonCoreOp(opname);
+    },
+
     "isNonCoreOp": (opname) =>
     {
-        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+        return defaultOps.isUserOp(opname) || defaultOps.isExtensionOp(opname) || defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname);
     },
 
     "isCustomOp": (opname) =>

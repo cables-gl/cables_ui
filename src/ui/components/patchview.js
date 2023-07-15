@@ -1015,7 +1015,11 @@ export default class PatchView extends CABLES.EventTarget
             sub.id = subOp.id;
 
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
-            if (subOp.storage.blueprintVer)sub.blueprintVer = subOp.storage.blueprintVer;
+            if (subOp.storage.blueprintVer)
+            {
+                sub.blueprintVer = subOp.storage.blueprintVer;
+                sub.icon = "blueprint";
+            }
         }
 
         const ops = this.getAllSubPatchOps(patchId || 0);
@@ -1030,13 +1034,9 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[i].uiAttribs.bookmarked)
             {
                 if (ops[i].objName == "Ops.Ui.Area")
-                {
                     sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
-                }
                 else
-                {
                     sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
-                }
             }
         }
 
@@ -1092,7 +1092,6 @@ export default class PatchView extends CABLES.EventTarget
                         found = true;
                         break;
                     }
-
 
                     const o = {
                         "opId": ops[j].id,

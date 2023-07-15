@@ -11,7 +11,7 @@
 
         <a class="button-small" target="_blank" href="{{url}}/op/{{op.objName}}"><span class="icon icon-op"></span>Op Page</a>
         <br/>
-        <span class="button-small" onclick="gui.serverOps.edit('{{op.objName}}',{{#if ownsOp}}false{{else}}true{{/if}});">{{#if ownsOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
+        <span class="button-small" onclick="gui.serverOps.edit('{{op.objName}}', {{canEditOp}});">{{#if canEditOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
         <br/>
         <span class="button-small" onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-code"></span>Clone op code</span>
         <br/>
