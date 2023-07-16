@@ -17,6 +17,7 @@ export default class GlPort
 
         this._direction = p.direction;
 
+
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
@@ -24,11 +25,8 @@ export default class GlPort
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
         this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
-
         this._mouseButtonRightTimeDown = 0;
-
         this._posX = posCount * (GlUiConfig.portWidth + GlUiConfig.portPadding);
-
 
         if (!this._parent) this._log.warn("no parent rect given");
         else this._parent.addChild(this._rect);
@@ -50,6 +48,11 @@ export default class GlPort
             if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
             if (attribs.hasOwnProperty("expose")) this._updateColor();
         });
+
+
+        if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
+        else this._rect.setShape(10);
+
 
         this.setFlowModeActivity(1);
         this.updateSize();
@@ -107,18 +110,27 @@ export default class GlPort
 
     updateSize()
     {
-        let h = GlUiConfig.portHeight;
-        if (this._port.isLinked()) h *= 1.5;
+        if (!this._rect) return;
+
+        let h = GlUiConfig.portHeight * 2;
+
 
         let y = 0;
-        if (this._port.direction == 1) y = this._glop.h - GlUiConfig.portHeight;
-        else if (this._port.isLinked()) y -= GlUiConfig.portHeight * 0.5;
-
-        if (this._rect)
+        if (this._port.direction == CABLES.PORT_DIR_OUT)
         {
-            this._rect.setPosition(this._posX, y);
-            this._rect.setSize(GlUiConfig.portWidth, h);
+            y = this._glop.h;
         }
+
+        if (this._port.isLinked())
+        {
+            if (this._port.direction == CABLES.PORT_DIR_IN) y += GlUiConfig.portHeight * 0.5;
+
+            h = GlUiConfig.portHeight * 1.5;
+            this._rect.setShape(0);
+        }
+
+        this._rect.setPosition(this._posX, y - GlUiConfig.portHeight);
+        this._rect.setSize(GlUiConfig.portWidth, h);
     }
 
     _onLinkChanged()
