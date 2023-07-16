@@ -968,8 +968,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
-
+                                    if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (errr)
                                     {
@@ -1096,7 +1095,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))
                                         gui.opSelect().reload();
@@ -1329,37 +1328,13 @@ export default class ServerOps
         return this.loaded;
     }
 
-    ownsOp(opname)
-    {
-        const usernamespace = "Ops.User." + gui.user.usernameLowercase + ".";
-        if (opname.indexOf(usernamespace) === 0) return true;
-        return false;
-    }
-
-    getUserOpOwner(opname)
-    {
-        if (!defaultops.isUserOp(opname)) return null;
-        const fields = opname.split(".", 3);
-        return fields[2];
-    }
-
-    getExtensionByOpName(opname)
-    {
-        return opname ? opname.split(".", 3).join(".") : null;
-    }
-
-    getTeamNamespaceByOpName(opname)
-    {
-        return opname ? opname.split(".", 3).join(".") : null;
-    }
-
     canEditOp(user, opName)
     {
         if (!user) return false;
         if (user.isAdmin) return true;
         const op = this._ops.find((o) => { return o.name === opName; });
         if (!op) return false;
-        return op.allowEdit;
+        return op.allowEdit || false;
     }
 
     canEditAttachment(user, opName)

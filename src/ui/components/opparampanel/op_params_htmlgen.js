@@ -17,7 +17,6 @@ class PortHtmlGenerator
     getHtmlOpHeader(op)
     {
         let isBookmarked = false;
-        let ownsOp = false;
         let oldversion = false;
         let newestVersion = false;
         let hasExample = false;
@@ -25,7 +24,7 @@ class PortHtmlGenerator
 
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
-        if (defaultops.isCurrentUserOp(op.objName)) ownsOp = true;
+        const canEditOp = gui.serverOps.canEditOp(gui.user, op.objName);
         if (defaultops.isDeprecatedOp(op.objName))
         {
             op.isDeprecated = true;
@@ -56,7 +55,7 @@ class PortHtmlGenerator
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "ownsOp": ownsOp,
+            "canEditOp": canEditOp,
             "oldVersion": oldversion,
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
