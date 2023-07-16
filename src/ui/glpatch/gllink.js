@@ -134,7 +134,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == MouseState.BUTTON_RIGHT && e.altKey)
+            if (e.buttons == MouseState.BUTTON_RIGHT)
             {
                 const
                     opIn = gui.corePatch().getOpById(this._opIdInput),
@@ -166,7 +166,7 @@ export default class GlLink
                     this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, e);
                 }
 
-                if (e.shiftKey) pIn.removeLinkTo(pOut);
+                if (!e.shiftKey) pIn.removeLinkTo(pOut);
 
                 return;
             }

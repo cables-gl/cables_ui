@@ -1314,6 +1314,7 @@ export default class PatchView extends CABLES.EventTarget
             opIds.push(selectedOps[i].id);
         }
 
+
         // remove links that are not fully copied...
         for (let i = 0; i < ops.length; i++)
         {
