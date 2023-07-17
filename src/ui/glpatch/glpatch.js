@@ -462,10 +462,6 @@ export default class GlPatch extends CABLES.EventTarget
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
 
-            // if (gui.opParams.isCurrentOpId(ops[0].id))
-            // {
-            //     gui.metaTabs.activateTabByName("op");
-            // }
 
 
             if (ops[0].isSubPatchOp())
@@ -490,7 +486,11 @@ export default class GlPatch extends CABLES.EventTarget
         }
         else
         {
-            this.emitEvent("dblclick", e);
+            if (this._currentSubpatch != 0)
+            {
+                const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+                if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
+            }
         }
         e.preventDefault();
     }
