@@ -424,7 +424,7 @@ export default class GlCable
         const len = Math.sqrt((distX * distX) + (distY * distY));
 
         // get dot product of the line and circle
-        const dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / Math.pow(len, 2);
+        const dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / len ** 2;
 
         // find the closest point on the line
         const closestX = x1 + (dot * (x2 - x1));
