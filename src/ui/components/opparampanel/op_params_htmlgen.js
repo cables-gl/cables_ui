@@ -55,7 +55,7 @@ class PortHtmlGenerator
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "canEditOp": canEditOp,
+            "showEditButton": canEditOp && defaultops.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
