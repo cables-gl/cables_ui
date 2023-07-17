@@ -10,41 +10,42 @@
             <a onclick="gui.bookmarks.add('{{op.id}}')" class="icon iconhover icon-bookmark info toggle-bookmark-button" data-info="Add Bookmark"></a>
         {{/if}}
 
-        <div class="panel params_op_head">
-            <input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
+        <div class="panel params_op_head panel_head">
+            <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
 			<br/>
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
-            <br/>
+            <div style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>{{#if op.summary}} - {{op.summary}}{{/if}}
+        </div>
+
+
 
             {{#if oldVersion}}
                 <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
                 <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
             {{/if}}
 
-			<div class="summary selectable">
-	            <!-- {{#if op.summary }} -->
-                    {{op.summary}}
-                    <!-- {{#if user.isAdmin}}
-                    &nbsp;<a onclick="gui.opDocs.writeSummary('{{op.objName}}','{{op.summary}}')"><i class="icon icon-edit"></i></a>
-                    {{/if}}
-                {{else}}
-                    {{#if user.isAdmin}}
-                    <a onclick="gui.opDocs.writeSummary('{{op.objName}}')">no summary - click to write one! <i class="icon icon-edit"></i></a>
-                    {{/if}}
-                {{/if}} -->
-			</div>
+            {{#if minified}}
+            {{:else}}
+                <div class="summary selectable">
+
+                </div>
+            {{/if}}
+
+
+
 
 
             {{#if showEditButton }}
-                <a class="button tt" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}',false,false,true);">Edit op</a>
-                <br/><br/>
+                <a class="button-small tt info " data-into="[e] - edit op" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}',false,false,true);">Edit Op</a>
             {{/if}}
 
-
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank">View documentation</a>
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
             {{#if hasExample}}
-                <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">View example</a>
+                <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
             {{/if}}
+
+
+
 
             {{#if op.isDeprecated }}
                 <div class="warning" id="">
