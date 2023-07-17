@@ -136,6 +136,7 @@ export default class GlLink
         {
             if (e.buttons == MouseState.BUTTON_RIGHT)
             {
+                CABLES.UI.hideToolTip();
                 const
                     opIn = gui.corePatch().getOpById(this._opIdInput),
                     opOut = gui.corePatch().getOpById(this._opIdOutput);
