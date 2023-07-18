@@ -49,14 +49,22 @@ export default class GlPort
             if (attribs.hasOwnProperty("expose")) this._updateColor();
         });
 
-
-        if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
-        else this._rect.setShape(10);
-
-
         this.setFlowModeActivity(1);
         this.updateSize();
         this._updateColor();
+    }
+
+    updateShape()
+    {
+        if (this._port.isLinked())
+        {
+            this._rect.setShape(0);
+        }
+        else
+        {
+            if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
+            else this._rect.setShape(10);
+        }
     }
 
     get port()
@@ -85,7 +93,12 @@ export default class GlPort
             }
 
             this._dot.setSize(size, size);
-            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
+
+
+            let dotPosY = GlUiConfig.portHeight / 2 - size / 2;
+            if (this.direction == CABLES.PORT_DIR_IN) dotPosY += GlUiConfig.portHeight;
+            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
+
             this._rect.addChild(this._dot);
         }
 
@@ -114,7 +127,6 @@ export default class GlPort
 
         let h = GlUiConfig.portHeight * 2;
 
-
         let y = 0;
         if (this._port.direction == CABLES.PORT_DIR_OUT)
         {
@@ -126,9 +138,9 @@ export default class GlPort
             if (this._port.direction == CABLES.PORT_DIR_IN) y += GlUiConfig.portHeight * 0.5;
 
             h = GlUiConfig.portHeight * 1.5;
-            this._rect.setShape(0);
         }
 
+        this.updateShape();
         this._rect.setPosition(this._posX, y - GlUiConfig.portHeight);
         this._rect.setSize(GlUiConfig.portWidth, h);
     }

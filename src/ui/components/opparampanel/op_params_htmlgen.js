@@ -1,5 +1,6 @@
 import defaultops from "../../defaultops";
 import text from "../../text";
+import userSettings from "../usersettings";
 
 class PortHtmlGenerator
 {
@@ -55,8 +56,9 @@ class PortHtmlGenerator
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "canEditOp": canEditOp,
+            "showEditButton": canEditOp && defaultops.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
+            "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
             "hasExample": hasExample,
