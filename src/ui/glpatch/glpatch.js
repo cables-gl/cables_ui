@@ -396,6 +396,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this.startLinkButtonDrag.startDragging();
         }
+
         this._dropInCircleRect = null;
 
         if (e.shiftKey) this._pressedShiftKey = true;
@@ -590,6 +591,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this.linkStartedDragging = false;
         this.startLinkButtonDrag = null;
 
         if (!this._portDragLine.isActive)

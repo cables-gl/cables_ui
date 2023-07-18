@@ -190,6 +190,11 @@ export default class GlLink
 
     startDragging()
     {
+        if (this._glPatch.linkStartedDragging) return;
+
+        this._glPatch.linkStartedDragging = true;
+
+
         CABLES.UI.hideToolTip();
         const
             opIn = gui.corePatch().getOpById(this._opIdInput),
