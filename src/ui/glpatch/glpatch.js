@@ -1476,6 +1476,11 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._glOpz[i].updateVisible();
         }
+
+        for (const i in this._links)
+        {
+            this._links[i].updateVisible();
+        }
         // }, timeGrey * 1000);
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);

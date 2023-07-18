@@ -306,8 +306,11 @@ export default class GlLink
             this._initSubCables();
         }
 
-        if (this._cable.subPatch == sub) this._cable.visible = true;
-        if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+        // if (this._cable.subPatch == sub) this._cable.visible = true;
+        // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
+        if (this._cable) this._cable.updateVisible();
+        if (this._cableSub) this._cableSub.updateVisible();
 
         // this._cable.visible =
         // this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));

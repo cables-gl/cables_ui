@@ -41,7 +41,7 @@ export default class GlCable
         this._distFromPort = 0;
         this._updateDistFromPort();
 
-        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        this.updateMouseListener();
 
         this.updateLineStyle();
     }
@@ -77,6 +77,33 @@ export default class GlCable
 
         this._updateDistFromPort();
         this._updateLinePos();
+    }
+
+    updateMouseListener()
+    {
+        if (this._visible)
+        {
+            if (!this._listenerMousemove)
+                this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        }
+
+        if ((!this._visible || this._disposed) && this._listenerMousemove)
+        {
+            this._glPatch.off(this._listenerMousemove);
+            this._listenerMousemove = null;
+        }
+    }
+
+    updateVisible()
+    {
+        const old = this._visible;
+        this._visible = (this.subPatch == this._glPatch.getCurrentSubPatch());
+        if (this._disposed) this._visible = false;
+
+        // if (!this._visible) this._buttonRect.visible = false;
+
+        if (old != this._visible)
+            this.updateMouseListener();
     }
 
     set visible(v)
@@ -120,7 +147,9 @@ export default class GlCable
         this._disposed = true;
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
-        this._glPatch.removeEventListener(this._listenerMousemove);
+        this.updateVisible();
+        this.updateMouseListener();
+        // this._glPatch.removeEventListener(this._listenerMousemove);
     }
 
     _updateDistFromPort()
@@ -317,13 +346,14 @@ export default class GlCable
         }
         if (this._visible)
         {
+
             // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._distFromPort);
             // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort);
             // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._distFromPort, this._x2, this._y2);
         }
         else
         {
-            this._splineDrawer.hideSpline(this._splineIdx);
+            // this._splineDrawer.hideSpline(this._splineIdx);
 
             // this._splineDrawer.setSpline(this._splineIdx,
             //     [
