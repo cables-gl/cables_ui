@@ -43,6 +43,8 @@ export default class GlLink
 
         this._buttonRect.on("mouseup", (e) =>
         {
+            this._glPatch.startLinkButtonDrag = null;
+
             if (this._glPatch.isDraggingPort())
             {
                 if (this._glPatch._portDragLine.isActive)
@@ -132,44 +134,14 @@ export default class GlLink
             this._buttonDown = MouseState.BUTTON_NONE;
         });
 
+
+
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == MouseState.BUTTON_RIGHT)
+            if (e.buttons == MouseState.BUTTON_LEFT)
             {
-                CABLES.UI.hideToolTip();
-                const
-                    opIn = gui.corePatch().getOpById(this._opIdInput),
-                    opOut = gui.corePatch().getOpById(this._opIdOutput);
-
-                if (!opIn || !opOut)
-                {
-                    console.log("[gllink] no in/out op");
-                    return;
-                }
-
-                const
-                    pIn = opIn.getPortById(this._portIdInput),
-                    pOut = opOut.getPortById(this._portIdOutput);
-
-                const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-                const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-
-                if (distIn < distOut)
-                {
-                    const glop = this._glPatch.getGlOp(opOut);
-                    const glport = glop.getGlPort(pOut.name);
-                    this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, e);
-                }
-                else
-                {
-                    const glop = this._glPatch.getGlOp(opIn);
-                    const glport = glop.getGlPort(pIn.name);
-                    this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, e);
-                }
-
-                if (!e.shiftKey) pIn.removeLinkTo(pOut);
-
-                return;
+                this._glPatch.startLinkButtonDrag = this;
+                this._startDragEvent = e;
             }
 
             this._mouseDownX = e.offsetX;
@@ -215,6 +187,43 @@ export default class GlLink
     get portIdOut() { return this._portIdOutput; }
 
     get subPatch() { return this._subPatch; }
+
+    startDragging()
+    {
+        CABLES.UI.hideToolTip();
+        const
+            opIn = gui.corePatch().getOpById(this._opIdInput),
+            opOut = gui.corePatch().getOpById(this._opIdOutput);
+
+        if (!opIn || !opOut)
+        {
+            console.log("[gllink] no in/out op");
+            return;
+        }
+
+        const
+            pIn = opIn.getPortById(this._portIdInput),
+            pOut = opOut.getPortById(this._portIdOutput);
+
+        const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+        const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+
+        if (distIn < distOut)
+        {
+            const glop = this._glPatch.getGlOp(opOut);
+            const glport = glop.getGlPort(pOut.name);
+            this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, this._startDragEvent);
+        }
+        else
+        {
+            const glop = this._glPatch.getGlOp(opIn);
+            const glport = glop.getGlPort(pIn.name);
+            this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
+        }
+
+        // if (!e.shiftKey)
+        pIn.removeLinkTo(pOut);
+    }
 
     _initSubCables()
     {
