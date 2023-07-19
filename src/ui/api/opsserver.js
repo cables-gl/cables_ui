@@ -911,7 +911,14 @@ export default class ServerOps
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
-                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { "opname": opname }, true);
+                if (err || !res || res.content === undefined)
+                {
+                    if (err) this._log.log("[editAttachment] err", err);
+                    if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                    return;
+                }
+
+                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname }, true);
 
                 if (err || !res || res.content == undefined)
                 {
@@ -1052,13 +1059,16 @@ export default class ServerOps
             },
             (er, rslt) =>
             {
+                gui.jobs().finish("load_opcode_" + opname);
+
                 if (er)
                 {
                     notifyError("Error receiving op code!");
+                    CABLES.editorSession.remove(opname, "op");
                     return;
                 }
-                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname, { "opId": opid });
-                gui.jobs().finish("load_opcode_" + opname);
+
+                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
 
                 // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
