@@ -55,6 +55,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.greyOut = false;
         this._greyOutRect = null;
+        this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
 
@@ -391,6 +392,11 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        if (this.startLinkButtonDrag)
+        {
+            this.startLinkButtonDrag.startDragging();
+        }
+
         this._dropInCircleRect = null;
 
         if (e.shiftKey) this._pressedShiftKey = true;
@@ -585,6 +591,9 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this.linkStartedDragging = false;
+        this.startLinkButtonDrag = null;
+
         if (!this._portDragLine.isActive)
         {
             if (this._pauseMouseUntilButtonUp)
@@ -1475,6 +1484,11 @@ export default class GlPatch extends CABLES.EventTarget
         for (const i in this._glOpz)
         {
             this._glOpz[i].updateVisible();
+        }
+
+        for (const i in this._links)
+        {
+            this._links[i].updateVisible();
         }
         // }, timeGrey * 1000);
 

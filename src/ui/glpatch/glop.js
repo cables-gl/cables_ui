@@ -819,6 +819,12 @@ export default class GlOp extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    get visible()
+    {
+        if (!this.isInCurrentSubPatch()) return false;
+        return this._visible;
+    }
+
     getSubPatch()
     {
         return this.opUiAttribs.subPatch;
@@ -851,11 +857,6 @@ export default class GlOp extends CABLES.EventTarget
         if (!visi) this._isHovering = false;
     }
 
-    get visible()
-    {
-        if (!this.isInCurrentSubPatch()) return false;
-        return this._visible;
-    }
 
     _updateIndicators()
     {
