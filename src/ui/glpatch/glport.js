@@ -14,6 +14,7 @@ export default class GlPort
         this._name = p.name;
         this._id = p.id;
         this._parent = oprect;
+        this.groupIndex = 0;
 
         this._direction = p.direction;
 
