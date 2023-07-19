@@ -807,6 +807,13 @@ export default class ServerOps
             {
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
+                if (err || !res || res.content === undefined)
+                {
+                    if (err) this._log.log("[editAttachment] err", err);
+                    if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                    return;
+                }
+
                 editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname }, true);
 
                 if (err || !res || res.content == undefined)
@@ -865,7 +872,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.sandbox.isDevEnv() && !defaultops.isNonCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
 
                                     if (errr)
@@ -937,8 +944,16 @@ export default class ServerOps
             },
             (er, rslt) =>
             {
-                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
                 gui.jobs().finish("load_opcode_" + opname);
+
+                if (er)
+                {
+                    notifyError("Error receiving op code!");
+                    CABLES.editorSession.remove(opname, "op");
+                    return;
+                }
+
+                const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
 
                 // var html = '';
                 // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
@@ -974,7 +989,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && opname.indexOf("Ops.User") == -1) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.sandbox.isDevEnv() && !defaultops.isNonCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))
                                         gui.opSelect().reload();
