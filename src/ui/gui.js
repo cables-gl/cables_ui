@@ -17,7 +17,7 @@ import MetaKeyframes from "./components/tabs/meta_keyframes";
 import MetaCode from "./components/tabs/meta_code";
 import MetaDoc from "./components/tabs/meta_doc";
 import TexturePreviewer from "./components/texturepreviewer";
-import MetaHistory from "./components/tabs/meta_history";
+import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
 import OpDocs from "./components/opdocs";
 import IconBar from "./elements/iconbar";
@@ -153,7 +153,7 @@ export default class Gui
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
-        this.history = new MetaHistory(this.metaTabs);
+        // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
 
         this._favIconLink = document.createElement("link");
@@ -1254,6 +1254,7 @@ export default class Gui
         });
 
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
+        ele.byId("nav_history").addEventListener("click", (event) => { new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true); });
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
