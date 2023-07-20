@@ -189,9 +189,8 @@ export default class GlLink
     get subPatch() { return this._subPatch; }
 
     startDragging()
-
     {
-        if (this._glPatch.linkStartedDragging) return;
+        if (this._glPatch.spacePressed || this._glPatch.linkStartedDragging) return;
 
         this._glPatch.linkStartedDragging = true;
 
