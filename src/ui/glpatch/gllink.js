@@ -189,6 +189,7 @@ export default class GlLink
     get subPatch() { return this._subPatch; }
 
     startDragging()
+
     {
         if (this._glPatch.linkStartedDragging) return;
 
@@ -539,6 +540,13 @@ export default class GlLink
         this._updatePosition();
     }
 
+    unlink()
+    {
+        this._link.remove();
+        // if (this._opOut) this._opOut.removeLink(this._id);
+        // if (this._opIn) this._opIn.removeLink(this._id);
+    }
+
     dispose()
     {
         if (this._opOut) this._opOut.removeLink(this._id);
@@ -590,5 +598,10 @@ export default class GlLink
     {
         this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
         if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
+    }
+
+    collideLine(x1, y1, x2, y2)
+    {
+        return this._cable.collideLine(x1, y1, x2, y2) || this._cableSub?.collideLine(x1, y1, x2, y2);
     }
 }

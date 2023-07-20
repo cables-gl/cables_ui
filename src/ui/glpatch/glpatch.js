@@ -46,6 +46,9 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._mouseLeaveButtons = 0;
 
+        this._cutLine = [];
+        this.cutLineActive = false;
+
         this._glOpz = {};
         this._hoverOps = [];
         this._hoverOpLongStartTime = 0;
@@ -221,6 +224,19 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(1); });
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
+
+        gui.keys.key("y", "Cut Cables", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            if (!this.cutLineActive) this._cutLine = [];
+            this.cutLineActive = true;
+        });
+
+        gui.keys.key("y", "Cut Cables", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            this.cutLineActive = false;
+            this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
+        });
+
 
         // gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
         // {
@@ -1020,6 +1036,34 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
+        if (this.cutLineActive)
+        {
+            if (
+                this.viewBox.mousePatchX == this._cutLine[this._cutLine.length - 3] &&
+                this.viewBox.mousePatchY == this._cutLine[this._cutLine.length - 2]) return;
+
+            for (let i in this.links)
+            {
+                if (this.links[i].collideLine(
+                    this._cutLine[this._cutLine.length - 3], this._cutLine[this._cutLine.length - 2], this.viewBox.mousePatchX, this.viewBox.mousePatchY))
+                {
+                    this.links[i].unlink();
+                }
+            }
+
+            this._cutLine.push(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0);
+
+            if (!this._cutLineIdx)
+            {
+                this._cutLineIdx = this._overlaySplines.getSplineIndex();
+            }
+
+            this._overlaySplines.setSpline(this._cutLineIdx, [...this._cutLine]); // copy dat array
+            this._overlaySplines.setSplineColor(this._cutLineIdx, [1, 0, 0, 1]);
+
+            return;
+        }
+
         if (this._oldMouseMoveX == x && this._oldMouseMoveY == y) return;
 
         this._oldMouseMoveX = x;
@@ -1385,6 +1429,7 @@ export default class GlPatch extends CABLES.EventTarget
         else if (t == CABLES.OP_PORT_TYPE_ARRAY) col = [128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1];
         else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
         else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
+
 
         e.setColor(col[0], col[1], col[2], col[3]);
     }

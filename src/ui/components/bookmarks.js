@@ -114,7 +114,6 @@ export default class Bookmarks
 
     setBoookmarkUiAttr(id, bookmarked)
     {
-        console.log(id);
         const op = gui.corePatch().getOpById(id);
         if (op)op.setUiAttrib({ "bookmarked": bookmarked });
     }

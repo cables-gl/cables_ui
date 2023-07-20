@@ -212,7 +212,7 @@ export default class GlSplineDrawer
                     for (let i = points.length / 3; i < this._splines[idx].origPoints.length / 3; i++)
                     {
                         points[i * 3] = points[i * 3];
-                        points[i * 3 + 1] = points[i * 3] + 1;
+                        points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
                 }

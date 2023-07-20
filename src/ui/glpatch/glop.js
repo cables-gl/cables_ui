@@ -122,7 +122,7 @@ export default class GlOp extends CABLES.EventTarget
 
     _storageChanged()
     {
-        if (this._op.isSubPatchOp())
+        if (this._op?.isSubPatchOp())
         {
             this._displayType = this.DISPLAY_SUBPATCH;
             this._rectBorder = 1;
@@ -528,6 +528,19 @@ export default class GlOp extends CABLES.EventTarget
         let portsWidthOut = 0;
 
         if (!this._glRectBg) return;
+
+
+        let oldGroup = "";
+        let groupIndex = 0;
+        for (let i = 0; i < this._glPorts.length; i++)
+        {
+            if (this._glPorts[i]._port.uiAttribs.group != oldGroup)
+            {
+                oldGroup = this._glPorts[i]._port.uiAttribs.group;
+                groupIndex++;
+            }
+            this._glPorts[i].groupIndex = groupIndex;
+        }
 
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)

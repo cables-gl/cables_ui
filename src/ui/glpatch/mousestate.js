@@ -131,7 +131,7 @@ export default class MouseState extends CABLES.EventTarget
         if (this.buttonAny)
         {
             this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
-            this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
+            this.draggingDistance = Math.sqrt((e.offsetX - this._mouseDownX) ** 2 + (e.offsetY - this._mouseDownY) ** 2);
         }
 
         if (e.buttons) this._setButton(e.buttons, true);
