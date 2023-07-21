@@ -511,7 +511,7 @@ export default class ServerOps
         });
     }
 
-    addCoreLib(opName, libName, next)
+    addCoreLib(opName, libName, next, options)
     {
         if (libName === "---") return;
 
@@ -523,6 +523,8 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                console.log(err, res);
+
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
