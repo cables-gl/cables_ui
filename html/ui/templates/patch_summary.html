@@ -1,8 +1,39 @@
 
 <script id="patch_summary" type="text/x-handlebars-template">
 
-    <div class="panel patch_summary" id="patchsummary">
+<div class="panel params_op_head panel_head">
+
+
+<div style="position:absolute;right:30px;margin-top:5px;">
+    <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
+    <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
+</div>
+
+<h2 class="nomargin">
+    {{#if project.settings.isPublic}}{{else}}<span class="icon icon-lock"></span>{{/if}}
+    <b style="color:var(--color-13)">{{project.name}}</b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.cachedUsername}}">{{project.cachedUsername}}</a>
+</h2>
+
+todo: likebutton<br/><br/>
+
+{{#compare port.uiAttribs.display '!=' 'none' }}
+    Licence: {{project.settings.licence}} (todo: long licencetext...)
+{{/compare}}
+<br/><br/>
+
+teams: todo,todo<br/>
+lists: todo,todo<br/>
+
+<br/>
+<a href="_blank" href="{{cablesUrl}}/bla" class="button-small">todo: test patch</a>
+<a href="_blank" href="{{cablesUrl}}/bla" class="button-small">todo: example for Ops.Gl.Mainloop</a>
+
+</div>
+
+<!-- <hr/> -->
+
+    <!-- <div class="panel patch_summary" id="patchsummary">
         <iframe class="iframe" src="{{cablesUrl}}/patch/summary/{{projectId}}"></iframe>
-    </div>
+    </div> -->
 
 </script>

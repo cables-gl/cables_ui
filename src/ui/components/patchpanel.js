@@ -63,16 +63,19 @@ export default class PatchPanel extends CABLES.EventTarget
             const project = gui.project();
             if (project)
             {
-                const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
-                if (project.isOpExample || notCollab)
-                {
-                    const projectId = project.shortId || project._id;
-                    html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-                }
-                if (notCollab)
-                {
-                    html += getHandleBarHtml("clonepatch", {});
-                }
+                const projectId = project.shortId || project._id;
+                // console.log(project);
+                html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
+                // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
+                // if (project.isOpExample || notCollab)
+                // {
+                //     const projectId = project.shortId || project._id;
+                //     html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+                // }
+                // if (notCollab)
+                // {
+                //     html += getHandleBarHtml("clonepatch", {});
+                // }
             }
             html += gui.bookmarks.getHtml();
         }
@@ -88,7 +91,6 @@ export default class PatchPanel extends CABLES.EventTarget
 
     subPatchContextMenu(item, el)
     {
-        console.log(item);
         const outer = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
         const items = [];
