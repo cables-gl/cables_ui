@@ -7,11 +7,11 @@ export default class OpDocs
     constructor()
     {
         this._log = new Logger();
-        const self = this;
         this._opDocs = [];
-        this.layoutPaper = null;
         this.libs = [];
         this.coreLibs = [];
+        this._extensions = [];
+        this._teamnamespaces = [];
     }
 
     addCoreOpDocs()
@@ -232,6 +232,24 @@ export default class OpDocs
     }
 
     /**
+     * Returns the op documentation object for an op
+     * @param {string} opId
+     */
+    getOpDocById(opId)
+    {
+        let doc = this._opDocs.find((d) => { return d.id == opId; });
+        if (doc) return doc;
+
+        doc = this._extensions.find((d) => { return d.id == opId; });
+        if (doc) return doc;
+
+        doc = this._teamnamespaces.find((d) => { return d.id == opId; });
+        if (doc) return doc;
+
+        return null;
+    }
+
+    /**
      * Returns the documentation for an op as Html
      * @param {string} opName - The name of the op to get the documentation as Html for
      */
@@ -324,15 +342,20 @@ export default class OpDocs
     {
         const perf = CABLES.UI.uiProfiler.start("[opdocs] addOpDocs");
         const newOpDocs = [];
+
         opDocs.forEach((doc) =>
         {
-            if (!this._opDocs.some((d) => { return d.id === doc.id; }))
+            let oldDoc = this._opDocs.findIndex((d) => { return d.id === doc.id; });
+            if (oldDoc === -1)
             {
                 newOpDocs.push(doc);
             }
+            else
+            {
+                this._opDocs[oldDoc] = doc;
+            }
         });
         this._opDocs = this._opDocs.concat(newOpDocs);
-        // this.extendOpDocs(this._opDocs);
         perf.finish();
     }
 

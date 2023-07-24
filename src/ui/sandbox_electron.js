@@ -35,6 +35,12 @@ export default class SandboxElectron extends CABLES.EventTarget
         return "code.js";
     }
 
+    getUrlProjectOpsCode(projectId)
+    {
+        // FIXME: only added to keep up with "the interface" - stephan
+        return projectId + ".js";
+    }
+
     isOffline()
     {
         return true;
