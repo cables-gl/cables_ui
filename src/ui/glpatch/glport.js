@@ -174,9 +174,8 @@ export default class GlPort
 
     _getBrightness()
     {
-        if (this._hover)console.log(this._activity, this._port.activityCounter);
-        if (this._hover) return 1.2;
-        if (this._activity > 0) return 1.5;
+        if (this._hover) return 1.5;
+        if (this._port.apf > 0) return 1.3;
 
         return 1;
     }

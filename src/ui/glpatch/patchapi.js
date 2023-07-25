@@ -125,7 +125,8 @@ export default class GlPatchAPI
 
         if (flowMode == 0) return;
 
-        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
+        const frameCount = gui.corePatch().cgl.fpsCounter.frameCount;
+        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 6 != 0) return;
 
@@ -144,15 +145,15 @@ export default class GlPatchAPI
 
             for (let ip = 0; ip < op.portsOut.length; ip++)
             {
-                op.portsOut[ip].apf = op.portsOut[ip].activityCounter / (this._glPatch.frameCount - op.portsOut[ip].activityCounterStartFrame);
+                op.portsOut[ip].apf = op.portsOut[ip].activityCounter / (frameCount - op.portsOut[ip].activityCounterStartFrame);
                 op.portsOut[ip].activityCounter = 0;
-                op.portsOut[ip].activityCounterStartFrame = this._glPatch.frameCount;
+                op.portsOut[ip].activityCounterStartFrame = frameCount;
             }
             for (let ip = 0; ip < op.portsIn.length; ip++)
             {
-                op.portsIn[ip].apf = op.portsIn[ip].activityCounter / (this._glPatch.frameCount - op.portsIn[ip].activityCounterStartFrame);
+                op.portsIn[ip].apf = op.portsIn[ip].activityCounter / (frameCount - op.portsIn[ip].activityCounterStartFrame);
                 op.portsIn[ip].activityCounter = 0;
-                op.portsIn[ip].activityCounterStartFrame = this._glPatch.frameCount;
+                op.portsIn[ip].activityCounterStartFrame = frameCount;
             }
 
             if (glop)
