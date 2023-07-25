@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 
 
 export default class MouseState extends CABLES.EventTarget
@@ -57,10 +58,6 @@ export default class MouseState extends CABLES.EventTarget
     get buttonMiddle() { return this._buttonStates[MouseState.BUTTON_WHEEL]; }
 
 
-    get buttonForScrolling()
-    {
-        return this._buttonStates[MouseState.BUTTON_RIGHT];
-    }
 
     get isDragging() { return this._isDragging; }
 
@@ -131,7 +128,7 @@ export default class MouseState extends CABLES.EventTarget
         if (this.buttonAny)
         {
             this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
-            this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
+            this.draggingDistance = Math.sqrt((e.offsetX - this._mouseDownX) ** 2 + (e.offsetY - this._mouseDownY) ** 2);
         }
 
         if (e.buttons) this._setButton(e.buttons, true);
@@ -151,6 +148,13 @@ export default class MouseState extends CABLES.EventTarget
     {
         this._isDragging = false;
         this._setButtonsUp();
+    }
+
+
+    get buttonForScrolling()
+    {
+        //     return this._buttonStates[MouseState.BUTTON_RIGHT];
+        return this._buttonStates[parseInt(userSettings.get("patch_button_scroll") || MouseState.BUTTON_RIGHT)];
     }
 }
 

@@ -76,6 +76,9 @@ export default class Preferences
         this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
 
+        this.setSwitchValue("patch_button_scroll", userSettings.get("patch_button_scroll") || "2");
+
+
 
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
 

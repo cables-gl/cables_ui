@@ -148,7 +148,7 @@ function getPortDescription(thePort, overlink)
     return str;
 }
 
-export function updateHoverToolTip(event, port, overlink)
+export function updateHoverToolTip(event, port, overlink, glport)
 {
     if (!port) return;
 
@@ -227,6 +227,8 @@ export function updateHoverToolTip(event, port, overlink)
         }
     }
     txt += "&nbsp;";
+
+    if (glport) txt += "act:" + glport._activity;
 
     CABLES.UI.showToolTip(event, txt, true);
 

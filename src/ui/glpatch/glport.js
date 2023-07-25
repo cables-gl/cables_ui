@@ -56,11 +56,6 @@ export default class GlPort
         this._updateColor();
     }
 
-    get port()
-    {
-        return this._port;
-    }
-
     _updateColor()
     {
         if (!this._rect) return;
@@ -150,7 +145,7 @@ export default class GlPort
     _getBrightness()
     {
         if (this._hover) return 2;
-        if (this._activity > 0) return 0;
+        if (this._activity > 0) return 1;
 
         // if (this._hasFlowActivity() == 0) return 0;
         // if (this._activity == -1) return 1;
@@ -173,7 +168,7 @@ export default class GlPort
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);
 
-        CABLES.UI.updateHoverToolTip(event, this._port);
+        CABLES.UI.updateHoverToolTip(event, this._port, false, this);
         this._updateColor();
     }
 

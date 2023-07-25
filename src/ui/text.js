@@ -137,6 +137,8 @@ const text =
     {
         "title": "Preferences",
 
+        "subtitle_scroll_button": "Scroll Button",
+
         "subtitle_glpatch_cursor": "use native cursor",
         "subtitle_glpatch_showboundings": "draw patch bounding",
         "subtitle_glpatch_linetype": "cables style",
