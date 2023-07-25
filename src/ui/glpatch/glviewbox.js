@@ -179,6 +179,7 @@ export default class GlViewBox
 
     _onCanvasWheel(event)
     {
+        if (this.glPatch.mouseState.buttonMiddle) return;
         this.setMousePos(event.offsetX, event.offsetY);
 
         let delta = 5;
