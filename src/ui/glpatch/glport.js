@@ -14,8 +14,10 @@ export default class GlPort
         this._name = p.name;
         this._id = p.id;
         this._parent = oprect;
+        this.groupIndex = 0;
 
         this._direction = p.direction;
+
 
         this._glop = glop;
         this._type = p.type;
@@ -24,11 +26,8 @@ export default class GlPort
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
         this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
-
         this._mouseButtonRightTimeDown = 0;
-
         this._posX = posCount * (GlUiConfig.portWidth + GlUiConfig.portPadding);
-
 
         if (!this._parent) this._log.warn("no parent rect given");
         else this._parent.addChild(this._rect);
@@ -56,6 +55,24 @@ export default class GlPort
         this._updateColor();
     }
 
+    updateShape()
+    {
+        if (this._port.isLinked())
+        {
+            this._rect.setShape(0);
+        }
+        else
+        {
+            if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
+            else this._rect.setShape(10);
+        }
+    }
+
+    get port()
+    {
+        return this._port;
+    }
+
     _updateColor()
     {
         if (!this._rect) return;
@@ -77,7 +94,12 @@ export default class GlPort
             }
 
             this._dot.setSize(size, size);
-            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, GlUiConfig.portHeight / 2 - size / 2);
+
+
+            let dotPosY = GlUiConfig.portHeight / 2 - size / 2;
+            if (this.direction == CABLES.PORT_DIR_IN) dotPosY += GlUiConfig.portHeight;
+            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
+
             this._rect.addChild(this._dot);
         }
 
@@ -102,18 +124,26 @@ export default class GlPort
 
     updateSize()
     {
-        let h = GlUiConfig.portHeight;
-        if (this._port.isLinked()) h *= 1.5;
+        if (!this._rect) return;
+
+        let h = GlUiConfig.portHeight * 2;
 
         let y = 0;
-        if (this._port.direction == 1) y = this._glop.h - GlUiConfig.portHeight;
-        else if (this._port.isLinked()) y -= GlUiConfig.portHeight * 0.5;
-
-        if (this._rect)
+        if (this._port.direction == CABLES.PORT_DIR_OUT)
         {
-            this._rect.setPosition(this._posX, y);
-            this._rect.setSize(GlUiConfig.portWidth, h);
+            y = this._glop.h;
         }
+
+        if (this._port.isLinked())
+        {
+            if (this._port.direction == CABLES.PORT_DIR_IN) y += GlUiConfig.portHeight * 0.5;
+
+            h = GlUiConfig.portHeight * 1.5;
+        }
+
+        this.updateShape();
+        this._rect.setPosition(this._posX, y - GlUiConfig.portHeight);
+        this._rect.setSize(GlUiConfig.portWidth, h);
     }
 
     _onLinkChanged()

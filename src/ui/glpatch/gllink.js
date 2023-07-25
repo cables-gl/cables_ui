@@ -43,6 +43,8 @@ export default class GlLink
 
         this._buttonRect.on("mouseup", (e) =>
         {
+            this._glPatch.startLinkButtonDrag = null;
+
             if (this._glPatch.isDraggingPort())
             {
                 if (this._glPatch._portDragLine.isActive)
@@ -132,43 +134,14 @@ export default class GlLink
             this._buttonDown = MouseState.BUTTON_NONE;
         });
 
+
+
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == MouseState.BUTTON_RIGHT && e.altKey)
+            if (e.buttons == MouseState.BUTTON_LEFT)
             {
-                const
-                    opIn = gui.corePatch().getOpById(this._opIdInput),
-                    opOut = gui.corePatch().getOpById(this._opIdOutput);
-
-                if (!opIn || !opOut)
-                {
-                    console.log("[gllink] no in/out op");
-                    return;
-                }
-
-                const
-                    pIn = opIn.getPortById(this._portIdInput),
-                    pOut = opOut.getPortById(this._portIdOutput);
-
-                const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-                const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
-
-                if (distIn < distOut)
-                {
-                    const glop = this._glPatch.getGlOp(opOut);
-                    const glport = glop.getGlPort(pOut.name);
-                    this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, e);
-                }
-                else
-                {
-                    const glop = this._glPatch.getGlOp(opIn);
-                    const glport = glop.getGlPort(pIn.name);
-                    this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, e);
-                }
-
-                if (e.shiftKey) pIn.removeLinkTo(pOut);
-
-                return;
+                this._glPatch.startLinkButtonDrag = this;
+                this._startDragEvent = e;
             }
 
             this._mouseDownX = e.offsetX;
@@ -214,6 +187,48 @@ export default class GlLink
     get portIdOut() { return this._portIdOutput; }
 
     get subPatch() { return this._subPatch; }
+
+    startDragging()
+    {
+        if (this._glPatch.spacePressed || this._glPatch.linkStartedDragging) return;
+
+        this._glPatch.linkStartedDragging = true;
+
+
+        CABLES.UI.hideToolTip();
+        const
+            opIn = gui.corePatch().getOpById(this._opIdInput),
+            opOut = gui.corePatch().getOpById(this._opIdOutput);
+
+        if (!opIn || !opOut)
+        {
+            console.log("[gllink] no in/out op");
+            return;
+        }
+
+        const
+            pIn = opIn.getPortById(this._portIdInput),
+            pOut = opOut.getPortById(this._portIdOutput);
+
+        const distOut = Math.sqrt((opOut.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opOut.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+        const distIn = Math.sqrt((opIn.uiAttribs.translate.x - this._glPatch.viewBox.mousePatchX) ** 2 + (opIn.uiAttribs.translate.y - this._glPatch.viewBox.mousePatchY) ** 2);
+
+        if (distIn < distOut)
+        {
+            const glop = this._glPatch.getGlOp(opOut);
+            const glport = glop.getGlPort(pOut.name);
+            this._glPatch.emitEvent("mouseDragLink", glport, opOut.id, pOut.name, this._startDragEvent);
+        }
+        else
+        {
+            const glop = this._glPatch.getGlOp(opIn);
+            const glport = glop.getGlPort(pIn.name);
+            this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
+        }
+
+        // if (!e.shiftKey)
+        pIn.removeLinkTo(pOut);
+    }
 
     _initSubCables()
     {
@@ -305,8 +320,11 @@ export default class GlLink
             this._initSubCables();
         }
 
-        if (this._cable.subPatch == sub) this._cable.visible = true;
-        if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+        // if (this._cable.subPatch == sub) this._cable.visible = true;
+        // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
+        if (this._cable) this._cable.updateVisible();
+        if (this._cableSub) this._cableSub.updateVisible();
 
         // this._cable.visible =
         // this._visible = (this._cable.subPatch == sub || (this._cableSub && this._cableSub.subPatch == sub));
@@ -521,6 +539,13 @@ export default class GlLink
         this._updatePosition();
     }
 
+    unlink()
+    {
+        this._link.remove();
+        // if (this._opOut) this._opOut.removeLink(this._id);
+        // if (this._opIn) this._opIn.removeLink(this._id);
+    }
+
     dispose()
     {
         if (this._opOut) this._opOut.removeLink(this._id);
@@ -572,5 +597,10 @@ export default class GlLink
     {
         this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
         if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
+    }
+
+    collideLine(x1, y1, x2, y2)
+    {
+        return this._cable.collideLine(x1, y1, x2, y2) || this._cableSub?.collideLine(x1, y1, x2, y2);
     }
 }

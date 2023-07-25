@@ -38,7 +38,7 @@ export default class GlSplineDrawer
                 // }
             ];
 
-        this._shader = new CGL.Shader(cgl, "glSplineDrawer "+name);
+        this._shader = new CGL.Shader(cgl, "glSplineDrawer " + name);
         this._shader.setSource(srcShaderGlSplineDrawerVert, srcShaderGlSplineDrawerFrag);
 
         this._uniTime = new CGL.Uniform(this._shader, "f", "time", 0);
@@ -169,6 +169,12 @@ export default class GlSplineDrawer
         this.setSpline(idx, this._splines[idx].origPoints);
     }
 
+
+    showSpline(idx)
+    {
+        this._splines[idx].hidden = false;
+    }
+
     hideSpline(idx)
     {
         this._splines[idx].hidden = true;
@@ -206,7 +212,7 @@ export default class GlSplineDrawer
                     for (let i = points.length / 3; i < this._splines[idx].origPoints.length / 3; i++)
                     {
                         points[i * 3] = points[i * 3];
-                        points[i * 3 + 1] = points[i * 3] + 1;
+                        points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
                 }

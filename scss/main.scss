@@ -15,6 +15,10 @@ $border-radius-popups:12px;
 @import 'libs/introjs-custom-styles';
 
 
+.nomargin
+{
+    margin:0px !important;
+}
 
 html,body { // ipad overscroll fix...
   position: fixed;

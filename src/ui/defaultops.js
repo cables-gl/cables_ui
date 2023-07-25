@@ -33,6 +33,7 @@ const defaultOps = {
         "VarGetTrigger": "Ops.Trigger.TriggerReceive",
         "defaultFont": "Ops.Html.FontFile_v2",
         "blueprint": "Ops.Dev.Blueprint",
+        "blueprintTemplate": "Ops.Templates.Blueprint2",
         "subPatch": "Ops.Ui.SubPatch",
         "subPatch2": "Ops.Dev.SubpatchNew",
         "subPatchInput2": "Ops.Dev.Ui.PatchInput",
@@ -297,9 +298,14 @@ const defaultOps = {
         return opname && opname.startsWith(defaultOps.getExtensionOpsPrefix());
     },
 
+    "isCoreOp": (opname) =>
+    {
+        return !defaultOps.isNonCoreOp(opname);
+    },
+
     "isNonCoreOp": (opname) =>
     {
-        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+        return defaultOps.isUserOp(opname) || defaultOps.isExtensionOp(opname) || defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname);
     },
 
     "isCustomOp": (opname) =>

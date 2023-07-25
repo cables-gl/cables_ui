@@ -507,7 +507,7 @@ class OpParampanel extends CABLES.EventTarget
         return this._currentOp.id == opid;
     }
 
-
+    // OLD SUBPATCH LIST!!!!!! REMOVE
     subPatchContextMenu(el)
     {
         const outer = gui.patchView.getSubPatchOuterOp(el.dataset.id);

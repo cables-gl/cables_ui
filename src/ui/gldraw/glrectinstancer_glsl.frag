@@ -177,6 +177,16 @@ float samp(in vec2 uv, float w) {
         if(uvRot.x>0.0 || uvRot.y>0.0) finalColor.a=0.0;
         finalColor.a*=v;
     }
+    else
+    if(shape==9.0) // half block top
+    {
+        if(uv.y<0.5)discard;
+    }
+    else
+    if(shape==10.0) // half block bottom
+    {
+        if(uv.y>0.5)discard;
+    }
 
     if(border>=1.0) // border
     {

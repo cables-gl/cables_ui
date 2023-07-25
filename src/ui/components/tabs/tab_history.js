@@ -5,7 +5,7 @@ export default class MetaHistory
     constructor(tabs)
     {
         this.html = "";
-        this._tab = new CABLES.UI.Tab("history", { "icon": "list", "infotext": "tab_history", "showTitle": false, "hideToolbar": true, "padding": true });
+        this._tab = new CABLES.UI.Tab("history", { "icon": "list", "infotext": "tab_history", "padding": true });
         tabs.addTab(this._tab);
 
         undo.setCallback(this.update.bind(this));

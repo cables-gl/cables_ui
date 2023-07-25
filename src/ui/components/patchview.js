@@ -626,7 +626,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = this._p.ops;
 
         for (let j = 0; j < ops.length; j++)
-            if (ops[j].objName.indexOf("Ops.Ui.") == -1)
+            if (ops[j].objName.indexOf("Ops.Ui.") == -1 && ops[j].objName.indexOf("Ops.Dev.Ui.") == -1)
             {
                 if (ops[j].uiAttribs && ops[j].uiAttribs.translate)
                     if (ops[j].uiAttribs.subPatch == subPatch)
@@ -1013,6 +1013,13 @@ export default class PatchView extends CABLES.EventTarget
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
             sub.id = subOp.id;
+
+            sub.subPatchVer = subOp.storage.subPatchVer || 0;
+            if (subOp.storage.blueprintVer)
+            {
+                sub.blueprintVer = subOp.storage.blueprintVer;
+                sub.icon = "blueprint";
+            }
         }
 
         const ops = this.getAllSubPatchOps(patchId || 0);
@@ -1027,13 +1034,9 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[i].uiAttribs.bookmarked)
             {
                 if (ops[i].objName == "Ops.Ui.Area")
-                {
                     sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
-                }
                 else
-                {
                     sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
-                }
             }
         }
 
@@ -1089,7 +1092,6 @@ export default class PatchView extends CABLES.EventTarget
                         found = true;
                         break;
                     }
-
 
                     const o = {
                         "opId": ops[j].id,
@@ -1311,6 +1313,7 @@ export default class PatchView extends CABLES.EventTarget
             ops.push(selectedOps[i].getSerialized());
             opIds.push(selectedOps[i].id);
         }
+
 
         // remove links that are not fully copied...
         for (let i = 0; i < ops.length; i++)
