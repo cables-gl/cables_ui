@@ -143,6 +143,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             this.store.setProject(proj);
 
+
             if (proj.ui.renderer)
             {
                 if (proj.ui.renderer.w * proj.ui.renderer.s > document.body.clientWidth * 0.9 || proj.ui.renderer.h * proj.ui.renderer.s > document.body.clientHeight * 0.9)
@@ -202,6 +203,8 @@ export default class PatchView extends CABLES.EventTarget
             }
 
             gui.patchView.checkPatchOutdated();
+
+            gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
 
             if (cb)cb();
         });

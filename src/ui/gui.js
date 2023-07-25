@@ -1269,6 +1269,7 @@ export default class Gui
             this.setLayout(); // yes, twice....
         }, false);
 
+
         cb();
     }
 
