@@ -20,7 +20,7 @@ const text =
     "nav_patch_new": "## New Patch\n\nCreates a new patch",
     "nav_patch_open": "## Open Patch\n\nLoad an existing patch",
 
-    "linkAddCircle": "## Cable \n\n* [LMB] insert op \n* [RMB] remove cable ",
+    "linkAddCircle": "## Cable \n\n* [LMB] Insert op \n* [RMB] Remove cable \n* [DRAG_RMB] Move cable \n* [RMB]+`alt` Duplicate cable ",
 
     "timeLineToggle": "Toggle timeline / keyframing panel",
     "timeLineTime": "* Shows current frame/time in seconds\n\n * Click to enter frame to go to",
@@ -137,7 +137,8 @@ const text =
     {
         "title": "Preferences",
 
-        "subtitle_scroll_button": "Scroll Button",
+        "subtitle_scroll_button": "Pan Button",
+        "subtitle_allow_cable_drag": "Allow dragging cables (right mouse button)",
 
         "subtitle_glpatch_cursor": "use native cursor",
         "subtitle_glpatch_showboundings": "draw patch bounding",

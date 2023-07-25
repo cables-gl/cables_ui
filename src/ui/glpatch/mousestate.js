@@ -156,6 +156,7 @@ export default class MouseState extends CABLES.EventTarget
     get buttonStateForScrolling()
     {
         return this._buttonStates[parseInt(userSettings.get("patch_button_scroll") || MouseState.BUTTON_RIGHT)];
+        // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
     }
 
     get buttonStateForLinkInsertOp()

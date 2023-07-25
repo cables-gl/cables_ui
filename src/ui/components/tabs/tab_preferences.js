@@ -77,6 +77,7 @@ export default class Preferences
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
 
         this.setSwitchValue("patch_button_scroll", userSettings.get("patch_button_scroll") || "2");
+        this.setSwitchValue("patch_allowCableDrag", userSettings.get("patch_allowCableDrag") || false);
 
 
 

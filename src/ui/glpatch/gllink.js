@@ -139,7 +139,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (this._glPatch.mouseState.buttonStateForLinkDrag)
+            if (this._glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
             {
                 this._glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;

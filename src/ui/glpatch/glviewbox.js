@@ -135,8 +135,6 @@ export default class GlViewBox
         if (
             (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
             ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonStateForScrolling)))
-        // && this.glPatch.allowDragging
-        // && !this.glPatch.isDraggingPort()
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
 
