@@ -1412,13 +1412,14 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
     // make static util thing...
-    setDrawableColorByType(e, t, brightness)
+    setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
-        let diff = 1;
+        diff = diff || 1;
+        diff *= 0.8;
 
-        if (brightness == 1)diff = 0.8;
-        if (brightness == 2)diff = 1.5;
+        // if (brightness == 1)diff = 0.8;
+        // if (brightness == 2)diff = 1.5;
 
         let col = [0, 0, 0, 0];
 

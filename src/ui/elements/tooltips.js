@@ -148,7 +148,7 @@ function getPortDescription(thePort, overlink)
     return str;
 }
 
-export function updateHoverToolTip(event, port, overlink, glport)
+export function updateHoverToolTip(event, port, overlink)
 {
     if (!port) return;
 
@@ -215,7 +215,6 @@ export function updateHoverToolTip(event, port, overlink, glport)
             txt += "&nbsp;&nbsp;";
         }
 
-
         if (gui.patchView.patchRenderer.dragLine && gui.patchView.patchRenderer.dragLine.isActive)
         {
             let oport = gui.patchView.patchRenderer.dragLine.glPort.port;
@@ -228,7 +227,7 @@ export function updateHoverToolTip(event, port, overlink, glport)
     }
     txt += "&nbsp;";
 
-    if (glport) txt += "act:" + glport._activity;
+    txt += "" + port.apf + " APF ";
 
     CABLES.UI.showToolTip(event, txt, true);
 
