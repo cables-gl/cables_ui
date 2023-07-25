@@ -79,7 +79,7 @@ export default class GlLink
             const pressTime = performance.now() - this._buttonDownTime;
 
             if (
-                this._buttonDown == MouseState.BUTTON_RIGHT &&
+                this._glPatch.mouseState.buttonForRemoveLink &&
                 this._mouseDownX - e.offsetX == 0 &&
                 this._mouseDownY - e.offsetY == 0 &&
                 pressTime < GlUiConfig.clickMaxDuration)
@@ -101,7 +101,8 @@ export default class GlLink
                 }
             }
 
-            if (this._buttonDown == MouseState.BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
+            if (
+                this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
             {
                 const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
@@ -138,7 +139,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == MouseState.BUTTON_LEFT)
+            if (this._glPatch.mouseState.buttonForLinkDrag)
             {
                 this._glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;
