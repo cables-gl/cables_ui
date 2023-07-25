@@ -102,6 +102,7 @@ export default class GlPatchAPI
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
                     const thePort = op.portsOut[ip];
+                    thePort.apf = -1;
                     if (thePort)
                     {
                         const glp = glop.getGlPort(thePort.name);
@@ -111,6 +112,7 @@ export default class GlPatchAPI
                 for (let ip = 0; ip < op.portsIn.length; ip++)
                 {
                     const thePort = op.portsIn[ip];
+                    thePort.apf = -1;
                     const glp = glop.getGlPort(thePort.name);
                     if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
                 }

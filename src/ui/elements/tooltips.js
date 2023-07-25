@@ -227,7 +227,7 @@ export function updateHoverToolTip(event, port, overlink)
     }
     txt += "&nbsp;";
 
-    txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
+    if (port.apf >= 0) txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
 
     CABLES.UI.showToolTip(event, txt, true);
 
