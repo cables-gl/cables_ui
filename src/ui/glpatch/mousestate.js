@@ -153,29 +153,29 @@ export default class MouseState extends CABLES.EventTarget
         this._setButtonsUp();
     }
 
-    get buttonForScrolling()
+    get buttonStateForScrolling()
     {
         return this._buttonStates[parseInt(userSettings.get("patch_button_scroll") || MouseState.BUTTON_RIGHT)];
     }
 
-    get buttonForLinkInsertOp()
+    get buttonStateForLinkInsertOp()
     {
         return this._buttonStates[MouseState.BUTTON_LEFT];
     }
 
-    get buttonForLinkDrag()
+    get buttonStateForLinkDrag()
     {
         return this._buttonStates[MouseState.BUTTON_RIGHT];
+    }
+
+    get buttonStateForSelectionArea()
+    {
+        return this._buttonStates[MouseState.BUTTON_LEFT];
     }
 
     get buttonForRemoveLink()
     {
-        return this._buttonStates[MouseState.BUTTON_RIGHT];
-    }
-
-    get buttonForSelectionArea()
-    {
-        return this._buttonStates[MouseState.BUTTON_LEFT];
+        return MouseState.BUTTON_RIGHT;
     }
 }
 

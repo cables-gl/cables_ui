@@ -110,7 +110,7 @@ export default class GlViewBox
 
     _onCanvasMouseDown(e)
     {
-        if (this.glPatch.mouseState.buttonForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
+        if (this.glPatch.mouseState.buttonStateForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
@@ -133,8 +133,8 @@ export default class GlViewBox
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
-            (this.glPatch.mouseState.buttonForScrolling && !this.glPatch.isDraggingPort()) ||
-            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonForScrolling)))
+            (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonStateForScrolling)))
         // && this.glPatch.allowDragging
         // && !this.glPatch.isDraggingPort()
         {
