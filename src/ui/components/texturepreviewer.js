@@ -45,7 +45,16 @@ export default class TexturePreviewer
 
     _renderTexture(tp, element)
     {
-        if (!tp) return;
+        if (!tp && this._lastClickedP)
+        {
+            tp = this.updateTexturePort(this._lastClickedP);
+        }
+        if (!tp)
+        {
+            console.log("no texport", this._lastClicked, this._lastClickedP);
+
+            return;
+        }
         let port = tp;
         if (tp.port)port = tp.port;
 
@@ -60,8 +69,10 @@ export default class TexturePreviewer
 
         if (!previewCanvasEle)
         {
+            console.log("no previewCanvasEle");
             return;
         }
+
         const previewCanvas = previewCanvasEle.getContext("2d");
 
         if (previewCanvas && port && port.get())
@@ -403,7 +414,7 @@ export default class TexturePreviewer
             {
                 doUpdateHtml = true;
                 this._texturePorts.push({
-                    id,
+                    "id": id,
                     "opid": port.parent.id,
                     "port": p,
                     "lastTimeClicked": -1,
@@ -466,16 +477,18 @@ export default class TexturePreviewer
         if (!o) return;
 
         this.enableBgPreview(o.enabled);
-
-
-        this.enableBgPreview(true);
         const op = gui.corePatch().getOpById(o.op);
 
-        if (!op) return;
+        if (!op)
+        {
+            console.log("texpreviewer cant find op");
+            return;
+        }
 
         const p = op.getPort(o.port);
 
         this.selectTexturePort(p);
+        this._lastClicked = this.updateTexturePort(p);
 
         this.pin(o.pinned);
         this.enableBgPreview(o.enabled);
@@ -484,11 +497,15 @@ export default class TexturePreviewer
     serialize()
     {
         const o = {};
+
         o.pinned = gui.metaTexturePreviewer.pinned;
-        if (this._lastClicked)
+
+        const p = this._lastClicked || this._lastClickedP.port;
+
+        if (p)
         {
-            o.port = gui.metaTexturePreviewer._lastClicked.port.name;
-            o.op = gui.metaTexturePreviewer._lastClicked.port.parent.id;
+            o.port = p.port.name;
+            o.op = p.port.parent.id;
             o.enabled = this._enabled;
         }
 
