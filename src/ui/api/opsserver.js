@@ -181,7 +181,7 @@ export default class ServerOps
                         CABLESUILOADER.talkerAPI.send(
                             "getOpCode",
                             {
-                                "opname": "Ops.Templates.Blueprint2",
+                                "opname": defaultops.defaultOpNames.blueprintTemplate,
                                 "projectId": this._patchId
                             },
                             (er, rslt) =>
@@ -407,7 +407,7 @@ export default class ServerOps
         );
     }
 
-    addOpLib(opName, libName)
+    addOpLib(opName, libName, next)
     {
         if (libName === "---") return;
         if (libName === "asset_upload")
@@ -442,16 +442,11 @@ export default class ServerOps
                 }
                 else
                 {
-                    this._log.log("lib added!");
-                    gui.reloadDocs(() =>
+                    gui.serverOps.loadOpDependencies(opName, () =>
                     {
-                        this._log.log("docs reloaded");
+                        this._log.log("lib added!", opName, libName);
                         gui.metaTabs.activateTabByName("code");
-
-                        let html = "";
-                        html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                        html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-                        new ModalDialog({ "title": "new library added", "html": html });
+                        if (next) next();
                     });
                 }
             },
@@ -477,7 +472,7 @@ export default class ServerOps
         }, true);
     }
 
-    removeOpLib(opName, libName)
+    removeOpLib(opName, libName, next)
     {
         const modal = new ModalDialog({ "title": "Really remove library from op?", "text": "Delete " + libName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
@@ -496,14 +491,11 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(() =>
+                        gui.serverOps.loadOpDependencies(opName, () =>
                         {
+                            this._log.log("lib removed!", opName, libName);
                             gui.metaTabs.activateTabByName("code");
-                            let html = "";
-                            html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-                            new ModalDialog({ "title": "Library removed", "text": html });
+                            if (next) next();
                         });
                     }
                 }
@@ -511,7 +503,7 @@ export default class ServerOps
         });
     }
 
-    addCoreLib(opName, libName, next, options)
+    addCoreLib(opName, libName, next, options = {})
     {
         if (libName === "---") return;
 
@@ -543,25 +535,18 @@ export default class ServerOps
                 }
                 else
                 {
-                    gui.reloadDocs(() =>
+                    gui.serverOps.loadOpDependencies(opName, () =>
                     {
+                        this._log.log("corelib added!", opName, libName);
                         gui.metaTabs.activateTabByName("code");
-
-                        if (CABLES.UI.loadedCoreLibs.indexOf(libName) === -1)
-                        {
-                            let html = "";
-                            html += "to initialize the new library, you should reload the patch.<br/><br/>";
-                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-                            new ModalDialog({ "title": "new library added", "html": html });
-                        }
-                    });
+                        if (next)next();
+                    }, true);
                 }
-                if (next)next();
             },
         );
     }
 
-    removeCoreLib(opName, libName)
+    removeCoreLib(opName, libName, next)
     {
         const modal = new ModalDialog({ "title": "Really remove corelib from op?", "text": "Delete " + libName + " from " + opName + "?", "choice": true });
         modal.on("onSubmit", () =>
@@ -580,17 +565,12 @@ export default class ServerOps
                     }
                     else
                     {
-                        gui.reloadDocs(() =>
+                        gui.serverOps.loadOpDependencies(opName, () =>
                         {
+                            this._log.log("corelib removed!", opName, libName);
                             gui.metaTabs.activateTabByName("code");
-                            let html = "";
-                            html += "to re-initialize after removing the library, you should reload the patch.<br/><br/>";
-                            html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-
-                            CABLES.UI.MODAL.show(html, {
-                                "title": "corelib removed",
-                            });
-                        });
+                            if (next) next();
+                        }, true);
                     }
                 },
             );
@@ -1178,78 +1158,66 @@ export default class ServerOps
 
     getOpLibs(op, checkLoaded)
     {
-        const opId = op.opId;
-        let opName = op.objName;
-        if (typeof op === "string") opName = op;
-        for (let i = 0; i < this._ops.length; i++)
+        let opDoc = gui.opDocs.getOpDocByName(op.objName);
+        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        const libs = [];
+        if (opDoc && opDoc.libs)
         {
-            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
+            for (let j = 0; j < opDoc.libs.length; j++)
             {
-                let found = false;
-                const libs = [];
-                if (this._ops[i].libs)
+                const libName = opDoc.libs[j];
+                if (!checkLoaded)
                 {
-                    for (let j = 0; j < this._ops[i].libs.length; j++)
-                    {
-                        const libName = this._ops[i].libs[j];
-                        if (!checkLoaded)
-                        {
-                            libs.push(libName);
-                        }
-                        else if (this._loadedLibs.indexOf(libName) === -1)
-                        {
-                            libs.push(libName);
-                        }
-                    }
-                    found = true;
+                    libs.push(libName);
                 }
-
-                if (found) return libs;
+                else if (this._loadedLibs.indexOf(libName) === -1)
+                {
+                    libs.push(libName);
+                }
             }
         }
-        return [];
+        return libs;
     }
 
     getCoreLibs(op, checkLoaded)
     {
-        const opId = op.opId;
-        let opName = op.objName;
-        if (typeof op === "string") opName = op;
-
-        for (let i = 0; i < this._ops.length; i++)
+        let opDoc = gui.opDocs.getOpDocByName(op.objName);
+        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        const coreLibs = [];
+        if (opDoc && opDoc.coreLibs)
         {
-            if ((opId && this._ops[i].id === opId) || this._ops[i].name === opName)
+            for (let j = 0; j < opDoc.coreLibs.length; j++)
             {
-                if (this._ops[i].coreLibs)
+                const libName = opDoc.coreLibs[j];
+                if (!checkLoaded)
                 {
-                    const coreLibs = [];
-                    for (let j = 0; j < this._ops[i].coreLibs.length; j++)
-                    {
-                        const libName = this._ops[i].coreLibs[j];
-                        if (!checkLoaded)
-                        {
-                            coreLibs.push(libName);
-                        }
-                        else if (this._loadedCoreLibs.indexOf(libName) === -1)
-                        {
-                            coreLibs.push(libName);
-                        }
-                    }
-                    return coreLibs;
+                    coreLibs.push(libName);
+                }
+                else if (this._loadedCoreLibs.indexOf(libName) === -1)
+                {
+                    coreLibs.push(libName);
                 }
             }
         }
-        return [];
+        return coreLibs;
     }
 
-    loadOpDependencies(opName, _next)
+    loadOpDependencies(opName, _next, reload = false)
     {
-        this.loadProjectDependencies({ "ops": [{ "objName": opName }] }, _next);
+        this.loadProjectDependencies({ "ops": [{ "objName": opName }] }, _next, reload);
     }
 
-    loadProjectDependencies(proj, _next)
+    loadProjectDependencies(proj, _next, reload = false)
     {
-        const missingOps = this.getMissingOps(proj);
+        let missingOps = [];
+        if (reload)
+        {
+            missingOps = proj.ops;
+        }
+        else
+        {
+            missingOps = this.getMissingOps(proj);
+        }
         this.loadMissingOps(missingOps, (newOps, newIds) =>
         {
             if (gui && gui.opSelect() && newOps.length > 0)
@@ -1260,6 +1228,19 @@ export default class ServerOps
 
             let libsToLoad = [];
             let coreLibsToLoad = [];
+            newOps.forEach((newOp) =>
+            {
+                if (newOp)
+                {
+                    if (newIds.hasOwnProperty(newOp.opId))
+                    {
+                        newOp.opId = newIds[newOp.opId];
+                    }
+                    libsToLoad = libsToLoad.concat(this.getOpLibs(newOp, true));
+                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
+                }
+            });
+
             for (let i = 0; i < proj.ops.length; i++)
             {
                 if (proj.ops[i])

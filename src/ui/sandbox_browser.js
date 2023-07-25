@@ -49,6 +49,11 @@ export default class SandboxBrowser extends CABLES.EventTarget
         return "/api/ops/code";
     }
 
+    getUrlProjectOpsCode(projectId)
+    {
+        return this.getCablesUrl() + "/api/ops/code/project/" + projectId;
+    }
+
     getLocalOpCode()
     {
         return ""; // no local ops in browser version

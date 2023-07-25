@@ -55,8 +55,6 @@ export default class MetaKeyframes
             }
         }
 
-        console.log("this anim", this.anim);
-
         const html = getHandleBarHtml("meta_keyframes",
             {
                 "anim": this.anim,

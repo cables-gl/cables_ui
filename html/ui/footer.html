@@ -161,10 +161,9 @@
 
                             addJS(localOpCode);
 
+                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
 
-                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())], 'cables_ops');
-
-                            loadjs.ready('cables_ops', function()
+                            loadjs.ready('all_ops', () =>
                             {
                                 incrementStartup();
                                 logStartup('loaded cables ops');
@@ -175,8 +174,6 @@
                                 if(uiBuild && uiBuild.git) if(window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
                                 if(coreBuild && coreBuild.git) if(window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
                                 if(apiBuild && apiBuild.git)  if(window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
-
-
 
                                 waitForAce();
                             });
