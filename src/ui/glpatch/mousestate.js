@@ -159,11 +159,6 @@ export default class MouseState extends CABLES.EventTarget
         // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
     }
 
-    get buttonStateForLinkInsertOp()
-    {
-        return this._buttonStates[MouseState.BUTTON_LEFT];
-    }
-
     get buttonStateForLinkDrag()
     {
         return this._buttonStates[MouseState.BUTTON_RIGHT];
@@ -177,6 +172,11 @@ export default class MouseState extends CABLES.EventTarget
     get buttonForRemoveLink()
     {
         return MouseState.BUTTON_RIGHT;
+    }
+
+    get buttonForLinkInsertOp()
+    {
+        return MouseState.BUTTON_LEFT;
     }
 }
 

@@ -101,8 +101,10 @@ export default class GlLink
                 }
             }
 
+            console.log(e.buttons, this._glPatch.mouseState.buttonForLinkInsertOp);
+
             if (
-                this._glPatch.mouseState.buttonStateForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
+                this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
             {
                 const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
