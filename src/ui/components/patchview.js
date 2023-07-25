@@ -204,7 +204,7 @@ export default class PatchView extends CABLES.EventTarget
 
             gui.patchView.checkPatchOutdated();
 
-            gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
+            if (gui.project() && gui.project().ui) gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
 
             if (cb)cb();
         });
