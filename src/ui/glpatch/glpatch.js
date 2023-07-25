@@ -1006,7 +1006,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
 
-        this.mouseState.debug(this.debugData);
+        // this.mouseState.debug(this.debugData);
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
