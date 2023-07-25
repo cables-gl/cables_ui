@@ -500,16 +500,19 @@ export default class TexturePreviewer
 
         o.pinned = gui.metaTexturePreviewer.pinned;
 
-        const p = this._lastClicked || this._lastClickedP.port;
-
-        if (p)
+        if (this._lastClickedP || this._lastClicked)
         {
-            o.port = p.port.name;
-            o.op = p.port.parent.id;
-            o.enabled = this._enabled;
-        }
+            const p = this._lastClicked || this._lastClickedP.port;
 
-        console.log(o);
+            if (p)
+            {
+                o.port = p.port.name;
+                o.op = p.port.parent.id;
+                o.enabled = this._enabled;
+            }
+
+            console.log(o);
+        }
 
         return o;
     }
