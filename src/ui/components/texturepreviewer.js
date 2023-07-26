@@ -8,7 +8,7 @@ import ele from "../utils/ele";
 
 export default class TexturePreviewer
 {
-    constructor(tabs)
+    constructor()
     {
         this._log = new Logger();
 
@@ -27,6 +27,8 @@ export default class TexturePreviewer
         this._timer.play();
         this._currentHeight = -1;
         this._currentWidth = -1;
+        this._lastClicked = null;
+        this.pinned = false;
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
@@ -43,7 +45,16 @@ export default class TexturePreviewer
 
     _renderTexture(tp, element)
     {
-        if (!tp) return;
+        if (!tp && this._lastClickedP)
+        {
+            tp = this.updateTexturePort(this._lastClickedP);
+        }
+        if (!tp)
+        {
+            console.log("no texport", this._lastClicked, this._lastClickedP);
+
+            return;
+        }
         let port = tp;
         if (tp.port)port = tp.port;
 
@@ -58,8 +69,10 @@ export default class TexturePreviewer
 
         if (!previewCanvasEle)
         {
+            console.log("no previewCanvasEle");
             return;
         }
+
         const previewCanvas = previewCanvasEle.getContext("2d");
 
         if (previewCanvas && port && port.get())
@@ -236,6 +249,7 @@ export default class TexturePreviewer
 
     enableBgPreview(enabled)
     {
+        this._enabled = enabled;
         if (!enabled)
         {
             this.pressedEscape();
@@ -245,6 +259,7 @@ export default class TexturePreviewer
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
+            ele.byId("texPrevPin").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
@@ -255,6 +270,7 @@ export default class TexturePreviewer
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
+            ele.byId("texPrevPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
 
             this._ele.classList.remove("hidden");
@@ -332,6 +348,7 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
+        if (this.pinned) return;
         if (!userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
@@ -339,6 +356,7 @@ export default class TexturePreviewer
 
             return;
         }
+
 
         ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
         CABLES.UI.hideToolTip();
@@ -364,10 +382,10 @@ export default class TexturePreviewer
 
         for (let i = 0; i < this._texturePorts.length; i++)
         {
-            const ele = document.getElementById("preview" + this._texturePorts[i].id);
-            if (ele)
-                if (this._texturePorts[i].port.parent != p.parent) ele.classList.remove("activePreview");
-                else ele.classList.add("activePreview");
+            const el = document.getElementById("preview" + this._texturePorts[i].id);
+            if (el)
+                if (this._texturePorts[i].port.parent != p.parent) el.classList.remove("activePreview");
+                else el.classList.add("activePreview");
         }
     }
 
@@ -396,7 +414,7 @@ export default class TexturePreviewer
             {
                 doUpdateHtml = true;
                 this._texturePorts.push({
-                    id,
+                    "id": id,
                     "opid": port.parent.id,
                     "port": p,
                     "lastTimeClicked": -1,
@@ -433,5 +451,69 @@ export default class TexturePreviewer
     gotoOp()
     {
         if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.parent.id);
+    }
+
+    pin(a)
+    {
+        if (a === undefined)
+            this.pinned = !this.pinned;
+        else
+            this.pinned = a;
+
+        if (this.pinned)
+        {
+            ele.byId("texPrevPin").classList.remove("icon-pin-outline");
+            ele.byId("texPrevPin").classList.add("icon-pin-filled");
+        }
+        else
+        {
+            ele.byId("texPrevPin").classList.add("icon-pin-outline");
+            ele.byId("texPrevPin").classList.remove("icon-pin-filled");
+        }
+    }
+
+    deserialize(o)
+    {
+        if (!o) return;
+
+        this.enableBgPreview(o.enabled);
+        const op = gui.corePatch().getOpById(o.op);
+
+        if (!op)
+        {
+            console.log("texpreviewer cant find op");
+            return;
+        }
+
+        const p = op.getPort(o.port);
+
+        this.selectTexturePort(p);
+        this._lastClicked = this.updateTexturePort(p);
+
+        this.pin(o.pinned);
+        this.enableBgPreview(o.enabled);
+    }
+
+    serialize()
+    {
+        const o = {};
+
+        o.pinned = gui.metaTexturePreviewer.pinned;
+
+        if (this._lastClickedP || this._lastClicked)
+        {
+            const p = this._lastClicked || this._lastClickedP.port;
+
+            if (p)
+            {
+                o.port = p.port.name;
+                o.op = p.port.parent.id;
+                o.enabled = this._enabled;
+            }
+
+            console.log(o);
+        }
+
+        return o;
     }
 }

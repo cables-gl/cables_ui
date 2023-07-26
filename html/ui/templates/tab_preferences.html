@@ -250,8 +250,8 @@
 
     <div class="row prefRow">
         <div class="cute-5-phone prefRight">
-            <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkLongPress" data-value="false">Off</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkLongPress" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkLongPress" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkLongPress" data-value="false">Off</span>
         </div>
         <div class="cute-7-phone">
             <h3>{{texts.title_quickLinkLongPress}}</h3>
@@ -261,8 +261,8 @@
 
     <div class="row prefRow">
         <div class="cute-5-phone prefRight">
-            <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkMiddleMouse" data-value="false">Off</span>
-            <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkMiddleMouse" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-left" data-setting="quickLinkMiddleMouse" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="quickLinkMiddleMouse" data-value="false">Off</span>
         </div>
         <div class="cute-7-phone">
             <h3>{{texts.title_quickLinkMiddleMouse}}</h3>
@@ -270,19 +270,29 @@
         </div>
     </div>
 
+    <div class="row prefRow" >
+        <div class="cute-5-phone text-right">
+            <span class="prefswitch switch switch-text switch-left" data-setting="patch_button_scroll" data-value="1">Left</span>
+            <span class="prefswitch switch switch-text switch-middle" data-setting="patch_button_scroll" data-value="4">Middle</span>
+            <span class="prefswitch switch switch-text switch-right"  data-setting="patch_button_scroll" data-value="2">Right</span>
+        </div>
+        <div class="cute-5-phone left">
+            {{texts.subtitle_scroll_button}}
+        </div>
+    </div>
 
 
-    <!-- <div class="row prefRow">
+
+    <div class="row prefRow">
         <div class="cute-5-phone prefRight">
-            <span data-value="0" data-setting="wheelmode" class="prefswitch switch switch-text switch-left">auto</span>
-            <span data-value="1" data-setting="wheelmode" class="prefswitch switch switch-text switch-middle">mousewheel</span>
-            <span data-value="2" data-setting="wheelmode" class="prefswitch switch switch-text switch-right">touchpad</span>
+            <span class="prefswitch switch switch-text switch-left" data-setting="patch_allowCableDrag" data-value="true">On</span>
+            <span class="prefswitch switch switch-text switch-right" data-setting="patch_allowCableDrag" data-value="false">Off</span>
         </div>
-        <div class="cute-7-phone">
-            <h3>{{texts.title_wheelmode}}</h3>
-            {{texts.subtitle_wheelmode}}
+        <div class="cute-5-phone left">
+            {{texts.subtitle_allow_cable_drag}}
         </div>
-    </div> -->
+    </div>
+
 
 
     <br/><br/>

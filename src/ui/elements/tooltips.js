@@ -215,7 +215,6 @@ export function updateHoverToolTip(event, port, overlink)
             txt += "&nbsp;&nbsp;";
         }
 
-
         if (gui.patchView.patchRenderer.dragLine && gui.patchView.patchRenderer.dragLine.isActive)
         {
             let oport = gui.patchView.patchRenderer.dragLine.glPort.port;
@@ -227,6 +226,8 @@ export function updateHoverToolTip(event, port, overlink)
         }
     }
     txt += "&nbsp;";
+
+    if (port.apf >= 0) txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
 
     CABLES.UI.showToolTip(event, txt, true);
 

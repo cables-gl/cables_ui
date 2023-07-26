@@ -528,6 +528,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
             "timeLineLength": gui.timeLine().getTimeLineLength()
         };
 
+        data.ui.texPreview = gui.metaTexturePreviewer.serialize();
+
+
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
         gui.patchView.serialize(data.ui);

@@ -174,11 +174,9 @@ export default class GlPort
 
     _getBrightness()
     {
-        if (this._hover) return 2;
-        if (this._activity > 0) return 0;
+        if (this._hover) return 1.5;
+        if (this._port.apf > 0) return 1.3;
 
-        // if (this._hasFlowActivity() == 0) return 0;
-        // if (this._activity == -1) return 1;
         return 1;
     }
 
@@ -198,7 +196,7 @@ export default class GlPort
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);
 
-        CABLES.UI.updateHoverToolTip(event, this._port);
+        CABLES.UI.updateHoverToolTip(event, this._port, false);
         this._updateColor();
     }
 
