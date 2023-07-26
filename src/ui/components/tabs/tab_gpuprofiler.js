@@ -34,6 +34,8 @@ export default class GpuProfiler
 
             for (let i in glQueryData)
             {
+                // console.log(glQueryData[i]);
+
                 arr.push(glQueryData[i]);
                 allTimes += (glQueryData[i].time || 0);
             }
@@ -67,5 +69,6 @@ export default class GpuProfiler
         }
 
         this._tab.html(html);
+        setTimeout(() => { this.update(); }, 500);
     }
 }

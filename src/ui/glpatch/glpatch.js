@@ -410,7 +410,7 @@ export default class GlPatch extends CABLES.EventTarget
     {
         if (this.startLinkButtonDrag)
         {
-            this.startLinkButtonDrag.startDragging();
+            this.startLinkButtonDrag.startDragging(e);
         }
 
         this._dropInCircleRect = null;
@@ -1006,7 +1006,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
 
-        this.mouseState.debug(this.debugData);
+        // this.mouseState.debug(this.debugData);
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
@@ -1138,7 +1138,7 @@ export default class GlPatch extends CABLES.EventTarget
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
 
-        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
+        if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
             if (this._rectInstancer.interactive)
                 if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
@@ -1412,13 +1412,14 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
     // make static util thing...
-    setDrawableColorByType(e, t, brightness)
+    setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
-        let diff = 1;
+        diff = diff || 1;
+        diff *= 0.8;
 
-        if (brightness == 1)diff = 0.8;
-        if (brightness == 2)diff = 1.5;
+        // if (brightness == 1)diff = 0.8;
+        // if (brightness == 2)diff = 1.5;
 
         let col = [0, 0, 0, 0];
 

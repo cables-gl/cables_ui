@@ -79,7 +79,7 @@ export default class GlLink
             const pressTime = performance.now() - this._buttonDownTime;
 
             if (
-                this._buttonDown == MouseState.BUTTON_RIGHT &&
+                this._buttonDown == this._glPatch.mouseState.buttonForRemoveLink &&
                 this._mouseDownX - e.offsetX == 0 &&
                 this._mouseDownY - e.offsetY == 0 &&
                 pressTime < GlUiConfig.clickMaxDuration)
@@ -101,7 +101,10 @@ export default class GlLink
                 }
             }
 
-            if (this._buttonDown == MouseState.BUTTON_LEFT && pressTime < GlUiConfig.clickMaxDuration)
+            console.log(e.buttons, this._glPatch.mouseState.buttonForLinkInsertOp);
+
+            if (
+                this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
             {
                 const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
@@ -138,7 +141,7 @@ export default class GlLink
 
         this._buttonRect.on("mousedown", (e) =>
         {
-            if (e.buttons == MouseState.BUTTON_LEFT)
+            if (this._glPatch.mouseState.buttonStateForLinkDrag && userSettings.get("patch_allowCableDrag"))
             {
                 this._glPatch.startLinkButtonDrag = this;
                 this._startDragEvent = e;
@@ -183,17 +186,15 @@ export default class GlLink
 
     get portIdIn() { return this._portIdInput; }
 
-
     get portIdOut() { return this._portIdOutput; }
 
     get subPatch() { return this._subPatch; }
 
-    startDragging()
+    startDragging(e)
     {
         if (this._glPatch.spacePressed || this._glPatch.linkStartedDragging) return;
 
         this._glPatch.linkStartedDragging = true;
-
 
         CABLES.UI.hideToolTip();
         const
@@ -226,8 +227,8 @@ export default class GlLink
             this._glPatch.emitEvent("mouseDragLink", glport, opIn.id, pIn.name, this._startDragEvent);
         }
 
-        // if (!e.shiftKey)
-        pIn.removeLinkTo(pOut);
+        if (!e.altKey)
+            pIn.removeLinkTo(pOut);
     }
 
     _initSubCables()
