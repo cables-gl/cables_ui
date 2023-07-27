@@ -137,21 +137,11 @@ export default class CanvasUi
             {
                 if (this.minimized)
                 {
-                    if (!this._wasMinimized)
-                    {
-                        console.log("hide");
-                        console.log("hide");
-                        ele.hide(hideeles[i]);
-                    }
+                    if (!this._wasMinimized) ele.hide(hideeles[i]);
                 }
                 else
                 {
-                    if (this._wasMinimized)
-                    {
-                        console.log("show");
-
-                        ele.show(hideeles[i]);
-                    }
+                    if (this._wasMinimized) ele.show(hideeles[i]);
                 }
             }
         }
