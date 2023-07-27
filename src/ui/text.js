@@ -173,6 +173,8 @@ const text =
         "title_theme": "Theme",
         "subtitle_theme": "Bright theme is better when you work outside.",
 
+        "title_hideCanvasUi": "Show Canvas Info Bar Ui",
+
         "title_hideSizeBar": "Icon Side Bar",
         "subtitle_hideSizeBar": "Shows a sidebar with icons of commands from command palette",
 

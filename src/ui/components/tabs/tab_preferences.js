@@ -50,6 +50,8 @@ export default class Preferences
         this.setSwitchValue("theme-bright", userSettings.get("theme-bright"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
+
+        this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
         this.setSwitchValue("texpreviewSize", userSettings.get("texpreviewSize"));
         this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
