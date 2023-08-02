@@ -1236,8 +1236,6 @@ export default class ServerOps
                 }
             }
 
-            console.log("NEWIDS", newIds);
-            console.log("P", proj.ops);
             libsToLoad = CABLES.uniqueArray(libsToLoad);
             coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
