@@ -108,28 +108,9 @@ export default class ServerOps
         );
     }
 
-    // showOpInstancingError(name, e)
-    // {
-    //     // this._log.log('show server op error message modal');
-
-    //     let msg = "<h2><span class=\"icon icon-alert-triangle\"></span> cablefail :/</h2>";
-    //     msg += "error creating op: " + name;
-    //     msg += "<br/><pre>" + e + "</pre><br/>";
-
-    //     if (this.isServerOp(name))
-    //     {
-    //         msg += "<a class=\"bluebutton\" onclick=\"gui.showEditor();gui.serverOps.edit('" + name + "')\">Edit op</a>";
-    //     }
-    //     if (gui.user.isAdmin)
-    //     {
-    //         msg += " <a class=\"bluebutton\" onclick=\"gui.serverOps.pullOp('" + name + "')\">try to pull</a>";
-    //     }
-    //     CABLES.UI.MODAL.show(msg);
-    // }
-
     isServerOp(name)
     {
-        for (let i = 0; i < this._ops.length; i++) if (this._ops[i].name == name) return true;
+        for (let i = 0; i < this._ops.length; i++) if (this._ops[i].name === name) return true;
         return false;
     }
 
@@ -231,7 +212,7 @@ export default class ServerOps
                 if (err) this._log.error(err);
 
                 loadingModal.setTask("Loading Op");
-                this.loadMissingOp(res, () =>
+                this.loadOp(res, () =>
                 {
                     if (openEditor)
                     {
@@ -395,7 +376,7 @@ export default class ServerOps
 
                     return;
                 }
-                this.loadMissingOp(res, () =>
+                this.loadOp(res, () =>
                 {
                     this.edit(name);
                     gui.serverOps.execute(name);
@@ -1207,10 +1188,10 @@ export default class ServerOps
         this.loadProjectDependencies({ "ops": [{ "objName": opName }] }, _next, reload);
     }
 
-    loadProjectDependencies(proj, _next, reload = false)
+    loadProjectDependencies(proj, _next, loadAll = false)
     {
         let missingOps = [];
-        if (reload)
+        if (loadAll)
         {
             missingOps = proj.ops;
         }
@@ -1218,7 +1199,8 @@ export default class ServerOps
         {
             missingOps = this.getMissingOps(proj);
         }
-        this.loadMissingOps(missingOps, (newOps, newIds) =>
+
+        this.loadOps(missingOps, (newOps, newIds) =>
         {
             if (gui && gui.opSelect() && newOps.length > 0)
             {
@@ -1245,18 +1227,17 @@ export default class ServerOps
             {
                 if (proj.ops[i])
                 {
-                    if (proj.ops[i])
+                    if (newIds.hasOwnProperty(proj.ops[i].opId))
                     {
-                        if (newIds.hasOwnProperty(proj.ops[i].opId))
-                        {
-                            proj.ops[i].opId = newIds[proj.ops[i].opId];
-                        }
-                        libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
-                        coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
+                        proj.ops[i].opId = newIds[proj.ops[i].opId];
                     }
+                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
+                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                 }
             }
 
+            console.log("NEWIDS", newIds);
+            console.log("P", proj.ops);
             libsToLoad = CABLES.uniqueArray(libsToLoad);
             coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
 
@@ -1264,7 +1245,7 @@ export default class ServerOps
             {
                 new CoreLibLoader(coreLibsToLoad, () =>
                 {
-                    if (_next)_next();
+                    if (_next)_next(proj);
                 });
             });
         });
@@ -1337,36 +1318,53 @@ export default class ServerOps
 
     getMissingOps(proj)
     {
-        const missingOps = [];
+        let missingOps = [];
         const missingOpsFound = [];
-        const opDocs = gui.opDocs.getOpDocs();
         proj.ops.forEach((op) =>
         {
             const opIdentifier = op.opId || op.objName;
             if (!missingOpsFound.includes(opIdentifier))
             {
-                let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
-                if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
-                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
-                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
-                if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
-                let loaded = false;
-                if (foundOp) loaded = this.opCodeLoaded(foundOp);
-
-                if (!loaded)
+                const opInfo = { "opId": op.opId, "objName": op.objName };
+                if (!this.isLoaded(op))
                 {
-                    const opInfo = { "id": op.opId, "objName": op.objName };
-                    if (op.storage && op.storage.blueprint) opInfo.parentProject = op.storage.blueprint.patchId;
                     missingOps.push(opInfo);
                     missingOpsFound.push(opIdentifier);
                 }
+                else
+                {
+                    if (op.storage && op.storage.blueprintVer > 1)
+                    {
+                        const isInProject = gui.project().ops.some((projectOp) => { return projectOp.opId === op.opId; });
+                        if (!isInProject)
+                        {
+                            missingOps.push(opInfo);
+                            missingOpsFound.push(opIdentifier);
+                        }
+                    }
+                }
             }
         });
+        missingOps = missingOps.filter((obj, index) => { return missingOps.findIndex((item) => { return item.opId === obj.opId; }) === index; });
         return missingOps;
     }
 
-    loadMissingOps(ops, cb)
+    isLoaded(op)
+    {
+        const opDocs = gui.opDocs.getOpDocs();
+        const opIdentifier = op.opId || op.objName;
+        let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+        if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
+        if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
+        if (!foundOp) foundOp = this._ops.find((loadedOp) => { return loadedOp.id === opIdentifier; });
+        if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
+        if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
+        let loaded = false;
+        if (foundOp) loaded = this.opCodeLoaded(foundOp);
+        return loaded;
+    }
+
+    loadOps(ops, cb)
     {
         let count = ops.length;
         const newOps = [];
@@ -1380,16 +1378,10 @@ export default class ServerOps
             ops.forEach((op) =>
             {
                 incrementStartup();
-                this.loadMissingOp(op, (newOp) =>
+                this.loadOp(op, (newOp, newId) =>
                 {
-                    if (newOp)
-                    {
-                        if (op.id && newOp.id && (op.id !== newOp.id))
-                        {
-                            newIds[op.id] = newOp.id;
-                        }
-                        newOps.push(newOp);
-                    }
+                    if (newId) newIds[op.opId] = newId;
+                    newOps.push(newOp);
                     count--;
                     if (count === 0) cb(newOps, newIds);
                 });
@@ -1397,7 +1389,7 @@ export default class ServerOps
         }
     }
 
-    loadMissingOp(op, cb)
+    loadOp(op, cb)
     {
         if (op)
         {
@@ -1416,7 +1408,7 @@ export default class ServerOps
                 }
                 else
                 {
-                    let identifier = res.newOpId || op.id || op.objName;
+                    let identifier = res.newOpId || op.opId || op.id || op.objName;
 
                     let lid = "missingop" + identifier + CABLES.uuid();
                     const missingOpUrl = [];
@@ -1440,7 +1432,7 @@ export default class ServerOps
                             }
                         }
                         incrementStartup();
-                        cb(newOp);
+                        cb(newOp, res.newOpId);
                     });
                     loadjs(missingOpUrl, lid);
                 }

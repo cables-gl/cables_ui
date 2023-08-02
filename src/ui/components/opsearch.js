@@ -6,6 +6,7 @@ export default class OpSearch extends CABLES.EventTarget
     {
         super();
         this._list = null;
+        this._wordsDb = null;
     }
 
     get list()
@@ -71,6 +72,8 @@ export default class OpSearch extends CABLES.EventTarget
             const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
             if (defaultOps.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
         }
+
+        this._rebuildWordList();
 
         CABLES.UI.OPSELECT.maxPop = maxPop;
     }
@@ -335,35 +338,8 @@ export default class OpSearch extends CABLES.EventTarget
 
     search(query)
     {
+        if (!query) return;
         const origQuery = query;
-
-        if (this._wordsDb == null && this._list) // build word database by splitting up camelcase
-        {
-            const buildWordDB = {};
-            for (let i = 0; i < this._list.length; i++)
-            {
-                const res = this._list[i].name.split(/(?=[A-Z,0-9,/.])/);
-
-                for (let j = 0; j < res.length; j++)
-                {
-                    if (res[j][res[j].length - 2] === "_") res[j] = res[j].substr(0, res[j].length - 2);
-                    if (res[j][0] === ".") res[j] = res[j].substr(1);
-                    if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
-                }
-
-
-                let shortName = "";
-                const ccParts = this._list[i].shortName.split(/(?=[A-Z,0-9,/.])/);
-                for (let j = 0; j < ccParts.length; j++)
-                    shortName += ccParts[j].substr(0, 1);
-                this._list[i].abbrev = shortName.toLocaleLowerCase();
-            }
-
-
-            this._wordsDb = Object.keys(buildWordDB);
-            this._wordsDb.sort((a, b) => { return b.length - a.length; });
-        }
-
         if (this._wordsDb) // search through word db
         {
             let q = query;
@@ -397,7 +373,7 @@ export default class OpSearch extends CABLES.EventTarget
             }
             else document.getElementById("realsearch").innerHTML = "";
         }
-        if (query.length > 1)
+        if (query.length > 1 && this._list)
         {
             for (let i = 0; i < this._list.length; i++)
             {
@@ -408,13 +384,41 @@ export default class OpSearch extends CABLES.EventTarget
             if (query.indexOf(" ") > -1)
             {
                 const words = query.split(" ");
-                for (let i = 0; i < words.length; i++) { this._searchWord(i, origQuery, this._list, words[i], options); }
+                for (let i = 0; i < words.length; i++) { this._searchWord(i, origQuery, this._list, words[i]); }
             }
             else
             {
-                this._searchWord(0, query, this._list, query, options);
+                this._searchWord(0, query, this._list, query);
             }
         }
+    }
+
+    _rebuildWordList()
+    {
+        if (!this._list) return;
+        const buildWordDB = {};
+        for (let i = 0; i < this._list.length; i++)
+        {
+            const res = this._list[i].name.split(/(?=[A-Z,0-9,/.])/);
+
+            for (let j = 0; j < res.length; j++)
+            {
+                if (res[j][res[j].length - 2] === "_") res[j] = res[j].substr(0, res[j].length - 2);
+                if (res[j][0] === ".") res[j] = res[j].substr(1);
+                if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
+            }
+
+
+            let shortName = "";
+            const ccParts = this._list[i].shortName.split(/(?=[A-Z,0-9,/.])/);
+            for (let j = 0; j < ccParts.length; j++)
+                shortName += ccParts[j].substr(0, 1);
+            this._list[i].abbrev = shortName.toLocaleLowerCase();
+        }
+
+
+        this._wordsDb = Object.keys(buildWordDB);
+        this._wordsDb.sort((a, b) => { return b.length - a.length; });
     }
 
 
