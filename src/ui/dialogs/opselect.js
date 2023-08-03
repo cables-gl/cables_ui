@@ -32,6 +32,7 @@ export default class OpSelect
         this._searching = false;
         this._bg = new ModalBackground();
         this._typedSinceOpening = false;
+        this._currentInfo = "";
 
         this._eleOpsearchmodal = null;
 
@@ -63,32 +64,35 @@ export default class OpSelect
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
 
-        const eleTypeStart = ele.byId("search_startType");
-        const eleTypeMore = ele.byId("search_startTypeMore");
-        const eleNoResults = ele.byId("search_noresults");
+        this._eleTypeStart = this._eleTypeStart || ele.byId("search_startType");
+        this._eleTypeMore = this._eleTypeMore || ele.byId("search_startTypeMore");
+        this._eleNoResults = this._eleNoResults || ele.byId("search_noresults");
 
         if (query.length === 0)
         {
-            ele.show(eleTypeStart);
+            ele.show(this._eleTypeStart);
             this._showSuggestionsInfo();
 
             for (let i = 0; i < this._opSearch.list.length; i++)
-                if (this._opSearch.list[i].element)
+                if (this._opSearch.list[i].element && !this._opSearch.list[i].elementHidden)
+                {
+                    this._opSearch.list[i].elementHidden = true;
                     ele.hide(this._opSearch.list[i].element);
+                }
         }
-        else ele.hide(eleTypeStart);
+        else ele.hide(this._eleTypeStart);
 
-        if (query.length === 1) ele.show(eleTypeMore);
-        else ele.hide(eleTypeMore);
+        if (query.length === 1) ele.show(this._eleTypeMore);
+        else ele.hide(this._eleTypeMore);
 
         if (num === 0 && query.length > 1)
         {
-            ele.show(eleNoResults);
-            ele.byId("searchinfo").innerHMTL = "";
+            ele.show(this._eleNoResults);
+            this._eleSearchinfo.innerHMTL = "";
         }
         else
         {
-            ele.hide(eleNoResults);
+            ele.hide(this._eleNoResults);
         }
 
         let optionsHtml = "";
@@ -252,9 +256,6 @@ export default class OpSelect
         }
         else ele.hide(eleReplaceWithExistingVar);
 
-
-        // if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
-
         perf.finish();
     }
 
@@ -265,7 +266,12 @@ export default class OpSelect
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
-        if (selectedEle)opName = selectedEle.dataset.opname;
+        if (selectedEle)
+        {
+            opName = selectedEle.dataset.opname;
+            if (this._currentInfo == selectedEle.dataset.opname) return;
+            this._currentInfo = selectedEle.dataset.opname;
+        }
 
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opName);
@@ -281,7 +287,6 @@ export default class OpSelect
             this._eleSearchinfo.innerHTML = "";
             const listItem = this.getListItemByOpName(opName);
             const opDocHtml = gui.opDocs.getHtml(opName, listItem);
-
 
             let html = "";
             if (listItem && listItem.isCollection)
@@ -310,17 +315,13 @@ export default class OpSelect
     {
         if (!this._opSearch.list || !this._html) this.prepare();
 
-
-
         let sq = this._getQuery();
-
 
         for (let i in CABLES.UI.DEFAULTMATHOPS) if (sq === i)
         {
             sq = CABLES.UI.DEFAULTMATHOPS[i];
             this._enterPressedEarly = true;
         }
-
 
         this.firstTime = false;
         sq = sq || "";
@@ -345,12 +346,14 @@ export default class OpSelect
             {
                 this._opSearch.list[i].element.dataset.score = this._opSearch.list[i].score;
                 this._opSearch.list[i].element.dataset.scoreDebug = this._opSearch.list[i].scoreDebug;
+                this._opSearch.list[i].elementHidden = false;
                 ele.show(this._opSearch.list[i].element);
             }
             else
             {
                 this._opSearch.list[i].element.dataset.score = "0.0";
                 this._opSearch.list[i].element.dataset.scoreDebug = "???";
+                this._opSearch.list[i].elementHidden = true;
                 ele.hide(this._opSearch.list[i].element);
             }
         }
@@ -362,9 +365,10 @@ export default class OpSelect
         tinysort(".searchresult", { "data": "score" });
         perfTinysort.finish();
 
-        const perf2 = CABLES.UI.uiProfiler.start("opselect.searchLoop2");
 
         this.navigate(0);
+
+        const perf2 = CABLES.UI.uiProfiler.start("opselect.searchLoop2");
 
         if (this.itemHeight === 0)
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
@@ -383,21 +387,30 @@ export default class OpSelect
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
 
         const oBoxCollection = ele.byQueryAll(".searchresult:not(.hidden)");
-        const oBoxCollectionAll = ele.byClass("searchresult");
+        // const oBoxCollectionAll = ele.byClass("searchresult");
 
         if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length - 1;
         if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
 
         const cssClass = "selected";
 
-        oBoxCollectionAll.classList.remove(cssClass);
+        // oBoxCollectionAll.classList.remove(cssClass);
+
 
         for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
 
         if (oBoxCollection[this.displayBoxIndex]) oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
 
-        if (this.displayBoxIndex > 5) ele.byClass("searchbrowser").scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
-        else ele.byClass("searchbrowser").scrollTop = 1;
+        const perf3 = CABLES.UI.uiProfiler.start("opselect.navigate.perf3");
+        const scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
+
+        if (this._lastScrollTop != scrollTop)
+        {
+            this._lastScrollTop = scrollTop;
+            if (this.displayBoxIndex > 5) ele.byClass("searchbrowser").scrollTop = scrollTop; // .scrollTop is expensive!
+            else ele.byClass("searchbrowser").scrollTop = 1;
+        }
+        perf3.finish();
 
         this.updateInfo();
         perf2.finish();
@@ -550,7 +563,7 @@ export default class OpSelect
     {
         clearTimeout(this._keyTimeout);
         this._typedSinceOpening = true;
-        ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+        // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
         this._searching = true;
 
         this._keyTimeout = setTimeout(() =>
@@ -559,7 +572,7 @@ export default class OpSelect
             this.displayBoxIndex = 0;
             this.updateInfo();
             this.search();
-            ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+            // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
             this._searching = false;
             if (this._enterPressedEarly)
             {
