@@ -34,15 +34,19 @@ export default class OpSelect
         this._bg = new ModalBackground();
         this._typedSinceOpening = false;
 
+        this._eleOpsearchmodal = null;
+
         this._opSearch = new OpSearch();
     }
 
     close()
     {
-        gui.patchView.focus();
-        ele.hide();
+        // ele.hide();
         this._bg.hide();
-        ele.hide(ele.byId("opsearchmodal"));
+        // ele.hide(this._eleOpsearchmodal);
+        this._eleOpsearchmodal.style.zIndex = -9999;
+
+        // gui.patchView.focus();
     }
 
     _getQuery()
@@ -128,6 +132,7 @@ export default class OpSelect
 
     _showSuggestionsInfo()
     {
+        if (this._minimal) return;
         const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
 
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
@@ -256,6 +261,8 @@ export default class OpSelect
 
     updateInfo()
     {
+        if (this._minimal) return;
+
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
@@ -275,6 +282,7 @@ export default class OpSelect
             this._eleSearchinfo.innerHTML = "";
             const listItem = this.getListItemByOpName(opName);
             const opDocHtml = gui.opDocs.getHtml(opName, listItem);
+
 
             let html = "";
             if (listItem && listItem.isCollection)
@@ -348,8 +356,14 @@ export default class OpSelect
             }
         }
 
+        perf.finish();
+
+        const perfTinysort = CABLES.UI.uiProfiler.start("opselect.tinysort");
         tinysort.defaults.order = "desc";
         tinysort(".searchresult", { "data": "score" });
+        perfTinysort.finish();
+
+        const perf2 = CABLES.UI.uiProfiler.start("opselect.searchLoop2");
 
         this.navigate(0);
 
@@ -357,11 +371,13 @@ export default class OpSelect
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
 
         this.updateOptions();
-        perf.finish();
+        perf2.finish();
     }
 
     navigate(diff)
     {
+        const perf2 = CABLES.UI.uiProfiler.start("opselect.navigate");
+
         this._typedSinceOpening = true;
         this.displayBoxIndex += diff;
 
@@ -385,6 +401,7 @@ export default class OpSelect
         else ele.byClass("searchbrowser").scrollTop = 1;
 
         this.updateInfo();
+        perf2.finish();
     }
 
     reload()
@@ -414,7 +431,8 @@ export default class OpSelect
 
             const head = getHandleBarHtml("op_select");
 
-            ele.byId("opsearchmodal").innerHTML = head;
+            this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
+            this._eleOpsearchmodal.innerHTML = head;
 
             this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text });
 
@@ -449,6 +467,9 @@ export default class OpSelect
 
         this._typedSinceOpening = false;
 
+
+        this._minimal = userSettings.get("miniopselect") == true;
+
         CABLES.UI.hideToolTip();
 
         this._enterPressedEarly = false;
@@ -481,9 +502,10 @@ export default class OpSelect
 
         this._bg.show();
 
-        ele.show(ele.byId("opsearchmodal"));
+        ele.show(this._eleOpsearchmodal);
+        this._eleOpsearchmodal.style.zIndex = 9999999;
 
-        if (userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
+        if (this._minimal) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
 
