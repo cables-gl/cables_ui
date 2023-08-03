@@ -25,7 +25,6 @@ export default class OpSelect
         this.itemHeight = 0;
         this.firstTime = true;
         this.tree = null;
-        this._wordsDb = null;
         this._eleSearchinfo = null;
         this._newOpOptions = {};
         this._searchInputEle = null;
