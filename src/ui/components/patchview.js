@@ -178,12 +178,12 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         if (window.logStartup) logStartup("loadProjectDependencies...");
-        gui.serverOps.loadProjectDependencies(proj, () =>
+        gui.serverOps.loadProjectDependencies(proj, (project) =>
         {
             if (window.logStartup) logStartup("loadProjectDependencies done");
 
             if (window.logStartup) logStartup("deserialize...");
-            gui.corePatch().deSerialize(proj);
+            gui.corePatch().deSerialize(project);
 
             if (window.logStartup) logStartup("deserialize done");
 
@@ -1394,10 +1394,10 @@ export default class PatchView extends CABLES.EventTarget
         str = str.replace("```", "");
         str = str.replace("```", "");
 
-        let json = null;
+        let pastedJson = null;
         try
         {
-            json = JSON.parse(str);
+            pastedJson = JSON.parse(str);
         }
         catch (exp)
         {
@@ -1408,52 +1408,53 @@ export default class PatchView extends CABLES.EventTarget
 
         const undoGroup = undo.startGroup();
 
-        if (!json || !json.ops) return;
+        if (!pastedJson || !pastedJson.ops) return;
 
         let focusSubpatchop = null;
-        gui.serverOps.loadProjectDependencies(json, () =>
+        gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
         {
+            console.log("OPS", project.ops);
             // change ids
-            json = CABLES.Patch.replaceOpIds(json, { "parentSubPatchId": oldSub });
+            project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
             const outerOp = this.getSubPatchOuterOp(currentSubPatch);
-            for (const i in json.ops)
+            for (const i in project.ops)
             {
-                json.ops[i].uiAttribs.pasted = true;
-                this.addBlueprintInfo(json.ops[i], outerOp);
+                project.ops[i].uiAttribs.pasted = true;
+                this.addBlueprintInfo(project.ops[i], outerOp);
             }
 
             { // change position of ops to paste
                 let minx = Number.MAX_VALUE;
                 let miny = Number.MAX_VALUE;
 
-                for (const i in json.ops)
+                for (const i in project.ops)
                 {
-                    if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate && json.ops[i].uiAttribs.subPatch == this.getCurrentSubPatch())
+                    if (project.ops[i].uiAttribs && project.ops[i].uiAttribs && project.ops[i].uiAttribs.translate && project.ops[i].uiAttribs.subPatch == this.getCurrentSubPatch())
                     {
-                        minx = Math.min(minx, json.ops[i].uiAttribs.translate.x);
-                        miny = Math.min(miny, json.ops[i].uiAttribs.translate.y);
+                        minx = Math.min(minx, project.ops[i].uiAttribs.translate.x);
+                        miny = Math.min(miny, project.ops[i].uiAttribs.translate.y);
                     }
                 }
 
-                for (const i in json.ops)
+                for (const i in project.ops)
                 {
-                    if (json.ops[i].uiAttribs && json.ops[i].uiAttribs && json.ops[i].uiAttribs.translate)
+                    if (project.ops[i].uiAttribs && project.ops[i].uiAttribs && project.ops[i].uiAttribs.translate)
                     {
-                        let x = json.ops[i].uiAttribs.translate.x + mouseX - minx;
-                        let y = json.ops[i].uiAttribs.translate.y + mouseY - miny;
+                        let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
+                        let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
                         if (userSettings.get("snapToGrid"))
                         {
                             x = gui.patchView.snapOpPosX(x);
                             y = gui.patchView.snapOpPosY(y);
                         }
-                        json.ops[i].uiAttribs.translate.x = x;
-                        json.ops[i].uiAttribs.translate.y = y;
+                        project.ops[i].uiAttribs.translate.x = x;
+                        project.ops[i].uiAttribs.translate.y = y;
 
                         gui.emitEvent(
                             "netOpPos", {
-                                "opId": json.ops[i].id,
-                                "x": json.ops[i].uiAttribs.translate.x,
-                                "y": json.ops[i].uiAttribs.translate.y
+                                "opId": project.ops[i].id,
+                                "x": project.ops[i].uiAttribs.translate.x,
+                                "y": project.ops[i].uiAttribs.translate.y
                             });
                     }
 
@@ -1470,15 +1471,15 @@ export default class PatchView extends CABLES.EventTarget
                                 gui.patchView.clipboardPaste(e);
                             }
                         });
-                    }(json.ops[i].id));
+                    }(project.ops[i].id));
                 }
             }
-            notify("Pasted " + json.ops.length + " ops");
-            gui.corePatch().deSerialize(json);
+            notify("Pasted " + project.ops.length + " ops");
+            gui.corePatch().deSerialize(project);
             this.isPasting = false;
 
             if (focusSubpatchop) this.patchRenderer.focusOpAnim(focusSubpatchop.id);
-            next(json.ops, focusSubpatchop);
+            next(project.ops, focusSubpatchop);
         });
         undo.endGroup(undoGroup, "Paste");
 
