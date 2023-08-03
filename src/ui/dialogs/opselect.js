@@ -33,6 +33,7 @@ export default class OpSelect
         this._bg = new ModalBackground();
         this._typedSinceOpening = false;
         this._currentInfo = "";
+        this._lastScrollTop = -5711;
 
         this._eleOpsearchmodal = null;
 
@@ -273,7 +274,6 @@ export default class OpSelect
             this._currentInfo = selectedEle.dataset.opname;
         }
 
-        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opName);
 
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
@@ -477,9 +477,10 @@ export default class OpSelect
 
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
         this._typedSinceOpening = false;
-
-
+        this._lastScrollTop = -5711;
         this._minimal = userSettings.get("miniopselect") == true;
 
         CABLES.UI.hideToolTip();
