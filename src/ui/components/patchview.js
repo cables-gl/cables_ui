@@ -1413,7 +1413,6 @@ export default class PatchView extends CABLES.EventTarget
         let focusSubpatchop = null;
         gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
         {
-            console.log("OPS", project.ops);
             // change ids
             project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
             const outerOp = this.getSubPatchOuterOp(currentSubPatch);
