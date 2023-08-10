@@ -51,8 +51,6 @@ export default class TexturePreviewer
         }
         if (!tp)
         {
-            console.log("no texport", this._lastClicked, this._lastClickedP);
-
             return;
         }
         let port = tp;
