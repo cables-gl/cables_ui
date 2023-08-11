@@ -3,37 +3,42 @@
 
 <div class="panel params_op_head panel_head">
 
-
 <div style="position:absolute;right:30px;margin-top:5px;">
+    <a id="patch-summary-toggle-fav"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
     <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
     <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
 </div>
 
 <h2 class="nomargin">
-    {{#if project.settings.isPublic}}{{else}}<span class="icon icon-lock"></span>{{/if}}
-    <b style="color:var(--color-13)">{{project.name}}</b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.cachedUsername}}">{{project.cachedUsername}}</a>
+    {{#if project.summary.isPublic}}{{else}}<span class="icon icon-lock"></span>{{/if}}
+    <b style="color:var(--color-13)">{{project.name}}</b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}</a>
 </h2>
 
-todo: likebutton<br/><br/>
+<br/><br/>
 
 {{#compare port.uiAttribs.display '!=' 'none' }}
-    Licence: {{project.settings.licence}} (todo: long licencetext...)
+    Licence: <a href="{{project.summary.licence.link}}" target="_blank">{{project.summary.licence.name}}</a><br/>{{project.summary.licence.description}}
 {{/compare}}
 <br/><br/>
 
-teams: todo,todo<br/>
+{{#if project.teams}}
+    Teams:
+    {{#each project.teams}}
+        {{#if not @first}}, {{/if}}
+        <a href="{{cablesUrl}}{{link}}">{{name}}</a>
+    {{/each}}
+{{/if}}
+<br/>
 lists: todo,todo<br/>
 
 <br/>
-<a href="_blank" href="{{cablesUrl}}/bla" class="button-small">todo: test patch</a>
-<a href="_blank" href="{{cablesUrl}}/bla" class="button-small">todo: example for Ops.Gl.Mainloop</a>
+{{#if project.summary.isTest }}
+<a href="_blank" href="{{cablesUrl}}/tests/{{projectId}}" class="button-small">todo: test patch</a>
+{{/if}}
+{{#if project.summary.exampleForOp }}
+    <a href="_blank" href="{{cablesUrl}}/op/{{project.summary.exampleForOp}}" class="button-small">Example for {{project.summary.exampleForOp}}</a>
+{{/if}}
 
 </div>
-
-<!-- <hr/> -->
-
-    <!-- <div class="panel patch_summary" id="patchsummary">
-        <iframe class="iframe" src="{{cablesUrl}}/patch/summary/{{projectId}}"></iframe>
-    </div> -->
 
 </script>

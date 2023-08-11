@@ -49,6 +49,7 @@ export default class PatchPanel extends CABLES.EventTarget
         if (!CABLES.UI.loaded) return;
         let html = "<div class=\"panel bookmarkpanel\">";
 
+        const panelEle = ele.byId(gui.getParamPanelEleId());
         if (gui.longPressConnector.isActive())
         {
             html += gui.longPressConnector.getParamPanelHtml();
@@ -60,11 +61,13 @@ export default class PatchPanel extends CABLES.EventTarget
             if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
             if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
+            html += gui.bookmarks.getHtml();
+
             const project = gui.project();
             if (project)
             {
                 const projectId = project.shortId || project._id;
-                // console.log(project);
+                console.log(project);
                 html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
                 // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
                 // if (project.isOpExample || notCollab)
@@ -76,13 +79,41 @@ export default class PatchPanel extends CABLES.EventTarget
                 // {
                 //     html += getHandleBarHtml("clonepatch", {});
                 // }
+                panelEle.innerHTML = html;
+                const likeButton = panelEle.querySelector("#patch-summary-toggle-fav");
+                if (likeButton)
+                {
+                    likeButton.addEventListener("click", (e) =>
+                    {
+                        CABLESUILOADER.talkerAPI.send("toggleFav", { "projectId": project._id }, (err, res) =>
+                        {
+                            if (!err && res.success)
+                            {
+                                const icon = likeButton.querySelector(".icon");
+                                if (icon)
+                                {
+                                    if (res.favstate)
+                                    {
+                                        icon.classList.remove("icon-heart");
+                                        icon.classList.add("icon-heart-fill");
+                                    }
+                                    else
+                                    {
+                                        icon.classList.remove("icon-heart-fill");
+                                        icon.classList.add("icon-heart");
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
             }
-            html += gui.bookmarks.getHtml();
         }
 
-        html += "<div id=\"tree\"></div>";
-
-        ele.byId(gui.getParamPanelEleId()).innerHTML = html;
+        // panelEle.innerHTML += "<div id=\"tree\"></div>";
+        const tree = document.createElement("div");
+        tree.id = "tree";
+        panelEle.appendChild(tree);
 
         const su = gui.patchView.getSubPatchesHierarchy();
         // html += this._subTree.html(su);
