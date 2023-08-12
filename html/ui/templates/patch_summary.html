@@ -17,7 +17,13 @@
 <br/><br/>
 
 {{#compare port.uiAttribs.display '!=' 'none' }}
-    Licence: <a href="{{project.summary.licence.link}}" target="_blank">{{project.summary.licence.name}}</a><br/>{{project.summary.licence.description}}
+    Licence:
+    {{#if project.summary.licence.link}}
+        <a href="{{project.summary.licence.link}}" target="_blank">{{project.summary.licence.name}}</a>
+    {{else}}
+        {{project.summary.licence.name}}
+    {{/if}}
+    <br/>{{project.summary.licence.description}}
 {{/compare}}
 <br/><br/>
 
