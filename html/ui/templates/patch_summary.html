@@ -24,7 +24,7 @@
 {{#if project.teams}}
     Teams:
     {{#each project.teams}}
-        {{#if not @first}}, {{/if}}
+        {{#unless @first}}, {{/unless}}
         <a href="{{cablesUrl}}{{link}}">{{name}}</a>
     {{/each}}
 {{/if}}
