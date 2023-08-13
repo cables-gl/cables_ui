@@ -186,7 +186,6 @@ export default class Gui
     {
         this._currentProject = p;
         gui.setProjectName(p.name || "unknown");
-        ele.byId("nav_viewProjectLink").setAttribute("href", CABLES.sandbox.getCablesUrl() + "/p/" + p.shortId || p._id);
     }
 
     opSelect()
@@ -1219,10 +1218,15 @@ export default class Gui
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
         {
             e.preventDefault();
-            const url = e.target.getAttribute("href");
-            const win = window.open(url, "_blank");
-            win.focus();
+            const projectId = this._currentProject ? this._currentProject.shortId : null;
+            if (projectId)
+            {
+                const url = CABLES.sandbox.getCablesUrl() + "/p/" + projectId;
+                const win = window.open(url, "_blank");
+                win.focus();
+            }
         });
+        ele.byId("nav_remoteViewerLink").addEventListener("click", (event) => { CABLES.CMD.UI.openRemoteViewer(); });
 
         ele.byId("nav_patch_save").addEventListener("click", (event) => { CABLES.CMD.PATCH.save(); });
         ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });

@@ -198,7 +198,6 @@ export default class ScConnection extends CABLES.EventTarget
                 {
                     this.client.isPilot = true;
                     this.sendNotification(this.client.username + " just started a multiplayer session");
-                    notify("YOU just started a multiplayer session");
                 }
                 this._inSessionSince = this.getTimestamp();
                 this.client.inMultiplayerSession = true;
@@ -224,14 +223,28 @@ export default class ScConnection extends CABLES.EventTarget
 
     reconnectRemoteViewer()
     {
-        gui.setRestriction(Gui.RESTRICT_MODE_FULL);
-        this.client.isPilot = true;
-        this.client.following = null;
-        this.client.inMultiplayerSession = true;
-        this._inSessionSince = this.getTimestamp();
-        this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
-        this._sendPing(true);
-        this._startPacoSend(this.clientId, true);
+        let startSessionListener = null;
+        const reconnectViewer = () =>
+        {
+            if (startSessionListener) this._state.off(startSessionListener);
+            gui.setRestriction(Gui.RESTRICT_MODE_FULL);
+            this.client.isPilot = true;
+            this.client.following = null;
+            this.client.inMultiplayerSession = true;
+            this._inSessionSince = this.getTimestamp();
+            this._state.emitEvent("enableMultiplayer", { "username": this.client.username, "clientId": this.clientId, "started": true });
+            this._sendPing(true);
+            this._startPacoSend(this.clientId, true);
+        };
+        if (!this.runningMultiplayerSession)
+        {
+            startSessionListener = this.on("multiplayerEnabled", reconnectViewer);
+            this.startMultiplayerSession();
+        }
+        else
+        {
+            reconnectViewer();
+        }
     }
 
     startRemoteViewer(doneCallback)
@@ -414,14 +427,11 @@ export default class ScConnection extends CABLES.EventTarget
                     }
                 })();
 
-                if (payload.started)
-                {
-                    this._startPacoSend(this.clientId);
-                }
-                else
+                if (!payload.started)
                 {
                     this.requestPilotPatch();
                 }
+                this.emitEvent("multiplayerEnabled");
             });
         }
 
@@ -659,7 +669,7 @@ export default class ScConnection extends CABLES.EventTarget
             {
                 if (!foreignRequest || (msg.data.vars && msg.data.vars.forceResync))
                 {
-                    this._synchronizePatch(msg.data);
+                    this._synchronizePatch(msg.data, msg.data.vars.forceResync);
                 }
             }
             else
@@ -699,10 +709,25 @@ export default class ScConnection extends CABLES.EventTarget
         if (msg.name === "resync")
         {
             if (msg.clientId === this._socket.clientId) return;
-            if (this._pacoEnabled && this.client && this.client.isPilot)
+
+            let startSessionListener = null;
+            const resyncPatch = () =>
             {
-                this._log.info("RESYNC sending paco patch....");
-                this._startPacoSend(msg.clientId);
+                if (startSessionListener) this.off(startSessionListener);
+                if (this._pacoEnabled && this.client && this.client.isPilot)
+                {
+                    this._log.info("RESYNC sending paco patch....");
+                    this._startPacoSend(msg.clientId);
+                }
+            };
+            if (!this.runningMultiplayerSession)
+            {
+                startSessionListener = this.on("multiplayerEnabled", resyncPatch);
+                this.startMultiplayerSession(true);
+            }
+            else
+            {
+                resyncPatch();
             }
         }
         if (msg.name === "pingMembers")
