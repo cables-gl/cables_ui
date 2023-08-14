@@ -1221,6 +1221,9 @@ export default class PatchView extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
+        this._patchRenderer.greyOutBlue =
+        this._patchRenderer.greyOut = false;
+
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
         else ele.show(this._eleSubpatchNav);
 
@@ -1266,8 +1269,6 @@ export default class PatchView extends CABLES.EventTarget
         else
         {
             gui.restriction.setMessage("blueprint", null);
-            this._patchRenderer.greyOutBlue =
-            this._patchRenderer.greyOut = false;
         }
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
