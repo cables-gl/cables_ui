@@ -173,6 +173,8 @@ const text =
         "title_theme": "Theme",
         "subtitle_theme": "Bright theme is better when you work outside.",
 
+        "title_hideCanvasUi": "Show Canvas Info Bar Ui",
+
         "title_hideSizeBar": "Icon Side Bar",
         "subtitle_hideSizeBar": "Shows a sidebar with icons of commands from command palette",
 
@@ -323,7 +325,7 @@ const text =
         },
 
         {
-            "descr": " To **move a cable connection to another port**, hold `SHIFT + alt` keyboard keys and `right mouse button` while over either end of the cable.",
+            "descr": " To move a cable connection to another port, hold `alt` keyboard keys and `right mouse button` while over either end of the cable.",
             "img": "right_shift_alt.gif"
         },
         {

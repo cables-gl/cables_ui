@@ -619,7 +619,7 @@ class OpParampanel extends CABLES.EventTarget
             "title": "Show Op Serialized",
             func()
             {
-                CABLES.CMD.PATCH.watchOpSerialized();
+                CABLES.CMD.DEBUG.watchOpSerialized();
             },
         });
 

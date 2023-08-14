@@ -507,7 +507,7 @@ export default class FileManager
                                             if (countRes.data.countOps)
                                             {
                                                 let linkText = countRes.data.countOps + " op";
-                                                if (countRes.data.countOps > 1) content += "s";
+                                                if (countRes.data.countOps > 1) linkText += "s";
                                                 content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                                 if (countRes.data.viaBlueprint) content += ". " + countRes.data.viaBlueprint + " times via blueprint.";
                                                 allowDelete = false;
@@ -637,7 +637,7 @@ export default class FileManager
                                     if (countRes.data.countOps)
                                     {
                                         let linkText = countRes.data.countPatches + " op";
-                                        if (countRes.data.countPatches > 1) linkText += "s";
+                                        if (countRes.data.countOps > 1) linkText += "s";
                                         content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
                                         allowDelete = false;
                                     }

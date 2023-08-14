@@ -6,6 +6,7 @@ import OpTreeList from "../components/opselect_treelist";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
+import OpSearch from "../components/opsearch";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -20,12 +21,10 @@ export default class OpSelect
 {
     constructor()
     {
-        this._list = null;
         this.displayBoxIndex = 0;
         this.itemHeight = 0;
         this.firstTime = true;
         this.tree = null;
-        this._wordsDb = null;
         this._eleSearchinfo = null;
         this._newOpOptions = {};
         this._searchInputEle = null;
@@ -33,14 +32,22 @@ export default class OpSelect
         this._searching = false;
         this._bg = new ModalBackground();
         this._typedSinceOpening = false;
+        this._currentInfo = "";
+        this._lastScrollTop = -5711;
+
+        this._eleOpsearchmodal = null;
+
+        this._opSearch = new OpSearch();
     }
 
     close()
     {
-        gui.patchView.focus();
-        ele.hide();
+        // ele.hide();
         this._bg.hide();
-        ele.hide(ele.byId("opsearchmodal"));
+        // ele.hide(this._eleOpsearchmodal);
+        this._eleOpsearchmodal.style.zIndex = -9999;
+
+        // gui.patchView.focus();
     }
 
     _getQuery()
@@ -58,32 +65,35 @@ export default class OpSelect
         const num = ele.byQueryAll(".searchbrowser .searchable:not(.hidden)").length;
         const query = this._getQuery();
 
-        const eleTypeStart = ele.byId("search_startType");
-        const eleTypeMore = ele.byId("search_startTypeMore");
-        const eleNoResults = ele.byId("search_noresults");
+        this._eleTypeStart = this._eleTypeStart || ele.byId("search_startType");
+        this._eleTypeMore = this._eleTypeMore || ele.byId("search_startTypeMore");
+        this._eleNoResults = this._eleNoResults || ele.byId("search_noresults");
 
         if (query.length === 0)
         {
-            ele.show(eleTypeStart);
+            ele.show(this._eleTypeStart);
             this._showSuggestionsInfo();
 
-            for (let i = 0; i < this._list.length; i++)
-                if (this._list[i].element)
-                    ele.hide(this._list[i].element);
+            for (let i = 0; i < this._opSearch.list.length; i++)
+                if (this._opSearch.list[i].element && !this._opSearch.list[i].elementHidden)
+                {
+                    this._opSearch.list[i].elementHidden = true;
+                    ele.hide(this._opSearch.list[i].element);
+                }
         }
-        else ele.hide(eleTypeStart);
+        else ele.hide(this._eleTypeStart);
 
-        if (query.length === 1) ele.show(eleTypeMore);
-        else ele.hide(eleTypeMore);
+        if (query.length === 1) ele.show(this._eleTypeMore);
+        else ele.hide(this._eleTypeMore);
 
         if (num === 0 && query.length > 1)
         {
-            ele.show(eleNoResults);
-            ele.byId("searchinfo").innerHMTL = "";
+            ele.show(this._eleNoResults);
+            this._eleSearchinfo.innerHMTL = "";
         }
         else
         {
-            ele.hide(eleNoResults);
+            ele.hide(this._eleNoResults);
         }
 
         let optionsHtml = "";
@@ -122,368 +132,11 @@ export default class OpSelect
         perf.finish();
     }
 
-    _searchWord(wordIndex, orig, list, query)
-    {
-        if (!query || query === " " || query === "") return;
-
-        const perf = CABLES.UI.uiProfiler.start("opselect._searchWord");
-
-        for (let i = 0; i < list.length; i++)
-        {
-            if (wordIndex > 0 && list[i].score === 0) continue; // when second word was found, but first was not
-
-            let scoreDebug = "<b>Query: " + query + " </b><br/>";
-            let found = false;
-            let points = 0;
-
-            if (list[i].lowercasename.indexOf(query) > -1)
-            {
-                if (list[i].name === "Ops.Gl.MainLoop")
-                {
-                    found = true;
-                    scoreDebug += "+2 vip op<br/>";
-                    points += 2;
-                }
-            }
-
-            if (list[i].abbrev && list[i].abbrev.indexOf(orig) === 0)
-            {
-                found = true;
-                let p = 2;
-                if (orig.length === 2)p = 6;
-                if (orig.length === 3)p = 4;
-                scoreDebug += "+" + p + " abbreviation<br/>";
-                points += p;
-            }
-
-            if (list[i].userOp && this._hideUserOps)
-            {
-                continue;
-            }
-
-            if (list[i]._summary.indexOf(query) > -1)
-            {
-                found = true;
-                points += 1;
-                scoreDebug += "+1 found in summary (" + query + ")<br/>";
-            }
-
-            if (list[i]._nameSpace.indexOf(query) > -1)
-            {
-                found = true;
-                points += 1;
-                scoreDebug += "+1 found in namespace (" + query + ")<br/>";
-            }
-
-            if (list[i]._shortName.indexOf(query) > -1)
-            {
-                found = true;
-                points += 4;
-                scoreDebug += "+4 found in shortname (" + query + ")<br/>";
-            }
-
-            if (list[i]._shortName == query)
-            {
-                found = true;
-                points += 5;
-                scoreDebug += "+5 query quals shortname<br/>";
-            }
-
-            if (orig.length > 1 && list[i]._lowerCaseName.indexOf(orig) > -1)
-            {
-                found = true;
-                points += 2;
-                scoreDebug += "+2 found full namespace (" + query + ")<br/>";
-            }
-
-
-            if (points == 0)
-            {
-                if (list[i]._lowerCaseName.indexOf(query) > -1)
-                {
-                    found = true;
-                    points += 2;
-                    scoreDebug += "+2 found full namespace (" + query + ")<br/>";
-                }
-            }
-
-
-            if (found)
-            {
-                if (this._newOpOptions)
-                {
-                    const firstportfitspoints = 3;
-                    const firstportfitsText = "+3 First Port fits<br/>";
-
-                    const docs = gui.opDocs.getOpDocByName(list[i].name);
-
-                    if (docs && docs.hasOwnProperty("version"))
-                    {
-                        const p = docs.version * 0.01;
-                        points += p;
-                        scoreDebug += "+" + p + " version<br/>";
-                    }
-
-
-                    if (docs && docs.layout && docs.layout.portsIn && docs.layout.portsOut && docs.layout.portsIn.length > 0 && docs.layout.portsOut.length > 0)
-                    {
-                        // when inserting into link - find fitting ports
-                        if (this._newOpOptions.linkNewLink)
-                        {
-                            let foundPortTypeIn = false;
-                            for (let j = 0; j < docs.layout.portsIn.length; j++)
-                            {
-                                if (docs.layout.portsIn[j] &&
-                                    this._newOpOptions.linkNewLink.portIn &&
-                                    docs.layout.portsIn[j].type == this._newOpOptions.linkNewLink.portIn.type)
-                                {
-                                    foundPortTypeIn = true;
-                                    break;
-                                }
-                            }
-
-                            let foundPortTypeOut = false;
-                            for (let j = 0; j < docs.layout.portsOut.length; j++)
-                            {
-                                if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewLink.portOut.type)
-                                {
-                                    foundPortTypeOut = true;
-                                    break;
-                                }
-                            }
-
-                            if (
-                                docs.layout.portsIn[0].type == this._newOpOptions.linkNewLink.portOut.type &&
-                                docs.layout.portsOut[0].type == this._newOpOptions.linkNewLink.portIn.type
-                            )
-                            {
-                                points += firstportfitspoints;
-                                scoreDebug += firstportfitsText;
-                            }
-
-                            if (!foundPortTypeOut && !foundPortTypeIn)
-                            {
-                                points -= 5.0; // seems harsh, but is only used when dragging a port, so it should be fine...
-                                scoreDebug += "-5.0 no compatible port found<br/>";
-                            }
-                        }
-
-                        // when dragging a port - find fitting  input/output port
-                        if (this._newOpOptions.linkNewOpToPort)
-                        {
-                            let foundPortType = false;
-                            if (this._newOpOptions.linkNewOpToPort.direction === CABLES.PORT_DIR_OUT)
-                            {
-                                if (docs.layout.portsIn[0].type == this._newOpOptions.linkNewOpToPort.type)
-                                {
-                                    points += firstportfitspoints;
-                                    scoreDebug += firstportfitsText;
-                                }
-
-                                for (let j = 0; j < docs.layout.portsIn.length; j++)
-                                {
-                                    if (docs.layout.portsIn[j].type == this._newOpOptions.linkNewOpToPort.type)
-                                    {
-                                        foundPortType = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (docs.layout.portsOut[0].type == this._newOpOptions.linkNewOpToPort.type)
-                                {
-                                    points += firstportfitspoints;
-                                    scoreDebug += firstportfitsText;
-                                }
-
-
-                                for (let j = 0; j < docs.layout.portsOut.length; j++)
-                                {
-                                    if (docs.layout.portsOut[j].type == this._newOpOptions.linkNewOpToPort.type)
-                                    {
-                                        foundPortType = true;
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (!foundPortType)
-                            {
-                                points -= 10.0; // seems harsh, but is only used when dragging a port, so it should be fine...
-                                scoreDebug += "-10.0 no comparible port found<br/>";
-                            }
-                        }
-                    }
-                }
-
-                if (list[i]._shortName.indexOf(orig) === 0)
-                {
-                    points += 2.5;
-                    scoreDebug += "+2.5 found in shortname at beginning (" + query + ")<br/>";
-
-                    if (list[i]._shortName == orig)
-                    {
-                        points += 2;
-                        scoreDebug += "+2 exact name (" + query + ")<br/>";
-                    }
-                }
-
-                if (list[i]._nameSpace.indexOf("ops.math") > -1)
-                {
-                    points += 1;
-                    scoreDebug += "+1 is math op (" + query + ")<br/>";
-                }
-                else if (list[i]._nameSpace.indexOf("ops.patch") > -1)
-                {
-                    points += 3;
-                    scoreDebug += "+1 is patch op (" + query + ")<br/>";
-                }
-                else if (list[i]._nameSpace.indexOf("ops.team") > -1)
-                {
-                    points += 2;
-                    scoreDebug += "+2 is team op (" + query + ")<br/>";
-                }
-
-
-                const shortnessPoints = 2 * Math.round((1.0 - Math.min(1, (list[i]._nameSpace + list[i]._shortName).length / 100)) * 100) / 100;
-                points += shortnessPoints;
-                scoreDebug += "+" + shortnessPoints + " shortness namespace<br/>";
-            }
-
-            if (found && this._list[i].old)
-            {
-                points -= 1;
-                scoreDebug += "-1 outdated<br/>";
-            }
-
-            if (found && list[i].pop > 0)
-            {
-                points += (list[i].pop || 2) / CABLES.UI.OPSELECT.maxPop || 1;
-            }
-
-            if (found && this._list[i].notUsable)
-            {
-                points = 0.1;
-                scoreDebug += "0.1 not usable<br/>";
-            }
-
-            if (!found) points = 0;
-
-            if (points === 0 && list[i].score > 0) list[i].score = 0;
-            else list[i].score += points;
-
-            list[i].scoreDebug = (list[i].scoreDebug || "") + scoreDebug + " (" + Math.round(points * 100) / 100 + " points)<br/><br/>";
-        }
-
-        perf.finish();
-    }
-
-    _search(sq)
-    {
-        for (let i in CABLES.UI.DEFAULTMATHOPS) if (sq === i)
-        {
-            sq = CABLES.UI.DEFAULTMATHOPS[i];
-            this._enterPressedEarly = true;
-        }
-
-        if (!this._list || !this._html) this.prepare();
-
-        this.firstTime = false;
-        sq = sq || "";
-        let query = sq.toLowerCase();
-
-        const options = {
-            "linkNamespaceIsTextureEffects": false,
-        };
-
-        if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
-
-        const origQuery = query;
-
-        if (this._wordsDb == null && this._list) // build word database by splitting up camelcase
-        {
-            const buildWordDB = {};
-            for (let i = 0; i < this._list.length; i++)
-            {
-                const res = this._list[i].name.split(/(?=[A-Z,0-9,/.])/);
-
-                for (let j = 0; j < res.length; j++)
-                {
-                    if (res[j][res[j].length - 2] === "_") res[j] = res[j].substr(0, res[j].length - 2);
-                    if (res[j][0] === ".") res[j] = res[j].substr(1);
-                    if (res[j].length > 2) buildWordDB[res[j].toLowerCase()] = 1;
-                }
-
-
-                let shortName = "";
-                const ccParts = this._list[i].shortName.split(/(?=[A-Z,0-9,/.])/);
-                for (let j = 0; j < ccParts.length; j++)
-                    shortName += ccParts[j].substr(0, 1);
-                this._list[i].abbrev = shortName.toLocaleLowerCase();
-            }
-
-
-            this._wordsDb = Object.keys(buildWordDB);
-            this._wordsDb.sort((a, b) => { return b.length - a.length; });
-        }
-
-        if (this._wordsDb) // search through word db
-        {
-            let q = query;
-            const queryParts = [];
-            let found = false;
-            do
-            {
-                found = false;
-                for (let i = 0; i < this._wordsDb.length; i++)
-                {
-                    const idx = q.indexOf(this._wordsDb[i]);
-                    if (idx > -1) // && queryParts.indexOf(this._wordsDb[i])==-1
-                    {
-                        found = true;
-                        queryParts.push(this._wordsDb[i]);
-                        q = q.substr(0, idx) + " " + q.substr(idx + this._wordsDb[i].length, q.length - idx);
-                        break;
-                    }
-                }
-            }
-            while (found);
-
-            if (queryParts.length > 0)
-            {
-                let nquery = queryParts.join(" ");
-                nquery += " " + q;
-
-                if (nquery !== query) document.getElementById("realsearch").innerHTML = "Searching for: <b>" + nquery + "</b>";
-
-                query = nquery;
-            }
-            else document.getElementById("realsearch").innerHTML = "";
-        }
-        if (query.length > 1)
-        {
-            for (let i = 0; i < this._list.length; i++)
-            {
-                this._list[i].score = 0;
-                this._list[i].scoreDebug = "";
-            }
-
-            if (query.indexOf(" ") > -1)
-            {
-                const words = query.split(" ");
-                for (let i = 0; i < words.length; i++) { this._searchWord(i, origQuery, this._list, words[i], options); }
-            }
-            else
-            {
-                this._searchWord(0, query, this._list, query, options);
-            }
-        }
-    }
 
 
     _showSuggestionsInfo()
     {
+        if (this._minimal) return;
         const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
 
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
@@ -604,20 +257,23 @@ export default class OpSelect
         }
         else ele.hide(eleReplaceWithExistingVar);
 
-
-        // if (!ops && !found && this._eleSearchinfo) this._eleSearchinfo.innerHTML = "";
-
         perf.finish();
     }
 
     updateInfo()
     {
+        if (this._minimal) return;
+
         let opName = "";
         const selectedEle = ele.byClass("selected");
 
-        if (selectedEle)opName = selectedEle.dataset.opname;
+        if (selectedEle)
+        {
+            opName = selectedEle.dataset.opname;
+            if (this._currentInfo == selectedEle.dataset.opname) return;
+            this._currentInfo = selectedEle.dataset.opname;
+        }
 
-        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
         this.updateOptions(opName);
 
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
@@ -657,70 +313,112 @@ export default class OpSelect
 
     search()
     {
-        const q = this._getQuery();
-        this._search(q);
+        if (!this._opSearch.list || !this._html) this.prepare();
+
+        let sq = this._getQuery();
+
+        for (let i in CABLES.UI.DEFAULTMATHOPS) if (sq === i)
+        {
+            sq = CABLES.UI.DEFAULTMATHOPS[i];
+            this._enterPressedEarly = true;
+        }
+
+        this.firstTime = false;
+        sq = sq || "";
+        let query = sq.toLowerCase();
+
+        const options = {
+            "linkNamespaceIsTextureEffects": false,
+        };
+
+        if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
+
+
+
+        this._opSearch.search(query);
         const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
 
-        for (let i = 0; i < this._list.length; i++)
+        for (let i = 0; i < this._opSearch.list.length; i++)
         {
-            this._list[i].element = this._list[i].element || ele.byId("result_" + this._list[i].id);
+            this._opSearch.list[i].element = this._opSearch.list[i].element || ele.byId("result_" + this._opSearch.list[i].id);
 
-            if (this._list[i].score > 0)
+            if (this._opSearch.list[i].score > 0)
             {
-                this._list[i].element.dataset.score = this._list[i].score;
-                this._list[i].element.dataset.scoreDebug = this._list[i].scoreDebug;
-                ele.show(this._list[i].element);
+                this._opSearch.list[i].element.dataset.score = this._opSearch.list[i].score;
+                this._opSearch.list[i].element.dataset.scoreDebug = this._opSearch.list[i].scoreDebug;
+                this._opSearch.list[i].elementHidden = false;
+                ele.show(this._opSearch.list[i].element);
             }
             else
             {
-                this._list[i].element.dataset.score = "0.0";
-                this._list[i].element.dataset.scoreDebug = "???";
-                ele.hide(this._list[i].element);
+                this._opSearch.list[i].element.dataset.score = "0.0";
+                this._opSearch.list[i].element.dataset.scoreDebug = "???";
+                this._opSearch.list[i].elementHidden = true;
+                ele.hide(this._opSearch.list[i].element);
             }
         }
 
+        perf.finish();
+
+        const perfTinysort = CABLES.UI.uiProfiler.start("opselect.tinysort");
         tinysort.defaults.order = "desc";
         tinysort(".searchresult", { "data": "score" });
+        perfTinysort.finish();
+
 
         this.navigate(0);
+
+        const perf2 = CABLES.UI.uiProfiler.start("opselect.searchLoop2");
 
         if (this.itemHeight === 0)
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
 
         this.updateOptions();
-        perf.finish();
+        perf2.finish();
     }
 
     navigate(diff)
     {
+        const perf2 = CABLES.UI.uiProfiler.start("opselect.navigate");
+
         this._typedSinceOpening = true;
         this.displayBoxIndex += diff;
 
         if (this.displayBoxIndex < 0) this.displayBoxIndex = 0;
 
         const oBoxCollection = ele.byQueryAll(".searchresult:not(.hidden)");
-        const oBoxCollectionAll = ele.byClass("searchresult");
+        // const oBoxCollectionAll = ele.byClass("searchresult");
 
         if (this.displayBoxIndex >= oBoxCollection.length) this.displayBoxIndex = oBoxCollection.length - 1;
         if (this.displayBoxIndex < 0) this.displayBoxIndex = oBoxCollection.length - 1;
 
         const cssClass = "selected";
 
-        oBoxCollectionAll.classList.remove(cssClass);
+        // oBoxCollectionAll.classList.remove(cssClass);
+
 
         for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
 
         if (oBoxCollection[this.displayBoxIndex]) oBoxCollection[this.displayBoxIndex].classList.add(cssClass);
 
-        if (this.displayBoxIndex > 5) ele.byClass("searchbrowser").scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
-        else ele.byClass("searchbrowser").scrollTop = 1;
+        const perf3 = CABLES.UI.uiProfiler.start("opselect.navigate.perf3");
+        const scrollTop = (this.displayBoxIndex - 5) * (this.itemHeight + 1);
+
+        if (this._lastScrollTop != scrollTop)
+        {
+            this._lastScrollTop = scrollTop;
+            if (this.displayBoxIndex > 5) ele.byClass("searchbrowser").scrollTop = scrollTop; // .scrollTop is expensive!
+            else ele.byClass("searchbrowser").scrollTop = 1;
+        }
+        perf3.finish();
 
         this.updateInfo();
+        perf2.finish();
     }
 
     reload()
     {
-        this._list = null;
+        this._opSearch.resetList();
         this._html = null;
         this._eleSearchinfo = null;
     }
@@ -730,32 +428,12 @@ export default class OpSelect
         this.tree = new OpTreeList();
 
 
-        if (!this._list)
+        if (!this._opSearch.list)
         {
             const perf = CABLES.UI.uiProfiler.start("opselect.prepare.list");
 
-            this._buildList();
+            this._opSearch._buildList();
 
-            let maxPop = 0;
-
-            for (let i = 0; i < this._list.length; i++)
-            {
-                if (!this._list[i].shortName) this._list[i].shortName = this._list[i].name;
-
-                maxPop = Math.max(this._list[i].pop || 0, maxPop);
-                this._list[i].id = i;
-                this._list[i].summary = this._list[i].summary || "";
-                this._list[i]._summary = this._list[i].summary.toLowerCase();
-                this._list[i]._shortName = this._list[i].shortName.toLowerCase();
-                this._list[i]._lowerCaseName = this._list[i].name.toLowerCase();
-                this._list[i]._nameSpace = this._list[i].nameSpace.toLowerCase() + ".";
-                this._list[i]._nameSpaceFull = this._list[i].nameSpace.toLowerCase() + "." + this._list[i].shortName.toLowerCase();
-
-                const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
-                if (defaultops.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
-            }
-
-            CABLES.UI.OPSELECT.maxPop = maxPop;
             perf.finish();
         }
 
@@ -765,9 +443,10 @@ export default class OpSelect
 
             const head = getHandleBarHtml("op_select");
 
-            ele.byId("opsearchmodal").innerHTML = head;
+            this._eleOpsearchmodal = this._eleOpsearchmodal || ele.byId("opsearchmodal");
+            this._eleOpsearchmodal.innerHTML = head;
 
-            this._html = getHandleBarHtml("op_select_ops", { "ops": this._list, "texts": text });
+            this._html = getHandleBarHtml("op_select_ops", { "ops": this._opSearch.list, "texts": text });
 
 
             ele.byId("searchbrowserContainer").innerHTML = this._html;
@@ -798,7 +477,11 @@ export default class OpSelect
 
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
+        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+
         this._typedSinceOpening = false;
+        this._lastScrollTop = -5711;
+        this._minimal = userSettings.get("miniopselect") == true;
 
         CABLES.UI.hideToolTip();
 
@@ -826,15 +509,16 @@ export default class OpSelect
 
         if (this.firstTime) this.search();
 
-        if (!this._list || !this._html) this.prepare();
+        if (!this._opSearch.list || !this._html) this.prepare();
 
         ele.hide(ele.byId("search_noresults"));
 
         this._bg.show();
 
-        ele.show(ele.byId("opsearchmodal"));
+        ele.show(this._eleOpsearchmodal);
+        this._eleOpsearchmodal.style.zIndex = 9999999;
 
-        if (userSettings.get("miniopselect") == true) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
+        if (this._minimal) document.getElementsByClassName("opsearch")[0].classList.add("minimal");
         else document.getElementsByClassName("opsearch")[0].classList.remove("minimal");
 
 
@@ -880,7 +564,7 @@ export default class OpSelect
     {
         clearTimeout(this._keyTimeout);
         this._typedSinceOpening = true;
-        ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
+        // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 0.6;
         this._searching = true;
 
         this._keyTimeout = setTimeout(() =>
@@ -889,7 +573,7 @@ export default class OpSelect
             this.displayBoxIndex = 0;
             this.updateInfo();
             this.search();
-            ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
+            // ele.byQuery("#searchbrowserContainer .searchbrowser").style.opacity = 1.0;
             this._searching = false;
             if (this._enterPressedEarly)
             {
@@ -1060,176 +744,10 @@ export default class OpSelect
         // prevent the default action (scroll / move caret)
     }
 
-    _buildList()
-    {
-        const perf = CABLES.UI.uiProfiler.start("opselect.getlist");
-
-        const coreOpNames = this._getOpsNamesFromCode([], "Ops", Ops, "");
-        let items = this._createListItemsByNames(coreOpNames);
-
-        const docOpName = gui.opDocs.getOpDocs().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(docOpName, items));
-
-        const extensionNames = gui.opDocs.getExtensions().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(extensionNames, items));
-
-        const teamNamespaces = gui.opDocs.getTeamNamespaces().map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(teamNamespaces, items));
-
-        const namespace = defaultops.getPatchOpsNamespace();
-        const patchOpNames = gui.opDocs.getNamespaceDocs(namespace).map((ext) => { return ext.name; });
-        items = items.concat(this._createListItemsByNames(patchOpNames, items));
-
-        const newList = {};
-        items.forEach((item) =>
-        {
-            if (!newList.hasOwnProperty(item.opId))
-            {
-                newList[item.opId] = item;
-            }
-        });
-
-        this._list = Object.values(newList);
-        this._list.sort((a, b) => { return b.pop - a.pop; });
-        perf.finish();
-    }
 
     getListItemByOpName(opName)
     {
-        if (!this._list) return null;
-        return this._list.find((item) => { return item.name === opName; });
-    }
-
-    _createListItemsByNames(opNames, listItems = [])
-    {
-        if (!opNames) return;
-        const items = [];
-        for (let i = 0; i < opNames.length; i++)
-        {
-            const opName = opNames[i];
-            if (!opName) continue;
-            const parts = opName.split(".");
-            const lowerCaseName = opName.toLowerCase() + "_" + parts.join("").toLowerCase();
-            const opDoc = gui.opDocs.getOpDocByName(opName);
-            let shortName = parts[parts.length - 1];
-            let hidden = false;
-            let opDocHidden = false;
-            let opId = null;
-
-            if (opDoc)
-            {
-                opId = opDoc.id;
-                opDocHidden = opDoc.hidden;
-                hidden = opDoc.hidden;
-
-                if (defaultops.isNonCoreOp(opName))
-                {
-                    shortName = opDoc.shortName;
-                }
-                else
-                {
-                    shortName = opDoc.shortNameDisplay;
-                }
-            }
-
-            if (hidden)
-            {
-                if (defaultops.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
-            }
-
-            if (defaultops.isDevOp(opName) && !CABLES.sandbox.isDevEnv()) hidden = true;
-
-            parts.length -= 1;
-            const nameSpace = parts.join(".");
-
-            if (defaultops.isCollection(opName))
-            {
-                const inUse = listItems && listItems.some((op) => { return op.name.startsWith(opName); });
-                if (inUse)
-                {
-                    hidden = true;
-                }
-            }
-
-            if (!hidden)
-            {
-                let oldState = "";
-                if (hidden)oldState = "OLD";
-                if (opDocHidden)oldState = "OLD";
-                if (defaultops.isDeprecatedOp(opName)) oldState = "DEPREC";
-                if (defaultops.isAdminOp(opName)) oldState = "ADMIN";
-
-                let popularity = -1;
-                let summary = gui.opDocs.getSummary(opName);
-                let type = "op";
-                if (defaultops.isTeamNamespace(opName)) type = "teamnamespace";
-                if (defaultops.isExtension(opName)) type = "extension";
-                if (defaultops.isPatchOp(opName)) type = "patchop";
-
-                const isCollection = defaultops.isCollection(opName);
-
-                const op = {
-                    "opId": opId || CABLES.simpleId(),
-                    "name": opName,
-                    "summary": summary,
-                    "nscolor": defaultops.getNamespaceClassName(opName),
-                    "isOp": !defaultops.isCollection(opName),
-                    "userOp": defaultops.isUserOp(opName),
-                    "devOp": defaultops.isDevOp(opName),
-                    "extensionOp": defaultops.isExtensionOp(opName),
-                    "teamOp": defaultops.isTeamOp(opName),
-                    "patchOp": defaultops.isPatchOp(opName),
-                    "isExtension": defaultops.isExtension(opName),
-                    "isTeamNamespace": defaultops.isTeamOp(opName),
-                    "shortName": shortName,
-                    "nameSpace": nameSpace,
-                    "oldState": oldState,
-                    "lowercasename": lowerCaseName,
-                    "isCollection": isCollection,
-                    "buttonText": isCollection ? "Load" : "Add",
-                    "type": type,
-                    "pop": popularity,
-
-                };
-                if (opDoc && opDoc.notUsable)
-                {
-                    op.notUsable = true;
-                    op.notUsableReasons = opDoc.notUsableReasons;
-                }
-                if (defaultops.isCollection(opName))
-                {
-                    op.isOp = false;
-                    op.pop = 1;
-                    if (opDoc)
-                    {
-                        op.summary = opDoc.summary;
-                        op.description = opDoc.description;
-                        op.teamName = opDoc.teamName;
-                        op.teamLink = opDoc.teamLink;
-                        op.numOps = opDoc.numOps;
-                        op.ops = opDoc.ops || [];
-                    }
-                }
-                items.push(op);
-            }
-        }
-        return items;
-    }
-
-    _getOpsNamesFromCode(opNames, ns, val, parentname)
-    {
-        if (Object.prototype.toString.call(val) === "[object Object]")
-        {
-            for (const propertyName in val)
-            {
-                if (val.hasOwnProperty(propertyName))
-                {
-                    const opName = ns + "." + parentname + propertyName;
-                    if (typeof (CABLES.Patch.getOpClass(opName)) === "function") opNames.push(opName);
-                    opNames = this._getOpsNamesFromCode(opNames, ns, val[propertyName], parentname + propertyName + ".");
-                }
-            }
-        }
-        return opNames;
+        if (!this._opSearch.list) return null;
+        return this._opSearch.list.find((item) => { return item.name === opName; });
     }
 }
