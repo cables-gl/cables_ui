@@ -50,6 +50,7 @@ export default class PatchPanel extends CABLES.EventTarget
         let html = "<div class=\"panel bookmarkpanel\">";
 
         const panelEle = ele.byId(gui.getParamPanelEleId());
+        panelEle.innerHTML = "";
         if (gui.longPressConnector.isActive())
         {
             panelEle.innerHTML += gui.longPressConnector.getParamPanelHtml();
