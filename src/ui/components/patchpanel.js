@@ -112,7 +112,7 @@ export default class PatchPanel extends CABLES.EventTarget
         // panelEle.innerHTML += "<div id=\"tree\"></div>";
         const tree = document.createElement("div");
         tree.id = "tree";
-        tree.classList.add("padding");
+        tree.style.padding = "10px";
         panelEle.appendChild(tree);
 
         const su = gui.patchView.getSubPatchesHierarchy();
