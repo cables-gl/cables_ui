@@ -1238,7 +1238,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-
+                this._patchRenderer.greyOutBlue = true;
             }
             else if (names[0].type == "blueprint_subpatch")
             {
