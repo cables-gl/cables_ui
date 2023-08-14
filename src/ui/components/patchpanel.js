@@ -52,7 +52,7 @@ export default class PatchPanel extends CABLES.EventTarget
         const panelEle = ele.byId(gui.getParamPanelEleId());
         if (gui.longPressConnector.isActive())
         {
-            html += gui.longPressConnector.getParamPanelHtml();
+            panelEle.innerHTML += gui.longPressConnector.getParamPanelHtml();
         }
         else
         {
@@ -79,7 +79,7 @@ export default class PatchPanel extends CABLES.EventTarget
                 // {
                 //     html += getHandleBarHtml("clonepatch", {});
                 // }
-                panelEle.innerHTML = html;
+                panelEle.innerHTML += html;
                 const likeButton = panelEle.querySelector("#patch-summary-toggle-fav");
                 if (likeButton)
                 {
@@ -113,6 +113,7 @@ export default class PatchPanel extends CABLES.EventTarget
         // panelEle.innerHTML += "<div id=\"tree\"></div>";
         const tree = document.createElement("div");
         tree.id = "tree";
+        tree.classList.add("padding");
         panelEle.appendChild(tree);
 
         const su = gui.patchView.getSubPatchesHierarchy();
