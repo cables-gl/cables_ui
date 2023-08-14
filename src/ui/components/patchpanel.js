@@ -67,7 +67,6 @@ export default class PatchPanel extends CABLES.EventTarget
             if (project)
             {
                 const projectId = project.shortId || project._id;
-                console.log(project);
                 html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
                 // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
                 // if (project.isOpExample || notCollab)
