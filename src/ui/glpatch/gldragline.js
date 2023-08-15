@@ -39,7 +39,20 @@ export default class GlDragLine
             if (!ele) return;
 
             if (ele.dataset.opid && ele.dataset.portname)
-                this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
+            {
+                if (gui && gui.corePatch())
+                {
+                    const op = gui.corePatch().getOpById(ele.dataset.opid);
+                    if (op)
+                    {
+                        const port = op.getPortByName(ele.dataset.portname);
+                        if (port)
+                        {
+                            this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, port);
+                        }
+                    }
+                }
+            }
 
             if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {

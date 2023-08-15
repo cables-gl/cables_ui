@@ -579,14 +579,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._cgl.canvas.style.cursor = "auto";
         }
 
-        if (this.greyOutBlue && this._greyOutRect)
-        {
-            this._greyOutRect.setColor(
-                glUiConfig.colors.background[0] * 0.8,
-                glUiConfig.colors.background[1] * 1.5,
-                glUiConfig.colors.background[2] * 2.5,
-                0.25);
-        }
+        // if (this.greyOutBlue && this._greyOutRect)
+        // {
+        //     this._greyOutRect.setColor(
+        //         glUiConfig.colors.background[0] * 0.8,
+        //         glUiConfig.colors.background[1] * 1.5,
+        //         glUiConfig.colors.background[2] * 2.5,
+        //         0.25);
+        // }
     }
 
     _onCanvasMouseDown(e)
@@ -850,11 +850,20 @@ export default class GlPatch extends CABLES.EventTarget
             this._cgl.gl.clearColor(0, 0, 0, 0);
         else
         {
-            this._cgl.gl.clearColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                glUiConfig.colors.background[3]);
+            if (this.greyOutBlue)
+            {
+                this._cgl.gl.clearColor(
+                    glUiConfig.colors.background[0] + (0.3 * 0.0),
+                    glUiConfig.colors.background[1] + (0.3 * 0.1),
+                    glUiConfig.colors.background[2] + (0.3 * 0.3),
+                    1);
+            }
+            else
+                this._cgl.gl.clearColor(
+                    glUiConfig.colors.background[0],
+                    glUiConfig.colors.background[1],
+                    glUiConfig.colors.background[2],
+                    glUiConfig.colors.background[3]);
         }
 
         // if (

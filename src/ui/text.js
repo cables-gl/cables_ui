@@ -325,7 +325,7 @@ const text =
         },
 
         {
-            "descr": " To **move a cable connection to another port**, hold `SHIFT + alt` keyboard keys and `right mouse button` while over either end of the cable.",
+            "descr": " To move a cable connection to another port, hold `alt` keyboard keys and `right mouse button` while over either end of the cable.",
             "img": "right_shift_alt.gif"
         },
         {
