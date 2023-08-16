@@ -487,13 +487,16 @@ export default class Gui
         // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
-        this.patchView.pause();
+        // this.patchView.pause();
+
+
+
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>
         {
             this._corePatch.cgl.updateSize();
             this.corePatch().resume();
-            this.patchView.resume();
+            // this.patchView.resume();
         }, 50);
 
 
