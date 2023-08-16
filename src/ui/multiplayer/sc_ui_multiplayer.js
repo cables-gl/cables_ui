@@ -483,28 +483,59 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
         this._connection.state.on("clientDisconnected", (client, wasInMultiplayerSession = false) =>
         {
-            if (this._connection.inMultiplayerSession && wasInMultiplayerSession)
+            if (client.clientId === this._connection.clientId) return;
+
+            if (this._connection.inMultiplayerSession)
             {
-                notify(client.username + " just left the multiplayer session");
+                if (client.isRemoteClient)
+                {
+                    notify("remote viewer closed by " + client.username);
+                }
+                else
+                {
+                    notify(client.username + " just left the multiplayer session");
+                }
             }
         });
 
         this._connection.state.on("clientJoined", (client) =>
         {
-            if (this._connection.inMultiplayerSession) notify(client.username + " just joined the multiplayer session");
+            if (client.clientId === this._connection.clientId) return;
+
+            if (this._connection.inMultiplayerSession)
+            {
+                if (client.isRemoteClient)
+                {
+                    notify("remote viewer opened by " + client.username);
+                }
+                else
+                {
+                    notify(client.username + " just joined the multiplayer session");
+                }
+            }
         });
 
         this._connection.state.on("clientLeft", (client) =>
         {
+            if (client.clientId === this._connection.clientId) return;
+
             if (this._connection.inMultiplayerSession)
             {
-                notify(client.username + " just left the multiplayer session");
+                if (client.isRemoteClient)
+                {
+                    notify("remote viewer closed by " + client.username);
+                }
+                else
+                {
+                    notify(client.username + " just left the multiplayer session");
+                }
             }
         });
 
         this._connection.state.on("pilotChanged", (pilot) =>
         {
             if (!this._connection.inMultiplayerSession) return;
+            if (this._connection.onlyRemoteClientsConnected) return;
 
             if (this._connection.state.getNumClients() > 1)
             {

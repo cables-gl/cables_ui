@@ -24,15 +24,12 @@ CABLES_CMD_UI.settings = function ()
 
 CABLES_CMD_UI.openRemoteViewer = function ()
 {
-    if (gui.socket) gui.socket.startRemoteViewer(() =>
+    let projectId = gui.patchId;
+    if (gui.project())
     {
-        let projectId = gui.patchId;
-        if (gui.project())
-        {
-            projectId = gui.project().shortId || gui.project()._id;
-        }
-        window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + projectId);
-    });
+        projectId = gui.project().shortId || gui.project()._id;
+    }
+    window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + projectId);
 };
 
 CABLES_CMD_UI.files = function ()

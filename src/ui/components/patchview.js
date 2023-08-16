@@ -1221,6 +1221,9 @@ export default class PatchView extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
+        this._patchRenderer.greyOutBlue =
+        this._patchRenderer.greyOut = false;
+
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
         else ele.show(this._eleSubpatchNav);
 
@@ -1238,7 +1241,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-
+                this._patchRenderer.greyOutBlue = true;
             }
             else if (names[0].type == "blueprint_subpatch")
             {
@@ -1266,8 +1269,6 @@ export default class PatchView extends CABLES.EventTarget
         else
         {
             gui.restriction.setMessage("blueprint", null);
-            this._patchRenderer.greyOutBlue =
-            this._patchRenderer.greyOut = false;
         }
 
         document.getElementById("subpatch_breadcrumb").innerHTML = str;
@@ -1413,7 +1414,6 @@ export default class PatchView extends CABLES.EventTarget
         let focusSubpatchop = null;
         gui.serverOps.loadProjectDependencies(pastedJson, (project) =>
         {
-            console.log("OPS", project.ops);
             // change ids
             project = CABLES.Patch.replaceOpIds(project, { "parentSubPatchId": oldSub });
             const outerOp = this.getSubPatchOuterOp(currentSubPatch);
