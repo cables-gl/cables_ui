@@ -270,18 +270,27 @@ export default class OpSelect
         if (selectedEle)
         {
             opName = selectedEle.dataset.opname;
-            if (this._currentInfo == selectedEle.dataset.opname) return;
-            this._currentInfo = selectedEle.dataset.opname;
         }
 
         this.updateOptions(opName);
 
         if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
         {
+            if (selectedEle)
+            {
+                if (this._currentInfo == "suggest_" + selectedEle.dataset.opname) return;
+                this._currentInfo = "suggest_" + selectedEle.dataset.opname;
+            }
+
             this._showSuggestionsInfo();
         }
         else if (opName)
         {
+            if (selectedEle)
+            {
+                if (this._currentInfo == "docs_" + selectedEle.dataset.opname) return;
+                this._currentInfo = "docs_" + selectedEle.dataset.opname;
+            }
             const perf = CABLES.UI.uiProfiler.start("opselect.updateInfo");
 
             this._eleSearchinfo.innerHTML = "";
@@ -305,8 +314,12 @@ export default class OpSelect
             perf.finish();
         }
         else
-        if (this._getQuery() == "")
-            if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
+        {
+            this._currentInfo = "tree";
+
+            if (this._getQuery() == "")
+                if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
+        }
 
         this._currentSearchInfo = opName;
     }
@@ -474,7 +487,6 @@ export default class OpSelect
     show(options, linkOp, linkPort, link)
     {
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
-
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
         this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
