@@ -40,8 +40,40 @@ export default class TexturePreviewer
             if (key == "bgpreview") this.enableBgPreview(v);
         });
 
+
+        this._initListener();
+
+
         this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
+
+    _initListener()
+    {
+
+        if(!window.gui)
+        {
+            console.log("waiting for gui")
+            setTimeout(this._initListener.bind(this),300);
+            return;
+        }
+
+        gui.opParams.on("opSelected", () =>
+        {
+            let foundPreview=false;
+            const ports=gui.opParams.op.portsOut;
+
+            for(let i=0;i<ports.length;i++)
+            {
+                if (!foundPreview && ports[i].uiAttribs.preview)
+                {
+                    this.selectTexturePort(ports[i]);
+                    return;
+                }
+            }
+           
+        });
+    }
+
 
     _renderTexture(tp, element)
     {

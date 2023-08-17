@@ -174,7 +174,7 @@ export default class Bookmarks
 
     goto(id)
     {
-        if (gui.keys.shiftKey)
+        if (!gui.keys.shiftKey)
         {
             const op = gui.corePatch().getOpById(id);
             gui.opParams.show(op);
