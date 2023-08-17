@@ -699,23 +699,30 @@ export default class PatchView extends CABLES.EventTarget
                     (ops[i].portsOut[0].isLinked() || ops[i].portsIn[0].isLinked())
                 )
                 {
-                    let outerIn = null;
-                    let outerOut = null;
+                    let outerIn = [];
+                    let outerOut = [];
                     let relink = ops[i].portsOut[0].isLinked() && ops[i].portsIn[0].isLinked();
 
                     if (relink)
                     {
-                        outerIn = ops[i].portsOut[0].links[0].getOtherPort(ops[i].portsOut[0]);
-                        outerOut = ops[i].portsIn[0].links[0].getOtherPort(ops[i].portsIn[0]);
+                        for(let o=0;o<ops[i].portsIn[0].links.length;o++)
+                            outerOut.push(ops[i].portsIn[0].links[o].getOtherPort(ops[i].portsIn[0]));
+
+                        for(let o=0;o<ops[i].portsOut[0].links.length;o++)
+                            outerIn.push(ops[i].portsOut[0].links[o].getOtherPort(ops[i].portsOut[0]));
                     }
 
                     ops[i].portsOut[0].removeLinks();
                     ops[i].portsIn[0].removeLinks();
 
                     if (relink)
-                        ops[i].patch.link(outerIn.parent, outerIn.getName(), outerOut.parent, outerOut.getName());
+                    {
+                        for(let j=0;j<outerIn.length;j++)
+                            for(let o=0;o<outerOut.length;o++)
+                                ops[i].patch.link(outerIn[j].parent, outerIn[j].getName(), outerOut[o].parent, outerOut[o].getName());
+
+                    }
                 }
-                // ops[i].unLinkReconnectOthers();
             }
         }
         else
