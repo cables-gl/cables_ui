@@ -62,8 +62,6 @@ export default class PatchPanel extends CABLES.EventTarget
             if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
             if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
-            html += gui.bookmarks.getHtml();
-
             const project = gui.project();
             if (project)
             {
@@ -79,7 +77,6 @@ export default class PatchPanel extends CABLES.EventTarget
                 // {
                 //     html += getHandleBarHtml("clonepatch", {});
                 // }
-                panelEle.innerHTML += html;
                 const likeButton = panelEle.querySelector("#patch-summary-toggle-fav");
                 if (likeButton)
                 {
@@ -109,6 +106,9 @@ export default class PatchPanel extends CABLES.EventTarget
                 }
             }
         }
+
+        html += gui.bookmarks.getHtml();
+        panelEle.innerHTML += html;
 
         // panelEle.innerHTML += "<div id=\"tree\"></div>";
         const tree = document.createElement("div");

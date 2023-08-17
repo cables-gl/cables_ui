@@ -130,6 +130,7 @@ export default class Bookmarks
         }
 
         while (this._bookmarks.indexOf(null) >= 0) this._bookmarks.splice(this._bookmarks.indexOf(null), 1);
+        gui.corePatch().emitEvent("bookmarkschanged");
     }
 
     add(id)
@@ -165,6 +166,7 @@ export default class Bookmarks
 
             gui.patchView.centerSelectOp(id);
             CABLES.UI.notify(text.bookmark_added);
+            gui.corePatch().emitEvent("bookmarkschanged");
         }
 
         this.updateDynamicCommands();

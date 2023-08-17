@@ -487,6 +487,9 @@ export default class Gui
 
         this.corePatch().pause();
         this.patchView.pause();
+
+
+
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>
         {

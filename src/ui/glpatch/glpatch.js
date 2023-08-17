@@ -1569,12 +1569,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     pause()
     {
+        this._cgl.canvas.style["background-color"] = "rgba(61,61,61,1)";
         this.paused = true;
         this.emitEvent("paused");
     }
 
     resume()
     {
+        this._cgl.canvas.style["background-color"] = "transparent";
         this.paused = false;
         this.emitEvent("resumed");
     }
