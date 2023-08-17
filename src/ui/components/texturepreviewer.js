@@ -247,6 +247,7 @@ export default class TexturePreviewer
 
     enableBgPreview(enabled)
     {
+
         this._enabled = enabled;
         if (!enabled)
         {
@@ -257,7 +258,7 @@ export default class TexturePreviewer
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
-            ele.byId("texPrevPin").classList.add("hidden");
+            ele.byId("bgpreviewInfoPin").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
@@ -268,7 +269,7 @@ export default class TexturePreviewer
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
-            ele.byId("texPrevPin").classList.remove("hidden");
+            ele.byId("bgpreviewInfoPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
 
             this._ele.classList.remove("hidden");
