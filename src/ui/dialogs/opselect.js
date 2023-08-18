@@ -136,18 +136,13 @@ export default class OpSelect
 
     _showSuggestionsInfo()
     {
-        console.log("suggestionInfo...",this._minimal);
         if (this._minimal) return;
-
-
 
         const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
 
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
-
-console.log("visops",vizops)
 
         if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
@@ -271,8 +266,6 @@ console.log("visops",vizops)
     updateInfo()
     {
         if (this._minimal) return;
-
-        console.log("updateinfo",this._typedSinceOpening,(CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
 
         let opName = "";
         const selectedEle = ele.byClass("selected");
