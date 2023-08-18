@@ -3,7 +3,7 @@
     <div class="panel params_op_head panel_head">
 
         <div style="position:absolute;right:30px;margin-top:5px;">
-            <a id="patch-summary-toggle-fav"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
+            <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
             <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
             <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
         </div>
