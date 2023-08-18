@@ -21,7 +21,7 @@ class PortHtmlGenerator
         let oldversion = false;
         let newestVersion = false;
         let hasExample = false;
-        let doc = null;
+        let doc = null; 
 
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
@@ -108,9 +108,9 @@ class PortHtmlGenerator
                 "cablesUrl": CABLES.sandbox.getCablesUrl(),
                 "portnum": i,
                 "isInput": true,
-                "op": ports[i].parent,
+                "op": ports[i].op,
                 "texts": text,
-                "vars": ports[i].parent.patch.getVars(ports[i].type)
+                "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 
             html += this._templatePortGeneral(tmplData);
