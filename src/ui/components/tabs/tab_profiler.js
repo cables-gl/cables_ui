@@ -55,6 +55,7 @@ export default class Profiler
     {
         const profiler = gui.corePatch().profiler;
         if(!profiler)return;
+
         const items = profiler.getItems();
         let html = "";
         let htmlBar = "";
@@ -87,7 +88,6 @@ export default class Profiler
                 cumulatedSubPatches[item.subPatch].subPatch = item.subPatch;
             }
 
-
             if (cumulate)
             {
                 if (cumulated[item.title])
@@ -115,10 +115,9 @@ export default class Profiler
             sortedItems[i].percent = sortedItems[i].timeUsed / allTimes * 100;
             allPortTriggers += sortedItems[i].numTriggers;
         }
-        let colorCounter = 0;
-
-        // if (allPortTriggers - this.lastPortTriggers > 0) htmlData = "Port triggers/s: " + (allPortTriggers - this.lastPortTriggers) + "<br/>";
         this.lastPortTriggers = allPortTriggers;
+
+        let colorCounter = 0;
 
         htmlData += "Active Ops: " + Object.keys(opids).length + "<br/><br/>";
 
@@ -240,6 +239,16 @@ export default class Profiler
                 html += pad + (Math.round(96 * item.peak) / 100) + "ms " + item.title + "<br/>";
             }
         }
+
+
+
+        let pauseStr="Pause";
+        if(gui.corePatch().profiler)
+        {
+            if(gui.corePatch().profiler.paused)pauseStr="Resume";
+            ele.byId("profiler_pause").innerHTML=pauseStr;
+        }
+        
 
         ele.byId("profilerui").style.display = "block";
         // ele.byId("profilerlistPeaks").innerHTML = htmlPeaks;
