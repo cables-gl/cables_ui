@@ -22,9 +22,9 @@ export default function extendCore()
             for (let i = 0; i < this.oldLinks.length; i++)
             {
                 this.patch.link(
-                    this.oldLinks[i].in.parent,
+                    this.oldLinks[i].in.op,
                     this.oldLinks[i].in.getName(),
-                    this.oldLinks[i].out.parent,
+                    this.oldLinks[i].out.op,
                     this.oldLinks[i].out.getName()
                 );
             }
@@ -137,9 +137,9 @@ export default function extendCore()
 
         if (CABLES.Op.unLinkTempReLinkP1 && CABLES.Op.unLinkTempReLinkP2)
             this.shakeLink = this.patch.link(
-                CABLES.Op.unLinkTempReLinkP1.parent,
+                CABLES.Op.unLinkTempReLinkP1.op,
                 CABLES.Op.unLinkTempReLinkP1.getName(),
-                CABLES.Op.unLinkTempReLinkP2.parent,
+                CABLES.Op.unLinkTempReLinkP2.op,
                 CABLES.Op.unLinkTempReLinkP2.getName()
             );
     };
@@ -165,8 +165,8 @@ export default function extendCore()
                 for (let li = 0; li < pi.links.length; li++)
                 {
                     if (!pi.links[li]) continue;
-                    if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
-                    if (pi.links[li].portOut.parent.hasParent(type, name, count)) return true;
+                    if (pi.links[li].portOut.op.objName.indexOf(name) > -1) return true;
+                    if (pi.links[li].portOut.op.hasParent(type, name, count)) return true;
                 }
             }
         }
@@ -194,8 +194,8 @@ export default function extendCore()
         //             for (let li = 0; li < pi.links.length; li++)
         //             {
         //                 if (!pi.links[li]) continue;
-        //                 if (pi.links[li].portOut.parent.objName.indexOf(name) > -1) return true;
-        //                 if (hasParent(pi.links[li].portOut.parent, type, name, count)) return true;
+        //                 if (pi.links[li].portOut.op.objName.indexOf(name) > -1) return true;
+        //                 if (hasParent(pi.links[li].portOut.op, type, name, count)) return true;
         //             }
         //         }
         //     }
@@ -361,7 +361,7 @@ export default function extendCore()
         for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
         {
             const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-            return otherport.parent;
+            return otherport.op;
         }
     };
 
@@ -375,11 +375,11 @@ export default function extendCore()
             {
                 const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
 
-                // maxY = Math.max(otherport.parent.getTempPosY, maxY);
-                if (otherport.parent.getTempPosY() > maxY)
+                // maxY = Math.max(otherport.op.getTempPosY, maxY);
+                if (otherport.op.getTempPosY() > maxY)
                 {
-                    maxY = otherport.parent.getTempPosY();
-                    lowestOp = otherport.parent;
+                    maxY = otherport.op.getTempPosY();
+                    lowestOp = otherport.op;
                 }
             }
         }
@@ -389,7 +389,7 @@ export default function extendCore()
         // for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i].isLinked())
         // {
         //     const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
-        //     return otherport.parent;
+        //     return otherport.op;
         // }
     };
 
@@ -400,7 +400,7 @@ export default function extendCore()
         {
             for (let j = 0; j < this.portsIn[i].links.length; j++)
             {
-                if (ops.indexOf(this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).parent) == -1) return true;
+                if (ops.indexOf(this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).op) == -1) return true;
             }
         }
     };
@@ -477,7 +477,7 @@ export default function extendCore()
             {
                 const p = this.portsOut[i].links[j].getOtherPort(this.portsOut[i]);
 
-                s = p.parent.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
+                s = p.op.getChildsBoundings(glpatch, s, untilOp, (count || 0) + 1);
             }
         }
         return s;
@@ -534,9 +534,9 @@ export default function extendCore()
         {
             for (const l in this.portsOut[ipo].links)
             {
-                this.portsOut[ipo].parent.setUiAttrib({ "selected": true });
-                if (this.portsOut[ipo].links[l].portIn.parent != this)
-                    this.portsOut[ipo].links[l].portIn.parent.selectChilds(options);
+                this.portsOut[ipo].op.setUiAttrib({ "selected": true });
+                if (this.portsOut[ipo].links[l].portIn.op != this)
+                    this.portsOut[ipo].links[l].portIn.op.selectChilds(options);
             }
         }
     };
