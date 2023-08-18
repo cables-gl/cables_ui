@@ -149,12 +149,7 @@ class PortHtmlGenerator
                 startGroup = lastGroup;
             }
 
-            // set auto preview
-            if (!foundPreview && ports[i].uiAttribs.preview)
-            {
-                foundPreview = true;
-                gui.texturePreview().selectTexturePort(ports[i]);
-            }
+
 
             const tmplData = {
                 "port": ports[i],

@@ -40,8 +40,40 @@ export default class TexturePreviewer
             if (key == "bgpreview") this.enableBgPreview(v);
         });
 
+
+        this._initListener();
+
+
         this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
+
+    _initListener()
+    {
+
+        if(!window.gui)
+        {
+            console.log("waiting for gui")
+            setTimeout(this._initListener.bind(this),300);
+            return;
+        }
+
+        gui.opParams.on("opSelected", () =>
+        {
+            let foundPreview=false;
+            const ports=gui.opParams.op.portsOut;
+
+            for(let i=0;i<ports.length;i++)
+            {
+                if (!foundPreview && ports[i].uiAttribs.preview)
+                {
+                    this.selectTexturePort(ports[i]);
+                    return;
+                }
+            }
+           
+        });
+    }
+
 
     _renderTexture(tp, element)
     {
@@ -247,6 +279,7 @@ export default class TexturePreviewer
 
     enableBgPreview(enabled)
     {
+
         this._enabled = enabled;
         if (!enabled)
         {
@@ -257,7 +290,7 @@ export default class TexturePreviewer
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
-            ele.byId("texPrevPin").classList.add("hidden");
+            ele.byId("bgpreviewInfoPin").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
@@ -268,7 +301,7 @@ export default class TexturePreviewer
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
-            ele.byId("texPrevPin").classList.remove("hidden");
+            ele.byId("bgpreviewInfoPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
 
             this._ele.classList.remove("hidden");
