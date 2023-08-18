@@ -108,10 +108,10 @@ export default class TexturePreviewer
         if (previewCanvas && port && port.get())
         {
             const perf = CABLES.UI.uiProfiler.start("texpreview");
-            const cgl = port.parent.patch.cgl;
+            const cgl = port.op.patch.cgl;
 
             if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
-            port.parent.patch.cgl.profileData.profileTexPreviews++;
+            port.op.patch.cgl.profileData.profileTexPreviews++;
 
             if (!this._mesh)
             {
@@ -231,8 +231,8 @@ export default class TexturePreviewer
         if (!meta)
         {
             const patchRect = gui.patchView.element.getBoundingClientRect();
-            maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-            maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
+            maxWidth = Math.min(patchRect.width, port.op.patch.cgl.canvasWidth);
+            maxHeight = Math.min(patchRect.height, port.op.patch.cgl.canvasHeight);
         }
 
         const aspect = tex.height / tex.width;
@@ -254,7 +254,7 @@ export default class TexturePreviewer
     {
         if (o.port.get())
             return {
-                "title": o.port.parent.getName() + " - " + o.port.name,
+                "title": o.port.op.getName() + " - " + o.port.name,
                 "id": o.id,
                 "opid": o.opid,
                 "order": parseInt(o.lastTimeClicked, 10),
@@ -415,7 +415,7 @@ export default class TexturePreviewer
         {
             const el = document.getElementById("preview" + this._texturePorts[i].id);
             if (el)
-                if (this._texturePorts[i].port.parent != p.parent) el.classList.remove("activePreview");
+                if (this._texturePorts[i].port.op != p.parent) el.classList.remove("activePreview");
                 else el.classList.add("activePreview");
         }
     }
@@ -434,7 +434,7 @@ export default class TexturePreviewer
 
         if (p && p.get() && p.get().tex && port.direction == CABLES.PORT_DIR_OUT)
         {
-            const id = port.parent.id + port.name;
+            const id = port.op.id + port.name;
 
             idx = -1;
             for (let i = 0; i < this._texturePorts.length; i++)
@@ -446,7 +446,7 @@ export default class TexturePreviewer
                 doUpdateHtml = true;
                 this._texturePorts.push({
                     "id": id,
-                    "opid": port.parent.id,
+                    "opid": port.op.id,
                     "port": p,
                     "lastTimeClicked": -1,
                     "doShow": false,
@@ -538,7 +538,7 @@ export default class TexturePreviewer
             if (p)
             {
                 o.port = p.port.name;
-                o.op = p.port.parent.id;
+                o.op = p.port.op.id;
                 o.enabled = this._enabled;
             }
 

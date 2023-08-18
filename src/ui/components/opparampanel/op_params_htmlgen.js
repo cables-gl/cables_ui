@@ -159,7 +159,7 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "portnum": i,
                 "isInput": false,
-                "op": ports[i].parent
+                "op": ports[i].op
             };
             html += this._templatePortGeneral(tmplData);
             html += this._templatePortOutput(tmplData);
