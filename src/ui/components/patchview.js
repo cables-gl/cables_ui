@@ -433,8 +433,8 @@ export default class PatchView extends CABLES.EventTarget
                 else
                 {
                     // core link
-                    op2 = options.linkNewLink.portIn.parent;
-                    op1 = options.linkNewLink.portOut.parent;
+                    op2 = options.linkNewLink.portIn.op;
+                    op1 = options.linkNewLink.portOut.op;
                     port2 = options.linkNewLink.portIn;
                     port1 = options.linkNewLink.portOut;
                 }
@@ -719,7 +719,7 @@ export default class PatchView extends CABLES.EventTarget
                     {
                         for(let j=0;j<outerIn.length;j++)
                             for(let o=0;o<outerOut.length;o++)
-                                ops[i].patch.link(outerIn[j].parent, outerIn[j].getName(), outerOut[o].parent, outerOut[o].getName());
+                                ops[i].patch.link(outerIn[j].op, outerIn[j].getName(), outerOut[o].op, outerOut[o].getName());
 
                     }
                 }
@@ -819,7 +819,7 @@ export default class PatchView extends CABLES.EventTarget
                         for (let k = 0; k < theOp.portsIn[j].links.length; k++)
                         {
                             const otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
-                            const otherOp = otherPort.parent;
+                            const otherOp = otherPort.op;
                             if (otherOp.uiAttribs.subPatch != patchId)
                             {
                                 theOp.portsIn[j].links[k].remove();
@@ -828,7 +828,7 @@ export default class PatchView extends CABLES.EventTarget
                                 if (found)
                                 {
                                     this._p.link(
-                                        otherPort.parent,
+                                        otherPort.op,
                                         otherPort.getName(),
                                         patchOp,
                                         found);
@@ -836,7 +836,7 @@ export default class PatchView extends CABLES.EventTarget
                                 else
                                 {
                                     this._p.link(
-                                        otherPort.parent,
+                                        otherPort.op,
                                         otherPort.getName(),
                                         patchOp,
                                         patchOp.dyn.name);
@@ -853,12 +853,12 @@ export default class PatchView extends CABLES.EventTarget
                                 const otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
                                 if (otherPortOut)
                                 {
-                                    const otherOpOut = otherPortOut.parent;
+                                    const otherOpOut = otherPortOut.op;
                                     if (otherOpOut.uiAttribs.subPatch != patchId)
                                     {
                                         theOp.portsOut[j].links[k].remove();
                                         this._p.link(
-                                            otherPortOut.parent,
+                                            otherPortOut.op,
                                             otherPortOut.getName(),
                                             patchOp,
                                             patchOp.dynOut.name);
@@ -882,7 +882,7 @@ export default class PatchView extends CABLES.EventTarget
                         for (let k = 0; k < op1.portsIn[j].links.length; k++)
                         {
                             const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
-                            const op2 = port2.parent;
+                            const op2 = port2.op;
 
                             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
                             {
@@ -909,7 +909,7 @@ export default class PatchView extends CABLES.EventTarget
                         for (let k = 0; k < op1.portsOut[j].links.length; k++)
                         {
                             const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
-                            const op2 = port2.parent;
+                            const op2 = port2.op;
 
                             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
                             {
@@ -1569,22 +1569,22 @@ export default class PatchView extends CABLES.EventTarget
     //         {
     //             const otherPort = firstLinkedPort.links[i].getOtherPort(firstLinkedPort);
 
-    //             if (ops.indexOf(otherPort.parent) == -1) return;
+    //             if (ops.indexOf(otherPort.op) == -1) return;
 
     //             let linkIndex = otherPort.links.indexOf(firstLinkedPort.links[i]);
     //             let extraLines = 1;
-    //             for (let j = otherPort.parent.portsOut.length - 1; j >= 0; j--)
+    //             for (let j = otherPort.op.portsOut.length - 1; j >= 0; j--)
     //             {
-    //                 if (otherPort == otherPort.parent.portsOut[j]) break;
-    //                 if (otherPort.parent.portsOut[j].isLinked())extraLines++;
+    //                 if (otherPort == otherPort.op.portsOut[j]) break;
+    //                 if (otherPort.op.portsOut[j].isLinked())extraLines++;
     //             }
 
     //             changed = true;
     //             if (otherPort.links.length > 1)extraLines++;
 
-    //             let portIndex = otherPort.parent.portsOut.indexOf(otherPort);
+    //             let portIndex = otherPort.op.portsOut.indexOf(otherPort);
 
-    //             this.setTempOpPos(op, otherPort.parent.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.parent.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
+    //             this.setTempOpPos(op, otherPort.op.getTempPosX() + (linkIndex * theOpWidth + portIndex * 30), otherPort.op.getTempPosY() + extraLines * CABLES.GLUI.glUiConfig.newOpDistanceY);
     //         }
     //     }
 
@@ -1688,7 +1688,7 @@ export default class PatchView extends CABLES.EventTarget
             const op = ops[0];
             if (op.portsIn[0] && op.portsIn[0].links.length)
             {
-                const pre = op.portsIn[0].links[0].portOut.parent;
+                const pre = op.portsIn[0].links[0].portOut.op;
 
                 if (pre.uiAttribs.translate && op.uiAttribs.translate)
                     op.setUiAttrib({ "translate": { "x": pre.uiAttribs.translate.x, "y": op.uiAttribs.translate.y } });
@@ -2054,7 +2054,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const id = "_validator" + inp.name;
 
-        inp.parent.setUiError(id, null);
+        inp.op.setUiError(id, null);
 
         if (!inp.isLinked()) return;
         if (inp.uiAttribs.ignoreObjTypeErrors) return;
@@ -2071,27 +2071,27 @@ export default class PatchView extends CABLES.EventTarget
         // check if both have defined objtype
         if (p1.uiAttribs.objType && p2.uiAttribs.objType && p1.uiAttribs.objType != p2.uiAttribs.objType)
         {
-            inp.parent.setUiError(id, errorMsg);
+            inp.op.setUiError(id, errorMsg);
             return;
         }
 
         // validate by object value
         if (inp.uiAttribs.objType && outp.get())
         {
-            if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.parent.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof CGL.Geometry)) inp.parent.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof CGL.Shader)) inp.parent.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "texture" && !(outp.get() instanceof WebGLTexture)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "geometry" && !(outp.get() instanceof CGL.Geometry)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "shader" && !(outp.get() instanceof CGL.Shader)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "element" && !(outp.get() instanceof Element)) inp.op.setUiError(id, errorMsg);
             // * audio
-            if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.parent.setUiError(id, errorMsg);
-            if (inp.uiAttribs.objType == "audioNode" && !(outp.get() instanceof AudioNode)) inp.parent.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "audioBuffer" && !(outp.get() instanceof AudioBuffer)) inp.op.setUiError(id, errorMsg);
+            if (inp.uiAttribs.objType == "audioNode" && !(outp.get() instanceof AudioNode)) inp.op.setUiError(id, errorMsg);
         }
     }
 
 
     refreshCurrentOpParamsByPort(p1, p2)
     {
-        if (this.isCurrentOp(p2.parent) || this.isCurrentOp(p1.parent)) gui.opParams.refresh();
+        if (this.isCurrentOp(p2.op) || this.isCurrentOp(p1.op)) gui.opParams.refresh();
     }
 
     isCurrentOp(op)
@@ -2254,7 +2254,7 @@ export default class PatchView extends CABLES.EventTarget
                     for (let j = 0; j < origOp.portsIn[i].links.length; j++)
                     {
                         const otherPort = origOp.portsIn[i].links[j].getOtherPort(origOp.portsIn[i]);
-                        this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
+                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsIn[i].name.toLowerCase(), true);
                     }
                 }
 
@@ -2263,7 +2263,7 @@ export default class PatchView extends CABLES.EventTarget
                     for (let j = 0; j < origOp.portsOut[i].links.length; j++)
                     {
                         const otherPort = origOp.portsOut[i].links[j].getOtherPort(origOp.portsOut[i]);
-                        this._p.link(otherPort.parent, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
+                        this._p.link(otherPort.op, otherPort.name.toLowerCase(), newOp, origOp.portsOut[i].name.toLowerCase(), true);
                     }
                 }
 
@@ -2372,14 +2372,14 @@ export default class PatchView extends CABLES.EventTarget
                 gui.corePatch().link(
                     op,
                     op.portsIn[0].getName(),
-                    portOut.parent,
+                    portOut.op,
                     portOut.getName()
                 );
 
                 gui.corePatch().link(
                     op,
                     op.portsOut[0].getName(),
-                    portIn.parent,
+                    portIn.op,
                     portIn.getName()
                 );
 
@@ -2388,7 +2388,7 @@ export default class PatchView extends CABLES.EventTarget
             else
             {
                 gui.corePatch().link(
-                    portIn.parent, portIn.getName(), portOut.parent, portOut.getName());
+                    portIn.op, portIn.getName(), portOut.op, portOut.getName());
             }
         }
     }
@@ -2481,9 +2481,9 @@ export default class PatchView extends CABLES.EventTarget
             if (sugIn.length == 1)
             {
                 gui.corePatch().link(
-                    p.parent,
+                    p.op,
                     p.name,
-                    sugIn[0].p.parent,
+                    sugIn[0].p.op,
                     sugIn[0].p.name);
                 return;
             }
@@ -2491,9 +2491,9 @@ export default class PatchView extends CABLES.EventTarget
             new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid)
             {
                 gui.corePatch().link(
-                    p.parent,
+                    p.op,
                     p.name,
-                    sugIn[sid].p.parent,
+                    sugIn[sid].p.op,
                     sugIn[sid].p.name);
             });
         };

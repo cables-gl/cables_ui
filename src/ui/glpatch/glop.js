@@ -705,9 +705,9 @@ export default class GlOp extends CABLES.EventTarget
         for (let i = 0; i < ports.length; i++)
         {
             // console.log(ports[i]);
-            // console.log("this.op.getSubPatch() != ports[i].parent.id", this.op.getSubPatch(), ports[i].parent.id);
+            // console.log("this.op.getSubPatch() != ports[i].op.id", this.op.getSubPatch(), ports[i].op.id);
 
-            if (this.op.getSubPatch() != ports[i].parent.getSubPatch())
+            if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
                 // console.log("yeas");
                 const key = "glPortIndex_" + this.op.id;
@@ -732,7 +732,7 @@ export default class GlOp extends CABLES.EventTarget
         }
 
 
-        // if (ports[0])console.log(ports[0].parent.objName);
+        // if (ports[0])console.log(ports[0].op.objName);
 
         // for (let i = 0; i < ports.length; i++)
         // {
@@ -741,8 +741,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (emit)
         {
-            ports[0].parent.emitEvent("glportOrderChanged");
-            if (this.op.getSubPatch() != ports[0].parent.getSubPatch()) this._op.emitEvent("glportOrderChanged");
+            ports[0].op.emitEvent("glportOrderChanged");
+            if (this.op.getSubPatch() != ports[0].op.getSubPatch()) this._op.emitEvent("glportOrderChanged");
         }
         return ports;
     }
@@ -1260,7 +1260,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._setPortIndexAttribs(this._op.portsIn);
 
-        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].parent.objName);
+        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].op.objName);
 
         for (let i = 0; i < this._op.portsIn.length; i++)
         {

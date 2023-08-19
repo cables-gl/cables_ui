@@ -47,21 +47,21 @@ export default class GlPatchAPI
                 {
                     const link = op.portsIn[ip].links[il];
 
-                    let visible = true;// link.portIn.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+                    let visible = true;// link.portIn.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
 
                     const l = new GlLink(
                         this._glPatch,
                         link,
                         link.id,
-                        link.portIn.parent.id,
-                        link.portOut.parent.id,
+                        link.portIn.op.id,
+                        link.portOut.op.id,
                         link.portIn.name,
                         link.portOut.name,
                         link.portIn.id,
                         link.portOut.id,
                         link.portIn.type,
                         visible,
-                        link.portIn.parent.uiAttribs.subPatch);
+                        link.portIn.op.uiAttribs.subPatch);
                 }
             }
         }
@@ -262,16 +262,16 @@ export default class GlPatchAPI
                     }
                 });
             }(
-                link.portOut.parent.patch,
+                link.portOut.op.patch,
                 p1.name,
                 p2.name,
-                p1.parent.id,
-                p2.parent.id
+                p1.op.id,
+                p2.op.id
             ));
         }
 
-        let visible = true;// p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
-        const l = new GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id, p1.name, p2.name, p1.id, p2.id, p1.type, visible, p1.parent.uiAttribs.subPatch);
+        let visible = true;// p1.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+        const l = new GlLink(this._glPatch, link, link.id, p1.op.id, p2.op.id, p1.name, p2.name, p1.id, p2.id, p1.type, visible, p1.op.uiAttribs.subPatch);
     }
 
     _onUnLink(a, b, link)
@@ -303,11 +303,11 @@ export default class GlPatchAPI
                 }
             });
         }(
-            link.portOut.parent.patch,
+            link.portOut.op.patch,
             link.portIn.getName(),
             link.portOut.getName(),
-            link.portIn.parent.id,
-            link.portOut.parent.id
+            link.portIn.op.id,
+            link.portOut.op.id
         ));
 
         this._glPatch.deleteLink(link.id);

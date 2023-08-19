@@ -57,7 +57,7 @@ export default class OpSelect
         return el.value || "";
     }
 
-    updateOptions()
+    updateStatusBar()
     {
         this._hideUserOps = gui.project().isOpExample;
 
@@ -137,16 +137,19 @@ export default class OpSelect
     _showSuggestionsInfo()
     {
         if (this._minimal) return;
+
         const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
 
         let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+
 
         if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
         }
+
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
@@ -272,14 +275,14 @@ export default class OpSelect
             opName = selectedEle.dataset.opname;
         }
 
-        this.updateOptions(opName);
+        this.updateStatusBar(opName);
 
-        if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewLink || CABLES.UI.OPSELECT.linkNewOpToPort))
+        if (!this._typedSinceOpening && CABLES.UI.OPSELECT.linkNewOpToPort)
         {
             if (selectedEle)
             {
-                if (this._currentInfo == "suggest_" + selectedEle.dataset.opname) return;
-                this._currentInfo = "suggest_" + selectedEle.dataset.opname;
+                if (this._currentInfo == "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName) return;
+                this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName;
             }
 
             this._showSuggestionsInfo();
@@ -321,7 +324,6 @@ export default class OpSelect
                 if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
         }
 
-        this._currentSearchInfo = opName;
     }
 
     search()
@@ -386,7 +388,7 @@ export default class OpSelect
         if (this.itemHeight === 0)
             this.itemHeight = ele.byClass("searchresult").getBoundingClientRect().height;
 
-        this.updateOptions();
+        this.updateStatusBar();
         perf2.finish();
     }
 
@@ -541,7 +543,7 @@ export default class OpSelect
         this._boundKeydown = this.keyDown.bind(this);
         eleOpsearch.addEventListener("keydown", this._boundKeydown);
 
-        this.updateOptions();
+        this.updateStatusBar();
 
         setTimeout(() =>
         {

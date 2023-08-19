@@ -74,7 +74,7 @@ class ParamsListener extends CABLES.EventTarget
                 if (elm)elm.addEventListener("click", (e) =>
                 {
                     this._portsIn[index].removeLinks();
-                    gui.opParams.show(this._portsIn[index].parent);
+                    gui.opParams.show(this._portsIn[index].op);
                 });
             })(ipip);
         }
@@ -95,8 +95,8 @@ class ParamsListener extends CABLES.EventTarget
                     if (_thePort.isAnimated())
                     {
                         gui.timeLine().setAnim(_thePort.anim, {
-                            "opid": _thePort.parent.id,
-                            "name": _thePort.parent.getTitle() + ": " + _thePort.name,
+                            "opid": _thePort.op.id,
+                            "name": _thePort.op.getTitle() + ": " + _thePort.name,
                         });
                     }
                 });
@@ -130,8 +130,7 @@ class ParamsListener extends CABLES.EventTarget
     {
         gui.emitEvent("paramsChangedUserInteraction", { "port": port, "panelId": this.panelId });
     }
-
-
+    
     togglePortValBool(which, checkbox)
     {
         gui.setStateUnsaved();
@@ -141,11 +140,11 @@ class ParamsListener extends CABLES.EventTarget
         let bool_value = inputEle.value == "true";
         bool_value = !bool_value;
 
-        checkBoxEle.parentElement.classList.remove("checkbox-inactive");
-        checkBoxEle.parentElement.classList.remove("checkbox-active");
+        checkBoxEle.opElement.classList.remove("checkbox-inactive");
+        checkBoxEle.opElement.classList.remove("checkbox-active");
 
-        if (bool_value) checkBoxEle.parentElement.classList.add("checkbox-active");
-        else checkBoxEle.parentElement.classList.add("checkbox-inactive");
+        if (bool_value) checkBoxEle.opElement.classList.add("checkbox-active");
+        else checkBoxEle.opElement.classList.add("checkbox-inactive");
 
         inputEle.value = bool_value;
         inputEle.dispatchEvent(new Event("input"));
@@ -245,9 +244,9 @@ class ParamsListener extends CABLES.EventTarget
                 if (!p.uiAttribs.hidePort)
                     gui.opSelect().show(
                         {
-                            "x": p.parent.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
-                            "y": p.parent.uiAttribs.translate.y - 50,
-                        }, thePort.parent, p);
+                            "x": p.op.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                            "y": p.op.uiAttribs.translate.y - 50,
+                        }, thePort.op, p);
             });
 
         if (ele.byId("portCreateOp_" + dirStr + "_" + index))
@@ -257,14 +256,14 @@ class ParamsListener extends CABLES.EventTarget
                 {
                     gui.corePatch().addOp("Ops.Team.ShaderGraph.Input", {}, function (newop)
                     {
-                        gui.corePatch().link(thePort.parent, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+                        gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_TEXTURE)
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.defaultOpImage, {}, function (newop)
                     {
-                        gui.corePatch().link(thePort.parent, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
+                        gui.corePatch().link(thePort.op, thePort.name, newop, newop.getFirstOutPortByType(thePort.type).name);
                     });
                 }
             });
@@ -272,7 +271,7 @@ class ParamsListener extends CABLES.EventTarget
         if (ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid))
             ele.byId("portspreadsheet_" + dirStr + "_" + index + "_" + panelid).addEventListener("click", function (e)
             {
-                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(thePort.parent.id, thePort.name);
+                CABLES.UI.paramsHelper.openParamSpreadSheetEditor(thePort.op.id, thePort.name);
             });
 
         // /////////////////////
@@ -282,7 +281,7 @@ class ParamsListener extends CABLES.EventTarget
         let el = ele.byId("portedit_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", () =>
         {
-            CABLES.UI.paramsHelper.openParamStringEditor(thePort.parent.id, thePort.name, null, true);
+            CABLES.UI.paramsHelper.openParamStringEditor(thePort.op.id, thePort.name, null, true);
         });
 
         // /////////////////////
@@ -328,7 +327,7 @@ class ParamsListener extends CABLES.EventTarget
         el = ele.byId("portsetvar_" + index);
         if (el)el.addEventListener("input", (e) =>
         {
-            const port = ports[index].parent.getPortById(e.target.dataset.portid);
+            const port = ports[index].op.getPortById(e.target.dataset.portid);
 
             if (port) port.setVariable(e.target.value);
             else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
@@ -339,16 +338,16 @@ class ParamsListener extends CABLES.EventTarget
         // el = ele.byId("portremovevar_" + index);
         // if (el)el.addEventListener("click", (e) =>
         // {
-        //     const port = ports[index].parent.getPortById(e.target.dataset.portid);
+        //     const port = ports[index].op.getPortById(e.target.dataset.portid);
         //     if (port) port.setVariable(null);
-        //     port.parent.refreshParams();
+        //     port.op.refreshParams();
         //     gui.setStateUnsaved();
         // });
 
         el = ele.byId("port_contextmenu_" + dirStr + "_" + index + "_" + panelid);
         if (el) el.addEventListener("click", (e) =>
         {
-            const port = thePort;// ports[index].parent.getPortById(e.target.dataset.portid);
+            const port = thePort;// ports[index].op.getPortById(e.target.dataset.portid);
             if (!thePort) return;
 
             let items = [];
@@ -371,7 +370,7 @@ class ParamsListener extends CABLES.EventTarget
                             if (port.isBoundToVar()) port.setVariable(null);
                             else port.setVariable("unknown");
 
-                            port.parent.refreshParams();
+                            port.op.refreshParams();
                         }
                     };
 
@@ -406,20 +405,20 @@ class ParamsListener extends CABLES.EventTarget
                     {
                         gui.setStateUnsaved();
 
-                        CABLES.UI.paramsHelper.setPortAnimated(thePort.parent, index, !thePort.isAnimated(), thePort.get());
+                        CABLES.UI.paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                     }
                 });
             }
 
             if (port.type == CABLES.OP_PORT_TYPE_STRING || port.type == CABLES.OP_PORT_TYPE_VALUE)
             {
-                if (port.parent.uiAttribs.extendTitlePort == port.name)
+                if (port.op.uiAttribs.extendTitlePort == port.name)
                     items.push({
                         "title": "Remove extended title",
                         "iconClass": "icon icon-x",
                         "func": () =>
                         {
-                            port.parent.setUiAttrib({ "extendTitlePort": null });
+                            port.op.setUiAttrib({ "extendTitlePort": null });
                         }
                     });
                 else
@@ -427,14 +426,14 @@ class ParamsListener extends CABLES.EventTarget
                         "title": "Extend title: \"" + port.name + ": x\"",
                         "func": () =>
                         {
-                            port.parent.setUiAttrib({ "extendTitlePort": port.name });
+                            port.op.setUiAttrib({ "extendTitlePort": port.name });
                         }
                     });
             }
 
 
             if (
-                (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.parent.uiAttribs.subPatch) &&
+                (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
                 !port.isAnimated())
             {
                 let title = "Subpatch Expose Port ";
@@ -451,7 +450,7 @@ class ParamsListener extends CABLES.EventTarget
                         "iconClass": icon,
                         "func": () =>
                         {
-                            const subOp = gui.patchView.getSubPatchOuterOp(port.parent.uiAttribs.subPatch);
+                            const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
                             port.removeLinks();
                             subOp.removePort(port);
                             port.setUiAttribs({ "expose": !port.uiAttribs.expose });
@@ -476,9 +475,9 @@ class ParamsListener extends CABLES.EventTarget
                         if (port.uiAttribs.title)
                         {
                             port.setUiAttribs({ "title": null });
-                            gui.opParams.show(port.parent.id);
+                            gui.opParams.show(port.op.id);
                         }
-                        else gui.patchView.setPortTitle(port.parent.id, port.name, port.title);
+                        else gui.patchView.setPortTitle(port.op.id, port.name, port.title);
                     }
                 });
 
@@ -508,7 +507,7 @@ class ParamsListener extends CABLES.EventTarget
                 elVal.focus();
             }
 
-            op.portsIn[index].parent.refreshParams();
+            op.portsIn[index].op.refreshParams();
             return;
         }
 
@@ -522,7 +521,7 @@ class ParamsListener extends CABLES.EventTarget
             "defaultValue": defaultValue
         };
         gui.timeLine().setAnim(op.portsIn[index].anim, animOptions);
-        op.portsIn[index].parent.refreshParams();
+        op.portsIn[index].op.refreshParams();
     }
 
     initPortInputListener(ports, index, panelid)
@@ -685,7 +684,7 @@ class ParamsListener extends CABLES.EventTarget
                                 catch (ex) { console.warn("undo failed"); }
                             }
                         });
-                }(ports[index].get(), v, ports[index].parent.id, ports[index].name));
+                }(ports[index].get(), v, ports[index].op.id, ports[index].name));
             }
 
 
@@ -693,7 +692,7 @@ class ParamsListener extends CABLES.EventTarget
             else ports[index].set(v || 0);
 
 
-            const op = ports[index].parent;
+            const op = ports[index].op;
             // update history on change
             if (op && !op.uiAttribs) op.uiAttribs = {};
             if (op && !op.uiAttribs.history) op.uiAttribs.history = {};
@@ -798,11 +797,11 @@ class ParamsListener extends CABLES.EventTarget
                 for (const iwcp in this._watchColorPicker)
                 {
                     const thePort2 = this._watchColorPicker[iwcp];
-                    const idx = thePort.parent.portsIn.indexOf(thePort2);
+                    const idx = thePort.op.portsIn.indexOf(thePort2);
                     paramsHelper.updateLinkedColorBoxes(
                         thePort2,
-                        thePort.parent.portsIn[idx + 1],
-                        thePort.parent.portsIn[idx + 2],
+                        thePort.op.portsIn[idx + 1],
+                        thePort.op.portsIn[idx + 2],
                         this.panelId,
                         idx);
                 }

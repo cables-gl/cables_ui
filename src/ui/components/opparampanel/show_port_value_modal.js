@@ -221,11 +221,11 @@ export default class ModalPortValue
             {
                 inputDataType = "Array";
             }
-            const jsonInfo = printJsonInfo(thing, port.parent, port.name, inputDataType);
+            const jsonInfo = printJsonInfo(thing, port.op, port.name, inputDataType);
 
             let fullHTML = "";
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             fullHTML += "<br/><br/>";
@@ -241,7 +241,7 @@ export default class ModalPortValue
         {
             let fullHTML = "";
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
 
@@ -274,16 +274,16 @@ export default class ModalPortValue
             let serializedThing = thing;
             if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
 
-            if (serializedThing == "{}")
-            {
-                serializedThing = "could not stringify object\n\n";
-                if (thing) for (let i in thing) serializedThing += "\n" + i + " (" + typeof thing[i] + ")";
-            }
+            // if (serializedThing == "{}")
+            // {
+            //     serializedThing = "could not stringify object\n\n";
+            //     if (thing) for (let i in thing) serializedThing += "\n" + i + " (" + typeof thing[i] + ")";
+            // }
 
 
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            html += "Port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             html += "<br/><br/>";
             html += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
@@ -319,7 +319,7 @@ export default class ModalPortValue
         {
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            html += "Port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             html += "<br/><br/>";
 
             const thing = port.get();

@@ -206,8 +206,9 @@ export default class GlUiCanvas
 
     activityMedium()
     {
+        console.log("activityMedium")
         this._targetFps = 30;
-        if (!this.glPatch.mouseOverCanvas) this._targetFps = 0;
+        // if (!this.glPatch.mouseOverCanvas) this._targetFps = 0;
         clearTimeout(this._activityTimeout);
         this._activityTimeout = setTimeout(() => { this.activityIdle(); }, 30000);
     }
