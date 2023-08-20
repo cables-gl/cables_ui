@@ -395,7 +395,7 @@ export default class TexturePreviewer
         if (!this._listeningFrame && p)
         {
             this._listeningFrame = true;
-            p.parent.patch.cgl.on("beginFrame", () =>
+            p.op.patch.cgl.on("beginFrame", () =>
             {
                 this.render();
             });
@@ -415,7 +415,7 @@ export default class TexturePreviewer
         {
             const el = document.getElementById("preview" + this._texturePorts[i].id);
             if (el)
-                if (this._texturePorts[i].port.op != p.parent) el.classList.remove("activePreview");
+                if (this._texturePorts[i].port.op != p.op) el.classList.remove("activePreview");
                 else el.classList.add("activePreview");
         }
     }
@@ -481,7 +481,7 @@ export default class TexturePreviewer
 
     gotoOp()
     {
-        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.parent.id);
+        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.op.id);
     }
 
     pin(a)

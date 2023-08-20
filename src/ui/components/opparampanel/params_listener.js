@@ -757,7 +757,10 @@ class ParamsListener extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
-                    newValue = "\"" + thePort.getValueForDisplay() + "\"";
+                    const v=thePort.getValueForDisplay();
+
+                    if (v && (typeof v === 'string' || v instanceof String)) newValue = "\"" + v + "\"";
+                    else newValue=String(v);
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {
