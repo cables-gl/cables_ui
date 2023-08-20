@@ -26,7 +26,7 @@ export default class ModalError
         let stackStr = "";
         for (let i = 0; i < s.length; i++)
         {
-            stackStr += "[" + s[i].parent.objName + " - " + s[i].name + "] ";
+            stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
             if (i != s.length - 1)stackStr += " -> ";
         }
 
