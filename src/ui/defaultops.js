@@ -47,13 +47,27 @@ const defaultOps = {
     },
     "defaultMathOps":
     {
-        ">": "Ops.Math.Compare.GreaterThan",
-        "<": "Ops.Math.Compare.LessThan",
-        "+": "Ops.Math.Sum",
-        "-": "Ops.Math.Subtract",
-        "/": "Ops.Math.Divide",
-        "*": "Ops.Math.Multiply",
-        "=": "Ops.Math.Equals",
+        "default":
+        {
+            ">": "Ops.Math.Compare.GreaterThan",
+            "<": "Ops.Math.Compare.LessThan",
+            "+": "Ops.Math.Sum",
+            "-": "Ops.Math.Subtract",
+            "/": "Ops.Math.Divide",
+            "*": "Ops.Math.Multiply",
+            "=": "Ops.Math.Equals",
+        },
+        "array":
+        {
+            "+": "Ops.Array.ArraySum",
+            "-": "Ops.Array.ArraySubtract",
+            "/": "Ops.Array.ArrayDivide",
+            "*": "Ops.Array.ArrayMultiply",
+        },
+        "string":
+        {
+            "+": "Ops.String.Concat_v2"
+        }
     },
     "getVizOpsForPortLink": (p, l) =>
     {

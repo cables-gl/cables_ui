@@ -7,6 +7,7 @@ import text from "../text";
 import userSettings from "../components/usersettings";
 import Gui from "../gui";
 import OpSearch from "../components/opsearch";
+import { UTILS } from "../../../../cables/src/core/utils";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -332,11 +333,16 @@ export default class OpSelect
 
         let sq = this._getQuery();
 
-        for (let i in CABLES.UI.DEFAULTMATHOPS) if (sq === i)
-        {
-            sq = CABLES.UI.DEFAULTMATHOPS[i];
-            this._enterPressedEarly = true;
-        }
+        
+        let mathPortType="default";
+
+        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_ARRAY)mathPortType="array";
+        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_STRING)mathPortType="string";
+
+
+        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType]) 
+            if (sq.charAt(0) === i)
+                sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];
 
         this.firstTime = false;
         sq = sq || "";
@@ -598,6 +604,24 @@ export default class OpSelect
 
     addOp(opname, reopenModal = false, itemType = "op")
     {
+
+        this._newOpOptions.onOpAdd=null;
+        
+        const sq=this._getQuery();
+        for (let i in CABLES.UI.DEFAULTMATHOPS) 
+            if (sq.charAt(0) === i)
+            {
+                let mathNum=parseFloat(sq.substr(1));
+
+                this._newOpOptions.onOpAdd=
+                (op)=>
+                {
+                    if(op.portsIn.length>1)
+                    op.portsIn[1].set(mathNum);
+                    op.refreshParams();
+                };
+            }
+        
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;
@@ -701,6 +725,13 @@ export default class OpSelect
             const opname = selEle.dataset.opname;
             const listItem = this.getListItemByOpName(opname);
             // prevent adding of ops that are not usable
+
+            
+
+            // if (sq.charAt(0) === i)
+            //     sq = CABLES.UI.DEFAULTMATHOPS[i]+" "+sq.substr(1);
+
+            
             if (!(listItem && listItem.notUsable))
             {
                 this.addOp(opname, reopenModal, selEle.dataset.itemType);
