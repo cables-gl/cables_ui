@@ -615,6 +615,7 @@ export default class OpSelect
             if (sq.charAt(0) === i)
             {
                 let mathNum=parseFloat(sq.substr(1));
+                if(mathPortType=="string")mathNum=sq.substr(1);
 
                 this._newOpOptions.onOpAdd=
                     (op)=>
