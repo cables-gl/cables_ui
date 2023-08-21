@@ -97,8 +97,7 @@ body
 
     a.link
     {
-        // text-decoration: underline !important;
-
+        text-decoration: underline !important;
     }
     a.link:hover
     {
@@ -715,6 +714,11 @@ body
     // {
     //     opacity: 0;
     // }
+
+    .patch_summary
+    {
+        padding:10px !important;
+    }
 }
 
 

@@ -245,7 +245,6 @@ class OpParampanel extends CABLES.EventTarget
 
         perfHtml.finish();
 
-
         this.updateUiAttribs();
 
         for (let i = 0; i < this._portsIn.length; i++)

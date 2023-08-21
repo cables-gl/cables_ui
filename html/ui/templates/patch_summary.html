@@ -1,6 +1,6 @@
 
 <script id="patch_summary" type="text/x-handlebars-template">
-    <div class="panel params_op_head panel_head">
+    <div class="panel params_op_head panel_head patch_summary">
 
         <div style="position:absolute;right:30px;margin-top:5px;">
             <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
@@ -10,36 +10,36 @@
 
         <h2 class="nomargin">
             {{#if project.summary.isPublic}}{{else}}<span class="icon icon-lock"></span>{{/if}}
-            <b style="color:var(--color-13)">{{project.name}}</b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}</a>
+            <b style="color:var(--color-13)"><a onclick="gui.patchView.store.showModalTitleDialog()">{{project.name}}</a></b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}</a>
         </h2>
 
-        <br/><br/>
+        <br/>
 
         {{#compare port.uiAttribs.display '!=' 'none' }}
-            Licence:
+            <b>Licence</b>:
             {{#if project.summary.licence.link}}
-                <a href="{{project.summary.licence.link}}" target="_blank">{{project.summary.licence.name}}</a>
+                <a href="{{project.summary.licence.link}}" class="link" target="_blank">{{project.summary.licence.name}}</a>
             {{else}}
                 {{project.summary.licence.name}}
             {{/if}}
             <br/>{{project.summary.licence.description}}
+            <br/><br/>
         {{/compare}}
-        <br/><br/>
 
         {{#if project.teams}}
             Teams:
             {{#each project.teams}}
                 {{#unless @first}}, {{/unless}}
-                <a href="{{cablesUrl}}{{link}}">{{name}}</a>
+                <a href="{{cablesUrl}}{{link}}" target="_blank" class="link">{{name}}</a>
             {{/each}}
-        {{/if}}
-        <br/>
-        <br/>
-        {{#if project.summary.isTest }}
-        <a target="_blank" href="{{cablesUrl}}/tests/{{projectId}}" class="button-small"><i class="icon icon-lock"></i> Show Tests</a>
+            <br/><br/>
         {{/if}}
         {{#if project.summary.exampleForOp }}
             <a target="_blank" href="{{cablesUrl}}/op/{{project.summary.exampleForOp}}" class="button-small">Example for {{project.summary.exampleForOp}}</a>
+        {{/if}}
+
+        {{#if project.summary.isTest }}
+            <a target="_blank" href="{{cablesUrl}}/tests/{{projectId}}" class="button-small">Run Test </a>
         {{/if}}
 
     </div>

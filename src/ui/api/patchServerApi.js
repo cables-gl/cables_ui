@@ -771,6 +771,22 @@ export default class PatchSaveServer extends CABLES.EventTarget
         return name;
     }
 
+    showModalTitleDialog()
+    {
+        new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "Patch Title",
+            "text": "Set the title of this patch",
+            "promptValue": gui.corePatch().name,
+            "promptOk": (v) =>
+            {
+                console.log("yes! prompt finished", v);
+            }
+        });
+    
+        
+    }
+
 
     saveScreenshot(hires, cb)
     {
