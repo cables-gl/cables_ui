@@ -89,7 +89,6 @@ export default class GlPatchAPI
         let flowMode = userSettings.get("glflowmode");
 
 
-        if(this._patch.ops.length>1000000)console.log("1 million ops................")
         
         if (flowMode == 0 && this._currentFlowMode != 0)
         {
@@ -152,6 +151,7 @@ export default class GlPatchAPI
             if (!glop.visible)
             {
                 numUpdates++;
+                if(numUpdates>20000)break;
                 continue;
             }
 
