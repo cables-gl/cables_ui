@@ -88,6 +88,9 @@ export default class GlPatchAPI
     {
         let flowMode = userSettings.get("glflowmode");
 
+
+        if(this._patch.ops.length>1000000)console.log("1 million ops................")
+        
         if (flowMode == 0 && this._currentFlowMode != 0)
         {
             const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
