@@ -78,7 +78,7 @@ export default class GlPort
         if (!this._rect) return;
         const isAssigned =
             this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
-            (this._port.uiAttribs.expose && this._port.parent.id == this._glop._op.id);
+            (this._port.uiAttribs.expose && this._port.op.id == this._glop._op.id);
 
         if (!this._dot &&
             (isAssigned || this._port.uiAttribs.notWorking))
@@ -169,7 +169,7 @@ export default class GlPort
                 return;
             }
         }
-        this._glPatch.emitEvent("mouseUpOverPort", this._port.parent.id, this._port);
+        this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
     }
 
     _getBrightness()
