@@ -151,7 +151,11 @@ export default class GlPatchAPI
             if (!glop.visible)
             {
                 numUpdates++;
-                if(numUpdates>20000)break;
+                if(numUpdates>20000)
+                {
+                    console.log("too many updated")
+                    break;
+                }
                 continue;
             }
 
