@@ -1031,11 +1031,14 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
-        let sub = { "title": "Main",
+        let sub = 
+        {
+            "title": "Main",
             "id": "0",
             "subPatchId": "0",
             "childs": [],
-            "icon": "op" };
+            "icon": "op" 
+        };
         let subs = [sub];
 
         if (patchId)
@@ -1046,7 +1049,7 @@ export default class PatchView extends CABLES.EventTarget
             sub.id = subOp.id;
 
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
-            if (subOp.storage.blueprintVer)
+            if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
                 sub.blueprintVer = subOp.storage.blueprintVer;
                 sub.icon = "blueprint";
@@ -2565,12 +2568,28 @@ export default class PatchView extends CABLES.EventTarget
                 return ops[i];
     }
 
+
+    
+    getAllOpsInBlueprint(subid)
+    {
+        const foundOps = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if(ops[i].isInBlueprint2()==subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+        }
+        return foundOps;
+    }
+
+    
     getAllSubPatchOps(subid)
     {
         const foundOps = [];
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
+        {
             if (ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+        }
         return foundOps;
     }
 

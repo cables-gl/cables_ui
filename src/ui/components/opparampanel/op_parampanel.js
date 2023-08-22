@@ -136,6 +136,8 @@ class OpParampanel extends CABLES.EventTarget
 
     show(op)
     {
+
+
         if (!CABLES.UI.loaded) return;
         if (!this._startedGlobalListeners)
         {
@@ -148,6 +150,7 @@ class OpParampanel extends CABLES.EventTarget
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
+
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
@@ -164,6 +167,8 @@ class OpParampanel extends CABLES.EventTarget
         {
             return;
         }
+
+        console.log("is in bp2",op.isInBlueprint2());
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;

@@ -1370,11 +1370,16 @@ export default class Gui
             }
             else
             {
-                if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
+                // if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
+
+                const subOuter=gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())
+                
+                // console.log("subouter",subOuter,subOuter.isInBlueprint2())
+
+                if( subOuter && (subOuter.isBlueprint2() || subOuter.isInBlueprint2()))
                 {
                     gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch()), { "oldSubId": gui.patchView.getCurrentSubPatch() });
                 }
-
 
                 CABLES.CMD.PATCH.save();
             }

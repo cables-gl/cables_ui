@@ -117,7 +117,9 @@ export default class ServerOps
     updateBluePrint2Attachment(newOp, options)
     {
         const oldSubId = options.oldSubId;
-        const ops = gui.patchView.getAllSubPatchOps(oldSubId);
+
+        console.log("oldSubId",oldSubId)
+        const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
 
@@ -141,7 +143,7 @@ export default class ServerOps
             },
             (errr, re) =>
             {
-                CABLES.UI.notify("blueprint op saved");
+                CABLES.UI.notify("blueprint op saved "+o.ops.length);
 
                 if (options.next)options.next();
             });
