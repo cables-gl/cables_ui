@@ -19,7 +19,7 @@ export default class PatchView extends CABLES.EventTarget
     constructor(corepatch)
     {
         super();
-        // wurst
+
         this._p = corepatch;
         this._log = new Logger("patchview");
         this._element = null;
@@ -88,6 +88,27 @@ export default class PatchView extends CABLES.EventTarget
                 "name": gui.user.usernameLowercase
             };
         }
+    }
+
+    clickSubPatchNav(subPatchId)
+    {
+        if(gui.patchView.getCurrentSubPatch()==subPatchId)
+        {
+            const op=gui.patchView.getSubPatchOuterOp(subPatchId);
+            if(!op)return;
+
+            gui.patchView.unselectAllOps();
+            gui.patchView.selectOpId(op.id);
+
+            gui.patchView.centerSelectOp(op.id);
+            gui.patchView.focusOpAnim(op.id);
+        }
+        else
+        {
+            gui.patchView.setCurrentSubPatch(subPatchId);
+            gui.patchParamPanel.show();
+        }
+
     }
 
     _onDeleteOpUndo(op)
@@ -1241,7 +1262,7 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = names.length - 1; i >= 0; i--)
         {
             if (i >= 0) str += "<span class=\"sparrow\">&rsaquo;</span>";
-            str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.setCurrentSubPatch('" + names[i].id + "');\">" + names[i].name + "</a>";
+            str += "<a class=\"" + names[i].type + "\" onclick=\"gui.patchView.clickSubPatchNav('" + names[i].id + "');\">" + names[i].name + "</a>";
         }
 
         if (names.length > 0)
