@@ -108,7 +108,7 @@ document.querySelector("body").addEventListener("mouseout", function (evt)
 
 function isMultilineString(str)
 {
-    if(!str)return false;
+    if(!str || !str.match || !str.length) return false;
     return ((str.match(/\n/g) || []).length > 0);
 }
 

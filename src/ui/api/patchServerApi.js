@@ -771,8 +771,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
         return name;
     }
 
-    showModalTitleDialog()
+    showModalTitleDialog(titleElement = null, cb = null)
     {
+        const currentProject = gui.project();
         new CABLES.UI.ModalDialog({
             "prompt": true,
             "title": "Patch Title",
@@ -780,11 +781,37 @@ export default class PatchSaveServer extends CABLES.EventTarget
             "promptValue": gui.corePatch().name,
             "promptOk": (v) =>
             {
-                console.log("yes! prompt finished", v);
+                CABLESUILOADER.talkerAPI.send(
+                    "setProjectName",
+                    {
+                        "id": currentProject._id,
+                        "name": v
+                    },
+                    (error, re) =>
+                    {
+                        const newName = re.data ? re.data.name : "";
+                        if (error || !newName)
+                        {
+                            const options = {
+                                "title": "Failed to set project name!",
+                                "html": "Error: " + re.msg,
+                                "warning": true,
+                                "showOkButton": true
+                            };
+                            new CABLES.UI.ModalDialog(options);
+                        }
+                        else
+                        {
+                            CABLESUILOADER.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                            {
+                                if (titleElement) titleElement.innerText = newName;
+                                gui.setProjectName(newName);
+                            });
+                            if (cb) cb(newName);
+                        }
+                    });
             }
         });
-    
-        
     }
 
 

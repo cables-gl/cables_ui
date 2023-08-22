@@ -324,7 +324,13 @@ export default class OpSelect
             if (this._getQuery() == "")
                 if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
         }
+    }
 
+    _getMathPortType()
+    {
+        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_ARRAY) return "array";
+        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_STRING) return "string";
+        return "default";
     }
 
     search()
@@ -332,13 +338,7 @@ export default class OpSelect
         if (!this._opSearch.list || !this._html) this.prepare();
 
         let sq = this._getQuery();
-
-        
-        let mathPortType="default";
-
-        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_ARRAY)mathPortType="array";
-        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_STRING)mathPortType="string";
-
+        let mathPortType=this._getMathPortType();
 
         for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType]) 
             if (sq.charAt(0) === i)
@@ -608,19 +608,26 @@ export default class OpSelect
         this._newOpOptions.onOpAdd=null;
         
         const sq=this._getQuery();
-        for (let i in CABLES.UI.DEFAULTMATHOPS) 
+        const mathPortType=this._getMathPortType();
+
+        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType]) 
+        {
             if (sq.charAt(0) === i)
             {
                 let mathNum=parseFloat(sq.substr(1));
+                if(mathPortType=="string")mathNum=sq.substr(1);
 
                 this._newOpOptions.onOpAdd=
-                (op)=>
-                {
-                    if(op.portsIn.length>1)
-                    op.portsIn[1].set(mathNum);
-                    op.refreshParams();
-                };
+                    (op)=>
+                    {
+                        if(op.portsIn.length>1)
+                        {
+                            op.portsIn[1].set(mathNum);
+                        }
+                        op.refreshParams();
+                    };
             }
+        }
         
         if (opname && opname.length > 2)
         {
@@ -726,12 +733,9 @@ export default class OpSelect
             const listItem = this.getListItemByOpName(opname);
             // prevent adding of ops that are not usable
 
-            
-
             // if (sq.charAt(0) === i)
             //     sq = CABLES.UI.DEFAULTMATHOPS[i]+" "+sq.substr(1);
 
-            
             if (!(listItem && listItem.notUsable))
             {
                 this.addOp(opname, reopenModal, selEle.dataset.itemType);
