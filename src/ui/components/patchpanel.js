@@ -47,8 +47,6 @@ export default class PatchPanel extends CABLES.EventTarget
         if (!CABLES.UI.loaded) return;
         let html = "<div class=\"panel bookmarkpanel\">";
 
-        gui.patchView.removeLostSubpatches();
-
         if (gui.longPressConnector.isActive())
         {
             html += gui.longPressConnector.getParamPanelHtml();

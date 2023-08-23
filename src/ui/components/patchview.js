@@ -226,6 +226,8 @@ export default class PatchView extends CABLES.EventTarget
 
             if (gui.project() && gui.project().ui) gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
 
+            gui.patchView.removeLostSubpatches();
+
             if (cb)cb();
         });
     }
@@ -1084,12 +1086,13 @@ export default class PatchView extends CABLES.EventTarget
             countSubs[sub]++;
         }
 
+
         for (let subid in countSubs)
         {
             // if(countSubs[subid]<=2)
             for (let asub in foundSubPatchOps)
             {
-                if (!foundSubPatchOps.hasOwnProperty(asub))
+                if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
                 {
                     console.warn("found lost subpatch...", subid);
                     if (countSubs[subid] <= 2)
