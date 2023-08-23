@@ -788,7 +788,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             "prompt": true,
             "title": "Patch Title",
             "text": "Set the title of this patch",
-            "promptValue": gui.corePatch().name,
+            "promptValue": currentProject.name,
             "promptOk": (v) =>
             {
                 console.log("yes! prompt finished", v);
