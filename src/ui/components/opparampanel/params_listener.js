@@ -454,10 +454,10 @@ class ParamsListener extends CABLES.EventTarget
                             port.removeLinks();
                             subOp.removePort(port);
                             port.setUiAttribs({ "expose": !port.uiAttribs.expose });
+                            port.op.refreshParams();
                         }
                     });
             }
-
 
             let strEditTitle = "Edit title";
             let icon = "";

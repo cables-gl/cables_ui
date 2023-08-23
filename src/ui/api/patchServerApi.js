@@ -432,11 +432,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
     finishAnimations()
     {
-        document.getElementById("patchname").classList.remove("blinking");
+        const elePatchName=ele.byId("patchname");
+        elePatchName.classList.remove("blinking");
 
-        if (document.getElementById("patchname").dataset.patchname != "undefined")
-            document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
-
+        if (elePatchName.dataset.patchname != "undefined")
+            elePatchName.innerHTML = elePatchName.dataset.patchname;
 
         setTimeout(() =>
         {
@@ -465,15 +465,19 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.uiAttribs)
+            {
                 if (defaultops.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch )
                 {
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 
                     if(op.patchId && op.isInBlueprint2())
                     {
+                        console.log("subpatch in blueprint found!",op)
                         blueprintIds.push(op.patchId.get());
                     }
                 }
+
+            }
 
             if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }

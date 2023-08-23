@@ -344,8 +344,6 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        // console.log("animscrollto",x,y);
-
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;
         if (p != p)p = 0;
@@ -509,7 +507,6 @@ export default class GlViewBox
     _storeCurrentSubPatch()
     {
         const o={ "x": this._scrollX, "y": this._scrollY, "z": this._zoom }
-        console.log("Store subpatch!",this._currentSubPatchId,o)
         this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 

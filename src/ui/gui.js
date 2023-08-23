@@ -577,7 +577,7 @@ export default class Gui
         if (this.mainTabs.getNumTabs() > 0) menupos += minmaxButtonSize;
         this._elMenubar.style.left = menupos + 10 + "px";
         const rMenuBar = this._elMenubar.getBoundingClientRect();
-        const mpMenuBar = document.getElementById("multiplayerbar");
+        const mpMenuBar = ele.byId("multiplayerbar");
         if (mpMenuBar) mpMenuBar.style.left = rMenuBar.x + rMenuBar.width + 10 + "px";
 
         this._elProgressbar.style.left = menupos + 10 + 8 + "px";
@@ -909,17 +909,17 @@ export default class Gui
     {
         if (show)
         {
-            document.getElementById("nav-logo_idle").classList.add("logoFadeout");
-            document.getElementById("nav-logo_idle").classList.remove("logoFadein");
-            document.getElementById("nav-loading").classList.remove("hidden");
+            ele.byId("nav-logo_idle").classList.add("logoFadeout");
+            ele.byId("nav-logo_idle").classList.remove("logoFadein");
+            ele.byId("nav-loading").classList.remove("hidden");
         }
         else
         {
             setTimeout(() =>
             {
-                document.getElementById("nav-logo_idle").classList.remove("logoFadeout");
-                document.getElementById("nav-logo_idle").classList.add("logoFadein");
-                document.getElementById("nav-loading").classList.add("hidden");
+                ele.byId("nav-logo_idle").classList.remove("logoFadeout");
+                ele.byId("nav-logo_idle").classList.add("logoFadein");
+                ele.byId("nav-loading").classList.add("hidden");
             }, 250);
         }
     }
@@ -990,8 +990,8 @@ export default class Gui
     {
         if (name && name !== "undefined")
         {
-            document.getElementById("patchname").innerHTML = name;
-            document.getElementById("patchname").dataset.patchname = name;
+            ele.byId("patchname").innerHTML = name;
+            ele.byId("patchname").dataset.patchname = name;
             gui.corePatch().name = name;
         }
     }
@@ -1376,9 +1376,14 @@ export default class Gui
                 
                 // console.log("subouter",subOuter,subOuter.isInBlueprint2())
 
-                if( subOuter && (subOuter.isBlueprint2() || subOuter.isInBlueprint2()))
+                if( subOuter)
                 {
-                    gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch()), { "oldSubId": gui.patchView.getCurrentSubPatch() });
+                    const bp=subOuter.isInBlueprint2() || subOuter.isBlueprint2();
+                    if(bp )
+                    {
+                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
+                    }
+    
                 }
 
                 CABLES.CMD.PATCH.save();
@@ -1754,6 +1759,7 @@ export default class Gui
 
     setStateUnsaved(options)
     {
+        if(this.ignoreSaveStateChanges)return;
         let subPatch = this.patchView.getCurrentSubPatch();
         if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
 
@@ -1769,7 +1775,7 @@ export default class Gui
             this._favIconLink.href = "/favicon/favicon_orange.ico";
             this._savedState = false;
 
-            document.getElementById("patchname").classList.add("warning");
+            ele.byId("patchname").classList.add("warning");
 
             this._onBeforeUnloadListener = (event) =>
             {
@@ -1793,7 +1799,7 @@ export default class Gui
         this._savedState = true;
         this.resetSavedStateChangesBlueprintSubPatches();
         this._favIconLink.href = "/favicon/favicon.ico";
-        document.getElementById("patchname").classList.remove("warning");
+        ele.byId("patchname").classList.remove("warning");
 
         let title = "";
         if (CABLES.sandbox.isDevEnv())title = "DEV ";

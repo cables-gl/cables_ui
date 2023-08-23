@@ -909,14 +909,17 @@ export default class PatchView extends CABLES.EventTarget
 
                             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
                             {
+
+
+                                // if (op1.uiAttribs.subPatch != patchId)
+                                //     port2.setUiAttribs({ "expose": true });
+                                // else
+                                //     port1.setUiAttribs({ "expose": true });
+
                                 // relinking is lazy and dirty but there is no easy way to rebuild
                                 op1.portsIn[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId)
-                                    port2.setUiAttribs({ "expose": true });
-                                else
-                                    port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }
