@@ -100,10 +100,16 @@ export default class ServerOps
                     gui.opDocs.addOpDocs(res);
                 }
 
-                if (window.logStartup) logStartup("Ops loaded");
-                if (cb) cb(this._ops);
-                that.loaded = true;
-                incrementStartup();
+                // ops added to opdocs so they are available in opsearch
+                // make sure all dependencies are loaded for ops that are actually used in project (or in blueprints)
+                const usedOps = res.filter((op) => { return op.usedInProject; });
+                this.loadProjectDependencies({ "ops": usedOps }, () =>
+                {
+                    if (window.logStartup) logStartup("Ops loaded");
+                    if (cb) cb(this._ops);
+                    that.loaded = true;
+                    incrementStartup();
+                });
             },
         );
     }
@@ -1251,18 +1257,22 @@ export default class ServerOps
 
     isLibLoaded(libName)
     {
-        const isloaded = this._loadedLibs.indexOf(libName) != -1;
-        return isloaded;
+        return this._loadedLibs.some(libName);
     }
 
-    opHasLibs(op)
+    isCoreLibLoaded(coreLibName)
     {
-        return this.getOpLibs(op).length !== 0;
+        return this._loadedCoreLibs.some(coreLibName);
     }
 
-    opLibsLoaded(op)
+    allLibsLoaded(op)
     {
-        const libsToLoad = this.getOpLibs(op);
+        const coreLibsToLoad = this.getCoreLibs(op, true);
+        const libsToLoad = this.getOpLibs(op, true);
+        for (let i = 0; i < coreLibsToLoad.length; i++)
+        {
+            if (!this.isCoreLibLoaded(coreLibsToLoad[i])) return false;
+        }
         for (let i = 0; i < libsToLoad.length; i++)
         {
             if (!this.isLibLoaded(libsToLoad[i])) return false;
@@ -1351,6 +1361,7 @@ export default class ServerOps
     {
         const opDocs = gui.opDocs.getOpDocs();
         const opIdentifier = op.opId || op.objName;
+        // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
         let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
@@ -1358,7 +1369,12 @@ export default class ServerOps
         if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
         if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
         let loaded = false;
-        if (foundOp) loaded = this.opCodeLoaded(foundOp);
+        if (foundOp)
+        {
+            // we found an op in opdocs, check if we also have the code and needed libraries
+            loaded = this.opCodeLoaded(foundOp);
+            if (loaded) loaded = this.allLibsLoaded(foundOp);
+        }
         return loaded;
     }
 
