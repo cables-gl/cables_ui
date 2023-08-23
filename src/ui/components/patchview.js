@@ -1078,7 +1078,7 @@ export default class PatchView extends CABLES.EventTarget
             const sub = ops[i].uiAttribs.subPatch || 0;
             if (ops[i].isSubPatchOp())
             {
-                foundSubPatchOps[ops[i].patchId.get()];
+                foundSubPatchOps[ops[i].patchId.get()] = true;
             }
             countSubs[sub] = countSubs[sub] || 0;
             countSubs[sub]++;
@@ -1087,20 +1087,22 @@ export default class PatchView extends CABLES.EventTarget
         for (let subid in countSubs)
         {
             // if(countSubs[subid]<=2)
-            for (let patchops in foundSubPatchOps)
+            for (let asub in foundSubPatchOps)
             {
-                // if(!foundSubPatchOps.hasOwnProperty(patchops))
-                // {
-                console.warn("found lost subpatch...", subid);
-                if (countSubs[subid] <= 2)
+                if (!foundSubPatchOps.hasOwnProperty(asub))
                 {
-                    console.warn("deleted lost subpatch! ", subid);
-                    for (let i = ops.length - 1; i >= 0; i--)
+                    console.warn("found lost subpatch...", subid);
+                    if (countSubs[subid] <= 2)
                     {
-                        if (ops[i].uiAttribs.subPatch == subid)
+                        console.warn("deleted lost subpatch! ", subid);
+                        for (let i = ops.length - 1; i >= 0; i--)
                         {
-                            ops[i].patch.deleteOp(ops[i].id);
+                            if (ops[i].uiAttribs.subPatch == subid)
+                            {
+                                ops[i].patch.deleteOp(ops[i].id);
+                            }
                         }
+                        countSubs[subid] = 1000;
                     }
                 }
             }
