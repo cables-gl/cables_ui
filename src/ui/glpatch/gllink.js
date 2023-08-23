@@ -481,7 +481,7 @@ export default class GlLink
                 }
                 // else
 
-                if(!foundCable)
+                if(!foundCable && this._cable)
                 {
 
                     if (this._debugColor) this._cable.setColor(0, 0, 0, 1); 
@@ -494,7 +494,7 @@ export default class GlLink
 
                 }
 
-                if(!foundCableSub)
+                if(!foundCableSub && this._cableSub)
                 {
                     if (this._debugColor) this._cableSub.setColor(1, 0.5, 0.4, 1); 
                     this._cableSub.setPosition(

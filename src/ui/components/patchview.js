@@ -105,6 +105,8 @@ export default class PatchView extends CABLES.EventTarget
         }
         else
         {
+            
+
             gui.patchView.setCurrentSubPatch(subPatchId);
             gui.patchParamPanel.show();
         }
