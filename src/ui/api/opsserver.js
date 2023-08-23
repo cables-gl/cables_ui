@@ -143,7 +143,7 @@ export default class ServerOps
             },
             (errr, re) =>
             {
-                CABLES.UI.notify("blueprint op saved ("+o.ops.length+"ops)");
+                CABLES.UI.notify("Saved "+newOp.objName+" ("+o.ops.length+"ops)");
 
                 if (options.next)options.next();
             });
