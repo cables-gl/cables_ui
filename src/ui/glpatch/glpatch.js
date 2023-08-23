@@ -484,26 +484,15 @@ export default class GlPatch extends CABLES.EventTarget
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
 
-
-
             if (ops[0].isSubPatchOp())
             {
-                console.log("dblclick subpatch!", ops[0].patchId.get());
                 gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
                 gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
             }
             if (CABLES.UI.DEFAULTOPNAMES.blueprint == ops[0].objName)
             {
-                // console.log(ops[0].storage);
-
-
-
                 const subid = gui.patchView.getSubPatchIdFromBlueprintOpId(ops[0].id);
-
-                console.log("subid", subid, ops[0].id);
-
                 if (subid)gui.patchView.setCurrentSubPatch(subid);
-                // gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
             }
         }
         else

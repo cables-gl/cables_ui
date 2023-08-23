@@ -21,8 +21,7 @@ export default class PatchPanel extends CABLES.EventTarget
             {
                 if (item.subPatchId)
                 {
-                    gui.patchView.setCurrentSubPatch(item.subPatchId);
-                    gui.patchParamPanel.show();
+                    gui.patchView.clickSubPatchNav(item.subPatchId)
                 }
                 else if (item.opid)
                 {

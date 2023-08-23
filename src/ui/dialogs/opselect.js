@@ -620,7 +620,7 @@ export default class OpSelect
                 this._newOpOptions.onOpAdd=
                     (op)=>
                     {
-                        if(op.portsIn.length>1)
+                        if(op.portsIn.length>1 && mathNum==mathNum)
                         {
                             op.portsIn[1].set(mathNum);
                         }

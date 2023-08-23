@@ -88,6 +88,8 @@ export default class GlPatchAPI
     {
         let flowMode = userSettings.get("glflowmode");
 
+
+        
         if (flowMode == 0 && this._currentFlowMode != 0)
         {
             const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
@@ -149,6 +151,11 @@ export default class GlPatchAPI
             if (!glop.visible)
             {
                 numUpdates++;
+                if(numUpdates>20000)
+                {
+                    console.log("too many updated")
+                    break;
+                }
                 continue;
             }
 
