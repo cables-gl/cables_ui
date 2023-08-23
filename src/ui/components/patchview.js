@@ -92,10 +92,10 @@ export default class PatchView extends CABLES.EventTarget
 
     clickSubPatchNav(subPatchId)
     {
-        if(gui.patchView.getCurrentSubPatch()==subPatchId)
+        if (gui.patchView.getCurrentSubPatch() == subPatchId)
         {
-            const op=gui.patchView.getSubPatchOuterOp(subPatchId);
-            if(!op)return;
+            const op = gui.patchView.getSubPatchOuterOp(subPatchId);
+            if (!op) return;
 
             gui.patchView.unselectAllOps();
             gui.patchView.selectOpId(op.id);
@@ -105,12 +105,9 @@ export default class PatchView extends CABLES.EventTarget
         }
         else
         {
-            
-
             gui.patchView.setCurrentSubPatch(subPatchId);
             gui.patchParamPanel.show();
         }
-
     }
 
     _onDeleteOpUndo(op)
@@ -381,17 +378,8 @@ export default class PatchView extends CABLES.EventTarget
 
     addOp(opname, options)
     {
-        let hadCallback = false;
-        setTimeout(() =>
-        {
-            if (!hadCallback)
-            {
-                this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
-            }
-        }, 500);
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            hadCallback = true;
             const uiAttribs = {};
             options = options || {};
 
@@ -728,10 +716,10 @@ export default class PatchView extends CABLES.EventTarget
 
                     if (relink)
                     {
-                        for(let o=0;o<ops[i].portsIn[0].links.length;o++)
+                        for (let o = 0; o < ops[i].portsIn[0].links.length; o++)
                             outerOut.push(ops[i].portsIn[0].links[o].getOtherPort(ops[i].portsIn[0]));
 
-                        for(let o=0;o<ops[i].portsOut[0].links.length;o++)
+                        for (let o = 0; o < ops[i].portsOut[0].links.length; o++)
                             outerIn.push(ops[i].portsOut[0].links[o].getOtherPort(ops[i].portsOut[0]));
                     }
 
@@ -740,10 +728,9 @@ export default class PatchView extends CABLES.EventTarget
 
                     if (relink)
                     {
-                        for(let j=0;j<outerIn.length;j++)
-                            for(let o=0;o<outerOut.length;o++)
+                        for (let j = 0; j < outerIn.length; j++)
+                            for (let o = 0; o < outerOut.length; o++)
                                 ops[i].patch.link(outerIn[j].op, outerIn[j].getName(), outerOut[o].op, outerOut[o].getName());
-
                     }
                 }
             }
@@ -909,8 +896,6 @@ export default class PatchView extends CABLES.EventTarget
 
                             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
                             {
-
-
                                 // if (op1.uiAttribs.subPatch != patchId)
                                 //     port2.setUiAttribs({ "expose": true });
                                 // else
@@ -919,7 +904,6 @@ export default class PatchView extends CABLES.EventTarget
                                 // relinking is lazy and dirty but there is no easy way to rebuild
                                 op1.portsIn[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
-
                             }
                         }
                     }
@@ -1036,13 +1020,13 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
-        let sub = 
+        let sub =
         {
             "title": "Main",
             "id": "0",
             "subPatchId": "0",
             "childs": [],
-            "icon": "op" 
+            "icon": "op"
         };
         let subs = [sub];
 
@@ -2574,19 +2558,19 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    
+
     getAllOpsInBlueprint(subid)
     {
         const foundOps = [];
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
         {
-            if(ops[i].isInBlueprint2()==subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+            if (ops[i].isInBlueprint2() == subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
         }
         return foundOps;
     }
 
-    
+
     getAllSubPatchOps(subid)
     {
         const foundOps = [];

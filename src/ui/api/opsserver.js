@@ -101,9 +101,9 @@ export default class ServerOps
                 }
 
                 // ops added to opdocs so they are available in opsearch
-                // make sure all dependencies are loaded for ops that are actually used in project (or in blueprints)
+                // make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
                 const usedOps = res.filter((op) => { return op.usedInProject; });
-                this.loadProjectDependencies({ "ops": usedOps }, () =>
+                this.loadOpsLibs(usedOps, () =>
                 {
                     if (window.logStartup) logStartup("Ops loaded");
                     if (cb) cb(this._ops);
@@ -124,7 +124,7 @@ export default class ServerOps
     {
         const oldSubId = options.oldSubId;
 
-        console.log("oldSubId",oldSubId)
+        console.log("oldSubId", oldSubId);
         const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
@@ -149,7 +149,7 @@ export default class ServerOps
             },
             (errr, re) =>
             {
-                CABLES.UI.notify("Saved "+newOp.objName+" ("+o.ops.length+"ops)");
+                CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + "ops)");
 
                 if (options.next)options.next();
             });
@@ -1239,20 +1239,12 @@ export default class ServerOps
                     {
                         proj.ops[i].opId = newIds[proj.ops[i].opId];
                     }
-                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
-                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                 }
             }
 
-            libsToLoad = CABLES.uniqueArray(libsToLoad);
-            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
-            new CABLES.LibLoader(libsToLoad, () =>
+            this.loadOpsLibs(proj.ops, () =>
             {
-                new CoreLibLoader(coreLibsToLoad, () =>
-                {
-                    if (_next)_next(proj);
-                });
+                if (_next) _next(proj);
             });
         });
     }
@@ -1289,8 +1281,8 @@ export default class ServerOps
 
     loadOpLibs(op, finishedCb)
     {
-        const libsToLoad = this.getOpLibs(op);
-        const coreLibsToLoad = this.getCoreLibs(op);
+        const libsToLoad = this.getOpLibs(op, true);
+        const coreLibsToLoad = this.getCoreLibs(op, true);
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {
@@ -1298,10 +1290,33 @@ export default class ServerOps
             return;
         }
 
+        this._runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb);
+    }
+
+    loadOpsLibs(ops, finishedCb)
+    {
+        if (!ops || ops.length === 0) finishedCb();
+        let libsToLoad = [];
+        let coreLibsToLoad = [];
+
+        ops.forEach((op) =>
+        {
+            libsToLoad = libsToLoad.concat(this.getOpLibs(op, true));
+            coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(op, true));
+            libsToLoad = CABLES.uniqueArray(libsToLoad);
+            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+        });
+        this._runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb);
+    }
+
+    _runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb)
+    {
         new CABLES.LibLoader(libsToLoad, () =>
         {
+            this._loadedLibs = this._loadedLibs.concat(libsToLoad);
             new CoreLibLoader(coreLibsToLoad, () =>
             {
+                this._loadedCoreLibs = this._loadedCoreLibs.concat(coreLibsToLoad);
                 finishedCb();
             });
         });
