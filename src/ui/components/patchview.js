@@ -378,17 +378,8 @@ export default class PatchView extends CABLES.EventTarget
 
     addOp(opname, options)
     {
-        let hadCallback = false;
-        setTimeout(() =>
-        {
-            if (!hadCallback)
-            {
-                this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
-            }
-        }, 500);
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            hadCallback = true;
             const uiAttribs = {};
             options = options || {};
 
