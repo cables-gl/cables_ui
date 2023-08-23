@@ -122,7 +122,7 @@ export default class ServerOps
     {
         const oldSubId = options.oldSubId;
 
-        console.log("oldSubId", oldSubId);
+        // console.log("oldSubId", oldSubId);
         const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();

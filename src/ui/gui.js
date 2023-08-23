@@ -1372,18 +1372,17 @@ export default class Gui
             {
                 // if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
 
-                const subOuter=gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())
-                
+                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+
                 // console.log("subouter",subOuter,subOuter.isInBlueprint2())
 
-                if( subOuter)
+                if (subOuter)
                 {
-                    const bp=subOuter.isInBlueprint2() || subOuter.isBlueprint2();
-                    if(bp )
+                    const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
+                    if (bp)
                     {
                         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
                     }
-    
                 }
 
                 CABLES.CMD.PATCH.save();
@@ -1759,7 +1758,7 @@ export default class Gui
 
     setStateUnsaved(options)
     {
-        if(this.ignoreSaveStateChanges)return;
+        if (this.ignoreSaveStateChanges) return;
         let subPatch = this.patchView.getCurrentSubPatch();
         if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
 
