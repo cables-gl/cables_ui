@@ -136,7 +136,7 @@ export default class ServerOps
             o.ops.push(ser);
         });
 
-        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
+        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true });
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
