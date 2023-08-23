@@ -1257,12 +1257,12 @@ export default class ServerOps
 
     isLibLoaded(libName)
     {
-        return this._loadedLibs.some(libName);
+        return this._loadedLibs.some((lib) => { return lib === libName; });
     }
 
     isCoreLibLoaded(coreLibName)
     {
-        return this._loadedCoreLibs.some(coreLibName);
+        return this._loadedCoreLibs.some((lib) => { return lib === coreLibName; });
     }
 
     allLibsLoaded(op)
