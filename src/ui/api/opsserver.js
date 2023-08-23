@@ -82,8 +82,6 @@ export default class ServerOps
 
     load(cb)
     {
-        const that = this;
-
         CABLESUILOADER.talkerAPI.send(
             "getAllProjectOps",
             { "projectId": this._patchId },
@@ -107,7 +105,7 @@ export default class ServerOps
                 {
                     if (window.logStartup) logStartup("Ops loaded");
                     if (cb) cb(this._ops);
-                    that.loaded = true;
+                    this.loaded = true;
                     incrementStartup();
                 });
             },
@@ -1295,7 +1293,11 @@ export default class ServerOps
 
     loadOpsLibs(ops, finishedCb)
     {
-        if (!ops || ops.length === 0) finishedCb();
+        if (!ops || ops.length === 0)
+        {
+            finishedCb();
+            return;
+        }
         let libsToLoad = [];
         let coreLibsToLoad = [];
 
