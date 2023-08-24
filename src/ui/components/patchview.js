@@ -1357,7 +1357,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].isSubPatchOp())
+            if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
             {
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }

@@ -395,24 +395,24 @@ export default function extendCore()
 
     CABLES.Op.prototype.isBlueprint2 = function ()
     {
-        if(this.storage.blueprintVer===2)return this.patchId.get();
-    }
-    
+        if (this.storage.blueprintVer === 2) return this.patchId.get();
+    };
+
     CABLES.Op.prototype.isInBlueprint2 = function ()
     {
-        if(!this.uiAttribs.subPatch || this.uiAttribs.subPatch==0)return false;
+        if (!this.uiAttribs.subPatch || this.uiAttribs.subPatch == 0) return false;
 
-        const sop=gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
-        if(sop)
+        const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+        if (sop)
         {
-            if(sop.isBlueprint2())return sop.isBlueprint2();
+            if (sop.isBlueprint2()) return sop.isBlueprint2();
 
-            const bp2=sop.isInBlueprint2();
-            if(bp2)return bp2;
+            const bp2 = sop.isInBlueprint2();
+            if (bp2) return bp2;
         }
-        
+
         return false;
-    }
+    };
 
     CABLES.Op.prototype.isInLinkedToOpOutside = function (ops)
     {
