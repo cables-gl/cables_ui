@@ -365,9 +365,9 @@ export default class GlLink
                     const b = gui.patchView.getSubPatchOuterOp(this._opOut.op.uiAttribs.subPatch);
 
                     this._subPatchOp = a || b;
-                    if(a && b)
-                    if(a.uiAttribs.subPatch==b.patchId.get())this._subPatchOp = a ;
-                    else this._subPatchOp = b; 
+                    if (a && b)
+                        if (a.uiAttribs.subPatch == b.patchId.get()) this._subPatchOp = a;
+                        else this._subPatchOp = b;
 
                     // this._glSubPatchOp = this._glPatch.getOp(this._subPatchOp.id);
 
@@ -391,8 +391,8 @@ export default class GlLink
                 if (!this._opIn || !this._opOut) this.update();
 
 
-                let foundCableSub=false
-                let foundCable=false
+                let foundCableSub = false;
+                let foundCable = false;
 
                 // inner input port op to subpatch-input op
                 if (
@@ -403,7 +403,7 @@ export default class GlLink
                     if (!this._opIn.getUiAttribs().translate) return;
                     if (this._debugColor) this._cable.setColor(1, 0, 1, 1);
 
-                    foundCable=true;
+                    foundCable = true;
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
@@ -420,8 +420,8 @@ export default class GlLink
                 {
                     if (!this._opOut.getUiAttribs().translate) return;
                     if (this._debugColor) this._cableSub.setColor(0, 0, 1, 1);
-                    
-                    foundCableSub=true;
+
+                    foundCableSub = true;
                     this._cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x,
                         this._subPatchOutputOp.uiAttribs.translate.y,
@@ -437,7 +437,7 @@ export default class GlLink
                 //
                 //
                 // outer output port op TO subpatch op
-                  if (this._cableSub &&
+                if (this._cableSub &&
                     this._opOut &&
                     this._subPatchOp &&
                     this._opOut.getUiAttribs().translate &&
@@ -449,7 +449,7 @@ export default class GlLink
                     // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
                     // console.log(this._subPatchOp);
 
-                    foundCableSub=true;
+                    foundCableSub = true;
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y,
@@ -462,16 +462,16 @@ export default class GlLink
                 else
 
                 // outer input port op FROM subpatch op
-                 if (
+                if (
                     this._cable &&
                     this._subPatchOp &&
                     this._opIn.getUiAttribs().translate &&
                     this._opIn.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch
-                    )
+                )
                 {
                     if (this._debugColor) this._cable.setColor(1, 0, 0, 1); // red
                     // console.log("RED")
-                    foundCable=true;
+                    foundCable = true;
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
@@ -481,32 +481,28 @@ export default class GlLink
                 }
                 // else
 
-                if(!foundCable && this._cable)
+                if (!foundCable && this._cable && this._subPatchOp)
                 {
-
-                    if (this._debugColor) this._cable.setColor(0, 0, 0, 1); 
+                    if (this._debugColor) this._cable.setColor(0, 0, 0, 1);
                     this._cable.setPosition(
                         this._opIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._opIn.getUiAttribs().translate.y,
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
-
                 }
 
-                if(!foundCableSub && this._cableSub)
+                if (!foundCableSub && this._cableSub && this._subPatchOutputOp)
                 {
-                    if (this._debugColor) this._cableSub.setColor(1, 0.5, 0.4, 1); 
+                    if (this._debugColor) this._cableSub.setColor(1, 0.5, 0.4, 1);
                     this._cableSub.setPosition(
                         this._subPatchOutputOp.uiAttribs.translate.x + this._subPatchOutputOp.getPortPosX(this._portNameOutput, this._subPatchOutputOp.id),
-                        this._subPatchOutputOp.uiAttribs.translate.y ,
+                        this._subPatchOutputOp.uiAttribs.translate.y,
 
                         this._opOut.getUiAttribs().translate.x + this._offsetXOutput,
-                        this._opOut.getUiAttribs().translate.y+30,
+                        this._opOut.getUiAttribs().translate.y + 30,
                     );
-
                 }
-
             }
         }
     }
