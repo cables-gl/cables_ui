@@ -12,7 +12,6 @@ export default class PatchPanel extends CABLES.EventTarget
         this._subTree.on("threedots_click",
             (item, el) =>
             {
-                // console.log("threedots!", item);
                 this.subPatchContextMenu(item, el);
             });
 
@@ -21,7 +20,7 @@ export default class PatchPanel extends CABLES.EventTarget
             {
                 if (item.subPatchId)
                 {
-                    gui.patchView.clickSubPatchNav(item.subPatchId)
+                    gui.patchView.clickSubPatchNav(item.subPatchId);
                 }
                 else if (item.opid)
                 {

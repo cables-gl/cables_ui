@@ -344,8 +344,6 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        // console.log("animscrollto",x,y);
-
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;
         if (p != p)p = 0;
@@ -360,14 +358,14 @@ export default class GlViewBox
 
     scrollTo(x, y, userInteraction)
     {
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        if (userInteraction)p = 0;
-        if (p != p)p = 0;
+        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        // if (userInteraction)p = 0;
+        // if (p != p)p = 0;
 
         this._animScrollX.clear();
         this._animScrollY.clear();
 
-        this._animScrollX.setValue(this.glPatch.time, x - p);
+        this._animScrollX.setValue(this.glPatch.time, x );
         this._animScrollY.setValue(this.glPatch.time, y);
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -508,7 +506,8 @@ export default class GlViewBox
 
     _storeCurrentSubPatch()
     {
-        this._subPatchViewBoxes[this._currentSubPatchId] = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        const o={ "x": this._scrollX, "y": this._scrollY, "z": this._zoom }
+        this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 
     _restoreSubPatch(sub)

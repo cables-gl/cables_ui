@@ -92,10 +92,10 @@ export default class PatchView extends CABLES.EventTarget
 
     clickSubPatchNav(subPatchId)
     {
-        if(gui.patchView.getCurrentSubPatch()==subPatchId)
+        if (gui.patchView.getCurrentSubPatch() == subPatchId)
         {
-            const op=gui.patchView.getSubPatchOuterOp(subPatchId);
-            if(!op)return;
+            const op = gui.patchView.getSubPatchOuterOp(subPatchId);
+            if (!op) return;
 
             gui.patchView.unselectAllOps();
             gui.patchView.selectOpId(op.id);
@@ -108,7 +108,6 @@ export default class PatchView extends CABLES.EventTarget
             gui.patchView.setCurrentSubPatch(subPatchId);
             gui.patchParamPanel.show();
         }
-
     }
 
     _onDeleteOpUndo(op)
@@ -226,6 +225,8 @@ export default class PatchView extends CABLES.EventTarget
             gui.patchView.checkPatchOutdated();
 
             if (gui.project() && gui.project().ui) gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
+
+            gui.patchView.removeLostSubpatches();
 
             if (cb)cb();
         });
@@ -379,17 +380,8 @@ export default class PatchView extends CABLES.EventTarget
 
     addOp(opname, options)
     {
-        let hadCallback = false;
-        setTimeout(() =>
-        {
-            if (!hadCallback)
-            {
-                this._log.error("HAD NO loadOpLibs CALLBACK!!!!");
-            }
-        }, 500);
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            hadCallback = true;
             const uiAttribs = {};
             options = options || {};
 
@@ -726,10 +718,10 @@ export default class PatchView extends CABLES.EventTarget
 
                     if (relink)
                     {
-                        for(let o=0;o<ops[i].portsIn[0].links.length;o++)
+                        for (let o = 0; o < ops[i].portsIn[0].links.length; o++)
                             outerOut.push(ops[i].portsIn[0].links[o].getOtherPort(ops[i].portsIn[0]));
 
-                        for(let o=0;o<ops[i].portsOut[0].links.length;o++)
+                        for (let o = 0; o < ops[i].portsOut[0].links.length; o++)
                             outerIn.push(ops[i].portsOut[0].links[o].getOtherPort(ops[i].portsOut[0]));
                     }
 
@@ -738,10 +730,9 @@ export default class PatchView extends CABLES.EventTarget
 
                     if (relink)
                     {
-                        for(let j=0;j<outerIn.length;j++)
-                            for(let o=0;o<outerOut.length;o++)
+                        for (let j = 0; j < outerIn.length; j++)
+                            for (let o = 0; o < outerOut.length; o++)
                                 ops[i].patch.link(outerIn[j].op, outerIn[j].getName(), outerOut[o].op, outerOut[o].getName());
-
                     }
                 }
             }
@@ -907,14 +898,14 @@ export default class PatchView extends CABLES.EventTarget
 
                             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
                             {
+                                // if (op1.uiAttribs.subPatch != patchId)
+                                //     port2.setUiAttribs({ "expose": true });
+                                // else
+                                //     port1.setUiAttribs({ "expose": true });
+
                                 // relinking is lazy and dirty but there is no easy way to rebuild
                                 op1.portsIn[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
-
-                                if (op1.uiAttribs.subPatch != patchId)
-                                    port2.setUiAttribs({ "expose": true });
-                                else
-                                    port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }
@@ -1031,11 +1022,14 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
-        let sub = { "title": "Main",
+        let sub =
+        {
+            "title": "Main",
             "id": "0",
             "subPatchId": "0",
             "childs": [],
-            "icon": "op" };
+            "icon": "op"
+        };
         let subs = [sub];
 
         if (patchId)
@@ -1046,7 +1040,7 @@ export default class PatchView extends CABLES.EventTarget
             sub.id = subOp.id;
 
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
-            if (subOp.storage.blueprintVer)
+            if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
                 sub.blueprintVer = subOp.storage.blueprintVer;
                 sub.icon = "blueprint";
@@ -1073,6 +1067,49 @@ export default class PatchView extends CABLES.EventTarget
 
         if (patchId == 0) return subs;
         else return sub;
+    }
+
+    removeLostSubpatches()
+    {
+        let countSubs = {};
+        let foundSubPatchOps = {};
+        const ops = gui.corePatch().ops;
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            const sub = ops[i].uiAttribs.subPatch || 0;
+            if (ops[i].isSubPatchOp())
+            {
+                foundSubPatchOps[ops[i].patchId.get()] = true;
+            }
+            countSubs[sub] = countSubs[sub] || 0;
+            countSubs[sub]++;
+        }
+
+
+        for (let subid in countSubs)
+        {
+            // if(countSubs[subid]<=2)
+            for (let asub in foundSubPatchOps)
+            {
+                if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
+                {
+                    console.warn("found lost subpatch...", subid);
+                    if (countSubs[subid] <= 2)
+                    {
+                        console.warn("deleted lost subpatch! ", subid);
+                        for (let i = ops.length - 1; i >= 0; i--)
+                        {
+                            if (ops[i].uiAttribs.subPatch == subid)
+                            {
+                                ops[i].patch.deleteOp(ops[i].id);
+                            }
+                        }
+                        countSubs[subid] = 1000;
+                    }
+                }
+            }
+        }
     }
 
     getSubPatches(sort) // flat list
@@ -1209,8 +1246,6 @@ export default class PatchView extends CABLES.EventTarget
     //         {
     //             gui.patchView.focusSubpatchOp(id);
     //         }
-
-
     //     });
 
     //     CABLES.contextMenu.show(
@@ -1328,7 +1363,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (selectedOps[i].uiAttribs.blueprintSubpatch2)
             {
-                continue;
+                // continue;
             }
             if (selectedOps[i].storage && selectedOps[i].storage.blueprint)
             {
@@ -1347,9 +1382,15 @@ export default class PatchView extends CABLES.EventTarget
         }
 
 
-        // remove links that are not fully copied...
         for (let i = 0; i < ops.length; i++)
         {
+            // {"ops":[{"opId":"a466bc1f-06e9-4595-8849-bffb9fe22f99","id":"930165ad-0b28-4be6-883c-169c2b0502f3","uiAttribs":{"title":"Sequence","translate":{"x":672,"y":440},"subPatch":"blueprint2sub_c07fca0f-abe6-4bfc-af98-e6dfa197a9cd","blueprintSubpatch2":true,"selected":true},"storage":{"ref":"8e92a5cb-a891-4d05-a924-eae2ba6b6928"},"portsIn":[{"name":"exe","value":0},{"name":"Clean up connections","value":0},{"name":"exe 0","value":0},{"name":"exe 1","value":0},{"name":"exe 2","value":0},{"name":"exe 3","value":0},{"name":"exe 4","value":0},{"name":"exe 5","value":0},{"name":"exe 6","value":0},{"name":"exe 7","value":0},{"name":"exe 8","value":0},{"name":"exe 9","value":0},{"name":"exe 10","value":0},{"name":"exe 11","value":0},{"name":"exe 12","value":0},{"name":"exe 13","value":0},{"name":"exe 14","value":0}],"portsOut":[{"name":"trigger 0","value":0},{"name":"trigger 1","value":0},{"name":"trigger 2","value":0},{"name":"trigger 3","value":0},{"name":"trigger 4","value":0},{"name":"trigger 5","value":0},{"name":"trigger 6","value":0},{"name":"trigger 7","value":0},{"name":"trigger 8","value":0},{"name":"trigger 9","value":0},{"name":"trigger 10","value":0},{"name":"trigger 11","value":0},{"name":"trigger 12","value":0},{"name":"trigger 13","value":0},{"name":"trigger 14","value":0},{"name":"trigger 15","value":0}]}]}
+
+            if (ops[i].storage && ops[i].storage.ref) delete ops[i].storage.ref;
+            if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch2) delete ops[i].uiAttribs.blueprintSubpatch2;
+            if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
+
+            // remove links that are not fully copied...
             for (let j = 0; j < ops[i].portsIn.length; j++)
             {
                 if (ops[i].portsIn[j].links)
@@ -1396,6 +1437,10 @@ export default class PatchView extends CABLES.EventTarget
                 }
             }
         }
+
+
+
+
 
         const objStr = JSON.stringify({
             "ops": ops
@@ -2565,12 +2610,28 @@ export default class PatchView extends CABLES.EventTarget
                 return ops[i];
     }
 
+
+
+    getAllOpsInBlueprint(subid)
+    {
+        const foundOps = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].isInBlueprint2() == subid || ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+        }
+        return foundOps;
+    }
+
+
     getAllSubPatchOps(subid)
     {
         const foundOps = [];
         const ops = gui.corePatch().ops;
         for (let i = 0; i < ops.length; i++)
+        {
             if (ops[i].uiAttribs.subPatch == subid) foundOps.push(ops[i]);
+        }
         return foundOps;
     }
 

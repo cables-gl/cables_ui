@@ -149,6 +149,7 @@ class OpParampanel extends CABLES.EventTarget
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 
+
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
         if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
@@ -164,6 +165,8 @@ class OpParampanel extends CABLES.EventTarget
         {
             return;
         }
+
+        console.log("is in bp2", op.isInBlueprint2());
 
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
@@ -578,6 +581,7 @@ class OpParampanel extends CABLES.EventTarget
                     func()
                     {
                         const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+
 
                         gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
                         // gui.patchView.focusSubpatchOp(el.dataset.id);

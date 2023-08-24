@@ -83,7 +83,6 @@ export default function extendCore()
         this.unLinkOptions(true, true);
     };
 
-
     CABLES.Op.prototype.unLinkOptions = function (tryRelink, temporary)
     {
         let i = 0;
@@ -375,7 +374,6 @@ export default function extendCore()
             {
                 const otherport = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
 
-                // maxY = Math.max(otherport.op.getTempPosY, maxY);
                 if (otherport.op.getTempPosY() > maxY)
                 {
                     maxY = otherport.op.getTempPosY();
@@ -393,6 +391,28 @@ export default function extendCore()
         // }
     };
 
+
+
+    CABLES.Op.prototype.isBlueprint2 = function ()
+    {
+        if(this.storage.blueprintVer===2)return this.patchId.get();
+    }
+    
+    CABLES.Op.prototype.isInBlueprint2 = function ()
+    {
+        if(!this.uiAttribs.subPatch || this.uiAttribs.subPatch==0)return false;
+
+        const sop=gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+        if(sop)
+        {
+            if(sop.isBlueprint2())return sop.isBlueprint2();
+
+            const bp2=sop.isInBlueprint2();
+            if(bp2)return bp2;
+        }
+        
+        return false;
+    }
 
     CABLES.Op.prototype.isInLinkedToOpOutside = function (ops)
     {

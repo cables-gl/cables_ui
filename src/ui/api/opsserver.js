@@ -82,8 +82,6 @@ export default class ServerOps
 
     load(cb)
     {
-        const that = this;
-
         CABLESUILOADER.talkerAPI.send(
             "getAllProjectOps",
             { "projectId": this._patchId },
@@ -100,10 +98,16 @@ export default class ServerOps
                     gui.opDocs.addOpDocs(res);
                 }
 
-                if (window.logStartup) logStartup("Ops loaded");
-                if (cb) cb(this._ops);
-                that.loaded = true;
-                incrementStartup();
+                // ops added to opdocs so they are available in opsearch
+                // make sure all libraries are loaded for ops that are actually used in project (or in blueprints)
+                const usedOps = res.filter((op) => { return op.usedInProject; });
+                this.loadOpsLibs(usedOps, () =>
+                {
+                    if (window.logStartup) logStartup("Ops loaded");
+                    if (cb) cb(this._ops);
+                    this.loaded = true;
+                    incrementStartup();
+                });
             },
         );
     }
@@ -117,7 +121,9 @@ export default class ServerOps
     updateBluePrint2Attachment(newOp, options)
     {
         const oldSubId = options.oldSubId;
-        const ops = gui.patchView.getAllSubPatchOps(oldSubId);
+
+        // console.log("oldSubId", oldSubId);
+        const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
 
@@ -130,7 +136,7 @@ export default class ServerOps
             o.ops.push(ser);
         });
 
-        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true });
+        CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true });
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -141,7 +147,7 @@ export default class ServerOps
             },
             (errr, re) =>
             {
-                CABLES.UI.notify("blueprint op saved");
+                CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + "ops)");
 
                 if (options.next)options.next();
             });
@@ -1231,38 +1237,34 @@ export default class ServerOps
                     {
                         proj.ops[i].opId = newIds[proj.ops[i].opId];
                     }
-                    libsToLoad = libsToLoad.concat(this.getOpLibs(proj.ops[i]));
-                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(proj.ops[i]));
                 }
             }
 
-            libsToLoad = CABLES.uniqueArray(libsToLoad);
-            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
-
-            new CABLES.LibLoader(libsToLoad, () =>
+            this.loadOpsLibs(proj.ops, () =>
             {
-                new CoreLibLoader(coreLibsToLoad, () =>
-                {
-                    if (_next)_next(proj);
-                });
+                if (_next) _next(proj);
             });
         });
     }
 
     isLibLoaded(libName)
     {
-        const isloaded = this._loadedLibs.indexOf(libName) != -1;
-        return isloaded;
+        return this._loadedLibs.some((lib) => { return lib === libName; });
     }
 
-    opHasLibs(op)
+    isCoreLibLoaded(coreLibName)
     {
-        return this.getOpLibs(op).length !== 0;
+        return this._loadedCoreLibs.some((lib) => { return lib === coreLibName; });
     }
 
-    opLibsLoaded(op)
+    allLibsLoaded(op)
     {
-        const libsToLoad = this.getOpLibs(op);
+        const coreLibsToLoad = this.getCoreLibs(op, true);
+        const libsToLoad = this.getOpLibs(op, true);
+        for (let i = 0; i < coreLibsToLoad.length; i++)
+        {
+            if (!this.isCoreLibLoaded(coreLibsToLoad[i])) return false;
+        }
         for (let i = 0; i < libsToLoad.length; i++)
         {
             if (!this.isLibLoaded(libsToLoad[i])) return false;
@@ -1277,8 +1279,8 @@ export default class ServerOps
 
     loadOpLibs(op, finishedCb)
     {
-        const libsToLoad = this.getOpLibs(op);
-        const coreLibsToLoad = this.getCoreLibs(op);
+        const libsToLoad = this.getOpLibs(op, true);
+        const coreLibsToLoad = this.getCoreLibs(op, true);
 
         if (libsToLoad.length === 0 && coreLibsToLoad.length === 0)
         {
@@ -1286,10 +1288,37 @@ export default class ServerOps
             return;
         }
 
+        this._runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb);
+    }
+
+    loadOpsLibs(ops, finishedCb)
+    {
+        if (!ops || ops.length === 0)
+        {
+            finishedCb();
+            return;
+        }
+        let libsToLoad = [];
+        let coreLibsToLoad = [];
+
+        ops.forEach((op) =>
+        {
+            libsToLoad = libsToLoad.concat(this.getOpLibs(op, true));
+            coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(op, true));
+            libsToLoad = CABLES.uniqueArray(libsToLoad);
+            coreLibsToLoad = CABLES.uniqueArray(coreLibsToLoad);
+        });
+        this._runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb);
+    }
+
+    _runLibsLoader(libsToLoad, coreLibsToLoad, finishedCb)
+    {
         new CABLES.LibLoader(libsToLoad, () =>
         {
+            this._loadedLibs = this._loadedLibs.concat(libsToLoad);
             new CoreLibLoader(coreLibsToLoad, () =>
             {
+                this._loadedCoreLibs = this._loadedCoreLibs.concat(coreLibsToLoad);
                 finishedCb();
             });
         });
@@ -1351,6 +1380,7 @@ export default class ServerOps
     {
         const opDocs = gui.opDocs.getOpDocs();
         const opIdentifier = op.opId || op.objName;
+        // FIXME: this is very convoluted since opdocs have .id and .name but projectops have .opId and .objName and the likes...unify some day :/
         let foundOp = opDocs.find((loadedOp) => { return loadedOp.id === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.objName === opIdentifier; });
         if (!foundOp) foundOp = opDocs.find((loadedOp) => { return loadedOp.name === opIdentifier; });
@@ -1358,7 +1388,12 @@ export default class ServerOps
         if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.objName && loadedOp.objName === opIdentifier; });
         if (!foundOp) foundOp = this._ops.find((loadedOp) => { return op.name && loadedOp.name === opIdentifier; });
         let loaded = false;
-        if (foundOp) loaded = this.opCodeLoaded(foundOp);
+        if (foundOp)
+        {
+            // we found an op in opdocs, check if we also have the code and needed libraries
+            loaded = this.opCodeLoaded(foundOp);
+            if (loaded) loaded = this.allLibsLoaded(foundOp);
+        }
         return loaded;
     }
 

@@ -461,10 +461,7 @@ export default function TimeLineGui()
         catch (e)
         {
             console.log(e);
-            console.log("strange values????", viewBox.x,
-                -200,
-                ele.byId("timeline").clientWidth,
-                400, false
+            console.log("strange values????", viewBox.x, -200, ele.byId("timeline").clientWidth, 400, false
             );
         }
         viewBox.w = ele.byId("timeline").clientWidth;
