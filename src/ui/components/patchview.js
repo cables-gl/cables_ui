@@ -1387,6 +1387,7 @@ export default class PatchView extends CABLES.EventTarget
             opIds.push(selectedOps[i].id);
         }
 
+        let numLinks = 0;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -1417,6 +1418,7 @@ export default class PatchView extends CABLES.EventTarget
                             }
                         }
                     }
+                    numLinks += ops[i].portsIn[j].links.length;
                 }
             }
 
@@ -1440,6 +1442,7 @@ export default class PatchView extends CABLES.EventTarget
                             }
                         }
                     }
+                    numLinks += ops[i].portsOut[j].links.length;
                 }
             }
         }
@@ -1451,7 +1454,7 @@ export default class PatchView extends CABLES.EventTarget
         const objStr = JSON.stringify({
             "ops": ops
         });
-        notify("Copied " + ops.length + " ops");
+        notify("Copied " + ops.length + " ops / " + numLinks + " Links");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();
