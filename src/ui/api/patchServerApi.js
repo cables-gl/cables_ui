@@ -668,7 +668,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         }
                         else
                         {
-                            CABLES.UI.notify("Patch saved (" + data.ops.length + "ops)");
+                            CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)

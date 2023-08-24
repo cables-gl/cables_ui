@@ -1290,7 +1290,7 @@ export default class PatchView extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
-        this._patchRenderer.greyOutBlue =
+        // this._patchRenderer.greyOutBlue =
         this._patchRenderer.greyOut = false;
 
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
@@ -1310,12 +1310,12 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-                this._patchRenderer.greyOutBlue = true;
+                // this._patchRenderer.greyOutBlue = true;
             }
             else if (names[0].type == "blueprint_subpatch")
             {
-                this._patchRenderer.greyOut =
-                this._patchRenderer.greyOutBlue = true;
+                this._patchRenderer.greyOut = true;
+                // this._patchRenderer.greyOutBlue = true;
                 let blueprintPatchId = names[0].blueprintPatchId;
                 if (!blueprintPatchId)
                 {
