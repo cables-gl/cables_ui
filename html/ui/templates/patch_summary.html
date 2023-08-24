@@ -2,7 +2,7 @@
 <script id="patch_summary" type="text/x-handlebars-template">
     <div class="panel params_op_head panel_head patch_summary">
 
-        <div style="position:absolute;right:30px;margin-top:5px;">
+        <div style="position:absolute;right:20px;margin-top:5px;">
             <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
             <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
             <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>

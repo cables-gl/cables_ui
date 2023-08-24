@@ -1040,6 +1040,12 @@ export default class PatchView extends CABLES.EventTarget
             sub.id = subOp.id;
 
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
+
+            if (this.getCurrentSubPatch() == sub.subPatchId)
+            {
+                sub.rowClass = "active";
+            }
+
             if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
                 sub.blueprintVer = subOp.storage.blueprintVer;

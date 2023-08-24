@@ -314,11 +314,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
             if (window.logStartup) logStartup("set project");
             gui.patchView.setProject(proj, cb);
 
-            if (proj.ui)
-            {
-                gui.bookmarks.set(proj.ui.bookmarks);
-                document.getElementById("options").innerHTML = gui.bookmarks.getHtml();
-            }
+            if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
         };
 
         if (!gui || !gui.user || !proj.userList.some((u) => { return u.username === gui.user.username; }))

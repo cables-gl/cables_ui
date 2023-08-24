@@ -46,6 +46,27 @@ export default class PatchPanel extends CABLES.EventTarget
     {
         if (!CABLES.UI.loaded) return;
         let html = "<div class=\"panel bookmarkpanel\">";
+        // html += "<div id=\"patchsummary\"></div>";
+
+        const project = gui.project();
+        if (project)
+        {
+            const projectId = project.shortId || project._id;
+            // console.log(project);
+            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
+            // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
+            // if (project.isOpExample || notCollab)
+            // {
+            //     const projectId = project.shortId || project._id;
+            //     html += getHandleBarHtml("patch_summary", { "projectId": projectId });
+            // }
+            // if (notCollab)
+            // {
+            //     html += getHandleBarHtml("clonepatch", {});
+            // }
+        }
+
+        html += "<br/><div id=\"tree\"></div>";
 
         if (gui.longPressConnector.isActive())
         {
@@ -58,27 +79,11 @@ export default class PatchPanel extends CABLES.EventTarget
             if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
             if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
-            const project = gui.project();
-            if (project)
-            {
-                const projectId = project.shortId || project._id;
-                // console.log(project);
-                html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
-                // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
-                // if (project.isOpExample || notCollab)
-                // {
-                //     const projectId = project.shortId || project._id;
-                //     html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-                // }
-                // if (notCollab)
-                // {
-                //     html += getHandleBarHtml("clonepatch", {});
-                // }
-            }
+
             html += gui.bookmarks.getHtml();
         }
 
-        html += "<div id=\"tree\"></div>";
+
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 

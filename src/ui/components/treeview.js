@@ -25,7 +25,7 @@ export default class TreeView extends CABLES.EventTarget
         for (let i = 0; i < data.length; i++)
         {
             const item = data[i];
-            html += "<tr>";
+            html += "<tr class=\"" + data[i].rowClass + "\">";
             html += "<td>";
 
             for (let j = 0; j < level; j++)
@@ -43,7 +43,7 @@ export default class TreeView extends CABLES.EventTarget
 
             html += "&nbsp;&nbsp;";
 
-            html += "<a id=\"title_" + item.id + "\" data-eletype=\"title\" class=\"link\" >";
+            html += "<a id=\"title_" + item.id + "\" data-eletype=\"title\" class=\"\" >";
             html += item.title;
             html += "</a>";
 
