@@ -85,6 +85,11 @@ export default class GlPort
         {
             this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
 
+            this._rect.addChild(this._dot);
+        }
+
+        if (this._dot)
+        {
             this._dot.setShape(6);
 
             this._dot.setColor(0.24, 0.24, 0.24, 1);
@@ -108,8 +113,6 @@ export default class GlPort
             }
             if (this._port.uiAttribs.expose)dotPosY += GlUiConfig.portHeight * 0.4;
             this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
-
-            this._rect.addChild(this._dot);
         }
 
         if (this._dot && !isAssigned && !this._port.uiAttribs.notWorking)
