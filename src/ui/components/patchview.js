@@ -1040,6 +1040,12 @@ export default class PatchView extends CABLES.EventTarget
             sub.id = subOp.id;
 
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
+
+            if (this.getCurrentSubPatch() == sub.subPatchId)
+            {
+                sub.rowClass = "active";
+            }
+
             if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
                 sub.blueprintVer = subOp.storage.blueprintVer;
@@ -1284,7 +1290,7 @@ export default class PatchView extends CABLES.EventTarget
 
     updateSubPatchBreadCrumb(currentSubPatch)
     {
-        this._patchRenderer.greyOutBlue =
+        // this._patchRenderer.greyOutBlue =
         this._patchRenderer.greyOut = false;
 
         if (currentSubPatch === 0) ele.hide(this._eleSubpatchNav);
@@ -1304,12 +1310,12 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-                this._patchRenderer.greyOutBlue = true;
+                // this._patchRenderer.greyOutBlue = true;
             }
             else if (names[0].type == "blueprint_subpatch")
             {
-                this._patchRenderer.greyOut =
-                this._patchRenderer.greyOutBlue = true;
+                this._patchRenderer.greyOut = true;
+                // this._patchRenderer.greyOutBlue = true;
                 let blueprintPatchId = names[0].blueprintPatchId;
                 if (!blueprintPatchId)
                 {
@@ -1351,7 +1357,7 @@ export default class PatchView extends CABLES.EventTarget
 
         for (const i in selectedOps)
         {
-            if (selectedOps[i].isSubPatchOp())
+            if (selectedOps[i].isSubPatchOp() && !selectedOps[i].isBlueprint2())
             {
                 this.selectAllOpsSubPatch(selectedOps[i].patchId.get(), true);
             }
@@ -1381,6 +1387,7 @@ export default class PatchView extends CABLES.EventTarget
             opIds.push(selectedOps[i].id);
         }
 
+        let numLinks = 0;
 
         for (let i = 0; i < ops.length; i++)
         {
@@ -1411,6 +1418,7 @@ export default class PatchView extends CABLES.EventTarget
                             }
                         }
                     }
+                    numLinks += ops[i].portsIn[j].links.length;
                 }
             }
 
@@ -1434,6 +1442,7 @@ export default class PatchView extends CABLES.EventTarget
                             }
                         }
                     }
+                    numLinks += ops[i].portsOut[j].links.length;
                 }
             }
         }
@@ -1445,7 +1454,7 @@ export default class PatchView extends CABLES.EventTarget
         const objStr = JSON.stringify({
             "ops": ops
         });
-        notify("Copied " + ops.length + " ops");
+        notify("Copied " + ops.length + " ops / " + numLinks + " Links");
 
         e.clipboardData.setData("text/plain", objStr);
         e.preventDefault();

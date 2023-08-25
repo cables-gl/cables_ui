@@ -89,5 +89,18 @@
             background-size: contain;
         }
 
+
+        tr.active
+        {
+            td
+            {
+                background-color: var(--color-05);
+                a
+                {
+                    color:var(--color-special)
+                }
+            }
+        }
+
     }
 }

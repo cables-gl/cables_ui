@@ -209,7 +209,7 @@ export default class opCleaner
             {
                 for (let j = 0; j < parent.portsOut[i].links.length; j++)
                 {
-                    if (parent.portsOut[i].links[j].getOtherPort(parent.portsOut[i]).parent == op)
+                    if (parent.portsOut[i].links[j].getOtherPort(parent.portsOut[i]).op == op)
                     {
                         return j;
                     }

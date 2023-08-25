@@ -839,20 +839,20 @@ export default class GlPatch extends CABLES.EventTarget
             this._cgl.gl.clearColor(0, 0, 0, 0);
         else
         {
-            if (this.greyOutBlue)
-            {
-                this._cgl.gl.clearColor(
-                    glUiConfig.colors.background[0] + (0.3 * 0.0),
-                    glUiConfig.colors.background[1] + (0.3 * 0.1),
-                    glUiConfig.colors.background[2] + (0.3 * 0.3),
-                    1);
-            }
-            else
-                this._cgl.gl.clearColor(
-                    glUiConfig.colors.background[0],
-                    glUiConfig.colors.background[1],
-                    glUiConfig.colors.background[2],
-                    glUiConfig.colors.background[3]);
+            // if (this.greyOutBlue)
+            // {
+            //     this._cgl.gl.clearColor(
+            //         glUiConfig.colors.background[0] + (0.3 * 0.0),
+            //         glUiConfig.colors.background[1] + (0.3 * 0.1),
+            //         glUiConfig.colors.background[2] + (0.3 * 0.3),
+            //         1);
+            // }
+            // else
+            this._cgl.gl.clearColor(
+                glUiConfig.colors.background[0],
+                glUiConfig.colors.background[1],
+                glUiConfig.colors.background[2],
+                glUiConfig.colors.background[3]);
         }
 
         // if (

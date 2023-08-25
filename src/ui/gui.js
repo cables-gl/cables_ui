@@ -106,6 +106,8 @@ export default class Gui
 
                 gui.patchView.highlightExamplePatchOps();
 
+
+
                 if (window.logStartup) logStartup("Patch loaded");
             });
 
