@@ -1262,13 +1262,7 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchOuterOp(subPatchId)
     {
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = ops[i];
-            if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
-                return op;
-        }
+        return gui.corePatch().getSubPatchOuterOp(subPatchId);
     }
 
     focusSubpatchOp(subPatchId)
