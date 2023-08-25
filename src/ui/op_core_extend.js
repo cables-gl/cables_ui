@@ -391,8 +391,6 @@ export default function extendCore()
         // }
     };
 
-
-
     CABLES.Op.prototype.isBlueprint2 = function ()
     {
         if (this.storage.blueprintVer === 2) return this.patchId.get();
@@ -457,9 +455,6 @@ export default function extendCore()
             pos.w = this.uiAttribs.translateTemp.w;
             pos.h = this.uiAttribs.translateTemp.h;
         }
-
-
-        // console.log("settemppos", pos);
 
         this.setUiAttribs({ "translateTemp": pos });
     };

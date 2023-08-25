@@ -481,7 +481,7 @@ export default class GlLink
                 }
                 // else
 
-                if (!foundCable && this._cable && this._subPatchOp)
+                if (!foundCable && this._cable && this._subPatchOp && this._opIn.getUiAttribs() && this._opIn.getUiAttribs().translate)
                 {
                     if (this._debugColor) this._cable.setColor(0, 0, 0, 1);
                     this._cable.setPosition(
