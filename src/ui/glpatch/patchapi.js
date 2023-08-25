@@ -88,8 +88,6 @@ export default class GlPatchAPI
     {
         let flowMode = userSettings.get("glflowmode");
 
-
-        
         if (flowMode == 0 && this._currentFlowMode != 0)
         {
             const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
@@ -148,12 +146,12 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            if (!glop.visible)
-            {
-                numUpdates++;
-                if(numUpdates>this._patch.ops.length) break;
-                continue;
-            }
+            // if (!glop.visible)
+            // {
+            //     numUpdates++;
+            //     if (numUpdates > this._patch.ops.length) break;
+            //     continue;
+            // }
 
             if (op.portsIn[0] && op.portsIn[0].activityCounterStartFrame == frameCount) continue;
 
@@ -172,7 +170,7 @@ export default class GlPatchAPI
 
             if (glop)
             {
-                if (!glop.visible) continue;
+                // if (glop.visible)
 
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
@@ -193,7 +191,6 @@ export default class GlPatchAPI
                     const glp = glop.getGlPort(thePort.name);
                     if (glp)glp.setFlowModeActivity(thePort.activityCounter);
                 }
-
 
                 for (let il = 0; il < thePort.links.length; il++)
                 {
