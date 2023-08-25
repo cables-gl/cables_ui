@@ -1392,6 +1392,8 @@ export default class PatchView extends CABLES.EventTarget
             // remove links that are not fully copied...
             for (let j = 0; j < ops[i].portsIn.length; j++)
             {
+                delete ops[i].portsIn[j].expose;
+
                 if (ops[i].portsIn[j].links)
                 {
                     let k = ops[i].portsIn[j].links.length;
@@ -1416,6 +1418,8 @@ export default class PatchView extends CABLES.EventTarget
 
             for (let j = 0; j < ops[i].portsOut.length; j++)
             {
+                delete ops[i].portsIn[j].expose;
+
                 if (ops[i].portsOut[j].links)
                 {
                     let k = ops[i].portsOut[j].links.length;
