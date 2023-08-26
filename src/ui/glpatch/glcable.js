@@ -102,10 +102,16 @@ export default class GlCable
         this._visible = (this.subPatch == this._glPatch.getCurrentSubPatch());
         if (this._disposed) this._visible = false;
 
-        // if (!this._visible) this._buttonRect.visible = false;
-
         if (old != this._visible)
+        {
+            if (!this._visible)
+            {
+                this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
+            }
             this.updateMouseListener();
+        }
     }
 
     set visible(v)
@@ -489,6 +495,9 @@ export default class GlCable
 
         if (!onSegment)
         {
+            this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
             perf.finish();
             return false;
         }
@@ -499,6 +508,7 @@ export default class GlCable
 
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
+
 
         if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {
