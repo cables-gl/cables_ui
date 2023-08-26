@@ -1262,13 +1262,7 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchOuterOp(subPatchId)
     {
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-        {
-            const op = ops[i];
-            if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
-                return op;
-        }
+        return gui.corePatch().getSubPatchOuterOp(subPatchId);
     }
 
     focusSubpatchOp(subPatchId)
@@ -1391,8 +1385,6 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let i = 0; i < ops.length; i++)
         {
-            // {"ops":[{"opId":"a466bc1f-06e9-4595-8849-bffb9fe22f99","id":"930165ad-0b28-4be6-883c-169c2b0502f3","uiAttribs":{"title":"Sequence","translate":{"x":672,"y":440},"subPatch":"blueprint2sub_c07fca0f-abe6-4bfc-af98-e6dfa197a9cd","blueprintSubpatch2":true,"selected":true},"storage":{"ref":"8e92a5cb-a891-4d05-a924-eae2ba6b6928"},"portsIn":[{"name":"exe","value":0},{"name":"Clean up connections","value":0},{"name":"exe 0","value":0},{"name":"exe 1","value":0},{"name":"exe 2","value":0},{"name":"exe 3","value":0},{"name":"exe 4","value":0},{"name":"exe 5","value":0},{"name":"exe 6","value":0},{"name":"exe 7","value":0},{"name":"exe 8","value":0},{"name":"exe 9","value":0},{"name":"exe 10","value":0},{"name":"exe 11","value":0},{"name":"exe 12","value":0},{"name":"exe 13","value":0},{"name":"exe 14","value":0}],"portsOut":[{"name":"trigger 0","value":0},{"name":"trigger 1","value":0},{"name":"trigger 2","value":0},{"name":"trigger 3","value":0},{"name":"trigger 4","value":0},{"name":"trigger 5","value":0},{"name":"trigger 6","value":0},{"name":"trigger 7","value":0},{"name":"trigger 8","value":0},{"name":"trigger 9","value":0},{"name":"trigger 10","value":0},{"name":"trigger 11","value":0},{"name":"trigger 12","value":0},{"name":"trigger 13","value":0},{"name":"trigger 14","value":0},{"name":"trigger 15","value":0}]}]}
-
             if (ops[i].storage && ops[i].storage.ref) delete ops[i].storage.ref;
             if (ops[i].uiAttribs && ops[i].uiAttribs.blueprintSubpatch2) delete ops[i].uiAttribs.blueprintSubpatch2;
             if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
@@ -1400,6 +1392,8 @@ export default class PatchView extends CABLES.EventTarget
             // remove links that are not fully copied...
             for (let j = 0; j < ops[i].portsIn.length; j++)
             {
+                delete ops[i].portsIn[j].expose;
+
                 if (ops[i].portsIn[j].links)
                 {
                     let k = ops[i].portsIn[j].links.length;
@@ -1424,6 +1418,8 @@ export default class PatchView extends CABLES.EventTarget
 
             for (let j = 0; j < ops[i].portsOut.length; j++)
             {
+                delete ops[i].portsIn[j].expose;
+
                 if (ops[i].portsOut[j].links)
                 {
                     let k = ops[i].portsOut[j].links.length;

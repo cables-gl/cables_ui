@@ -187,6 +187,12 @@ float samp(in vec2 uv, float w) {
     {
         if(uv.y>0.5)discard;
     }
+    else
+    if(shape==11.0) // arrow down
+    {
+        if((abs(uv.x-0.5))>(uv.y-0.5))finalColor.a=0.0;
+        else finalColor.a=1.0;
+    }
 
     if(border>=1.0) // border
     {

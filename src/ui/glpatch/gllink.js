@@ -236,9 +236,7 @@ export default class GlLink
         if (this._cable) this._cable = this._cable.dispose();
         if (this._cableSub) this._cableSub = this._cableSub.dispose();
 
-
         this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
-
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
         const op1 = gui.corePatch().getOpById(this._opIdInput);
@@ -254,9 +252,7 @@ export default class GlLink
 
         if (this.crossSubpatch)
         {
-            // ops[i].isSubPatchOp()
             const subpatchop = gui.patchView.getSubPatchOuterOp(op1.uiAttribs.subPatch) || gui.patchView.getSubPatchOuterOp(op2.uiAttribs.subPatch);
-
 
             if (subpatchop && subpatchop.uiAttribs && subpatchop.uiAttribs.subPatchOp)
             {
@@ -444,6 +440,8 @@ export default class GlLink
                     this._opOut.op.uiAttribs.subPatch == this._subPatchOp.uiAttribs.subPatch)
                 {
                     if (!this._opOut.getUiAttribs().translate) return;
+                    if (!this._subPatchOp.uiAttribs.translate) return;
+
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
 
                     // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
@@ -481,7 +479,7 @@ export default class GlLink
                 }
                 // else
 
-                if (!foundCable && this._cable && this._subPatchOp)
+                if (!foundCable && this._cable && this._subPatchOp && this._opIn.getUiAttribs() && this._opIn.getUiAttribs().translate)
                 {
                     if (this._debugColor) this._cable.setColor(0, 0, 0, 1);
                     this._cable.setPosition(
@@ -631,8 +629,11 @@ export default class GlLink
 
         this._cable.setText(r);
         this._cable.setSpeed(act);
-        if (this._cableSub) this._cableSub.setText(r);
-        if (this._cableSub) this._cableSub.setSpeed(act);
+        if (this._cableSub)
+        {
+            this._cableSub.setText(r);
+            this._cableSub.setSpeed(act);
+        }
     }
 
     highlight(b)

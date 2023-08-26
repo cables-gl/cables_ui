@@ -84,23 +84,35 @@ export default class GlPort
             (isAssigned || this._port.uiAttribs.notWorking))
         {
             this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
+
+            this._rect.addChild(this._dot);
+        }
+
+        if (this._dot)
+        {
             this._dot.setShape(6);
-            this._dot.setColor(1, 1, 1, 1);
+
+            this._dot.setColor(0.24, 0.24, 0.24, 1);
             let size = GlUiConfig.portHeight * 0.75;
 
-            if (this._port.uiAttribs.notWorking)
+            if (this._port.uiAttribs.expose)
             {
-                this._dot.setColor(0.2, 0.2, 0.2, 1);
+                size *= 2.0;
+                this._dot.setShape(11);
             }
+
+            if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
 
             this._dot.setSize(size, size);
 
-
             let dotPosY = GlUiConfig.portHeight / 2 - size / 2;
-            if (this.direction == CABLES.PORT_DIR_IN) dotPosY += GlUiConfig.portHeight;
+            if (this.direction == CABLES.PORT_DIR_IN)
+            {
+                dotPosY += GlUiConfig.portHeight;
+                if (this._port.uiAttribs.expose && this._port.isLinked())dotPosY -= GlUiConfig.portHeight * 0.7;
+            }
+            if (this._port.uiAttribs.expose)dotPosY += GlUiConfig.portHeight * 0.4;
             this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
-
-            this._rect.addChild(this._dot);
         }
 
         if (this._dot && !isAssigned && !this._port.uiAttribs.notWorking)
