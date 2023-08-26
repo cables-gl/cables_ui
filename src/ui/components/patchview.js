@@ -2413,8 +2413,23 @@ export default class PatchView extends CABLES.EventTarget
 
     insertOpInLink(oldLink, op, x, y)
     {
-        if (!op.portsIn[0] || !op.portsOut[0]) return;
-        if (op.portsIn[0].isLinked() || op.portsOut[0].isLinked()) return;
+        let newPortIn = op.portsIn[0];
+        let newPortOut = op.portsOut[0];
+
+
+        if (op.patchId && op.patchId.get() && op.isSubPatchOp())
+        {
+            console.log("is subpatch...");
+            const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
+            const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
+
+            if (!(portsIn[0].type == portsOut[0].type == oldLink.portIn.type)) return false;
+            newPortIn = portsIn[0];
+            newPortOut = portsOut[0];
+        }
+
+        if (!newPortIn || !newPortOut) return;
+        if (newPortIn.isLinked() || newPortOut.isLinked()) return;
 
         let portIn = oldLink.portIn;
         let portOut = oldLink.portOut;
@@ -2436,20 +2451,20 @@ export default class PatchView extends CABLES.EventTarget
             oldLink.remove();
         }
 
-        if (portIn && portOut && op.portsOut[0]) // && !op.portsIn[0].isLinked()
+        if (portIn && portOut && newPortOut) // && !newPortIn.isLinked()
         {
-            if (CABLES.Link.canLink(op.portsIn[0], portOut)) //! portOut.isLinked() &&
+            if (CABLES.Link.canLink(newPortIn, portOut)) //! portOut.isLinked() &&
             {
                 gui.corePatch().link(
                     op,
-                    op.portsIn[0].getName(),
+                    newPortIn.getName(),
                     portOut.op,
                     portOut.getName()
                 );
 
                 gui.corePatch().link(
                     op,
-                    op.portsOut[0].getName(),
+                    newPortOut.getName(),
                     portIn.op,
                     portIn.getName()
                 );
