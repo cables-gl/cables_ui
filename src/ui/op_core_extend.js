@@ -75,7 +75,7 @@ export default function extendCore()
 
     CABLES.Op.prototype.unLinkReconnectOthers = function ()
     {
-        this.unLinkOptions(false, false);
+        this.unLinkOptions(true, false);
     };
 
     CABLES.Op.prototype.unLinkTemporary = function ()
