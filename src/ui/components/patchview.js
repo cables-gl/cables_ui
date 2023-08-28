@@ -1418,7 +1418,7 @@ export default class PatchView extends CABLES.EventTarget
 
             for (let j = 0; j < ops[i].portsOut.length; j++)
             {
-                delete ops[i].portsIn[j].expose;
+                delete ops[i].portsOut[j].expose;
 
                 if (ops[i].portsOut[j].links)
                 {
