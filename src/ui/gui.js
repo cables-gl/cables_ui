@@ -103,11 +103,9 @@ export default class Gui
                 this._corePatch.off(this._patchLoadEndiD);
                 this.setStateSaved();
                 if (window.logStartup) logStartup("patch loaded 2");
+
                 gui.bookmarks.updateDynamicCommands();
-
                 gui.patchView.highlightExamplePatchOps();
-
-
 
                 if (window.logStartup) logStartup("Patch loaded");
             });
@@ -1698,7 +1696,7 @@ export default class Gui
 
     getSavedState()
     {
-        return this.savedState.isSaved();
+        return this.savedState.isSaved;
         // return this._savedState;
     }
 
