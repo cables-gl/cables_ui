@@ -16,7 +16,7 @@
                 {{else}}
                     {{project.name}}
                 {{/if}}
-            </b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}</a>
+            </b>{{#if project.summary.owner.username }} by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}{{/if}}</a>
         </h2>
 
         <br/>
