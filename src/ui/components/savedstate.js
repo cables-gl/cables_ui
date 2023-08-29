@@ -38,7 +38,6 @@ export default class SavedState extends CABLES.EventTarget
         return bp;
     }
 
-
     log(initiator, section, savedState)
     {
         this._statesInitiator[section] = this._statesInitiator[section] || [];
@@ -47,7 +46,7 @@ export default class SavedState extends CABLES.EventTarget
         let savedStateStr = "saved";
         if (!savedState) savedStateStr = "unsaved!";
 
-        console.log("[savestate]", initiator, section, savedStateStr);
+        // console.log("[savestate]", initiator, section, savedStateStr);
     }
 
     setSavedAll(initiator)
@@ -79,7 +78,6 @@ export default class SavedState extends CABLES.EventTarget
         subpatch = subpatch || 0;
         this._statesSaved[subpatch] = true;
 
-        // console.log(this._statesSaved);
 
         this.log(initiator, subpatch, true);
 
@@ -89,7 +87,6 @@ export default class SavedState extends CABLES.EventTarget
 
     setUnSaved(initiator, subpatch)
     {
-        console.log("HURZ ", initiator, subpatch);
         if (subpatch === undefined)
         {
             subpatch = this.getBlueprint() || 0;
