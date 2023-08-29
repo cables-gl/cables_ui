@@ -179,21 +179,6 @@ export default class Gui
         this.updateTheme();
     }
 
-    changeFavicon(src)
-    {
-        let link = document.createElement("link");
-        let oldLink = document.getElementById("dynamic-favicon");
-        link.id = "dynamic-favicon";
-        link.rel = "shortcut icon";
-        link.href = src;
-        if (oldLink)
-        {
-            document.head.removeChild(oldLink);
-        }
-        document.head.appendChild(link);
-    }
-
-
     project()
     {
         return this._currentProject;
@@ -1788,7 +1773,8 @@ export default class Gui
             title += gui.project.name + " *";
             document.title = title;
 
-            this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico");
+            CABLESUILOADER.talkerAPI.send("setIconUnsaved");
+            // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon-32_orange.png");
             // this._favIconLink.href = CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico";
             this._savedState = false;
 
@@ -1815,7 +1801,9 @@ export default class Gui
     {
         this._savedState = true;
         this.resetSavedStateChangesBlueprintSubPatches();
-        this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
+
+        CABLESUILOADER.talkerAPI.send("setIconSaved");
+        // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
         // this._favIconLink.href = "/favicon/favicon.ico";
         ele.byId("patchname").classList.remove("warning");
 
