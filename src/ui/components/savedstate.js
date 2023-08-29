@@ -89,9 +89,11 @@ export default class SavedState extends CABLES.EventTarget
 
     setUnSaved(initiator, subpatch)
     {
+        console.log("HURZ ", initiator, subpatch);
         if (subpatch === undefined)
         {
-            subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
+            subpatch = this.getBlueprint() || 0;
+            this._statesSaved[subpatch] = true;
         }
         else
         {
