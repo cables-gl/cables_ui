@@ -40,7 +40,6 @@ export default class GlLink
         this._buttonRect.setShape(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
-
         this._buttonRect.on("mouseup", (e) =>
         {
             this._glPatch.startLinkButtonDrag = null;
@@ -526,7 +525,6 @@ export default class GlLink
             }
         }
 
-
         if (!this._opIn || !this._opOut)
         {
             this._log.warn("unknown ops...", this._opIdInput, this._opIdOutput, this._opIn, this._opOut);
@@ -535,9 +533,6 @@ export default class GlLink
 
         this._offsetXInput = this._opIn.getPortPos(this._portNameInput);
         this._offsetXOutput = this._opOut.getPortPos(this._portNameOutput);
-
-        // console.log(this._offsetXOutput, this._portNameOutput);
-
 
         if (!this.addedOrderListeners)
         {
@@ -572,10 +567,8 @@ export default class GlLink
             });
         }
 
-
         this._opIn.updateVisible();
         this._opOut.updateVisible();
-
         this._updatePosition();
     }
 

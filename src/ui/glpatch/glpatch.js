@@ -409,9 +409,7 @@ export default class GlPatch extends CABLES.EventTarget
     _onCanvasMouseMove(e)
     {
         if (this.startLinkButtonDrag)
-        {
             this.startLinkButtonDrag.startDragging(e);
-        }
 
         this._dropInCircleRect = null;
 
@@ -425,6 +423,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (this._dropInCircleRect)
         {
+            // console.log("_dropInCircleRect", gui.patchView.getSelectedOps().length);
+
             let visible = false;
             if (gui.patchView.getSelectedOps().length == 1)
             {

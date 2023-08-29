@@ -2,6 +2,7 @@ import GlUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import text from "../text";
 import userSettings from "../components/usersettings";
+import GlOp from "./glop";
 
 export default class GlCable
 {
@@ -102,10 +103,16 @@ export default class GlCable
         this._visible = (this.subPatch == this._glPatch.getCurrentSubPatch());
         if (this._disposed) this._visible = false;
 
-        // if (!this._visible) this._buttonRect.visible = false;
-
         if (old != this._visible)
+        {
+            if (!this._visible)
+            {
+                this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
+            }
             this.updateMouseListener();
+        }
     }
 
     set visible(v)
@@ -126,22 +133,30 @@ export default class GlCable
         {
             if (this._glPatch.getNumSelectedOps() == 1)
             {
-                if (this._glPatch.getNumSelectedOps() > 1) return false;
+                const op = this._glPatch.getOnlySelectedOp();
+                const glop = this._glPatch.getGlOp(op);
+                if (glop._displayType === glop.DISPLAY_SUBPATCH)
+                {
+                    const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
+                    const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
 
-                if (this._glPatch.getOnlySelectedOp() &&
-                    this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
-                    this._glPatch.getOnlySelectedOp().portsOut.length > 0)
+                    if (portsIn.length < 1 || portsOut.lengh < 1 || !portsIn[0] || !portsOut[0]) return false;
+                    if (!(portsIn[0].type == portsOut[0].type == this._type)) return false;
+                }
+                else
+                if (
+                    op.portsIn.length > 0 &&
+                    op.portsOut.length > 0)
                 {
                     if (!(
-                        this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
-                    this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
+                        op.portsIn[0].type == this._type &&
+                        op.portsOut[0].type == this._type))
                         return false;
                 }
             }
         }
 
-
-        const r = this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
@@ -151,7 +166,6 @@ export default class GlCable
         this._splineDrawer.deleteSpline(this._splineIdx);
         this.updateVisible();
         this.updateMouseListener();
-        // this._glPatch.removeEventListener(this._listenerMousemove);
     }
 
     _updateDistFromPort()
@@ -489,6 +503,9 @@ export default class GlCable
 
         if (!onSegment)
         {
+            this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
             perf.finish();
             return false;
         }
@@ -499,6 +516,7 @@ export default class GlCable
 
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
+
 
         if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {
@@ -524,9 +542,9 @@ export default class GlCable
 
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
-            this._buttonRect.visible = true;
-            this._buttonRect.interactive = true;
-            this._buttonRect._hovering = true;
+            this._buttonRect.visible =
+                this._buttonRect.interactive =
+                this._buttonRect._hovering = true;
 
             this._glPatch.setHoverLink(e, this._link);
             this._glPatch._dropInCircleRect = this._buttonRect;
@@ -541,9 +559,9 @@ export default class GlCable
         else
         {
             if (this._buttonRect.visible) this._glPatch.setHoverLink(e, null);
-            this._buttonRect.interactive = false;
-            this._buttonRect.visible = false;
-            this._buttonRect._hovering = false;
+            this._buttonRect.interactive =
+                this._buttonRect.visible =
+                this._buttonRect._hovering = false;
             perf.finish();
             return false;
         }
