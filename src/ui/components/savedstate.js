@@ -54,12 +54,12 @@ export default class SavedState extends CABLES.EventTarget
     {
         if (subpatch === undefined)
         {
-            subpatch = this._statesSaved[this.getBlueprint()] = true;
+            subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
         }
         else
         {
             let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
-            if (subOuter && !subOuter.isBlueprint2())
+            if (!subOuter || !subOuter.isBlueprint2())
             {
                 subpatch = 0;
             }
@@ -67,7 +67,7 @@ export default class SavedState extends CABLES.EventTarget
         subpatch = subpatch || 0;
         this._statesSaved[subpatch] = true;
 
-        console.log(this._statesSaved);
+        // console.log(this._statesSaved);
 
         this.log(initiator, subpatch, true);
 
@@ -75,11 +75,25 @@ export default class SavedState extends CABLES.EventTarget
         this.updateUi();
     }
 
-    setUnSaved(initiator, section)
+    setUnSaved(initiator, subpatch)
     {
-        this._statesSaved[this.getBlueprint()] = false;
+        if (subpatch === undefined)
+        {
+            subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
+        }
+        else
+        {
+            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
+            if (!subOuter || !subOuter.isBlueprint2())
+            {
+                subpatch = 0;
+            }
+        }
+        if (subpatch === true)subpatch = 0;
+        subpatch = subpatch || 0;
+        this._statesSaved[subpatch] = false;
 
-        this.log(initiator, section, false);
+        this.log(initiator, subpatch, false);
 
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUi();
