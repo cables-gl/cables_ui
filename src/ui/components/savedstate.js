@@ -47,7 +47,19 @@ export default class SavedState extends CABLES.EventTarget
         let savedStateStr = "saved";
         if (!savedState) savedStateStr = "unsaved!";
 
-        // console.log("[savestate]", initiator, section, savedStateStr);
+        console.log("[savestate]", initiator, section, savedStateStr);
+    }
+
+    setSavedAll(initiator)
+    {
+        for (const sp in this._statesSaved)
+        {
+            this._statesSaved[sp] = true;
+            this.log(initiator, sp, true);
+        }
+
+        gui.corePatch().emitEvent("subpatchesChanged");
+        this.updateUi();
     }
 
     setSaved(initiator, subpatch)

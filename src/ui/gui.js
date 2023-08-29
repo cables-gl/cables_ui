@@ -1624,7 +1624,7 @@ export default class Gui
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
-        gui.savedState.setSaved("showUiElements", 0);
+        gui.savedState.setSavedAll("showUiElements");
 
         gui.metaTabs.loadCurrentTabUsersettings();
 
