@@ -158,10 +158,10 @@ export default class Gui
         // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
 
-        this._favIconLink = document.createElement("link");
-        document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
-        this._favIconLink.type = "image/x-icon";
-        this._favIconLink.rel = "shortcut icon";
+        // this._favIconLink = document.createElement("link");
+        // this._favIconLink.type = "image/x-icon";
+        // this._favIconLink.rel = "shortcut icon";
+        // document.head.appendChild(this._favIconLink);
 
         this.user = null;
         this.onSaveProject = null;
@@ -178,6 +178,21 @@ export default class Gui
         this.currentModal = null;
         this.updateTheme();
     }
+
+    changeFavicon(src)
+    {
+        let link = document.createElement("link");
+        let oldLink = document.getElementById("dynamic-favicon");
+        link.id = "dynamic-favicon";
+        link.rel = "shortcut icon";
+        link.href = src;
+        if (oldLink)
+        {
+            document.head.removeChild(oldLink);
+        }
+        document.head.appendChild(link);
+    }
+
 
     project()
     {
@@ -1773,7 +1788,8 @@ export default class Gui
             title += gui.project.name + " *";
             document.title = title;
 
-            this._favIconLink.href = "/favicon/favicon_orange.ico";
+            this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico");
+            // this._favIconLink.href = CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico";
             this._savedState = false;
 
             ele.byId("patchname").classList.add("warning");
@@ -1799,7 +1815,8 @@ export default class Gui
     {
         this._savedState = true;
         this.resetSavedStateChangesBlueprintSubPatches();
-        this._favIconLink.href = "/favicon/favicon.ico";
+        this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
+        // this._favIconLink.href = "/favicon/favicon.ico";
         ele.byId("patchname").classList.remove("warning");
 
         let title = "";
