@@ -64,7 +64,10 @@ export default class SavedState extends CABLES.EventTarget
                 subpatch = 0;
             }
         }
+        subpatch = subpatch || 0;
         this._statesSaved[subpatch] = true;
+
+        console.log(this._statesSaved);
 
         this.log(initiator, subpatch, true);
 
