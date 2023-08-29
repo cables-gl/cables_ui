@@ -1394,6 +1394,7 @@ export default class Gui
                         CABLES.CMD.PATCH.save();
                     }
                 }
+                else CABLES.CMD.PATCH.save();
             }
         });
 
