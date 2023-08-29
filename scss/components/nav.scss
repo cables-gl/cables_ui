@@ -265,6 +265,10 @@
             background: var(--color-03);
             display: block;
             color: var(--color-13);
+
+            text-overflow: ellipsis;
+            max-width: 100%;
+            overflow: hidden;
         }
         ul li ul li:hover
         {
