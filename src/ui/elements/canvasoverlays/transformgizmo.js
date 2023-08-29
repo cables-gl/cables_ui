@@ -274,7 +274,9 @@ export default class Gizmo
 
         function down(e)
         {
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformDown");
+
             isDown = true;
             document.addEventListener("pointerlockchange", lockChange, false);
             document.addEventListener("mozpointerlockchange", lockChange, false);
@@ -315,7 +317,9 @@ export default class Gizmo
                 ));
             }
 
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformUp");
+
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
             document.removeEventListener("mozpointerlockchange", lockChange, false);
@@ -334,7 +338,9 @@ export default class Gizmo
 
         function move(e)
         {
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformMove");
+
             let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
             if (e.shiftKey) v *= 0.025;
             self._dragSum += v;

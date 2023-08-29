@@ -42,7 +42,8 @@ export default class GlArea
                 this._w = this._glop.glPatch.snapLines.snapX(this._w);
                 this._h = this._glop.glPatch.snapLines.snapY(this._h);
             }
-            gui.setStateUnsaved();
+            // gui.setStateUnsaved();
+            gui.savedState.setUnSaved("resizeGlArea");
             this._update();
         });
 
@@ -70,7 +71,8 @@ export default class GlArea
         if (!this._visible) return;
         this._rectBg.setPosition(
             this._glop.x,
-            this._glop.y, 0.1);
+            this._glop.y,
+            0.1);
 
         this._rectBg.setSize(this._w, this._h);
 

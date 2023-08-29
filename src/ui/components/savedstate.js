@@ -7,6 +7,7 @@ export default class SavedState extends CABLES.EventTarget
     {
         super();
         this._statesSaved = {};
+        this._statesInitiator = {};
 
         this._onBeforeUnloadListener = (event) =>
         {
@@ -37,16 +38,35 @@ export default class SavedState extends CABLES.EventTarget
         return bp;
     }
 
-    setSaved()
+
+    log(initiator, section, savedState)
     {
-        this._statesSaved[this.getBlueprint()] = true;
+        this._statesInitiator[section] = this._statesInitiator[section] || [];
+        this._statesInitiator[section].push({ "initiator": initiator, "section": section, "savedState": savedState });
+
+        let savedStateStr = "saved";
+        if (!savedState) savedStateStr = "unsaved!";
+
+        // console.log("[savestate]", initiator, section, savedStateStr);
+    }
+
+    setSaved(initiator, subpatch)
+    {
+        if (subpatch === undefined)subpatch = this._statesSaved[this.getBlueprint()] = true;
+        this._statesSaved[subpatch] = true;
+
+        this.log(initiator, subpatch, true);
+
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUi();
     }
 
-    setUnSaved()
+    setUnSaved(initiator, section)
     {
         this._statesSaved[this.getBlueprint()] = false;
+
+        this.log(initiator, section, false);
+
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUi();
     }

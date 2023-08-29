@@ -130,10 +130,12 @@ class ParamsListener extends CABLES.EventTarget
     {
         gui.emitEvent("paramsChangedUserInteraction", { "port": port, "panelId": this.panelId });
     }
-    
+
     togglePortValBool(which, checkbox)
     {
-        gui.setStateUnsaved();
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("togglePortValBool");
+
         const inputEle = document.getElementById(which);
         const checkBoxEle = document.getElementById(checkbox);
 
@@ -332,7 +334,8 @@ class ParamsListener extends CABLES.EventTarget
             if (port) port.setVariable(e.target.value);
             else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
 
-            gui.setStateUnsaved();
+            // gui.setStateUnsaved();
+            gui.savedState.setUnSaved("initPortClickListener");
         });
 
         // el = ele.byId("portremovevar_" + index);
@@ -365,7 +368,9 @@ class ParamsListener extends CABLES.EventTarget
                         "title": "Assign variable",
                         "func": () =>
                         {
-                            gui.setStateUnsaved();
+                            // gui.setStateUnsaved();
+                            gui.savedState.setUnSaved("initPortClickListener");
+
 
                             if (port.isBoundToVar()) port.setVariable(null);
                             else port.setVariable("unknown");
@@ -403,7 +408,8 @@ class ParamsListener extends CABLES.EventTarget
                     "iconClass": icon,
                     "func": () =>
                     {
-                        gui.setStateUnsaved();
+                        // gui.setStateUnsaved();
+                        gui.savedState.setUnSaved("setPortAnimated");
 
                         CABLES.UI.paramsHelper.setPortAnimated(thePort.op, index, !thePort.isAnimated(), thePort.get());
                     }
@@ -577,7 +583,9 @@ class ParamsListener extends CABLES.EventTarget
         {
             let v = "" + el.value;
 
-            gui.setStateUnsaved();
+            // gui.setStateUnsaved();
+            gui.savedState.setUnSaved("paramsInput");
+
 
             if (
                 ports[index].uiAttribs.display != "bool" &&
@@ -757,10 +765,10 @@ class ParamsListener extends CABLES.EventTarget
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_STRING)
                 {
-                    const v=thePort.getValueForDisplay();
+                    const v = thePort.getValueForDisplay();
 
-                    if (v && (typeof v === 'string' || v instanceof String)) newValue = "\"" + v + "\"";
-                    else newValue=String(v);
+                    if (v && (typeof v === "string" || v instanceof String)) newValue = "\"" + v + "\"";
+                    else newValue = String(v);
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_OBJECT)
                 {

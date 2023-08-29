@@ -101,11 +101,11 @@ export default class Gui
             () =>
             {
                 this._corePatch.off(this._patchLoadEndiD);
-                this.setStateSaved();
                 if (window.logStartup) logStartup("patch loaded 2");
 
                 gui.bookmarks.updateDynamicCommands();
                 gui.patchView.highlightExamplePatchOps();
+                gui.savedState.setSaved("patch load end", 0);
 
                 if (window.logStartup) logStartup("Patch loaded");
             });
@@ -144,7 +144,7 @@ export default class Gui
         this.metaTabs = new TabPanel("metatabpanel");
 
         this.savedState = new SavedState();
-        this._savedState = true;
+        // this._savedState = true;
         this._savedStateChangesBlueprintSubPatches = [];
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
@@ -1373,22 +1373,27 @@ export default class Gui
             }
             else
             {
-                // if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
-
                 const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-
-                // console.log("subouter",subOuter,subOuter.isInBlueprint2())
 
                 if (subOuter)
                 {
                     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
                     if (bp)
                     {
-                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
+                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                            {
+                                "oldSubId": bp,
+                                "next": () =>
+                                {
+                                    gui.savedState.setSaved("saved bp", bp);
+                                }
+                            });
                     }
                 }
-
-                CABLES.CMD.PATCH.save();
+                else
+                {
+                    CABLES.CMD.PATCH.save();
+                }
             }
         });
 
@@ -1618,6 +1623,8 @@ export default class Gui
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
+        gui.savedState.setSaved("showUiElements", 0);
+
         gui.metaTabs.loadCurrentTabUsersettings();
 
         gui.patchView.focus();
@@ -1697,7 +1704,6 @@ export default class Gui
     getSavedState()
     {
         return this.savedState.isSaved;
-        // return this._savedState;
     }
 
     setTransformGizmo(params, idx)
@@ -1762,7 +1768,7 @@ export default class Gui
 
     setStateUnsaved(options)
     {
-        if (this.ignoreSaveStateChanges) return;
+        // if (this.ignoreSaveStateChanges) return;
         // let subPatch = this.patchView.getCurrentSubPatch();
         // if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
 
@@ -1770,7 +1776,7 @@ export default class Gui
 
         // this._savedState = this.savedState.isSaved;
 
-        this.savedState.setUnSaved("unknown");
+        this.savedState.setUnSaved("unknown", 0);
 
         // if (this._savedState)
         // {
@@ -1802,39 +1808,39 @@ export default class Gui
         // }
     }
 
-    setStateSaved()
-    {
-        // this._savedState = true;
-        // this.resetSavedStateChangesBlueprintSubPatches();
+    // setStateSaved()
+    // {
+    //     // this._savedState = true;
+    //     // this.resetSavedStateChangesBlueprintSubPatches();
 
-        // CABLESUILOADER.talkerAPI.send("setIconSaved");
-        // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
-        // this._favIconLink.href = "/favicon/favicon.ico";
-        // ele.byId("patchname").classList.remove("warning");
-
-
-        // const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-
-        // // console.log("subouter",subOuter,subOuter.isInBlueprint2())
-
-        // if (subOuter)
-        // {
-        //     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
-        //     if (bp)
-        //     {
-        //         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
-        //     }
-        // }
+    //     // CABLESUILOADER.talkerAPI.send("setIconSaved");
+    //     // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
+    //     // this._favIconLink.href = "/favicon/favicon.ico";
+    //     // ele.byId("patchname").classList.remove("warning");
 
 
-        this.savedState.setSaved("unknown");
+    //     // const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
 
-        // let title = "";
-        // if (CABLES.sandbox.isDevEnv())title = "DEV ";
-        // title += gui.project.name;
-        // document.title = title;
-        // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
-    }
+    //     // // console.log("subouter",subOuter,subOuter.isInBlueprint2())
+
+    //     // if (subOuter)
+    //     // {
+    //     //     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
+    //     //     if (bp)
+    //     //     {
+    //     //         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
+    //     //     }
+    //     // }
+
+
+    //     this.savedState.setSaved("unknown", 0);
+
+    //     // let title = "";
+    //     // if (CABLES.sandbox.isDevEnv())title = "DEV ";
+    //     // title += gui.project.name;
+    //     // document.title = title;
+    //     // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
+    // }
 
     reloadDocs(cb)
     {
@@ -2050,7 +2056,7 @@ export default class Gui
 
     getSavedStateChangesBlueprintSubPatches()
     {
-        return this._savedStateChangesBlueprintSubPatches;
+        return [];// this._savedStateChangesBlueprintSubPatches; // old blueprints
     }
 
     // resetSavedStateChangesBlueprintSubPatches()

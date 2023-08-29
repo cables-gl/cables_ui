@@ -642,7 +642,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             this._log.warn("[save patch error]", err);
                         }
 
-                        gui.setStateSaved();
+                        gui.savedState.setSaved("patchServerApi", 0);
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 

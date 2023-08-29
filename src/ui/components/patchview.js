@@ -35,19 +35,19 @@ export default class PatchView extends CABLES.EventTarget
         this._initListeners();
         this._eleSubpatchNav = ele.byId("subpatch_nav");
 
-        corepatch.addEventListener("onLink", this._portValidate.bind(this));
-        corepatch.addEventListener("onUnLink", this._portValidate.bind(this));
+        corepatch.on("onLink", this._portValidate.bind(this));
+        corepatch.on("onUnLink", this._portValidate.bind(this));
 
-        corepatch.addEventListener("onLink", this.refreshCurrentOpParamsByPort.bind(this));
-        corepatch.addEventListener("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
+        corepatch.on("onLink", this.refreshCurrentOpParamsByPort.bind(this));
+        corepatch.on("onUnLink", this.refreshCurrentOpParamsByPort.bind(this));
 
-        corepatch.addEventListener("onOpAdd", this._onAddOpHistory.bind(this));
-        corepatch.addEventListener("onOpDelete", this._onDeleteOpUndo.bind(this));
+        corepatch.on("onOpAdd", this._onAddOpHistory.bind(this));
+        corepatch.on("onOpDelete", this._onDeleteOpUndo.bind(this));
 
-        corepatch.addEventListener("onOpAdd", this.setUnsaved.bind(this));
-        corepatch.addEventListener("onOpDelete", this.setUnsaved.bind(this));
-        corepatch.addEventListener("onLink", this.setUnsaved.bind(this));
-        corepatch.addEventListener("onUnLink", this.setUnsaved.bind(this));
+        corepatch.on("onOpAdd", (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpAdd", op.uiAttribs.subPatch); });
+        corepatch.on("onOpDelete", (op) => { if (!undo.paused())gui.savedState.setUnSaved("onOpDelete", op.uiAttribs.subPatch); });
+        corepatch.on("onLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onLink", p1.op.uiAttribs.subPatch || p2.op.uiAttribs.subPatch); });
+        corepatch.on("onUnLink", (p1, p2) => { if (!undo.paused())gui.savedState.setUnSaved("onUnLink", p1.op.uiAttribs.subPatch || p2.op.uiAttribs.subPatch); });
     }
 
     get element() { return this._element || PatchView.getElement(); }
@@ -1035,6 +1035,7 @@ export default class PatchView extends CABLES.EventTarget
         if (patchId)
         {
             const subOp = this.getSubPatchOuterOp(patchId);
+            if (!subOp) return;
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
             sub.id = subOp.id;
@@ -2103,7 +2104,8 @@ export default class PatchView extends CABLES.EventTarget
 
     setUnsaved()
     {
-        gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
+        // gui.setStateUnsaved({ "subPatch": this.getCurrentSubPatch });
+        gui.savedState.setUnSaved("patchview??", this.getCurrentSubPatch());
     }
 
     _portValidate(p1, p2)

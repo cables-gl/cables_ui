@@ -193,7 +193,9 @@ function valueChanger(eleId, focus, portName, opid)
             }(portName, opid, parseFloat(startVal), parseFloat(eleInput.value)));
         }
 
-        gui.setStateUnsaved();
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("valuechangerUp");
+
         isDown = false;
 
         if (usePointerLock)
@@ -242,7 +244,8 @@ function valueChanger(eleId, focus, portName, opid)
 
         if (ele.hasFocus(eleInput)) return;
 
-        gui.setStateUnsaved();
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("valuechangerMove");
         let v = eleInputValue();
         let inc = 0;
 
