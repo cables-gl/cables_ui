@@ -52,7 +52,18 @@ export default class SavedState extends CABLES.EventTarget
 
     setSaved(initiator, subpatch)
     {
-        if (subpatch === undefined)subpatch = this._statesSaved[this.getBlueprint()] = true;
+        if (subpatch === undefined)
+        {
+            subpatch = this._statesSaved[this.getBlueprint()] = true;
+        }
+        else
+        {
+            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
+            if (subOuter && !subOuter.isBlueprint2())
+            {
+                subpatch = 0;
+            }
+        }
         this._statesSaved[subpatch] = true;
 
         this.log(initiator, subpatch, true);

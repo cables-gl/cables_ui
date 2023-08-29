@@ -1389,10 +1389,10 @@ export default class Gui
                                 }
                             });
                     }
-                }
-                else
-                {
-                    CABLES.CMD.PATCH.save();
+                    else
+                    {
+                        CABLES.CMD.PATCH.save();
+                    }
                 }
             }
         });

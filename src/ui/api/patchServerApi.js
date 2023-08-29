@@ -591,7 +591,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // }
 
         CABLES.patch.namespace = currentProject.namespace;
-
+        console.log(1);
         setTimeout(() =>
         {
             try
@@ -606,6 +606,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
+                console.log(2);
 
                 // let b64 = Buffer.from(uint8data).toString("base64");
                 // bytesArrToBase
