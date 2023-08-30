@@ -16,7 +16,7 @@
                 {{else}}
                     {{project.name}}
                 {{/if}}
-            </b> by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}</a>
+            </b>{{#if project.summary.owner.username }} by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}{{/if}}</a>
         </h2>
 
         <br/>
@@ -35,6 +35,14 @@
         {{#if project.teams}}
             Teams:
             {{#each project.teams}}
+                {{#unless @first}}, {{/unless}}
+                <a href="{{../cablesUrl}}{{link}}" target="_blank" class="link">{{name}}</a>
+            {{/each}}
+            <br/><br/>
+        {{/if}}
+        {{#if project.summary.patchLists}}
+            Lists:
+            {{#each project.summary.patchLists}}
                 {{#unless @first}}, {{/unless}}
                 <a href="{{../cablesUrl}}{{link}}" target="_blank" class="link">{{name}}</a>
             {{/each}}

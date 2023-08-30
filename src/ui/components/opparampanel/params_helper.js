@@ -61,7 +61,10 @@ const paramsHelper =
     "inputIncrement": (v, dir, e) =>
     {
         if (e.target.type == "search") return v;
-        gui.setStateUnsaved();
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("paramsInputIncrement");
+
+
         if (v == "true") return "false";
         if (v == "false") return "true";
 
@@ -95,7 +98,8 @@ const paramsHelper =
 
     "togglePortValBool": (which, checkbox) =>
     {
-        gui.setStateUnsaved();
+        // gui.setStateUnsaved();
+        gui.savedState.setUnSaved("paramsTogglePortValBool");
         const inputEle = document.getElementById(which);
         const checkBoxEle = document.getElementById(checkbox);
 
@@ -125,16 +129,15 @@ const paramsHelper =
         const port = op.getPortByName(portname);
         if (!port) return console.warn("paramedit port not found");
 
-        new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(),
+        new CABLES.UI.SpreadSheetTab(gui.mainTabs, port, port.get(), {
+            "title": gui.mainTabs.getUniqueTitle("Array " + portname),
+            "onchange": (content) =>
             {
-                "title": gui.mainTabs.getUniqueTitle("Array " + portname),
-                "onchange": (content) =>
-                {
-                    console.warn(content);
-                    port.set(content);
-                    gui.emitEvent("portValueEdited", op, port, content);
-                }
-            });
+                console.warn(content);
+                port.set(content);
+                gui.emitEvent("portValueEdited", op, port, content);
+            }
+        });
     },
 
     "updateLinkedColorBoxes": (thePort, thePort1, thePort2, panelid, idx) =>
@@ -241,14 +244,16 @@ const paramsHelper =
                     "onSave": function (setStatus, content)
                     {
                         setStatus("updated " + port.name);
-                        gui.setStateUnsaved();
+                        // gui.setStateUnsaved();
+                        gui.savedState.setUnSaved("saveeditorcontent");
                         gui.jobs().finish("saveeditorcontent");
                         port.set(content);
                         gui.emitEvent("portValueEdited", op, port, content);
                     },
                     "onChange": function (e)
                     {
-                        gui.setStateUnsaved();
+                        // gui.setStateUnsaved();
+                        gui.savedState.setUnSaved("editorOnChange");
                     },
                     "onFinished": () =>
                     {

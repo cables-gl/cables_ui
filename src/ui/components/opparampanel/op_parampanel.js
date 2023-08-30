@@ -480,7 +480,8 @@ class OpParampanel extends CABLES.EventTarget
             this._currentOp.uiAttr({ "comment": v });
             if (v.length == 0) this._currentOp.uiAttr({ "comment": null });
             this._currentOp.patch.emitEvent("commentChanged");
-            gui.setStateUnsaved({ "op": this._currentOp });
+            // gui.setStateUnsaved({ "op": this._currentOp });
+            gui.savedState.setUnSaved("op comment", this._currentOp.uiAttribs.subPatch);
         }
         else
         {

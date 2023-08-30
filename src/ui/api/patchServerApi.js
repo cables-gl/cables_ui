@@ -606,7 +606,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
-
                 // let b64 = Buffer.from(uint8data).toString("base64");
                 // bytesArrToBase
                 let b64 = bytesArrToBase64(uint8data);
@@ -642,7 +641,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             this._log.warn("[save patch error]", err);
                         }
 
-                        gui.setStateSaved();
+                        gui.savedState.setSaved("patchServerApi", 0);
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 

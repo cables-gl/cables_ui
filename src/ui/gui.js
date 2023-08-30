@@ -39,6 +39,7 @@ import CanvasManager from "./components/canvas/canvasmanager";
 import GuiRestrictions from "./components/guirestrictions";
 import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
+import SavedState from "./components/savedstate";
 
 
 export default class Gui
@@ -100,13 +101,11 @@ export default class Gui
             () =>
             {
                 this._corePatch.off(this._patchLoadEndiD);
-                this.setStateSaved();
                 if (window.logStartup) logStartup("patch loaded 2");
+
                 gui.bookmarks.updateDynamicCommands();
-
                 gui.patchView.highlightExamplePatchOps();
-
-
+                gui.savedState.setSaved("patch load end", 0);
 
                 if (window.logStartup) logStartup("Patch loaded");
             });
@@ -143,7 +142,9 @@ export default class Gui
         this.chat = null;
 
         this.metaTabs = new TabPanel("metatabpanel");
-        this._savedState = true;
+
+        this.savedState = new SavedState();
+        // this._savedState = true;
         this._savedStateChangesBlueprintSubPatches = [];
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
@@ -158,10 +159,10 @@ export default class Gui
         // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
 
-        this._favIconLink = document.createElement("link");
-        document.getElementsByTagName("head")[0].appendChild(this._favIconLink);
-        this._favIconLink.type = "image/x-icon";
-        this._favIconLink.rel = "shortcut icon";
+        // this._favIconLink = document.createElement("link");
+        // this._favIconLink.type = "image/x-icon";
+        // this._favIconLink.rel = "shortcut icon";
+        // document.head.appendChild(this._favIconLink);
 
         this.user = null;
         this.onSaveProject = null;
@@ -1372,22 +1373,28 @@ export default class Gui
             }
             else
             {
-                // if (defaultOps.isBlueprintOp(gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch())) == 2)
-
                 const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-
-                // console.log("subouter",subOuter,subOuter.isInBlueprint2())
 
                 if (subOuter)
                 {
                     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
                     if (bp)
                     {
-                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
+                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                            {
+                                "oldSubId": bp,
+                                "next": () =>
+                                {
+                                    gui.savedState.setSaved("saved bp", bp);
+                                }
+                            });
+                    }
+                    else
+                    {
+                        CABLES.CMD.PATCH.save();
                     }
                 }
-
-                CABLES.CMD.PATCH.save();
+                else CABLES.CMD.PATCH.save();
             }
         });
 
@@ -1617,6 +1624,8 @@ export default class Gui
         console.table(CABLESUILOADER.startup.log);
         console.groupEnd();
 
+        gui.savedState.setSavedAll("showUiElements");
+
         gui.metaTabs.loadCurrentTabUsersettings();
 
         gui.patchView.focus();
@@ -1695,7 +1704,7 @@ export default class Gui
 
     getSavedState()
     {
-        return this._savedState;
+        return this.savedState.isSaved;
     }
 
     setTransformGizmo(params, idx)
@@ -1760,54 +1769,79 @@ export default class Gui
 
     setStateUnsaved(options)
     {
-        if (this.ignoreSaveStateChanges) return;
-        let subPatch = this.patchView.getCurrentSubPatch();
-        if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
+        // if (this.ignoreSaveStateChanges) return;
+        // let subPatch = this.patchView.getCurrentSubPatch();
+        // if (options && options.op)subPatch = options.op.uiAttribs.subPatch;
 
-        this.setSavedStateChangesBlueprintSubPatches(subPatch, true);
+        // this.setSavedStateChangesBlueprintSubPatches(subPatch, true);
 
-        if (this._savedState)
-        {
-            let title = "";
-            if (CABLES.sandbox.isDevEnv())title = "DEV ";
-            title += gui.project.name + " *";
-            document.title = title;
+        // this._savedState = this.savedState.isSaved;
 
-            this._favIconLink.href = "/favicon/favicon_orange.ico";
-            this._savedState = false;
+        this.savedState.setUnSaved("unknown", 0);
 
-            ele.byId("patchname").classList.add("warning");
+        // if (this._savedState)
+        // {
+        // let title = "";
+        // if (CABLES.sandbox.isDevEnv())title = "DEV ";
+        // title += gui.project.name + " *";
+        // document.title = title;
 
-            this._onBeforeUnloadListener = (event) =>
-            {
-                const message = "unsaved content!";
-                if (typeof event == "undefined")
-                {
-                    event = window.event;
-                }
-                if (event)
-                {
-                    event.returnValue = message;
-                }
-                return message;
-            };
-            window.addEventListener("beforeunload", this._onBeforeUnloadListener);
-        }
+        // CABLESUILOADER.talkerAPI.send("setIconUnsaved");
+        // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon-32_orange.png");
+        // this._favIconLink.href = CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico";
+
+        // ele.byId("patchname").classList.add("warning");
+
+        // this._onBeforeUnloadListener = (event) =>
+        // {
+        //     const message = "unsaved content!";
+        //     if (typeof event == "undefined")
+        //     {
+        //         event = window.event;
+        //     }
+        //     if (event)
+        //     {
+        //         event.returnValue = message;
+        //     }
+        //     return message;
+        // };
+        // window.addEventListener("beforeunload", this._onBeforeUnloadListener);
+        // }
     }
 
-    setStateSaved()
-    {
-        this._savedState = true;
-        this.resetSavedStateChangesBlueprintSubPatches();
-        this._favIconLink.href = "/favicon/favicon.ico";
-        ele.byId("patchname").classList.remove("warning");
+    // setStateSaved()
+    // {
+    //     // this._savedState = true;
+    //     // this.resetSavedStateChangesBlueprintSubPatches();
 
-        let title = "";
-        if (CABLES.sandbox.isDevEnv())title = "DEV ";
-        title += gui.project.name;
-        document.title = title;
-        window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
-    }
+    //     // CABLESUILOADER.talkerAPI.send("setIconSaved");
+    //     // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
+    //     // this._favIconLink.href = "/favicon/favicon.ico";
+    //     // ele.byId("patchname").classList.remove("warning");
+
+
+    //     // const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+
+    //     // // console.log("subouter",subOuter,subOuter.isInBlueprint2())
+
+    //     // if (subOuter)
+    //     // {
+    //     //     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
+    //     //     if (bp)
+    //     //     {
+    //     //         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp });
+    //     //     }
+    //     // }
+
+
+    //     this.savedState.setSaved("unknown", 0);
+
+    //     // let title = "";
+    //     // if (CABLES.sandbox.isDevEnv())title = "DEV ";
+    //     // title += gui.project.name;
+    //     // document.title = title;
+    //     // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
+    // }
 
     reloadDocs(cb)
     {
@@ -2023,29 +2057,29 @@ export default class Gui
 
     getSavedStateChangesBlueprintSubPatches()
     {
-        return this._savedStateChangesBlueprintSubPatches;
+        return [];// this._savedStateChangesBlueprintSubPatches; // old blueprints
     }
 
-    resetSavedStateChangesBlueprintSubPatches()
-    {
-        this._savedStateChangesBlueprintSubPatches = [];
-    }
+    // resetSavedStateChangesBlueprintSubPatches()
+    // {
+    //     this._savedStateChangesBlueprintSubPatches = [];
+    // }
 
-    setSavedStateChangesBlueprintSubPatches(subPatchId)
-    {
-        const oldLength = this._savedStateChangesBlueprintSubPatches.length;
-        if (!this._savedStateChangesBlueprintSubPatches.includes(subPatchId)) this._savedStateChangesBlueprintSubPatches.push(subPatchId);
-        const newLength = this._savedStateChangesBlueprintSubPatches.length;
-        if (newLength > oldLength)
-        {
-            const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches([subPatchId], true);
-            if (blueprintOps.length > 0)
-            {
-                const reloadIcon = ele.byId("nav-item-bpReload");
-                if (reloadIcon) ele.show(reloadIcon);
-            }
-        }
-    }
+    // setSavedStateChangesBlueprintSubPatches(subPatchId)
+    // {
+    //     const oldLength = this._savedStateChangesBlueprintSubPatches.length;
+    //     if (!this._savedStateChangesBlueprintSubPatches.includes(subPatchId)) this._savedStateChangesBlueprintSubPatches.push(subPatchId);
+    //     const newLength = this._savedStateChangesBlueprintSubPatches.length;
+    //     if (newLength > oldLength)
+    //     {
+    //         const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches([subPatchId], true);
+    //         if (blueprintOps.length > 0)
+    //         {
+    //             const reloadIcon = ele.byId("nav-item-bpReload");
+    //             if (reloadIcon) ele.show(reloadIcon);
+    //         }
+    //     }
+    // }
 }
 
 Gui.RESTRICT_MODE_LOADING = 0;
