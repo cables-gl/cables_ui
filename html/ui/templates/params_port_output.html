@@ -14,7 +14,7 @@
 
     {{#compare port.type '==' 5 }}
         <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}_{{ panelid }}">{{port.port.getValueForDisplay}}</span>
-        <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectView('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
+        <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
     {{/compare}}
 
     {{#compare port.type '==' 3 }}
@@ -22,7 +22,7 @@
 
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.watchArray('{{op.id}}','{{port.name}}');"><span class="icon icon-align-justify"></span></span>
 
-        <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectView('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+        <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
     </td>
     <td>
@@ -57,7 +57,7 @@
         {{else}}
             <span class="value valuetext watchPort watchPortValue_{{ port.watchId }}_{{ panelid }} inspectable" >
             </span>
-            <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectView('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
+            <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span>
             <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="gui.opPortModal.showJsonStructure('{{op.id}}','{{port.name}}');"><span class="icon icon-settings"></span></span><br/>
         {{/if}}
     {{/compare}}
