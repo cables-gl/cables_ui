@@ -52,24 +52,13 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
             let serializedThing = thing;
             if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
 
-            // if (serializedThing == "{}")
-            // {
-            //     serializedThing = "could not stringify object\n\n";
-            //     if (thing) for (let i in thing) serializedThing += "\n" + i + " (" + typeof thing[i] + ")";
-            // }
-
-
             let html = "";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect: " + this.op.name + ": " + this.port.name + "</h2>";
-            // html += "Port: <b>" + this.port.name + "</b> of <b>" + this.op.name + "</b> ";
             html += "<br/><br/>";
-            html += "<a class=\"button\" id=\"portvaluejson" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
+            html += "<a class=\"button\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
             html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
-
             html += "<br/><br/>";
-
-            // onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"
 
             if (thing && thing.constructor)
             {
@@ -81,13 +70,12 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
 
 
             html += "<br/><br/>";
-            html += "<pre><code id=\"portvalue\" class=\"code hljs language-json\">" + convertHTML(serializedThing) + "</code></pre>";
+            html += "<div class=\"tabContentScrollContainer\" style=\"max-height:80%;\"><code><pre id=\"portvaluejson" + this._id + "\"class=\"hljs language-json\">" + convertHTML(serializedThing) + "</code></pre></div>";
 
-            // new ModalDialog({ "html": html });
             this.tab.html(html);
-            const el = ele.byId("portvalue");
+            const el = ele.byId("portvaluejson" + this._id);
 
-            ele.byId("portvaluejson" + this._id).addEventListener("click",
+            ele.byId("portvaluejsonbutton" + this._id).addEventListener("click",
                 () =>
                 {
                     this._showPortValue();
@@ -97,14 +85,14 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
 
             ele.byId("copybutton").addEventListener("click", (e) =>
             {
-                this.copyPortValuePreview(e, title);
+                this.copyPortValuePreview(e, port.name);
             });
         }
         catch (ex)
         {
             let html = "";
-            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            html += "Port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
+            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect Failed</h2>";
+            html += "Port: <b>" + port.name + "</b> of <b>" + port.op.name + "</b> ";
             html += "<br/><br/>";
 
             const thing = port.get();
@@ -121,7 +109,6 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
             html += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
 
             this.tab.html(html);
-            // new ModalDialog({ "html": html });
         }
     }
 
