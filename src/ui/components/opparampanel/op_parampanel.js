@@ -166,8 +166,6 @@ class OpParampanel extends CABLES.EventTarget
             return;
         }
 
-        console.log("is in bp2", op.isInBlueprint2());
-
         this._portsIn = op.portsIn;
         this._portsOut = op.portsOut;
 
