@@ -142,12 +142,14 @@ export default class SavedState extends CABLES.EventTarget
                 if (this._statesSaved[idx]) continue;
                 let subname = "";
                 subname = gui.patchView.getSubPatchName(idx) || "Main";
-                str += "<li onclick=\"gui.patchView.setCurrentSubPatch('" + idx + "')\" class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
+                str += "<li style=\"overflow:hidden;text-overflow:ellipsis\" onclick=\"gui.patchView.setCurrentSubPatch('" + idx + "')\" class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
             }
             str += "<li class=\"divide\"></li>";
             ele.byId("savestates").innerHTML = str;
         }
     }
+
+
 
     get isSaved()
     {
