@@ -6,9 +6,16 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
     {
         super();
         this.tabs = gui.mainTabs;
-        this.tab = new CABLES.UI.Tab("Object Inspect", { "icon": "op", "infotext": "tab_objectinspect", "padding": true, "singleton": "true", });
-        this.tabs.addTab(this.tab, true);
+        this.tab = new CABLES.UI.Tab("Inspect " + portName, { "icon": "op", "infotext": "tab_objectinspect", "padding": true, "singleton": "false", });
+        const tt = this.tabs.addTab(this.tab, true);
+
+        if (tt != this.tab) return;
         this._id = CABLES.uuid();
+
+        this.tab.on("onActivate", () =>
+        {
+            this._showPortValue();
+        });
 
         this.op = gui.corePatch().getOpById(opid);
         if (!this.op)

@@ -104,13 +104,12 @@ export default class TabPanel extends CABLES.EventTarget
             {
                 const t = this._tabs[i];
 
-                const cmd = gui.cmdPallet.addDynamic("tab", "Tab " + t.title,
-                    () =>
-                    {
-                        gui.maintabPanel.show(true);
+                const cmd = gui.cmdPallet.addDynamic("tab", "Tab " + t.title, () =>
+                {
+                    gui.maintabPanel.show(true);
 
-                        this.activateTab(t.id, true);
-                    }, t.icon || "edit");
+                    this.activateTab(t.id, true);
+                }, t.icon || "edit");
                 this._dynCmds.push(cmd);
             }
 
