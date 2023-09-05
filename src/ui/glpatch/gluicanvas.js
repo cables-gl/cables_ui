@@ -253,9 +253,9 @@ export default class GlUiCanvas
         this.glPatch.debugData.targetFps = this._targetFps;
 
         this.glPatch.render(
-            this.width, this.height,
+            this.width, this.height, //
             0, 0, // scroll
-            0,
+            0, //
             0, 0, // mouse
             this._mouseButton // mouse button
         );

@@ -9,8 +9,14 @@ export default class SavedState extends CABLES.EventTarget
         this._statesSaved = {};
         this._statesInitiator = {};
 
-        this._onBeforeUnloadListener = (event) =>
+        window.addEventListener("beforeunload", (event) =>
         {
+            if (this.isSaved)
+            {
+                document.body.style.opacity = 0;
+                return false;
+            }
+
             const message = "unsaved content!";
             if (typeof event == "undefined")
             {
@@ -21,7 +27,7 @@ export default class SavedState extends CABLES.EventTarget
                 event.returnValue = message;
             }
             return message;
-        };
+        });
     }
 
     getBlueprint()
@@ -121,14 +127,14 @@ export default class SavedState extends CABLES.EventTarget
         {
             CABLESUILOADER.talkerAPI.send("setIconSaved");
             ele.byId("patchname").classList.remove("warning");
-            window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
+            // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
             ele.byId("savestates").innerHTML = "";
         }
         else
         {
             CABLESUILOADER.talkerAPI.send("setIconUnsaved");
             ele.byId("patchname").classList.add("warning");
-            window.addEventListener("beforeunload", this._onBeforeUnloadListener);
+            // window.addEventListener("beforeunload", this._onBeforeUnloadListener);
 
             let str = "";
             for (const idx in this._statesSaved)
