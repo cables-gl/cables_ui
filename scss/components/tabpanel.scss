@@ -147,19 +147,16 @@
 
         .tabRow
         {
-            margin: 10px;
-            margin-right: 0px;
-
+            margin-bottom:10px;
         }
 
         .tabRowExpand
         {
-            margin: 10px;
-            margin-right: 0px;
             display:flex;
             flex-grow:1;
             flex: 1 1 auto;
             overflow-y: auto;
+            margin-bottom:10px;
         }
 
         .hljs
@@ -171,16 +168,26 @@
 
     }
 
+
+.padding
+{
+    padding-left:10px;
+}
+
+.closetabx
+{
+    margin-top: 4px;
+    margin-right:10px;
+    float:right;
+    position: absolute;
+    right: 0px;
+}
+
     .tabcontent
     {
         background-color:$background-color-dark;
         max-height:100%;
         height:auto;
-
-.padding
-{
-    padding:10px;
-}
 
 
         &.readonly {
