@@ -1242,7 +1242,7 @@ export default class Gui
 
         ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
         ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-        ele.byId("nav_changelog").addEventListener("click", CABLES.CMD.UI.showChangelog);
+        ele.byId("nav_changelog").addEventListener("click", () => { window.open("https://docs.cables.gl", "_blank"); });
 
         // --- Help menu
         // Documentation
