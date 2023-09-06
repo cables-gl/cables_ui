@@ -172,7 +172,7 @@ export default class Gui
         this._oldCanvasHeight = 0;
         this._oldShowingEditor = false;
         this._eventListeners = {};
-        this._onBeforeUnloadListener = null;
+        // this._onBeforeUnloadListener = null;
 
         this._currentProject = null;
         this.tips = new Tips();
