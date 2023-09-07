@@ -1076,8 +1076,7 @@ export default class ServerOps
                                 {
                                     if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
-                                    if (!CABLES.Patch.getOpClass(opname))
-                                        gui.opSelect().reload();
+                                    if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
                                     loadingModal.setTask("Executing code");
 

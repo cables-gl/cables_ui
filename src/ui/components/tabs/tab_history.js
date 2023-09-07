@@ -5,7 +5,7 @@ export default class MetaHistory
     constructor(tabs)
     {
         this.html = "";
-        this._tab = new CABLES.UI.Tab("history", { "icon": "list", "infotext": "tab_history", "padding": true });
+        this._tab = new CABLES.UI.Tab("History", { "icon": "list", "infotext": "tab_history", "padding": true });
         tabs.addTab(this._tab);
 
         undo.setCallback(this.update.bind(this));
@@ -18,7 +18,7 @@ export default class MetaHistory
     {
         if (!this._tab.isVisible()) return;
 
-        this.html = "<h3>Undo History</h3>";
+        this.html = "<h2>Undo History</h2>";
 
         this.html += "<span onclick=\"CABLES.UI.undo.undo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-left\" ></span></span>";
         this.html += "<span onclick=\"CABLES.UI.undo.redo();\" class=\"iconbutton\"><span class=\"icon icon-arrow-right\"></span></span>";

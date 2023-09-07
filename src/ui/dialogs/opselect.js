@@ -328,8 +328,8 @@ export default class OpSelect
 
     _getMathPortType()
     {
-        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_ARRAY) return "array";
-        if(CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type===CABLES.OP_PORT_TYPE_STRING) return "string";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
+        if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_STRING) return "string";
         return "default";
     }
 
@@ -338,9 +338,9 @@ export default class OpSelect
         if (!this._opSearch.list || !this._html) this.prepare();
 
         let sq = this._getQuery();
-        let mathPortType=this._getMathPortType();
+        let mathPortType = this._getMathPortType();
 
-        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType]) 
+        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
             if (sq.charAt(0) === i)
                 sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];
 
@@ -353,8 +353,6 @@ export default class OpSelect
         };
 
         if (this._newOpOptions.linkNewOpToOp && this._newOpOptions.linkNewOpToOp.objName.toLowerCase().indexOf(".textureeffects") > -1) options.linkNamespaceIsTextureEffects = true;
-
-
 
         this._opSearch.search(query);
         const perf = CABLES.UI.uiProfiler.start("opselect.searchLoop");
@@ -385,7 +383,6 @@ export default class OpSelect
         tinysort.defaults.order = "desc";
         tinysort(".searchresult", { "data": "score" });
         perfTinysort.finish();
-
 
         this.navigate(0);
 
@@ -604,23 +601,22 @@ export default class OpSelect
 
     addOp(opname, reopenModal = false, itemType = "op")
     {
+        this._newOpOptions.onOpAdd = null;
 
-        this._newOpOptions.onOpAdd=null;
-        
-        const sq=this._getQuery();
-        const mathPortType=this._getMathPortType();
+        const sq = this._getQuery();
+        const mathPortType = this._getMathPortType();
 
-        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType]) 
+        for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
         {
             if (sq.charAt(0) === i)
             {
-                let mathNum=parseFloat(sq.substr(1));
-                if(mathPortType=="string")mathNum=sq.substr(1);
+                let mathNum = parseFloat(sq.substr(1));
+                if (mathPortType == "string")mathNum = sq.substr(1);
 
-                this._newOpOptions.onOpAdd=
-                    (op)=>
+                this._newOpOptions.onOpAdd =
+                    (op) =>
                     {
-                        if(op.portsIn.length>1 && mathNum==mathNum)
+                        if (op.portsIn.length > 1 && mathNum == mathNum)
                         {
                             op.portsIn[1].set(mathNum);
                         }
@@ -628,7 +624,7 @@ export default class OpSelect
                     };
             }
         }
-        
+
         if (opname && opname.length > 2)
         {
             this._newOpOptions.createdLocally = true;

@@ -146,6 +146,7 @@ export default class OpSearch extends CABLES.EventTarget
                 scoreDebug += "+5 query quals shortname<br/>";
             }
 
+
             if (orig.length > 1 && list[i]._lowerCaseName.indexOf(orig) > -1)
             {
                 found = true;
@@ -164,6 +165,12 @@ export default class OpSearch extends CABLES.EventTarget
                 }
             }
 
+            if (list[i].collectionOpNames && list[i].collectionOpNames.indexOf(orig) > -1)
+            {
+                found = true;
+                points += 1;
+                scoreDebug += "+1 is op in collection (" + query + ")<br/>";
+            }
 
             if (found)
             {
@@ -285,6 +292,7 @@ export default class OpSearch extends CABLES.EventTarget
                         scoreDebug += "+2 exact name (" + query + ")<br/>";
                     }
                 }
+
 
                 if (list[i]._nameSpace.indexOf("ops.math") > -1)
                 {
@@ -505,12 +513,22 @@ export default class OpSearch extends CABLES.EventTarget
                 if (defaultOps.isExtension(opName)) type = "extension";
                 if (defaultOps.isPatchOp(opName)) type = "patchop";
 
+                const isTeamOp = defaultOps.isTeamOp(opName);
+
                 const isCollection = defaultOps.isCollection(opName);
+
+                let collectionOpNames = null;
+                if (isCollection)
+                {
+                    const a = gui.opDocs.getNamespaceDocs(opName);
+                    if (a && a.length > 0 && a[0].ops) collectionOpNames = a[0].ops.join(" ").toLowerCase();
+                }
 
                 const op = {
                     "opId": opId || CABLES.simpleId(),
                     "name": opName,
                     "summary": summary,
+                    "collectionOpNames": collectionOpNames,
                     "nscolor": defaultOps.getNamespaceClassName(opName),
                     "isOp": !defaultOps.isCollection(opName),
                     "userOp": defaultOps.isUserOp(opName),
@@ -519,7 +537,7 @@ export default class OpSearch extends CABLES.EventTarget
                     "teamOp": defaultOps.isTeamOp(opName),
                     "patchOp": defaultOps.isPatchOp(opName),
                     "isExtension": defaultOps.isExtension(opName),
-                    "isTeamNamespace": defaultOps.isTeamOp(opName),
+                    "isTeamNamespace": isTeamOp,
                     "shortName": shortName,
                     "nameSpace": nameSpace,
                     "oldState": oldState,

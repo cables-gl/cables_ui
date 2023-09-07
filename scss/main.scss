@@ -55,6 +55,16 @@ body
 
 .cablesCssUi
 {
+
+    h3,h2
+    {
+        font-weight: normal;
+    }
+
+    .hljs
+    {
+        margin: 0 !important;
+    }
     p
     {
         font-style: normal;

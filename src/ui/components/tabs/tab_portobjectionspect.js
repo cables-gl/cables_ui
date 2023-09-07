@@ -60,8 +60,10 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
             if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
 
             let html = "";
+            html += "<div class=\"tabRows\">";
+            html += "<div class=\"tabRow\">";
             html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect: " + this.op.name + ": " + this.port.name + "</h2>";
-            html += "<br/><br/>";
+            html += "<br/>";
             html += "<a class=\"button\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
             html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
@@ -75,10 +77,14 @@ export default class TabPortObjectInspect extends CABLES.EventTarget
                 if (thing.constructor.name == "Float32Array") html += " - length: " + thing.length + "\n";
             }
 
+            html += "</div>";
 
-            html += "<br/><br/>";
-            html += "<div class=\"tabContentScrollContainer\" style=\"max-height:80%;\"><code><pre id=\"portvaluejson" + this._id + "\"class=\"hljs language-json\">" + convertHTML(serializedThing) + "</code></pre></div>";
-
+            html += "<div class=\"tabRowExpand\">";
+            // html += "<div style=\"max-height:100%;height:100%;\">";
+            html += "<code><pre id=\"portvaluejson" + this._id + "\"class=\"hljs language-json\">" + convertHTML(serializedThing) + "</code></pre>";
+            // html += "</div>";
+            html += "</div>";
+            html += "</div>";
             this.tab.html(html);
             const el = ele.byId("portvaluejson" + this._id);
 
