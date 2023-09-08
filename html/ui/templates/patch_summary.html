@@ -4,7 +4,8 @@
 
 
         <h2 class="nomargin" style="margin-bottom:10px !important;">
-            {{#if project.summary.isPublic}}{{else}}<span class="icon icon-lock"></span>{{/if}}
+            {{#compare opexample.visibility '==' 'unlisted'}<span class="icon icon-eye"></span>{{/compare}}
+            {{#compare opexample.visibility '==' 'private'}<span class="icon icon-lock"></span>{{/compare}}
             <b style="color:var(--color-13)">
                 {{#if project.summary.allowEdit}}
                     <a onclick="gui.patchView.store.showModalTitleDialog(this)">{{project.name}}</a>
