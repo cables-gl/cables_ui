@@ -221,7 +221,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
             }
 
-            const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches
+            const copyCollaborators = (!project.isOpExample && project.visibility !== "public"); // dont do this for example and public patches
 
             let prompt = "Enter a name for the copy of this patch.";
 
@@ -385,7 +385,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
                                 gui.corePatch().settings = gui.corePatch().settings || {};
-                                gui.corePatch().settings.isPublic = false;
                                 gui.corePatch().settings.secret = "";
 
                                 if (checkboxStates && checkboxStates.keepLocalBlueprints)

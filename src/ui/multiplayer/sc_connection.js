@@ -59,7 +59,7 @@ export default class ScConnection extends CABLES.EventTarget
 
     get showGuestUsers()
     {
-        return gui && gui.project() && gui.project() && gui.project().settings && gui.project().settings.isPublic;
+        return gui && gui.project() && gui.project() && gui.project().settings && gui.project().visibility === "public";
     }
 
     get netMouseCursorDelay() { return 100; }
