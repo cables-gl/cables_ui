@@ -387,9 +387,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.isPublic = false;
                                 gui.corePatch().settings.secret = "";
-                                gui.corePatch().settings.isExample = false;
-                                gui.corePatch().settings.isTest = false;
-                                gui.corePatch().settings.isFeatured = false;
 
                                 if (checkboxStates && checkboxStates.keepLocalBlueprints)
                                 {
