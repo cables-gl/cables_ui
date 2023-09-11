@@ -347,7 +347,7 @@ export default class TabPanel extends CABLES.EventTarget
         const iframeTab = this.addTab(new CABLES.UI.Tab(title, options));
         const id = CABLES.uuid();
 
-        const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\"  style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
+        const html = "<div class=\"loading\" id=\"loading" + id + "\" style=\"position:absolute;left:45%;top:34%\"></div><iframe id=\"iframe" + id + "\" allow=\"clipboard-write\" style=\"border:none;width:100%;height:100%\" src=\"" + url + "\" onload=\"document.getElementById('loading" + id + "').style.display='none';\"></iframe";
         iframeTab.contentEle.innerHTML = html;
         iframeTab.contentEle.style.padding = "0px";
         if (options.gotoUrl)
@@ -360,6 +360,7 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
         const frame = document.getElementById("iframe" + id);
+
         const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
 
