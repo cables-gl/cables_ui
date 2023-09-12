@@ -309,9 +309,9 @@ export default class Gizmo
                         }
                     });
                 }(
-                    self._draggingPort.parent.patch,
+                    self._draggingPort.op.patch,
                     self._draggingPort.getName(),
-                    self._draggingPort.parent.id,
+                    self._draggingPort.op.id,
                     self._origValue,
                     self._draggingPort.get()
                 ));
@@ -333,7 +333,7 @@ export default class Gizmo
 
             document.removeEventListener("mousemove", move, false);
 
-            if (CABLES.UI) gui.opParams.show(self._draggingPort.parent);
+            if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
         }
 
         function move(e)
@@ -346,7 +346,7 @@ export default class Gizmo
             self._dragSum += v;
             const newValue = self._origValue + self._dragSum;
             self._draggingPort.set(newValue);
-            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.parent.id, self._draggingPort.getName(), newValue);
+            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
         }
 
         function lockChange(e)
