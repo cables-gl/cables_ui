@@ -328,6 +328,9 @@ export default class OpSelect
 
     _getMathPortType()
     {
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_STRING) return "string";
+
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_STRING) return "string";
         return "default";
@@ -339,7 +342,6 @@ export default class OpSelect
 
         let sq = this._getQuery();
         let mathPortType = this._getMathPortType();
-
         for (let i in CABLES.UI.DEFAULTMATHOPS[mathPortType])
             if (sq.charAt(0) === i)
                 sq = CABLES.UI.DEFAULTMATHOPS[mathPortType][i];

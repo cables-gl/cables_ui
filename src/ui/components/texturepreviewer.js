@@ -49,20 +49,19 @@ export default class TexturePreviewer
 
     _initListener()
     {
-
-        if(!window.gui)
+        if (!window.gui)
         {
-            console.log("waiting for gui")
-            setTimeout(this._initListener.bind(this),300);
+            console.log("waiting for gui");
+            setTimeout(this._initListener.bind(this), 300);
             return;
         }
 
         gui.opParams.on("opSelected", () =>
         {
-            let foundPreview=false;
-            const ports=gui.opParams.op.portsOut;
+            let foundPreview = false;
+            const ports = gui.opParams.op.portsOut;
 
-            for(let i=0;i<ports.length;i++)
+            for (let i = 0; i < ports.length; i++)
             {
                 if (!foundPreview && ports[i].uiAttribs.preview)
                 {
@@ -70,7 +69,6 @@ export default class TexturePreviewer
                     return;
                 }
             }
-           
         });
     }
 
@@ -81,10 +79,11 @@ export default class TexturePreviewer
         {
             tp = this.updateTexturePort(this._lastClickedP);
         }
-        if (!tp)
+        if (!tp || !this._enabled)
         {
             return;
         }
+
         let port = tp;
         if (tp.port)port = tp.port;
 
@@ -115,7 +114,7 @@ export default class TexturePreviewer
 
             if (!this._mesh)
             {
-                const geom = new CGL.Geometry("preview op rect");
+                const geom = new CGL.Geometry("tex preview rect");
                 geom.vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
                 geom.texCoords = [
                     1.0, 1.0,
@@ -127,7 +126,7 @@ export default class TexturePreviewer
             }
             if (!this._shader)
             {
-                this._shader = new CGL.Shader(cgl, "MinimalMaterial");
+                this._shader = new CGL.Shader(cgl, "texPreviewShader");
                 this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
                 this._shader.setSource(srcShaderVertex, srcShaderFragment);
                 this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
@@ -279,7 +278,6 @@ export default class TexturePreviewer
 
     enableBgPreview(enabled)
     {
-
         this._enabled = enabled;
         if (!enabled)
         {

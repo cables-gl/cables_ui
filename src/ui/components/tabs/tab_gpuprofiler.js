@@ -16,7 +16,7 @@ export default class GpuProfiler
         if (glQueryExt)gui.corePatch().cgl.profileData.doProfileGlQuery = true;
 
         gui.corePatch().on("performance", this.update.bind(this));
-
+        gui.corePatch().cgl.profileData.glQueryData = {};
         this.update();
     }
 
@@ -34,8 +34,6 @@ export default class GpuProfiler
 
             for (let i in glQueryData)
             {
-                // console.log(glQueryData[i]);
-
                 arr.push(glQueryData[i]);
                 allTimes += (glQueryData[i].time || 0);
             }
@@ -45,8 +43,7 @@ export default class GpuProfiler
                 arr[i].perc = arr[i].time / allTimes;
             }
 
-            arr.sort((a, b) => { return b.perc - a.perc; });
-
+            arr = arr.sort((a, b) => { return b.perc - a.perc; });
 
             let sum = 0;
             for (let i = 0; i < arr.length; i++)
@@ -54,8 +51,6 @@ export default class GpuProfiler
                 sum += (arr[i].time || 0);
             }
             html += "Sum: " + Math.round(sum * 1000) / 1000 + "ms<br/><br/>";
-
-
             html += "<div class=\"editor_spreadsheet\">";
             html += "<table class=\"spreadsheet\">";
             html += "<tr>";
@@ -63,8 +58,6 @@ export default class GpuProfiler
             html += "<td class=\"colname\">Percent</td>";
             html += "<td class=\"colname\">ID</td>";
             html += "</tr>";
-
-
 
             for (let i = 0; i < arr.length; i++)
             {
