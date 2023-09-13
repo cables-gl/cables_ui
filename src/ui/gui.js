@@ -1296,7 +1296,6 @@ export default class Gui
             const selectedOp = gui.patchView.getSelectedOps();
             const selectedOpId = selectedOp[0].id;
 
-            let portName = null;
             let port = null;
 
             for (let i = 0; i < selectedOp[0].portsIn.length; i++)

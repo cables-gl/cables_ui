@@ -101,6 +101,7 @@ export default class MetaCode
                             "summary": summary,
                             "showPatchLibSelect": showPatchLibSelect,
                             "canEditOp": canEditOp,
+                            "readOnly": !canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,

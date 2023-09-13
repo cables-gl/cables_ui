@@ -627,34 +627,6 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-
-        // items.push({
-        //     "title": "Clone op code",
-        //     func()
-        //     {
-        //         gui.serverOps.cloneDialog(opname);
-        //     }
-        // });
-
-        // items.push({
-        //     "title": "View op code",
-        //     func()
-        //     {
-        //         gui.serverOps.edit(opname, false, false, true);
-        //     }
-        // });
-
-        // if (gui.user.isAdmin)
-        // {
-        //     items.push({
-        //         "title": "Edit op ",
-        //         "iconClass": "icon icon-lock",
-        //         func()
-        //         {
-        //             gui.serverOps.edit(opname, false, false, true);
-        //         },
-        //     });
-        // }
         CABLES.contextMenu.show({ items }, el);
     }
 }
