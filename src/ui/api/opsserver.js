@@ -1009,6 +1009,7 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(op);
+            if (!docs) return console.log("could not find docs", op, opid);
             opid = docs.id;
 
             if (!opid)
