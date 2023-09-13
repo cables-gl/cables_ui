@@ -67,7 +67,7 @@ export default class GlLink
                         this._glPatch._portDragLine.stop();
 
                         gui.corePatch().link(
-                            fromOp, this._glPatch._portDragLine._startPortName, otherPort.parent, otherPort.name);
+                            fromOp, this._glPatch._portDragLine._startPortName, otherPort.op, otherPort.name);
 
                         return;
                     }
