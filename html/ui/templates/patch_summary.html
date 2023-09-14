@@ -43,8 +43,10 @@
             {{/each}}
             <br/><br/>
         {{/if}}
-        {{#if project.summary.exampleForOp }}
-            <a target="_blank" href="{{cablesUrl}}/op/{{project.summary.exampleForOp}}" class="button-small">Example for {{project.summary.exampleForOp}}</a>
+        {{#if project.summary.exampleForOps }}
+            {{#each project.summary.exampleForOps}}
+                <a target="_blank" href="{{../cablesUrl}}/op/{{.}}" class="button-small">Example for {{.}}</a>
+            {{/each}}
             <br/><br/>
         {{/if}}
 

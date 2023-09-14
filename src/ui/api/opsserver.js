@@ -1008,7 +1008,12 @@ export default class ServerOps
         }
         else
         {
-            console.log("deprecated: use serverOps.edit with op not just opname!");
+            const docs = gui.opDocs.getOpDocByName(op);
+            if (!docs) return console.log("could not find docs", op, opid);
+            opid = docs.id;
+
+            if (!opid)
+                console.log("deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")

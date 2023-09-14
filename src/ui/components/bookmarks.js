@@ -1,7 +1,7 @@
 import defaultops from "../defaultops";
 import text from "../text";
 import { getHandleBarHtml } from "../utils/handlebars";
-import TreeView from "./treeview";
+
 
 export default class Bookmarks
 {
@@ -33,39 +33,39 @@ export default class Bookmarks
 
     getHtml()
     {
-        if (this.needRefreshSubs)
-        {
-            const subs = gui.patchView.getSubPatches(true);
-            const perf = CABLES.UI.uiProfiler.start("bookmark panel subpatches");
+        // if (this.needRefreshSubs)
+        // {
+        //     const subs = gui.patchView.getSubPatches(true);
+        //     const perf = CABLES.UI.uiProfiler.start("bookmark panel subpatches");
 
-            this.needRefreshSubs = false;
-            for (let i = 0; i < subs.length; i++)
-            {
-                const subPatchId = subs[i].id;
+        //     this.needRefreshSubs = false;
+        //     for (let i = 0; i < subs.length; i++)
+        //     {
+        //         const subPatchId = subs[i].id;
 
-                subs[i].path = gui.patchView.getSubpatchPathArray(subPatchId, null, true);
-                let sortname = "";
+        //         subs[i].path = gui.patchView.getSubpatchPathArray(subPatchId, null, true);
+        //         let sortname = "";
 
-                for (let j = 0; j < subs[i].path.length; j++)
-                    sortname = subs[i].path[j].name + "+" + sortname;
+        //         for (let j = 0; j < subs[i].path.length; j++)
+        //             sortname = subs[i].path[j].name + "+" + sortname;
 
-                subs[i].sortname = sortname;
-            }
+        //         subs[i].sortname = sortname;
+        //     }
 
-            subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
+        //     subs.sort(function (a, b) { return a.sortname.localeCompare(b.sortname); });
 
-            for (let i = 0; i < subs.length; i++)
-            {
-                subs[i].indent = "";
-                for (let j = 0; j < subs[i].path.length; j++)
-                {
-                    subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;";
-                }
-            }
-            this._subs = subs;
+        //     for (let i = 0; i < subs.length; i++)
+        //     {
+        //         subs[i].indent = "";
+        //         for (let j = 0; j < subs[i].path.length; j++)
+        //         {
+        //             subs[i].indent += "&nbsp;&nbsp;&nbsp;&nbsp;";
+        //         }
+        //     }
+        //     this._subs = subs;
 
-            perf.finish();
-        }
+        //     perf.finish();
+        // }
 
 
         const perf = CABLES.UI.uiProfiler.start("bookmarks");
