@@ -24,7 +24,18 @@ export default class Exporter
             url += "?version=" + this._versionId;
         }
 
-        const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
-        new ModalDialog({ "html": html, "nopadding": true, "persistInIdleMode": true });
+        gui.mainTabs.addIframeTab(
+            "Export Patch ",
+            url,
+            {
+                "icon": "settings",
+                "closable": true,
+                "singleton": false,
+                "gotoUrl": url
+            },
+            true);
+    
+        // const html = "<iframe src=\"" + url + "/\" style=\"width:720px;height:600px;border:0;outline:0\"/>";
+        // new ModalDialog({ "html": html, "nopadding": true, "persistInIdleMode": true });
     }
 }

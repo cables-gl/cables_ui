@@ -11,25 +11,6 @@ export default class ModalPortValue
         this._port = null;
     }
 
-    showJson(opid, which)
-    {
-        const op = gui.corePatch().getOpById(opid);
-        if (!op)
-        {
-            this._log.warn("opid not found:", opid);
-            return;
-        }
-        const port = op.getPort(which);
-        if (!port)
-        {
-            this._log.warn("port not found:", which);
-            return;
-        }
-
-        this._port = port;
-        const modal = new ModalDialog({});
-        this._showPortValue(port.name, modal);
-    }
 
     showJsonStructure(opid, which)
     {
@@ -221,11 +202,11 @@ export default class ModalPortValue
             {
                 inputDataType = "Array";
             }
-            const jsonInfo = printJsonInfo(thing, port.parent, port.name, inputDataType);
+            const jsonInfo = printJsonInfo(thing, port.op, port.name, inputDataType);
 
             let fullHTML = "";
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortStructurePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
             fullHTML += "<br/><br/>";
@@ -241,7 +222,7 @@ export default class ModalPortValue
         {
             let fullHTML = "";
             fullHTML += "<h2><span class=\"icon icon-settings\"></span>&nbsp;Structure</h2>";
-            fullHTML += "port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
+            fullHTML += "port: <b>" + title + "</b> of <b>" + port.op.name + "</b> ";
             fullHTML += "<br/><br/>";
             fullHTML += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
 
@@ -250,110 +231,7 @@ export default class ModalPortValue
     }
 
 
-    _showPortValue(title)
-    {
-        const port = this._port;
-        function convertHTML(str)
-        {
-            const regex = /[&|<|>|"|']/g;
-            const htmlString = str.replace(regex, function (match)
-            {
-                if (match === "&") return "&amp;";
-                else if (match === "<") return "&lt;";
-                else if (match === ">") return "&gt;";
-                else if (match === "\"") return "&quot;";
-                else return "&apos;";
-            });
-            return htmlString;
-        }
 
-
-        try
-        {
-            const thing = port.get();
-            let serializedThing = thing;
-            if (typeof thing !== "string") serializedThing = JSON.stringify(thing, null, 2);
-
-            if (serializedThing == "{}")
-            {
-                serializedThing = "could not stringify object\n\n";
-                if (thing) for (let i in thing) serializedThing += "\n" + i + " (" + typeof thing[i] + ")";
-            }
-
-
-            let html = "";
-            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-            html += "<br/><br/>";
-            html += "<a class=\"button \" onclick=\"gui.opPortModal.updatePortValuePreview('" + title + "')\"><span class=\"icon icon-refresh\"></span>Update</a>";
-            html += "&nbsp;";
-            html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
-
-            html += "<br/><br/>";
-
-            if (thing && thing.constructor)
-            {
-                html += "class name:" + thing.constructor.name + " \n";
-
-                if (thing.constructor.name == "Array") html += " - length: " + thing.length + "\n";
-                if (thing.constructor.name == "Float32Array") html += " - length: " + thing.length + "\n";
-            }
-
-
-            html += "<br/><br/>";
-            html += "<pre><code id=\"portvalue\" class=\"code hljs language-json\">" + convertHTML(serializedThing) + "</code></pre>";
-
-            new ModalDialog({ "html": html });
-
-            const el = ele.byId("portvalue");
-
-
-            hljs.highlightElement(el);
-
-            ele.byId("copybutton").addEventListener("click", (e) =>
-            {
-                this.copyPortValuePreview(e, title);
-            });
-        }
-        catch (ex)
-        {
-            let html = "";
-            html += "<h2><span class=\"icon icon-search\"></span>&nbsp;Inspect</h2>";
-            html += "Port: <b>" + title + "</b> of <b>" + port.parent.name + "</b> ";
-            html += "<br/><br/>";
-
-            const thing = port.get();
-
-            if (thing && thing.constructor)
-            {
-                html += "" + thing.constructor.name + " \n";
-
-                if (thing.constructor.name === "Array") html += " - length: " + thing.length + "\n";
-                if (thing.constructor.name === "Float32Array") html += " - length: " + thing.length + "\n";
-            }
-
-            html += "<br/><br/>";
-            html += "<pre><code id=\"portvalue\" class=\"code hljs json\">Unable to serialize Array/Object:<br/>" + ex.message + "</code></pre>";
-
-            new ModalDialog({ "html": html });
-        }
-    }
-
-    copyPortValuePreview(e, title)
-    {
-        // todo this should copy from the port value directly, not the html element...
-
-        navigator.clipboard
-            .writeText(JSON.stringify(this._port.get()))
-            .then(() =>
-            {
-                CABLES.UI.notify("Copied value to clipboard");
-            })
-            .catch((err) =>
-            {
-                console.warn("copy to clipboard failed", err);
-            });
-    }
 
 
     updatePortValuePreview(title)

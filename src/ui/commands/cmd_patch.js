@@ -103,7 +103,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
     {
         const alwaysSave = gui.user.isAdmin;
         const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
-        if (gui.project().settings.isTest)
+        if (gui.project().summary && gui.project().summary.isTest)
         {
             doSave = false;
 
@@ -668,7 +668,7 @@ CABLES_CMD_PATCH.editOp = function (userInteraction)
     {
         for (let i = 0; i < selops.length; i++)
         {
-            gui.serverOps.edit(selops[i].objName, false, null, userInteraction);
+            gui.serverOps.edit(selops[i], false, null, userInteraction);
         }
     }
 };
@@ -930,6 +930,30 @@ CABLES_CMD_PATCH.updateLocalChangedBlueprints = () =>
     if (reloadIcon) ele.hide(reloadIcon);
 };
 
+CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
+{
+    CABLESUILOADER.talkerAPI.send("toggleFav", { "projectId": gui.project()._id }, (err, res) =>
+    {
+        if (!err && res.success && targetElement)
+        {
+            const icon = targetElement.querySelector(".icon");
+            if (icon)
+            {
+                if (res.favstate)
+                {
+                    icon.classList.remove("icon-heart");
+                    icon.classList.add("icon-heart-fill");
+                }
+                else
+                {
+                    icon.classList.remove("icon-heart-fill");
+                    icon.classList.add("icon-heart");
+                }
+            }
+        }
+    });
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
@@ -1185,6 +1209,11 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
+    {
+        "cmd": "toggle patch like",
+        "func": CABLES_CMD_PATCH.togglePatchLike,
+        "category": "patch"
+    }
 
 
 );

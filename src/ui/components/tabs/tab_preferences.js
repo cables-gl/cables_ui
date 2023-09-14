@@ -32,6 +32,8 @@ export default class Preferences
     {
         if (value === null)value = false;
         const elements = document.getElementsByClassName("prefswitch");
+
+
         for (let i = 0; i < elements.length; i++)
         {
             if (elements[i].dataset.setting == name)
@@ -48,6 +50,8 @@ export default class Preferences
         this.setSwitchValue("theme-bright", userSettings.get("theme-bright"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
+
+        this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
         this.setSwitchValue("texpreviewSize", userSettings.get("texpreviewSize"));
         this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
@@ -72,6 +76,12 @@ export default class Preferences
         this.setSwitchValue("disableSnapLines", userSettings.get("disableSnapLines"));
 
         this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
+        this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
+
+        this.setSwitchValue("patch_button_scroll", userSettings.get("patch_button_scroll") || "2");
+        this.setSwitchValue("patch_allowCableDrag", userSettings.get("patch_allowCableDrag") || false);
+
+
 
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
 
@@ -81,6 +91,9 @@ export default class Preferences
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");
         this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
+
+        this.setSwitchValue("formatcode", userSettings.get("formatcode") || false);
+
         // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
     }
 
@@ -96,6 +109,7 @@ export default class Preferences
             elements[i].addEventListener("click", (e) =>
             {
                 let v = e.target.dataset.value;
+
                 if (v === "true") v = true;
                 if (v === "false") v = false;
 
@@ -110,10 +124,7 @@ export default class Preferences
             {
                 let v = e.target.value;
                 if (e.target.classList.contains("numberinput")) v = parseFloat(v);
-                if (v == v)
-                {
-                    userSettings.set(e.target.dataset.setting, v);
-                }
+                if (v == v) userSettings.set(e.target.dataset.setting, v);
             });
         }
 

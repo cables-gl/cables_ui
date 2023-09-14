@@ -47,19 +47,21 @@ export default class GlPatchAPI
                 {
                     const link = op.portsIn[ip].links[il];
 
-                    let visible = true;// link.portIn.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+                    let visible = true;// link.portIn.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
 
                     const l = new GlLink(
                         this._glPatch,
                         link,
                         link.id,
-                        link.portIn.parent.id,
-                        link.portOut.parent.id,
+                        link.portIn.op.id,
+                        link.portOut.op.id,
                         link.portIn.name,
                         link.portOut.name,
                         link.portIn.id,
                         link.portOut.id,
-                        link.portIn.type, visible, link.portIn.parent.uiAttribs.subPatch);
+                        link.portIn.type,
+                        visible,
+                        link.portIn.op.uiAttribs.subPatch);
                 }
             }
         }
@@ -88,6 +90,8 @@ export default class GlPatchAPI
 
         if (flowMode == 0 && this._currentFlowMode != 0)
         {
+            const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode 0");
+
             for (let i = 0; i < this._patch.ops.length; i++)
             {
                 const op = this._patch.ops[i];
@@ -98,6 +102,7 @@ export default class GlPatchAPI
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
                     const thePort = op.portsOut[ip];
+                    thePort.apf = -1;
                     if (thePort)
                     {
                         const glp = glop.getGlPort(thePort.name);
@@ -107,25 +112,33 @@ export default class GlPatchAPI
                 for (let ip = 0; ip < op.portsIn.length; ip++)
                 {
                     const thePort = op.portsIn[ip];
+                    thePort.apf = -1;
                     const glp = glop.getGlPort(thePort.name);
                     if (glp)glp.setFlowModeActivity(DEFAULT_ACTIVITY);
                 }
             }
 
             for (let i in this._glPatch.links) this._glPatch.links[i].setFlowModeActivity(DEFAULT_ACTIVITY);
+
+            perf.finish();
         }
 
         this._currentFlowMode = flowMode;
 
         if (flowMode == 0) return;
 
-        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = this._glPatch.frameCount;
+        const frameCount = gui.corePatch().cgl.fpsCounter.frameCount;
+        if (this._flowvisStartFrame == 0) this._flowvisStartFrame = frameCount;
         if (this._glPatch.frameCount - this._flowvisStartFrame < 6) return;
         if (this._glPatch.frameCount % 6 != 0) return;
 
+
+        const frames = this._glPatch.frameCount - this._flowvisStartFrame;
+
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
 
-        const numUpdates = Math.min(250, this._patch.ops.length);
+        let numUpdates = Math.min(250, this._patch.ops.length);
+
 
         for (let ii = 0; ii < numUpdates; ii++)
         {
@@ -133,12 +146,31 @@ export default class GlPatchAPI
             const op = this._patch.ops[i];
             const glop = this._glPatch.getGlOp(op);
 
-            for (let ip = 0; ip < op.portsOut.length; ip++) op.portsOut[ip].activityCounter = 0;
-            for (let ip = 0; ip < op.portsIn.length; ip++) op.portsIn[ip].activityCounter = 0;
+            // if (!glop.visible)
+            // {
+            //     numUpdates++;
+            //     if (numUpdates > this._patch.ops.length) break;
+            //     continue;
+            // }
+
+            if (op.portsIn[0] && op.portsIn[0].activityCounterStartFrame == frameCount) continue;
+
+            for (let ip = 0; ip < op.portsOut.length; ip++)
+            {
+                op.portsOut[ip].apf = op.portsOut[ip].activityCounter / (frameCount - op.portsOut[ip].activityCounterStartFrame);
+                op.portsOut[ip].activityCounter = 0;
+                op.portsOut[ip].activityCounterStartFrame = frameCount;
+            }
+            for (let ip = 0; ip < op.portsIn.length; ip++)
+            {
+                op.portsIn[ip].apf = op.portsIn[ip].activityCounter / (frameCount - op.portsIn[ip].activityCounterStartFrame);
+                op.portsIn[ip].activityCounter = 0;
+                op.portsIn[ip].activityCounterStartFrame = frameCount;
+            }
 
             if (glop)
             {
-                if (!glop.visible) continue;
+                // if (glop.visible)
 
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
@@ -159,7 +191,6 @@ export default class GlPatchAPI
                     const glp = glop.getGlPort(thePort.name);
                     if (glp)glp.setFlowModeActivity(thePort.activityCounter);
                 }
-
 
                 for (let il = 0; il < thePort.links.length; il++)
                 {
@@ -231,19 +262,16 @@ export default class GlPatchAPI
                     }
                 });
             }(
-                link.portOut.parent.patch,
+                link.portOut.op.patch,
                 p1.name,
                 p2.name,
-                p1.parent.id,
-                p2.parent.id
+                p1.op.id,
+                p2.op.id
             ));
         }
 
-        let visible = true;// p1.parent.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
-        const l = new GlLink(this._glPatch, link, link.id, p1.parent.id, p2.parent.id,
-            p1.name, p2.name,
-            p1.id, p2.id,
-            p1.type, visible, p1.parent.uiAttribs.subPatch);
+        let visible = true;// p1.op.uiAttribs.subPatch != gui.patchView.getCurrentSubPatch();
+        const l = new GlLink(this._glPatch, link, link.id, p1.op.id, p2.op.id, p1.name, p2.name, p1.id, p2.id, p1.type, visible, p1.op.uiAttribs.subPatch);
     }
 
     _onUnLink(a, b, link)
@@ -275,11 +303,11 @@ export default class GlPatchAPI
                 }
             });
         }(
-            link.portOut.parent.patch,
+            link.portOut.op.patch,
             link.portIn.getName(),
             link.portOut.getName(),
-            link.portIn.parent.id,
-            link.portOut.parent.id
+            link.portIn.op.id,
+            link.portOut.op.id
         ));
 
         this._glPatch.deleteLink(link.id);
@@ -301,13 +329,21 @@ export default class GlPatchAPI
 
     _onDeleteOp(op)
     {
-        if (!undo.paused()) gui.setStateUnsaved();
+        // if (!undo.paused()) gui.setStateUnsaved();
+        if (!undo.paused()) gui.savedState.setUnSaved("patchApiOnDeleteOp");
+
+        let updateSubs = false;
+
+        if (op.storage && (op.storage.subPatchVer || op.storage.blueprintVer)) updateSubs = true;
 
         this._glPatch.deleteOp(op.id);
 
         clearInterval(CABLES.UI.hoverInterval);
         CABLES.UI.hoverInterval = -1;
         CABLES.UI.hideToolTip();
+
+        if (updateSubs)
+            gui.bookmarks.needRefreshSubs = true;
     }
 
     showOpParams(opid)

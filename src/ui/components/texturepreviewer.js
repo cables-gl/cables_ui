@@ -8,7 +8,7 @@ import ele from "../utils/ele";
 
 export default class TexturePreviewer
 {
-    constructor(tabs)
+    constructor()
     {
         this._log = new Logger();
 
@@ -27,6 +27,8 @@ export default class TexturePreviewer
         this._timer.play();
         this._currentHeight = -1;
         this._currentWidth = -1;
+        this._lastClicked = null;
+        this.pinned = false;
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
@@ -38,12 +40,50 @@ export default class TexturePreviewer
             if (key == "bgpreview") this.enableBgPreview(v);
         });
 
+
+        this._initListener();
+
+
         this.enableBgPreview(userSettings.get("bgpreviewMax"));
     }
 
+    _initListener()
+    {
+        if (!window.gui)
+        {
+            console.log("waiting for gui");
+            setTimeout(this._initListener.bind(this), 300);
+            return;
+        }
+
+        gui.opParams.on("opSelected", () =>
+        {
+            let foundPreview = false;
+            const ports = gui.opParams.op.portsOut;
+
+            for (let i = 0; i < ports.length; i++)
+            {
+                if (!foundPreview && ports[i].uiAttribs.preview)
+                {
+                    this.selectTexturePort(ports[i]);
+                    return;
+                }
+            }
+        });
+    }
+
+
     _renderTexture(tp, element)
     {
-        if (!tp) return;
+        if (!tp && this._lastClickedP)
+        {
+            tp = this.updateTexturePort(this._lastClickedP);
+        }
+        if (!tp || !this._enabled)
+        {
+            return;
+        }
+
         let port = tp;
         if (tp.port)port = tp.port;
 
@@ -58,21 +98,23 @@ export default class TexturePreviewer
 
         if (!previewCanvasEle)
         {
+            console.log("no previewCanvasEle");
             return;
         }
+
         const previewCanvas = previewCanvasEle.getContext("2d");
 
         if (previewCanvas && port && port.get())
         {
             const perf = CABLES.UI.uiProfiler.start("texpreview");
-            const cgl = port.parent.patch.cgl;
+            const cgl = port.op.patch.cgl;
 
             if (!this._emptyCubemap) this._emptyCubemap = CGL.Texture.getEmptyCubemapTexture(cgl);
-            port.parent.patch.cgl.profileData.profileTexPreviews++;
+            port.op.patch.cgl.profileData.profileTexPreviews++;
 
             if (!this._mesh)
             {
-                const geom = new CGL.Geometry("preview op rect");
+                const geom = new CGL.Geometry("tex preview rect");
                 geom.vertices = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0];
                 geom.texCoords = [
                     1.0, 1.0,
@@ -84,7 +126,7 @@ export default class TexturePreviewer
             }
             if (!this._shader)
             {
-                this._shader = new CGL.Shader(cgl, "MinimalMaterial");
+                this._shader = new CGL.Shader(cgl, "texPreviewShader");
                 this._shader.setModules(["MODULE_VERTEX_POSITION", "MODULE_COLOR", "MODULE_BEGIN_FRAG"]);
                 this._shader.setSource(srcShaderVertex, srcShaderFragment);
                 this._shaderTexUniform = new CGL.Uniform(this._shader, "t", "tex", texSlot);
@@ -188,8 +230,8 @@ export default class TexturePreviewer
         if (!meta)
         {
             const patchRect = gui.patchView.element.getBoundingClientRect();
-            maxWidth = Math.min(patchRect.width, port.parent.patch.cgl.canvasWidth);
-            maxHeight = Math.min(patchRect.height, port.parent.patch.cgl.canvasHeight);
+            maxWidth = Math.min(patchRect.width, port.op.patch.cgl.canvasWidth);
+            maxHeight = Math.min(patchRect.height, port.op.patch.cgl.canvasHeight);
         }
 
         const aspect = tex.height / tex.width;
@@ -211,7 +253,7 @@ export default class TexturePreviewer
     {
         if (o.port.get())
             return {
-                "title": o.port.parent.getName() + " - " + o.port.name,
+                "title": o.port.op.getName() + " - " + o.port.name,
                 "id": o.id,
                 "opid": o.opid,
                 "order": parseInt(o.lastTimeClicked, 10),
@@ -236,6 +278,7 @@ export default class TexturePreviewer
 
     enableBgPreview(enabled)
     {
+        this._enabled = enabled;
         if (!enabled)
         {
             this.pressedEscape();
@@ -245,6 +288,7 @@ export default class TexturePreviewer
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
+            ele.byId("bgpreviewInfoPin").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
@@ -255,6 +299,7 @@ export default class TexturePreviewer
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
+            ele.byId("bgpreviewInfoPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
 
             this._ele.classList.remove("hidden");
@@ -332,6 +377,7 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
+        if (this.pinned) return;
         if (!userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
@@ -340,13 +386,14 @@ export default class TexturePreviewer
             return;
         }
 
+
         ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
         CABLES.UI.hideToolTip();
 
         if (!this._listeningFrame && p)
         {
             this._listeningFrame = true;
-            p.parent.patch.cgl.on("beginFrame", () =>
+            p.op.patch.cgl.on("beginFrame", () =>
             {
                 this.render();
             });
@@ -364,10 +411,10 @@ export default class TexturePreviewer
 
         for (let i = 0; i < this._texturePorts.length; i++)
         {
-            const ele = document.getElementById("preview" + this._texturePorts[i].id);
-            if (ele)
-                if (this._texturePorts[i].port.parent != p.parent) ele.classList.remove("activePreview");
-                else ele.classList.add("activePreview");
+            const el = document.getElementById("preview" + this._texturePorts[i].id);
+            if (el)
+                if (this._texturePorts[i].port.op != p.op) el.classList.remove("activePreview");
+                else el.classList.add("activePreview");
         }
     }
 
@@ -385,7 +432,7 @@ export default class TexturePreviewer
 
         if (p && p.get() && p.get().tex && port.direction == CABLES.PORT_DIR_OUT)
         {
-            const id = port.parent.id + port.name;
+            const id = port.op.id + port.name;
 
             idx = -1;
             for (let i = 0; i < this._texturePorts.length; i++)
@@ -396,8 +443,8 @@ export default class TexturePreviewer
             {
                 doUpdateHtml = true;
                 this._texturePorts.push({
-                    id,
-                    "opid": port.parent.id,
+                    "id": id,
+                    "opid": port.op.id,
                     "port": p,
                     "lastTimeClicked": -1,
                     "doShow": false,
@@ -432,6 +479,70 @@ export default class TexturePreviewer
 
     gotoOp()
     {
-        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.parent.id);
+        if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.op.id);
+    }
+
+    pin(a)
+    {
+        if (a === undefined)
+            this.pinned = !this.pinned;
+        else
+            this.pinned = a;
+
+        if (this.pinned)
+        {
+            ele.byId("texPrevPin").classList.remove("icon-pin-outline");
+            ele.byId("texPrevPin").classList.add("icon-pin-filled");
+        }
+        else
+        {
+            ele.byId("texPrevPin").classList.add("icon-pin-outline");
+            ele.byId("texPrevPin").classList.remove("icon-pin-filled");
+        }
+    }
+
+    deserialize(o)
+    {
+        if (!o) return;
+
+        this.enableBgPreview(o.enabled);
+        const op = gui.corePatch().getOpById(o.op);
+
+        if (!op)
+        {
+            console.log("texpreviewer cant find op");
+            return;
+        }
+
+        const p = op.getPort(o.port);
+
+        this.selectTexturePort(p);
+        this._lastClicked = this.updateTexturePort(p);
+
+        this.pin(o.pinned);
+        this.enableBgPreview(o.enabled);
+    }
+
+    serialize()
+    {
+        const o = {};
+
+        o.pinned = gui.metaTexturePreviewer.pinned;
+
+        if (this._lastClickedP || this._lastClicked)
+        {
+            const p = this._lastClicked || this._lastClickedP.port;
+
+            if (p)
+            {
+                o.port = p.port.name;
+                o.op = p.port.op.id;
+                o.enabled = this._enabled;
+            }
+
+            console.log(o);
+        }
+
+        return o;
     }
 }

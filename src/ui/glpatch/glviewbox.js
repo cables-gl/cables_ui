@@ -110,7 +110,7 @@ export default class GlViewBox
 
     _onCanvasMouseDown(e)
     {
-        if (this.glPatch.mouseState.buttonForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
+        if (this.glPatch.mouseState.buttonStateForScrolling || this.glPatch.spacePressed || this.glPatch.mouseState.numFingers)
         {
             this._oldScrollX = this._scrollX;
             this._oldScrollY = this._scrollY;
@@ -133,10 +133,8 @@ export default class GlViewBox
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
-            (this.glPatch.mouseState.buttonForScrolling && !this.glPatch.isDraggingPort()) ||
-            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonForScrolling)))
-        // && this.glPatch.allowDragging
-        // && !this.glPatch.isDraggingPort()
+            (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonStateForScrolling)))
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
 
@@ -145,7 +143,8 @@ export default class GlViewBox
 
             this.scrollTo(
                 this._oldScrollX + (this._mouseRightDownStartX - e.offsetX) / pixelMulX,
-                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY, true);
+                this._oldScrollY + (this._mouseRightDownStartY - e.offsetY) / pixelMulY,
+                true);
         }
     }
 
@@ -178,6 +177,7 @@ export default class GlViewBox
 
     _onCanvasWheel(event)
     {
+        if (this.glPatch.mouseState.buttonMiddle) return;
         this.setMousePos(event.offsetX, event.offsetY);
 
         let delta = 5;
@@ -244,13 +244,16 @@ export default class GlViewBox
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], dur, true);
+                y - mouseAfterZoom[1],
+                dur,
+                true);
         }
         else
         {
             this.scrollTo(
                 x - mouseAfterZoom[0],
-                y - mouseAfterZoom[1], true);
+                y - mouseAfterZoom[1],
+                true);
         }
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -323,7 +326,6 @@ export default class GlViewBox
                     else ele.show(ele.byId("patchnavhelperBounds"));
                 }
             }
-
         }
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
@@ -342,8 +344,6 @@ export default class GlViewBox
 
     animateScrollTo(x, y, dur, userInteraction)
     {
-        // console.log("animscrollto",x,y);
-
         let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
         if (userInteraction)p = 0;
         if (p != p)p = 0;
@@ -358,14 +358,14 @@ export default class GlViewBox
 
     scrollTo(x, y, userInteraction)
     {
-        let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
-        if (userInteraction)p = 0;
-        if (p != p)p = 0;
+        // let p = this._eleTabs.getBoundingClientRect().left / this._viewResX * this._animZoom.getValue(this.glPatch.time + 10);
+        // if (userInteraction)p = 0;
+        // if (p != p)p = 0;
 
         this._animScrollX.clear();
         this._animScrollY.clear();
 
-        this._animScrollX.setValue(this.glPatch.time, x - p);
+        this._animScrollX.setValue(this.glPatch.time, x );
         this._animScrollY.setValue(this.glPatch.time, y);
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -506,7 +506,8 @@ export default class GlViewBox
 
     _storeCurrentSubPatch()
     {
-        this._subPatchViewBoxes[this._currentSubPatchId] = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
+        const o={ "x": this._scrollX, "y": this._scrollY, "z": this._zoom }
+        this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 
     _restoreSubPatch(sub)
@@ -529,19 +530,21 @@ export default class GlViewBox
     {
         this._storeCurrentSubPatch();
 
-        const zoomFactor = 0.03;
+        const zoomFactor = 0.1;
 
-        this._animZoom.clear();
-        this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
-        this._animZoom.setValue(this.glPatch.time, this._zoom);
-        this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
+        dur = 0.5;
 
-        this._animZoom.defaultEasing = this._defaultEasing;
+        // this._animZoom.clear();
+        // this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
+        // this._animZoom.setValue(this.glPatch.time, this._zoom);
+        // this._animZoom.setValue(this.glPatch.time + timeGrey, this._zoom - (this._zoom * zoomFactor));
+
+        // this._animZoom.defaultEasing = this._defaultEasing;
         this._restoreSubPatch(sub);
 
         this._animZoom.clear();
         this._animZoom.setValue(this.glPatch.time, this._zoom + (this._zoom * zoomFactor));
-        this._animZoom.setValue(this.glPatch.time + timeVisibleAgain + dur * 5, this._zoom);
+        this._animZoom.setValue(this.glPatch.time + dur, this._zoom);
 
         if (next)next();
     }

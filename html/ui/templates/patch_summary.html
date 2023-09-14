@@ -1,8 +1,66 @@
 
 <script id="patch_summary" type="text/x-handlebars-template">
+    <div class="panel params_op_head panel_head patch_summary">
 
-    <div class="panel patch_summary" id="patchsummary">
-        <iframe class="iframe" src="{{cablesUrl}}/patch/summary/{{projectId}}"></iframe>
+
+        <h2 class="nomargin" style="margin-bottom:10px !important;">
+            {{#compare project.visibility '==' 'unlisted'}}<span class="icon icon-eye"></span>{{/compare}}
+            {{#compare project.visibility '==' 'private'}}<span class="icon icon-lock"></span>{{/compare}}
+            <b style="color:var(--color-13)">
+                {{#if project.summary.allowEdit}}
+                    <a onclick="gui.patchView.store.showModalTitleDialog(this)">{{project.name}}</a>
+                {{else}}
+                    {{project.name}}
+                {{/if}}
+            </b>{{#if project.summary.owner.username }} by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}{{/if}}</a>
+        </h2>
+
+
+        {{#compare port.uiAttribs.display '!=' 'none' }}
+            <b>Licence</b>:
+            {{#if project.summary.licence.link}}
+                <a href="{{project.summary.licence.link}}" class="link" target="_blank">{{project.summary.licence.name}}</a>
+            {{else}}
+                {{project.summary.licence.name}}
+            {{/if}}
+            <br/>{{project.summary.licence.description}}
+            <br/><br/>
+        {{/compare}}
+
+        {{#if project.teams}}
+            Teams:
+            {{#each project.teams}}
+                {{#unless @first}}, {{/unless}}
+                <a href="{{../cablesUrl}}{{link}}" target="_blank" class="link">{{name}}</a>
+            {{/each}}
+            <br/><br/>
+        {{/if}}
+        {{#if project.summary.patchLists}}
+            Lists:
+            {{#each project.summary.patchLists}}
+                {{#unless @first}}, {{/unless}}
+                <a href="{{../cablesUrl}}{{link}}" target="_blank" class="link">{{name}}</a>
+            {{/each}}
+            <br/><br/>
+        {{/if}}
+        {{#if project.summary.exampleForOps }}
+            {{#each project.summary.exampleForOps}}
+                <a target="_blank" href="{{../cablesUrl}}/op/{{.}}" class="button-small">Example for {{.}}</a>
+            {{/each}}
+            <br/><br/>
+        {{/if}}
+
+        {{#if project.summary.isTest }}
+            <a target="_blank" href="{{cablesUrl}}/tests/{{projectId}}" class="button-small">Run Test </a>
+            <br/><br/>
+        {{/if}}
+
+        <div>
+            <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
+            <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
+            <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
+        </div>
+
     </div>
 
 </script>

@@ -69,6 +69,7 @@ CABLES_CMD_RENDERER.aspect = function (a)
         gui.rendererWidth = gui.rendererHeight * a;
     }
 
+    gui.emitEvent("resizecanvas");
     gui.setLayout();
     gui.canvasManager.getCanvasUiBar().updateCanvasIconBar();
 };

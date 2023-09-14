@@ -39,7 +39,20 @@ export default class GlDragLine
             if (!ele) return;
 
             if (ele.dataset.opid && ele.dataset.portname)
-                this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, ele.dataset.portname);
+            {
+                if (gui && gui.corePatch())
+                {
+                    const op = gui.corePatch().getOpById(ele.dataset.opid);
+                    if (op)
+                    {
+                        const port = op.getPortByName(ele.dataset.portname);
+                        if (port)
+                        {
+                            this._glPatch.emitEvent("mouseUpOverPort", ele.dataset.opid, port);
+                        }
+                    }
+                }
+            }
 
             if ((this._button == MouseState.BUTTON_LEFT || e.altKey) && this._glPort && this._glPort.port) // this._button == MouseState.BUTTON_LEFT &&
             {
@@ -52,7 +65,7 @@ export default class GlDragLine
                         "subPatch": this._glPatch.subPatch,
                         "x": x,
                         "y": this._glPatch.viewBox.mousePatchY
-                    }, this._glPort.port.parent, this._glPort.port);
+                    }, this._glPort.port.op, this._glPort.port);
             }
 
             this.stop();
@@ -130,7 +143,7 @@ export default class GlDragLine
             if (this._startGlPorts.length === 0)
             {
                 // left click
-                gui.patchView.linkPorts(this._startPortOpId, this._startPortId, port.parent.id, portId);
+                gui.patchView.linkPorts(this._startPortOpId, this._startPortId, port.op.id, portId);
             }
             else
             {
@@ -170,7 +183,7 @@ export default class GlDragLine
             return;
         }
 
-        this._startPortOpId = glp.port.parent.id;
+        this._startPortOpId = glp.port.op.id;
         this._startPortId = glp.port.id;
         this._rect = glp.rect;
         this._glPort = glp;

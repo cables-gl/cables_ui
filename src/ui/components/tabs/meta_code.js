@@ -83,25 +83,25 @@ export default class MetaCode
                         doc.attachmentFiles = attachmentFiles;
                     }
 
+                    const opName = this._op.objName;
                     doc.libs = gui.serverOps.getOpLibs(this._op, false);
                     doc.coreLibs = gui.serverOps.getCoreLibs(this._op, false);
-                    summary = gui.opDocs.getSummary(this._op.objName);
+                    summary = gui.opDocs.getSummary(opName);
 
-                    const canEditOp = gui.serverOps.canEditOp(gui.user, this._op.objName);
+                    const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
-                    if (this._op.objName.indexOf("User.") == -1)
-                        this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + this._op.objName;
+                    if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
 
-                    const showPatchLibSelect = defaultops.isUserOp(this._op.objName) || defaultops.isExtensionOp(this._op.objName) || defaultops.isTeamOp(this._op.objName) || defaultops.isPatchOp(this._op.objName);
+                    const showPatchLibSelect = defaultops.isNonCoreOp(opName);
                     const html = getHandleBarHtml("meta_code",
                         {
                             "url": CABLES.sandbox.getCablesUrl(),
                             "op": this._op,
                             "doc": doc,
                             "summary": summary,
-                            "ownsOp": gui.serverOps.ownsOp(this._op.objName),
                             "showPatchLibSelect": showPatchLibSelect,
                             "canEditOp": canEditOp,
+                            "readOnly": !canEditOp,
                             "libs": gui.opDocs.libs,
                             "coreLibs": gui.opDocs.coreLibs,
                             "user": gui.user,

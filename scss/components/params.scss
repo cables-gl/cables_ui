@@ -1,6 +1,14 @@
 
 .cablesCssUi
 {
+
+    #metatabpanel .tabs, #metatabpanel .tabpanel
+    {
+        height:30px !important;
+        max-height: 30px !important;
+        overflow: hidden;
+    }
+
     #opparams
     {
         .button-small
@@ -9,20 +17,34 @@
         }
     }
 
+
+    .panel_head
+    {
+        background-color: var(--color-01);
+        padding-bottom: 15px;
+
+    }
+
     .params
     {
 
 
+        .op-contextmenu {
+            position: absolute;
+            top: 9px;
+            right: 10px;
+        }
         .toggle-bookmark-button
         {
             position: absolute;
-            top: 15px;
+            top: 9px;
             right: 34px;
         }
 
 
         .warning,.warning-experimental,.warning-error
         {
+            margin-top:10px;
             border: 3px solid;
             padding: 6px;
 
@@ -71,16 +93,8 @@
             background-color: $background-color-brighter;
         }
 
-        .op-contextmenu {
-            position: absolute;
-            top: 15px;
-            right: 10px;
-        }
-
         .params_op_head
         {
-            text-align: center;
-            padding-bottom: 0px;
 
             #opname {
                 width: 77%;
@@ -106,8 +120,9 @@
 
             input
             {
-                text-align: center;
+                // text-align: center;
                 margin-bottom: 5px;
+                padding-bottom: 3px;
             }
 
         }
@@ -570,6 +585,7 @@
     {
         color: var(--color-13);
         margin-top:0px;
+        margin-bottom: 5px;
         text-transform: uppercase;
     }
 

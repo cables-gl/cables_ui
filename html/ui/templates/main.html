@@ -82,6 +82,9 @@
     <div id="bgpreviewButtons" class="cbl_iconbar cbl_iconbar_hor">
         <span class="item nonInteractive" style="float: left;" id="bgpreviewInfo"  onclick="gui.metaTexturePreviewer.gotoOp();">
         </span>
+        <span class="item" id="bgpreviewInfoPin">
+            <span id="texPrevPin" class="icon icon-1_25x fright iconhover icon-pin-outline" onclick="gui.metaTexturePreviewer.pin();"></span>
+        </span>
         <!-- <span class="item" id="bgpreviewInfo">
             <span class="icon icon-1_25x fright iconhover icon-x" onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
         </span> -->
@@ -136,6 +139,9 @@
             <li class="main">
                 <div id="patchname" onclick="CABLES.CMD.UI.settings();"></div>
                 <ul class="nav-submenu">
+                    <div id="savestates">
+
+                    </div>
                     <li class="nav_patch_settings" onclick="CABLES.CMD.UI.settings();">Patch settings<span class="shortcut">[cmd_ctrl]`,`</span></li>
 
                     <li class="divide"></li>
@@ -165,7 +171,7 @@
                         Remote Viewer (beta)
                         <span class="icon icon-chevron-right"></span>
                         <ul>
-                            <li><a onclick="CABLES.CMD.UI.openRemoteViewer()">Open in new window</a></li>
+                            <li><a id="nav_remoteViewerLink">Open in new window</a></li>
                             <li class="divide"></li>
                             <li><a>Open on mobile:</a>
                                 <div id="remote_view_qr" style="border: 10px solid white;"></div>
@@ -194,6 +200,8 @@
                     <li id="nav_filemanager">Files</li>
                     <li id="nav_timeline">Timeline</li>
                     <li id="nav_profiler">Profiler</li>
+                    <li id="nav_gpuprofiler">GPU Profiler</li>
+                    <li id="nav_history">Undo History</li>
                     <li id="nav_uploadfile">Upload file</li>
                     <li id="nav_search">Search <span class="shortcut">[cmd_ctrl]`F`</span></li>
                     <li id="nav_cmdplt">Command Palette <span class="shortcut">[cmd_ctrl]`P`</span></li>

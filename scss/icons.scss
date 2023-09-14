@@ -33,7 +33,6 @@
         margin-right:4px;
         cursor:pointer;
 
-
         &:hover
         {
             background-color: var( --color-button-bg-hover);
@@ -130,5 +129,16 @@
         animation: rotating 2s linear infinite;
         vertical-align: sub;
     }
+
+    .icon-empty
+    {
+        background-color: transparent !important;
+    }
+
+    .icon-blueprint
+    {
+        background-color: #5dc0fd !important;
+    }
+
 
 }

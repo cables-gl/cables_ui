@@ -41,14 +41,14 @@
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
             {{#compare port.uiAttribs.display '==' 'buttons' }}
             {{else}}
-            {{#compare port.uiAttribs.display '==' 'button' }}
-            {{else}}
-                {{#if port.uiAttribs.title }}
-                    <i>{{port.uiAttribs.title}}</i>
+                {{#compare port.uiAttribs.display '==' 'button' }}
                 {{else}}
-                    {{port.name}}
-                {{/if}}
-            {{/compare}}
+                    {{#if port.uiAttribs.title }}
+                        <i>{{port.uiAttribs.title}}</i>
+                    {{else}}
+                        {{port.name}}
+                    {{/if}}
+                {{/compare}}
             {{/compare}}
         </span>
 
@@ -67,7 +67,7 @@
                     <tr>
                         <td>
                             <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.parent.id}}',true);">{{{ portIn.parent.name }}}</span><br/>
+                            <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portIn.op.id}}',true);">{{{ portIn.op.name }}}</span><br/>
                         </td>
                     </tr>
                 {{/each}}
@@ -77,7 +77,7 @@
                 {{#each port.links}}
 
                         <a class="info icon-x icon iconhover" data-info="{{ ../texts.portUnlink }}" id="portdelete_{{ ../dirStr }}_{{ ../portnum }}" style="vertical-align:bottom"></a>
-                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.parent.id}}',true);">{{{ portOut.parent.name }}}</span><br/>
+                        <span class="paramsPortLink" onclick="gui.patchView.centerSelectOp('{{portOut.op.id}}',true);">{{{ portOut.op.name }}}</span><br/>
                 {{/each}}
             {{/if}}
         {{/if}}

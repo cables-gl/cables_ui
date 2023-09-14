@@ -8,12 +8,6 @@
                 {{#if opDoc.oldVersion}} OLD {{/if}}
             </p>
 
-            {{#if opDoc.userOp}}
-                <br/>
-                <br/>
-                <a onclick="gui.serverOps.edit('{{ opDoc.name}}');gui.closeModal();" class="button">Edit Op</a>
-            {{/if}}
-
             {{#if opDoc.summaryHtml}}
                 <div class="op-doc__summary">{{{opDoc.summaryHtml}}}</div>
             {{/if}}

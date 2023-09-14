@@ -26,7 +26,7 @@ export default class ModalError
         let stackStr = "";
         for (let i = 0; i < s.length; i++)
         {
-            stackStr += "[" + s[i].parent.objName + " - " + s[i].name + "] ";
+            stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
             if (i != s.length - 1)stackStr += " -> ";
         }
 
@@ -218,7 +218,7 @@ export default class ModalError
             {
                 if (window.gui && (gui.user.isStaff || defaultops.isCurrentUserOp(this.opName)))
                 {
-                    str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "');gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
+                    str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }
             }
         }

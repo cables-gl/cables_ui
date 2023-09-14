@@ -221,7 +221,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
             }
 
-            const copyCollaborators = (!project.isOpExample && !project.settings.isPublic); // dont do this for example and public patches
+            const copyCollaborators = (!project.isOpExample && project.visibility !== "public"); // dont do this for example and public patches
 
             let prompt = "Enter a name for the copy of this patch.";
 
@@ -385,11 +385,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             {
                                 const newProjectId = d.shortId ? d.shortId : d._id;
                                 gui.corePatch().settings = gui.corePatch().settings || {};
-                                gui.corePatch().settings.isPublic = false;
                                 gui.corePatch().settings.secret = "";
-                                gui.corePatch().settings.isExample = false;
-                                gui.corePatch().settings.isTest = false;
-                                gui.corePatch().settings.isFeatured = false;
 
                                 if (checkboxStates && checkboxStates.keepLocalBlueprints)
                                 {
@@ -428,15 +424,17 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 {
                     if (!err) this._saveCurrentProject(cb, _id, _name);
                 }.bind(this), true);
+
+        gui.patchView.removeLostSubpatches();
     }
 
     finishAnimations()
     {
-        document.getElementById("patchname").classList.remove("blinking");
+        const elePatchName = ele.byId("patchname");
+        elePatchName.classList.remove("blinking");
 
-        if (document.getElementById("patchname").dataset.patchname != "undefined")
-            document.getElementById("patchname").innerHTML = document.getElementById("patchname").dataset.patchname;
-
+        if (elePatchName.dataset.patchname != "undefined")
+            elePatchName.innerHTML = elePatchName.dataset.patchname;
 
         setTimeout(() =>
         {
@@ -465,8 +463,18 @@ export default class PatchSaveServer extends CABLES.EventTarget
         {
             const op = ops[i];
             if (op.uiAttribs)
+            {
                 if (defaultops.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
+                {
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
+
+                    if (op.patchId && op.isInBlueprint2())
+                    {
+                        console.log("subpatch in blueprint found!", op);
+                        blueprintIds.push(op.patchId.get());
+                    }
+                }
+            }
 
             if (op.uiAttribs.title == CABLES.getShortOpName(op.objName)) delete op.uiAttribs.title;
         }
@@ -500,6 +508,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
         }
 
+
+        // delete subpatch 2 ops
+        let isu = data.ops.length;
+        while (isu--)
+            if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("blueprint2sub_") == 0))
+                data.ops.splice(isu, 1);
+
+
         if (blueprintIds.length > 0)
         {
             let i = data.ops.length;
@@ -514,10 +530,14 @@ export default class PatchSaveServer extends CABLES.EventTarget
             }
         }
 
+
         data.ui = {
             "viewBox": {},
             "timeLineLength": gui.timeLine().getTimeLineLength()
         };
+
+        data.ui.texPreview = gui.metaTexturePreviewer.serialize();
+
 
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
@@ -582,7 +602,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
 
-
                 // let b64 = Buffer.from(uint8data).toString("base64");
                 // bytesArrToBase
                 let b64 = bytesArrToBase64(uint8data);
@@ -618,7 +637,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             this._log.warn("[save patch error]", err);
                         }
 
-                        gui.setStateSaved();
+                        gui.savedState.setSaved("patchServerApi", 0);
                         if (this._savedPatchCallback) this._savedPatchCallback();
                         this._savedPatchCallback = null;
 
@@ -644,7 +663,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         }
                         else
                         {
-                            CABLES.UI.notify("Patch saved");
+                            CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)
@@ -757,6 +776,49 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const lastSeparatorIndex = filename.lastIndexOf(separator);
         const name = filename.substring(lastSeparatorIndex + 1, lastDotIndex);
         return name;
+    }
+
+    showModalTitleDialog(titleElement = null, cb = null)
+    {
+        const currentProject = gui.project();
+        new CABLES.UI.ModalDialog({
+            "prompt": true,
+            "title": "Patch Title",
+            "text": "Set the title of this patch",
+            "promptValue": currentProject.name,
+            "promptOk": (v) =>
+            {
+                CABLESUILOADER.talkerAPI.send(
+                    "setProjectName",
+                    {
+                        "id": currentProject._id,
+                        "name": v
+                    },
+                    (error, re) =>
+                    {
+                        const newName = re.data ? re.data.name : "";
+                        if (error || !newName)
+                        {
+                            const options = {
+                                "title": "Failed to set project name!",
+                                "html": "Error: " + re.msg,
+                                "warning": true,
+                                "showOkButton": true
+                            };
+                            new CABLES.UI.ModalDialog(options);
+                        }
+                        else
+                        {
+                            CABLESUILOADER.talkerAPI.send("updatePatchName", { "name": newName }, () =>
+                            {
+                                if (titleElement) titleElement.innerText = newName;
+                                gui.setProjectName(newName);
+                            });
+                            if (cb) cb(newName);
+                        }
+                    });
+            }
+        });
     }
 
 

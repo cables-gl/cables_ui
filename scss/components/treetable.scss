@@ -3,6 +3,33 @@
     .treetable
     {
 
+        tr:nth-child(odd)
+        {
+            td
+            {
+                padding-top:0 !important;
+                padding-bottom:0 !important;
+                padding-left:5px;
+                background-color: #262626;
+            }
+        }
+        tr:nth-child(even)
+        {
+            td
+            {
+                padding-top:0 !important;
+                padding-bottom:0 !important;
+                padding-left:5px;
+                background-color: #1e1e1e;
+            }
+        }
+        tr:hover
+        {
+            td
+            {
+                background-color: #444;
+            }
+        }
 
         .treebutton
         {
@@ -47,6 +74,7 @@
         td
         {
             white-space: nowrap;
+            vertical-align: top;
         }
 
 
@@ -64,6 +92,19 @@
         .identBg
         {
             background-size: contain;
+        }
+
+
+        tr.active
+        {
+            td
+            {
+                background-color: var(--color-05);
+                a
+                {
+                    color:var(--color-special)
+                }
+            }
         }
 
     }

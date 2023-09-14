@@ -87,23 +87,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._op.on("onStorageChange", () =>
             {
-                if (this._op.isSubPatchOp())
-                {
-                    this._displayType = this.DISPLAY_SUBPATCH;
-                    this._rectBorder = 1;
-                    this._updateColors();
-                    this.refreshPorts();
-
-                    this._op.patch.on("subpatchExpose", (subpatchid) =>
-                    {
-                        if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
-                            this.refreshPorts();
-                    });
-                }
-                if (this._op.storage && this._op.storage.blueprintVer)
-                {
-                    this._rectBorder = 1;
-                }
+                this._storageChanged();
             });
 
             // if (defaultops.isSubPatchOpName(this._op.objName))
@@ -136,6 +120,25 @@ export default class GlOp extends CABLES.EventTarget
         //     });
     }
 
+    _storageChanged()
+    {
+        if (this._op?.isSubPatchOp())
+        {
+            this._displayType = this.DISPLAY_SUBPATCH;
+            this._rectBorder = 1;
+
+            if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = 2;
+            this._updateColors();
+            this.refreshPorts();
+
+            this._op.patch.on("subpatchExpose", (subpatchid) =>
+            {
+                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
+                    this.refreshPorts();
+            });
+        }
+    }
+
     _initWhenFirstInCurrentSubpatch()
     {
         if (this._wasInCurrentSubpatch) return;
@@ -143,6 +146,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._wasInCurrentSubpatch = true;
 
+        this._storageChanged();
         this.refreshPorts();
 
         if (this._glRectBg)
@@ -504,8 +508,7 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
-            if (this._glTitle.text == String(title))console.log("dupe settitle...");
-            this._glTitle.text = String(title);
+            if (this._glTitle.text != String(title)) this._glTitle.text = String(title);
         }
 
         this.updateSize();
@@ -524,6 +527,19 @@ export default class GlOp extends CABLES.EventTarget
         let portsWidthOut = 0;
 
         if (!this._glRectBg) return;
+
+
+        let oldGroup = "";
+        let groupIndex = 0;
+        for (let i = 0; i < this._glPorts.length; i++)
+        {
+            if (this._glPorts[i]._port.uiAttribs.group != oldGroup)
+            {
+                oldGroup = this._glPorts[i]._port.uiAttribs.group;
+                groupIndex++;
+            }
+            this._glPorts[i].groupIndex = groupIndex;
+        }
 
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
@@ -689,9 +705,9 @@ export default class GlOp extends CABLES.EventTarget
         for (let i = 0; i < ports.length; i++)
         {
             // console.log(ports[i]);
-            // console.log("this.op.getSubPatch() != ports[i].parent.id", this.op.getSubPatch(), ports[i].parent.id);
+            // console.log("this.op.getSubPatch() != ports[i].op.id", this.op.getSubPatch(), ports[i].op.id);
 
-            if (this.op.getSubPatch() != ports[i].parent.getSubPatch())
+            if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
                 // console.log("yeas");
                 const key = "glPortIndex_" + this.op.id;
@@ -716,7 +732,7 @@ export default class GlOp extends CABLES.EventTarget
         }
 
 
-        // if (ports[0])console.log(ports[0].parent.objName);
+        // if (ports[0])console.log(ports[0].op.objName);
 
         // for (let i = 0; i < ports.length; i++)
         // {
@@ -725,8 +741,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (emit)
         {
-            ports[0].parent.emitEvent("glportOrderChanged");
-            if (this.op.getSubPatch() != ports[0].parent.getSubPatch()) this._op.emitEvent("glportOrderChanged");
+            ports[0].op.emitEvent("glportOrderChanged");
+            if (this.op.getSubPatch() != ports[0].op.getSubPatch()) this._op.emitEvent("glportOrderChanged");
         }
         return ports;
     }
@@ -759,6 +775,9 @@ export default class GlOp extends CABLES.EventTarget
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
 
+
+        this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
+        this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
@@ -812,6 +831,12 @@ export default class GlOp extends CABLES.EventTarget
         this._setVisible(v);
     }
 
+    get visible()
+    {
+        if (!this.isInCurrentSubPatch()) return false;
+        return this._visible;
+    }
+
     getSubPatch()
     {
         return this.opUiAttribs.subPatch;
@@ -844,11 +869,6 @@ export default class GlOp extends CABLES.EventTarget
         if (!visi) this._isHovering = false;
     }
 
-    get visible()
-    {
-        if (!this.isInCurrentSubPatch()) return false;
-        return this._visible;
-    }
 
     _updateIndicators()
     {
@@ -1240,7 +1260,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._setPortIndexAttribs(this._op.portsIn);
 
-        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].parent.objName);
+        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].op.objName);
 
         for (let i = 0; i < this._op.portsIn.length; i++)
         {

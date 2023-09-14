@@ -53,6 +53,7 @@ import { initHandleBarsHelper } from "./utils/handlebars";
 import { arrayContains, uniqueArray } from "./utils/helper";
 import LogFilter from "./utils/loggerfilter";
 import undo from "./utils/undo";
+import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -77,12 +78,13 @@ CABLES.GLGUI.GlPatch = GlPatch;
 CABLES.GLGUI.GlPatchAPI = GlPatchAPI;
 CABLES.GLUI.glUiConfig = gluiconfig;
 CABLES.UI.uiConfig = uiconfig;
+CABLES.UI.TabPortObjectInspect = TabPortObjectInspect;
 
 CABLES.UI.CanvasLens = CanvasLens;
 CABLES.UI.Keypresenter = Keypresenter;
 CABLES.UI.UiProfiler = UiProfiler;
 CABLES.UI.Exporter = Exporter;
-CABLES.UI.PatchServer = PatchSaveServer;
+// CABLES.UI.PatchServer = PatchSaveServer;
 CABLES.GradientEditor = GradientEditor;
 CABLES.UI.Tab = Tab; // needs to stay - is used in ops
 CABLES.UI.FindTab = FindTab;

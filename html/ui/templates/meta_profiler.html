@@ -2,7 +2,7 @@
 <script id="meta_profiler" type="text/x-handlebars-template">
     <div class="tabContentScrollContainer">
         <div>
-            <h3>Profiler</h3>
+            <h2>Profiler</h2>
 
             <a  class="button " id="profilerstartbutton"><span class="icon icon-pie-chart"></span>Start</a>
 
@@ -10,6 +10,8 @@
             <div id="profilerui" style="display:none" class="editor_spreadsheet">
 
                 <a class="button-small" onclick="gui.corePatch().profiler.clear();gui.corePatch().cgl.profileData.heavyEvents=[];">Reset</a>
+                <a class="button-small" id="profiler_pause" onclick="gui.corePatch().profiler.togglePause();">Pause</a>
+
                 <br/>
                 <br/>
                 <div class="text-center">

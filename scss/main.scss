@@ -15,6 +15,10 @@ $border-radius-popups:12px;
 @import 'libs/introjs-custom-styles';
 
 
+.nomargin
+{
+    margin:0px !important;
+}
 
 html,body { // ipad overscroll fix...
   position: fixed;
@@ -51,6 +55,16 @@ body
 
 .cablesCssUi
 {
+
+    h3,h2
+    {
+        font-weight: normal;
+    }
+
+    .hljs
+    {
+        margin: 0 !important;
+    }
     p
     {
         font-style: normal;
@@ -89,6 +103,16 @@ body
     .padded { padding:15px; }
     .text-center { text-align: center; }
     .text-right { text-align: right; }
+
+
+    a.link
+    {
+        text-decoration: underline !important;
+    }
+    a.link:hover
+    {
+        color:var(--color-special);
+    }
 
     a
     {
@@ -700,6 +724,11 @@ body
     // {
     //     opacity: 0;
     // }
+
+    .patch_summary
+    {
+        padding:10px !important;
+    }
 }
 
 

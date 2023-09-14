@@ -1,3 +1,4 @@
+import userSettings from "../components/usersettings";
 
 
 export default class MouseState extends CABLES.EventTarget
@@ -8,7 +9,12 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseOverCanvas = false;
         this._x = 0;
         this._y = 0;
-        this._buttonStates = [false, false, false, false, false];
+        this._buttonStates = {};
+        this._buttonStates[MouseState.BUTTON_LEFT] = false;
+        this._buttonStates[MouseState.BUTTON_RIGHT] = false;
+        this._buttonStates[MouseState.BUTTON_WHEEL] = false;
+        this._buttonStates[MouseState.BUTTON_4] = false;
+        this._buttonStates[MouseState.BUTTON_5] = false;
         this._numFingers = 0;
 
         this._isDragging = false;
@@ -37,6 +43,7 @@ export default class MouseState extends CABLES.EventTarget
         {
             this._numFingers = e.touches.length;
         });
+
         canvas.addEventListener("touchleave", (e) =>
         {
             this._numFingers = e.touches.length;
@@ -48,19 +55,13 @@ export default class MouseState extends CABLES.EventTarget
 
     get mouseOverCanvas() { return this._mouseOverCanvas; }
 
-    get buttonAny() { return this._buttonStates[0] || this._buttonStates[1] || this._buttonStates[2] || this._buttonStates[3]; }
+    get buttonAny() { return this._buttonStates[MouseState.BUTTON_LEFT] || this._buttonStates[MouseState.BUTTON_RIGHT] || this._buttonStates[MouseState.BUTTON_WHEEL] || this._buttonStates[MouseState.BUTTON_4] || this._buttonStates[MouseState.BUTTON_5]; }
 
     get buttonLeft() { return this._buttonStates[MouseState.BUTTON_LEFT]; }
 
     get buttonRight() { return this._buttonStates[MouseState.BUTTON_RIGHT]; }
 
     get buttonMiddle() { return this._buttonStates[MouseState.BUTTON_WHEEL]; }
-
-
-    get buttonForScrolling()
-    {
-        return this._buttonStates[MouseState.BUTTON_RIGHT];
-    }
 
     get isDragging() { return this._isDragging; }
 
@@ -69,21 +70,20 @@ export default class MouseState extends CABLES.EventTarget
         if (this._buttonStates[MouseState.BUTTON_LEFT]) return MouseState.BUTTON_LEFT;
         if (this._buttonStates[MouseState.BUTTON_RIGHT]) return MouseState.BUTTON_RIGHT;
         if (this._buttonStates[MouseState.BUTTON_WHEEL]) return MouseState.BUTTON_WHEEL;
+        if (this._buttonStates[MouseState.BUTTON_4]) return MouseState.BUTTON_4;
+        if (this._buttonStates[MouseState.BUTTON_5]) return MouseState.BUTTON_5;
         return MouseState.BUTTON_NONE;
     }
 
     isButtonDown(button)
     {
-        if (button === undefined)
-        {
-            return this._buttonStates[0] || this._buttonStates[1] || this._buttonStates[2] || this._buttonStates[3];
-        }
+        if (button === undefined) return this.buttonAny;
         return this._buttonStates[button];
     }
 
     _setButtonsUp()
     {
-        for (let i = 0; i < this._buttonStates.length; i++)
+        for (const i in this._buttonStates)
         {
             this._buttonUp(i);
         }
@@ -120,7 +120,7 @@ export default class MouseState extends CABLES.EventTarget
     debug(data)
     {
         data.mouse_OverCanvas = this._mouseOverCanvas;
-        data.mouse_buttonStates = this._buttonStates.join(",");
+        data.mouse_buttonStates = JSON.stringify(this._buttonStates);// .join(",");
     }
 
     _move(e)
@@ -131,7 +131,7 @@ export default class MouseState extends CABLES.EventTarget
         if (this.buttonAny)
         {
             this._isDragging = this._mouseDownX != e.offsetX || this._mouseDownY != e.offsetY;
-            this.draggingDistance = Math.sqrt(Math.pow(e.offsetX - this._mouseDownX, 2) + Math.pow(e.offsetY - this._mouseDownY, 2));
+            this.draggingDistance = Math.sqrt((e.offsetX - this._mouseDownX) ** 2 + (e.offsetY - this._mouseDownY) ** 2);
         }
 
         if (e.buttons) this._setButton(e.buttons, true);
@@ -152,9 +152,37 @@ export default class MouseState extends CABLES.EventTarget
         this._isDragging = false;
         this._setButtonsUp();
     }
+
+    get buttonStateForScrolling()
+    {
+        return this._buttonStates[parseInt(userSettings.get("patch_button_scroll") || MouseState.BUTTON_RIGHT)];
+        // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
+    }
+
+    get buttonStateForLinkDrag()
+    {
+        return this._buttonStates[MouseState.BUTTON_RIGHT];
+    }
+
+    get buttonStateForSelectionArea()
+    {
+        return this._buttonStates[MouseState.BUTTON_LEFT];
+    }
+
+    get buttonForRemoveLink()
+    {
+        return MouseState.BUTTON_RIGHT;
+    }
+
+    get buttonForLinkInsertOp()
+    {
+        return MouseState.BUTTON_LEFT;
+    }
 }
 
 MouseState.BUTTON_NONE = 0;
 MouseState.BUTTON_LEFT = 1;
 MouseState.BUTTON_RIGHT = 2;
 MouseState.BUTTON_WHEEL = 4;
+MouseState.BUTTON_4 = 8;
+MouseState.BUTTON_5 = 16;

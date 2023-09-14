@@ -1,5 +1,6 @@
 import defaultops from "../../defaultops";
 import text from "../../text";
+import userSettings from "../usersettings";
 
 class PortHtmlGenerator
 {
@@ -17,15 +18,14 @@ class PortHtmlGenerator
     getHtmlOpHeader(op)
     {
         let isBookmarked = false;
-        let ownsOp = false;
         let oldversion = false;
         let newestVersion = false;
         let hasExample = false;
-        let doc = null;
+        let doc = null; 
 
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
-        if (defaultops.isCurrentUserOp(op.objName)) ownsOp = true;
+        const canEditOp = gui.serverOps.canEditOp(gui.user, op.objName);
         if (defaultops.isDeprecatedOp(op.objName))
         {
             op.isDeprecated = true;
@@ -56,8 +56,9 @@ class PortHtmlGenerator
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "ownsOp": ownsOp,
+            "showEditButton": canEditOp && defaultops.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
+            "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.sandbox.getCablesUrl(),
             "hasExample": hasExample,
@@ -107,9 +108,9 @@ class PortHtmlGenerator
                 "cablesUrl": CABLES.sandbox.getCablesUrl(),
                 "portnum": i,
                 "isInput": true,
-                "op": ports[i].parent,
+                "op": ports[i].op,
                 "texts": text,
-                "vars": ports[i].parent.patch.getVars(ports[i].type)
+                "vars": ports[i].op.patch.getVars(ports[i].type)
             };
 
             html += this._templatePortGeneral(tmplData);
@@ -148,12 +149,7 @@ class PortHtmlGenerator
                 startGroup = lastGroup;
             }
 
-            // set auto preview
-            if (!foundPreview && ports[i].uiAttribs.preview)
-            {
-                foundPreview = true;
-                gui.texturePreview().selectTexturePort(ports[i]);
-            }
+
 
             const tmplData = {
                 "port": ports[i],
@@ -163,7 +159,7 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "portnum": i,
                 "isInput": false,
-                "op": ports[i].parent
+                "op": ports[i].op
             };
             html += this._templatePortGeneral(tmplData);
             html += this._templatePortOutput(tmplData);

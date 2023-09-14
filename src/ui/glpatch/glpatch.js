@@ -34,6 +34,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._log = new Logger("glpatch");
         this.paused = false;
+        this.blueprint = false;
 
         this.clear = true;
         this._cgl = cgl;
@@ -45,6 +46,9 @@ export default class GlPatch extends CABLES.EventTarget
 
         this._mouseLeaveButtons = 0;
 
+        this._cutLine = [];
+        this.cutLineActive = false;
+
         this._glOpz = {};
         this._hoverOps = [];
         this._hoverOpLongStartTime = 0;
@@ -54,6 +58,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.greyOut = false;
         this._greyOutRect = null;
+        this.startLinkButtonDrag = null;
 
         this.frameCount = 0;
 
@@ -126,7 +131,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._redrawFlash.setSize(50, 5);
         this._redrawFlash.setColor(0, 1, 0, 1);
 
-        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._fadeOutRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_LINEAR });
         this._fadeOutRect = this._overLayRects.createRect();
         this._fadeOutRect.setSize(100000000, 100000000);
         this._fadeOutRect.setPosition(-50000000, -50000000);
@@ -219,6 +224,19 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("-", "Zoom Out", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.zoomStep(1); });
 
         gui.keys.key("t", "Set Title", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.setOpTitle(); });
+
+        gui.keys.key("y", "Cut Cables", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            if (!this.cutLineActive) this._cutLine = [];
+            this.cutLineActive = true;
+        });
+
+        gui.keys.key("y", "Cut Cables", "up", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
+        {
+            this.cutLineActive = false;
+            this._overlaySplines.setSpline(this._cutLineIdx, [0, 0, 0, 0, 0, 0]);
+        });
+
 
         // gui.keys.key("Enter", "enter subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) =>
         // {
@@ -390,6 +408,9 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseMove(e)
     {
+        if (this.startLinkButtonDrag)
+            this.startLinkButtonDrag.startDragging(e);
+
         this._dropInCircleRect = null;
 
         if (e.shiftKey) this._pressedShiftKey = true;
@@ -402,6 +423,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (this._dropInCircleRect)
         {
+            // console.log("_dropInCircleRect", gui.patchView.getSelectedOps().length);
+
             let visible = false;
             if (gui.patchView.getSelectedOps().length == 1)
             {
@@ -461,11 +484,6 @@ export default class GlPatch extends CABLES.EventTarget
             const ops = gui.patchView.getSelectedOps();
             if (ops.length != 1) return;
 
-            // if (gui.opParams.isCurrentOpId(ops[0].id))
-            // {
-            //     gui.metaTabs.activateTabByName("op");
-            // }
-
             if (ops[0].isSubPatchOp())
             {
                 gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
@@ -473,19 +491,17 @@ export default class GlPatch extends CABLES.EventTarget
             }
             if (CABLES.UI.DEFAULTOPNAMES.blueprint == ops[0].objName)
             {
-                // console.log(ops[0].storage);
-
                 const subid = gui.patchView.getSubPatchIdFromBlueprintOpId(ops[0].id);
-
-                console.log("subid", subid, ops[0].id);
-
                 if (subid)gui.patchView.setCurrentSubPatch(subid);
-                // gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
             }
         }
         else
         {
-            this.emitEvent("dblclick", e);
+            if (this._currentSubpatch != 0)
+            {
+                const spOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+                if (spOp) gui.patchView.setCurrentSubPatch(spOp.uiAttribs.subPatch);
+            }
         }
         e.preventDefault();
     }
@@ -552,14 +568,14 @@ export default class GlPatch extends CABLES.EventTarget
             this._cgl.canvas.style.cursor = "auto";
         }
 
-        if (this.greyOutBlue && this._greyOutRect)
-        {
-            this._greyOutRect.setColor(
-                glUiConfig.colors.background[0] * 0.8,
-                glUiConfig.colors.background[1] * 1.5,
-                glUiConfig.colors.background[2] * 2.5,
-                0.25);
-        }
+        // if (this.greyOutBlue && this._greyOutRect)
+        // {
+        //     this._greyOutRect.setColor(
+        //         glUiConfig.colors.background[0] * 0.8,
+        //         glUiConfig.colors.background[1] * 1.5,
+        //         glUiConfig.colors.background[2] * 2.5,
+        //         0.25);
+        // }
     }
 
     _onCanvasMouseDown(e)
@@ -580,6 +596,9 @@ export default class GlPatch extends CABLES.EventTarget
 
     _onCanvasMouseUp(e)
     {
+        this.linkStartedDragging = false;
+        this.startLinkButtonDrag = null;
+
         if (!this._portDragLine.isActive)
         {
             if (this._pauseMouseUntilButtonUp)
@@ -819,11 +838,22 @@ export default class GlPatch extends CABLES.EventTarget
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG || !this.clear)
             this._cgl.gl.clearColor(0, 0, 0, 0);
         else
+        {
+            // if (this.greyOutBlue)
+            // {
+            //     this._cgl.gl.clearColor(
+            //         glUiConfig.colors.background[0] + (0.3 * 0.0),
+            //         glUiConfig.colors.background[1] + (0.3 * 0.1),
+            //         glUiConfig.colors.background[2] + (0.3 * 0.3),
+            //         1);
+            // }
+            // else
             this._cgl.gl.clearColor(
                 glUiConfig.colors.background[0],
                 glUiConfig.colors.background[1],
                 glUiConfig.colors.background[2],
                 glUiConfig.colors.background[3]);
+        }
 
         // if (
         //     this._portDragLine.isActive &&
@@ -872,17 +902,20 @@ export default class GlPatch extends CABLES.EventTarget
         this.snapLines.render(this._canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
-        if (this._fadeOutRect.visible)
-        {
-            this.isAnimated = true;
-            const v = this._fadeOutRectAnim.getValue(this._time);
+        // if (this._fadeOutRect.visible)
+        // {
+        //     this.isAnimated = true;
+        //     const v = this._fadeOutRectAnim.getValue(this._time);
 
-            this._fadeOutRect.setColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                v);
-        }
+        // this.subPatchAnim = 1.0 - this._fadeOutRectAnim.getValue(this._time);
+        // console.log(this.subPatchAnim);
+
+        //     this._fadeOutRect.setColor(
+        //         glUiConfig.colors.background[0],
+        //         glUiConfig.colors.background[1],
+        //         glUiConfig.colors.background[2],
+        //         v);
+        // }
 
 
         this._focusRect.visible = !this._focusRectAnim.isFinished(this._time);
@@ -971,7 +1004,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.debugData.rectInstancer = JSON.stringify(this._rectInstancer.getDebug(), false, 2);
 
-        this.mouseState.debug(this.debugData);
+        // this.mouseState.debug(this.debugData);
 
         this.debugData.renderMs = Math.round((performance.now() - starttime) * 10) / 10;
 
@@ -1001,6 +1034,34 @@ export default class GlPatch extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
+        if (this.cutLineActive)
+        {
+            if (
+                this.viewBox.mousePatchX == this._cutLine[this._cutLine.length - 3] &&
+                this.viewBox.mousePatchY == this._cutLine[this._cutLine.length - 2]) return;
+
+            for (let i in this.links)
+            {
+                if (this.links[i].collideLine(
+                    this._cutLine[this._cutLine.length - 3], this._cutLine[this._cutLine.length - 2], this.viewBox.mousePatchX, this.viewBox.mousePatchY))
+                {
+                    this.links[i].unlink();
+                }
+            }
+
+            this._cutLine.push(this.viewBox.mousePatchX, this.viewBox.mousePatchY, 0);
+
+            if (!this._cutLineIdx)
+            {
+                this._cutLineIdx = this._overlaySplines.getSplineIndex();
+            }
+
+            this._overlaySplines.setSpline(this._cutLineIdx, [...this._cutLine]); // copy dat array
+            this._overlaySplines.setSplineColor(this._cutLineIdx, [1, 0, 0, 1]);
+
+            return;
+        }
+
         if (this._oldMouseMoveX == x && this._oldMouseMoveY == y) return;
 
         this._oldMouseMoveX = x;
@@ -1075,7 +1136,7 @@ export default class GlPatch extends CABLES.EventTarget
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
 
-        if (this.mouseState.buttonLeft && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
+        if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
             if (this._rectInstancer.interactive)
                 if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
@@ -1349,13 +1410,14 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
     // make static util thing...
-    setDrawableColorByType(e, t, brightness)
+    setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
-        let diff = 1;
+        diff = diff || 1;
+        diff *= 0.8;
 
-        if (brightness == 1)diff = 0.8;
-        if (brightness == 2)diff = 1.5;
+        // if (brightness == 1)diff = 0.8;
+        // if (brightness == 2)diff = 1.5;
 
         let col = [0, 0, 0, 0];
 
@@ -1366,6 +1428,7 @@ export default class GlPatch extends CABLES.EventTarget
         else if (t == CABLES.OP_PORT_TYPE_ARRAY) col = [128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1];
         else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
         else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
+
 
         e.setColor(col[0], col[1], col[2], col[3]);
     }
@@ -1448,25 +1511,30 @@ export default class GlPatch extends CABLES.EventTarget
         if (sub != 0 && sub != this._currentSubpatch) this._log.log("set subpatch: ", sub);
         this._currentSubpatch = sub;
 
-        const dur = 0.0;
+        const dur = 0.3;
         const timeGrey = dur * 1.5;
         const timeVisibleAgain = dur * 3.0;
 
-        this._fadeOutRectAnim.clear();
-        this._fadeOutRectAnim.setValue(this._time, 0);
-        this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
-        this._fadeOutRectAnim.setValue(this._time + timeGrey + 0.1, 1);
-        this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
+        // this._fadeOutRectAnim.clear();
+        // this._fadeOutRectAnim.setValue(this._time, 0);
+        // this._fadeOutRectAnim.setValue(this._time + timeGrey, 1.0);
+        // this._fadeOutRectAnim.setValue(this._time + timeGrey + 2, 1);
+        // this._fadeOutRectAnim.setValue(this._time + timeVisibleAgain, 0);
 
         gui.patchView.updateSubPatchBreadCrumb(sub);
 
-        setTimeout(() =>
+        // setTimeout(() =>
+        // {
+        for (const i in this._glOpz)
         {
-            for (const i in this._glOpz)
-            {
-                this._glOpz[i].updateVisible();
-            }
-        }, timeGrey * 1000);
+            this._glOpz[i].updateVisible();
+        }
+
+        for (const i in this._links)
+        {
+            this._links[i].updateVisible();
+        }
+        // }, timeGrey * 1000);
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
         this.snapLines.update();
@@ -1490,12 +1558,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     pause()
     {
+        this._cgl.canvas.style["background-color"] = "rgba(61,61,61,1)";
         this.paused = true;
         this.emitEvent("paused");
     }
 
     resume()
     {
+        this._cgl.canvas.style["background-color"] = "transparent";
         this.paused = false;
         this.emitEvent("resumed");
     }

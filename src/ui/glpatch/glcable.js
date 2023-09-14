@@ -2,6 +2,7 @@ import GlUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import text from "../text";
 import userSettings from "../components/usersettings";
+import GlOp from "./glop";
 
 export default class GlCable
 {
@@ -38,10 +39,12 @@ export default class GlCable
         this._x2 = 0;
         this._y2 = 0;
 
+        this._points = [];
+
         this._distFromPort = 0;
         this._updateDistFromPort();
 
-        this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        this.updateMouseListener();
 
         this.updateLineStyle();
     }
@@ -79,6 +82,39 @@ export default class GlCable
         this._updateLinePos();
     }
 
+    updateMouseListener()
+    {
+        if (this._visible)
+        {
+            if (!this._listenerMousemove)
+                this._listenerMousemove = this._glPatch.on("mousemove", this._checkCollide.bind(this));
+        }
+
+        if ((!this._visible || this._disposed) && this._listenerMousemove)
+        {
+            this._glPatch.off(this._listenerMousemove);
+            this._listenerMousemove = null;
+        }
+    }
+
+    updateVisible()
+    {
+        const old = this._visible;
+        this._visible = (this.subPatch == this._glPatch.getCurrentSubPatch());
+        if (this._disposed) this._visible = false;
+
+        if (old != this._visible)
+        {
+            if (!this._visible)
+            {
+                this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
+            }
+            this.updateMouseListener();
+        }
+    }
+
     set visible(v)
     {
         // is this even needed ? all cables are drawn because the splinedrawer is bound to a specific subpatch anyway....
@@ -97,22 +133,30 @@ export default class GlCable
         {
             if (this._glPatch.getNumSelectedOps() == 1)
             {
-                if (this._glPatch.getNumSelectedOps() > 1) return false;
+                const op = this._glPatch.getOnlySelectedOp();
+                const glop = this._glPatch.getGlOp(op);
+                if (glop._displayType === glop.DISPLAY_SUBPATCH)
+                {
+                    const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
+                    const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
 
-                if (this._glPatch.getOnlySelectedOp() &&
-                    this._glPatch.getOnlySelectedOp().portsIn.length > 0 &&
-                    this._glPatch.getOnlySelectedOp().portsOut.length > 0)
+                    if (portsIn.length < 1 || portsOut.lengh < 1 || !portsIn[0] || !portsOut[0]) return false;
+                    if (!(portsIn[0].type == portsOut[0].type == this._type)) return false;
+                }
+                else
+                if (
+                    op.portsIn.length > 0 &&
+                    op.portsOut.length > 0)
                 {
                     if (!(
-                        this._glPatch.getOnlySelectedOp().portsIn[0].type == this._type &&
-                    this._glPatch.getOnlySelectedOp().portsOut[0].type == this._type))
+                        op.portsIn[0].type == this._type &&
+                        op.portsOut[0].type == this._type))
                         return false;
                 }
             }
         }
 
-
-        const r = this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        this.collideMouse(e, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
     }
 
     dispose()
@@ -120,7 +164,8 @@ export default class GlCable
         this._disposed = true;
         this.setColor(0, 0, 0, 0);
         this._splineDrawer.deleteSpline(this._splineIdx);
-        this._glPatch.removeEventListener(this._listenerMousemove);
+        this.updateVisible();
+        this.updateMouseListener();
     }
 
     _updateDistFromPort()
@@ -206,17 +251,19 @@ export default class GlCable
                 {
                     this._curvedSimple = true;
                     this._updateDistFromPort();
-                    this._splineDrawer.setSpline(this._splineIdx,
-                        this._subdivivde(
-                            [
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0
-                            ]));
+
+                    this._points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0
+                        ]);
+
+                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
                 else
                 {
@@ -227,20 +274,21 @@ export default class GlCable
                     }
 
                     const distY = Math.abs(this._y - this._y2);
-                    this._splineDrawer.setSpline(
-                        this._splineIdx,
-                        this._subdivivde(
-                            [
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX, this._y - (distY * 0.002) - this._distFromPort, 0,
 
-                                (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
+                    this._points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX, this._y - (distY * 0.002) - this._distFromPort, 0,
 
-                                posX2, this._y2 + (distY * 0.002) + this._distFromPort, 0,
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0,
-                            ]));
+                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
+
+                            posX2, this._y2 + (distY * 0.002) + this._distFromPort, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                        ]);
+
+                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
             }
             if (this._linetype == this.LINETYPE_HANGING)
@@ -249,16 +297,16 @@ export default class GlCable
                 {
                     this._curvedSimple = true;
                     this._updateDistFromPort();
-                    this._splineDrawer.setSpline(this._splineIdx,
-                        this._subdivivde(
-                            [
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0
-                            ]));
+                    this.points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0
+                        ]);
+                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
                 else
                 {
@@ -277,53 +325,60 @@ export default class GlCable
                     let centerX = (posX * 0.3 + posX2 * 0.7);
                     if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
 
+                    this._points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
+
+                            centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
+
+                            posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                        ], 8);
+
                     this._splineDrawer.setSpline(
                         this._splineIdx,
-                        this._subdivivde(
-                            [
-                                posX, this._y, 0,
-                                posX, this._y, 0,
-                                (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
-
-                                centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
-
-                                posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
-                                posX2, this._y2, 0,
-                                posX2, this._y2, 0,
-                            ], 8));
+                        this._points);
                 }
             }
             if (this._linetype == this.LINETYPE_STRAIGHT)
             {
                 // straight lines...
+
+                this._points = [
+                    posX, this._y, 0,
+                    posX, this._y - this._distFromPort, 0,
+                    posX2, this._y2 + this._distFromPort, 0,
+                    posX2, this._y2, 0
+                ];
+
                 this._splineDrawer.setSpline(this._splineIdx,
-                    [
-                        posX, this._y, 0,
-                        posX, this._y - this._distFromPort, 0,
-                        posX2, this._y2 + this._distFromPort, 0,
-                        posX2, this._y2, 0
-                    ]);
+                    this._points);
             }
             if (this._linetype == this.LINETYPE_SIMPLE)
             {
-                this._splineDrawer.setSpline(this._splineIdx,
-                    [
-                        posX, this._y, 0,
-                        posX, this._y, 0,
-                        posX2, this._y2, 0,
-                        posX2, this._y2, 0
-                    ]);
+                this._points = [
+                    posX, this._y, 0,
+                    posX, this._y, 0,
+                    posX2, this._y2, 0,
+                    posX2, this._y2, 0
+                ];
+
+                this._splineDrawer.setSpline(this._splineIdx, this._points);
             }
         }
         if (this._visible)
         {
+
             // this._lineDrawer.setLine(this._lineIdx0, this._x, this._y, this._x, this._y - this._distFromPort);
             // this._lineDrawer.setLine(this._lineIdx1, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort);
             // this._lineDrawer.setLine(this._lineIdx2, this._x2, this._y2 + this._distFromPort, this._x2, this._y2);
         }
         else
         {
-            this._splineDrawer.hideSpline(this._splineIdx);
+            // this._splineDrawer.hideSpline(this._splineIdx);
 
             // this._splineDrawer.setSpline(this._splineIdx,
             //     [
@@ -395,6 +450,18 @@ export default class GlCable
         this._splineDrawer.setSplineSpeed(this._splineIdx, speed);
     }
 
+    collideLine(x1, y1, x2, y2)
+    {
+        if (!this._visible) return;
+        for (let i = 0; i < this._points.length - 3; i += 3)
+        {
+            const found = this.collideLineLine(x1, y1, x2, y2, this._points[i + 0], this._points[i + 1], this._points[i + 3], this._points[i + 4]);
+
+            if (found) return true;
+        }
+        return false;
+    }
+
     collideMouse(e, x1, y1, x2, y2, cx, cy, r)
     {
         // if (this._glPatch.isDraggingPort()) return;
@@ -424,7 +491,7 @@ export default class GlCable
         const len = Math.sqrt((distX * distX) + (distY * distY));
 
         // get dot product of the line and circle
-        const dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / Math.pow(len, 2);
+        const dot = (((cx - x1) * (x2 - x1)) + ((cy - y1) * (y2 - y1))) / len ** 2;
 
         // find the closest point on the line
         const closestX = x1 + (dot * (x2 - x1));
@@ -436,6 +503,9 @@ export default class GlCable
 
         if (!onSegment)
         {
+            this._buttonRect.visible =
+                    this._buttonRect.interactive =
+                    this._buttonRect._hovering = false;
             perf.finish();
             return false;
         }
@@ -446,6 +516,7 @@ export default class GlCable
 
         const distance = Math.sqrt((distX * distX) + (distY * distY));
         const mouseOverLineAndOpButNotDragging = this._glPatch.isMouseOverOp() && !this._glPatch.isDraggingOps();
+
 
         if (distance <= r && !mouseOverLineAndOpButNotDragging)
         {
@@ -471,9 +542,9 @@ export default class GlCable
 
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
-            this._buttonRect.visible = true;
-            this._buttonRect.interactive = true;
-            this._buttonRect._hovering = true;
+            this._buttonRect.visible =
+                this._buttonRect.interactive =
+                this._buttonRect._hovering = true;
 
             this._glPatch.setHoverLink(e, this._link);
             this._glPatch._dropInCircleRect = this._buttonRect;
@@ -488,9 +559,9 @@ export default class GlCable
         else
         {
             if (this._buttonRect.visible) this._glPatch.setHoverLink(e, null);
-            this._buttonRect.interactive = false;
-            this._buttonRect.visible = false;
-            this._buttonRect._hovering = false;
+            this._buttonRect.interactive =
+                this._buttonRect.visible =
+                this._buttonRect._hovering = false;
             perf.finish();
             return false;
         }
@@ -551,6 +622,27 @@ export default class GlCable
         // rather than one #
         if (d1 + d2 >= lineLen - buffer && d1 + d2 <= lineLen + buffer)
         {
+            return true;
+        }
+        return false;
+    }
+
+    collideLineLine(x1, y1, x2, y2, x3, y3, x4, y4)
+    {
+        // calculate the distance to intersection point
+        let uA = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+        let uB = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+        // if uA and uB are between 0-1, lines are colliding
+        if (uA >= 0 && uA <= 1 && uB >= 0 && uB <= 1)
+        {
+            // optionally, draw a circle where the lines meet
+            let intersectionX = x1 + (uA * (x2 - x1));
+            let intersectionY = y1 + (uA * (y2 - y1));
+            //   fill(255,0,0);
+            //   noStroke();
+            //   ellipse(intersectionX,intersectionY, 20,20);
+
             return true;
         }
         return false;

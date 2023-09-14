@@ -274,7 +274,9 @@ export default class Gizmo
 
         function down(e)
         {
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformDown");
+
             isDown = true;
             document.addEventListener("pointerlockchange", lockChange, false);
             document.addEventListener("mozpointerlockchange", lockChange, false);
@@ -307,15 +309,17 @@ export default class Gizmo
                         }
                     });
                 }(
-                    self._draggingPort.parent.patch,
+                    self._draggingPort.op.patch,
                     self._draggingPort.getName(),
-                    self._draggingPort.parent.id,
+                    self._draggingPort.op.id,
                     self._origValue,
                     self._draggingPort.get()
                 ));
             }
 
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformUp");
+
             isDown = false;
             document.removeEventListener("pointerlockchange", lockChange, false);
             document.removeEventListener("mozpointerlockchange", lockChange, false);
@@ -329,18 +333,20 @@ export default class Gizmo
 
             document.removeEventListener("mousemove", move, false);
 
-            if (CABLES.UI) gui.opParams.show(self._draggingPort.parent);
+            if (CABLES.UI) gui.opParams.show(self._draggingPort.op);
         }
 
         function move(e)
         {
-            if (CABLES.UI) gui.setStateUnsaved();
+            // if (CABLES.UI) gui.setStateUnsaved();
+            if (CABLES.UI) gui.savedState.setUnSaved("transformMove");
+
             let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
             if (e.shiftKey) v *= 0.025;
             self._dragSum += v;
             const newValue = self._origValue + self._dragSum;
             self._draggingPort.set(newValue);
-            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.parent.id, self._draggingPort.getName(), newValue);
+            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
         }
 
         function lockChange(e)

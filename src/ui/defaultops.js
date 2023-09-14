@@ -12,7 +12,7 @@ const defaultOps = {
         "defaultOpImage": "Ops.Gl.Texture_v2",
         "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
         "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
-        "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v3",
+        "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
         "defaultOpJson": "Ops.Json.AjaxRequest_v2",
         "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
         "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
@@ -32,12 +32,14 @@ const defaultOps = {
         "VarSetTrigger": "Ops.Trigger.TriggerSend",
         "VarGetTrigger": "Ops.Trigger.TriggerReceive",
         "defaultFont": "Ops.Html.FontFile_v2",
+
         "blueprint": "Ops.Dev.Blueprint",
+        "blueprintTemplate": "Ops.Templates.Blueprint2",
+
         "subPatch": "Ops.Ui.SubPatch",
         "subPatch2": "Ops.Dev.SubpatchNew",
         "subPatchInput2": "Ops.Dev.Ui.PatchInput",
         "subPatchOutput2": "Ops.Dev.Ui.PatchOutput",
-
 
         "uiArea": "Ops.Ui.Area",
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
@@ -46,13 +48,27 @@ const defaultOps = {
     },
     "defaultMathOps":
     {
-        ">": "Ops.Math.Compare.GreaterThan",
-        "<": "Ops.Math.Compare.LessThan",
-        "+": "Ops.Math.Sum",
-        "-": "Ops.Math.Subtract",
-        "/": "Ops.Math.Divide",
-        "*": "Ops.Math.Multiply",
-        "=": "Ops.Math.Equals",
+        "default":
+        {
+            ">": "Ops.Math.Compare.GreaterThan",
+            "<": "Ops.Math.Compare.LessThan",
+            "+": "Ops.Math.Sum",
+            "-": "Ops.Math.Subtract",
+            "/": "Ops.Math.Divide",
+            "*": "Ops.Math.Multiply",
+            "=": "Ops.Math.Equals",
+        },
+        "array":
+        {
+            "+": "Ops.Array.ArraySum",
+            "-": "Ops.Array.ArraySubtract",
+            "/": "Ops.Array.ArrayDivide",
+            "*": "Ops.Array.ArrayMultiply",
+        },
+        "string":
+        {
+            "+": "Ops.String.Concat_v2"
+        }
     },
     "getVizOpsForPortLink": (p, l) =>
     {
@@ -72,14 +88,14 @@ const defaultOps = {
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.String.String_v2", "Ops.String.StringEditor"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Value.Number"];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Sequence"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Trigger.Sequence"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [CABLES.UI.DEFAULTOPNAMES.defaultOpImage];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return ["Ops.Html.DivElement_v2"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "shader") return ["Ops.Gl.Shader.CustomShader_v2"];
         }
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Sequence"];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Trigger.Sequence"];
         }
     },
     "getOpsForFilename": (filename) =>
@@ -297,9 +313,14 @@ const defaultOps = {
         return opname && opname.startsWith(defaultOps.getExtensionOpsPrefix());
     },
 
+    "isCoreOp": (opname) =>
+    {
+        return !defaultOps.isNonCoreOp(opname);
+    },
+
     "isNonCoreOp": (opname) =>
     {
-        return defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname) || defaultOps.isUserOp(opname) || defaultOps.isDevOp(opname);
+        return defaultOps.isUserOp(opname) || defaultOps.isExtensionOp(opname) || defaultOps.isTeamOp(opname) || defaultOps.isPatchOp(opname);
     },
 
     "isCustomOp": (opname) =>
@@ -347,7 +368,8 @@ const defaultOps = {
 
     "isBlueprintOp": (op) =>
     {
-        return op.storage && op.storage.blueprintVer;
+        if (op && op.storage)
+            return op.storage.blueprintVer || 0;
     },
 
     "isInBlueprint": (op) =>

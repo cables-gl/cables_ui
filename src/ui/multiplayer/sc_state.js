@@ -341,7 +341,8 @@ export default class ScState extends CABLES.EventTarget
             if (!this._connection.client.isPilot)
             {
                 // set patchsave state if not pilot after sync
-                gui.setStateSaved();
+                // gui.setStateSaved();
+                gui.savedState.setSaved("sc", 0);
             }
             if (this._connection.client.isRemoteClient)
             {

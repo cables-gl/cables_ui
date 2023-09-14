@@ -47,7 +47,7 @@ export default class SuggestPortDialog
             for (const i in this._suggestions)
                 if (this._suggestions[i].id == id)
                 {
-                    if (port.parent.uiAttribs.subPatch != this._suggestions[i].p.parent.uiAttribs.subPatch)
+                    if (port.op.uiAttribs.subPatch != this._suggestions[i].p.op.uiAttribs.subPatch)
                     {
                         this._suggestions[i].p.setUiAttribs({ "expose": true });
                     }
@@ -64,7 +64,7 @@ export default class SuggestPortDialog
 
         this._suggestions.push({
             "p": p,
-            "op": p.parent.id,
+            "op": p.op.id,
             "name": p.title,
             "isLinked": p.isLinked(),
             "isBoundToVar": p.isBoundToVar(),

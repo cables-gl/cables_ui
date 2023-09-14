@@ -139,27 +139,66 @@
         overflow-y:auto;
     }
 
+    .tabRows
+    {
+        display: flex;
+        flex-direction:column;
+        height:100%;
+
+        .tabRow
+        {
+            margin-bottom:10px;
+        }
+
+        .tabRowExpand
+        {
+            display:flex;
+            flex-grow:1;
+            flex: 1 1 auto;
+            overflow-y: auto;
+            margin-bottom:10px;
+        }
+
+        .hljs
+        {
+            width:100%;
+            height:100%;
+            overflow: auto;
+        }
+    }
+
+    .padding
+    {
+        padding-left:10px;
+    }
+
+    .closetabx
+    {
+        margin-top: 4px;
+        margin-right:10px;
+        float:right;
+        position: absolute;
+        right: 0px;
+    }
+
     .tabcontent
     {
         background-color:$background-color-dark;
         max-height:100%;
         height:auto;
 
-        &.readonly {
+        &.readonly
+        {
             opacity: 0.6;
             pointer-events: none !important;
             user-select: none !important;
 
-            input {
+            input
+            {
                 pointer-events: none !important;
                 user-select: none !important;
             }
         }
-    }
-
-    .padding
-    {
-        padding:10px;
     }
 }
 
