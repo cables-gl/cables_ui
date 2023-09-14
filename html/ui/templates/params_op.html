@@ -36,7 +36,7 @@
 
 
             {{#if showEditButton }}
-                <a class="button-small tt info " data-into="[e] - edit op" data-tt="[e] - edit op " onclick="gui.serverOps.edit(gui.corePatch().getOpsByObjName('{{op.objName}}'),false,false,true);">Edit Op</a>
+                <a class="button-small tt info " data-into="[e] - edit op" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}',false,false,true);">Edit Op</a>
             {{/if}}
 
             <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
