@@ -60,8 +60,9 @@ export default class ChangelogToast
                     "<button>Read More</button>",
                     function (instance, toast)
                     {
-                        CABLES.CMD.UI.showChangelog();
-                        iziToast.hide({}, toast);
+                        window.open(CABLES.sandbox.getCablesUrl() + "/changelog");
+                        // CABLES.CMD.UI.showChangelog();
+                        // iziToast.hide({}, toast);
                     },
                 ],
             ],
