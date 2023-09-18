@@ -185,7 +185,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
         {
             this._cfg.patch = r;
             incrementStartup();
-            this.initializeProject(() =>
+            this.loadUserOps(() =>
             {
                 if (cb) cb();
             });
@@ -226,7 +226,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
                             gui.corePatch().clear();
                             this._cfg.patch = project;
                             incrementStartup();
-                            this.initializeProject(() =>
+                            this.loadUserOps(() =>
                             {
                                 if (cb) cb(null, project);
                             });
@@ -292,12 +292,46 @@ export default class SandboxBrowser extends CABLES.EventTarget
         showBackupDialog();
     }
 
-    initializeProject(cb)
+    sanitizeUsername(name)
     {
+        name = name.toLowerCase();
+        name = name.split(" ").join("_");
+        name = name.replace(/\./g, "_");
+        if (name.match(/^\d/))name = "u_" + name;
+        return name;
+    }
+
+    loadUserOps(cb)
+    {
+        const userOpsUrls = [];
         const proj = this._cfg.patch;
-        incrementStartup();
-        if (window.logStartup) logStartup("set project");
-        gui.patchView.setProject(proj, cb);
-        if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
+
+        const doneCallback = () =>
+        {
+            incrementStartup();
+            if (window.logStartup) logStartup("User Ops loaded");
+
+            if (window.logStartup) logStartup("set project");
+            gui.patchView.setProject(proj, cb);
+
+            if (proj.ui) gui.bookmarks.set(proj.ui.bookmarks);
+        };
+
+        if (!gui || !gui.user || !proj.userList.some((u) => { return u.username === gui.user.username; }))
+        {
+            doneCallback();
+        }
+        else
+        {
+            for (const i in proj.userList) userOpsUrls.push(CABLESUILOADER.noCacheUrl(this.getCablesUrl() + "/api/ops/code/" + this.sanitizeUsername(proj.userList[i].username)));
+
+            const lid = "userops" + proj._id + CABLES.generateUUID();
+            loadjs.ready(lid, () =>
+            {
+                doneCallback();
+            });
+
+            loadjs(userOpsUrls, lid);
+        }
     }
 }
