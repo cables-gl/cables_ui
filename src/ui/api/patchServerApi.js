@@ -663,7 +663,24 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         }
                         else
                         {
-                            CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
+                            if (gui.project().summary && gui.project().summary.isTest)
+                            {
+                                CABLES.UI.notifyWarn("Test patch saved");
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            {
+                                CABLES.UI.notifyWarn("Example patch saved");
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.isPublic)
+                            {
+                                CABLES.UI.notifyWarn("Published patch saved");
+                            }
+                            else
+                            {
+                                CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
+                            }
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)

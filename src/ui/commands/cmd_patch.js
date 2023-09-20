@@ -103,42 +103,42 @@ CABLES_CMD_PATCH.save = function (force, cb)
     {
         const alwaysSave = gui.user.isAdmin;
         const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
-        if (gui.project().summary && gui.project().summary.isTest)
+        // if (gui.project().summary && gui.project().summary.isTest)
+        // {
+        //     doSave = false;
+
+        //     let html = "You are trying to save a testcase for ops, are you sure you want to continue?<br/><br/>";
+        //     if (alwaysSave && notCollaborator)
+        //     {
+        //         html += "And you are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>";
+        //         html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
+        //     }
+        //     html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
+        //     html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
+
+        //     new ModalDialog({
+        //         "warning": true,
+        //         "title": "Saving Test",
+        //         "html": html
+        //     });
+        // }
+        // else
+        // {
+        if (alwaysSave && notCollaborator)
         {
             doSave = false;
-
-            let html = "You are trying to save a testcase for ops, are you sure you want to continue?<br/><br/>";
-            if (alwaysSave && notCollaborator)
-            {
-                html += "And you are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>";
-                html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
-            }
-            html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
-            html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-
-            new ModalDialog({
-                "warning": true,
-                "title": "Saving Test",
-                "html": html
-            });
-        }
-        else
-        {
-            if (alwaysSave && notCollaborator)
-            {
-                doSave = false;
-                const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
+            const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
                     + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
                     + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
                     + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
 
-                new ModalDialog({
-                    "warning": true,
-                    "title": "Not Collaborator",
-                    "html": html
-                });
-            }
+            new ModalDialog({
+                "warning": true,
+                "title": "Not Collaborator",
+                "html": html
+            });
         }
+        // }
     }
 
     if (doSave)
