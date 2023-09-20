@@ -2278,7 +2278,9 @@ export default class PatchView extends CABLES.EventTarget
 
                 if (allFine)
                 {
-                    html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                    gui.patchView.replaceOp(opid, newOpObjName);
+                    return;
+                    // html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
                 }
                 else
                 {
