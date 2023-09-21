@@ -2278,7 +2278,9 @@ export default class PatchView extends CABLES.EventTarget
 
                 if (allFine)
                 {
-                    html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
+                    gui.patchView.replaceOp(opid, newOpObjName);
+                    return;
+                    // html += "All old ports are available in the new op, it should be safe to replace with new version. Make sure you test if it behaves the same, very accurately.<br/><br/>";
                 }
                 else
                 {
@@ -2698,24 +2700,21 @@ export default class PatchView extends CABLES.EventTarget
 
     highlightExamplePatchOps()
     {
-        const opDocs = gui.opDocs.getOpDocs();
-
-        let found = false;
-        for (let j = 0; j < opDocs.length; j++)
+        if (gui.project().summary && gui.project().summary.exampleForOps)
         {
-            if (gui.project().shortId == opDocs[j].exampleProjectId)
-            {
-                if (!found)
-                {
-                    const ops = gui.corePatch().ops;
-                    for (let i = 0; i < ops.length; i++)
-                        ops[i].setUiAttribs({ "color": null });
-                }
-                found = true;
+            const ops = gui.corePatch().ops;
+            for (let i = 0; i < ops.length; i++)
+                ops[i].setUiAttribs({ "color": null });
 
-                const ops = gui.corePatch().getOpsByObjName(opDocs[j].name);
-                for (let i = 0; i < ops.length; i++)
-                    ops[i].setUiAttribs({ "color": "#5dc0fd" });
+
+            for (let j = 0; j < gui.project().summary.exampleForOps.length; j++)
+            {
+                const opz = gui.corePatch().getOpsByObjName(gui.project().summary.exampleForOps[j]);
+                for (let k = 0; k < opz.length; k++)
+                {
+                    const opname = opz[k];
+                    opz[k].setUiAttribs({ "color": "#5dc0fd" });
+                }
             }
         }
     }

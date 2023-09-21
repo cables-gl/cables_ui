@@ -32,7 +32,7 @@ import ModalLoading from "./dialogs/modalloading";
 import oldModalWrap from "./dialogs/modal_old_wrap";
 import FileUploader from "./dialogs/upload";
 import ContextMenu from "./elements/contextmenu";
-import { notify, notifyError } from "./elements/notification";
+import { notify, notifyError, notifyWarn } from "./elements/notification";
 import initSplitPanes from "./elements/splitpane";
 import EditorSession from "./elements/tabpanel/editor_session";
 import Tab from "./elements/tabpanel/tab";
@@ -132,6 +132,7 @@ CABLES.UI.updateHoverToolTip = updateHoverToolTip;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;
+CABLES.UI.notifyWarn = notifyWarn;
 CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;

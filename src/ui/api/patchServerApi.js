@@ -117,7 +117,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 let html =
                     "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
                     "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-                if (!gui.getSavedState()) html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
+                html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
                 html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                 new ModalDialog(
@@ -663,7 +663,24 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         }
                         else
                         {
-                            CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
+                            if (gui.project().summary && gui.project().summary.isTest)
+                            {
+                                CABLES.UI.notifyWarn("Test patch saved");
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            {
+                                CABLES.UI.notifyWarn("Example patch saved");
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.isPublic)
+                            {
+                                CABLES.UI.notifyWarn("Published patch saved");
+                            }
+                            else
+                            {
+                                CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
+                            }
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)
