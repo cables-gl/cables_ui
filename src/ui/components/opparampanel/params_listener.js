@@ -461,6 +461,8 @@ class ParamsListener extends CABLES.EventTarget
                             subOp.removePort(port);
                             port.setUiAttribs({ "expose": !port.uiAttribs.expose });
                             port.op.refreshParams();
+
+                            gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
                         }
                     });
             }
