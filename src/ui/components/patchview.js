@@ -1391,33 +1391,34 @@ export default class PatchView extends CABLES.EventTarget
             if (ops[i].uiAttribs && ops[i].uiAttribs.selected) delete ops[i].uiAttribs.selected;
 
             // remove links that are not fully copied...
-            for (let j = 0; j < ops[i].portsIn.length; j++)
-            {
-                delete ops[i].portsIn[j].expose;
-
-                if (ops[i].portsIn[j].links)
+            if (ops[i].portsIn)
+                for (let j = 0; j < ops[i].portsIn.length; j++)
                 {
-                    let k = ops[i].portsIn[j].links.length;
-                    while (k--)
+                    delete ops[i].portsIn[j].expose;
+
+                    if (ops[i].portsIn[j].links)
                     {
-                        if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
+                        let k = ops[i].portsIn[j].links.length;
+                        while (k--)
                         {
-                            if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
+                            if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
                             {
-                                const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
-                                ops[i].portsIn[j].links[k] = null;
-                                if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
                                 {
-                                    ops[i].portsIn[j].value = p.get();
+                                    const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
+                                    ops[i].portsIn[j].links[k] = null;
+                                    if (p && (p.type === CABLES.OP_PORT_TYPE_STRING || p.type === CABLES.OP_PORT_TYPE_VALUE))
+                                    {
+                                        ops[i].portsIn[j].value = p.get();
+                                    }
                                 }
                             }
                         }
+                        numLinks += ops[i].portsIn[j].links.length;
                     }
-                    numLinks += ops[i].portsIn[j].links.length;
                 }
-            }
 
-            for (let j = 0; j < ops[i].portsOut.length; j++)
+            if (ops[i].portsOut) for (let j = 0; j < ops[i].portsOut.length; j++)
             {
                 delete ops[i].portsOut[j].expose;
 
@@ -2667,8 +2668,9 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             if (dir == undefined || dir === CABLES.PORT_DIR_IN)
-                for (let j = 0; j < ops[i].portsIn.length; j++)
-                    if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
+                if (ops[i].portsIn)
+                    for (let j = 0; j < ops[i].portsIn.length; j++)
+                        if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
 
             if (dir == undefined || dir === CABLES.PORT_DIR_OUT)
                 for (let j = 0; j < ops[i].portsOut.length; j++)

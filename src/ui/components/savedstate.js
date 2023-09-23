@@ -9,6 +9,7 @@ export default class SavedState extends CABLES.EventTarget
         this._statesSaved = {};
         this._statesInitiator = {};
 
+
         window.addEventListener("beforeunload", (event) =>
         {
             if (this.isSaved)

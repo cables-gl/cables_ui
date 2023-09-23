@@ -537,8 +537,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         };
 
         data.ui.texPreview = gui.metaTexturePreviewer.serialize();
-
-
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
         gui.patchView.serialize(data.ui);
@@ -588,6 +586,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         CABLES.patch.namespace = currentProject.namespace;
 
+
         setTimeout(() =>
         {
             try
@@ -595,9 +594,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 const datastr = JSON.stringify(data);
                 gui.patchView.warnLargestPort();
 
-                const origSize = Math.round(data.length / 1024);
+                const origSize = Math.round(datastr.length / 1024);
 
                 let uint8data = pako.deflate(datastr);
+
+                console.log("origSize", datastr.length);
 
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");
@@ -625,10 +626,10 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         "dataB64": b64,
                         "fromBackup": CABLES.sandbox.getPatchVersion() || false,
                         "buildInfo":
-                    {
-                        "core": CABLES.build,
-                        "ui": CABLES.UI.build
-                    }
+                        {
+                            "core": CABLES.build,
+                            "ui": CABLES.UI.build
+                        }
                     },
                     (err, r) =>
                     {
@@ -713,8 +714,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     catch (e2)
                     {
                         found = true;
-                        // this._log.log(e);
-                        // this is the op!
 
                         iziToast.error({
                             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
