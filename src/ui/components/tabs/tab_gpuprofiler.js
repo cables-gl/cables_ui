@@ -23,7 +23,7 @@ export default class GpuProfiler
 
     update()
     {
-        let html = "<h2>GPU Shader and Mesh Drawcalls</h2>";
+        let html = "<div class=\"tabContentScrollContainer\"><h2>GPU Shader and Mesh Drawcalls</h2>";
 
         const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
 
@@ -64,10 +64,11 @@ export default class GpuProfiler
                 html += "<tr>";
                 html += "<td><span>" + Math.round((arr[i].time || 0) * 1000) / 1000 + "ms</span></td>";
                 html += "<td><span>" + Math.round((arr[i].perc || 0) * 100) + "%</span></td>";
-                html += "<td><span>" + arr[i].id + "</span></td>";
+                html += "<td><span class=\"nobreak\">" + arr[i].id + "</span></td>";
                 html += "</tr>";
             }
             html += "</table>";
+            html += "</div>";
             html += "</div>";
         }
 
