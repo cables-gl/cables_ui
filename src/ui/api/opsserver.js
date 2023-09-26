@@ -122,7 +122,6 @@ export default class ServerOps
     {
         const oldSubId = options.oldSubId;
 
-        // console.log("oldSubId", oldSubId);
         const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
@@ -434,7 +433,7 @@ export default class ServerOps
                         this._log.log("lib added!", opName, libName);
                         gui.metaTabs.activateTabByName("code");
                         if (next) next();
-                    });
+                    }, true);
                 }
             },
         );
@@ -483,7 +482,7 @@ export default class ServerOps
                             this._log.log("lib removed!", opName, libName);
                             gui.metaTabs.activateTabByName("code");
                             if (next) next();
-                        });
+                        }, true);
                     }
                 }
             );
@@ -502,8 +501,6 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                console.log(err, res);
-
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
