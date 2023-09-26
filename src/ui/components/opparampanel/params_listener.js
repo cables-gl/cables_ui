@@ -471,8 +471,8 @@ class ParamsListener extends CABLES.EventTarget
             {
                 items.push(
                     {
-                        "title": "Expose: move left",
-                        "iconClass": "icon icon-chevron-left",
+                        "title": "Expose: move up",
+                        "iconClass": "icon icon-chevron-up",
                         "func": () =>
                         {
                             gui.patchView.setExposedPortOrder(port, -1);
@@ -480,8 +480,8 @@ class ParamsListener extends CABLES.EventTarget
                     });
                 items.push(
                     {
-                        "title": "Expose: move right",
-                        "iconClass": "icon icon-chevron-right",
+                        "title": "Expose: move down",
+                        "iconClass": "icon icon-chevron-down",
                         "func": () =>
                         {
                             gui.patchView.setExposedPortOrder(port, 1);

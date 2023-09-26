@@ -1216,7 +1216,7 @@ export default class PatchView extends CABLES.EventTarget
                 });
         }
 
-        if (sort) subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
+        if (sort) subPatches = subPatches.sort(function (a, b) { return a.name.localeCompare(b.name); });
 
         return subPatches;
     }
@@ -2672,22 +2672,21 @@ export default class PatchView extends CABLES.EventTarget
         }
 
         const idx = ports.indexOf(port);
-        move(ports, idx, idx + dir);
+        if (idx + dir >= 0)move(ports, idx, idx + dir);
 
+        for (let i = 0; i < ports.length; i++) ports[i].setUiAttribs({ "order": i });
 
-        for (let i = 0; i < ports.length; i++)
-        {
-            ports[i].setUiAttribs({ "order": i });
-        }
+        const exposeOp = this.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
 
-        if (gui.opParams.op == this.getSubPatchOuterOp(port.op.uiAttribs.subPatch)) gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
-        port.op.emitEvent("portOrderChanged");
+        if (gui.opParams.op == exposeOp) gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
+        exposeOp.emitEvent("portOrderChanged");
+        exposeOp.emitEvent("glportOrderChanged");
     }
 
 
     getSubPatchExposedPorts(subid, dir)
     {
-        const foundPorts = [];
+        let foundPorts = [];
         const ops = this.getAllSubPatchOps(subid);
 
         for (let i = 0; i < ops.length; i++)
@@ -2702,13 +2701,10 @@ export default class PatchView extends CABLES.EventTarget
                     if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         }
 
-        foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
+        foundPorts = foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
 
-
-        for (let i = 0; i < foundPorts.length; i++)
-            console.log(i, foundPorts[i].title);
-
-
+        // for (let i = 0; i < foundPorts.length; i++)
+        // console.log(i, foundPorts[i].title);
 
         return foundPorts;
     }
