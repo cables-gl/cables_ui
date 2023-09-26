@@ -148,7 +148,7 @@ export default class ServerOps
             (errr, re) =>
             {
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
-
+                gui.showLoadingProgress(false);
                 if (options.next)options.next();
             });
     }

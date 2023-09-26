@@ -613,9 +613,4 @@ export default function extendCore()
 
         return 2;
     };
-
-    // CABLES.Op.prototype.isSubPatchOp = function ()
-    // {
-    //     return (this.objName == "Ops.Ui.SubPatch" || this.objName == "Ops.Dev.SubpatchNew");
-    // };
 }

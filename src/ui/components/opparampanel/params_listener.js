@@ -467,6 +467,28 @@ class ParamsListener extends CABLES.EventTarget
                     });
             }
 
+            if (port.uiAttribs.expose)
+            {
+                items.push(
+                    {
+                        "title": "Expose: move left",
+                        "iconClass": "icon icon-chevron-left",
+                        "func": () =>
+                        {
+                            gui.patchView.setExposedPortOrder(port, -1);
+                        }
+                    });
+                items.push(
+                    {
+                        "title": "Expose: move right",
+                        "iconClass": "icon icon-chevron-right",
+                        "func": () =>
+                        {
+                            gui.patchView.setExposedPortOrder(port, 1);
+                        }
+                    });
+            }
+
             let strEditTitle = "Edit title";
             let icon = "";
             if (port.uiAttribs.title)

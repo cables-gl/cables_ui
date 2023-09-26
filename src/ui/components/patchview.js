@@ -2660,6 +2660,31 @@ export default class PatchView extends CABLES.EventTarget
         return foundOps;
     }
 
+    setExposedPortOrder(port, dir)
+    {
+        const ports = this.getSubPatchExposedPorts(port.op.uiAttribs.subPatch);
+
+        gui.savedState.setUnSaved("exposedPortOrder", port.op.uiAttribs.subPatch);
+
+        function move(arr, from, to)
+        {
+            arr.splice(to, 0, arr.splice(from, 1)[0]);
+        }
+
+        const idx = ports.indexOf(port);
+        move(ports, idx, idx + dir);
+
+
+        for (let i = 0; i < ports.length; i++)
+        {
+            ports[i].setUiAttribs({ "order": i });
+        }
+
+        if (gui.opParams.op == this.getSubPatchOuterOp(port.op.uiAttribs.subPatch)) gui.opParams.show(this.getSubPatchOuterOp(port.op.uiAttribs.subPatch).id);
+        port.op.emitEvent("portOrderChanged");
+    }
+
+
     getSubPatchExposedPorts(subid, dir)
     {
         const foundPorts = [];
@@ -2676,6 +2701,14 @@ export default class PatchView extends CABLES.EventTarget
                 for (let j = 0; j < ops[i].portsOut.length; j++)
                     if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
         }
+
+        foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
+
+
+        for (let i = 0; i < foundPorts.length; i++)
+            console.log(i, foundPorts[i].title);
+
+
 
         return foundPorts;
     }

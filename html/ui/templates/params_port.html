@@ -29,7 +29,7 @@
 
     <td class="portType_{{ port.type }} disp_{{port.uiAttribs.display}}">
         {{#if port.uiAttribs.isAnimated}}<span>&nbsp;&nbsp;A</span>{{/if}}
-        {{#if port.uiAttribs.expose}}<span>&nbsp;&nbsp;E</span>{{/if}}
+        {{#if port.uiAttribs.expose}}<span>&nbsp;&nbsp;E{{port.uiAttribs.order}}</span>{{/if}}
         {{#if port.uiAttribs.boundToVar}}<span>&nbsp;&nbsp;V</span>{{/if}}
     </td>
     <td class="port {{#if port.links}}_linked{{/if}}" style="{{#if port.uiAttribs.hidePort }}box-shadow:none !important;{{/if}}" id="portLineTitle_{{ dirStr }}_{{ portnum }}"  data-portname="{{port.name}}" >
