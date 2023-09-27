@@ -156,6 +156,9 @@ export default class ServerOps
     {
         const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
 
+        if (gui.patchView.getCurrentSubPatch() == oldSubId)
+            gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
+
         this.createDialog(null,
             {
                 "showEditor": false,

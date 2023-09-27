@@ -566,6 +566,15 @@ export default function extendCore()
         return this.uiAttribs.subPatch || 0;
     };
 
+    CABLES.Op.prototype.getParentSubPatch = function ()
+    {
+        if (this.uiAttribs.subPatch === 0) return 0;
+        const sop = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+        if (sop) return sop.uiAttribs.subPatch;
+
+        return 0;
+    };
+
     CABLES.Op.prototype.getPortPosX = function (name, opid)
     {
         if (this.isSubPatchOp() == 2)
