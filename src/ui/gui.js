@@ -1385,7 +1385,7 @@ export default class Gui
                                 "oldSubId": bp,
                                 "next": () =>
                                 {
-                                    gui.savedState.setSaved("saved bp", bp);
+
                                 }
                             });
                         gui.showLoadingProgress(true);

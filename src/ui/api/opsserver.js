@@ -148,6 +148,7 @@ export default class ServerOps
             {
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
                 gui.showLoadingProgress(false);
+                gui.savedState.setSaved("saved bp", newOp.uiAttribs.subPatch);
                 if (options.next)options.next();
             });
     }
