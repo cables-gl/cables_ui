@@ -1388,6 +1388,7 @@ export default class Gui
                                     gui.savedState.setSaved("saved bp", bp);
                                 }
                             });
+                        gui.showLoadingProgress(true);
                     }
                     else
                     {

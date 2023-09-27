@@ -211,6 +211,9 @@ class OpParampanel extends CABLES.EventTarget
         // }
 
 
+        this._portsIn.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
+
+
         let html = this._htmlGen.getHtmlOpHeader(op);
 
         gui.showInfo(text.patchSelectedOp);

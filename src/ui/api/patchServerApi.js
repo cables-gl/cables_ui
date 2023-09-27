@@ -489,24 +489,21 @@ export default class PatchSaveServer extends CABLES.EventTarget
         if (_name) name = _name;
         let data = gui.corePatch().serialize({ "asObject": true });
 
-        for (let i = 0; i < data.ops.length; i++)
-        {
-            if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
-            if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
-            if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
-            if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
-            if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
-            if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
-
-
-            if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
-            if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
-
-            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork"))
+        if (data.ops)
+            for (let i = 0; i < data.ops.length; i++)
             {
-                delete data.ops[i].uiAttribs.fromNetwork;
+                if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
+                if (data.ops[i].uiAttribs.warning) delete data.ops[i].uiAttribs.warning;
+                if (data.ops[i].uiAttribs.hint) delete data.ops[i].uiAttribs.hint;
+                if (data.ops[i].uiAttribs.uierrors) delete data.ops[i].uiAttribs.uierrors;
+                if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
+                if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
+
+                if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
+                if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
+
+                if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork")) delete data.ops[i].uiAttribs.fromNetwork;
             }
-        }
 
 
         // delete subpatch 2 ops
@@ -597,8 +594,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 const origSize = Math.round(datastr.length / 1024);
 
                 let uint8data = pako.deflate(datastr);
-
-                console.log("origSize", datastr.length);
 
                 if (origSize > 1000)
                     console.log("saving compressed data", Math.round(uint8data.length / 1024) + "kb (was: " + origSize + "kb)");

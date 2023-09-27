@@ -90,6 +90,11 @@ export default class GlOp extends CABLES.EventTarget
                 this._storageChanged();
             });
 
+            this._op.on("portOrderChanged", () =>
+            {
+                this.refreshPorts();
+            });
+
             // if (defaultops.isSubPatchOpName(this._op.objName))
             // if (this._op.storage && this._op.storage.subPatchVer)
             // {
@@ -306,9 +311,7 @@ export default class GlOp extends CABLES.EventTarget
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;
-
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
-
 
         if (!this._op)
         {
@@ -317,7 +320,6 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
-
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
@@ -332,7 +334,6 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
-
         if (e.touchType == "mouse")
         {
             if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
@@ -341,7 +342,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._glPatch.patchAPI.showOpParams(this._id);
         }
-
 
         if (e.altKey || e.metaKey)
         {
@@ -389,14 +389,10 @@ export default class GlOp extends CABLES.EventTarget
         this.glPatch.snapLines.update();
     }
 
-
     setUiAttribs(newAttribs, attr)
     {
         if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
-
-        // let subPatchChanged = false;
-        // if (newAttribs.subPatch && newAttribs.subPatch != this.opUiAttribs.subPatch) subPatchChanged = true;
 
         this.opUiAttribs = JSON.parse(JSON.stringify(attr));
 
@@ -688,10 +684,11 @@ export default class GlOp extends CABLES.EventTarget
                 if (portsOut.indexOf(ports[i]) == -1) portsOut.push(ports[i]);
         }
 
+
+
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
     }
-
 
     _setPortIndexAttribs(ports)
     {
@@ -709,8 +706,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
-                // console.log("yeas");
-                const key = "glPortIndex_" + this.op.id;
+                const key = "glPortIndex_" + (ports[i].uiAttribs.order || 0) + this.op.id;
                 const o = {};
                 o[key] = count;
 
@@ -753,6 +749,11 @@ export default class GlOp extends CABLES.EventTarget
 
         ports = this._setPortIndexAttribs(ports);
 
+        ports = ports.sort((a, b) =>
+        {
+            return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
+        });
+
         for (let i = 0; i < ports.length; i++)
         {
             if (ports[i].uiAttribs.display == "dropdown") continue;
@@ -774,7 +775,6 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
-
 
         this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
