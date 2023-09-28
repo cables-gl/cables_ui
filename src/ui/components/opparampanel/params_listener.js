@@ -471,7 +471,7 @@ class ParamsListener extends CABLES.EventTarget
             {
                 items.push(
                     {
-                        "title": "Expose: move up",
+                        "title": "Exposed Port: move up",
                         "iconClass": "icon icon-chevron-up",
                         "func": () =>
                         {
@@ -480,7 +480,7 @@ class ParamsListener extends CABLES.EventTarget
                     });
                 items.push(
                     {
-                        "title": "Expose: move down",
+                        "title": "Exposed Port: move down",
                         "iconClass": "icon icon-chevron-down",
                         "func": () =>
                         {
