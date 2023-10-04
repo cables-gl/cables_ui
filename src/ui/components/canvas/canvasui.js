@@ -42,9 +42,12 @@ export default class CanvasUi
                 if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
                 this._oldFps = perf.fps;
 
-                const ms = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100;
-                if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
-                this._oldMs = ms;
+                if (this._cg.profileData)
+                {
+                    const ms = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100;
+                    if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
+                    this._oldMs = ms;
+                }
             }
 
             p.finish();
