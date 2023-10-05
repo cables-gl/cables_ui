@@ -8,7 +8,7 @@ export default class SavedState extends CABLES.EventTarget
         super();
         this._statesSaved = {};
         this._statesInitiator = {};
-
+        this._talkerState = null;
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -126,16 +126,18 @@ export default class SavedState extends CABLES.EventTarget
     {
         if (this.isSaved)
         {
-            CABLESUILOADER.talkerAPI.send("setIconSaved");
+            if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconSaved");
+            this._talkerState = this.isSaved;
+
             ele.byId("patchname").classList.remove("warning");
-            // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);
             ele.byId("savestates").innerHTML = "";
         }
         else
         {
-            CABLESUILOADER.talkerAPI.send("setIconUnsaved");
+            if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconUnsaved");
+            this._talkerState = this.isSaved;
+
             ele.byId("patchname").classList.add("warning");
-            // window.addEventListener("beforeunload", this._onBeforeUnloadListener);
 
             let str = "";
             for (const idx in this._statesSaved)

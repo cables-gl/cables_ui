@@ -165,7 +165,7 @@ export default class TabPanel extends CABLES.EventTarget
         }
 
         if (!found)
-            console.warn("[activateTabByName] could not find tab", name);
+            console.log("[activateTabByName] could not find tab", name);
 
         this.updateHtml();
     }

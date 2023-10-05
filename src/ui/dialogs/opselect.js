@@ -328,8 +328,8 @@ export default class OpSelect
 
     _getMathPortType()
     {
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
-        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_STRING) return "string";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
+        if (CABLES.UI.OPSELECT.linkNewLink && CABLES.UI.OPSELECT.linkNewLink.portIn && CABLES.UI.OPSELECT.linkNewLink.portIn.type === CABLES.OP_PORT_TYPE_STRING) return "string";
 
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_ARRAY) return "array";
         if (CABLES.UI.OPSELECT.linkNewOpToPort && CABLES.UI.OPSELECT.linkNewOpToPort.type === CABLES.OP_PORT_TYPE_STRING) return "string";
