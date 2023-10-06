@@ -72,6 +72,8 @@ export default class Gui
 
         this.patchParamPanel = new PatchPanel();
 
+        this.canvasMagnifier = null;
+
         this.CANVASMODE_NORMAL = 0;
         this.CANVASMODE_FULLSCREEN = 2;
         this.CANVASMODE_PATCHBG = 1;
@@ -1097,13 +1099,27 @@ export default class Gui
                 "items":
                 [
                     {
-                        "title": "set canvas size",
+                        "title": "Set canvas size",
                         "func": CABLES.CMD.RENDERER.changeSize
                     },
                     {
-                        "title": "set canvas scale",
+                        "title": "Set canvas scale",
                         "func": CABLES.CMD.RENDERER.scaleCanvas
+                    },
+                    {
+                        "title": "Canvas Magnifier",
+                        "func": CABLES.CMD.RENDERER.canvasMagnifier
+                    },
+                    {
+                        "title": "Maximize Canvas",
+                        "func": CABLES.CMD.UI.toggleMaxRenderer,
+                        "icon": "icon-picker"
+                    },
+                    {
+                        "title": "Canvas As Patch Background",
+                        "func": CABLES.CMD.UI.togglePatchBgRenderer
                     }
+
                 ]
             }, el);
     }
@@ -1422,11 +1438,15 @@ export default class Gui
         this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
+
+
+
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
 
         if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
+        else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
         else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
             if (this._canvasMode == this.CANVASMODE_FULLSCREEN)

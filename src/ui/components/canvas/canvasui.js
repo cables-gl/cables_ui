@@ -44,7 +44,7 @@ export default class CanvasUi
 
                 if (this._cg.profileData)
                 {
-                    const ms = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100;
+                    const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
                     if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
                     this._oldMs = ms;
                 }

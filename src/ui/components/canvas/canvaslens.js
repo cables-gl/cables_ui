@@ -30,7 +30,7 @@ export default class CanvasLens
         document.body.appendChild(this._lensCanvas);
 
         this._endFrameListener = this._onEndframe.bind(this);
-        gui.corePatch().cgl.on("endFrame", this._endFrameListener);
+        this._endFrameListenerId = gui.corePatch().cgl.on("endFrame", this._endFrameListener);
 
         this._moveListener = this._onMouseMove.bind(this);
         this._origCanvas.addEventListener("mousemove", this._moveListener);
@@ -40,6 +40,8 @@ export default class CanvasLens
 
         this._copyListener = this._onCopy.bind(this);
         document.addEventListener("copy", this._copyListener);
+
+        gui.canvasMagnifier = this;
     }
 
     _onCopy(e)
@@ -92,14 +94,13 @@ export default class CanvasLens
 
     close()
     {
-        gui.corePatch().cgl.off("endFrame", this._endFrameListener);
+        gui.corePatch().cgl.off(this._endFrameListenerId);
         this._origCanvas.removeEventListener("mousemove", this._moveListener);
         this._origCanvas.removeEventListener("mouseleave", this._moveLeaveListener);
         document.removeEventListener("copy", this._copyListener);
 
         this._lensCanvas.remove();
     }
-
 
     rgbToHex(R, G, B) { return this._toHex(R) + this._toHex(G) + this._toHex(B); }
 

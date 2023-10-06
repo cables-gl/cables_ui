@@ -43,12 +43,12 @@
 <div id="canvasicons" class="hidden">
     <div class="tt icon icon-resize-window" id="splitterRendererWH" class="splitter" data-tt="drag to resize"></div>
     <div id="canvasIconBar" class="cbl_iconbar cbl_iconbar_hor ">
-        <span class="item canvasuihidable"><span class="tt info icon icon-canvas_max icon-1_25x" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-info="renderer_maximize"></span></span>
-        <span class="item canvasuihidable"><span class="tt info icon icon-canvas_patchbg icon-1_25x" onclick="CABLES.CMD.UI.togglePatchBgRenderer()" data-tt="patch background" data-info="renderer_patchbg"></span></span>
+        <!-- <span class="item canvasuihidable"><span class="tt info icon icon-canvas_max icon-1_25x" onclick="CABLES.CMD.UI.toggleMaxRenderer()" data-tt="maximize canvas" data-info="renderer_maximize"></span></span> -->
+        <!-- <span class="item canvasuihidable"><span class="tt info icon icon-canvas_patchbg icon-1_25x" onclick="CABLES.CMD.UI.togglePatchBgRenderer()" data-tt="patch background" data-info="renderer_patchbg"></span></span> -->
 
-        <span class="item canvasuihidable"><span class="tt info icon icon-image icon-1_25x" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-info="save_screenshot"></span></span>
-        <span class="item canvasuihidable"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-info="toggle_sound"></span></span>
-        <span class="item canvasuihidable"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span>
+        <!-- <span class="item canvasuihidable"><span class="tt info icon icon-image icon-1_25x" onclick="CABLES.CMD.RENDERER.screenshot()" data-tt="save screenshot" data-info="save_screenshot"></span></span> -->
+        <!-- <span class="item canvasuihidable"><span class="tt info icon icon-volume-2 icon-1_25x" id="timelineVolume" onclick="CABLES.CMD.UI.toggleMute();" data-tt="Toggle Sound" data-info="toggle_sound"></span></span> -->
+        <!-- <span class="item canvasuihidable"><span class="tt info icon icon-picker icon-1_25x" id="canvasLens" onclick="new CABLES.UI.CanvasLens();" data-tt="Pixel Magnifier" data-info="canvas_lens"></span></span> -->
         <span class="item canvasuihidable"><span class="tt info icon icon-gizmo icon-1_25x" onclick="gui.helperContextMenu(this);" data-tt="Toggle Helper" data-info="toggle_helper"></span></span>
 
         <span class="item canvasuihidable textButton info" data-info="canvas_size" id="canvasCtxSwitcher" onclick="gui.canvasManager.menu(this)">-</span>
@@ -59,7 +59,7 @@
         <span class="item canvasuihidable nonInteractive info" data-info="canvas_fps" id="canvasInfoFPS">?? FPS</span>
         <span class="item canvasuihidable nonInteractive info" data-info="canvas_ms" id="canvasInfoMS">? MS</span>
 
-        <span class="item"><span class="tt icon icon-three-dots icon-1_25x" onclick="gui.rendererContextMenu(this)" data-tt="more options"></span></span>
+        <span class="item"><span class="icon icon-three-dots icon-1_25x" onclick="gui.rendererContextMenu(this)" ></span></span>
     </div>
 </div>
 
