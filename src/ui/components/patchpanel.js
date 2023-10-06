@@ -42,10 +42,13 @@ export default class PatchPanel extends CABLES.EventTarget
             });
     }
 
-    show()
+    show(force)
     {
         if (!CABLES.UI.loaded) return;
-        let html = "<div class=\"panel bookmarkpanel\">";
+
+        if (!force && ele.byClass("patchParamPanel")) return;
+
+        let html = "<div class=\"patchParamPanel panel bookmarkpanel\">";
         // html += "<div id=\"patchsummary\"></div>";
 
         const project = gui.project();
@@ -83,11 +86,8 @@ export default class PatchPanel extends CABLES.EventTarget
             if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
             if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
-
             html += gui.bookmarks.getHtml();
         }
-
-
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 
