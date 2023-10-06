@@ -70,6 +70,25 @@ export default class CanvasManager
         }
     }
 
+
+    screenShot(cb, mimeType = "image/png", quality = 1)
+    {
+        if (this.currentCanvas() && this.currentCanvas().toBlob)
+        {
+            this.currentCanvas().toBlob(
+                (blob) =>
+                {
+                    if (cb) cb(blob);
+                    else this._log.log("no screenshot callback...");
+                }, mimeType, quality);
+        }
+        else
+        {
+            console.log("canvasmanager no current canvas");
+            cb(null);
+        }
+    }
+
     menu(el)
     {
         let items = [];

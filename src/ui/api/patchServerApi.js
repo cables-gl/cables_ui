@@ -852,10 +852,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
             screenshotHeight = 720;
         }
 
-        cgl.canvas.width = screenshotWidth + "px";
-        cgl.canvas.height = screenshotHeight + "px";
-        cgl.canvas.style.width = screenshotWidth + "px";
-        cgl.canvas.style.height = screenshotHeight + "px";
+        const canvas = cgl.canvas;// gui.canvasManager.currentCanvas();
+
+        canvas.width = screenshotWidth + "px";
+        canvas.height = screenshotHeight + "px";
+        canvas.style.width = screenshotWidth + "px";
+        canvas.style.height = screenshotHeight + "px";
 
         const screenshotTimeout = setTimeout(() =>
         {
@@ -872,6 +874,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         thePatch.renderOneFrame();
         gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
+        // gui.canvasManager.screenShot((screenBlob) =>
         cgl.screenShot((screenBlob) =>
         {
             clearTimeout(screenshotTimeout);
@@ -883,7 +886,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
             reader.onload = (event) =>
             {
-                this._log.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
+                // console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
                 CABLESUILOADER.talkerAPI.send(
                     "saveScreenshot",
                     {
