@@ -18,7 +18,7 @@ export default class CanvasUi
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
         this._elCtxSwitcher = this._elCtxSwitcher || document.getElementById("canvasCtxSwitcher");
 
-        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+        // this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
         if (this._elInfoVersion)
@@ -44,9 +44,10 @@ export default class CanvasUi
 
                 if (this._cg.profileData)
                 {
-                    const ms = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100;
-                    if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
-                    this._oldMs = ms;
+                    // const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
+                    // if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
+                    // this._oldMs = ms;
+                    // this._elCanvasInfoFps.dataset.tt = "hurz!" + ms;
                 }
             }
 

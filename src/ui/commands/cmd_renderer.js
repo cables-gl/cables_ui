@@ -30,6 +30,12 @@ CABLES_CMD_RENDERER.resetSize = function ()
     gui.setLayout();
 };
 
+CABLES_CMD_RENDERER.canvasMagnifier = function ()
+{
+    gui.canvasMagnifier = new CABLES.UI.CanvasLens();
+};
+
+
 CABLES_CMD_RENDERER.aspect = function (a)
 {
     if (!a)
@@ -144,5 +150,10 @@ rendererCommands.commands.push({
     "category": "renderer",
     "func": CABLES_CMD_RENDERER.scaleCanvas,
     "icon": "scale_canvas"
+}, {
+    "cmd": "canvas magnifier",
+    "category": "renderer",
+    "func": CABLES_CMD_RENDERER.canvasMagnifier,
+    "icon": "icon-picker"
 }
 );
