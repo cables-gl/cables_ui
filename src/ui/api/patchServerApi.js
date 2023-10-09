@@ -874,47 +874,56 @@ export default class PatchSaveServer extends CABLES.EventTarget
         thePatch.renderOneFrame();
         gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        // gui.canvasManager.screenShot((screenBlob) =>
-        cgl.screenShot((screenBlob) =>
-        {
-            clearTimeout(screenshotTimeout);
+        // gui.canvasManager.screenShot(() =>
+        // {
 
-            cgl.setSize(w, h);
-            thePatch.resume();
+        // });
+        // cgl.screenShot((screenBlob) =>
+        // {
+        clearTimeout(screenshotTimeout);
 
-            const reader = new FileReader();
+        cgl.setSize(w, h);
+        // thePatch.resume();
 
-            reader.onload = (event) =>
+        const reader = new FileReader();
+
+        const url = gui.canvasManager.currentCanvas().toDataURL();
+        // reader.onload = (event) =>
+        // {
+
+        // gui.corePatch().pause();
+        // console.log(url);
+        // window.open(url);
+
+        console.log("send screenshot", Math.round(url.length / 1024) + "kb");
+        CABLESUILOADER.talkerAPI.send(
+            "saveScreenshot",
             {
-                // console.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
-                CABLESUILOADER.talkerAPI.send(
-                    "saveScreenshot",
-                    {
-                        "id": currentProject._id,
-                        "screenshot": event.target.result
-                    },
-                    (error, re) =>
-                    {
-                        if (error)
-                            this._log.warn("[screenshot save error]", error);
-
-                        gui.jobs().finish("screenshotsave");
-                        if (gui.onSaveProject) gui.onSaveProject();
-                        if (cb)cb();
-
-                        this.finishAnimations();
-                    });
-            };
-
-            try
+                "id": currentProject._id,
+                "screenshot": url
+            },
+            (error, re) =>
             {
-                reader.readAsDataURL(screenBlob);
-            }
-            catch (e)
-            {
-                this._log.log(e);
-            }
-        });
+                if (error)
+                    this._log.warn("[screenshot save error]", error);
+
+                gui.jobs().finish("screenshotsave");
+                if (gui.onSaveProject) gui.onSaveProject();
+                if (cb)cb();
+
+                this.finishAnimations();
+            });
+        // };
+
+        // try
+        // {
+        //     reader.readAsDataURL(screenBlob);
+        // }
+        // catch (e)
+        // {
+        //     this._log.log(e);
+        // }
+        // });
         // }, false, "image/webp", 80);
     }
 }

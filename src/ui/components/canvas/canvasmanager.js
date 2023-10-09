@@ -75,12 +75,13 @@ export default class CanvasManager
     {
         if (this.currentCanvas() && this.currentCanvas().toBlob)
         {
-            this.currentCanvas().toBlob(
-                (blob) =>
-                {
-                    if (cb) cb(blob);
-                    else this._log.log("no screenshot callback...");
-                }, mimeType, quality);
+            const url = this.currentCanvas().toDataURL();
+            console.log(url);
+        //         (blob) =>
+        //         {
+        //             if (cb) cb(blob);
+        //             else this._log.log("no screenshot callback...");
+        //         }, mimeType, quality);
         }
         else
         {
