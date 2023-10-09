@@ -882,7 +882,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // {
         // clearTimeout(screenshotTimeout);
 
-
+        // cgl.setSize(w, h);
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
 
 
