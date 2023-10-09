@@ -880,15 +880,16 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // });
         // cgl.screenShot((screenBlob) =>
         // {
-        clearTimeout(screenshotTimeout);
+        // clearTimeout(screenshotTimeout);
 
-        cgl.setSize(w, h);
+
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
 
 
         const reader = new FileReader();
 
         const url = gui.canvasManager.currentCanvas().toDataURL();
+
         // reader.onload = (event) =>
         // {
 
