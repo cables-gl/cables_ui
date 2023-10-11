@@ -36,7 +36,8 @@ export default class ScConnection extends CABLES.EventTarget
         this._pacoChannel = null;
         this._pacoLoopReady = false;
 
-        this.channelName = this._scConfig.channel;
+        this.patchChannelName = this._scConfig.patchChannel;
+        this.userChannelName = this._scConfig.userChannel;
         this.multiplayerCapable = this._scConfig.multiplayerCapable;
         if (cfg) this._init((isActive) =>
         {
@@ -272,7 +273,7 @@ export default class ScConnection extends CABLES.EventTarget
     leaveMultiplayerSession()
     {
         this.client.isPilot = false;
-        this._pacoChannel = this._socket.unsubscribe(this.channelName + "/paco");
+        this._pacoChannel = this._socket.unsubscribe(this.patchChannelName + "/paco");
         this._pacoEnabled = false;
         this.client.inMultiplayerSession = false;
         this.client.following = null;
@@ -394,7 +395,8 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
-        this._socket.channelName = this.channelName;
+        this._socket.patchChannelName = this.patchChannelName;
+        this._socket.userChannelName = this.patchChannelName;
 
         this._state = new ScState(this);
         if (this.multiplayerCapable)
@@ -414,7 +416,7 @@ export default class ScConnection extends CABLES.EventTarget
                     if (!this._pacoEnabled) return;
                     if (!this._pacoChannel)
                     {
-                        this._pacoChannel = this._socket.subscribe(this.channelName + "/paco");
+                        this._pacoChannel = this._socket.subscribe(this.patchChannelName + "/paco");
                         if (!this._pacoLoopReady)
                         {
                             this._pacoLoopReady = true;
@@ -476,7 +478,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const controlChannel = this._socket.subscribe(this.channelName + "/control");
+            const controlChannel = this._socket.subscribe(this.patchChannelName + "/control");
 
             for await (const msg of controlChannel)
             {
@@ -487,7 +489,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const uiChannel = this._socket.subscribe(this.channelName + "/ui");
+            const uiChannel = this._socket.subscribe(this.patchChannelName + "/ui");
             for await (const msg of uiChannel)
             {
                 this._handleUiChannelMsg(msg);
@@ -495,9 +497,20 @@ export default class ScConnection extends CABLES.EventTarget
             }
         })();
 
+
         (async () =>
         {
-            const infoChannel = this._socket.subscribe(this.channelName + "/info");
+            const userChannel = this._socket.subscribe(this.userChannelName + "/notify");
+            for await (const msg of userChannel)
+            {
+                this._handleInfoChannelMsg(msg);
+                this.emitEvent("netActivityIn");
+            }
+        })();
+
+        (async () =>
+        {
+            const infoChannel = this._socket.subscribe(this.patchChannelName + "/info");
             for await (const msg of infoChannel)
             {
                 this._handleInfoChannelMsg(msg);
@@ -507,7 +520,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         (async () =>
         {
-            const chatChannel = this._socket.subscribe(this.channelName + "/chat");
+            const chatChannel = this._socket.subscribe(this.patchChannelName + "/chat");
             for await (const msg of chatChannel)
             {
                 this._handleChatChannelMsg(msg);
@@ -620,7 +633,7 @@ export default class ScConnection extends CABLES.EventTarget
 
                 this.emitEvent("netActivityOut");
                 const perf = CABLES.UI.uiProfiler.start("[sc] send");
-                const scTopic = this.channelName + "/" + topic;
+                const scTopic = this.patchChannelName + "/" + topic;
                 this._logVerbose("send:", scTopic, payload);
                 this._socket.transmitPublish(scTopic, finalPayload);
                 perf.finish();
@@ -635,7 +648,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleChatChannelMsg(msg)
     {
         if (!this.client) return;
-        this._logVerbose("received:", this.channelName + "/chat", msg);
+        this._logVerbose("received:", this.patchChannelName + "/chat", msg);
 
         if (msg.name === "chatmsg")
         {
@@ -647,7 +660,7 @@ export default class ScConnection extends CABLES.EventTarget
     {
         if (!this.client) return;
         if (msg.clientId === this._socket.clientId) return;
-        this._logVerbose("received:", this.channelName + "/paco", msg);
+        this._logVerbose("received:", this.patchChannelName + "/paco", msg);
 
         if (this.inMultiplayerSession && msg.name === "paco")
         {
@@ -704,7 +717,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleControlChannelMessage(msg)
     {
         if (!this.client) return;
-        this._logVerbose("received:", this.channelName + "/control", msg);
+        this._logVerbose("received:", this.patchChannelName + "/control", msg);
 
         if (msg.name === "resync")
         {
@@ -772,7 +785,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleUiChannelMsg(msg)
     {
         if (!this.client) return;
-        this._logVerbose("received:", this.channelName + "/ui", msg);
+        this._logVerbose("received:", this.patchChannelName + "/ui", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent(msg.name, msg);
@@ -781,7 +794,7 @@ export default class ScConnection extends CABLES.EventTarget
     _handleInfoChannelMsg(msg)
     {
         if (!this.client) return;
-        this._logVerbose("received:", this.channelName + "/info", msg);
+        this._logVerbose("received:", this.patchChannelName + "/info", msg);
 
         if (msg.clientId === this._socket.clientId) return;
         this.emitEvent("onInfoMessage", msg);
