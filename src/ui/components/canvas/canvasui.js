@@ -18,7 +18,7 @@ export default class CanvasUi
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
         this._elCtxSwitcher = this._elCtxSwitcher || document.getElementById("canvasCtxSwitcher");
 
-        // this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
         if (this._elInfoVersion)
@@ -44,10 +44,9 @@ export default class CanvasUi
 
                 if (this._cg.profileData)
                 {
-                    // const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
-                    // if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
-                    // this._oldMs = ms;
-                    // this._elCanvasInfoFps.dataset.tt = "hurz!" + ms;
+                    const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
+                    if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
+                    this._oldMs = ms;
                 }
             }
 
@@ -101,14 +100,14 @@ export default class CanvasUi
         // this._oldIconBarLeft = left;
         // this._oldIconBarWidth = width;
 
-        let top = "";
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = "0px";
-        else top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
+        // let top = "";
+        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = "0px";
+        // else top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
 
 
-        if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
+        // if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
 
-        this._oldIconBarTop = top;
+        // this._oldIconBarTop = top;
 
         const w = gui.rendererWidth * this._cg.canvasScale;
 
@@ -121,14 +120,14 @@ export default class CanvasUi
         }
 
 
-        const r = this._elCanvasIconbar.getBoundingClientRect();
-        const widthResizeIcon = 30;
+        // const r = this._elCanvasIconbar.getBoundingClientRect();
+        // const widthResizeIcon = 30;
 
 
         // this.minimized = w < this.fullWidth;
 
         // if (!this.minimized)
-        this.fullWidth = r.width + widthResizeIcon;
+        // this.fullWidth = r.width + widthResizeIcon;
 
         // if (this._wasMinimized != this.minimized)
         // {

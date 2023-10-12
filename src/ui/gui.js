@@ -442,6 +442,7 @@ export default class Gui
         let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
+        this.canvasInfoUiHeight = 36;
 
         let patchHeight = window.innerHeight;
 
@@ -736,10 +737,18 @@ export default class Gui
             this._elOptions.style.display = "none";
         }
 
-        this.canvasInfoUiHeight = 40;
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
-        ele.byId("canvasicons").style.width = this.rendererWidth + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth) + "px";
         ele.byId("canvasicons").style.right = (0) + "px";
+
+        const widthResizeIcon = 30;
+        ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
+
+
+        let top = 0;
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = 0;
+        else top = this.rendererHeightScaled + 1;
+        ele.byId("canvasicons").style.top = top + "px";
 
         this._elMenubar.style.top = 0 + "px";
 

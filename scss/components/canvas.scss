@@ -57,8 +57,35 @@
     z-index: $zindex_over;
     // border:1px solid red;
     // background-color: blue;
-    background-color: black;
+    background-color: var(--color-01);
+    display: inline-block;
+
     // padding-left: 28px; /* to give resize-window icon some space */
+
+
+
+
+#canvasIconBar
+{
+    white-space: nowrap;
+    padding-right: 5px;;
+    overflow: hidden;
+}
+
+
+.threedotcanvas
+{
+    position:absolute;
+    right:3px;
+
+    // border-right: 5px solid var(--color-01);
+    background-color: var(--color-01);
+    border-radius: 3px !important;
+}
+.threedotcanvas:hover
+{
+    background-color: var(--color-04);
+}
 
     a
     {
@@ -85,6 +112,7 @@
         // margin-left: 10px;
         // margin-top: 10px;
         // transform:translate(-50%);
+        background-color: transparent !important;
         // border-top-left-radius: 0;
         // border-top-right-radius: 0;
         margin-left: 25px;
