@@ -12,10 +12,10 @@ export default class MetaKeyframes
         this.anim = null;
         this._tab = new CABLES.UI.Tab("keyframes", { "icon": "clock", "infotext": "tab_keyframes", "showTitle": false, "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
-        this._tab.addEventListener("onActivate", function ()
-        {
-            this.show();
-        }.bind(this));
+        // this._tab.addEventListener("onActivate", function ()
+        // {
+        this.show();
+        // }.bind(this));
     }
 
     update()

@@ -13,9 +13,8 @@ import KeyBindingsManager from "./utils/keybindingsmanager";
 import ModalDialog from "./dialogs/modaldialog";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
-import MetaKeyframes from "./components/tabs/meta_keyframes";
-import MetaCode from "./components/tabs/meta_code";
-import MetaDoc from "./components/tabs/meta_doc";
+// import MetaKeyframes from "./components/tabs/meta_keyframes";
+// import MetaDoc from "./components/tabs/meta_doc";
 import TexturePreviewer from "./components/texturepreviewer";
 import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
@@ -151,12 +150,12 @@ export default class Gui
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
-        this.metaDoc = new MetaDoc(this.metaTabs);
-        this._metaCode = new MetaCode(this.metaTabs);
+        // this.metaDoc = new MetaDoc(this.metaTabs);
+        // this._metaCode = new MetaCode(this.metaTabs);
 
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-        this.metaKeyframes = new MetaKeyframes(this.metaTabs);
+        // this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
         // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
@@ -1702,10 +1701,10 @@ export default class Gui
         cb(this.opDocs.getHtml(opname));
     }
 
-    metaCode()
-    {
-        return this._metaCode;
-    }
+    // metaCode()
+    // {
+    //     return this._metaCode;
+    // }
 
     showSettings(userInteraction)
     {

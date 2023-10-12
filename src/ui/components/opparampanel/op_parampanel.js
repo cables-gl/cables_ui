@@ -8,6 +8,7 @@ import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
 import defaultops from "../../defaultops";
 import userSettings from "../usersettings";
+import MetaCode from "../tabs/meta_code";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -621,6 +622,16 @@ class OpParampanel extends CABLES.EventTarget
                 gui.bookmarks.add();
             }
         });
+
+        items.push({
+            "title": "Manage Op Code",
+            func()
+            {
+                new MetaCode(gui.mainTabs, opname);
+            },
+        });
+
+
 
         items.push({
             "title": "Show Op Serialized",

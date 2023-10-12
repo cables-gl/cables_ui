@@ -6,20 +6,20 @@ import defaultops from "../../defaultops";
 
 export default class MetaCode
 {
-    constructor(tabs)
+    constructor(tabs, opname)
     {
         this._log = new Logger("MetaCode");
         this._initialized = false;
-        this._op = null;
+        // this._op = null;
         this._lastSelectedOp = null;
-        this._currentName = null;
+        this._currentName = opname;
 
-        this._tab = new Tab("code", { "icon": "code", "infotext": "tab_code", "showTitle": false, "hideToolbar": true, "padding": true });
+        this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "hideToolbar": true, "padding": true });
         tabs.addTab(this._tab);
-        this._tab.addEventListener("onActivate", function ()
-        {
-            this.show();
-        }.bind(this));
+        // this._tab.addEventListener("onActivate", function ()
+        // {
+        this.show();
+        // }.bind(this));
     }
 
     init()
@@ -27,113 +27,114 @@ export default class MetaCode
         if (this._initialized) return;
         this._initialized = true;
 
-        gui.opParams.addEventListener("opSelected", this.onOpSelected.bind(this));
+        // gui.opParams.addEventListener("opSelected", this.onOpSelected.bind(this));
     }
 
-    onOpSelected(_op)
-    {
-        this._lastSelectedOp = _op;
+    // onOpSelected(_op)
+    // {
+    //     this._lastSelectedOp = _op;
 
-        if (!this._tab.isVisible()) return;
+    //     if (!this._tab.isVisible()) return;
 
-        clearTimeout(CABLES.UI.OpShowMetaCodeDelay);
-        CABLES.UI.OpShowMetaCodeDelay = setTimeout(function ()
-        {
-            this._op = this._lastSelectedOp;
-            this.show();
-        }.bind(this), 100);
-    }
+    //     clearTimeout(CABLES.UI.OpShowMetaCodeDelay);
+    //     CABLES.UI.OpShowMetaCodeDelay = setTimeout(function ()
+    //     {
+    //         this._op = this._lastSelectedOp;
+    //         this.show();
+    //     }.bind(this), 100);
+    // }
 
     show()
     {
-        if (this._lastSelectedOp != this._op) this.onOpSelected(this._lastSelectedOp);
+        // if (this._lastSelectedOp != this._op) this.onOpSelected(this._lastSelectedOp);
 
-        if (!this._op)
-        {
-            this._currentName = null;
-            this._tab.html("<h3>Code</h3>Select any Op");
-            return;
-        }
+        // if (!this._op)
+        // {
+        //     this._currentName = null;
+        //     this._tab.html("<h3>Code</h3>Select any Op");
+        //     return;
+        // }
 
-        this._currentName = this._op.objName;
+        // this._currentName = this._op.objName;
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
         if (window.process && window.process.versions.electron) return;
-        if (this._op)
-        {
-            CABLES.api.get(
-                "op/" + this._op.objName + "/info",
-                (res) =>
+        // if (this._op)
+        // {
+        CABLES.api.get(
+            "op/" + this._currentName + "/info",
+            (res) =>
+            {
+                const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
+                const doc = {};
+                let summary = "";
+
+                if (res.attachmentFiles)
                 {
-                    const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
-                    const doc = {};
-                    let summary = "";
-
-                    if (res.attachmentFiles)
+                    const attachmentFiles = [];
+                    for (let i = 0; i < res.attachmentFiles.length; i++)
                     {
-                        const attachmentFiles = [];
-                        for (let i = 0; i < res.attachmentFiles.length; i++)
-                        {
-                            attachmentFiles.push(
-                                {
-                                    "readable": res.attachmentFiles[i].substr(4),
-                                    "original": res.attachmentFiles[i],
-                                });
-                        }
-                        doc.attachmentFiles = attachmentFiles;
+                        attachmentFiles.push(
+                            {
+                                "readable": res.attachmentFiles[i].substr(4),
+                                "original": res.attachmentFiles[i],
+                            });
                     }
+                    doc.attachmentFiles = attachmentFiles;
+                }
 
-                    const opName = this._op.objName;
-                    doc.libs = gui.serverOps.getOpLibs(this._op, false);
-                    doc.coreLibs = gui.serverOps.getCoreLibs(this._op, false);
-                    summary = gui.opDocs.getSummary(opName);
+                const opName = this._currentName;
+                doc.libs = gui.serverOps.getOpLibs(opName, false);
+                doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
+                summary = gui.opDocs.getSummary(opName);
 
-                    const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
+                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
-                    if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
+                // if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
 
-                    const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-                    const html = getHandleBarHtml("meta_code",
-                        {
-                            "url": CABLES.sandbox.getCablesUrl(),
-                            "op": this._op,
-                            "doc": doc,
-                            "summary": summary,
-                            "showPatchLibSelect": showPatchLibSelect,
-                            "canEditOp": canEditOp,
-                            "readOnly": !canEditOp,
-                            "libs": gui.opDocs.libs,
-                            "coreLibs": gui.opDocs.coreLibs,
-                            "user": gui.user,
-                            "warns": res.warns
-                        });
-                    this._tab.html(html);
-                    if (!canEditOp)
+                const showPatchLibSelect = defaultops.isNonCoreOp(opName);
+                const html = getHandleBarHtml("meta_code",
                     {
-                        document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
-                        {
-                            opLibSelect.disabled = true;
-                            opLibSelect.addEventListener("pointerenter", (event) =>
-                            {
-                                showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
-                            });
-                            opLibSelect.addEventListener("pointerleave", (event) =>
-                            {
-                                hideToolTip();
-                            });
-                        });
-
-                        document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
-                        {
-                            select.classList.add("inactive");
-                        });
-                    }
-                    perf.finish();
-                },
-                () =>
+                        "url": CABLES.sandbox.getCablesUrl(),
+                        "op": this._op,
+                        "opname": opName,
+                        "doc": doc,
+                        "summary": summary,
+                        "showPatchLibSelect": showPatchLibSelect,
+                        "canEditOp": canEditOp,
+                        "readOnly": !canEditOp,
+                        "libs": gui.opDocs.libs,
+                        "coreLibs": gui.opDocs.coreLibs,
+                        "user": gui.user,
+                        "warns": res.warns
+                    });
+                this._tab.html(html);
+                if (!canEditOp)
                 {
-                    this._log.warn("error api?");
-                });
-        }
+                    document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
+                    {
+                        opLibSelect.disabled = true;
+                        opLibSelect.addEventListener("pointerenter", (event) =>
+                        {
+                            showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+                        });
+                        opLibSelect.addEventListener("pointerleave", (event) =>
+                        {
+                            hideToolTip();
+                        });
+                    });
+
+                    document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
+                    {
+                        select.classList.add("inactive");
+                    });
+                }
+                perf.finish();
+            },
+            () =>
+            {
+                this._log.warn("error api?");
+            });
+        // }
     }
 }

@@ -1,5 +1,4 @@
 
-
 .paco-iframe
 {
     z-index: 99999999;
@@ -62,30 +61,24 @@
 
     // padding-left: 28px; /* to give resize-window icon some space */
 
+    #canvasIconBar
+    {
+        white-space: nowrap;
+        padding-right: 5px;;
+        overflow: hidden;
+    }
 
-
-
-#canvasIconBar
-{
-    white-space: nowrap;
-    padding-right: 5px;;
-    overflow: hidden;
-}
-
-
-.threedotcanvas
-{
-    position:absolute;
-    right:3px;
-
-    // border-right: 5px solid var(--color-01);
-    background-color: var(--color-01);
-    border-radius: 3px !important;
-}
-.threedotcanvas:hover
-{
-    background-color: var(--color-04);
-}
+    .threedotcanvas
+    {
+        position:absolute;
+        right:3px;
+        background-color: var(--color-01);
+        border-radius: 3px !important;
+    }
+    .threedotcanvas:hover
+    {
+        background-color: var(--color-04);
+    }
 
     a
     {
