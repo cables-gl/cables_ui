@@ -711,12 +711,12 @@ export default class Gui
             metaWidth = this.rightPanelWidth - optionsWidth;
 
             this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = this.rendererHeightScaled + "px";
+            this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elOptions.style.width = optionsWidth + "px";
             this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -727,7 +727,7 @@ export default class Gui
             metaWidth = this.rightPanelWidth;
             this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -736,6 +736,10 @@ export default class Gui
             this._elOptions.style.display = "none";
         }
 
+        this.canvasInfoUiHeight = 40;
+        ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
+        ele.byId("canvasicons").style.width = this.rendererWidth + "px";
+        ele.byId("canvasicons").style.right = (0) + "px";
 
         this._elMenubar.style.top = 0 + "px";
 
