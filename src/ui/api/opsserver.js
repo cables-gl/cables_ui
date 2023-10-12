@@ -1151,7 +1151,13 @@ export default class ServerOps
 
     getOpLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(opname);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
         // if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname);
         const libs = [];
         if (opDoc && opDoc.libs)
@@ -1174,8 +1180,14 @@ export default class ServerOps
 
     getCoreLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(opname);
-        // if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
+
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)
         {
