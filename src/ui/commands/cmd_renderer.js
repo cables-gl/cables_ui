@@ -119,6 +119,12 @@ CABLES_CMD_RENDERER.changeSize = function ()
     });
 };
 
+
+CABLES_CMD_RENDERER.popoutCanvas = function ()
+{
+    gui.canvasManager.popOut();
+};
+
 rendererCommands.commands.push({
     "cmd": "save screenshot",
     "category": "renderer",
@@ -154,6 +160,11 @@ rendererCommands.commands.push({
     "cmd": "canvas magnifier",
     "category": "renderer",
     "func": CABLES_CMD_RENDERER.canvasMagnifier,
-    "icon": "icon-picker"
+    "icon": "picker"
+}, {
+    "cmd": "canvas window",
+    "category": "renderer",
+    "func": CABLES_CMD_RENDERER.popoutCanvas,
+    "icon": "external"
 }
 );

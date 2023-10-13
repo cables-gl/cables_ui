@@ -487,6 +487,11 @@ export default class Gui
             patchWidth = window.innerWidth - this.rightPanelWidth;
             this.rendererHeightScaled = 0;
         }
+        if (this.canvasManager.poppedOut)
+        {
+            this.rendererHeightScaled = 0;
+        }
+
 
         this.corePatch().pause();
         this.patchView.pause();
@@ -776,6 +781,17 @@ export default class Gui
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
         // console.log("tabPanelTopHeight", tabPanelTopHeight);
 
+
+        if (this.canvasManager.poppedOut)
+        {
+            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
+            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.width = "0px";
+            this._elCablesCanvasContainer.style.height = "0px";
+            this._elCablesCanvasContainer.style["z-index"] = 1;
+        }
+        else
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
@@ -801,7 +817,7 @@ export default class Gui
             this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
-        if (this._canvasMode == this.CANVASMODE_NORMAL)
+        else if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
             this._elCablesCanvasContainer.style["z-index"] = 10;
 
