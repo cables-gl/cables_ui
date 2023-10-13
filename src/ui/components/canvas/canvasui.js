@@ -35,10 +35,8 @@ export default class CanvasUi
 
         cg.on("resize", () =>
         {
-            console.log("RESIZE!!!CANVASUI");
             this.updateSizeDisplay();
         });
-
 
 
         cg.fpsCounter.on("performance", (perf) =>
