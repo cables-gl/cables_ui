@@ -18,7 +18,7 @@ export default class CanvasUi
         this._elCanvasInfoFps = this._elCanvasInfoFps || document.getElementById("canvasInfoFPS");
         this._elCtxSwitcher = this._elCtxSwitcher || document.getElementById("canvasCtxSwitcher");
 
-        // this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
+        this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
         if (this._elInfoVersion)
@@ -44,10 +44,9 @@ export default class CanvasUi
 
                 if (this._cg.profileData)
                 {
-                    // const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
-                    // if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
-                    // this._oldMs = ms;
-                    // this._elCanvasInfoFps.dataset.tt = "hurz!" + ms;
+                    const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
+                    if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
+                    this._oldMs = ms;
                 }
             }
 
@@ -89,31 +88,26 @@ export default class CanvasUi
 
         const perf = CABLES.UI.uiProfiler.start("[canvasUi] updateCanvasIconBar");
 
-
-
-
         const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
         const bodyRect = document.body.getBoundingClientRect();
 
-        const left = this._elSplitterPatch.getBoundingClientRect().left;
-        const width = bodyRect.width - splitterPatchRect.width;
+        // const left = this._elSplitterPatch.getBoundingClientRect().left;
+        // const width = bodyRect.width - splitterPatchRect.width;
 
-        if (width != this._oldIconBarWidth) this._elCanvasIconbarContainer.style.width = width + "px";
-        if (this._oldIconBarLeft != left) this._elCanvasIconbarContainer.style.left = left + 4 + "px";
+        // if (width != this._oldIconBarWidth) this._elCanvasIconbarContainer.style.width = width + "px";
+        // if (this._oldIconBarLeft != left) this._elCanvasIconbarContainer.style.left = left + 4 + "px";
 
-        this._oldIconBarLeft = left;
-        this._oldIconBarWidth = width;
+        // this._oldIconBarLeft = left;
+        // this._oldIconBarWidth = width;
 
-        let top = "";
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
-            top = "0px";
-        else
-            top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
+        // let top = "";
+        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = "0px";
+        // else top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
 
 
-        if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
+        // if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
 
-        this._oldIconBarTop = top;
+        // this._oldIconBarTop = top;
 
         const w = gui.rendererWidth * this._cg.canvasScale;
 
@@ -121,46 +115,47 @@ export default class CanvasUi
 
         if (this._oldIconBarW != w)
         {
-            this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
+            // this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
             this._oldIconBarW = w;
         }
 
 
-        const r = this._elCanvasIconbar.getBoundingClientRect();
-        const widthResizeIcon = 30;
+        // const r = this._elCanvasIconbar.getBoundingClientRect();
+        // const widthResizeIcon = 30;
 
 
-        this.minimized = w < this.fullWidth;
+        // this.minimized = w < this.fullWidth;
 
-        if (!this.minimized) this.fullWidth = r.width + widthResizeIcon;
+        // if (!this.minimized)
+        // this.fullWidth = r.width + widthResizeIcon;
 
-        if (this._wasMinimized != this.minimized)
-        {
-            const hideeles = ele.byClassAll("canvasuihidable");
-            for (let i = 0; i < hideeles.length; i++)
-            {
-                if (this.minimized)
-                {
-                    if (!this._wasMinimized) ele.hide(hideeles[i]);
-                }
-                else
-                {
-                    if (this._wasMinimized) ele.show(hideeles[i]);
-                }
-            }
-        }
-        this._wasMinimized = this.minimized;
+        // if (this._wasMinimized != this.minimized)
+        // {
+        //     const hideeles = ele.byClassAll("canvasuihidable");
+        //     for (let i = 0; i < hideeles.length; i++)
+        //     {
+        //         if (this.minimized)
+        //         {
+        //             if (!this._wasMinimized) ele.hide(hideeles[i]);
+        //         }
+        //         else
+        //         {
+        //             if (this._wasMinimized) ele.show(hideeles[i]);
+        //         }
+        //     }
+        // }
+        // this._wasMinimized = this.minimized;
 
-        if (this.minimized && w < r.width + widthResizeIcon)
-        {
-            this._minimizedHiding = true;
-            ele.hide(this._elCanvasIconbar);
-        }
-        else
-        {
-            if (this._minimizedHiding) ele.show(this._elCanvasIconbar);
-            this._minimizedHiding = false;
-        }
+        // if (this.minimized && w < r.width + widthResizeIcon)
+        // {
+        //     this._minimizedHiding = true;
+        //     ele.hide(this._elCanvasIconbar);
+        // }
+        // else
+        // {
+        // if (this._minimizedHiding) ele.show(this._elCanvasIconbar);
+        // this._minimizedHiding = false;
+        // }
 
         perf.finish();
     }
@@ -215,7 +210,7 @@ export default class CanvasUi
 
         if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
         {
-            ele.show(this._elCanvasIconbarContainer);
+            // ele.show(this._elCanvasIconbarContainer);
             _show = true;
 
             this.updateCanvasIconBar();
@@ -226,7 +221,7 @@ export default class CanvasUi
 
         this.isCanvasFocussed = _show;
 
-        if (!this._elCanvasIconbarContainer) return;
+        // if (!this._elCanvasIconbarContainer) return;
 
 
         if (_show)
@@ -240,7 +235,7 @@ export default class CanvasUi
                 if (!this._showing) ele.show(this._elCanvasModalDarkener);
             }
 
-            if (!this._showing) ele.show(this._elCanvasIconbarContainer);
+            // if (!this._showing) ele.show(this._elCanvasIconbarContainer);
 
             this.updateCanvasIconBar();
 
@@ -253,7 +248,7 @@ export default class CanvasUi
         {
             setTimeout(() =>
             {
-                ele.hide(this._elCanvasIconbarContainer);
+            // ele.hide(this._elCanvasIconbarContainer);
                 ele.hide(this._elCanvasModalDarkener);
             }, 100);
         }

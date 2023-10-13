@@ -1121,7 +1121,7 @@ export default class ServerOps
                 if (editorObj)
                 {
                     const t = new EditorTab({
-                        title,
+                        "title": title,
                         "name": editorObj.name,
                         "content": rslt.code,
                         "singleton": true,
@@ -1149,10 +1149,16 @@ export default class ServerOps
     }
 
 
-    getOpLibs(op, checkLoaded)
+    getOpLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(op.objName);
-        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
+        // if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname);
         const libs = [];
         if (opDoc && opDoc.libs)
         {
@@ -1172,10 +1178,16 @@ export default class ServerOps
         return libs;
     }
 
-    getCoreLibs(op, checkLoaded)
+    getCoreLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(op.objName);
-        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
+
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)
         {

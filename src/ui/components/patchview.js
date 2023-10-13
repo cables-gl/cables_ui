@@ -1976,6 +1976,8 @@ export default class PatchView extends CABLES.EventTarget
             let p2 = op2.getPortByName(p2id);
 
 
+            console.log("csdcsdcsd");
+
             if (!p1 || !p2)
             {
                 console.log("COULD NOT FIND PORT!");
@@ -1984,11 +1986,16 @@ export default class PatchView extends CABLES.EventTarget
                 return;
             }
 
-            if ((p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
-                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING))
+            if (
+                (p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
+                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING) ||
+
+                (p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_FUNCTION) ||
+                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_FUNCTION)
+            )
 
             {
-                if (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING)
+                if (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type != CABLES.OP_PORT_TYPE_VALUE)
                 {
                     const p = p1;
                     const o = op1;
@@ -1998,13 +2005,24 @@ export default class PatchView extends CABLES.EventTarget
                     op2 = o;
                 }
 
-                this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToString, { "onOpAdd": (newOp) =>
-                {
-                    this._p.link(op1, p1.getName(), newOp, "Number");
-                    this._p.link(op2, p2.getName(), newOp, "Result");
 
-                    newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
-                } });
+                if (p2.type == CABLES.OP_PORT_TYPE_FUNCTION)
+                    this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToTrigger, { "onOpAdd": (newOp) =>
+                    {
+                        this._p.link(op1, p1.getName(), newOp, "Value");
+                        this._p.link(op2, p2.getName(), newOp, "Next");
+
+                        newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                    } });
+
+                if (p2.type == CABLES.OP_PORT_TYPE_STRING)
+                    this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToString, { "onOpAdd": (newOp) =>
+                    {
+                        this._p.link(op1, p1.getName(), newOp, "Number");
+                        this._p.link(op2, p2.getName(), newOp, "Result");
+
+                        newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                    } });
                 return;
             }
         }

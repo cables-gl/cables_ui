@@ -13,9 +13,8 @@ import KeyBindingsManager from "./utils/keybindingsmanager";
 import ModalDialog from "./dialogs/modaldialog";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
-import MetaKeyframes from "./components/tabs/meta_keyframes";
-import MetaCode from "./components/tabs/meta_code";
-import MetaDoc from "./components/tabs/meta_doc";
+// import MetaKeyframes from "./components/tabs/meta_keyframes";
+// import MetaDoc from "./components/tabs/meta_doc";
 import TexturePreviewer from "./components/texturepreviewer";
 import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
@@ -151,12 +150,12 @@ export default class Gui
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
-        this.metaDoc = new MetaDoc(this.metaTabs);
-        this._metaCode = new MetaCode(this.metaTabs);
+        // this.metaDoc = new MetaDoc(this.metaTabs);
+        // this._metaCode = new MetaCode(this.metaTabs);
 
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-        this.metaKeyframes = new MetaKeyframes(this.metaTabs);
+        // this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
         // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
@@ -442,6 +441,7 @@ export default class Gui
         let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
+        this.canvasInfoUiHeight = 36;
 
         let patchHeight = window.innerHeight;
 
@@ -711,12 +711,12 @@ export default class Gui
             metaWidth = this.rightPanelWidth - optionsWidth;
 
             this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = this.rendererHeightScaled + "px";
+            this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elOptions.style.width = optionsWidth + "px";
             this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -727,7 +727,7 @@ export default class Gui
             metaWidth = this.rightPanelWidth;
             this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -736,6 +736,18 @@ export default class Gui
             this._elOptions.style.display = "none";
         }
 
+        ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth) + "px";
+        ele.byId("canvasicons").style.right = (0) + "px";
+
+        const widthResizeIcon = 30;
+        ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
+
+
+        let top = 0;
+        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = 0;
+        else top = this.rendererHeightScaled + 1;
+        ele.byId("canvasicons").style.top = top + "px";
 
         this._elMenubar.style.top = 0 + "px";
 
@@ -1689,10 +1701,10 @@ export default class Gui
         cb(this.opDocs.getHtml(opname));
     }
 
-    metaCode()
-    {
-        return this._metaCode;
-    }
+    // metaCode()
+    // {
+    //     return this._metaCode;
+    // }
 
     showSettings(userInteraction)
     {

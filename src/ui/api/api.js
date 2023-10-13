@@ -88,7 +88,10 @@ export default class Api
             {
                 if (response.json)
                 {
-                    response.json().then((_data) =>
+                    response.json().catch((e) =>
+                    {
+                        console.log(e, url);
+                    }).then((_data) =>
                     {
                         if (doCache)
                             this.cache.push({ url, method, _data });

@@ -66,9 +66,9 @@ export default function startUi(cfg)
                 userSettings.init();
                 incrementStartup();
 
-                gui.metaCode().init();
+                // gui.metaCode().init();
 
-                gui.metaDoc.init();
+                // gui.metaDoc.init();
                 gui.opSelect().reload();
                 // gui.setMetaTab(userSettings.get("metatab") || 'doc');
                 gui.showWelcomeNotifications();

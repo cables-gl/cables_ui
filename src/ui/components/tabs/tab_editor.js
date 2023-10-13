@@ -2,6 +2,7 @@ import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
 import text from "../../text";
 import userSettings from "../usersettings";
+import MetaCode from "./meta_code";
 
 export default class EditorTab
 {
@@ -38,83 +39,100 @@ export default class EditorTab
         const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
         this._tab.html(html);
 
-        createEditor("editorcontent" + this._tab.id, options.content || "",
-            (editor) =>
+        createEditor("editorcontent" + this._tab.id, options.content || "", (editor) =>
+        {
+            this._editor = editor;
+
+            editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
+
+
+
+
+            if (options.allowEdit)
             {
-                this._editor = editor;
-
-                editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
-
-                if (options.allowEdit)
+                if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
+                let hideFormatButton = !!options.hideFormatButton;
+                if (!hideFormatButton && options.syntax && options.syntax === "js")
                 {
-                    if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
-                    let hideFormatButton = !!options.hideFormatButton;
-                    if (!hideFormatButton && options.syntax && options.syntax === "js")
-                    {
-                        hideFormatButton = false;
-                    }
-                    else
-                    {
-                        hideFormatButton = true;
-                    }
-                    if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+                    hideFormatButton = false;
                 }
                 else
                 {
-                    this._editor.setOptions({ "readOnly": "true" });
+                    hideFormatButton = true;
                 }
+                if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+            }
+            else
+            {
+                this._editor.setOptions({ "readOnly": "true" });
+            }
 
-                this._editor.resize();
+            let opname = null;
 
-                const undoManager = this._editor.session.getUndoManager();
-                undoManager.reset();
-                this._editor.session.setUndoManager(undoManager);
+            if (options.editorObj.type == "op")opname = options.editorObj.name;
+            if (options.editorObj.data && options.editorObj.data.opname)opname = options.editorObj.data.opname;
 
-                this._editor.on(
-                    "change",
-                    function (e)
-                    {
-                        gui.mainTabs.setChanged(this._tab.id, true);
-                        if (options.onChange) options.onChange();
-                    }.bind(this),
-                );
+            if (opname)
+            {
+                this._tab.addButton("Manage Op", () => { new MetaCode(gui.mainTabs, opname); });
 
-                this._editor.getSession().setUseWorker(true);
+                this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
+            }
 
-                if (options.syntax === "md") this._editor.session.setMode("ace/mode/Markdown");
-                else if (options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
-                else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
-                else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
-                else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
-                else if (options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
-                else if (options.syntax === "inline-css")
+
+
+
+            this._editor.resize();
+
+            const undoManager = this._editor.session.getUndoManager();
+            undoManager.reset();
+            this._editor.session.setUndoManager(undoManager);
+
+            this._editor.on(
+                "change",
+                function (e)
                 {
-                    this._editor.session.setMode("ace/mode/css");
-                    this._editor.getSession().setUseWorker(false);
-                }
-                else
-                {
-                    this._editor.session.setMode("ace/mode/plain_text");
-                    this._editor.getSession().setUseWorker(false);
-                }
+                    gui.mainTabs.setChanged(this._tab.id, true);
+                    if (options.onChange) options.onChange();
+                }.bind(this),
+            );
 
-                this._tab.addEventListener("onClose", options.onClose);
-                this._tab.addEventListener(
-                    "onActivate",
-                    function ()
-                    {
-                        this._editor.resize(true);
-                        this._editor.focus();
-                        userSettings.set("editortab", this._tab.editorObj.name);
-                    }.bind(this),
-                );
+            this._editor.getSession().setUseWorker(true);
 
-                setTimeout(() =>
+            if (options.syntax === "md") this._editor.session.setMode("ace/mode/Markdown");
+            else if (options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
+            else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
+            else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
+            else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
+            else if (options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
+            else if (options.syntax === "inline-css")
+            {
+                this._editor.session.setMode("ace/mode/css");
+                this._editor.getSession().setUseWorker(false);
+            }
+            else
+            {
+                this._editor.session.setMode("ace/mode/plain_text");
+                this._editor.getSession().setUseWorker(false);
+            }
+
+            this._tab.addEventListener("onClose", options.onClose);
+            this._tab.addEventListener(
+                "onActivate",
+                function ()
                 {
+                    this._editor.resize(true);
                     this._editor.focus();
-                    if (options.onFinished)options.onFinished();
-                }, 100);
-            });
+                    userSettings.set("editortab", this._tab.editorObj.name);
+                }.bind(this),
+            );
+
+            setTimeout(() =>
+            {
+                this._editor.focus();
+                if (options.onFinished)options.onFinished();
+            }, 100);
+        });
     }
 
 
