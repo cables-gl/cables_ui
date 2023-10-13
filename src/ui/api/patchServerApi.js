@@ -882,7 +882,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // {
         // clearTimeout(screenshotTimeout);
 
-        // cgl.setSize(w, h);
+
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
 
 
@@ -909,7 +909,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (error)
                     this._log.warn("[screenshot save error]", error);
 
-
+                cgl.setSize(w, h);
+                console.log("set size", w, h);
                 thePatch.resume(); // must resume here for webgpu
                 gui.jobs().finish("screenshotsave");
                 if (gui.onSaveProject) gui.onSaveProject();

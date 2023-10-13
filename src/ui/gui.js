@@ -422,7 +422,6 @@ export default class Gui
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
         this._elLibrary = this._elLibrary || ele.byId("library");
-        this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
         this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || ele.byId("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || ele.byId("editormaximized");
@@ -479,21 +478,18 @@ export default class Gui
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
-
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
-
-
-        // const cgl = this._corePatch.cgl;
-        // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
+        if (this._canvasMode == this.CANVASMODE_PATCHBG)
+        {
+            patchWidth = window.innerWidth - this.rightPanelWidth;
+            this.rendererHeightScaled = 0;
+        }
 
         this.corePatch().pause();
         this.patchView.pause();
-
-
 
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>

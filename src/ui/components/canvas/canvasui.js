@@ -33,6 +33,14 @@ export default class CanvasUi
 
         this.canvasEle = this._cg.canvas;
 
+        cg.on("resize", () =>
+        {
+            console.log("RESIZE!!!CANVASUI");
+            this.updateSizeDisplay();
+        });
+
+
+
         cg.fpsCounter.on("performance", (perf) =>
         {
             const p = CABLES.UI.uiProfiler.start("[canvasUi] on performance");
@@ -115,7 +123,6 @@ export default class CanvasUi
 
         if (this._oldIconBarW != w)
         {
-            // this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
             this._oldIconBarW = w;
         }
 
@@ -160,7 +167,7 @@ export default class CanvasUi
         perf.finish();
     }
 
-    getCanvasSizeString()
+    updateSizeDisplay()
     {
         this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
@@ -180,7 +187,7 @@ export default class CanvasUi
         if (zoom != 1)
         {
             this._showingInfoZoom = true;
-            if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
+            // if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
             this._eleCanvasInfoZoom.innerHTML = "x" + zoom;
         }
         else
@@ -193,12 +200,6 @@ export default class CanvasUi
     }
 
 
-    updateSizeDisplay()
-    {
-        const sizeStr = this.getCanvasSizeString();
-        if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
-        this._oldSizeStr = sizeStr;
-    }
 
     showCanvasModal(_show)
     {
@@ -208,20 +209,22 @@ export default class CanvasUi
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
-        {
-            // ele.show(this._elCanvasIconbarContainer);
-            _show = true;
+        this.updateSizeDisplay();
+        this.updateCanvasIconBar();
 
-            this.updateCanvasIconBar();
-            this.updateSizeDisplay();
+        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
+        // {
+        //     // ele.show(this._elCanvasIconbarContainer);
+        //     _show = true;
 
-            return;
-        }
+
+        //     return;
+        // }
 
         this.isCanvasFocussed = _show;
 
         // if (!this._elCanvasIconbarContainer) return;
+
 
 
         if (_show)
@@ -237,12 +240,12 @@ export default class CanvasUi
 
             // if (!this._showing) ele.show(this._elCanvasIconbarContainer);
 
-            this.updateCanvasIconBar();
 
-            const sizeStr = this.getCanvasSizeString();
 
-            if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
-            this._oldSizeStr = sizeStr;
+            // const sizeStr = this.getCanvasSizeString();
+
+            // if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
+            // this._oldSizeStr = sizeStr;
         }
         else
         {

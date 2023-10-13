@@ -63,10 +63,7 @@ export default class CanvasManager
             const density = this._contexts[i].pixelDensity;
             const el = this._contexts[i].canvas;
 
-            el.setAttribute("width", w * density);
-            el.setAttribute("height", h * density);
-            el.style.width = w + "px";
-            el.style.height = h + "px";
+            this._contexts[i].setSize(w, h);
         }
     }
 
@@ -77,7 +74,7 @@ export default class CanvasManager
         {
             const url = this.currentCanvas().toDataURL();
             console.log(url);
-        //         (blob) =>
+        //         (blob) =>//
         //         {
         //             if (cb) cb(blob);
         //             else this._log.log("no screenshot callback...");
