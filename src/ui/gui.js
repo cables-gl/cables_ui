@@ -422,7 +422,6 @@ export default class Gui
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
         this._elLibrary = this._elLibrary || ele.byId("library");
-        this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
         this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || ele.byId("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || ele.byId("editormaximized");
@@ -479,21 +478,23 @@ export default class Gui
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
-
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
+        if (this._canvasMode == this.CANVASMODE_PATCHBG)
+        {
+            patchWidth = window.innerWidth - this.rightPanelWidth;
+            this.rendererHeightScaled = 0;
+        }
+        if (this.canvasManager.poppedOut)
+        {
+            this.rendererHeightScaled = 0;
+        }
 
-
-        // const cgl = this._corePatch.cgl;
-        // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
-
-
 
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>
@@ -780,6 +781,17 @@ export default class Gui
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
         // console.log("tabPanelTopHeight", tabPanelTopHeight);
 
+
+        if (this.canvasManager.poppedOut)
+        {
+            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
+            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.width = "0px";
+            this._elCablesCanvasContainer.style.height = "0px";
+            this._elCablesCanvasContainer.style["z-index"] = 1;
+        }
+        else
         if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
@@ -805,7 +817,7 @@ export default class Gui
             this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
-        if (this._canvasMode == this.CANVASMODE_NORMAL)
+        else if (this._canvasMode == this.CANVASMODE_NORMAL)
         {
             this._elCablesCanvasContainer.style["z-index"] = 10;
 

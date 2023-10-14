@@ -10,57 +10,25 @@ export default class MetaCode
     {
         this._log = new Logger("MetaCode");
         this._initialized = false;
-        // this._op = null;
         this._lastSelectedOp = null;
         this._currentName = opname;
 
-        this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "hideToolbar": true, "padding": true });
+        this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab);
-        // this._tab.addEventListener("onActivate", function ()
-        // {
         this.show();
-        // }.bind(this));
     }
 
     init()
     {
         if (this._initialized) return;
         this._initialized = true;
-
-        // gui.opParams.addEventListener("opSelected", this.onOpSelected.bind(this));
     }
-
-    // onOpSelected(_op)
-    // {
-    //     this._lastSelectedOp = _op;
-
-    //     if (!this._tab.isVisible()) return;
-
-    //     clearTimeout(CABLES.UI.OpShowMetaCodeDelay);
-    //     CABLES.UI.OpShowMetaCodeDelay = setTimeout(function ()
-    //     {
-    //         this._op = this._lastSelectedOp;
-    //         this.show();
-    //     }.bind(this), 100);
-    // }
 
     show()
     {
-        // if (this._lastSelectedOp != this._op) this.onOpSelected(this._lastSelectedOp);
-
-        // if (!this._op)
-        // {
-        //     this._currentName = null;
-        //     this._tab.html("<h3>Code</h3>Select any Op");
-        //     return;
-        // }
-
-        // this._currentName = this._op.objName;
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
         if (window.process && window.process.versions.electron) return;
-        // if (this._op)
-        // {
         CABLES.api.get(
             "op/" + this._currentName + "/info",
             (res) =>
@@ -135,6 +103,5 @@ export default class MetaCode
             {
                 this._log.warn("error api?");
             });
-        // }
     }
 }

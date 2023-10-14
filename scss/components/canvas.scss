@@ -141,6 +141,8 @@
 #cablescanvas
 {
     z-index: $zindex_lowest;
+    overflow:hidden;
+    position:absolute;
 }
 
 #glcanvas
