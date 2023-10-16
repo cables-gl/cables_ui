@@ -22,9 +22,17 @@ export default class CanvasManager
     set mode(m)
     {
         this._canvasMode = m;
-        gui.emitEvent("canvasModeChange", this._canvasMode);
-        gui.setLayout();
-        gui.corePatch().cgl.updateSize();
+
+        if (m == this.CANVASMODE_POPOUT)
+        {
+            this.popOut();
+        }
+        else
+        {
+            gui.emitEvent("canvasModeChange", this._canvasMode);
+            gui.setLayout();
+            gui.corePatch().cgl.updateSize();
+        }
     }
 
     get mode()
@@ -138,7 +146,7 @@ export default class CanvasManager
         this.subWindow = window.open("", "view#" + id, "width=" + 500 + ",height=" + 500 + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
         let nDocument = this.subWindow.document;
-        nDocument.title = "jo";
+        nDocument.title = "cables";
 
         let nBody = nDocument.body;
 
@@ -208,10 +216,8 @@ export default class CanvasManager
             gui.setLayout();
         });
 
-        gui.emitEvent("canvasModeChange", this._canvasMode);
-
         this._canvasMode = this.CANVASMODE_POPOUT;
-
+        gui.emitEvent("canvasModeChange", this._canvasMode);
 
         gui.setLayout();
     }

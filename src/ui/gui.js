@@ -484,10 +484,8 @@ export default class Gui
             patchWidth = window.innerWidth - this.rightPanelWidth;
             this.rendererHeightScaled = 0;
         }
-        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
-        {
-            this.rendererHeightScaled = 0;
-        }
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
+
 
 
         this.corePatch().pause();
@@ -779,7 +777,7 @@ export default class Gui
         // console.log("tabPanelTopHeight", tabPanelTopHeight);
 
 
-        if (this.canvasManager.poppedOut)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
             this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
             this._elCablesCanvasContainer.style.right = "initial";

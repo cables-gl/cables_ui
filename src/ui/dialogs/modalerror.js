@@ -255,7 +255,7 @@ export default class ModalError
             }
             else
             {
-                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Log</a>&nbsp;&nbsp;";
+                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
             }
         }
 
