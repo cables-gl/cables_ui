@@ -156,15 +156,20 @@ export default class CanvasManager
         // body.appendChild(img);
         // console.log("huhu");
 
-        const style = nDocument.createElement("link");
-        style.setAttribute("href", "/ui/css/style-dark.css");
-        style.setAttribute("rel", "stylesheet");
-        style.setAttribute("type", "text/css");
-        style.setAttribute("media", "all");
+        // const style = nDocument.createElement("link");
+        // style.setAttribute("href", "/ui/css/style-dark.css");
+        // style.setAttribute("rel", "stylesheet");
+        // style.setAttribute("type", "text/css");
+        // style.setAttribute("media", "all");
 
-        style.onload = () => { console.log("load"); };
+        // style.onload = () => { console.log("load"); };
 
-        nDocument.head.appendChild(style);
+        // nDocument.head.appendChild(style);
+
+        const style = document.createElement("style");
+        style.innerHTML = "body{padding:0;margin:0;background-color:black;overflow:hidden;color:#aaa;font-family:arial;}" +
+            "#glcanvas{position:absolute;}";
+        nBody.appendChild(style);
 
         // <link rel="stylesheet" type="text/css" media="all" href="css/style-dark.css">
 
