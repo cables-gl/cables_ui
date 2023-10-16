@@ -121,7 +121,7 @@ function initSplitPanes()
 
     function resizeRenderer(ev)
     {
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) return;
+        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) return;
 
         if (ev.shiftKey)
         {

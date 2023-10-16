@@ -6,10 +6,30 @@ export default class CanvasManager
         this._contexts = [];
         this.subWindow = null;
 
+        this.CANVASMODE_NORMAL = 0;
+        this.CANVASMODE_PATCHBG = 1;
+        this.CANVASMODE_FULLSCREEN = 2;
+        this.CANVASMODE_POPOUT = 3;
+
+        this._canvasMode = this.CANVASMODE_NORMAL;
+
         window.addEventListener("beforeunload", () =>
         {
             if (this.subWindow) this.subWindow.close();
         });
+    }
+
+    set mode(m)
+    {
+        this._canvasMode = m;
+        gui.emitEvent("canvasModeChange", this._canvasMode);
+        gui.setLayout();
+        gui.corePatch().cgl.updateSize();
+    }
+
+    get mode()
+    {
+        return this._canvasMode;
     }
 
     currentCanvas()
@@ -184,11 +204,15 @@ export default class CanvasManager
             // for (let i = 0; i < ncablesEles.length; i++)
 
             gui.corePatch().cgl.updateSize();
-            this.poppedOut = false;
+            this._canvasMode = this.CANVASMODE_NORMAL;
             gui.setLayout();
         });
 
-        this.poppedOut = true;
+        gui.emitEvent("canvasModeChange", this._canvasMode);
+
+        this._canvasMode = this.CANVASMODE_POPOUT;
+
+
         gui.setLayout();
     }
 }

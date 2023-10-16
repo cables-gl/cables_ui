@@ -73,10 +73,7 @@ export default class Gui
 
         this.canvasMagnifier = null;
 
-        this.CANVASMODE_NORMAL = 0;
-        this.CANVASMODE_FULLSCREEN = 2;
-        this.CANVASMODE_PATCHBG = 1;
-        this._canvasMode = this.CANVASMODE_NORMAL;
+
 
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
@@ -446,7 +443,7 @@ export default class Gui
 
         if (window.innerWidth <= 480 || this.isRemoteClient)
         {
-            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
             this._showingEditor = false;
@@ -469,7 +466,7 @@ export default class Gui
             this.rendererWidth = window.innerWidth * 0.4;
             this.rendererHeight = window.innerHeight * 0.25;
         }
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
             this.rendererWidth = window.innerWidth;
             this.rendererHeight = window.innerHeight;
@@ -482,12 +479,12 @@ export default class Gui
         this.rendererHeight = Math.floor(this.rendererHeight);
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             patchWidth = window.innerWidth - this.rightPanelWidth;
             this.rendererHeightScaled = 0;
         }
-        if (this.canvasManager.poppedOut)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
         {
             this.rendererHeightScaled = 0;
         }
@@ -597,7 +594,7 @@ export default class Gui
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
         this.rightPanelWidth = this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
 
         this._elSplitterPatch.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
         this._elSplitterPatch.style.height = (patchHeight + timelineUiHeight + 2) + "px";
@@ -746,7 +743,7 @@ export default class Gui
 
 
         let top = 0;
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = 0;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) top = 0;
         else top = this.rendererHeightScaled + 1;
         ele.byId("canvasicons").style.top = top + "px";
 
@@ -792,7 +789,7 @@ export default class Gui
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
         else
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
             this._elCablesCanvasContainer.style.right = "initial";
@@ -805,7 +802,7 @@ export default class Gui
 
             this._elCablesCanvasContainer.style["z-index"] = 40;
         }
-        else if (this._canvasMode == this.CANVASMODE_PATCHBG)
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
@@ -817,7 +814,7 @@ export default class Gui
             this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
-        else if (this._canvasMode == this.CANVASMODE_NORMAL)
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
             this._elCablesCanvasContainer.style["z-index"] = 10;
 
@@ -848,21 +845,20 @@ export default class Gui
         perf.finish();
     }
 
-    _setCanvasMode(m)
-    {
-        this._canvasMode = m;
-        this.emitEvent("canvasModeChange", m);
-    }
+    // _setCanvasMode(m)
+    // {
+    //     this.canvasManager.mode = m;
+    // }
 
 
-    getCanvasMode()
-    {
-        return this._canvasMode;
-    }
+    // getCanvasMode()
+    // {
+    //     return this.canvasManager.mode;
+    // }
 
     _switchCanvasSizeNormal()
     {
-        this._setCanvasMode(this.CANVASMODE_NORMAL);
+        this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
     }
@@ -873,7 +869,7 @@ export default class Gui
         this._oldCanvasHeight = this.rendererHeight;
         this.rightPanelWidth = this.rendererWidth;
 
-        this._setCanvasMode(this.CANVASMODE_PATCHBG);
+        this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
         userSettings.set("canvasMode", "patchbg");
 
         this.rendererHeight = 100;
@@ -882,9 +878,9 @@ export default class Gui
 
     cyclePatchBg()
     {
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
 
-        if (this._canvasMode == this.CANVASMODE_NORMAL)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
             this._switchCanvasPatchBg();
         }
@@ -900,9 +896,9 @@ export default class Gui
 
     cycleFullscreen()
     {
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
-            this._setCanvasMode(this.CANVASMODE_NORMAL);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
         }
@@ -911,7 +907,7 @@ export default class Gui
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
 
             if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
             this.notifiedFullscreen = true;
@@ -1473,7 +1469,7 @@ export default class Gui
         else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
         else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
-            if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+            if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
             {
                 this.cycleFullscreen();
             }
