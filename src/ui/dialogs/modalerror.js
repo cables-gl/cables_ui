@@ -113,7 +113,10 @@ export default class ModalError
             }
         }
 
+        console.log("cdscdscdscds", this._options.exception || this._options.title);
+
         CABLES.lastError = {
+            "title": this._options.title,
             "exception": this._options.exception,
             "opName": this.opName,
             "opTriggerStack": stackStr,
@@ -226,8 +229,6 @@ export default class ModalError
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
-
-
         let isCustomOpError = false;
 
         if (CABLES.lastError && CABLES.lastError.opTriggerStack)
@@ -238,9 +239,9 @@ export default class ModalError
                 CABLES.lastError.opTriggerStack.indexOf("Ops.patch.") >= 0) isCustomOpError = true;
         }
 
-        if (!isCustomOp && !isPrivateOp && !isCustomOpError)
+        if (!isCustomOp && !isPrivateOp)
         {
-            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff)
+            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !isCustomOpError)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
