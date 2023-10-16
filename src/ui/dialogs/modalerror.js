@@ -113,7 +113,6 @@ export default class ModalError
             }
         }
 
-        console.log("cdscdscdscds", this._options.exception || this._options.title);
 
         CABLES.lastError = {
             "title": this._options.title,
@@ -122,6 +121,10 @@ export default class ModalError
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
+
+
+
+
 
         if (this._options.op) CABLES.lastError.opName = this.opName;
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
@@ -231,6 +234,9 @@ export default class ModalError
 
         let isCustomOpError = false;
 
+
+
+
         if (CABLES.lastError && CABLES.lastError.opTriggerStack)
         {
             if (CABLES.lastError.opTriggerStack.indexOf("Ops.Gl.Shader.CustomShader_") >= 0 ||
@@ -241,6 +247,7 @@ export default class ModalError
 
         if (!isCustomOp && !isPrivateOp)
         {
+            console.log("cdscdscdscds", CABLES.lastError);
             if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !isCustomOpError)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);

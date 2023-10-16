@@ -212,6 +212,7 @@ export default class Api
 
     getErrorReport(err)
     {
+        const report = err || CABLES.lastError || {};
         let history = [];
         if (undo)
         {
@@ -220,7 +221,6 @@ export default class Api
         history = history.slice(-10);
         err = err || CABLES.lastError;
 
-        const report = {};
         report.time = Date.now();
         report.history = history;
 
@@ -229,7 +229,7 @@ export default class Api
         report.infoPlatform = navigator.platform;
         report.infoLanguage = navigator.language;
         report.infoUserAgent = navigator.userAgent;
-        report.opTriggerStack = err.opTriggerStack;
+        // report.opTriggerStack = err.opTriggerStack;
 
         if (window.gui)
         {
@@ -251,27 +251,27 @@ export default class Api
             }
         }
 
-        report.exception = {};
-        if (err.exception)
-        {
-            report.exception = {
-                "type": err.exception.type,
-                "error": err.exception.error,
-                "filename": err.exception.filename,
-                "lineno": err.exception.lineno,
-                "message": err.exception.message,
-            };
-            if (err.exception.stack) report.stack = err.exception.stack;
-            if (err.exception.error && err.exception.error.stack) report.stack = err.exception.error.stack;
-        }
+        // report.exception = {};
+        // if (err.exception)
+        // {
+        //     report.exception = {
+        //         "type": err.exception.type,
+        //         "error": err.exception.error,
+        //         "filename": err.exception.filename,
+        //         "lineno": err.exception.lineno,
+        //         "message": err.exception.message,
+        //     };
+        //     if (err.exception.stack) report.stack = err.exception.stack;
+        //     if (err.exception.error && err.exception.error.stack) report.stack = err.exception.error.stack;
+        // }
 
-        report.opName = err.opName;
-        report.errorLine = err.errorLine;
+        // report.opName = err.opName;
+        // report.errorLine = err.errorLine;
 
-        if (err.stackInfo)
-        {
-            report.stackInfo = err.stackInfo;
-        }
+        // if (err.stackInfo)
+        // {
+        //     report.stackInfo = err.stackInfo;
+        // }
 
         return report;
     }
