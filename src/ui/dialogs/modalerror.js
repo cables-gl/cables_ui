@@ -226,7 +226,19 @@ export default class ModalError
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
-        if (!isCustomOp && !isPrivateOp)
+
+
+        let isCustomOpError = false;
+
+        if (CABLES.lastError && CABLES.lastError.opTriggerStack)
+        {
+            if (CABLES.lastError.opTriggerStack.indexOf("Ops.Gl.Shader.CustomShader_") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.User.") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.Team.") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.patch.") >= 0) isCustomOpError = true;
+        }
+
+        if (!isCustomOp && !isPrivateOp && !isCustomOpError)
         {
             if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff)
             {
