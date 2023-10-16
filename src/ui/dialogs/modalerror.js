@@ -27,7 +27,7 @@ export default class ModalError
         for (let i = 0; i < s.length; i++)
         {
             stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
-            if (i != s.length - 1)stackStr += " -> ";
+            if (i != s.length - 1)stackStr += " -> \n";
         }
 
         if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("NetworkError") > -1 && this._options.exception.message.indexOf("/ace/worker") > -1)
