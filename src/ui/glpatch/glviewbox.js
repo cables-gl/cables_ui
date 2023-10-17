@@ -288,7 +288,7 @@ export default class GlViewBox
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
+        if (gui.canvasManager.mode != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
             if (!this._opsBoundingRect)
             {
@@ -327,7 +327,7 @@ export default class GlViewBox
                 }
             }
         }
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
+        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
             this._opsBoundingRect.visible = false;
         }

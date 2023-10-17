@@ -107,7 +107,7 @@ export default class CanvasUi
         // this._oldIconBarWidth = width;
 
         // let top = "";
-        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) top = "0px";
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) top = "0px";
         // else top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
 
 
@@ -210,7 +210,7 @@ export default class CanvasUi
         this.updateSizeDisplay();
         this.updateCanvasIconBar();
 
-        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG)
         // {
         //     // ele.show(this._elCanvasIconbarContainer);
         //     _show = true;
@@ -227,7 +227,7 @@ export default class CanvasUi
 
         if (_show)
         {
-            if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
+            if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG)
             {
                 ele.hide(this._elCanvasModalDarkener);
             }

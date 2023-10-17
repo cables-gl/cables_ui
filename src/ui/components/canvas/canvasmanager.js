@@ -6,10 +6,38 @@ export default class CanvasManager
         this._contexts = [];
         this.subWindow = null;
 
+        this.CANVASMODE_NORMAL = 0;
+        this.CANVASMODE_PATCHBG = 1;
+        this.CANVASMODE_FULLSCREEN = 2;
+        this.CANVASMODE_POPOUT = 3;
+
+        this._canvasMode = this.CANVASMODE_NORMAL;
+
         window.addEventListener("beforeunload", () =>
         {
             if (this.subWindow) this.subWindow.close();
         });
+    }
+
+    set mode(m)
+    {
+        this._canvasMode = m;
+
+        if (m == this.CANVASMODE_POPOUT)
+        {
+            this.popOut();
+        }
+        else
+        {
+            gui.emitEvent("canvasModeChange", this._canvasMode);
+            gui.setLayout();
+            gui.corePatch().cgl.updateSize();
+        }
+    }
+
+    get mode()
+    {
+        return this._canvasMode;
     }
 
     currentCanvas()
@@ -118,7 +146,7 @@ export default class CanvasManager
         this.subWindow = window.open("", "view#" + id, "width=" + 500 + ",height=" + 500 + ",directories=0,titlebar=0,toolbar=0,location=0,status=0,menubar=0,scrollbars=no,resizable=yes,popup=true");
         if (!this.subWindow) return;
         let nDocument = this.subWindow.document;
-        nDocument.title = "jo";
+        nDocument.title = "cables";
 
         let nBody = nDocument.body;
 
@@ -128,15 +156,20 @@ export default class CanvasManager
         // body.appendChild(img);
         // console.log("huhu");
 
-        const style = nDocument.createElement("link");
-        style.setAttribute("href", "/ui/css/style-dark.css");
-        style.setAttribute("rel", "stylesheet");
-        style.setAttribute("type", "text/css");
-        style.setAttribute("media", "all");
+        // const style = nDocument.createElement("link");
+        // style.setAttribute("href", "/ui/css/style-dark.css");
+        // style.setAttribute("rel", "stylesheet");
+        // style.setAttribute("type", "text/css");
+        // style.setAttribute("media", "all");
 
-        style.onload = () => { console.log("load"); };
+        // style.onload = () => { console.log("load"); };
 
-        nDocument.head.appendChild(style);
+        // nDocument.head.appendChild(style);
+
+        const style = document.createElement("style");
+        style.innerHTML = "body{padding:0;margin:0;background-color:black;overflow:hidden;color:#aaa;font-family:arial;}" +
+            "#glcanvas{position:absolute;}";
+        nBody.appendChild(style);
 
         // <link rel="stylesheet" type="text/css" media="all" href="css/style-dark.css">
 
@@ -184,11 +217,13 @@ export default class CanvasManager
             // for (let i = 0; i < ncablesEles.length; i++)
 
             gui.corePatch().cgl.updateSize();
-            this.poppedOut = false;
+            this._canvasMode = this.CANVASMODE_NORMAL;
             gui.setLayout();
         });
 
-        this.poppedOut = true;
+        this._canvasMode = this.CANVASMODE_POPOUT;
+        gui.emitEvent("canvasModeChange", this._canvasMode);
+
         gui.setLayout();
     }
 }

@@ -835,7 +835,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     render(resX, resY)
     {
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG || !this.clear)
+        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG || !this.clear)
             this._cgl.gl.clearColor(0, 0, 0, 0);
         else
         {

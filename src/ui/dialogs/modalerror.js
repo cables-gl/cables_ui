@@ -27,7 +27,7 @@ export default class ModalError
         for (let i = 0; i < s.length; i++)
         {
             stackStr += "[" + s[i].op.objName + " - " + s[i].name + "] ";
-            if (i != s.length - 1)stackStr += " -> ";
+            if (i != s.length - 1)stackStr += " -> \n";
         }
 
         if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("NetworkError") > -1 && this._options.exception.message.indexOf("/ace/worker") > -1)
@@ -113,12 +113,18 @@ export default class ModalError
             }
         }
 
+
         CABLES.lastError = {
+            "title": this._options.title,
             "exception": this._options.exception,
             "opName": this.opName,
             "opTriggerStack": stackStr,
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
+
+
+
+
 
         if (this._options.op) CABLES.lastError.opName = this.opName;
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
@@ -226,16 +232,30 @@ export default class ModalError
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
+        let isCustomOpError = false;
+
+
+
+
+        if (CABLES.lastError && CABLES.lastError.opTriggerStack)
+        {
+            if (CABLES.lastError.opTriggerStack.indexOf("Ops.Gl.Shader.CustomShader_") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.User.") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.Team.") >= 0 ||
+                CABLES.lastError.opTriggerStack.indexOf("Ops.patch.") >= 0) isCustomOpError = true;
+        }
+
         if (!isCustomOp && !isPrivateOp)
         {
-            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff)
+            console.log("cdscdscdscds", CABLES.lastError);
+            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !isCustomOpError)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
             }
             else
             {
-                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Log</a>&nbsp;&nbsp;";
+                str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
             }
         }
 
