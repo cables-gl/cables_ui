@@ -396,7 +396,7 @@ export default class ScConnection extends CABLES.EventTarget
         this._token = this._scConfig.token;
         this._socket = socketClusterClient.create(this._scConfig);
         this._socket.patchChannelName = this.patchChannelName;
-        this._socket.userChannelName = this.patchChannelName;
+        this._socket.userChannelName = this.userChannelName;
 
         this._state = new ScState(this);
         if (this.multiplayerCapable)
@@ -497,16 +497,18 @@ export default class ScConnection extends CABLES.EventTarget
             }
         })();
 
-
-        (async () =>
+        if (this.userChannelName)
         {
-            const userChannel = this._socket.subscribe(this.userChannelName + "/notify");
-            for await (const msg of userChannel)
+            (async () =>
             {
-                this._handleInfoChannelMsg(msg);
-                this.emitEvent("netActivityIn");
-            }
-        })();
+                const userChannel = this._socket.subscribe(this.userChannelName + "/notify");
+                for await (const msg of userChannel)
+                {
+                    this._handleInfoChannelMsg(msg);
+                    this.emitEvent("netActivityIn");
+                }
+            })();
+        }
 
         (async () =>
         {
