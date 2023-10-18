@@ -169,6 +169,8 @@ export default function startUi(cfg)
                     "correctLevel": QRCode.CorrectLevel.H
                 });
 
+                if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
+
                 CABLES.UI.loaded = true;
                 CABLES.UI.loadedTime = performance.now();
 
