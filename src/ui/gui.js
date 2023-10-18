@@ -1302,6 +1302,13 @@ export default class Gui
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_history").addEventListener("click", (event) => { new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true); });
 
+        ele.byId("nav-item-activity").addEventListener("click", (event) =>
+        {
+            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed/";
+            gui.mainTabs.addIframeTab("Activity Feed", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
+        });
+
+
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
         window.addEventListener("resize", () =>
