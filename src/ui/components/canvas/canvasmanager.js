@@ -150,6 +150,8 @@ export default class CanvasManager
 
         let nBody = nDocument.body;
 
+        gui.corePatch().emitEvent("windowChanged", this.subWindow);
+
         // const img = nDocument.createElement("img");
         // img.setAttribute("src", "http://localhost:5711/assets/6528ff86a3da3169c9cfef49/production_0_side.jpg?rnd629ea44b-fff0-4f1d-885c-db95d63aae30/production_0_side.jpg?rnd=629ea44b-fff0-4f1d-885c-db95d63aae30");
         // img.onload = () => { console.log("load"); };
@@ -184,6 +186,11 @@ export default class CanvasManager
         nBody.appendChild(containerEle);
 
         containerEle.id = "cablescanvas";
+
+        // const base = document.createElement("base");
+        // base.setAttribute("href", "https://meineSeite.de/");
+        // document.head.appendChild(base);
+
 
         const p = gui.corePatch().cgl.canvas.parentElement;
 
