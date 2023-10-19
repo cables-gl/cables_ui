@@ -84,15 +84,17 @@
     <div id="bgpreviewButtons" class="cbl_iconbar cbl_iconbar_hor">
         <span class="item nonInteractive" style="float: left;" id="bgpreviewInfo"  onclick="gui.metaTexturePreviewer.gotoOp();">
         </span>
-        <span class="item" id="bgpreviewInfoPin">
-            <span id="texPrevPin" class="icon icon-1_25x fright iconhover icon-pin-outline" onclick="gui.metaTexturePreviewer.pin();"></span>
+
+        <span class="item" id="texprevSize" onclick="gui.metaTexturePreviewer.toggleSize(-1);"  style="padding-right:0px !important;margin-right:0px !important" >
+            <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-minus"></span>
         </span>
-        <!-- <span class="item" id="bgpreviewInfo">
-            <span class="icon icon-1_25x fright iconhover icon-x" onclick="gui.metaTexturePreviewer.pressedEscape();"></span>
-        </span> -->
-        <!-- <span class="item" id="bgpreviewMenu" onclick="gui.metaTexturePreviewer.pressedEscape();">
-            <span class="icon icon-1_25x fright iconhover icon-three-dots" ></span>
-        </span> -->
+        <span class="item" id="texprevSize2" onclick="gui.metaTexturePreviewer.toggleSize(1);"  style="padding-left:0px !important;margin-left:0px !important" >
+            <span id="bgpreviewToggleSize" class="icon icon-1_25x fright iconhover icon-plus"></span>
+        </span>
+
+        <span class="item" id="bgpreviewInfoPin" onclick="gui.metaTexturePreviewer.pin();">
+            <span id="texPrevPin" class="icon icon-1_25x fright iconhover icon-pin" ></span>
+        </span>
 
 
         <span class="item hidden" id="bgpreviewMax" onclick="gui.metaTexturePreviewer.enableBgPreview(true);">
