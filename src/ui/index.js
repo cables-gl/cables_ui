@@ -54,6 +54,7 @@ import { arrayContains, uniqueArray } from "./utils/helper";
 import LogFilter from "./utils/loggerfilter";
 import undo from "./utils/undo";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
+import MetaCode from "./components/tabs/meta_code";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
