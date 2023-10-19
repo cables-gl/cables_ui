@@ -37,7 +37,7 @@
 
             {{#if showEditButton }}
                 <a class="button-small tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="gui.serverOps.edit('{{op.objName}}',false,false,true);">Edit Op</a>
-                <a class="button-small tt info"  onclick="new CABLES.UI.MetaCode(gui.mainTabs, opname);">Manage Op</a>
+                <a class="button-small tt info"  onclick="new CABLES.UI.MetaCode(gui.mainTabs, '{{op.objName}}');">Manage Op</a>
             {{/if}}
 
             <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
