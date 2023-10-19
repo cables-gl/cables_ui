@@ -14,8 +14,12 @@ export default class MetaCode
         this._currentName = opname;
 
         this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
-        tabs.addTab(this._tab);
+        tabs.addTab(this._tab, true);
         this.show();
+
+        console.log(tabs);
+        gui.maintabPanel.show(true);
+        // tabs.activateTab(this._tab.id);
     }
 
     init()
