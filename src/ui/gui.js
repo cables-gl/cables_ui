@@ -947,6 +947,27 @@ export default class Gui
         }
     }
 
+    updateActivityFeedIcon(data)
+    {
+        console.log("UPDATE", data);
+        if (!data) return;
+        const feedIcon = ele.byId("nav-item-activity");
+        if (feedIcon)
+        {
+            const actionable = feedIcon.querySelector(".dot");
+            if (data.action_required)
+            {
+                ele.show(feedIcon);
+                ele.show(actionable);
+            }
+            else
+            {
+                ele.hide(feedIcon);
+                ele.hide(actionable);
+            }
+        }
+    }
+
     hideTiming()
     {
         gui.timeLine().hidden = true;
@@ -1301,6 +1322,12 @@ export default class Gui
         ele.byId("nav_gpuprofiler").addEventListener("click", (event) => { CABLES.CMD.UI.profileGPU(); });
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_history").addEventListener("click", (event) => { new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true); });
+
+        ele.byId("nav-item-activity").addEventListener("click", (event) =>
+        {
+            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed?iframe=true";
+            gui.mainTabs.addIframeTab("Activity Feed", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
+        });
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
@@ -1729,7 +1756,7 @@ export default class Gui
             }
         };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settingsiframe";
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 

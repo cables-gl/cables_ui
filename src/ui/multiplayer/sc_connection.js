@@ -501,11 +501,13 @@ export default class ScConnection extends CABLES.EventTarget
         {
             (async () =>
             {
-                const userChannel = this._socket.subscribe(this.userChannelName + "/notify");
+                const userChannel = this._socket.subscribe(this.userChannelName + "/activity");
                 for await (const msg of userChannel)
                 {
-                    this._handleInfoChannelMsg(msg);
-                    this.emitEvent("netActivityIn");
+                    if (msg && msg.data)
+                    {
+                        gui.updateActivityFeedIcon(msg.data);
+                    }
                 }
             })();
         }

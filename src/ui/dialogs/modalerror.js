@@ -232,23 +232,21 @@ export default class ModalError
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
         str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
 
-        let isCustomOpError = false;
+        let ignoreErrorReport = false;
 
-
-
+        if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("Script Error.") > -1)ignoreErrorReport = true;
 
         if (CABLES.lastError && CABLES.lastError.opTriggerStack)
         {
             if (CABLES.lastError.opTriggerStack.indexOf("Ops.Gl.Shader.CustomShader_") >= 0 ||
                 CABLES.lastError.opTriggerStack.indexOf("Ops.User.") >= 0 ||
                 CABLES.lastError.opTriggerStack.indexOf("Ops.Team.") >= 0 ||
-                CABLES.lastError.opTriggerStack.indexOf("Ops.patch.") >= 0) isCustomOpError = true;
+                CABLES.lastError.opTriggerStack.indexOf("Ops.Patch.") >= 0) ignoreErrorReport = true;
         }
 
         if (!isCustomOp && !isPrivateOp)
         {
-            console.log("cdscdscdscds", CABLES.lastError);
-            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !isCustomOpError)
+            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";

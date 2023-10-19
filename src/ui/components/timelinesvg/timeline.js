@@ -298,7 +298,8 @@ export default function TimeLineGui()
         if (newanim == anim) return;
         if (newanim && newanim != tlEmpty)gui.showTiming();
 
-        gui.metaKeyframes.setAnim(newanim);
+        if (gui.metaKeyframes)
+            gui.metaKeyframes.setAnim(newanim);
 
         removeDots();
 

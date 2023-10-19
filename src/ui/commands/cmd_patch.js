@@ -201,7 +201,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
-    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settingsiframe#versions";
+    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
         url,
