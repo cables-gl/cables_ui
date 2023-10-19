@@ -207,7 +207,7 @@ export default class CanvasManager
 
         this.subWindow.addEventListener("resize", () =>
         {
-            console.log(this.subWindow.innerWidth, this.subWindow.innerHeight);
+            // console.log(this.subWindow.innerWidth, this.subWindow.innerHeight);
             gui.corePatch().cgl.setSize(this.subWindow.innerWidth, this.subWindow.innerHeight);
             gui.corePatch().cgl.updateSize();
         });
