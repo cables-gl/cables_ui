@@ -4,6 +4,7 @@ import text from "../../text";
 import userSettings from "../usersettings";
 import MetaCode from "./meta_code";
 
+
 export default class EditorTab
 {
     constructor(options)

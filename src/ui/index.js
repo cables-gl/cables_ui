@@ -152,6 +152,7 @@ CABLES.UI.ParamTabInputListener = ParamTabInputListener;
 CABLES.UI.undo = undo;
 
 CABLES.UI.MODAL = oldModalWrap;
+CABLES.UI.MetaCode = MetaCode;
 
 
 setHtmlDefaultListeners();
