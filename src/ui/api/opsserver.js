@@ -12,6 +12,14 @@ import gluiconfig from "../glpatch/gluiconfig";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
+function capitalize(str)
+{
+    console.log(str);
+    const s = (str[0].toUpperCase() + str.slice(1));
+    console.log(s);
+    return s;
+}
+
 export default class ServerOps
 {
     constructor(gui, patchId, next)
@@ -640,7 +648,8 @@ export default class ServerOps
         const _nameChangeListener = () =>
         {
             const newNamespace = ele.byId("opNameDialogNamespace").value;
-            const v = ele.byId("opNameDialogInput").value;
+            let v = capitalize(ele.byId("opNameDialogInput").value);
+
             if (v)
             {
                 CABLESUILOADER.talkerAPI.send("checkOpName", {
@@ -690,7 +699,7 @@ export default class ServerOps
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                ele.byId("opNameDialogInput").value = suggest.dataset.shortName;
+                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.shortName);
                                 _nameChangeListener();
                             });
                         }
@@ -738,13 +747,13 @@ export default class ServerOps
 
             ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
             {
-                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
+                cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value));
             });
 
             if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
                 (event) =>
                 {
-                    cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value, true);
+                    cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), true);
                 });
         });
     }
