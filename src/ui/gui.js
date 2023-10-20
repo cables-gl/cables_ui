@@ -73,7 +73,7 @@ export default class Gui
 
         this.canvasMagnifier = null;
 
-
+        this.userSettings = userSettings;
 
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;

@@ -684,28 +684,10 @@ body
     {
         display:none;
         position:absolute;
-        // margin-right: 5px;
         z-index: $zindex_superlow;
-        // cursor:pointer;
         pointer-events: none;
+        transform:scale(1,-1);
     }
-
-    // .bgpreviewScale50
-    // {
-    //     transform: scale(0.5, -0.5) translate(50%, 50%);
-    // }
-    // .bgpreviewScale25
-    // {
-    //     transform: scale(0.25, -0.25) translate(150%,150%);
-    // }
-    // .bgpreviewScale33
-    // {
-    //     transform: scale(0.33, -0.33) translate(100%,100%);
-    // }
-    // .bgpreviewScale100
-    // {
-    //     transform: scale(1, -1);
-    // }
 
     #offlineIndicator
     {

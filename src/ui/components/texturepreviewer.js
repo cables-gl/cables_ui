@@ -37,15 +37,18 @@ export default class TexturePreviewer
         userSettings.addEventListener("onChange", (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
-            if (key == "texpreviewSize") this.setSize();
-            if (key == "bgpreview") this.enableBgPreview(v);
+            if (key == "texpreviewSize") this.setSize(userSettings.get(key));
+            if (key == "bgpreviewMax") this.enableBgPreview();
+
+
+            console.log("usersettings change", key, v);
         });
 
 
         this._initListener();
 
 
-        this.enableBgPreview(userSettings.get("bgpreviewMax"));
+        this.enableBgPreview();
     }
 
     _initListener()
@@ -220,10 +223,14 @@ export default class TexturePreviewer
 
     setSize(size)
     {
-        if (!size)size = 50;
+        if (!size)size = userSettings.get("texpreviewSize") || 50;
 
         if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
         else this._ele.style.opacity = 1;
+
+        this.scale = size / 100;
+
+        userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     _getCanvasSize(port, tex, meta)
@@ -280,14 +287,25 @@ export default class TexturePreviewer
     }
 
 
-    enableBgPreview(enabled)
+
+    enableBgPreview()
     {
+        const enabled = userSettings.get("bgpreviewMax");
         this._enabled = enabled;
+
+        // if (storeSetting)
+        // {
+        //     userSettings.set("bgpreviewMax", enabled);
+
+        //     console.log("store bgpreview max", enabled);
+        // }
+
+        // console.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
+
         if (!enabled)
         {
             this.pressedEscape();
 
-            userSettings.set("bgpreviewMax", false);
 
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
@@ -300,8 +318,6 @@ export default class TexturePreviewer
         }
         else
         {
-            userSettings.set("bgpreviewMax", true);
-
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
