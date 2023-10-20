@@ -115,14 +115,14 @@ export default class CanvasUi
 
         // this._oldIconBarTop = top;
 
-        const w = gui.rendererWidth * this._cg.canvasScale;
+        // const w = gui.rendererWidth * this._cg.canvasScale;
 
-        ele.show(this._elCanvasIconbar);
+        // ele.show(this._elCanvasIconbar);
 
-        if (this._oldIconBarW != w)
-        {
-            this._oldIconBarW = w;
-        }
+        // if (this._oldIconBarW != w)
+        // {
+        //     this._oldIconBarW = w;
+        // }
 
 
         // const r = this._elCanvasIconbar.getBoundingClientRect();

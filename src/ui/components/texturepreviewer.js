@@ -29,6 +29,7 @@ export default class TexturePreviewer
         this._currentWidth = -1;
         this._lastClicked = null;
         this.pinned = false;
+        this.scale = 0.2;
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
@@ -180,10 +181,10 @@ export default class TexturePreviewer
 
             if (texType == 1)s[0] *= 1.33;
 
-            if (this._currentWidth != s[0] || this._currentHeight != s[1])
+            if (this._currentWidth != s[0] * this.scale || this._currentHeight != s[1] * this.scale)
             {
-                this._currentWidth = previewCanvasEle.width = s[0];
-                this._currentHeight = previewCanvasEle.height = s[1];
+                this._currentWidth = previewCanvasEle.width = s[0] * this.scale;
+                this._currentHeight = previewCanvasEle.height = s[1] * this.scale;
             }
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
@@ -200,26 +201,29 @@ export default class TexturePreviewer
         }
     }
 
+
+    toggleSize(m)
+    {
+        let size = userSettings.get("texpreviewSize");
+
+        if (size == null || size == undefined)size = 30;
+
+        if (size % 10 != 0)size = 30;
+        size += m * 10;
+        if (size <= 0)size = 10;
+        if (size > 100)size = 10;
+
+        this.scale = size / 100;
+
+        userSettings.set("texpreviewSize", this.scale * 100);
+    }
+
     setSize(size)
     {
-        if (size == undefined)
-        {
-            size = userSettings.get("texpreviewSize");
-            if (!size)size = 50;
-        }
+        if (!size)size = 50;
 
         if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
         else this._ele.style.opacity = 1;
-
-
-        this._ele.classList.remove("bgpreviewScale25");
-        this._ele.classList.remove("bgpreviewScale33");
-        this._ele.classList.remove("bgpreviewScale50");
-        this._ele.classList.remove("bgpreviewScale100");
-
-        this._ele.classList.add("bgpreviewScale" + size);
-
-        userSettings.set("texpreviewSize", size);
     }
 
     _getCanvasSize(port, tex, meta)
@@ -289,6 +293,8 @@ export default class TexturePreviewer
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
             ele.byId("bgpreviewInfoPin").classList.add("hidden");
+            ele.byId("texprevSize").classList.add("hidden");
+            ele.byId("texprevSize2").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
@@ -301,6 +307,8 @@ export default class TexturePreviewer
             ele.byId("bgpreviewMin").classList.remove("hidden");
             ele.byId("bgpreviewInfoPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
+            ele.byId("texprevSize").classList.remove("hidden");
+            ele.byId("texprevSize2").classList.remove("hidden");
 
             this._ele.classList.remove("hidden");
 

@@ -733,7 +733,7 @@ export default class Gui
         }
 
         ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
-        ele.byId("canvasicons").style.width = (this.rendererWidth) + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth * this._corePatch.cgl.canvasScale) + "px";
         ele.byId("canvasicons").style.right = (0) + "px";
 
         const widthResizeIcon = 30;

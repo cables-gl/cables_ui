@@ -12,15 +12,15 @@
 
 
 .cursor_pointer{ cursor:pointer; }
-.cursor_grab{ cursor:url(/ui/img/grab.png) 0 0, auto; }
 .cursor_wait{ cursor:progress; }
 .cursor_auto{ cursor:auto; }
 .cursor_copy{ cursor:copy; }
 
-.cursor_port_check{ cursor:url(/ui/img/check.png) 10 10, auto }
-.cursor_port_circle{ cursor:url(/ui/img/circle.png) 10 10, auto }
-.cursor_port_remove{ cursor:url(/ui/img/remove.png) 10 10, auto }
-.cursor_port_add{ cursor:url(/ui/img/add.png) 10 10, auto }
+// .cursor_grab{ cursor:url(/ui/img/grab.png) 0 0, auto; }
+// .cursor_port_check{ cursor:url(/ui/img/check.png) 10 10, auto }
+// .cursor_port_circle{ cursor:url(/ui/img/circle.png) 10 10, auto }
+// .cursor_port_remove{ cursor:url(/ui/img/remove.png) 10 10, auto }
+// .cursor_port_add{ cursor:url(/ui/img/add.png) 10 10, auto }
 
 
 #drop-op-cursor

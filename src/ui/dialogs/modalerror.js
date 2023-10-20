@@ -82,6 +82,7 @@ export default class ModalError
                 // browser not supported, we don't care at this point
             }
             console.log("exception:", this._options.exception, info);
+            if (this._options.exception && this._options.exception.error && this._options.exception.error.message) this._options.title = this._options.exception.error.message;
         }
 
         let doTrack = true;
