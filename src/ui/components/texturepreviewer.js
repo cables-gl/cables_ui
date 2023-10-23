@@ -39,15 +39,9 @@ export default class TexturePreviewer
             if (key == "texpreviewTransparent") this.setSize();
             if (key == "texpreviewSize") this.setSize(userSettings.get(key));
             if (key == "bgpreviewMax") this.enableBgPreview();
-
-
-            console.log("usersettings change", key, v);
         });
 
-
         this._initListener();
-
-
         this.enableBgPreview();
     }
 
