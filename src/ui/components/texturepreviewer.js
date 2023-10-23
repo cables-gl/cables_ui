@@ -187,7 +187,9 @@ export default class TexturePreviewer
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
             previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
-            previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+
+            if (this._currentWidth != 0 && previewCanvasEle.height != 0)
+                previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
 
             perf2.finish();
 
