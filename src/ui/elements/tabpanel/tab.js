@@ -45,6 +45,12 @@ export default class Tab extends CABLES.EventTarget
         eleContainer.appendChild(this.contentEle);
     }
 
+
+    addButtonBarElement(ele)
+    {
+        this.toolbarEle.appendChild(ele);
+    }
+
     addButton(title, cb)
     {
         const button = document.createElement("a");

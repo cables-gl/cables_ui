@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab";
 import text from "../../text";
 import userSettings from "../usersettings";
 import MetaCode from "./meta_code";
+import ServerOps from "../../api/opsserver";
 
 
 export default class EditorTab
@@ -78,7 +79,42 @@ export default class EditorTab
                 this._tab.addButton("Manage Op", () => { new MetaCode(gui.mainTabs, opname); });
 
                 this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
+
+
+
+
+                const opdoc = gui.opDocs.getOpDocByName(opname);
+                if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
+                {
+                    const drop = document.createElement("select");
+
+
+                    const optMain = document.createElement("option");
+                    optMain.setAttribute("value", opname);
+                    optMain.innerText = opname;
+                    console.log(options.editorObj);
+                    drop.appendChild(optMain);
+
+                    drop.addEventListener("change", (a, b) =>
+                    {
+                        console.log(drop.value);
+
+                        gui.serverOps.editAttachment(opname, drop.value);
+                    });
+
+                    for (let i = 0; i < opdoc.attachmentFiles.length; i++)
+                    {
+                        const opt = document.createElement("option");
+                        opt.setAttribute("value", opdoc.attachmentFiles[i]);
+                        opt.innerText = opdoc.attachmentFiles[i];
+                        if (options.editorObj.name.indexOf(opdoc.attachmentFiles[i]) >= 0) opt.setAttribute("SELECTED", "SELECTED");
+                        drop.appendChild(opt);
+                    }
+                    this._tab.addButtonBarElement(drop);
+                }
+                console.log(opdoc);
             }
+
 
 
 
