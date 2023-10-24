@@ -14,9 +14,8 @@ import gluiconfig from "../glpatch/gluiconfig";
 
 function capitalize(str)
 {
-    console.log(str);
+    if (!str) return "";
     const s = (str[0].toUpperCase() + str.slice(1));
-    console.log(s);
     return s;
 }
 

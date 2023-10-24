@@ -39,15 +39,9 @@ export default class TexturePreviewer
             if (key == "texpreviewTransparent") this.setSize();
             if (key == "texpreviewSize") this.setSize(userSettings.get(key));
             if (key == "bgpreviewMax") this.enableBgPreview();
-
-
-            console.log("usersettings change", key, v);
         });
 
-
         this._initListener();
-
-
         this.enableBgPreview();
     }
 
@@ -193,7 +187,9 @@ export default class TexturePreviewer
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
             previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
-            previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+
+            if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
+                previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
 
             perf2.finish();
 
