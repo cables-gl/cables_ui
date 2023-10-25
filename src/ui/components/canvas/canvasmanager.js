@@ -21,6 +21,7 @@ export default class CanvasManager
 
     set mode(m)
     {
+        const hasChanged = m == this._canvasMode;
         this._canvasMode = m;
 
         if (m == this.CANVASMODE_POPOUT)
@@ -30,7 +31,7 @@ export default class CanvasManager
         else
         {
             gui.emitEvent("canvasModeChange", this._canvasMode);
-            gui.setLayout();
+            if (hasChanged) gui.setLayout();
             gui.corePatch().cgl.updateSize();
         }
     }
