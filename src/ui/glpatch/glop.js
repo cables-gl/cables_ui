@@ -174,7 +174,6 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectBg = this._instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(GlUiConfig.opWidth, GlUiConfig.opHeight);
         this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
-        console.log(GlUiConfig.colors.opBgRect);
 
         this._glRectNames.push("_glRectBg");
 
