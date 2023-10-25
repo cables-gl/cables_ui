@@ -234,10 +234,10 @@ export default class Gui
             {
                 // this.patchView.focus();
 
+                gui.opParams.show(opid);
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();
-                // this.patchView.centerSelectOp(opid);
-                gui.opParams.show(opid);
+                this.patchView.centerSelectOp(opid);
             });
         }
 
