@@ -21,7 +21,7 @@ export default class CanvasManager
 
     set mode(m)
     {
-        const hasChanged = m == this._canvasMode;
+        const hasChanged = m != this._canvasMode;
         this._canvasMode = m;
 
         if (m == this.CANVASMODE_POPOUT)
