@@ -2107,7 +2107,6 @@ export default class PatchView extends CABLES.EventTarget
 
         if (gui.patchView.getSelectedOps().length == 1) this.focusOpAnim(gui.patchView.getSelectedOps()[0].id);
         this.focus();
-        console.log("focus", this.hasFocus());
     }
 
     setSelectedOpById(opid)
