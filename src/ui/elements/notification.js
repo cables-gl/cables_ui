@@ -30,7 +30,7 @@ export function notifyError(title, text, options = {})
 {
     const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
     const closeable = options.closeable || false;
-    const force = options.force || false;
+    const force = options.force;
 
     if (!force)
     {
@@ -66,7 +66,7 @@ export function notifyWarn(title, text, options = {})
 {
     const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
     const closeable = options.closeable || false;
-    const force = options.force || false;
+    const force = options.hasOwnProperty("force") ? options.force : true;
 
     if (!force)
     {
