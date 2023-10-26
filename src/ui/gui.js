@@ -2010,6 +2010,20 @@ export default class Gui
     {
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
+
+        if (window.localStorage.getItem("cables_theme"))
+        {
+            try
+            {
+                console.log("found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
+                this.setTheme(JSON.parse(window.localStorage.getItem("cables_theme")));
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+        }
+
         hljs.configure({ "ignoreUnescapedHTML": true });
 
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
@@ -2160,12 +2174,11 @@ export default class Gui
     // }
 
 
-    setTheme(theme)
+    setTheme(theme = {})
     {
         if (!theme) return;
 
         theme = JSON.parse(JSON.stringify(theme));
-        theme.types = theme.types || {};
 
         const missing = {};
         const defaultTheme = gluiconfig._colors_dark;
@@ -2175,11 +2188,6 @@ export default class Gui
             return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
         }
 
-
-        // for (let i in gluiconfig._colors_dark)
-        // {
-        //     if (!theme.hasOwnProperty(i)) theme[i] = gluiconfig._colors_dark[i];
-        // }
 
         const colorTopics = ["patch", "html", "textedit", "namespaces", "types"];
 
@@ -2200,17 +2208,13 @@ export default class Gui
             document.documentElement.style.setProperty("--" + i, rgbtohex(theme.html[i] || [1, 1, 1, 1]));
         }
 
-
         gluiconfig.colors = theme;
 
-        document.documentElement.style.setProperty("--color_port_function", rgbtohex(gluiconfig.colors.types.trigger || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_value", rgbtohex(gluiconfig.colors.types.num || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_object", rgbtohex(gluiconfig.colors.types.obj || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_string", rgbtohex(gluiconfig.colors.types.str || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_array", rgbtohex(gluiconfig.colors.types.arr || [1, 1, 1, 1]));
-
-
-
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.types.str || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.types.arr || [1, 1, 1, 1]));
 
         this.patchView.updateTheme();
         return missing;
