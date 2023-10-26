@@ -949,7 +949,6 @@ export default class Gui
 
     updateActivityFeedIcon(data)
     {
-        console.log("UPDATE", data);
         if (!data) return;
         const feedIcon = ele.byId("nav-item-activity");
         if (feedIcon)
