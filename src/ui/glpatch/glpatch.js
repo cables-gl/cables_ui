@@ -1422,12 +1422,12 @@ export default class GlPatch extends CABLES.EventTarget
         let col = [0, 0, 0, 0];
 
         // p[ut colors into gluiconfig...]
-        if (t == CABLES.OP_PORT_TYPE_VALUE) col = [92 / 255 * diff, 181 / 255 * diff, 158 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) col = [240 / 255 * diff, 209 / 255 * diff, 101 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) col = [171 / 255 * diff, 90 / 255 * diff, 148 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) col = [128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
+        if (t == CABLES.OP_PORT_TYPE_VALUE) if (glUiConfig.colors.types.num) col = [glUiConfig.colors.types.num[0] * diff, glUiConfig.colors.types.num[1] * diff, glUiConfig.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (glUiConfig.colors.types.trigger) col = [glUiConfig.colors.types.trigger[0] * diff, glUiConfig.colors.types.trigger[1] * diff, glUiConfig.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (glUiConfig.colors.types.obj) col = [glUiConfig.colors.types.obj[0] * diff, glUiConfig.colors.types.obj[1] * diff, glUiConfig.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (glUiConfig.colors.types.arr) col = [glUiConfig.colors.types.arr[0] * diff, glUiConfig.colors.types.arr[1] * diff, glUiConfig.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_STRING) if (glUiConfig.colors.types.str) col = [glUiConfig.colors.types.str[0] * diff, glUiConfig.colors.types.str[1] * diff, glUiConfig.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (glUiConfig.colors.types.dynamic) col = [glUiConfig.colors.types.dynamic[0] * diff, glUiConfig.colors.types.dynamic[1] * diff, glUiConfig.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
 
 
         e.setColor(col[0], col[1], col[2], col[3]);
@@ -1641,17 +1641,11 @@ export default class GlPatch extends CABLES.EventTarget
         // console.log(link);
     }
 
-    setTheme(theme)
+    updateTheme()
     {
-        glUiConfig.colors = theme;
+        this._selectionArea.updateTheme();
 
-        // console.log(glUiConfig.colors.opBgRect);
-    }
-
-    getDefaultTheme()
-    {
-        return glUiConfig._colors_dark;
-
-        // console.log(glUiConfig.colors.opBgRect);
+        for (let i in this._glOpz)
+            this._glOpz[i].updateTheme();
     }
 }

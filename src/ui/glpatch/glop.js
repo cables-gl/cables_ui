@@ -39,6 +39,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glRectBg = null;
         this._rectResize = null;
+        this._glColorIndicator = null;
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
@@ -571,6 +572,12 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
 
+        if (this._glColorIndicator)
+        {
+            this._glColorIndicator.setSize(4, this._height * 0.3);
+            this._glColorIndicator.setPosition(this._height * 0.1, this._height * 0.35);
+        }
+
         this._updateCommentPosition();
         this._updateSizeRightHandle();
     }
@@ -635,6 +642,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
         if (this._rectResize) this._rectResize = this._rectResize.dispose();
+        if (this._glColorIndicator) this._glColorIndicator = this._glColorIndicator.dispose();
 
         this._disposeDots();
 
@@ -756,6 +764,31 @@ export default class GlOp extends CABLES.EventTarget
 
         for (let i = 0; i < ports.length; i++)
         {
+            if (ports[i].uiAttribs.colorPick && !this._glColorIndicator)
+            {
+                if (!this._glColorIndicator)
+                {
+                    const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
+
+                    this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
+                    this._glColorIndicator.setShape(0);
+
+                    this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1]);
+                    this.updateSize();
+
+                    const updateColorIndicator = () =>
+                    {
+                        this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), colorPorts[3].get()]);
+                    };
+
+
+                    colorPorts[0].on("change", updateColorIndicator);
+                    colorPorts[1].on("change", updateColorIndicator);
+                    colorPorts[2].on("change", updateColorIndicator);
+                    if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
+                }
+            }
+
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
@@ -780,7 +813,7 @@ export default class GlOp extends CABLES.EventTarget
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 1, -0.01);
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
         this._updateIndicators();
@@ -863,6 +896,7 @@ export default class GlOp extends CABLES.EventTarget
         this._updateIndicators();
 
         if (this._resizableArea) this._resizableArea.visible = visi;
+        if (this._glColorIndicator) this._glColorIndicator.visible = visi;
 
         for (const i in this._links) this._links[i].visible = true;
 
@@ -997,7 +1031,10 @@ export default class GlOp extends CABLES.EventTarget
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
+
         this._glRectNames.push("_glTitle");
+
+
 
         if (!this._titleExt &&
             (
@@ -1057,6 +1094,9 @@ export default class GlOp extends CABLES.EventTarget
                 this.updateSize();
             });
         }
+
+
+
 
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
 
@@ -1253,44 +1293,9 @@ export default class GlOp extends CABLES.EventTarget
 
     getPortPos(id)
     {
-        // console.log(".//////");
-        // for cable position
-
         if (!this._op) return;
-
         this._setPortIndexAttribs(this._op.portsIn);
-
-        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].op.objName);
-
-        for (let i = 0; i < this._op.portsIn.length; i++)
-        {
-            // console.log(i, this._op.portsIn[i].name, this._op.portsIn[i].uiAttribs.glPortIndex, this._op.portsIn[i].id);
-        }
-
         return this._op.getPortPosX(id);
-
-        // let count = 0;
-        // for (let i = 0; i < this._op.portsIn.length; i++)
-        // {
-        //     if (this._op.portsIn[i].name == id ||
-        //         this._op.portsIn[i].id == id) return (this._op.portsIn[i].uiAttribs.glPortIndex || count) * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
-
-        //     if (this._op.portsIn[i].isHidden() ||
-        //         this._op.portsIn[i].uiAttribs.display == "dropdown" ||
-        //         this._op.portsIn[i].uiAttribs.display == "readonly" ||
-        //         this._op.portsIn[i].uiAttribs.hidePort) continue;
-
-        //     count++;
-        // }
-
-        // for (let i = 0; i < this._op.portsOut.length; i++)
-        // {
-        //     if (this._op.portsOut[i].name == id || this._op.portsOut[i].id == id) return i * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
-        // }
-
-        // console.log("not found port pos");
-
-        // return -10;
     }
 
     isPassiveDrag()
@@ -1377,5 +1382,13 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         return ports;
+    }
+
+    updateTheme()
+    {
+        this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+        this._updateColors();
+
+        for (const i in this._links) this._links[i].updateTheme();
     }
 }

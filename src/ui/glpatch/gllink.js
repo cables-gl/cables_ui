@@ -639,4 +639,9 @@ export default class GlLink
     {
         return this._cable.collideLine(x1, y1, x2, y2) || this._cableSub?.collideLine(x1, y1, x2, y2);
     }
+
+    updateTheme()
+    {
+        this.highlight(false);
+    }
 }

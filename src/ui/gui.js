@@ -38,6 +38,7 @@ import GuiRestrictions from "./components/guirestrictions";
 import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
+import gluiconfig from "./glpatch/gluiconfig";
 
 
 export default class Gui
@@ -2158,6 +2159,29 @@ export default class Gui
     //         }
     //     }
     // }
+
+
+    setTheme(theme)
+    {
+        gluiconfig.colors = theme;
+
+        for (let i in gluiconfig._colors_dark)
+        {
+            if (!theme.hasOwnProperty(i))theme[i] = gluiconfig._colors_dark[i];
+        }
+
+        console.log(gluiconfig.colors);
+
+
+        this.patchView.updateTheme();
+    }
+
+    getDefaultTheme()
+    {
+        return gluiconfig._colors_dark;
+
+        // console.log(glUiConfig.colors.opBgRect);
+    }
 }
 
 Gui.RESTRICT_MODE_LOADING = 0;
