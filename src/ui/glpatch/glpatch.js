@@ -1405,8 +1405,10 @@ export default class GlPatch extends CABLES.EventTarget
         const parts = ns.split(".");
         const nss = parts[0] + "." + parts[1];
 
+        if (!glUiConfig.colors.namespaces) return [1, 1, 1, 1];
+
         if (glUiConfig.colors.namespaces[nss]) return glUiConfig.colors.namespaces[nss];
-        else return glUiConfig.colors.namespaces.unknown;
+        else return glUiConfig.colors.namespaces.unknown || [1, 0, 0, 1];
     }
 
     // make static util thing...
@@ -1416,13 +1418,9 @@ export default class GlPatch extends CABLES.EventTarget
         diff = diff || 1;
         diff *= 0.8;
 
-        // if (brightness == 1)diff = 0.8;
-        // if (brightness == 2)diff = 1.5;
-
         let col = [0, 0, 0, 0];
+        if (!glUiConfig.colors.types) return;
 
-
-        // p[ut colors into gluiconfig...]
         if (t == CABLES.OP_PORT_TYPE_VALUE) if (glUiConfig.colors.types.num) col = [glUiConfig.colors.types.num[0] * diff, glUiConfig.colors.types.num[1] * diff, glUiConfig.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
         else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (glUiConfig.colors.types.trigger) col = [glUiConfig.colors.types.trigger[0] * diff, glUiConfig.colors.types.trigger[1] * diff, glUiConfig.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
         else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (glUiConfig.colors.types.obj) col = [glUiConfig.colors.types.obj[0] * diff, glUiConfig.colors.types.obj[1] * diff, glUiConfig.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];

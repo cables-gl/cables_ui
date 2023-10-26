@@ -22,12 +22,6 @@ export default class GlUiCanvas
         document.body.style["touch-action"] = "none";
         // this._zoom = GlUiConfig.zoomDefault;
 
-        this.updateTheme();
-        userSettings.on("onchange", (key, value) =>
-        {
-            this.updateTheme();
-        });
-
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
         // this.canvas.style.display='block';
@@ -267,10 +261,5 @@ export default class GlUiCanvas
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
-    }
-
-    updateTheme()
-    {
-        glUiConfig.setTheme(userSettings.get("theme-bright") == true);
     }
 }

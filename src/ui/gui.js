@@ -176,7 +176,6 @@ export default class Gui
         this._currentProject = null;
         this.tips = new Tips();
         this.currentModal = null;
-        this.updateTheme();
     }
 
     project()
@@ -2069,11 +2068,6 @@ export default class Gui
         gui.user = u;
     }
 
-    updateTheme()
-    {
-        if (userSettings.get("theme-bright")) document.body.classList.add("bright");
-        else document.body.classList.remove("bright");
-    }
 
     // todo use eventtarget...
     addEventListener(name, cb)
@@ -2179,9 +2173,10 @@ export default class Gui
         if (!theme) return;
 
         theme = JSON.parse(JSON.stringify(theme));
+        theme.colors = theme.colors || {};
 
-        const missing = {};
-        const defaultTheme = gluiconfig._colors_dark;
+        const missing = { "colors": {} };
+        const defaultTheme = gluiconfig.getDefaultTheme();
 
         function rgbtohex(rgb)
         {
@@ -2194,27 +2189,29 @@ export default class Gui
         for (let i = 0; i < colorTopics.length; i++)
         {
             const topic = colorTopics[i];
-            theme[topic] = theme[topic] || {};
-            missing[topic] = {};
-            for (let j in defaultTheme[topic])
+            theme.colors[topic] = theme.colors[topic] || {};
+            missing.colors[topic] = {};
+
+            for (let j in defaultTheme.colors[topic])
             {
-                if (!theme[topic].hasOwnProperty(j))
-                    missing[topic][j] = theme[topic][j] = gluiconfig._colors_dark[topic][j];
+                if (!theme.colors[topic].hasOwnProperty(j))
+                    missing.colors[topic][j] = theme.colors[topic][j] = defaultTheme.colors[topic][j];
             }
         }
 
-        for (let i in theme.html)
+        for (let i in theme.colors.html)
         {
-            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.html[i] || [1, 1, 1, 1]));
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.html[i] || [1, 1, 1, 1]));
         }
 
-        gluiconfig.colors = theme;
+        gluiconfig.setTheme(theme);
 
-        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.types.trigger || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.types.num || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.types.obj || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.types.str || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.types.arr || [1, 1, 1, 1]));
+
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors.types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors.types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors.types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.str || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.arr || [1, 1, 1, 1]));
 
         this.patchView.updateTheme();
         return missing;
@@ -2223,8 +2220,6 @@ export default class Gui
     getDefaultTheme()
     {
         return gluiconfig._colors_dark;
-
-        // console.log(glUiConfig.colors.opBgRect);
     }
 }
 

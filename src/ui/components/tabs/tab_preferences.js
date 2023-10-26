@@ -47,7 +47,6 @@ export default class Preferences
     updateValues()
     {
         this.setSwitchValue("snapToGrid", userSettings.get("snapToGrid"));
-        this.setSwitchValue("theme-bright", userSettings.get("theme-bright"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
 
