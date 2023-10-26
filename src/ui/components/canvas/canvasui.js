@@ -68,6 +68,8 @@ export default class CanvasUi
             this.showCanvasModal(true);
             gui.canvasManager.setCurrentCanvas(this.canvasEle);
 
+
+
             p.finish();
         });
 
@@ -220,6 +222,9 @@ export default class CanvasUi
         // }
 
         this.isCanvasFocussed = _show;
+        if (this.isCanvasFocussed) this._elCanvasIconbar.style.opacity = 1.0;
+        else this._elCanvasIconbar.style.opacity = 0.0;
+
 
         // if (!this._elCanvasIconbarContainer) return;
 

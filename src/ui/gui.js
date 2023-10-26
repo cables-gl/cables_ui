@@ -1,3 +1,4 @@
+import MetaKeyframes from "./components/tabs/meta_keyframes";
 import Bookmarks from "./components/bookmarks";
 import Introduction from "./components/introduction";
 import Jobs from "./components/jobs";
@@ -13,8 +14,6 @@ import KeyBindingsManager from "./utils/keybindingsmanager";
 import ModalDialog from "./dialogs/modaldialog";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
-// import MetaKeyframes from "./components/tabs/meta_keyframes";
-// import MetaDoc from "./components/tabs/meta_doc";
 import TexturePreviewer from "./components/texturepreviewer";
 import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
@@ -152,6 +151,7 @@ export default class Gui
 
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
+        this.metaKeyframes = null;
         // this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
         // this.history = new MetaHistory(this.metaTabs);
@@ -234,10 +234,10 @@ export default class Gui
             {
                 // this.patchView.focus();
 
+                gui.opParams.show(opid);
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();
-                // this.patchView.centerSelectOp(opid);
-                gui.opParams.show(opid);
+                this.patchView.centerSelectOp(opid);
             });
         }
 
@@ -1476,6 +1476,18 @@ export default class Gui
             }
             this._spaceBarStart = 0;
         });
+    }
+
+    metaKeyframesShowAnim(opid, portname)
+    {
+        if (!gui.metaKeyframes)
+        {
+            gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
+            gui.maintabPanel.show(true);
+        }
+
+        if (opid && portname)
+            gui.metaKeyframes.showAnim(opid, portname);
     }
 
     pressedEscape(e)

@@ -21,7 +21,7 @@ class PortHtmlGenerator
         let oldversion = false;
         let newestVersion = false;
         let hasExample = false;
-        let doc = null; 
+        let doc = null;
 
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
@@ -56,7 +56,7 @@ class PortHtmlGenerator
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "showEditButton": canEditOp && defaultops.isNonCoreOp(op.objName),
+            "showEditButton": canEditOp, // && defaultops.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,

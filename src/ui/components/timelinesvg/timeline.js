@@ -1067,7 +1067,12 @@ export default function TimeLineGui()
     ele.byId("keyframe_previous").addEventListener("click", () => { this.jumpKey(-1); });
     ele.byId("keyframe_next").addEventListener("click", () => { this.jumpKey(1); });
 
-    ele.byId("keyframe_meta").addEventListener("click", () => { new MetaKeyframes(gui.mainTabs); });
+    ele.byId("keyframe_meta").addEventListener("click", () =>
+    {
+        // if (gui.metaKeyframes)gui.metaKeyframes.setAnim(newanim);
+        // else
+        gui.metaKeyframesShowAnim();
+    });
 
 
     ele.byId("loop").addEventListener("click", this.toggleLoop);

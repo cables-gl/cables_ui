@@ -71,7 +71,7 @@ export default class SnapLines extends CABLES.EventTarget
                 {
                     if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
                     {
-                        x = this._xCoords[i];
+                        // x = this._xCoords[i];
                         this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
                         this.rect.visible = true;
                         break;

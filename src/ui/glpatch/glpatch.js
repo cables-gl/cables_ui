@@ -1640,4 +1640,18 @@ export default class GlPatch extends CABLES.EventTarget
         }
         // console.log(link);
     }
+
+    setTheme(theme)
+    {
+        glUiConfig.colors = theme;
+
+        // console.log(glUiConfig.colors.opBgRect);
+    }
+
+    getDefaultTheme()
+    {
+        return glUiConfig._colors_dark;
+
+        // console.log(glUiConfig.colors.opBgRect);
+    }
 }

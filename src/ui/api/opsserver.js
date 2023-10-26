@@ -791,8 +791,8 @@ export default class ServerOps
                                 });
 
                                 if (op) gui.patchView.focusOp(op.id);
-                                if (op)gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
-                                if (options.cb)options.cb(op);
+                                if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+                                if (options.cb) options.cb(op);
                             }
                         });
                 });

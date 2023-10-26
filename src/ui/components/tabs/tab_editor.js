@@ -77,11 +77,7 @@ export default class EditorTab
             if (opname)
             {
                 this._tab.addButton("Manage Op", () => { new MetaCode(gui.mainTabs, opname); });
-
                 this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
-
-
-
 
                 const opdoc = gui.opDocs.getOpDocByName(opname);
                 if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
@@ -92,13 +88,10 @@ export default class EditorTab
                     const optMain = document.createElement("option");
                     optMain.setAttribute("value", opname);
                     optMain.innerText = opname;
-                    console.log(options.editorObj);
                     drop.appendChild(optMain);
 
                     drop.addEventListener("change", (a, b) =>
                     {
-                        console.log(drop.value);
-
                         gui.serverOps.editAttachment(opname, drop.value);
                     });
 
@@ -112,7 +105,6 @@ export default class EditorTab
                     }
                     this._tab.addButtonBarElement(drop);
                 }
-                console.log(opdoc);
             }
 
 

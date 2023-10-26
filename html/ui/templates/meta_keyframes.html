@@ -2,53 +2,6 @@
 <script id="meta_keyframes" type="text/x-handlebars-template">
 
 <div>
-    <h3>Keyframes {{op.objName}}</h3>
-
-    {{#if anim}}
-        <a onclick="gui.metaKeyframes.addKey();" class="button">Add Keyframe</a>
-        <br/><br/>
-    {{/if}}
-
-    {{#if anim.keys}}
-        <table class="table">
-            <tr>
-                <th></th>
-                <th>frame</th>
-                <th>value</th>
-                <th>easing</th>
-                <th></th>
-            </tr>
-            {{#each anim.keys}}
-                <tr>
-                    <td>
-                        <a onclick="var newFrame=prompt('new frame');if(newFrame==null){return;}gui.timeLine().getAnim().moveKeyAt({{time}},parseInt(newFrame)/gui.timeLine().getFPS() );gui.metaKeyframes.update();gui.timeLine().refresh()" class="fa fa-arrows-h tt" data-tt="move"></a>
-                    </td>
-
-                    <td onclick="gui.scene().timer.setTime({{time}});gui.metaKeyframes.update()" style="cursor:pointer;">{{frame}}&nbsp;&nbsp;</td>
-                    <td onclick="var newValue=prompt('value');if(newValue==null){return;}gui.timeLine().getAnim().setValue({{time}},newValue);gui.metaKeyframes.update()" style="cursor:pointer;">{{value}}</td>
-                    <td>{{_easing}}</td>
-                    <td>
-                        <a onclick="gui.timeLine().getAnim().deleteKeyAt({{time}});gui.metaKeyframes.update()" class="fa fa-times"></a>
-                    </td>
-                </tr>
-            {{/each}}
-        </table>
-    {{else}}
-    no animations found<br/><br/>
-    {{/if}}
-    <br/><br/>
-
-    {{#if anims}}
-    <h3>Animated Ports</h3>
-
-    <div class="list">
-        {{#each anims}}
-            <div  onclick="gui.metaKeyframes.showAnim('{{opid}}','{{portname}}');">
-                <span class="{{colorClass}}">{{opname}}</span> - {{portname}}
-            </div>
-        {{/each}}
-    </div>
-    {{/if}}
 
     <h3>Easings</h3>
 
@@ -106,6 +59,56 @@
             <a class="iconbutton" onclick="gui.timeLine().setSelectedKeysEasing(CABLES.EASING_BOUNCE_OUT);"><span class="icon icon-ease-exp-out"></span></a>
         </div>
     </div>
+
+
+    <h3>Keyframes {{op.objName}}</h3>
+
+    {{#if anim}}
+        <a onclick="gui.metaKeyframes.addKey();" class="button">Add Keyframe</a>
+        <br/><br/>
+    {{/if}}
+
+    {{#if anim.keys}}
+        <table class="table">
+            <tr>
+                <th></th>
+                <th>frame</th>
+                <th>value</th>
+                <th>easing</th>
+                <th></th>
+            </tr>
+            {{#each anim.keys}}
+                <tr>
+                    <td>
+                        <a onclick="var newFrame=prompt('new frame');if(newFrame==null){return;}gui.timeLine().getAnim().moveKeyAt({{time}},parseInt(newFrame)/gui.timeLine().getFPS() );gui.metaKeyframes.update();gui.timeLine().refresh()" class="fa fa-arrows-h tt" data-tt="move"></a>
+                    </td>
+
+                    <td onclick="gui.scene().timer.setTime({{time}});gui.metaKeyframes.update()" style="cursor:pointer;">{{frame}}&nbsp;&nbsp;</td>
+                    <td onclick="var newValue=prompt('value');if(newValue==null){return;}gui.timeLine().getAnim().setValue({{time}},newValue);gui.metaKeyframes.update()" style="cursor:pointer;">{{value}}</td>
+                    <td>{{_easing}}</td>
+                    <td>
+                        <a onclick="gui.timeLine().getAnim().deleteKeyAt({{time}});gui.metaKeyframes.update()" class="fa fa-times"></a>
+                    </td>
+                </tr>
+            {{/each}}
+        </table>
+    {{else}}
+    No animations found<br/><br/>
+    {{/if}}
+    <br/><br/>
+
+    {{#if anims}}
+    <h3>Animated Ports</h3>
+
+    <div class="list">
+        {{#each anims}}
+            <div  onclick="gui.metaKeyframes.showAnim('{{opid}}','{{portname}}');">
+                <span class="{{colorClass}}">{{opname}}</span> - {{portname}}
+            </div>
+        {{/each}}
+    </div>
+    {{/if}}
+
 </div>
 
 </script>
