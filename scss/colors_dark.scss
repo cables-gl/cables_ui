@@ -35,7 +35,15 @@
 
     --color-blueprint: #5dc0fdA5;
 
+    --textedit-default: var(--color-10);
+    --textedit-numeric:#4adab5;
+    --textedit-string:#d57272;
+    --textedit-comment: #5CB59E;
+    --textedit-function: #eeeeee;
+    --textedit-keyword: #F0D165;
 }
+
+
 
 
 $iconbar-borderradius:5px;

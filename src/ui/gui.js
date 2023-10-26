@@ -2162,17 +2162,58 @@ export default class Gui
 
     setTheme(theme)
     {
-        gluiconfig.colors = theme;
+        if (!theme) return;
 
-        for (let i in gluiconfig._colors_dark)
+        theme = JSON.parse(JSON.stringify(theme));
+        theme.types = theme.types || {};
+
+        const missing = {};
+        const defaultTheme = gluiconfig._colors_dark;
+
+        function rgbtohex(rgb)
         {
-            if (!theme.hasOwnProperty(i))theme[i] = gluiconfig._colors_dark[i];
+            return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
         }
 
-        console.log(gluiconfig.colors);
+
+        // for (let i in gluiconfig._colors_dark)
+        // {
+        //     if (!theme.hasOwnProperty(i)) theme[i] = gluiconfig._colors_dark[i];
+        // }
+
+        const colorTopics = ["patch", "html", "textedit", "namespaces", "types"];
+
+        for (let i = 0; i < colorTopics.length; i++)
+        {
+            const topic = colorTopics[i];
+            theme[topic] = theme[topic] || {};
+            missing[topic] = {};
+            for (let j in defaultTheme[topic])
+            {
+                if (!theme[topic].hasOwnProperty(j))
+                    missing[topic][j] = theme[topic][j] = gluiconfig._colors_dark[topic][j];
+            }
+        }
+
+        for (let i in theme.html)
+        {
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.html[i] || [1, 1, 1, 1]));
+        }
+
+
+        gluiconfig.colors = theme;
+
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(gluiconfig.colors.types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(gluiconfig.colors.types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(gluiconfig.colors.types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(gluiconfig.colors.types.str || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(gluiconfig.colors.types.arr || [1, 1, 1, 1]));
+
+
 
 
         this.patchView.updateTheme();
+        return missing;
     }
 
     getDefaultTheme()

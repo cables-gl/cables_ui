@@ -94,6 +94,7 @@ export default class GlText
     setColor(r, g, b, a)
     {
         if (a === undefined)a = 1.0;
+        if (r === undefined)r = g = b = 1.0;
         if (r.length) vec4.set(this._color, r[0], r[1], r[2], 1);
         else vec4.set(this._color, r, g, b, a);
 
@@ -150,9 +151,7 @@ export default class GlText
             rect.setColor(this._color);
 
             rect.setTexRect(
-                ch.x / 1024, ch.y / 1024,
-
-                ch.width / 1024, ch.height / 1024);
+                ch.x / 1024, ch.y / 1024, ch.width / 1024, ch.height / 1024);
             rect.setTexture(this._textWriter.getFontTexture());
 
             posX += this._map(ch.xadvance);

@@ -282,7 +282,7 @@ export default class GlPatch extends CABLES.EventTarget
                 }
                 else
                 {
-                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colors.patchSelectionArea[3]]);
+                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colorsSelectionArea[3]]);
                     area.setPos(msg.x, msg.y, 1000);
                     area.setSize(msg.sizeX, msg.sizeY);
                 }
@@ -552,9 +552,9 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._greyOutRect = this._overLayRects.createRect();
             this._greyOutRect.setColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
+                glUiConfig.colors.patch.background[0],
+                glUiConfig.colors.patch.background[1],
+                glUiConfig.colors.patch.background[2],
                 0.25);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
@@ -571,9 +571,9 @@ export default class GlPatch extends CABLES.EventTarget
         // if (this.greyOutBlue && this._greyOutRect)
         // {
         //     this._greyOutRect.setColor(
-        //         glUiConfig.colors.background[0] * 0.8,
-        //         glUiConfig.colors.background[1] * 1.5,
-        //         glUiConfig.colors.background[2] * 2.5,
+        //         glUiConfig.colors.patch.background[0] * 0.8,
+        //         glUiConfig.colors.patch.background[1] * 1.5,
+        //         glUiConfig.colors.patch.background[2] * 2.5,
         //         0.25);
         // }
     }
@@ -842,17 +842,17 @@ export default class GlPatch extends CABLES.EventTarget
             // if (this.greyOutBlue)
             // {
             //     this._cgl.gl.clearColor(
-            //         glUiConfig.colors.background[0] + (0.3 * 0.0),
-            //         glUiConfig.colors.background[1] + (0.3 * 0.1),
-            //         glUiConfig.colors.background[2] + (0.3 * 0.3),
+            //         glUiConfig.colors.patch.background[0] + (0.3 * 0.0),
+            //         glUiConfig.colors.patch.background[1] + (0.3 * 0.1),
+            //         glUiConfig.colors.patch.background[2] + (0.3 * 0.3),
             //         1);
             // }
             // else
             this._cgl.gl.clearColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                glUiConfig.colors.background[3]);
+                glUiConfig.colors.patch.background[0],
+                glUiConfig.colors.patch.background[1],
+                glUiConfig.colors.patch.background[2],
+                glUiConfig.colors.patch.background[3]);
         }
 
         // if (
@@ -911,9 +911,9 @@ export default class GlPatch extends CABLES.EventTarget
         // console.log(this.subPatchAnim);
 
         //     this._fadeOutRect.setColor(
-        //         glUiConfig.colors.background[0],
-        //         glUiConfig.colors.background[1],
-        //         glUiConfig.colors.background[2],
+        //         glUiConfig.colors.patch.background[0],
+        //         glUiConfig.colors.patch.background[1],
+        //         glUiConfig.colors.patch.background[2],
         //         v);
         // }
 
@@ -1405,8 +1405,8 @@ export default class GlPatch extends CABLES.EventTarget
         const parts = ns.split(".");
         const nss = parts[0] + "." + parts[1];
 
-        if (glUiConfig.colors.namespaceColors[nss]) return glUiConfig.colors.namespaceColors[nss];
-        else return glUiConfig.colors.namespaceColors.unknown;
+        if (glUiConfig.colors.namespaces[nss]) return glUiConfig.colors.namespaces[nss];
+        else return glUiConfig.colors.namespaces.unknown;
     }
 
     // make static util thing...
@@ -1420,6 +1420,7 @@ export default class GlPatch extends CABLES.EventTarget
         // if (brightness == 2)diff = 1.5;
 
         let col = [0, 0, 0, 0];
+
 
         // p[ut colors into gluiconfig...]
         if (t == CABLES.OP_PORT_TYPE_VALUE) if (glUiConfig.colors.types.num) col = [glUiConfig.colors.types.num[0] * diff, glUiConfig.colors.types.num[1] * diff, glUiConfig.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];

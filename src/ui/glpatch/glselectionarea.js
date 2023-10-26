@@ -20,7 +20,7 @@ export default class GlSelectionArea
 
     updateTheme()
     {
-        this._selectRect.setColor(glUiConfig.colors.patchSelectionArea);
+        this._selectRect.setColor(glUiConfig.colors.patch.patchSelectionArea);
     }
 
     get w() { return this._w; }
