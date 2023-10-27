@@ -285,6 +285,8 @@ function createEditor(id, val, cb)
             "showPrintMargin": false,
         });
 
+        editor.setTheme("ace/theme/cables");
+
         editor.session.setMode("ace/mode/javascript");
         editor.session.on("changeMode", (e, session) =>
         {

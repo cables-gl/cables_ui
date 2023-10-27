@@ -18,7 +18,6 @@ export default class GlPort
 
         this._direction = p.direction;
 
-
         this._glop = glop;
         this._type = p.type;
         this._glPatch = glpatch;
@@ -181,10 +180,10 @@ export default class GlPort
 
     _getBrightness()
     {
-        if (this._hover) return 1.5;
-        if (this._port.apf > 0) return 1.3;
+        if (this._hover) return GlUiConfig.colorMulHover;
+        if (this._port.apf > 0) return GlUiConfig.colorMulActive;
 
-        return 1;
+        return GlUiConfig.colorMulInActive;
     }
 
     _onHover(rect)
