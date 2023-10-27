@@ -38,6 +38,7 @@ import GuiRestrictions from "./components/guirestrictions";
 import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
+import gluiconfig from "./glpatch/gluiconfig";
 
 
 export default class Gui
@@ -175,7 +176,6 @@ export default class Gui
         this._currentProject = null;
         this.tips = new Tips();
         this.currentModal = null;
-        this.updateTheme();
     }
 
     project()
@@ -949,7 +949,6 @@ export default class Gui
 
     updateActivityFeedIcon(data)
     {
-        console.log("UPDATE", data);
         if (!data) return;
         const feedIcon = ele.byId("nav-item-activity");
         if (feedIcon)
@@ -2010,6 +2009,20 @@ export default class Gui
     {
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
+
+        if (window.localStorage.getItem("cables_theme"))
+        {
+            try
+            {
+                console.log("found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
+                this.setTheme(JSON.parse(window.localStorage.getItem("cables_theme")));
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+        }
+
         hljs.configure({ "ignoreUnescapedHTML": true });
 
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
@@ -2055,11 +2068,6 @@ export default class Gui
         gui.user = u;
     }
 
-    updateTheme()
-    {
-        if (userSettings.get("theme-bright")) document.body.classList.add("bright");
-        else document.body.classList.remove("bright");
-    }
 
     // todo use eventtarget...
     addEventListener(name, cb)
@@ -2158,6 +2166,61 @@ export default class Gui
     //         }
     //     }
     // }
+
+
+    setTheme(theme = {})
+    {
+        if (!theme) return;
+
+        theme = JSON.parse(JSON.stringify(theme));
+        theme.colors = theme.colors || {};
+
+        const missing = { "colors": {} };
+        const defaultTheme = gluiconfig.getDefaultTheme();
+
+        function rgbtohex(rgb)
+        {
+            return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
+        }
+
+
+        const colorTopics = ["patch", "html", "textedit", "namespaces", "types"];
+
+        for (let i = 0; i < colorTopics.length; i++)
+        {
+            const topic = colorTopics[i];
+            theme.colors[topic] = theme.colors[topic] || {};
+            missing.colors[topic] = {};
+
+            for (let j in defaultTheme.colors[topic])
+            {
+                if (!theme.colors[topic].hasOwnProperty(j))
+                    missing.colors[topic][j] = theme.colors[topic][j] = defaultTheme.colors[topic][j];
+            }
+        }
+
+        for (let i in theme.colors.html)
+        {
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.html[i] || [1, 1, 1, 1]));
+        }
+
+        gluiconfig.setTheme(theme);
+
+
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors.types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors.types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors.types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.str || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.arr || [1, 1, 1, 1]));
+
+        this.patchView.updateTheme();
+        return missing;
+    }
+
+    getDefaultTheme()
+    {
+        return gluiconfig._colors_dark;
+    }
 }
 
 Gui.RESTRICT_MODE_LOADING = 0;

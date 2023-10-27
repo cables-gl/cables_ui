@@ -282,7 +282,7 @@ export default class GlPatch extends CABLES.EventTarget
                 }
                 else
                 {
-                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colors.patchSelectionArea[3]]);
+                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colorsSelectionArea[3]]);
                     area.setPos(msg.x, msg.y, 1000);
                     area.setSize(msg.sizeX, msg.sizeY);
                 }
@@ -552,9 +552,9 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._greyOutRect = this._overLayRects.createRect();
             this._greyOutRect.setColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
+                glUiConfig.colors.patch.background[0],
+                glUiConfig.colors.patch.background[1],
+                glUiConfig.colors.patch.background[2],
                 0.25);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
@@ -571,9 +571,9 @@ export default class GlPatch extends CABLES.EventTarget
         // if (this.greyOutBlue && this._greyOutRect)
         // {
         //     this._greyOutRect.setColor(
-        //         glUiConfig.colors.background[0] * 0.8,
-        //         glUiConfig.colors.background[1] * 1.5,
-        //         glUiConfig.colors.background[2] * 2.5,
+        //         glUiConfig.colors.patch.background[0] * 0.8,
+        //         glUiConfig.colors.patch.background[1] * 1.5,
+        //         glUiConfig.colors.patch.background[2] * 2.5,
         //         0.25);
         // }
     }
@@ -842,17 +842,17 @@ export default class GlPatch extends CABLES.EventTarget
             // if (this.greyOutBlue)
             // {
             //     this._cgl.gl.clearColor(
-            //         glUiConfig.colors.background[0] + (0.3 * 0.0),
-            //         glUiConfig.colors.background[1] + (0.3 * 0.1),
-            //         glUiConfig.colors.background[2] + (0.3 * 0.3),
+            //         glUiConfig.colors.patch.background[0] + (0.3 * 0.0),
+            //         glUiConfig.colors.patch.background[1] + (0.3 * 0.1),
+            //         glUiConfig.colors.patch.background[2] + (0.3 * 0.3),
             //         1);
             // }
             // else
             this._cgl.gl.clearColor(
-                glUiConfig.colors.background[0],
-                glUiConfig.colors.background[1],
-                glUiConfig.colors.background[2],
-                glUiConfig.colors.background[3]);
+                glUiConfig.colors.patch.background[0],
+                glUiConfig.colors.patch.background[1],
+                glUiConfig.colors.patch.background[2],
+                glUiConfig.colors.patch.background[3]);
         }
 
         // if (
@@ -911,9 +911,9 @@ export default class GlPatch extends CABLES.EventTarget
         // console.log(this.subPatchAnim);
 
         //     this._fadeOutRect.setColor(
-        //         glUiConfig.colors.background[0],
-        //         glUiConfig.colors.background[1],
-        //         glUiConfig.colors.background[2],
+        //         glUiConfig.colors.patch.background[0],
+        //         glUiConfig.colors.patch.background[1],
+        //         glUiConfig.colors.patch.background[2],
         //         v);
         // }
 
@@ -1405,8 +1405,10 @@ export default class GlPatch extends CABLES.EventTarget
         const parts = ns.split(".");
         const nss = parts[0] + "." + parts[1];
 
-        if (glUiConfig.colors.namespaceColors[nss]) return glUiConfig.colors.namespaceColors[nss];
-        else return glUiConfig.colors.namespaceColors.unknown;
+        if (!glUiConfig.colors.namespaces) return [1, 1, 1, 1];
+
+        if (glUiConfig.colors.namespaces[nss]) return glUiConfig.colors.namespaces[nss];
+        else return glUiConfig.colors.namespaces.unknown || [1, 0, 0, 1];
     }
 
     // make static util thing...
@@ -1416,18 +1418,15 @@ export default class GlPatch extends CABLES.EventTarget
         diff = diff || 1;
         diff *= 0.8;
 
-        // if (brightness == 1)diff = 0.8;
-        // if (brightness == 2)diff = 1.5;
-
         let col = [0, 0, 0, 0];
+        if (!glUiConfig.colors.types) return;
 
-        // p[ut colors into gluiconfig...]
-        if (t == CABLES.OP_PORT_TYPE_VALUE) col = [92 / 255 * diff, 181 / 255 * diff, 158 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) col = [240 / 255 * diff, 209 / 255 * diff, 101 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) col = [171 / 255 * diff, 90 / 255 * diff, 148 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) col = [128 / 255 * diff, 132 / 255 * diff, 212 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_STRING) col = [213 / 255 * diff, 114 / 255 * diff, 114 / 255 * diff, 1];
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) col = [1, 1, 1, 1];
+        if (t == CABLES.OP_PORT_TYPE_VALUE) if (glUiConfig.colors.types.num) col = [glUiConfig.colors.types.num[0] * diff, glUiConfig.colors.types.num[1] * diff, glUiConfig.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (glUiConfig.colors.types.trigger) col = [glUiConfig.colors.types.trigger[0] * diff, glUiConfig.colors.types.trigger[1] * diff, glUiConfig.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (glUiConfig.colors.types.obj) col = [glUiConfig.colors.types.obj[0] * diff, glUiConfig.colors.types.obj[1] * diff, glUiConfig.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (glUiConfig.colors.types.arr) col = [glUiConfig.colors.types.arr[0] * diff, glUiConfig.colors.types.arr[1] * diff, glUiConfig.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_STRING) if (glUiConfig.colors.types.str) col = [glUiConfig.colors.types.str[0] * diff, glUiConfig.colors.types.str[1] * diff, glUiConfig.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (glUiConfig.colors.types.dynamic) col = [glUiConfig.colors.types.dynamic[0] * diff, glUiConfig.colors.types.dynamic[1] * diff, glUiConfig.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
 
 
         e.setColor(col[0], col[1], col[2], col[3]);
@@ -1641,17 +1640,11 @@ export default class GlPatch extends CABLES.EventTarget
         // console.log(link);
     }
 
-    setTheme(theme)
+    updateTheme()
     {
-        glUiConfig.colors = theme;
+        this._selectionArea.updateTheme();
 
-        // console.log(glUiConfig.colors.opBgRect);
-    }
-
-    getDefaultTheme()
-    {
-        return glUiConfig._colors_dark;
-
-        // console.log(glUiConfig.colors.opBgRect);
+        for (let i in this._glOpz)
+            this._glOpz[i].updateTheme();
     }
 }

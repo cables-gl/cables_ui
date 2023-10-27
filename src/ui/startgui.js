@@ -97,11 +97,6 @@ export default function startUi(cfg)
                         gui.setElementBgPattern(ele.byId("bgpreview"));
                     }
 
-                    if (key == "theme-bright")
-                    {
-                        gui.updateTheme();
-                    }
-
                     if (key == "hideSizeBar")
                     {
                         gui.setLayout();

@@ -286,11 +286,6 @@ CABLES_CMD_UI.showPreferences = function ()
     gui.maintabPanel.show(true);
 };
 
-CABLES_CMD_UI.toggleTheme = function ()
-{
-    userSettings.set("theme-bright", !userSettings.get("theme-bright"));
-    gui.updateTheme();
-};
 
 CABLES_CMD_UI.profileGPU = function ()
 {
