@@ -631,8 +631,8 @@ export default class GlLink
 
     highlight(b)
     {
-        this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
-        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
+        this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 1 : 0);
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
     }
 
     collideLine(x1, y1, x2, y2)

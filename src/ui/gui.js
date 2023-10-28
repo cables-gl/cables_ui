@@ -2010,7 +2010,7 @@ export default class Gui
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
 
-        if (window.localStorage.getItem("cables_theme"))
+        if (window.localStorage.getItem("cables_theme") && window.localStorage.getItem("cables_theme") != "null" && window.localStorage.getItem("cables_theme") != "undefined")
         {
             try
             {
@@ -2202,6 +2202,11 @@ export default class Gui
         for (let i in theme.colors.html)
         {
             document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.html[i] || [1, 1, 1, 1]));
+        }
+
+        for (let i in theme.colors.textedit)
+        {
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.textedit[i] || [1, 1, 1, 1]));
         }
 
         gluiconfig.setTheme(theme);

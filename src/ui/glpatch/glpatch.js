@@ -1415,8 +1415,7 @@ export default class GlPatch extends CABLES.EventTarget
     setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
-        diff = diff || 1;
-        diff *= 0.8;
+        diff = diff || glUiConfig.colorMulInActive;
 
         let col = [0, 0, 0, 0];
         if (!glUiConfig.colors.types) return;
