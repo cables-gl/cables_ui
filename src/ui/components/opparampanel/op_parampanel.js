@@ -627,7 +627,16 @@ class OpParampanel extends CABLES.EventTarget
             "title": "Manage Op Code",
             func()
             {
-                new MetaCode(gui.mainTabs, opname);
+                CABLES.CMD.PATCH.manageSelectedOp();
+            },
+        });
+
+
+        items.push({
+            "title": "Clone Op",
+            func()
+            {
+                CABLES.CMD.PATCH.cloneSelectedOp();
             },
         });
 
