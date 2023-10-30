@@ -144,7 +144,7 @@ export default class EditorTab
                 this._editor.getSession().setUseWorker(false);
             }
 
-            this._tab.addEventListener("onClose", options.onClose);
+            this._tab.addEventListener("close", options.onClose);
             this._tab.addEventListener(
                 "onActivate",
                 function ()

@@ -68,7 +68,8 @@ export default class Tab extends CABLES.EventTarget
 
     remove()
     {
-        this.emitEvent("onClose", this);
+        this.emitEvent("close", this);
+        // this.emitEvent("onClose", this);
         this.contentEle.remove();
         this.toolbarContainerEle.remove();
     }

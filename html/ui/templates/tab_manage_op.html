@@ -2,20 +2,21 @@
 <script id="tab_manage_op" type="text/x-handlebars-template">
 
     <div>
-        <img src="/api/op/layout/{{opname}}">
-        <h3><b>{{opname}}</b></h3>
+        <img src="{{url}}/api/op/layout/{{opname}}">
+        <br/>
+        <h2>Op {{opDoc.shortName}}</h2>
+        {{opname}}
+        <br/>
         <div class="summary selectable">
-            {{op.summary}}
-            <br/><br/>
+            <br/><b>{{summary}}</b>
         </div>
+        <br/>
 
-        <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}"><span class="icon icon-op"></span>Op Page</a>
-        <br/>
-        <span class="button-small" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
-        <br/>
-        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');"><span class="icon icon-code"></span>Clone op code</span>
-        <br/>
-        <a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}"><span class="icon icon-op"></span>Rename Op</a>
+        <span class="button-small button-icon" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>{{else}}<span class="icon icon-file"></span>{{/if}}</span>
+
+        <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}">Op Page / Documentation</a>
+
+        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op code</span><a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}">Rename Op</a>
         <br/>
         <br/>
 

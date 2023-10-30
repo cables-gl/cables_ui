@@ -16,7 +16,7 @@ export default class ItemManager
         tabs.addTab(this._tab);
 
         this._tab.addEventListener(
-            "onClose",
+            "close",
             () =>
             {
                 this.emitEvent("onClose");
