@@ -2,7 +2,7 @@
 <script id="tab_manage_op" type="text/x-handlebars-template">
 
     <div>
-        <img src="{{url}}/api/op/layout/{{opname}}">
+        <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
         {{opname}}
@@ -92,6 +92,8 @@
 
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
+
+        You can upload .js files that can be used as libraries for your own ops
 
         {{#if doc.libs}}
             <table class="table">

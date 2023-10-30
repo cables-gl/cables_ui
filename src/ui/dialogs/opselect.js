@@ -278,7 +278,7 @@ export default class OpSelect
 
         this.updateStatusBar(opName);
 
-        if (!this._typedSinceOpening && CABLES.UI.OPSELECT.linkNewOpToPort)
+        if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewOpToPort || CABLES.UI.OPSELECT.linkNewLink))
         {
             if (selectedEle)
             {

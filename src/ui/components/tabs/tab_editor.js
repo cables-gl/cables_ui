@@ -79,6 +79,9 @@ export default class EditorTab
                 this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
 
                 const opdoc = gui.opDocs.getOpDocByName(opname);
+
+                if (!opdoc)console.log("could not get opdoc:" + opname);
+                else
                 if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
                     const drop = document.createElement("select");
