@@ -1322,7 +1322,7 @@ export default class Gui
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {
-            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed?iframe=true";
+            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
             gui.mainTabs.addIframeTab("Activity Feed", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
         });
 
