@@ -60,6 +60,7 @@ export default class OpSelect
 
     updateStatusBar()
     {
+        if (!this._eleSearchinfo) return;
         this._hideUserOps = gui.project().isOpExample;
 
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
