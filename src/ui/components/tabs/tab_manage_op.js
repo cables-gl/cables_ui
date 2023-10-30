@@ -4,11 +4,11 @@ import { getHandleBarHtml } from "../../utils/handlebars";
 import { hideToolTip, showToolTip } from "../../elements/tooltips";
 import defaultops from "../../defaultops";
 
-export default class MetaCode
+export default class ManageOp
 {
     constructor(tabs, opname)
     {
-        this._log = new Logger("MetaCode");
+        this._log = new Logger("ManageOp");
         this._initialized = false;
         this._lastSelectedOp = null;
         this._currentName = opname;
@@ -65,7 +65,7 @@ export default class MetaCode
                 // if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
 
                 const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-                const html = getHandleBarHtml("meta_code",
+                const html = getHandleBarHtml("tab_manage_op",
                     {
                         "url": CABLES.sandbox.getCablesUrl(),
                         "op": this._op,

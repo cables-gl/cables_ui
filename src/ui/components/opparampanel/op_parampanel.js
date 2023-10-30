@@ -1,14 +1,10 @@
-import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
-
 import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
-import defaultops from "../../defaultops";
 import userSettings from "../usersettings";
-import MetaCode from "../tabs/meta_code";
 
 class OpParampanel extends CABLES.EventTarget
 {

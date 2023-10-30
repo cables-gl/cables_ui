@@ -148,8 +148,6 @@ export default class Gui
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
         // this.metaDoc = new MetaDoc(this.metaTabs);
-        // this._metaCode = new MetaCode(this.metaTabs);
-
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = null;
@@ -1744,11 +1742,6 @@ export default class Gui
     {
         cb(this.opDocs.getHtml(opname));
     }
-
-    // metaCode()
-    // {
-    //     return this._metaCode;
-    // }
 
     showSettings(userInteraction)
     {

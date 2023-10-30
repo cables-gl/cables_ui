@@ -8,7 +8,7 @@ import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
 import defaultops from "../defaultops";
-import MetaCode from "../components/tabs/meta_code";
+import ManageOp from "../components/tabs/tab_manage_op";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -107,7 +107,7 @@ CABLES_CMD_PATCH.cloneSelectedOp = function ()
 CABLES_CMD_PATCH.manageSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) new MetaCode(gui.mainTabs, ops[0].objName);
+    if (ops.length > 0) new ManageOp(gui.mainTabs, ops[0].objName);
 };
 
 
