@@ -282,9 +282,18 @@ export default class OpSelect
         {
             if (selectedEle)
             {
-                if (this._currentInfo == "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName) return;
-                this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName;
+                if (CABLES.UI.OPSELECT.linkNewOpToPort)
+                {
+                    if (this._currentInfo == "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName) return;
+                    this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName;
+                }
+
+                if (CABLES.UI.OPSELECT.linkNewLink)
+                {
+                    this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewLink.id;
+                }
             }
+
 
             this._showSuggestionsInfo();
         }
