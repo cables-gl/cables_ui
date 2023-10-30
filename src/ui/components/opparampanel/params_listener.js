@@ -662,6 +662,8 @@ class ParamsListener extends CABLES.EventTarget
                 }
             }
 
+
+
             if (ports[index].uiAttribs.display == "bool")
             {
                 if (!v || v == "false" || v == "0" || v == 0) v = false;
@@ -778,7 +780,16 @@ class ParamsListener extends CABLES.EventTarget
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {
-                    newValue = this._formatNumber(thePort.getValueForDisplay());
+                    if (thePort.uiAttribs.display == "boolnum")
+                    {
+                        if (thePort.get() === 0)newValue = "0 - false";
+                        else if (thePort.get() === 1)newValue = "1 - true";
+                        else newValue = "invlaid bool value! " + thePort.get();
+                        // if (!v || v == "false" || v == "0" || v == 0) v = false;
+                        // else v = true;
+                    }
+                    else
+                        newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {
