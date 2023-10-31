@@ -443,7 +443,7 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this._log.log("lib added!", opName, libName);
-                        gui.metaTabs.activateTabByName("code");
+                        gui.emitEvent("refreshManageOp");
                         if (next) next();
                     }, true);
                 }
@@ -534,7 +534,9 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this._log.log("corelib added!", opName, libName);
-                        gui.metaTabs.activateTabByName("code");
+
+                        gui.emitEvent("refreshManageOp");
+                        // gui.metaTabs.activateTabByName("code");
                         if (next)next();
                     }, true);
                 }

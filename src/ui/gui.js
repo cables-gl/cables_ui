@@ -148,8 +148,6 @@ export default class Gui
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
         // this.metaDoc = new MetaDoc(this.metaTabs);
-        // this._metaCode = new MetaCode(this.metaTabs);
-
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
         this.metaKeyframes = null;
@@ -1324,7 +1322,7 @@ export default class Gui
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {
-            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed?iframe=true";
+            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
             gui.mainTabs.addIframeTab("Activity Feed", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
         });
 
@@ -1744,11 +1742,6 @@ export default class Gui
     {
         cb(this.opDocs.getHtml(opname));
     }
-
-    // metaCode()
-    // {
-    //     return this._metaCode;
-    // }
 
     showSettings(userInteraction)
     {

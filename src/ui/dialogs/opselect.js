@@ -60,6 +60,7 @@ export default class OpSelect
 
     updateStatusBar()
     {
+        if (!this._eleSearchinfo) return;
         this._hideUserOps = gui.project().isOpExample;
 
         const perf = CABLES.UI.uiProfiler.start("opselect.udpateOptions");
@@ -278,13 +279,22 @@ export default class OpSelect
 
         this.updateStatusBar(opName);
 
-        if (!this._typedSinceOpening && CABLES.UI.OPSELECT.linkNewOpToPort)
+        if (!this._typedSinceOpening && (CABLES.UI.OPSELECT.linkNewOpToPort || CABLES.UI.OPSELECT.linkNewLink))
         {
             if (selectedEle)
             {
-                if (this._currentInfo == "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName) return;
-                this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName;
+                if (CABLES.UI.OPSELECT.linkNewOpToPort)
+                {
+                    if (this._currentInfo == "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName) return;
+                    this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewOpToPort.op.objName;
+                }
+
+                if (CABLES.UI.OPSELECT.linkNewLink)
+                {
+                    this._currentInfo = "suggest_" + CABLES.UI.OPSELECT.linkNewLink.id;
+                }
             }
+
 
             this._showSuggestionsInfo();
         }

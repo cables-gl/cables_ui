@@ -2,8 +2,7 @@ import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
 import text from "../../text";
 import userSettings from "../usersettings";
-import MetaCode from "./meta_code";
-import ServerOps from "../../api/opsserver";
+import ManageOp from "./tab_manage_op";
 
 
 export default class EditorTab
@@ -76,10 +75,13 @@ export default class EditorTab
 
             if (opname)
             {
-                this._tab.addButton("Manage Op", () => { new MetaCode(gui.mainTabs, opname); });
+                this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
                 this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
 
                 const opdoc = gui.opDocs.getOpDocByName(opname);
+
+                if (!opdoc)console.log("could not get opdoc:" + opname);
+                else
                 if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
                     const drop = document.createElement("select");
@@ -145,7 +147,7 @@ export default class EditorTab
                 this._editor.getSession().setUseWorker(false);
             }
 
-            this._tab.addEventListener("onClose", options.onClose);
+            this._tab.addEventListener("close", options.onClose);
             this._tab.addEventListener(
                 "onActivate",
                 function ()

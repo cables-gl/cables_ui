@@ -4,11 +4,11 @@ import { getHandleBarHtml } from "../../utils/handlebars";
 import { hideToolTip, showToolTip } from "../../elements/tooltips";
 import defaultops from "../../defaultops";
 
-export default class MetaCode
+export default class ManageOp
 {
     constructor(tabs, opname)
     {
-        this._log = new Logger("MetaCode");
+        this._log = new Logger("ManageOp");
         this._initialized = false;
         this._lastSelectedOp = null;
         this._currentName = opname;
@@ -17,9 +17,17 @@ export default class MetaCode
         tabs.addTab(this._tab, true);
         this.show();
 
-        console.log(tabs);
+        this._tab.on("close", () =>
+        {
+            gui.off(this._refreshListener);
+        });
+
         gui.maintabPanel.show(true);
-        // tabs.activateTab(this._tab.id);
+
+        this._refreshListener = gui.on("refreshManageOp", () =>
+        {
+            this.show();
+        });
     }
 
     init()
@@ -56,21 +64,25 @@ export default class MetaCode
                 }
 
                 const opName = this._currentName;
+
+                const opDoc = gui.opDocs.getOpDocByName(opName);
+                console.log(opDoc);
+
                 doc.libs = gui.serverOps.getOpLibs(opName, false);
                 doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
                 summary = gui.opDocs.getSummary(opName);
-
                 const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
                 // if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
 
                 const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-                const html = getHandleBarHtml("meta_code",
+                const html = getHandleBarHtml("tab_manage_op",
                     {
                         "url": CABLES.sandbox.getCablesUrl(),
                         "op": this._op,
                         "opname": opName,
                         "doc": doc,
+                        "opDoc": opDoc,
                         "summary": summary,
                         "showPatchLibSelect": showPatchLibSelect,
                         "canEditOp": canEditOp,

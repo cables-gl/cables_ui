@@ -260,7 +260,7 @@ export default class TabPanel extends CABLES.EventTarget
             if (this._tabs[i].id == id)
             {
                 tab = this._tabs[i];
-                tab.emitEvent("close");
+                // tab.emitEvent("close");
                 this._tabs.splice(i, 1);
                 idx = i;
                 break;

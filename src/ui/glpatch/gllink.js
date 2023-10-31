@@ -100,7 +100,6 @@ export default class GlLink
                 }
             }
 
-            console.log(e.buttons, this._glPatch.mouseState.buttonForLinkInsertOp);
 
             if (
                 this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)

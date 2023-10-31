@@ -1,14 +1,10 @@
-import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
-
 import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
-import defaultops from "../../defaultops";
 import userSettings from "../usersettings";
-import MetaCode from "../tabs/meta_code";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -627,7 +623,16 @@ class OpParampanel extends CABLES.EventTarget
             "title": "Manage Op Code",
             func()
             {
-                new MetaCode(gui.mainTabs, opname);
+                CABLES.CMD.PATCH.manageSelectedOp();
+            },
+        });
+
+
+        items.push({
+            "title": "Clone Op",
+            func()
+            {
+                CABLES.CMD.PATCH.cloneSelectedOp();
             },
         });
 

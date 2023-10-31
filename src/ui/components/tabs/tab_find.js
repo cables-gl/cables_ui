@@ -56,7 +56,7 @@ export default class FindTab
         this._listenerids.push(gui.corePatch().addEventListener("onOpAdd", this._updateCb));
         this._listenerids.push(gui.corePatch().addEventListener("commentChanged", this._updateCb));
 
-        this._tab.addEventListener("onClose", () =>
+        this._tab.addEventListener("close", () =>
         {
             gui.opHistory.removeEventListener(listenerChanged);
 

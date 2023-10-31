@@ -8,6 +8,7 @@ import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
 import defaultops from "../defaultops";
+import ManageOp from "../components/tabs/tab_manage_op";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -83,6 +84,34 @@ CABLES_CMD_PATCH.reload = function ()
 {
     CABLESUILOADER.talkerAPI.send("reload");
 };
+
+
+
+
+CABLES_CMD_PATCH.editOp = function (userInteraction = true)
+{
+    const selops = gui.patchView.getSelectedOps();
+
+    if (selops && selops.length > 0)
+    {
+        for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i], false, null, userInteraction);
+    }
+};
+
+CABLES_CMD_PATCH.cloneSelectedOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName);
+};
+
+CABLES_CMD_PATCH.manageSelectedOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length > 0) new ManageOp(gui.mainTabs, ops[0].objName);
+};
+
+
+
 
 CABLES_CMD_PATCH.save = function (force, cb)
 {
@@ -639,18 +668,6 @@ CABLES_CMD_PATCH.alignOpsLeft = () =>
     gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
 };
 
-CABLES_CMD_PATCH.editOp = function (userInteraction)
-{
-    const selops = gui.patchView.getSelectedOps();
-
-    if (selops && selops.length > 0)
-    {
-        for (let i = 0; i < selops.length; i++)
-        {
-            gui.serverOps.edit(selops[i], false, null, userInteraction);
-        }
-    }
-};
 
 CABLES_CMD_PATCH.downGradeOp = function ()
 {
@@ -1142,6 +1159,19 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
     },
+
+    {
+        "cmd": "clone selected op",
+        "func": CABLES_CMD_PATCH.cloneSelectedOp,
+        "icon": "op"
+    },
+    {
+        "cmd": "manage selected op",
+        "func": CABLES_CMD_PATCH.manageSelectedOp,
+        "icon": "op"
+    },
+
+
     {
         "cmd": "go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,

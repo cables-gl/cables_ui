@@ -574,8 +574,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._glColorIndicator)
         {
-            this._glColorIndicator.setSize(4, this._height * 0.3);
-            this._glColorIndicator.setPosition(this._height * 0.1, this._height * 0.35);
+            this._glColorIndicator.setSize(this._height * 0.5, this._height);
+            this._glColorIndicator.setPosition(this._width, 0);
         }
 
         this._updateCommentPosition();
@@ -755,7 +755,7 @@ export default class GlOp extends CABLES.EventTarget
 
                     const updateColorIndicator = () =>
                     {
-                        this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), colorPorts[3].get()]);
+                        this._glColorIndicator.setColor([colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get()]);
                     };
 
 
