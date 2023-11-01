@@ -346,7 +346,7 @@ export default class Gui
     showTwoMetaPanels()
     {
         let r = true;
-        if (this.rendererWidth < 700) r = false;
+        if (this.rendererWidth < 1000) r = false;
 
         const haschanged = this.showingtwoMetaPanel != r;
         this.showingtwoMetaPanel = r;

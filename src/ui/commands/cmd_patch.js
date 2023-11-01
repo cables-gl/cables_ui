@@ -231,6 +231,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 CABLES_CMD_PATCH.showBackups = () =>
 {
     const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
+    const gotoUrl = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
         url,
@@ -238,7 +239,7 @@ CABLES_CMD_PATCH.showBackups = () =>
             "icon": "settings",
             "closable": true,
             "singleton": true,
-            "gotoUrl": url
+            "gotoUrl": gotoUrl
         },
         true);
 };
