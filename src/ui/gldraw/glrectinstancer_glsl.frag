@@ -23,7 +23,14 @@
 
  float screenPxRange() {
     float pxRange=4.0;
+
+#ifdef WEBGL1
+vec2 unitRange = vec2(pxRange)/vec2(1024.0);
+#endif
+#ifdef WEBGL2
     vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));
+#endif
+
     vec2 screenTexSize = vec2(1.0)/fwidth(uv);
     return max(0.5*dot(unitRange, screenTexSize), 1.0);
 }
