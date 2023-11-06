@@ -574,8 +574,9 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._glColorIndicator)
         {
-            this._glColorIndicator.setSize(this._height * 0.5, this._height);
             this._glColorIndicator.setPosition(this._width, 0);
+            this._glColorIndicator.setSize(this._height * 0.5, this._height);
+            this._width += this._height * 0.5;
         }
 
         this._updateCommentPosition();
@@ -675,6 +676,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
+        this._initColorIndicators();
     }
 
     _setPortIndexAttribs(ports)
@@ -728,6 +730,55 @@ export default class GlOp extends CABLES.EventTarget
         return ports;
     }
 
+    _initColorIndicators()
+    {
+        const ports = this._op.portsIn;
+
+        for (let i = 0; i < ports.length; i++)
+        {
+            if (ports[i].uiAttribs.colorPick && !this._glColorIndicator)
+            {
+                if (!this._glColorIndicator)
+                {
+                    const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
+
+                    this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
+                    this._glColorIndicator.setShape(0);
+
+                    this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1]);
+                    this.updateSize();
+
+                    const updateColorIndicator = () =>
+                    {
+                        this._glColorIndicator?.setColor([colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get()]);
+                    };
+
+                    colorPorts[0].on("onUiAttrChange", (attrs, port) =>
+                    {
+                        if (attrs.hasOwnProperty("greyout"))
+                        {
+                            if (attrs.greyout)
+                            {
+                                if (this._glColorIndicator)
+                                    this._glColorIndicator = this._glColorIndicator.dispose();
+                            }
+                            else
+                            {
+                                this._initColorIndicators();
+                            }
+
+                            this.updateSize();
+                        }
+                    });
+                    colorPorts[0].on("change", updateColorIndicator);
+                    colorPorts[1].on("change", updateColorIndicator);
+                    colorPorts[2].on("change", updateColorIndicator);
+                    if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
+                }
+            }
+        }
+    }
+
     _setupPorts(ports)
     {
         let count = 0;
@@ -741,31 +792,6 @@ export default class GlOp extends CABLES.EventTarget
 
         for (let i = 0; i < ports.length; i++)
         {
-            // if (ports[i].uiAttribs.colorPick && !this._glColorIndicator)
-            // {
-            //     if (!this._glColorIndicator)
-            //     {
-            //         const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
-
-            //         this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
-            //         this._glColorIndicator.setShape(0);
-
-            //         this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1]);
-            //         this.updateSize();
-
-            //         const updateColorIndicator = () =>
-            //         {
-            //             this._glColorIndicator.setColor([colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get()]);
-            //         };
-
-
-            //         colorPorts[0].on("change", updateColorIndicator);
-            //         colorPorts[1].on("change", updateColorIndicator);
-            //         colorPorts[2].on("change", updateColorIndicator);
-            //         if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
-            //     }
-            // }
-
             if (ports[i].uiAttribs.display == "dropdown") continue;
             if (ports[i].uiAttribs.display == "readonly") continue;
             if (ports[i].uiAttribs.hidePort) continue;
