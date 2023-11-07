@@ -724,7 +724,7 @@ class ParamsListener extends CABLES.EventTarget
 
 
             if (ports[index].uiAttribs.type == "string")ports[index].set(v || "");
-            else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
+            // else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
             else ports[index].set(v || 0);
 
 
