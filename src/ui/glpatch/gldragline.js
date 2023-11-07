@@ -222,6 +222,8 @@ export default class GlDragLine
             for (let i = 0; i < this._startGlPorts.length; i++)
             {
                 if (!this._startGlPorts[i]) continue;
+                // if (!this._startGlPorts[i].glOp) continue;
+                // if (!this._startGlPorts[i].rect) continue;
                 if (count > this._lineIndices.length - 1) this._lineIndices[count] = this._splineDrawer.getSplineIndex();
 
                 this._splineDrawer.setSpline(
