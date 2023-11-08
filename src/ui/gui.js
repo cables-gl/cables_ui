@@ -1005,6 +1005,7 @@ export default class Gui
         else
         {
             this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
+            this.fileManager.show(userInteraction);
         }
     }
 
