@@ -171,6 +171,8 @@ export default class TabPanel extends CABLES.EventTarget
         this.updateHtml();
     }
 
+
+
     scrollToActiveTab()
     {
         const tab = this.getActiveTab();
@@ -212,6 +214,7 @@ export default class TabPanel extends CABLES.EventTarget
         // console.log("CABLES.editorSession", CABLES.editorSession);
         if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
+
 
     loadCurrentTabUsersettings()
     {

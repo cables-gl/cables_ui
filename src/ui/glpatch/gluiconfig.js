@@ -72,9 +72,6 @@ class GlUiConfig
 
         this.theme = JSON.parse(JSON.stringify(this._defaultTheme));
         this.colors = this.theme.colors;
-
-        console.log("gluiconfig...");
-        console.log(this.colors);
     }
 
     setTheme(theme)
