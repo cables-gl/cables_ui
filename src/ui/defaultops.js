@@ -44,9 +44,69 @@ const defaultOps = {
         "uiArea": "Ops.Ui.Area",
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture",
-        "convertNumberToString": "Ops.String.NumberToString_v2",
-        "convertNumberToTrigger": "Ops.Value.TriggerOnChangeNumber"
+
     },
+    "converterOps":
+    [
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "op": "Ops.String.NumberToString_v2",
+            "portIn": "Number",
+            "portOut": "Result",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "op": "Ops.Value.TriggerOnChangeNumber",
+            "portIn": "Value",
+            "portOut": "Next",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "op": "Ops.Trigger.TriggerOnChangeString",
+            "portIn": "String",
+            "portOut": "Changed",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_TRIGGER,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "op": "Ops.Trigger.TriggerCounter",
+            "portIn": "exe",
+            "portOut": "timesTriggered",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "op": "Ops.String.ParseFloat",
+            "portIn": "String",
+            "portOut": "Number",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_VALUE,
+            "op": "Ops.Array.ArrayLength_v2",
+            "portIn": "array",
+            "portOut": "length",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
+            "op": "Ops.Array.StringToArray_v2",
+            "portIn": "text",
+            "portOut": "array",
+        },
+        {
+            "typeFrom": CONSTANTS.OP.OP_PORT_TYPE_ARRAY,
+            "typeTo": CONSTANTS.OP.OP_PORT_TYPE_STRING,
+            "op": "Ops.Array.ArrayToString_v3",
+            "portIn": "Array",
+            "portOut": "Result",
+        },
+
+
+    ],
     "defaultMathOps":
     {
         "default":
