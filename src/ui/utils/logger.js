@@ -7,7 +7,6 @@ export default class Logger extends CABLES.EventTarget
         super();
         this._logs = [];
         this.initiator = initiator;
-
     }
 
     stack(t)
