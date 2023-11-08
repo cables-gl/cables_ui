@@ -2750,7 +2750,7 @@ export default class PatchView extends CABLES.EventTarget
 
     highlightExamplePatchOps()
     {
-        if (gui.project().summary && gui.project().summary.exampleForOps)
+        if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
         {
             const ops = gui.corePatch().ops;
             for (let i = 0; i < ops.length; i++)
