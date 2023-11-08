@@ -134,7 +134,7 @@ export default class GlViewBox
 
         if (
             (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
-            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonStateForScrolling)))
+            ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
 
@@ -288,7 +288,7 @@ export default class GlViewBox
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (gui.getCanvasMode() != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
+        if (gui.canvasManager.mode != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
             if (!this._opsBoundingRect)
             {
@@ -327,7 +327,7 @@ export default class GlViewBox
                 }
             }
         }
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
+        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
         {
             this._opsBoundingRect.visible = false;
         }
@@ -365,7 +365,7 @@ export default class GlViewBox
         this._animScrollX.clear();
         this._animScrollY.clear();
 
-        this._animScrollX.setValue(this.glPatch.time, x );
+        this._animScrollX.setValue(this.glPatch.time, x);
         this._animScrollY.setValue(this.glPatch.time, y);
 
         gui.patchView.emitEvent("viewBoxChange");
@@ -506,7 +506,7 @@ export default class GlViewBox
 
     _storeCurrentSubPatch()
     {
-        const o={ "x": this._scrollX, "y": this._scrollY, "z": this._zoom }
+        const o = { "x": this._scrollX, "y": this._scrollY, "z": this._zoom };
         this._subPatchViewBoxes[this._currentSubPatchId] = o;
     }
 

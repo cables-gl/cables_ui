@@ -60,8 +60,9 @@ export default class ChangelogToast
                     "<button>Read More</button>",
                     function (instance, toast)
                     {
-                        CABLES.CMD.UI.showChangelog();
-                        iziToast.hide({}, toast);
+                        window.open(CABLES.sandbox.getCablesUrl() + "/changelog");
+                        // CABLES.CMD.UI.showChangelog();
+                        // iziToast.hide({}, toast);
                     },
                 ],
             ],
@@ -72,6 +73,9 @@ export default class ChangelogToast
     {
         if (gui.isRemoteClient) return;
 
-        gui.mainTabs.addIframeTab("changelog", CABLES.sandbox.getCablesUrl() + "/changelog", { "icon": "book-open", "closable": true }, true);
+        const url = CABLES.sandbox.getCablesUrl() + "/changelog?iframe=true";
+        const gotoUrl = CABLES.sandbox.getCablesUrl() + "/changelog";
+
+        gui.mainTabs.addIframeTab("changelog", url, { "icon": "book-open", "closable": true, "gotoUrl": gotoUrl }, true);
     }
 }

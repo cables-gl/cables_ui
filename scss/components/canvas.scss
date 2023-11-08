@@ -1,5 +1,4 @@
 
-
 .paco-iframe
 {
     z-index: 99999999;
@@ -47,14 +46,39 @@
 
 #canvasicons
 {
-    height: 100px;
-    background:linear-gradient(var(--color-01), var(--color-01),transparent,transparent);
+    // height: 25px;
+    // background:linear-gradient(var(--color-01), var(--color-01),transparent,transparent);
+
     user-select: none;
     color:var(--color-13);
     position: absolute;
-    padding-bottom: 30px;
+    overflow: hidden;
     z-index: $zindex_over;
+    // border:1px solid red;
+    // background-color: blue;
+    background-color: var(--color-01);
+    display: inline-block;
+
     // padding-left: 28px; /* to give resize-window icon some space */
+
+    #canvasIconBar
+    {
+        white-space: nowrap;
+        padding-right: 5px;;
+        overflow: hidden;
+    }
+
+    .threedotcanvas
+    {
+        position:absolute;
+        right:3px;
+        background-color: var(--color-01);
+        border-radius: 3px !important;
+    }
+    .threedotcanvas:hover
+    {
+        background-color: var(--color-04);
+    }
 
     a
     {
@@ -67,21 +91,24 @@
         position: absolute;
         width: 10px;
         height: 10px;
-        top: 20px;
+        top: 12px;
         left: 3px;
         display: block;
-        opacity: 0.3;
+        opacity: 0.4;
         cursor: nesw-resize;
     }
 
     .cbl_iconbar
     {
-        margin-top: 3px;
-        padding-right:5px;
-
-        margin-left: 10px;
-        margin-top: 10px;
-        transform:translate(-50%);
+        // margin-top: 3px;
+        // padding-right:5px;
+        // margin-left: 10px;
+        // margin-top: 10px;
+        // transform:translate(-50%);
+        background-color: transparent !important;
+        // border-top-left-radius: 0;
+        // border-top-right-radius: 0;
+        margin-left: 25px;
     }
 
     .canvasInfo,.cbl_iconbar
@@ -114,6 +141,8 @@
 #cablescanvas
 {
     z-index: $zindex_lowest;
+    overflow:hidden;
+    position:absolute;
 }
 
 #glcanvas

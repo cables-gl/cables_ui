@@ -39,6 +39,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glRectBg = null;
         this._rectResize = null;
+        this._glColorIndicator = null;
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
@@ -88,6 +89,11 @@ export default class GlOp extends CABLES.EventTarget
             this._op.on("onStorageChange", () =>
             {
                 this._storageChanged();
+            });
+
+            this._op.on("portOrderChanged", () =>
+            {
+                this.refreshPorts();
             });
 
             // if (defaultops.isSubPatchOpName(this._op.objName))
@@ -168,7 +174,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         this._glRectBg = this._instancer.createRect({ "draggable": true });
         this._glRectBg.setSize(GlUiConfig.opWidth, GlUiConfig.opHeight);
-        this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
+        this._glRectBg.setColor(GlUiConfig.colors.patch.opBgRect);
 
         this._glRectNames.push("_glRectBg");
 
@@ -306,9 +312,7 @@ export default class GlOp extends CABLES.EventTarget
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;
-
         if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
-
 
         if (!this._op)
         {
@@ -317,7 +321,6 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         const perf = CABLES.UI.uiProfiler.start("[glop] mouseDown");
-
 
         if (this._op.objName == CABLES.UI.DEFAULTOPNAMES.uiArea)
         {
@@ -332,7 +335,6 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.opShakeDetector.down(e.offsetX, e.offsetY);
 
-
         if (e.touchType == "mouse")
         {
             if (this.isHovering()) this._glPatch.patchAPI.showOpParams(this._id);
@@ -341,7 +343,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._glPatch.patchAPI.showOpParams(this._id);
         }
-
 
         if (e.altKey || e.metaKey)
         {
@@ -389,14 +390,10 @@ export default class GlOp extends CABLES.EventTarget
         this.glPatch.snapLines.update();
     }
 
-
     setUiAttribs(newAttribs, attr)
     {
         if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
-
-        // let subPatchChanged = false;
-        // if (newAttribs.subPatch && newAttribs.subPatch != this.opUiAttribs.subPatch) subPatchChanged = true;
 
         this.opUiAttribs = JSON.parse(JSON.stringify(attr));
 
@@ -502,7 +499,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._hidePorts = true;
                 this._glTitle.scale = 4;
-                this._glTitle.setColor(GlUiConfig.colors.patchComment);
+                this._glTitle.setColor(GlUiConfig.colors.patch.patchComment);
             }
             this._updateColors();
         }
@@ -575,6 +572,13 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
 
+        if (this._glColorIndicator)
+        {
+            this._glColorIndicator.setPosition(this._width, 0);
+            this._glColorIndicator.setSize(this._height * 0.5, this._height);
+            this._width += this._height * 0.5;
+        }
+
         this._updateCommentPosition();
         this._updateSizeRightHandle();
     }
@@ -582,7 +586,6 @@ export default class GlOp extends CABLES.EventTarget
     addLink(l)
     {
         this._links[l.id] = l;
-        // l.visible = this.visible;
         l.updateVisible();
     }
 
@@ -593,24 +596,6 @@ export default class GlOp extends CABLES.EventTarget
 
     mouseMove(x, y)
     {
-        // const wasHovering=this._isHovering;
-        // this.setHover(this._glRectBg.isPointInside(x,y));
-
-        // if(this._isHovering)
-        // {
-        //     for(var i=0;i<this._portRects.length;i++)
-        //     {
-        //         this._portRects[i].setOutline(this._portRects[i].isPointInside(x,y));
-        //         // if( this._portRects[i].isPointInside(x,y) ) this._portRects[i].setColor(1,0,0,1);
-        //         // else this._portRects[i].setColor(0,0,0,1);
-        //     }
-        // }
-
-        // if(wasHovering && !this._isHovering)
-        // {
-        //     for(var i=0;i<this._portRects.length;i++)
-        //         this._portRects[i].setOutline(false);
-        // }
     }
 
     setHover(h)
@@ -639,6 +624,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glRectRightHandle) this._glRectRightHandle = this._glRectRightHandle.dispose();
         if (this._resizableArea) this._resizableArea = this._resizableArea.dispose();
         if (this._rectResize) this._rectResize = this._rectResize.dispose();
+        if (this._glColorIndicator) this._glColorIndicator = this._glColorIndicator.dispose();
 
         this._disposeDots();
 
@@ -690,8 +676,8 @@ export default class GlOp extends CABLES.EventTarget
 
         this._setupPorts(portsIn);
         this._setupPorts(portsOut);
+        this._initColorIndicators();
     }
-
 
     _setPortIndexAttribs(ports)
     {
@@ -709,8 +695,7 @@ export default class GlOp extends CABLES.EventTarget
 
             if (this.op.getSubPatch() != ports[i].op.getSubPatch())
             {
-                // console.log("yeas");
-                const key = "glPortIndex_" + this.op.id;
+                const key = "glPortIndex_" + (ports[i].uiAttribs.order || 0) + this.op.id;
                 const o = {};
                 o[key] = count;
 
@@ -731,9 +716,7 @@ export default class GlOp extends CABLES.EventTarget
             count++;
         }
 
-
         // if (ports[0])console.log(ports[0].op.objName);
-
         // for (let i = 0; i < ports.length; i++)
         // {
         //     console.log(i, ports[i].name, ports[i].uiAttribs.glPortIndex);
@@ -747,11 +730,65 @@ export default class GlOp extends CABLES.EventTarget
         return ports;
     }
 
+    _initColorIndicators()
+    {
+        const ports = this._op.portsIn;
+
+        for (let i = 0; i < ports.length; i++)
+        {
+            if (ports[i].uiAttribs.colorPick && !this._glColorIndicator)
+            {
+                if (!this._glColorIndicator)
+                {
+                    const colorPorts = [ports[i], ports[i + 1], ports[i + 2], ports[i + 3]];
+
+                    this._glColorIndicator = this._instancer.createRect({ "parent": this._glRectBg });
+                    this._glColorIndicator.setShape(0);
+
+                    this._glColorIndicator.setColor([colorPorts[0].get(), colorPorts[1].get(), colorPorts[2].get(), 1]);
+                    this.updateSize();
+
+                    const updateColorIndicator = () =>
+                    {
+                        this._glColorIndicator?.setColor([colorPorts[0]?.get(), colorPorts[1]?.get(), colorPorts[2]?.get(), colorPorts[3]?.get()]);
+                    };
+
+                    colorPorts[0].on("onUiAttrChange", (attrs, port) =>
+                    {
+                        if (attrs.hasOwnProperty("greyout"))
+                        {
+                            if (attrs.greyout)
+                            {
+                                if (this._glColorIndicator)
+                                    this._glColorIndicator = this._glColorIndicator.dispose();
+                            }
+                            else
+                            {
+                                this._initColorIndicators();
+                            }
+
+                            this.updateSize();
+                        }
+                    });
+                    colorPorts[0].on("change", updateColorIndicator);
+                    colorPorts[1].on("change", updateColorIndicator);
+                    colorPorts[2].on("change", updateColorIndicator);
+                    if (colorPorts[3])colorPorts[3].on("change", updateColorIndicator);
+                }
+            }
+        }
+    }
+
     _setupPorts(ports)
     {
         let count = 0;
 
         ports = this._setPortIndexAttribs(ports);
+
+        ports = ports.sort((a, b) =>
+        {
+            return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0);
+        });
 
         for (let i = 0; i < ports.length; i++)
         {
@@ -774,7 +811,6 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._glRectBg) return;
         if (!this.opUiAttribs.translate) return;
-
 
         this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
@@ -863,6 +899,7 @@ export default class GlOp extends CABLES.EventTarget
         this._updateIndicators();
 
         if (this._resizableArea) this._resizableArea.visible = visi;
+        if (this._glColorIndicator) this._glColorIndicator.visible = visi;
 
         for (const i in this._links) this._links[i].visible = true;
 
@@ -890,7 +927,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glLoadingIndicator.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glLoadingIndicator.setColor(GlUiConfig.colors.opErrorHint);
+                this._glLoadingIndicator.setColor(GlUiConfig.colors.patch.opErrorHint);
                 this._glLoadingIndicator.setShape(8);
 
                 this._glLoadingIndicator.setColor(1, 1, 1, 1);
@@ -927,17 +964,17 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotHint.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotHint.setColor(GlUiConfig.colors.opErrorHint);
+                this._glDotHint.setColor(GlUiConfig.colors.patch.opErrorHint);
                 this._glDotHint.setShape(6);
 
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotWarning.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotWarning.setColor(GlUiConfig.colors.opErrorWarning);
+                this._glDotWarning.setColor(GlUiConfig.colors.patch.opErrorWarning);
                 this._glDotWarning.setShape(6);
 
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glDotError.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotError.setColor(GlUiConfig.colors.opError);
+                this._glDotError.setColor(GlUiConfig.colors.patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
 
@@ -997,7 +1034,10 @@ export default class GlOp extends CABLES.EventTarget
         if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
+
         this._glRectNames.push("_glTitle");
+
+
 
         if (!this._titleExt &&
             (
@@ -1006,7 +1046,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._titleExt = new GlText(this._textWriter, " ???");
             this._titleExt.setParentRect(this._glRectBg);
-            this._titleExt.setColor(GlUiConfig.colors.opTitleExt);
+            this._titleExt.setColor(GlUiConfig.colors.patch.opTitleExt);
             this._titleExt.visible = this.visible;
         }
         if (this._titleExt &&
@@ -1058,6 +1098,9 @@ export default class GlOp extends CABLES.EventTarget
             });
         }
 
+
+
+
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
 
         if (comment)
@@ -1066,7 +1109,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._glComment = new GlText(this._textWriter, comment);
                 this._glComment.setParentRect(this._glRectBg);
-                this._glComment.setColor(GlUiConfig.colors.patchComment);
+                this._glComment.setColor(GlUiConfig.colors.patch.patchComment);
             }
 
             if (comment != this._glComment.text) this._glComment.text = comment;
@@ -1163,12 +1206,13 @@ export default class GlOp extends CABLES.EventTarget
         }
         else
         {
-            this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
-            // this._glTitle.setColor(0.8, 0.8, 0.8);
+            if (this._OpNameSpaceColor)
+                this._glTitle.setColor(this._OpNameSpaceColor[0], this._OpNameSpaceColor[1], this._OpNameSpaceColor[2]);
+            else this._glTitle.setColor(0.8, 0.8, 0.8);
         }
 
         this._glRectBg.setBorder(this._rectBorder);
-        if (this._transparent) this._glRectBg.setColor(GlUiConfig.colors.transparent);
+        if (this._transparent) this._glRectBg.setColor(GlUiConfig.colors.patch.transparent);
         else
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
@@ -1186,7 +1230,7 @@ export default class GlOp extends CABLES.EventTarget
             }
             else
             {
-                this._glRectBg.setColor(GlUiConfig.colors.opBgRect);
+                this._glRectBg.setColor(GlUiConfig.colors.patch.opBgRect);
                 if (this._glRectRightHandle && this.opUiAttribs.color == null)
                 {
                     this._glRectRightHandle.dispose();
@@ -1198,7 +1242,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setSelected(1);
-            this._glTitle.setColor(GlUiConfig.colors.opTitleSelected);
+            this._glTitle.setColor(GlUiConfig.colors.patch.opTitleSelected);
         }
         else this._glRectBg.setSelected(0);
 
@@ -1253,44 +1297,9 @@ export default class GlOp extends CABLES.EventTarget
 
     getPortPos(id)
     {
-        // console.log(".//////");
-        // for cable position
-
         if (!this._op) return;
-
         this._setPortIndexAttribs(this._op.portsIn);
-
-        // if (this._op.portsIn[0])console.log(this._op.portsIn[0].op.objName);
-
-        for (let i = 0; i < this._op.portsIn.length; i++)
-        {
-            // console.log(i, this._op.portsIn[i].name, this._op.portsIn[i].uiAttribs.glPortIndex, this._op.portsIn[i].id);
-        }
-
         return this._op.getPortPosX(id);
-
-        // let count = 0;
-        // for (let i = 0; i < this._op.portsIn.length; i++)
-        // {
-        //     if (this._op.portsIn[i].name == id ||
-        //         this._op.portsIn[i].id == id) return (this._op.portsIn[i].uiAttribs.glPortIndex || count) * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
-
-        //     if (this._op.portsIn[i].isHidden() ||
-        //         this._op.portsIn[i].uiAttribs.display == "dropdown" ||
-        //         this._op.portsIn[i].uiAttribs.display == "readonly" ||
-        //         this._op.portsIn[i].uiAttribs.hidePort) continue;
-
-        //     count++;
-        // }
-
-        // for (let i = 0; i < this._op.portsOut.length; i++)
-        // {
-        //     if (this._op.portsOut[i].name == id || this._op.portsOut[i].id == id) return i * (GlUiConfig.portWidth + GlUiConfig.portPadding) + uiconfig.portSize * 0.5;
-        // }
-
-        // console.log("not found port pos");
-
-        // return -10;
     }
 
     isPassiveDrag()
@@ -1377,5 +1386,13 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         return ports;
+    }
+
+    updateTheme()
+    {
+        this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+        this._updateColors();
+
+        for (const i in this._links) this._links[i].updateTheme();
     }
 }

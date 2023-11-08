@@ -1,12 +1,9 @@
-import paramsHelper from "./params_helper";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import Logger from "../../utils/logger";
-
 import text from "../../text";
 import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
-import defaultops from "../../defaultops";
 import userSettings from "../usersettings";
 
 class OpParampanel extends CABLES.EventTarget
@@ -141,10 +138,10 @@ class OpParampanel extends CABLES.EventTarget
         {
             this._startedGlobalListeners = true;
 
-            gui.corePatch().on("bookmarkschanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
-            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
-            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
-            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(); });
+            gui.corePatch().on("bookmarkschanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
+            gui.corePatch().on("subpatchesChanged", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
+            gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
+            gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
         }
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
@@ -209,6 +206,9 @@ class OpParampanel extends CABLES.EventTarget
         //     }
         //     if (!foundAnim) self.timeLine.setAnim(null);
         // }
+
+
+        this._portsIn.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
 
 
         let html = this._htmlGen.getHtmlOpHeader(op);
@@ -618,6 +618,25 @@ class OpParampanel extends CABLES.EventTarget
                 gui.bookmarks.add();
             }
         });
+
+        items.push({
+            "title": "Manage Op Code",
+            func()
+            {
+                CABLES.CMD.PATCH.manageSelectedOp();
+            },
+        });
+
+
+        items.push({
+            "title": "Clone Op",
+            func()
+            {
+                CABLES.CMD.PATCH.cloneSelectedOp();
+            },
+        });
+
+
 
         items.push({
             "title": "Show Op Serialized",

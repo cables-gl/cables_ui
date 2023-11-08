@@ -11,7 +11,7 @@ export default class Bookmarks
         this._dynCmds = [];
         this.needRefreshSubs = true;
         this._subs = null;
-        this._subpatchOps = {};
+        // this._subpatchOps = {};
     }
 
     hasBookmarkWithId(id)
@@ -94,9 +94,9 @@ export default class Bookmarks
         let html = getHandleBarHtml("bookmarks", { "bookmarks": bm, "subPatches": this._subs, "currentSubPatch": gui.patchView.getCurrentSubPatch() });
         perf2.finish();
 
-        const perf3 = CABLES.UI.uiProfiler.start("update dynamic commands");
-        this.updateDynamicCommands();
-        perf3.finish();
+        // const perf3 = CABLES.UI.uiProfiler.start("update dynamic commands");
+        // this.updateDynamicCommands();
+        // perf3.finish();
 
 
         return html;
@@ -107,7 +107,6 @@ export default class Bookmarks
         for (let i = 0; i < this._bookmarks.length; i++) this.setBoookmarkUiAttr(this._bookmarks[i], false);
 
         if (arr) this._bookmarks = arr;
-
 
         this.updateDynamicCommands();
     }

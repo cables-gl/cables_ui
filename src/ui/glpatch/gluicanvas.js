@@ -22,12 +22,6 @@ export default class GlUiCanvas
         document.body.style["touch-action"] = "none";
         // this._zoom = GlUiConfig.zoomDefault;
 
-        this.updateTheme();
-        userSettings.on("onchange", (key, value) =>
-        {
-            this.updateTheme();
-        });
-
         this.canvas = document.createElement("canvas");
         this.canvas.id = "glGuiCanvas-" + CABLES.uuid();
         // this.canvas.style.display='block';
@@ -223,7 +217,7 @@ export default class GlUiCanvas
 
         const cgl = this.patch.cgl;
 
-        // if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
         // else cgl.gl.clearColor(0, 0, 0, 1);
 
         // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
@@ -267,10 +261,5 @@ export default class GlUiCanvas
 
         cgl.renderEnd(cgl);
         this._lastTime = performance.now();
-    }
-
-    updateTheme()
-    {
-        glUiConfig.setTheme(userSettings.get("theme-bright") == true);
     }
 }

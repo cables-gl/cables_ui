@@ -8,6 +8,7 @@ import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
 import defaultops from "../defaultops";
+import ManageOp from "../components/tabs/tab_manage_op";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -84,6 +85,34 @@ CABLES_CMD_PATCH.reload = function ()
     CABLESUILOADER.talkerAPI.send("reload");
 };
 
+
+
+
+CABLES_CMD_PATCH.editOp = function (userInteraction = true)
+{
+    const selops = gui.patchView.getSelectedOps();
+
+    if (selops && selops.length > 0)
+    {
+        for (let i = 0; i < selops.length; i++) gui.serverOps.edit(selops[i], false, null, userInteraction);
+    }
+};
+
+CABLES_CMD_PATCH.cloneSelectedOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName);
+};
+
+CABLES_CMD_PATCH.manageSelectedOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length > 0) new ManageOp(gui.mainTabs, ops[0].objName);
+};
+
+
+
+
 CABLES_CMD_PATCH.save = function (force, cb)
 {
     if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL)
@@ -103,42 +132,21 @@ CABLES_CMD_PATCH.save = function (force, cb)
     {
         const alwaysSave = gui.user.isAdmin;
         const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
-        if (gui.project().summary && gui.project().summary.isTest)
+        if (alwaysSave && notCollaborator)
         {
             doSave = false;
-
-            let html = "You are trying to save a testcase for ops, are you sure you want to continue?<br/><br/>";
-            if (alwaysSave && notCollaborator)
-            {
-                html += "And you are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>";
-                html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;";
-            }
-            html += "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;";
-            html += "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-
-            new ModalDialog({
-                "warning": true,
-                "title": "Saving Test",
-                "html": html
-            });
-        }
-        else
-        {
-            if (alwaysSave && notCollaborator)
-            {
-                doSave = false;
-                const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
+            const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
                     + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
                     + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
                     + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
 
-                new ModalDialog({
-                    "warning": true,
-                    "title": "Not Collaborator",
-                    "html": html
-                });
-            }
+            new ModalDialog({
+                "warning": true,
+                "title": "Not Collaborator",
+                "html": html
+            });
         }
+        // }
     }
 
     if (doSave)
@@ -222,7 +230,8 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
-    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settingsiframe#versions";
+    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
+    const gotoUrl = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
         url,
@@ -230,7 +239,7 @@ CABLES_CMD_PATCH.showBackups = () =>
             "icon": "settings",
             "closable": true,
             "singleton": true,
-            "gotoUrl": url
+            "gotoUrl": gotoUrl
         },
         true);
 };
@@ -660,18 +669,6 @@ CABLES_CMD_PATCH.alignOpsLeft = () =>
     gui.patchView.alignSelectedOpsVert(gui.patchView.getSelectedOps());
 };
 
-CABLES_CMD_PATCH.editOp = function (userInteraction)
-{
-    const selops = gui.patchView.getSelectedOps();
-
-    if (selops && selops.length > 0)
-    {
-        for (let i = 0; i < selops.length; i++)
-        {
-            gui.serverOps.edit(selops[i], false, null, userInteraction);
-        }
-    }
-};
 
 CABLES_CMD_PATCH.downGradeOp = function ()
 {
@@ -1163,6 +1160,19 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
     },
+
+    {
+        "cmd": "clone selected op",
+        "func": CABLES_CMD_PATCH.cloneSelectedOp,
+        "icon": "op"
+    },
+    {
+        "cmd": "manage selected op",
+        "func": CABLES_CMD_PATCH.manageSelectedOp,
+        "icon": "op"
+    },
+
+
     {
         "cmd": "go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,

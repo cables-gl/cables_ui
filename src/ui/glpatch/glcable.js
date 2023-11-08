@@ -422,9 +422,9 @@ export default class GlCable
     {
         if (r === undefined)
         {
-            r = this._r * 1.1;
-            g = this._g * 1.1;
-            b = this._b * 1.1;
+            r = this._r;
+            g = this._g;
+            b = this._b;
             a = this._a;
         }
         else

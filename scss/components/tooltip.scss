@@ -71,6 +71,11 @@
         user-select: none;
         z-index: $zindex_lowest;
 
+        h2
+        {
+            font-size: 15px !important;
+        }
+
         .icon
         {
             margin-top: 2px;

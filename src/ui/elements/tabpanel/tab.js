@@ -45,6 +45,12 @@ export default class Tab extends CABLES.EventTarget
         eleContainer.appendChild(this.contentEle);
     }
 
+
+    addButtonBarElement(ele)
+    {
+        this.toolbarEle.appendChild(ele);
+    }
+
     addButton(title, cb)
     {
         const button = document.createElement("a");
@@ -62,7 +68,8 @@ export default class Tab extends CABLES.EventTarget
 
     remove()
     {
-        this.emitEvent("onClose", this);
+        this.emitEvent("close", this);
+        // this.emitEvent("onClose", this);
         this.contentEle.remove();
         this.toolbarContainerEle.remove();
     }

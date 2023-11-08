@@ -66,11 +66,7 @@ export default function startUi(cfg)
                 userSettings.init();
                 incrementStartup();
 
-                gui.metaCode().init();
-
-                gui.metaDoc.init();
                 gui.opSelect().reload();
-                // gui.setMetaTab(userSettings.get("metatab") || 'doc');
                 gui.showWelcomeNotifications();
                 incrementStartup();
                 gui.showUiElements();
@@ -95,11 +91,6 @@ export default function startUi(cfg)
                     {
                         gui.setElementBgPattern(ele.byId("cablescanvas"));
                         gui.setElementBgPattern(ele.byId("bgpreview"));
-                    }
-
-                    if (key == "theme-bright")
-                    {
-                        gui.updateTheme();
                     }
 
                     if (key == "hideSizeBar")
@@ -168,6 +159,8 @@ export default function startUi(cfg)
                     "colorLight": "#ffffff",
                     "correctLevel": QRCode.CorrectLevel.H
                 });
+
+                if (gui.user) gui.updateActivityFeedIcon(gui.user.activityFeed);
 
                 CABLES.UI.loaded = true;
                 CABLES.UI.loadedTime = performance.now();

@@ -44,7 +44,8 @@ const defaultOps = {
         "uiArea": "Ops.Ui.Area",
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture",
-        "convertNumberToString": "Ops.String.NumberToString_v2"
+        "convertNumberToString": "Ops.String.NumberToString_v2",
+        "convertNumberToTrigger": "Ops.Value.TriggerOnChangeNumber"
     },
     "defaultMathOps":
     {

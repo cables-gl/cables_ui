@@ -1,3 +1,4 @@
+import MetaKeyframes from "./components/tabs/meta_keyframes";
 import Bookmarks from "./components/bookmarks";
 import Introduction from "./components/introduction";
 import Jobs from "./components/jobs";
@@ -13,9 +14,6 @@ import KeyBindingsManager from "./utils/keybindingsmanager";
 import ModalDialog from "./dialogs/modaldialog";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
-import MetaKeyframes from "./components/tabs/meta_keyframes";
-import MetaCode from "./components/tabs/meta_code";
-import MetaDoc from "./components/tabs/meta_doc";
 import TexturePreviewer from "./components/texturepreviewer";
 import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
@@ -40,6 +38,7 @@ import GuiRestrictions from "./components/guirestrictions";
 import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
+import gluiconfig from "./glpatch/gluiconfig";
 
 
 export default class Gui
@@ -72,10 +71,9 @@ export default class Gui
 
         this.patchParamPanel = new PatchPanel();
 
-        this.CANVASMODE_NORMAL = 0;
-        this.CANVASMODE_FULLSCREEN = 2;
-        this.CANVASMODE_PATCHBG = 1;
-        this._canvasMode = this.CANVASMODE_NORMAL;
+        this.canvasMagnifier = null;
+
+        this.userSettings = userSettings;
 
         this.editorWidth = userSettings.get("editorWidth") || 350;
         this._timeoutPauseProfiler = null;
@@ -149,12 +147,11 @@ export default class Gui
 
         this.metaOpParams = new MetaOpParams(this.metaTabs);
 
-        this.metaDoc = new MetaDoc(this.metaTabs);
-        this._metaCode = new MetaCode(this.metaTabs);
-
+        // this.metaDoc = new MetaDoc(this.metaTabs);
 
         this.metaTexturePreviewer = new TexturePreviewer(this.metaTabs, this._corePatch.cgl);
-        this.metaKeyframes = new MetaKeyframes(this.metaTabs);
+        this.metaKeyframes = null;
+        // this.metaKeyframes = new MetaKeyframes(this.metaTabs);
         this.bookmarks = new Bookmarks();
         // this.history = new MetaHistory(this.metaTabs);
         this.bottomInfoArea = new BottomInfoAreaBar(this);
@@ -177,7 +174,6 @@ export default class Gui
         this._currentProject = null;
         this.tips = new Tips();
         this.currentModal = null;
-        this.updateTheme();
     }
 
     project()
@@ -236,10 +232,10 @@ export default class Gui
             {
                 // this.patchView.focus();
 
+                gui.opParams.show(opid);
                 this.patchView.focusOpAnim(opid);
                 this.patchView.patchRenderer.viewBox.centerSelectedOps();
-                // this.patchView.centerSelectOp(opid);
-                gui.opParams.show(opid);
+                this.patchView.centerSelectOp(opid);
             });
         }
 
@@ -350,7 +346,7 @@ export default class Gui
     showTwoMetaPanels()
     {
         let r = true;
-        if (this.rendererWidth < 700) r = false;
+        if (this.rendererWidth < 1000) r = false;
 
         const haschanged = this.showingtwoMetaPanel != r;
         this.showingtwoMetaPanel = r;
@@ -421,7 +417,6 @@ export default class Gui
         this._elMaintab = this._elMaintab || ele.byId("maintabs");
         this._elEditor = this._elEditor || ele.byId("editor");
         this._elLibrary = this._elLibrary || ele.byId("library");
-        this._elCanvasInfoSize = this._elCanvasInfoSize || ele.byId("canvasInfoSize");
         this._elSplitterMaintabs = this._elSplitterMaintabs || ele.byId("splitterMaintabs");
         this._elEditorMinimized = this._elEditorMinimized || ele.byId("editorminimized");
         this._elEditorMaximized = this._elEditorMaximized || ele.byId("editormaximized");
@@ -440,12 +435,13 @@ export default class Gui
         let timelineHeight = this.timingHeight;
 
         const iconBarWidth = 0;
+        this.canvasInfoUiHeight = 36;
 
         let patchHeight = window.innerHeight;
 
         if (window.innerWidth <= 480 || this.isRemoteClient)
         {
-            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
             this._showingEditor = false;
@@ -468,7 +464,7 @@ export default class Gui
             this.rendererWidth = window.innerWidth * 0.4;
             this.rendererHeight = window.innerHeight * 0.25;
         }
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
             this.rendererWidth = window.innerWidth;
             this.rendererHeight = window.innerHeight;
@@ -477,21 +473,21 @@ export default class Gui
         this.rendererWidthScaled = this.rendererWidth * this._corePatch.cgl.canvasScale;
         this.rendererHeightScaled = this.rendererHeight * this._corePatch.cgl.canvasScale;
 
-
         this.rendererWidth = Math.floor(this.rendererWidth);
         this.rendererHeight = Math.floor(this.rendererHeight);
 
         let patchWidth = window.innerWidth - this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG) patchWidth = window.innerWidth - this.rightPanelWidth;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
+        {
+            patchWidth = window.innerWidth - this.rightPanelWidth;
+            this.rendererHeightScaled = 0;
+        }
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT) this.rendererHeightScaled = 0;
 
 
-        // const cgl = this._corePatch.cgl;
-        // if (this.canvasManager.getCanvasUiBar()) this.canvasManager.getCanvasUiBar().getCanvasSizeString(cgl);
 
         this.corePatch().pause();
         this.patchView.pause();
-
-
 
         clearTimeout(this.delayedResizeCanvas);
         this.delayedResizeCanvas = setTimeout(() =>
@@ -594,7 +590,7 @@ export default class Gui
         if (this.rendererWidth < 100) this.rendererWidth = 100;
 
         this.rightPanelWidth = this.rendererWidthScaled;
-        if (this._canvasMode == this.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) this.rightPanelWidth = this.splitpanePatchPos;
 
         this._elSplitterPatch.style.left = (window.innerWidth - this.rightPanelWidth - 4) + "px";
         this._elSplitterPatch.style.height = (patchHeight + timelineUiHeight + 2) + "px";
@@ -709,12 +705,12 @@ export default class Gui
             metaWidth = this.rightPanelWidth - optionsWidth;
 
             this._elOptions.style.right = metaWidth + "px";
-            this._elOptions.style.top = this.rendererHeightScaled + "px";
+            this._elOptions.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elOptions.style.width = optionsWidth + "px";
             this._elOptions.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
             this._elMeta.style.right = 0 + "px";
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -725,7 +721,7 @@ export default class Gui
             metaWidth = this.rightPanelWidth;
             this._elMeta.style.right = 0 + "px";
 
-            this._elMeta.style.top = this.rendererHeightScaled + "px";
+            this._elMeta.style.top = (this.rendererHeightScaled + this.canvasInfoUiHeight) + "px";
             this._elMeta.style.width = metaWidth + "px";
             this._elMeta.style.height = window.innerHeight - this.rendererHeightScaled + "px";
 
@@ -734,6 +730,18 @@ export default class Gui
             this._elOptions.style.display = "none";
         }
 
+        ele.byId("canvasicons").style.height = this.canvasInfoUiHeight + "px";
+        ele.byId("canvasicons").style.width = (this.rendererWidth * this._corePatch.cgl.canvasScale) + "px";
+        ele.byId("canvasicons").style.right = (0) + "px";
+
+        const widthResizeIcon = 30;
+        ele.byId("canvasIconBar").style.width = (this.rendererWidth - widthResizeIcon - 10) + "px";
+
+
+        let top = 0;
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG) top = 0;
+        else top = this.rendererHeightScaled + 1;
+        ele.byId("canvasicons").style.top = top + "px";
 
         this._elMenubar.style.top = 0 + "px";
 
@@ -766,7 +774,18 @@ export default class Gui
         ele.byQuery("#metatabpanel .contentcontainer").style.height = window.innerHeight - this.rendererHeightScaled - infoAreaHeight - metaTabPanelTabsHeight - menubarHeight - 1 + "px";
         // console.log("tabPanelTopHeight", tabPanelTopHeight);
 
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_POPOUT)
+        {
+            this._elCablesCanvasContainer.style.left = iconBarWidth + "px";
+            this._elCablesCanvasContainer.style.right = "initial";
+            this._elCablesCanvasContainer.style.top = "0px";
+            this._elCablesCanvasContainer.style.width = "0px";
+            this._elCablesCanvasContainer.style.height = "0px";
+            this._elCablesCanvasContainer.style["z-index"] = 1;
+        }
+        else
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
             this._elCablesCanvasContainer.style.left = 0 + "px";
             this._elCablesCanvasContainer.style.right = "initial";
@@ -779,7 +798,7 @@ export default class Gui
 
             this._elCablesCanvasContainer.style["z-index"] = 40;
         }
-        else if (this._canvasMode == this.CANVASMODE_PATCHBG)
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_PATCHBG)
         {
             this._elGlCanvasDom.style.width = this._elPatch.style.width;
             this._elGlCanvasDom.style.height = this._elPatch.style.height;
@@ -791,7 +810,7 @@ export default class Gui
             this._elCablesCanvasContainer.style.height = this._elGlCanvasDom.style.height;
             this._elCablesCanvasContainer.style["z-index"] = 1;
         }
-        if (this._canvasMode == this.CANVASMODE_NORMAL)
+        else if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
             this._elCablesCanvasContainer.style["z-index"] = 10;
 
@@ -822,21 +841,20 @@ export default class Gui
         perf.finish();
     }
 
-    _setCanvasMode(m)
-    {
-        this._canvasMode = m;
-        this.emitEvent("canvasModeChange", m);
-    }
+    // _setCanvasMode(m)
+    // {
+    //     this.canvasManager.mode = m;
+    // }
 
 
-    getCanvasMode()
-    {
-        return this._canvasMode;
-    }
+    // getCanvasMode()
+    // {
+    //     return this.canvasManager.mode;
+    // }
 
     _switchCanvasSizeNormal()
     {
-        this._setCanvasMode(this.CANVASMODE_NORMAL);
+        this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
         this.rendererWidth = this._oldCanvasWidth;
         this.rendererHeight = this._oldCanvasHeight;
     }
@@ -847,7 +865,7 @@ export default class Gui
         this._oldCanvasHeight = this.rendererHeight;
         this.rightPanelWidth = this.rendererWidth;
 
-        this._setCanvasMode(this.CANVASMODE_PATCHBG);
+        this.canvasManager.mode = this.canvasManager.CANVASMODE_PATCHBG;
         userSettings.set("canvasMode", "patchbg");
 
         this.rendererHeight = 100;
@@ -856,9 +874,9 @@ export default class Gui
 
     cyclePatchBg()
     {
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN) this.cycleFullscreen();
 
-        if (this._canvasMode == this.CANVASMODE_NORMAL)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_NORMAL)
         {
             this._switchCanvasPatchBg();
         }
@@ -874,9 +892,9 @@ export default class Gui
 
     cycleFullscreen()
     {
-        if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+        if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
         {
-            this._setCanvasMode(this.CANVASMODE_NORMAL);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_NORMAL;
             this.rendererWidth = this._oldCanvasWidth;
             this.rendererHeight = this._oldCanvasHeight;
         }
@@ -885,7 +903,7 @@ export default class Gui
             this._oldCanvasWidth = this.rendererWidth;
             this._oldCanvasHeight = this.rendererHeight;
             this.rightPanelWidth = this.rendererWidth;
-            this._setCanvasMode(this.CANVASMODE_FULLSCREEN);
+            this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
 
             if (!this.notifiedFullscreen)CABLES.UI.notify("press escape to exit fullscreen mode");
             this.notifiedFullscreen = true;
@@ -924,6 +942,26 @@ export default class Gui
                 ele.byId("nav-logo_idle").classList.add("logoFadein");
                 ele.byId("nav-loading").classList.add("hidden");
             }, 250);
+        }
+    }
+
+    updateActivityFeedIcon(data)
+    {
+        if (!data) return;
+        const feedIcon = ele.byId("nav-item-activity");
+        if (feedIcon)
+        {
+            const actionable = feedIcon.querySelector(".dot");
+            if (data.action_required)
+            {
+                ele.show(feedIcon);
+                ele.show(actionable);
+            }
+            else
+            {
+                ele.hide(feedIcon);
+                ele.hide(actionable);
+            }
         }
     }
 
@@ -1097,13 +1135,27 @@ export default class Gui
                 "items":
                 [
                     {
-                        "title": "set canvas size",
+                        "title": "Set canvas size",
                         "func": CABLES.CMD.RENDERER.changeSize
                     },
                     {
-                        "title": "set canvas scale",
+                        "title": "Set canvas scale",
                         "func": CABLES.CMD.RENDERER.scaleCanvas
+                    },
+                    {
+                        "title": "Canvas Magnifier",
+                        "func": CABLES.CMD.RENDERER.canvasMagnifier
+                    },
+                    {
+                        "title": "Maximize Canvas",
+                        "func": CABLES.CMD.UI.toggleMaxRenderer,
+                        "icon": "icon-picker"
+                    },
+                    {
+                        "title": "Canvas As Patch Background",
+                        "func": CABLES.CMD.UI.togglePatchBgRenderer
                     }
+
                 ]
             }, el);
     }
@@ -1268,6 +1320,12 @@ export default class Gui
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
         ele.byId("nav_history").addEventListener("click", (event) => { new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true); });
 
+        ele.byId("nav-item-activity").addEventListener("click", (event) =>
+        {
+            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
+            gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
+        });
+
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
 
         window.addEventListener("resize", () =>
@@ -1385,9 +1443,10 @@ export default class Gui
                                 "oldSubId": bp,
                                 "next": () =>
                                 {
-                                    gui.savedState.setSaved("saved bp", bp);
+
                                 }
                             });
+                        gui.showLoadingProgress(true);
                     }
                     else
                     {
@@ -1416,19 +1475,35 @@ export default class Gui
         });
     }
 
+    metaKeyframesShowAnim(opid, portname)
+    {
+        if (!gui.metaKeyframes)
+        {
+            gui.metaKeyframes = new MetaKeyframes(gui.mainTabs);
+            gui.maintabPanel.show(true);
+        }
+
+        if (opid && portname)
+            gui.metaKeyframes.showAnim(opid, portname);
+    }
+
     pressedEscape(e)
     {
         this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
+
+
+
 
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
 
         if (gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
+        else if (this.canvasMagnifier) this.canvasMagnifier = this.canvasMagnifier.close();
         else if (this.rendererWidth * this._corePatch.cgl.canvasScale > window.innerWidth * 0.9)
         {
-            if (this._canvasMode == this.CANVASMODE_FULLSCREEN)
+            if (this.canvasManager.mode == this.canvasManager.CANVASMODE_FULLSCREEN)
             {
                 this.cycleFullscreen();
             }
@@ -1668,11 +1743,6 @@ export default class Gui
         cb(this.opDocs.getHtml(opname));
     }
 
-    metaCode()
-    {
-        return this._metaCode;
-    }
-
     showSettings(userInteraction)
     {
         window.onmessage = (e) =>
@@ -1690,7 +1760,7 @@ export default class Gui
             }
         };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settingsiframe";
+        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
         gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
@@ -1932,6 +2002,20 @@ export default class Gui
     {
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
+
+        if (window.localStorage.getItem("cables_theme") && window.localStorage.getItem("cables_theme") != "null" && window.localStorage.getItem("cables_theme") != "undefined")
+        {
+            try
+            {
+                console.log("found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
+                this.setTheme(JSON.parse(window.localStorage.getItem("cables_theme")));
+            }
+            catch (e)
+            {
+                console.log(e);
+            }
+        }
+
         hljs.configure({ "ignoreUnescapedHTML": true });
 
         ele.byId("timing").innerHTML = getHandleBarHtml("timeline_controler");
@@ -1977,11 +2061,6 @@ export default class Gui
         gui.user = u;
     }
 
-    updateTheme()
-    {
-        if (userSettings.get("theme-bright")) document.body.classList.add("bright");
-        else document.body.classList.remove("bright");
-    }
 
     // todo use eventtarget...
     addEventListener(name, cb)
@@ -2080,6 +2159,66 @@ export default class Gui
     //         }
     //     }
     // }
+
+
+    setTheme(theme = {})
+    {
+        if (!theme) return;
+
+        theme = JSON.parse(JSON.stringify(theme));
+        theme.colors = theme.colors || {};
+
+        const missing = { "colors": {} };
+        const defaultTheme = gluiconfig.getDefaultTheme();
+
+        function rgbtohex(rgb)
+        {
+            return "#" + ((rgb[2] * 255 | (rgb[1] * 255) << 8 | (rgb[0] * 255) << 16) | 1 << 24).toString(16).slice(1);
+        }
+
+
+        const colorTopics = ["patch", "html", "textedit", "namespaces", "types"];
+
+        for (let i = 0; i < colorTopics.length; i++)
+        {
+            const topic = colorTopics[i];
+            theme.colors[topic] = theme.colors[topic] || {};
+            missing.colors[topic] = {};
+
+            for (let j in defaultTheme.colors[topic])
+            {
+                if (!theme.colors[topic].hasOwnProperty(j))
+                    missing.colors[topic][j] = theme.colors[topic][j] = defaultTheme.colors[topic][j];
+            }
+        }
+
+        for (let i in theme.colors.html)
+        {
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.html[i] || [1, 1, 1, 1]));
+        }
+
+        for (let i in theme.colors.textedit)
+        {
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.textedit[i] || [1, 1, 1, 1]));
+        }
+
+        gluiconfig.setTheme(theme);
+
+
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors.types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors.types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors.types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.str || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.arr || [1, 1, 1, 1]));
+
+        this.patchView.updateTheme();
+        return missing;
+    }
+
+    getDefaultTheme()
+    {
+        return gluiconfig._colors_dark;
+    }
 }
 
 Gui.RESTRICT_MODE_LOADING = 0;

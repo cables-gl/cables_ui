@@ -29,6 +29,7 @@ export default class TexturePreviewer
         this._currentWidth = -1;
         this._lastClicked = null;
         this.pinned = false;
+        this.scale = 0.2;
 
         this._ele = document.getElementById("bgpreview");
         this.setSize();
@@ -36,15 +37,12 @@ export default class TexturePreviewer
         userSettings.addEventListener("onChange", (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
-            if (key == "texpreviewSize") this.setSize();
-            if (key == "bgpreview") this.enableBgPreview(v);
+            if (key == "texpreviewSize") this.setSize(userSettings.get(key));
+            if (key == "bgpreviewMax") this.enableBgPreview();
         });
 
-
         this._initListener();
-
-
-        this.enableBgPreview(userSettings.get("bgpreviewMax"));
+        this.enableBgPreview();
     }
 
     _initListener()
@@ -180,16 +178,18 @@ export default class TexturePreviewer
 
             if (texType == 1)s[0] *= 1.33;
 
-            if (this._currentWidth != s[0] || this._currentHeight != s[1])
+            if (this._currentWidth != s[0] * this.scale || this._currentHeight != s[1] * this.scale)
             {
-                this._currentWidth = previewCanvasEle.width = s[0];
-                this._currentHeight = previewCanvasEle.height = s[1];
+                this._currentWidth = previewCanvasEle.width = s[0] * this.scale;
+                this._currentHeight = previewCanvasEle.height = s[1] * this.scale;
             }
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
             previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
-            previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+
+            if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
+                previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
 
             perf2.finish();
 
@@ -200,26 +200,33 @@ export default class TexturePreviewer
         }
     }
 
+
+    toggleSize(m)
+    {
+        let size = userSettings.get("texpreviewSize");
+
+        if (size == null || size == undefined)size = 30;
+
+        if (size % 10 != 0)size = 30;
+        size += m * 10;
+        if (size <= 0)size = 10;
+        if (size > 100)size = 10;
+
+        this.scale = size / 100;
+
+        userSettings.set("texpreviewSize", this.scale * 100);
+    }
+
     setSize(size)
     {
-        if (size == undefined)
-        {
-            size = userSettings.get("texpreviewSize");
-            if (!size)size = 50;
-        }
+        if (!size)size = userSettings.get("texpreviewSize") || 50;
 
         if (userSettings.get("texpreviewTransparent")) this._ele.style.opacity = 0.5;
         else this._ele.style.opacity = 1;
 
+        this.scale = size / 100;
 
-        this._ele.classList.remove("bgpreviewScale25");
-        this._ele.classList.remove("bgpreviewScale33");
-        this._ele.classList.remove("bgpreviewScale50");
-        this._ele.classList.remove("bgpreviewScale100");
-
-        this._ele.classList.add("bgpreviewScale" + size);
-
-        userSettings.set("texpreviewSize", size);
+        userSettings.set("texpreviewSize", this.scale * 100);
     }
 
     _getCanvasSize(port, tex, meta)
@@ -276,31 +283,44 @@ export default class TexturePreviewer
     }
 
 
-    enableBgPreview(enabled)
+
+    enableBgPreview()
     {
+        const enabled = userSettings.get("bgpreviewMax");
         this._enabled = enabled;
+
+        // if (storeSetting)
+        // {
+        //     userSettings.set("bgpreviewMax", enabled);
+
+        //     console.log("store bgpreview max", enabled);
+        // }
+
+        // console.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
+
         if (!enabled)
         {
             this.pressedEscape();
 
-            userSettings.set("bgpreviewMax", false);
 
             ele.byId("bgpreviewInfo").classList.add("hidden");
             ele.byId("bgpreviewMin").classList.add("hidden");
             ele.byId("bgpreviewMax").classList.remove("hidden");
             ele.byId("bgpreviewInfoPin").classList.add("hidden");
+            ele.byId("texprevSize").classList.add("hidden");
+            ele.byId("texprevSize2").classList.add("hidden");
 
             this._ele.classList.add("hidden");
         }
         else
         {
-            userSettings.set("bgpreviewMax", true);
-
             this.paused = false;
             ele.byId("bgpreviewInfo").classList.remove("hidden");
             ele.byId("bgpreviewMin").classList.remove("hidden");
             ele.byId("bgpreviewInfoPin").classList.remove("hidden");
             ele.byId("bgpreviewMax").classList.add("hidden");
+            ele.byId("texprevSize").classList.remove("hidden");
+            ele.byId("texprevSize2").classList.remove("hidden");
 
             this._ele.classList.remove("hidden");
 

@@ -43,6 +43,13 @@
             {{/each}}
             <br/><br/>
         {{/if}}
+        {{#if missingExampleOps }}
+            {{#each missingExampleOps}}
+                <a target="_blank" href="{{../cablesUrl}}/op/{{.}}" class="button-small redbutton">Missing example Op {{.}}</a>
+            {{/each}}
+            <br/><br/>
+        {{/if}}
+
         {{#if project.summary.exampleForOps }}
             {{#each project.summary.exampleForOps}}
                 <a target="_blank" href="{{../cablesUrl}}/op/{{.}}" class="button-small">Example for {{.}}</a>
@@ -50,8 +57,9 @@
             <br/><br/>
         {{/if}}
 
+
         {{#if project.summary.isTest }}
-            <a target="_blank" href="{{cablesUrl}}/tests/{{projectId}}" class="button-small">Run Test </a>
+            <a target="_blank" href="{{cablesUrl}}/tests/{{project.shortId}}" class="button-small">Run Test </a>
             <br/><br/>
         {{/if}}
 

@@ -131,26 +131,27 @@ class ParamsListener extends CABLES.EventTarget
         gui.emitEvent("paramsChangedUserInteraction", { "port": port, "panelId": this.panelId });
     }
 
-    togglePortValBool(which, checkbox)
-    {
-        // gui.setStateUnsaved();
-        gui.savedState.setUnSaved("togglePortValBool");
+    // togglePortValBool(which, checkbox)
+    // {
+    //     console.log("HJSAHJKLSHJKLS");
+    //     // gui.setStateUnsaved();
+    //     gui.savedState.setUnSaved("togglePortValBool");
 
-        const inputEle = document.getElementById(which);
-        const checkBoxEle = document.getElementById(checkbox);
+    //     const inputEle = document.getElementById(which);
+    //     const checkBoxEle = document.getElementById(checkbox);
 
-        let bool_value = inputEle.value == "true";
-        bool_value = !bool_value;
+    //     let bool_value = inputEle.value == "true";
+    //     bool_value = !bool_value;
 
-        checkBoxEle.opElement.classList.remove("checkbox-inactive");
-        checkBoxEle.opElement.classList.remove("checkbox-active");
+    //     checkBoxEle.opElement.classList.remove("checkbox-inactive");
+    //     checkBoxEle.opElement.classList.remove("checkbox-active");
 
-        if (bool_value) checkBoxEle.opElement.classList.add("checkbox-active");
-        else checkBoxEle.opElement.classList.add("checkbox-inactive");
+    //     if (bool_value) checkBoxEle.opElement.classList.add("checkbox-active");
+    //     else checkBoxEle.opElement.classList.add("checkbox-inactive");
 
-        inputEle.value = bool_value;
-        inputEle.dispatchEvent(new Event("input"));
-    }
+    //     inputEle.value = bool_value;
+    //     inputEle.dispatchEvent(new Event("input"));
+    // }
 
     watchColorPickerPort(thePort, panelid, idx)
     {
@@ -461,6 +462,30 @@ class ParamsListener extends CABLES.EventTarget
                             subOp.removePort(port);
                             port.setUiAttribs({ "expose": !port.uiAttribs.expose });
                             port.op.refreshParams();
+
+                            gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
+                        }
+                    });
+            }
+
+            if (port.uiAttribs.expose)
+            {
+                items.push(
+                    {
+                        "title": "Exposed Port: move up",
+                        "iconClass": "icon icon-chevron-up",
+                        "func": () =>
+                        {
+                            gui.patchView.setExposedPortOrder(port, -1);
+                        }
+                    });
+                items.push(
+                    {
+                        "title": "Exposed Port: move down",
+                        "iconClass": "icon icon-chevron-down",
+                        "func": () =>
+                        {
+                            gui.patchView.setExposedPortOrder(port, 1);
                         }
                     });
             }
@@ -638,6 +663,8 @@ class ParamsListener extends CABLES.EventTarget
                 }
             }
 
+
+
             if (ports[index].uiAttribs.display == "bool")
             {
                 if (!v || v == "false" || v == "0" || v == 0) v = false;
@@ -697,6 +724,7 @@ class ParamsListener extends CABLES.EventTarget
 
 
             if (ports[index].uiAttribs.type == "string")ports[index].set(v || "");
+            // else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
             else ports[index].set(v || 0);
 
 
@@ -754,7 +782,16 @@ class ParamsListener extends CABLES.EventTarget
                 }
                 if (thePort.type == CABLES.OP_PORT_TYPE_VALUE)
                 {
-                    newValue = this._formatNumber(thePort.getValueForDisplay());
+                    if (thePort.uiAttribs.display == "boolnum")
+                    {
+                        if (thePort.get() === 0)newValue = "0 - false";
+                        else if (thePort.get() === 1)newValue = "1 - true";
+                        else newValue = "invlaid bool value! " + thePort.get();
+                        // if (!v || v == "false" || v == "0" || v == 0) v = false;
+                        // else v = true;
+                    }
+                    else
+                        newValue = this._formatNumber(thePort.getValueForDisplay());
                 }
                 else if (thePort.type == CABLES.OP_PORT_TYPE_ARRAY)
                 {

@@ -33,19 +33,28 @@ export default class CanvasUi
 
         this.canvasEle = this._cg.canvas;
 
+        cg.on("resize", () =>
+        {
+            this.updateSizeDisplay();
+        });
+
+
         cg.fpsCounter.on("performance", (perf) =>
         {
             const p = CABLES.UI.uiProfiler.start("[canvasUi] on performance");
 
-            if (this.isCanvasFocussed)
-            {
-                if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
-                this._oldFps = perf.fps;
+            // if (this.isCanvasFocussed)
+            // {
+            if (this._oldFps != perf.fps) this._elCanvasInfoFps.innerHTML = perf.fps + " FPS";
+            this._oldFps = perf.fps;
 
-                const ms = Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100;
+            if (this._cg.profileData)
+            {
+                const ms = (Math.round(this._cg.profileData.profileOnAnimFrameOps * 100) / 100) || "0.0";
                 if (this._oldMs != ms) this._elCanvasInfoMs.innerHTML = ms + " MS";
                 this._oldMs = ms;
             }
+            // }
 
             p.finish();
         });
@@ -58,6 +67,8 @@ export default class CanvasUi
 
             this.showCanvasModal(true);
             gui.canvasManager.setCurrentCanvas(this.canvasEle);
+
+
 
             p.finish();
         });
@@ -85,83 +96,78 @@ export default class CanvasUi
 
         const perf = CABLES.UI.uiProfiler.start("[canvasUi] updateCanvasIconBar");
 
-
-
-
         const splitterPatchRect = this._elSplitterPatch.getBoundingClientRect();
         const bodyRect = document.body.getBoundingClientRect();
 
-        const left = this._elSplitterPatch.getBoundingClientRect().left;
-        const width = bodyRect.width - splitterPatchRect.width;
+        // const left = this._elSplitterPatch.getBoundingClientRect().left;
+        // const width = bodyRect.width - splitterPatchRect.width;
 
-        if (width != this._oldIconBarWidth) this._elCanvasIconbarContainer.style.width = width + "px";
-        if (this._oldIconBarLeft != left) this._elCanvasIconbarContainer.style.left = left + 4 + "px";
+        // if (width != this._oldIconBarWidth) this._elCanvasIconbarContainer.style.width = width + "px";
+        // if (this._oldIconBarLeft != left) this._elCanvasIconbarContainer.style.left = left + 4 + "px";
 
-        this._oldIconBarLeft = left;
-        this._oldIconBarWidth = width;
+        // this._oldIconBarLeft = left;
+        // this._oldIconBarWidth = width;
 
-        let top = "";
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
-            top = "0px";
-        else
-            top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
+        // let top = "";
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) top = "0px";
+        // else top = gui.rendererHeight * this._cg.canvasScale + 1 + "px";
 
 
-        if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
+        // if (this._oldIconBarTop != top) this._elCanvasIconbarContainer.style.top = top;
 
-        this._oldIconBarTop = top;
+        // this._oldIconBarTop = top;
 
-        const w = gui.rendererWidth * this._cg.canvasScale;
+        // const w = gui.rendererWidth * this._cg.canvasScale;
 
-        ele.show(this._elCanvasIconbar);
+        // ele.show(this._elCanvasIconbar);
 
-        if (this._oldIconBarW != w)
-        {
-            this._elCanvasIconbar.style["margin-left"] = ((w / 2)) + "px";
-            this._oldIconBarW = w;
-        }
-
-
-        const r = this._elCanvasIconbar.getBoundingClientRect();
-        const widthResizeIcon = 30;
+        // if (this._oldIconBarW != w)
+        // {
+        //     this._oldIconBarW = w;
+        // }
 
 
-        this.minimized = w < this.fullWidth;
+        // const r = this._elCanvasIconbar.getBoundingClientRect();
+        // const widthResizeIcon = 30;
 
-        if (!this.minimized) this.fullWidth = r.width + widthResizeIcon;
 
-        if (this._wasMinimized != this.minimized)
-        {
-            const hideeles = ele.byClassAll("canvasuihidable");
-            for (let i = 0; i < hideeles.length; i++)
-            {
-                if (this.minimized)
-                {
-                    if (!this._wasMinimized) ele.hide(hideeles[i]);
-                }
-                else
-                {
-                    if (this._wasMinimized) ele.show(hideeles[i]);
-                }
-            }
-        }
-        this._wasMinimized = this.minimized;
+        // this.minimized = w < this.fullWidth;
 
-        if (this.minimized && w < r.width + widthResizeIcon)
-        {
-            this._minimizedHiding = true;
-            ele.hide(this._elCanvasIconbar);
-        }
-        else
-        {
-            if (this._minimizedHiding) ele.show(this._elCanvasIconbar);
-            this._minimizedHiding = false;
-        }
+        // if (!this.minimized)
+        // this.fullWidth = r.width + widthResizeIcon;
+
+        // if (this._wasMinimized != this.minimized)
+        // {
+        //     const hideeles = ele.byClassAll("canvasuihidable");
+        //     for (let i = 0; i < hideeles.length; i++)
+        //     {
+        //         if (this.minimized)
+        //         {
+        //             if (!this._wasMinimized) ele.hide(hideeles[i]);
+        //         }
+        //         else
+        //         {
+        //             if (this._wasMinimized) ele.show(hideeles[i]);
+        //         }
+        //     }
+        // }
+        // this._wasMinimized = this.minimized;
+
+        // if (this.minimized && w < r.width + widthResizeIcon)
+        // {
+        //     this._minimizedHiding = true;
+        //     ele.hide(this._elCanvasIconbar);
+        // }
+        // else
+        // {
+        // if (this._minimizedHiding) ele.show(this._elCanvasIconbar);
+        // this._minimizedHiding = false;
+        // }
 
         perf.finish();
     }
 
-    getCanvasSizeString()
+    updateSizeDisplay()
     {
         this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
@@ -181,7 +187,7 @@ export default class CanvasUi
         if (zoom != 1)
         {
             this._showingInfoZoom = true;
-            if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
+            // if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
             this._eleCanvasInfoZoom.innerHTML = "x" + zoom;
         }
         else
@@ -194,12 +200,6 @@ export default class CanvasUi
     }
 
 
-    updateSizeDisplay()
-    {
-        const sizeStr = this.getCanvasSizeString();
-        if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = this.getCanvasSizeString();
-        this._oldSizeStr = sizeStr;
-    }
 
     showCanvasModal(_show)
     {
@@ -209,25 +209,30 @@ export default class CanvasUi
 
         this._elCanvasModalDarkener = this._elCanvasModalDarkener || document.getElementById("canvasmodal");
 
-        if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
-        {
-            ele.show(this._elCanvasIconbarContainer);
-            _show = true;
+        this.updateSizeDisplay();
+        this.updateCanvasIconBar();
 
-            this.updateCanvasIconBar();
-            this.updateSizeDisplay();
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG)
+        // {
+        //     // ele.show(this._elCanvasIconbarContainer);
+        //     _show = true;
 
-            return;
-        }
+
+        //     return;
+        // }
 
         this.isCanvasFocussed = _show;
+        if (this.isCanvasFocussed) this._elCanvasIconbar.style.opacity = 1.0;
+        else this._elCanvasIconbar.style.opacity = 0.0;
 
-        if (!this._elCanvasIconbarContainer) return;
+
+        // if (!this._elCanvasIconbarContainer) return;
+
 
 
         if (_show)
         {
-            if (gui.getCanvasMode() == gui.CANVASMODE_PATCHBG)
+            if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG)
             {
                 ele.hide(this._elCanvasModalDarkener);
             }
@@ -236,20 +241,20 @@ export default class CanvasUi
                 if (!this._showing) ele.show(this._elCanvasModalDarkener);
             }
 
-            if (!this._showing) ele.show(this._elCanvasIconbarContainer);
+            // if (!this._showing) ele.show(this._elCanvasIconbarContainer);
 
-            this.updateCanvasIconBar();
 
-            const sizeStr = this.getCanvasSizeString();
 
-            if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
-            this._oldSizeStr = sizeStr;
+            // const sizeStr = this.getCanvasSizeString();
+
+            // if (sizeStr != this._oldSizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
+            // this._oldSizeStr = sizeStr;
         }
         else
         {
             setTimeout(() =>
             {
-                ele.hide(this._elCanvasIconbarContainer);
+            // ele.hide(this._elCanvasIconbarContainer);
                 ele.hide(this._elCanvasModalDarkener);
             }, 100);
         }

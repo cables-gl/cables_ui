@@ -2,6 +2,8 @@ import Logger from "../../utils/logger";
 import Tab from "../../elements/tabpanel/tab";
 import text from "../../text";
 import userSettings from "../usersettings";
+import ManageOp from "./tab_manage_op";
+
 
 export default class EditorTab
 {
@@ -38,83 +40,130 @@ export default class EditorTab
         const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
         this._tab.html(html);
 
-        createEditor("editorcontent" + this._tab.id, options.content || "",
-            (editor) =>
+        createEditor("editorcontent" + this._tab.id, options.content || "", (editor) =>
+        {
+            this._editor = editor;
+
+            editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
+
+
+
+
+            if (options.allowEdit)
             {
-                this._editor = editor;
-
-                editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
-
-                if (options.allowEdit)
+                if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
+                let hideFormatButton = !!options.hideFormatButton;
+                if (!hideFormatButton && options.syntax && options.syntax === "js")
                 {
-                    if (options.onSave) this._tab.addButton(text.editorSaveButton, this.save.bind(this));
-                    let hideFormatButton = !!options.hideFormatButton;
-                    if (!hideFormatButton && options.syntax && options.syntax === "js")
-                    {
-                        hideFormatButton = false;
-                    }
-                    else
-                    {
-                        hideFormatButton = true;
-                    }
-                    if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+                    hideFormatButton = false;
                 }
                 else
                 {
-                    this._editor.setOptions({ "readOnly": "true" });
+                    hideFormatButton = true;
                 }
+                if (options.onSave && !hideFormatButton) this._tab.addButton(text.editorFormatButton, this.format.bind(this));
+            }
+            else
+            {
+                this._editor.setOptions({ "readOnly": "true" });
+            }
 
-                this._editor.resize();
+            let opname = null;
 
-                const undoManager = this._editor.session.getUndoManager();
-                undoManager.reset();
-                this._editor.session.setUndoManager(undoManager);
+            if (options.editorObj.type == "op")opname = options.editorObj.name;
+            if (options.editorObj.data && options.editorObj.data.opname)opname = options.editorObj.data.opname;
 
-                this._editor.on(
-                    "change",
-                    function (e)
-                    {
-                        gui.mainTabs.setChanged(this._tab.id, true);
-                        if (options.onChange) options.onChange();
-                    }.bind(this),
-                );
+            if (opname)
+            {
+                this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
+                this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
 
-                this._editor.getSession().setUseWorker(true);
+                const opdoc = gui.opDocs.getOpDocByName(opname);
 
-                if (options.syntax === "md") this._editor.session.setMode("ace/mode/Markdown");
-                else if (options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
-                else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
-                else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
-                else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
-                else if (options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
-                else if (options.syntax === "inline-css")
-                {
-                    this._editor.session.setMode("ace/mode/css");
-                    this._editor.getSession().setUseWorker(false);
-                }
+                if (!opdoc)console.log("could not get opdoc:" + opname);
                 else
+                if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
-                    this._editor.session.setMode("ace/mode/plain_text");
-                    this._editor.getSession().setUseWorker(false);
-                }
+                    const drop = document.createElement("select");
 
-                this._tab.addEventListener("onClose", options.onClose);
-                this._tab.addEventListener(
-                    "onActivate",
-                    function ()
+
+                    const optMain = document.createElement("option");
+                    optMain.setAttribute("value", opname);
+                    optMain.innerText = opname;
+                    drop.appendChild(optMain);
+
+                    drop.addEventListener("change", (a, b) =>
                     {
-                        this._editor.resize(true);
-                        this._editor.focus();
-                        userSettings.set("editortab", this._tab.editorObj.name);
-                    }.bind(this),
-                );
+                        gui.serverOps.editAttachment(opname, drop.value);
+                    });
 
-                setTimeout(() =>
+                    for (let i = 0; i < opdoc.attachmentFiles.length; i++)
+                    {
+                        const opt = document.createElement("option");
+                        opt.setAttribute("value", opdoc.attachmentFiles[i]);
+                        opt.innerText = opdoc.attachmentFiles[i];
+                        if (options.editorObj.name.indexOf(opdoc.attachmentFiles[i]) >= 0) opt.setAttribute("SELECTED", "SELECTED");
+                        drop.appendChild(opt);
+                    }
+                    this._tab.addButtonBarElement(drop);
+                }
+            }
+
+
+
+
+
+            this._editor.resize();
+
+            const undoManager = this._editor.session.getUndoManager();
+            undoManager.reset();
+            this._editor.session.setUndoManager(undoManager);
+
+            this._editor.on(
+                "change",
+                function (e)
                 {
+                    gui.mainTabs.setChanged(this._tab.id, true);
+                    if (options.onChange) options.onChange();
+                }.bind(this),
+            );
+
+            this._editor.getSession().setUseWorker(true);
+
+            if (options.syntax === "md") this._editor.session.setMode("ace/mode/Markdown");
+            else if (options.syntax === "js") this._editor.session.setMode("ace/mode/javascript");
+            else if (options.syntax === "glsl") this._editor.session.setMode("ace/mode/glsl");
+            else if (options.syntax === "css") this._editor.session.setMode("ace/mode/css");
+            else if (options.syntax === "json") this._editor.session.setMode("ace/mode/json");
+            else if (options.syntax === "sql") this._editor.session.setMode("ace/mode/sql");
+            else if (options.syntax === "inline-css")
+            {
+                this._editor.session.setMode("ace/mode/css");
+                this._editor.getSession().setUseWorker(false);
+            }
+            else
+            {
+                this._editor.session.setMode("ace/mode/plain_text");
+                this._editor.getSession().setUseWorker(false);
+            }
+
+            this._tab.addEventListener("close", options.onClose);
+            this._tab.addEventListener(
+                "onActivate",
+                function ()
+                {
+                    this._editor.resize(true);
                     this._editor.focus();
-                    if (options.onFinished)options.onFinished();
-                }, 100);
-            });
+                    userSettings.set("editortab", this._tab.editorObj.name);
+                }.bind(this),
+            );
+
+            setTimeout(() =>
+            {
+                this._editor.focus();
+                if (options.onFinished)options.onFinished();
+            }, 100);
+        });
     }
 
 
@@ -238,7 +287,7 @@ function createEditor(id, val, cb)
             "showPrintMargin": false,
         });
 
-        if (!userSettings.get("theme-bright")) editor.setTheme("ace/theme/cables");
+        editor.setTheme("ace/theme/cables");
 
         editor.session.setMode("ace/mode/javascript");
         editor.session.on("changeMode", (e, session) =>

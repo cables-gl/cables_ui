@@ -117,7 +117,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 let html =
                     "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
                     "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-                html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
+                if (fromSave) html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
                 html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
                 new ModalDialog(
@@ -489,6 +489,8 @@ export default class PatchSaveServer extends CABLES.EventTarget
         if (_name) name = _name;
         let data = gui.corePatch().serialize({ "asObject": true });
 
+        data.ops = data.ops || [];
+
         for (let i = 0; i < data.ops.length; i++)
         {
             if (data.ops[i].uiAttribs.error) delete data.ops[i].uiAttribs.error;
@@ -498,14 +500,10 @@ export default class PatchSaveServer extends CABLES.EventTarget
             if (data.ops[i].uiAttribs.extendTitle) delete data.ops[i].uiAttribs.extendTitle;
             if (data.ops[i].uiAttribs.loading) delete data.ops[i].uiAttribs.loading;
 
-
             if (data.ops[i].uiAttribs.hasOwnProperty("selected")) delete data.ops[i].uiAttribs.selected;
             if (data.ops[i].uiAttribs.subPatch == 0) delete data.ops[i].uiAttribs.subPatch;
 
-            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork"))
-            {
-                delete data.ops[i].uiAttribs.fromNetwork;
-            }
+            if (data.ops[i].uiAttribs.hasOwnProperty("fromNetwork")) delete data.ops[i].uiAttribs.fromNetwork;
         }
 
 
@@ -537,8 +535,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         };
 
         data.ui.texPreview = gui.metaTexturePreviewer.serialize();
-
-
         data.ui.bookmarks = gui.bookmarks.getBookmarks();
 
         gui.patchView.serialize(data.ui);
@@ -588,6 +584,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
         CABLES.patch.namespace = currentProject.namespace;
 
+
         setTimeout(() =>
         {
             try
@@ -595,7 +592,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 const datastr = JSON.stringify(data);
                 gui.patchView.warnLargestPort();
 
-                const origSize = Math.round(data.length / 1024);
+                const origSize = Math.round(datastr.length / 1024);
 
                 let uint8data = pako.deflate(datastr);
 
@@ -625,10 +622,10 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         "dataB64": b64,
                         "fromBackup": CABLES.sandbox.getPatchVersion() || false,
                         "buildInfo":
-                    {
-                        "core": CABLES.build,
-                        "ui": CABLES.UI.build
-                    }
+                        {
+                            "core": CABLES.build,
+                            "ui": CABLES.UI.build
+                        }
                     },
                     (err, r) =>
                     {
@@ -663,7 +660,24 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         }
                         else
                         {
-                            CABLES.UI.notify("Patch saved (" + data.ops.length + " ops)");
+                            if (gui.project().summary && gui.project().summary.isTest)
+                            {
+                                CABLES.UI.notifyWarn("Test patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.exampleForOps && gui.project().summary.exampleForOps.length > 0)
+                            {
+                                CABLES.UI.notifyWarn("Example patch saved", null, { "force": true });
+                            }
+                            else
+                            if (gui.project().summary && gui.project().summary.isPublic)
+                            {
+                                CABLES.UI.notifyWarn("Published patch saved", null, { "force": true });
+                            }
+                            else
+                            {
+                                CABLES.UI.notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
+                            }
                             if (gui.socket)
                             {
                                 if (gui.user.usernameLowercase)
@@ -696,8 +710,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
                     catch (e2)
                     {
                         found = true;
-                        // this._log.log(e);
-                        // this is the op!
 
                         iziToast.error({
                             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
@@ -840,10 +852,12 @@ export default class PatchSaveServer extends CABLES.EventTarget
             screenshotHeight = 720;
         }
 
-        cgl.canvas.width = screenshotWidth + "px";
-        cgl.canvas.height = screenshotHeight + "px";
-        cgl.canvas.style.width = screenshotWidth + "px";
-        cgl.canvas.style.height = screenshotHeight + "px";
+        const canvas = cgl.canvas;// gui.canvasManager.currentCanvas();
+
+        canvas.width = screenshotWidth + "px";
+        canvas.height = screenshotHeight + "px";
+        canvas.style.width = screenshotWidth + "px";
+        canvas.style.height = screenshotHeight + "px";
 
         const screenshotTimeout = setTimeout(() =>
         {
@@ -860,46 +874,61 @@ export default class PatchSaveServer extends CABLES.EventTarget
         thePatch.renderOneFrame();
         gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        cgl.screenShot((screenBlob) =>
-        {
-            clearTimeout(screenshotTimeout);
+        // gui.canvasManager.screenShot(() =>
+        // {
 
-            cgl.setSize(w, h);
-            thePatch.resume();
+        // });
+        // cgl.screenShot((screenBlob) =>
+        // {
+        // clearTimeout(screenshotTimeout);
 
-            const reader = new FileReader();
 
-            reader.onload = (event) =>
+        if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
+
+
+        const reader = new FileReader();
+
+        const url = gui.canvasManager.currentCanvas().toDataURL();
+
+        // reader.onload = (event) =>
+        // {
+
+        // gui.corePatch().pause();
+        // console.log(url);
+        // window.open(url);
+
+        console.log("send screenshot", Math.round(url.length / 1024) + "kb");
+        CABLESUILOADER.talkerAPI.send(
+            "saveScreenshot",
             {
-                this._log.log("send screenshot", Math.round(event.target.result.length / 1024) + "kb");
-                CABLESUILOADER.talkerAPI.send(
-                    "saveScreenshot",
-                    {
-                        "id": currentProject._id,
-                        "screenshot": event.target.result
-                    },
-                    (error, re) =>
-                    {
-                        if (error)
-                            this._log.warn("[screenshot save error]", error);
-
-                        gui.jobs().finish("screenshotsave");
-                        if (gui.onSaveProject) gui.onSaveProject();
-                        if (cb)cb();
-
-                        this.finishAnimations();
-                    });
-            };
-
-            try
+                "id": currentProject._id,
+                "screenshot": url
+            },
+            (error, re) =>
             {
-                reader.readAsDataURL(screenBlob);
-            }
-            catch (e)
-            {
-                this._log.log(e);
-            }
-        });
+                if (error)
+                    this._log.warn("[screenshot save error]", error);
+
+                cgl.setSize(w, h);
+                console.log("set size", w, h);
+                thePatch.resume(); // must resume here for webgpu
+                gui.jobs().finish("screenshotsave");
+                if (gui.onSaveProject) gui.onSaveProject();
+                if (cb)cb();
+
+                this.finishAnimations();
+            });
+        // };
+
+        // try
+        // {
+        //     reader.readAsDataURL(screenBlob);
+        // }
+        // catch (e)
+        // {
+        //     this._log.log(e);
+        // }
+        // });
         // }, false, "image/webp", 80);
     }
 }

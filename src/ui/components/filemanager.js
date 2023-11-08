@@ -35,7 +35,7 @@ export default class FileManager
             this.setDetail(items);
         });
 
-        this._manager.addEventListener("onClose", () =>
+        this._manager.addEventListener("close", () =>
         {
             userSettings.set("fileManagerOpened", false);
             gui.fileManager = null;

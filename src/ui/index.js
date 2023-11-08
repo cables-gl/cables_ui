@@ -32,7 +32,7 @@ import ModalLoading from "./dialogs/modalloading";
 import oldModalWrap from "./dialogs/modal_old_wrap";
 import FileUploader from "./dialogs/upload";
 import ContextMenu from "./elements/contextmenu";
-import { notify, notifyError } from "./elements/notification";
+import { notify, notifyError, notifyWarn } from "./elements/notification";
 import initSplitPanes from "./elements/splitpane";
 import EditorSession from "./elements/tabpanel/editor_session";
 import Tab from "./elements/tabpanel/tab";
@@ -54,6 +54,7 @@ import { arrayContains, uniqueArray } from "./utils/helper";
 import LogFilter from "./utils/loggerfilter";
 import undo from "./utils/undo";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
+import ManageOp from "./components/tabs/tab_manage_op";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -132,6 +133,7 @@ CABLES.UI.updateHoverToolTip = updateHoverToolTip;
 
 CABLES.UI.notify = notify;
 CABLES.UI.notifyError = notifyError;
+CABLES.UI.notifyWarn = notifyWarn;
 CABLES.DragNDrop = DragNDrop;
 
 CABLES.CMD = CMD;
@@ -151,6 +153,7 @@ CABLES.UI.ParamTabInputListener = ParamTabInputListener;
 CABLES.UI.undo = undo;
 
 CABLES.UI.MODAL = oldModalWrap;
+CABLES.UI.ManageOp = ManageOp;
 
 
 setHtmlDefaultListeners();

@@ -1,21 +1,22 @@
 
-<script id="meta_code" type="text/x-handlebars-template">
+<script id="tab_manage_op" type="text/x-handlebars-template">
 
     <div>
-        <h3><b>{{op.objName}}</b></h3>
+        <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
+        <br/>
+        <h2>Op {{opDoc.shortName}}</h2>
+        {{opname}}
+        <br/>
         <div class="summary selectable">
-            {{op.summary}}
-            <br/><br/>
+            <br/><b>{{summary}}</b>
         </div>
+        <br/>
 
+        <span class="button-small button-icon" onclick="gui.serverOps.edit('{{opname}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>{{else}}<span class="icon icon-file"></span>{{/if}}</span>
 
-        <a class="button-small" target="_blank" href="{{url}}/op/{{op.objName}}"><span class="icon icon-op"></span>Op Page</a>
-        <br/>
-        <span class="button-small" onclick="gui.serverOps.edit('{{op.objName}}', {{readOnly}},null,true);">{{#if canEditOp}}<span class="icon icon-edit"></span>Edit{{else}}<span class="icon icon-file"></span>View{{/if}} code</span>
-        <br/>
-        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{op.objName}}');"><span class="icon icon-code"></span>Clone op code</span>
-        <br/>
-        <a class="button-small" target="_blank" href="{{url}}/op/rename?op={{op.objName}}&new={{op.objName}}"><span class="icon icon-op"></span>Rename Op</a>
+        <a class="button-small" target="_blank" href="{{url}}/op/{{opname}}">Op Page / Documentation</a>
+
+        <span class="button-small" onclick="gui.serverOps.cloneDialog('{{opname}}');">Clone op code</span><a class="button-small" target="_blank" href="{{url}}/op/rename?op={{opname}}&new={{opname}}">Rename Op</a>
         <br/>
         <br/>
 
@@ -39,12 +40,12 @@
                 </tr>
                 {{#each doc.attachmentFiles}}
                     <tr>
-                        <td onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');" style="cursor:pointer">
-                            <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../op.objName}}','{{original}}');"></a>
+                        <td onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');" style="cursor:pointer">
+                            <a class="icon icon-edit iconhover" onclick="gui.serverOps.editAttachment('{{../opname}}','{{original}}');"></a>
                             {{readable}}
                         </td>
                         <td>
-                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../op.objName}}','{{../op.opId}}','{{original}}');"></a>
+                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.deleteAttachment('{{../opname}}','{{../op.opId}}','{{original}}');"></a>
                         </td>
                     </tr>
                 {{/each}}
@@ -53,7 +54,7 @@
             No attachments...<br/><br/>
         {{/if}}
 
-        <a class="button" onclick="gui.serverOps.addAttachmentDialog('{{op.objName}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create</a>
+        <a class="button" onclick="gui.serverOps.addAttachmentDialog('{{opname}}');"><span class="icon icon-plus-circle icon-1_25x"></span>Create</a>
 
         <br/><br/>
 
@@ -71,7 +72,7 @@
                         <td>{{.}}</td>
                         <td>
                             {{#if ../canEditOp}}
-                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../op.objName}}','{{.}}');"></a>
+                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeCoreLib('{{../opname}}','{{.}}');"></a>
                             {{/if}}
                         </td>
                     </tr>
@@ -86,11 +87,13 @@
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{op.objName}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
         </div>
 
         <br/><br/>
         <div class="groupSpacer"><h3>Libs</h3></div>
+
+        You can upload .js files that can be used as libraries for your own ops
 
         {{#if doc.libs}}
             <table class="table">
@@ -103,7 +106,7 @@
                         <td>{{.}}</td>
                         <td>
                             {{#if ../canEditOp}}
-                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../op.objName}}','{{.}}');"></a>
+                            <a class="icon-x icon iconhover" style="text-align:right" onclick="gui.serverOps.removeOpLib('{{../opname}}','{{.}}');"></a>
                             {{/if}}
                         </td>
                     </tr>
@@ -123,7 +126,7 @@
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addOpLib('{{op.objName}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
         </div>
 
 

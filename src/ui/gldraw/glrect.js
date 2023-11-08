@@ -150,6 +150,7 @@ export default class GlRect extends CABLES.EventTarget
 
     setColor(r, g, b, a)
     {
+        if (r === undefined)r = g = b = a = 1.0;
         if (r.length) vec4.set(this.color, r[0], r[1], r[2], r[3]);
         else vec4.set(this.color, r, g, b, a);
         this._rectInstancer.setColor(this._attrIndex, this.color);
@@ -300,12 +301,13 @@ export default class GlRect extends CABLES.EventTarget
                 if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
                 else this._rectInstancer.setColor(this._attrIndex, this.colorHover[0], this.colorHover[1], this.colorHover[2], this.colorHover[3]);
             }
+            else this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
 
-            if (this.colorHoverMultiply)
-            {
-                if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
-                else this._rectInstancer.setColor(this._attrIndex, this.color[0] * this.colorHoverMultiply, this.color[1] * this.colorHoverMultiply, this.color[2] * this.colorHoverMultiply, this.color[3] * this.colorHoverMultiply);
-            }
+            // if (this.colorHoverMultiply)
+            // {
+            //     if (!this._hovering) this._rectInstancer.setColor(this._attrIndex, this.color[0], this.color[1], this.color[2], this.color[3]);
+            //     else this._rectInstancer.setColor(this._attrIndex, this.color[0] * this.colorHoverMultiply, this.color[1] * this.colorHoverMultiply, this.color[2] * this.colorHoverMultiply, this.color[3] * this.colorHoverMultiply);
+            // }
         }
 
 

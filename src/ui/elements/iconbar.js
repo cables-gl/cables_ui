@@ -35,7 +35,7 @@ export default class IconBar
         {
             this.vertical = false;
             items.push("center patch", "zoom out", "zoom in");
-            if (gui && (gui.getCanvasMode() === gui.CANVASMODE_PATCHBG))
+            if (gui && (gui.canvasManager.mode === gui.CANVASMODE_PATCHBG))
             {
                 items.push("patch background renderer");
                 items.push("hide patchfield");

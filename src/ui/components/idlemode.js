@@ -15,13 +15,14 @@ const logger = new Logger("idlemode");
 
 function startIdleMode()
 {
-    if (gui.getCanvasMode() == gui.CANVASMODE_FULLSCREEN) return;
+    if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_POPOUT || gui.canvasManager.mode == gui.canvasManager.CANVASMODE_FULLSCREEN) return;
     if (gui.patchView.hasFocus() && idleFocus) return;
 
     if (!CABLES.UI.loaded || !window.gui) return;
     if (idling) return;
     if (CABLES.UI.userSettings.get("noidlemode")) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
+
 
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
     if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode()))
@@ -35,6 +36,7 @@ function startIdleMode()
     gui.corePatch().pause();
     gui.emitEvent("uiIdleStart", wasActiveSeconds);
     idling = true;
+
     clearTimeout(idleTimeout);
     idleModeStart = Date.now();
 }

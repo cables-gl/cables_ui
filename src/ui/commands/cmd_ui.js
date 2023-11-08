@@ -119,7 +119,7 @@ CABLES_CMD_UI.toggleMaxRenderer = function ()
 
 CABLES_CMD_UI.togglePatchBgPatchField = function ()
 {
-    if (gui && (gui.getCanvasMode() === gui.CANVASMODE_PATCHBG))
+    if (gui && (gui.canvasManager.mode === gui.CANVASMODE_PATCHBG))
     {
         gui.patchView.toggleVisibility();
     }
@@ -286,11 +286,6 @@ CABLES_CMD_UI.showPreferences = function ()
     gui.maintabPanel.show(true);
 };
 
-CABLES_CMD_UI.toggleTheme = function ()
-{
-    userSettings.set("theme-bright", !userSettings.get("theme-bright"));
-    gui.updateTheme();
-};
 
 CABLES_CMD_UI.profileGPU = function ()
 {

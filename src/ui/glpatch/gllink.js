@@ -100,7 +100,6 @@ export default class GlLink
                 }
             }
 
-            console.log(e.buttons, this._glPatch.mouseState.buttonForLinkInsertOp);
 
             if (
                 this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
@@ -631,12 +630,17 @@ export default class GlLink
 
     highlight(b)
     {
-        this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 2 : 0);
-        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 2 : 0);
+        this._glPatch.setDrawableColorByType(this._cable, this._type, b ? 1 : 0);
+        if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
     }
 
     collideLine(x1, y1, x2, y2)
     {
         return this._cable.collideLine(x1, y1, x2, y2) || this._cableSub?.collideLine(x1, y1, x2, y2);
+    }
+
+    updateTheme()
+    {
+        this.highlight(false);
     }
 }

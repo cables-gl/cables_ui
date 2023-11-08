@@ -1,6 +1,7 @@
 import MouseState from "../../glpatch/mousestate";
 import text from "../../text";
 import ele from "../../utils/ele";
+import MetaKeyframes from "../tabs/meta_keyframes";
 
 export default function TimeLineGui()
 {
@@ -297,7 +298,8 @@ export default function TimeLineGui()
         if (newanim == anim) return;
         if (newanim && newanim != tlEmpty)gui.showTiming();
 
-        gui.metaKeyframes.setAnim(newanim);
+        if (gui.metaKeyframes)
+            gui.metaKeyframes.setAnim(newanim);
 
         removeDots();
 
@@ -1065,7 +1067,12 @@ export default function TimeLineGui()
     ele.byId("keyframe_previous").addEventListener("click", () => { this.jumpKey(-1); });
     ele.byId("keyframe_next").addEventListener("click", () => { this.jumpKey(1); });
 
-    ele.byId("keyframe_meta").addEventListener("click", () => { gui.metaTabs.activateTabByName("keyframes"); });
+    ele.byId("keyframe_meta").addEventListener("click", () =>
+    {
+        // if (gui.metaKeyframes)gui.metaKeyframes.setAnim(newanim);
+        // else
+        gui.metaKeyframesShowAnim();
+    });
 
 
     ele.byId("loop").addEventListener("click", this.toggleLoop);

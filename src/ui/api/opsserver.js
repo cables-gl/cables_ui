@@ -12,6 +12,13 @@ import gluiconfig from "../glpatch/gluiconfig";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
+function capitalize(str)
+{
+    if (!str) return "";
+    const s = (str[0].toUpperCase() + str.slice(1));
+    return s;
+}
+
 export default class ServerOps
 {
     constructor(gui, patchId, next)
@@ -122,7 +129,6 @@ export default class ServerOps
     {
         const oldSubId = options.oldSubId;
 
-        // console.log("oldSubId", oldSubId);
         const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
         const o = { "ops": [] };
         const subId = CABLES.shortId();
@@ -148,7 +154,9 @@ export default class ServerOps
             (errr, re) =>
             {
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
+                gui.showLoadingProgress(false);
 
+                gui.savedState.setSaved("saved bp", newOp.patchId.get());
                 if (options.next)options.next();
             });
     }
@@ -156,6 +164,9 @@ export default class ServerOps
     createBlueprint2Op(oldSubId)
     {
         const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
+
+        if (gui.patchView.getCurrentSubPatch() == oldSubId)
+            gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
 
         this.createDialog(null,
             {
@@ -432,9 +443,9 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this._log.log("lib added!", opName, libName);
-                        gui.metaTabs.activateTabByName("code");
+                        gui.emitEvent("refreshManageOp");
                         if (next) next();
-                    });
+                    }, true);
                 }
             },
         );
@@ -483,7 +494,7 @@ export default class ServerOps
                             this._log.log("lib removed!", opName, libName);
                             gui.metaTabs.activateTabByName("code");
                             if (next) next();
-                        });
+                        }, true);
                     }
                 }
             );
@@ -502,8 +513,6 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                console.log(err, res);
-
                 if (err)
                 {
                     if (err.msg === "NO_OP_RIGHTS")
@@ -525,7 +534,9 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this._log.log("corelib added!", opName, libName);
-                        gui.metaTabs.activateTabByName("code");
+
+                        gui.emitEvent("refreshManageOp");
+                        // gui.metaTabs.activateTabByName("code");
                         if (next)next();
                     }, true);
                 }
@@ -638,7 +649,8 @@ export default class ServerOps
         const _nameChangeListener = () =>
         {
             const newNamespace = ele.byId("opNameDialogNamespace").value;
-            const v = ele.byId("opNameDialogInput").value;
+            let v = capitalize(ele.byId("opNameDialogInput").value);
+
             if (v)
             {
                 CABLESUILOADER.talkerAPI.send("checkOpName", {
@@ -688,7 +700,7 @@ export default class ServerOps
                         {
                             suggest.addEventListener("pointerdown", (e) =>
                             {
-                                ele.byId("opNameDialogInput").value = suggest.dataset.shortName;
+                                ele.byId("opNameDialogInput").value = capitalize(suggest.dataset.shortName);
                                 _nameChangeListener();
                             });
                         }
@@ -736,13 +748,13 @@ export default class ServerOps
 
             ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
             {
-                cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value);
+                cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value));
             });
 
             if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
                 (event) =>
                 {
-                    cb(ele.byId("opNameDialogNamespace").value, ele.byId("opNameDialogInput").value, true);
+                    cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), true);
                 });
         });
     }
@@ -781,8 +793,8 @@ export default class ServerOps
                                 });
 
                                 if (op) gui.patchView.focusOp(op.id);
-                                if (op)gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
-                                if (options.cb)options.cb(op);
+                                if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+                                if (options.cb) options.cb(op);
                             }
                         });
                 });
@@ -1119,7 +1131,7 @@ export default class ServerOps
                 if (editorObj)
                 {
                     const t = new EditorTab({
-                        title,
+                        "title": title,
                         "name": editorObj.name,
                         "content": rslt.code,
                         "singleton": true,
@@ -1147,10 +1159,16 @@ export default class ServerOps
     }
 
 
-    getOpLibs(op, checkLoaded)
+    getOpLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(op.objName);
-        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
+        // if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname);
         const libs = [];
         if (opDoc && opDoc.libs)
         {
@@ -1170,10 +1188,16 @@ export default class ServerOps
         return libs;
     }
 
-    getCoreLibs(op, checkLoaded)
+    getCoreLibs(opname, checkLoaded)
     {
-        let opDoc = gui.opDocs.getOpDocByName(op.objName);
-        if (!opDoc) opDoc = gui.opDocs.getOpDocById(op.opId || op.id);
+        let opDoc = null;
+        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        else
+        {
+            opDoc = gui.opDocs.getOpDocByName(opname.objName);
+            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        }
+
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)
         {

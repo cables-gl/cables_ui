@@ -42,18 +42,25 @@ export default class PatchPanel extends CABLES.EventTarget
             });
     }
 
-    show()
+    show(force)
     {
         if (!CABLES.UI.loaded) return;
-        let html = "<div class=\"panel bookmarkpanel\">";
+
+        if (!force && ele.byClass("patchParamPanel")) return;
+
+        let html = "<div class=\"patchParamPanel panel bookmarkpanel\">";
         // html += "<div id=\"patchsummary\"></div>";
 
         const project = gui.project();
         if (project)
         {
             const projectId = project.shortId || project._id;
-            // console.log(project);
-            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl() });
+            let missingExampleOps = [];
+            if (project.opExampleFor)
+                for (let i = 0; i < project.opExampleFor.length; i++)
+                    if (gui.corePatch().getOpsByObjName(project.opExampleFor[i]).length == 0)missingExampleOps.push(project.opExampleFor[i]);
+
+            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps });
             // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
             // if (project.isOpExample || notCollab)
             // {
@@ -79,11 +86,8 @@ export default class PatchPanel extends CABLES.EventTarget
             if (!gui.bookmarks.needRefreshSubs && ele.byId("patchsummary")) return;
             if (!gui.bookmarks.needRefreshSubs && ele.byId("bookmarkpanel")) return;
 
-
             html += gui.bookmarks.getHtml();
         }
-
-
 
         ele.byId(gui.getParamPanelEleId()).innerHTML = html;
 

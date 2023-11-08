@@ -59,7 +59,25 @@ body
     h3,h2
     {
         font-weight: normal;
+        margin-bottom:4px;
     }
+
+    h3
+    {
+        font-size: 1.17em !important;
+    }
+
+    h2
+    {
+        font-size: 1.5em !important;
+        color:var(--color-13);
+    }
+
+    h1
+    {
+        font-size: 2em !important;
+    }
+
 
     .hljs
     {
@@ -314,6 +332,7 @@ body
     {
         scrollbar-color:$color-scrollbar-thumb $color-scrollbar-background;
     }
+
 
 
 
@@ -667,27 +686,9 @@ body
     {
         display:none;
         position:absolute;
-        // margin-right: 5px;
         z-index: $zindex_superlow;
-        // cursor:pointer;
         pointer-events: none;
-    }
-
-    .bgpreviewScale50
-    {
-        transform: scale(0.5, -0.5) translate(50%, 50%);
-    }
-    .bgpreviewScale25
-    {
-        transform: scale(0.25, -0.25) translate(150%,150%);
-    }
-    .bgpreviewScale33
-    {
-        transform: scale(0.33, -0.33) translate(100%,100%);
-    }
-    .bgpreviewScale100
-    {
-        transform: scale(1, -1);
+        transform:scale(1,-1);
     }
 
     #offlineIndicator
@@ -728,6 +729,11 @@ body
     .patch_summary
     {
         padding:10px !important;
+    }
+
+    .nobreak
+    {
+        white-space: nowrap;
     }
 }
 

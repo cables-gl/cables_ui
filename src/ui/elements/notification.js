@@ -30,7 +30,7 @@ export function notifyError(title, text, options = {})
 {
     const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
     const closeable = options.closeable || false;
-    const force = options.hasOwnProperty("force") ? options.force : true;
+    const force = options.force;
 
     if (!force)
     {
@@ -50,7 +50,7 @@ export function notifyError(title, text, options = {})
             "id": toastId,
             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
-            title,
+            "title": title,
             "message": text || "",
             "progressBar": false,
             "animateInside": false,
@@ -60,6 +60,43 @@ export function notifyError(title, text, options = {})
 
     return toastId;
 }
+
+
+export function notifyWarn(title, text, options = {})
+{
+    const timeout = options.hasOwnProperty("timeout") ? options.timeout : 2000;
+    const closeable = options.closeable || false;
+    const force = options.hasOwnProperty("force") ? options.force : true;
+
+    if (!force)
+    {
+        if (title === lastNotify && text === lastText)
+        {
+            return;
+        }
+    }
+
+    lastNotify = title;
+    lastText = text;
+
+    const toastId = CABLES.uuid();
+
+    iziToast.warning(
+        {
+            "id": toastId,
+            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            "theme": "dark",
+            "title": title,
+            "message": text || "",
+            "progressBar": false,
+            "animateInside": false,
+            "close": closeable,
+            "timeout": timeout
+        });
+
+    return toastId;
+}
+
 
 /**
  * notify displays a toast-notification
@@ -82,7 +119,7 @@ export function notify(title, text, options = {})
 
     const timeout = options.timeout || 2000;
     const closeable = options.closeable || false;
-    const force = options.hasOwnProperty("force") ? options.force : false;
+    const force = options.force || false;
 
     if (!force)
     {
@@ -107,7 +144,7 @@ export function notify(title, text, options = {})
             "id": toastId,
             "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
-            title,
+            "title": title,
             "message": text || "",
             "progressBar": false,
             "animateInside": false,
