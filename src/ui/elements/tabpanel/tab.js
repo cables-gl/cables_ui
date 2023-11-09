@@ -59,6 +59,7 @@ export default class Tab extends CABLES.EventTarget
         button.addEventListener("click", cb);
         this.toolbarEle.appendChild(button);
         this.buttons.push({ "ele": button, cb, title });
+        return button;
     }
 
     getSaveButton()
