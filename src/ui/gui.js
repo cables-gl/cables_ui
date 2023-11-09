@@ -993,18 +993,12 @@ export default class Gui
 
     showFileManager(cb, userInteraction)
     {
-        if (this.fileManager)
-        {
-            this.fileManager.show(userInteraction);
-            gui.mainTabs.activateTabByName("Files");
+        if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
 
-            if (cb)cb();
-        }
-        else
-        {
-            this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
-            this.fileManager.show(userInteraction);
-        }
+        this.fileManager.show(userInteraction);
+        gui.mainTabs.activateTabByName("Files");
+
+        if (cb)cb();
     }
 
     showFileSelect(inputId, filterType, opid, previewId)

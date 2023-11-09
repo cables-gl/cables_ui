@@ -45,6 +45,7 @@ export default class FileManager
     show(userInteraction)
     {
         gui.maintabPanel.show(userInteraction);
+        gui.maintabPanel.show(true);
     }
 
     refresh()
