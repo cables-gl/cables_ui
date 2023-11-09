@@ -19,7 +19,7 @@ export default class ItemManager
             "close",
             () =>
             {
-                this.emitEvent("onClose");
+                this.emitEvent("close");
             },
         );
 
