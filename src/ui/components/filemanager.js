@@ -92,6 +92,9 @@ export default class FileManager
             return;
         }
 
+        const eleContent = ele.byQuery("#item_manager .filelistcontainer");
+        if (eleContent)eleContent.innerHTML = "<div class=\"loading\" style=\"margin-top:50px;\"></div>";
+
         gui.jobs().start({
             "id": "getFileList",
             "title": "Loading file list"
@@ -113,9 +116,7 @@ export default class FileManager
             this._files = files;
 
             this._buildHtml();
-
             if (cb) cb();
-
             gui.jobs().finish("getFileList");
         });
     }
@@ -296,8 +297,9 @@ export default class FileManager
     setSource(s, cb)
     {
         this._fileSource = s;
-        this.reload(cb);
         this.updateHeader();
+
+        this.reload(cb);
     }
 
     _selectFile(filename)
@@ -347,7 +349,6 @@ export default class FileManager
             if (ele.byId("itemmanager_header")) ele.byId("itemmanager_header").innerHTML = (text.guestHint);
             return;
         }
-
 
         const html = getHandleBarHtml("filemanager_header", {
             "fileSelectOp": this._filePortOp,

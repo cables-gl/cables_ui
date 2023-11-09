@@ -152,11 +152,12 @@ export default class TabPanel extends CABLES.EventTarget
 
     activateTabByName(name)
     {
+        name = name || "";
         let found = false;
 
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (this._tabs[i].options.name == name)
+            if (this._tabs[i].options.name.toLowerCase() == name.toLowerCase())
             {
                 this.activateTab(this._tabs[i].id);
                 found = true;
@@ -169,6 +170,8 @@ export default class TabPanel extends CABLES.EventTarget
 
         this.updateHtml();
     }
+
+
 
     scrollToActiveTab()
     {
@@ -211,6 +214,7 @@ export default class TabPanel extends CABLES.EventTarget
         // console.log("CABLES.editorSession", CABLES.editorSession);
         if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }
+
 
     loadCurrentTabUsersettings()
     {

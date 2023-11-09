@@ -51,7 +51,6 @@ export default class Gui
 
         this.patchId = cfg.patchId;
         this._showTiming = false;
-        this._showingEditor = false;
 
         this.canvasManager = new CanvasManager();
 
@@ -444,7 +443,6 @@ export default class Gui
             this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
             this._elGlCanvasDom.classList.add("maximized");
             this.rendererWidth = 0;
-            this._showingEditor = false;
         }
 
         if (this.isRemoteClient)
@@ -1005,6 +1003,7 @@ export default class Gui
         else
         {
             this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
+            this.fileManager.show(userInteraction);
         }
     }
 
@@ -1492,9 +1491,6 @@ export default class Gui
         this.canvasManager.getCanvasUiBar().showCanvasModal(false);
         this.emitEvent("pressedEscape");
 
-
-
-
         if (this.fileManager) this.fileManager.setFilePort(null);
 
         if (e && (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey)) return;
@@ -1513,7 +1509,6 @@ export default class Gui
                 this.rendererHeight = window.innerHeight * 0.25;
             }
 
-            this._showingEditor = this._oldShowingEditor;
             this._elGlCanvasDom.classList.remove("maximized");
             this.setLayout();
             this.canvasManager.getCanvasUiBar().showCanvasModal(true);
@@ -1528,10 +1523,16 @@ export default class Gui
         else if (gui.isShowingModal())
         {
             gui.closeModal();
-            if (this._showingEditor) this.editor().focus();
+
+            if (this.maintabPanel?._tabs?.getActiveTab()?.editor)
+            {
+                setTimeout(() =>
+                {
+                    this.maintabPanel?._tabs?.getActiveTab().editor.focus();
+                }, 50); // why...
+            }
         }
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
-        else if (this._showingEditor) this.closeEditor();
         else
         {
             if (this._opselect.isOpen()) this._opselect.close();

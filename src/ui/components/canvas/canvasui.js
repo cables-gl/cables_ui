@@ -222,11 +222,8 @@ export default class CanvasUi
         // }
 
         this.isCanvasFocussed = _show;
-        if (this.isCanvasFocussed) this._elCanvasIconbar.style.opacity = 1.0;
-        else this._elCanvasIconbar.style.opacity = 0.0;
-
-
-        // if (!this._elCanvasIconbarContainer) return;
+        if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
+        else this._elCanvasIconbar.classList.add("hidden");
 
 
 
