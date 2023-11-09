@@ -155,6 +155,9 @@ const text =
         "title_introCompleted": "Intro Tour",
         "subtitle_introCompleted": "Show Intro tour again (needs reload)",
 
+        "title_randomizePatchName": "Random Patch Name",
+        "subtitle_randomizePatchName": "Pick a random name for new patches, instead of 'new project'",
+
         "title_helperMode": "Show Helper Meshes",
         "subtitle_helperMode": "Show helper, directions/boundaries etc, as in e.g. randomCluster",
 

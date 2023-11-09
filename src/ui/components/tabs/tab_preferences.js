@@ -59,6 +59,7 @@ export default class Preferences
         this.setSwitchValue("presentationmode", userSettings.get("presentationmode"));
         this.setSwitchValue("nobrowserWarning", userSettings.get("nobrowserWarning"));
         this.setSwitchValue("introCompleted", userSettings.get("introCompleted"));
+        this.setSwitchValue("randomizePatchName", userSettings.get("randomizePatchName", true));
         this.setSwitchValue("showTipps", userSettings.get("showTipps"));
         this.setSwitchValue("showMinimap", userSettings.get("showMinimap"));
         this.setSwitchValue("hideSizeBar", userSettings.get("hideSizeBar"));

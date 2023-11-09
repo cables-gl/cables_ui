@@ -1035,15 +1035,17 @@ export default class Gui
     {
         if (gui.showGuestWarning()) return;
 
-
+        const randomize = userSettings.get("randomizePatchName", true);
+        let title = "Enter a name for your new project";
+        if (randomize) title += ", leave empty for random name";
         new ModalDialog({
             "prompt": true,
             "title": "New Project",
-            "text": "Enter a name for your new project",
-            "promptValue": "new project",
+            "text": title,
+            "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (name)
+                if (randomize || name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
                         let id = d._id;
