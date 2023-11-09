@@ -1321,8 +1321,7 @@ export default class Gui
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {
-            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
-            gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
+            CABLES.CMD.UI.activityFeed();
         });
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });

@@ -22,6 +22,15 @@ CABLES_CMD_UI.settings = function ()
     gui.showSettings();
 };
 
+
+CABLES_CMD_UI.activityFeed = function ()
+{
+    const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
+    gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
+};
+
+
+
 CABLES_CMD_UI.openRemoteViewer = function ()
 {
     let projectId = gui.patchId;
@@ -535,6 +544,14 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.togglePauseVizLayer,
         "infotext": ""
+    },
+    {
+        "cmd": "Show Activity Feed",
+        "category": "ui",
+        "func": CABLES_CMD_UI.activityFeed,
+        "infotext": "",
+        "icon": "activity"
     }
+
 
 );
