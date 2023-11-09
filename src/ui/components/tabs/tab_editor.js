@@ -25,7 +25,10 @@ export default class EditorTab
                 "dataId": options.dataId,
                 "infotext": text.editorTab,
                 "singleton": options.singleton,
+
             });
+
+        this._tab.editor = this;
 
         const existing = gui.mainTabs.getTabByTitle(options.title);
         if (existing)
@@ -166,6 +169,11 @@ export default class EditorTab
         });
     }
 
+
+    focus()
+    {
+        this._editor.focus();
+    }
 
     format()
     {
