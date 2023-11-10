@@ -87,28 +87,28 @@ export default class EditorTab
                 else
                 if (opdoc.attachmentFiles && opdoc.attachmentFiles.length)
                 {
-                    const drop = document.createElement("select");
-
-
-                    const optMain = document.createElement("option");
-                    optMain.setAttribute("value", opname);
-                    optMain.innerText = opname;
-                    drop.appendChild(optMain);
-
-                    drop.addEventListener("change", (a, b) =>
+                    const el = this._tab.addButton(opdoc.shortName + " Attachments", () =>
                     {
-                        gui.serverOps.editAttachment(opname, drop.value);
+                        const items = [];
+
+                        for (let i = 0; i < opdoc.attachmentFiles.length; i++)
+                        {
+                            const fn = opdoc.attachmentFiles[i];
+                            items.push({
+                                "title": opdoc.attachmentFiles[i],
+                                "iconClass": "icon icon-file",
+                                "func": () =>
+                                {
+                                    gui.serverOps.editAttachment(opname, fn);
+                                }
+                            });
+                        }
+
+                        CABLES.contextMenu.show(
+                            {
+                                "items": items
+                            }, el);
                     });
-
-                    for (let i = 0; i < opdoc.attachmentFiles.length; i++)
-                    {
-                        const opt = document.createElement("option");
-                        opt.setAttribute("value", opdoc.attachmentFiles[i]);
-                        opt.innerText = opdoc.attachmentFiles[i];
-                        if (options.editorObj.name.indexOf(opdoc.attachmentFiles[i]) >= 0) opt.setAttribute("SELECTED", "SELECTED");
-                        drop.appendChild(opt);
-                    }
-                    this._tab.addButtonBarElement(drop);
                 }
             }
 

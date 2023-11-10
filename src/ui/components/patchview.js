@@ -10,6 +10,7 @@ import { getHandleBarHtml } from "../utils/handlebars";
 import Logger from "../utils/logger";
 import undo from "../utils/undo";
 import opCleaner from "./cleanops";
+import { convertPorts, getConverters } from "./converterops";
 import SuggestionDialog from "./suggestiondialog";
 import SuggestPortDialog from "./suggestionportdialog";
 import userSettings from "./usersettings";
@@ -1975,54 +1976,11 @@ export default class PatchView extends CABLES.EventTarget
             let p1 = op1.getPortByName(pid);
             let p2 = op2.getPortByName(p2id);
 
+            const converters = getConverters(p1, p2);
 
-            console.log("csdcsdcsd");
-
-            if (!p1 || !p2)
+            if (converters.length > 0)
             {
-                console.log("COULD NOT FIND PORT!");
-                console.log(op1.name, p1, pid);
-                console.log(op2.name, p2, p2id);
-                return;
-            }
-
-            if (
-                (p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_STRING) ||
-                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_STRING) ||
-
-                (p1.type == CABLES.OP_PORT_TYPE_VALUE && p2.type == CABLES.OP_PORT_TYPE_FUNCTION) ||
-                (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type == CABLES.OP_PORT_TYPE_FUNCTION)
-            )
-
-            {
-                if (p2.type == CABLES.OP_PORT_TYPE_VALUE && p1.type != CABLES.OP_PORT_TYPE_VALUE)
-                {
-                    const p = p1;
-                    const o = op1;
-                    p1 = p2;
-                    p2 = p;
-                    op1 = op2;
-                    op2 = o;
-                }
-
-
-                if (p2.type == CABLES.OP_PORT_TYPE_FUNCTION)
-                    this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToTrigger, { "onOpAdd": (newOp) =>
-                    {
-                        this._p.link(op1, p1.getName(), newOp, "Value");
-                        this._p.link(op2, p2.getName(), newOp, "Next");
-
-                        newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
-                    } });
-
-                if (p2.type == CABLES.OP_PORT_TYPE_STRING)
-                    this.addOp(CABLES.UI.DEFAULTOPNAMES.convertNumberToString, { "onOpAdd": (newOp) =>
-                    {
-                        this._p.link(op1, p1.getName(), newOp, "Number");
-                        this._p.link(op2, p2.getName(), newOp, "Result");
-
-                        newOp.setUiAttrib({ "translate": { "x": op2.uiAttribs.translate.x, "y": op2.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY } });
-                    } });
+                convertPorts(p1, p2, converters[0]);
                 return;
             }
         }

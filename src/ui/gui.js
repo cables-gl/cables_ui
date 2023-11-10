@@ -993,18 +993,12 @@ export default class Gui
 
     showFileManager(cb, userInteraction)
     {
-        if (this.fileManager)
-        {
-            this.fileManager.show(userInteraction);
-            gui.mainTabs.activateTabByName("Files");
+        if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
 
-            if (cb)cb();
-        }
-        else
-        {
-            this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
-            this.fileManager.show(userInteraction);
-        }
+        this.fileManager.show(userInteraction);
+        gui.mainTabs.activateTabByName("Files");
+
+        if (cb)cb();
     }
 
     showFileSelect(inputId, filterType, opid, previewId)
@@ -1041,15 +1035,17 @@ export default class Gui
     {
         if (gui.showGuestWarning()) return;
 
-
+        const randomize = userSettings.get("randomizePatchName", true);
+        let title = "Enter a name for your new project";
+        if (randomize) title += ", leave empty for random name";
         new ModalDialog({
             "prompt": true,
             "title": "New Project",
-            "text": "Enter a name for your new project",
-            "promptValue": "new project",
+            "text": title,
+            "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (name)
+                if (randomize || name)
                     CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
                     {
                         let id = d._id;
@@ -1321,8 +1317,7 @@ export default class Gui
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {
-            const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
-            gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": url }, true);
+            CABLES.CMD.UI.activityFeed();
         });
 
         ele.byId("nav-item-bpReload").addEventListener("click", (event) => { CABLES.CMD.PATCH.updateLocalChangedBlueprints(); });
