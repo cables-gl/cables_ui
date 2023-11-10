@@ -13,7 +13,7 @@ const defaultOps = {
         "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
         "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
         "defaultOpGltf": "Ops.Gl.GLTF.GltfScene_v4",
-        "defaultOpJson": "Ops.Json.AjaxRequest_v2",
+        "defaultOpJson": "Ops.Json.HttpRequest_v3",
         "defaultOpExr": "Ops.Gl.Textures.ExrTexture",
         "VarSetNumber": "Ops.Vars.VarSetNumber_v2",
         "VarTriggerNumber": "Ops.Vars.VarTriggerNumber",
