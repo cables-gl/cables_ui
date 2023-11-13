@@ -51,11 +51,15 @@ export default class Tab extends CABLES.EventTarget
         this.toolbarEle.appendChild(ele);
     }
 
-    addButton(title, cb)
+    addButton(title, cb, options)
     {
         const button = document.createElement("a");
         button.classList.add("button-small");
-        button.innerHTML = title;
+
+        let html = "";
+        // html += "<span class=\"icon icon-files\"></span>";
+        html += title;
+        button.innerHTML = html;
         button.addEventListener("click", cb);
         this.toolbarEle.appendChild(button);
         this.buttons.push({ "ele": button, cb, title });
