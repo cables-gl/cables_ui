@@ -1,7 +1,7 @@
 IN vec2 texCoord;
 IN vec4 fcolor;
 IN float fProgress;
-IN float fProgressNorm;
+IN float fSplineLength;
 IN float fspeed;
 IN float zz;
 
@@ -43,8 +43,17 @@ void main()
         finalColor.a=1.0;
     #endif
 
-    finalColor.a=abs(fProgressNorm-0.5)*2.0+0.1;
-    finalColor.a=clamp(finalColor.a,0.0,1.0);
+if(fSplineLength>200.0)
+{
+
+    float lengthFull=50.0;
+    finalColor.a=0.0;
+    finalColor.a=1.0-smoothstep(fProgress,0.0,lengthFull);
+    finalColor.a+=(1.0-smoothstep(fProgress,fSplineLength,fSplineLength-lengthFull));
+    finalColor.a=clamp(finalColor.a,0.1,1.0);
+}
+
+    // finalColor.a=abs(fProgressNorm-0.5)*2.0+0.1;
 
     outColor = finalColor;
 }
