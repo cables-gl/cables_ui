@@ -11,6 +11,9 @@ OUT float fspeed;
 IN float splineProgress;
 OUT float fProgress;
 
+IN float splineProgressNorm;
+OUT float fProgressNorm;
+
 UNI float width;
 UNI float zpos;
 
@@ -90,6 +93,7 @@ void main()
 
     finalPosition = mix(finalPosition,finalPosition2,pos.x);
     fProgress=splineProgress;//*(zoom*300.0);
+    fProgressNorm=splineProgressNorm;//*(zoom*300.0);
 
 
     finalPosition.xy += offset.xy;

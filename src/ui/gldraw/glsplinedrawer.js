@@ -17,6 +17,7 @@ export default class GlSplineDrawer
 
         this._geom = new CGL.Geometry("GlSplineDrawer_" + name);
         this._pointsProgress = new Float32Array();
+        this._pointsProgressNorm = new Float32Array();
         this._points = new Float32Array();
         this._points2 = new Float32Array();
         this._points3 = new Float32Array();
@@ -372,8 +373,19 @@ export default class GlSplineDrawer
         }
 
         let totalDistance = 0;
-        for (let i = 0; i < (points.length - 3) / 3; i++)
+        const len = (points.length - 3) / 3;
+        for (let i = 0; i < len; i++)
         {
+            // this._pointsProgressNorm[(off + count) / 3 + 1] =
+            // this._pointsProgressNorm[(off + count) / 3 + 0] =
+            // this._pointsProgressNorm[(off + count) / 3 + 2] = (i + 3) / len;
+
+            // this._pointsProgressNorm[(off + count) / 3 + 3] =
+            // this._pointsProgressNorm[(off + count) / 3 + 4] =
+
+            // this._pointsProgressNorm[(off + count) / 3 + 5] = i / len;
+
+
             this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
             this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
             this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
@@ -402,6 +414,8 @@ export default class GlSplineDrawer
                 for (let k = 0; k < 3; k++)
                     count++;
         }
+        for (let i = 0; i < this._pointsProgress.length; i++)
+            this._pointsProgressNorm[i] = this._pointsProgress[i] / totalDistance;
 
 
         count = 0;
@@ -432,6 +446,7 @@ export default class GlSplineDrawer
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
+        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgressNorm"), this._pointsProgressNorm, off / 3, (off + count) / 3);
         if (updateWhat == undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
 
         perf.finish();
@@ -493,6 +508,7 @@ export default class GlSplineDrawer
 
             this._doDraw = new Float32Array(newLength / 3);
             this._pointsProgress = new Float32Array(newLength / 3);
+            this._pointsProgressNorm = new Float32Array(newLength / 3);
             this._speeds = new Float32Array(newLength / 3);
         }
 
@@ -550,6 +566,7 @@ export default class GlSplineDrawer
         this._mesh.setAttribute("spline2", this._points2, 3);
         this._mesh.setAttribute("spline3", this._points3, 3);
         this._mesh.setAttribute("splineProgress", this._pointsProgress, 1);
+        this._mesh.setAttribute("splineProgressNorm", this._pointsProgressNorm, 1);
 
 
         for (const i in this._splines)
