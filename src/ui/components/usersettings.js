@@ -92,9 +92,9 @@ class UserSettings extends CABLES.EventTarget
         }
     }
 
-    get(key)
+    get(key, defaultValue = null)
     {
-        if (!this._settings || !this._settings.hasOwnProperty(key)) return null;
+        if (!this._settings || !this._settings.hasOwnProperty(key)) return defaultValue;
         return this._settings[key];
     }
 
