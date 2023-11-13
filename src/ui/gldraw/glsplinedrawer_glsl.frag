@@ -46,7 +46,7 @@ void main()
 if(fSplineLength>200.0)
 {
 
-    float lengthFull=50.0;
+    float lengthFull=20.0;
     finalColor.a=0.0;
     finalColor.a=1.0-smoothstep(fProgress,0.0,lengthFull);
     finalColor.a+=(1.0-smoothstep(fProgress,fSplineLength,fSplineLength-lengthFull));
