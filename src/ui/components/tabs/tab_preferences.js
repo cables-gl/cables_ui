@@ -85,6 +85,9 @@ export default class Preferences
         this.setSwitchValue("miniopselect", userSettings.get("miniopselect"));
 
         this.setSwitchValue("glpatch_cursor", userSettings.get("glpatch_cursor"));
+
+        this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
+
         this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
 
@@ -127,7 +130,7 @@ export default class Preferences
             });
         }
 
-        userSettings.addEventListener("onChange", () =>
+        userSettings.on("change", () =>
         {
             this.updateValues();
         });

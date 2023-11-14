@@ -34,7 +34,7 @@ export default class TexturePreviewer
         this._ele = document.getElementById("bgpreview");
         this.setSize();
 
-        userSettings.addEventListener("onChange", (key, v) =>
+        userSettings.on("change", (key, v) =>
         {
             if (key == "texpreviewTransparent") this.setSize();
             if (key == "texpreviewSize") this.setSize(userSettings.get(key));

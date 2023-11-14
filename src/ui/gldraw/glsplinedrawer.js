@@ -51,6 +51,13 @@ export default class GlSplineDrawer
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
         this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
+
+        this._shader.toggleDefine("FADEOUT", !userSettings.get("noFadeOutCables"));
+
+        userSettings.on("change", (which, val) =>
+        {
+            if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
+        });
     }
 
     set zPos(v)

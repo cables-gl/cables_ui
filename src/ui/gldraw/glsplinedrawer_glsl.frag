@@ -44,16 +44,19 @@ void main()
     #endif
         finalColor.a=1.0;
 
-    float lengthStart=400.0;
-    float fadeDist=30.0;
+    #ifdef FADEOUT
+        // fade out over distance
+        float lengthStart=400.0;
+        float fadeDist=30.0;
 
-    if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
-    {
-        finalColor.a=0.0;
-        finalColor.a=1.0-smoothstep(fProgress,lengthStart,lengthStart+fadeDist);
-        finalColor.a+=1.0-(smoothstep(fProgress,fSplineLength-lengthStart,fSplineLength-lengthStart-fadeDist));
-        finalColor.a=clamp(finalColor.a,0.2,1.0);
-    }
+        if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
+        {
+            finalColor.a=0.0;
+            finalColor.a=1.0-smoothstep(fProgress,lengthStart,lengthStart+fadeDist);
+            finalColor.a+=1.0-(smoothstep(fProgress,fSplineLength-lengthStart,fSplineLength-lengthStart-fadeDist));
+            finalColor.a=clamp(finalColor.a,0.2,1.0);
+        }
+    #endif
 
     outColor = finalColor;
 }

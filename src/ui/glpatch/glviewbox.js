@@ -55,6 +55,15 @@ export default class GlViewBox
         this._eleTabs = document.getElementById("splitterMaintabs");
 
         this._drawBoundingRect = userSettings.get("glpatch_showboundings");
+
+        userSettings.on("change", (which, v) =>
+        {
+            if (which == "glpatch_showboundings")
+            {
+                this._drawBoundingRect = v;
+                if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
+            }
+        });
     }
 
     setSize(w, h)
@@ -296,7 +305,7 @@ export default class GlViewBox
                 this._opsBoundingRect.interactive = false;
                 this._opsBoundingRect.setPosition(-500, -500, 1);
                 this._opsBoundingRect.setSize(1000, 1000);
-                this._opsBoundingRect.setColor(GlUiConfig.colors.opBoundsRect);
+                this._opsBoundingRect.setColor(GlUiConfig.colors.patch.opBoundsRect);
             }
 
             const bounds = this.glPatch.rectDrawer.bounds;
