@@ -442,7 +442,7 @@ export default class GlCable
     isHoveredButtonRect()
     {
         if (this._glPatch.isDraggingPort()) return false;
-        return this.collideMouse(null, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 10);
+        return this.collideMouse(null, this._x, this._y - this._distFromPort, this._x2, this._y2 + this._distFromPort, this._glPatch.viewBox.mousePatchX, this._glPatch.viewBox.mousePatchY, 7);
     }
 
     setSpeed(speed)
