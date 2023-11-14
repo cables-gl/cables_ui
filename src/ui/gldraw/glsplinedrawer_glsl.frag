@@ -46,16 +46,36 @@ void main()
 
     #ifdef FADEOUT
         // fade out over distance
-        float lengthStart=400.0;
-        float fadeDist=30.0;
+
+
+        // if(fSplineLength>50.0)
+        // {
+        //     float lengthStart=fSplineLength/18.0;
+            //  fadeDist=30.0;
+
+
+        float lengthStart=50.0;
+
 
         if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
         {
+            // float fadedDist=1.0-smoothstep(fSplineLength,lengthStart,lengthStart*5.0);
+
+            // float fadeDist=(1.0-fadedDist)*50.0+20.0;
+            float fadeDist=40.0;
+
+
+            //opacity distance
+            float fadedDistSmall=1.0-smoothstep(fSplineLength,lengthStart*6.0,lengthStart*12.0);
+            float fadeMin=fadedDistSmall*0.9+0.1;
+
             finalColor.a=0.0;
             finalColor.a=1.0-smoothstep(fProgress,lengthStart,lengthStart+fadeDist);
             finalColor.a+=1.0-(smoothstep(fProgress,fSplineLength-lengthStart,fSplineLength-lengthStart-fadeDist));
-            finalColor.a=clamp(finalColor.a,0.2,1.0);
+            finalColor.a=clamp(finalColor.a,fadeMin,1.0);
         }
+
+        // }
     #endif
 
     outColor = finalColor;
