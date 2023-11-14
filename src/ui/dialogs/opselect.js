@@ -112,7 +112,8 @@ export default class OpSelect
             }
         }
 
-        optionsHtml += "&nbsp;Found " + num + " ops.";
+        if (num > 0)
+            optionsHtml += "&nbsp;Found " + num + " ops.";
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");
