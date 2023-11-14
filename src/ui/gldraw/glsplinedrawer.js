@@ -417,9 +417,6 @@ export default class GlSplineDrawer
         for (let i = 0; i < this._pointsProgress.length; i++)
             this._pointsSplineLength[i] = totalDistance;
 
-        console.log("totalDistance", totalDistance);
-
-
         count = 0;
         for (let i = 0; i < points.length / 3; i++)
         {

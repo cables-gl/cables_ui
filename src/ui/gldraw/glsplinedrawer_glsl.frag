@@ -42,18 +42,18 @@ void main()
         finalColor.rg=texCoord;
         finalColor.a=1.0;
     #endif
+        finalColor.a=1.0;
 
-if(fSplineLength>200.0)
-{
+    float lengthStart=400.0;
+    float fadeDist=30.0;
 
-    float lengthFull=20.0;
-    finalColor.a=0.0;
-    finalColor.a=1.0-smoothstep(fProgress,0.0,lengthFull);
-    finalColor.a+=(1.0-smoothstep(fProgress,fSplineLength,fSplineLength-lengthFull));
-    finalColor.a=clamp(finalColor.a,0.1,1.0);
-}
-
-    // finalColor.a=abs(fProgressNorm-0.5)*2.0+0.1;
+    if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
+    {
+        finalColor.a=0.0;
+        finalColor.a=1.0-smoothstep(fProgress,lengthStart,lengthStart+fadeDist);
+        finalColor.a+=1.0-(smoothstep(fProgress,fSplineLength-lengthStart,fSplineLength-lengthStart-fadeDist));
+        finalColor.a=clamp(finalColor.a,0.2,1.0);
+    }
 
     outColor = finalColor;
 }
