@@ -9,6 +9,7 @@ import { CONSTANTS } from "../../../cables/src/core/constants";
 export const defaultOpNames =
 {
     "number": "Ops.Value.Number",
+    "customOp": "Ops.Cables.CustomOp",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
@@ -82,7 +83,8 @@ export const defaultOpNames =
     "ArraySum": "Ops.Array.ArraySum",
     "ArraySubtract": "Ops.Array.ArraySubtract",
     "ArrayDivide": "Ops.Array.ArrayDivide",
-    "ArrayMultiply": "Ops.Array.ArrayMultiply",
+    "ArrayMultiply": "Ops.Array.ArrayMultiply"
+
 
 };
 
@@ -429,7 +431,7 @@ const defaultOps = {
 
     "isCustomOp": (opname) =>
     {
-        return opname.startsWith("Ops.Cables.CustomOp");
+        return opname.startsWith(defaultOpNames.customOp);
     },
 
     "isPrivateOp": (opname) =>
