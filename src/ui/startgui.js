@@ -80,7 +80,7 @@ export default function startUi(cfg)
 
                 gui.setFontSize(userSettings.get("fontSizeOff"));
 
-                userSettings.addEventListener("onChange", function (key, v)
+                userSettings.on("change", function (key, v)
                 {
                     if (key == "fontSizeOff")
                     {

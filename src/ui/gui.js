@@ -1517,6 +1517,7 @@ export default class Gui
         else if (CABLES.contextMenu.isVisible()) CABLES.contextMenu.close();
         else if (gui.isShowingModal())
         {
+            console.log("closing modal...");
             gui.closeModal();
 
             if (this.maintabPanel?._tabs?.getActiveTab()?.editor)
@@ -1527,11 +1528,10 @@ export default class Gui
                 }, 50); // why...
             }
         }
+        else if (this._opselect.isOpen()) this._opselect.close();
         else if (this.maintabPanel.isVisible()) this.maintabPanel.hide();
         else
         {
-            if (this._opselect.isOpen()) this._opselect.close();
-            else
             if (e)
             {
                 gui.opSelect().show({

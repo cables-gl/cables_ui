@@ -64,9 +64,6 @@ class UserSettings extends CABLES.EventTarget
 
     set(key, value)
     {
-        // console.log("usersetting", key, value);
-        // console.log((new Error()).stack);
-
         if (value === "true") value = true;
         else if (value === "false") value = false;
 
@@ -88,7 +85,7 @@ class UserSettings extends CABLES.EventTarget
                     this.save();
                 }, delay);
             }
-            if (wasChanged) this.emitEvent("onChange", key, value);
+            if (wasChanged) this.emitEvent("change", key, value);
         }
     }
 

@@ -29,7 +29,6 @@ float texOffset=0.0;
 float sizeAtt=0.0;
 
 #define PI 3.1415926538
-// float aspect=1.7777;
 
 vec2 rotate(vec2 v, float a)
 {

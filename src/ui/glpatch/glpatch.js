@@ -361,7 +361,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.vizLayer = new VizLayer(this);
 
 
-        userSettings.on("onChange", (key, value) =>
+        userSettings.on("change", (key, value) =>
         {
             // this._log.log("linetype changed!", value);
             if (key == "linetype")

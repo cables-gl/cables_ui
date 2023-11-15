@@ -208,6 +208,9 @@ const text =
         "title_presentationmode": "Presentation Mode",
         "subtitle_presentationmode": "Show all key presses on the screen",
 
+        "title_fadeOutCables": "Fade Cables",
+        "subtitle_fadeOutCables": "Fade out long cables",
+
         "title_fontsize": "Text Size",
         "subtitle_fontsize": "Size Of Text and Icons in cables",
         "subtitle_fontsize_ace": "Font size in Text editor",

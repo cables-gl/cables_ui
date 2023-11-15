@@ -21,7 +21,7 @@ export default class VizLayer extends CABLES.EventTarget
             this._updateSize();
         });
 
-        userSettings.on("onChange", (key, value) =>
+        userSettings.on("change", (key, value) =>
         {
             if (key == "vizlayerpaused") this.paused = value;
         });
