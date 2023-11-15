@@ -127,7 +127,7 @@
 .contentcontainer
 {
     // outer container for tabs. can not scroll. scrolling must be handles in container childs!
-
+    position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
     height: 100%;
