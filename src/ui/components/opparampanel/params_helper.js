@@ -96,10 +96,11 @@ const paramsHelper =
             const isDefault = port.get() == port.defaultValue;
             if (titleEl) titleEl.classList.toggle("nonDefaultValue", !isDefault);
 
-            if (isDefault) resetEl.style.opacity = 0.0;
+            if (isDefault) resetEl.classList.add("reset_hidden");
             else
             {
-                resetEl.style.opacity = 1;
+                resetEl.classList.remove("reset_hidden");
+
 
                 // if (!resetEl.classList.contains("listener"))
                 // {
