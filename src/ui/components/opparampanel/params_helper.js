@@ -91,8 +91,25 @@ const paramsHelper =
     {
         if (port.defaultValue !== undefined && port.defaultValue !== null)
         {
-            const titleEl = ele.byId("portTitle_in_" + index + "_" + panelid);
-            if (titleEl) titleEl.classList.toggle("nonDefaultValue", port.get() != port.defaultValue);
+            const resetEl = ele.byQuery("#portTitle_in_" + index + "_reset");
+            const titleEl = ele.byId("portTitle_in_" + index);
+            const isDefault = port.get() == port.defaultValue;
+            if (titleEl) titleEl.classList.toggle("nonDefaultValue", !isDefault);
+
+            if (isDefault) resetEl.style.opacity = 0.0;
+            else
+            {
+                resetEl.style.opacity = 1;
+
+                // if (!resetEl.classList.contains("listener"))
+                // {
+                //     resetEl.classList.add("listener");
+                //     resetEl.addEventListener("click", () =>
+                //     {
+                //         console.log("resdet!");
+                //     });
+                // }
+            }
         }
     },
 

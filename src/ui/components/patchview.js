@@ -2581,7 +2581,7 @@ export default class PatchView extends CABLES.EventTarget
             selectedOps[i].setUiAttrib({ "color": col });
     }
 
-    resetOpValues(opid)
+    resetOpValues(opid, portname)
     {
         const op = this._p.getOpById(opid);
         if (!op)
@@ -2589,9 +2589,19 @@ export default class PatchView extends CABLES.EventTarget
             this._log.error("reset op values: op not found...", opid);
             return;
         }
-        for (let i = 0; i < op.portsIn.length; i++)
-            if (op.portsIn[i].defaultValue != null)
-                op.portsIn[i].set(op.portsIn[i].defaultValue);
+
+        if (portname)
+        {
+            const p = op.getPortByName(portname);
+            p.set(p.defaultValue);
+        }
+        else
+        {
+            // all ops
+            for (let i = 0; i < op.portsIn.length; i++)
+                if (op.portsIn[i].defaultValue != null)
+                    op.portsIn[i].set(op.portsIn[i].defaultValue);
+        }
 
         gui.opParams.show(op);
     }

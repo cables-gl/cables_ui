@@ -47,10 +47,12 @@
                         <i>{{port.uiAttribs.title}}</i>
                     {{else}}
                         {{port.name}}
+
                     {{/if}}
                 {{/compare}}
             {{/compare}}
         </span>
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" style="opacity:0;cursor:pointer;vertical-align: middle;" class="icon icon-undo " onclick="gui.patchView.resetOpValues('{{op.id}}','{{port.name}}');"></span>
 
         {{#if port.uiAttribs.colorPick }}
             <div class="button_colorpick fright" id="watchcolorpick_{{ dirStr }}_{{ portnum }}_{{ panelid }}"></div>
