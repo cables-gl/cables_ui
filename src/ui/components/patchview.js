@@ -2590,9 +2590,27 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
+
+
+
         if (portname)
         {
             const p = op.getPortByName(portname);
+            const oldValue = p.get();
+            CABLES.UI.undo.add({
+                "title": "reset defaultvalue",
+                undo()
+                {
+                    p.set(oldValue);
+                    gui.opParams.show(op);
+                },
+                redo()
+                {
+                    p.set(p.defaultValue);
+                    gui.opParams.show(op);
+                }
+            });
+
             p.set(p.defaultValue);
         }
         else

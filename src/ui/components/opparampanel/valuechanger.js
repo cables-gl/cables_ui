@@ -230,7 +230,6 @@ function valueChanger(eleId, focus, portName, opid)
         let v = parseFloat(str);
         if (v != v)v = 0;
 
-
         return v;
     }
 

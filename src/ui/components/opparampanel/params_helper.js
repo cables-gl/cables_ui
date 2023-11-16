@@ -100,16 +100,6 @@ const paramsHelper =
             else
             {
                 resetEl.classList.remove("reset_hidden");
-
-
-                // if (!resetEl.classList.contains("listener"))
-                // {
-                //     resetEl.classList.add("listener");
-                //     resetEl.addEventListener("click", () =>
-                //     {
-                //         console.log("resdet!");
-                //     });
-                // }
             }
         }
     },
