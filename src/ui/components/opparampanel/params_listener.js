@@ -162,7 +162,8 @@ class ParamsListener extends CABLES.EventTarget
             ele.byId("portval_" + (idx + 1) + "_" + panelid),
             ele.byId("portval_" + (idx + 2) + "_" + panelid)
         ];
-        if (ele.byId("portval_" + (idx + 3) + "_" + panelid).dataset.portname.toLowerCase() == "a")
+        const eleA = ele.byId("portval_" + (idx + 3) + "_" + panelid);
+        if (eleA && eleA.dataset.portname.toLowerCase() == "a")
         {
             inputElements.push(ele.byId("portval_" + (idx + 3) + "_" + panelid));
             console.log("found alpha");
