@@ -155,12 +155,19 @@ class ParamsListener extends CABLES.EventTarget
 
     watchColorPickerPort(thePort, panelid, idx)
     {
+        let foundOpacity = false;
         const inputElements =
         [
             ele.byId("portval_" + idx + "_" + panelid),
             ele.byId("portval_" + (idx + 1) + "_" + panelid),
             ele.byId("portval_" + (idx + 2) + "_" + panelid)
         ];
+        if (ele.byId("portval_" + (idx + 3) + "_" + panelid).dataset.portname.toLowerCase() == "a")
+        {
+            inputElements.push(ele.byId("portval_" + (idx + 3) + "_" + panelid));
+            console.log("found alpha");
+            foundOpacity = true;
+        }
 
         if (!inputElements[0] || !inputElements[1] || !inputElements[2])
         {
@@ -170,10 +177,13 @@ class ParamsListener extends CABLES.EventTarget
 
         const getCurrentColor = () =>
         {
-            return [
+            const arr = [
                 Math.round(255 * parseFloat(inputElements[0].value)),
                 Math.round(255 * parseFloat(inputElements[1].value)),
                 Math.round(255 * parseFloat(inputElements[2].value))];
+
+            // if (inputElements[3])arr.push(inputElements[3].value);
+            return arr;
         };
 
 
@@ -197,13 +207,20 @@ class ParamsListener extends CABLES.EventTarget
 
         updateColorBox();
 
+
+
         colEle.addEventListener("click", (e) =>
         {
             let undoGroup;
+            let opacity = 1;
+            if (inputElements[3])opacity = inputElements[3].value;
+
             const cr = new ColorRick({
                 "ele": colEle,
+                "showOpacity": foundOpacity,
                 "color": getCurrentColor(), // "#ffffff",
-                "onChange": (col) =>
+                "opacity": opacity,
+                "onChange": (col, _opacity) =>
                 {
                     updateColorBox();
                     const glRgb = col.gl();
@@ -211,14 +228,17 @@ class ParamsListener extends CABLES.EventTarget
                     const elR = ele.byId("numberinputDisplay_in_" + idx + "_" + panelid);
                     const elG = ele.byId("numberinputDisplay_in_" + (idx + 1) + "_" + panelid);
                     const elB = ele.byId("numberinputDisplay_in_" + (idx + 2) + "_" + panelid);
+                    const elA = ele.byId("numberinputDisplay_in_" + (idx + 3) + "_" + panelid);
 
                     if (elR)elR.innerHTML = inputElements[0].value = glRgb[0];
                     if (elG)elG.innerHTML = inputElements[1].value = glRgb[1];
                     if (elB)elB.innerHTML = inputElements[2].value = glRgb[2];
+                    if (elA)elA.innerHTML = inputElements[3].value = _opacity;
 
                     inputElements[0].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                     inputElements[1].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                     inputElements[2].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
+                    if (inputElements[3])inputElements[3].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                 },
                 "onStart": () =>
                 {
