@@ -1,4 +1,4 @@
-import defaultops from "../defaultops";
+import defaultops, { defaultOpNames } from "../defaultops";
 import Logger from "../utils/logger";
 import { getHandleBarHtml } from "../utils/handlebars";
 
@@ -24,6 +24,8 @@ export default class OpDocs
         this.coreLibs = res.coreLibs;
 
         this.addOpDocs(res.opDocs);
+
+        this.checkDefaultOpsOutdated();
     }
 
     /**
@@ -362,5 +364,22 @@ export default class OpDocs
     getOpDocs()
     {
         return this._opDocs;
+    }
+
+
+    checkDefaultOpsOutdated()
+    {
+        const perf = CABLES.UI.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
+        for (const i in defaultOpNames)
+        {
+            const doc = this.getOpDocByName(defaultOpNames[i]);
+
+            if (!doc)
+            {
+                console.warn("default op " + i + " " + defaultOpNames[i] + " not found... outdated ?");
+            }
+        }
+
+        perf.finish();
     }
 }

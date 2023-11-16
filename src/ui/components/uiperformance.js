@@ -125,7 +125,7 @@ export default class UiProfiler
             "start": performance.now(),
             finish()
             {
-                if (ignorethis || !perf._measures || !perf._measures[name]) return;
+                if (ignorethis || !perf._measures) return;
                 const time = performance.now() - this.start;
 
                 perf._measures[name] = perf._measures[name] || {};

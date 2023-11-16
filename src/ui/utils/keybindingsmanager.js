@@ -64,20 +64,32 @@ export default class KeyBindingsManager extends CABLES.EventTarget
             return a.target.localeCompare(b.target);
         });
 
-        let lastTarget = "";
+
+        // remove double entries
+        let lastCombined = "";
+        let lines = [];
         for (let i = 0; i < k.length; i++)
         {
-            if (k[i].target != lastTarget)
-            {
-                const group = k[i].options.displayGroup ? k[i].options.displayGroup : k[i].target;
-                k[i].group = group;
-            }
-            lastTarget = k[i].target;
-
-            if (k[i].key == " ")k[i].key = "Space";
+            let combined = k[i].title + k[i].key + k[i].options.shiftKey + k[i].options.cmdCtrl;
+            if (combined != lastCombined) lines.push(k[i]);
+            lastCombined = combined;
         }
-        k = k.filter((key) => { return key.title !== ""; });
-        return k;
+
+
+        let lastTarget = "";
+        for (let i = 0; i < lines.length; i++)
+        {
+            if (lines[i].target != lastTarget)
+            {
+                const group = lines[i].options.displayGroup ? lines[i].options.displayGroup : lines[i].target;
+                lines[i].group = group;
+            }
+            lastTarget = lines[i].target;
+
+            if (lines[i].key == " ")lines[i].key = "Space";
+        }
+        lines = lines.filter((key) => { return key.title !== ""; });
+        return lines;
     }
 
     _onKeyUp(e)
