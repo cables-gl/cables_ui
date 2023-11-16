@@ -4,7 +4,7 @@ function defaultSetting(initiator)
 {
     if (initiator.indexOf("Ops.User") == 0) return true;
     if (initiator.indexOf("op Ops.User") == 0) return true;
-    if (initiator.indexOf("Ops.Cables.CustomOp") == 0) return true;
+    if (initiator.indexOf("Ops.Deprecated.Cables.CustomOp") == 0) return true;
     return false;
 }
 
