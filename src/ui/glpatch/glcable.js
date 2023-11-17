@@ -451,7 +451,13 @@ export default class GlCable
             // return;
         }
 
-        const col = GlPort.getColor(this._link.type, this.hovering);
+        let hover = this.hovering;
+
+        console.log("this._link.isAPortHovering", this._link.isAPortHovering());
+
+        if (this._link) if (this._link.isAPortHovering())hover = true;
+
+        const col = GlPort.getColor(this._link.type, hover);
 
         this._splineDrawer.setSplineColor(this._splineIdx, col);
         this._buttonRect.setColor(col[0], col[1], col[2], col[3]);

@@ -653,10 +653,32 @@ export default class GlLink
         this.highlight(false);
     }
 
+    isAPortHovering()
+    {
+        const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChangeisAPortHoveringd");
+
+        if (this._opOut)
+        {
+            let port = this._opOut.op.getPortById(this._portIdOutput);
+            let glport = this._opOut.getGlPort(port.name);
+            if (glport && glport.hovering) return true;
+        }
+
+        if (this._opIn)
+        {
+            let port = this._opIn.op.getPortById(this._portIdInput);
+            let glport = this._opIn.getGlPort(port.name);
+
+            if (glport && glport.hovering) return true;
+        }
+
+        perf.finish();
+        return false;
+    }
+
     cableHoverChanged(cable, hovering)
     {
         const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChanged");
-
 
         if (this._opOut)
         {

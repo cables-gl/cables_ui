@@ -231,6 +231,8 @@ export default class GlPort
         this._updateColor();
     }
 
+    get hovering() { return this._hover; }
+
     get type() { return this._port.type; }
 
     get port() { return this._port; }
