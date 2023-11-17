@@ -652,6 +652,13 @@ export default class GlLink
         this.highlight(false);
     }
 
+    isAOpSelected()
+    {
+        if (this._glOpOut && this._glOpOut.selected) return true;
+        if (this._glOpIn && this._glOpIn.selected) return true;
+        return false;
+    }
+
     isAPortHovering()
     {
         const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChangeisAPortHoveringd");
@@ -675,7 +682,13 @@ export default class GlLink
         return false;
     }
 
-    cableHoverChanged(cable, hovering)
+    updateColor()
+    {
+        this._cable.updateColor();
+        if (this._cableSub) this._cableSub.updateColor();
+    }
+
+    cableHoverChanged()
     {
         const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChanged");
 
@@ -687,7 +700,7 @@ export default class GlLink
             let glport = this._glOpOut.getGlPort(port.name);
 
             if (glport)glport._updateColor();
-            else console.log("no glport");
+            // else console.log("no glport");
         }
 
         if (this._glOpIn)
@@ -696,7 +709,7 @@ export default class GlLink
             let glport = this._glOpIn.getGlPort(port.name);
 
             if (glport)glport._updateColor();
-            else console.log("no glport");
+            // else console.log("no glport");
         }
 
 

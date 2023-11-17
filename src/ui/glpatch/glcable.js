@@ -114,14 +114,12 @@ export default class GlCable
         }
     }
 
-
     setCloseToMouse(b)
     {
         if (this._buttonRect.interactive != b)
         {
             this._buttonRect.visible =
             this._buttonRect.interactive = b;
-
             if (!b) this._unHover();
         }
     }
@@ -129,11 +127,9 @@ export default class GlCable
     _unHover()
     {
         this.setCloseToMouse(false);
-        // console.log("unhover");
         this._link.cableHoverChanged(this, false);
         this.updateColor();
     }
-
 
     updateVisible()
     {
@@ -143,10 +139,7 @@ export default class GlCable
 
         if (old != this._visible)
         {
-            if (!this._visible)
-            {
-                this.setCloseToMouse(false);
-            }
+            if (!this._visible) this.setCloseToMouse(false);
             this.updateMouseListener();
         }
     }
@@ -474,10 +467,16 @@ export default class GlCable
         }
 
         let hover = this.hovering;
+        let selected = false;
 
-        if (this._link) if (this._link.isAPortHovering())hover = true;
+        if (this._link)
+        {
+            if (this._link.isAPortHovering())hover = true;
+            if (this._link.isAOpSelected())selected = true;
+        }
 
-        const col = GlPort.getColor(this._link.type, hover);
+
+        const col = GlPort.getColor(this._link.type, hover, selected);
 
         this._splineDrawer.setSplineColor(this._splineIdx, col);
         this._buttonRect.setColor(col[0], col[1], col[2], col[3]);

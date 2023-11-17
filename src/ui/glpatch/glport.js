@@ -117,7 +117,6 @@ export default class GlPort
 
         // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
 
-
         let hover = this._hover;
 
         for (const i in this._glop._links)
@@ -125,8 +124,7 @@ export default class GlPort
                 if (this._glop._links[i].hovering) { hover = true; break; }
 
 
-
-        const col = GlPort.getColor(this._type, hover);
+        const col = GlPort.getColor(this._type, hover, this._glop.selected && this._port.isLinked());
         this._rect.setColor(col);
     }
 
@@ -279,7 +277,7 @@ GlPort.getColor = (type, hovering, selected) =>
     else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
 
     if (hovering)name = portname + "_hover";
-    else if (selected)name = portname + "_hover";
+    else if (selected)name = portname + "_selected";
 
     let col = GlUiConfig.colors.types[name] || GlUiConfig.colors.types[portname] || [1, 0, 0, 1];
 

@@ -93,7 +93,7 @@ const paramsHelper =
         {
             const resetEl = ele.byQuery("#portTitle_in_" + index + "_reset");
             const titleEl = ele.byId("portTitle_in_" + index);
-            const isDefault = port.get() == port.defaultValue;
+            const isDefault = port.get() == port.defaultValue || port.isLinked();
             if (titleEl) titleEl.classList.toggle("nonDefaultValue", !isDefault);
 
             if (isDefault) resetEl.classList.add("reset_hidden");
