@@ -1690,6 +1690,11 @@ export default class Gui
             buildInfoTable.push(infoRow);
         }
 
+
+        if (CABLES.sandbox.getPatchVersion())
+            gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
+
+
         console.table(buildInfoTable);
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
