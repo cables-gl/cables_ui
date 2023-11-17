@@ -453,8 +453,6 @@ export default class GlCable
 
         let hover = this.hovering;
 
-        console.log("this._link.isAPortHovering", this._link.isAPortHovering());
-
         if (this._link) if (this._link.isAPortHovering())hover = true;
 
         const col = GlPort.getColor(this._link.type, hover);
@@ -466,24 +464,6 @@ export default class GlCable
     setColor(r, g, b, a)
     {
         this.updateColor();
-        // console.log((new Error()).stack);
-        // if (r === undefined)
-        // {
-        //     r = this._r;
-        //     g = this._g;
-        //     b = this._b;
-        //     a = this._a;
-        // }
-        // else
-        // {
-        //     this._r = r;
-        //     this._g = g;
-        //     this._b = b;
-        //     this._a = a;
-        // }
-
-        // this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        // this._buttonRect.setColor(r, g, b, a);
     }
 
     isHoveredButtonRect()
