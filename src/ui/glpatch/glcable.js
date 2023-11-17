@@ -103,8 +103,8 @@ export default class GlCable
         if (this._buttonRect._hovering != b)
         {
             this._buttonRect.visible =
-                this._buttonRect.interactive =
-                this._buttonRect._hovering = b;
+                this._buttonRect.interactive = b;
+            // this._buttonRect._hovering = b;
 
             this._link.cableHoverChanged(this, b);
             this.updateColor();
