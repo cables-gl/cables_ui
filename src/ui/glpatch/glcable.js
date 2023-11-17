@@ -448,7 +448,7 @@ export default class GlCable
         {
             console.log("disposed setcolor!!!!!!!!!!");
             // console.log((new Error()).stack);
-            // return;
+            return;
         }
 
         let hover = this.hovering;
@@ -549,9 +549,17 @@ export default class GlCable
             const selectedOp = gui.patchView.getSelectedOps()[0];
             if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
 
-            if ((this._glPatch.isDraggingOps() &&
+
+
+            if (
+                this._glPatch.isDraggingOps() &&
                 gui.patchView.getSelectedOps().length == 1 &&
-                (this._link._opIn.id == selectedOp.id || this._link._opOut.id == selectedOp.id)))
+
+                (
+                    (this._link._glOpIn.op.id == selectedOp.id) ||
+                    (this._link._glOpOut.op.id == selectedOp.id)
+                )
+            )
             {
                 // no self hovering/linking
 
