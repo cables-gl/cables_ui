@@ -9,7 +9,6 @@ import { CONSTANTS } from "../../../cables/src/core/constants";
 export const defaultOpNames =
 {
     "number": "Ops.Value.Number",
-    "customOp": "Ops.Cables.CustomOp",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
@@ -431,7 +430,7 @@ const defaultOps = {
 
     "isCustomOp": (opname) =>
     {
-        return opname.startsWith(defaultOpNames.customOp);
+        return opname.startsWith("Ops.Deprecated.Cables.CustomOp");
     },
 
     "isPrivateOp": (opname) =>

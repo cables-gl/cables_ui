@@ -17,6 +17,26 @@
         }
     }
 
+    .reset_hidden
+    {
+        pointer-events: none;
+        opacity: 0.0 !important;
+    }
+
+    .param_reset
+    {
+        opacity:0;
+        cursor:pointer;
+        vertical-align: middle;
+        opacity: 0.5;
+
+        background-color: red;
+        &:hover
+        {
+            opacity: 1 !important;
+
+        }
+    }
 
     .panel_head
     {
