@@ -35,6 +35,22 @@ export default class GlCable
         this._buttonRect.setShape(1);
         this._buttonRect.visible = false;
 
+        this._buttonRect.on("hover", () =>
+        {
+            this.setCloseToMouse(true);
+            // console.log("hover");
+            this._link.cableHoverChanged(this, true);
+            this.updateColor();
+        });
+
+        this._buttonRect.on("unhover", () =>
+        {
+            this._unHover();
+        });
+
+
+
+
         this._x = 0;
         this._y = 0;
         this._x2 = 0;
@@ -98,17 +114,24 @@ export default class GlCable
         }
     }
 
-    setHovering(b)
+
+    setCloseToMouse(b)
     {
-        if (this._buttonRect._hovering != b)
+        if (this._buttonRect.interactive != b)
         {
             this._buttonRect.visible =
-                this._buttonRect.interactive = b;
-            // this._buttonRect._hovering = b;
+            this._buttonRect.interactive = b;
 
-            this._link.cableHoverChanged(this, b);
-            this.updateColor();
+            if (!b) this._unHover();
         }
+    }
+
+    _unHover()
+    {
+        this.setCloseToMouse(false);
+        // console.log("unhover");
+        this._link.cableHoverChanged(this, false);
+        this.updateColor();
     }
 
 
@@ -122,7 +145,7 @@ export default class GlCable
         {
             if (!this._visible)
             {
-                this.setHovering(false);
+                this.setCloseToMouse(false);
             }
             this.updateMouseListener();
         }
@@ -176,7 +199,6 @@ export default class GlCable
     dispose()
     {
         this._disposed = true;
-
 
         this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 1]);
         this._buttonRect.setColor(0, 0, 0, 1);
@@ -530,7 +552,7 @@ export default class GlCable
 
         if (!onSegment)
         {
-            this.setHovering(false);
+            this.setCloseToMouse(false);
 
             perf.finish();
             return false;
@@ -563,7 +585,7 @@ export default class GlCable
             {
                 // no self hovering/linking
 
-                this.setHovering(false);
+                this.setCloseToMouse(false);
 
                 return false;
             }
@@ -575,7 +597,7 @@ export default class GlCable
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
 
-            this.setHovering(true);
+            this.setCloseToMouse(true);
 
             this.updateColor();
 
@@ -593,7 +615,7 @@ export default class GlCable
         {
             if (this._buttonRect.visible) this._glPatch.setHoverLink(e, null);
 
-            this.setHovering(false);
+            this.setCloseToMouse(false);
 
             perf.finish();
             return false;

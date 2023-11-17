@@ -38,9 +38,6 @@ export default class GlLink
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
         this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setShape(1);
-        this._buttonRect.setColorHover(1, 0, 0, 1);
-
-
 
         this._buttonRect.on("mouseup", (e) =>
         {
