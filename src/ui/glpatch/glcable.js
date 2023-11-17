@@ -584,7 +584,8 @@ export default class GlCable
             {
                 // no self hovering/linking
 
-                this.setCloseToMouse(false);
+                console.log("eyyy");
+                // this.setCloseToMouse(false);
 
                 return false;
             }
@@ -602,6 +603,7 @@ export default class GlCable
 
             this._glPatch.setHoverLink(e, this._link);
             this._glPatch._dropInCircleRect = this._buttonRect;
+            this._glPatch._dropInCircleLink = this._link;
 
             if (this._glPatch.cablesHoverText) this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
