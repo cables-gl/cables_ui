@@ -520,6 +520,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             const html = getHandleBarHtml(
                 "params_ops", {
+                    "isDevEnv": CABLES.sandbox.isDevEnv(),
                     "numOps": numops,
                 });
 
