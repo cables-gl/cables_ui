@@ -96,10 +96,10 @@ export default class Api
                         if (doCache)
                             this.cache.push({ url, method, _data });
 
-                        const tooktime = (performance.now() - startTime) / 1000;
-                        if (tooktime > 2.0)
+                        const tooktime = Math.round(performance.now() - startTime);
+                        if (tooktime > 350.0)
                         {
-                            this._log.warn("request took " + tooktime + "s: ", url);
+                            console.warn("- slow request: " + method + " " + url + ": " + tooktime + "ms");
                         }
 
                         if (cbSuccess) cbSuccess(_data);
