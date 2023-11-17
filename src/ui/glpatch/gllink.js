@@ -40,6 +40,8 @@ export default class GlLink
         this._buttonRect.setShape(1);
         this._buttonRect.setColorHover(1, 0, 0, 1);
 
+
+
         this._buttonRect.on("mouseup", (e) =>
         {
             this._glPatch.startLinkButtonDrag = null;
@@ -104,10 +106,10 @@ export default class GlLink
             if (
                 this._buttonDown == this._glPatch.mouseState.buttonForLinkInsertOp && pressTime < GlUiConfig.clickMaxDuration)
             {
-                const opIn = gui.corePatch().getOpById(this._opIdInput);
+                // const opIn = gui.corePatch().getOpById(this._opIdInput);
                 const pIn = opIn.getPortById(this._portIdInput);
-                const opOut = gui.corePatch().getOpById(this._opIdOutput);
-                const pOut = opOut.getPortById(this._portIdOutput);
+                // const opOut = gui.corePatch().getOpById(this._opIdOutput);
+                const pOut = this._opOut.getPortById(this._portIdOutput);
                 if (!pOut) return;
                 const llink = pOut.getLinkTo(pIn);
 
@@ -165,6 +167,13 @@ export default class GlLink
         this.update();
     }
 
+    get hovering()
+    {
+        if (this._cableSub && this._cableSub.hovering) return true;
+        return this._cable.hovering;
+    }
+
+    get type() { return this._type; }
 
     get link() { return this._link; }
 
@@ -642,5 +651,37 @@ export default class GlLink
     updateTheme()
     {
         this.highlight(false);
+    }
+
+    cableHoverChanged(cable, hovering)
+    {
+        const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChanged");
+
+
+        if (this._opOut)
+        {
+            // console.log("cableHoverChanged", this._opOut);
+            // let glop = this._glPatch.getGlOp(this._opOut);
+            let port = this._opOut.op.getPortById(this._portIdOutput);
+            let glport = this._opOut.getGlPort(port.name);
+
+            if (glport)glport._updateColor();
+            else console.log("no glport");
+        }
+
+        if (this._opIn)
+        {
+            let port = this._opIn.op.getPortById(this._portIdInput);
+            let glport = this._opIn.getGlPort(port.name);
+
+            if (glport)glport._updateColor();
+            else console.log("no glport");
+        }
+
+
+        perf.finish();
+
+        // const glopIn = this._glPatch.getGlOp(this._opIn);
+        // glport = glopIn.getGlPort(pIn.name);
     }
 }

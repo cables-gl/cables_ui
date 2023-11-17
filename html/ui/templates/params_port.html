@@ -52,7 +52,9 @@
                 {{/compare}}
             {{/compare}}
         </span>
-        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset icon icon-undo icon-0_75x" onclick="gui.patchView.resetOpValues('{{op.id}}','{{port.name}}');"></span>
+
+        <span id="portTitle_{{ dirStr }}_{{ portnum }}_reset" class="param_reset reset_hidden icon icon-undo icon-0_75x" onclick="gui.patchView.resetOpValues('{{op.id}}','{{port.name}}');"></span>
+
         <!-- numberinput-val -->
 
         {{#if port.uiAttribs.colorPick }}
@@ -86,6 +88,7 @@
         {{/if}}
 
 </script>
+
 
 
 

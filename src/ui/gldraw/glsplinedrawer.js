@@ -165,7 +165,8 @@ export default class GlSplineDrawer
     {
         const sp = this._splines[idx];
 
-        this.setSplineColor(idx, 0, 0, 0, 0);
+        this.setSplineColor(idx, [0, 0, 0, 0]);
+        // this._rebuildLater = true;
 
         if (this._splines[idx].origPoints)
             for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
@@ -174,6 +175,7 @@ export default class GlSplineDrawer
                 this._splines[idx].origPoints[i + 1] =
                 this._splines[idx].origPoints[i + 2] = 0;
             }
+
         this.setSpline(idx, this._splines[idx].origPoints);
     }
 
