@@ -163,10 +163,9 @@ class ParamsListener extends CABLES.EventTarget
             ele.byId("portval_" + (idx + 2) + "_" + panelid)
         ];
         const eleA = ele.byId("portval_" + (idx + 3) + "_" + panelid);
-        if (eleA && eleA.dataset.portname.toLowerCase() == "a")
+        if (eleA && eleA.dataset.portname && eleA.dataset.portname.toLowerCase() == "a")
         {
             inputElements.push(ele.byId("portval_" + (idx + 3) + "_" + panelid));
-            console.log("found alpha");
             foundOpacity = true;
         }
 
@@ -234,7 +233,7 @@ class ParamsListener extends CABLES.EventTarget
                     if (elR)elR.innerHTML = inputElements[0].value = glRgb[0];
                     if (elG)elG.innerHTML = inputElements[1].value = glRgb[1];
                     if (elB)elB.innerHTML = inputElements[2].value = glRgb[2];
-                    if (elA)elA.innerHTML = inputElements[3].value = _opacity;
+                    if (elA && inputElements[3])elA.innerHTML = inputElements[3].value = _opacity;
 
                     inputElements[0].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));
                     inputElements[1].dispatchEvent(new CustomEvent("input", { "detail": { "ignorePaco": true } }));

@@ -150,6 +150,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.links = {};
         this.zIndex = 0;
 
+        this._dropInCircleLink = null;
         this._dropInCircleRect = null;
 
         this._dropInOpBorder = this._overLayRects.createRect();
@@ -411,7 +412,7 @@ export default class GlPatch extends CABLES.EventTarget
         if (this.startLinkButtonDrag)
             this.startLinkButtonDrag.startDragging(e);
 
-        this._dropInCircleRect = null;
+        this._dropInCircleLink = this._dropInCircleRect = null;
 
         if (e.shiftKey) this._pressedShiftKey = true;
         else this._pressedShiftKey = false;
@@ -434,11 +435,11 @@ export default class GlPatch extends CABLES.EventTarget
                     {
                         visible = true;
 
-                        const border = 3;
+                        const border = 5;
                         this._dropInOpBorder.setSize(this._selectedGlOps[i].w + border * 2, this._selectedGlOps[i].h + border * 2);
                         this._dropInOpBorder.setPosition(this._selectedGlOps[i].x - border, this._selectedGlOps[i].y - border);
                         this._dropInOpBorder.setColor(this._dropInCircleRect.color);
-                        this._dropInOpBorder.setOpacity(0.5);
+                        this._dropInOpBorder.setOpacity(0.35);
                     }
                 }
             }
@@ -636,9 +637,28 @@ export default class GlPatch extends CABLES.EventTarget
             if (this._hoverOps.length == 0 && gui.longPressConnector.isActive()) gui.longPressConnector.longPressCancel();
         }
 
+
+        if (this._dropInCircleLink)
+        {
+            // if (this._cable.isHoveredButtonRect() && gui.patchView.getSelectedOps().length == 1)
+            if (gui.patchView.getSelectedOps().length == 1)
+            {
+                for (const i in this.selectedGlOps)
+                {
+                    if (this.selectedGlOps[i].isHovering()) // && this.selectedGlOps[i].isDragging
+                    {
+                        const coord = this.screenToPatchCoord(e.offsetX, e.offsetY);
+                        gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
+                        return;
+                    }
+                }
+            }
+        }
+
+
         perf.finish();
 
-        this._dropInCircleRect = null;
+        this._dropInCircleLink = this._dropInCircleRect = null;
 
         this._selectionArea.mouseUp();
     }

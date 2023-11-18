@@ -1690,6 +1690,11 @@ export default class Gui
             buildInfoTable.push(infoRow);
         }
 
+
+        if (CABLES.sandbox.getPatchVersion())
+            gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
+
+
         console.table(buildInfoTable);
         console.log("start up times:");
         console.table(CABLESUILOADER.startup.log);
@@ -2204,8 +2209,8 @@ export default class Gui
         document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors.types.trigger || [1, 1, 1, 1]));
         document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors.types.num || [1, 1, 1, 1]));
         document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors.types.obj || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.str || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.arr || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.string || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.array || [1, 1, 1, 1]));
 
         this.patchView.updateTheme();
         return missing;

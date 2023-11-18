@@ -3,6 +3,7 @@ import Logger from "../utils/logger";
 import text from "../text";
 import userSettings from "../components/usersettings";
 import GlOp from "./glop";
+import GlPort from "./glport";
 
 export default class GlCable
 {
@@ -34,6 +35,22 @@ export default class GlCable
         this._buttonRect.setShape(1);
         this._buttonRect.visible = false;
 
+        this._buttonRect.on("hover", () =>
+        {
+            this.setCloseToMouse(true);
+            // console.log("hover");
+            this._link.cableHoverChanged(this, true);
+            this.updateColor();
+        });
+
+        this._buttonRect.on("unhover", () =>
+        {
+            this._unHover();
+        });
+
+
+
+
         this._x = 0;
         this._y = 0;
         this._x2 = 0;
@@ -47,6 +64,7 @@ export default class GlCable
         this.updateMouseListener();
 
         this.updateLineStyle();
+        this.updateColor();
     }
 
     get subPatch() { return this._subPatch; }
@@ -77,7 +95,6 @@ export default class GlCable
             this._tension = 0.3;
         }
 
-
         this._updateDistFromPort();
         this._updateLinePos();
     }
@@ -97,6 +114,23 @@ export default class GlCable
         }
     }
 
+    setCloseToMouse(b)
+    {
+        if (this._buttonRect.interactive != b)
+        {
+            this._buttonRect.visible =
+            this._buttonRect.interactive = b;
+            if (!b) this._unHover();
+        }
+    }
+
+    _unHover()
+    {
+        this.setCloseToMouse(false);
+        this._link.cableHoverChanged(this, false);
+        this.updateColor();
+    }
+
     updateVisible()
     {
         const old = this._visible;
@@ -105,12 +139,7 @@ export default class GlCable
 
         if (old != this._visible)
         {
-            if (!this._visible)
-            {
-                this._buttonRect.visible =
-                    this._buttonRect.interactive =
-                    this._buttonRect._hovering = false;
-            }
+            if (!this._visible) this.setCloseToMouse(false);
             this.updateMouseListener();
         }
     }
@@ -125,6 +154,7 @@ export default class GlCable
 
     _checkCollide(e)
     {
+        if (this._disposed) return;
         if (this._glPatch.isAreaSelecting) return;
         if (!this._visible) return false;
         if (this.subPatch != this._glPatch.getCurrentSubPatch()) return false;
@@ -162,7 +192,10 @@ export default class GlCable
     dispose()
     {
         this._disposed = true;
-        this.setColor(0, 0, 0, 0);
+
+        this._splineDrawer.setSplineColor(this._splineIdx, [0, 0, 0, 1]);
+        this._buttonRect.setColor(0, 0, 0, 1);
+
         this._splineDrawer.deleteSpline(this._splineIdx);
         this.updateVisible();
         this.updateMouseListener();
@@ -217,6 +250,7 @@ export default class GlCable
 
     _updateLinePos()
     {
+        if (this._disposed) return;
         this._updateDistFromPort();
 
         // "hanging" cables
@@ -418,25 +452,39 @@ export default class GlCable
         this._buttonRect.visible = false;
     }
 
-    setColor(r, g, b, a)
+    get hovering()
     {
-        if (r === undefined)
+        return this._buttonRect._hovering;
+    }
+
+    updateColor()
+    {
+        if (this._disposed)
         {
-            r = this._r;
-            g = this._g;
-            b = this._b;
-            a = this._a;
-        }
-        else
-        {
-            this._r = r;
-            this._g = g;
-            this._b = b;
-            this._a = a;
+            console.log("disposed setcolor!!!!!!!!!!");
+            // console.log((new Error()).stack);
+            return;
         }
 
-        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
-        this._buttonRect.setColor(r, g, b, a);
+        let hover = this.hovering;
+        let selected = false;
+
+        if (this._link)
+        {
+            if (this._link.isAPortHovering())hover = true;
+            if (this._link.isAOpSelected())selected = true;
+        }
+
+
+        const col = GlPort.getColor(this._link.type, hover, selected);
+
+        this._splineDrawer.setSplineColor(this._splineIdx, col);
+        this._buttonRect.setColor(col[0], col[1], col[2], col[3]);
+    }
+
+    setColor(r, g, b, a)
+    {
+        this.updateColor();
     }
 
     isHoveredButtonRect()
@@ -503,9 +551,8 @@ export default class GlCable
 
         if (!onSegment)
         {
-            this._buttonRect.visible =
-                    this._buttonRect.interactive =
-                    this._buttonRect._hovering = false;
+            this.setCloseToMouse(false);
+
             perf.finish();
             return false;
         }
@@ -523,31 +570,40 @@ export default class GlCable
             const selectedOp = gui.patchView.getSelectedOps()[0];
             if (selectedOp && (!selectedOp.portsIn || !selectedOp.portsOut || selectedOp.portsIn.length == 0 || selectedOp.portsOut.length == 0)) return;
 
-            if ((this._glPatch.isDraggingOps() &&
+
+
+            if (
+                this._glPatch.isDraggingOps() &&
                 gui.patchView.getSelectedOps().length == 1 &&
-                (this._link._opIn.id == selectedOp.id || this._link._opOut.id == selectedOp.id)))
+
+                (
+                    (this._link._glOpIn.op.id == selectedOp.id) ||
+                    (this._link._glOpOut.op.id == selectedOp.id)
+                )
+            )
             {
                 // no self hovering/linking
 
-                this._buttonRect.visible =
-                    this._buttonRect.interactive =
-                    this._buttonRect._hovering = false;
+                console.log("eyyy");
+                // this.setCloseToMouse(false);
 
                 return false;
             }
 
-            this.setColor();
-
+            // this.setColor();
+            this.updateColor();
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
 
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 
-            this._buttonRect.visible =
-                this._buttonRect.interactive =
-                this._buttonRect._hovering = true;
+
+            this.setCloseToMouse(true);
+
+            this.updateColor();
 
             this._glPatch.setHoverLink(e, this._link);
             this._glPatch._dropInCircleRect = this._buttonRect;
+            this._glPatch._dropInCircleLink = this._link;
 
             if (this._glPatch.cablesHoverText) this._glPatch.cablesHoverText.setPosition(closestX + 10, closestY - 10);
 
@@ -559,9 +615,9 @@ export default class GlCable
         else
         {
             if (this._buttonRect.visible) this._glPatch.setHoverLink(e, null);
-            this._buttonRect.interactive =
-                this._buttonRect.visible =
-                this._buttonRect._hovering = false;
+
+            this.setCloseToMouse(false);
+
             perf.finish();
             return false;
         }
