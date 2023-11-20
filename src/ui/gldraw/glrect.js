@@ -32,7 +32,7 @@ export default class GlRect extends CABLES.EventTarget
         this._data = {};
         this.color = vec4.create();
         this.colorHover = null;
-        this.colorHoverMultiply = 1.4;
+        // this.colorHoverMultiply = 1.0;
         this._texture = null;
         // draggable stuff
         this._draggable = false;

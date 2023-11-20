@@ -5,7 +5,7 @@ import userSettings from "../components/usersettings";
 import undo from "../utils/undo";
 
 
-const DEFAULT_ACTIVITY = 1;
+const DEFAULT_ACTIVITY = 0;
 
 export default class GlPatchAPI
 {

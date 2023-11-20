@@ -87,7 +87,7 @@ export default class GlArea
 
     _updateColor()
     {
-        this._rectBg.colorHoverMultiply = 1;
+        // this._rectBg.colorHoverMultiply = 1;
 
         if (this._glop.opUiAttribs.color)
         {

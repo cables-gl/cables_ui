@@ -5,6 +5,9 @@ IN float attrVertIndex;
 IN vec4 vcolor;
 OUT vec4 fcolor;
 
+IN vec4 vinactiveColor;
+OUT vec4 finactiveColor;
+
 IN float speed;
 OUT float fspeed;
 
@@ -51,6 +54,9 @@ void main()
 
     float aspect=resX/resY;
     fcolor=vcolor;
+
+    finactiveColor=vinactiveColor;
+
     fspeed=speed;
 
     texCoord=vPosition.xy;

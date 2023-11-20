@@ -23,9 +23,6 @@ class GlUiConfig
         this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
-        this.colorMulHover = 1.5;
-        this.colorMulActive = 1.3;
-        this.colorMulInActive = 1;
 
         this._defaultTheme =
         {

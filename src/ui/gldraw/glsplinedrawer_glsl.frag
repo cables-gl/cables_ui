@@ -1,5 +1,6 @@
 IN vec2 texCoord;
 IN vec4 fcolor;
+IN vec4 finactiveColor;
 IN float fProgress;
 IN float fSplineLength;
 IN float fspeed;
@@ -10,28 +11,39 @@ UNI vec2 mousePos;
 UNI float a;
 UNI float time;
 
+
+
+// vec4 finactiveColor=vec4(0.0,0.0,0.0,1.0);
+
+
 {{MODULES_HEAD}}
 
 void main()
 {
     vec4 finalColor=fcolor;
-    float darken=1.0;
-    float minOpacity=0.7;
+    // float darken=1.0;
+    // float minOpacity=0.7;
 
-    if(fspeed==0.0)darken=1.0;
-    if(fspeed==1.0)darken=1.1;
+
+    if(fspeed==0.0)finalColor=finactiveColor;
+    if(fspeed==1.0)finalColor=fcolor;
+    // if(fspeed==0.0)darken=1.0;
+    // if(fspeed==1.0)darken=1.1;
     if(fspeed>=2.0)
     {
         float ffspeed=clamp(fspeed,0.,25.0);
-        darken=step(0.5,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0))+minOpacity;
-        darken=clamp(darken,0.3,1.0);
+        float darken=step(0.5,mod((time*ffspeed/2.0)+fProgress*0.2*(ffspeed*0.1),1.0));
+
+        if(darken>0.5)finalColor=finactiveColor;
+        else finalColor=fcolor;
+        // if(darken)
     }
 
     {{MODULE_COLOR}}
-    finalColor.rgb*=darken;
+    // finalColor.rgb*=darken;
 
 // #ifdef LINE_OUTLINE
-//     if(abs(texCoord.y)>0.7) finalColor.rgb*=0.7;
+//     if(abs(texCoord.y)>0.7) finalColor.rgb*=0.0;
 // #endif
 
     #ifdef DEBUG_1
@@ -78,5 +90,8 @@ void main()
         // }
     #endif
 
+
+    // if(texCoord.y<0.001||texCoord.y>0.1-0.001)finalColor=fcolor;
+// finalColor.rgb*=texCoord.y;
     outColor = finalColor;
 }

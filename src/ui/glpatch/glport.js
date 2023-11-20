@@ -188,13 +188,6 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
     }
 
-    _getBrightness()
-    {
-        if (this._hover) return GlUiConfig.colorMulHover;
-        if (this._port.apf > 0) return GlUiConfig.colorMulActive;
-
-        return GlUiConfig.colorMulInActive;
-    }
 
     _onHover(rect)
     {
@@ -261,6 +254,27 @@ export default class GlPort
     }
 }
 
+
+GlPort.getInactiveColor = (type) =>
+{
+    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    let portname = "";
+
+    if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
+    else if (type == CABLES.OP_PORT_TYPE_FUNCTION) portname = "trigger";
+    else if (type == CABLES.OP_PORT_TYPE_OBJECT) portname = "obj";
+    else if (type == CABLES.OP_PORT_TYPE_ARRAY) portname = "array";
+    else if (type == CABLES.OP_PORT_TYPE_STRING) portname = "string";
+    else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
+
+    const name = portname + "_inactive";
+
+    let col = GlUiConfig.colors.types[name] || GlUiConfig.colors.types[portname] || [0, 0, 0, 1];
+
+    perf.finish();
+
+    return col;
+};
 
 GlPort.getColor = (type, hovering, selected) =>
 {
