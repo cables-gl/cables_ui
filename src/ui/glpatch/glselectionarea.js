@@ -12,15 +12,13 @@ export default class GlSelectionArea
         this._selectRect.setPosition(0, 0, 1000);
         this.previousOps = [];
 
-
-
         this._w = 0;
         this._h = 0;
     }
 
     updateTheme()
     {
-        this._selectRect.setColor(glUiConfig.colors.patch.patchSelectionArea);
+        this._selectRect.setColor(gui.theme.colors_patch.patchSelectionArea);
     }
 
     get w() { return this._w; }

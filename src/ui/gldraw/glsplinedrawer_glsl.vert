@@ -80,8 +80,6 @@ void main()
     vec2 screenPos3=fix( vec4(spline3,1.0));
 
     float wid=width*10.0+(3.0*fcolorBorder.a);
-        //     if(sizeAtt>0.0) //todo as define
-        //         wid=width*finalPosition.w*0.5;
 
     vec2 dir1 = normalize( screenPos2 - screenPos );
     vec2 dir2 = normalize( screenPos3 - screenPos2 );
@@ -94,16 +92,12 @@ void main()
 
     finalPosition = mix(finalPosition,finalPosition2,pos.x);
 
-
-    fProgress=splineProgress;//*(zoom*300.0);
-    fSplineLength=splineLength;//*(zoom*300.0);
-
+    fProgress=splineProgress;
+    fSplineLength=splineLength;
 
     finalPosition.xy += offset.xy;
 
     finalPosition.y*=-aspect;
-
-
     finalPosition.xy*=zoom;
     finalPosition.x+=scrollX;
     finalPosition.y+=scrollY;

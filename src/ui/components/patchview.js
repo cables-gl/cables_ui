@@ -243,7 +243,7 @@ export default class PatchView extends CABLES.EventTarget
 
         document.addEventListener("paste", (e) =>
         {
-            if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+            if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
             let items = (e.clipboardData || e.originalEvent.clipboardData).items;
             for (let index in items)
@@ -340,7 +340,7 @@ export default class PatchView extends CABLES.EventTarget
 
     addAssetOpAuto(filename, event)
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
         const ops = CABLES.UI.getOpsForFilename(filename);
 
@@ -748,7 +748,7 @@ export default class PatchView extends CABLES.EventTarget
 
     deleteSelectedOps()
     {
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
         const undoGroup = undo.startGroup();
         const ids = [];

@@ -114,9 +114,9 @@ export default class GlSplineDrawer
         this._splines[this._count] =
         {
             "points": [],
-            "color": [1, 1, 1, 1],
-            "colorInactive": [1, 1, 1, 1],
-            "colorBorder": [1, 1, 1, 1],
+            "color": [1, 0, 0, 1],
+            "colorInactive": [0, 1, 0, 1],
+            "colorBorder": [0, 0, 0, 0],
             "speed": 1,
             "index": this._count,
             "hidden": false
