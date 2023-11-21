@@ -9,6 +9,7 @@ import MouseState from "./mousestate";
 import defaultops from "../defaultops";
 import uiconfig from "../uiconfig";
 import gluiconfig from "./gluiconfig";
+import GlPatch from "./glpatch";
 
 
 export default class GlOp extends CABLES.EventTarget
@@ -477,7 +478,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._glTitle = new GlText(this._textWriter, title);
             this._glTitle.setParentRect(this._glRectBg);
-            this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+            this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this._op.objName);
 
             // if (this._displayType === this.DISPLAY_SUBPATCH)
             // {
@@ -1431,7 +1432,7 @@ export default class GlOp extends CABLES.EventTarget
 
     updateTheme()
     {
-        this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+        this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this._op.objName);
         this._updateColors();
 
         for (const i in this._links) this._links[i].updateTheme();

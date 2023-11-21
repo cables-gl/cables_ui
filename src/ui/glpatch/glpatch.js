@@ -1419,17 +1419,6 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
 
-    // make static util thing...
-    getOpNamespaceColor(ns)
-    {
-        const parts = ns.split(".");
-        const nss = parts[0] + "." + parts[1];
-
-        if (!gui.theme.colors_namespaces) return [1, 1, 1, 1];
-
-        if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
-        else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
-    }
 
     // make static util thing...
     setDrawableColorByType(e, t, diff)
@@ -1667,3 +1656,16 @@ export default class GlPatch extends CABLES.EventTarget
             this._glOpz[i].updateTheme();
     }
 }
+
+
+// make static util thing...
+GlPatch.getOpNamespaceColor = (ns) =>
+{
+    const parts = ns.split(".");
+    const nss = parts[0] + "." + parts[1];
+
+    if (!gui.theme.colors_namespaces) return [1, 1, 1, 1];
+
+    if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
+    else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
+};
