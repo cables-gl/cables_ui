@@ -1,6 +1,7 @@
 IN vec2 texCoord;
 IN vec4 fcolor;
 IN vec4 finactiveColor;
+IN vec4 fcolorBorder;
 IN float fProgress;
 IN float fSplineLength;
 IN float fspeed;
@@ -68,6 +69,16 @@ void main()
 
         float lengthStart=50.0;
 
+        if(fcolorBorder.a>0.0)
+        {
+            float border=0.3;
+            if(texCoord.y<border|| texCoord.y>1.0-border) finalColor=fcolorBorder;
+
+        //     float border=0.5;
+        //     if(texCoord.y<border)finalColor=mix(fcolorBorder,finalColor,abs(texCoord.y/border));
+        //     else if(texCoord.y>1.0-border)finalColor=mix(fcolorBorder,finalColor,abs((1.0-texCoord.y)/(border)));
+        }
+
 
         if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
         {
@@ -90,8 +101,7 @@ void main()
         // }
     #endif
 
+// finalColor=finactiveColor;
 
-    // if(texCoord.y<0.001||texCoord.y>0.1-0.001)finalColor=fcolor;
-// finalColor.rgb*=texCoord.y;
     outColor = finalColor;
 }
