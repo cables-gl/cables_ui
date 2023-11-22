@@ -137,6 +137,7 @@ export default class GlRect extends CABLES.EventTarget
 
     setSize(w, h)
     {
+        if (this._w == w && this._h == h) return;
         this._w = w;
         this._h = h;
         this._updateSize();

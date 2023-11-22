@@ -116,6 +116,10 @@ export default class GlOp extends CABLES.EventTarget
 
         this._initGl();
 
+        this._glPatch.on("selectedOpsChanged", (num) =>
+        {
+            if (this._glRectSelected) this.updateSize();
+        });
 
         // this.refreshPorts();
         // if (this._displayType === this.DISPLAY_SUBPATCH)
@@ -603,7 +607,15 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._glRectSelected)
         {
-            this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+            if (this._glPatch._numSelectedGlOps > 1)
+            {
+                this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+            }
+            else
+            {
+                // this._glRectSelected.setPosition(0, 0);
+                this._glRectSelected.setSize(0, 0);
+            }
         }
 
         this._updateCommentPosition();

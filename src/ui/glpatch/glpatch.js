@@ -1197,7 +1197,10 @@ export default class GlPatch extends CABLES.EventTarget
             const numSelectedOps = Object.keys(this._selectedGlOps).length;
 
             gui.patchView.showSelectedOpsPanel();
+
+            const changedNumOps = this._numSelectedGlOps != numSelectedOps;
             this._numSelectedGlOps = numSelectedOps;
+            if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
         }
         else
         {
