@@ -49,7 +49,9 @@ export default class GlSplineDrawer
         this._uniZpos = new CGL.Uniform(this._shader, "f", "zpos", 0.96);
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
-        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 0.3);
+        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
+        this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
+
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
         this._shader.toggleDefine("FADEOUT", !userSettings.get("noFadeOutCables"));
@@ -57,6 +59,12 @@ export default class GlSplineDrawer
         userSettings.on("change", (which, val) =>
         {
             if (which == "noFadeOutCables") this._shader.toggleDefine("FADEOUT", !val);
+        });
+
+        gui.on("themeChanged", () =>
+        {
+            this._uniWidth.set(gui.theme.patch.cablesWidth || 3);
+            this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
         });
     }
 
@@ -300,7 +308,7 @@ export default class GlSplineDrawer
 
     setWidth(w)
     {
-        this._uniWidth.set(w);
+        this._uniWidth.set(w * 10);
     }
 
     buildMesh()
@@ -692,5 +700,11 @@ export default class GlSplineDrawer
         perf.finish();
 
         return this._arrEdges;
+    }
+
+    updateTheme()
+    {
+        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 3);
+        this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "width", 3);
     }
 }

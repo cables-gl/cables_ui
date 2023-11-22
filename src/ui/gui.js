@@ -2212,7 +2212,8 @@ export default class Gui
         document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
 
         this.theme = theme;
-        this.patchView.updateTheme();
+
+        this.emitEvent("themeChanged");
         return missing;
     }
 

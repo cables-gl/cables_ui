@@ -11,8 +11,6 @@ OUT vec4 finactiveColor;
 IN vec4 vcolorBorder;
 OUT vec4 fcolorBorder;
 
-
-
 IN float speed;
 OUT float fspeed;
 
@@ -23,6 +21,7 @@ IN float splineLength;
 OUT float fSplineLength;
 
 UNI float width;
+UNI float widthSelected;
 UNI float zpos;
 
 IN vec3 spline,spline2,spline3;
@@ -79,7 +78,7 @@ void main()
     vec2 screenPos2=fix( vec4(spline2,1.0));
     vec2 screenPos3=fix( vec4(spline3,1.0));
 
-    float wid=width*10.0+(3.0*fcolorBorder.a);
+    float wid=width+(widthSelected*fcolorBorder.a);
 
     vec2 dir1 = normalize( screenPos2 - screenPos );
     vec2 dir2 = normalize( screenPos3 - screenPos2 );

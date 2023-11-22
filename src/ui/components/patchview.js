@@ -2936,9 +2936,4 @@ export default class PatchView extends CABLES.EventTarget
         }
         return op;
     }
-
-    updateTheme()
-    {
-        this.patchRenderer.updateTheme();
-    }
 }

@@ -173,6 +173,7 @@ export default class GlPatch extends CABLES.EventTarget
         cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
         cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this));
 
+        gui.on("themeChanged", this.updateTheme.bind(this));
 
         gui.keys.key(["Delete", "Backspace"], "Delete selected ops", "down", cgl.canvas.id, {}, this._onKeyDelete.bind(this));
         gui.keys.key("f", "Toggle flow visualization", "down", cgl.canvas.id, {}, (e) =>
