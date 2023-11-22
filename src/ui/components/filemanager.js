@@ -274,10 +274,8 @@ export default class FileManager
 
         this.updateHeader();
 
-
         if (this._files.length == 0)
         {
-            console.log("no fiules");
             const els = ele.byQuery("#filemanagercontainer .filelistcontainer");
             if (els)els.innerHTML = "<br/><br/><br/><br/><center>This Patch contains no files yet!<br/><br/><a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Upload files</a> or use files from our <a class=\"button-small\" onclick=\"gui.fileManager.setSource('lib');\">Library</a></center>";
         }
