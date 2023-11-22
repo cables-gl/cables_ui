@@ -26,8 +26,10 @@ export default class SuggestionDialog
 
         CABLES.UI.suggestions = this;
 
-        const sugDegree = 6;
+        let sugDegree = 6;
         const sugHeight = 23;
+
+        if (suggestions.length > 10)sugDegree = 3;
 
         for (let i = 0; i < suggestions.length; i++)
         {
