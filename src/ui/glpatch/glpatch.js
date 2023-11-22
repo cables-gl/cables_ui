@@ -1194,13 +1194,10 @@ export default class GlPatch extends CABLES.EventTarget
 
             gui.emitEvent("drawSelectionArea", this._lastMouseX, this._lastMouseY, (x - this._lastMouseX), (y - this._lastMouseY));
 
-            const numSelectedOps = Object.keys(this._selectedGlOps).length;
 
             gui.patchView.showSelectedOpsPanel();
 
-            const changedNumOps = this._numSelectedGlOps != numSelectedOps;
-            this._numSelectedGlOps = numSelectedOps;
-            if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+            this._updateNumberOfSelectedOps();
         }
         else
         {
@@ -1218,13 +1215,21 @@ export default class GlPatch extends CABLES.EventTarget
         this._lastButton = this.mouseState.getButton();
     }
 
+    _updateNumberOfSelectedOps()
+    {
+        const numSelectedOps = Object.keys(this._selectedGlOps).length;
+
+        const changedNumOps = this._numSelectedGlOps != numSelectedOps;
+        this._numSelectedGlOps = numSelectedOps;
+        if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+    }
+
     _getGlOpsInRect(xa, ya, xb, yb)
     {
         if (this.cacheOIRxa == xa && this.cacheOIRya == ya && this.cacheOIRxb == xb && this.cacheOIRyb == yb)
             return this.cacheOIRops;
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] ops in rect");
-
         const x = Math.min(xa, xb);
         const y = Math.min(ya, yb);
         const x2 = Math.max(xa, xb);
@@ -1264,6 +1269,7 @@ export default class GlPatch extends CABLES.EventTarget
         this._selectedGlOps = {};
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
+        this._updateNumberOfSelectedOps();
 
         perf.finish();
     }

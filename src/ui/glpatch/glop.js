@@ -118,6 +118,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.on("selectedOpsChanged", (num) =>
         {
+            this._updateSelectedRect();
             if (this._glRectSelected) this.updateSize();
         });
 
@@ -142,8 +143,7 @@ export default class GlOp extends CABLES.EventTarget
 
             this._op.patch.on("subpatchExpose", (subpatchid) =>
             {
-                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
-                    this.refreshPorts();
+                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid) this.refreshPorts();
             });
         }
     }
@@ -350,6 +350,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
             gui.patchView.selectChilds(this.op.id);
+            this._glPatch.emitEvent("selectedOpsChanged", gui.patchView.getSelectedOps());
         }
 
         if (!this.selected)
@@ -475,6 +476,13 @@ export default class GlOp extends CABLES.EventTarget
         if (!title) title = this._op.getTitle();
         if (textWriter) this._textWriter = textWriter;
         if (title === undefined)title = "";
+
+        if (
+            this._displayType != this.DISPLAY_COMMENT &&
+            this._displayType != this.DISPLAY_UI_AREA &&
+            title != "var set" &&
+            title != "var get" &&
+            title != this._op.shortName) title = "\"" + title + "\"";
 
         if (!this._glTitle)
         {
@@ -1340,6 +1348,11 @@ export default class GlOp extends CABLES.EventTarget
 
                 for (const i in this._links) this._links[i].updateColor();
                 // this._updateColors();
+
+
+                this._glPatch._updateNumberOfSelectedOps();
+                this._glPatch.selectOpId(this._id);
+                // console.log("_updateNumberOfSelectedOps");
             }
 
             this.updatePosition();
