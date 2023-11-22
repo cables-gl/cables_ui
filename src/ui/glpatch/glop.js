@@ -541,6 +541,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (!this._glRectSelected)
             {
+                if (!this._instancer) return; // how?
                 this._glRectSelected = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false });
                 this._glRectSelected.setColor(gui.theme.colors_patch.selected);
 
