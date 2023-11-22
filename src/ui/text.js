@@ -214,7 +214,11 @@ const text =
         "title_fontsize": "Text Size",
         "subtitle_fontsize": "Size Of Text and Icons in cables",
         "subtitle_fontsize_ace": "Font size in Text editor",
-        "subtitle_formatcode": "Format code after saving"
+        "subtitle_formatcode": "Format code after saving",
+
+
+        "subtitle_notlocalizeNumberformat": "Localize output port number format"
+
 
     },
     "tips":

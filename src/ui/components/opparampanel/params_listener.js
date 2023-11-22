@@ -2,6 +2,7 @@ import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
 import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
+import userSettings from "../usersettings";
 import paramsHelper from "./params_helper";
 import WatchPortVisualizer from "./watchPortVisualizer";
 
@@ -19,6 +20,11 @@ class ParamsListener extends CABLES.EventTarget
         this._watchStrings = [];
         this._portsIn = [];
         this._portsOut = [];
+
+        this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
+
+
+
 
         this._watchPortVisualizer = new WatchPortVisualizer();
 
@@ -904,7 +910,8 @@ class ParamsListener extends CABLES.EventTarget
     {
         const options = { "useGrouping": false, "maximumSignificantDigits": 16 };
         n = n || 0;
-        return n.toLocaleString("fullwide", options);
+        if (this._doFormatNumbers) return n.toLocaleString("fullwide", options);
+        else return String(n);
     }
 }
 

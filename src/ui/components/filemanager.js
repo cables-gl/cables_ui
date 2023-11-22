@@ -84,8 +84,8 @@ export default class FileManager
     {
         this._manager.clear();
 
-        this._fileSource = this._fileSource || "lib";
-        if (this._firstTimeOpening) this._fileSource = "patch";
+        this._fileSource = this._fileSource || "patch";
+        // if (this._firstTimeOpening) this._fileSource = "patch";
 
         if (gui.isGuestEditor())
         {
@@ -105,13 +105,13 @@ export default class FileManager
         {
             if (!files) files = [];
             const patchFiles = files.filter((file) => { return file.projectId && file.projectId === gui.project()._id; });
-            if (this._firstTimeOpening && patchFiles.length === 0)
-            {
-                this._firstTimeOpening = false;
-                this._fileSource = "lib";
-                this.reload(cb);
-                return;
-            }
+            // if (this._firstTimeOpening && patchFiles.length === 0)
+            // {
+            //     this._firstTimeOpening = false;
+            //     this._fileSource = "lib";
+            //     this.reload(cb);
+            //     return;
+            // }
 
             this._firstTimeOpening = false;
             this._files = files;
@@ -266,12 +266,21 @@ export default class FileManager
             this._createItem(items, this._files[i], this._filterType);
         }
 
+
         this._manager.listHtmlOptions.showHeader = this._fileSource !== "lib";
         this._manager.listHtmlOptions.order = this._order;
         this._manager.listHtmlOptions.orderReverse = this._orderReverse;
         this._manager.setItems(items);
 
         this.updateHeader();
+
+
+        if (this._files.length == 0)
+        {
+            console.log("no fiules");
+            const els = ele.byQuery("#filemanagercontainer .filelistcontainer");
+            if (els)els.innerHTML = "<br/><br/><br/><br/><center>This Patch contains no files yet!<br/><br/><a class=\"button-small\" onclick=\"CABLES.CMD.PATCH.uploadFileDialog();\">Upload files</a> or use files from our <a class=\"button-small\" onclick=\"gui.fileManager.setSource('lib');\">Library</a></center>";
+        }
     }
 
     setFilter(f)
