@@ -1,16 +1,16 @@
-import GlUiConfig from "./gluiconfig";
 import GlPort from "./glport";
 import GlText from "../gldraw/gltext";
 import GlArea from "./glarea";
 import GlRect from "../gldraw/glrect";
 import userSettings from "../components/usersettings";
 import GlLinedrawer from "../gldraw/gllinedrawer";
-import GlLink from "./gllink";
 import undo from "../utils/undo";
-import Gui from "../gui";
 import MouseState from "./mousestate";
 import defaultops from "../defaultops";
 import uiconfig from "../uiconfig";
+import gluiconfig from "./gluiconfig";
+import GlPatch from "./glpatch";
+
 
 export default class GlOp extends CABLES.EventTarget
 {
@@ -30,13 +30,14 @@ export default class GlOp extends CABLES.EventTarget
         this._objName = op.objName;
         this._glRectNames = [];
         this._instancer = instancer;
-        this._width = GlUiConfig.opWidth;
-        this._height = GlUiConfig.opHeight;
+        this._width = gluiconfig.opWidth;
+        this._height = gluiconfig.opHeight;
         this._needsUpdate = true;
         this._textWriter = null;
         this._resizableArea = null;
         this._glRectNames.push("_resizableArea");
 
+        this._glRectSelected = null;
         this._glRectBg = null;
         this._rectResize = null;
         this._glColorIndicator = null;
@@ -170,11 +171,12 @@ export default class GlOp extends CABLES.EventTarget
         this.updateSize();
     }
 
+
     _initGl()
     {
         this._glRectBg = this._instancer.createRect({ "draggable": true });
-        this._glRectBg.setSize(GlUiConfig.opWidth, GlUiConfig.opHeight);
-        this._glRectBg.setColor(GlUiConfig.colors.patch.opBgRect);
+        this._glRectBg.setSize(gluiconfig.opWidth, gluiconfig.opHeight);
+        this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
 
         this._glRectNames.push("_glRectBg");
 
@@ -187,8 +189,6 @@ export default class GlOp extends CABLES.EventTarget
     get glPatch() { return this._glPatch; }
 
     get isDragging() { if (this._glRectBg) return this._glRectBg.isDragging; else return false; }
-
-    get selected() { return this.opUiAttribs.selected; }
 
     get x() { if (this.opUiAttribs.translate) return this.opUiAttribs.translate.x; else return 0; }
 
@@ -208,7 +208,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
+        if (window.gui.getRestriction() < gui.RESTRICT_MODE_FULL) return;
 
         const glOps = this._glPatch.selectedGlOps;
         const ids = Object.keys(glOps);
@@ -241,7 +241,7 @@ export default class GlOp extends CABLES.EventTarget
     getPosZ()
     {
         if (this._displayType == this.DISPLAY_UI_AREA) return -0.1;
-        if (this.selected) return -0.5;
+        if (this.selected) return -0.3;
         return this._origPosZ;
     }
 
@@ -312,7 +312,7 @@ export default class GlOp extends CABLES.EventTarget
     _onMouseDown(e)
     {
         CABLES.mouseButtonWheelDown = false;
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+        if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
 
         if (!this._op)
         {
@@ -478,7 +478,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._glTitle = new GlText(this._textWriter, title);
             this._glTitle.setParentRect(this._glRectBg);
-            this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+            this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this._op.objName);
 
             // if (this._displayType === this.DISPLAY_SUBPATCH)
             // {
@@ -499,7 +499,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._hidePorts = true;
                 this._glTitle.scale = 4;
-                this._glTitle.setColor(GlUiConfig.colors.patch.patchComment);
+                this._glTitle.setColor(gui.theme.colors_patch.patchComment);
             }
             this._updateColors();
         }
@@ -516,6 +516,29 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glComment)
             if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this.getPosZ());
             else this._glComment.setPosition(0, this._height + 20, this.getPosZ());
+    }
+
+
+    _updateSelectedRect()
+    {
+        if (!this.selected && this._glRectSelected)
+        {
+            this._glRectSelected.visible = false;
+            return;
+        }
+
+        if (this.selected)
+        {
+            if (!this._glRectSelected)
+            {
+                this._glRectSelected = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false });
+                this._glRectSelected.setColor(gui.theme.colors_patch.selected);
+
+                this.updateSize();
+                this.updatePosition();
+            }
+            this._glRectSelected.visible = true;
+        }
     }
 
     updateSize()
@@ -541,12 +564,12 @@ export default class GlOp extends CABLES.EventTarget
         const oldHeight = this._height;
         for (let i = 0; i < this._glPorts.length; i++)
         {
-            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN) portsWidthIn += this._glPorts[i].width + GlUiConfig.portPadding;
-            else portsWidthOut += this._glPorts[i].width + GlUiConfig.portPadding;
+            if (this._glPorts[i].direction == CABLES.PORT_DIR_IN) portsWidthIn += this._glPorts[i].width + gluiconfig.portPadding;
+            else portsWidthOut += this._glPorts[i].width + gluiconfig.portPadding;
         }
 
-        if (portsWidthIn != 0) portsWidthIn -= GlUiConfig.portPadding;
-        if (portsWidthOut != 0) portsWidthOut -= GlUiConfig.portPadding;
+        if (portsWidthIn != 0) portsWidthIn -= gluiconfig.portPadding;
+        if (portsWidthOut != 0) portsWidthOut -= gluiconfig.portPadding;
 
         // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = this._getTitleWidth();
@@ -556,7 +579,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
         if (this.opUiAttribs.width) this._width = Math.max(minWidth, this.opUiAttribs.width);
 
-        if (this._height < GlUiConfig.opHeight) this._height = GlUiConfig.opHeight;
+        if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 
         // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
@@ -572,11 +595,17 @@ export default class GlOp extends CABLES.EventTarget
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
 
+
         if (this._glColorIndicator)
         {
             this._glColorIndicator.setPosition(this._width, 0);
             this._glColorIndicator.setSize(this._height * 0.5, this._height);
             this._width += this._height * 0.5;
+        }
+
+        if (this._glRectSelected)
+        {
+            this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
         }
 
         this._updateCommentPosition();
@@ -611,6 +640,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glDotError) this._glDotError = this._glDotError.dispose();
         if (this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
         if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+
         if (this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
     }
 
@@ -618,6 +648,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         this._disposed = true;
         if (this._glRectBg) this._glRectBg = this._glRectBg.dispose();
+        if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
         if (this._glComment) this._glComment = this._glComment.dispose();
         if (this._titleExt) this._titleExt = this._titleExt.dispose();
@@ -816,6 +847,8 @@ export default class GlOp extends CABLES.EventTarget
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
+        if (this._glRectSelected) this._glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, 0.5);
+
         if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
@@ -831,22 +864,22 @@ export default class GlOp extends CABLES.EventTarget
     _getTitleWidth()
     {
         let w = 0;
-        if (this._titleExt) w += this._titleExt.width + GlUiConfig.OpTitlePaddingExtTitle;
+        if (this._titleExt) w += this._titleExt.width + gluiconfig.OpTitlePaddingExtTitle;
         if (this._glTitle) w += this._glTitle.width;
 
-        w += GlUiConfig.OpTitlePaddingLeftRight * 2.0;
+        w += gluiconfig.OpTitlePaddingLeftRight * 2.0;
 
         return w;
     }
 
     _getTitlePosition()
     {
-        return GlUiConfig.OpTitlePaddingLeftRight;
+        return gluiconfig.OpTitlePaddingLeftRight;
     }
 
     _getTitleExtPosition()
     {
-        return GlUiConfig.OpTitlePaddingLeftRight + this._glTitle.width + GlUiConfig.OpTitlePaddingExtTitle;
+        return gluiconfig.OpTitlePaddingLeftRight + this._glTitle.width + gluiconfig.OpTitlePaddingExtTitle;
     }
 
     updateVisible()
@@ -926,8 +959,8 @@ export default class GlOp extends CABLES.EventTarget
             if (!this._glLoadingIndicator)
             {
                 this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glLoadingIndicator.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glLoadingIndicator.setColor(GlUiConfig.colors.patch.opErrorHint);
+                this._glLoadingIndicator.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glLoadingIndicator.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glLoadingIndicator.setShape(8);
 
                 this._glLoadingIndicator.setColor(1, 1, 1, 1);
@@ -957,24 +990,24 @@ export default class GlOp extends CABLES.EventTarget
                 if (this.opUiAttribs.uierrors[i].level == 3) notworking = true;
             }
 
-            let dotX = 0 - GlUiConfig.OpErrorDotSize / 2;
-            const dotY = this.h / 2 - GlUiConfig.OpErrorDotSize / 2;
+            let dotX = 0 - gluiconfig.OpErrorDotSize / 2;
+            const dotY = this.h / 2 - gluiconfig.OpErrorDotSize / 2;
 
             if (!this._glDotHint)
             {
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotHint.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotHint.setColor(GlUiConfig.colors.patch.opErrorHint);
+                this._glDotHint.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotHint.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glDotHint.setShape(6);
 
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotWarning.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotWarning.setColor(GlUiConfig.colors.patch.opErrorWarning);
+                this._glDotWarning.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotWarning.setColor(gui.theme.colors_patch.opErrorWarning);
                 this._glDotWarning.setShape(6);
 
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotError.setSize(GlUiConfig.OpErrorDotSize, GlUiConfig.OpErrorDotSize);
-                this._glDotError.setColor(GlUiConfig.colors.patch.opError);
+                this._glDotError.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotError.setColor(gui.theme.colors_patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
 
@@ -1046,7 +1079,6 @@ export default class GlOp extends CABLES.EventTarget
         {
             this._titleExt = new GlText(this._textWriter, " ???");
             this._titleExt.setParentRect(this._glRectBg);
-            this._titleExt.setColor(GlUiConfig.colors.patch.opTitleExt);
             this._titleExt.visible = this.visible;
         }
         if (this._titleExt &&
@@ -1109,7 +1141,7 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._glComment = new GlText(this._textWriter, comment);
                 this._glComment.setParentRect(this._glRectBg);
-                this._glComment.setColor(GlUiConfig.colors.patch.patchComment);
+                this._glComment.setColor(gui.theme.colors_patch.patchComment);
             }
 
             if (comment != this._glComment.text) this._glComment.text = comment;
@@ -1212,7 +1244,7 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         this._glRectBg.setBorder(this._rectBorder);
-        if (this._transparent) this._glRectBg.setColor(GlUiConfig.colors.patch.transparent);
+        if (this._transparent) this._glRectBg.setColor(gui.theme.colors_patch.transparent);
         else
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
@@ -1230,7 +1262,7 @@ export default class GlOp extends CABLES.EventTarget
             }
             else
             {
-                this._glRectBg.setColor(GlUiConfig.colors.patch.opBgRect);
+                this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
                 // if (this._glRectRightHandle && this.opUiAttribs.color == null)
                 // {
                 //     this._glRectRightHandle.dispose();
@@ -1242,9 +1274,13 @@ export default class GlOp extends CABLES.EventTarget
         if (this.opUiAttribs.selected)
         {
             this._glRectBg.setSelected(1);
-            this._glTitle.setColor(GlUiConfig.colors.patch.opTitleSelected);
+            if (gui.theme.colors_patch.opBgRectSelected) this._glRectBg.setColor(gui.theme.colors_patch.opBgRectSelected);
         }
-        else this._glRectBg.setSelected(0);
+        else
+        {
+            this._glRectBg.setSelected(0);
+            this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
+        }
 
 
         if (this._displayType === this.DISPLAY_UI_AREA)
@@ -1279,6 +1315,8 @@ export default class GlOp extends CABLES.EventTarget
         this._glRectNames.push("_glTitle");
     }
 
+    get selected() { return this.opUiAttribs.selected; }
+
     set selected(s)
     {
         if (!this._op) return;
@@ -1293,7 +1331,9 @@ export default class GlOp extends CABLES.EventTarget
                 for (const i in this._links) this._links[i].updateColor();
                 // this._updateColors();
             }
+
             this.updatePosition();
+            this._updateSelectedRect();
         }
     }
 
@@ -1392,9 +1432,15 @@ export default class GlOp extends CABLES.EventTarget
 
     updateTheme()
     {
-        this._OpNameSpaceColor = this._glPatch.getOpNamespaceColor(this._op.objName);
+        this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this._op.objName);
         this._updateColors();
 
         for (const i in this._links) this._links[i].updateTheme();
+
+
+        this.update();
+        this.updateSize();
+        if (this._titleExt) this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
+        if (this._glRectSelected) this._glRectSelected.setColor(gui.theme.colors_patch.selected);
     }
 }

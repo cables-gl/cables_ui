@@ -114,7 +114,9 @@ export default class GlSplineDrawer
         this._splines[this._count] =
         {
             "points": [],
-            "color": [1, 1, 1, 1],
+            "color": [1, 0, 0, 1],
+            "colorInactive": [0, 1, 0, 1],
+            "colorBorder": [0, 0, 0, 0],
             "speed": 1,
             "index": this._count,
             "hidden": false
@@ -144,6 +146,34 @@ export default class GlSplineDrawer
             this._splines[idx].speed = speed;
             this._updateAttribsSpeed(idx);
             // this._rebuildLater = true;
+        }
+    }
+
+    setSplineColorInactive(idx, rgba)
+    {
+        if (
+            this._float32Diff(this._splines[idx].colorInactive[0], rgba[0]) ||
+            this._float32Diff(this._splines[idx].colorInactive[1], rgba[1]) ||
+            this._float32Diff(this._splines[idx].colorInactive[2], rgba[2]) ||
+            this._float32Diff(this._splines[idx].colorInactive[3], rgba[3]))
+        {
+            this._splines[idx].colorInactive = rgba;
+            // this._rebuildLater = true;
+            this._updateAttribsCoordinates(idx, { "colors": true });
+        }
+    }
+
+    setSplineColorBorder(idx, rgba)
+    {
+        if (
+            this._float32Diff(this._splines[idx].colorBorder[0], rgba[0]) ||
+            this._float32Diff(this._splines[idx].colorBorder[1], rgba[1]) ||
+            this._float32Diff(this._splines[idx].colorBorder[2], rgba[2]) ||
+            this._float32Diff(this._splines[idx].colorBorder[3], rgba[3]))
+        {
+            this._splines[idx].colorBorder = rgba;
+            // this._rebuildLater = true;
+            this._updateAttribsCoordinates(idx, { "colors": true });
         }
     }
 
@@ -308,8 +338,8 @@ export default class GlSplineDrawer
 
         if (!this._mesh) this._mesh = new CGL.Mesh(this._cgl, this._geom);
 
-        this._mesh.setAttribute("attrVertNormal", new Float32Array(this._verts.length), 3);
-        this._mesh.setAttribute("attrTexCoord", new Float32Array(this._verts.length / 3 * 2), 2);
+        // this._mesh.setAttribute("attrVertNormal", new Float32Array(this._verts.length), 3);
+        // this._mesh.setAttribute("attrTexCoord", new Float32Array(this._verts.length / 3 * 2), 2);
 
         this._mesh.addVertexNumbers = false;
         this._mesh.updateVertices(this._geom);
@@ -438,6 +468,15 @@ export default class GlSplineDrawer
                 this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
                 this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
 
+                this._colorsInactive[(off + count) / 3 * 4 + 0] = this._splines[idx].colorInactive[0];
+                this._colorsInactive[(off + count) / 3 * 4 + 1] = this._splines[idx].colorInactive[1];
+                this._colorsInactive[(off + count) / 3 * 4 + 2] = this._splines[idx].colorInactive[2];
+                this._colorsInactive[(off + count) / 3 * 4 + 3] = this._splines[idx].colorInactive[3];
+
+                this._colorsBorder[(off + count) / 3 * 4 + 0] = this._splines[idx].colorBorder[0];
+                this._colorsBorder[(off + count) / 3 * 4 + 1] = this._splines[idx].colorBorder[1];
+                this._colorsBorder[(off + count) / 3 * 4 + 2] = this._splines[idx].colorBorder[2];
+                this._colorsBorder[(off + count) / 3 * 4 + 3] = this._splines[idx].colorBorder[3];
 
                 for (let k = 0; k < 3; k++)
                 {
@@ -449,10 +488,16 @@ export default class GlSplineDrawer
             }
         }
 
-        if (updateWhat == undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat == undefined || updateWhat.colors)
+        {
+            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
+            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
+            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
+        }
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
         if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineLength"), this._pointsSplineLength, off / 3, (off + count) / 3);
         if (updateWhat == undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
@@ -509,6 +554,8 @@ export default class GlSplineDrawer
         if (this._points.length != newLength)
         {
             this._colors = new Float32Array(newLength / 3 * 4);
+            this._colorsInactive = new Float32Array(newLength / 3 * 4);
+            this._colorsBorder = new Float32Array(newLength / 3 * 4);
 
             this._points = new Float32Array(newLength);
             this._points2 = new Float32Array(newLength);
@@ -566,9 +613,12 @@ export default class GlSplineDrawer
 
 
         this._mesh.setAttribute("speed", this._speeds, 1);
+
         this._mesh.setAttribute("splineDoDraw", this._doDraw, 1);
 
         this._mesh.setAttribute("vcolor", this._colors, 4);
+        this._mesh.setAttribute("vcolorInactive", this._colorsInactive, 4);
+        this._mesh.setAttribute("vcolorBorder", this._colorsBorder, 4);
 
         this._mesh.setAttribute("spline", this._points, 3);
         this._mesh.setAttribute("spline2", this._points2, 3);
@@ -578,11 +628,7 @@ export default class GlSplineDrawer
 
 
         for (const i in this._splines)
-        {
-            // console.log("spl ", i);
             this._updateAttribsCoordinates(this._splines[i].index);
-        }
-
 
         const rows = [[
             "idx",

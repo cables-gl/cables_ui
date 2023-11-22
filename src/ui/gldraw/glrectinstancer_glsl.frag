@@ -213,11 +213,11 @@ float samp(in vec2 uv, float w) {
        else finalColor.rgb+=vec3(add*0.1);
     }
 
-    if(selected==1.0) // stripe
-    {
-       float w=0.05;
-       finalColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));
-    }
+    // if(selected==1.0) // stripe
+    // {
+    //    float w=0.05;
+    //    finalColor.rgb+=0.12*vec3( step(w/2.0,mod( time*0.04+posSize.x+posSize.y,w )));
+    // }
 
     finalColor.a*=col.a;
 

@@ -553,9 +553,9 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._greyOutRect = this._overLayRects.createRect();
             this._greyOutRect.setColor(
-                glUiConfig.colors.patch.background[0],
-                glUiConfig.colors.patch.background[1],
-                glUiConfig.colors.patch.background[2],
+                gui.theme.colors_patch.background[0],
+                gui.theme.colors_patch.background[1],
+                gui.theme.colors_patch.background[2],
                 0.25);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
@@ -572,9 +572,9 @@ export default class GlPatch extends CABLES.EventTarget
         // if (this.greyOutBlue && this._greyOutRect)
         // {
         //     this._greyOutRect.setColor(
-        //         glUiConfig.colors.patch.background[0] * 0.8,
-        //         glUiConfig.colors.patch.background[1] * 1.5,
-        //         glUiConfig.colors.patch.background[2] * 2.5,
+        //         gui.theme.colors_patch.background[0] * 0.8,
+        //         gui.theme.colors_patch.background[1] * 1.5,
+        //         gui.theme.colors_patch.background[2] * 2.5,
         //         0.25);
         // }
     }
@@ -862,17 +862,17 @@ export default class GlPatch extends CABLES.EventTarget
             // if (this.greyOutBlue)
             // {
             //     this._cgl.gl.clearColor(
-            //         glUiConfig.colors.patch.background[0] + (0.3 * 0.0),
-            //         glUiConfig.colors.patch.background[1] + (0.3 * 0.1),
-            //         glUiConfig.colors.patch.background[2] + (0.3 * 0.3),
+            //         gui.theme.colors_patch.background[0] + (0.3 * 0.0),
+            //         gui.theme.colors_patch.background[1] + (0.3 * 0.1),
+            //         gui.theme.colors_patch.background[2] + (0.3 * 0.3),
             //         1);
             // }
             // else
             this._cgl.gl.clearColor(
-                glUiConfig.colors.patch.background[0],
-                glUiConfig.colors.patch.background[1],
-                glUiConfig.colors.patch.background[2],
-                glUiConfig.colors.patch.background[3]);
+                gui.theme.colors_patch.background[0],
+                gui.theme.colors_patch.background[1],
+                gui.theme.colors_patch.background[2],
+                gui.theme.colors_patch.background[3]);
         }
 
         // if (
@@ -931,9 +931,9 @@ export default class GlPatch extends CABLES.EventTarget
         // console.log(this.subPatchAnim);
 
         //     this._fadeOutRect.setColor(
-        //         glUiConfig.colors.patch.background[0],
-        //         glUiConfig.colors.patch.background[1],
-        //         glUiConfig.colors.patch.background[2],
+        //         gui.theme.colors_patch.background[0],
+        //         gui.theme.colors_patch.background[1],
+        //         gui.theme.colors_patch.background[2],
         //         v);
         // }
 
@@ -1419,17 +1419,6 @@ export default class GlPatch extends CABLES.EventTarget
     }
 
 
-    // make static util thing...
-    getOpNamespaceColor(ns)
-    {
-        const parts = ns.split(".");
-        const nss = parts[0] + "." + parts[1];
-
-        if (!glUiConfig.colors.namespaces) return [1, 1, 1, 1];
-
-        if (glUiConfig.colors.namespaces[nss]) return glUiConfig.colors.namespaces[nss];
-        else return glUiConfig.colors.namespaces.unknown || [1, 0, 0, 1];
-    }
 
     // make static util thing...
     setDrawableColorByType(e, t, diff)
@@ -1438,14 +1427,14 @@ export default class GlPatch extends CABLES.EventTarget
         diff = diff || glUiConfig.colorMulInActive;
 
         let col = [0, 0, 0, 0];
-        if (!glUiConfig.colors.types) return;
+        if (!gui.theme.colors.types) return;
 
-        if (t == CABLES.OP_PORT_TYPE_VALUE) if (glUiConfig.colors.types.num) col = [glUiConfig.colors.types.num[0] * diff, glUiConfig.colors.types.num[1] * diff, glUiConfig.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (glUiConfig.colors.types.trigger) col = [glUiConfig.colors.types.trigger[0] * diff, glUiConfig.colors.types.trigger[1] * diff, glUiConfig.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (glUiConfig.colors.types.obj) col = [glUiConfig.colors.types.obj[0] * diff, glUiConfig.colors.types.obj[1] * diff, glUiConfig.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (glUiConfig.colors.types.arr) col = [glUiConfig.colors.types.arr[0] * diff, glUiConfig.colors.types.arr[1] * diff, glUiConfig.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_STRING) if (glUiConfig.colors.types.str) col = [glUiConfig.colors.types.str[0] * diff, glUiConfig.colors.types.str[1] * diff, glUiConfig.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
-        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (glUiConfig.colors.types.dynamic) col = [glUiConfig.colors.types.dynamic[0] * diff, glUiConfig.colors.types.dynamic[1] * diff, glUiConfig.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        if (t == CABLES.OP_PORT_TYPE_VALUE) if (gui.theme.colors.types.num) col = [gui.theme.colors.types.num[0] * diff, gui.theme.colors.types.num[1] * diff, gui.theme.colors.types.num[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_FUNCTION) if (gui.theme.colors.types.trigger) col = [gui.theme.colors.types.trigger[0] * diff, gui.theme.colors.types.trigger[1] * diff, gui.theme.colors.types.trigger[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_OBJECT) if (gui.theme.colors.types.obj) col = [gui.theme.colors.types.obj[0] * diff, gui.theme.colors.types.obj[1] * diff, gui.theme.colors.types.obj[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_ARRAY) if (gui.theme.colors.types.arr) col = [gui.theme.colors.types.arr[0] * diff, gui.theme.colors.types.arr[1] * diff, gui.theme.colors.types.arr[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_STRING) if (gui.theme.colors.types.str) col = [gui.theme.colors.types.str[0] * diff, gui.theme.colors.types.str[1] * diff, gui.theme.colors.types.str[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
+        else if (t == CABLES.OP_PORT_TYPE_DYNAMIC) if (gui.theme.colors.types.dynamic) col = [gui.theme.colors.types.dynamic[0] * diff, gui.theme.colors.types.dynamic[1] * diff, gui.theme.colors.types.dynamic[2] * diff, 1]; else col = [0.7, 0.7, 0.7, 1];
 
 
         e.setColor(col[0], col[1], col[2], col[3]);
@@ -1667,3 +1656,16 @@ export default class GlPatch extends CABLES.EventTarget
             this._glOpz[i].updateTheme();
     }
 }
+
+
+// make static util thing...
+GlPatch.getOpNamespaceColor = (ns) =>
+{
+    const parts = ns.split(".");
+    const nss = parts[0] + "." + parts[1];
+
+    if (!gui.theme.colors_namespaces) return [1, 1, 1, 1];
+
+    if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
+    else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
+};

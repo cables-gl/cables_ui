@@ -139,7 +139,7 @@ export default class GlViewBox
         this._lastPosPixel[0] = e.offsetX;
         this._lastPosPixel[1] = e.offsetY;
 
-        if (window.gui.getRestriction() < Gui.RESTRICT_MODE_EXPLORER) return;
+        if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
             (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
@@ -305,7 +305,7 @@ export default class GlViewBox
                 this._opsBoundingRect.interactive = false;
                 this._opsBoundingRect.setPosition(-500, -500, 1);
                 this._opsBoundingRect.setSize(1000, 1000);
-                this._opsBoundingRect.setColor(GlUiConfig.colors.patch.opBoundsRect);
+                this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
             }
 
             const bounds = this.glPatch.rectDrawer.bounds;

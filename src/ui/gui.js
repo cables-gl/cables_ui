@@ -39,6 +39,7 @@ import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
 import gluiconfig from "./glpatch/gluiconfig";
+import defaultTheme from "./defaulttheme.json";
 
 
 export default class Gui
@@ -49,6 +50,7 @@ export default class Gui
 
         this._log = new Logger("gui");
 
+        this.theme = defaultTheme;
         this.patchId = cfg.patchId;
         this._showTiming = false;
 
@@ -2003,6 +2005,7 @@ export default class Gui
     {
         // this.canvasManager.getCanvasUiBar() = new CABLES.UI.CanvasUi(this.corePatch().cgl);
 
+        this.setTheme(JSON.parse(JSON.stringify(defaultTheme)));
 
         if (window.localStorage.getItem("cables_theme") && window.localStorage.getItem("cables_theme") != "null" && window.localStorage.getItem("cables_theme") != "undefined")
         {
@@ -2169,8 +2172,7 @@ export default class Gui
         theme = JSON.parse(JSON.stringify(theme));
         theme.colors = theme.colors || {};
 
-        const missing = { "colors": {} };
-        const defaultTheme = gluiconfig.getDefaultTheme();
+        const missing = {};
 
         function rgbtohex(rgb)
         {
@@ -2178,18 +2180,18 @@ export default class Gui
         }
 
 
-        const colorTopics = ["patch", "html", "textedit", "namespaces", "types"];
+        const topics = Object.keys(defaultTheme);
 
-        for (let i = 0; i < colorTopics.length; i++)
+        for (let i = 0; i < topics.length; i++)
         {
-            const topic = colorTopics[i];
-            theme.colors[topic] = theme.colors[topic] || {};
-            missing.colors[topic] = {};
+            const topic = topics[i];
+            theme[topic] = theme[topic] || {};
+            missing[topic] = {};
 
-            for (let j in defaultTheme.colors[topic])
+            for (let j in defaultTheme[topic])
             {
-                if (!theme.colors[topic].hasOwnProperty(j))
-                    missing.colors[topic][j] = theme.colors[topic][j] = defaultTheme.colors[topic][j];
+                if (!theme[topic].hasOwnProperty(j))
+                    missing[topic][j] = theme[topic][j] = defaultTheme[topic][j];
             }
         }
 
@@ -2203,22 +2205,21 @@ export default class Gui
             document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.textedit[i] || [1, 1, 1, 1]));
         }
 
-        gluiconfig.setTheme(theme);
+        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors_types.trigger || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors_types.num || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors_types.obj || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors_types.string || [1, 1, 1, 1]));
+        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
 
-
-        document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors.types.trigger || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors.types.num || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors.types.obj || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_string", rgbtohex(theme.colors.types.string || [1, 1, 1, 1]));
-        document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors.types.array || [1, 1, 1, 1]));
-
+        this.theme = theme;
         this.patchView.updateTheme();
         return missing;
     }
 
     getDefaultTheme()
     {
-        return gluiconfig._colors_dark;
+        // return gluiconfig._colors_dark;
+        return JSON.parse(JSON.stringify(defaultTheme));
     }
 }
 

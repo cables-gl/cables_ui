@@ -96,10 +96,10 @@ const paramsHelper =
             const isDefault = port.get() == port.defaultValue || port.isLinked();
             if (titleEl) titleEl.classList.toggle("nonDefaultValue", !isDefault);
 
-            if (isDefault) resetEl.classList.add("reset_hidden");
-            else
+            if (resetEl)
             {
-                resetEl.classList.remove("reset_hidden");
+                if (isDefault) resetEl.classList.add("reset_hidden");
+                else resetEl.classList.remove("reset_hidden");
             }
         }
     },

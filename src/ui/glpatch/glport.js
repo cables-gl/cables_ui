@@ -124,7 +124,7 @@ export default class GlPort
                 if (this._glop._links[i].hovering) { hover = true; break; }
 
 
-        const col = GlPort.getColor(this._type, hover, this._glop.selected && this._port.isLinked());
+        const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
     }
 
@@ -188,13 +188,6 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
     }
 
-    _getBrightness()
-    {
-        if (this._hover) return GlUiConfig.colorMulHover;
-        if (this._port.apf > 0) return GlUiConfig.colorMulActive;
-
-        return GlUiConfig.colorMulInActive;
-    }
 
     _onHover(rect)
     {
@@ -245,8 +238,12 @@ export default class GlPort
 
     setFlowModeActivity(a)
     {
-        this._activity = a;
+        // this._activity = a;
         // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
+        // console.log(a);
+
+        this._activity = this._port.apf;
+
         this._updateColor();
     }
 
@@ -262,7 +259,28 @@ export default class GlPort
 }
 
 
-GlPort.getColor = (type, hovering, selected) =>
+GlPort.getInactiveColor = (type) =>
+{
+    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    let portname = "";
+
+    if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
+    else if (type == CABLES.OP_PORT_TYPE_FUNCTION) portname = "trigger";
+    else if (type == CABLES.OP_PORT_TYPE_OBJECT) portname = "obj";
+    else if (type == CABLES.OP_PORT_TYPE_ARRAY) portname = "array";
+    else if (type == CABLES.OP_PORT_TYPE_STRING) portname = "string";
+    else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
+
+    const name = portname + "_inactive";
+
+    let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [0, 0, 0, 1];
+
+    perf.finish();
+
+    return col;
+};
+
+GlPort.getColorBorder = (type, hovering, selected) =>
 {
     const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
 
@@ -276,10 +294,47 @@ GlPort.getColor = (type, hovering, selected) =>
     else if (type == CABLES.OP_PORT_TYPE_STRING) portname = "string";
     else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
 
-    if (hovering)name = portname + "_hover";
-    else if (selected)name = portname + "_selected";
+    let coll = [1, 1, 1, 0];
+    if (hovering)
+    {
+        name = portname + "_hover";
+        coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
+    }
+    else if (selected)
+    {
+        // name = portname + "_selected";
+        coll = gui.theme.colors_patch.selected;
+    }
 
-    let col = GlUiConfig.colors.types[name] || GlUiConfig.colors.types[portname] || [1, 0, 0, 1];
+    // let coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
+    let col = [coll[0], coll[1], coll[2], coll[3]];
+
+    if (!hovering && !selected)col[3] = 0;
+    perf.finish();
+
+    return col;
+};
+
+GlPort.getColor = (type, hovering, selected, activity) =>
+{
+    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+
+    let name = "";
+    let portname = "";
+
+    if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
+    else if (type == CABLES.OP_PORT_TYPE_FUNCTION) portname = "trigger";
+    else if (type == CABLES.OP_PORT_TYPE_OBJECT) portname = "obj";
+    else if (type == CABLES.OP_PORT_TYPE_ARRAY) portname = "array";
+    else if (type == CABLES.OP_PORT_TYPE_STRING) portname = "string";
+    else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
+
+    if (activity == 0)name = portname + "_inactive";
+
+    // if (hovering)name = portname + "_hover";
+    // else if (selected)name = portname + "_selected";
+
+    let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
 
     perf.finish();
 

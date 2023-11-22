@@ -79,6 +79,7 @@ export default class GlLinedrawer
 
             .endl() + "   finalColor.rgb = finalColor.rgb;"
             .endl() + "   finalColor.a = showSpeed;"
+        // .endl() + "   finalColor.a = 1.0;"
         // .endl()+'   color.r = 1.0;'
 
 

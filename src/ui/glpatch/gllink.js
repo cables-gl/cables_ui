@@ -36,7 +36,7 @@ export default class GlLink
         this.crossSubpatch = false;
 
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
-        this._buttonRect.colorHoverMultiply = 1.0;
+        // this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setShape(1);
 
 

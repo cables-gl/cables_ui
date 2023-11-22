@@ -2,6 +2,7 @@ import glUiConfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import MouseState from "./mousestate";
 import Gui from "../gui";
+import GlPort from "./glport";
 
 
 export default class GlDragLine
@@ -22,6 +23,7 @@ export default class GlDragLine
         this._startGlPorts = [];
         this._lineIndices = [];
         this._clearSpline();
+        this._color = [1, 1, 1, 1];
 
         this._x = 0;
         this._y = 0;
@@ -214,7 +216,13 @@ export default class GlDragLine
 
         this._clearSpline();
 
-        if (this._glPort) this._glPatch.setDrawableColorByType(this, this._glPort.type);
+        if (this._glPort)
+        {
+            const col = GlPort.getColor(this._glPort._port.type);
+
+            if (col) this.setColor(col);
+        }
+
 
         if (this._startGlPorts && this._startGlPorts.length)
         {
@@ -252,7 +260,7 @@ export default class GlDragLine
                         this._x, this._y, this._z,
                     ]);
 
-                this._splineDrawer.setSplineColor(this._splineIdx, [1, 1, 1, 1]);
+                this._splineDrawer.setSplineColor(this._splineIdx, this._color);
             }
         }
     }
@@ -279,11 +287,12 @@ export default class GlDragLine
         this._update();
     }
 
-    setColor(r, g, b, a)
+    setColor(rgba)
     {
+        this.color = rgba;
         for (let i = 0; i < this._lineIndices.length; i++)
-            this._splineDrawer.setSplineColor(this._lineIndices[i], [r, g, b, a]);
+            this._splineDrawer.setSplineColor(this._lineIndices[i], this._color);
 
-        this._splineDrawer.setSplineColor(this._splineIdx, [r, g, b, a]);
+        this._splineDrawer.setSplineColor(this._splineIdx, this._color);
     }
 }
