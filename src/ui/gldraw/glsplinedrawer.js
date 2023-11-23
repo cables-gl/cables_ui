@@ -52,9 +52,13 @@ export default class GlSplineDrawer
         this._uniWidth = new CGL.Uniform(this._shader, "f", "width", gui.theme.patch.cablesWidth || 3);
         this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "widthSelected", gui.theme.patch.cablesWidthSelected || 3);
 
+
+
+        this._uniFadeoutOptions = new CGL.Uniform(this._shader, "4f", "fadeOutOptions", [50.0, 40.0, 0.0, 0.2]);
+
         this._uniMousePos = new CGL.Uniform(this._shader, "2f", "mousePos");
 
-        this._shader.toggleDefine("FADEOUT", !userSettings.get("noFadeOutCables"));
+        this._shader.toggleDefine("FADEOUT", !userSettings.get("fadeOutOptions"));
 
         userSettings.on("change", (which, val) =>
         {
@@ -65,6 +69,7 @@ export default class GlSplineDrawer
         {
             this._uniWidth.set(gui.theme.patch.cablesWidth || 3);
             this._uniWidthSelected.set(gui.theme.patch.cablesWidthSelected || 3);
+            this._uniFadeoutOptions.set([gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity]);
         });
     }
 
@@ -700,11 +705,5 @@ export default class GlSplineDrawer
         perf.finish();
 
         return this._arrEdges;
-    }
-
-    updateTheme()
-    {
-        this._uniWidth = new CGL.Uniform(this._shader, "f", "width", 3);
-        this._uniWidthSelected = new CGL.Uniform(this._shader, "f", "width", 3);
     }
 }
