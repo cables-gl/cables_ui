@@ -95,6 +95,7 @@ export default class Preferences
         this.setSwitchValue("fontSizeOff", userSettings.get("fontSizeOff") || 0);
 
         this.setSwitchValue("formatcode", userSettings.get("formatcode") || false);
+        this.setSwitchValue("notlocalizeNumberformat", userSettings.get("notlocalizeNumberformat") || false);
 
         // this.setSwitchValue("bgpreviewTemp", userSettings.get("bgpreviewTemp"));
     }

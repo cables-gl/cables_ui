@@ -963,8 +963,6 @@ export default class PatchView extends CABLES.EventTarget
                 gui.patchView.setCurrentSubPatch(patchId);
             }
 
-
-
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
             this._p.emitEvent("subpatchCreated");
         });
@@ -2935,10 +2933,5 @@ export default class PatchView extends CABLES.EventTarget
             }
         }
         return op;
-    }
-
-    updateTheme()
-    {
-        this.patchRenderer.updateTheme();
     }
 }

@@ -2195,14 +2195,14 @@ export default class Gui
             }
         }
 
-        for (let i in theme.colors.html)
+        for (let i in theme.colors_html)
         {
-            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.html[i] || [1, 1, 1, 1]));
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_html[i] || [1, 1, 1, 1]));
         }
 
-        for (let i in theme.colors.textedit)
+        for (let i in theme.colors_textedit)
         {
-            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors.textedit[i] || [1, 1, 1, 1]));
+            document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_textedit[i] || [1, 1, 1, 1]));
         }
 
         document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors_types.trigger || [1, 1, 1, 1]));
@@ -2212,7 +2212,8 @@ export default class Gui
         document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
 
         this.theme = theme;
-        this.patchView.updateTheme();
+
+        this.emitEvent("themeChanged");
         return missing;
     }
 

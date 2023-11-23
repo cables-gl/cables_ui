@@ -12,6 +12,8 @@ UNI vec2 mousePos;
 UNI float a;
 UNI float time;
 
+UNI float width;
+UNI float widthSelected;
 
 
 // vec4 finactiveColor=vec4(0.0,0.0,0.0,1.0);
@@ -55,23 +57,16 @@ void main()
         finalColor.rg=texCoord;
         finalColor.a=1.0;
     #endif
-        finalColor.a=1.0;
-
-    #ifdef FADEOUT
-        // fade out over distance
+    finalColor.a=1.0;
 
 
-        // if(fSplineLength>50.0)
-        // {
-        //     float lengthStart=fSplineLength/18.0;
-            //  fadeDist=30.0;
 
 
-        float lengthStart=50.0;
 
+        // selected border
         if(fcolorBorder.a>0.0)
         {
-            float border=0.3;
+            float border=widthSelected/(width+widthSelected)/2.0;
             if(texCoord.y<border|| texCoord.y>1.0-border) finalColor=fcolorBorder;
 
         //     float border=0.5;
@@ -80,6 +75,13 @@ void main()
         }
 
 
+    #ifdef FADEOUT
+
+
+
+        // fade out over distance
+
+        float lengthStart=50.0;
         if(fSplineLength>lengthStart*2.0 && fProgress>lengthStart && fProgress<fSplineLength-lengthStart)
         {
             // float fadedDist=1.0-smoothstep(fSplineLength,lengthStart,lengthStart*5.0);

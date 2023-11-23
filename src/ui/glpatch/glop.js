@@ -78,8 +78,6 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glLoadingIndicator = null;
         this._glNotWorkingCross = null;
-        this._glNotWorkingCross = null;
-
         this._glDotError = null;
         this._glDotWarning = null;
         this._glDotHint = null;
@@ -118,6 +116,11 @@ export default class GlOp extends CABLES.EventTarget
 
         this._initGl();
 
+        this._glPatch.on("selectedOpsChanged", (num) =>
+        {
+            this._updateSelectedRect();
+            if (this._glRectSelected) this.updateSize();
+        });
 
         // this.refreshPorts();
         // if (this._displayType === this.DISPLAY_SUBPATCH)
@@ -140,8 +143,7 @@ export default class GlOp extends CABLES.EventTarget
 
             this._op.patch.on("subpatchExpose", (subpatchid) =>
             {
-                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid)
-                    this.refreshPorts();
+                if (this._op && this._op.patchId && this._op.patchId.get() === subpatchid) this.refreshPorts();
             });
         }
     }
@@ -348,6 +350,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (!e.shiftKey) this._glPatch.unselectAll();
             gui.patchView.selectChilds(this.op.id);
+            this._glPatch.emitEvent("selectedOpsChanged", gui.patchView.getSelectedOps());
         }
 
         if (!this.selected)
@@ -474,6 +477,13 @@ export default class GlOp extends CABLES.EventTarget
         if (textWriter) this._textWriter = textWriter;
         if (title === undefined)title = "";
 
+        if (
+            this._displayType != this.DISPLAY_COMMENT &&
+            this._displayType != this.DISPLAY_UI_AREA &&
+            title != "var set" &&
+            title != "var get" &&
+            title != this._op.shortName) title = "\"" + title + "\"";
+
         if (!this._glTitle)
         {
             this._glTitle = new GlText(this._textWriter, title);
@@ -531,6 +541,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (!this._glRectSelected)
             {
+                if (!this._instancer) return; // how?
                 this._glRectSelected = this._instancer.createRect({ "parent": this._glRectBg, "interactive": false });
                 this._glRectSelected.setColor(gui.theme.colors_patch.selected);
 
@@ -605,7 +616,15 @@ export default class GlOp extends CABLES.EventTarget
 
         if (this._glRectSelected)
         {
-            this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+            if (this._glPatch._numSelectedGlOps > 1)
+            {
+                this._glRectSelected.setSize(this._width + gui.theme.patch.selectedOpBorderX, this._height + gui.theme.patch.selectedOpBorderY);
+            }
+            else
+            {
+                // this._glRectSelected.setPosition(0, 0);
+                this._glRectSelected.setSize(0, 0);
+            }
         }
 
         this._updateCommentPosition();
@@ -959,7 +978,7 @@ export default class GlOp extends CABLES.EventTarget
             if (!this._glLoadingIndicator)
             {
                 this._glLoadingIndicator = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glLoadingIndicator.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glLoadingIndicator.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glLoadingIndicator.setShape(8);
 
@@ -990,30 +1009,30 @@ export default class GlOp extends CABLES.EventTarget
                 if (this.opUiAttribs.uierrors[i].level == 3) notworking = true;
             }
 
-            let dotX = 0 - gluiconfig.OpErrorDotSize / 2;
-            const dotY = this.h / 2 - gluiconfig.OpErrorDotSize / 2;
+            let dotX = 0 - gui.theme.patch.opStateIndicatorSize / 2;
+            const dotY = this.h / 2 - gui.theme.patch.opStateIndicatorSize / 2;
 
             if (!this._glDotHint)
             {
                 this._glDotHint = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotHint.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotHint.setColor(gui.theme.colors_patch.opErrorHint);
                 this._glDotHint.setShape(6);
 
                 this._glDotWarning = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotWarning.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotWarning.setColor(gui.theme.colors_patch.opErrorWarning);
                 this._glDotWarning.setShape(6);
 
                 this._glDotError = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
-                this._glDotError.setSize(gluiconfig.OpErrorDotSize, gluiconfig.OpErrorDotSize);
+                this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
                 this._glDotError.setColor(gui.theme.colors_patch.opError);
                 this._glDotError.setShape(6);
                 this._glDotError.interactive = false;
 
                 this._glNotWorkingCross = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
                 this._glNotWorkingCross.setSize(this._height * 0.25, this._height * 0.25);
-                this._glNotWorkingCross.setColor(1.0, 0.25, 0.25, 1.0);
+                this._glNotWorkingCross.setColor(gui.theme.colors_patch.opNotWorkingCross);
                 this._glNotWorkingCross.setShape(7);
                 this._glNotWorkingCross.interactive = false;
             }
@@ -1330,6 +1349,11 @@ export default class GlOp extends CABLES.EventTarget
 
                 for (const i in this._links) this._links[i].updateColor();
                 // this._updateColors();
+
+
+                this._glPatch._updateNumberOfSelectedOps();
+                this._glPatch.selectOpId(this._id);
+                // console.log("_updateNumberOfSelectedOps");
             }
 
             this.updatePosition();
@@ -1437,10 +1461,22 @@ export default class GlOp extends CABLES.EventTarget
 
         for (const i in this._links) this._links[i].updateTheme();
 
-
         this.update();
         this.updateSize();
+        this._updateIndicators();
+
         if (this._titleExt) this._titleExt.setColor(gui.theme.colors_patch.opTitleExt);
         if (this._glRectSelected) this._glRectSelected.setColor(gui.theme.colors_patch.selected);
+
+        if (this._glDotHint) this._glDotHint.setColor(gui.theme.colors_patch.opErrorHint);
+        if (this._glDotWarning) this._glDotWarning.setColor(gui.theme.colors_patch.opErrorWarning);
+        if (this._glDotError) this._glDotError.setColor(gui.theme.colors_patch.opError);
+        if (this._glNotWorkingCross) this._glNotWorkingCross.setColor(gui.theme.colors_patch.opNotWorkingCross);
+
+
+        if (this._glDotHint) this._glDotHint.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
+        if (this._glDotWarning) this._glDotWarning.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
+        if (this._glDotError) this._glDotError.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
+        if (this._glLoadingIndicator) this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
     }
 }

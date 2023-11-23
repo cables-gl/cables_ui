@@ -81,7 +81,6 @@ export default class Api
             if (data) options.body = JSON.stringify(data);
         }
 
-        const startTime = performance.now();
 
         fetch(url, options)
             .then((response) =>
@@ -93,14 +92,11 @@ export default class Api
                         console.log(e, url);
                     }).then((_data) =>
                     {
-                        if (doCache)
-                            this.cache.push({ url, method, _data });
-
-                        const tooktime = Math.round(performance.now() - startTime);
-                        if (tooktime > 350.0)
-                        {
-                            console.warn("- slow request: " + method + " " + url + ": " + tooktime + "ms");
-                        }
+                        // const tooktime = Math.round(performance.now() - startTime);
+                        // if (tooktime > 350.0)
+                        // {
+                        //     console.warn("- slow request: " + method + " " + url + ": " + tooktime + "ms");
+                        // }
 
                         if (cbSuccess) cbSuccess(_data);
                     });

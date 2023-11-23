@@ -5,7 +5,7 @@ class GlUiConfig
         this.OpTitlePaddingLeftRight = 10;
         this.OpTitlePaddingExtTitle = 1;
 
-        this.OpErrorDotSize = 8;
+        // this.OpErrorDotSize = 8;
 
         this.portWidth = 10;
         this.portHeight = 5;
@@ -15,7 +15,6 @@ class GlUiConfig
         this.opWidth = 20;
 
         this.minZoom = 15;
-        this.zoomSmooth = 2;
         this.zoomDefault = 500;
 
         this.newOpDistanceY = 40;
