@@ -313,11 +313,11 @@ export default class GlCable
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,
-                            posX, this._y - (distY * 0.002) - this._distFromPort * 2, 0,
+                            posX, this._y - (distY * 0.002) - this._distFromPort * 1.25, 0,
 
-                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
+                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // center point
 
-                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * 2, 0,
+                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * 1.25, 0,
                             posX2, this._y2, 0,
                             posX2, this._y2, 0,
                         ];
