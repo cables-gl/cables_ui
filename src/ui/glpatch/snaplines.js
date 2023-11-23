@@ -13,12 +13,17 @@ export default class SnapLines extends CABLES.EventTarget
         this._timeout = null;
 
         this._rectWidth = 1;
-        this.rect = new GlRect(this._instancer, { "interactive": false });
-        this.rect.setColor(0, 0, 0, 0.3);
-        this.rect.setPosition(0, -300000);
-        this.rect.setSize(this._rectWidth * 2, 1000000);
 
         this.enabled = !userSettings.get("disableSnapLines");
+
+
+        if (this.enabled)
+        {
+            this.rect = new GlRect(this._instancer, { "interactive": false });
+            this.rect.setColor(0, 0, 0, 0.3);
+            this.rect.setPosition(0, -300000);
+            this.rect.setSize(this._rectWidth * 2, 1000000);
+        }
     }
 
     update()
@@ -53,7 +58,7 @@ export default class SnapLines extends CABLES.EventTarget
     render(mouseDown)
     {
         if (!this.enabled) return;
-        if (!mouseDown) this.rect.visible = false;
+        if (!mouseDown) if (this.rect) this.rect.visible = false;
     }
 
     snapX(_x, forceSnap)
@@ -65,16 +70,20 @@ export default class SnapLines extends CABLES.EventTarget
             {
                 const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
                 let dist = 1;
-                if (forceSnap) dist = 3;
-                this.rect.visible = false;
-                for (let i = 0; i < this._xCoords.length; i++)
+                if (forceSnap) dist = 13;
+
+                if (this.rect)
                 {
-                    if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
+                    this.rect.visible = false;
+                    for (let i = 0; i < this._xCoords.length; i++)
                     {
-                        // x = this._xCoords[i];
-                        this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
-                        this.rect.visible = true;
-                        break;
+                        if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
+                        {
+                            x = this._xCoords[i];
+                            this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
+                            this.rect.visible = true;
+                            break;
+                        }
                     }
                 }
                 perf.finish();

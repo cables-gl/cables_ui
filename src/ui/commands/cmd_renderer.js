@@ -35,6 +35,24 @@ CABLES_CMD_RENDERER.canvasMagnifier = function ()
     gui.canvasMagnifier = new CABLES.UI.CanvasLens();
 };
 
+CABLES_CMD_RENDERER.scrollingPage = function ()
+{
+    // gui.canvasMagnifier = new CABLES.UI.CanvasLens();
+    if (ele.byId("testcontent").innerHTML == "")
+    {
+        let str = "";
+        for (let i = 0; i < 1000; i++)
+            str += "long page...<br/>";
+        ele.byId("testcontent").innerHTML = str;
+        document.body.style.overflow = "auto";
+    }
+    else
+    {
+        ele.byId("testcontent").innerHTML = "";
+        document.body.style.overflow = "hidden";
+    }
+};
+
 
 CABLES_CMD_RENDERER.aspect = function (a)
 {
@@ -166,5 +184,10 @@ rendererCommands.commands.push({
     "category": "renderer",
     "func": CABLES_CMD_RENDERER.popoutCanvas,
     "icon": "external"
+}, {
+    "cmd": "Simulate Scrolling Page",
+    "category": "renderer",
+    "func": CABLES_CMD_RENDERER.scrollingPage
+
 }
 );
