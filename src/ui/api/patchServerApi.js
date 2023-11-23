@@ -151,15 +151,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                         gui.restriction.setMessage("cablesupdate", "cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>the page to get the latest update!");
 
-
-                        console.log("update0rt!");
-
-                        // new ModalDialog(
-                        //     {
-                        //         "title": "Meanwhile...",
-                        //         "html": html
-                        //     });
-
                         gui.jobs().finish("checkupdated");
                     }
                     else
