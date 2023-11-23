@@ -309,18 +309,20 @@ export default class GlCable
 
                     const distY = Math.abs(this._y - this._y2);
 
-                    this._points = this._subdivivde(
+                    this._points =
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,
-                            posX, this._y - (distY * 0.002) - this._distFromPort, 0,
+                            posX, this._y - (distY * 0.002) - this._distFromPort * 2, 0,
 
                             (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
 
-                            posX2, this._y2 + (distY * 0.002) + this._distFromPort, 0,
+                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * 2, 0,
                             posX2, this._y2, 0,
                             posX2, this._y2, 0,
-                        ]);
+                        ];
+                    this._points = this._subdivivde(this._points);
+                    this._points = this._subdivivde(this._points);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
