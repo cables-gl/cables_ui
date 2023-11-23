@@ -37,7 +37,6 @@ CABLES_CMD_RENDERER.canvasMagnifier = function ()
 
 CABLES_CMD_RENDERER.scrollingPage = function ()
 {
-    // gui.canvasMagnifier = new CABLES.UI.CanvasLens();
     if (ele.byId("testcontent").innerHTML == "")
     {
         let str = "";

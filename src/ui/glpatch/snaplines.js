@@ -48,8 +48,8 @@ export default class SnapLines extends CABLES.EventTarget
             for (let i in hashmap)
             {
                 const ii = parseInt(i);
-                if (hashmap[ii] > 1)
-                    this._xCoords.push(ii);
+                // if (hashmap[ii] > 1)
+                this._xCoords.push(ii);
             }
             perf.finish();
         }, 50);
@@ -63,9 +63,14 @@ export default class SnapLines extends CABLES.EventTarget
 
     snapX(_x, forceSnap)
     {
-        let x = gui.patchView.snapOpPosX(_x);
+        let x = _x;
+        if (userSettings.get("snapToGrid"))
+            x = gui.patchView.snapOpPosX(_x);
+
+        console.log(0, this.enabled);
         if (this.enabled)
         {
+            console.log(1);
             if (gui.patchView.getSelectedOps().length == 1)
             {
                 const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
@@ -75,6 +80,7 @@ export default class SnapLines extends CABLES.EventTarget
                 if (this.rect)
                 {
                     this.rect.visible = false;
+                    console.log(2, this._xCoords);
                     for (let i = 0; i < this._xCoords.length; i++)
                     {
                         if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
@@ -94,6 +100,7 @@ export default class SnapLines extends CABLES.EventTarget
 
     snapY(y)
     {
-        return gui.patchView.snapOpPosY(y);
+        if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosY(y);
+        else return y;
     }
 }
