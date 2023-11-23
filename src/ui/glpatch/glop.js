@@ -1138,18 +1138,13 @@ export default class GlOp extends CABLES.EventTarget
                 let w = this._rectResize.x - this.x + this._rectResize.w;
                 let h = this._rectResize.y - this.y + this._rectResize.h;
 
-                if (userSettings.get("snapToGrid"))
-                {
-                    w = this.glPatch.snapLines.snapX(w);
-                    h = this.glPatch.snapLines.snapY(h);
-                }
+                w = this.glPatch.snapLines.snapX(w);
+                h = this.glPatch.snapLines.snapY(h);
 
                 if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
                 this.updateSize();
             });
         }
-
-
 
 
         const comment = this.opUiAttribs.comment || this.opUiAttribs.comment_text;
@@ -1415,11 +1410,8 @@ export default class GlOp extends CABLES.EventTarget
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
-        // if (userSettings.get("snapToGrid"))
-        {
-            x = this._glPatch.snapLines.snapX(x);
-            y = this._glPatch.snapLines.snapY(y);
-        }
+        x = this._glPatch.snapLines.snapX(x);
+        y = this._glPatch.snapLines.snapY(y);
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.emitEvent("drag");

@@ -71,7 +71,7 @@ export default class SnapLines extends CABLES.EventTarget
         if (this.enabled)
         {
             console.log(1);
-            if (gui.patchView.getSelectedOps().length == 1)
+            if (gui.patchView.getSelectedOps().length > 0)
             {
                 const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
                 let dist = 1;
@@ -80,7 +80,6 @@ export default class SnapLines extends CABLES.EventTarget
                 if (this.rect)
                 {
                     this.rect.visible = false;
-                    console.log(2, this._xCoords);
                     for (let i = 0; i < this._xCoords.length; i++)
                     {
                         if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
