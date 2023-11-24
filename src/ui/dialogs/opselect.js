@@ -152,7 +152,7 @@ export default class OpSelect
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
         }
-
+        console.log(ops);
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
@@ -426,7 +426,6 @@ export default class OpSelect
         const cssClass = "selected";
 
         // oBoxCollectionAll.classList.remove(cssClass);
-
 
         for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
 

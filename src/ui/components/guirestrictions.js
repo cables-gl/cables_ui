@@ -15,6 +15,12 @@ export default class GuiRestrictions
         // });
     }
 
+
+    get visible()
+    {
+        return Object.keys(this._messages).length > 0;
+    }
+
     setMessage(id, msg)
     {
         if (!msg)
@@ -32,7 +38,7 @@ export default class GuiRestrictions
         if (msg) this._messageBox.classList.remove("hidden");
         else this._messageBox.classList.add("hidden");
 
-        this._messageBox.innerHTML = msg;// + "<span class=\"icon icon-1_5x icon-x\"></span>";
+        this._messageBox.innerHTML = msg;// + "<span class=\"icon icon-1_5x icon-x\"></span>"; //
     }
 }
 

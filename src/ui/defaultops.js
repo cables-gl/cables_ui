@@ -155,20 +155,20 @@ const defaultOps = {
     {
         "default":
         {
-            "GreaterThan": defaultOpNames.GreaterThan,
-            "LessThan": defaultOpNames.LessThan,
-            "Sum": defaultOpNames.Sum,
-            "Subtract": defaultOpNames.Subtract,
-            "Divide": defaultOpNames.Divide,
-            "Multiply": defaultOpNames.Multiply,
-            "Equals": defaultOpNames.Equals,
+            ">": defaultOpNames.GreaterThan,
+            "<": defaultOpNames.LessThan,
+            "+": defaultOpNames.Sum,
+            "-": defaultOpNames.Subtract,
+            "/": defaultOpNames.Divide,
+            "*": defaultOpNames.Multiply,
+            "=": defaultOpNames.Equals,
         },
         "array":
         {
-            "ArraySum": defaultOpNames.ArraySum,
-            "ArraySubtract": defaultOpNames.ArraySubtract,
-            "ArrayDivide": defaultOpNames.ArrayDivide,
-            "ArrayMultiply": defaultOpNames.ArrayMultiply,
+            "+": defaultOpNames.ArraySum,
+            "-": defaultOpNames.ArraySubtract,
+            "/": defaultOpNames.ArrayDivide,
+            "*": defaultOpNames.ArrayMultiply,
         },
         "string":
         {
@@ -191,8 +191,8 @@ const defaultOps = {
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_IN)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.string, defaultOpNames.StringEditor];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.Number];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.string, defaultOpNames.stringEditor];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.number];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.defaultOpImage];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return [defaultOpNames.divElement];
@@ -202,6 +202,7 @@ const defaultOps = {
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
         }
+        return [];
     },
     "getOpsForFilename": (filename) =>
     {

@@ -141,7 +141,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                         if (CABLESUILOADER.buildInfo.ui) newUi = buildInfo.ui.timestamp > CABLESUILOADER.buildInfo.ui.timestamp;
                     }
 
-                    if (newCore || newUi)
+                    if (!gui.restriction.visible && (newCore || newUi))
                     {
                         const html =
                                 "Cables has been updated. Your version is out of date.<br/><br/>Please save your progress and reload this page!<br/><br/>" +
