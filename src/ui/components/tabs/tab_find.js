@@ -461,6 +461,19 @@ export default class FindTab
                 }
             }
             else
+            if (str == ":currentsubpatch")
+            {
+                console.log("JAAAA");
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+
+                    console.log(op.uiAttribs && op.uiAttribs.subPatch, gui.patchView.getCurrentSubPatch());
+                    if (op.uiAttribs && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch())
+                        results.push({ op, "score": 1 });
+                }
+            }
+            else
             if (str == ":textures")
             {
                 for (let i = 0; i < ops.length; i++)
