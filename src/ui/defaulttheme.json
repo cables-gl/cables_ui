@@ -210,9 +210,9 @@
         1
       ],
       "opBgRect": [
-        0.19333333333333336,
-        0.19333333333333336,
-        0.19333333333333336,
+        0.18947916666666664,
+        0.18947916666666664,
+        0.18947916666666664,
         1
       ],
       "opErrorWarning": [
@@ -253,6 +253,8 @@
       "selectedOpBorderY": 44,
       "cablesWidth": 3,
       "cablesWidthSelected": 3,
+      "cablesCurveY": 1,
+      "cablesSubDivde": 2,
       "opStateIndicatorSize": 8,
       "fadeOutDistStart": 66,
       "fadeOutFadeDist": 33,
