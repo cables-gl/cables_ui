@@ -2212,6 +2212,22 @@ export default class Gui
 
         this.theme = theme;
 
+
+        const nsColors = document.createElement("style");
+        document.body.appendChild(nsColors);
+
+        let strNsCss = "";
+
+
+        for (let i in theme.colors_namespaces)
+        {
+            let ns = i;
+            ns = ns.replaceAll(".", "_");
+            strNsCss += ".nsColor_" + ns + "{color:" + rgbtohex(theme.colors_namespaces[i]) + " !important;}\n";
+        }
+
+        nsColors.textContent = strNsCss;
+
         this.emitEvent("themeChanged");
         return missing;
     }

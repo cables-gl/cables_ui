@@ -186,6 +186,7 @@ const defaultOps = {
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.VizTexture, defaultOpNames.VizTextureTable, defaultOpNames.VizObject];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return [defaultOpNames.VizObject];
         }
+        return [];
     },
     "getOpsForPortLink": (p, l) =>
     {
@@ -315,17 +316,8 @@ const defaultOps = {
 
     "getNamespaceClassName": (opName) =>
     {
-        if (!opName) return "default";
-        if (opName.startsWith("Ops.Gl.")) return "gl";
-        if (opName.startsWith("Ops.WebAudio.")) return "audio";
-        if (opName.startsWith("Ops.Devices.")) return "devices";
-        if (opName.startsWith("Ops.Html.")) return "html";
-        if (opName.startsWith("Ops.Sidebar.")) return "html";
-        if (opName.startsWith("Ops.Math.")) return "math";
-        if (opName.startsWith("Ops.User.")) return "user";
-        if (opName.startsWith("Ops.Team.")) return "team";
-        if (opName.startsWith("Ops.Patch.")) return "user";
-        return "default";
+        const opNameParts = opName.split(".");
+        return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
     },
 
     "getNamespace": (opname) =>

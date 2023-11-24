@@ -513,6 +513,7 @@ export default class OpSearch extends CABLES.EventTarget
                 if (defaultOps.isExtension(opName)) type = "extension";
                 if (defaultOps.isPatchOp(opName)) type = "patchop";
 
+
                 const isTeamOp = defaultOps.isTeamOp(opName);
 
                 const isCollection = defaultOps.isCollection(opName);

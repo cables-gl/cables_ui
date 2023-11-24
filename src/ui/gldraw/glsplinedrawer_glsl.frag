@@ -84,7 +84,8 @@ void main()
         float fadeDistLength=6.0;
         float minOpacity=fadeOutOptions.w;
 
-        if(fSplineLength>fadeDistStart*2.0 && fProgress>fadeDistStart && fProgress<fSplineLength-fadeDistStart)
+
+        if(fcolorBorder.a==0.0 && fSplineLength>fadeDistStart*2.0 && fProgress>fadeDistStart && fProgress<fSplineLength-fadeDistStart)
         {
 
             finalColor.a=0.0;

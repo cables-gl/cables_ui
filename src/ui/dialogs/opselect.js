@@ -147,12 +147,12 @@ export default class OpSelect
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
 
-        if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
+        if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
         }
-        console.log(ops);
+
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
         if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
 
