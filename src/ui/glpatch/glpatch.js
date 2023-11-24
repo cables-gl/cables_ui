@@ -736,6 +736,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             ops[i].setEnabled(!willDisable);
         }
+        gui.opParams.refresh();
     }
 
     addLink(l)
