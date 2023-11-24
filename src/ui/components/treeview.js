@@ -26,7 +26,7 @@ export default class TreeView extends CABLES.EventTarget
         {
             if (!data[i]) continue;
             const item = data[i];
-            html += "<tr class=\"" + data[i].rowClass + "\">";
+            html += "<tr class=\"" + (data[i].rowClass || "") + "\">";
             html += "<td>";
 
             for (let j = 0; j < level; j++)

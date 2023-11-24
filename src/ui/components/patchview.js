@@ -1030,6 +1030,9 @@ export default class PatchView extends CABLES.EventTarget
             "childs": [],
             "icon": "op"
         };
+
+        if (this.getCurrentSubPatch() == 0)sub.rowClass = "active";
+
         let subs = [sub];
 
         if (patchId)
@@ -1039,13 +1042,10 @@ export default class PatchView extends CABLES.EventTarget
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
             sub.id = subOp.id;
-
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
 
-            if (this.getCurrentSubPatch() == sub.subPatchId)
-            {
-                sub.rowClass = "active";
-            }
+            if (this.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
+            else sub.rowClass = "";
 
             if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
