@@ -522,7 +522,7 @@ export default class Gui
 
 
         ele.byId("restriction_message").style.left = (patchLeft + patchWidth / 2) + "px";
-        ele.byId("restriction_message").style.top = (patchHeight - 60) + "px";
+        ele.byId("restriction_message").style.top = (patchHeight - 100) + "px";
 
 
         if (this.maintabPanel.isVisible())

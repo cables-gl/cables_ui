@@ -48,7 +48,12 @@ export default class GlCable
             this._unHover();
         });
 
+        gui.on("themeChanged", () =>
+        {
+            this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
 
+            this._updateLinePos();
+        });
 
 
         this._x = 0;
@@ -309,18 +314,25 @@ export default class GlCable
 
                     const distY = Math.abs(this._y - this._y2);
 
-                    this._points = this._subdivivde(
+
+
+                    this._points =
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,
-                            posX, this._y - (distY * 0.002) - this._distFromPort, 0,
+                            posX, this._y - (distY * 0.002) - this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
 
-                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // * 0.5 - (0.001 * distY), 0,
+                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // center point
 
-                            posX2, this._y2 + (distY * 0.002) + this._distFromPort, 0,
+                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
                             posX2, this._y2, 0,
                             posX2, this._y2, 0,
-                        ]);
+                        ];
+
+
+
+                    for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+                        this._points = this._subdivivde(this._points);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }

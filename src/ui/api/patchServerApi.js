@@ -149,11 +149,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save progress</a>&nbsp;&nbsp;" +
                                 "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
 
-                        new ModalDialog(
-                            {
-                                "title": "Meanwhile...",
-                                "html": html
-                            });
+                        gui.restriction.setMessage("cablesupdate", "cables.gl has been updated! &nbsp;&nbsp;&nbsp; <a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>reload </a>the page to get the latest update!");
 
                         gui.jobs().finish("checkupdated");
                     }
