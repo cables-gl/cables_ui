@@ -2331,26 +2331,25 @@ export default class PatchView extends CABLES.EventTarget
         });
     }
 
-
-    tempUnlinkOp()
-    {
-        if (this._lastTempOP)
-        {
-            this._lastTempOP.undoUnLinkTemporary();
-            this._lastTempOP.setEnabled(true);
-            this._lastTempOP = null;
-        }
-        else
-        {
-            const op = this.getSelectedOps()[0];
-            if (op)
-            {
-                op.setEnabled(false);
-                op.unLinkTemporary();
-                this._lastTempOP = op;
-            }
-        }
-    }
+    // tempUnlinkOp()
+    // {
+    //     if (this._lastTempOP)
+    //     {
+    //         this._lastTempOP.undoUnLinkTemporary();
+    //         this._lastTempOP.setEnabled(true);
+    //         this._lastTempOP = null;
+    //     }
+    //     else
+    //     {
+    //         const op = this.getSelectedOps()[0];
+    //         if (op)
+    //         {
+    //             op.setEnabled(false);
+    //             op.unLinkTemporary();
+    //             this._lastTempOP = op;
+    //         }
+    //     }
+    // }
 
     toggleVisibility()
     {
