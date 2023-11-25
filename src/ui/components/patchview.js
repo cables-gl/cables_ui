@@ -1030,6 +1030,9 @@ export default class PatchView extends CABLES.EventTarget
             "childs": [],
             "icon": "op"
         };
+
+        if (this.getCurrentSubPatch() == 0)sub.rowClass = "active";
+
         let subs = [sub];
 
         if (patchId)
@@ -1039,13 +1042,10 @@ export default class PatchView extends CABLES.EventTarget
             sub.title = subOp.getTitle();
             sub.subPatchId = patchId;
             sub.id = subOp.id;
-
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
 
-            if (this.getCurrentSubPatch() == sub.subPatchId)
-            {
-                sub.rowClass = "active";
-            }
+            if (this.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
+            else sub.rowClass = "";
 
             if (subOp.storage.blueprintVer || subOp.isInBlueprint2())
             {
@@ -2331,26 +2331,25 @@ export default class PatchView extends CABLES.EventTarget
         });
     }
 
-
-    tempUnlinkOp()
-    {
-        if (this._lastTempOP)
-        {
-            this._lastTempOP.undoUnLinkTemporary();
-            this._lastTempOP.setEnabled(true);
-            this._lastTempOP = null;
-        }
-        else
-        {
-            const op = this.getSelectedOps()[0];
-            if (op)
-            {
-                op.setEnabled(false);
-                op.unLinkTemporary();
-                this._lastTempOP = op;
-            }
-        }
-    }
+    // tempUnlinkOp()
+    // {
+    //     if (this._lastTempOP)
+    //     {
+    //         this._lastTempOP.undoUnLinkTemporary();
+    //         this._lastTempOP.setEnabled(true);
+    //         this._lastTempOP = null;
+    //     }
+    //     else
+    //     {
+    //         const op = this.getSelectedOps()[0];
+    //         if (op)
+    //         {
+    //             op.setEnabled(false);
+    //             op.unLinkTemporary();
+    //             this._lastTempOP = op;
+    //         }
+    //     }
+    // }
 
     toggleVisibility()
     {

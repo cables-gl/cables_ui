@@ -1268,7 +1268,6 @@ export default class Gui
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
         ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
-
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });
         ele.byId("nav_viewProjectLink").addEventListener("click", (e) =>
@@ -2212,6 +2211,22 @@ export default class Gui
         document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
 
         this.theme = theme;
+
+
+        const nsColors = document.createElement("style");
+        document.body.appendChild(nsColors);
+
+        let strNsCss = "";
+
+
+        for (let i in theme.colors_namespaces)
+        {
+            let ns = i;
+            ns = ns.replaceAll(".", "_");
+            strNsCss += ".nsColor_" + ns + "{color:" + rgbtohex(theme.colors_namespaces[i]) + " !important;}\n";
+        }
+
+        nsColors.textContent = strNsCss;
 
         this.emitEvent("themeChanged");
         return missing;

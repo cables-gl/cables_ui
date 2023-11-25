@@ -155,20 +155,20 @@ const defaultOps = {
     {
         "default":
         {
-            "GreaterThan": defaultOpNames.GreaterThan,
-            "LessThan": defaultOpNames.LessThan,
-            "Sum": defaultOpNames.Sum,
-            "Subtract": defaultOpNames.Subtract,
-            "Divide": defaultOpNames.Divide,
-            "Multiply": defaultOpNames.Multiply,
-            "Equals": defaultOpNames.Equals,
+            ">": defaultOpNames.GreaterThan,
+            "<": defaultOpNames.LessThan,
+            "+": defaultOpNames.Sum,
+            "-": defaultOpNames.Subtract,
+            "/": defaultOpNames.Divide,
+            "*": defaultOpNames.Multiply,
+            "=": defaultOpNames.Equals,
         },
         "array":
         {
-            "ArraySum": defaultOpNames.ArraySum,
-            "ArraySubtract": defaultOpNames.ArraySubtract,
-            "ArrayDivide": defaultOpNames.ArrayDivide,
-            "ArrayMultiply": defaultOpNames.ArrayMultiply,
+            "+": defaultOpNames.ArraySum,
+            "-": defaultOpNames.ArraySubtract,
+            "/": defaultOpNames.ArrayDivide,
+            "*": defaultOpNames.ArrayMultiply,
         },
         "string":
         {
@@ -186,13 +186,14 @@ const defaultOps = {
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.VizTexture, defaultOpNames.VizTextureTable, defaultOpNames.VizObject];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return [defaultOpNames.VizObject];
         }
+        return [];
     },
     "getOpsForPortLink": (p, l) =>
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_IN)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.string, defaultOpNames.StringEditor];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.Number];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.string, defaultOpNames.stringEditor];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.number];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.defaultOpImage];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return [defaultOpNames.divElement];
@@ -202,6 +203,7 @@ const defaultOps = {
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
         }
+        return [];
     },
     "getOpsForFilename": (filename) =>
     {
@@ -314,17 +316,8 @@ const defaultOps = {
 
     "getNamespaceClassName": (opName) =>
     {
-        if (!opName) return "default";
-        if (opName.startsWith("Ops.Gl.")) return "gl";
-        if (opName.startsWith("Ops.WebAudio.")) return "audio";
-        if (opName.startsWith("Ops.Devices.")) return "devices";
-        if (opName.startsWith("Ops.Html.")) return "html";
-        if (opName.startsWith("Ops.Sidebar.")) return "html";
-        if (opName.startsWith("Ops.Math.")) return "math";
-        if (opName.startsWith("Ops.User.")) return "user";
-        if (opName.startsWith("Ops.Team.")) return "team";
-        if (opName.startsWith("Ops.Patch.")) return "user";
-        return "default";
+        const opNameParts = opName.split(".");
+        return "nsColor_" + opNameParts[0] + "_" + opNameParts[1];
     },
 
     "getNamespace": (opname) =>

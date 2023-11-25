@@ -147,7 +147,7 @@ export default class OpSelect
         let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
 
-        if (!ops && !vizops && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
+        if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)
         {
             if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = this.tree.html();
             return;
@@ -426,7 +426,6 @@ export default class OpSelect
         const cssClass = "selected";
 
         // oBoxCollectionAll.classList.remove(cssClass);
-
 
         for (let i = 0; i < oBoxCollection.length; i++) oBoxCollection[i].classList.remove(cssClass);
 

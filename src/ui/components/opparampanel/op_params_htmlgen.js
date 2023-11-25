@@ -52,7 +52,7 @@ class PortHtmlGenerator
             "op": op,
             "panelid": this._panelId,
             "isBookmarked": isBookmarked,
-            "colorClass": "op_color_" + defaultops.getNamespaceClassName(op.objName),
+            "colorClass": defaultops.getNamespaceClassName(op.objName),
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),

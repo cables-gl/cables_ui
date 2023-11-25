@@ -461,6 +461,15 @@ export default class FindTab
                 }
             }
             else
+            if (str == ":currentsubpatch")
+            {
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+                    if (op.uiAttribs && op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) results.push({ op, "score": 1 });
+                }
+            }
+            else
             if (str == ":textures")
             {
                 for (let i = 0; i < ops.length; i++)
@@ -721,7 +730,8 @@ export default class FindTab
         let results = this._doSearch(strs[0] || "", userInvoked, gui.corePatch().ops) || [];
 
         let resultsTriggers = this._doSearchTriggers(strs[0]);
-        let resultsVars = this._doSearchVars(strs[0]);
+        let resultsVars = [];
+        // resultsVars=this._doSearchVars(strs[0]);
 
 
         if (strs.length > 1)

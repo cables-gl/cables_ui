@@ -217,7 +217,7 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("k", "Navigate op history forward", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.opHistory.forward(); });
 
         gui.keys.key("d", "Disable Op", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { this.toggleOpsEnable(); });
-        gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
+        // gui.keys.key("d", "Temporary unlink op", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.tempUnlinkOp(); });
 
         gui.keys.key("!", "debug", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { this._cycleDebug(); });
 
@@ -736,6 +736,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             ops[i].setEnabled(!willDisable);
         }
+        gui.opParams.refresh();
     }
 
     addLink(l)

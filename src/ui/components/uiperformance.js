@@ -133,7 +133,16 @@ export default class UiProfiler
                 perf._measures[name].count++;
 
                 perf._measures[name].times = perf._measures[name].times || [];
-                perf._measures[name].times.push(time);
+
+                try
+                {
+                    perf._measures[name].times.push(time);
+                }
+                catch (e)
+                {
+                    console.log(e);
+                    console.log(perf._measures[name].times);
+                }
 
                 perf._measures[name].date = performance.now();
             }
