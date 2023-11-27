@@ -48,7 +48,7 @@
                         {{#if isTeamNamespace }}<span class="icon icon-users"></span>{{/if}}
                         {{#if isExtension }}<span class="icon icon-book-open"></span>{{/if}}
                     {{/if}}
-                    <span class="shortname nsColor_{{ nscolor }}">{{shortName}}</span>
+                    <span class="shortname {{ nscolor }}">{{shortName}}</span>
                     {{oldState}}
                     {{#if old}}OLD{{/if}}
                     - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
