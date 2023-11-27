@@ -26,7 +26,7 @@ export default class Api
             if (gui.corePatch().isPlaying())
             {
                 const startTime = performance.now();
-                this.request("POST", "ping", { "lastPing": this.pingTime }, (msg) =>
+                CABLESUILOADER.talkerAPI.send("ping", { "lastPing": this.pingTime }, (err, msg) =>
                 {
                     if (msg.maintenance)
                     {
@@ -153,36 +153,6 @@ export default class Api
                     if (cbError) cbError(response);
                 }
             });
-    }
-
-    hasCached(url, method)
-    {
-        if (!method)method = "GET";
-        for (let i = 0; i < this.cache.length; i++)
-        {
-            if (this.cache[i].url == url && this.cache[i].method == method)
-                return this.cache[i];
-        }
-        return null;
-    }
-
-    clearCache()
-    {
-        this.cache.length = 0;
-    }
-
-    getCached(url, cb, cbErr)
-    {
-        for (let i = 0; i < this.cache.length; i++)
-        {
-            if (this.cache[i].url == url)
-            {
-                cb(this.cache[i].data);
-                return;
-            }
-        }
-
-        this.request("GET", url, {}, cb, cbErr, true);
     }
 
     get(url, cb, cbErr)

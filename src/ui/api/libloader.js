@@ -60,8 +60,6 @@ export default class LibLoader
                 "executed": false,
                 "cb": (libName) =>
                 {
-                    if (window.module) module = window.module; // electron module workaround/fix
-
                     const i = this.libsToLoad.indexOf(libName);
                     this.libsToLoad.splice(i, 1);
                     this.list.push(libName);
@@ -69,8 +67,6 @@ export default class LibLoader
                 }
             }
             );
-
-            if (typeof module === "object") { window.module = module; module = undefined; } // electron module workaround/fix
 
             const elRef = this.id + "_" + name;
             if (!document.querySelector("[data-libname=\"" + elRef + "\"]"))

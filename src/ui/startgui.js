@@ -126,8 +126,6 @@ export default function startUi(cfg)
                     if (userSettings.get("forceWebGl1")) CABLES.UI.notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
-                if (window.module) module = window.module; // electronn workaround/fix
-
                 gui.patchView.checkPatchErrors();
 
                 gui.patchView.setCurrentSubPatch(0);

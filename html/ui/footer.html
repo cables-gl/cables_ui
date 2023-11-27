@@ -1,222 +1,234 @@
-
         <a id="undev" data-info="undevLogo" class="icon-undev info" target="_blank" href="http://www.undev.de"></a>
+    </div>
+</body>
+<script>
+    "use strict";
+    var CABLESUILOADER = CABLESUILOADER || {};
 
-</div>
-
-    </body>
-
-<script>if (typeof module === 'object') {window.module = module; module = undefined;}</script><!-- electron module workaround/fix -->
-    <script>
-"use strict";
-        var CABLESUILOADER = CABLESUILOADER || {};
-
-        CABLESUILOADER.GlobalVarTester = (function(){
-            var fields = {};
-            var before = function(w){
-                for(var field in w){
-                    fields[field] = true;
-                };
-            };
-
-            var after = function(w){
-                for(var field in w){
-                    if(!fields[field]){
-                        console.log(field + " has been added");
-                    }
-                };
-
-            };
-            return {before: before, after:after};
-        }());
-
-        CABLESUILOADER.preload={};
-        CABLESUILOADER.GlobalVarTester.before(window);
-
-        CABLESUILOADER.uiLoadStart=performance.now();
-        CABLESUILOADER.startup={};
-        CABLESUILOADER.startup.log=[];
-        CABLESUILOADER.startup.maxEvents=15-1;
-        CABLESUILOADER.startup.numEvents=0;
-
-        CABLESUILOADER.buildInfo = {};
-
-        function incrementStartup()
+    CABLESUILOADER.GlobalVarTester = (function ()
+    {
+        var fields = {};
+        var before = function (w)
         {
-            CABLESUILOADER.startup.numEvents++;
-
-            const loadingBarEle=document.getElementById("loadingstatusBar");
-            if(loadingBarEle) loadingBarEle.style.width=(CABLESUILOADER.startup.numEvents/CABLESUILOADER.startup.maxEvents)*100+'%';
-        }
-
-        function logStartup(title)
-        {
-
-            const timeUsed=Math.round((performance.now()-CABLESUILOADER.uiLoadStart)/1000*100)/100;
-
-            CABLESUILOADER.startup.log.push(
+            for (var field in w)
             {
-                "title":title,
-                "time":timeUsed
-            });
-
-            if(!CABLES || !CABLES.sandbox || !CABLES.sandbox.isDevEnv())return;
-            document.getElementById("loadingstatusLog").innerHTML+=title+" ("+timeUsed+") <br/>";
-            document.querySelectorAll(".devOnly").forEach(e => e.style.display = "inherit");
-        }
-
-        CABLESUILOADER.noCacheUrl=function(url)
-        {
-            return url+'?nc='+(Date.now()+'').substr(-6);
+                fields[field] = true;
+            }
         };
 
-        CABLESUILOADER.builtVersionUrl = function(component, url) {
-            let ncUrl = CABLESUILOADER.noCacheUrl(url);
-            if(CABLESUILOADER.buildInfo) {
-                if(CABLESUILOADER.buildInfo[component]) {
-                    ncUrl = url + '?nc=' + CABLESUILOADER.buildInfo[component].timestamp
+        var after = function (w)
+        {
+            for (var field in w)
+            {
+                if (!fields[field])
+                {
+                    console.log(field + " has been added");
                 }
             }
-            return ncUrl;
+            ;
+
+        };
+        return {
+            before: before,
+            after: after
+        };
+    }());
+
+    CABLESUILOADER.preload = {};
+    CABLESUILOADER.GlobalVarTester.before(window);
+
+    CABLESUILOADER.uiLoadStart = performance.now();
+    CABLESUILOADER.startup = {};
+    CABLESUILOADER.startup.log = [];
+    CABLESUILOADER.startup.maxEvents = 15 - 1;
+    CABLESUILOADER.startup.numEvents = 0;
+
+    CABLESUILOADER.buildInfo = {};
+
+    function incrementStartup()
+    {
+        CABLESUILOADER.startup.numEvents++;
+
+        const loadingBarEle = document.getElementById("loadingstatusBar");
+        if (loadingBarEle) loadingBarEle.style.width = (CABLESUILOADER.startup.numEvents / CABLESUILOADER.startup.maxEvents) * 100 + "%";
+    }
+
+    function logStartup(title)
+    {
+
+        const timeUsed = Math.round((performance.now() - CABLESUILOADER.uiLoadStart) / 1000 * 100) / 100;
+
+        CABLESUILOADER.startup.log.push(
+            {
+                "title": title,
+                "time": timeUsed
+            });
+
+        if (!CABLES || !CABLES.sandbox || !CABLES.sandbox.isDevEnv()) return;
+        document.getElementById("loadingstatusLog").innerHTML += title + " (" + timeUsed + ") <br/>";
+        document.querySelectorAll(".devOnly").forEach(e => e.style.display = "inherit");
+    }
+
+    CABLESUILOADER.noCacheUrl = function (url)
+    {
+        return url + "?nc=" + (Date.now() + "").substr(-6);
+    };
+
+    CABLESUILOADER.builtVersionUrl = function (component, url)
+    {
+        let ncUrl = CABLESUILOADER.noCacheUrl(url);
+        if (CABLESUILOADER.buildInfo)
+        {
+            if (CABLESUILOADER.buildInfo[component])
+            {
+                ncUrl = url + "?nc=" + CABLESUILOADER.buildInfo[component].timestamp;
+            }
         }
+        return ncUrl;
+    };
+
+    incrementStartup();
+    if (window.logStartup) logStartup("Start");
+    const numRetries = 5;
+
+    CABLESUILOADER.loadAll = function (cfg)
+    {
+        CABLESUILOADER.cfg = cfg;
+        if (!window.hasOwnProperty("loadjs"))
+        {
+            setTimeout(CABLESUILOADER.loadAll, 100);
+            console.log("wait for loadjs...");
+            return;
+        }
+
+        logStartup("loaded minimum libs / starting up...");
 
         incrementStartup();
-        if(window.logStartup) logStartup("Start");
-        const numRetries=5;
 
-        CABLESUILOADER.loadAll=function(cfg)
+        loadjs([
+            CABLESUILOADER.builtVersionUrl("core", "js/libs.core.min.js")
+        ], "libs");
+
+        var jsType = "max";
+        if (!cfg.isDevEnv) jsType = "min";
+
+        loadjs.ready("libs", function ()
         {
-            CABLESUILOADER.cfg=cfg;
-            if(!window.hasOwnProperty('loadjs'))
-            {
-                setTimeout(CABLESUILOADER.loadAll,100);
-                console.log("wait for loadjs...");
-                return;
-            }
-
-            logStartup('loaded minimum libs / starting up...');
-
             incrementStartup();
+            logStartup("loaded libs");
 
-            loadjs([
-                CABLESUILOADER.builtVersionUrl("core", 'js/libs.core.min.js')
-                    ], 'libs');
 
-            var jsType='max';
-            if(!cfg.isDevEnv) jsType='min';
+            loadjs([CABLESUILOADER.builtVersionUrl("core", "js/cables." + jsType + ".js")], "cables_core");
 
-            loadjs.ready('libs', function()
+            loadjs.ready("cables_core", function ()
             {
+                logStartup("loaded cables core");
+                // console.log("core loaded",CABLES);
+
                 incrementStartup();
-                logStartup('loaded libs');
 
+                loadjs([CABLESUILOADER.builtVersionUrl("ui", "js/cablesui." + jsType + ".js")], "cablesuinew");
 
-                    loadjs([CABLESUILOADER.builtVersionUrl("core", 'js/cables.'+jsType+'.js')],'cables_core');
+                loadjs.ready("cablesuinew", function ()
+                {
+                    incrementStartup();
+                    logStartup("loaded ui");
 
-                    loadjs.ready('cables_core', function()
+                    CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
+                    CABLESUILOADER.talkerAPI.send("getOpDocsAll", { "projectId": cfg.patchId }, (err, _data) =>
                     {
-                        logStartup('loaded cables core');
-                        // console.log("core loaded",CABLES);
-
-                        incrementStartup();
-
-                        loadjs([CABLESUILOADER.builtVersionUrl("ui", 'js/cablesui.'+jsType+'.js')], 'cablesuinew');
-
-                        loadjs.ready('cablesuinew', function()
+                        if (err)
                         {
+                            console.error("preloading error", err);
+                        }
+                        else
+                        {
+                            CABLESUILOADER.preload.opDocsAll = _data;
+                        }
+                    }, (response) =>
+                    {
+                        console.error("preloading error", response);
+                    });
+
+                    CABLES.sandbox = new CABLES.SandboxBrowser(cfg);
+
+                    incrementStartup();
+                    const localOpCode = CABLES.sandbox.getLocalOpCode();
+                    if (localOpCode)
+                    {
+                        // append the local-op-code to document
+                        const s = document.createElement("script");
+                        s.type = "text/javascript";
+                        s.innerHTML = localOpCode;
+                        document.getElementsByTagName("head")[0].appendChild(s);
+                    }
+
+                    CABLESUILOADER.talkerAPI.send("getCoreOpsCode", {}, (coreErr, coreCode) =>
+                    {
+                        const codeCodeEle = document.createElement("script");
+                        codeCodeEle.type = "text/javascript";
+                        codeCodeEle.innerHTML = coreCode;
+                        document.getElementsByTagName("head")[0].appendChild(codeCodeEle);
+                        CABLESUILOADER.talkerAPI.send("getProjectOpsCode", { "projectId": cfg.patchId }, (projectErr, projectCode) =>
+                        {
+                            const projectCodeEle = document.createElement("script");
+                            projectCodeEle.type = "text/javascript";
+                            projectCodeEle.innerHTML = projectCode;
+                            document.getElementsByTagName("head")[0].appendChild(projectCodeEle);
+
                             incrementStartup();
-                            logStartup('loaded ui');
+                            logStartup("loaded cables ops");
+                            const uiBuild = CABLESUILOADER.buildInfo.ui;
+                            const coreBuild = CABLESUILOADER.buildInfo.core;
+                            const apiBuild = CABLESUILOADER.buildInfo.api;
 
-                            CABLESUILOADER.talkerAPI= CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
-                            CABLESUILOADER.talkerAPI.send("getOpDocsAll",{"projectId": cfg.patchId},(err, _data) =>
-                            {
-                                if(err) {
-                                    console.error("preloading error",err);
-                                }else{
-                                    CABLESUILOADER.preload.opDocsAll=_data;
-                                }
-                            }, (response) => {
-                                console.error("preloading error",response);
-                            });
+                            if (uiBuild && uiBuild.git) if (window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
+                            if (coreBuild && coreBuild.git) if (window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
+                            if (apiBuild && apiBuild.git) if (window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
 
-                            if(document.location.href.indexOf('https://cables.gl') === -1 && window.process && window.process.versions['electron']) CABLES.sandbox=new CABLES.SandboxElectron();
-                            else CABLES.sandbox=new CABLES.SandboxBrowser(cfg);
-
-                            incrementStartup();
-                            // local ops are only available in electron version
-                            var localOpCode = CABLES.sandbox.getLocalOpCode();
-                            // var opPathsToLoad = [CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode())];
-
-                            // if(localOpPaths && localOpPaths.length > 0) {
-                            //     localOpPaths = localOpPaths.concat(opPathsToLoad);
-                            // }
-
-                            // append the local-op-code to document
-                            function addJS(jsCode) {
-                                var s = document.createElement('script');
-
-                                s.type = 'text/javascript';
-                                s.innerText = jsCode;
-                                document.getElementsByTagName('head')[0].appendChild(s);
-                            }
-
-                            addJS(localOpCode);
-
-                            loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
-
-                            loadjs.ready('all_ops', () =>
-                            {
-                                incrementStartup();
-                                logStartup('loaded cables ops');
-                                const uiBuild = CABLESUILOADER.buildInfo.ui;
-                                const coreBuild = CABLESUILOADER.buildInfo.core;
-                                const apiBuild = CABLESUILOADER.buildInfo.api;
-
-                                if(uiBuild && uiBuild.git) if(window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
-                                if(coreBuild && coreBuild.git) if(window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
-                                if(apiBuild && apiBuild.git)  if(window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
-
-                                waitForAce();
-                            });
+                            waitForAce();
                         });
                     });
-            });
-        };
-
-        function waitForAce()
-        {
-            if(!CABLESUILOADER.preload.opDocsAll)
-            {
-                console.log("waiting for opDocsAll...");
-                setTimeout(waitForAce,100);
-            }
-            else
-            {
-                CABLESUILOADER.uiLoadFiles=performance.now()-CABLESUILOADER.uiLoadStart;
-
-                CABLES.UI.startUi(CABLESUILOADER.cfg);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', function(event)
-        {
-            CABLESUILOADER.talkerAPI= CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
-            CABLESUILOADER.talkerAPI.send("requestPatchData",{},function(response)
-            {
-                if(response.buildInfo) {
-                    CABLESUILOADER.buildInfo = response.buildInfo;
-                }
-                CABLESUILOADER.loadAll(response);
+                });
             });
         });
+    };
 
-        if(! (function() { return !this; })() ) console.log('not in strict mode: footer html' );
+    function waitForAce()
+    {
+        if (!CABLESUILOADER.preload.opDocsAll)
+        {
+            console.log("waiting for opDocsAll...");
+            setTimeout(waitForAce, 100);
+        }
+        else
+        {
+            CABLESUILOADER.uiLoadFiles = performance.now() - CABLESUILOADER.uiLoadStart;
 
-    </script>
+            CABLES.UI.startUi(CABLESUILOADER.cfg);
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event)
+    {
+        CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
+        CABLESUILOADER.talkerAPI.send("requestPatchData", {}, function (response)
+        {
+            if (response.buildInfo)
+            {
+                CABLESUILOADER.buildInfo = response.buildInfo;
+            }
+            CABLESUILOADER.loadAll(response);
+        });
+    });
+
+    if (!(function () { return !this; })()) console.log("not in strict mode: footer html");
+
+</script>
 
 <div class="preloading" style="font-family:fontawesome"></div>
 <div class="preloading" style="font-family:SourceSansPro"></div>
 
 <div id="testcontent"></div>
-
 
 </html>
