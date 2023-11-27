@@ -196,28 +196,12 @@ function _svgcss(done)
         .pipe(gulp.dest("../cables_api/scss/"));
 }
 
-function _electronapp(done)
-{
-    const copydist = gulp.src("dist/**/*.*").pipe(gulp.dest("dist-electron/"));
-    const electronsrc = gulp.src("src-electron/**/*.*").pipe(gulp.dest("dist-electron/"));
-    return merge(copydist, electronsrc);
-}
-
 function _watch(done)
 {
     gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui));
     gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi));
-    done();
-}
-
-function _electron_watch(done)
-{
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], gulp.series(_update_buildInfo, _scripts_ui_webpack));
-    gulp.watch(["scss/**/*.scss", "scss/*.scss"], gulp.series(_update_buildInfo, _sass));
-    gulp.watch(["html/**/*.html", "html/*.html"], gulp.series(_update_buildInfo, _html_ui));
-    gulp.watch("src-electron/**/*", gulp.series(_update_buildInfo, _electronapp));
     done();
 }
 
@@ -258,24 +242,6 @@ gulp.task("build", gulp.series(
     _scripts_talkerapi,
     _cleanup_scripts,
     _sass,
-));
-
-/**
- * Electron development
- * Run "gulp electron"
- */
-gulp.task("electron", gulp.series(
-    _update_buildInfo,
-    _svgcss,
-    _scripts_ui_webpack,
-    _lint,
-    _html_ui,
-    _scripts_libs_ui,
-    _cleanup_scripts,
-    _cleanup_scripts,
-    _sass,
-    _electronapp,
-    _electron_watch
 ));
 
 gulp.task("testui", gulp.series(

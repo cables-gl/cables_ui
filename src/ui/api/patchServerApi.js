@@ -115,7 +115,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             else if (this._serverDate != data.updated)
             {
                 let html =
-                    "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updatedReadable + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
+                    "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updated + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
                     "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
                 if (fromSave) html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
                 html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
@@ -167,47 +167,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
     saveAs()
     {
         if (gui.showGuestWarning()) return;
-
-        // if (window.process && window.process.versions.electron)
-        // {
-        //     const electron = require("electron");
-        //     const remote = electron.remote;
-        //     const dialog = remote.dialog;
-        //     const data = gui.corePatch().serialize({ "asObject": true });
-
-        //     data.ui = {
-        //         "viewBox": {},
-        //         "timeLineLength": gui.timeLine().getTimeLineLength()
-        //     };
-
-        //     gui.bookmarks.cleanUp();
-        //     data.ui.bookmarks = gui.bookmarks.getBookmarks();
-        //     // data.ui.viewBox = this._viewBox.serialize();
-        //     data.ui.subPatchViewBoxes = gui.patch.getSubPatchViewBoxes();
-        //     data.ui.renderer = {};
-        //     data.ui.renderer.w = gui.rendererWidth;
-        //     data.ui.renderer.h = gui.rendererHeight;
-        //     data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
-
-        //     dialog.showSaveDialog(
-        //         {
-        //             // file filters, only display files with these extensions
-        //             "filters": [{
-        //                 "name": "cables",
-        //                 "extensions": ["cables"]
-        //             }]
-        //         },
-        //         function (filePath)
-        //         {
-        //             this.nativeWritePatchToFile(data, filePath);
-        //             this.filename = filePath; // store the path so we don't have to ask on next save
-        //             this._log.log("this.filename saved: ", this.filename);
-        //             const projectName = self.getProjectnameFromFilename(filePath);
-        //             gui.setProjectName(projectName);
-        //         }
-        //     );
-        //     return;
-        // }
 
         CABLESUILOADER.talkerAPI.send("getPatch", {}, (_err, project) =>
         {
@@ -540,44 +499,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
         data.ui.renderer.h = gui.rendererHeight;
         data.ui.renderer.s = data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
 
-        // electron
-        // if (window.process && window.process.versions.electron)
-        // {
-        //     const electron = require("electron");
-        //     const ipcRenderer = electron.ipcRenderer;
-        //     const remote = electron.remote;
-        //     const dialog = remote.dialog;
-
-        //     this._log.log("filename before check: ", filename);
-        //     // patch has been saved before, overwrite the patch
-        //     if (filename)
-        //     {
-        //         this.nativeWritePatchToFile(data, filename);
-        //     }
-        //     else
-        //     {
-        //         dialog.showSaveDialog(
-        //             {
-        //                 // file filters, only display files with these extensions
-        //                 "filters": [{
-        //                     "name": "cables",
-        //                     "extensions": ["cables"]
-        //                 }]
-        //             },
-        //             function (filePath)
-        //             {
-        //                 this.nativeWritePatchToFile(data, filePath);
-        //                 filename = filePath; // store the path so we don't have to ask on next save
-        //                 this._log.log("filename saved: ", filename);
-        //                 const projectName = this.getProjectnameFromFilename(filePath);
-        //                 gui.setProjectName(projectName);
-        //             }
-        //         );
-        //     }
-
-        //     return;
-        // }
-
         CABLES.patch.namespace = currentProject.namespace;
 
 
@@ -648,7 +569,11 @@ export default class PatchSaveServer extends CABLES.EventTarget
                             let msg = "no response";
                             if (r && r.msg) msg = r.msg;
 
-                            CABLES.UI.MODAL.showError("Patch not saved", "Could not save patch: " + msg);
+                            new ModalDialog({
+                                "warning": true,
+                                "title": "Patch not saved",
+                                "text": "Could not save patch: " + msg
+                            });
 
                             this._log.log(r);
                             this.finishAnimations();

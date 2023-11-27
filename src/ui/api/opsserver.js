@@ -877,8 +877,6 @@ export default class ServerOps
         const userInteraction = !fromListener;
 
         let editorObj = null;
-        CABLES.api.clearCache();
-
         gui.jobs().start({ "id": "load_attachment_" + attachmentName, "title": "loading attachment " + attachmentName });
 
         const apiParams = {
