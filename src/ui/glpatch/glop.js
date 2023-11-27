@@ -1258,32 +1258,6 @@ export default class GlOp extends CABLES.EventTarget
         }
 
         this._glRectBg.setBorder(this._rectBorder);
-        if (this._transparent) this._glRectBg.setColor(gui.theme.colors_patch.transparent);
-        else
-        {
-            if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
-            {
-                this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
-
-                // if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
-                // {
-                //     this._glRectRightHandle = this._instancer.createRect();
-                //     this._glRectRightHandle.setParent(this._glRectBg);
-                //     this._updateSizeRightHandle();
-                // }
-
-                // if (this._glRectRightHandle) this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
-            }
-            else
-            {
-                this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
-                // if (this._glRectRightHandle && this.opUiAttribs.color == null)
-                // {
-                //     this._glRectRightHandle.dispose();
-                //     this._glRectRightHandle = null;
-                // }
-            }
-        }
 
         if (this.opUiAttribs.selected)
         {
@@ -1293,8 +1267,39 @@ export default class GlOp extends CABLES.EventTarget
         else
         {
             this._glRectBg.setSelected(0);
-            this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
+
+
+            if (this._transparent)
+            {
+                this._glRectBg.setColor(gui.theme.colors_patch.transparent);
+            }
+            else
+            {
+                if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color)
+                {
+                    this._glRectBg.setColor(chroma.hex(this.opUiAttribs.color).darken(3.3).gl());
+
+                    // if (!this._glRectRightHandle && this._displayType != this.DISPLAY_UI_AREA)
+                    // {
+                    //     this._glRectRightHandle = this._instancer.createRect();
+                    //     this._glRectRightHandle.setParent(this._glRectBg);
+                    //     this._updateSizeRightHandle();
+                    // }
+
+                    // if (this._glRectRightHandle) this._glRectRightHandle.setColor(chroma.hex(this.opUiAttribs.color).gl());
+                }
+                else
+                {
+                    this._glRectBg.setColor(gui.theme.colors_patch.opBgRect);
+                    // if (this._glRectRightHandle && this.opUiAttribs.color == null)
+                    // {
+                    //     this._glRectRightHandle.dispose();
+                    //     this._glRectRightHandle = null;
+                    // }
+                }
+            }
         }
+
 
 
         if (this._displayType === this.DISPLAY_UI_AREA)
