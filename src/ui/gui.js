@@ -1365,7 +1365,13 @@ export default class Gui
                     CABLES.UI.paramsHelper.openParamStringEditor(selectedOpId, port.name, null, true);
                 if (port.uiAttribs.display === "gradient")
                 {
-                    (new CABLES.GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") })).show();
+                    const editor = new CABLES.GradientEditor(selectedOpId, port.name, { "openerEle": ele.byClass("gradienteditbutton") });
+                    editor.show();
+
+                    port.on("change", () =>
+                    {
+                        console.log(editor);
+                    });
                 }
             }
         });

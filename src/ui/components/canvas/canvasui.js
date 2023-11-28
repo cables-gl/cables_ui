@@ -169,7 +169,7 @@ export default class CanvasUi
 
     updateSizeDisplay()
     {
-        this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
+        // this._eleCanvasInfoZoom = this._eleCanvasInfoZoom || document.getElementById("canvasInfoZoom");
         this._elCanvasInfoAspect = this._elCanvasInfoAspect || document.getElementById("canvasInfoAspect");
 
         let sizeStr = Math.floor(100 * this._cg.canvasWidth) / 100 + "x" + Math.floor(100 * this._cg.canvasHeight) / 100;
@@ -183,18 +183,21 @@ export default class CanvasUi
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
 
-        const zoom = Math.round(window.devicePixelRatio);
-        if (zoom != 1)
-        {
-            this._showingInfoZoom = true;
-            // if (!this.minimized) ele.show(this._eleCanvasInfoZoom);
-            this._eleCanvasInfoZoom.innerHTML = "x" + zoom;
-        }
-        else
-        {
-            if (this._showingInfoZoom) ele.hide(this._eleCanvasInfoZoom);
-            this._showingInfoZoom = false;
-        }
+        // const zoom = Math.round(gui.corePatch().cgl.pixelDensity * 100) / 100;
+
+        // console.log(zoom);
+
+        // if (zoom != 1)
+        // {
+        //     if (!this._showingInfoZoom) ele.show(this._eleCanvasInfoZoom);
+        //     this._eleCanvasInfoZoom.innerHTML = "x" + zoom;
+        //     this._showingInfoZoom = true;
+        // }
+        // else
+        // {
+        //     if (this._showingInfoZoom) ele.hide(this._eleCanvasInfoZoom);
+        //     this._showingInfoZoom = false;
+        // }
 
         return sizeStr;
     }
