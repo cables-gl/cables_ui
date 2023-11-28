@@ -60,6 +60,7 @@ CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
 CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
+CABLES.UTILS = CABLES.UTILS || {};
 
 
 CABLES.SandboxBrowser = SandboxBrowser;
@@ -123,6 +124,7 @@ CABLES.UI.ModalError = ModalError;
 CABLES.UI.initSplitPanes = initSplitPanes;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
 CABLES.UTILS.arrayContains = arrayContains;
+CABLES.UTILS.uniqueArray = uniqueArray;
 
 CABLES.UI.startIdleListeners = startIdleListeners;
 

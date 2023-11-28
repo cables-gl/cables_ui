@@ -68,12 +68,14 @@ void main()
         if(fcolorBorder.a>0.0)
         {
             float border=widthSelected/(width+widthSelected)/2.0;
-            if(texCoord.y<border|| texCoord.y>1.0-border) finalColor=fcolorBorder;
+            float fade=0.0;
 
-        //     float border=0.5;
-        //     if(texCoord.y<border)finalColor=mix(fcolorBorder,finalColor,abs(texCoord.y/border));
-        //     else if(texCoord.y>1.0-border)finalColor=mix(fcolorBorder,finalColor,abs((1.0-texCoord.y)/(border)));
+            fade=smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+
+            smoothstep(1.0-border,1.0-border+fwidth(texCoord.y),texCoord.y);
+
+            finalColor=mix(finalColor,fcolorBorder,fade);
         }
+
 
 
     #ifdef FADEOUT

@@ -40,84 +40,75 @@ export default class ManageOp
     {
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
-        if (window.process && window.process.versions.electron) return;
-        CABLES.api.get(
-            "op/" + this._currentName + "/info",
-            (res) =>
+        CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": this._currentName }, (error, res) =>
+        {
+            if (error) this._log.warn("error api?");
+            const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
+            const doc = {};
+            let summary = "";
+
+            if (res.attachmentFiles)
             {
-                const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
-                const doc = {};
-                let summary = "";
-
-                if (res.attachmentFiles)
+                const attachmentFiles = [];
+                for (let i = 0; i < res.attachmentFiles.length; i++)
                 {
-                    const attachmentFiles = [];
-                    for (let i = 0; i < res.attachmentFiles.length; i++)
-                    {
-                        attachmentFiles.push(
-                            {
-                                "readable": res.attachmentFiles[i].substr(4),
-                                "original": res.attachmentFiles[i],
-                            });
-                    }
-                    doc.attachmentFiles = attachmentFiles;
+                    attachmentFiles.push(
+                        {
+                            "readable": res.attachmentFiles[i].substr(4),
+                            "original": res.attachmentFiles[i],
+                        });
                 }
+                doc.attachmentFiles = attachmentFiles;
+            }
 
-                const opName = this._currentName;
+            const opName = this._currentName;
 
-                const opDoc = gui.opDocs.getOpDocByName(opName);
-                console.log(opDoc);
+            const opDoc = gui.opDocs.getOpDocByName(opName);
 
-                doc.libs = gui.serverOps.getOpLibs(opName, false);
-                doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
-                summary = gui.opDocs.getSummary(opName);
-                const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
+            doc.libs = gui.serverOps.getOpLibs(opName, false);
+            doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
+            summary = gui.opDocs.getSummary(opName);
+            const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
 
-                // if (defaultops.isCoreOp(opName)) this._op.github = "https://github.com/pandrr/cables/tree/master/src/ops/base/" + opName;
-
-                const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-                const html = getHandleBarHtml("tab_manage_op",
-                    {
-                        "url": CABLES.sandbox.getCablesUrl(),
-                        "op": this._op,
-                        "opname": opName,
-                        "doc": doc,
-                        "opDoc": opDoc,
-                        "summary": summary,
-                        "showPatchLibSelect": showPatchLibSelect,
-                        "canEditOp": canEditOp,
-                        "readOnly": !canEditOp,
-                        "libs": gui.opDocs.libs,
-                        "coreLibs": gui.opDocs.coreLibs,
-                        "user": gui.user,
-                        "warns": res.warns
-                    });
-                this._tab.html(html);
-                if (!canEditOp)
+            const showPatchLibSelect = defaultops.isNonCoreOp(opName);
+            const html = getHandleBarHtml("tab_manage_op",
                 {
-                    document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
-                    {
-                        opLibSelect.disabled = true;
-                        opLibSelect.addEventListener("pointerenter", (event) =>
-                        {
-                            showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
-                        });
-                        opLibSelect.addEventListener("pointerleave", (event) =>
-                        {
-                            hideToolTip();
-                        });
-                    });
-
-                    document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
-                    {
-                        select.classList.add("inactive");
-                    });
-                }
-                perf.finish();
-            },
-            () =>
+                    "url": CABLES.sandbox.getCablesUrl(),
+                    "op": this._op,
+                    "opname": opName,
+                    "doc": doc,
+                    "opDoc": opDoc,
+                    "summary": summary,
+                    "showPatchLibSelect": showPatchLibSelect,
+                    "canEditOp": canEditOp,
+                    "readOnly": !canEditOp,
+                    "libs": gui.opDocs.libs,
+                    "coreLibs": gui.opDocs.coreLibs,
+                    "user": gui.user,
+                    "warns": res.warns
+                });
+            this._tab.html(html);
+            if (!canEditOp)
             {
-                this._log.warn("error api?");
-            });
+                document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
+                {
+                    opLibSelect.disabled = true;
+                    opLibSelect.addEventListener("pointerenter", (event) =>
+                    {
+                        showToolTip(event.currentTarget, "you are not allowed to add libraries to this op");
+                    });
+                    opLibSelect.addEventListener("pointerleave", (event) =>
+                    {
+                        hideToolTip();
+                    });
+                });
+
+                document.querySelectorAll("#metatabpanel .libselect").forEach((select) =>
+                {
+                    select.classList.add("inactive");
+                });
+            }
+            perf.finish();
+        });
     }
 }

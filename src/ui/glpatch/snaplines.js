@@ -67,10 +67,8 @@ export default class SnapLines extends CABLES.EventTarget
         if (userSettings.get("snapToGrid"))
             x = gui.patchView.snapOpPosX(_x);
 
-        console.log(0, this.enabled);
         if (this.enabled)
         {
-            console.log(1);
             if (gui.patchView.getSelectedOps().length > 0)
             {
                 const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");

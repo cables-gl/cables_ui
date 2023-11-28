@@ -20,7 +20,7 @@ export default class GlTextWriter
     {
         if (!this._fontTex)
         {
-            this._fontTex = CGL.Texture.load(this._cgl, "/ui/img/worksans-regular_int.png", () =>
+            this._fontTex = CGL.Texture.load(this._cgl, "img/worksans-regular_int.png", () =>
             {
                 this._rectDrawer.setAllTexture(this._fontTex, true);
             }, { "flip": false, "filter": CGL.Texture.FILTER_LINEAR });
