@@ -116,11 +116,19 @@ CABLES_CMD_RENDERER.scaleCanvas = function ()
 
 CABLES_CMD_RENDERER.changeSize = function ()
 {
+    let str = "<table>";
+    str += "<tr><td>Canvas HTML Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + " x x" + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
+    str += "<tr><td>Canvas Pixel Size:</td><td><code>" + gui.corePatch().cgl.canvas.width + " x x" + gui.corePatch().cgl.canvas.height + "</td></tr>";
+    str += "<tr><td>Device Pixel Ratio/Density:</td><td><code>" + window.devicePixelRatio + "</td></tr>";
+    str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + gui.corePatch().cgl.pixelDensity + "</td></tr>";
+    str += "</table>";
+    str += "<br/>Enter a new size:";
+
     gui.canvasManager.getCanvasUiBar().showCanvasModal(false);
     const p = new ModalDialog({
         "prompt": true,
         "title": "Change Canvas size",
-        "text": "Enter a new size",
+        "text": str,
         "promptValue": Math.round(gui.rendererWidth) + " x " + Math.round(gui.rendererHeight),
         "promptOk": (r) =>
         {

@@ -129,7 +129,7 @@ export default class CanvasManager
         for (let i = 0; i < this._contexts.length; i++)
         {
             const ctx = this._contexts[i];
-            items.push({ "title": ctx.getGApiName(),
+            items.push({ "title": i + ": " + ctx.getGApiName(),
                 "func": () =>
                 {
                     ctx.canvas.focus();

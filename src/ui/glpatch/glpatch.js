@@ -1638,7 +1638,7 @@ export default class GlPatch extends CABLES.EventTarget
         if (link && e)
         {
             clearTimeout(this._ttTImeout);
-            CABLES.UI.updateHoverToolTip(e, link._link.portOut, true);
+            CABLES.UI.updateHoverToolTip(e, link._link.portOut, link);
             // console.log(e.offsetY);
             // console.log("show!");
         }

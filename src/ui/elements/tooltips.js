@@ -108,7 +108,7 @@ document.querySelector("body").addEventListener("mouseout", function (evt)
 
 function isMultilineString(str)
 {
-    if(!str || !str.match || !str.length) return false;
+    if (!str || !str.match || !str.length) return false;
     return ((str.match(/\n/g) || []).length > 0);
 }
 
@@ -132,8 +132,16 @@ function getPortDescription(thePort, overlink)
         str += "<span class=\"tooltip_objtype\">" + objType + "</span>";
     }
 
-    if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
-    else str += " <b>" + thePort.getName() + "</b> ";
+
+    if (!overlink)
+    {
+        if (thePort.uiAttribs.title) str += " <b>" + thePort.uiAttribs.title + " (" + thePort.getName() + ") </b> ";
+        else str += " <b>" + thePort.getName() + "</b> ";
+    }
+    else
+    {
+        // str += overlink.opOut.op.getTitle() + "." + overlink._portNameOutput + " <i class=\"icon-0_75x icon icon-arrow-right\" align=\"bottom\" ></i>" + overlink.opIn.op.getTitle() + "." + overlink._portNameInput;
+    }
 
     if (!overlink)
     {

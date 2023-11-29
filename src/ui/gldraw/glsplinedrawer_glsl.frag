@@ -62,19 +62,17 @@ void main()
 
 
 
+    // selected border
+    if(fcolorBorder.a>0.0)
+    {
+        float border=widthSelected/(width+widthSelected)/2.0;
+        float fade=0.0;
 
+        fade=smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+
+            smoothstep(1.0-border,1.0-border+fwidth(texCoord.y),texCoord.y); // antialiase
 
-        // selected border
-        if(fcolorBorder.a>0.0)
-        {
-            float border=widthSelected/(width+widthSelected)/2.0;
-            float fade=0.0;
-
-            fade=smoothstep(border+fwidth(texCoord.y),border,texCoord.y)+
-            smoothstep(1.0-border,1.0-border+fwidth(texCoord.y),texCoord.y);
-
-            finalColor=mix(finalColor,fcolorBorder,fade);
-        }
+        finalColor=mix(finalColor,fcolorBorder,fade);
+    }
 
 
 

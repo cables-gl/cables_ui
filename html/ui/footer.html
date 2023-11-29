@@ -163,31 +163,20 @@
                         document.getElementsByTagName("head")[0].appendChild(s);
                     }
 
-                    CABLESUILOADER.talkerAPI.send("getCoreOpsCode", {}, (coreErr, coreCode) =>
+                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
+                    loadjs.ready('all_ops', () =>
                     {
-                        const codeCodeEle = document.createElement("script");
-                        codeCodeEle.type = "text/javascript";
-                        codeCodeEle.innerHTML = coreCode;
-                        document.getElementsByTagName("head")[0].appendChild(codeCodeEle);
-                        CABLESUILOADER.talkerAPI.send("getProjectOpsCode", { "projectId": cfg.patchId }, (projectErr, projectCode) =>
-                        {
-                            const projectCodeEle = document.createElement("script");
-                            projectCodeEle.type = "text/javascript";
-                            projectCodeEle.innerHTML = projectCode;
-                            document.getElementsByTagName("head")[0].appendChild(projectCodeEle);
+                        incrementStartup();
+                        logStartup('loaded cables ops');
+                        const uiBuild = CABLESUILOADER.buildInfo.ui;
+                        const coreBuild = CABLESUILOADER.buildInfo.core;
+                        const apiBuild = CABLESUILOADER.buildInfo.api;
 
-                            incrementStartup();
-                            logStartup("loaded cables ops");
-                            const uiBuild = CABLESUILOADER.buildInfo.ui;
-                            const coreBuild = CABLESUILOADER.buildInfo.core;
-                            const apiBuild = CABLESUILOADER.buildInfo.api;
+                        if(uiBuild && uiBuild.git) if(window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
+                        if(coreBuild && coreBuild.git) if(window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
+                        if(apiBuild && apiBuild.git)  if(window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
 
-                            if (uiBuild && uiBuild.git) if (window.logStartup) logStartup("UI buildmessage: " + uiBuild.git.message);
-                            if (coreBuild && coreBuild.git) if (window.logStartup) logStartup("CORE buildmessage: " + coreBuild.git.message);
-                            if (apiBuild && apiBuild.git) if (window.logStartup) logStartup("API buildmessage: " + apiBuild.git.message);
-
-                            waitForAce();
-                        });
+                        waitForAce();
                     });
                 });
             });
