@@ -1178,7 +1178,9 @@ export default class GlOp extends CABLES.EventTarget
         {
             if (this.opUiAttribs.hasOwnProperty("extendTitlePort") && this.opUiAttribs.extendTitlePort)
             {
-                const str = " " + this.opUiAttribs.extendTitlePort + ": " + this._op.getPort(this.opUiAttribs.extendTitlePort).get();
+                const thePort = this._op.getPort(this.opUiAttribs.extendTitlePort);
+
+                const str = " " + thePort.getTitle() + ": " + thePort.get();
                 if (str != this._titleExt.text)
                 {
                     this._titleExt.text = str;

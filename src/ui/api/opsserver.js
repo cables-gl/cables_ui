@@ -144,6 +144,7 @@ export default class ServerOps
 
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
 
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
@@ -155,6 +156,8 @@ export default class ServerOps
             {
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
                 gui.showLoadingProgress(false);
+
+                CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, () => {});
 
 
                 if (newOp.patchId)
