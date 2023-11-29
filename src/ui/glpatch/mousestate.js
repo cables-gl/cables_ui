@@ -26,9 +26,9 @@ export default class MouseState extends CABLES.EventTarget
         this._useScrollButton = MouseState.BUTTON_RIGHT;
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
-        if (userSettingScrollButton == 4 || userSettingScrollButton == "middle") this._useScrollButton = MouseState.BUTTON_WHEEL;
-        if (userSettingScrollButton == 1 || userSettingScrollButton == "left") this._useScrollButton = MouseState.BUTTON_LEFT;
-        if (userSettingScrollButton == 2 || userSettingScrollButton == "right") this._useScrollButton = MouseState.BUTTON_RIGHT;
+        if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
+        if (userSettingScrollButton == 1) this._useScrollButton = MouseState.BUTTON_LEFT;
+        if (userSettingScrollButton == 2) this._useScrollButton = MouseState.BUTTON_RIGHT;
 
 
         canvas.addEventListener("pointerenter", (e) =>
