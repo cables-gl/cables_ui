@@ -1016,9 +1016,10 @@ export default class Gui
             const fn = portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
-            console.log("showfileselect", opid, gui.corePatch().getOpById(opid));
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
+
+            ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
         });
     }
 
