@@ -182,7 +182,9 @@ export default class VizLayer extends CABLES.EventTarget
                     "vizLayer": this
                 };
 
-                if (pos[0] === pos[0] && size[0] === size[0]) this._items[i].op.renderVizLayer(this._canvasCtx, layer, this);
+                if (!this._items[i].op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < this._items[i].op.uiAttribs.vizLayerMaxZoom)
+                    if (pos[0] === pos[0] && size[0] === size[0])
+                        this._items[i].op.renderVizLayer(this._canvasCtx, layer, this);
             }
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
