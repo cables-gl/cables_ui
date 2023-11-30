@@ -22,6 +22,8 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseDownX = 0;
         this._mouseDownY = 0;
 
+        this._useDragCablesButton = MouseState.BUTTON_RIGHT;
+        this._useScrollButton = MouseState.BUTTON_RIGHT;
 
         this._initUserPrefs();
 
@@ -74,7 +76,6 @@ export default class MouseState extends CABLES.EventTarget
 
     _initUserPrefs()
     {
-        this._useScrollButton = MouseState.BUTTON_RIGHT;
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
         if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
@@ -214,14 +215,13 @@ export default class MouseState extends CABLES.EventTarget
 
     get buttonStateForScrolling()
     {
-        if (this._useScrollButton == MouseState.BUTTON_RIGHT && gui.patchView.patchRenderer.isDraggingPort()) return false;
+        if (this._useScrollButton == this._useDragCablesButton && gui.patchView.patchRenderer.isDraggingPort()) return false;
         return this._buttonStates[this._useScrollButton].down;
-        // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
     }
 
     get buttonStateForLinkDrag()
     {
-        return this._buttonStates[MouseState.BUTTON_RIGHT].down;
+        return this._buttonStates[this._useDragCablesButton].down;
     }
 
     get buttonStateForSelectionArea()
