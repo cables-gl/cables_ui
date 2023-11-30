@@ -214,6 +214,7 @@ export default class MouseState extends CABLES.EventTarget
 
     get buttonStateForScrolling()
     {
+        if (this._useScrollButton == MouseState.BUTTON_RIGHT && gui.patchView.patchRenderer.isDraggingPort()) return false;
         return this._buttonStates[this._useScrollButton].down;
         // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
     }

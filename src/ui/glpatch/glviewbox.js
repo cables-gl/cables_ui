@@ -142,7 +142,7 @@ export default class GlViewBox
         if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
-            (this.glPatch.mouseState.buttonStateForScrolling) || // && !this.glPatch.isDraggingPort()
+            (this.glPatch.mouseState.buttonStateForScrolling) ||
             ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
@@ -219,6 +219,11 @@ export default class GlViewBox
         this.setMousePos(this._mouseX, this._mouseY);
 
         if (this._touchpadMode && event.metaKey) this.wheelZoom(delta);
+
+        gui.on("themeChanged", () =>
+        {
+            this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+        });
     }
 
     wheelZoom(delta)
