@@ -1,3 +1,4 @@
+
 import userSettings from "../components/usersettings";
 
 
@@ -20,6 +21,15 @@ export default class MouseState extends CABLES.EventTarget
         this._isDragging = false;
         this._mouseDownX = 0;
         this._mouseDownY = 0;
+
+
+        this._useScrollButton = MouseState.BUTTON_RIGHT;
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+
+        if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
+        if (userSettingScrollButton == 1) this._useScrollButton = MouseState.BUTTON_LEFT;
+        if (userSettingScrollButton == 2) this._useScrollButton = MouseState.BUTTON_RIGHT;
+
 
         canvas.addEventListener("pointerenter", (e) =>
         {
@@ -65,6 +75,20 @@ export default class MouseState extends CABLES.EventTarget
 
     get isDragging() { return this._isDragging; }
 
+
+    _updateDebug()
+    {
+        let str = "";
+
+        for (let i in this._buttonStates)
+        {
+            str += i + ":" + (this._buttonStates[i] ? "X" : "-") + " | ";
+        }
+
+        gui.patchView._patchRenderer.debugData.mouseState = str;
+    }
+
+
     getButton()
     {
         if (this._buttonStates[MouseState.BUTTON_LEFT]) return MouseState.BUTTON_LEFT;
@@ -96,6 +120,7 @@ export default class MouseState extends CABLES.EventTarget
             this._buttonStates[button] = false;
             this.emitEvent("buttonUp", button);
         }
+        this._updateDebug();
     }
 
     _buttonDown(button)
@@ -105,6 +130,7 @@ export default class MouseState extends CABLES.EventTarget
             this._buttonStates[button] = true;
             this.emitEvent("buttonDown", button);
         }
+        this._updateDebug();
     }
 
     _setButton(button, newState)
@@ -155,7 +181,7 @@ export default class MouseState extends CABLES.EventTarget
 
     get buttonStateForScrolling()
     {
-        return this._buttonStates[parseInt(userSettings.get("patch_button_scroll") || MouseState.BUTTON_RIGHT)];
+        return this._buttonStates[this._useScrollButton];
         // return this._buttonStates[MouseState.BUTTON_LEFT + MouseState.BUTTON_RIGHT];
     }
 
@@ -186,3 +212,5 @@ MouseState.BUTTON_RIGHT = 2;
 MouseState.BUTTON_WHEEL = 4;
 MouseState.BUTTON_4 = 8;
 MouseState.BUTTON_5 = 16;
+
+

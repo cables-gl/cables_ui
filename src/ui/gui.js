@@ -1016,9 +1016,10 @@ export default class Gui
             const fn = portInputEle.value;
 
             this.fileManager.setFilterType(filterType);
-            console.log("showfileselect", opid, gui.corePatch().getOpById(opid));
             this.fileManager.setFilePort(portInputEle, gui.corePatch().getOpById(opid), ele.byId(previewId));
             this.fileManager.selectFile(fn);
+
+            ele.byId("menubar").scrollIntoView({ "block": "end" }); // dont ask why... without "some"(background image op) file selects make the page scroll............
         });
     }
 
@@ -1261,12 +1262,39 @@ export default class Gui
 
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
 
+
+        let lastTimeRecent = 0;
+        ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>
+        {
+            if (lastTimeRecent != 0 && performance.now() - lastTimeRecent < 30000) return;
+
+            CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+            {
+                lastTimeRecent = performance.now();
+
+                let str = "";
+                for (let i = 0; i < r.length; i++)
+                {
+                    str += "<li><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
+                }
+
+                str +=
+                    "<li class=\"divide\"></li>" +
+                    "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/mypatches\">My Patches</a></li>" +
+                    "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/\">Open cables.gl</a></li>";
+
+                ele.byId("nav_recentpatches").innerHTML = str;
+
+                // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
+            });
+        });
+
+
         ele.byId("nav_cmdplt").addEventListener("click", (event) => { gui.cmdPallet.show(); });
         ele.byId("nav_search").addEventListener("click", (event) => { gui.find(""); });
 
         ele.byId("nav_createBackup").addEventListener("click", (event) => { CABLES.CMD.PATCH.createBackup(); });
         ele.byId("nav_viewBackups").addEventListener("click", (event) => { CABLES.CMD.PATCH.showBackups(); });
-        ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
 
         ele.byId("nav_preferences").addEventListener("click", () => { CABLES.CMD.UI.showPreferences(); });
         ele.byId("button_toggleTiming").addEventListener("click", () => { gui.toggleTiming(); });

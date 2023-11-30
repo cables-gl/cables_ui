@@ -63,7 +63,7 @@
         <span onclick="gui.rendererContextMenu(this)" class="item threedotcanvas" ><span class="icon icon-three-dots icon-1_25x" ></span></span>
     </div>
 </div>
-
+<div id="canvasInfoOverlay" class="hidden"></div>
 <div id="notify"></div>
 
 <div id="maintabs"></div>
@@ -123,7 +123,7 @@
 <div id="menubar" class="hidden menubar" style="-webkit-app-region: drag;"> <!-- handle to drag the window in electron -->
     <nav style="-webkit-app-region: no-drag;"> <!-- disable window dragging here to regain control -->
         <ul>
-            <li class="nav_logo main" >
+            <li class="nav_logo main" id="nav_logo_area">
                 <div id="offlineIndicator" style="background-color:red;"></span></div>
 
                 <span id="nav-logo" class="icon-empty icon">
@@ -131,10 +131,9 @@
                     <div id="nav-loading"></div>
                 </span>
 
-                <ul class="nav-submenu">
-                    <!-- <li id="nav_recentpatches">Recent patches</span></li> -->
-                    <li class="divide"></li>
-                    <li id="nav_cablesweb">Open cables.gl</span></li>
+
+                <ul class="nav-submenu" id="nav_recentpatches">
+
                 </ul>
             </li>
 

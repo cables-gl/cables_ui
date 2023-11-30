@@ -456,7 +456,7 @@ class ParamsListener extends CABLES.EventTarget
                     });
                 else
                     items.push({
-                        "title": "Extend title: \"" + port.name + ": x\"",
+                        "title": "Extend title: \"" + port.getTitle() + ": x\"",
                         "func": () =>
                         {
                             port.op.setUiAttrib({ "extendTitlePort": port.name });

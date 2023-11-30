@@ -200,3 +200,13 @@
     left:0;
     pointer-events:none;
 }
+
+#canvasInfoOverlay
+{
+    background-color: var(--color-04);
+    font-family: monospace;
+    z-index: 9999;
+    position: absolute;
+    padding:20px;
+    transform: translate(-50%);
+}

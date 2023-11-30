@@ -211,6 +211,7 @@ export default class TabPanel extends CABLES.EventTarget
             // console.log("could not find tab", id);
         }
 
+
         // console.log("CABLES.editorSession", CABLES.editorSession);
         if (CABLES.editorSession && CABLES.editorSession.loaded() && CABLES.UI.loaded) this.saveCurrentTabUsersettings();
     }

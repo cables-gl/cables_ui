@@ -21,6 +21,20 @@ export default class CanvasUi
         this._elCanvasInfoMs = this._elCanvasInfoMs || document.getElementById("canvasInfoMS");
         this._elInfoVersion = ele.byId("canvasInfoVersion");
 
+        this._elCanvasInfoSizeOverlay = ele.byId("canvasInfoOverlay");
+
+        this._elCanvasInfoSize.addEventListener("pointerenter", () =>
+        {
+            this._elCanvasInfoSizeOverlay.style.top = this._elCanvasInfoSize.getBoundingClientRect().y + 30 + "px";
+            this._elCanvasInfoSizeOverlay.style.left = this._elCanvasInfoSize.getBoundingClientRect().x + "px";
+            // this._elCanvasInfoSizeOverlay.innerHTML = "";
+            this._elCanvasInfoSizeOverlay.classList.remove("hidden");
+        });
+        this._elCanvasInfoSize.addEventListener("pointerleave", () =>
+        {
+            this._elCanvasInfoSizeOverlay.classList.add("hidden");
+        });
+
         if (this._elInfoVersion)
         {
             if (this._cg.glVersion == 1)
@@ -180,6 +194,16 @@ export default class CanvasUi
 
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
+
+
+
+        let str = "<table>";
+        str += "<tr><td>Canvas HTML Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + " x " + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
+        str += "<tr><td>Canvas Pixel Size:</td><td><code>" + gui.corePatch().cgl.canvas.width + " x " + gui.corePatch().cgl.canvas.height + "</td></tr>";
+        str += "<tr><td>Device Pixel Ratio/Density:</td><td><code>" + window.devicePixelRatio + "</td></tr>";
+        str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + gui.corePatch().cgl.pixelDensity + "</td></tr>";
+        str += "</table>";
+        this._elCanvasInfoSizeOverlay.innerHTML = str;
 
         return sizeStr;
     }

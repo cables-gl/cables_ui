@@ -158,11 +158,9 @@
         $nav-li-padding: 5px 10px;
 
         .main .icon
-    {
-        margin-top:2px;
-    }
-
-
+        {
+            margin-top:2px;
+        }
 
         li
         {
@@ -174,10 +172,11 @@
 
         a
         {
-            &:hover
-            {
-                color: var(--color-13);
-            }
+            color: var(--text-color) !important;
+            // &:hover
+            // {
+            //     color: var(--color-13);
+            // }
         }
         ul
         {
