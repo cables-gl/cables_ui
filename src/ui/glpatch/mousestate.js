@@ -23,13 +23,9 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseDownY = 0;
 
 
-        this._useScrollButton = MouseState.BUTTON_RIGHT;
-        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+        this._initUserPrefs();
 
-        if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
-        if (userSettingScrollButton == 1) this._useScrollButton = MouseState.BUTTON_LEFT;
-        if (userSettingScrollButton == 2) this._useScrollButton = MouseState.BUTTON_RIGHT;
-
+        userSettings.on("change", this._initUserPrefs.bind(this));
 
         canvas.addEventListener("pointerenter", (e) =>
         {
@@ -75,6 +71,16 @@ export default class MouseState extends CABLES.EventTarget
 
     get isDragging() { return this._isDragging; }
 
+
+    _initUserPrefs()
+    {
+        this._useScrollButton = MouseState.BUTTON_RIGHT;
+        const userSettingScrollButton = userSettings.get("patch_button_scroll");
+
+        if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
+        if (userSettingScrollButton == 1) this._useScrollButton = MouseState.BUTTON_LEFT;
+        if (userSettingScrollButton == 2) this._useScrollButton = MouseState.BUTTON_RIGHT;
+    }
 
     _updateDebug()
     {
