@@ -482,6 +482,10 @@ export default class GlOp extends CABLES.EventTarget
             this._displayType != this.DISPLAY_UI_AREA &&
             title != "var set" &&
             title != "var get" &&
+            title != "*" &&
+            title != "/" &&
+            title != "+" &&
+            title != "-" &&
             title != this._op.shortName) title = "\"" + title + "\"";
 
         if (!this._glTitle)

@@ -142,7 +142,7 @@ export default class GlViewBox
         if (window.gui.getRestriction() < gui.RESTRICT_MODE_EXPLORER) return;
 
         if (
-            (this.glPatch.mouseState.buttonStateForScrolling && !this.glPatch.isDraggingPort()) ||
+            (this.glPatch.mouseState.buttonStateForScrolling) || // && !this.glPatch.isDraggingPort()
             ((this.glPatch.spacePressed || this.glPatch.mouseState.numFingers == 2) && (this.glPatch.mouseState.buttonLeft || this.glPatch.mouseState.buttonRight || this.glPatch.mouseState.buttonStateForScrolling)))
         {
             this.glPatch.setCursor(CABLES.GLGUI.CURSOR_HAND);
