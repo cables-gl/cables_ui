@@ -1259,9 +1259,7 @@ export default class Gui
 
         if (userSettings.get("canvasMode") == "patchbg") this._switchCanvasPatchBg();
 
-
         this.bottomInfoArea.on("changed", this.setLayout.bind(this));
-
 
         let lastTimeRecent = 0;
         ele.byId("nav_logo_area").addEventListener("pointerenter", (event) =>

@@ -157,7 +157,10 @@ export default class ServerOps
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
                 gui.showLoadingProgress(false);
 
-                CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, () => {});
+                CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
+                {
+                    gui.patchView.store._serverDate = e.data.updated;
+                });
 
 
                 if (newOp.patchId)

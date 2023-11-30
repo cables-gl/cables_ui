@@ -115,7 +115,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             else if (this._serverDate != data.updated)
             {
                 let html =
-                    "This patch was changed. Your version is out of date. <br/><br/>Last update: " + data.updated + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
+                    "This patch was changed. Your version is out of date. <br/><br/>Last update: " + moment(data.updated).fromNow() + " by " + (data.updatedByUser || "unknown") + "<br/><br/>" +
                     "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
                 if (fromSave) html += "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('" + data.updated + "');\"><span class=\"icon icon-save\"></span>Save anyway</a>&nbsp;&nbsp;";
                 html += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
