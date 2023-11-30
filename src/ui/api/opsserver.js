@@ -162,9 +162,9 @@ export default class ServerOps
                     gui.patchView.store._serverDate = e.data.updated;
                 });
 
-
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
+
                 if (options.next)options.next();
             });
     }

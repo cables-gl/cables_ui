@@ -331,8 +331,8 @@ export default class GlCable
 
 
 
-                    for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
-                        this._points = this._subdivivde(this._points);
+                    // for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+                    this._points = this._subdivivde(this._points);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
