@@ -210,7 +210,7 @@ float samp(in vec2 uv, float w) {
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.w));
 
        if(border==2.0)finalColor.rgb+=vec3(0.0,add*0.2,add*0.5);
-       else finalColor.rgb+=vec3(add*0.1);
+       else finalColor.rgb+=vec3(add*0.5);
     }
 
     // if(selected==1.0) // stripe
