@@ -13,57 +13,8 @@ export default class Api
         this._log = new Logger("api");
         this.cache = [];
         this.lastErrorReport = null;
-        this.pingTime = 0;
+        // this.pingTime = 0;
         this.maintenanceModeWarning = null;
-
-        setTimeout(this.ping.bind(this), 5000);
-    }
-
-    ping()
-    {
-        if (window.gui)
-        {
-            if (gui.corePatch().isPlaying())
-            {
-                const startTime = performance.now();
-                CABLESUILOADER.talkerAPI.send("ping", { "lastPing": this.pingTime }, (err, msg) =>
-                {
-                    if (msg.maintenance)
-                    {
-                        if (!this.maintenanceModeWarning && gui.getRestriction() > Gui.RESTRICT_MODE_REMOTEVIEW)
-                        {
-                            const notifyOptions = {
-                                "timeout": false,
-                                "closeable": true,
-                                "force": false
-                            };
-                            this.maintenanceModeWarning = notifyError("maintenance mode", "saving is disabled, please wait until we are done", notifyOptions);
-                        }
-                    }
-                    else
-                    {
-                        if (this.maintenanceModeWarning)
-                        {
-                            hideNotificaton(this.maintenanceModeWarning);
-                            this.maintenanceModeWarning = false;
-                            const lastView = userSettings.get("changelogLastView");
-                            const cl = new ChangelogToast();
-                            cl.getHtml((clhtml) =>
-                            {
-                                if (clhtml !== null)
-                                {
-                                    cl.showNotification();
-                                }
-                            }, lastView);
-                        }
-                    }
-                    this.pingTime = Math.round(performance.now() - startTime);
-                    this._log.log("ping roundtrip", this.pingTime);
-                });
-            }
-        }
-
-        setTimeout(this.ping.bind(this), 30 * 1000);
     }
 
     request(method, url, data, cbSuccess, cbError, doCache)

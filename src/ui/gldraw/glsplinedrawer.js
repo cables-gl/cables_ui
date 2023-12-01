@@ -100,6 +100,13 @@ export default class GlSplineDrawer
             this._uniZoom.set(1.0 / zoom);
             this._uniTime.set(performance.now() / 1000);
 
+            const fadeOutOpts = [gui.theme.patch.fadeOutDistStart, gui.theme.patch.fadeOutFadeDist, 0.0, gui.theme.patch.fadeOutFadeOpacity];
+            if (zoom > 1400)fadeOutOpts[3] = CABLES.map(zoom, 1400, 2700, gui.theme.patch.fadeOutFadeOpacity, 1.0);
+
+
+            this._uniFadeoutOptions.set(fadeOutOpts);
+
+
             // this._cgl.pushDepthTest(true);
             // this._cgl.pushDepthWrite(true);
             // this._cgl.pushDepthFunc(this._cgl.gl.GREATER);
