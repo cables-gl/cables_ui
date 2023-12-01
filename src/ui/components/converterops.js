@@ -46,6 +46,7 @@ export function getConverters(p1, p2)
     for (let i = 0; i < defaultOps.converterOps.length; i++)
     {
         let found = false;
+        if (!p1) return converters;
 
         if (p1.type == defaultOps.converterOps[i].typeFrom && p2.type == defaultOps.converterOps[i].typeTo && p1.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
