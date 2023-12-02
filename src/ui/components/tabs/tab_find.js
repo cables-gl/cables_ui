@@ -247,7 +247,7 @@ export default class FindTab
 
         if (op.op)op = op.op;
 
-        const colorClass = "op_color_" + defaultops.getNamespaceClassName(op.objName);
+        const colorClass = "" + defaultops.getNamespaceClassName(op.objName);
 
         let hiddenClass = "";
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";

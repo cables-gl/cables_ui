@@ -408,16 +408,19 @@ export default class GlOp extends CABLES.EventTarget
                 this._titleExtPort = null;
             }
             this._titleExtPort = this._op.getPort(this.opUiAttribs.extendTitlePort);
-            this._titleExtPortlister = this._titleExtPort.on("change", () =>
+            if (this._titleExtPort)
             {
-                clearTimeout(this._titleExtPortTimeout);
-                if (performance.now() - this._titleExtPortLastTime < 50)
+                this._titleExtPortlister = this._titleExtPort.on("change", () =>
                 {
-                    this._titleExtPortTimeout = setTimeout(() => { this.update(); }, 50);
-                }
-                this.update();
-                this._titleExtPortLastTime = performance.now();
-            });
+                    clearTimeout(this._titleExtPortTimeout);
+                    if (performance.now() - this._titleExtPortLastTime < 50)
+                    {
+                        this._titleExtPortTimeout = setTimeout(() => { this.update(); }, 50);
+                    }
+                    this.update();
+                    this._titleExtPortLastTime = performance.now();
+                });
+            }
         }
 
         if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();

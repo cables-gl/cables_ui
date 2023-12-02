@@ -303,7 +303,7 @@ GlPort.getColorBorder = (type, hovering, selected) =>
     else if (selected)
     {
         // name = portname + "_selected";
-        coll = gui.theme.colors_patch.selected;
+        coll = gui.theme.colors_patch.selectedCable;
     }
 
     // let coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
