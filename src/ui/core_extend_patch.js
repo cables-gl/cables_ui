@@ -18,12 +18,17 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
-        console.log("clear subpatch cache...", patchId);
+        // console.log("clear subpatch cache...", patchId);
 
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
     };
 
+    CABLES.Patch.prototype._subPatchCacheAdd = function (subPatchId, op)
+    {
+        if (this._subpatchOpCache[subPatchId])
+            this._subpatchOpCache[subPatchId].ops[op.id] = op;
+    };
 
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
