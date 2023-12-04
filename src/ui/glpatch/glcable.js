@@ -286,37 +286,37 @@ export default class GlCable
 
             if (this._linetype == this.LINETYPE_CURVED)
             {
-                if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
+                // if (this._x == this._x2 || Math.abs(this._x - this._x2) < 50)
+                // {
+                //     this._curvedSimple = true;
+                //     this._updateDistFromPort();
+
+                //     this._points = this._subdivivde(
+                //         [
+                //             posX, this._y, 0,
+                //             posX, this._y, 0,
+                //             posX, this._y, 0,
+                //             posX, this._y, 0,
+                //             posX2, this._y2, 0,
+                //             posX2, this._y2, 0,
+                //             posX2, this._y2, 0
+                //         ]);
+
+                //     this._splineDrawer.setSpline(this._splineIdx, this._points);
+                // }
+                // else
+                // {
+                if (this._curvedSimple)
                 {
-                    this._curvedSimple = true;
+                    this._curvedSimple = false;
                     this._updateDistFromPort();
-
-                    this._points = this._subdivivde(
-                        [
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0
-                        ]);
-
-                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
-                else
-                {
-                    if (this._curvedSimple)
-                    {
-                        this._curvedSimple = false;
-                        this._updateDistFromPort();
-                    }
 
-                    const distY = Math.abs(this._y - this._y2);
+                const distY = Math.abs(this._y - this._y2);
 
 
 
-                    this._points =
+                this._points =
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,
@@ -331,11 +331,11 @@ export default class GlCable
 
 
 
-                    for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
-                        this._points = this._subdivivde(this._points);
+                for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+                    this._points = this._subdivivde(this._points);
 
-                    this._splineDrawer.setSpline(this._splineIdx, this._points);
-                }
+                this._splineDrawer.setSpline(this._splineIdx, this._points);
+                // }
             }
             if (this._linetype == this.LINETYPE_HANGING)
             {

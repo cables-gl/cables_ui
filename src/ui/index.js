@@ -43,7 +43,7 @@ import gluiconfig from "./glpatch/gluiconfig";
 import GlGuiFull from "./glpatch/gluifull";
 import GlGuiTab from "./glpatch/gluitab";
 import GlPatchAPI from "./glpatch/patchapi";
-import extendCore from "./op_core_extend";
+import extendCoreOp from "./core_extend_op";
 import SandboxBrowser from "./sandbox_browser";
 import startUi from "./startgui";
 import text from "./text";
@@ -55,6 +55,7 @@ import LogFilter from "./utils/loggerfilter";
 import undo from "./utils/undo";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
 import ManageOp from "./components/tabs/tab_manage_op";
+import extendCorePatch from "./core_extend_patch";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -159,7 +160,8 @@ CABLES.UI.ManageOp = ManageOp;
 
 
 setHtmlDefaultListeners();
-extendCore();
+extendCoreOp();
+extendCorePatch();
 extendCoreAnim();
 
 CABLES.UI.startUi = startUi;

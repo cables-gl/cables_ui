@@ -941,8 +941,13 @@ export default class GlOp extends CABLES.EventTarget
 
     _setVisible(v)
     {
+        let changed = false;
         if (this._visible == v) return;
-        if (v !== undefined) this._visible = v;
+        if (v !== undefined)
+        {
+            changed = true;
+            this._visible = v;
+        }
 
         let visi = this._visible;
 
@@ -952,12 +957,14 @@ export default class GlOp extends CABLES.EventTarget
             if (this[this._glRectNames[i]])
                 this[this._glRectNames[i]].visible = visi;
 
-        this._updateIndicators();
+        if (changed)
+            this._updateIndicators();
 
         if (this._resizableArea) this._resizableArea.visible = visi;
         if (this._glColorIndicator) this._glColorIndicator.visible = visi;
 
-        for (const i in this._links) this._links[i].visible = true;
+        if (changed)
+            for (const i in this._links) this._links[i].visible = true;
 
         if (!visi) this._isHovering = false;
     }
