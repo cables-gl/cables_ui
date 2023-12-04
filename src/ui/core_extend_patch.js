@@ -52,10 +52,14 @@ export default function extendCorePatch()
                 {
                     this._subpatchOpCache[subPatchId].ops[op.id] = op;
                 }
+
+                if (op.isSubPatchOp())
+                    console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
+
                 if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
                 {
                     this._subpatchOpCache[subPatchId].subPatchOpId = op.id;
-                    console.log("subpatchiopid");
+                    // console.log("subpatchiopid", op.patchId.get());
                 }
             }
             this._subpatchOpCache[subPatchId].ops = opids;
@@ -86,18 +90,16 @@ export default function extendCorePatch()
     {
         if (subPatchId == 0) return null;
 
-        if (!this._subpatchOpCache[subPatchId])
+        if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
-            // console.log("build cache...");
+            this.clearSubPatchCache(subPatchId);
             this.getSubPatchOps(subPatchId); // try build cache
-        }
-
-        if (!this._subpatchOpCache[subPatchId])
-        {
             console.error("unknown subpatchid cache ?!", subPatchId);
             return;
         }
 
+        // console.log(this._subpatchOpCache);
+        // console.log("subpatchopdi", this._subpatchOpCache[subPatchId].subPatchOpId);
         return this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
 
         //     const ops = this.ops;
