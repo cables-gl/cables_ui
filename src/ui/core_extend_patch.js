@@ -25,31 +25,35 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatchOps = function (patchId, recursive = false)
     {
+
+    };
+
+    CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
+    {
         this._subpatchOpCache = this._subpatchOpCache || {};
 
-        // console.log(patchId);
+        // console.log(subPatchId);
         let opids = [];
 
-        if (this._subpatchOpCache[patchId] && this._subpatchOpCache[patchId].ops)
+        if (this._subpatchOpCache[subPatchId] && this._subpatchOpCache[subPatchId].ops)
         {
-            opids = this._subpatchOpCache[patchId].ops;
+            opids = this._subpatchOpCache[subPatchId].ops;
         }
         else
         {
-            this._subpatchOpCache[patchId] = { "ops": {} };
+            this._subpatchOpCache[subPatchId] = { "ops": {} };
             for (const i in this.ops)
             {
-                if (this.ops[i].uiAttribs && this.ops[i].uiAttribs.subPatch == patchId)
+                const op = this.ops[i];
+                if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
                 {
-                    this._subpatchOpCache[patchId].ops[this.ops[i].id] = this.ops[i];
-                    // opids.push(this.ops[i].id);
+                    this._subpatchOpCache[subPatchId].ops[op.id] = op;
                 }
+                if (op.isSubPatchOp() && op.patchId.get() == subPatchId) this._subpatchOpCache[subPatchId].subPatchOpId = op.id;
             }
-            // console.log(this.ops);
-            this._subpatchOpCache[patchId].ops = opids;
+            this._subpatchOpCache[subPatchId].ops = opids;
         }
-        opids = Object.keys(this._subpatchOpCache[patchId].ops);
-        // console.log("opids", opids);
+        opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
         let ops = this._opIdsToOps(opids);
 
         if (recursive)
@@ -68,5 +72,29 @@ export default function extendCorePatch()
         }
 
         return ops;
+    };
+
+
+    CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
+    {
+        if (!this._subpatchOpCache[subPatchId])
+        {
+            this.getSubPatchOps(subPatchId); // try build cache
+        }
+
+        if (!this._subpatchOpCache[subPatchId])
+        {
+            console.error("unknown subpatchid cache ?!", subPatchId);
+            return;
+        }
+
+        return this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
+
+        //     const ops = this.ops;
+        //     for (let i = 0; i < ops.length; i++)
+        //     {
+        //         const op = ops[i];
+        //         if (op.isSubPatchOp() && op.patchId.get() == subPatchId) return op;
+        //     }
     };
 }
