@@ -88,7 +88,7 @@ export default function extendCorePatch()
 
         if (!this._subpatchOpCache[subPatchId])
         {
-            console.log("build cache...");
+            // console.log("build cache...");
             this.getSubPatchOps(subPatchId); // try build cache
         }
 
