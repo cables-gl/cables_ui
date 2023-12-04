@@ -20,7 +20,7 @@ export default function extendCorePatch()
     {
         this._subpatchOpCache = this._subpatchOpCache || {};
 
-        console.log(patchId);
+        // console.log(patchId);
         let opids = [];
 
         if (this._subpatchOpCache[patchId] && this._subpatchOpCache[patchId].ops)
@@ -38,11 +38,11 @@ export default function extendCorePatch()
                     // opids.push(this.ops[i].id);
                 }
             }
-            console.log(this.ops);
+            // console.log(this.ops);
             this._subpatchOpCache[patchId].ops = opids;
         }
         opids = Object.keys(this._subpatchOpCache[patchId].ops);
-        console.log("opids", opids);
+        // console.log("opids", opids);
         let ops = this._opIdsToOps(opids);
 
         if (recursive)
