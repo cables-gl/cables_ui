@@ -16,7 +16,16 @@ export default class GlCable
 
         this._log = new Logger("glcable");
 
-        this._buttonSize = 12;
+        this._x = 0;
+        this._y = 0;
+        this._x2 = 0;
+        this._y2 = 0;
+
+        this._points = [];
+
+
+
+        this._buttonSize = gui.theme.patch.cableButtonSize || 17;
         this._linetype = this.LINETYPE_CURVED;
 
         this._subPatch = subpatch;
@@ -38,7 +47,6 @@ export default class GlCable
         this._buttonRect.on("hover", () =>
         {
             this.setCloseToMouse(true);
-            // console.log("hover");
             this._link.cableHoverChanged(this, true);
             this.updateColor();
         });
@@ -51,17 +59,10 @@ export default class GlCable
         gui.on("themeChanged", () =>
         {
             this._oldx = this._oldy = this._oldx2 = this._oldy2 = 0;
-
+            this._buttonSize = gui.theme.patch.cableButtonSize || 17;
+            this._setPositionButton();
             this._updateLinePos();
         });
-
-
-        this._x = 0;
-        this._y = 0;
-        this._x2 = 0;
-        this._y2 = 0;
-
-        this._points = [];
 
         this._distFromPort = 0;
         this._updateDistFromPort();
@@ -139,7 +140,7 @@ export default class GlCable
     updateVisible()
     {
         const old = this._visible;
-        this._visible = (this.subPatch == this._glPatch.getCurrentSubPatch());
+        this._visible = (this._subPatch == this._glPatch.getCurrentSubPatch());
         if (this._disposed) this._visible = false;
 
         if (old != this._visible)
@@ -162,7 +163,9 @@ export default class GlCable
         if (this._disposed) return;
         if (this._glPatch.isAreaSelecting) return;
         if (!this._visible) return false;
-        if (this.subPatch != this._glPatch.getCurrentSubPatch()) return false;
+
+
+        if (this._subPatch != this._glPatch.getCurrentSubPatch()) return false;
 
         if (this._glPatch.isDraggingOps())
         {
@@ -314,8 +317,6 @@ export default class GlCable
 
                 const distY = Math.abs(this._y - this._y2);
 
-
-
                 this._points =
                         [
                             posX, this._y, 0,
@@ -330,64 +331,63 @@ export default class GlCable
                         ];
 
 
-
                 for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
                     this._points = this._subdivivde(this._points);
 
                 this._splineDrawer.setSpline(this._splineIdx, this._points);
-                // }
             }
-            if (this._linetype == this.LINETYPE_HANGING)
+        }
+        if (this._linetype == this.LINETYPE_HANGING)
+        {
+            if (this._x == this._x2 || Math.abs(this._x - this._x2) < 30)
             {
-                if (this._x == this._x2 || Math.abs(this._x - this._x2) < 30)
+                this._curvedSimple = true;
+                this._updateDistFromPort();
+                this.points = this._subdivivde(
+                    [
+                        posX, this._y, 0,
+                        posX, this._y, 0,
+                        posX, this._y, 0,
+                        posX2, this._y2, 0,
+                        posX2, this._y2, 0,
+                        posX2, this._y2, 0
+                    ]);
+                this._splineDrawer.setSpline(this._splineIdx, this._points);
+            }
+            else
+            {
+                if (this._curvedSimple)
                 {
-                    this._curvedSimple = true;
+                    this._curvedSimple = false;
                     this._updateDistFromPort();
-                    this.points = this._subdivivde(
-                        [
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0
-                        ]);
-                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
-                else
-                {
-                    if (this._curvedSimple)
-                    {
-                        this._curvedSimple = false;
-                        this._updateDistFromPort();
-                    }
 
-                    const distY = Math.abs(this._y - this._y2);
-                    const distX = Math.abs(this._x - this._x2);
+                const distY = Math.abs(this._y - this._y2);
+                const distX = Math.abs(this._x - this._x2);
 
-                    let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
+                let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
 
 
-                    let centerX = (posX * 0.3 + posX2 * 0.7);
-                    if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
+                let centerX = (posX * 0.3 + posX2 * 0.7);
+                if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
 
-                    this._points = this._subdivivde(
-                        [
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
+                this._points = this._subdivivde(
+                    [
+                        posX, this._y, 0,
+                        posX, this._y, 0,
+                        (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
 
-                            centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
+                        centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
 
-                            posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
-                        ], 8);
+                        posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
+                        posX2, this._y2, 0,
+                        posX2, this._y2, 0,
+                    ], 8);
 
-                    this._splineDrawer.setSpline(
-                        this._splineIdx,
-                        this._points);
-                }
+                this._splineDrawer.setSpline(
+                    this._splineIdx,
+                    this._points);
+                // }
             }
             if (this._linetype == this.LINETYPE_STRAIGHT)
             {
@@ -441,6 +441,17 @@ export default class GlCable
         }
     }
 
+
+    _setPositionButton()
+    {
+        this._buttonRect.setShape(1);
+        this._buttonRect.setSize(this._buttonSize, this._buttonSize);
+        this._buttonRect.setPosition(
+            this._x + ((this._x2 - this._x) / 2) - this._buttonSize / 2,
+            (this._y + this._buttonSize) + (((this._y2 - this._buttonSize) - (this._y + this._buttonSize)) / 2) - this._buttonSize / 2,
+            GlUiConfig.zPosCableButtonRect);
+    }
+
     setPosition(x, y, x2, y2)
     {
         if (!(this._x != x || this._y != y || this._x2 != x2 || this._y2 != y2)) return;
@@ -451,15 +462,7 @@ export default class GlCable
         this._y2 = y2;
 
         this._updateLinePos();
-
-        // circle button
-
-        this._buttonRect.setShape(1);
-        this._buttonRect.setSize(this._buttonSize, this._buttonSize);
-        this._buttonRect.setPosition(
-            x + ((x2 - x) / 2) - this._buttonSize / 2,
-            (y + this._buttonSize) + (((y2 - this._buttonSize) - (y + this._buttonSize)) / 2) - this._buttonSize / 2,
-            GlUiConfig.zPosCableButtonRect);
+        this._setPositionButton();
 
         this._buttonRect.visible = false;
     }
@@ -600,8 +603,6 @@ export default class GlCable
             {
                 // no self hovering/linking
 
-                console.log("eyyy");
-                // this.setCloseToMouse(false);
 
                 return false;
             }

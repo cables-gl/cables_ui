@@ -53,8 +53,7 @@ export default function extendCorePatch()
                     this._subpatchOpCache[subPatchId].ops[op.id] = op;
                 }
 
-                if (op.isSubPatchOp())
-                    console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
+                // if (op.isSubPatchOp()) console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
 
                 if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
                 {
@@ -94,7 +93,7 @@ export default function extendCorePatch()
         {
             this.clearSubPatchCache(subPatchId);
             this.getSubPatchOps(subPatchId); // try build cache
-            console.error("unknown subpatchid cache ?!", subPatchId);
+            // console.error("unknown subpatchid cache ?!", subPatchId);
             return;
         }
 

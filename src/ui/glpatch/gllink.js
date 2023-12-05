@@ -35,6 +35,8 @@ export default class GlLink
         this._buttonDownTime = 0;
         this.crossSubpatch = false;
 
+        console.log("gllink sub", subpatch);
+
         this._buttonRect = this._glPatch.rectDrawer.createRect({});
         // this._buttonRect.colorHoverMultiply = 1.0;
         this._buttonRect.setShape(1);
@@ -231,6 +233,7 @@ export default class GlLink
         if (this._cable) this._cable = this._cable.dispose();
         if (this._cableSub) this._cableSub = this._cableSub.dispose();
 
+        console.log("NEW link cable", this._subPatch);
         this._cable = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(this._subPatch), this._buttonRect, this._type, this, this._subPatch);
         this._glPatch.setDrawableColorByType(this._cable, this._type);
 
@@ -239,6 +242,8 @@ export default class GlLink
 
         if (!op1 || !op1.uiAttribs || !op2 || !op2.uiAttribs) return;
         this.crossSubpatch = op1.uiAttribs.subPatch != op2.uiAttribs.subPatch;
+
+        console.log("SUBBBB link cable", op1.uiAttribs.subPatch, this._subPatch);
 
         if (op1.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op1.uiAttribs.subPatch), this._buttonRect, this._type, this, op1.uiAttribs.subPatch);
         if (op2.uiAttribs.subPatch != this._subPatch) this._cableSub = new GlCable(this._glPatch, this._glPatch.getSplineDrawer(op2.uiAttribs.subPatch), this._buttonRect, this._type, this, op2.uiAttribs.subPatch);
@@ -291,8 +296,15 @@ export default class GlLink
     {
         const sub = this._glPatch.getCurrentSubPatch();
 
-        if (!this._glOpIn || !this._glOpOut) return;
 
+        console.log("link updatevisible 1");
+
+        if (!this._glOpIn || !this._glOpOut)
+        {
+            console.log("no glopinout");
+            return;
+        }
+        else console.log("ye");
 
         if (
             (
@@ -314,6 +326,8 @@ export default class GlLink
 
         // if (this._cable.subPatch == sub) this._cable.visible = true;
         // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
+        console.log("link update visible", this._visible);
 
         if (this._cable) this._cable.updateVisible();
         if (this._cableSub) this._cableSub.updateVisible();
