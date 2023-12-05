@@ -524,10 +524,6 @@ export default class GlSplineDrawer
     {
         if (this._splines.length == 0) return;
 
-        // if (this._thePoints.length > 100)
-        //     console.log("spline complete rebuild...", this.name, this._rebuildReason);
-
-        console.log("rebuild", this._rebuildReason);
         this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;

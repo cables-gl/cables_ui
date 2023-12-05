@@ -7,6 +7,7 @@ export default class PatchPanel extends CABLES.EventTarget
     {
         super();
 
+        this._firstTime = true;
         this._subTree = new TreeView();
 
         this._subTree.on("threedots_click",
@@ -45,6 +46,12 @@ export default class PatchPanel extends CABLES.EventTarget
     show(force)
     {
         if (!CABLES.UI.loaded) return;
+
+        if (this._firstTime)
+        {
+            gui.corePatch().buildSubPatchCache();
+            this._firstTime = false;
+        }
 
         if (!force && ele.byClass("patchParamPanel")) return;
 

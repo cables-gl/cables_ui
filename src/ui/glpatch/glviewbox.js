@@ -25,7 +25,7 @@ export default class GlViewBox
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
-        this._opsBoundingRect = null;
+        // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = GlUiConfig.zoomDefault;
@@ -61,7 +61,7 @@ export default class GlViewBox
             if (which == "glpatch_showboundings")
             {
                 this._drawBoundingRect = v;
-                if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
+                // // if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
             }
         });
     }
@@ -222,7 +222,7 @@ export default class GlViewBox
 
         gui.on("themeChanged", () =>
         {
-            this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+            // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
         });
     }
 
@@ -304,19 +304,19 @@ export default class GlViewBox
 
         if (gui.canvasManager.mode != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
         {
-            if (!this._opsBoundingRect)
+            // if (!this._opsBoundingRect)
             {
-                this._opsBoundingRect = this.glPatch.rectDrawer.createRect();
-                this._opsBoundingRect.interactive = false;
-                this._opsBoundingRect.setPosition(-500, -500, 1);
-                this._opsBoundingRect.setSize(1000, 1000);
-                this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+                // this._opsBoundingRect = this.glPatch.rectDrawer.createRect();
+                // this._opsBoundingRect.interactive = false;
+                // this._opsBoundingRect.setPosition(-500, -500, 1);
+                // this._opsBoundingRect.setSize(1000, 1000);
+                // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
             }
 
             const bounds = this.glPatch.rectDrawer.bounds;
-            this._opsBoundingRect.visible = bounds.changed;
-            this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
-            this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+            // this._opsBoundingRect.visible = bounds.changed;
+            // this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
+            // this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
             if (gui.corePatch().ops.length > 1)
             {
@@ -342,9 +342,9 @@ export default class GlViewBox
             }
         }
         if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
-        {
+        // {
             this._opsBoundingRect.visible = false;
-        }
+        // }
     }
 
     animateZoom(z, dur)
