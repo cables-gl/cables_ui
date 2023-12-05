@@ -14,8 +14,7 @@ export default class ChangelogToast
         {
             if (since)
             {
-                for (let i = 0; i < obj.items.length; i++) if (obj.items[i].date < since) obj.items.length = i;
-
+                if (obj.items) for (let i = 0; i < obj.items.length; i++) if (obj.items[i].date < since) obj.items.length = i;
                 obj.onlyLatest = true;
             }
 
@@ -29,7 +28,7 @@ export default class ChangelogToast
 
             userSettings.set("changelogLastView", obj.ts);
 
-            if (obj.items.length === 0)
+            if (!obj.items || obj.items.length === 0)
             {
                 cb(null);
                 return;
