@@ -294,7 +294,7 @@ GlPort.getColorBorder = (type, hovering, selected) =>
     else if (type == CABLES.OP_PORT_TYPE_STRING) portname = "string";
     else if (type == CABLES.OP_PORT_TYPE_DYNAMIC) portname = "dynamic";
 
-    let coll = [1, 1, 1, 0];
+    let coll = [1, 0.9, 0.8, 0];
     if (hovering)
     {
         name = portname + "_hover";
@@ -305,8 +305,8 @@ GlPort.getColorBorder = (type, hovering, selected) =>
         // name = portname + "_selected";
         coll = gui.theme.colors_patch.selectedCable;
     }
+    else return coll;
 
-    // let coll = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
     let col = [coll[0], coll[1], coll[2], coll[3]];
 
     if (!hovering && !selected)col[3] = 0;

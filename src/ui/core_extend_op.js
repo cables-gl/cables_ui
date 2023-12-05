@@ -10,7 +10,7 @@ import uiconfig from "./uiconfig";
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 
-export default function extendCore()
+export default function extendCoreOp()
 {
     CABLES.Op.prototype.undoUnLinkTemporary = function ()
     {

@@ -179,7 +179,7 @@ export default class GlSplineDrawer
         {
             this._splines[idx].colorInactive = rgba;
             // this._rebuildLater = true;
-            this._updateAttribsCoordinates(idx, { "colors": true });
+            this._updateAttribsCoordinates(idx, { "colorsInactive": true });
         }
     }
 
@@ -193,7 +193,7 @@ export default class GlSplineDrawer
         {
             this._splines[idx].colorBorder = rgba;
             // this._rebuildLater = true;
-            this._updateAttribsCoordinates(idx, { "colors": true });
+            this._updateAttribsCoordinates(idx, { "colorsBorder": true });
         }
     }
 
@@ -431,72 +431,69 @@ export default class GlSplineDrawer
             return Math.sqrt(xd * xd + yd * yd);
         }
 
-        let totalDistance = 0;
-        const len = (points.length - 3) / 3;
-        for (let i = 0; i < len; i++)
+        if (updateWhat === undefined)
         {
-            // this._pointsSplineLength[(off + count) / 3 + 1] =
-            // this._pointsSplineLength[(off + count) / 3 + 0] =
-            // this._pointsSplineLength[(off + count) / 3 + 2] = (i + 3) / len;
+            let totalDistance = 0;
+            const len = (points.length - 3) / 3;
+            for (let i = 0; i < len; i++)
+            {
+                this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
+                this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
+                this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
 
-            // this._pointsSplineLength[(off + count) / 3 + 3] =
-            // this._pointsSplineLength[(off + count) / 3 + 4] =
+                const idx3 = i * 3;
+                const idx31 = (i + 1) * 3;
 
-            // this._pointsSplineLength[(off + count) / 3 + 5] = i / len;
-
-
-            this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
-            this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
-            this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
-
-            const idx3 = i * 3;
-            const idx31 = (i + 1) * 3;
-
-            if (
-                !isNaN(points[idx3 + 0]) &&
+                if (
+                    !isNaN(points[idx3 + 0]) &&
                 !isNaN(points[idx3 + 1]) &&
                 !isNaN(points[idx31 + 0]) &&
                 !isNaN(points[idx31 + 1])
-            )
-            {
-                const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
-                if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
-                if (d)totalDistance += d;
+                )
+                {
+                    const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                    if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                    if (d)totalDistance += d;
+                }
+
+
+                this._pointsProgress[(off + count) / 3 + 0] = totalDistance;
+                this._pointsProgress[(off + count) / 3 + 2] = totalDistance;
+                this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
+
+                for (let j = 0; j < 6; j++)
+                    for (let k = 0; k < 3; k++)
+                        count++;
             }
 
-
-            this._pointsProgress[(off + count) / 3 + 0] = totalDistance;
-            this._pointsProgress[(off + count) / 3 + 2] = totalDistance;
-            this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
-
-            for (let j = 0; j < 6; j++)
-                for (let k = 0; k < 3; k++)
-                    count++;
+            // if (this._pointsSplineLength.length != this._pointsProgress.length)console.log("wrong length?!");
+            for (let i = 0; i < this._pointsProgress.length; i++)
+                this._pointsSplineLength[i] = totalDistance;
         }
-        for (let i = 0; i < this._pointsProgress.length; i++)
-            this._pointsSplineLength[i] = totalDistance;
 
         count = 0;
         for (let i = 0; i < points.length / 3; i++)
         {
             for (let j = 0; j < 6; j++)
             {
-                this._speeds[(off + count) / 3 + 0] = this._splines[idx].speed;
+                const idxArr = (off + count) / 3;
+                const idxArr4 = idxArr * 4;
+                this._speeds[idxArr + 0] = this._splines[idx].speed;
 
-                this._colors[(off + count) / 3 * 4 + 0] = this._splines[idx].color[0];
-                this._colors[(off + count) / 3 * 4 + 1] = this._splines[idx].color[1];
-                this._colors[(off + count) / 3 * 4 + 2] = this._splines[idx].color[2];
-                this._colors[(off + count) / 3 * 4 + 3] = this._splines[idx].color[3];
+                this._colors[idxArr4 + 0] = this._splines[idx].color[0];
+                this._colors[idxArr4 + 1] = this._splines[idx].color[1];
+                this._colors[idxArr4 + 2] = this._splines[idx].color[2];
+                this._colors[idxArr4 + 3] = this._splines[idx].color[3];
 
-                this._colorsInactive[(off + count) / 3 * 4 + 0] = this._splines[idx].colorInactive[0];
-                this._colorsInactive[(off + count) / 3 * 4 + 1] = this._splines[idx].colorInactive[1];
-                this._colorsInactive[(off + count) / 3 * 4 + 2] = this._splines[idx].colorInactive[2];
-                this._colorsInactive[(off + count) / 3 * 4 + 3] = this._splines[idx].colorInactive[3];
+                this._colorsInactive[idxArr4 + 0] = this._splines[idx].colorInactive[0];
+                this._colorsInactive[idxArr4 + 1] = this._splines[idx].colorInactive[1];
+                this._colorsInactive[idxArr4 + 2] = this._splines[idx].colorInactive[2];
+                this._colorsInactive[idxArr4 + 3] = this._splines[idx].colorInactive[3];
 
-                this._colorsBorder[(off + count) / 3 * 4 + 0] = this._splines[idx].colorBorder[0];
-                this._colorsBorder[(off + count) / 3 * 4 + 1] = this._splines[idx].colorBorder[1];
-                this._colorsBorder[(off + count) / 3 * 4 + 2] = this._splines[idx].colorBorder[2];
-                this._colorsBorder[(off + count) / 3 * 4 + 3] = this._splines[idx].colorBorder[3];
+                this._colorsBorder[idxArr4 + 0] = this._splines[idx].colorBorder[0];
+                this._colorsBorder[idxArr4 + 1] = this._splines[idx].colorBorder[1];
+                this._colorsBorder[idxArr4 + 2] = this._splines[idx].colorBorder[2];
+                this._colorsBorder[idxArr4 + 3] = this._splines[idx].colorBorder[3];
 
                 for (let k = 0; k < 3; k++)
                 {
@@ -508,19 +505,17 @@ export default class GlSplineDrawer
             }
         }
 
-        if (updateWhat == undefined || updateWhat.colors)
-        {
-            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
-            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
-            this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
-        }
-        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
-        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
-        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+        if (updateWhat === undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat === undefined || updateWhat.colorsInactive) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
+        if (updateWhat === undefined || updateWhat.colorsBorder) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorBorder"), this._colorsBorder, (off / 3) * 4, ((off + count) / 3) * 4);
 
-        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
-        if (updateWhat == undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineLength"), this._pointsSplineLength, off / 3, (off + count) / 3);
-        if (updateWhat == undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
+        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline"), this._points, off, off + count);
+        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline2"), this._points2, off, off + count);
+        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("spline3"), this._points3, off, off + count);
+
+        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
+        if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineLength"), this._pointsSplineLength, off / 3, (off + count) / 3);
+        if (updateWhat === undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
 
         perf.finish();
     }
@@ -532,6 +527,7 @@ export default class GlSplineDrawer
         // if (this._thePoints.length > 100)
         //     console.log("spline complete rebuild...", this.name, this._rebuildReason);
 
+        console.log("rebuild", this._rebuildReason);
         this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;
@@ -569,7 +565,7 @@ export default class GlSplineDrawer
         let drawable = 0;
 
 
-        // console.log("LENFGTH", this._thePoints.length, newLength / 6);
+        // console.log("LENGTH", this._thePoints.length, newLength / 6);
 
         if (this._points.length != newLength)
         {

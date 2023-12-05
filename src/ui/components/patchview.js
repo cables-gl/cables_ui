@@ -26,7 +26,7 @@ export default class PatchView extends CABLES.EventTarget
         this._element = null;
         this._pvRenderers = {};
         this._patchRenderer = null;
-        this._cachedSubpatchNames = {};
+        // this._cachedSubpatchNames = {};
         this.isPasting = false;
         this._showingNavHelperEmpty = false;
         this._lastTempOP = null;
@@ -971,14 +971,19 @@ export default class PatchView extends CABLES.EventTarget
     getSubPatchName(subpatch)
     {
         if (!subpatch) return "Main";
-        if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
 
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-            if (ops[i].isSubPatchOp() && ops[i].patchId)
-                this._cachedSubpatchNames[ops[i].patchId.get()] = ops[i].name;
+        const op = gui.corePatch().getSubPatchOuterOp(subpatch);
+        if (!op) return "unknown subpatch op";
+        return op.name;
+        // if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
 
-        if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
+        // const ops = gui.corePatch().ops;
+        // for (let i = 0; i < ops.length; i++)
+        //     if (ops[i].isSubPatchOp() && ops[i].patchId && ops[i].patchId.get() == subpatch)
+        //         this._cachedSubpatchNames[subpatch] = ops[i].name;
+
+        // console.log(this._cachedSubpatchNames);
+        // if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
     }
 
     getSubpatchPathArray(subId, arr)
