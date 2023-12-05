@@ -1070,10 +1070,12 @@ export default class PatchView extends CABLES.EventTarget
             else
             if (ops[i].uiAttribs.bookmarked)
             {
-                if (ops[i].objName == "Ops.Ui.Area")
-                    sub.childs.push({ "title": ops[i].uiAttribs.comment_title, "icon": "box-select", "id": ops[i].id, "opid": ops[i].id });
-                else
-                    sub.childs.push({ "title": ops[i].getTitle(), "icon": "bookmark", "id": ops[i].id, "opid": ops[i].id });
+                let icon = "bookmark";
+                let title = ops[i].uiAttribs.comment_title || ops[i].getTitle();
+                if (ops[i].uiAttribs.comment_title) icon = "message";
+                if (ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
+
+                sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "opid": ops[i].id });
             }
         }
 
