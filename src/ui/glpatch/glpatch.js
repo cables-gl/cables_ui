@@ -1669,3 +1669,4 @@ GlPatch.getOpNamespaceColor = (ns) =>
     if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
     else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
 };
+

@@ -761,8 +761,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const cgl = thePatch.cgl;
         const currentProject = gui.project();
 
-        const w = cgl.canvas.width / cgl.pixelDensity;
-        const h = cgl.canvas.height / cgl.pixelDensity;
+        const w = (cgl.canvas.width / cgl.pixelDensity) || 640;
+        const h = (cgl.canvas.height / cgl.pixelDensity) || 360;
+
 
         let screenshotWidth = 640;
         let screenshotHeight = 360;

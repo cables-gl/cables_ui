@@ -1103,7 +1103,6 @@ export default class PatchView extends CABLES.EventTarget
 
         for (let subid in countSubs)
         {
-            // if(countSubs[subid]<=2)
             for (let asub in foundSubPatchOps)
             {
                 if (!foundSubPatchOps.hasOwnProperty(subid) && subid != 0)
@@ -1113,12 +1112,9 @@ export default class PatchView extends CABLES.EventTarget
                     {
                         console.warn("deleted lost subpatch! ", subid);
                         for (let i = ops.length - 1; i >= 0; i--)
-                        {
                             if (ops[i].uiAttribs.subPatch == subid)
-                            {
                                 ops[i].patch.deleteOp(ops[i].id);
-                            }
-                        }
+
                         countSubs[subid] = 1000;
                     }
                 }
