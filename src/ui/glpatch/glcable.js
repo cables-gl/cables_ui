@@ -163,8 +163,6 @@ export default class GlCable
         if (this._disposed) return;
         if (this._glPatch.isAreaSelecting) return;
         if (!this._visible) return false;
-
-
         if (this._subPatch != this._glPatch.getCurrentSubPatch()) return false;
 
         if (this._glPatch.isDraggingOps())
@@ -336,60 +334,60 @@ export default class GlCable
 
                 this._splineDrawer.setSpline(this._splineIdx, this._points);
             }
-        }
-        if (this._linetype == this.LINETYPE_HANGING)
-        {
-            if (this._x == this._x2 || Math.abs(this._x - this._x2) < 30)
+            else if (this._linetype == this.LINETYPE_HANGING)
             {
-                this._curvedSimple = true;
-                this._updateDistFromPort();
-                this.points = this._subdivivde(
-                    [
-                        posX, this._y, 0,
-                        posX, this._y, 0,
-                        posX, this._y, 0,
-                        posX2, this._y2, 0,
-                        posX2, this._y2, 0,
-                        posX2, this._y2, 0
-                    ]);
-                this._splineDrawer.setSpline(this._splineIdx, this._points);
-            }
-            else
-            {
-                if (this._curvedSimple)
+                if (this._x == this._x2 || Math.abs(this._x - this._x2) < 30)
                 {
-                    this._curvedSimple = false;
+                    this._curvedSimple = true;
                     this._updateDistFromPort();
+                    this.points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0
+                        ]);
+                    this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
+                else
+                {
+                    if (this._curvedSimple)
+                    {
+                        this._curvedSimple = false;
+                        this._updateDistFromPort();
+                    }
 
-                const distY = Math.abs(this._y - this._y2);
-                const distX = Math.abs(this._x - this._x2);
+                    const distY = Math.abs(this._y - this._y2);
+                    const distX = Math.abs(this._x - this._x2);
 
-                let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
+                    let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
 
 
-                let centerX = (posX * 0.3 + posX2 * 0.7);
-                if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
+                    let centerX = (posX * 0.3 + posX2 * 0.7);
+                    if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
 
-                this._points = this._subdivivde(
-                    [
-                        posX, this._y, 0,
-                        posX, this._y, 0,
-                        (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
+                    this._points = this._subdivivde(
+                        [
+                            posX, this._y, 0,
+                            posX, this._y, 0,
+                            (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
 
-                        centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
+                            centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
 
-                        posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
-                        posX2, this._y2, 0,
-                        posX2, this._y2, 0,
-                    ], 8);
+                            posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
+                            posX2, this._y2, 0,
+                            posX2, this._y2, 0,
+                        ], 8);
 
-                this._splineDrawer.setSpline(
-                    this._splineIdx,
-                    this._points);
+                    this._splineDrawer.setSpline(
+                        this._splineIdx,
+                        this._points);
                 // }
+                }
             }
-            if (this._linetype == this.LINETYPE_STRAIGHT)
+            else if (this._linetype == this.LINETYPE_STRAIGHT)
             {
                 // straight lines...
 
