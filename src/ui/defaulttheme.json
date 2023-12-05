@@ -228,9 +228,9 @@
         0.999140625
       ],
       "selectedCable": [
-        0.12549019607843137,
-        0.12549019607843137,
-        0.12549019607843137,
+        0.12710937499999997,
+        0.12710937499999997,
+        0.12710937499999997,
         0.999140625
       ],
       "patchSelectionArea": [
@@ -306,6 +306,7 @@
       "opStateIndicatorSize": 8,
       "fadeOutDistStart": 66,
       "fadeOutFadeDist": 33,
-      "fadeOutFadeOpacity": 0.3
+      "fadeOutFadeOpacity": 0.3,
+      "cableButtonSize": 17
     }
   }
