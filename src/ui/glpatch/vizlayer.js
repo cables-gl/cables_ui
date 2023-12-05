@@ -105,7 +105,7 @@ export default class VizLayer extends CABLES.EventTarget
         }
 
         if (this._items.length == 0) return;
-        this._canvasCtx.fillStyle = "#222222";
+        this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
         const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderGl");
@@ -163,7 +163,7 @@ export default class VizLayer extends CABLES.EventTarget
                 this._canvasCtx.scale(scale, scale);
 
                 this._canvasCtx.font = "normal 6px sourceCodePro";
-                this._canvasCtx.fillStyle = "#ccc";
+                this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
                 this._canvasCtx.textAlign = "center";
                 this._canvasCtx.fillText("paused", (pos[0] + size[0] / 2) / scale, (pos[1] + (size[1] / 2)) / scale);
@@ -223,6 +223,11 @@ export default class VizLayer extends CABLES.EventTarget
         this._eleCanvas.style["pointer-events"] = "none";
     }
 
+    clear(ctx, layer)
+    {
+        ctx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222" || "#222";
+        ctx.fillRect(layer.x, layer.y, layer.width, layer.height);
+    }
 
 
     renderText(ctx, layer, lines, options)
@@ -242,11 +247,11 @@ export default class VizLayer extends CABLES.EventTarget
         if (lines.length < numLines)offset = 0;
 
         ctx.font = "normal " + fs + "px sourceCodePro";
-        ctx.fillStyle = "#ccc";
+        ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
         if (options.showLineNum) for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
 
-        ctx.fillStyle = "#ccc";
+        ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
         let hl = options.syntax && options.syntax != "text";
 
@@ -256,11 +261,11 @@ export default class VizLayer extends CABLES.EventTarget
 
             if (options.showLineNum)
             {
-                ctx.fillStyle = "#888";
+                ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
                 ctx.fillText(i,
                     layer.x / layer.scale + padding,
                     layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
-                ctx.fillStyle = "#ccc";
+                ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
             }
 
             if (hl)
@@ -273,7 +278,7 @@ export default class VizLayer extends CABLES.EventTarget
                     const child = data._emitter.rootNode.children[j];
                     if (typeof child == "string")
                     {
-                        ctx.fillStyle = "#ccc";
+                        ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
                         ctx.fillText(indent + fake + child,
                             layer.x / layer.scale + padding,
                             layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
@@ -317,7 +322,7 @@ export default class VizLayer extends CABLES.EventTarget
         if (offset > 0)
         {
             const radGrad = ctx.createLinearGradient(0, layer.y / layer.scale + 5, 0, layer.y / layer.scale + gradHeight);
-            radGrad.addColorStop(0, "#222");
+            radGrad.addColorStop(0, gui.theme.colors_vizlayer.colorBackground || "#222");
             radGrad.addColorStop(1, "rgba(34,34,34,0.0)");
             ctx.fillStyle = radGrad;
             ctx.fillRect(layer.x / layer.scale, layer.y / layer.scale, layer.width, gradHeight);
@@ -326,7 +331,7 @@ export default class VizLayer extends CABLES.EventTarget
         if (offset + numLines < lines.length)
         {
             const radGrad = ctx.createLinearGradient(0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + 5, 0, layer.y / layer.scale + layer.height / layer.scale - gradHeight + gradHeight);
-            radGrad.addColorStop(1, "#222");
+            radGrad.addColorStop(1, gui.theme.colors_vizlayer.colorBackground || "#222");
             radGrad.addColorStop(0, "rgba(34,34,34,0.0)");
             ctx.fillStyle = radGrad;
             ctx.fillRect(layer.x / layer.scale, layer.y / layer.scale + layer.height / layer.scale - gradHeight, layer.width, gradHeight);

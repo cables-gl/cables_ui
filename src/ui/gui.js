@@ -2236,6 +2236,12 @@ export default class Gui
             document.documentElement.style.setProperty("--" + i, rgbtohex(theme.colors_textedit[i] || [1, 1, 1, 1]));
         }
 
+        theme.colors_vizlayer = theme.colors_vizlayer || {};
+        for (let i in theme.colors_vizlayer)
+        {
+            theme.colors_vizlayer[i] = rgbtohex(theme.colors_vizlayer[i] || [1, 1, 1, 1]);
+        }
+
         document.documentElement.style.setProperty("--color_port_function", rgbtohex(theme.colors_types.trigger || [1, 1, 1, 1]));
         document.documentElement.style.setProperty("--color_port_value", rgbtohex(theme.colors_types.num || [1, 1, 1, 1]));
         document.documentElement.style.setProperty("--color_port_object", rgbtohex(theme.colors_types.obj || [1, 1, 1, 1]));
@@ -2243,6 +2249,7 @@ export default class Gui
         document.documentElement.style.setProperty("--color_port_array", rgbtohex(theme.colors_types.array || [1, 1, 1, 1]));
 
         this.theme = theme;
+
 
 
         const nsColors = document.createElement("style");
