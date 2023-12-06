@@ -8,7 +8,7 @@ import { CONSTANTS } from "../../../cables/src/core/constants";
 const defaultOps = {
     "defaultOpNames":
     {
-        "number": "Ops.Value.Number",
+        "number": "Ops.Number.Number",
         "defaultOpImage": "Ops.Gl.Texture_v2",
         "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
         "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
@@ -45,7 +45,7 @@ const defaultOps = {
         "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
         "defaultOpVizTexture": "Ops.Ui.VizTexture",
         "convertNumberToString": "Ops.String.NumberToString_v2",
-        "convertNumberToTrigger": "Ops.Value.TriggerOnChangeNumber"
+        "convertNumberToTrigger": "Ops.Number.TriggerOnChangeNumber"
     },
     "defaultMathOps":
     {
@@ -88,7 +88,7 @@ const defaultOps = {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_IN)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return ["Ops.String.String_v2", "Ops.String.StringEditor"];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Value.Number"];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return ["Ops.Number.Number"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return ["Ops.Trigger.Sequence"];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [CABLES.UI.DEFAULTOPNAMES.defaultOpImage];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return ["Ops.Html.DivElement_v2"];
