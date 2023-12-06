@@ -1465,6 +1465,7 @@ export default class Gui
                     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
                     if (bp)
                     {
+                        gui.showLoadingProgress(true);
                         gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
                             {
                                 "oldSubId": bp,
@@ -1473,7 +1474,6 @@ export default class Gui
 
                                 }
                             });
-                        gui.showLoadingProgress(true);
                     }
                     else
                     {

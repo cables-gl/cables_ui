@@ -18,7 +18,7 @@ export default function setHtmlDefaultListeners()
     {
         // setTimeout(function ()
         // {
-        console.log("window caught error");
+        console.log("window caught error", e);
         if (!CABLES.lastError)
         {
             new CABLES.UI.ModalError({ "exception": e });

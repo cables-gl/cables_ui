@@ -138,7 +138,7 @@ export default class ServerOps
             const ser = op.getSerialized();
 
             delete ser.uiAttribs.history;
-            ser.uiAttribs.subPatch = subId;
+            if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
         });
 
@@ -164,6 +164,14 @@ export default class ServerOps
 
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
+
+
+                this.execute(newOp.objName,
+                    (newOps) =>
+                    {
+                        console.log("executed", newOps);
+                    });
+
 
                 if (options.next)options.next();
             });
@@ -339,6 +347,7 @@ export default class ServerOps
 
     execute(name, next)
     {
+        console.log("execute", name);
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
             let html = "";
@@ -876,7 +885,6 @@ export default class ServerOps
             opId = op.opId;
         }
 
-
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
@@ -952,7 +960,6 @@ export default class ServerOps
                         "onSave": (_setStatus, _content) =>
                         {
                             const loadingModal = new ModalLoading("Save attachment...");
-
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -973,6 +980,7 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
+
                                     gui.serverOps.execute(opname, (newOps) =>
                                     {
                                         // setTimeout(() =>
