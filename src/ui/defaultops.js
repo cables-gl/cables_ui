@@ -46,7 +46,7 @@ export const defaultOpNames =
     "defaultOpVizTexture": "Ops.Ui.VizTexture",
 
     "NumberToString": "Ops.String.NumberToString_v2",
-    "TriggerOnChangeNumber": "Ops.Value.TriggerOnChangeNumber",
+    "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "TriggerCounter": "Ops.Trigger.TriggerCounter",
     "parseFloat": "Ops.String.ParseFloat",
