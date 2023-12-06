@@ -8,7 +8,7 @@ import { CONSTANTS } from "../../../cables/src/core/constants";
 
 export const defaultOpNames =
 {
-    "number": "Ops.Value.Number",
+    "number": "Ops.Number.Number",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
