@@ -149,7 +149,7 @@ class OpParampanel extends CABLES.EventTarget
 
         if (typeof op == "string") op = gui.corePatch().getOpById(op);
 
-        if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab().title != "op")
+        if (!gui.showingtwoMetaPanel && gui.metaTabs.getActiveTab() && gui.metaTabs.getActiveTab().title != "op")
             gui.metaTabs.activateTabByName("op");
 
 

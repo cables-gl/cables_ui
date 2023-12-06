@@ -347,7 +347,6 @@ export default class ServerOps
 
     execute(name, next)
     {
-        console.log("execute", name);
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
             let html = "";
@@ -971,6 +970,7 @@ export default class ServerOps
                                 {
                                     if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
+
                                     if (errr)
                                     {
                                         CABLES.UI.notifyError("error: op not saved");
@@ -980,6 +980,23 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
+
+                                    console.log(attachmentName);
+                                    if (attachmentName == "att_ports.json")
+                                    {
+                                        CABLESUILOADER.talkerAPI.send(
+                                            "opAttachmentSave",
+                                            {
+                                                "opname": opname,
+                                                "name": "att_gen_ports.js",
+                                                "content": "console.log('porz');",
+                                            },
+                                            (errr2, re2) =>
+                                            {
+                                                console.log("done...?");
+                                            },
+                                        );
+                                    }
 
                                     gui.serverOps.execute(opname, (newOps) =>
                                     {
