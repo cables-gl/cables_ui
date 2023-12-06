@@ -291,8 +291,12 @@ export default class GlLink
     {
         const sub = this._glPatch.getCurrentSubPatch();
 
-        if (!this._glOpIn || !this._glOpOut) return;
 
+
+        if (!this._glOpIn || !this._glOpOut)
+        {
+            return;
+        }
 
         if (
             (
@@ -307,13 +311,13 @@ export default class GlLink
             )
         )
         { // redo everything when ops were moved into another subpatch
-            console.log("move link to other subpatch");
             this._subPatch = this._glOpIn.uiAttribs.subPatch;
             this._initSubCables();
         }
 
         // if (this._cable.subPatch == sub) this._cable.visible = true;
         // if (this._cableSub && this._cableSub.subPatch == sub) this._cableSub.visible = true;
+
 
         if (this._cable) this._cable.updateVisible();
         if (this._cableSub) this._cableSub.updateVisible();
@@ -439,9 +443,6 @@ export default class GlLink
 
                     if (this._debugColor) this._cableSub.setColor(0, 1, 0, 1); // green
 
-                    // console.log(this._portNameInput, this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id));
-                    // console.log(this._subPatchOp);
-
                     foundCableSub = true;
                     this._cableSub.setPosition(
                         this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
@@ -463,7 +464,6 @@ export default class GlLink
                 )
                 {
                     if (this._debugColor) this._cable.setColor(1, 0, 0, 1); // red
-                    // console.log("RED")
                     foundCable = true;
                     this._cable.setPosition(
                         this._glOpIn.getUiAttribs().translate.x + this._offsetXInput,

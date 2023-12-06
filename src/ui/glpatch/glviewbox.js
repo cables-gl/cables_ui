@@ -25,7 +25,7 @@ export default class GlViewBox
         this._oldScrollY = 0;
         this._viewResX = 0;
         this._viewResY = 0;
-        this._opsBoundingRect = null;
+        // this._opsBoundingRect = null;
         this._mouseRightDownStartX = 0;
         this._mouseRightDownStartY = 0;
         this._zoom = GlUiConfig.zoomDefault;
@@ -54,16 +54,16 @@ export default class GlViewBox
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 
-        this._drawBoundingRect = userSettings.get("glpatch_showboundings");
+        // this._drawBoundingRect = userSettings.get("glpatch_showboundings");
 
-        userSettings.on("change", (which, v) =>
-        {
-            if (which == "glpatch_showboundings")
-            {
-                this._drawBoundingRect = v;
-                if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
-            }
-        });
+        // userSettings.on("change", (which, v) =>
+        // {
+        //     if (which == "glpatch_showboundings")
+        //     {
+        //         this._drawBoundingRect = v;
+        //         // // if (this._opsBoundingRect) this._opsBoundingRect.visible = v;
+        //     }
+        // });
     }
 
     setSize(w, h)
@@ -222,7 +222,7 @@ export default class GlViewBox
 
         gui.on("themeChanged", () =>
         {
-            this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+            // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
         });
     }
 
@@ -302,49 +302,49 @@ export default class GlViewBox
 
         this.setMousePos(this._mouseX, this._mouseY);
 
-        if (gui.canvasManager.mode != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
-        {
-            if (!this._opsBoundingRect)
-            {
-                this._opsBoundingRect = this.glPatch.rectDrawer.createRect();
-                this._opsBoundingRect.interactive = false;
-                this._opsBoundingRect.setPosition(-500, -500, 1);
-                this._opsBoundingRect.setSize(1000, 1000);
-                this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
-            }
+        // if (gui.canvasManager.mode != gui.CANVASMODE_PATCHBG && this._drawBoundingRect)
+        // {
+        //     // if (!this._opsBoundingRect)
+        //     {
+        //         // this._opsBoundingRect = this.glPatch.rectDrawer.createRect();
+        //         // this._opsBoundingRect.interactive = false;
+        //         // this._opsBoundingRect.setPosition(-500, -500, 1);
+        //         // this._opsBoundingRect.setSize(1000, 1000);
+        //         // this._opsBoundingRect.setColor(gui.theme.colors_patch.opBoundsRect);
+        //     }
 
-            const bounds = this.glPatch.rectDrawer.bounds;
-            this._opsBoundingRect.visible = bounds.changed;
-            this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
-            this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
+        //     const bounds = this.glPatch.rectDrawer.bounds;
+        //     // this._opsBoundingRect.visible = bounds.changed;
+        //     // this._opsBoundingRect.setPosition(bounds.minX, bounds.minY, 0.999);
+        //     // this._opsBoundingRect.setSize(bounds.maxX - bounds.minX, bounds.maxY - bounds.minY);
 
-            if (gui.corePatch().ops.length > 1)
-            {
-                const min = this.patchToScreenCoords(bounds.minX, bounds.minY);
-                const max = this.patchToScreenCoords(bounds.maxX, bounds.maxY);
+        //     if (gui.corePatch().ops.length > 1)
+        //     {
+        //         const min = this.patchToScreenCoords(bounds.minX, bounds.minY);
+        //         const max = this.patchToScreenCoords(bounds.maxX, bounds.maxY);
 
-                let outOfBounds = false;
-                if (max[0] >= 0 && // min[ ]right edge past r2 left
-                    min[0] <= this._viewResX && // min[ ]left edge past r2 right
-                    max[1] >= 0 && // min[ ]top edge past r2 bottom
-                    min[1] <= this._viewResY) // r1 bottom edge past r2 top
-                {
-                    outOfBounds = true;
-                }
+        //         let outOfBounds = false;
+        //         if (max[0] >= 0 && // min[ ]right edge past r2 left
+        //             min[0] <= this._viewResX && // min[ ]left edge past r2 right
+        //             max[1] >= 0 && // min[ ]top edge past r2 bottom
+        //             min[1] <= this._viewResY) // r1 bottom edge past r2 top
+        //         {
+        //             outOfBounds = true;
+        //         }
 
-                if (this._outOfBounds != outOfBounds)
-                {
-                    this._outOfBounds = outOfBounds;
+        //         if (this._outOfBounds != outOfBounds)
+        //         {
+        //             this._outOfBounds = outOfBounds;
 
-                    if (this._outOfBounds) ele.hide(ele.byId("patchnavhelperBounds"));
-                    else ele.show(ele.byId("patchnavhelperBounds"));
-                }
-            }
-        }
-        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
-        {
-            this._opsBoundingRect.visible = false;
-        }
+        //             if (this._outOfBounds) ele.hide(ele.byId("patchnavhelperBounds"));
+        //             else ele.show(ele.byId("patchnavhelperBounds"));
+        //         }
+        //     }
+        // }
+        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG && this._opsBoundingRect)
+        // // {
+        //     this._opsBoundingRect.visible = false;
+        // // }
     }
 
     animateZoom(z, dur)

@@ -761,8 +761,9 @@ export default class PatchSaveServer extends CABLES.EventTarget
         const cgl = thePatch.cgl;
         const currentProject = gui.project();
 
-        const w = cgl.canvas.width / cgl.pixelDensity;
-        const h = cgl.canvas.height / cgl.pixelDensity;
+        const w = (cgl.canvas.width / cgl.pixelDensity) || 640;
+        const h = (cgl.canvas.height / cgl.pixelDensity) || 360;
+
 
         let screenshotWidth = 640;
         let screenshotHeight = 360;
@@ -830,6 +831,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                 if (error)
                     this._log.warn("[screenshot save error]", error);
 
+                cgl.setSize(w, h + 1);
                 cgl.setSize(w, h);
                 console.log("set size", w, h);
                 thePatch.resume(); // must resume here for webgpu

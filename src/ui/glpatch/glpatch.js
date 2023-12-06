@@ -901,7 +901,6 @@ export default class GlPatch extends CABLES.EventTarget
                 }
             }
             // }
-            // console.log(this._glOpz,gui.corePatch().ops)
 
             this._log.error("BROKEN");
         }
@@ -930,7 +929,6 @@ export default class GlPatch extends CABLES.EventTarget
         //     const v = this._fadeOutRectAnim.getValue(this._time);
 
         // this.subPatchAnim = 1.0 - this._fadeOutRectAnim.getValue(this._time);
-        // console.log(this.subPatchAnim);
 
         //     this._fadeOutRect.setColor(
         //         gui.theme.colors_patch.background[0],
@@ -1095,7 +1093,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         let allowSelectionArea = !this._portDragLine.isActive;
         if (this._selectionArea.active)allowSelectionArea = true;
-
 
         this._rectInstancer.mouseMove(x, y, this.mouseState.getButton());
 
@@ -1548,11 +1545,10 @@ export default class GlPatch extends CABLES.EventTarget
             this._glOpz[i].updateVisible();
         }
 
-        for (const i in this._links)
+        for (const i in this.links)
         {
-            this._links[i].updateVisible();
+            this.links[i].updateVisible();
         }
-        // }, timeGrey * 1000);
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
         this.snapLines.update();
@@ -1639,13 +1635,7 @@ export default class GlPatch extends CABLES.EventTarget
         {
             clearTimeout(this._ttTImeout);
             CABLES.UI.updateHoverToolTip(e, link._link.portOut, link);
-            // console.log(e.offsetY);
-            // console.log("show!");
         }
-        // if(!link) CABLES.UI.hideToolTip();
-
-
-        // console.log(link);
 
         if (!link)
         {
@@ -1656,7 +1646,6 @@ export default class GlPatch extends CABLES.EventTarget
                 CABLES.UI.hideToolTip();
             }, 100);
         }
-        // console.log(link);
     }
 
     updateTheme()
@@ -1680,3 +1669,4 @@ GlPatch.getOpNamespaceColor = (ns) =>
     if (gui.theme.colors_namespaces[nss]) return gui.theme.colors_namespaces[nss];
     else return gui.theme.colors_namespaces.unknown || [1, 0, 0, 1];
 };
+

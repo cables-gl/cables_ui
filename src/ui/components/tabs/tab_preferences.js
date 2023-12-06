@@ -88,7 +88,7 @@ export default class Preferences
 
         this.setSwitchValue("noFadeOutCables", userSettings.get("noFadeOutCables"));
 
-        this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
+        // this.setSwitchValue("glpatch_showboundings", userSettings.get("glpatch_showboundings") || false);
 
 
         this.setSwitchValue("bgpattern", userSettings.get("bgpattern") || "bgPatternDark");

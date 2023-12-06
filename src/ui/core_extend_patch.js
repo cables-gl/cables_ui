@@ -33,8 +33,9 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
-        this._subpatchOpCache = this._subpatchOpCache || {};
+        const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
+        this._subpatchOpCache = this._subpatchOpCache || {};
         // console.log(subPatchId);
         let opids = [];
 
@@ -53,8 +54,7 @@ export default function extendCorePatch()
                     this._subpatchOpCache[subPatchId].ops[op.id] = op;
                 }
 
-                if (op.isSubPatchOp())
-                    console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
+                // if (op.isSubPatchOp()) console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
 
                 if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
                 {
@@ -82,9 +82,25 @@ export default function extendCorePatch()
             }
         }
 
+        perf.finish();
         return ops;
     };
 
+    CABLES.Patch.prototype.buildSubPatchCache = () =>
+    {
+        const perf = CABLES.UI.uiProfiler.start("[corePatch ext] buildSubPatchCache");
+
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+        {
+            if (ops[i].uiAttribs.subPatch)
+            {
+                gui.corePatch().getSubPatchOuterOp(ops[i].uiAttribs.subPatch);
+            }
+        }
+
+        perf.finish();
+    };
 
     CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
     {
@@ -94,7 +110,7 @@ export default function extendCorePatch()
         {
             this.clearSubPatchCache(subPatchId);
             this.getSubPatchOps(subPatchId); // try build cache
-            console.error("unknown subpatchid cache ?!", subPatchId);
+            // console.error("unknown subpatchid cache ?!", subPatchId);
             return;
         }
 
