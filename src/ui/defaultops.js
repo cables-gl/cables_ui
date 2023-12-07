@@ -8,7 +8,7 @@ import { CONSTANTS } from "../../../cables/src/core/constants";
 
 export const defaultOpNames =
 {
-    "number": "Ops.Value.Number",
+    "number": "Ops.Number.Number",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
@@ -46,7 +46,7 @@ export const defaultOpNames =
     "defaultOpVizTexture": "Ops.Ui.VizTexture",
 
     "NumberToString": "Ops.String.NumberToString_v2",
-    "TriggerOnChangeNumber": "Ops.Value.TriggerOnChangeNumber",
+    "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "TriggerCounter": "Ops.Trigger.TriggerCounter",
     "parseFloat": "Ops.String.ParseFloat",

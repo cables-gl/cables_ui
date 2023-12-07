@@ -138,7 +138,7 @@ export default class ServerOps
             const ser = op.getSerialized();
 
             delete ser.uiAttribs.history;
-            ser.uiAttribs.subPatch = subId;
+            if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
         });
 
@@ -164,6 +164,14 @@ export default class ServerOps
 
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
+
+
+                this.execute(newOp.objName,
+                    (newOps) =>
+                    {
+                        console.log("executed", newOps);
+                    });
+
 
                 if (options.next)options.next();
             });
@@ -876,7 +884,6 @@ export default class ServerOps
             opId = op.opId;
         }
 
-
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
         const title = shortname + "/" + attachmentName;
@@ -952,7 +959,6 @@ export default class ServerOps
                         "onSave": (_setStatus, _content) =>
                         {
                             const loadingModal = new ModalLoading("Save attachment...");
-
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
@@ -964,6 +970,7 @@ export default class ServerOps
                                 {
                                     if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
+
                                     if (errr)
                                     {
                                         CABLES.UI.notifyError("error: op not saved");
@@ -973,14 +980,52 @@ export default class ServerOps
                                     }
 
                                     _setStatus("saved");
-                                    gui.serverOps.execute(opname, (newOps) =>
+
+                                    console.log(attachmentName);
+                                    if (attachmentName == "att_ports.json")
                                     {
-                                        // setTimeout(() =>
-                                        // {
-                                        gui.opParams.refresh();
-                                        // }, 100);
-                                        loadingModal.close();
-                                    });
+                                        let src = "";
+
+
+                                        const ports = JSON.parse(_content);
+
+                                        console.log(ports.ports);
+
+                                        if (ports.ports)
+                                            for (let i = 0; i < ports.ports.length; i++)
+                                            {
+                                                src += "const port" + i + "=op.inFloat(\"" + ports.ports[i].name + "\"," + ports.ports[i].value + ");";
+
+                                                src += "\n";
+                                            }
+
+
+
+                                        CABLESUILOADER.talkerAPI.send(
+                                            "opAttachmentSave",
+                                            {
+                                                "opname": opname,
+                                                "name": "att_inc_gen_ports.js",
+                                                "content": src,
+                                            },
+                                            (errr2, re2) =>
+                                            {
+                                                console.log("done...?");
+
+                                                gui.serverOps.execute(opname, (newOps) =>
+                                                {
+                                                    gui.opParams.refresh();
+                                                    loadingModal.close();
+                                                });
+                                            },
+                                        );
+                                    }
+                                    else
+                                        gui.serverOps.execute(opname, (newOps) =>
+                                        {
+                                            gui.opParams.refresh();
+                                            loadingModal.close();
+                                        });
                                 },
                             );
                         },

@@ -973,7 +973,7 @@ export default class PatchView extends CABLES.EventTarget
         if (!subpatch) return "Main";
 
         const op = gui.corePatch().getSubPatchOuterOp(subpatch);
-        if (!op) return "unknown subpatch op";
+        if (!op) return null;
         return op.name;
         // if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
 
