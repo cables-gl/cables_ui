@@ -38,8 +38,8 @@ export const defaultOpNames =
 
     "subPatch": "Ops.Ui.SubPatch",
     "subPatch2": "Ops.Dev.SubpatchNew",
-    "subPatchInput2": "Ops.Dev.Ui.PatchInput",
-    "subPatchOutput2": "Ops.Dev.Ui.PatchOutput",
+    "subPatchInput2": "Ops.Ui.SubPatchInput",
+    "subPatchOutput2": "Ops.Ui.SubPatchOutput",
 
     "uiArea": "Ops.Ui.Area",
     "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",

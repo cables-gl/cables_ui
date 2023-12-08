@@ -2023,6 +2023,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
+            console.log(subpatch);
             this._patchRenderer.setCurrentSubPatch(subpatch,
                 () =>
                 {

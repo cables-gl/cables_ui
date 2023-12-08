@@ -18,7 +18,7 @@ class OpParampanel extends CABLES.EventTarget
         this._htmlGen = new PortHtmlGenerator(this.panelId);
 
         this._currentOp = null;
-        this._eventPrefix = CABLES.uuid();
+        this._eventPrefix = CABLES.shortId();
         this._isPortLineDragDown = false;
 
         this._portsIn = [];

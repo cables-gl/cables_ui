@@ -135,18 +135,15 @@ export default class ServerOps
 
         ops.forEach((op) =>
         {
-            // if (!op.uiAttribs.ignoreSerialize)
-            // {
             const ser = op.getSerialized();
-
             delete ser.uiAttribs.history;
             if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
-            // }
         });
 
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
 
+        // gui.patchView.setCurrentSubPatch(0);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -168,12 +165,33 @@ export default class ServerOps
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
+                console.log(newOp.id);
 
                 this.execute(newOp.objName,
-                    (newOps) =>
+                    (newOps, refNewOp) =>
                     {
+                        console.log(refNewOp);
+                        console.log(refNewOp.patchId.get());
+
+                        // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+
+
+                        setTimeout(() =>
+                        {
+                            gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
+
+                            gui.patchView.focusOp(refNewOp.id);
+                            gui.patchView.centerSelectOp(refNewOp.id, true);
+
+
+                            // gui.patchView.setCurrentSubPatch(refOldOp.patchId.get());
+                        }, 300);
+
+                        // gui.patchView.setCurrentSubPatch(0);
+                        // gui.patchView.setCurrentSubPatch(oldSubId);
                         console.log("executed", newOps);
-                    });
+                    },
+                    newOp);
 
 
                 if (options.next)options.next();
@@ -348,7 +366,7 @@ export default class ServerOps
         );
     }
 
-    execute(name, next)
+    execute(name, next, refOldOp)
     {
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
@@ -382,8 +400,9 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);
-                    if (next)next(newOps);
+                    if (next)next(newOps, refOldOp);
                 },
+                refOldOp
             );
         };
         document.body.appendChild(s);
@@ -967,7 +986,7 @@ export default class ServerOps
             const p = ports.ports[i];
             if (p.dir != 1) continue;
 
-            let inPortFunc = "inNumber";
+            let inPortFunc = "inFloat";
             if (ports.ports[i].type == 1) inPortFunc = "inTrigger";
             if (ports.ports[i].type == 2) inPortFunc = "inObject";
             if (ports.ports[i].type == 3) inPortFunc = "inArray";
