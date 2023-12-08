@@ -688,7 +688,7 @@ export default class PatchView extends CABLES.EventTarget
 
     getSelectedOpsIds()
     {
-        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
+        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOpsIds");
         const ops = [];
 
         for (let i = 0; i < this._p.ops.length; i++)
@@ -816,9 +816,12 @@ export default class PatchView extends CABLES.EventTarget
         let opname = defaultops.defaultOpNames.subPatch;
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
 
+        const selectedOps = this.getSelectedOps();
+        console.log("selectedOps", selectedOps);
+
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            const selectedOps = this.getSelectedOps();
+            console.log("selectedOps", selectedOps);
             const bounds = this.getSelectionBounds();
             const trans = {
                 "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,

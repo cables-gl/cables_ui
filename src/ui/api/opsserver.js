@@ -19,6 +19,8 @@ function capitalize(str)
     return s;
 }
 
+const blueprintSubpatchAttachmentFilename = "att_subpatch_json";
+const blueprintPortAttachmentFilename = "att_ports.json";
 export default class ServerOps
 {
     constructor(gui, patchId, next)
@@ -152,11 +154,13 @@ export default class ServerOps
 
         // gui.patchView.setCurrentSubPatch(0);
 
+
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
                 "opname": newOp.objName,
-                "name": "att_subpatch_json",
+                "name": blueprintSubpatchAttachmentFilename,
                 "content": JSON.stringify(o, null, "    "),
             },
             (errr, re) =>
@@ -176,16 +180,14 @@ export default class ServerOps
 
                 console.log(newOp.id);
 
-                if (options.loadingModal)options.loadingModal.setTask("execute...");
-
                 if (options.execute !== false)
+                {
+                    if (options.loadingModal)options.loadingModal.setTask("execute...");
+
                     this.execute(newOp.objName,
                         (newOps, refNewOp) =>
                         {
                             if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
-
-                            // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
-
 
                             setTimeout(() =>
                             {
@@ -195,19 +197,16 @@ export default class ServerOps
                                     gui.patchView.focusOp(refNewOp.id);
                                     gui.patchView.centerSelectOp(refNewOp.id, true);
                                 }
-
-
-                            // gui.patchView.setCurrentSubPatch(refOldOp.patchId.get());
                             }, 300);
-
-                            // gui.patchView.setCurrentSubPatch(0);
-                            // gui.patchView.setCurrentSubPatch(oldSubId);
                             console.log("executed", newOps);
+                            if (options.next)options.next();
                         },
                         newOp);
-
-
-                if (options.next)options.next();
+                }
+                else
+                {
+                    if (options.next)options.next();
+                }
             });
     }
 
@@ -241,6 +240,9 @@ export default class ServerOps
                         (err, res) =>
                         {
                             if (loadingModal)loadingModal.setTask("update bp2 attachment");
+
+
+                            console.log("oldSubpatchOp.patchId.get()", oldSubpatchOp.patchId.get());
 
                             this.updateBluePrint2Attachment(
                                 newOp,
@@ -393,10 +395,16 @@ export default class ServerOps
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
         }
 
-        const oldOps = gui.corePatch().getOpsByObjName(name);
+        let oldOps = null;
+        if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
+        else oldOps = gui.corePatch().getOpsByOpId(name);
+
+        if (oldOps.length > 0) name = oldOps[0].objName;
+
         for (let i = 0; i < oldOps.length; i++)
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
+
 
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
@@ -980,6 +988,7 @@ export default class ServerOps
             if (ports.ports[i].type == 5) outPortFunc = "outString";
 
             src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
+            if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
             if (p.type == 0 || p.type == 5)
                 src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
@@ -1008,6 +1017,7 @@ export default class ServerOps
             if (ports.ports[i].type == 5) inPortFunc = "inString";
 
             src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
+            if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
             if (p.type == 0 || p.type == 5)
                 src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
@@ -1024,6 +1034,99 @@ export default class ServerOps
         "};".endl();
 
         return src;
+    }
+
+    createBlueprintPortJsonElement(port, i)
+    {
+        return {
+            "id": "id" + i,
+            "title": port.getTitle(),
+            "value": port.get(),
+            "dir": port.direction,
+            "type": port.type,
+            "uiDisplay": port.uiAttribs.display
+        };
+    }
+
+    savePortBlueprintAttachment(portsJson, opname, next)
+    {
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentSave",
+            {
+                "opname": opname,
+                "name": blueprintPortAttachmentFilename,
+                "content": JSON.stringify(portsJson, false, 4),
+            },
+            (errr2, re2) =>
+            {
+                const src = this._generatePortsAttachment(portsJson);
+
+                CABLESUILOADER.talkerAPI.send(
+                    "opAttachmentSave",
+                    {
+                        "opname": opname,
+                        "name": "att_inc_gen_ports.js",
+                        "content": src,
+                    },
+                    (errr3, re3) =>
+                    {
+                        if (next)next();
+                    },
+                );
+            },
+        );
+    }
+
+    addPortToBlueprint(opId, port)
+    {
+        const loadingModal = new ModalLoading("Adding port...");
+
+        loadingModal.setTask("getting ports json");
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname": opId,
+                "name": blueprintPortAttachmentFilename,
+            },
+            (err, res) =>
+            {
+                console.log("attachment ports", res);
+                res.content = res.content || JSON.stringify({ "ports": [] });
+                const js = JSON.parse(res.content);
+                const newPortJson = this.createBlueprintPortJsonElement(port, js.ports.length);
+
+                js.ports.push(newPortJson);
+                loadingModal.setTask("saving ports json");
+
+                this.savePortBlueprintAttachment(js, opId, () =>
+                {
+                    loadingModal.setTask("reload op");
+
+                    gui.serverOps.execute(opId, (newOps) =>
+                    {
+                        gui.opParams.refresh();
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+
+
+                        // setTimeout(() =>
+                        // {
+                        gui.corePatch().buildSubPatchCache();
+                        console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
+
+
+                        // timeouts are BAD but does not work else..
+                        gui.corePatch().link(
+                            port.op,
+                            port.name,
+                            gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
+                            "innerOut_" + newPortJson.id
+                        );
+                        loadingModal.close();
+                        // }, 500);
+                    });
+                });
+            }
+        );
     }
 
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
@@ -1135,30 +1238,20 @@ export default class ServerOps
                                     _setStatus("saved");
 
                                     console.log(attachmentName);
-                                    if (attachmentName == "att_ports.json")
+                                    if (attachmentName == blueprintPortAttachmentFilename)
                                     {
                                         const ports = JSON.parse(_content);
                                         const src = this._generatePortsAttachment(ports);
 
 
-                                        CABLESUILOADER.talkerAPI.send(
-                                            "opAttachmentSave",
+                                        this.savePortBlueprintAttachment(src, opname, () =>
+                                        {
+                                            gui.serverOps.execute(opname, (newOps) =>
                                             {
-                                                "opname": opname,
-                                                "name": "att_inc_gen_ports.js",
-                                                "content": src,
-                                            },
-                                            (errr2, re2) =>
-                                            {
-                                                console.log("done...?");
-
-                                                gui.serverOps.execute(opname, (newOps) =>
-                                                {
-                                                    gui.opParams.refresh();
-                                                    loadingModal.close();
-                                                });
-                                            },
-                                        );
+                                                gui.opParams.refresh();
+                                                loadingModal.close();
+                                            });
+                                        });
                                     }
                                     else
                                         gui.serverOps.execute(opname, (newOps) =>

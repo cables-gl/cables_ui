@@ -1460,7 +1460,7 @@ export default class GlOp extends CABLES.EventTarget
             if (this._links[i].nameOutput == portname && this._links[i].opIdOutput == opid)
             {
                 const op = this._glPatch.getOp(this._links[i].opIdInput);
-                ports.push(op.getGlPort(this._links[i].nameInput));
+                if (op)ports.push(op.getGlPort(this._links[i].nameInput));
             }
         }
 

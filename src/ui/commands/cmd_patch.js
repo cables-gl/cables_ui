@@ -178,49 +178,48 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
 
 CABLES_CMD_PATCH.createOpFromSelection = function ()
 {
-    let selectedOps = gui.patchView.getSelectedOpsIds();
+    let selectedOpIds = gui.patchView.getSelectedOpsIds();
 
     gui.serverOps.createDialog(null,
         {
             "showEditor": false,
-            "cb":
-            (newOp) =>
+            "cb": (newOp) =>
             {
                 const loadingModal = new ModalLoading("Creating op...");
 
-
+                console.log("newOp", newOp);
                 gui.patchView.unselectAllOps();
-                for (let i = 0; i < selectedOps.length; i++)
-                    gui.patchView.selectOpId(selectedOps[i]);
+                console.log("selected ops", selectedOpIds);
+                for (let i = 0; i < selectedOpIds.length; i++)
+                {
+                    console.log("selectop", selectedOpIds[i]);
+                    gui.patchView.selectOpId(selectedOpIds[i]);
+                }
 
-                loadingModal.setTask("Creating subpatch");
+                loadingModal.setTask("Creating subpatch / " + selectedOpIds.length + " ops");
 
+                console.log("selected ops", selectedOpIds);
                 gui.patchView.createSubPatchFromSelection(2, (patchId, OpTempSubpatch) =>
                 {
+                    console.log("selected ops", selectedOpIds);
                     loadingModal.setTask("find exposed ports...");
                     const portJson = { "ports": [] };
 
                     const inports = gui.patchView.getSubPatchExposedPorts(patchId, 0);
                     for (let i = 0; i < inports.length; i++)
                     {
-                        portJson.ports.push({
-                            "id": "id" + i,
-                            "title": inports[i].getTitle(),
-                            "value": inports[i].get(),
-                            "dir": inports[i].direction,
-                            "type": inports[i].type,
-                            "uiDisplay": inports[i].uiAttribs.display
-                        });
+                        portJson.ports.push(gui.serverOps.createBlueprintPortJsonElement(inports[i], i));
+
                         inports[i].setUiAttribs({ "expose": false });
                     }
 
                     loadingModal.setTask("Creating blueprint op");
-
                     gui.serverOps.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                     {
                         const src = gui.serverOps._generatePortsAttachment(portJson);
 
                         gui.corePatch().deleteOp(OpTempSubpatch.id);
+                        gui.patchView.setCurrentSubPatch(0);
 
                         loadingModal.setTask("Creating ports...");
 
@@ -249,7 +248,14 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
 
                                         gui.serverOps.execute(newOp.objName, (newOps) =>
                                         {
-                                            // gui.opParams.refresh();
+                                            // link ports.......
+
+                                            for (let i = 0; i < inports.length; i++)
+                                            {
+                                                // gui.corePatch.link(inports[i].op,?);
+
+                                            }
+
                                             loadingModal.close();
                                         });
                                     });
