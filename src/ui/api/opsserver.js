@@ -876,6 +876,8 @@ export default class ServerOps
         }, true);
     }
 
+
+
     _generatePortsAttachment(ports)
     {
         let src = "console.log(\"creating ports....\")\n";
@@ -886,56 +888,107 @@ export default class ServerOps
 
         for (let i = 0; i < ports.ports.length; i++)
         {
-            src += "const port" + ports.ports[i].id + "=";
+            const p = ports.ports[i];
+            src += "const port_" + p.id + "=";
 
-            if (ports.ports[i].type == 0) src += "op.inFloat";
-            if (ports.ports[i].type == 1) src += "op.inTrigger";
-            if (ports.ports[i].type == 2) src += "op.inObject";
-            if (ports.ports[i].type == 3) src += "op.inArray";
-            if (ports.ports[i].type == 5) src += "op.inString";
+            if (p.dir == 0) // INPUT
+            {
+                if (p.type == 0) src += "op.inFloat";
+                if (p.type == 1) src += "op.inTrigger";
+                if (p.type == 2) src += "op.inObject";
+                if (p.type == 3) src += "op.inArray";
+                if (p.type == 5) src += "op.inString";
 
-            src += "(\"" + ports.ports[i].id + "\""; // 1. name
+                src += "(\"" + p.id + "\""; // 1. name
 
-            if (ports.ports[i].type == 5) src += ",\"" + ports.ports[i].value + "\""; // 2. param default value
-            if (ports.ports[i].type == 0) src += "," + ports.ports[i].value; // 2. param default value
+                if (p.type == 5) src += ",\"" + p.value + "\""; // 2. param default value
+                if (p.type == 0) src += "," + p.value; // 2. param default value
 
-            src += ");";
+                src += ");";
+            }
+            else // OUTPUT
+            {
+                if (p.type == 0) src += "op.outNumber";
+                if (p.type == 1) src += "op.outTrigger";
+                if (p.type == 2) src += "op.outObject";
+                if (p.type == 3) src += "op.outArray";
+                if (p.type == 5) src += "op.outString";
+
+                src += "(\"" + p.id + "\""; // 1. name
+
+                src += ");";
+            }
+
             src += "\n";
-
-            if (ports.ports[i].title)src += "port" + i + ".setUiAttribs({title:\"" + ports.ports[i].title + "\"});\n";
+            if (p.title)src += "port_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
         }
 
         src +=
             "function initInnerPorts(addedOps)".endl() +
             "{".endl() +
-                "for(let i=0;i<addedOps.length;i++)".endl() +
-                "{".endl() +
-                    "if(addedOps[i].innerInput)".endl() +
-                    "{".endl();
+            "  for(let i=0;i<addedOps.length;i++)".endl() +
+            "  {".endl() +
+
+
+            "    if(addedOps[i].innerInput)".endl() +
+            "    {".endl();
+
 
         for (let i = 0; i < ports.ports.length; i++)
         {
+            const p = ports.ports[i];
+            if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
+
             let outPortFunc = "outNumber";
             if (ports.ports[i].type == 1) outPortFunc = "outTrigger";
             if (ports.ports[i].type == 2) outPortFunc = "outObject";
             if (ports.ports[i].type == 3) outPortFunc = "outArray";
             if (ports.ports[i].type == 5) outPortFunc = "outString";
 
+            src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
 
-            src += "const out_" + ports.ports[i].id + " = addedOps[i]." + outPortFunc + "(\"out_" + ports.ports[i].id + "\");".endl();
+            if (p.type == 0 || p.type == 5)
+                src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
 
-
-            if (ports.ports[i].type == 0)
-                src += "port" + ports.ports[i].id + ".on(\"change\", (a,v) => { out_" + ports.ports[i].id + ".set(a);console.log(a,v); });".endl();
-
-            if (ports.ports[i].type == 1)
-                src += "port" + ports.ports[i].id + ".onTriggered = () => { out_" + ports.ports[i].id + ".trigger(); };".endl();
+            if (p.type == 1)
+                src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
         }
+
+
+        src += "    }".endl();
+
+
+        src += "if(addedOps[i].innerOutput)".endl() +
+                "{".endl();
+
+
+        for (let i = 0; i < ports.ports.length; i++)
+        {
+            const p = ports.ports[i];
+            if (p.dir != 1) continue;
+
+            let inPortFunc = "inNumber";
+            if (ports.ports[i].type == 1) inPortFunc = "inTrigger";
+            if (ports.ports[i].type == 2) inPortFunc = "inObject";
+            if (ports.ports[i].type == 3) inPortFunc = "inArray";
+            if (ports.ports[i].type == 5) inPortFunc = "inString";
+
+            src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
+
+            if (p.type == 0 || p.type == 5)
+                src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
+
+            if (p.type == 1)
+                src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
+        }
+        src +=
+                "}".endl();
+
+
 
         src +=
             "}".endl() +
-            "}".endl() +
-            "}";
+        "}";
 
         return src;
     }
