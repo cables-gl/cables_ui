@@ -135,11 +135,14 @@ export default class ServerOps
 
         ops.forEach((op) =>
         {
+            // if (!op.uiAttribs.ignoreSerialize)
+            // {
             const ser = op.getSerialized();
 
             delete ser.uiAttribs.history;
             if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
+            // }
         });
 
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
@@ -873,6 +876,70 @@ export default class ServerOps
         }, true);
     }
 
+    _generatePortsAttachment(ports)
+    {
+        let src = "console.log(\"creating ports....\")\n";
+
+        console.log(ports.ports);
+
+        if (!ports.ports) return;
+
+        for (let i = 0; i < ports.ports.length; i++)
+        {
+            src += "const port" + ports.ports[i].id + "=";
+
+            if (ports.ports[i].type == 0) src += "op.inFloat";
+            if (ports.ports[i].type == 1) src += "op.inTrigger";
+            if (ports.ports[i].type == 2) src += "op.inObject";
+            if (ports.ports[i].type == 3) src += "op.inArray";
+            if (ports.ports[i].type == 5) src += "op.inString";
+
+            src += "(\"" + ports.ports[i].id + "\""; // 1. name
+
+            if (ports.ports[i].type == 5) src += ",\"" + ports.ports[i].value + "\""; // 2. param default value
+            if (ports.ports[i].type == 0) src += "," + ports.ports[i].value; // 2. param default value
+
+            src += ");";
+            src += "\n";
+
+            if (ports.ports[i].title)src += "port" + i + ".setUiAttribs({title:\"" + ports.ports[i].title + "\"});\n";
+        }
+
+        src +=
+            "function initInnerPorts(addedOps)".endl() +
+            "{".endl() +
+                "for(let i=0;i<addedOps.length;i++)".endl() +
+                "{".endl() +
+                    "if(addedOps[i].innerInput)".endl() +
+                    "{".endl();
+
+        for (let i = 0; i < ports.ports.length; i++)
+        {
+            let outPortFunc = "outNumber";
+            if (ports.ports[i].type == 1) outPortFunc = "outTrigger";
+            if (ports.ports[i].type == 2) outPortFunc = "outObject";
+            if (ports.ports[i].type == 3) outPortFunc = "outArray";
+            if (ports.ports[i].type == 5) outPortFunc = "outString";
+
+
+            src += "const out_" + ports.ports[i].id + " = addedOps[i]." + outPortFunc + "(\"out_" + ports.ports[i].id + "\");".endl();
+
+
+            if (ports.ports[i].type == 0)
+                src += "port" + ports.ports[i].id + ".on(\"change\", (a,v) => { out_" + ports.ports[i].id + ".set(a);console.log(a,v); });".endl();
+
+            if (ports.ports[i].type == 1)
+                src += "port" + ports.ports[i].id + ".onTriggered = () => { out_" + ports.ports[i].id + ".trigger(); };".endl();
+        }
+
+        src +=
+            "}".endl() +
+            "}".endl() +
+            "}";
+
+        return src;
+    }
+
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
     {
         let opname = op;
@@ -984,21 +1051,8 @@ export default class ServerOps
                                     console.log(attachmentName);
                                     if (attachmentName == "att_ports.json")
                                     {
-                                        let src = "";
-
-
                                         const ports = JSON.parse(_content);
-
-                                        console.log(ports.ports);
-
-                                        if (ports.ports)
-                                            for (let i = 0; i < ports.ports.length; i++)
-                                            {
-                                                src += "const port" + i + "=op.inFloat(\"" + ports.ports[i].name + "\"," + ports.ports[i].value + ");";
-
-                                                src += "\n";
-                                            }
-
+                                        const src = this._generatePortsAttachment(ports);
 
 
                                         CABLESUILOADER.talkerAPI.send(
