@@ -133,6 +133,8 @@ export default class ServerOps
         const o = { "ops": [] };
         const subId = CABLES.shortId();
 
+        if (options.loadingModal)options.loadingModal.setTask("serialize ops");
+
         ops.forEach((op) =>
         {
             const ser = op.getSerialized();
@@ -141,7 +143,12 @@ export default class ServerOps
             o.ops.push(ser);
         });
 
+        if (options.loadingModal)options.loadingModal.setTask("replace op ids");
+
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
+
+
+        if (options.loadingModal)options.loadingModal.setTask("save attachment...");
 
         // gui.patchView.setCurrentSubPatch(0);
 
@@ -157,6 +164,8 @@ export default class ServerOps
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
                 gui.showLoadingProgress(false);
 
+                if (options.loadingModal)options.loadingModal.setTask("update project date...");
+
                 CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
                 {
                     gui.patchView.store._serverDate = e.data.updated;
@@ -167,44 +176,49 @@ export default class ServerOps
 
                 console.log(newOp.id);
 
-                this.execute(newOp.objName,
-                    (newOps, refNewOp) =>
-                    {
-                        if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+                if (options.loadingModal)options.loadingModal.setTask("execute...");
 
-                        // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
-
-
-                        setTimeout(() =>
+                if (options.execute !== false)
+                    this.execute(newOp.objName,
+                        (newOps, refNewOp) =>
                         {
-                            if (refNewOp)
+                            if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+
+                            // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+
+
+                            setTimeout(() =>
                             {
-                                gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
-                                gui.patchView.focusOp(refNewOp.id);
-                                gui.patchView.centerSelectOp(refNewOp.id, true);
-                            }
+                                if (refNewOp)
+                                {
+                                    gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
+                                    gui.patchView.focusOp(refNewOp.id);
+                                    gui.patchView.centerSelectOp(refNewOp.id, true);
+                                }
 
 
                             // gui.patchView.setCurrentSubPatch(refOldOp.patchId.get());
-                        }, 300);
+                            }, 300);
 
-                        // gui.patchView.setCurrentSubPatch(0);
-                        // gui.patchView.setCurrentSubPatch(oldSubId);
-                        console.log("executed", newOps);
-                    },
-                    newOp);
+                            // gui.patchView.setCurrentSubPatch(0);
+                            // gui.patchView.setCurrentSubPatch(oldSubId);
+                            console.log("executed", newOps);
+                        },
+                        newOp);
 
 
                 if (options.next)options.next();
             });
     }
 
-    createBlueprint2Op(newOp, oldSubpatchOp, next)
+    createBlueprint2Op(newOp, oldSubpatchOp, next, loadingModal)
     {
         // const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
 
         // if (gui.patchView.getCurrentSubPatch() == oldSubId)
         // gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
+
+        if (loadingModal)loadingModal.setTask("add Corebib");
 
         this.addCoreLib(newOp.objName, "subpatchop", () =>
         {
@@ -216,6 +230,8 @@ export default class ServerOps
                 },
                 (er, rslt) =>
                 {
+                    if (loadingModal)loadingModal.setTask("save op code");
+
                     CABLESUILOADER.talkerAPI.send(
                         "saveOpCode",
                         {
@@ -224,9 +240,13 @@ export default class ServerOps
                         },
                         (err, res) =>
                         {
+                            if (loadingModal)loadingModal.setTask("update bp2 attachment");
+
                             this.updateBluePrint2Attachment(
                                 newOp,
                                 {
+                                    "execute": false,
+                                    "loadingModal": loadingModal,
                                     "oldSubId": oldSubpatchOp.patchId.get(),
                                     "replaceIds": true,
                                     "next": () =>
@@ -938,7 +958,7 @@ export default class ServerOps
         }
 
         src +=
-            "function initInnerPorts(addedOps)".endl() +
+            "op.initInnerPorts=function(addedOps)".endl() +
             "{".endl() +
             "  for(let i=0;i<addedOps.length;i++)".endl() +
             "  {".endl() +
@@ -999,10 +1019,9 @@ export default class ServerOps
                 "}".endl();
 
 
-
         src +=
             "}".endl() +
-        "}";
+        "};".endl();
 
         return src;
     }
