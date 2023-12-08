@@ -175,6 +175,37 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
+CABLES_CMD_PATCH.createOpFromSelection = function ()
+{
+    let selectedOps = gui.patchView.getSelectedOpsIds();
+
+
+
+
+    gui.serverOps.createDialog(null,
+        {
+            "showEditor": false,
+            "cb":
+            (newOp) =>
+            {
+                gui.patchView.unselectAllOps();
+                for (let i = 0; i < selectedOps.length; i++)
+                    gui.patchView.selectOpId(selectedOps[i]);
+
+                gui.patchView.createSubPatchFromSelection(2, (patchId, newOpSub) =>
+                {
+                    console.log("new opname", newOp);
+                    console.log("sub op", newOp);
+                    console.log("patchId", patchId);
+                    gui.serverOps.createBlueprint2Op(newOp, newOpSub, () =>
+                    {
+                        gui.corePatch().deleteOp(newOpSub.id);
+                    });
+                });
+            }
+        });
+};
+
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
 {
     gui.patchView.createSubPatchFromSelection(version);

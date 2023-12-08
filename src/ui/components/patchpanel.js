@@ -117,15 +117,15 @@ export default class PatchPanel extends CABLES.EventTarget
             },
         });
 
-        if (item.subPatchVer == "2" && item.blueprintVer != 2)
-            items.push({
-                "title": "Create op from subpatch",
-                func()
-                {
-                    gui.serverOps.createBlueprint2Op(item.subPatchId);
-                    // gui.patchView.focusSubpatchOp(item.subPatchId);
-                },
-            });
+        // if (item.subPatchVer == "2" && item.blueprintVer != 2)
+        //     items.push({
+        //         "title": "Create op from subpatch",
+        //         func()
+        //         {
+        //             gui.serverOps.createBlueprint2Op(item.subPatchId);
+        //             // gui.patchView.focusSubpatchOp(item.subPatchId);
+        //         },
+        //     });
 
         if (item.blueprintver == 2)
         {

@@ -686,6 +686,21 @@ export default class PatchView extends CABLES.EventTarget
         return bounds;
     }
 
+    getSelectedOpsIds()
+    {
+        const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
+        const ops = [];
+
+        for (let i = 0; i < this._p.ops.length; i++)
+            if (this._p.ops[i].uiAttribs.selected)
+                ops.push(this._p.ops[i].id);
+
+        perf.finish();
+
+        return ops;
+    }
+
+
     getSelectedOps()
     {
         const perf = CABLES.UI.uiProfiler.start("patchview getSelectedOps");
@@ -796,7 +811,7 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    createSubPatchFromSelection(version = 0)
+    createSubPatchFromSelection(version = 0, next = null)
     {
         let opname = defaultops.defaultOpNames.subPatch;
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
@@ -943,8 +958,6 @@ export default class PatchView extends CABLES.EventTarget
                 this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                 this._p.emitEvent("subpatchExpose", patchId);
 
-
-
                 setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
                 {
                     // set positions of input/output
@@ -958,9 +971,13 @@ export default class PatchView extends CABLES.EventTarget
 
                     this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                     this._p.emitEvent("subpatchExpose", patchId);
+
+                    if (next)next(patchId, patchOp);
+
+                    // gui.serverOps.createBlueprint2Op(patchId);
                 }, 100);
 
-                gui.patchView.setCurrentSubPatch(patchId);
+                // gui.patchView.setCurrentSubPatch(patchId);
             }
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());

@@ -170,18 +170,19 @@ export default class ServerOps
                 this.execute(newOp.objName,
                     (newOps, refNewOp) =>
                     {
-                        console.log(refNewOp);
-                        console.log(refNewOp.patchId.get());
+                        if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
 
                         // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
 
 
                         setTimeout(() =>
                         {
-                            gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
-
-                            gui.patchView.focusOp(refNewOp.id);
-                            gui.patchView.centerSelectOp(refNewOp.id, true);
+                            if (refNewOp)
+                            {
+                                gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
+                                gui.patchView.focusOp(refNewOp.id);
+                                gui.patchView.centerSelectOp(refNewOp.id, true);
+                            }
 
 
                             // gui.patchView.setCurrentSubPatch(refOldOp.patchId.get());
@@ -198,56 +199,50 @@ export default class ServerOps
             });
     }
 
-    createBlueprint2Op(oldSubId)
+    createBlueprint2Op(newOp, oldSubpatchOp, next)
     {
-        const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
+        // const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
 
-        if (gui.patchView.getCurrentSubPatch() == oldSubId)
-            gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
+        // if (gui.patchView.getCurrentSubPatch() == oldSubId)
+        // gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
 
-        this.createDialog(null,
-            {
-                "showEditor": false,
-                "cb":
-                (newOp) =>
+        this.addCoreLib(newOp.objName, "subpatchop", () =>
+        {
+            CABLESUILOADER.talkerAPI.send(
+                "getOpCode",
                 {
-                    this.addCoreLib(newOp.objName, "subpatchop", () =>
-                    {
-                        CABLESUILOADER.talkerAPI.send(
-                            "getOpCode",
-                            {
-                                "opname": defaultops.defaultOpNames.blueprintTemplate,
-                                "projectId": this._patchId
-                            },
-                            (er, rslt) =>
-                            {
-                                CABLESUILOADER.talkerAPI.send(
-                                    "saveOpCode",
+                    "opname": defaultops.defaultOpNames.blueprintTemplate,
+                    "projectId": this._patchId
+                },
+                (er, rslt) =>
+                {
+                    CABLESUILOADER.talkerAPI.send(
+                        "saveOpCode",
+                        {
+                            "opname": newOp.objName,
+                            "code": rslt.code
+                        },
+                        (err, res) =>
+                        {
+                            this.updateBluePrint2Attachment(
+                                newOp,
+                                {
+                                    "oldSubId": oldSubpatchOp.patchId.get(),
+                                    "replaceIds": true,
+                                    "next": () =>
                                     {
-                                        "opname": newOp.objName,
-                                        "code": rslt.code
-                                    },
-                                    (err, res) =>
-                                    {
-                                        this.updateBluePrint2Attachment(
-                                            newOp,
+                                        this.execute(newOp.objName,
+                                            (newOps) =>
                                             {
-                                                "oldSubId": oldSubId,
-                                                "replaceIds": true,
-                                                "next": () =>
-                                                {
-                                                    this.execute(newOp.objName,
-                                                        (newOps) =>
-                                                        {
-                                                            if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
-                                                        });
-                                                }
+                                                if (oldSubpatchOp && newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
+
+                                                if (next)next();
                                             });
-                                    });
-                            });
-                    }, { "showReloadInfo": false });
-                }
-            });
+                                    }
+                                });
+                        });
+                });
+        }, { "showReloadInfo": false });
     }
 
     create(name, cb, openEditor)
