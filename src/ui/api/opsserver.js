@@ -19,6 +19,8 @@ function capitalize(str)
     return s;
 }
 
+const blueprintSubpatchAttachmentFilename = "att_subpatch_json";
+const blueprintPortAttachmentFilename = "att_ports.json";
 export default class ServerOps
 {
     constructor(gui, patchId, next)
@@ -133,32 +135,40 @@ export default class ServerOps
         const o = { "ops": [] };
         const subId = CABLES.shortId();
 
+        if (options.loadingModal)options.loadingModal.setTask("serialize ops");
+
         ops.forEach((op) =>
         {
-            // if (!op.uiAttribs.ignoreSerialize)
-            // {
             const ser = op.getSerialized();
-
             delete ser.uiAttribs.history;
             if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
             o.ops.push(ser);
-            // }
         });
 
+        if (options.loadingModal)options.loadingModal.setTask("replace op ids");
+
         CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
+
+
+        if (options.loadingModal)options.loadingModal.setTask("save attachment...");
+
+        // gui.patchView.setCurrentSubPatch(0);
+
 
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
                 "opname": newOp.objName,
-                "name": "att_subpatch_json",
+                "name": blueprintSubpatchAttachmentFilename,
                 "content": JSON.stringify(o, null, "    "),
             },
             (errr, re) =>
             {
                 CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
                 gui.showLoadingProgress(false);
+
+                if (options.loadingModal)options.loadingModal.setTask("update project date...");
 
                 CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
                 {
@@ -168,68 +178,93 @@ export default class ServerOps
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
+                console.log(newOp.id);
 
-                this.execute(newOp.objName,
-                    (newOps) =>
-                    {
-                        console.log("executed", newOps);
-                    });
+                if (options.execute !== false)
+                {
+                    if (options.loadingModal)options.loadingModal.setTask("execute...");
 
+                    this.execute(newOp.objName,
+                        (newOps, refNewOp) =>
+                        {
+                            if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
 
-                if (options.next)options.next();
+                            setTimeout(() =>
+                            {
+                                if (refNewOp)
+                                {
+                                    gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
+                                    gui.patchView.focusOp(refNewOp.id);
+                                    gui.patchView.centerSelectOp(refNewOp.id, true);
+                                }
+                            }, 300);
+                            console.log("executed", newOps);
+                            if (options.next)options.next();
+                        },
+                        newOp);
+                }
+                else
+                {
+                    if (options.next)options.next();
+                }
             });
     }
 
-    createBlueprint2Op(oldSubId)
+    createBlueprint2Op(newOp, oldSubpatchOp, next, loadingModal)
     {
-        const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
+        // const oldSubpatchOp = gui.patchView.getSubPatchOuterOp(oldSubId);
 
-        if (gui.patchView.getCurrentSubPatch() == oldSubId)
-            gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
+        // if (gui.patchView.getCurrentSubPatch() == oldSubId)
+        // gui.patchView.setCurrentSubPatch(oldSubpatchOp.getParentSubPatch());
 
-        this.createDialog(null,
-            {
-                "showEditor": false,
-                "cb":
-                (newOp) =>
+        if (loadingModal)loadingModal.setTask("add Corebib");
+
+        this.addCoreLib(newOp.objName, "subpatchop", () =>
+        {
+            CABLESUILOADER.talkerAPI.send(
+                "getOpCode",
                 {
-                    this.addCoreLib(newOp.objName, "subpatchop", () =>
-                    {
-                        CABLESUILOADER.talkerAPI.send(
-                            "getOpCode",
-                            {
-                                "opname": defaultops.defaultOpNames.blueprintTemplate,
-                                "projectId": this._patchId
-                            },
-                            (er, rslt) =>
-                            {
-                                CABLESUILOADER.talkerAPI.send(
-                                    "saveOpCode",
+                    "opname": defaultops.defaultOpNames.blueprintTemplate,
+                    "projectId": this._patchId
+                },
+                (er, rslt) =>
+                {
+                    if (loadingModal)loadingModal.setTask("save op code");
+
+                    CABLESUILOADER.talkerAPI.send(
+                        "saveOpCode",
+                        {
+                            "opname": newOp.objName,
+                            "code": rslt.code
+                        },
+                        (err, res) =>
+                        {
+                            if (loadingModal)loadingModal.setTask("update bp2 attachment");
+
+
+                            console.log("oldSubpatchOp.patchId.get()", oldSubpatchOp.patchId.get());
+
+                            this.updateBluePrint2Attachment(
+                                newOp,
+                                {
+                                    "execute": false,
+                                    "loadingModal": loadingModal,
+                                    "oldSubId": oldSubpatchOp.patchId.get(),
+                                    "replaceIds": true,
+                                    "next": () =>
                                     {
-                                        "opname": newOp.objName,
-                                        "code": rslt.code
-                                    },
-                                    (err, res) =>
-                                    {
-                                        this.updateBluePrint2Attachment(
-                                            newOp,
+                                        this.execute(newOp.objName,
+                                            (newOps) =>
                                             {
-                                                "oldSubId": oldSubId,
-                                                "replaceIds": true,
-                                                "next": () =>
-                                                {
-                                                    this.execute(newOp.objName,
-                                                        (newOps) =>
-                                                        {
-                                                            if (newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
-                                                        });
-                                                }
+                                                if (oldSubpatchOp && newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
+
+                                                if (next)next();
                                             });
-                                    });
-                            });
-                    }, { "showReloadInfo": false });
-                }
-            });
+                                    }
+                                });
+                        });
+                });
+        }, { "showReloadInfo": false });
     }
 
     create(name, cb, openEditor)
@@ -348,7 +383,7 @@ export default class ServerOps
         );
     }
 
-    execute(name, next)
+    execute(name, next, refOldOp)
     {
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
@@ -360,10 +395,16 @@ export default class ServerOps
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
         }
 
-        const oldOps = gui.corePatch().getOpsByObjName(name);
+        let oldOps = null;
+        if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
+        else oldOps = gui.corePatch().getOpsByOpId(name);
+
+        if (oldOps.length > 0) name = oldOps[0].objName;
+
         for (let i = 0; i < oldOps.length; i++)
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
+
 
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
@@ -382,8 +423,9 @@ export default class ServerOps
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
                     gui.emitEvent("opReloaded", name);
-                    if (next)next(newOps);
+                    if (next)next(newOps, refOldOp);
                 },
+                refOldOp
             );
         };
         document.body.appendChild(s);
@@ -876,6 +918,8 @@ export default class ServerOps
         }, true);
     }
 
+
+
     _generatePortsAttachment(ports)
     {
         let src = "console.log(\"creating ports....\")\n";
@@ -886,58 +930,203 @@ export default class ServerOps
 
         for (let i = 0; i < ports.ports.length; i++)
         {
-            src += "const port" + ports.ports[i].id + "=";
+            const p = ports.ports[i];
+            src += "const port_" + p.id + "=";
 
-            if (ports.ports[i].type == 0) src += "op.inFloat";
-            if (ports.ports[i].type == 1) src += "op.inTrigger";
-            if (ports.ports[i].type == 2) src += "op.inObject";
-            if (ports.ports[i].type == 3) src += "op.inArray";
-            if (ports.ports[i].type == 5) src += "op.inString";
+            if (p.dir == 0) // INPUT
+            {
+                if (p.type == 0) src += "op.inFloat";
+                if (p.type == 1) src += "op.inTrigger";
+                if (p.type == 2) src += "op.inObject";
+                if (p.type == 3) src += "op.inArray";
+                if (p.type == 5) src += "op.inString";
 
-            src += "(\"" + ports.ports[i].id + "\""; // 1. name
+                src += "(\"" + p.id + "\""; // 1. name
 
-            if (ports.ports[i].type == 5) src += ",\"" + ports.ports[i].value + "\""; // 2. param default value
-            if (ports.ports[i].type == 0) src += "," + ports.ports[i].value; // 2. param default value
+                if (p.type == 5) src += ",\"" + p.value + "\""; // 2. param default value
+                if (p.type == 0) src += "," + p.value; // 2. param default value
 
-            src += ");";
+                src += ");";
+            }
+            else // OUTPUT
+            {
+                if (p.type == 0) src += "op.outNumber";
+                if (p.type == 1) src += "op.outTrigger";
+                if (p.type == 2) src += "op.outObject";
+                if (p.type == 3) src += "op.outArray";
+                if (p.type == 5) src += "op.outString";
+
+                src += "(\"" + p.id + "\""; // 1. name
+
+                src += ");";
+            }
+
             src += "\n";
-
-            if (ports.ports[i].title)src += "port" + i + ".setUiAttribs({title:\"" + ports.ports[i].title + "\"});\n";
+            if (p.title)src += "port_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
         }
 
         src +=
-            "function initInnerPorts(addedOps)".endl() +
+            "op.initInnerPorts=function(addedOps)".endl() +
             "{".endl() +
-                "for(let i=0;i<addedOps.length;i++)".endl() +
-                "{".endl() +
-                    "if(addedOps[i].innerInput)".endl() +
-                    "{".endl();
+            "  for(let i=0;i<addedOps.length;i++)".endl() +
+            "  {".endl() +
+
+
+            "    if(addedOps[i].innerInput)".endl() +
+            "    {".endl();
+
 
         for (let i = 0; i < ports.ports.length; i++)
         {
+            const p = ports.ports[i];
+            if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
+
             let outPortFunc = "outNumber";
             if (ports.ports[i].type == 1) outPortFunc = "outTrigger";
             if (ports.ports[i].type == 2) outPortFunc = "outObject";
             if (ports.ports[i].type == 3) outPortFunc = "outArray";
             if (ports.ports[i].type == 5) outPortFunc = "outString";
 
+            src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
+            if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
-            src += "const out_" + ports.ports[i].id + " = addedOps[i]." + outPortFunc + "(\"out_" + ports.ports[i].id + "\");".endl();
+            if (p.type == 0 || p.type == 5)
+                src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
 
-
-            if (ports.ports[i].type == 0)
-                src += "port" + ports.ports[i].id + ".on(\"change\", (a,v) => { out_" + ports.ports[i].id + ".set(a);console.log(a,v); });".endl();
-
-            if (ports.ports[i].type == 1)
-                src += "port" + ports.ports[i].id + ".onTriggered = () => { out_" + ports.ports[i].id + ".trigger(); };".endl();
+            if (p.type == 1)
+                src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
         }
+
+
+        src += "    }".endl();
+
+
+        src += "if(addedOps[i].innerOutput)".endl() +
+                "{".endl();
+
+
+        for (let i = 0; i < ports.ports.length; i++)
+        {
+            const p = ports.ports[i];
+            if (p.dir != 1) continue;
+
+            let inPortFunc = "inFloat";
+            if (ports.ports[i].type == 1) inPortFunc = "inTrigger";
+            if (ports.ports[i].type == 2) inPortFunc = "inObject";
+            if (ports.ports[i].type == 3) inPortFunc = "inArray";
+            if (ports.ports[i].type == 5) inPortFunc = "inString";
+
+            src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
+            if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
+
+            if (p.type == 0 || p.type == 5)
+                src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
+
+            if (p.type == 1)
+                src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
+        }
+        src +=
+                "}".endl();
+
 
         src +=
             "}".endl() +
-            "}".endl() +
-            "}";
+        "};".endl();
 
         return src;
+    }
+
+    createBlueprintPortJsonElement(port, i)
+    {
+        return {
+            "id": "id" + i,
+            "title": port.getTitle(),
+            "value": port.get(),
+            "dir": port.direction,
+            "type": port.type,
+            "uiDisplay": port.uiAttribs.display
+        };
+    }
+
+    savePortBlueprintAttachment(portsJson, opname, next)
+    {
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentSave",
+            {
+                "opname": opname,
+                "name": blueprintPortAttachmentFilename,
+                "content": JSON.stringify(portsJson, false, 4),
+            },
+            (errr2, re2) =>
+            {
+                const src = this._generatePortsAttachment(portsJson);
+
+                CABLESUILOADER.talkerAPI.send(
+                    "opAttachmentSave",
+                    {
+                        "opname": opname,
+                        "name": "att_inc_gen_ports.js",
+                        "content": src,
+                    },
+                    (errr3, re3) =>
+                    {
+                        if (next)next();
+                    },
+                );
+            },
+        );
+    }
+
+    addPortToBlueprint(opId, port)
+    {
+        const loadingModal = new ModalLoading("Adding port...");
+
+        loadingModal.setTask("getting ports json");
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname": opId,
+                "name": blueprintPortAttachmentFilename,
+            },
+            (err, res) =>
+            {
+                console.log("attachment ports", res);
+                res.content = res.content || JSON.stringify({ "ports": [] });
+                const js = JSON.parse(res.content);
+                const newPortJson = this.createBlueprintPortJsonElement(port, js.ports.length);
+
+                js.ports.push(newPortJson);
+                loadingModal.setTask("saving ports json");
+
+                this.savePortBlueprintAttachment(js, opId, () =>
+                {
+                    loadingModal.setTask("reload op");
+
+                    gui.serverOps.execute(opId, (newOps) =>
+                    {
+                        gui.opParams.refresh();
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+
+
+                        // setTimeout(() =>
+                        // {
+                        gui.corePatch().buildSubPatchCache();
+                        console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
+
+
+                        // timeouts are BAD but does not work else..
+                        gui.corePatch().link(
+                            port.op,
+                            port.name,
+                            gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
+                            "innerOut_" + newPortJson.id
+                        );
+                        loadingModal.close();
+                        // }, 500);
+                    });
+                });
+            }
+        );
     }
 
     editAttachment(op, attachmentName, readOnly, cb, fromListener = false)
@@ -1049,30 +1238,20 @@ export default class ServerOps
                                     _setStatus("saved");
 
                                     console.log(attachmentName);
-                                    if (attachmentName == "att_ports.json")
+                                    if (attachmentName == blueprintPortAttachmentFilename)
                                     {
                                         const ports = JSON.parse(_content);
                                         const src = this._generatePortsAttachment(ports);
 
 
-                                        CABLESUILOADER.talkerAPI.send(
-                                            "opAttachmentSave",
+                                        this.savePortBlueprintAttachment(src, opname, () =>
+                                        {
+                                            gui.serverOps.execute(opname, (newOps) =>
                                             {
-                                                "opname": opname,
-                                                "name": "att_inc_gen_ports.js",
-                                                "content": src,
-                                            },
-                                            (errr2, re2) =>
-                                            {
-                                                console.log("done...?");
-
-                                                gui.serverOps.execute(opname, (newOps) =>
-                                                {
-                                                    gui.opParams.refresh();
-                                                    loadingModal.close();
-                                                });
-                                            },
-                                        );
+                                                gui.opParams.refresh();
+                                                loadingModal.close();
+                                            });
+                                        });
                                     }
                                     else
                                         gui.serverOps.execute(opname, (newOps) =>

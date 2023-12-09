@@ -37,9 +37,9 @@ export const defaultOpNames =
     "blueprintTemplate": "Ops.Templates.Blueprint2",
 
     "subPatch": "Ops.Ui.SubPatch",
-    "subPatch2": "Ops.Dev.SubpatchNew",
-    "subPatchInput2": "Ops.Dev.Ui.PatchInput",
-    "subPatchOutput2": "Ops.Dev.Ui.PatchOutput",
+    "subPatch2": "Ops.Ui.Subpatch2Temp",
+    "subPatchInput2": "Ops.Ui.SubPatchInput",
+    "subPatchOutput2": "Ops.Ui.SubPatchOutput",
 
     "uiArea": "Ops.Ui.Area",
     "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
@@ -328,15 +328,7 @@ const defaultOps = {
         return parts.join(".") + ".";
     },
 
-    // "isSubPatchOpName": (opname) =>
-    // {
-    //     return (opname == "Ops.Ui.SubPatch" || opname == "Ops.Dev.SubpatchNew");
-    // },
 
-    // "isSubPatchOpNameV2": (opname) =>
-    // {
-    //     return opname == "Ops.Dev.SubpatchNew";
-    // },
 
     "getPatchOpsPrefix": () =>
     {

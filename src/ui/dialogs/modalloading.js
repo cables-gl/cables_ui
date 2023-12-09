@@ -10,28 +10,27 @@ export default class ModalLoading
 {
     constructor(title)
     {
-        this._tasks=[];
-        this.options={
-            "title":title,
-            "html":this.getHtml()
-        }
+        this._tasks = [];
+        this.options = {
+            "title": title,
+            "html": this.getHtml()
+        };
 
-        this._dialog=new ModalDialog(this.options);
+        this._dialog = new ModalDialog(this.options);
     }
 
     getHtml()
     {
-        let str="<div class=\"loading\" ><br/><br/></div>";
+        let str = "<div class=\"loading\" ><br/><br/></div>";
 
-        if(this._tasks.length>0)
+        if (this._tasks.length > 0)
         {
-            str+="<div class=\"code\">";
-            for(let i=0;i<this._tasks.length;i++)
+            str += "<div class=\"code\">";
+            for (let i = 0; i < this._tasks.length; i++)
             {
-                str+="- "+this._tasks[i]+"<br/>";
+                str += "- " + this._tasks[i] + "<br/>";
             }
-            str+="</div>";
-
+            str += "</div>";
         }
 
         return str;
@@ -46,6 +45,6 @@ export default class ModalLoading
     close()
     {
         this._dialog.close();
-        this._dialog=null;
+        this._dialog = null;
     }
 }

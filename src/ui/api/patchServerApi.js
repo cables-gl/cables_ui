@@ -465,7 +465,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // delete subpatch 2 ops
         let isu = data.ops.length;
         while (isu--)
-            if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("blueprint2sub_") == 0))
+            if (data.ops[isu].uiAttribs.blueprintSubpatch2 || (data.ops[isu].uiAttribs.subPatch && data.ops[isu].uiAttribs.subPatch.indexOf("bp2sub_") == 0))
                 data.ops.splice(isu, 1);
 
 
