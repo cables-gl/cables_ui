@@ -520,24 +520,24 @@ class ParamsListener extends CABLES.EventTarget
 
             if (port.uiAttribs.expose)
             {
-                items.push(
-                    {
-                        "title": "Exposed Port: move up",
-                        "iconClass": "icon icon-chevron-up",
-                        "func": () =>
-                        {
-                            gui.patchView.setExposedPortOrder(port, -1);
-                        }
-                    });
-                items.push(
-                    {
-                        "title": "Exposed Port: move down",
-                        "iconClass": "icon icon-chevron-down",
-                        "func": () =>
-                        {
-                            gui.patchView.setExposedPortOrder(port, 1);
-                        }
-                    });
+                // items.push(
+                //     {
+                //         "title": "Exposed Port: move up",
+                //         "iconClass": "icon icon-chevron-up",
+                //         "func": () =>
+                //         {
+                //             gui.patchView.setExposedPortOrder(port, -1);
+                //         }
+                //     });
+                // items.push(
+                //     {
+                //         "title": "Exposed Port: move down",
+                //         "iconClass": "icon icon-chevron-down",
+                //         "func": () =>
+                //         {
+                //             gui.patchView.setExposedPortOrder(port, 1);
+                //         }
+                //     });
             }
 
             let strEditTitle = "Edit title";

@@ -1,7 +1,7 @@
 
 <script id="tab_manage_op" type="text/x-handlebars-template">
 
-    <div>
+    <div class="tabContentScrollContainer">
         <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
@@ -28,6 +28,41 @@
                     <br/>
                 {{/each}}
             </div>
+        {{/if}}
+
+
+        {{#if portJson}}
+            <div class="groupSpacer"><h3>Ports</h3></div>
+
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th style="width:40%">Title</th>
+                    <th>default</th>
+                    <th>display</th>
+                    <th></th>
+                </tr>
+                {{#each portJson.ports}}
+                <tr>
+                    <td>
+                        <span class="button-small button-icon" ><span class="icon icon-chevron-up"></span></span>
+                        <span class="button-small button-icon" ><span class="icon icon-chevron-down"></span></span>
+                    </td>
+
+
+                    <td>
+                        <span class="portType_{{type}}_background">&nbsp;&nbsp;&nbsp;</span>&nbsp;
+                        {{title}}
+                    </td>
+                    <td>1</td>
+                    <td>[int|float|boolean]</td>
+                    <td>
+                        <span class="button-small button-icon" ><span class="icon icon-x"></span></span>
+                    </td>
+                </tr>
+
+                {{/each}}
+            </table>
         {{/if}}
 
         <div class="groupSpacer"><h3>Attachments</h3></div>
