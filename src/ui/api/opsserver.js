@@ -178,8 +178,6 @@ export default class ServerOps
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
-                console.log(newOp.id);
-
                 if (options.execute !== false)
                 {
                     if (options.loadingModal)options.loadingModal.setTask("execute...");
@@ -188,6 +186,9 @@ export default class ServerOps
                         (newOps, refNewOp) =>
                         {
                             if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+
+                            gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
+                            gui.corePatch().clearSubPatchCache(newOp.patchId.get());
 
                             setTimeout(() =>
                             {
@@ -198,7 +199,8 @@ export default class ServerOps
                                     gui.patchView.centerSelectOp(refNewOp.id, true);
                                 }
                             }, 300);
-                            console.log("executed", newOps);
+
+
                             if (options.next)options.next();
                         },
                         newOp);
@@ -1109,8 +1111,10 @@ export default class ServerOps
 
                         // setTimeout(() =>
                         // {
+                        gui.corePatch().op.patch.clearSubPatchCache(newOps[0].patchId.get());
                         gui.corePatch().buildSubPatchCache();
                         console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
+
 
 
                         // timeouts are BAD but does not work else..
