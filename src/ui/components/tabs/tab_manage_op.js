@@ -70,11 +70,9 @@ export default class ManageOp
 
                     if (res.attachmentFiles[i] === "att_ports.json")
                     {
-                        console.log(res.attachmentFiles[i]);
                         const ops = gui.corePatch().getOpsByObjName(opName);
                         if (ops && ops.length > 0)
                         {
-                            console.log(ops[0].attachments.ports_json);
                             try
                             {
                                 portJson = JSON.parse(ops[0].attachments.ports_json);
@@ -116,7 +114,7 @@ export default class ManageOp
                     "user": gui.user,
                     "warns": res.warns
                 });
-            console.log("!!!!!!!!", this._id);
+
             this._tab.html(html);
 
             if (canEditOp)
@@ -130,6 +128,21 @@ export default class ManageOp
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
                         {
                             gui.serverOps.portJsonDelete(opName, id);
+                        });
+
+                        const buttonTitle = ele.byId(this._id + "_port_title_" + id);
+                        if (buttonTitle)buttonTitle.addEventListener("click", () =>
+                        {
+                            new CABLES.UI.ModalDialog({
+                                "prompt": true,
+                                "title": "Enter Title",
+                                "text": "Enter a new title for " + portJson.ports[i].title + " (" + id + ")",
+                                "promptValue": portJson.ports[i].title,
+                                "promptOk": (title) =>
+                                {
+                                    gui.serverOps.portJsonTitle(opName, id, title);
+                                }
+                            });
                         });
 
 

@@ -28,6 +28,8 @@ class OpParampanel extends CABLES.EventTarget
 
         this._portUiAttrListeners = [];
         this._startedGlobalListeners = false;
+
+        this.reloadListener = null;
     }
 
     get op()
@@ -143,6 +145,12 @@ class OpParampanel extends CABLES.EventTarget
             gui.corePatch().on("subpatchCreated", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
             gui.corePatch().on("patchLoadEnd", () => { gui.bookmarks.needRefreshSubs = true; this._startedGlobalListeners = true; if (!this._currentOp) gui.patchParamPanel.show(true); });
         }
+
+        if (this.reloadListener)
+            this.reloadListener = gui.on("opReloaded", () =>
+            {
+                this.refreshDelayed();
+            });
 
         const perf = CABLES.UI.uiProfiler.start("[opparampanel] show");
 

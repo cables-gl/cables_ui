@@ -152,7 +152,7 @@ export default class ServerOps
 
         if (options.loadingModal)options.loadingModal.setTask("save attachment...");
 
-        // gui.patchView.setCurrentSubPatch(0);
+        const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 
 
 
@@ -194,7 +194,10 @@ export default class ServerOps
                             {
                                 if (refNewOp)
                                 {
-                                    gui.patchView.setCurrentSubPatch(refNewOp.uiAttribs.subPatch);
+                                    gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
+
+
+
                                     gui.patchView.focusOp(refNewOp.id);
                                     gui.patchView.centerSelectOp(refNewOp.id, true);
                                 }
@@ -1038,6 +1041,54 @@ export default class ServerOps
     }
 
 
+    portJsonTitle(opId, portid, title)
+    {
+        const loadingModal = new ModalLoading("Setting port title...");
+
+
+        const ops = gui.corePatch().getOpsByOpId(opId);
+        for (let i = 0; i < ops.length; i++)
+        {
+            for (let k = 0; k < ops[i].portsIn.length; k++) ops[i].portsIn[k].setUiAttribs({ "title": null });
+            for (let k = 0; k < ops[i].portsOut.length; k++) ops[i].portsOut[k].setUiAttribs({ "title": null });
+        }
+
+
+        loadingModal.setTask("getting ports json");
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname": opId,
+                "name": blueprintPortAttachmentFilename,
+            },
+            (err, res) =>
+            {
+                res.content = res.content || JSON.stringify({ "ports": [] });
+                const js = JSON.parse(res.content);
+
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)js.ports[i].title = title;
+
+                loadingModal.setTask("saving ports json");
+
+                this.savePortBlueprintAttachment(js, opId, () =>
+                {
+                    loadingModal.setTask("reload op");
+
+                    gui.serverOps.execute(opId, (newOps) =>
+                    {
+                        gui.opParams.refresh();
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+
+                        gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
+                        gui.corePatch().buildSubPatchCache();
+
+                        loadingModal.close();
+                    });
+                });
+            }
+        );
+    }
+
     portJsonDelete(opId, portid)
     {
         const loadingModal = new ModalLoading("Deleting port...");
@@ -1346,7 +1397,6 @@ export default class ServerOps
 
                                     _setStatus("saved");
 
-                                    console.log(attachmentName);
                                     if (attachmentName == blueprintPortAttachmentFilename)
                                     {
                                         const ports = JSON.parse(_content);
