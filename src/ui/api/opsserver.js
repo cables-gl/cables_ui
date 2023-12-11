@@ -178,8 +178,6 @@ export default class ServerOps
                 if (newOp.patchId)
                     gui.savedState.setSaved("saved bp", newOp.patchId.get());
 
-                console.log(newOp.id);
-
                 if (options.execute !== false)
                 {
                     if (options.loadingModal)options.loadingModal.setTask("execute...");
@@ -188,6 +186,9 @@ export default class ServerOps
                         (newOps, refNewOp) =>
                         {
                             if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+
+                            gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
+                            gui.corePatch().clearSubPatchCache(newOp.patchId.get());
 
                             setTimeout(() =>
                             {
@@ -198,7 +199,8 @@ export default class ServerOps
                                     gui.patchView.centerSelectOp(refNewOp.id, true);
                                 }
                             }, 300);
-                            console.log("executed", newOps);
+
+
                             if (options.next)options.next();
                         },
                         newOp);
@@ -405,7 +407,6 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
-
         const s = document.createElement("script");
         s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = () =>
@@ -422,7 +423,7 @@ export default class ServerOps
                     }
 
                     if (newOps.length > 0) this.saveOpLayout(newOps[0]);
-                    gui.emitEvent("opReloaded", name);
+                    gui.emitEvent("opReloaded", name, newOps[0]);
                     if (next)next(newOps, refOldOp);
                 },
                 refOldOp
@@ -1036,6 +1037,113 @@ export default class ServerOps
         return src;
     }
 
+
+    portJsonDelete(opId, portid)
+    {
+        const loadingModal = new ModalLoading("Deleting port...");
+
+        loadingModal.setTask("getting ports json");
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname": opId,
+                "name": blueprintPortAttachmentFilename,
+            },
+            (err, res) =>
+            {
+                res.content = res.content || JSON.stringify({ "ports": [] });
+                const js = JSON.parse(res.content);
+
+                let idx = -1;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+
+                if (idx != -1)
+                {
+                    js.ports.splice(1, idx);
+                }
+                else
+                {
+                    loadingModal.setTask("INVALID PORT INDEX");
+                }
+
+                loadingModal.setTask("saving ports json");
+
+                this.savePortBlueprintAttachment(js, opId, () =>
+                {
+                    loadingModal.setTask("reload op");
+
+                    gui.serverOps.execute(opId, (newOps) =>
+                    {
+                        gui.opParams.refresh();
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+
+                        gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
+                        gui.corePatch().buildSubPatchCache();
+
+                        loadingModal.close();
+                    });
+                });
+            }
+        );
+    }
+
+    portJsonMove(opId, portid, dir)
+    {
+        const loadingModal = new ModalLoading("Moving port...");
+
+        loadingModal.setTask("getting ports json");
+        CABLESUILOADER.talkerAPI.send(
+            "opAttachmentGet",
+            {
+                "opname": opId,
+                "name": blueprintPortAttachmentFilename,
+            },
+            (err, res) =>
+            {
+                res.content = res.content || JSON.stringify({ "ports": [] });
+                const js = JSON.parse(res.content);
+
+                let idx = -1;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+
+                function array_move(arr, old_index, new_index)
+                {
+                    if (new_index >= arr.length)
+                    {
+                        let k = new_index - arr.length + 1;
+                        while (k--)
+                        {
+                            arr.push(undefined);
+                        }
+                    }
+                    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+                    return arr; // for testing
+                }
+
+                array_move(js.ports, idx, idx + dir);
+
+                loadingModal.setTask("saving ports json");
+
+                this.savePortBlueprintAttachment(js, opId, () =>
+                {
+                    loadingModal.setTask("reload op");
+
+                    gui.serverOps.execute(opId, (newOps) =>
+                    {
+                        gui.opParams.refresh();
+                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+
+                        gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
+                        gui.corePatch().buildSubPatchCache();
+
+                        loadingModal.close();
+                    });
+                });
+            }
+        );
+    }
+
+
     createBlueprintPortJsonElement(port, i)
     {
         return {
@@ -1109,8 +1217,10 @@ export default class ServerOps
 
                         // setTimeout(() =>
                         // {
+                        gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                         gui.corePatch().buildSubPatchCache();
                         console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
+
 
 
                         // timeouts are BAD but does not work else..

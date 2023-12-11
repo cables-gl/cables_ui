@@ -38,11 +38,11 @@ export default function extendCorePatch()
 
         let opids = [];
 
-        // if (this._subpatchOpCache[subPatchId] && this._subpatchOpCache[subPatchId].ops)
-        // {
-        //     opids = this._subpatchOpCache[subPatchId].ops;
-        // }
-        // else
+        if (this._subpatchOpCache[subPatchId] && this._subpatchOpCache[subPatchId].ops)
+        {
+            opids = this._subpatchOpCache[subPatchId].ops;
+        }
+        else
         {
             this._subpatchOpCache[subPatchId] = { "ops": {}, "subPatchOpId": null };
             for (const i in this.ops)
