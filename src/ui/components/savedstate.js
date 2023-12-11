@@ -9,6 +9,7 @@ export default class SavedState extends CABLES.EventTarget
         this._statesSaved = {};
         this._statesInitiator = {};
         this._talkerState = null;
+        this._timeout = null;
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -114,12 +115,21 @@ export default class SavedState extends CABLES.EventTarget
         this.log(initiator, subpatch, false);
 
         gui.corePatch().emitEvent("subpatchesChanged");
-        this.updateUi();
+        this.updateUiLater();
     }
 
     getStateBlueprint(bp)
     {
         return this._statesSaved[bp];
+    }
+
+    updateUiLater()
+    {
+        clearTimeout(this._timeout);
+        this._timeout = setTimeout(() =>
+        {
+            this.updateUi();
+        }, 100);
     }
 
     updateUi()
@@ -143,8 +153,14 @@ export default class SavedState extends CABLES.EventTarget
             for (const idx in this._statesSaved)
             {
                 if (this._statesSaved[idx]) continue;
-                let subname = "";
-                subname = gui.patchView.getSubPatchName(idx) || "Main";
+                let subname = gui.patchView.getSubPatchName(idx);
+
+                if (!subname)
+                {
+                    delete this._statesSaved[idx];
+                    this.updateUiLater();
+                    continue;
+                }
                 str += "<li style=\"overflow:hidden;text-overflow:ellipsis\" onclick=\"gui.patchView.setCurrentSubPatch('" + idx + "')\" class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
             }
             str += "<li class=\"divide\"></li>";

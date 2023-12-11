@@ -46,6 +46,8 @@ export default class ManageOp
             const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
             const doc = {};
             let summary = "";
+            let portJson = null;
+            const opName = this._currentName;
 
             if (res.attachmentFiles)
             {
@@ -57,11 +59,29 @@ export default class ManageOp
                             "readable": res.attachmentFiles[i].substr(4),
                             "original": res.attachmentFiles[i],
                         });
+
+                    if (res.attachmentFiles[i] === "att_ports.json")
+                    {
+                        console.log(res.attachmentFiles[i]);
+                        const ops = gui.corePatch().getOpsByObjName(opName);
+                        if (ops && ops.length > 0)
+                        {
+                            console.log(ops[0].attachments.ports_json);
+                            try
+                            {
+                                portJson = JSON.parse(ops[0].attachments.ports_json);
+                            }
+                            catch (e)
+                            {
+                                console.log(e);
+                            }
+                        }
+                    }
                 }
                 doc.attachmentFiles = attachmentFiles;
             }
 
-            const opName = this._currentName;
+
 
             const opDoc = gui.opDocs.getOpDocByName(opName);
 
@@ -79,6 +99,7 @@ export default class ManageOp
                     "opname": opName,
                     "doc": doc,
                     "opDoc": opDoc,
+                    "portJson": portJson,
                     "summary": summary,
                     "showPatchLibSelect": showPatchLibSelect,
                     "canEditOp": canEditOp,

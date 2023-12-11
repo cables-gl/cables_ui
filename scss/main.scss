@@ -735,6 +735,15 @@ body
     {
         white-space: nowrap;
     }
+
+
+    .portType_0_background { background-color:var(--color_link_value) !important; }
+    .portType_1_background { background-color:var(--color_link_function) !important; }
+    .portType_2_background { background-color:var(--color_link_object) !important; }
+    .portType_3_background { background-color:var(--color_link_array) !important; }
+    .portType_4_background { background-color:var(--color_port_dynamic) !important; }
+    .portType_5_background { background-color:var(--color_link_string) !important; }
+
 }
 
 

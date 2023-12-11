@@ -1107,7 +1107,6 @@ export default class ServerOps
                         gui.opParams.refresh();
                         gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
 
-
                         // setTimeout(() =>
                         // {
                         gui.corePatch().buildSubPatchCache();

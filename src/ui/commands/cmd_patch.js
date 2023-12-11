@@ -256,6 +256,9 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
 
                                             }
 
+                                            gui.patchView.centerSelectOp(newOps[0], true);
+
+
                                             loadingModal.close();
                                         });
                                     });
