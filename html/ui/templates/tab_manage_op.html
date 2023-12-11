@@ -45,19 +45,19 @@
                 {{#each portJson.ports}}
                 <tr>
                     <td>
-                        <span class="button-small button-icon" ><span class="icon icon-chevron-up"></span></span>
-                        <span class="button-small button-icon" ><span class="icon icon-chevron-down"></span></span>
+                        <span class="button-small button-icon" id="{{../viewId}}_port_up_{{id}}"><span class="icon icon-chevron-up"></span></span>
+                        <span class="button-small button-icon" id="{{../viewId}}_port_down_{{id}}"><span class="icon icon-chevron-down"></span></span>
                     </td>
 
 
                     <td>
                         <span class="portType_{{type}}_background">&nbsp;&nbsp;&nbsp;</span>&nbsp;
-                        {{title}}
+                        {{title}} {{id}}
                     </td>
                     <td>1</td>
                     <td>[int|float|boolean]</td>
                     <td>
-                        <span class="button-small button-icon" ><span class="icon icon-x"></span></span>
+                        <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
                     </td>
                 </tr>
 

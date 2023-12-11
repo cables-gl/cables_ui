@@ -12,6 +12,7 @@ export default class ManageOp
         this._initialized = false;
         this._lastSelectedOp = null;
         this._currentName = opname;
+        this._id = CABLES.shortId();
 
         this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab, true);
@@ -28,6 +29,11 @@ export default class ManageOp
         {
             this.show();
         });
+
+        gui.on("opReloaded", () =>
+        {
+            this.show();
+        });
     }
 
     init()
@@ -38,6 +44,8 @@ export default class ManageOp
 
     show()
     {
+        this._id = CABLES.shortId();
+
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
         CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": this._currentName }, (error, res) =>
@@ -89,9 +97,7 @@ export default class ManageOp
             doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
             summary = gui.opDocs.getSummary(opName);
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
-
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-            console.log("op", opDoc);
             const html = getHandleBarHtml("tab_manage_op",
                 {
                     "url": CABLES.sandbox.getCablesUrl(),
@@ -99,6 +105,7 @@ export default class ManageOp
                     "opname": opName,
                     "doc": doc,
                     "opDoc": opDoc,
+                    "viewId": this._id,
                     "portJson": portJson,
                     "summary": summary,
                     "showPatchLibSelect": showPatchLibSelect,
@@ -109,8 +116,37 @@ export default class ManageOp
                     "user": gui.user,
                     "warns": res.warns
                 });
+            console.log("!!!!!!!!", this._id);
             this._tab.html(html);
-            if (!canEditOp)
+
+            if (canEditOp)
+            {
+                if (portJson && portJson.ports)
+                {
+                    for (let i = 0; i < portJson.ports.length; i++)
+                    {
+                        const id = portJson.ports[i].id;
+                        const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
+                        if (buttonDelete)buttonDelete.addEventListener("click", () =>
+                        {
+                            gui.serverOps.portJsonDelete(opName, id);
+                        });
+
+
+                        const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
+                        if (buttonMoveUp)buttonMoveUp.addEventListener("click", () =>
+                        {
+                            gui.serverOps.portJsonMove(opName, id, -1);
+                        });
+                        const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
+                        if (buttonMoveDown)buttonMoveDown.addEventListener("click", () =>
+                        {
+                            gui.serverOps.portJsonMove(opName, id, 1);
+                        });
+                    }
+                }
+            }
+            else
             {
                 document.querySelectorAll("#metatabpanel .libselect select, #metatabpanel .libselect a").forEach((opLibSelect) =>
                 {
