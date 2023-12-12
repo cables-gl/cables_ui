@@ -33,7 +33,10 @@ export default function extendCorePatch()
     CABLES.Patch.prototype._subPatchCacheAdd = function (subPatchId, op)
     {
         if (this._subpatchOpCache[subPatchId])
+        {
+            this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
             this._subpatchOpCache[subPatchId].ops[op.id] = op;
+        }
     };
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
