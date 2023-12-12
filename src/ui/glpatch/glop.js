@@ -118,7 +118,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.on("selectedOpsChanged", (num) =>
         {
-            if (!this.visible) return;
+            if (!this._visible) return;
             this._updateSelectedRect();
             if (this._glRectSelected) this.updateSize();
         });
@@ -880,7 +880,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
         this._updateIndicators();
-        for (const i in this._links) if (this._links[i]) this._links[i].update();
+        // for (const i in this._links) if (this._links[i]) this._links[i].update();
     }
 
     getUiAttribs()
