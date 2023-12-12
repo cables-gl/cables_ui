@@ -967,6 +967,8 @@ export default class ServerOps
 
             src += "\n";
             if (p.title)src += "port_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
+
+            src += "".endl();
         }
 
         src +=
@@ -992,6 +994,9 @@ export default class ServerOps
             if (ports.ports[i].type == 5) outPortFunc = "outString";
 
             src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
+
+            src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
+
             if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
             if (p.type == 0 || p.type == 5)
@@ -999,6 +1004,8 @@ export default class ServerOps
 
             if (p.type == 1)
                 src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
+
+            src += "".endl();
         }
 
 
@@ -1028,6 +1035,8 @@ export default class ServerOps
 
             if (p.type == 1)
                 src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
+
+            src += "".endl();
         }
         src +=
                 "}".endl();
@@ -1266,23 +1275,33 @@ export default class ServerOps
                         gui.opParams.refresh();
                         gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
 
-                        // setTimeout(() =>
-                        // {
                         gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                         gui.corePatch().buildSubPatchCache();
                         console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
 
 
-
+                        setTimeout(() =>
+                        {
                         // timeouts are BAD but does not work else..
-                        gui.corePatch().link(
-                            port.op,
-                            port.name,
-                            gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
-                            "innerOut_" + newPortJson.id
-                        );
-                        loadingModal.close();
-                        // }, 500);
+                            if (port.op.storage && port.op.storage.ref)
+                            {
+                                console.log("ref", port.op.storage.ref, newOps[0].patchId.get());
+
+                                const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOps[0].patchId.get());
+
+                                console.log("theop", theOp);
+
+                                gui.corePatch().link(
+                                    theOp,
+                                    port.name,
+                                    gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
+                                    "innerOut_" + newPortJson.id
+                                );
+                            }
+
+                            console.log(gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
+                            loadingModal.close();
+                        }, 500);
                     });
                 });
             }

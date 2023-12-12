@@ -470,7 +470,7 @@ class ParamsListener extends CABLES.EventTarget
             {
                 items.push(
                     {
-                        "title": "Create Port",
+                        "title": "Supatch Op: Create Port",
                         "iconClass": "",
                         "func": () =>
                         {
