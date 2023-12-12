@@ -137,7 +137,7 @@ export default class GlPatchAPI
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
 
-        let numUpdates = Math.min(250, this._patch.ops.length);
+        let numUpdates = Math.min(100, this._patch.ops.length);
 
 
         for (let ii = 0; ii < numUpdates; ii++)
@@ -170,8 +170,6 @@ export default class GlPatchAPI
 
             if (glop)
             {
-                // if (glop.visible)
-
                 for (let ip = 0; ip < op.portsOut.length; ip++)
                 {
                     const thePort = op.portsOut[ip];

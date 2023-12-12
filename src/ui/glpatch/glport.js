@@ -241,9 +241,11 @@ export default class GlPort
         // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
         // console.log(a);
 
-        this._activity = this._port.apf;
-
-        this._updateColor();
+        if (this._activity != this._port.apf)
+        {
+            this._activity = this._port.apf;
+            this._updateColor();
+        }
     }
 
     dispose()

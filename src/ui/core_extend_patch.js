@@ -41,6 +41,7 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
+        console.log("getSubPatchOps", subPatchId);
         const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
         this._subpatchOpCache = this._subpatchOpCache || {};
