@@ -41,7 +41,7 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
-        console.log("getSubPatchOps", subPatchId);
+        // console.log("getSubPatchOps", subPatchId);
         const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
         this._subpatchOpCache = this._subpatchOpCache || {};
@@ -94,7 +94,8 @@ export default function extendCorePatch()
                     const subPatchPort = ops[i].portsIn.find((port) => { return port.name === "patchId"; });
                     if (subPatchPort)
                     {
-                        ops = ops.concat(this.getSubPatchOps(subPatchPort.value, true));
+                        if (subPatchPort.value != subPatchId)
+                            ops = ops.concat(this.getSubPatchOps(subPatchPort.value, true));
                     }
                 }
             }
