@@ -1408,7 +1408,15 @@ export default class ServerOps
 
                                     if (attachmentName == blueprintPortAttachmentFilename)
                                     {
-                                        const ports = JSON.parse(_content);
+                                        let ports = null;
+                                        try
+                                        {
+                                            ports = JSON.parse(_content);
+                                        }
+                                        catch (e)
+                                        {
+                                            ports = { "ports": [] };
+                                        }
                                         const src = this._generatePortsAttachment(ports);
 
 
