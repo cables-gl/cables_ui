@@ -19,19 +19,13 @@ export default function extendCorePatch()
     CABLES.Patch.prototype.getOpByRefId = function (refId, subPatchId)
     {
         const ops = this.getSubPatchOps(subPatchId);
-        console.log("!!!!!!!!!!!getOpByRefId", ops);
         if (ops)
             for (let i = 0; i < ops.length; i++)
-            {
-                console.log("stor", ops[i].storage);
                 if (ops[i].storage && ops[i].storage.ref == refId) return ops[i];
-            }
     };
 
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
-        // console.log("clear subpatch cache...", patchId);
-
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
     };
@@ -50,7 +44,6 @@ export default function extendCorePatch()
 
         let opids = [];
 
-        console.log("CACHEEEEE", this._subpatchOpCache);
         if (this._subpatchOpCache[subPatchId] && this._subpatchOpCache[subPatchId].ops)
         {
             opids = this._subpatchOpCache[subPatchId].ops;
@@ -60,8 +53,6 @@ export default function extendCorePatch()
             for (const i in this.ops)
             {
                 const op = this.ops[i];
-
-                console.log("i", i, op.uiAttribs.subPatch);
 
                 // if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
                 // {
@@ -104,8 +95,6 @@ export default function extendCorePatch()
         return ops;
     };
 
-
-
     CABLES.Patch.prototype.getSubPatch2InnerInputOp = function (subPatchId)
     {
         const ops = this.ops;// gui.corePatch().getSubPatchOps(subPatchId);
@@ -116,7 +105,6 @@ export default function extendCorePatch()
         }
     };
 
-
     CABLES.Patch.prototype.getSubPatch2InnerOutputOp = function (subPatchId)
     {
         const ops = gui.corePatch().getSubPatchOps(subPatchId);
@@ -125,7 +113,6 @@ export default function extendCorePatch()
             if (ops[i].innerOutput) return ops[i];
         }
     };
-
 
     CABLES.Patch.prototype.buildSubPatchCache = () =>
     {
@@ -161,7 +148,6 @@ export default function extendCorePatch()
     CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
     {
         if (subPatchId == 0) return null;
-
         // oldSubPatchIds
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)

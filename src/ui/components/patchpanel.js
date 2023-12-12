@@ -33,7 +33,6 @@ export default class PatchPanel extends CABLES.EventTarget
         this._subTree.on("icon_click",
             (item) =>
             {
-                console.log("icon click", item);
                 if (item.subPatchId) gui.patchView.focusSubpatchOp(item.subPatchId);
                 else if (item.opid)
                 {

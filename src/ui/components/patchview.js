@@ -93,22 +93,22 @@ export default class PatchView extends CABLES.EventTarget
 
     clickSubPatchNav(subPatchId)
     {
-        if (gui.patchView.getCurrentSubPatch() == subPatchId)
-        {
-            const op = gui.patchView.getSubPatchOuterOp(subPatchId);
-            if (!op) return;
+        // if (gui.patchView.getCurrentSubPatch() == subPatchId)
+        // {
+        //     const op = gui.patchView.getSubPatchOuterOp(subPatchId);
+        //     if (!op) return;
 
-            gui.patchView.unselectAllOps();
-            gui.patchView.selectOpId(op.id);
+        //     gui.patchView.unselectAllOps();
+        //     gui.patchView.selectOpId(op.id);
 
-            gui.patchView.centerSelectOp(op.id);
-            gui.patchView.focusOpAnim(op.id);
-        }
-        else
-        {
-            gui.patchView.setCurrentSubPatch(subPatchId);
-            gui.patchParamPanel.show(true);
-        }
+        //     gui.patchView.centerSelectOp(op.id);
+        //     gui.patchView.focusOpAnim(op.id);
+        // }
+        // else
+        // {
+        gui.patchView.setCurrentSubPatch(subPatchId);
+        gui.patchParamPanel.show(true);
+        // }
     }
 
     _onDeleteOpUndo(op)
@@ -2046,7 +2046,6 @@ export default class PatchView extends CABLES.EventTarget
     {
         if (this._patchRenderer.setCurrentSubPatch)
         {
-            console.log(subpatch);
             this._patchRenderer.setCurrentSubPatch(subpatch,
                 () =>
                 {

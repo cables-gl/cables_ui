@@ -45,11 +45,8 @@ export default class TreeView extends CABLES.EventTarget
             html += "&nbsp;&nbsp;";
 
             html += "<a id=\"title_" + item.id + "\" data-eletype=\"title\" class=\"\">";
-
-
             html += item.title;
             html += "</a>";
-
 
             html += "</td>";
             html += "<td>";
