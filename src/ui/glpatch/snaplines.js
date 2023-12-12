@@ -46,8 +46,9 @@ export default class SnapLines extends CABLES.EventTarget
             if (selOps.length == 1) selOp = selOps[0];
 
             for (let i = 0; i < ops.length; i++)
-                if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
-                    hashmap[ops[i].uiAttribs.translate.x] = (hashmap[ops[i].uiAttribs.translate.x] || 0) + 1;
+                if (ops[i])
+                    if (selOp != ops[i] && selOps.indexOf(ops[i]) == -1 && ops[i].uiAttribs.translate)
+                        hashmap[ops[i].uiAttribs.translate.x] = (hashmap[ops[i].uiAttribs.translate.x] || 0) + 1;
 
             for (let i in hashmap)
             {
