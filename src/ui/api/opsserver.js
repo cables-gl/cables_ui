@@ -928,13 +928,12 @@ export default class ServerOps
     {
         let src = "console.log(\"creating ports....\")\n";
 
-        console.log(ports.ports);
-
-        if (!ports.ports) return;
+        if (!ports || !ports.ports) ports = { "ports": [] };
 
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p || !p.id) continue;
             src += "const port_" + p.id + "=";
 
             if (p.dir == 0) // INPUT
@@ -984,6 +983,7 @@ export default class ServerOps
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p) continue;
             if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
 
             let outPortFunc = "outNumber";
@@ -1016,6 +1016,7 @@ export default class ServerOps
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p) continue;
             if (p.dir != 1) continue;
 
             let inPortFunc = "inFloat";
@@ -1049,14 +1050,12 @@ export default class ServerOps
     {
         const loadingModal = new ModalLoading("Setting port title...");
 
-
         const ops = gui.corePatch().getOpsByOpId(opId);
         for (let i = 0; i < ops.length; i++)
         {
             for (let k = 0; k < ops[i].portsIn.length; k++) ops[i].portsIn[k].setUiAttribs({ "title": null });
             for (let k = 0; k < ops[i].portsOut.length; k++) ops[i].portsOut[k].setUiAttribs({ "title": null });
         }
-
 
         loadingModal.setTask("getting ports json");
         CABLESUILOADER.talkerAPI.send(
@@ -1110,7 +1109,7 @@ export default class ServerOps
                 const js = JSON.parse(res.content);
 
                 let idx = -1;
-                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
                 if (idx != -1)
                 {
@@ -1159,7 +1158,7 @@ export default class ServerOps
                 const js = JSON.parse(res.content);
 
                 let idx = -1;
-                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
                 function array_move(arr, old_index, new_index)
                 {
@@ -1175,7 +1174,12 @@ export default class ServerOps
                     return arr; // for testing
                 }
 
-                array_move(js.ports, idx, idx + dir);
+                if (idx + dir < 0)
+                {
+                    loadingModal.close();
+                    return;
+                }
+                array_move(js.ports, idx, Math.max(js.ports.length - 1, idx + dir));
 
                 loadingModal.setTask("saving ports json");
 
@@ -1213,6 +1217,8 @@ export default class ServerOps
 
     savePortBlueprintAttachment(portsJson, opname, next)
     {
+        portsJson.ports = portsJson.ports.filter((n) => { if (n) return n; });
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
