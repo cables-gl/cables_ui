@@ -9,6 +9,7 @@ import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
 import gluiconfig from "../glpatch/gluiconfig";
+import { executeBlueprintIfMultiple } from "../blueprint_util";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -182,31 +183,32 @@ export default class ServerOps
                 {
                     if (options.loadingModal)options.loadingModal.setTask("execute...");
 
-                    this.execute(newOp.objName,
-                        (newOps, refNewOp) =>
-                        {
-                            if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
-
-                            gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
-                            gui.corePatch().clearSubPatchCache(newOp.patchId.get());
-
-                            setTimeout(() =>
+                    if (gui.corePatch().getOpsByObjName(newOp.objName).length > 1)
+                        this.execute(newOp.objName,
+                            (newOps, refNewOp) =>
                             {
-                                if (refNewOp)
+                                if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+
+                                gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
+                                gui.corePatch().clearSubPatchCache(newOp.patchId.get());
+
+                                setTimeout(() =>
                                 {
-                                    gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
+                                    if (refNewOp)
+                                    {
+                                        gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
 
 
 
-                                    gui.patchView.focusOp(refNewOp.id);
-                                    gui.patchView.centerSelectOp(refNewOp.id, true);
-                                }
-                            }, 300);
+                                        gui.patchView.focusOp(refNewOp.id);
+                                        gui.patchView.centerSelectOp(refNewOp.id, true);
+                                    }
+                                }, 300);
 
 
-                            if (options.next)options.next();
-                        },
-                        newOp);
+                                if (options.next)options.next();
+                            },
+                            newOp);
                 }
                 else
                 {
@@ -1422,7 +1424,7 @@ export default class ServerOps
 
                                         this.savePortBlueprintAttachment(src, opname, () =>
                                         {
-                                            gui.serverOps.execute(opname, (newOps) =>
+                                            executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
                                                 loadingModal.close();
@@ -1430,7 +1432,7 @@ export default class ServerOps
                                         });
                                     }
                                     else
-                                        gui.serverOps.execute(opname, (newOps) =>
+                                        executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
                                             loadingModal.close();
