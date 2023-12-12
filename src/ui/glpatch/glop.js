@@ -118,6 +118,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.on("selectedOpsChanged", (num) =>
         {
+            if (!this.visible) return;
             this._updateSelectedRect();
             if (this._glRectSelected) this.updateSize();
         });

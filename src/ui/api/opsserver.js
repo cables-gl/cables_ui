@@ -1255,6 +1255,7 @@ export default class ServerOps
     {
         const loadingModal = new ModalLoading("Adding port...");
 
+
         loadingModal.setTask("getting ports json");
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",

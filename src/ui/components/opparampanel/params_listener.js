@@ -474,17 +474,11 @@ class ParamsListener extends CABLES.EventTarget
                         "iconClass": "",
                         "func": () =>
                         {
-                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
-                            // const uop = gui.corePatch().getOpById();
-                            // console.log("addPortToBlueprint",);
-                            gui.serverOps.addPortToBlueprint(subOuter.opId, port);
-                            // const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
-                            // port.removeLinks();
-                            // subOp.removePort(port);
-                            // port.setUiAttribs({ "expose": !port.uiAttribs.expose });
-                            // port.op.refreshParams();
+                            gui.patchView.unselectAllOps();
 
-                            // gui.savedState.setUnSaved("Create Port", port.op.uiAttribs.subPatch);
+                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
+
+                            gui.serverOps.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
             }
