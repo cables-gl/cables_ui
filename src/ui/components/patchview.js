@@ -1060,11 +1060,14 @@ export default class PatchView extends CABLES.EventTarget
 
         let subs = [sub];
 
+        const showSubIds = userSettings.get("devinfos");
+
         if (patchId)
         {
             const subOp = this.getSubPatchOuterOp(patchId);
             if (!subOp) return;
             sub.title = subOp.getTitle();
+            if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
             sub.subPatchId = patchId;
             sub.id = subOp.id;
             sub.subPatchVer = subOp.storage.subPatchVer || 0;

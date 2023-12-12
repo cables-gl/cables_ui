@@ -125,9 +125,26 @@ export default function extendCorePatch()
         perf.finish();
     };
 
+    CABLES.Patch.prototype.getNewSubpatchId = function (oldSubPatchId)
+    {
+        for (let i in this._subpatchOpCache)
+        {
+            if (this._subpatchOpCache[i].subPatchOpId)
+            {
+                const outerOp = this.getOpById(this._subpatchOpCache[i].subPatchOpId);
+                if (outerOp.oldSubPatchIds && outerOp.oldSubPatchIds.indexOf(oldSubPatchId) > -1)
+                {
+                    return i;
+                }
+            }
+        }
+    };
+
     CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
     {
         if (subPatchId == 0) return null;
+
+        // oldSubPatchIds
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
