@@ -1277,31 +1277,20 @@ export default class ServerOps
 
                         gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                         gui.corePatch().buildSubPatchCache();
-                        console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
 
-
-                        setTimeout(() =>
+                        if (port.op.storage && port.op.storage.ref)
                         {
-                        // timeouts are BAD but does not work else..
-                            if (port.op.storage && port.op.storage.ref)
-                            {
-                                console.log("ref", port.op.storage.ref, newOps[0].patchId.get());
+                            const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOps[0].patchId.get());
 
-                                const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOps[0].patchId.get());
+                            gui.corePatch().link(
+                                theOp,
+                                port.name,
+                                gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
+                                "innerOut_" + newPortJson.id
+                            );
+                        }
 
-                                console.log("theop", theOp);
-
-                                gui.corePatch().link(
-                                    theOp,
-                                    port.name,
-                                    gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
-                                    "innerOut_" + newPortJson.id
-                                );
-                            }
-
-                            console.log(gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
-                            loadingModal.close();
-                        }, 500);
+                        loadingModal.close();
                     });
                 });
             }
