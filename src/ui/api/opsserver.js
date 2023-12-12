@@ -1107,6 +1107,7 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                res = res || {};
                 res.content = res.content || JSON.stringify({ "ports": [] });
                 const js = JSON.parse(res.content);
 
