@@ -71,8 +71,7 @@ export default class GlPort
     {
         if (!this._rect) return;
         const isAssigned =
-            this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated ||
-            (this._port.uiAttribs.expose && this._port.op.id == this._glop._op.id);
+            this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
 
         if (!this._dot &&
             (isAssigned || this._port.uiAttribs.notWorking))
@@ -89,11 +88,11 @@ export default class GlPort
             this._dot.setColor(0.24, 0.24, 0.24, 1);
             let size = GlUiConfig.portHeight * 0.75;
 
-            if (this._port.uiAttribs.expose)
-            {
-                size *= 2.0;
-                this._dot.setShape(11);
-            }
+            // if (this._port.uiAttribs.expose)
+            // {
+            //     size *= 2.0;
+            //     this._dot.setShape(11);
+            // }
 
             if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
 
@@ -103,9 +102,9 @@ export default class GlPort
             if (this.direction == CABLES.PORT_DIR_IN)
             {
                 dotPosY += GlUiConfig.portHeight;
-                if (this._port.uiAttribs.expose && this._port.isLinked())dotPosY -= GlUiConfig.portHeight * 0.7;
+                // if (this._port.uiAttribs.expose && this._port.isLinked())dotPosY -= GlUiConfig.portHeight * 0.7;
             }
-            if (this._port.uiAttribs.expose)dotPosY += GlUiConfig.portHeight * 0.4;
+            // if (this._port.uiAttribs.expose)dotPosY += GlUiConfig.portHeight * 0.4;
             this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
         }
 

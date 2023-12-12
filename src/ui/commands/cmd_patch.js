@@ -86,9 +86,6 @@ CABLES_CMD_PATCH.reload = function ()
     CABLESUILOADER.talkerAPI.send("reload");
 };
 
-
-
-
 CABLES_CMD_PATCH.editOp = function (userInteraction = true)
 {
     const selops = gui.patchView.getSelectedOps();
@@ -180,6 +177,11 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
 {
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
 
+
+    const origOpsBounds = gui.patchView.getSelectionBounds();
+
+
+
     gui.serverOps.createDialog(null,
         {
             "showEditor": false,
@@ -218,6 +220,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                     {
                         const src = gui.serverOps._generatePortsAttachment(portJson);
 
+                        // newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+
                         gui.corePatch().deleteOp(OpTempSubpatch.id);
                         gui.patchView.setCurrentSubPatch(0);
 
@@ -255,8 +259,12 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                                                 // gui.corePatch.link(inports[i].op,?);
 
                                             }
+                                            console.log("origOpsBounds", origOpsBounds);
+
+                                            // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
 
                                             gui.patchView.centerSelectOp(newOps[0], true);
+                                            newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
 
 
                                             loadingModal.close();
