@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import { hideToolTip, showToolTip } from "../../elements/tooltips";
 import defaultops from "../../defaultops";
+import blueprintUtil from "../../blueprint_util";
 
 export default class ManageOp
 {
@@ -132,7 +133,7 @@ export default class ManageOp
                         const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonDelete(opName, id);
+                            blueprintUtil.portJsonDelete(opName, id);
                         });
 
                         const buttonTitle = ele.byId(this._id + "_port_title_" + id);
@@ -145,7 +146,7 @@ export default class ManageOp
                                 "promptValue": p.title,
                                 "promptOk": (title) =>
                                 {
-                                    gui.serverOps.portJsonTitle(opName, id, title);
+                                    blueprintUtil.portJsonTitle(opName, id, title);
                                 }
                             });
                         });
@@ -154,12 +155,12 @@ export default class ManageOp
                         const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
                         if (buttonMoveUp)buttonMoveUp.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonMove(opName, id, -1);
+                            blueprintUtil.portJsonMove(opName, id, -1);
                         });
                         const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
                         if (buttonMoveDown)buttonMoveDown.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonMove(opName, id, 1);
+                            blueprintUtil.portJsonMove(opName, id, 1);
                         });
                     }
                 }
