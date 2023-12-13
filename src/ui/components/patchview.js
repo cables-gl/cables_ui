@@ -1075,7 +1075,11 @@ export default class PatchView extends CABLES.EventTarget
 
             sub.subPatchId = patchId;
             sub.id = subOp.id;
-            sub.order = subOp.getTitle() + (subOp.uiAttribs.translate.x * subOp.uiAttribs.translate.y);
+            if (subOp.uiAttribs && subOp.uiAttribs.translate)
+                sub.order = subOp.getTitle() + (subOp.uiAttribs.translate.x * subOp.uiAttribs.translate.y);
+            else
+                sub.order = subOp.getTitle();
+
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
 
             if (this.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
