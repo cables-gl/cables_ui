@@ -2056,6 +2056,9 @@ export default class PatchView extends CABLES.EventTarget
         }
         else this._log.warn("patchRenderer has no function setCurrentSubPatch");
 
+
+
+
         gui.corePatch().emitEvent("subpatchesChanged");
     }
 

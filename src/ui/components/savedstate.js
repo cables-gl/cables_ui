@@ -10,6 +10,7 @@ export default class SavedState extends CABLES.EventTarget
         this._statesInitiator = {};
         this._talkerState = null;
         this._timeout = null;
+        this._addedGuiListener = false;
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -93,6 +94,8 @@ export default class SavedState extends CABLES.EventTarget
         this.updateUi();
     }
 
+
+
     setUnSaved(initiator, subpatch)
     {
         if (subpatch === undefined)
@@ -114,8 +117,19 @@ export default class SavedState extends CABLES.EventTarget
 
         this.log(initiator, subpatch, false);
 
+
+
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUiLater();
+
+        if (!this._addedGuiListener)
+        {
+            this._addedGuiListener = true;
+            gui.corePatch().on("subpatchesChanged", () =>
+            {
+                this.updateRestrictionDisplay();
+            });
+        }
     }
 
     getStateBlueprint(bp)
@@ -134,6 +148,8 @@ export default class SavedState extends CABLES.EventTarget
 
     updateUi()
     {
+        console.log(this._statesSaved);
+
         if (this.isSaved)
         {
             if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconSaved");
@@ -166,8 +182,58 @@ export default class SavedState extends CABLES.EventTarget
             str += "<li class=\"divide\"></li>";
             ele.byId("savestates").innerHTML = str;
         }
+        this.updateRestrictionDisplay();
     }
 
+
+    isSavedSubOp(subOpName)
+    {
+        for (const idx in this._statesSaved)
+        {
+            let subname = gui.patchView.getSubPatchName(idx);
+            if (subOpName == subname) return false;
+        }
+        return true;
+    }
+
+    isSavedSubPatch(subPatchId)
+    {
+        return this._statesSaved[subPatchId] !== false;
+    }
+
+    updateRestrictionDisplay()
+    {
+        const subpatch = gui.patchView.getCurrentSubPatch();
+        const exposeOp = gui.patchView.getSubPatchOuterOp(subpatch);
+
+        gui.restriction.setMessage("cablesupdate", null);
+        gui.patchView.patchRenderer.greyOut = false;
+
+        if (exposeOp && exposeOp.patchId)
+        {
+            // console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
+            // console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
+
+            if (!this.isSavedSubOp(exposeOp.objName) && this.isSavedSubPatch(subpatch))
+            {
+                let theIdx = null;
+                for (const idx in this._statesSaved)
+                {
+                    let subname = gui.patchView.getSubPatchName(idx);
+                    if (exposeOp.objName == subname)
+                    {
+                        theIdx = idx;
+                        break;
+                    }
+                }
+
+                gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">over the there</a> ");
+                gui.patchView.patchRenderer.greyOut = true;
+            }
+        }
+
+        // console.log(this._statesSaved);
+    }
 
 
     get isSaved()
