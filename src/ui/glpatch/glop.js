@@ -118,6 +118,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._glPatch.on("selectedOpsChanged", (num) =>
         {
+            if (!this._visible) return;
             this._updateSelectedRect();
             if (this._glRectSelected) this.updateSize();
         });
@@ -879,7 +880,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
         this._updateCommentPosition();
         this._updateIndicators();
-        for (const i in this._links) if (this._links[i]) this._links[i].update();
+        // for (const i in this._links) if (this._links[i]) this._links[i].update();
     }
 
     getUiAttribs()
@@ -1101,7 +1102,7 @@ export default class GlOp extends CABLES.EventTarget
             this._resizableArea = new GlArea(this._instancer, this);
 
 
-        this._glRectNames.push("_glTitle");
+        // this._glRectNames.push("_glTitle");
 
 
 
@@ -1349,7 +1350,7 @@ export default class GlOp extends CABLES.EventTarget
         }
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
         if (this._resizableArea) this._resizableArea._updateColor();
-        this._glRectNames.push("_glTitle");
+        // this._glRectNames.push("_glTitle");
     }
 
     get selected() { return this.opUiAttribs.selected; }

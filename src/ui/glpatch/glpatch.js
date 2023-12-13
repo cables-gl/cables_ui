@@ -483,17 +483,16 @@ export default class GlPatch extends CABLES.EventTarget
     {
         if (this._hoverOps.length > 0)
         {
-            const ops = gui.patchView.getSelectedOps();
-            if (ops.length != 1) return;
+            const hoverOp = this._hoverOps[0].op;
 
-            if (ops[0].isSubPatchOp())
+            if (hoverOp.isSubPatchOp())
             {
-                gui.patchView.setCurrentSubPatch(ops[0].patchId.get());
-                gui.patchView.updateSubPatchBreadCrumb(ops[0].patchId.get());
+                gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
+                gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
             }
-            if (CABLES.UI.DEFAULTOPNAMES.blueprint == ops[0].objName)
+            if (CABLES.UI.DEFAULTOPNAMES.blueprint == hoverOp.objName)
             {
-                const subid = gui.patchView.getSubPatchIdFromBlueprintOpId(ops[0].id);
+                const subid = gui.patchView.getSubPatchIdFromBlueprintOpId(hoverOp.id);
                 if (subid)gui.patchView.setCurrentSubPatch(subid);
             }
         }

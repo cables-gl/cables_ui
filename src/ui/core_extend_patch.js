@@ -16,10 +16,28 @@ export default function extendCorePatch()
         return ops;
     };
 
+    CABLES.Patch.prototype.getOpsByRefId = function (refId)
+    {
+        const perf = CABLES.UI.uiProfiler.start("[corepatchetend] getOpsByRefId");
+        const refOps = [];
+        const ops = gui.corePatch().ops;
+        for (let i = 0; i < ops.length; i++)
+            if (ops[i].storage && ops[i].storage.ref == refId) refOps.push(ops[i]);
+        perf.finish();
+        return refOps;
+    };
+
+
+    CABLES.Patch.prototype.getOpByRefId = function (refId, subPatchId)
+    {
+        const ops = this.getSubPatchOps(subPatchId);
+        if (ops)
+            for (let i = 0; i < ops.length; i++)
+                if (ops[i].storage && ops[i].storage.ref == refId) return ops[i];
+    };
+
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
-        // console.log("clear subpatch cache...", patchId);
-
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
     };
@@ -27,11 +45,15 @@ export default function extendCorePatch()
     CABLES.Patch.prototype._subPatchCacheAdd = function (subPatchId, op)
     {
         if (this._subpatchOpCache[subPatchId])
+        {
+            this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
             this._subpatchOpCache[subPatchId].ops[op.id] = op;
+        }
     };
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
+        // console.log("getSubPatchOps", subPatchId);
         const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
         this._subpatchOpCache = this._subpatchOpCache || {};
@@ -44,26 +66,35 @@ export default function extendCorePatch()
         }
         else
         {
-            this._subpatchOpCache[subPatchId] = { "ops": {}, "subPatchOpId": null };
             for (const i in this.ops)
             {
                 const op = this.ops[i];
-                if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
-                {
-                    this._subpatchOpCache[subPatchId].ops[op.id] = op;
-                }
+
+                // if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
+                // {
+                this._subpatchOpCache[subPatchId] = this._subpatchOpCache[subPatchId] || {};// "ops": {}, "subPatchOpId": null };
+                this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
+                this._subpatchOpCache[subPatchId].ops[op.id] = op;
+                // }
 
                 // if (op.isSubPatchOp()) console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
 
-                if (op.isSubPatchOp() && op.patchId.get() == subPatchId)
+                if (op.isSubPatchOp())
                 {
-                    this._subpatchOpCache[subPatchId].subPatchOpId = op.id;
+                    this._subpatchOpCache[op.patchId.get()] = this._subpatchOpCache[op.patchId.get()] || {};
+                    this._subpatchOpCache[op.patchId.get()].subPatchOpId = op.id;
                     // console.log("subpatchiopid", op.patchId.get());
                 }
             }
-            this._subpatchOpCache[subPatchId].ops = opids;
+            // this._subpatchOpCache[subPatchId].ops = opids;
         }
-        opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
+        if (!this._subpatchOpCache[subPatchId])
+        {
+            console.log("no cache", subPatchId);
+        }
+        else
+            opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
+
         let ops = this._opIdsToOps(opids);
 
         if (recursive)
@@ -75,7 +106,8 @@ export default function extendCorePatch()
                     const subPatchPort = ops[i].portsIn.find((port) => { return port.name === "patchId"; });
                     if (subPatchPort)
                     {
-                        ops = ops.concat(this.getSubPatchOps(subPatchPort.value, true));
+                        if (subPatchPort.value != subPatchId)
+                            ops = ops.concat(this.getSubPatchOps(subPatchPort.value, true));
                     }
                 }
             }
@@ -85,19 +117,15 @@ export default function extendCorePatch()
         return ops;
     };
 
-
-
     CABLES.Patch.prototype.getSubPatch2InnerInputOp = function (subPatchId)
     {
         const ops = this.ops;// gui.corePatch().getSubPatchOps(subPatchId);
-        console.log(subPatchId, ":", ops);
 
         for (let i = 0; i < ops.length; i++)
         {
             if (ops[i].innerInput) return ops[i];
         }
     };
-
 
     CABLES.Patch.prototype.getSubPatch2InnerOutputOp = function (subPatchId)
     {
@@ -107,7 +135,6 @@ export default function extendCorePatch()
             if (ops[i].innerOutput) return ops[i];
         }
     };
-
 
     CABLES.Patch.prototype.buildSubPatchCache = () =>
     {
@@ -143,7 +170,6 @@ export default function extendCorePatch()
     CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
     {
         if (subPatchId == 0) return null;
-
         // oldSubPatchIds
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)

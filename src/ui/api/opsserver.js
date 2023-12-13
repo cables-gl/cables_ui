@@ -9,6 +9,7 @@ import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
 import gluiconfig from "../glpatch/gluiconfig";
+import { executeBlueprintIfMultiple } from "../blueprint_util";
 
 // todo: merge serverops and opdocs.js and/or response from server ? ....
 
@@ -182,31 +183,32 @@ export default class ServerOps
                 {
                     if (options.loadingModal)options.loadingModal.setTask("execute...");
 
-                    this.execute(newOp.objName,
-                        (newOps, refNewOp) =>
-                        {
-                            if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
-
-                            gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
-                            gui.corePatch().clearSubPatchCache(newOp.patchId.get());
-
-                            setTimeout(() =>
+                    if (gui.corePatch().getOpsByObjName(newOp.objName).length > 1)
+                        this.execute(newOp.objName,
+                            (newOps, refNewOp) =>
                             {
-                                if (refNewOp)
+                                if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
+
+                                gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
+                                gui.corePatch().clearSubPatchCache(newOp.patchId.get());
+
+                                setTimeout(() =>
                                 {
-                                    gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
+                                    if (refNewOp)
+                                    {
+                                        gui.patchView.setCurrentSubPatch(gui.corePatch().getNewSubpatchId(oldSubPatchId));//
 
 
 
-                                    gui.patchView.focusOp(refNewOp.id);
-                                    gui.patchView.centerSelectOp(refNewOp.id, true);
-                                }
-                            }, 300);
+                                        gui.patchView.focusOp(refNewOp.id);
+                                        gui.patchView.centerSelectOp(refNewOp.id, true);
+                                    }
+                                }, 300);
 
 
-                            if (options.next)options.next();
-                        },
-                        newOp);
+                                if (options.next)options.next();
+                            },
+                            newOp);
                 }
                 else
                 {
@@ -928,13 +930,12 @@ export default class ServerOps
     {
         let src = "console.log(\"creating ports....\")\n";
 
-        console.log(ports.ports);
-
-        if (!ports.ports) return;
+        if (!ports || !ports.ports) ports = { "ports": [] };
 
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p || !p.id) continue;
             src += "const port_" + p.id + "=";
 
             if (p.dir == 0) // INPUT
@@ -967,6 +968,8 @@ export default class ServerOps
 
             src += "\n";
             if (p.title)src += "port_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
+
+            src += "".endl();
         }
 
         src +=
@@ -975,7 +978,6 @@ export default class ServerOps
             "  for(let i=0;i<addedOps.length;i++)".endl() +
             "  {".endl() +
 
-
             "    if(addedOps[i].innerInput)".endl() +
             "    {".endl();
 
@@ -983,6 +985,7 @@ export default class ServerOps
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p) continue;
             if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
 
             let outPortFunc = "outNumber";
@@ -992,13 +995,16 @@ export default class ServerOps
             if (ports.ports[i].type == 5) outPortFunc = "outString";
 
             src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
+
+            src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
+
             if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
-            if (p.type == 0 || p.type == 5)
-                src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
+            if (p.type == 0 || p.type == 5) src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".set(a); });".endl();
+            else if (p.type == 1) src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
+            else src += "port_" + p.id + ".on(\"change\", (a,v) => { innerOut_" + p.id + ".setRef(a); });".endl();
 
-            if (p.type == 1)
-                src += "port_" + p.id + ".onTriggered = () => { innerOut_" + p.id + ".trigger(); };".endl();
+            src += "".endl();
         }
 
 
@@ -1012,6 +1018,7 @@ export default class ServerOps
         for (let i = 0; i < ports.ports.length; i++)
         {
             const p = ports.ports[i];
+            if (!p) continue;
             if (p.dir != 1) continue;
 
             let inPortFunc = "inFloat";
@@ -1023,11 +1030,11 @@ export default class ServerOps
             src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
             if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
-            if (p.type == 0 || p.type == 5)
-                src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
+            if (p.type == 0 || p.type == 5) src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".set(a); });".endl();
+            else if (p.type == 1) src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
+            else src += "innerIn_" + p.id + ".on(\"change\", (a,v) => { port_" + p.id + ".setRef(a); });".endl();
 
-            if (p.type == 1)
-                src += "innerIn_" + p.id + ".onTriggered = () => { port_" + p.id + ".trigger(); };".endl();
+            src += "".endl();
         }
         src +=
                 "}".endl();
@@ -1045,14 +1052,12 @@ export default class ServerOps
     {
         const loadingModal = new ModalLoading("Setting port title...");
 
-
         const ops = gui.corePatch().getOpsByOpId(opId);
         for (let i = 0; i < ops.length; i++)
         {
             for (let k = 0; k < ops[i].portsIn.length; k++) ops[i].portsIn[k].setUiAttribs({ "title": null });
             for (let k = 0; k < ops[i].portsOut.length; k++) ops[i].portsOut[k].setUiAttribs({ "title": null });
         }
-
 
         loadingModal.setTask("getting ports json");
         CABLESUILOADER.talkerAPI.send(
@@ -1063,6 +1068,7 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                res = res || {};
                 res.content = res.content || JSON.stringify({ "ports": [] });
                 const js = JSON.parse(res.content);
 
@@ -1102,11 +1108,12 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                res = res || {};
                 res.content = res.content || JSON.stringify({ "ports": [] });
                 const js = JSON.parse(res.content);
 
                 let idx = -1;
-                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
                 if (idx != -1)
                 {
@@ -1151,11 +1158,12 @@ export default class ServerOps
             },
             (err, res) =>
             {
+                res = res || {};
                 res.content = res.content || JSON.stringify({ "ports": [] });
                 const js = JSON.parse(res.content);
 
                 let idx = -1;
-                for (let i = 0; i < js.ports.length; i++) if (js.ports[i].id == portid)idx = i;
+                for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
                 function array_move(arr, old_index, new_index)
                 {
@@ -1171,7 +1179,12 @@ export default class ServerOps
                     return arr; // for testing
                 }
 
-                array_move(js.ports, idx, idx + dir);
+                if (idx + dir < 0)
+                {
+                    loadingModal.close();
+                    return;
+                }
+                array_move(js.ports, idx, Math.max(js.ports.length - 1, idx + dir));
 
                 loadingModal.setTask("saving ports json");
 
@@ -1209,6 +1222,8 @@ export default class ServerOps
 
     savePortBlueprintAttachment(portsJson, opname, next)
     {
+        portsJson.ports = portsJson.ports.filter((n) => { if (n) return n; });
+
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
             {
@@ -1240,6 +1255,7 @@ export default class ServerOps
     {
         const loadingModal = new ModalLoading("Adding port...");
 
+
         loadingModal.setTask("getting ports json");
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
@@ -1249,7 +1265,7 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                console.log("attachment ports", res);
+                res = res || {};
                 res.content = res.content || JSON.stringify({ "ports": [] });
                 const js = JSON.parse(res.content);
                 const newPortJson = this.createBlueprintPortJsonElement(port, js.ports.length);
@@ -1266,23 +1282,22 @@ export default class ServerOps
                         gui.opParams.refresh();
                         gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
 
-                        // setTimeout(() =>
-                        // {
                         gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                         gui.corePatch().buildSubPatchCache();
-                        console.log("sdsdsdsd", newOps[0].patchId.get(), gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()));
 
+                        if (port.op.storage && port.op.storage.ref)
+                        {
+                            const theOp = gui.corePatch().getOpByRefId(port.op.storage.ref, newOps[0].patchId.get());
 
+                            gui.corePatch().link(
+                                theOp,
+                                port.name,
+                                gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
+                                "innerOut_" + newPortJson.id
+                            );
+                        }
 
-                        // timeouts are BAD but does not work else..
-                        gui.corePatch().link(
-                            port.op,
-                            port.name,
-                            gui.corePatch().getSubPatch2InnerInputOp(newOps[0].patchId.get()),
-                            "innerOut_" + newPortJson.id
-                        );
                         loadingModal.close();
-                        // }, 500);
                     });
                 });
             }
@@ -1399,13 +1414,21 @@ export default class ServerOps
 
                                     if (attachmentName == blueprintPortAttachmentFilename)
                                     {
-                                        const ports = JSON.parse(_content);
+                                        let ports = null;
+                                        try
+                                        {
+                                            ports = JSON.parse(_content);
+                                        }
+                                        catch (e)
+                                        {
+                                            ports = { "ports": [] };
+                                        }
                                         const src = this._generatePortsAttachment(ports);
 
 
                                         this.savePortBlueprintAttachment(src, opname, () =>
                                         {
-                                            gui.serverOps.execute(opname, (newOps) =>
+                                            executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
                                                 loadingModal.close();
@@ -1413,7 +1436,7 @@ export default class ServerOps
                                         });
                                     }
                                     else
-                                        gui.serverOps.execute(opname, (newOps) =>
+                                        executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
                                             loadingModal.close();

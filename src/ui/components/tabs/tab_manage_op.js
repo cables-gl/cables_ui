@@ -123,7 +123,12 @@ export default class ManageOp
                 {
                     for (let i = 0; i < portJson.ports.length; i++)
                     {
-                        const id = portJson.ports[i].id;
+                        const p = portJson.ports[i];
+                        if (!p || !p.id) continue;
+
+                        console.log(111111); //
+
+                        const id = p.id;
                         const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
                         {
@@ -136,8 +141,8 @@ export default class ManageOp
                             new CABLES.UI.ModalDialog({
                                 "prompt": true,
                                 "title": "Enter Title",
-                                "text": "Enter a new title for " + portJson.ports[i].title + " (" + id + ")",
-                                "promptValue": portJson.ports[i].title,
+                                "text": "Enter a new title for " + p.title + " (" + id + ")",
+                                "promptValue": p.title,
                                 "promptOk": (title) =>
                                 {
                                     gui.serverOps.portJsonTitle(opName, id, title);

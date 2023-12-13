@@ -597,6 +597,9 @@ export default class GlLink
 
     setFlowModeActivity(act, v)
     {
+        if (this._activity == act) return;
+        this._activity = act;
+
         let r = "";
         if (typeof v == "number") r = this._singleValueToString(v);// v = Math.round(v * 1000) / 1000;
         else if (typeof v == "string") r = this._singleValueToString(v);// v = "\"" + v + "\"";

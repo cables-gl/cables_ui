@@ -163,6 +163,8 @@ export default class GlSplineDrawer
     {
         if (this._splines[idx].speed != speed)
         {
+            // console.log(this._splines[idx].speed, speed);
+
             this._splines[idx].speed = speed;
             this._updateAttribsSpeed(idx);
             // this._rebuildLater = true;
@@ -385,7 +387,7 @@ export default class GlSplineDrawer
 
         if (!points) return;
 
-        this._splines[idx].speed = this._splines[idx].speed;
+        // this._splines[idx].speed = this._splines[idx].speed;
 
         for (let i = 0; i < points.length / 3; i++)
         {

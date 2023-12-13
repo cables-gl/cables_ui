@@ -439,6 +439,12 @@ export default function extendCoreOp()
         console.log("no uiattribs ?!", this);
     };
 
+    CABLES.Op.prototype.setPos = function (x, y)
+    {
+        console.log("setpos", x, y);
+        this.setUiAttribs({ "translate": { "x": x, "y": y } });
+    };
+
     CABLES.Op.prototype.setTempOpPos = function (x, y, w, h)
     {
         const pos = {

@@ -470,21 +470,15 @@ class ParamsListener extends CABLES.EventTarget
             {
                 items.push(
                     {
-                        "title": "Create Port",
+                        "title": "Supatch Op: Create Port",
                         "iconClass": "",
                         "func": () =>
                         {
-                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
-                            // const uop = gui.corePatch().getOpById();
-                            // console.log("addPortToBlueprint",);
-                            gui.serverOps.addPortToBlueprint(subOuter.opId, port);
-                            // const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
-                            // port.removeLinks();
-                            // subOp.removePort(port);
-                            // port.setUiAttribs({ "expose": !port.uiAttribs.expose });
-                            // port.op.refreshParams();
+                            gui.patchView.unselectAllOps();
 
-                            // gui.savedState.setUnSaved("Create Port", port.op.uiAttribs.subPatch);
+                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
+
+                            gui.serverOps.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
             }
@@ -776,6 +770,18 @@ class ParamsListener extends CABLES.EventTarget
             if (ports[index].uiAttribs.type == "string")ports[index].set(v || "");
             // else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
             else ports[index].set(v || 0);
+
+
+
+            if (ports[index].op.storage && ports[index].op.storage.ref)
+            {
+                const ops = ports[index].op.patch.getOpsByRefId(ports[index].op.storage.ref);
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const p = ops[i].getPort(ports[index].name);
+                    p.set(v || 0);
+                }
+            }
 
 
             const op = ports[index].op;

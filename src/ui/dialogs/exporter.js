@@ -17,7 +17,8 @@ export default class Exporter
             return;
         }
 
-        let gotoUrl = CABLES.sandbox.getCablesUrl() + "/export/" + this._project._id;
+        const projectId = this._project.shortId || this._project._id;
+        let gotoUrl = CABLES.sandbox.getCablesUrl() + "/export/" + projectId;
         if (this._versionId)
         {
             gotoUrl += "?version=" + this._versionId;
