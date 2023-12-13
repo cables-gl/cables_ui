@@ -35,7 +35,7 @@ export default class ManageOp
             }));
 
         this._refreshListener.push(
-            gui.on("savedStateChanged", () =>
+            gui.corePatch().on("savedStateChanged", () =>
             {
                 this.show();
             }));

@@ -60,11 +60,15 @@ export default class SavedState extends CABLES.EventTarget
 
     setSavedAll(initiator)
     {
+        let changed = false;
+
         for (const sp in this._statesSaved)
         {
+            if (this._statesSaved[sp] != true)changed = true;
             this._statesSaved[sp] = true;
             this.log(initiator, sp, true);
         }
+        if (changed)gui.corePatch().emitEvent("savedStateChanged");
 
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUi();
@@ -74,7 +78,8 @@ export default class SavedState extends CABLES.EventTarget
     {
         if (subpatch === undefined)
         {
-            subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
+            // subpatch = this._statesSaved[this.getBlueprint() || 0] = true;
+            subpatch = 0;// this._statesSaved[this.getBlueprint() || 0] = true;
         }
         else
         {
@@ -105,7 +110,7 @@ export default class SavedState extends CABLES.EventTarget
         if (subpatch === undefined)
         {
             subpatch = this.getBlueprint() || 0;
-            this._statesSaved[subpatch] = true;
+            // this._statesSaved[subpatch] = true;
         }
         else
         {
@@ -197,7 +202,7 @@ export default class SavedState extends CABLES.EventTarget
         for (const idx in this._statesSaved)
         {
             let subname = gui.patchView.getSubPatchName(idx);
-            if (subOpName == subname) return false;
+            if (subOpName == subname) return this._statesSaved[idx] !== false;
         }
         return true;
     }

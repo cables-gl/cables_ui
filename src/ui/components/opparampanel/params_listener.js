@@ -1,5 +1,6 @@
 import blueprintUtil from "../../blueprint_util";
 import defaultops from "../../defaultops";
+import ModalDialog from "../../dialogs/modaldialog";
 import ele from "../../utils/ele";
 import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
@@ -471,10 +472,21 @@ class ParamsListener extends CABLES.EventTarget
             {
                 items.push(
                     {
-                        "title": "Supatch Op: Create Port",
+                        "title": "Subpatch Op: Create Port",
                         "iconClass": "",
                         "func": () =>
                         {
+                            if (gui.savedState.isSavedSubOp(port.op.objName))
+                            {
+                                new ModalDialog({
+                                    "showOkButton": true,
+                                    "title": "Can't create port",
+                                    "text": "You need to save the subPatch before creating a port!"
+                                });
+                                return;
+                            }
+
+
                             gui.patchView.unselectAllOps();
 
                             const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
