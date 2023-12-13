@@ -266,6 +266,8 @@ const blueprintUtil =
                 let idx = -1;
                 for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
+
+
                 function array_move(arr, old_index, new_index)
                 {
                     if (new_index >= arr.length)
@@ -285,7 +287,13 @@ const blueprintUtil =
                     loadingModal.close();
                     return;
                 }
-                array_move(js.ports, idx, Math.max(js.ports.length - 1, idx + dir));
+
+                console.log("idx + dir", idx + dir);
+
+                let newIndex = idx + dir;
+                // if(newIndex>=0 && newInde)
+
+                array_move(js.ports, idx, newIndex);
 
                 loadingModal.setTask("saving ports json");
 
@@ -328,6 +336,8 @@ const blueprintUtil =
             debugger;
             return;
         }
+
+        portsJson.ports = portsJson.ports.filter((n) => { return n; });
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",

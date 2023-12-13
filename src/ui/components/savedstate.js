@@ -233,10 +233,7 @@ export default class SavedState extends CABLES.EventTarget
                 }
             }
         }
-
-        console.log(this._statesSaved);
     }
-
 
     get isSaved()
     {

@@ -127,8 +127,6 @@ export default class ManageOp
                         const p = portJson.ports[i];
                         if (!p || !p.id) continue;
 
-                        console.log(111111); //
-
                         const id = p.id;
                         const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
