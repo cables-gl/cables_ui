@@ -148,8 +148,6 @@ export default class SavedState extends CABLES.EventTarget
 
     updateUi()
     {
-        console.log(this._statesSaved);
-
         if (this.isSaved)
         {
             if (this._talkerState != this.isSaved) CABLESUILOADER.talkerAPI.send("setIconSaved");
@@ -211,28 +209,32 @@ export default class SavedState extends CABLES.EventTarget
 
         if (exposeOp && exposeOp.patchId)
         {
-            // console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
-            // console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
-
-            if (!this.isSavedSubOp(exposeOp.objName) && this.isSavedSubPatch(subpatch))
+            const ops = gui.corePatch().getOpsByObjName(exposeOp.objName);
+            if (ops.length > 1)
             {
-                let theIdx = null;
-                for (const idx in this._statesSaved)
-                {
-                    let subname = gui.patchView.getSubPatchName(idx);
-                    if (exposeOp.objName == subname)
-                    {
-                        theIdx = idx;
-                        break;
-                    }
-                }
+                console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
+                console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
 
-                gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">over the there</a> ");
-                gui.patchView.patchRenderer.greyOut = true;
+                if (!this.isSavedSubOp(exposeOp.objName) && this.isSavedSubPatch(subpatch))
+                {
+                    let theIdx = null;
+                    for (const idx in this._statesSaved)
+                    {
+                        let subname = gui.patchView.getSubPatchName(idx);
+                        if (exposeOp.objName == subname)
+                        {
+                            theIdx = idx;
+                            break;
+                        }
+                    }
+
+                    gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">over the there</a> ");
+                    gui.patchView.patchRenderer.greyOut = true;
+                }
             }
         }
 
-        // console.log(this._statesSaved);
+        console.log(this._statesSaved);
     }
 
 

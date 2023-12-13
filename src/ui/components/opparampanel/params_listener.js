@@ -1,3 +1,4 @@
+import blueprintUtil from "../../blueprint_util";
 import defaultops from "../../defaultops";
 import ele from "../../utils/ele";
 import undo from "../../utils/undo";
@@ -478,7 +479,7 @@ class ParamsListener extends CABLES.EventTarget
 
                             const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
 
-                            gui.serverOps.addPortToBlueprint(subOuter.opId, port);
+                            blueprintUtil.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
             }

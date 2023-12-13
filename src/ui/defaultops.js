@@ -6,7 +6,7 @@
 import { CONSTANTS } from "../../../cables/src/core/constants";
 
 
-export const defaultOpNames =
+const defaultOpNames =
 {
     "number": "Ops.Number.Number",
     "defaultOpImage": "Ops.Gl.Texture_v2",
@@ -83,8 +83,6 @@ export const defaultOpNames =
     "ArraySubtract": "Ops.Array.ArraySubtract",
     "ArrayDivide": "Ops.Array.ArrayDivide",
     "ArrayMultiply": "Ops.Array.ArrayMultiply"
-
-
 };
 
 const defaultOps = {
@@ -467,4 +465,5 @@ const defaultOps = {
         return op.storage && op.storage.hasOwnProperty("blueprint");
     }
 };
+
 export default defaultOps;

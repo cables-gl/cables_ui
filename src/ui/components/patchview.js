@@ -1072,6 +1072,7 @@ export default class PatchView extends CABLES.EventTarget
             if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
 
 
+
             sub.subPatchId = patchId;
             sub.id = subOp.id;
             sub.order = subOp.getTitle() + (subOp.uiAttribs.translate.x * subOp.uiAttribs.translate.y);
@@ -1154,7 +1155,7 @@ export default class PatchView extends CABLES.EventTarget
     {
         let foundPatchIds = [];
         const foundBlueprints = {};
-        const subPatches = [];
+        let subPatches = [];
         const ops = gui.corePatch().ops;
 
         for (let i = 0; i < ops.length; i++)
