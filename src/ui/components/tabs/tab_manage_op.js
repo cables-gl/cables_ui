@@ -14,6 +14,7 @@ export default class ManageOp
         this._lastSelectedOp = null;
         this._currentName = opname;
         this._id = CABLES.shortId();
+        this._refreshListener = [];
 
         this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab, true);
@@ -21,20 +22,29 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
-            gui.off(this._refreshListener);
+            for (let i in this._refreshListener)
+                gui.off(this._refreshListener[i]);
         });
 
         gui.maintabPanel.show(true);
 
-        this._refreshListener = gui.on("refreshManageOp", () =>
-        {
-            this.show();
-        });
+        this._refreshListener.push(
+            gui.on("refreshManageOp", () =>
+            {
+                this.show();
+            }));
 
-        gui.on("opReloaded", () =>
-        {
-            this.show();
-        });
+        this._refreshListener.push(
+            gui.on("savedStateChanged", () =>
+            {
+                this.show();
+            }));
+
+        this._refreshListener.push(
+            gui.on("opReloaded", () =>
+            {
+                this.show();
+            }));
     }
 
     init()
@@ -105,6 +115,7 @@ export default class ManageOp
                     "doc": doc,
                     "opDoc": opDoc,
                     "viewId": this._id,
+                    "bpSaved": gui.savedState.isSavedSubOp(opName),
                     "portJson": portJson,
                     "summary": summary,
                     "showPatchLibSelect": showPatchLibSelect,
@@ -149,12 +160,12 @@ export default class ManageOp
                             });
                         });
 
-
                         const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
                         if (buttonMoveUp)buttonMoveUp.addEventListener("click", () =>
                         {
                             blueprintUtil.portJsonMove(opName, id, -1);
                         });
+
                         const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
                         if (buttonMoveDown)buttonMoveDown.addEventListener("click", () =>
                         {

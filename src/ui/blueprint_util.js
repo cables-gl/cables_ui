@@ -267,7 +267,6 @@ const blueprintUtil =
                 for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
 
 
-
                 function array_move(arr, old_index, new_index)
                 {
                     if (new_index >= arr.length)
@@ -288,10 +287,7 @@ const blueprintUtil =
                     return;
                 }
 
-                console.log("idx + dir", idx + dir);
-
                 let newIndex = idx + dir;
-                // if(newIndex>=0 && newInde)
 
                 array_move(js.ports, idx, newIndex);
 

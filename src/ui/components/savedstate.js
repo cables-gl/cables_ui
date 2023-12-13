@@ -85,6 +85,10 @@ export default class SavedState extends CABLES.EventTarget
             }
         }
         subpatch = subpatch || 0;
+
+        const changed = this._statesSaved[subpatch] != true;
+        if (changed)gui.corePatch().emitEvent("savedStateChanged");
+
         this._statesSaved[subpatch] = true;
 
 
@@ -113,11 +117,15 @@ export default class SavedState extends CABLES.EventTarget
         }
         if (subpatch === true)subpatch = 0;
         subpatch = subpatch || 0;
+
+        const changed = this._statesSaved[subpatch] != false;
+
         this._statesSaved[subpatch] = false;
 
         this.log(initiator, subpatch, false);
 
 
+        if (changed)gui.corePatch().emitEvent("savedStateChanged");
 
         gui.corePatch().emitEvent("subpatchesChanged");
         this.updateUiLater();
