@@ -22,6 +22,11 @@ export default class TreeView extends CABLES.EventTarget
             html = " <table class=\"table treetable\">";
         }
 
+        data.sort(
+            (a, b) =>
+            { return a.order.localeCompare(b.order, "en", { "sensitivity": "base" }); }
+        );
+
         for (let i = 0; i < data.length; i++)
         {
             if (!data[i]) continue;
@@ -35,7 +40,7 @@ export default class TreeView extends CABLES.EventTarget
 
                 if (level == j + 1)
                     if (item.hasOwnProperty("childs") && item.childs.length > 0) html += "<span class=\"icon icon-chevron-down\" style=\"margin-right:3px;\"></span>";
-                    else html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;;\"></span>";
+                    else html += "<span style=\"border-right:2px solid #555;margin-right:9px;width:8px;display:block;float:left;height:20px;\"></span>";
             }
 
             const icon = data[i].icon || "empty";
@@ -50,7 +55,7 @@ export default class TreeView extends CABLES.EventTarget
 
             html += "</td>";
             html += "<td>";
-            html += "<span id=\"threedots_" + item.id + "\" data-eletype=\"threedots\" class=\"icon icon-three-dots iconhover\"></span>";
+            html += "  <span id=\"threedots_" + item.id + "\" data-eletype=\"threedots\" class=\"icon icon-three-dots iconhover\"></span>";
             html += "</td>";
             html += "</tr>";
 

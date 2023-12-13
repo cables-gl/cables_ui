@@ -3,7 +3,6 @@ import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";
 import gluiconfig from "../glpatch/gluiconfig";
-import Gui from "../gui";
 import text from "../text";
 import ele from "../utils/ele";
 import { getHandleBarHtml } from "../utils/handlebars";
@@ -123,7 +122,7 @@ export default class PatchView extends CABLES.EventTarget
             undo.add({
                 "title": "delete op",
                 "context": {
-                    opname
+                    "opname": opname
                 },
                 undo()
                 {
@@ -949,10 +948,8 @@ export default class PatchView extends CABLES.EventTarget
                                 op1.portsOut[j].links[k].remove();
                                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId)
-                                    port2.setUiAttribs({ "expose": true });
-                                else
-                                    port1.setUiAttribs({ "expose": true });
+                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
+                                else port1.setUiAttribs({ "expose": true });
                             }
                         }
                     }
@@ -1047,10 +1044,14 @@ export default class PatchView extends CABLES.EventTarget
 
     getSubPatchesHierarchy(patchId = 0)
     {
+        let mainTitle = "Main ";
+        if (!gui.savedState.isSavedSubPatch(0))mainTitle += " (*) ";
+
         let sub =
         {
-            "title": "Main",
+            "title": mainTitle,
             "id": "0",
+            "order": 0,
             "subPatchId": "0",
             "childs": [],
             "icon": "op"
@@ -1067,9 +1068,13 @@ export default class PatchView extends CABLES.EventTarget
             const subOp = this.getSubPatchOuterOp(patchId);
             if (!subOp) return;
             sub.title = subOp.getTitle();
+            if (!gui.savedState.isSavedSubPatch(patchId))sub.title += " (*) ";
             if (showSubIds)sub.title += " <span style=\"opacity:0.5\">" + patchId + "</span>";
+
+
             sub.subPatchId = patchId;
             sub.id = subOp.id;
+            sub.order = subOp.getTitle() + (subOp.uiAttribs.translate.x * subOp.uiAttribs.translate.y);
             sub.subPatchVer = subOp.storage.subPatchVer || 0;
 
             if (this.getCurrentSubPatch() == sub.subPatchId) sub.rowClass = "active";
@@ -1098,7 +1103,7 @@ export default class PatchView extends CABLES.EventTarget
                 if (ops[i].uiAttribs.comment_title) icon = "message";
                 if (ops[i].objName.indexOf("Ops.Ui.Area") > -1) icon = "box-select";
 
-                sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "opid": ops[i].id });
+                sub.childs.push({ "title": title, "icon": icon, "id": ops[i].id, "opid": ops[i].id, "order": title + ops[i].id });
             }
         }
 
