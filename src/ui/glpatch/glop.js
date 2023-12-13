@@ -1415,6 +1415,8 @@ export default class GlOp extends CABLES.EventTarget
                         }
                     });
                 }(this, this._passiveDragStartX, this._passiveDragStartY, this.x, this.y));
+
+                gui.savedState.setUnSaved("opDrag");
             }
 
         this._passiveDragStartX = null;

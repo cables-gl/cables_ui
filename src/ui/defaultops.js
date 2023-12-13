@@ -64,6 +64,7 @@ const defaultOpNames =
     "VizString": "Ops.Ui.VizString",
     "VizStringLong": "Ops.Ui.VizStringLong",
     "VizTexture": "Ops.Ui.VizTexture",
+    "VizLogger": "Ops.Ui.VizLogger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
 
     "string": "Ops.String.String_v2",
@@ -177,9 +178,9 @@ const defaultOps = {
     {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
-            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.VizString, defaultOpNames.VizStringLong];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOpNames.VizBool, defaultOpNames.VizNumber];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.VizNumber, defaultOpNames.VizGraph, defaultOpNames.VizNumberBar];
+            if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.VizString, defaultOpNames.VizStringLong, defaultOpNames.VizLogger];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOpNames.VizBool, defaultOpNames.VizNumber,, defaultOpNames.VizLogger];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.VizNumber, defaultOpNames.VizGraph, defaultOpNames.VizNumberBar, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return [defaultOpNames.VizArrayTable];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.VizTexture, defaultOpNames.VizTextureTable, defaultOpNames.VizObject];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return [defaultOpNames.VizObject];
