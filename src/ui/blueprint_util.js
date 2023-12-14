@@ -150,7 +150,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 };
 
 
-blueprintUtil.fportJsonTitle = (opId, portid, title) =>
+blueprintUtil.portJsonTitle = (opId, portid, title) =>
 {
     const loadingModal = new ModalLoading("Setting port title...");
 
