@@ -476,7 +476,10 @@ class ParamsListener extends CABLES.EventTarget
                         "iconClass": "",
                         "func": () =>
                         {
-                            if (gui.savedState.isSavedSubOp(port.op.objName))
+                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
+
+                            console.log("isSavedSubOp", gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch));
+                            if (!gui.savedState.isSavedSubPatch(port.op.uiAttribs.subPatch))
                             {
                                 new ModalDialog({
                                     "showOkButton": true,
@@ -489,7 +492,6 @@ class ParamsListener extends CABLES.EventTarget
 
                             gui.patchView.unselectAllOps();
 
-                            const subOuter = gui.patchView.getSubPatchOuterOp(port.op.isInBlueprint2());
 
                             blueprintUtil.addPortToBlueprint(subOuter.opId, port);
                         }
