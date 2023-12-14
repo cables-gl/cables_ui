@@ -38,26 +38,26 @@ const blueprintUtil =
 
             if (p.dir == 0) // INPUT
             {
-                if (p.type == 0) src += "op.inFloat";
-                if (p.type == 1) src += "op.inTrigger";
-                if (p.type == 2) src += "op.inObject";
-                if (p.type == 3) src += "op.inArray";
-                if (p.type == 5) src += "op.inString";
+                if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.inFloat";
+                if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.inTrigger";
+                if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.inObject";
+                if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.inArray";
+                if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.inString";
 
                 src += "(\"" + p.id + "\""; // 1. name
 
-                if (p.type == 5) src += ",\"" + p.value + "\""; // 2. param default value
-                if (p.type == 0) src += "," + p.value; // 2. param default value
+                if (p.type == CABLES.OP_PORT_TYPE_STRING) src += ",\"" + p.value + "\""; // 2. param default value
+                if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "," + p.value; // 2. param default value
 
                 src += ");";
             }
             else // OUTPUT
             {
-                if (p.type == 0) src += "op.outNumber";
-                if (p.type == 1) src += "op.outTrigger";
-                if (p.type == 2) src += "op.outObject";
-                if (p.type == 3) src += "op.outArray";
-                if (p.type == 5) src += "op.outString";
+                if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.outNumber";
+                if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.outTrigger";
+                if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.outObject";
+                if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.outArray";
+                if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.outString";
 
                 src += "(\"" + p.id + "\""; // 1. name
 
@@ -90,14 +90,15 @@ const blueprintUtil =
             if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
 
             let outPortFunc = "outNumber";
-            if (ports.ports[i].type == 1) outPortFunc = "outTrigger";
-            if (ports.ports[i].type == 2) outPortFunc = "outObject";
-            if (ports.ports[i].type == 3) outPortFunc = "outArray";
-            if (ports.ports[i].type == 5) outPortFunc = "outString";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_FUNCTION) outPortFunc = "outTrigger";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_OBJECT) outPortFunc = "outObject";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_ARRAY) outPortFunc = "outArray";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING) outPortFunc = "outString";
 
             src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
 
-            src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_VALUE || ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING)
+                src += "innerOut_" + p.id + ".set(port_" + p.id + ".get() );".endl();
 
             if (p.title)src += "innerOut_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
 
@@ -123,10 +124,10 @@ const blueprintUtil =
             if (p.dir != 1) continue;
 
             let inPortFunc = "inFloat";
-            if (ports.ports[i].type == 1) inPortFunc = "inTrigger";
-            if (ports.ports[i].type == 2) inPortFunc = "inObject";
-            if (ports.ports[i].type == 3) inPortFunc = "inArray";
-            if (ports.ports[i].type == 5) inPortFunc = "inString";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_FUNCTION) inPortFunc = "inTrigger";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_OBJECT) inPortFunc = "inObject";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_ARRAY) inPortFunc = "inArray";
+            if (ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING) inPortFunc = "inString";
 
             src += "const innerIn_" + p.id + " = addedOps[i]." + inPortFunc + "(\"innerIn_" + p.id + "\");".endl();
             if (p.title)src += "innerIn_" + p.id + ".setUiAttribs({title:\"" + p.title + "\"});\n";
@@ -177,7 +178,7 @@ const blueprintUtil =
 
                 loadingModal.setTask("saving ports json");
 
-                gui.serverOps.savePortJsonBlueprintAttachment(js, opId, () =>
+                blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
                 {
                     loadingModal.setTask("reload op");
 
@@ -227,7 +228,7 @@ const blueprintUtil =
 
                 loadingModal.setTask("saving ports json");
 
-                gui.serverOps.savePortJsonBlueprintAttachment(js, opId, () =>
+                blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
                 {
                     loadingModal.setTask("reload op");
 
@@ -314,14 +315,18 @@ const blueprintUtil =
 
     "createBlueprintPortJsonElement": (port, i) =>
     {
-        return {
+        const o = {
             "id": "id" + i,
             "title": port.getTitle(),
-            "value": port.get(),
             "dir": port.direction,
             "type": port.type,
             "uiDisplay": port.uiAttribs.display
         };
+
+        if (port.type == CABLES.OP_PORT_TYPE_VALUE || port.type == CABLES.OP_PORT_TYPE_STRING)
+            o.value = port.get();
+
+        return o;
     },
 
     "savePortJsonBlueprintAttachment": (portsJson, opname, next) =>
@@ -334,6 +339,9 @@ const blueprintUtil =
         }
 
         portsJson.ports = portsJson.ports.filter((n) => { return n; });
+
+
+        console.log("portsJson", portsJson);
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentSave",
@@ -384,6 +392,7 @@ const blueprintUtil =
 
                 js.ports.push(newPortJson);
                 loadingModal.setTask("saving ports json");
+
 
                 blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
                 {
