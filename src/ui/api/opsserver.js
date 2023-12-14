@@ -1103,6 +1103,7 @@ export default class ServerOps
 
     getOpLibs(opname, checkLoaded)
     {
+        const perf = CABLES.UI.uiProfiler.start("[opsserver] getOpLibs");
         let opDoc = null;
         if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
         else
@@ -1110,7 +1111,6 @@ export default class ServerOps
             opDoc = gui.opDocs.getOpDocByName(opname.objName);
             if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
         }
-        // if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname);
         const libs = [];
         if (opDoc && opDoc.libs)
         {
@@ -1127,11 +1127,15 @@ export default class ServerOps
                 }
             }
         }
+
+        perf.finish();
         return libs;
     }
 
     getCoreLibs(opname, checkLoaded)
     {
+        const perf = CABLES.UI.uiProfiler.start("[opsserver] getCoreLibs");
+
         let opDoc = null;
         if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
         else
@@ -1156,6 +1160,8 @@ export default class ServerOps
                 }
             }
         }
+        perf.finish();
+
         return coreLibs;
     }
 
@@ -1178,26 +1184,32 @@ export default class ServerOps
 
         this.loadOps(missingOps, (newOps, newIds) =>
         {
+            const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
+
+
             if (gui && gui.opSelect() && newOps.length > 0)
             {
                 gui.opSelect().reload();
                 gui.opSelect().prepare();
             }
 
-            let libsToLoad = [];
-            let coreLibsToLoad = [];
-            newOps.forEach((newOp) =>
-            {
-                if (newOp)
-                {
-                    if (newIds.hasOwnProperty(newOp.opId))
-                    {
-                        newOp.opId = newIds[newOp.opId];
-                    }
-                    libsToLoad = libsToLoad.concat(this.getOpLibs(newOp, true));
-                    coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
-                }
-            });
+
+
+            // let libsToLoad = [];
+            // let coreLibsToLoad = [];
+            // newOps.forEach((newOp) =>
+            // {
+            //     if (newOp)
+            //     {
+            //         if (newIds.hasOwnProperty(newOp.opId))
+            //         {
+            //             newOp.opId = newIds[newOp.opId];
+            //         }
+            //         libsToLoad = libsToLoad.concat(this.getOpLibs(newOp, true));
+            //         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
+            //     }
+            // });
+
 
             for (let i = 0; i < proj.ops.length; i++)
             {
@@ -1210,6 +1222,7 @@ export default class ServerOps
                 }
             }
 
+            perf2.finish();
             this.loadOpsLibs(proj.ops, () =>
             {
                 if (_next) _next(proj);
@@ -1268,6 +1281,8 @@ export default class ServerOps
             finishedCb();
             return;
         }
+
+
         let libsToLoad = [];
         let coreLibsToLoad = [];
 
@@ -1315,6 +1330,8 @@ export default class ServerOps
 
     getMissingOps(proj)
     {
+        const perf = CABLES.UI.uiProfiler.start("[opsserver] gerMissingOps");
+
         let missingOps = [];
         const missingOpsFound = [];
         proj.ops.forEach((op) =>
@@ -1343,6 +1360,8 @@ export default class ServerOps
             }
         });
         missingOps = missingOps.filter((obj, index) => { return missingOps.findIndex((item) => { return item.opId === obj.opId; }) === index; });
+
+        perf.finish();
         return missingOps;
     }
 

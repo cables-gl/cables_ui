@@ -157,6 +157,7 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
+        const perf = CABLES.UI.uiProfiler.start("[patchview] setproject");
         if (window.logStartup) logStartup("setProject 1");
 
         if (proj && proj.ui)
@@ -197,12 +198,17 @@ export default class PatchView extends CABLES.EventTarget
             return;
         }
 
+        perf.finish();
+
         if (window.logStartup) logStartup("loadProjectDependencies...");
         gui.serverOps.loadProjectDependencies(proj, (project) =>
         {
             if (window.logStartup) logStartup("loadProjectDependencies done");
-
             if (window.logStartup) logStartup("deserialize...");
+
+            const perf2 = CABLES.UI.uiProfiler.start("[patchview] setproject2");
+
+
             gui.corePatch().deSerialize(project);
 
             if (window.logStartup) logStartup("deserialize done");
@@ -227,6 +233,8 @@ export default class PatchView extends CABLES.EventTarget
             if (gui.project() && gui.project().ui) gui.metaTexturePreviewer.deserialize(gui.project().ui.texPreview);
 
             gui.patchView.removeLostSubpatches();
+
+            perf2.finish();
 
             if (cb)cb();
         });

@@ -166,7 +166,7 @@ blueprintUtil.portJsonTitle = (opId, portid, title) =>
         "opAttachmentGet",
         {
             "opname": opId,
-            "name": blueprintUtil.blueprintUtil.blueprintPortJsonAttachmentFilename,
+            "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
         },
         (err, res) =>
         {
