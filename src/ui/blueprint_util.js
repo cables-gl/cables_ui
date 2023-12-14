@@ -1,3 +1,4 @@
+import OpDocs from "./components/opdocs";
 import defaultOps from "./defaultops";
 import ModalLoading from "./dialogs/modalloading";
 import gluiconfig from "./glpatch/gluiconfig";
@@ -512,6 +513,28 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
                 if (options.next)options.next();
             }
         });
+};
+
+blueprintUtil.getAutoName = () =>
+{
+    let newOpName = "";
+    const ns = defaultOps.getPatchOpsNamespace();
+
+    for (let i = 0; i < 1000; i++)
+    {
+        newOpName = ns + "SubPatch" + i;
+        // const ops = gui.corePatch().getOpsByObjName(newOpName);
+        const doc = gui.opDocs.getOpDocByName(newOpName);
+        // if (ops.length == 0)
+        if (!doc)
+        {
+            break;
+        }
+    }
+
+    console.log("newOpName", newOpName);
+
+    return newOpName;
 };
 
 blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
