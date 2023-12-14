@@ -206,10 +206,12 @@ export default class PatchView extends CABLES.EventTarget
             if (window.logStartup) logStartup("loadProjectDependencies done");
             if (window.logStartup) logStartup("deserialize...");
 
-            const perf2 = CABLES.UI.uiProfiler.start("[patchview] setproject2");
 
-
+            const perf3 = CABLES.UI.uiProfiler.start("[core] deserialize");
             gui.corePatch().deSerialize(project);
+            perf3.finish();
+
+            const perf2 = CABLES.UI.uiProfiler.start("[patchview] setproject2");
 
             if (window.logStartup) logStartup("deserialize done");
 
