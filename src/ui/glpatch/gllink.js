@@ -19,7 +19,7 @@ export default class GlLink
         this._link = link;
         this._visible = visible;
         this._cable = null;
-        this._debugColor = userSettings.get("devinfos");
+        this._debugColor = true;// userSettings.get("devinfos");
 
         this._glPatch = glpatch;
         this._type = type;
