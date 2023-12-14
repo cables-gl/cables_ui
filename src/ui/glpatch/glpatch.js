@@ -556,7 +556,7 @@ export default class GlPatch extends CABLES.EventTarget
                 gui.theme.colors_patch.background[0],
                 gui.theme.colors_patch.background[1],
                 gui.theme.colors_patch.background[2],
-                0.25);
+                0.5);
             this._greyOutRect.setSize(20000000, 20000000);
             this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
 

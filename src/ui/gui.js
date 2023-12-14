@@ -40,6 +40,7 @@ import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
 import gluiconfig from "./glpatch/gluiconfig";
 import defaultTheme from "./defaulttheme.json";
+import blueprintUtil from "./blueprint_util";
 
 
 export default class Gui
@@ -53,6 +54,11 @@ export default class Gui
         this.theme = defaultTheme;
         this.patchId = cfg.patchId;
         this._showTiming = false;
+
+        /**
+         * @type {ServerOps}
+         */
+        this.serverOps = null;
 
         this.canvasManager = new CanvasManager();
 
@@ -1466,7 +1472,7 @@ export default class Gui
                     if (bp)
                     {
                         gui.showLoadingProgress(true);
-                        gui.serverOps.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
                             {
                                 "oldSubId": bp,
                                 "next": () =>

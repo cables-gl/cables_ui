@@ -10,6 +10,7 @@ import ele from "../utils/ele";
 import defaultops from "../defaultops";
 import ManageOp from "../components/tabs/tab_manage_op";
 import ModalLoading from "../dialogs/modalloading";
+import blueprintUtil from "../blueprint_util";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -210,17 +211,15 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                     const inports = gui.patchView.getSubPatchExposedPorts(patchId, 0);
                     for (let i = 0; i < inports.length; i++)
                     {
-                        portJson.ports.push(gui.serverOps.createBlueprintPortJsonElement(inports[i], i));
+                        portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(inports[i], i));
 
                         inports[i].setUiAttribs({ "expose": false });
                     }
 
                     loadingModal.setTask("Creating blueprint op");
-                    gui.serverOps.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                    blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                     {
-                        const src = gui.serverOps._generatePortsAttachment(portJson);
-
-                        // newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+                        const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
 
                         gui.corePatch().deleteOp(OpTempSubpatch.id);
                         gui.patchView.setCurrentSubPatch(0);

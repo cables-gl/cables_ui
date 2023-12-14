@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab";
 import { getHandleBarHtml } from "../../utils/handlebars";
 import { hideToolTip, showToolTip } from "../../elements/tooltips";
 import defaultops from "../../defaultops";
+import blueprintUtil from "../../blueprint_util";
 
 export default class ManageOp
 {
@@ -13,6 +14,7 @@ export default class ManageOp
         this._lastSelectedOp = null;
         this._currentName = opname;
         this._id = CABLES.shortId();
+        this._refreshListener = [];
 
         this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab, true);
@@ -20,20 +22,29 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
-            gui.off(this._refreshListener);
+            for (let i in this._refreshListener)
+                gui.off(this._refreshListener[i]);
         });
 
         gui.maintabPanel.show(true);
 
-        this._refreshListener = gui.on("refreshManageOp", () =>
-        {
-            this.show();
-        });
+        this._refreshListener.push(
+            gui.on("refreshManageOp", () =>
+            {
+                this.show();
+            }));
 
-        gui.on("opReloaded", () =>
-        {
-            this.show();
-        });
+        this._refreshListener.push(
+            gui.corePatch().on("savedStateChanged", () =>
+            {
+                this.show();
+            }));
+
+        this._refreshListener.push(
+            gui.on("opReloaded", () =>
+            {
+                this.show();
+            }));
     }
 
     init()
@@ -104,6 +115,7 @@ export default class ManageOp
                     "doc": doc,
                     "opDoc": opDoc,
                     "viewId": this._id,
+                    "bpSaved": gui.savedState.isSavedSubOp(opName),
                     "portJson": portJson,
                     "summary": summary,
                     "showPatchLibSelect": showPatchLibSelect,
@@ -126,13 +138,11 @@ export default class ManageOp
                         const p = portJson.ports[i];
                         if (!p || !p.id) continue;
 
-                        console.log(111111); //
-
                         const id = p.id;
                         const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonDelete(opName, id);
+                            blueprintUtil.portJsonDelete(opName, id);
                         });
 
                         const buttonTitle = ele.byId(this._id + "_port_title_" + id);
@@ -145,21 +155,21 @@ export default class ManageOp
                                 "promptValue": p.title,
                                 "promptOk": (title) =>
                                 {
-                                    gui.serverOps.portJsonTitle(opName, id, title);
+                                    blueprintUtil.portJsonTitle(opName, id, title);
                                 }
                             });
                         });
 
-
                         const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
                         if (buttonMoveUp)buttonMoveUp.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonMove(opName, id, -1);
+                            blueprintUtil.portJsonMove(opName, id, -1);
                         });
+
                         const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
                         if (buttonMoveDown)buttonMoveDown.addEventListener("click", () =>
                         {
-                            gui.serverOps.portJsonMove(opName, id, 1);
+                            blueprintUtil.portJsonMove(opName, id, 1);
                         });
                     }
                 }
