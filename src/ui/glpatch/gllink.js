@@ -355,7 +355,7 @@ export default class GlLink
             }
             else
             {
-                if (!this._subPatchOp)
+                if (!this._subPatchOp && this._glOpIn && this._glOpOut)
                 {
                     const a = gui.patchView.getSubPatchOuterOp(this._glOpIn.op.uiAttribs.subPatch);
                     const b = gui.patchView.getSubPatchOuterOp(this._glOpOut.op.uiAttribs.subPatch);
