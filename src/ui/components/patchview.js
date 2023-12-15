@@ -554,9 +554,10 @@ export default class PatchView extends CABLES.EventTarget
 
     selectAllOpsSubPatch(subPatch, noUnselect)
     {
-        for (let i = 0; i < this._p.ops.length; i++)
+        const ops = gui.corePatch().getSubPatchOps(subPatch);
+        for (let i = 0; i < ops.length; i++)
         {
-            const op = this._p.ops[i];
+            const op = ops[i];
             if ((op.uiAttribs.subPatch || 0) == subPatch && !op.uiAttribs.selected)
             {
                 op.uiAttr({ "selected": true });
@@ -573,6 +574,7 @@ export default class PatchView extends CABLES.EventTarget
 
     checkPatchOutdated()
     {
+        const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
         this.hasOldOps = false;
 
         for (let i = 0; i < this._p.ops.length; i++)
@@ -582,9 +584,11 @@ export default class PatchView extends CABLES.EventTarget
             if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
+                perf.finish();
                 return;
             }
         }
+        perf.finish();
     }
 
     checkPatchErrorsSoon()
@@ -913,81 +917,78 @@ export default class PatchView extends CABLES.EventTarget
             }
             else
             {
-                for (let i = 0; i < selectedOps.length; i++)
-                {
-                    for (let j = 0; j < selectedOps[i].portsIn.length; j++)
-                    {
-                        const port1 = selectedOps[i].portsIn[j];
-                        const op1 = selectedOps[i];
+                // for (let i = 0; i < selectedOps.length; i++)
+                // {
+                //     for (let j = 0; j < selectedOps[i].portsIn.length; j++)
+                //     {
+                //         const port1 = selectedOps[i].portsIn[j];
+                //         const op1 = selectedOps[i];
 
-                        for (let k = 0; k < op1.portsIn[j].links.length; k++)
-                        {
-                            const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
-                            const op2 = port2.op;
+                //         for (let k = 0; k < op1.portsIn[j].links.length; k++)
+                //         {
+                //             const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
+                //             const op2 = port2.op;
 
-                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
-                            {
-                                if (op1.uiAttribs.subPatch != patchId)
-                                    port2.setUiAttribs({ "expose": true });
-                                else
-                                    port1.setUiAttribs({ "expose": true });
+                //             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                //             {
+                //                 if (op1.uiAttribs.subPatch != patchId)
+                //                     port2.setUiAttribs({ "expose": true });
+                //                 else
+                //                     port1.setUiAttribs({ "expose": true });
 
-                                // relinking is lazy and dirty but there is no easy way to rebuild
-                                op1.portsIn[j].links[k].remove();
-                                gui.corePatch().link(op1, port1.name, op2, port2.name);
-                            }
-                        }
-                    }
-                }
+                //                 // relinking is lazy and dirty but there is no easy way to rebuild
+                //                 op1.portsIn[j].links[k].remove();
+                //                 gui.corePatch().link(op1, port1.name, op2, port2.name);
+                //             }
+                //         }
+                //     }
+                // }
 
-                for (let i = 0; i < selectedOps.length; i++)
-                {
-                    for (let j = 0; j < selectedOps[i].portsOut.length; j++)
-                    {
-                        const port1 = selectedOps[i].portsOut[j];
-                        const op1 = selectedOps[i];
+                // for (let i = 0; i < selectedOps.length; i++)
+                // {
+                //     for (let j = 0; j < selectedOps[i].portsOut.length; j++)
+                //     {
+                //         const port1 = selectedOps[i].portsOut[j];
+                //         const op1 = selectedOps[i];
 
-                        for (let k = 0; k < op1.portsOut[j].links.length; k++)
-                        {
-                            const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
-                            const op2 = port2.op;
+                //         for (let k = 0; k < op1.portsOut[j].links.length; k++)
+                //         {
+                //             const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
+                //             const op2 = port2.op;
 
-                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
-                            {
-                                // relinking is lazy and dirty but there is no easy way to rebuild
-                                op1.portsOut[j].links[k].remove();
-                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+                //             if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                //             {
+                //                 // relinking is lazy and dirty but there is no easy way to rebuild
+                //                 op1.portsOut[j].links[k].remove();
+                //                 gui.corePatch().link(op1, port1.name, op2, port2.name);
 
-                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                else port1.setUiAttribs({ "expose": true });
-                            }
-                        }
-                    }
-                }
+                //                 if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
+                //                 else port1.setUiAttribs({ "expose": true });
+                //             }
+                //         }
+                //     }
+                // }
+
+                // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                // this._p.emitEvent("subpatchExpose", patchId);
+
+                // setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
+                // {
+                // set positions of input/output
+                let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
+                let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+
+                const b = this.getSubPatchBounds(patchId);
+
+                if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
+                if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
 
                 this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                 this._p.emitEvent("subpatchExpose", patchId);
 
-                setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
-                {
-                    // set positions of input/output
-                    let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
-                    let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+                if (next)next(patchId, patchOp);
 
-                    const b = this.getSubPatchBounds(patchId);
-
-                    if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-                    if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
-
-                    this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                    this._p.emitEvent("subpatchExpose", patchId);
-
-                    if (next)next(patchId, patchOp);
-
-                    // gui.serverOps.createBlueprint2Op(patchId);
-                }, 100);
-
-                // gui.patchView.setCurrentSubPatch(patchId);
+                // }, 100);
             }
 
             gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());

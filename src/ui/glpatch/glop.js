@@ -243,8 +243,8 @@ export default class GlOp extends CABLES.EventTarget
 
     getPosZ()
     {
-        if (this._displayType == this.DISPLAY_UI_AREA) return -0.1;
-        if (this.selected) return -0.3;
+        if (this._displayType == this.DISPLAY_UI_AREA) return gluiconfig.zPosOpArea;
+        if (this.selected) return gluiconfig.zPosOpSelected;
         return this._origPosZ;
     }
 
@@ -876,10 +876,10 @@ export default class GlOp extends CABLES.EventTarget
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
 
-        if (this._glRectSelected) this._glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, 0.2);
+        if (this._glRectSelected) this._glRectSelected.setPosition(-gui.theme.patch.selectedOpBorderX / 2, -gui.theme.patch.selectedOpBorderY / 2, gluiconfig.zPosGlRectSelected);
 
-        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, -0.01);
-        if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, -0.01);
+        if (this._glTitle) this._glTitle.setPosition(this._getTitlePosition(), 0, gluiconfig.zPosGlTitle);
+        if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
         // for (const i in this._links) if (this._links[i]) this._links[i].update();
