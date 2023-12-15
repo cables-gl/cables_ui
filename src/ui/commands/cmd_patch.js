@@ -181,100 +181,120 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
 
     const origOpsBounds = gui.patchView.getSelectionBounds();
 
+    // console.log(blueprintUtil.getAutoName());
 
+    // gui.serverOps.createDialog(null,
+    //     {
+    //         "showEditor": false,
 
-    gui.serverOps.createDialog(null,
+    const newOpname = blueprintUtil.getAutoName();
+    //         "cb": (newOp) =>
+
+    gui.serverOps.create(newOpname, () =>
+    {
+        const loadingModal = new ModalLoading("Creating op...");
+
+        gui.patchView.unselectAllOps();
+        for (let i = 0; i < selectedOpIds.length; i++)
         {
-            "showEditor": false,
-            "cb": (newOp) =>
+            gui.patchView.selectOpId(selectedOpIds[i]);
+        }
+
+        loadingModal.setTask("Creating subpatch / " + selectedOpIds.length + " ops");
+
+
+        console.log("selected ops", selectedOpIds);
+        gui.patchView.createSubPatchFromSelection(2, (patchId, OpTempSubpatch) =>
+        {
+            console.log("selected ops", selectedOpIds);
+            loadingModal.setTask("find exposed ports...");
+            const portJson = { "ports": [] };
+
+            const inports = gui.patchView.getSubPatchExposedPorts(patchId, 0);
+            for (let i = 0; i < inports.length; i++)
             {
-                const loadingModal = new ModalLoading("Creating op...");
+                portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(inports[i], i));
 
-                console.log("newOp", newOp);
-                gui.patchView.unselectAllOps();
-                console.log("selected ops", selectedOpIds);
-                for (let i = 0; i < selectedOpIds.length; i++)
-                {
-                    console.log("selectop", selectedOpIds[i]);
-                    gui.patchView.selectOpId(selectedOpIds[i]);
-                }
-
-                loadingModal.setTask("Creating subpatch / " + selectedOpIds.length + " ops");
-
-                console.log("selected ops", selectedOpIds);
-                gui.patchView.createSubPatchFromSelection(2, (patchId, OpTempSubpatch) =>
-                {
-                    console.log("selected ops", selectedOpIds);
-                    loadingModal.setTask("find exposed ports...");
-                    const portJson = { "ports": [] };
-
-                    const inports = gui.patchView.getSubPatchExposedPorts(patchId, 0);
-                    for (let i = 0; i < inports.length; i++)
-                    {
-                        portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(inports[i], i));
-
-                        inports[i].setUiAttribs({ "expose": false });
-                    }
-
-                    loadingModal.setTask("Creating blueprint op");
-                    blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
-                    {
-                        const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
-
-                        gui.corePatch().deleteOp(OpTempSubpatch.id);
-                        gui.patchView.setCurrentSubPatch(0);
-
-                        loadingModal.setTask("Creating ports...");
-
-                        CABLESUILOADER.talkerAPI.send(
-                            "opAttachmentSave",
-                            {
-                                "opname": newOp.objName,
-                                "name": "att_inc_gen_ports.js",
-                                "content": src,
-                            },
-                            (errr2, re2) =>
-                            {
-                                loadingModal.setTask("Saving ports...");
-
-                                CABLESUILOADER.talkerAPI.send(
-                                    "opAttachmentSave",
-                                    {
-                                        "opname": newOp.objName,
-                                        "name": "att_ports.json",
-                                        "content": JSON.stringify(portJson),
-                                    },
-                                    (errr3, re3) =>
-                                    {
-                                        loadingModal.setTask("Execute code");
-
-
-                                        gui.serverOps.execute(newOp.objName, (newOps) =>
-                                        {
-                                            // link ports.......
-
-                                            for (let i = 0; i < inports.length; i++)
-                                            {
-                                                // gui.corePatch.link(inports[i].op,?);
-
-                                            }
-                                            console.log("origOpsBounds", origOpsBounds);
-
-                                            // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
-
-                                            gui.patchView.centerSelectOp(newOps[0], true);
-                                            newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
-
-
-                                            loadingModal.close();
-                                        });
-                                    });
-                            },
-                        );
-                    }, loadingModal);
-                });
+                inports[i].setUiAttribs({ "expose": false });
             }
+
+            loadingModal.setTask("Creating blueprint op");
+
+            gui.patchView.addOp(newOpname,
+                {
+                    "onOpAdd": (newOp) =>
+                    {
+                        // op.setUiAttrib({
+                        //     "translate": {
+                        //         "x": gui.patchView.patchRenderer.viewBox.mousePatchX,
+                        //         "y": gui.patchView.patchRenderer.viewBox.mousePatchY },
+                        // });
+
+                        // if (op) gui.patchView.focusOp(op.id);
+                        // if (op) gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
+                        // if (options.cb) options.cb(op);
+
+
+                        blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                        {
+                            const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
+
+                            gui.corePatch().deleteOp(OpTempSubpatch.id);
+                            gui.patchView.setCurrentSubPatch(0);
+
+                            loadingModal.setTask("Creating ports...");
+
+                            CABLESUILOADER.talkerAPI.send(
+                                "opAttachmentSave",
+                                {
+                                    "opname": newOpname,
+                                    "name": "att_inc_gen_ports.js",
+                                    "content": src,
+                                },
+                                (errr2, re2) =>
+                                {
+                                    loadingModal.setTask("Saving ports...");
+
+                                    CABLESUILOADER.talkerAPI.send(
+                                        "opAttachmentSave",
+                                        {
+                                            "opname": newOpname,
+                                            "name": "att_ports.json",
+                                            "content": JSON.stringify(portJson),
+                                        },
+                                        (errr3, re3) =>
+                                        {
+                                            loadingModal.setTask("Execute code");
+
+
+                                            gui.serverOps.execute(newOpname, (newOps) =>
+                                            {
+                                                // link ports.......
+
+                                                for (let i = 0; i < inports.length; i++)
+                                                {
+                                                    // gui.corePatch.link(inports[i].op,?);
+
+                                                }
+                                                console.log("origOpsBounds", origOpsBounds);
+
+                                                // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+
+                                                gui.patchView.centerSelectOp(newOps[0], true);
+                                                newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+
+
+                                                loadingModal.close();
+                                            });
+                                        });
+                                },
+                            );
+                        }, loadingModal);
+                    },
+                });
         });
+    });
+    // });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)

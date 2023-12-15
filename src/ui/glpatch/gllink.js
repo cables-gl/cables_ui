@@ -19,7 +19,7 @@ export default class GlLink
         this._link = link;
         this._visible = visible;
         this._cable = null;
-        this._debugColor = userSettings.get("devinfos");
+        this._debugColor = true;// userSettings.get("devinfos");
 
         this._glPatch = glpatch;
         this._type = type;
@@ -355,7 +355,7 @@ export default class GlLink
             }
             else
             {
-                if (!this._subPatchOp)
+                if (!this._subPatchOp && this._glOpIn && this._glOpOut)
                 {
                     const a = gui.patchView.getSubPatchOuterOp(this._glOpIn.op.uiAttribs.subPatch);
                     const b = gui.patchView.getSubPatchOuterOp(this._glOpOut.op.uiAttribs.subPatch);
