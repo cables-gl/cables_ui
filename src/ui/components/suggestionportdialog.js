@@ -14,6 +14,7 @@ export default class SuggestPortDialog
             if (
                 !theport.uiAttribs.hidePort &&
                 !theport.uiAttribs.readOnly &&
+
                 CABLES.Link.canLink(theport, port))
             {
                 this._addPort(theport);
