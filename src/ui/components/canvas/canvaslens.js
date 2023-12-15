@@ -3,13 +3,13 @@ export default class CanvasLens
 {
     constructor(ele)
     {
+        this._origCanvas = gui.canvasManager.currentCanvas();
         this._scale = 7;
-        this._size = this._scale * 15;
+        this._size = this._scale * (this._origCanvas.clientWidth / 25);
         this._size2 = this._size / 2;
         this._origPixels = this._size / this._scale;
         this._origPixels2 = this._size / this._scale / 2;
 
-        this._origCanvas = gui.canvasManager.currentCanvas();
         this._lensCanvas = document.createElement("canvas");
         this._lensCanvas.id = "canvaslens";
         this._lensCanvas.width = this._size;
