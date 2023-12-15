@@ -164,6 +164,19 @@ export default class ServerOps
 
     saveOpLayout(op)
     {
+        this.timeoutsLayouts = this.timeoutsLayouts || {};
+
+
+        clearTimeout(this.timeoutsLayouts[op.objName]);
+        this.timeoutsLayouts[op.objName] = setTimeout(
+            () =>
+            {
+                this._saveOpLayout(op);
+            }, 1000);
+    }
+
+    _saveOpLayout(op)
+    {
         if (!op)
         {
             this._log.error("saveoplayout: no op!");

@@ -249,10 +249,11 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                                                     // gui.corePatch.link(inports[i].op,?);
 
                                                 }
-                                                // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
 
-                                                gui.patchView.centerSelectOp(newOps[0], true);
+                                                // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                                // gui.patchView.centerSelectOp(newOps[0], true);
                                                 newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                                gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
 
                                                 loadingModal.close();

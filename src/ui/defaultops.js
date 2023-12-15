@@ -34,7 +34,6 @@ const defaultOpNames =
     "defaultFont": "Ops.Html.FontFile_v2",
 
     "blueprint": "Ops.Dev.Blueprint",
-    "blueprintTemplate": "Ops.Templates.Blueprint2",
 
     "subPatch": "Ops.Ui.SubPatch",
     "subPatch2": "Ops.Ui.Subpatch2Temp",
