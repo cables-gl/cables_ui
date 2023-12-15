@@ -1239,15 +1239,19 @@ export default class GlPatch extends CABLES.EventTarget
         const y2 = Math.max(ya, yb);
         const ops = [];
 
-        for (const i in this._glOpz)
+
+        const cops = gui.corePatch().getSubPatchOps();
+
+        for (let j = 0; j < cops.length; j++)
         {
-            const glop = this._glOpz[i];
+            // for (const i in this._glOpz)
+            const glop = this._glOpz[cops[j].id];
             if (!glop.visible) continue;
 
             if (glop.x + glop.w >= x && // glop. right edge past r2 left
-                glop.x <= x2 && // glop. left edge past r2 right
-                glop.y + glop.h >= y && // glop. top edge past r2 bottom
-                glop.y <= y2) // r1 bottom edge past r2 top
+                    glop.x <= x2 && // glop. left edge past r2 right
+                    glop.y + glop.h >= y && // glop. top edge past r2 bottom
+                    glop.y <= y2) // r1 bottom edge past r2 top
             {
                 ops.push(glop);
             }
