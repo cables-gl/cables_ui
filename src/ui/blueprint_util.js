@@ -160,6 +160,9 @@ blueprintUtil.portJsonTitle = (opId, portid, title) =>
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
+    let setSavedParentSubpatch = false;
+    if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
+
     const ops = gui.corePatch().getOpsByOpId(opId);
     for (let i = 0; i < ops.length; i++)
     {
@@ -198,6 +201,8 @@ blueprintUtil.portJsonTitle = (opId, portid, title) =>
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
+
                     loadingModal.close();
                 });
             });
@@ -210,6 +215,9 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
     const loadingModal = new ModalLoading("Deleting port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+
+    let setSavedParentSubpatch = false;
+    if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
     loadingModal.setTask("getting ports json");
     CABLESUILOADER.talkerAPI.send(
@@ -250,6 +258,7 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
 
                     loadingModal.close();
                 });
@@ -263,6 +272,8 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
     const loadingModal = new ModalLoading("Moving port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+    let setSavedParentSubpatch = false;
+    if (gui.savedState.isSavedSubPatch(oldSubPatchId)) setSavedParentSubpatch = oldSubPatchId;
 
     loadingModal.setTask("getting ports json");
     CABLESUILOADER.talkerAPI.send(
@@ -315,11 +326,12 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
                 {
                     gui.opParams.refresh();
 
-                    if (subOuter)
-                        gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
+                    if (subOuter) gui.patchView.setCurrentSubPatch(newOps[0].patchId.get());
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
+
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
 
                     loadingModal.close();
                 });
