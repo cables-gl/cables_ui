@@ -1214,17 +1214,20 @@ export default class GlPatch extends CABLES.EventTarget
 
     _updateNumberOfSelectedOps()
     {
-        const perf = CABLES.UI.uiProfiler.start("[glpatch] _updateNumberOfSelectedOps");
+        clearTimeout(this._numSelOpsTimeout);
+        this._numSelOpsTimeout = setTimeout(() =>
+        {
+            const perf = CABLES.UI.uiProfiler.start("[glpatch] _updateNumberOfSelectedOps");
 
-        const numSelectedOps = Object.keys(this._selectedGlOps).length;
+            const numSelectedOps = Object.keys(this._selectedGlOps).length;
 
-        perf.finish();
-        const perf2 = CABLES.UI.uiProfiler.start("[glpatch] _updateNumberOfSelectedOps2");
+            const perf2 = CABLES.UI.uiProfiler.start("[glpatch] _updateNumberOfSelectedOps2");
 
-        const changedNumOps = this._numSelectedGlOps != numSelectedOps;
-        this._numSelectedGlOps = numSelectedOps;
-        perf2.finish();
-        if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+            const changedNumOps = this._numSelectedGlOps != numSelectedOps;
+            this._numSelectedGlOps = numSelectedOps;
+
+            if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+        }, 20);
     }
 
     _getGlOpsInRect(xa, ya, xb, yb)
