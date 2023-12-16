@@ -164,6 +164,19 @@ export default class ServerOps
 
     saveOpLayout(op)
     {
+        this.timeoutsLayouts = this.timeoutsLayouts || {};
+
+
+        clearTimeout(this.timeoutsLayouts[op.objName]);
+        this.timeoutsLayouts[op.objName] = setTimeout(
+            () =>
+            {
+                this._saveOpLayout(op);
+            }, 1000);
+    }
+
+    _saveOpLayout(op)
+    {
         if (!op)
         {
             this._log.error("saveoplayout: no op!");
@@ -366,7 +379,7 @@ export default class ServerOps
                     gui.serverOps.loadOpDependencies(opName, () =>
                     {
                         this._log.log("lib added!", opName, libName);
-                        gui.emitEvent("refreshManageOp");
+                        gui.emitEvent("refreshManageOp", opName);
                         if (next) next();
                     }, true);
                 }
@@ -415,6 +428,8 @@ export default class ServerOps
                         gui.serverOps.loadOpDependencies(opName, () =>
                         {
                             this._log.log("lib removed!", opName, libName);
+                            gui.emitEvent("refreshManageOp", opName);
+
                             gui.metaTabs.activateTabByName("code");
                             if (next) next();
                         }, true);
@@ -458,7 +473,7 @@ export default class ServerOps
                     {
                         this._log.log("corelib added!", opName, libName);
 
-                        gui.emitEvent("refreshManageOp");
+                        gui.emitEvent("refreshManageOp", opName);
                         // gui.metaTabs.activateTabByName("code");
                         if (next)next();
                     }, true);
@@ -489,6 +504,8 @@ export default class ServerOps
                         gui.serverOps.loadOpDependencies(opName, () =>
                         {
                             this._log.log("corelib removed!", opName, libName);
+                            gui.emitEvent("refreshManageOp", opName);
+
                             gui.metaTabs.activateTabByName("code");
                             if (next) next();
                         }, true);
@@ -511,6 +528,8 @@ export default class ServerOps
                 },
                 (err, res) =>
                 {
+                    gui.emitEvent("refreshManageOp", opName);
+
                     if (err)
                     {
                         CABLES.UI.MODAL.showError("ERROR", "unable to remove attachment: " + err.msg);
@@ -544,6 +563,7 @@ export default class ServerOps
                     {
                         this.editAttachment(opname, "att_" + attName);
                         gui.metaTabs.activateTabByName("code");
+                        gui.emitEvent("refreshManageOp", opname);
                     },
                 );
             }

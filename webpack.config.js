@@ -28,6 +28,10 @@ module.exports = (isLiveBuild, buildInfo) =>
                 {
                     "test": /\.vert/,
                     "use": "raw-loader",
+                },
+                {
+                    "test": /\.txt/,
+                    "use": "raw-loader",
                 }
             ]
         },

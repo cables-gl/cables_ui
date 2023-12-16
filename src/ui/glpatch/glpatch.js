@@ -1214,11 +1214,14 @@ export default class GlPatch extends CABLES.EventTarget
 
     _updateNumberOfSelectedOps()
     {
-        const numSelectedOps = Object.keys(this._selectedGlOps).length;
-
-        const changedNumOps = this._numSelectedGlOps != numSelectedOps;
-        this._numSelectedGlOps = numSelectedOps;
-        if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+        clearTimeout(this._numSelOpsTimeout);
+        this._numSelOpsTimeout = setTimeout(() =>
+        {
+            const numSelectedOps = Object.keys(this._selectedGlOps).length;
+            const changedNumOps = this._numSelectedGlOps != numSelectedOps;
+            this._numSelectedGlOps = numSelectedOps;
+            if (changedNumOps) this.emitEvent("selectedOpsChanged", numSelectedOps);
+        }, 20);
     }
 
     _getGlOpsInRect(xa, ya, xb, yb)
@@ -1233,18 +1236,26 @@ export default class GlPatch extends CABLES.EventTarget
         const y2 = Math.max(ya, yb);
         const ops = [];
 
-        for (const i in this._glOpz)
-        {
-            const glop = this._glOpz[i];
-            if (!glop.visible) continue;
 
-            if (glop.x + glop.w >= x && // glop. right edge past r2 left
-                glop.x <= x2 && // glop. left edge past r2 right
-                glop.y + glop.h >= y && // glop. top edge past r2 bottom
-                glop.y <= y2) // r1 bottom edge past r2 top
+        const cops = gui.corePatch().getSubPatchOps();
+
+        for (let j = 0; j < cops.length; j++)
+        {
+            // for (const i in this._glOpz)
+            if (cops[j])
             {
-                ops.push(glop);
+                const glop = this._glOpz[cops[j].id];
+                if (!glop.visible) continue;
+
+                if (glop.x + glop.w >= x && // glop. right edge past r2 left
+                        glop.x <= x2 && // glop. left edge past r2 right
+                        glop.y + glop.h >= y && // glop. top edge past r2 bottom
+                        glop.y <= y2) // r1 bottom edge past r2 top
+                {
+                    ops.push(glop);
+                }
             }
+            else console.log("no c op");
         }
 
         perf.finish();

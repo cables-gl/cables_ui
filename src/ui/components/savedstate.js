@@ -225,8 +225,9 @@ export default class SavedState extends CABLES.EventTarget
             const ops = gui.corePatch().getOpsByObjName(exposeOp.objName);
             if (ops.length > 1)
             {
-                console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
-                console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
+                console.log("updaterestrict?!");
+                // console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
+                // console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
 
                 if (!this.isSavedSubOp(exposeOp.objName) && this.isSavedSubPatch(subpatch))
                 {

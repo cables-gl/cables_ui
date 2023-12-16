@@ -554,15 +554,16 @@ export default class PatchView extends CABLES.EventTarget
 
     selectAllOpsSubPatch(subPatch, noUnselect)
     {
-        for (let i = 0; i < this._p.ops.length; i++)
+        const ops = gui.corePatch().getSubPatchOps(subPatch);
+        for (let i = 0; i < ops.length; i++)
         {
-            const op = this._p.ops[i];
+            const op = ops[i];
             if ((op.uiAttribs.subPatch || 0) == subPatch && !op.uiAttribs.selected)
             {
                 op.uiAttr({ "selected": true });
 
-                if (op.isSubPatchOp())
-                    this.selectAllOpsSubPatch(op.patchId.get(), true);
+                // if (op.isSubPatchOp())
+                // this.selectAllOpsSubPatch(op.patchId.get(), true);
             }
             else if (!noUnselect) op.uiAttr({ "selected": false });
         }
@@ -573,6 +574,7 @@ export default class PatchView extends CABLES.EventTarget
 
     checkPatchOutdated()
     {
+        const perf = CABLES.UI.uiProfiler.start("checkpatcherrors");
         this.hasOldOps = false;
 
         for (let i = 0; i < this._p.ops.length; i++)
@@ -582,9 +584,11 @@ export default class PatchView extends CABLES.EventTarget
             if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
+                perf.finish();
                 return;
             }
         }
+        perf.finish();
     }
 
     checkPatchErrorsSoon()
@@ -828,148 +832,147 @@ export default class PatchView extends CABLES.EventTarget
         const selectedOps = this.getSelectedOps();
         console.log("selectedOps", selectedOps);
 
-        gui.serverOps.loadOpDependencies(opname, () =>
-        {
-            console.log("selectedOps", selectedOps);
-            const bounds = this.getSelectionBounds();
-            const trans = {
-                "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
-                "y": bounds.miny };
-
-            // let opname = defaultops.defaultOpNames.subPatch;
-            // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
-
-            // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
-            // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
-
-            const patchOp = this._p.addOp(opname, { "translate": trans });
-            const patchId = patchOp.patchId.get();
-
-            patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
-
-            for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
-
-            if (version < 2)
+        gui.serverOps.loadOpDependencies(opname,
+            () =>
             {
-                for (let i = 0; i < selectedOps.length; i++)
+                console.log("selectedOps", selectedOps);
+                const bounds = this.getSelectionBounds();
+                const trans = {
+                    "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
+                    "y": bounds.miny };
+
+                // let opname = defaultops.defaultOpNames.subPatch;
+                // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
+
+                // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
+                // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
+
+                const patchOp = this._p.addOp(opname, { "translate": trans });
+                const patchId = patchOp.patchId.get();
+
+                patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
+
+                for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
+
+                if (version < 2)
                 {
-                    for (let j = 0; j < selectedOps[i].portsIn.length; j++)
+                    for (let i = 0; i < selectedOps.length; i++)
                     {
-                        const theOp = selectedOps[i];
-                        let found = null;
-                        for (let k = 0; k < theOp.portsIn[j].links.length; k++)
+                        for (let j = 0; j < selectedOps[i].portsIn.length; j++)
                         {
-                            const otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
-                            const otherOp = otherPort.op;
-                            if (otherOp.uiAttribs.subPatch != patchId)
+                            const theOp = selectedOps[i];
+                            let found = null;
+                            for (let k = 0; k < theOp.portsIn[j].links.length; k++)
                             {
-                                theOp.portsIn[j].links[k].remove();
-                                k--;
-
-                                if (found)
+                                const otherPort = theOp.portsIn[j].links[k].getOtherPort(theOp.portsIn[j]);
+                                const otherOp = otherPort.op;
+                                if (otherOp.uiAttribs.subPatch != patchId)
                                 {
-                                    this._p.link(
-                                        otherPort.op,
-                                        otherPort.getName(),
-                                        patchOp,
-                                        found);
-                                }
-                                else
-                                {
-                                    this._p.link(
-                                        otherPort.op,
-                                        otherPort.getName(),
-                                        patchOp,
-                                        patchOp.dyn.name);
+                                    theOp.portsIn[j].links[k].remove();
+                                    k--;
 
-                                    found = patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                                    if (found)
+                                    {
+                                        this._p.link(
+                                            otherPort.op,
+                                            otherPort.getName(),
+                                            patchOp,
+                                            found);
+                                    }
+                                    else
+                                    {
+                                        this._p.link(
+                                            otherPort.op,
+                                            otherPort.getName(),
+                                            patchOp,
+                                            patchOp.dyn.name);
+
+                                        found = patchOp.addSubLink(theOp.portsIn[j], otherPort);
+                                    }
                                 }
                             }
-                        }
 
-                        if (theOp.portsOut[j])
-                        {
-                            for (let k = 0; k < theOp.portsOut[j].links.length; k++)
+                            if (theOp.portsOut[j])
                             {
-                                const otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
-                                if (otherPortOut)
+                                for (let k = 0; k < theOp.portsOut[j].links.length; k++)
                                 {
-                                    const otherOpOut = otherPortOut.op;
-                                    if (otherOpOut.uiAttribs.subPatch != patchId)
+                                    const otherPortOut = theOp.portsOut[j].links[k].getOtherPort(theOp.portsOut[j]);
+                                    if (otherPortOut)
                                     {
-                                        theOp.portsOut[j].links[k].remove();
-                                        this._p.link(
-                                            otherPortOut.op,
-                                            otherPortOut.getName(),
-                                            patchOp,
-                                            patchOp.dynOut.name);
-                                        patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
+                                        const otherOpOut = otherPortOut.op;
+                                        if (otherOpOut.uiAttribs.subPatch != patchId)
+                                        {
+                                            theOp.portsOut[j].links[k].remove();
+                                            this._p.link(
+                                                otherPortOut.op,
+                                                otherPortOut.getName(),
+                                                patchOp,
+                                                patchOp.dynOut.name);
+                                            patchOp.addSubLink(theOp.portsOut[j], otherPortOut);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            }
-            else
-            {
-                for (let i = 0; i < selectedOps.length; i++)
+                else
                 {
-                    for (let j = 0; j < selectedOps[i].portsIn.length; j++)
+                    for (let i = 0; i < selectedOps.length; i++)
                     {
-                        const port1 = selectedOps[i].portsIn[j];
-                        const op1 = selectedOps[i];
-
-                        for (let k = 0; k < op1.portsIn[j].links.length; k++)
+                        for (let j = 0; j < selectedOps[i].portsIn.length; j++)
                         {
-                            const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
-                            const op2 = port2.op;
+                            const port1 = selectedOps[i].portsIn[j];
+                            const op1 = selectedOps[i];
 
-                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                            for (let k = 0; k < op1.portsIn[j].links.length; k++)
                             {
-                                if (op1.uiAttribs.subPatch != patchId)
-                                    port2.setUiAttribs({ "expose": true });
-                                else
-                                    port1.setUiAttribs({ "expose": true });
+                                const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
+                                const op2 = port2.op;
 
-                                // relinking is lazy and dirty but there is no easy way to rebuild
-                                op1.portsIn[j].links[k].remove();
-                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+                                if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                                {
+                                    // if (op1.uiAttribs.subPatch != patchId)
+                                    //     port2.setUiAttribs({ "expose": true });
+                                    // else
+                                    //     port1.setUiAttribs({ "expose": true });
+
+                                    op1.portsIn[j].links[k].remove();
+                                    // gui.corePatch().link(op1, port1.name, op2, port2.name);
+                                }
                             }
                         }
                     }
-                }
 
-                for (let i = 0; i < selectedOps.length; i++)
-                {
-                    for (let j = 0; j < selectedOps[i].portsOut.length; j++)
+                    for (let i = 0; i < selectedOps.length; i++)
                     {
-                        const port1 = selectedOps[i].portsOut[j];
-                        const op1 = selectedOps[i];
-
-                        for (let k = 0; k < op1.portsOut[j].links.length; k++)
+                        for (let j = 0; j < selectedOps[i].portsOut.length; j++)
                         {
-                            const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
-                            const op2 = port2.op;
+                            const port1 = selectedOps[i].portsOut[j];
+                            const op1 = selectedOps[i];
 
-                            if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                            for (let k = 0; k < op1.portsOut[j].links.length; k++)
                             {
-                                // relinking is lazy and dirty but there is no easy way to rebuild
-                                op1.portsOut[j].links[k].remove();
-                                gui.corePatch().link(op1, port1.name, op2, port2.name);
+                                const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
+                                const op2 = port2.op;
 
-                                if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                else port1.setUiAttribs({ "expose": true });
+                                if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
+                                {
+                                    op1.portsOut[j].links[k].remove();
+                                    // gui.corePatch().link(op1, port1.name, op2, port2.name);
+
+                                    // if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
+                                    // else port1.setUiAttribs({ "expose": true });
+                                }
                             }
                         }
                     }
-                }
 
-                this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                this._p.emitEvent("subpatchExpose", patchId);
+                    // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                    // this._p.emitEvent("subpatchExpose", patchId);
 
-                setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
-                {
+                    // setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
+                    // {
                     // set positions of input/output
                     let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
                     let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
@@ -984,15 +987,12 @@ export default class PatchView extends CABLES.EventTarget
 
                     if (next)next(patchId, patchOp);
 
-                    // gui.serverOps.createBlueprint2Op(patchId);
-                }, 100);
+                // }, 100);
+                }
 
-                // gui.patchView.setCurrentSubPatch(patchId);
-            }
-
-            gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
-            this._p.emitEvent("subpatchCreated");
-        });
+                gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
+                this._p.emitEvent("subpatchCreated");
+            });
     }
 
     getSubPatchName(subpatch)

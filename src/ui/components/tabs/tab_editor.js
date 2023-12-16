@@ -40,7 +40,10 @@ export default class EditorTab
         this._tab.editorObj = options.editorObj;
         gui.mainTabs.addTab(this._tab);
 
-        const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;\"></div>";
+        let style = "";
+
+        if (!options.allowEdit) style = "background-color:#333;";
+        const html = "<div id=\"editorcontent" + this._tab.id + "\" style=\"width:100%;height:100%;" + style + "\"></div>";
         this._tab.html(html);
 
         createEditor("editorcontent" + this._tab.id, options.content || "", (editor) =>
@@ -48,7 +51,6 @@ export default class EditorTab
             this._editor = editor;
 
             editor.setFontSize(parseInt(userSettings.get("fontsize_ace")) || 12);
-
 
 
 
@@ -68,7 +70,14 @@ export default class EditorTab
             }
             else
             {
-                this._editor.setOptions({ "readOnly": "true" });
+                this._editor.setOptions(
+                    {
+                        "readOnly": "true",
+                        "highlightActiveLine": false,
+                        "highlightGutterLine": false
+                    });
+                this._editor.renderer.setStyle("disabled", true);
+                this._editor.blur();
             }
 
             let opname = null;

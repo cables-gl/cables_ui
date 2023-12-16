@@ -33,8 +33,7 @@ const defaultOpNames =
     "VarGetTrigger": "Ops.Trigger.TriggerReceive",
     "defaultFont": "Ops.Html.FontFile_v2",
 
-    "blueprint": "Ops.Dev.Blueprint",
-    "blueprintTemplate": "Ops.Templates.Blueprint2",
+    "blueprint": "Ops.Deprecated.Dev.Blueprint",
 
     "subPatch": "Ops.Ui.SubPatch",
     "subPatch2": "Ops.Ui.Subpatch2Temp",
