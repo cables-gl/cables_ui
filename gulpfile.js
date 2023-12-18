@@ -90,7 +90,8 @@ function _scripts_ui_webpack(done)
         .pipe(gulp.dest("dist/js"))
         .on("error", (err) =>
         {
-            console.error("WEBPACK ERROR", err);
+            console.error("WEBPACK ERROR NEU!!!!!!!", err);
+            done(err);
         });
 }
 

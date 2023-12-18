@@ -1,3 +1,4 @@
+import defaultOps from "../../defaultops";
 import Tab from "../../elements/tabpanel/tab";
 
 export default class GpuProfiler
@@ -11,6 +12,7 @@ export default class GpuProfiler
         this.intervalId = null;
         this.lastPortTriggers = 0;
         this._subTab = 0;
+        this._foundPerfOp = false;
 
         const glQueryExt = gui.corePatch().cgl.gl.getExtension("EXT_disjoint_timer_query_webgl2");
         if (glQueryExt)gui.corePatch().cgl.profileData.doProfileGlQuery = true;
@@ -24,6 +26,21 @@ export default class GpuProfiler
     update()
     {
         let html = "<div class=\"tabContentScrollContainer\"><h2>GPU Shader and Mesh Drawcalls</h2>";
+
+        if (!this._foundPerfOp)
+        {
+            const ops = gui.corePatch().getOpsByObjName(defaultOps.defaultOpNames.performance);
+            if (ops && ops.length > 0)
+            {
+                this._foundPerfOp = true;
+
+                console.log("found perf op!!!!cxcsdcsd");
+            }
+            else
+            {
+                html += "<div class=\"warning-error warning-error-level2\">Error: Insert a performance op directly below mainloop to measure all performance related data!</div>";
+            }
+        }
 
         const glQueryData = gui.corePatch().cgl.profileData.glQueryData;
 
