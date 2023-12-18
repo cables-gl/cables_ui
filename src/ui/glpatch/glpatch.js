@@ -1103,6 +1103,7 @@ export default class GlPatch extends CABLES.EventTarget
         let preId = -1;
         if (this._hoverOps.length) preId = this._hoverOps[0].id;
 
+
         this._hoverOps = this._getGlOpsInRect(x, y, x + 1, y + 1);
 
         if (this._hoverOps.length && this._hoverOps[0].id != preId) this._hoverOpLongStartTime = performance.now();
@@ -1153,6 +1154,7 @@ export default class GlPatch extends CABLES.EventTarget
             const ops = this._getGlOpsInRect(x, y, x + 1, y + 1);
             if (ops.length > 0 && this._focusRectAnim.isFinished(this._time) && gui.longPressConnector.getStartOp().id != ops[0].id) this.focusOpAnim(ops[0].id);
         }
+
 
         if (this.mouseState.buttonStateForSelectionArea && allowSelectionArea && this.mouseState.isDragging && this.mouseState.mouseOverCanvas)
         {
@@ -1239,6 +1241,8 @@ export default class GlPatch extends CABLES.EventTarget
 
         const cops = gui.corePatch().getSubPatchOps();
 
+
+
         for (let j = 0; j < cops.length; j++)
         {
             // for (const i in this._glOpz)
@@ -1255,7 +1259,7 @@ export default class GlPatch extends CABLES.EventTarget
                     ops.push(glop);
                 }
             }
-            else console.log("no c op");
+            // else console.log("no c op");
         }
 
         perf.finish();

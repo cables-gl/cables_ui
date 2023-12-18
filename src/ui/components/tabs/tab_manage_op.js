@@ -16,7 +16,7 @@ export default class ManageOp
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
-        this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
+        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
 
