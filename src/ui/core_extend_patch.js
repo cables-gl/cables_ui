@@ -175,7 +175,7 @@ export default function extendCorePatch()
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
-            console.error("unknown subpatchid cache ?!", subPatchId, this._subpatchOpCache[subPatchId]);
+            // console.error("unknown subpatchid cache ?!", subPatchId, this._subpatchOpCache[subPatchId]);
             // this.clearSubPatchCache(subPatchId);
             // this.getSubPatchOps(subPatchId); // try build cache
 
