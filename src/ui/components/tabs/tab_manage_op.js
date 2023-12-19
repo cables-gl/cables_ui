@@ -113,7 +113,7 @@ export default class ManageOp
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
 
-            if (portJson.ports)
+            if (portJson && portJson.ports)
             {
                 portJson.ports = portJson.ports.sort((a, b) => { return a.order - b.order; });
 
