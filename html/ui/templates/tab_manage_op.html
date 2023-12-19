@@ -41,7 +41,7 @@
 
             <table class="table" style="{{#if bpSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}"">
                 <tr>
-                    <th></th>
+                    <th>Inputs</th>
                     <th></th>
                     <th style="width:40%">Title</th>
                     <th>id</th>
@@ -50,6 +50,20 @@
                     <th></th>
                 </tr>
                 {{#each portJson.ports}}
+
+                {{#if divider}}
+                <tr>
+                    <th>Outputs</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+                {{/if}}
+
+
                 <tr>
                     <td>
                         <span class="button-small button-icon" id="{{../viewId}}_port_up_{{id}}"><span class="icon icon-chevron-up"></span></span>

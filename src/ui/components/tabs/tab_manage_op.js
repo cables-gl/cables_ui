@@ -113,7 +113,17 @@ export default class ManageOp
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
 
-            console.log(portJson);
+            if (portJson.ports)
+            {
+                portJson.ports = portJson.ports.sort((a, b) => { return a.order - b.order; });
+
+                if (portJson.ports.length > 1)
+                    for (let i = 1; i < portJson.ports.length; i++)
+                    {
+                        if (portJson.ports[i - 1].dir != portJson.ports[i].dir)portJson.ports[i].divider = true;
+                    }
+            }
+
             const html = getHandleBarHtml("tab_manage_op",
                 {
                     "url": CABLES.sandbox.getCablesUrl(),

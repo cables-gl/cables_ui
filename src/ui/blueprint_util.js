@@ -316,6 +316,9 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
 
             array_move(js.ports, idx, newIndex);
 
+            for (let i = 0; i < js.ports.length; i++)
+                js.ports[i].order = js.ports[i].dir * 1000 + i;
+
             loadingModal.setTask("saving ports json");
 
             blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
