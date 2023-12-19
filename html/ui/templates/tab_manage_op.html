@@ -42,6 +42,7 @@
             <table class="table" style="{{#if bpSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}"">
                 <tr>
                     <th></th>
+                    <th></th>
                     <th style="width:40%">Title</th>
                     <th>default</th>
                     <th>display</th>
@@ -53,7 +54,9 @@
                         <span class="button-small button-icon" id="{{../viewId}}_port_up_{{id}}"><span class="icon icon-chevron-up"></span></span>
                         <span class="button-small button-icon" id="{{../viewId}}_port_down_{{id}}"><span class="icon icon-chevron-down"></span></span>
                     </td>
-
+                    <td>
+                        {{#if dir}}out{{else}}in{{/if}}
+                    </td>
                     <td>
                         <span class="portType_{{type}}_background">&nbsp;&nbsp;&nbsp;</span>&nbsp;
                         {{title}}

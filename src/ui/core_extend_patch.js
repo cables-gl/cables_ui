@@ -168,18 +168,19 @@ export default function extendCorePatch()
         }
     };
 
-    CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId)
+    CABLES.Patch.prototype.getSubPatchOuterOp = function (subPatchId, ignoreNotFound)
     {
         if (subPatchId == 0) return null;
         // oldSubPatchIds
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
-            // console.error("unknown subpatchid cache ?!", subPatchId, this._subpatchOpCache[subPatchId]);
-            // this.clearSubPatchCache(subPatchId);
-            // this.getSubPatchOps(subPatchId); // try build cache
-
-            return null;
+            if (ignoreNotFound)
+            {
+                this.clearSubPatchCache(subPatchId);
+                this.getSubPatchOps(subPatchId); // try build cache
+            }
+            else return null;
         }
 
         // console.log(this._subpatchOpCache);

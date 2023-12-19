@@ -343,7 +343,7 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
 blueprintUtil.createBlueprintPortJsonElement = (port, i) =>
 {
     const o = {
-        "id": "id" + i,
+        "id": i,
         "title": port.getTitle(),
         "dir": port.direction,
         "type": port.type,
@@ -410,7 +410,14 @@ blueprintUtil.addPortToBlueprint = (opId, port) =>
             res.content = res.content || JSON.stringify({ "ports": [] });
             const js = JSON.parse(res.content) || {};
             js.ports = js.ports || [];
-            const newPortJson = blueprintUtil.createBlueprintPortJsonElement(port, js.ports.length);
+
+            let newId = js.ports.length;
+            for (let i = 0; i < js.ports.length; i++)
+            {
+                if (js.ports[i].id >= newId)newId = js.ports[i].id;
+            }
+
+            const newPortJson = blueprintUtil.createBlueprintPortJsonElement(port, newId);
 
             js.ports.push(newPortJson);
             loadingModal.setTask("saving ports json");

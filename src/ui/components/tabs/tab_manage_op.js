@@ -112,6 +112,8 @@ export default class ManageOp
             summary = gui.opDocs.getSummary(opName);
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
+
+            console.log(portJson);
             const html = getHandleBarHtml("tab_manage_op",
                 {
                     "url": CABLES.sandbox.getCablesUrl(),

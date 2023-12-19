@@ -114,7 +114,7 @@ export default class SavedState extends CABLES.EventTarget
         }
         else
         {
-            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
+            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch, true);
             if (!subOuter || !subOuter.isBlueprint2())
             {
                 subpatch = 0;
