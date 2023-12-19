@@ -73,8 +73,13 @@ export default class ManageOp
                 const attachmentFiles = [];
                 for (let i = 0; i < res.attachmentFiles.length; i++)
                 {
+                    const parts = res.attachmentFiles[i].split(".");
+                    let suffix = "";
+                    suffix = parts[parts.length - 1];
+
                     attachmentFiles.push(
                         {
+                            "suffix": suffix,
                             "readable": res.attachmentFiles[i].substr(4),
                             "original": res.attachmentFiles[i],
                         });
