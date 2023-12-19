@@ -184,7 +184,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
     {
         const loadingModal = new ModalLoading("Creating op...");
 
-        gui.patchView.unselectAllOps();
+
         for (let i = 0; i < selectedOpIds.length; i++)
             gui.patchView.selectOpId(selectedOpIds[i]);
 
