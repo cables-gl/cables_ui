@@ -175,21 +175,26 @@ export default function extendCorePatch()
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
-            this.clearSubPatchCache(subPatchId);
-            this.getSubPatchOps(subPatchId); // try build cache
-            // console.error("unknown subpatchid cache ?!", subPatchId);
-            return;
+            console.error("unknown subpatchid cache ?!", subPatchId, this._subpatchOpCache[subPatchId]);
+            // this.clearSubPatchCache(subPatchId);
+            // this.getSubPatchOps(subPatchId); // try build cache
+
+            return null;
         }
 
         // console.log(this._subpatchOpCache);
         // console.log("subpatchopdi", this._subpatchOpCache[subPatchId].subPatchOpId);
-        return this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
+        let op = this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
+        if (op) return op;
 
-        //     const ops = this.ops;
-        //     for (let i = 0; i < ops.length; i++)
-        //     {
-        //         const op = ops[i];
-        //         if (op.isSubPatchOp() && op.patchId.get() == subPatchId) return op;
-        //     }
+        // const ops = this.ops;
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     op = ops[i];
+        //     if (op.isSubPatchOp() && op.patchId.get() == subPatchId) return op;
+        // }
+
+        // console.log("not found+?!?!?!");
+        return null;
     };
 }
