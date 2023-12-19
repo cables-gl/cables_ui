@@ -1331,8 +1331,8 @@ export default class GlOp extends CABLES.EventTarget
         else
         if (!this._op.enabled)
         {
-            this._glRectBg.setOpacity(0.2, false);
-            this._glTitle.setOpacity(0.2);
+            this._glRectBg.setOpacity(0.15, false);
+            this._glTitle.setOpacity(0.5);
         }
         else
         {

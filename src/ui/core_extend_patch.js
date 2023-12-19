@@ -91,7 +91,7 @@ export default function extendCorePatch()
         }
         if (!this._subpatchOpCache[subPatchId])
         {
-            console.log("no cache", subPatchId);
+            // console.log("no cache", subPatchId);
         }
         else
             opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
@@ -175,7 +175,7 @@ export default function extendCorePatch()
 
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].subPatchOpId)
         {
-            if (ignoreNotFound)
+            if (!ignoreNotFound)
             {
                 this.clearSubPatchCache(subPatchId);
                 this.getSubPatchOps(subPatchId); // try build cache

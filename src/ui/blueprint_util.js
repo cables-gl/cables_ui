@@ -574,12 +574,6 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
 {
     if (loadingModal)loadingModal.setTask("add Corebib");
 
-
-    console.log("createBlueprint2OpcreateBlueprint2OpcreateBlueprint2OpcreateBlueprint2OpcreateBlueprint2OpcreateBlueprint2Op");
-
-    console.log(srcBluePrintOp);
-
-
     // gui.serverOps.addCoreLib(newOp.objName, "subpatchop", () =>
     // {
     // CABLESUILOADER.talkerAPI.send(
