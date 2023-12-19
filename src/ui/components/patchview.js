@@ -558,14 +558,17 @@ export default class PatchView extends CABLES.EventTarget
         for (let i = 0; i < ops.length; i++)
         {
             const op = ops[i];
-            if ((op.uiAttribs.subPatch || 0) == subPatch && !op.uiAttribs.selected)
+            if (op)
             {
-                op.uiAttr({ "selected": true });
+                if ((op.uiAttribs.subPatch || 0) == subPatch && !op.uiAttribs.selected)
+                {
+                    op.uiAttr({ "selected": true });
 
                 // if (op.isSubPatchOp())
                 // this.selectAllOpsSubPatch(op.patchId.get(), true);
+                }
+                else if (!noUnselect) op.uiAttr({ "selected": false });
             }
-            else if (!noUnselect) op.uiAttr({ "selected": false });
         }
 
 
