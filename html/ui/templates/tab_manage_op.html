@@ -44,6 +44,7 @@
                     <th></th>
                     <th></th>
                     <th style="width:40%">Title</th>
+                    <th>id</th>
                     <th>default</th>
                     <th>display</th>
                     <th></th>
@@ -62,8 +63,9 @@
                         {{title}}
                         <span class="icon icon-edit iconhover" id="{{../viewId}}_port_title_{{id}}" ></span>
                     </td>
-                    <td>1</td>
-                    <td>[int|float|boolean]</td>
+                    <td>{{id}}</td>
+                    <td>{{value}}</td>
+                    <td>{{uiDisplay}}</td>
                     <td>
                         <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
                     </td>

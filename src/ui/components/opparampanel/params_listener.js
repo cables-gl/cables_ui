@@ -517,7 +517,12 @@ class ParamsListener extends CABLES.EventTarget
                         "func": () =>
                         {
                             const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
+
+                            if (!subOp)
+                            { console.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
+
                             port.removeLinks();
+
                             subOp.removePort(port);
                             port.setUiAttribs({ "expose": !port.uiAttribs.expose });
                             port.op.refreshParams();

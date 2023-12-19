@@ -340,10 +340,10 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
     );
 };
 
-blueprintUtil.createBlueprintPortJsonElement = (port, i) =>
+blueprintUtil.createBlueprintPortJsonElement = (port) =>
 {
     const o = {
-        "id": i,
+        "id": CABLES.shortId(),
         "title": port.getTitle(),
         "dir": port.direction,
         "type": port.type,
@@ -411,13 +411,7 @@ blueprintUtil.addPortToBlueprint = (opId, port) =>
             const js = JSON.parse(res.content) || {};
             js.ports = js.ports || [];
 
-            let newId = js.ports.length;
-            for (let i = 0; i < js.ports.length; i++)
-            {
-                if (js.ports[i].id >= newId)newId = js.ports[i].id;
-            }
-
-            const newPortJson = blueprintUtil.createBlueprintPortJsonElement(port, newId);
+            const newPortJson = blueprintUtil.createBlueprintPortJsonElement(port);
 
             js.ports.push(newPortJson);
             loadingModal.setTask("saving ports json");
