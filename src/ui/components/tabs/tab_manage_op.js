@@ -16,7 +16,7 @@ export default class ManageOp
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
-        this._tab = new Tab(opname, { "icon": "code", "infotext": "tab_code", "padding": true });
+        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true });
         tabs.addTab(this._tab, true);
         this.show();
 
@@ -82,6 +82,7 @@ export default class ManageOp
                     if (res.attachmentFiles[i] === "att_ports.json")
                     {
                         const ops = gui.corePatch().getOpsByObjName(opName);
+
                         if (ops && ops.length > 0)
                         {
                             try
@@ -97,7 +98,6 @@ export default class ManageOp
                 }
                 doc.attachmentFiles = attachmentFiles;
             }
-
 
 
             const opDoc = gui.opDocs.getOpDocByName(opName);
@@ -198,3 +198,5 @@ export default class ManageOp
         });
     }
 }
+
+

@@ -22,29 +22,27 @@
             {{#if oldVersion}}
                 <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
                 <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
+                <br/>
             {{/if}}
 
             {{#if minified}}
             {{:else}}
                 <div class="summary selectable">
-
                 </div>
             {{/if}}
 
 
 
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
+            {{#if hasExample}}
+            <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
+            {{/if}}
 
+            <a class="button-small button-icon tt info"  onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-op"></span></a>
 
             {{#if showEditButton }}
                 <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
-                <a class="button-small button-icon tt info"  onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-settings"></span></a>
             {{/if}}
-
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
-            {{#if hasExample}}
-                <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
-            {{/if}}
-
 
 
 
@@ -52,8 +50,8 @@
                 <div class="warning" id="">
                     This operator is outdated.
                     {{#if op.isDeprecatedAlternative }}
-                        <br/>
-                        we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
+                    <br/>
+                    we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
                     {{/if}}
                 </div>
                 <br/><br/>

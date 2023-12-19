@@ -12,6 +12,22 @@ CABLES.Op.unLinkTempReLinkP2 = null;
 
 export default function extendCoreOp()
 {
+    CABLES.Op.prototype.initUi = function ()
+    {
+        this.on("onPortAdd", () =>
+        {
+            for (let i = 0; i < this.portsIn.length; i++)
+            {
+                for (let j = 0; j < this.portsOut.length; j++)
+                    if (this.portsIn[i].name == this.portsOut[j].name)
+                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsOut[j].name + ". Must be unique!", 2);
+                for (let j = 0; j < this.portsIn.length; j++)
+                    if (i != j && this.portsIn[i].name == this.portsIn[j].name)
+                        this.setUiError("dupeport", "Duplicate Port name: " + this.portsIn[j].name + ". Must be unique!", 2);
+            }
+        });
+    };
+
     CABLES.Op.prototype.undoUnLinkTemporary = function ()
     {
         if (this.shakeLink) this.shakeLink.remove();

@@ -23,3 +23,4 @@ export default class LoggingTab extends CABLES.EventTarget
         this._tab.html(html);
     }
 }
+
