@@ -19,86 +19,86 @@
 
 
 
-            {{#if oldVersion}}
-                <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
-                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
+        {{#if oldVersion}}
+            <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
+            <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
+            <br/>
+        {{/if}}
+
+        {{#if minified}}
+        {{:else}}
+            <div class="summary selectable">
+            </div>
+        {{/if}}
+
+
+
+        <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
+        {{#if hasExample}}
+        <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
+        {{/if}}
+
+        <a class="button-small button-icon tt info"  onclick="CABLES.CMD.PATCH.manageSelectedOp('{{op.objName}}')"><span class="icon icon-op"></span></a>
+
+        {{#if showEditButton }}
+            <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
+        {{/if}}
+
+
+
+        {{#if op.isDeprecated }}
+            <div class="warning" id="">
+                This operator is outdated.
+                {{#if op.isDeprecatedAlternative }}
                 <br/>
-            {{/if}}
+                we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
+                {{/if}}
+            </div>
+            <br/><br/>
+        {{/if}}
 
-            {{#if minified}}
-            {{:else}}
-                <div class="summary selectable">
-                </div>
-            {{/if}}
+        {{#if op.uiAttribs.error }}
 
+            <div class="warning-error warning-error-level2" id="options_error"  >
+                OLD ERROR MSG<br/>
+                <i>Error:</i> {{op.uiAttribs.error}}
+            </div>
+        {{/if}}
 
-
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
-            {{#if hasExample}}
-            <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
-            {{/if}}
-
-            <a class="button-small button-icon tt info"  onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-op"></span></a>
-
-            {{#if showEditButton }}
-                <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
-            {{/if}}
-
-
-
-            {{#if op.isDeprecated }}
-                <div class="warning" id="">
-                    This operator is outdated.
-                    {{#if op.isDeprecatedAlternative }}
-                    <br/>
-                    we recommend to use the new version: <a onclick="gui.scene().addOp('{{op.isDeprecatedAlternative}}');">{{ op.isDeprecatedAlternative }}</a>
-                    {{/if}}
-                </div>
-                <br/><br/>
-            {{/if}}
-
-            {{#if op.uiAttribs.error }}
-
+        {{#if op.uiAttribs.errors }}
+            {{#each op.uiAttribs.errors}}
                 <div class="warning-error warning-error-level2" id="options_error"  >
                     OLD ERROR MSG<br/>
-                    <i>Error:</i> {{op.uiAttribs.error}}
+                    {{{.}}}<br/>
                 </div>
-            {{/if}}
+            {{/each}}
+        {{/if}}
 
-            {{#if op.uiAttribs.errors }}
-                {{#each op.uiAttribs.errors}}
-                    <div class="warning-error warning-error-level2" id="options_error"  >
-                        OLD ERROR MSG<br/>
-                        {{{.}}}<br/>
-                    </div>
-                {{/each}}
-            {{/if}}
+        <div id="op_params_uierrors"></div>
 
-            <div id="op_params_uierrors"></div>
+        {{#if op.isExperimental }}
+            <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
+        {{/if}}
 
-            {{#if op.isExperimental }}
-                <div class="warning-experimental" id=""><b>Warning: This operator is Experimental.</b><br/> You can play around with it, but a lot will change and it might stop working for you.</div>
-            {{/if}}
+        {{#if op.uiAttribs.warning }}
+            <div class="warning" id="options_warning" >
+                <i>Warning:</i> {{op.uiAttribs.warning}}
+            </div>
+        {{/if}}
 
-            {{#if op.uiAttribs.warning }}
-                <div class="warning" id="options_warning" >
-                    <i>Warning:</i> {{op.uiAttribs.warning}}
-                </div>
-            {{/if}}
-
-            {{#if op.uiAttribs.hint }}
-                <div class="hint" id="options_hint" >
-            	    <i>Hint:</i> {{op.uiAttribs.hint}}
-                </div>
-            {{/if}}
+        {{#if op.uiAttribs.hint }}
+            <div class="hint" id="options_hint" >
+                <i>Hint:</i> {{op.uiAttribs.hint}}
+            </div>
+        {{/if}}
 
 
 
-        </div>
     </div>
+</div>
 
-    <div id="opparams" class="panel" style="padding:0px;">
-        <table>
+<div id="opparams" class="panel" style="padding:0px;">
+    <table>
 
 </script>
 

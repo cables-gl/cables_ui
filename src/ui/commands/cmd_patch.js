@@ -103,13 +103,13 @@ CABLES_CMD_PATCH.cloneSelectedOp = function ()
     if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName);
 };
 
-CABLES_CMD_PATCH.manageSelectedOp = function ()
+CABLES_CMD_PATCH.manageSelectedOp = function (opid)
 {
     const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) new ManageOp(gui.mainTabs, ops[0].objName);
+
+    console.log("manage selected", ops);
+    if (ops.length > 0) new ManageOp(gui.mainTabs, opid || ops[0].objName);
 };
-
-
 
 
 CABLES_CMD_PATCH.save = function (force, cb)

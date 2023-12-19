@@ -2090,7 +2090,9 @@ export default class PatchView extends CABLES.EventTarget
 
     unselectAllOps()
     {
-        this._patchRenderer.unselectAll();
+        // this._patchRenderer.unselectAll();
+        for (let i = 0; i < this._p.ops.length; i++)
+            if (this._p.ops[i].uiAttribs.selected) this._p.ops[i].setUiAttribs({ "selected": false });
     }
 
     unselectOpsFromOtherSubpatches()

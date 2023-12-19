@@ -107,15 +107,21 @@ export default class ManageOp
 
             const opDoc = gui.opDocs.getOpDocByName(opName);
 
+            if (!opDoc)
+            {
+                this._tab.html("error unknown op/no opdoc...");
+                return;
+            }
+
             doc.libs = gui.serverOps.getOpLibs(opName, false);
             doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
-            summary = gui.opDocs.getSummary(opName);
+            summary = gui.opDocs.getSummary(opName) || "unknown";
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
 
             if (portJson && portJson.ports)
             {
-                portJson.ports = portJson.ports.sort((a, b) => { return a.order - b.order; });
+                portJson.ports = blueprintUtil.sortPortsJsonPorts(portJson.ports);
 
                 if (portJson.ports.length > 1)
                     for (let i = 1; i < portJson.ports.length; i++)
