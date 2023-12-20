@@ -497,35 +497,40 @@ class ParamsListener extends CABLES.EventTarget
                         }
                     });
             }
-            else
-            if (
-                (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
-                !port.isAnimated())
-            {
-                let title = "Subpatch Expose Port ";
-                let icon = "";
-                if (port.uiAttribs.expose)
-                {
-                    title = "Subpatch Remove Exposed Port";
-                    icon = "icon icon-x";
-                }
+            // else
+            // if (
+            //     (gui.patchView.getCurrentSubPatch() != 0 || gui.patchView.getCurrentSubPatch() != port.op.uiAttribs.subPatch) &&
+            //     !port.isAnimated())
+            // {
+            //     let title = "Subpatch Expose Port ";
+            //     let icon = "";
+            //     if (port.uiAttribs.expose)
+            //     {
+            //         title = "Subpatch Remove Exposed Port";
+            //         icon = "icon icon-x";
+            //     }
 
-                items.push(
-                    {
-                        "title": title,
-                        "iconClass": icon,
-                        "func": () =>
-                        {
-                            const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
-                            port.removeLinks();
-                            subOp.removePort(port);
-                            port.setUiAttribs({ "expose": !port.uiAttribs.expose });
-                            port.op.refreshParams();
+            //     items.push(
+            //         {
+            //             "title": title,
+            //             "iconClass": icon,
+            //             "func": () =>
+            //             {
+            //                 const subOp = gui.patchView.getSubPatchOuterOp(port.op.uiAttribs.subPatch);
 
-                            gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
-                        }
-                    });
-            }
+            //                 if (!subOp)
+            //                 { console.error("could not find subpatchop!!!!!!!", port.op.uiAttribs.subPatch); }
+
+            //                 port.removeLinks();
+
+            //                 subOp.removePort(port);
+            //                 port.setUiAttribs({ "expose": !port.uiAttribs.expose });
+            //                 port.op.refreshParams();
+
+            //                 gui.savedState.setUnSaved("Subpatch Expose Port", port.op.uiAttribs.subPatch);
+            //             }
+            //         });
+            // }
 
             if (port.uiAttribs.expose)
             {

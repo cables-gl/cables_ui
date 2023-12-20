@@ -123,10 +123,6 @@ export default class ModalError
             "stackInfo": info,
             "triggerStack": this._options.triggerStack };
 
-
-
-
-
         if (this._options.op) CABLES.lastError.opName = this.opName;
         if (window.gui && doTrack) gui.emitEvent("uncaughtError", CABLES.api.getErrorReport());
 

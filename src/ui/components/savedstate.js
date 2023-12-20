@@ -114,7 +114,7 @@ export default class SavedState extends CABLES.EventTarget
         }
         else
         {
-            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch);
+            let subOuter = gui.patchView.getSubPatchOuterOp(subpatch, true);
             if (!subOuter || !subOuter.isBlueprint2())
             {
                 subpatch = 0;
@@ -132,16 +132,19 @@ export default class SavedState extends CABLES.EventTarget
 
         if (changed)gui.corePatch().emitEvent("savedStateChanged");
 
-        gui.corePatch().emitEvent("subpatchesChanged");
-        this.updateUiLater();
-
-        if (!this._addedGuiListener)
+        if (changed)
         {
-            this._addedGuiListener = true;
-            gui.corePatch().on("subpatchesChanged", () =>
+            gui.corePatch().emitEvent("subpatchesChanged");
+            this.updateUiLater();
+
+            if (!this._addedGuiListener)
             {
-                this.updateRestrictionDisplay();
-            });
+                this._addedGuiListener = true;
+                gui.corePatch().on("subpatchesChanged", () =>
+                {
+                    this.updateRestrictionDisplay();
+                });
+            }
         }
     }
 
@@ -217,34 +220,40 @@ export default class SavedState extends CABLES.EventTarget
         const subpatch = gui.patchView.getCurrentSubPatch();
         const exposeOp = gui.patchView.getSubPatchOuterOp(subpatch);
 
-        gui.restriction.setMessage("cablesupdate", null);
-        gui.patchView.patchRenderer.greyOut = false;
-
         if (exposeOp && exposeOp.patchId)
         {
             const ops = gui.corePatch().getOpsByObjName(exposeOp.objName);
             if (ops.length > 1)
             {
-                console.log("updaterestrict?!");
-                // console.log("isSavedSubOp", exposeOp.objName, this.isSavedSubOp(exposeOp.objName));
-                // console.log("isSavedSubPatch", subpatch, this.isSavedSubPatch(subpatch));
-
                 if (!this.isSavedSubOp(exposeOp.objName) && this.isSavedSubPatch(subpatch))
                 {
-                    let theIdx = null;
-                    for (const idx in this._statesSaved)
+                    if (!gui.patchView.patchRenderer.greyOut)
                     {
-                        let subname = gui.patchView.getSubPatchName(idx);
-                        if (exposeOp.objName == subname)
-                        {
-                            theIdx = idx;
-                            break;
-                        }
-                    }
+                        console.log("updaterestrict?!");
 
-                    gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">here</a> ");
-                    gui.patchView.patchRenderer.greyOut = true;
+                        let theIdx = null;
+                        for (const idx in this._statesSaved)
+                        {
+                            let subname = gui.patchView.getSubPatchName(idx);
+                            if (exposeOp.objName == subname)
+                            {
+                                theIdx = idx;
+                                break;
+                            }
+                        }
+
+                        gui.restriction.setMessage("cablesupdate", "A different reference of this SubPatchOp was changed, continue editing &nbsp; <a class=\"button\" onclick=\"gui.patchView.setCurrentSubPatch('" + theIdx + "')\">here</a> ");
+                        gui.patchView.patchRenderer.greyOut = true;
+                    }
                 }
+            }
+        }
+        else
+        {
+            if (gui.patchView.patchRenderer.greyOut)
+            {
+                gui.restriction.setMessage("cablesupdate", null);
+                gui.patchView.patchRenderer.greyOut = false;
             }
         }
     }

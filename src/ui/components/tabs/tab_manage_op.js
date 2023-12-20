@@ -73,8 +73,13 @@ export default class ManageOp
                 const attachmentFiles = [];
                 for (let i = 0; i < res.attachmentFiles.length; i++)
                 {
+                    const parts = res.attachmentFiles[i].split(".");
+                    let suffix = "";
+                    suffix = parts[parts.length - 1];
+
                     attachmentFiles.push(
                         {
+                            "suffix": suffix,
                             "readable": res.attachmentFiles[i].substr(4),
                             "original": res.attachmentFiles[i],
                         });
@@ -102,11 +107,29 @@ export default class ManageOp
 
             const opDoc = gui.opDocs.getOpDocByName(opName);
 
+            if (!opDoc)
+            {
+                this._tab.html("error unknown op/no opdoc...");
+                return;
+            }
+
             doc.libs = gui.serverOps.getOpLibs(opName, false);
             doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
-            summary = gui.opDocs.getSummary(opName);
+            summary = gui.opDocs.getSummary(opName) || "unknown";
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
+
+            if (portJson && portJson.ports)
+            {
+                portJson.ports = blueprintUtil.sortPortsJsonPorts(portJson.ports);
+
+                if (portJson.ports.length > 1)
+                    for (let i = 1; i < portJson.ports.length; i++)
+                    {
+                        if (portJson.ports[i - 1].dir != portJson.ports[i].dir)portJson.ports[i].divider = true;
+                    }
+            }
+
             const html = getHandleBarHtml("tab_manage_op",
                 {
                     "url": CABLES.sandbox.getCablesUrl(),

@@ -117,7 +117,7 @@ export default class Gui
 
         this._corePatch.on("opcrash", (portTriggered) =>
         {
-            this.showOpCrash(portTriggered.parent);
+            this.showOpCrash(portTriggered.op);
         });
 
         this.on("libLoadError", (libName) =>
