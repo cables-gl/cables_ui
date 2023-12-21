@@ -232,17 +232,9 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
             res.content = res.content || JSON.stringify({ "ports": [] });
             const js = JSON.parse(res.content);
 
-            let idx = -1;
-            for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid)idx = i;
+            for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid) js.ports[i] = null;
 
-            if (idx != -1)
-            {
-                js.ports.splice(1, idx);
-            }
-            else
-            {
-                loadingModal.setTask("INVALID PORT INDEX");
-            }
+            js.ports = blueprintUtil.sortPortsJsonPorts(js.ports);
 
             loadingModal.setTask("saving ports json");
 
