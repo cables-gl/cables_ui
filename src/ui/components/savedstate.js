@@ -1,5 +1,6 @@
 import { getHandleBarHtml } from "../utils/handlebars";
 import TreeView from "./treeview";
+import undo from "../utils/undo";
 
 export default class SavedState extends CABLES.EventTarget
 {
@@ -11,6 +12,7 @@ export default class SavedState extends CABLES.EventTarget
         this._talkerState = null;
         this._timeout = null;
         this._addedGuiListener = false;
+
 
         window.addEventListener("beforeunload", (event) =>
         {
@@ -31,6 +33,16 @@ export default class SavedState extends CABLES.EventTarget
             }
             return message;
         });
+    }
+
+    pause()
+    {
+        this._paused = true;
+    }
+
+    resume()
+    {
+        this._paused = false;
     }
 
     getBlueprint()
@@ -107,6 +119,8 @@ export default class SavedState extends CABLES.EventTarget
 
     setUnSaved(initiator, subpatch)
     {
+        if (this._paused) return;
+        console.log("set unsaved ", initiator, subpatch, undo.paused());
         if (subpatch === undefined)
         {
             subpatch = this.getBlueprint() || 0;
