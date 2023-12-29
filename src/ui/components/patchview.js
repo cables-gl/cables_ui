@@ -2744,21 +2744,21 @@ export default class PatchView extends CABLES.EventTarget
     getSubPatchExposedPorts(subid, dir)
     {
         let foundPorts = [];
-        const ops = this.getAllSubPatchOps(subid);
+        // const ops = this.getAllSubPatchOps(subid);
 
-        for (let i = 0; i < ops.length; i++)
-        {
-            if (dir == undefined || dir === CABLES.PORT_DIR_IN)
-                if (ops[i].portsIn)
-                    for (let j = 0; j < ops[i].portsIn.length; j++)
-                        if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
+        // for (let i = 0; i < ops.length; i++)
+        // {
+        //     if (dir == undefined || dir === CABLES.PORT_DIR_IN)
+        //         if (ops[i].portsIn)
+        //             for (let j = 0; j < ops[i].portsIn.length; j++)
+        //                 if (ops[i].portsIn[j].uiAttribs.expose)foundPorts.push(ops[i].portsIn[j]);
 
-            if (dir == undefined || dir === CABLES.PORT_DIR_OUT)
-                for (let j = 0; j < ops[i].portsOut.length; j++)
-                    if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
-        }
+        //     if (dir == undefined || dir === CABLES.PORT_DIR_OUT)
+        //         for (let j = 0; j < ops[i].portsOut.length; j++)
+        //             if (ops[i].portsOut[j].uiAttribs.expose)foundPorts.push(ops[i].portsOut[j]);
+        // }
 
-        foundPorts = foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
+        // foundPorts = foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
 
         // for (let i = 0; i < foundPorts.length; i++)
         // console.log(i, foundPorts[i].title);

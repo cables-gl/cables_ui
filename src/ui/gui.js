@@ -148,7 +148,8 @@ export default class Gui
 
         this.metaTabs = new TabPanel("metatabpanel");
 
-        this.savedState = new SavedState();
+        this.savedState = new SavedState(this);
+        this.savedState.pause();
         // this._savedState = true;
         this._savedStateChangesBlueprintSubPatches = [];
 
@@ -1740,6 +1741,7 @@ export default class Gui
         console.groupEnd();
 
         gui.savedState.setSavedAll("showUiElements");
+        gui.savedState.resume();
 
         gui.metaTabs.loadCurrentTabUsersettings();
 
