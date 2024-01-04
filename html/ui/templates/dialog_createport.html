@@ -1,0 +1,47 @@
+<script id="dialog_createport" type="text/x-handlebars-template">
+
+    <h2>Create Port</h2>
+
+
+    <input id="createPortId" value="{{portId}}" class="hidden"/>
+
+
+
+    <br/>
+    Direction
+    <br/>
+    <select id="createPortDir">
+        <option value="0">Input</option>
+        <option value="1">Output</option>
+    </select>
+
+    <br/><br/>
+    Type<br/>
+    <select id="createPortType">
+        <option value="Number - Float">Number - Float</option>
+        <option value="Number - Float Slider">Number - Float Slider</option>
+        <option value="Number - Integer">Number - Integer</option>
+        <option value="Boolean">Boolean</option>
+        <option value="String">String</option>
+        <option value="Array">Array</option>
+        <option value="Object">Object</option>
+        <option value="Object - Texture">Object - Texture</option>
+    </select>
+
+    <br/><br/>
+    Name:<br/>
+    <input id="createPortName"/>
+    <br/>
+
+    <br/><br/>
+    Default Value:<br/>
+    <input id="createPortValue"/>
+    <br/>
+
+
+    <br/>
+    <br/>
+    <a class="button bluebutton" id="createPortSubmit">Create</a>
+    <a class="button"onclick="gui.closeModal();">Cancel</a>
+
+</script>
