@@ -73,7 +73,10 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
         src += "\n";
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
-        if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
+
+        if (p.uiDisplay == "texture")src += "display:\"texture\",objType:\"texture\",";
+        else if (p.uiDisplay == "int")src += "increment:\"integer\",";
+        else if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
         src += "});\n";
 
         src += "".endl();
@@ -582,10 +585,10 @@ blueprintUtil.getAutoName = () =>
     return newOpName;
 };
 
-blueprintUtil.portCreateDialog = (opId) =>
+blueprintUtil.portEditDialog = (opId, portId, portData) =>
 {
-    let portId = CABLES.shortId();
-    const html = getHandleBarHtml("dialog_createport", { "portId": portId });
+    if (!portId)portId = CABLES.shortId();
+    const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData });
 
     new ModalDialog({ "html": html });
 
@@ -607,7 +610,7 @@ blueprintUtil.portCreateDialog = (opId) =>
             if (eleType.value.indexOf("String") == 0)type = CABLES.OP_PORT_TYPE_STRING;
             if (eleType.value.indexOf("Array") == 0)type = CABLES.OP_PORT_TYPE_ARRAY;
             if (eleType.value.indexOf("Object") == 0)type = CABLES.OP_PORT_TYPE_OBJECT;
-
+            if (eleType.value.indexOf("Trigger") == 0)type = CABLES.OP_PORT_TYPE_FUNCTION;
 
             const port =
             {
@@ -621,15 +624,23 @@ blueprintUtil.portCreateDialog = (opId) =>
             };
 
 
-            if (type == CABLES.OP_PORT_TYPE_STRING)port.value = eleValue.value;
+            if (type == CABLES.OP_PORT_TYPE_STRING)
+            {
+                port.value = eleValue.value;
+                if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
+                if (eleType.value.indexOf("URL") > -1) port.uiDisplay = "file";
+            }
+
+            if (type == CABLES.OP_PORT_TYPE_FUNCTION)
+            {
+                if (eleType.value.indexOf("Button") > -1) port.uiDisplay = "button";
+            }
             if (type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 port.value = parseFloat(eleValue.value) || 0;
 
-                if (eleType.value.indexOf("Integer") > -1)
-                {
-                    port.uiAttribs = { "increment": "integer" };
-                }
+                if (eleType.value.indexOf("Integer") > -1) port.uiDisplay = "int";
+                if (eleType.value.indexOf("Slider") > -1) port.uiDisplay = "range";
             }
 
 
@@ -637,8 +648,9 @@ blueprintUtil.portCreateDialog = (opId) =>
             {
                 if (eleType.value.indexOf("Texture") > -1)
                 {
-                    port.uiAttribs = { "display": "texture" };
-                    port.objType = "texture";
+                    port.uiDisplay = "texture";
+                    // port.uiAttribs = { "display": "texture" };
+                    // port.objType = "texture";
                 }
             }
 

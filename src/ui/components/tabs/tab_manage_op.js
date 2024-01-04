@@ -159,7 +159,7 @@ export default class ManageOp
                     const buttonCreate = ele.byId(this._id + "_port_create");
                     if (buttonCreate)buttonCreate.addEventListener("click", () =>
                     {
-                        blueprintUtil.portCreateDialog(opName);
+                        blueprintUtil.portEditDialog(opName);
                     });
 
 
@@ -176,18 +176,21 @@ export default class ManageOp
                         });
 
                         const buttonTitle = ele.byId(this._id + "_port_title_" + id);
+
+
                         if (buttonTitle)buttonTitle.addEventListener("click", () =>
                         {
-                            new CABLES.UI.ModalDialog({
-                                "prompt": true,
-                                "title": "Enter Title",
-                                "text": "Enter a new title for " + p.title + " (" + id + ")",
-                                "promptValue": p.title,
-                                "promptOk": (title) =>
-                                {
-                                    blueprintUtil.portJsonUtil(opName, id, { "title": title });
-                                }
-                            });
+                            blueprintUtil.portEditDialog(opName, id, p);
+                        //     new CABLES.UI.ModalDialog({
+                        //         "prompt": true,
+                        //         "title": "Enter Title",
+                        //         "text": "Enter a new title for " + p.title + " (" + id + ")",
+                        //         "promptValue": p.title,
+                        //         "promptOk": (title) =>
+                        //         {
+                        //             blueprintUtil.portJsonUtil(opName, id, { "title": title });
+                        //         }
+                        //     });
                         });
 
                         const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
