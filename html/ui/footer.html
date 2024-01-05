@@ -200,17 +200,18 @@
 
     document.addEventListener("DOMContentLoaded", function (event)
     {
-        if(window.self == window.top)
+        CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
+
+        const reqTimeout=setTimeout(()=>
         {
             document.getElementById("loadingstatus").style.display="none";
-            document.getElementById("loadingstatusLog").innerHTML += "error: could not start ui, editor should be in an iframe! <br/>";
+            document.getElementById("loadingstatusLog").innerHTML += "error: could not get response from talker api. editor not in iframe? <br/>";
+        },1000);
 
-            return;
-        }
-
-        CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
         CABLESUILOADER.talkerAPI.send("requestPatchData", {}, function (response)
         {
+            clearTimeout(reqTimeout);
+
             if (response.buildInfo)
             {
                 CABLESUILOADER.buildInfo = response.buildInfo;
