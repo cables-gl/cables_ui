@@ -1,0 +1,48 @@
+<script id="dialog_createport" type="text/x-handlebars-template">
+
+    <h2>Edit Port</h2>
+
+    <input id="createPortId" value="{{portId}}" class="hidden"/>
+
+    <br/>
+    Direction
+    <br/>
+    <select id="createPortDir">
+        <option value="0">Input</option>
+        <option value="1" {{#if port.dir}}selected{{/if}}>Output</option>
+    </select>
+
+    <br/><br/>
+    Type<br/>
+    <select id="createPortType">
+        <option value="Number - Float">Number - Float</option>
+        <option value="Number - Float Slider" {{#compare port.uiDisplay '==' 'range'}}selected{{/compare}}>Number - Float Slider</option>
+        <option value="Number - Integer" {{#compare port.uiDisplay '==' 'int'}}selected{{/compare}}>Number - Integer</option>
+        <option value="Boolean" {{#compare port.uiDisplay '==' 'bool'}}selected{{/compare}}>Boolean</option>
+        <option value="String" {{#compare port.type '==' 5}}selected{{/compare}}>String</option>
+        <option value="String - URL" {{#compare port.uiDisplay '==' 'file'}}selected{{/compare}}>String - URL</option>
+        <option value="String - Editor" {{#compare port.uiDisplay '==' 'editor'}}selected{{/compare}}>String - Editor</option>
+        <option value="Array" {{#compare port.type '==' 3}}selected{{/compare}}>Array</option>
+        <option value="Object" {{#compare port.type '==' 2}}selected{{/compare}}>Object</option>
+        <option value="Object - Texture" {{#compare port.uiDisplay '==' 'texture'}}selected{{/compare}}>Object - Texture</option>
+        <option value="Trigger" {{#compare port.type '==' 1}}selected{{/compare}}>Trigger</option>
+        <option value="Trigger - Button" {{#compare port.uiDisplay '==' 'button'}}selected{{/compare}}>Trigger - Button</option>
+    </select>
+
+    <br/><br/>
+    Title:<br/>
+    <input id="createPortName" value="{{port.title}}"/>
+    <br/>
+
+    <br/><br/>
+    Default Value:<br/>
+    <input id="createPortValue" value="{{port.value}}"/>
+    <br/>
+
+
+    <br/>
+    <br/>
+    <a class="button bluebutton" id="createPortSubmit">Save</a>
+    <a class="button"onclick="gui.closeModal();">Cancel</a>
+
+</script>

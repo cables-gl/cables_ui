@@ -120,7 +120,6 @@ export default class SavedState extends CABLES.EventTarget
     setUnSaved(initiator, subpatch)
     {
         if (this._paused) return;
-        console.log("set unsaved ", initiator, subpatch, undo.paused());
         if (subpatch === undefined)
         {
             subpatch = this.getBlueprint() || 0;

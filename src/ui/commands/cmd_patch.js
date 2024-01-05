@@ -315,7 +315,7 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
     if (!fileElem)
     {
-        const html = getHandleBarHtml("upload", { "patchId": gui.project()._id });
+        const html = getHandleBarHtml("dialog_upload", { "patchId": gui.project()._id });
 
         new ModalDialog({ "html": html });
     }

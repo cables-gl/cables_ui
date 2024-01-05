@@ -198,7 +198,7 @@ export default class CanvasUi
 
 
         let str = "<table>";
-        str += "<tr><td>Canvas HTML Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + " x " + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
+        str += "<tr><td>Canvas HTML Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + "&nbsp;x&nbsp;" + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
         str += "<tr><td>Canvas Pixel Size:</td><td><code>" + gui.corePatch().cgl.canvas.width + " x " + gui.corePatch().cgl.canvas.height + "</td></tr>";
         str += "<tr><td>Device Pixel Ratio/Density:</td><td><code>" + window.devicePixelRatio + "</td></tr>";
         str += "<tr><td>Canvas Pixel Ratio/Density:</td><td><code>" + gui.corePatch().cgl.pixelDensity + "</td></tr>";

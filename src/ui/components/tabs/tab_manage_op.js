@@ -115,7 +115,7 @@ export default class ManageOp
 
             doc.libs = gui.serverOps.getOpLibs(opName, false);
             doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
-            summary = gui.opDocs.getSummary(opName) || "unknown";
+            summary = gui.opDocs.getSummary(opName) || "No Summary";
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
             const showPatchLibSelect = defaultops.isNonCoreOp(opName);
 
@@ -156,6 +156,13 @@ export default class ManageOp
             {
                 if (portJson && portJson.ports)
                 {
+                    const buttonCreate = ele.byId(this._id + "_port_create");
+                    if (buttonCreate)buttonCreate.addEventListener("click", () =>
+                    {
+                        blueprintUtil.portEditDialog(opName);
+                    });
+
+
                     for (let i = 0; i < portJson.ports.length; i++)
                     {
                         const p = portJson.ports[i];
@@ -169,18 +176,21 @@ export default class ManageOp
                         });
 
                         const buttonTitle = ele.byId(this._id + "_port_title_" + id);
+
+
                         if (buttonTitle)buttonTitle.addEventListener("click", () =>
                         {
-                            new CABLES.UI.ModalDialog({
-                                "prompt": true,
-                                "title": "Enter Title",
-                                "text": "Enter a new title for " + p.title + " (" + id + ")",
-                                "promptValue": p.title,
-                                "promptOk": (title) =>
-                                {
-                                    blueprintUtil.portJsonTitle(opName, id, title);
-                                }
-                            });
+                            blueprintUtil.portEditDialog(opName, id, p);
+                        //     new CABLES.UI.ModalDialog({
+                        //         "prompt": true,
+                        //         "title": "Enter Title",
+                        //         "text": "Enter a new title for " + p.title + " (" + id + ")",
+                        //         "promptValue": p.title,
+                        //         "promptOk": (title) =>
+                        //         {
+                        //             blueprintUtil.portJsonUtil(opName, id, { "title": title });
+                        //         }
+                        //     });
                         });
 
                         const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
