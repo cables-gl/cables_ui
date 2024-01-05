@@ -85,6 +85,7 @@ export default class GlLink
                 pressTime < GlUiConfig.clickMaxDuration)
             {
                 this._glPatch.patchAPI.removeLink(this._opIdInput, this._opIdOutput, this._portIdInput, this._portIdOutput);
+                // console
             }
 
 

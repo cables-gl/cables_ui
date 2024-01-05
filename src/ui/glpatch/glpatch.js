@@ -624,7 +624,7 @@ export default class GlPatch extends CABLES.EventTarget
         // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if ((gui.patchView.getSelectedOps().length == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0))
+        if ((gui.patchView.getSelectedOps().length == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0 && !this._hoverLink))
         {
             this.unselectAll();
             gui.showInfo(text.patch);
@@ -1643,8 +1643,7 @@ export default class GlPatch extends CABLES.EventTarget
 
     setHoverLink(e, link)
     {
-        // console.log(link);
-
+        this._hoverLink = link;
         if (link && e)
         {
             clearTimeout(this._ttTImeout);
