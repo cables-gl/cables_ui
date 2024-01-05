@@ -641,6 +641,7 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 
                 if (eleType.value.indexOf("Integer") > -1) port.uiDisplay = "int";
                 if (eleType.value.indexOf("Slider") > -1) port.uiDisplay = "range";
+                if (eleType.value.indexOf("Boolean") > -1) port.uiDisplay = "bool";
             }
 
 

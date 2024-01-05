@@ -7,6 +7,7 @@
         <script src="js/talkerapi.js"></script>
 
         <script>
+
             if(parent !== window) {
                 window.addEventListener("hashchange", (event) => {
                     parent.postMessage({"type": "hashchange", "data": window.location.hash}, "*");
@@ -54,18 +55,6 @@
                 margin-bottom:20px;
             }
 
-            <!-- .workingindicator
-            {
-                margin-left: 0;
-                margin-right: 0;
-                z-index: 999999999;
-                position: absolute;
-                display: none;
-                margin-top:-40px !important;
-                border:10px solid red;
-                color:#aaa;
-            } -->
-
             .startUpError
             {
                 padding:30px;
@@ -79,7 +68,6 @@
 
     <div id="loadingstatus"><div id="loadingstatusBar"></div><div id="loadingInfo"></div><div class="loading" style="margin-top:50px;"></div></div>
     <div id="loadingstatusLog" style="font-family: monospace;padding:30px;"></div>
-
 
     <div id="cablescanvas" class="bgpatternDark hidden" style="width:640px;height:300px;right:0px;">
         <canvas id="glcanvas" width="0" height="0"></canvas>

@@ -200,6 +200,14 @@
 
     document.addEventListener("DOMContentLoaded", function (event)
     {
+        if(window.self == window.top)
+        {
+            document.getElementById("loadingstatus").style.display="none";
+            document.getElementById("loadingstatusLog").innerHTML += "error: could not start ui, editor should be in an iframe! <br/>";
+
+            return;
+        }
+
         CABLESUILOADER.talkerAPI = CABLESUILOADER.talkerAPI || new CABLESUILOADER.TalkerAPI(window.parent);
         CABLESUILOADER.talkerAPI.send("requestPatchData", {}, function (response)
         {
