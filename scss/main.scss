@@ -747,7 +747,22 @@ body
 }
 
 
-
+.formtable
+{
+    select
+    {
+        padding:5px !important;
+        background-color: var(--color-04) !important;
+        color: var(--color-11);
+    }
+    input
+    {
+        background-color: var(--color-05);
+        color: var(--color-11);
+        padding:5px !important;
+        padding-left:10px !important;
+    }
+}
 
 
 @import 'components/searchbox.scss';
