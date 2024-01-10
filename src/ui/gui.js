@@ -41,6 +41,7 @@ import SavedState from "./components/savedstate";
 import gluiconfig from "./glpatch/gluiconfig";
 import defaultTheme from "./defaulttheme.json";
 import blueprintUtil from "./blueprint_util";
+import ModalLoading from "./dialogs/modalloading";
 
 
 export default class Gui
@@ -87,6 +88,9 @@ export default class Gui
         this._cursor = "";
         this.restriction = new GuiRestrictions();
         this._restrictionMode = Gui.RESTRICT_MODE_LOADING;
+
+        this._modalLoading = null;
+        this._modalLoadingCount = 0;
 
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
@@ -219,6 +223,24 @@ export default class Gui
     jobs()
     {
         return this._jobs;
+    }
+
+
+    startModalLoading(title)
+    {
+        this._modalLoadingCount++;
+        this._modalLoading = this._modalLoading || new ModalLoading(title);
+        return this._modalLoading;
+    }
+
+    endModalLoading()
+    {
+        this._modalLoadingCount--;
+        if (this._modalLoadingCount == 0 && this._modalLoading)
+        {
+            this._modalLoading.close();
+            this._modalLoading = null;
+        }
     }
 
     finishedLoading()

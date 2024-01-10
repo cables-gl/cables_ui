@@ -493,7 +493,7 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                const loadingModal = new ModalLoading("Checking asset dependencies");
+                                const loadingModal = gui.startModalLoading("Checking asset dependencies");
                                 loadingModal.setTask("Checking patches and ops...");
                                 const fullName = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
                                 CABLESUILOADER.talkerAPI.send(
@@ -501,7 +501,7 @@ export default class FileManager
                                     { "filenames": [fullName] },
                                     (countErr, countRes) =>
                                     {
-                                        loadingModal.close();
+                                        gui.endModalLoading();
                                         let content = "";
                                         let allowDelete = true;
                                         if (countRes && countRes.data)
@@ -626,14 +626,14 @@ export default class FileManager
                             fullNames.push(detailItem.p);
                         }
 
-                        const loadingModal = new ModalLoading("Checking asset dependencies");
+                        const loadingModal = gui.startModalLoading("Checking asset dependencies");
                         loadingModal.setTask("Checking patches and ops...");
                         CABLESUILOADER.talkerAPI.send(
                             "checkNumAssetPatches",
                             { "filenames": fullNames },
                             (countErr, countRes) =>
                             {
-                                loadingModal.close();
+                                gui.endModalLoading();
                                 let content = "";
                                 let allowDelete = true;
                                 if (countRes && countRes.data)

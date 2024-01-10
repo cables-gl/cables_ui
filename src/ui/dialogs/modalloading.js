@@ -21,8 +21,7 @@ export default class ModalLoading
 
     getHtml()
     {
-        let str = "<div class=\"loading\" ><br/><br/></div>";
-
+        let str = "";
         if (this._tasks.length > 0)
         {
             str += "<div class=\"code\">";
@@ -32,12 +31,17 @@ export default class ModalLoading
             }
             str += "</div>";
         }
+        else
+        {
+            str = "<div class=\"loading\" ></div>";
+        }
 
         return str;
     }
 
     setTask(txt)
     {
+        console.log("[ModalLoading] " + this.options.title + ": " + txt);
         this._tasks.push(txt);
         this._dialog.updateHtml(this.getHtml());
     }

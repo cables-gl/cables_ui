@@ -9,7 +9,6 @@ import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
 import defaultops from "../defaultops";
 import ManageOp from "../components/tabs/tab_manage_op";
-import ModalLoading from "../dialogs/modalloading";
 import blueprintUtil from "../blueprint_util";
 
 const CABLES_CMD_PATCH = {};
@@ -145,7 +144,6 @@ CABLES_CMD_PATCH.save = function (force, cb)
                 "html": html
             });
         }
-        // }
     }
 
     if (doSave)
@@ -179,92 +177,90 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const origOpsBounds = gui.patchView.getSelectionBounds();
     const newOpname = blueprintUtil.getAutoName();
+    const currentSubpatch = gui.patchView.getCurrentSubPatch();
+    const loadingModal = gui.startModalLoading("Create Subpatch");
 
     gui.serverOps.create(newOpname, () =>
     {
-        const loadingModal = new ModalLoading("Creating op...");
-
+        let newselectedOpIds = [];
 
         for (let i = 0; i < selectedOpIds.length; i++)
+        {
             gui.patchView.selectOpId(selectedOpIds[i]);
 
-        loadingModal.setTask("Creating subpatch / " + selectedOpIds.length + " ops");
-
-        gui.patchView.createSubPatchFromSelection(2, (patchId, OpTempSubpatch) =>
-        {
-            loadingModal.setTask("find exposed ports...");
-            const portJson = { "ports": [] };
-
-            const inports = gui.patchView.getSubPatchExposedPorts(patchId, 0);
-            for (let i = 0; i < inports.length; i++)
+            const op = gui.corePatch().getOpById(selectedOpIds[i]);
+            if (op.isSubPatchOp())
             {
-                portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(inports[i], i));
-
-                inports[i].setUiAttribs({ "expose": false });
-            }
-
-            loadingModal.setTask("Creating blueprint op");
-
-            gui.patchView.addOp(newOpname,
+                const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
+                for (let j = 0; j < newops.length; j++)
                 {
-                    "onOpAdd": (newOp) =>
+                    newselectedOpIds.push(newops[j].id);
+                }
+            }
+        }
+
+        gui.patchView.createSubPatchFromSelection(2,
+            (patchId, OpTempSubpatch) =>
+            {
+                const portJson = { "ports": [] };
+                // todo: createSubPatchFromSelection should provide the cross links...
+
+                loadingModal.setTask("Creating blueprint op");
+
+                gui.patchView.addOp(newOpname,
                     {
-                        blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                        "onOpAdd": (newOp) =>
                         {
-                            const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
+                            blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                            {
+                                const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
 
-                            gui.corePatch().deleteOp(OpTempSubpatch.id);
-                            gui.patchView.setCurrentSubPatch(0);
+                                gui.corePatch().deleteOp(OpTempSubpatch.id);
+                                gui.patchView.setCurrentSubPatch(currentSubpatch);
 
-                            loadingModal.setTask("Creating ports...");
+                                loadingModal.setTask("Creating ports...");
 
-                            CABLESUILOADER.talkerAPI.send(
-                                "opAttachmentSave",
-                                {
-                                    "opname": newOpname,
-                                    "name": "att_inc_gen_ports.js",
-                                    "content": src,
-                                },
-                                (errr2, re2) =>
-                                {
-                                    loadingModal.setTask("Saving ports...");
+                                CABLESUILOADER.talkerAPI.send(
+                                    "opAttachmentSave",
+                                    {
+                                        "opname": newOpname,
+                                        "name": "att_inc_gen_ports.js",
+                                        "content": src,
+                                    },
+                                    (errr2, re2) =>
+                                    {
+                                        loadingModal.setTask("Saving ports...");
 
-                                    CABLESUILOADER.talkerAPI.send(
-                                        "opAttachmentSave",
-                                        {
-                                            "opname": newOpname,
-                                            "name": "att_ports.json",
-                                            "content": JSON.stringify(portJson),
-                                        },
-                                        (errr3, re3) =>
-                                        {
-                                            loadingModal.setTask("Execute code");
-
-                                            gui.serverOps.execute(newOpname, (newOps) =>
+                                        CABLESUILOADER.talkerAPI.send(
+                                            "opAttachmentSave",
                                             {
-                                                // link ports.......
+                                                "opname": newOpname,
+                                                "name": "att_ports.json",
+                                                "content": JSON.stringify(portJson),
+                                            },
+                                            (errr3, re3) =>
+                                            {
+                                                loadingModal.setTask("Execute code");
 
-                                                for (let i = 0; i < inports.length; i++)
+
+                                                gui.serverOps.execute(newOpname, (newOps) =>
                                                 {
-                                                    // gui.corePatch.link(inports[i].op,?);
+                                                    // link ports.......
 
-                                                }
+                                                    newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                                    gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
-                                                // newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
-                                                // gui.patchView.centerSelectOp(newOps[0], true);
-                                                newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
-                                                gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
-
-
-                                                loadingModal.close();
+                                                    gui.endModalLoading();
+                                                });
                                             });
-                                        });
-                                },
-                            );
-                        }, loadingModal);
-                    },
-                });
-        });
+                                    },
+                                );
+                            });
+                        },
+                    });
+            },
+            null,
+            null);
     });
 };
 

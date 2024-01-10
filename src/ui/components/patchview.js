@@ -827,7 +827,7 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    createSubPatchFromSelection(version = 0, next = null)
+    createSubPatchFromSelection(version = 0, next = null,)
     {
         let opname = defaultops.defaultOpNames.subPatch;
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
@@ -855,10 +855,15 @@ export default class PatchView extends CABLES.EventTarget
 
                 patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
 
-                for (let i in selectedOps) selectedOps[i].setUiAttribs({ "subPatch": patchId });
 
                 if (version < 2)
                 {
+                    for (let i in selectedOps)
+                    {
+                        // if (selectedOps[i].uiAttribs.subPatch == this.getCurrentSubPatch())
+                        selectedOps[i].setUiAttribs({ "subPatch": patchId });
+                    }
+
                     for (let i = 0; i < selectedOps.length; i++)
                     {
                         for (let j = 0; j < selectedOps[i].portsIn.length; j++)
@@ -921,61 +926,19 @@ export default class PatchView extends CABLES.EventTarget
                 }
                 else
                 {
-                    for (let i = 0; i < selectedOps.length; i++)
-                    {
-                        for (let j = 0; j < selectedOps[i].portsIn.length; j++)
-                        {
-                            const port1 = selectedOps[i].portsIn[j];
-                            const op1 = selectedOps[i];
-
-                            for (let k = 0; k < op1.portsIn[j].links.length; k++)
-                            {
-                                const port2 = op1.portsIn[j].links[k].getOtherPort(op1.portsIn[j]);
-                                const op2 = port2.op;
-
-                                if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
-                                {
-                                    // if (op1.uiAttribs.subPatch != patchId)
-                                    //     port2.setUiAttribs({ "expose": true });
-                                    // else
-                                    //     port1.setUiAttribs({ "expose": true });
-
-                                    op1.portsIn[j].links[k].remove();
-                                    // gui.corePatch().link(op1, port1.name, op2, port2.name);
-                                }
-                            }
-                        }
-                    }
-
-                    for (let i = 0; i < selectedOps.length; i++)
-                    {
-                        for (let j = 0; j < selectedOps[i].portsOut.length; j++)
-                        {
-                            const port1 = selectedOps[i].portsOut[j];
-                            const op1 = selectedOps[i];
-
-                            for (let k = 0; k < op1.portsOut[j].links.length; k++)
-                            {
-                                const port2 = op1.portsOut[j].links[k].getOtherPort(op1.portsOut[j]);
-                                const op2 = port2.op;
-
-                                if (op1.uiAttribs.subPatch != op2.uiAttribs.subPatch)
-                                {
-                                    op1.portsOut[j].links[k].remove();
-                                    // gui.corePatch().link(op1, port1.name, op2, port2.name);
-
-                                    // if (op1.uiAttribs.subPatch != patchId) port2.setUiAttribs({ "expose": true });
-                                    // else port1.setUiAttribs({ "expose": true });
-                                }
-                            }
-                        }
-                    }
-
                     // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                     // this._p.emitEvent("subpatchExpose", patchId);
 
                     // setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
                     // {
+
+
+                    for (let i in selectedOps)
+                    {
+                        if (selectedOps[i].uiAttribs.subPatch == this.getCurrentSubPatch())
+                            selectedOps[i].setUiAttribs({ "subPatch": patchId });
+                    }
+
                     // set positions of input/output
                     let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
                     let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
@@ -985,8 +948,8 @@ export default class PatchView extends CABLES.EventTarget
                     if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
                     if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
 
-                    this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                    this._p.emitEvent("subpatchExpose", patchId);
+                    // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
+                    // this._p.emitEvent("subpatchExpose", patchId);
 
                     if (next)next(patchId, patchOp);
 
