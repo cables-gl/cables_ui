@@ -938,6 +938,24 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
     }
 };
 
+CABLES_CMD_PATCH.replaceOp = function ()
+{
+    new ModalDialog({
+        "prompt": true,
+        "title": "Replace Ops",
+        "text": "Replace selected ops with: Enter full op name",
+        "promptOk": (opname) =>
+        {
+            const ops = gui.patchView.getSelectedOps();
+            for (let i = 0; i < ops.length; i++)
+            {
+                // gui.patchView.replaceOpCheck("{{op.id}}", "{{newestVersion.name}}");
+                gui.patchView.replaceOp(ops[i].id, opname);
+            }
+        }
+    });
+};
+
 CABLES_CMD_PATCH.uncollideOps = function (ops)
 {
     let found = true;
@@ -1240,6 +1258,12 @@ CMD_PATCH_COMMANDS.push(
         "icon": "image"
     },
     {
+        "cmd": "replace ops",
+        "func": CABLES_CMD_PATCH.replaceOp,
+        "icon": "op"
+
+    },
+    {
         "cmd": "link two selected ops",
         "func": CABLES_CMD_PATCH.linkTwoSelectedOps,
         "icon": "op"
@@ -1249,7 +1273,6 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.downGradeOp,
         "icon": "op"
     },
-
     {
         "cmd": "clone selected op",
         "func": CABLES_CMD_PATCH.cloneSelectedOp,

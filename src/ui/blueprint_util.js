@@ -161,7 +161,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 
 blueprintUtil.portJsonUtil = (opId, portid, options) =>
 {
-    const loadingModal = gui.StartModalLoading("Modify port ...");
+    const loadingModal = gui.startModalLoading("Modify port ...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
@@ -235,7 +235,7 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
 
 blueprintUtil.portJsonDelete = (opId, portid) =>
 {
-    const loadingModal = gui.StartModalLoading("Deleting port...");
+    const loadingModal = gui.startModalLoading("Deleting port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
@@ -284,7 +284,7 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
 
 blueprintUtil.portJsonMove = (opId, portid, dir) =>
 {
-    const loadingModal = gui.StartModalLoading("Moving port...");
+    const loadingModal = gui.startModalLoading("Moving port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
     let setSavedParentSubpatch = false;
@@ -411,7 +411,7 @@ blueprintUtil.sortPortsJsonPorts = (ports) =>
 
 blueprintUtil.addPortToBlueprint = (opId, port) =>
 {
-    const loadingModal = gui.StartModalLoading("Adding port");
+    const loadingModal = gui.startModalLoading("Adding port");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 

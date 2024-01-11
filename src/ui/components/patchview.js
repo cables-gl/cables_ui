@@ -2071,7 +2071,9 @@ export default class PatchView extends CABLES.EventTarget
 
     selectOpId(id)
     {
-        this._patchRenderer.selectOpId(id);
+        const op = this._p.getOpById(id);
+        if (op)op.setUiAttribs({ "selected": true });
+        // this._patchRenderer.selectOpId(id);
     }
 
     centerSelectOp(opid)

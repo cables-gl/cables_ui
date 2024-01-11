@@ -187,7 +187,6 @@ export default class GlPort
         this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
     }
 
-
     _onHover(rect)
     {
         if (!this._glPatch.hasFocus) return;
