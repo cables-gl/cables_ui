@@ -280,26 +280,26 @@ export default class PatchSaveServer extends CABLES.EventTarget
             console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
             console.log("patch save as - patchName", patchName);
 
-            const localBlueprints = gui.corePatch().ops.filter((op) =>
-            {
-                if (!defaultops.isBlueprintOp(op)) return false;
-                const port = op.getPortByName("externalPatchId");
-                if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
-                return false;
-            });
-            if (localBlueprints.length > 0)
-            {
-                checkboxGroups.push({
-                    "title": "Blueprints:",
-                    "checkboxes": [
-                        {
-                            "name": "keepLocalBlueprints",
-                            "title": "Point local blueprints to new patch",
-                            "checked": true
-                        }
-                    ]
-                });
-            }
+            // const localBlueprints = gui.corePatch().ops.filter((op) =>
+            // {
+            //     if (!defaultops.isBlueprintOp(op)) return false;
+            //     const port = op.getPortByName("externalPatchId");
+            //     if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
+            //     return false;
+            // });
+            // if (localBlueprints.length > 0)
+            // {
+            //     checkboxGroups.push({
+            //         "title": "Blueprints:",
+            //         "checkboxes": [
+            //             {
+            //                 "name": "keepLocalBlueprints",
+            //                 "title": "Point local blueprints to new patch",
+            //                 "checked": true
+            //             }
+            //         ]
+            //     });
+            // }
 
             new ModalDialog({
                 "prompt": true,
@@ -342,10 +342,10 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.secret = "";
 
-                                if (checkboxStates && checkboxStates.keepLocalBlueprints)
-                                {
-                                    gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
-                                }
+                                // if (checkboxStates && checkboxStates.keepLocalBlueprints)
+                                // {
+                                //     gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
+                                // }
 
                                 this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
                             }

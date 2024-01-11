@@ -53,7 +53,7 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
-        if (subPatchId === undefined)subPatchId = gui.patchView.getCurrentSubPatch();
+        if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
 
         const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
@@ -71,12 +71,12 @@ export default function extendCorePatch()
             {
                 const op = this.ops[i];
 
-                // if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
-                // {
-                this._subpatchOpCache[subPatchId] = this._subpatchOpCache[subPatchId] || {};// "ops": {}, "subPatchOpId": null };
-                this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
-                this._subpatchOpCache[subPatchId].ops[op.id] = op;
-                // }
+                if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
+                {
+                    this._subpatchOpCache[subPatchId] = this._subpatchOpCache[subPatchId] || {};// "ops": {}, "subPatchOpId": null };
+                    this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
+                    this._subpatchOpCache[subPatchId].ops[op.id] = op;
+                }
 
                 // if (op.isSubPatchOp()) console.log("issub", op.isSubPatchOp(), op.patchId.get(), subPatchId);
 
@@ -91,7 +91,7 @@ export default function extendCorePatch()
         }
         if (!this._subpatchOpCache[subPatchId])
         {
-            // console.log("no cache", subPatchId);
+            console.log("no cache", subPatchId);
         }
         else
             opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
@@ -185,6 +185,12 @@ export default function extendCorePatch()
 
         // console.log(this._subpatchOpCache);
         // console.log("subpatchopdi", this._subpatchOpCache[subPatchId].subPatchOpId);
+
+        if (!this._subpatchOpCache[subPatchId])
+        {
+            console.log("subpatch [cache] not found", subPatchId);
+            return null;
+        }
         let op = this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
         if (op) return op;
 
