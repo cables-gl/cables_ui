@@ -100,7 +100,7 @@ export default function extendCorePatch()
             }
             // this._subpatchOpCache[subPatchId].ops = opids;
         }
-        if (!this._subpatchOpCache[subPatchId])
+        if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].ops)
         {
             console.log("no cache", subPatchId);
         }
