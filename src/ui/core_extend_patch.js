@@ -38,6 +38,11 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
+        if (patchId === undefined)
+        {
+            this._subpatchOpCache = {};
+            return;
+        }
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
     };
