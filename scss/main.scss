@@ -624,6 +624,8 @@ body
 
     #uiperf
     {
+        max-height: 100%;
+        overflow: scroll;
         z-index: $zindex_high;
         padding:20px;
         position:absolute;
