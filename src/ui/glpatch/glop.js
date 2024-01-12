@@ -396,6 +396,8 @@ export default class GlOp extends CABLES.EventTarget
 
     setUiAttribs(newAttribs, attr)
     {
+        const perf = CABLES.UI.uiProfiler.start("[glop] setuiattribs");
+
         if (newAttribs && newAttribs.selected) this._glPatch.selectOpId(this._id);
         if (newAttribs && !this.opUiAttribs.selected && newAttribs.selected) this._glPatch.selectOpId(this._id);
 
@@ -423,11 +425,10 @@ export default class GlOp extends CABLES.EventTarget
                 });
             }
         }
-
-        if (newAttribs && newAttribs.hasOwnProperty("hidden")) this.updateVisible();
+        if (newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
-        if (newAttribs && newAttribs.translate) this.sendNetPos();
+        if (newAttribs.translate) this.sendNetPos();
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
@@ -459,7 +460,7 @@ export default class GlOp extends CABLES.EventTarget
         //         }
         //     }
         // }
-
+        perf.finish();
         this._needsUpdate = true;
     }
 
@@ -477,6 +478,8 @@ export default class GlOp extends CABLES.EventTarget
 
     setTitle(title, textWriter)
     {
+        const perf = CABLES.UI.uiProfiler.start("[glop] set title");
+
         if (!title) title = this._op.getTitle();
         if (textWriter) this._textWriter = textWriter;
         if (title === undefined)title = "";
@@ -526,6 +529,7 @@ export default class GlOp extends CABLES.EventTarget
             if (this._glTitle.text != String(title)) this._glTitle.text = String(title);
         }
 
+        perf.finish();
         this.updateSize();
     }
 
@@ -567,6 +571,8 @@ export default class GlOp extends CABLES.EventTarget
         let portsWidthOut = 0;
 
         if (!this._glRectBg) return;
+
+        const perf = CABLES.UI.uiProfiler.start("[glop] updatesize");
 
 
         let oldGroup = "";
@@ -636,6 +642,7 @@ export default class GlOp extends CABLES.EventTarget
             }
         }
 
+        perf.finish();
         this._updateCommentPosition();
         // this._updateSizeRightHandle();
     }

@@ -123,6 +123,7 @@ export default class GlPort
                 if (this._glop._links[i].hovering) { hover = true; break; }
 
 
+
         const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
     }
@@ -217,6 +218,7 @@ export default class GlPort
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
 
+
         this._updateColor();
     }
 
@@ -261,7 +263,7 @@ export default class GlPort
 
 GlPort.getInactiveColor = (type) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    const perf = CABLES.UI.uiProfiler.start("[glport] getInactiveColor");
     let portname = "";
 
     if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
@@ -282,8 +284,7 @@ GlPort.getInactiveColor = (type) =>
 
 GlPort.getColorBorder = (type, hovering, selected) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
-
+    const perf = CABLES.UI.uiProfiler.start("[glport] getcolorBorder");
     let name = "";
     let portname = "";
 
