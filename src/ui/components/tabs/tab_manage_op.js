@@ -117,8 +117,6 @@ export default class ManageOp
             doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);
             summary = gui.opDocs.getSummary(opName) || "No Summary";
             const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
-            const showPatchLibSelect = defaultops.isNonCoreOp(opName);
-
             if (portJson && portJson.ports)
             {
                 portJson.ports = blueprintUtil.sortPortsJsonPorts(portJson.ports);
@@ -129,6 +127,16 @@ export default class ManageOp
                         if (portJson.ports[i - 1].dir != portJson.ports[i].dir)portJson.ports[i].divider = true;
                     }
             }
+            const allLibs = gui.opDocs.libs;
+            const libs = [];
+            allLibs.forEach((lib) =>
+            {
+                libs.push({
+                    "url": lib,
+                    "name": CABLES.basename(lib),
+                    "isAssetLib": lib.startsWith("/assets/"),
+                });
+            });
 
             const html = getHandleBarHtml("tab_manage_op",
                 {
@@ -141,10 +149,9 @@ export default class ManageOp
                     "bpSaved": gui.savedState.isSavedSubOp(opName),
                     "portJson": portJson,
                     "summary": summary,
-                    "showPatchLibSelect": showPatchLibSelect,
                     "canEditOp": canEditOp,
                     "readOnly": !canEditOp,
-                    "libs": gui.opDocs.libs,
+                    "libs": libs,
                     "coreLibs": gui.opDocs.coreLibs,
                     "user": gui.user,
                     "warns": res.warns
