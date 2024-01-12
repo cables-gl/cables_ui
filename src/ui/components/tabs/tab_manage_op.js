@@ -159,7 +159,7 @@ export default class ManageOp
                     const buttonCreate = ele.byId(this._id + "_port_create");
                     if (buttonCreate)buttonCreate.addEventListener("click", () =>
                     {
-                        blueprintUtils.portEditDialog(opName);
+                        blueprintUtil.portEditDialog(opName);
                     });
 
 
@@ -172,13 +172,13 @@ export default class ManageOp
                         const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                         if (buttonDelete)buttonDelete.addEventListener("click", () =>
                         {
-                            blueprintUtils.portJsonDelete(opName, id);
+                            blueprintUtil.portJsonDelete(opName, id);
                         });
 
                         const buttonTitle = ele.byId(this._id + "_port_title_" + id);
                         if (buttonTitle)buttonTitle.addEventListener("click", () =>
                         {
-                            blueprintUtils.portEditDialog(opName, id, p);
+                            blueprintUtil.portEditDialog(opName, id, p);
                         //     new CABLES.UI.ModalDialog({
                         //         "prompt": true,
                         //         "title": "Enter Title",
