@@ -21,8 +21,6 @@ function capitalize(str)
     return s;
 }
 
-
-
 export default class ServerOps
 {
     constructor(gui, patchId, next)
@@ -165,7 +163,6 @@ export default class ServerOps
     saveOpLayout(op)
     {
         this.timeoutsLayouts = this.timeoutsLayouts || {};
-
 
         clearTimeout(this.timeoutsLayouts[op.objName]);
         this.timeoutsLayouts[op.objName] = setTimeout(
@@ -1206,14 +1203,11 @@ export default class ServerOps
         {
             const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
 
-
             if (gui && gui.opSelect() && newOps.length > 0)
             {
                 gui.opSelect().reload();
                 gui.opSelect().prepare();
             }
-
-
 
             // let libsToLoad = [];
             // let coreLibsToLoad = [];
@@ -1229,7 +1223,6 @@ export default class ServerOps
             //         coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(newOp, true));
             //     }
             // });
-
 
             for (let i = 0; i < proj.ops.length; i++)
             {
@@ -1301,7 +1294,6 @@ export default class ServerOps
             finishedCb();
             return;
         }
-
 
         let libsToLoad = [];
         let coreLibsToLoad = [];

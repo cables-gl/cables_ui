@@ -27,7 +27,6 @@ function startIdleMode()
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
     if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode()))
     {
-        // idleModal = new ModalDialog({ "html": "<center><b>Cables is paused!</b><br/><br/>Click to resume<br/></center>" });
         gui.restriction.setMessage("idlemode", "cables is paused! Click to resume");
         idleModal = new ModalBackground();
         idleModal.show();

@@ -1772,29 +1772,6 @@ export default class Gui
 
     showWelcomeNotifications()
     {
-        function show(html)
-        {
-            if (html && html.length > 0) CABLES.UI.MODAL.show(
-                "<div style=\"min-height:30px;max-height:500px;overflow-y:scroll;\">" + html + "</div>" +
-                "<center><a class=\"bluebutton\" onclick=\"gui.closeModal();\">&nbsp;&nbsp;&nbsp;ok&nbsp;&nbsp;&nbsp;</a></center>"
-            );
-        }
-
-        // if (this.project().users.indexOf(this.user.id) == -1 &&
-        //     this.project().userId+''!=''+this.user.id ){
-        //     iziToast.show({
-        //         position: 'topRight', // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
-        //         theme: 'dark',
-        //         title: 'Not your patch',
-        //         message: 'Feel free to play around tho!<br />You cannot overwrite the patch, use «save as» in the menu bar instead.',
-        //         progressBar: false,
-        //         animateInside: false,
-        //         close: true,
-        //         timeout: false
-        //     });
-        // }
-
-
         if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
         if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
 
