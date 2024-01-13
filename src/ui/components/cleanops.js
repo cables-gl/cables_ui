@@ -1,4 +1,4 @@
-import WatchPortVisualizer from "./opparampanel/watchPortVisualizer";
+import WatchPortVisualizer from "./opparampanel/watchportvisualizer";
 
 export default class opCleaner
 {

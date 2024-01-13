@@ -182,13 +182,8 @@
         <div class="libselect">
             <select id="addoplib">
                 <option value="">---</option>
-                {{#if canEditOp}}
-                {{#if showPatchLibSelect}}
-                    <option value="asset_upload">use library from patch assets...</option>
-                {{/if}}
-                {{/if}}
                 {{#each libs}}
-                <option value="{{.}}">{{.}}</option>
+                <option value="{{url}}">{{#if isAssetLib}}in patch - {{/if}}{{name}}</option>
                 {{/each}}
             </select>
             <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>

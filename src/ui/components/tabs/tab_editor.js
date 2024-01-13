@@ -87,8 +87,11 @@ export default class EditorTab
 
             if (opname)
             {
+                console.log(
+                    "opname", opname
+                );
                 this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
-                this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + options.editorObj.name); });
+                this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + opname); });
 
                 const opdoc = gui.opDocs.getOpDocByName(opname);
 

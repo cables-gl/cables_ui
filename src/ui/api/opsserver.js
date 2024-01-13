@@ -341,12 +341,6 @@ export default class ServerOps
     addOpLib(opName, libName, next)
     {
         if (libName === "---") return;
-        if (libName === "asset_upload")
-        {
-            gui.serverOps.selectLibFromAssets(opName);
-            return;
-        }
-
         CABLESUILOADER.talkerAPI.send(
             "opAddLib",
             {
@@ -382,25 +376,6 @@ export default class ServerOps
                 }
             },
         );
-    }
-
-    selectLibFromAssets(opName)
-    {
-        gui.showFileManager(() =>
-        {
-            gui.fileManager.setFilterType([".js"]);
-            gui.fileManager._manager.addEventListener("onItemsSelected", (items) =>
-            {
-                if (items && items.length > 0)
-                {
-                    const userLib = items[0];
-                    if (userLib.p)
-                    {
-                        this.addOpLib(opName, userLib.p);
-                    }
-                }
-            });
-        }, true);
     }
 
     removeOpLib(opName, libName, next)

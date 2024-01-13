@@ -88,12 +88,6 @@ export default class GlPort
             this._dot.setColor(0.24, 0.24, 0.24, 1);
             let size = GlUiConfig.portHeight * 0.75;
 
-            // if (this._port.uiAttribs.expose)
-            // {
-            //     size *= 2.0;
-            //     this._dot.setShape(11);
-            // }
-
             if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
 
             this._dot.setSize(size, size);
@@ -102,9 +96,7 @@ export default class GlPort
             if (this.direction == CABLES.PORT_DIR_IN)
             {
                 dotPosY += GlUiConfig.portHeight;
-                // if (this._port.uiAttribs.expose && this._port.isLinked())dotPosY -= GlUiConfig.portHeight * 0.7;
             }
-            // if (this._port.uiAttribs.expose)dotPosY += GlUiConfig.portHeight * 0.4;
             this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
         }
 
@@ -114,14 +106,11 @@ export default class GlPort
             this._dot = null;
         }
 
-        // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
-
         let hover = this._hover;
 
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 if (this._glop._links[i].hovering) { hover = true; break; }
-
 
         const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
@@ -217,6 +206,7 @@ export default class GlPort
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
 
+
         this._updateColor();
     }
 
@@ -261,7 +251,7 @@ export default class GlPort
 
 GlPort.getInactiveColor = (type) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
+    const perf = CABLES.UI.uiProfiler.start("[glport] getInactiveColor");
     let portname = "";
 
     if (type == CABLES.OP_PORT_TYPE_VALUE) portname = "num";
@@ -282,8 +272,7 @@ GlPort.getInactiveColor = (type) =>
 
 GlPort.getColorBorder = (type, hovering, selected) =>
 {
-    const perf = CABLES.UI.uiProfiler.start("[glport] getcolor");
-
+    const perf = CABLES.UI.uiProfiler.start("[glport] getcolorBorder");
     let name = "";
     let portname = "";
 

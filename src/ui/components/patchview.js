@@ -1,4 +1,4 @@
-import PatchSaveServer from "../api/patchServerApi";
+import PatchSaveServer from "../api/patchserverapi";
 import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";

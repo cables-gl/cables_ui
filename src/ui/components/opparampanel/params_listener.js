@@ -6,7 +6,7 @@ import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
 import userSettings from "../usersettings";
 import paramsHelper from "./params_helper";
-import WatchPortVisualizer from "./watchPortVisualizer";
+import WatchPortVisualizer from "./watchportvisualizer";
 
 
 class ParamsListener extends CABLES.EventTarget

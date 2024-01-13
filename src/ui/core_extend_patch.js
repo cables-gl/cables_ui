@@ -38,6 +38,12 @@ export default function extendCorePatch()
 
     CABLES.Patch.prototype.clearSubPatchCache = function (patchId)
     {
+        // console.log("clear subpatch cache", patchId);
+        if (patchId === undefined)
+        {
+            this._subpatchOpCache = {};
+            return;
+        }
         this._subpatchOpCache = this._subpatchOpCache || {};
         delete this._subpatchOpCache[patchId];
     };
@@ -54,7 +60,7 @@ export default function extendCorePatch()
     CABLES.Patch.prototype.getSubPatchOps = function (subPatchId, recursive = false)
     {
         if (subPatchId === undefined) subPatchId = gui.patchView.getCurrentSubPatch();
-
+        if (this.ops.length == 0) return [];
         const perf = CABLES.UI.uiProfiler.start("[corepatch ext] getSubPatchOps");
 
         this._subpatchOpCache = this._subpatchOpCache || {};
@@ -63,15 +69,20 @@ export default function extendCorePatch()
 
         if (this._subpatchOpCache[subPatchId] && this._subpatchOpCache[subPatchId].ops)
         {
+            // console.log("cache hit");
             opids = this._subpatchOpCache[subPatchId].ops;
         }
         else
         {
-            for (const i in this.ops)
+            // console.log("creating cache...ops:", this.ops.length);
+            for (let i = 0; i < this.ops.length; i++)
             {
+                // console.log("creating cache ", subPatchId, this.ops.length);
                 const op = this.ops[i];
 
-                if (op.uiAttribs && op.uiAttribs.subPatch == subPatchId)
+                // console.log("creating cache ", subPatchId, op.uiAttribs.subPatch, this.ops);
+
+                if ((op.uiAttribs && op.uiAttribs.subPatch == subPatchId) || !op.uiAttribs.hasOwnProperty("subPatch"))
                 {
                     this._subpatchOpCache[subPatchId] = this._subpatchOpCache[subPatchId] || {};// "ops": {}, "subPatchOpId": null };
                     this._subpatchOpCache[subPatchId].ops = this._subpatchOpCache[subPatchId].ops || {};
@@ -89,7 +100,7 @@ export default function extendCorePatch()
             }
             // this._subpatchOpCache[subPatchId].ops = opids;
         }
-        if (!this._subpatchOpCache[subPatchId])
+        if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].ops)
         {
             console.log("no cache", subPatchId);
         }

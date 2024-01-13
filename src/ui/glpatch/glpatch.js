@@ -1241,8 +1241,6 @@ export default class GlPatch extends CABLES.EventTarget
 
         const cops = gui.corePatch().getSubPatchOps();
 
-
-
         for (let j = 0; j < cops.length; j++)
         {
             // for (const i in this._glOpz)

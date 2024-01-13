@@ -6,7 +6,7 @@ import OpHistory from "./components/ophistory";
 import OpParampanel from "./components/opparampanel/op_parampanel";
 import CommandPallete from "./dialogs/commandpalette";
 import OpSelect from "./dialogs/opselect";
-import BottomInfoAreaBar from "./elements/bottomInfoAreaBar";
+import BottomInfoAreaBar from "./elements/bottominfoareabar";
 import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
 import MainTabPanel from "./elements/tabpanel/maintabpanel";
 import TabPanel from "./elements/tabpanel/tabpanel";

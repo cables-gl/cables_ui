@@ -632,9 +632,13 @@ export default class GlLink
 
     highlight(b)
     {
-        this._cable.updateColor();
-        if (this._cableSub) this._cableSub.updateColor();
-        // if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
+        if (this._oldHighlight !== b)
+        {
+            this._cable.updateColor();
+            if (this._cableSub) this._cableSub.updateColor();
+            // if (this._cableSub) this._glPatch.setDrawableColorByType(this._cableSub, this._type, b ? 1 : 0);
+            this._oldHighlight = b;
+        }
     }
 
     collideLine(x1, y1, x2, y2)
