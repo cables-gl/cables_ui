@@ -21,6 +21,14 @@ export default class OpSerialized extends CABLES.EventTarget
         });
     }
 
+    _sortObject(obj)
+    {
+        return Object.keys(obj).sort().reduce(function (result, key)
+        {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
 
     setOp(op)
     {
@@ -49,7 +57,7 @@ export default class OpSerialized extends CABLES.EventTarget
     {
         if (this._op)
         {
-            let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._op.getSerialized(), false, 4) + "</code></pre></div>";
+            let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.getSerialized()), false, 4) + "</code></pre></div>";
             this._tab.html(html);
         }
         else

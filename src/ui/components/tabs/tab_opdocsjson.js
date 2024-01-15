@@ -38,13 +38,22 @@ export default class OpDocsJson extends CABLES.EventTarget
         this.rebuildHtml();
     }
 
+    _sortObject(obj)
+    {
+        return Object.keys(obj).sort().reduce(function (result, key)
+        {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
 
     rebuildHtml()
     {
-        console.log(this._op);
         if (this._op)
         {
-            const json = gui.opDocs.getOpDocByName(this._op.objName);
+            let json = gui.opDocs.getOpDocByName(this._op.objName);
+
+            json = this._sortObject(json);
 
             let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(json, false, 4) + "</code></pre></div>";
             this._tab.html(html);
