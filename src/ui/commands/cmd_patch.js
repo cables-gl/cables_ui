@@ -272,6 +272,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     if (selectedOpIds.length == 0) newOps[0].setPos(0, 0);
                                                     else newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
 
+                                                    gui.patchView.testCollision(newOps[0]);
+
                                                     gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
                                                     gui.endModalLoading();
