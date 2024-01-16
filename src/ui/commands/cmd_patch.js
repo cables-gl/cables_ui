@@ -10,6 +10,7 @@ import ele from "../utils/ele";
 import defaultops from "../defaultops";
 import ManageOp from "../components/tabs/tab_manage_op";
 import blueprintUtil from "../blueprint_util";
+import ModalError from "../dialogs/modalerror";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -172,11 +173,21 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
-CABLES_CMD_PATCH.createOpFromSelection = function ()
+CABLES_CMD_PATCH.createSubPatchOp = function ()
+{
+    let suggestedNamespace = defaultops.getPatchOpsNamespace();
+    gui.serverOps.opNameDialog("Create operator", blueprintUtil.getAutoName(true), "patch", suggestedNamespace, (newNamespace, newName) =>
+    {
+        CABLES_CMD_PATCH.createOpFromSelection();
+    });
+};
+
+CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const origOpsBounds = gui.patchView.getSelectionBounds();
-    const newOpname = blueprintUtil.getAutoName();
+    const newOpname = options.newOpName || blueprintUtil.getAutoName();
+
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
     const loadingModal = gui.startModalLoading("Create Subpatch");
 
@@ -227,8 +238,14 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                                         "name": "att_inc_gen_ports.js",
                                         "content": src,
                                     },
-                                    (errr2, re2) =>
+                                    (err2) =>
                                     {
+                                        if (err2)
+                                        {
+                                            new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            return;
+                                        }
+
                                         loadingModal.setTask("Saving ports...");
 
                                         CABLESUILOADER.talkerAPI.send(
@@ -238,25 +255,32 @@ CABLES_CMD_PATCH.createOpFromSelection = function ()
                                                 "name": "att_ports.json",
                                                 "content": JSON.stringify(portJson),
                                             },
-                                            (errr3, re3) =>
+                                            (err) =>
                                             {
-                                                loadingModal.setTask("Execute code");
+                                                if (err)
+                                                {
+                                                    new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    return;
+                                                }
 
+                                                loadingModal.setTask("Execute code");
 
                                                 gui.serverOps.execute(newOpname, (newOps) =>
                                                 {
                                                     // link ports.......
 
-                                                    newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                                    if (selectedOpIds.length == 0) newOps[0].setPos(0, 0);
+                                                    else newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+
                                                     gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
                                                     gui.endModalLoading();
                                                 });
                                             });
-                                    },
+                                    }
                                 );
                             });
-                        },
+                        }
                     });
             },
             null,
@@ -1335,7 +1359,14 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "toggle patch like",
         "func": CABLES_CMD_PATCH.togglePatchLike,
         "category": "patch"
-    }
+    },
+    {
+        "cmd": "create subpatch op",
+        "func": CABLES_CMD_PATCH.createSubPatchOp,
+        "category": "patch",
+        "icon": "op"
+    },
+
 
 
 );

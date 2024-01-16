@@ -58,11 +58,8 @@ export default class OpWatchUiAttribs extends CABLES.EventTarget
         if (this._op)
         {
             let html = "<div class=\"tabContentScrollContainer\">";
-
             html += "<hr/><h2>Op: " + this._op.name + " </h2>";
-
             html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.uiAttribs), false, 4) + "</code></pre>";
-
 
             for (let i = 0; i < this._op.portsIn.length; i++)
             {

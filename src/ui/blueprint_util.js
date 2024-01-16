@@ -7,6 +7,7 @@ import srcBluePrintOp from "./blueprint_op.js.txt";
 import ModalDialog from "./dialogs/modaldialog";
 import { getHandleBarHtml } from "./utils/handlebars";
 
+import ModalError from "./dialogs/modalerror";
 
 
 const blueprintUtil = {};
@@ -474,7 +475,7 @@ blueprintUtil.addPortToBlueprint = (opId, port) =>
 };
 
 
-blueprintUtil.getAutoName = () =>
+blueprintUtil.getAutoName = (short) =>
 {
     let newOpName = "";
     const ns = defaultOps.getPatchOpsNamespace();
@@ -487,6 +488,7 @@ blueprintUtil.getAutoName = () =>
         // if (ops.length == 0)
         if (!doc)
         {
+            if (short)newOpName = "SubPatch" + i;
             break;
         }
     }
@@ -583,7 +585,9 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
     const o = { "ops": [] };
     const subId = CABLES.shortId();
 
-    if (options.loadingModal)options.loadingModal.setTask("serialize ops");
+    // if (options.loadingModal)options.loadingModal.setTask("serialize ops");
+    const loadingModal = gui.startModalLoading("serialize ops");
+
 
     ops.forEach((op) =>
     {
@@ -603,7 +607,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
     CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
 
 
-    if (options.loadingModal)options.loadingModal.setTask("save attachment...");
+    loadingModal.setTask("save attachment...");
 
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
 
@@ -616,8 +620,13 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
             "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
             "content": JSON.stringify(o, null, "    "),
         },
-        (errr, re) =>
+        (err) =>
         {
+            if (err)
+            {
+                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                return;
+            }
             CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
             gui.showLoadingProgress(false);
 
@@ -663,14 +672,15 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
             {
                 if (options.next)options.next();
             }
+            gui.endModalLoading();
         });
 };
 
 
 
-blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
+blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
 {
-    if (loadingModal)loadingModal.setTask("save op code");
+    const loadingModal = gui.startModalLoading("save op code");
 
     CABLESUILOADER.talkerAPI.send("opUpdate",
         {
@@ -680,10 +690,14 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
                 "coreLibs": ["subpatchop"]
             }
         },
-        (r) =>
+        (err) =>
         {
-            console.log("response", r);
-            if (loadingModal)loadingModal.setTask("update bp2 attachment");
+            if (err)
+            {
+                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                return;
+            }
+            loadingModal.setTask("update bp2 attachment");
 
             console.log("oldSubpatchOp.patchId.get()", oldSubpatchOp.patchId.get());
 
@@ -691,7 +705,6 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
                 newOp,
                 {
                     "execute": false,
-                    "loadingModal": loadingModal,
                     "oldSubId": oldSubpatchOp.patchId.get(),
                     "replaceIds": true,
                     "next": () =>
@@ -699,6 +712,7 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, loadingModal) =>
                         gui.serverOps.execute(newOp.objName,
                             (newOps) =>
                             {
+                                gui.endModalLoading();
                                 if (oldSubpatchOp && newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
 
                                 if (next)next();
