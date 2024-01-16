@@ -176,10 +176,15 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
 CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
     let suggestedNamespace = defaultops.getPatchOpsNamespace();
-    gui.serverOps.opNameDialog("Create operator", blueprintUtil.getAutoName(true), "patch", suggestedNamespace, (newNamespace, newName) =>
-    {
-        CABLES_CMD_PATCH.createOpFromSelection();
-    });
+    gui.serverOps.opNameDialog("Create operator",
+        blueprintUtil.getAutoName(true),
+        "patch",
+        suggestedNamespace,
+        (newNamespace, newName) =>
+        {
+            console.log(newName);
+            CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName });
+        });
 };
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
