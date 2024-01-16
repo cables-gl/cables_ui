@@ -1,5 +1,6 @@
 import GlDebugTab from "../components/tabs/tab_debugglui";
 import LoggingTab from "../components/tabs/tab_logging";
+import OpDocsJson from "../components/tabs/tab_opdocsjson";
 import OpSerialized from "../components/tabs/tab_opserialized";
 import OpWatchUiAttribs from "../components/tabs/tab_uiattribs";
 import Gui from "../gui";
@@ -226,6 +227,12 @@ CABLES_CMD_DEBUG.watchOpSerialized = function ()
     gui.maintabPanel.show(true);
 };
 
+CABLES_CMD_DEBUG.watchOpDocsJson = function ()
+{
+    new OpDocsJson(gui.mainTabs);
+    gui.maintabPanel.show(true);
+};
+
 
 CABLES_CMD_DEBUG.watchOpUiAttribs = function ()
 {
@@ -311,6 +318,12 @@ CMD_DEBUG_COMMANDS.push(
         "cmd": "test op",
         "category": "debug",
         "func": CABLES_CMD_DEBUG.testOp,
+        "icon": "op"
+    },
+    {
+        "cmd": "show op docs json",
+        "func": CABLES_CMD_DEBUG.watchOpDocsJson,
+        "category": "debug",
         "icon": "op"
     },
     {

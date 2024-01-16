@@ -1,12 +1,12 @@
 import ele from "../../utils/ele";
 
-export default class OpSerialized extends CABLES.EventTarget
+export default class OpDocsJson extends CABLES.EventTarget
 {
     constructor(tabs)
     {
         super();
         this._tabs = tabs;
-        this._tab = new CABLES.UI.Tab("Serialized Op", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
+        this._tab = new CABLES.UI.Tab("Op Docs Json", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
         this._id = "hljs" + CABLES.uuid();
@@ -21,14 +21,6 @@ export default class OpSerialized extends CABLES.EventTarget
         });
     }
 
-    _sortObject(obj)
-    {
-        return Object.keys(obj).sort().reduce(function (result, key)
-        {
-            result[key] = obj[key];
-            return result;
-        }, {});
-    }
 
     setOp(op)
     {
@@ -39,25 +31,31 @@ export default class OpSerialized extends CABLES.EventTarget
             // unbind listener!
         }
 
-        if (op)
-        {
-            op.addEventListener("onUiAttribsChange", () =>
-            {
-                this.rebuildHtml();
-            });
+        this._op = op;
 
-            this._op = op;
-        }
+
 
         this.rebuildHtml();
     }
 
+    _sortObject(obj)
+    {
+        return Object.keys(obj).sort().reduce(function (result, key)
+        {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
 
     rebuildHtml()
     {
         if (this._op)
         {
-            let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.getSerialized()), false, 4) + "</code></pre></div>";
+            let json = gui.opDocs.getOpDocByName(this._op.objName);
+
+            json = this._sortObject(json);
+
+            let html = "<div class=\"tabContentScrollContainer\"><code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(json, false, 4) + "</code></pre></div>";
             this._tab.html(html);
         }
         else

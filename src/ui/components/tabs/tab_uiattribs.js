@@ -44,6 +44,14 @@ export default class OpWatchUiAttribs extends CABLES.EventTarget
         this.rebuildHtml();
     }
 
+    _sortObject(obj)
+    {
+        return Object.keys(obj).sort().reduce(function (result, key)
+        {
+            result[key] = obj[key];
+            return result;
+        }, {});
+    }
 
     rebuildHtml()
     {
@@ -53,13 +61,13 @@ export default class OpWatchUiAttribs extends CABLES.EventTarget
 
             html += "<hr/><h2>Op: " + this._op.name + " </h2>";
 
-            html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._op.uiAttribs, false, 4) + "</code></pre>";
+            html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.uiAttribs), false, 4) + "</code></pre>";
 
 
             for (let i = 0; i < this._op.portsIn.length; i++)
             {
                 html += "<hr/><h3>Port: " + this._op.portsIn[i].name + " </h3>";
-                html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._op.portsIn[i].uiAttribs, false, 4) + "</code></pre>";
+                html += "<code ><pre id=\"" + this._id + "\" class=\"hljs language-json\">" + JSON.stringify(this._sortObject(this._op.portsIn[i].uiAttribs), false, 4) + "</code></pre>";
             }
 
             html += "</div>";
