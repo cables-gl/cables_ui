@@ -9,6 +9,7 @@ import { notifyError } from "../elements/notification";
 import defaultops from "../defaultops";
 import ele from "../utils/ele";
 import blueprintUtil from "../blueprint_util";
+import ModalError from "../dialogs/modalerror";
 
 
 
@@ -498,8 +499,14 @@ export default class ServerOps
                     "opname": opId,
                     "name": attName,
                 },
-                (err, res) =>
+                (err) =>
                 {
+                    if (err)
+                    {
+                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        return;
+                    }
+
                     gui.emitEvent("refreshManageOp", opName);
 
                     if (err)
@@ -531,8 +538,14 @@ export default class ServerOps
                         "opname": opname,
                         "name": attName,
                     },
-                    (err, res) =>
+                    (err) =>
                     {
+                        if (err)
+                        {
+                            new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            return;
+                        }
+
                         this.editAttachment(opname, "att_" + attName);
                         gui.metaTabs.activateTabByName("code");
                         gui.emitEvent("refreshManageOp", opname);
@@ -573,6 +586,12 @@ export default class ServerOps
                     "v": v
                 }, (err, res) =>
                 {
+                    if (err)
+                    {
+                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        return;
+                    }
+
                     _updateFormFromApi(res, v, newNamespace);
                 });
             }
@@ -649,8 +668,14 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send("checkOpName", {
             "namespace": suggestedNamespace,
             "v": newName
-        }, (initialErr, initialRes) =>
+        }, (err, initialRes) =>
         {
+            if (err)
+            {
+                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                return;
+            }
+
             new CABLES.UI.ModalDialog({
                 "title": title,
                 "text": html
@@ -803,6 +828,12 @@ export default class ServerOps
             apiParams,
             (err, res) =>
             {
+                if (err)
+                {
+                    new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    return;
+                }
+
                 gui.jobs().finish("load_attachment_" + attachmentName);
 
                 if (err || !res || res.content === undefined)

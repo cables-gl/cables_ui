@@ -317,13 +317,16 @@ export default class PatchView extends CABLES.EventTarget
             {
                 const b = gui.corePatch().ops[j];
                 if (b.deleted || b == op) continue;
+                if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
 
                 if (b.uiAttribs.translate &&
                     op.uiAttribs.translate &&
                     (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
                     op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
-                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY } });
+                    let y = b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY;
+                    console.log("y", y);
+                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": y } });
                     found = true;
                 }
             }
