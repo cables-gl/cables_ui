@@ -259,6 +259,7 @@ export default class ServerOps
 
     execute(name, next, refOldOp)
     {
+        console.log("execute", name);
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
             let html = "";
@@ -1207,6 +1208,7 @@ export default class ServerOps
 
         this.loadOps(missingOps, (newOps, newIds) =>
         {
+            console.log("load ops", missingOps);
             const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
 
             if (gui && gui.opSelect() && newOps.length > 0)
@@ -1399,7 +1401,7 @@ export default class ServerOps
         {
             // we found an op in opdocs, check if we also have the code and needed libraries
             loaded = this.opCodeLoaded(foundOp);
-            if (loaded) loaded = this.allLibsLoaded(foundOp);
+            // if (loaded) loaded = this.allLibsLoaded(foundOp);
         }
         return loaded;
     }
