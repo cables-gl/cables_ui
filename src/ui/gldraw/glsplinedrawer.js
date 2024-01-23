@@ -152,7 +152,8 @@ export default class GlSplineDrawer
             "colorBorder": [0, 0, 0, 0],
             "speed": 1,
             "index": this._count,
-            "hidden": false
+            "hidden": false,
+            "pointsNeedProgressUpdate": true
         };
 
         // console.log("get new spline");
@@ -291,6 +292,7 @@ export default class GlSplineDrawer
                         points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
+                    this._splines[idx].pointsNeedProgressUpdate = true;
                 }
                 else
                 if (points.length > this._splines[idx].origPoints.length)
@@ -412,10 +414,7 @@ export default class GlSplineDrawer
         {
             for (let j = 0; j < 6; j++)
             {
-                for (let k = 0; k < 3; k++)
-                {
-                    count++;
-                }
+                count += 3;
                 this._speeds[(off + count) / 3] = this._splines[idx].speed;
             }
         }
@@ -437,18 +436,13 @@ export default class GlSplineDrawer
             return;
         }
 
-        let count = 0;
-
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
+        let count = 0;
+        let title = "all";
 
         if (!points) return;
 
-
-        // console.log("what",updateWhat,idx)
-
-        // CABLES.logStack();
-        let title = "all";
         if (updateWhat == undefined) title = "all";
         else title = Object.keys(updateWhat).join(".");
 
@@ -578,15 +572,21 @@ export default class GlSplineDrawer
 
         for (let i = 0; i < this._splines.length; i++)
         {
-            this._splines[i].startOffset = count * 6;
+            const spline = this._splines[i];
+            if (spline.startOffset != count * 6 || this._splineIndex[numPoints] != i)
+            {
+                spline.startOffset = count * 6;
+                spline.pointsNeedProgressUpdate = true;
+            }
 
-            if (this._splines[i].points)
-                for (let j = 0; j < this._splines[i].points.length / 3; j++)
+            if (spline.points)
+                for (let j = 0; j < spline.points.length / 3; j++)
                 {
+                    const j3 = j * 3;
+                    this._thePoints[count++] = spline.points[j3 + 0];
+                    this._thePoints[count++] = spline.points[j3 + 1];
+                    this._thePoints[count++] = spline.points[j3 + 2];
                     this._splineIndex[numPoints] = i;
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
 
                     numPoints++;
                 }

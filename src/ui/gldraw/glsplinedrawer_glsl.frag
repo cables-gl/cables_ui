@@ -91,7 +91,6 @@ void main()
 
         if(fcolorBorder.a==0.0 && fSplineLength>fadeDistStart*2.0 && fProgress>fadeDistStart && fProgress<fSplineLength-fadeDistStart)
         {
-
             finalColor.a=0.0;
             finalColor.a=1.0-smoothstep(fProgress,fadeDistStart,fadeDistStart+fadeDist);
             finalColor.a+=1.0-(smoothstep(fProgress,fSplineLength-fadeDistStart,fSplineLength-fadeDistStart-fadeDist));
@@ -101,6 +100,8 @@ void main()
     #endif
 
 // finalColor=finactiveColor;
+
+finalColor.rgb*=fProgress/fSplineLength;
 
     outColor = finalColor;
 }
