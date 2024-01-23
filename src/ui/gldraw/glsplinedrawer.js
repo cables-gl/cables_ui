@@ -466,9 +466,9 @@ export default class GlSplineDrawer
 
                     if (
                         !isNaN(points[idx3 + 0]) &&
-                    !isNaN(points[idx3 + 1]) &&
-                    !isNaN(points[idx31 + 0]) &&
-                    !isNaN(points[idx31 + 1])
+                        !isNaN(points[idx3 + 1]) &&
+                        !isNaN(points[idx31 + 0]) &&
+                        !isNaN(points[idx31 + 1])
                     )
                     {
                         const d = this._dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
