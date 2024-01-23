@@ -218,7 +218,7 @@ export default class GlCable
         else this._distFromPort = GlUiConfig.portHeight * 2.9; // magic number...?!
     }
 
-    _subdivivde(inPoints, divs)
+    _subdivide(inPoints, divs)
     {
         const arr = [];
         const subd = divs || 4;
@@ -261,7 +261,7 @@ export default class GlCable
 
         // "hanging" cables
         // this._splineDrawer.setSpline(this._splineIdx,
-        //     this._subdivivde(
+        //     this._subdivide(
         //         [
         //             this._x, this._y, 0,
         //             this._x, this._y, 0,
@@ -292,16 +292,14 @@ export default class GlCable
                     this._curvedSimple = true;
                     this._updateDistFromPort();
 
-                    this._points = this._subdivivde(
+                    this._points = //this._subdivide(
                         [
                             posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
+                            // posX, this._y, 0,
+                            // posX2, this._y2, 0,
                             posX2, this._y2, 0
-                        ]);
+                        ];
+                        //);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
@@ -330,7 +328,7 @@ export default class GlCable
 
 
                     for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
-                        this._points = this._subdivivde(this._points);
+                        this._points = this._subdivide(this._points);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
@@ -341,7 +339,7 @@ export default class GlCable
                 {
                     this._curvedSimple = true;
                     this._updateDistFromPort();
-                    this.points = this._subdivivde(
+                    this.points = this._subdivide(
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,
@@ -369,7 +367,7 @@ export default class GlCable
                     let centerX = (posX * 0.3 + posX2 * 0.7);
                     if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
 
-                    this._points = this._subdivivde(
+                    this._points = this._subdivide(
                         [
                             posX, this._y, 0,
                             posX, this._y, 0,

@@ -124,13 +124,22 @@ export default class GlSplineDrawer
         // todo move before rendering but will not draw when rebuilding...
         if (this._rebuildLater)
         {
-            // clearTimeout(this._laterTimeout);
-            // this._laterTimeout=setTimeout(
-            //     () =>
-            //     {
-                    this.rebuild();
-            // },20);
-            // this._rebuildLater = false;
+
+            if(gui.finishedLoading)
+            {
+                this.rebuild();
+            }
+            else
+{
+    clearTimeout(this._laterTimeout);
+    this._laterTimeout=setTimeout(
+        () =>
+        {
+            this.rebuild();
+    },100);
+    this._rebuildLater = false;
+
+}
 
         }
     }
@@ -293,6 +302,7 @@ export default class GlSplineDrawer
                     // length of spline changed, we need to rebuild the whole buffer....
                     isDifferent = true;
                     isDifferentLength = true;
+                    this._splines[idx].pointsNeedProgressUpdate = true;
 
                     // console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
@@ -305,6 +315,7 @@ export default class GlSplineDrawer
                         if (this._splines[idx].origPoints[i] != points[i])
                         {
                             isDifferent = true;
+                            this._splines[idx].pointsNeedProgressUpdate = true;
                             break;
                         }
                     }
@@ -318,6 +329,7 @@ export default class GlSplineDrawer
 
         this._splines[idx].origPoints = points;
         this._splines[idx].points = this.tessEdges(points);
+        // this._splines[idx].points = points;
         this._splines[idx].pointsNeedProgressUpdate = true;
 
 
@@ -460,12 +472,14 @@ export default class GlSplineDrawer
                 const len = (points.length - 3) / 3;
                 for (let i = 0; i < len; i++)
                 {
-                    this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
-                    this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
-                    this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
-
+                    const ofc3=(off + count) / 3;
                     const idx3 = i * 3;
                     const idx31 = (i + 1) * 3;
+
+                    this._pointsProgress[ofc3+ 1] =
+                        this._pointsProgress[ofc3+ 3] =
+                        this._pointsProgress[ofc3+ 4] = totalDistance;
+
 
                     if (
                         !isNaN(points[idx3 + 0]) &&
@@ -480,13 +494,14 @@ export default class GlSplineDrawer
                     }
 
 
-                    this._pointsProgress[(off + count) / 3 + 0] = totalDistance;
-                    this._pointsProgress[(off + count) / 3 + 2] = totalDistance;
-                    this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
+                    this._pointsProgress[ofc3 + 0] = totalDistance;
+                    this._pointsProgress[ofc3 + 2] = totalDistance;
+                    this._pointsProgress[ofc3 + 5] = totalDistance;
 
-                    for (let j = 0; j < 6; j++)
-                        for (let k = 0; k < 3; k++)
-                            count++;
+                    // for (let j = 0; j < 6; j++)
+                        // for (let k = 0; k < 3; k++)
+                            // count++;
+                    count+=6*3;
                 }
 
                 // if (this._pointsSplineLength.length != this._pointsProgress.length)console.log("wrong length?!");
@@ -702,6 +717,15 @@ export default class GlSplineDrawer
 
         this._rebuildLater = false;
         perf.finish();
+
+        let l=0;
+        for(let i=0;i<this._splines.length;i++)
+        {
+            l+=this._splines[i].points.length/3;
+
+        }
+        console.log(this._splines);
+        console.log("avg spline points",l/this._splines.length);
     }
 
     ip(a, b, p)
