@@ -171,11 +171,8 @@ export default class GlSplineDrawer
     {
         if (this._splines[idx].speed != speed)
         {
-            // console.log(this._splines[idx].speed, speed);
-
             this._splines[idx].speed = speed;
             this._updateAttribsSpeed(idx);
-            // this._rebuildLater = true;
         }
     }
 
@@ -188,7 +185,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].colorInactive[3], rgba[3]))
         {
             this._splines[idx].colorInactive = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colorsInactive": true });
         }
     }
@@ -202,7 +198,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].colorBorder[3], rgba[3]))
         {
             this._splines[idx].colorBorder = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colorsBorder": true });
         }
     }
@@ -216,7 +211,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].color[3], rgba[3]))
         {
             this._splines[idx].color = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colors": true });
         }
     }
@@ -226,7 +220,6 @@ export default class GlSplineDrawer
         const sp = this._splines[idx];
 
         this.setSplineColor(idx, [0, 0, 0, 0]);
-        // this._rebuildLater = true;
 
         if (this._splines[idx].origPoints)
             for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
@@ -326,8 +319,6 @@ export default class GlSplineDrawer
 
         if (!isDifferentLength) // length is the same, update vertices only
         {
-            // this._rebuildLater = true;
-
             this._updateAttribsCoordinates(idx);
 
             // setAttributeRange(attr, array, start, end)
@@ -397,8 +388,6 @@ export default class GlSplineDrawer
 
         if (!points) return;
 
-        // this._splines[idx].speed = this._splines[idx].speed;
-
         for (let i = 0; i < points.length / 3; i++)
         {
             for (let j = 0; j < 6; j++)
@@ -407,12 +396,8 @@ export default class GlSplineDrawer
                 this._speeds[(off + count) / 3] = this._splines[idx].speed;
             }
         }
-
-        // console.log("this._speeds", this._speeds);
         this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
     }
-
-
 
     _dist(x1, y1, x2, y2)
     {
@@ -600,7 +585,7 @@ export default class GlSplineDrawer
 
         // console.log("LENGTH", this._thePoints.length, newLength / 6);
 
-        if (this._points.length != newLength)
+        if (this._points.length < newLength)
         {
             this._colors = new Float32Array(newLength / 3 * 4);
             this._colorsInactive = new Float32Array(newLength / 3 * 4);

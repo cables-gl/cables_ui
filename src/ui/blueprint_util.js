@@ -597,8 +597,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
         const ser = op.getSerialized();
         delete ser.uiAttribs.history;
-
-        // console.log("after", op.getTitle(), ser.uiAttribs.subPatch);
+        delete ser.uiAttribs.selected;
 
         if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
         o.ops.push(ser);
