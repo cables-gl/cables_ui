@@ -475,7 +475,6 @@ export default class GlCable
     {
         if (this._disposed)
         {
-            console.log("disposed setcolor!!!!!!!!!!");
             // console.log((new Error()).stack);
             return;
         }

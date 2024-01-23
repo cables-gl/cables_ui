@@ -560,7 +560,7 @@ export default class TexturePreviewer
                 o.enabled = this._enabled;
             }
 
-            console.log(o);
+            // console.log(o);
         }
 
         return o;

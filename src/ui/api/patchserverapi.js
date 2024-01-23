@@ -819,7 +819,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         // console.log(url);
         // window.open(url);
 
-        console.log("send screenshot", Math.round(url.length / 1024) + "kb");
+        // console.log("send screenshot", Math.round(url.length / 1024) + "kb");
         CABLESUILOADER.talkerAPI.send(
             "saveScreenshot",
             {
@@ -833,7 +833,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                 cgl.setSize(w, h + 1);
                 cgl.setSize(w, h);
-                console.log("set size", w, h);
+                // console.log("set size", w, h);
                 thePatch.resume(); // must resume here for webgpu
                 gui.jobs().finish("screenshotsave");
                 if (gui.onSaveProject) gui.onSaveProject();

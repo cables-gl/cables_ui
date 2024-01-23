@@ -1101,6 +1101,17 @@ export default class GlOp extends CABLES.EventTarget
         }
     }
 
+    _shortenExtTitle(str)
+    {
+        if (str.startsWith("data:") && str.indexOf(":") > -1)
+        {
+            const parts = str.split(";");
+            str = parts[0];
+        }
+        if (str.length > 50)str.slice(0, 50);
+        return str;
+    }
+
     update()
     {
         if (this._disposed) return;
@@ -1205,7 +1216,8 @@ export default class GlOp extends CABLES.EventTarget
                 const thePort = this._op.getPort(this.opUiAttribs.extendTitlePort);
                 if (thePort)
                 {
-                    const str = " " + thePort.getTitle() + ": " + thePort.get();
+                    const str = this._shortenExtTitle(" " + thePort.getTitle() + ": " + thePort.get());
+
                     if (str != this._titleExt.text)
                     {
                         this._titleExt.text = str;
@@ -1216,7 +1228,7 @@ export default class GlOp extends CABLES.EventTarget
             else
             if (this.opUiAttribs.hasOwnProperty("extendTitle") && this.opUiAttribs.extendTitle != this._titleExt.text)
             {
-                const str = " " + this.opUiAttribs.extendTitle || "!?!?!";
+                const str = this._shortenExtTitle(" " + this.opUiAttribs.extendTitle || "!?");
 
                 if (this._titleExt.text != str)
                 {
