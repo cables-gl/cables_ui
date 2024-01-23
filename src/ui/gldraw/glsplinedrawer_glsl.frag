@@ -100,8 +100,7 @@ void main()
     #endif
 
 // finalColor=finactiveColor;
-
-finalColor.rgb*=fProgress/fSplineLength;
+// finalColor.rgb*=fProgress/fSplineLength;
 
     outColor = finalColor;
 }
