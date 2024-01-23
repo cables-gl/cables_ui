@@ -82,14 +82,6 @@ export default class GlSplineDrawer
     {
         if (this._splines.length == 0) return;
 
-        // if (this._count < 2) return;
-
-        if (mouseX)
-        {
-            // this._uniMousePos.setValue([mouseX, resY - mouseY]);
-            // console.log(mouseX, mouseY);
-        }
-
 
         if (this._rebuildLater)
         {
@@ -112,6 +104,7 @@ export default class GlSplineDrawer
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
+
             this._uniResX.set(resX);
             this._uniResY.set(resY);
             this._uniscrollX.set(scrollX);
@@ -378,11 +371,7 @@ export default class GlSplineDrawer
         }
         this._geom.vertices = this._verts;
 
-
         if (!this._mesh) this._mesh = new CGL.Mesh(this._cgl, this._geom);
-
-        // this._mesh.setAttribute("attrVertNormal", new Float32Array(this._verts.length), 3);
-        // this._mesh.setAttribute("attrTexCoord", new Float32Array(this._verts.length / 3 * 2), 2);
 
         this._mesh.addVertexNumbers = false;
         this._mesh.updateVertices(this._geom);

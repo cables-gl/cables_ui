@@ -580,10 +580,12 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
+    gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
 
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     const o = { "ops": [] };
     const subId = CABLES.shortId();
+
 
     // if (options.loadingModal)options.loadingModal.setTask("serialize ops");
     const loadingModal = gui.startModalLoading("serialize ops");
@@ -601,6 +603,8 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
         if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
         o.ops.push(ser);
     });
+
+
 
     if (options.loadingModal)options.loadingModal.setTask("replace op ids");
 

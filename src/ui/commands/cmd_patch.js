@@ -281,6 +281,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                                                     gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
+                                                    gui.patchView.setPositionSubPatchInputOutputOps(newOps[0].patchId.get());
+
                                                     gui.endModalLoading();
                                                 });
                                             });
@@ -291,8 +293,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     },
                 );
             },
-            null,
-            null);
+            { "translate": { "x": -999999, "y": -999999 } });
     });
 };
 
