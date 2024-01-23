@@ -292,14 +292,14 @@ export default class GlCable
                     this._curvedSimple = true;
                     this._updateDistFromPort();
 
-                    this._points = //this._subdivide(
+                    this._points = // this._subdivide(
                         [
                             posX, this._y, 0,
                             // posX, this._y, 0,
                             // posX2, this._y2, 0,
                             posX2, this._y2, 0
                         ];
-                        //);
+                    // );
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
@@ -326,9 +326,9 @@ export default class GlCable
                             posX2, this._y2, 0,
                         ];
 
-
-                    for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
-                        this._points = this._subdivide(this._points);
+                    // console.log(gui.theme.patch.cablesSubDivde);
+                    // for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+                    this._points = this._subdivide(this._points, 5);
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
