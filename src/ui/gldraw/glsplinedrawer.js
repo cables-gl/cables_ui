@@ -721,8 +721,8 @@ export default class GlSplineDrawer
         {
             l += this._splines[i].points.length / 3;
         }
-        console.log(this._splines);
-        console.log("avg spline points", l / this._splines.length);
+        // console.log(this._splines);
+        // console.log("avg spline points", l / this._splines.length);
     }
 
     ip(a, b, p)
