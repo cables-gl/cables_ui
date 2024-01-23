@@ -395,8 +395,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            const uiAttribs = {};
             options = options || {};
+            const uiAttribs = options.uiAttribs || {};
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
@@ -853,10 +853,8 @@ export default class PatchView extends CABLES.EventTarget
                 // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
                 // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
 
-                const patchOp = this._p.addOp(opname, { "translate": trans });
+                const patchOp = this._p.addOp(opname, { "translate": trans, "subPatch": this.getCurrentSubPatch() });
                 const patchId = patchOp.patchId.get();
-
-                patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
 
 
                 if (version < 2)

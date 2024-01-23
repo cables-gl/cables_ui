@@ -699,7 +699,14 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
             }
             loadingModal.setTask("update bp2 attachment");
 
-            console.log("oldSubpatchOp.patchId.get()", oldSubpatchOp.patchId.get());
+            if (oldSubpatchOp && newOp)
+                newOp.setUiAttrib(
+                    { "translate":
+                        {
+                            "x": oldSubpatchOp.uiAttribs.translate.x,
+                            "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY
+                        }
+                    });
 
             blueprintUtil.updateBluePrint2Attachment(
                 newOp,
@@ -713,7 +720,6 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
                             (newOps) =>
                             {
                                 gui.endModalLoading();
-                                if (oldSubpatchOp && newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
 
                                 if (next)next();
                             });

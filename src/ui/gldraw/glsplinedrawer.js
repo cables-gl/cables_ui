@@ -90,6 +90,25 @@ export default class GlSplineDrawer
             // console.log(mouseX, mouseY);
         }
 
+
+        if (this._rebuildLater)
+        {
+            if (gui.finishedLoading)
+            {
+                this.rebuild();
+            }
+            else
+            {
+                clearTimeout(this._laterTimeout);
+                this._laterTimeout = setTimeout(
+                    () =>
+                    {
+                        this.rebuild();
+                    }, 100);
+                this._rebuildLater = false;
+            }
+        }
+
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
@@ -119,25 +138,6 @@ export default class GlSplineDrawer
             // this._cgl.popDepthTest();
             // this._cgl.popDepthWrite();
             // this._cgl.popDepthFunc();
-        }
-
-        // todo move before rendering but will not draw when rebuilding...
-        if (this._rebuildLater)
-        {
-            if (gui.finishedLoading)
-            {
-                this.rebuild();
-            }
-            else
-            {
-                clearTimeout(this._laterTimeout);
-                this._laterTimeout = setTimeout(
-                    () =>
-                    {
-                        this.rebuild();
-                    }, 100);
-                this._rebuildLater = false;
-            }
         }
     }
 
@@ -424,6 +424,14 @@ export default class GlSplineDrawer
     }
 
 
+
+    _dist(x1, y1, x2, y2)
+    {
+        const xd = x2 - x1;
+        const yd = y2 - y1;
+        return Math.sqrt(xd * xd + yd * yd);
+    }
+
     _updateAttribsCoordinates(idx, updateWhat)
     {
         if (!gui.patchView._patchRenderer) return;
@@ -447,13 +455,6 @@ export default class GlSplineDrawer
         else title = Object.keys(updateWhat).join(".");
 
         const perf = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates " + title);
-
-        function dist(x1, y1, x2, y2)
-        {
-            const xd = x2 - x1;
-            const yd = y2 - y1;
-            return Math.sqrt(xd * xd + yd * yd);
-        }
 
         if (updateWhat === undefined)
         {
@@ -481,7 +482,7 @@ export default class GlSplineDrawer
                     !isNaN(points[idx31 + 1])
                     )
                     {
-                        const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                        const d = this._dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
                         if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
                         if (d)totalDistance += d;
                     }
@@ -719,7 +720,8 @@ export default class GlSplineDrawer
         let l = 0;
         for (let i = 0; i < this._splines.length; i++)
         {
-            l += this._splines[i].points.length / 3;
+            if (this._splines[i].points)
+                l += this._splines[i].points.length / 3;
         }
         // console.log(this._splines);
         // console.log("avg spline points", l / this._splines.length);

@@ -192,7 +192,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const origOpsBounds = gui.patchView.getSelectionBounds();
     const newOpname = options.newOpName || blueprintUtil.getAutoName();
-
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
     const loadingModal = gui.startModalLoading("Create Subpatch");
 
@@ -209,9 +208,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             {
                 const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
                 for (let j = 0; j < newops.length; j++)
-                {
                     newselectedOpIds.push(newops[j].id);
-                }
             }
         }
 
@@ -225,6 +222,9 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                 gui.patchView.addOp(newOpname,
                     {
+                        "uiAttribs": {
+                            "translate": { "x": origOpsBounds.minx, "y": origOpsBounds.miny }
+                        },
                         "onOpAdd": (newOp) =>
                         {
                             blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
@@ -288,7 +288,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                 );
                             });
                         }
-                    });
+                    },
+                );
             },
             null,
             null);
