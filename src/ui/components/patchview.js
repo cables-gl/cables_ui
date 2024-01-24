@@ -836,7 +836,6 @@ export default class PatchView extends CABLES.EventTarget
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
 
         const selectedOps = this.getSelectedOps();
-        console.log("selectedOps", selectedOps);
 
         gui.serverOps.loadOpDependencies(opname,
             () =>
@@ -963,11 +962,8 @@ export default class PatchView extends CABLES.EventTarget
         let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
         let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
 
-
         if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-        else console.log("nto ofund!", patchId);
         if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
-        else console.log("nto ofund!2");
     }
 
     getSubPatchName(subpatch)
@@ -977,15 +973,6 @@ export default class PatchView extends CABLES.EventTarget
         const op = gui.corePatch().getSubPatchOuterOp(subpatch);
         if (!op) return null;
         return op.name;
-        // if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
-
-        // const ops = gui.corePatch().ops;
-        // for (let i = 0; i < ops.length; i++)
-        //     if (ops[i].isSubPatchOp() && ops[i].patchId && ops[i].patchId.get() == subpatch)
-        //         this._cachedSubpatchNames[subpatch] = ops[i].name;
-
-        // console.log(this._cachedSubpatchNames);
-        // if (this._cachedSubpatchNames[subpatch]) return this._cachedSubpatchNames[subpatch];
     }
 
     getSubpatchPathArray(subId, arr)
@@ -1000,7 +987,6 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     let type = "subpatch";
                     if (ops[i].storage && ops[i].storage.blueprint) type = "blueprint_subpatch";
-
                     if (ops[i].storage && ops[i].storage.blueprintVer == 2) type = "blueprint_subpatch2";
 
                     const patchInfo = {

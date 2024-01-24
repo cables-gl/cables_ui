@@ -263,12 +263,7 @@ export default class FindTab
         if (op.uiAttribs.extendTitle) html += " <span style=\"color: var(--color-13);\"> | " + op.uiAttribs.extendTitle + "</span>";
 
         if (op.storage && (op.storage.blueprint || op.storage.blueprintVer))
-        {
             html += "<span data-eletype=\"icon\" class=\"icon icon-blueprint iconhover\" style=\"margin-left: 6px;vertical-align: bottom;margin-bottom: 2px;\"></span>";
-        }
-
-
-
 
         html += "</h3>";
 

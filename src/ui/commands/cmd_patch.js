@@ -212,10 +212,54 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             }
         }
 
+
+
+
+
         gui.patchView.createSubPatchFromSelection(2,
             (patchId, OpTempSubpatch) =>
             {
                 const portJson = { "ports": [] };
+
+
+                // find ops that are crosslinked...
+                // todo: relink somehow ?
+                {
+                    const ops = gui.corePatch().getSubPatchOps(patchId);
+
+                    for (let i = 0; i < ops.length; i++)
+                    {
+                        const op = ops[i];
+                        for (let j = 0; j < op.portsIn.length; j++)
+                        {
+                            if (op.portsIn[j].isLinked())
+                            {
+                                const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
+                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                {
+                                    portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]));
+                                    op.portsIn[j].removeLinks();
+                                }
+                            }
+                        }
+                        for (let j = 0; j < op.portsOut.length; j++)
+                        {
+                            if (op.portsOut[j].isLinked())
+                            {
+                                const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
+                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                                {
+                                    portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]));
+
+                                    op.portsOut[j].removeLinks();
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
                 // todo: createSubPatchFromSelection should provide the cross links...
 
                 loadingModal.setTask("Creating blueprint op");
