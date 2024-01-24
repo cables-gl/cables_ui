@@ -344,12 +344,12 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                                 op.setUiAttrib({ "tempSubOldOpId": null });
 
                                                                 let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                                const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[i].pJson.id, subOps[i], oldLinks[i].origPortName);
+                                                                const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
 
                                                                 if (!l)
                                                                 {
                                                                     let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                                    newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[i].pJson.id, subOps[i], oldLinks[i].origPortName);
+                                                                    newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
                                                                 }
                                                             }
                                                         }
