@@ -141,7 +141,6 @@ const paramsHelper =
             "title": gui.mainTabs.getUniqueTitle("Array " + portname),
             "onchange": (content) =>
             {
-                console.warn(content);
                 port.set(content);
                 gui.emitEvent("portValueEdited", op, port, content);
             }

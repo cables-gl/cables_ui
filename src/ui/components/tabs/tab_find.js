@@ -262,6 +262,14 @@ export default class FindTab
         html += "<h3 class=\"" + colorClass + "\">" + colorHandle + op.name;
         if (op.uiAttribs.extendTitle) html += " <span style=\"color: var(--color-13);\"> | " + op.uiAttribs.extendTitle + "</span>";
 
+        if (op.storage && (op.storage.blueprint || op.storage.blueprintVer))
+        {
+            html += "<span data-eletype=\"icon\" class=\"icon icon-blueprint iconhover\" style=\"margin-left: 6px;vertical-align: bottom;margin-bottom: 2px;\"></span>";
+        }
+
+
+
+
         html += "</h3>";
 
         if (result.hint) html += "<div class=\"warning-error-level0\">" + result.hint + "</div>";
@@ -275,11 +283,7 @@ export default class FindTab
         let highlightsubpatch = "";
         if (op.uiAttribs.subPatch == gui.patchView.getCurrentSubPatch()) highlightsubpatch = "highlight";
 
-        if (op.storage && op.storage.blueprint)
-        {
-            html += "<br/> Blueprint: <span class=\"\">" + (op.uiAttribs.extendTitle || gui.patchView.getSubPatchName(op.uiAttribs.subPatch)) + "</span>";
-        }
-        else
+
         if (op.uiAttribs.subPatch != 0) html += "<br/> Subpatch: <span class=\"" + highlightsubpatch + "\">" + gui.patchView.getSubPatchName(op.uiAttribs.subPatch) + "</span>";
 
 
