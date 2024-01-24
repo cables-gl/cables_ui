@@ -150,7 +150,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
         CABLESUILOADER.talkerAPI.addEventListener("notifyError", (options, next) =>
         {
-            CABLES.UI.notifyError(options.msg);
+            CABLES.UI.notifyError(options.msg, options.text, options.options);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("refreshFileManager", (options, next) =>

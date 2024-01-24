@@ -33,7 +33,7 @@ blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
 
 blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 {
-    let src = "console.log(\"creating ports....\")\n";
+    let src = "";
 
     if (!ports || !ports.ports) ports = { "ports": [] };
 

@@ -384,12 +384,12 @@ export default class TabPanel extends CABLES.EventTarget
 
         talkerAPI.addEventListener("notify", (opts, next) =>
         {
-            CABLES.UI.notify(opts.msg);
+            CABLES.UI.notify(opts.msg, opts.text, opts.options);
         });
 
         talkerAPI.addEventListener("notifyError", (opts, next) =>
         {
-            CABLES.UI.notifyError(opts.msg);
+            CABLES.UI.notifyError(opts.msg, opts.text, opts.options);
         });
 
         talkerAPI.addEventListener("updatePatchName", (opts, next) =>
