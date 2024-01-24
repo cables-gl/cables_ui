@@ -7,10 +7,11 @@ import { CONSTANTS } from "../../../../cables/src/core/constants";
 import OpParampanel from "../components/opparampanel/op_parampanel";
 import GlOpWatcher from "../components/tabs/tab_glop";
 import ele from "../utils/ele";
-import defaultops from "../defaultops";
 import ManageOp from "../components/tabs/tab_manage_op";
 import blueprintUtil from "../blueprint_util";
 import ModalError from "../dialogs/modalerror";
+import defaultops from "../defaultops";
+import defaultOps from "../defaultops";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -221,7 +222,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             {
                 const portJson = { "ports": [] };
 
-                const outSideLinks = [];
+                const oldLinks = [];
 
                 // find ops that are crosslinked...
                 // todo: relink somehow ?
@@ -241,7 +242,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
                                     portJson.ports.push(pJson);
                                     op.portsIn[j].removeLinks();
-                                    outSideLinks.push({ "pJson": pJson, "port": p2 });
+                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsIn[j].name });
                                 }
                             }
                         }
@@ -255,7 +257,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
                                     portJson.ports.push(pJson);
                                     op.portsOut[j].removeLinks();
-                                    outSideLinks.push({ "pJson": pJson, "port": p2 });
+                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsOut[j].name });
                                 }
                             }
                         }
@@ -323,15 +326,33 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                 gui.serverOps.execute(newOpname, (newOps) =>
                                                 {
                                                     newOp = newOps[0];
+                                                    const subPatchId = newOp.patchId.get();
 
-                                                    // re link outside ports.......
-                                                    for (let i = 0; i < outSideLinks.length; i++)
-                                                        newOp.patch.link(newOp, outSideLinks[i].pJson.id, outSideLinks[i].port.op, outSideLinks[i].port.name);
-                                                    // for (let i = 0; i < outSideLinks.length; i++)
-                                                    //     newOp.patch.link(newOp, outSideLinks[i].pJson.id, outSideLinks[i].port.op, outSideLinks[i].port.name);
-
+                                                    // relink outside ports.......
+                                                    for (let i = 0; i < oldLinks.length; i++)
+                                                        newOp.patch.link(newOp, oldLinks[i].pJson.id, oldLinks[i].port.op, oldLinks[i].port.name);
 
 
+                                                    // relink inside ports....
+                                                    const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
+                                                    for (let j = 0; j < oldLinks.length; j++)
+                                                        for (let i = 0; i < subOps.length; i++)
+                                                        {
+                                                            if (subOps[i].uiAttribs.tempSubOldOpId == oldLinks[j].tempSubOldOpId)
+                                                            {
+                                                                const op = subOps[i];
+                                                                op.setUiAttrib({ "tempSubOldOpId": null });
+
+                                                                let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                                const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[i].pJson.id, subOps[i], oldLinks[i].origPortName);
+
+                                                                if (!l)
+                                                                {
+                                                                    let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                    newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[i].pJson.id, subOps[i], oldLinks[i].origPortName);
+                                                                }
+                                                            }
+                                                        }
 
                                                     if (selectedOpIds.length == 0) newOp.setPos(0, 0);
                                                     else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
@@ -340,7 +361,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                                                     gui.patchView.patchRenderer.focusOpAnim(newOp.id);
 
-                                                    gui.patchView.setPositionSubPatchInputOutputOps(newOp.patchId.get());
+                                                    gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 
                                                     gui.endModalLoading();
                                                 });
