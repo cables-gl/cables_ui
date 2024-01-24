@@ -221,6 +221,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
             {
                 const portJson = { "ports": [] };
 
+                const outSideLinks = [];
 
                 // find ops that are crosslinked...
                 // todo: relink somehow ?
@@ -237,8 +238,10 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                 const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
                                 if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                                 {
-                                    portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]));
+                                    const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
+                                    portJson.ports.push(pJson);
                                     op.portsIn[j].removeLinks();
+                                    outSideLinks.push({ "pJson": pJson, "port": p2 });
                                 }
                             }
                         }
@@ -249,9 +252,10 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                 const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
                                 if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                                 {
-                                    portJson.ports.push(blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]));
-
+                                    const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
+                                    portJson.ports.push(pJson);
                                     op.portsOut[j].removeLinks();
+                                    outSideLinks.push({ "pJson": pJson, "port": p2 });
                                 }
                             }
                         }
@@ -314,18 +318,29 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                                                 loadingModal.setTask("Execute code");
 
+
+
                                                 gui.serverOps.execute(newOpname, (newOps) =>
                                                 {
-                                                    // link ports.......
+                                                    newOp = newOps[0];
 
-                                                    if (selectedOpIds.length == 0) newOps[0].setPos(0, 0);
-                                                    else newOps[0].setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                                    // re link outside ports.......
+                                                    for (let i = 0; i < outSideLinks.length; i++)
+                                                        newOp.patch.link(newOp, outSideLinks[i].pJson.id, outSideLinks[i].port.op, outSideLinks[i].port.name);
+                                                    // for (let i = 0; i < outSideLinks.length; i++)
+                                                    //     newOp.patch.link(newOp, outSideLinks[i].pJson.id, outSideLinks[i].port.op, outSideLinks[i].port.name);
 
-                                                    gui.patchView.testCollision(newOps[0]);
 
-                                                    gui.patchView.patchRenderer.focusOpAnim(newOps[0].id);
 
-                                                    gui.patchView.setPositionSubPatchInputOutputOps(newOps[0].patchId.get());
+
+                                                    if (selectedOpIds.length == 0) newOp.setPos(0, 0);
+                                                    else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+
+                                                    gui.patchView.testCollision(newOp);
+
+                                                    gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+
+                                                    gui.patchView.setPositionSubPatchInputOutputOps(newOp.patchId.get());
 
                                                     gui.endModalLoading();
                                                 });
