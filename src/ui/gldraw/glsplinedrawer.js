@@ -82,17 +82,29 @@ export default class GlSplineDrawer
     {
         if (this._splines.length == 0) return;
 
-        // if (this._count < 2) return;
 
-        if (mouseX)
+        if (this._rebuildLater)
         {
-            // this._uniMousePos.setValue([mouseX, resY - mouseY]);
-            // console.log(mouseX, mouseY);
+            if (gui.finishedLoading)
+            {
+                this.rebuild();
+            }
+            else
+            {
+                clearTimeout(this._laterTimeout);
+                this._laterTimeout = setTimeout(
+                    () =>
+                    {
+                        this.rebuild();
+                    }, 100);
+                this._rebuildLater = false;
+            }
         }
 
         if (this._mesh)
         {
             this._cgl.pushShader(this._shader);
+
             this._uniResX.set(resX);
             this._uniResY.set(resY);
             this._uniscrollX.set(scrollX);
@@ -120,12 +132,6 @@ export default class GlSplineDrawer
             // this._cgl.popDepthWrite();
             // this._cgl.popDepthFunc();
         }
-
-        // todo move before rendering but will not draw when rebuilding...
-        if (this._rebuildLater)
-        {
-            this.rebuild();
-        }
     }
 
     getSplineIndex()
@@ -139,11 +145,13 @@ export default class GlSplineDrawer
             "colorBorder": [0, 0, 0, 0],
             "speed": 1,
             "index": this._count,
-            "hidden": false
+            "hidden": false,
+            "pointsNeedProgressUpdate": true
         };
 
         // console.log("get new spline");
         this._rebuildLater = true;
+        this._rebuildReason = "new spline...";
 
         return this._count;
     }
@@ -163,11 +171,8 @@ export default class GlSplineDrawer
     {
         if (this._splines[idx].speed != speed)
         {
-            // console.log(this._splines[idx].speed, speed);
-
             this._splines[idx].speed = speed;
             this._updateAttribsSpeed(idx);
-            // this._rebuildLater = true;
         }
     }
 
@@ -180,7 +185,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].colorInactive[3], rgba[3]))
         {
             this._splines[idx].colorInactive = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colorsInactive": true });
         }
     }
@@ -194,7 +198,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].colorBorder[3], rgba[3]))
         {
             this._splines[idx].colorBorder = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colorsBorder": true });
         }
     }
@@ -208,7 +211,6 @@ export default class GlSplineDrawer
             this._float32Diff(this._splines[idx].color[3], rgba[3]))
         {
             this._splines[idx].color = rgba;
-            // this._rebuildLater = true;
             this._updateAttribsCoordinates(idx, { "colors": true });
         }
     }
@@ -218,7 +220,6 @@ export default class GlSplineDrawer
         const sp = this._splines[idx];
 
         this.setSplineColor(idx, [0, 0, 0, 0]);
-        // this._rebuildLater = true;
 
         if (this._splines[idx].origPoints)
             for (let i = 0; i < this._splines[idx].origPoints.length; i += 3)
@@ -277,6 +278,7 @@ export default class GlSplineDrawer
                         points[i * 3 + 1] = points[i * 3 + 1];
                         points[i * 3 + 2] = points[i * 3 + 2];
                     }
+                    this._splines[idx].pointsNeedProgressUpdate = true;
                 }
                 else
                 if (points.length > this._splines[idx].origPoints.length)
@@ -284,6 +286,7 @@ export default class GlSplineDrawer
                     // length of spline changed, we need to rebuild the whole buffer....
                     isDifferent = true;
                     isDifferentLength = true;
+                    this._splines[idx].pointsNeedProgressUpdate = true;
 
                     // console.log("spline length changed...", points.length, this._splines[idx].origPoints.length);
                     this._rebuildLater = true;
@@ -296,6 +299,7 @@ export default class GlSplineDrawer
                         if (this._splines[idx].origPoints[i] != points[i])
                         {
                             isDifferent = true;
+                            this._splines[idx].pointsNeedProgressUpdate = true;
                             break;
                         }
                     }
@@ -309,11 +313,12 @@ export default class GlSplineDrawer
 
         this._splines[idx].origPoints = points;
         this._splines[idx].points = this.tessEdges(points);
+        // this._splines[idx].points = points;
+        this._splines[idx].pointsNeedProgressUpdate = true;
+
 
         if (!isDifferentLength) // length is the same, update vertices only
         {
-            // this._rebuildLater = true;
-
             this._updateAttribsCoordinates(idx);
 
             // setAttributeRange(attr, array, start, end)
@@ -327,7 +332,7 @@ export default class GlSplineDrawer
 
     buildMesh()
     {
-        const perf = CABLES.UI.uiProfiler.start("glspline buildMesh");
+        const perf = CABLES.UI.uiProfiler.start("[glspline] buildMesh");
 
 
         const num = this._thePoints.length / 3;
@@ -357,11 +362,7 @@ export default class GlSplineDrawer
         }
         this._geom.vertices = this._verts;
 
-
         if (!this._mesh) this._mesh = new CGL.Mesh(this._cgl, this._geom);
-
-        // this._mesh.setAttribute("attrVertNormal", new Float32Array(this._verts.length), 3);
-        // this._mesh.setAttribute("attrTexCoord", new Float32Array(this._verts.length / 3 * 2), 2);
 
         this._mesh.addVertexNumbers = false;
         this._mesh.updateVertices(this._geom);
@@ -387,24 +388,23 @@ export default class GlSplineDrawer
 
         if (!points) return;
 
-        // this._splines[idx].speed = this._splines[idx].speed;
-
         for (let i = 0; i < points.length / 3; i++)
         {
             for (let j = 0; j < 6; j++)
             {
-                for (let k = 0; k < 3; k++)
-                {
-                    count++;
-                }
+                count += 3;
                 this._speeds[(off + count) / 3] = this._splines[idx].speed;
             }
         }
-
-        // console.log("this._speeds", this._speeds);
         this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
     }
 
+    _dist(x1, y1, x2, y2)
+    {
+        const xd = x2 - x1;
+        const yd = y2 - y1;
+        return Math.sqrt(xd * xd + yd * yd);
+    }
 
     _updateAttribsCoordinates(idx, updateWhat)
     {
@@ -413,65 +413,74 @@ export default class GlSplineDrawer
 
         if (!this._mesh || !this._colors)
         {
+            this._rebuildReason = "no mesh/colors";
             this._rebuildLater = true;
             return;
         }
 
-        let count = 0;
-
         const off = this._splines[idx].startOffset || 0;
         const points = this._splines[idx].points;
+        let count = 0;
+        let title = "all";
 
         if (!points) return;
 
-        const perf = CABLES.UI.uiProfiler.start("glspline _updateAttribsCoordinates");
+        if (updateWhat == undefined) title = "all";
+        else title = Object.keys(updateWhat).join(".");
 
-        function dist(x1, y1, x2, y2)
-        {
-            const xd = x2 - x1;
-            const yd = y2 - y1;
-            return Math.sqrt(xd * xd + yd * yd);
-        }
+        const perf = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates " + title);
 
         if (updateWhat === undefined)
         {
-            let totalDistance = 0;
-            const len = (points.length - 3) / 3;
-            for (let i = 0; i < len; i++)
+            if (this._splines[idx].pointsNeedProgressUpdate)
             {
-                this._pointsProgress[(off + count) / 3 + 1] = totalDistance;
-                this._pointsProgress[(off + count) / 3 + 3] = totalDistance;
-                this._pointsProgress[(off + count) / 3 + 4] = totalDistance;
-
-                const idx3 = i * 3;
-                const idx31 = (i + 1) * 3;
-
-                if (
-                    !isNaN(points[idx3 + 0]) &&
-                !isNaN(points[idx3 + 1]) &&
-                !isNaN(points[idx31 + 0]) &&
-                !isNaN(points[idx31 + 1])
-                )
+                this._splines[idx].pointsNeedProgressUpdate = false;
+                const perf2 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates progress coords");
+                let totalDistance = 0;
+                const len = (points.length - 3) / 3;
+                for (let i = 0; i < len; i++)
                 {
-                    const d = dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
-                    if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
-                    if (d)totalDistance += d;
+                    const ofc3 = (off + count) / 3;
+                    const idx3 = i * 3;
+                    const idx31 = (i + 1) * 3;
+
+                    this._pointsProgress[ofc3 + 1] =
+                        this._pointsProgress[ofc3 + 3] =
+                        this._pointsProgress[ofc3 + 4] = totalDistance;
+
+
+                    if (
+                        !isNaN(points[idx3 + 0]) &&
+                        !isNaN(points[idx3 + 1]) &&
+                        !isNaN(points[idx31 + 0]) &&
+                        !isNaN(points[idx31 + 1])
+                    )
+                    {
+                        const d = this._dist(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                        if (d != d)console.log(points[idx3 + 0], points[idx3 + 1], points[idx31 + 0], points[idx31 + 1]);
+                        if (d)totalDistance += d;
+                    }
+
+
+                    this._pointsProgress[ofc3 + 0] = totalDistance;
+                    this._pointsProgress[ofc3 + 2] = totalDistance;
+                    this._pointsProgress[ofc3 + 5] = totalDistance;
+
+                    // for (let j = 0; j < 6; j++)
+                    // for (let k = 0; k < 3; k++)
+                    // count++;
+                    count += 6 * 3;
                 }
 
+                // if (this._pointsSplineLength.length != this._pointsProgress.length)console.log("wrong length?!");
+                for (let i = 0; i < this._pointsProgress.length; i++)
+                    this._pointsSplineLength[i] = totalDistance;
 
-                this._pointsProgress[(off + count) / 3 + 0] = totalDistance;
-                this._pointsProgress[(off + count) / 3 + 2] = totalDistance;
-                this._pointsProgress[(off + count) / 3 + 5] = totalDistance;
-
-                for (let j = 0; j < 6; j++)
-                    for (let k = 0; k < 3; k++)
-                        count++;
+                perf2.finish();
             }
-
-            // if (this._pointsSplineLength.length != this._pointsProgress.length)console.log("wrong length?!");
-            for (let i = 0; i < this._pointsProgress.length; i++)
-                this._pointsSplineLength[i] = totalDistance;
         }
+
+        const perf4 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates color values");
 
         count = 0;
         for (let i = 0; i < points.length / 3; i++)
@@ -506,6 +515,9 @@ export default class GlSplineDrawer
                 }
             }
         }
+        perf4.finish();
+
+        const perf3 = CABLES.UI.uiProfiler.start("[glspline] _updateAttribsCoordinates setAttributeRanges");
 
         if (updateWhat === undefined || updateWhat.colors) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolor"), this._colors, (off / 3) * 4, ((off + count) / 3) * 4);
         if (updateWhat === undefined || updateWhat.colorsInactive) this._mesh.setAttributeRange(this._mesh.getAttribute("vcolorInactive"), this._colorsInactive, (off / 3) * 4, ((off + count) / 3) * 4);
@@ -518,30 +530,38 @@ export default class GlSplineDrawer
         if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineProgress"), this._pointsProgress, off / 3, (off + count) / 3);
         if (updateWhat === undefined) this._mesh.setAttributeRange(this._mesh.getAttribute("splineLength"), this._pointsSplineLength, off / 3, (off + count) / 3);
         if (updateWhat === undefined || updateWhat.speed) this._mesh.setAttributeRange(this._mesh.getAttribute("speed"), this._speeds, off / 3, ((off + count) / 3));
-
+        perf3.finish();
         perf.finish();
     }
 
     rebuild()
     {
         if (this._splines.length == 0) return;
-
+        // console.log("this._rebuildReason",this._rebuildReason)
         this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;
         let numPoints = 0;
 
+        const perf = CABLES.UI.uiProfiler.start("[glspline] rebuild");
+
         for (let i = 0; i < this._splines.length; i++)
         {
-            this._splines[i].startOffset = count * 6;
+            const spline = this._splines[i];
+            if (spline.startOffset != count * 6 || this._splineIndex[numPoints] != i)
+            {
+                spline.startOffset = count * 6;
+                spline.pointsNeedProgressUpdate = true;
+            }
 
-            if (this._splines[i].points)
-                for (let j = 0; j < this._splines[i].points.length / 3; j++)
+            if (spline.points)
+                for (let j = 0; j < spline.points.length / 3; j++)
                 {
+                    const j3 = j * 3;
+                    this._thePoints[count++] = spline.points[j3 + 0];
+                    this._thePoints[count++] = spline.points[j3 + 1];
+                    this._thePoints[count++] = spline.points[j3 + 2];
                     this._splineIndex[numPoints] = i;
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 0];
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 1];
-                    this._thePoints[count++] = this._splines[i].points[j * 3 + 2];
 
                     numPoints++;
                 }
@@ -565,7 +585,7 @@ export default class GlSplineDrawer
 
         // console.log("LENGTH", this._thePoints.length, newLength / 6);
 
-        if (this._points.length != newLength)
+        if (this._points.length < newLength)
         {
             this._colors = new Float32Array(newLength / 3 * 4);
             this._colorsInactive = new Float32Array(newLength / 3 * 4);
@@ -626,6 +646,8 @@ export default class GlSplineDrawer
         }
 
 
+        const perfAttribs = CABLES.UI.uiProfiler.start("[glspline] rebuild set Attribs");
+
         this._mesh.setAttribute("speed", this._speeds, 1);
 
         this._mesh.setAttribute("splineDoDraw", this._doDraw, 1);
@@ -640,28 +662,43 @@ export default class GlSplineDrawer
         this._mesh.setAttribute("splineProgress", this._pointsProgress, 1);
         this._mesh.setAttribute("splineLength", this._pointsSplineLength, 1);
 
+        perfAttribs.finish();
+
+        const perfAttribs2 = CABLES.UI.uiProfiler.start("[glspline] rebuild _updateAttribsCoordinates");
 
         for (const i in this._splines)
             this._updateAttribsCoordinates(this._splines[i].index);
 
-        const rows = [[
-            "idx",
-            "origPoints",
-            "offset",
-            "verts"]];
+        perfAttribs2.finish();
+
+        // const rows = [[
+        //     "idx",
+        //     "origPoints",
+        //     "offset",
+        //     "verts"]];
 
 
+        // for (let i = 0; i < this._splines.length; i++)
+        // {
+        //     if (this._splines[i].points)
+        //         rows.push([
+        //             i,
+        //             (this._splines[i].origPoints || []).length / 3,
+        //             this._splines[i].startOffset / 3,
+        //             this._splines[i].points.length / 3]);
+        // }
+
+        this._rebuildLater = false;
+        perf.finish();
+
+        let l = 0;
         for (let i = 0; i < this._splines.length; i++)
         {
             if (this._splines[i].points)
-                rows.push([
-                    i,
-                    (this._splines[i].origPoints || []).length / 3,
-                    this._splines[i].startOffset / 3,
-                    this._splines[i].points.length / 3]);
+                l += this._splines[i].points.length / 3;
         }
-
-        this._rebuildLater = false;
+        // console.log(this._splines);
+        // console.log("avg spline points", l / this._splines.length);
     }
 
     ip(a, b, p)
@@ -682,7 +719,7 @@ export default class GlSplineDrawer
 
         if (!l || l < 0) return;
 
-        const perf = CABLES.UI.uiProfiler.start("glspline tessEdges");
+        const perf = CABLES.UI.uiProfiler.start("[glspline] tessEdges");
 
 
         this._arrEdges = [];

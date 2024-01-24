@@ -580,10 +580,12 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
+    gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
 
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     const o = { "ops": [] };
     const subId = CABLES.shortId();
+
 
     // if (options.loadingModal)options.loadingModal.setTask("serialize ops");
     const loadingModal = gui.startModalLoading("serialize ops");
@@ -595,12 +597,13 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
         const ser = op.getSerialized();
         delete ser.uiAttribs.history;
-
-        // console.log("after", op.getTitle(), ser.uiAttribs.subPatch);
+        delete ser.uiAttribs.selected;
 
         if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
         o.ops.push(ser);
     });
+
+
 
     if (options.loadingModal)options.loadingModal.setTask("replace op ids");
 
@@ -699,7 +702,14 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
             }
             loadingModal.setTask("update bp2 attachment");
 
-            console.log("oldSubpatchOp.patchId.get()", oldSubpatchOp.patchId.get());
+            if (oldSubpatchOp && newOp)
+                newOp.setUiAttrib(
+                    { "translate":
+                        {
+                            "x": oldSubpatchOp.uiAttribs.translate.x,
+                            "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY
+                        }
+                    });
 
             blueprintUtil.updateBluePrint2Attachment(
                 newOp,
@@ -713,7 +723,6 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
                             (newOps) =>
                             {
                                 gui.endModalLoading();
-                                if (oldSubpatchOp && newOps.length == 1) newOps[0].setUiAttrib({ "translate": { "x": oldSubpatchOp.uiAttribs.translate.x, "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY } });
 
                                 if (next)next();
                             });

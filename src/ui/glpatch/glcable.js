@@ -218,7 +218,7 @@ export default class GlCable
         else this._distFromPort = GlUiConfig.portHeight * 2.9; // magic number...?!
     }
 
-    _subdivivde(inPoints, divs)
+    _subdivide(inPoints, divs)
     {
         const arr = [];
         const subd = divs || 4;
@@ -251,6 +251,9 @@ export default class GlCable
             }
         }
 
+        arr.push(inPoints[inPoints.length - 3], inPoints[inPoints.length - 2], inPoints[inPoints.length - 1]);
+        arr.unshift(inPoints[0], inPoints[1], inPoints[2]);
+
         return arr;
     }
 
@@ -261,7 +264,7 @@ export default class GlCable
 
         // "hanging" cables
         // this._splineDrawer.setSpline(this._splineIdx,
-        //     this._subdivivde(
+        //     this._subdivide(
         //         [
         //             this._x, this._y, 0,
         //             this._x, this._y, 0,
@@ -292,16 +295,14 @@ export default class GlCable
                     this._curvedSimple = true;
                     this._updateDistFromPort();
 
-                    this._points = this._subdivivde(
+                    this._points = // this._subdivide(
                         [
                             posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
+                            // posX, this._y, 0,
+                            // posX2, this._y2, 0,
                             posX2, this._y2, 0
-                        ]);
+                        ];
+                    // );
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }
@@ -318,74 +319,30 @@ export default class GlCable
                     this._points =
                         [
                             posX, this._y, 0,
-                            posX, this._y, 0,
                             posX, this._y - (distY * 0.002) - this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
 
                             (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // center point
 
                             posX2, this._y2 + (distY * 0.002) + this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
                             posX2, this._y2, 0,
-                            posX2, this._y2, 0,
+                            posX2, this._y2, 0
+
                         ];
 
+                    // console.log(gui.theme.patch.cablesSubDivde);
+                    // for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
+                    this._points = this._subdivide(this._points, 5);
 
-                    for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
-                        this._points = this._subdivivde(this._points);
+
+                    // this._points.unshift(posX, this._y, 0);
+                    // this._points.unshift(posX, this._y, 0);
+                    // this._points.unshift(posX, this._y, 0);
+                    // this._points.unshift(posX, this._y, 0);
+                    // this._points.push(posX2, this._y2, 0);
+                    // this._points.push(posX2, this._y2, 0);
+
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
-                }
-            }
-            else if (this._linetype == this.LINETYPE_HANGING)
-            {
-                if (this._x == this._x2 || Math.abs(this._x - this._x2) < 30)
-                {
-                    this._curvedSimple = true;
-                    this._updateDistFromPort();
-                    this.points = this._subdivivde(
-                        [
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0
-                        ]);
-                    this._splineDrawer.setSpline(this._splineIdx, this._points);
-                }
-                else
-                {
-                    if (this._curvedSimple)
-                    {
-                        this._curvedSimple = false;
-                        this._updateDistFromPort();
-                    }
-
-                    const distY = Math.abs(this._y - this._y2);
-                    const distX = Math.abs(this._x - this._x2);
-
-                    let hang = (distX * 2.3 - (distY * 0.4)) * this._tension;
-
-
-                    let centerX = (posX * 0.3 + posX2 * 0.7);
-                    if (this._y > this._y2)centerX = (posX * 0.7 + posX2 * 0.3);
-
-                    this._points = this._subdivivde(
-                        [
-                            posX, this._y, 0,
-                            posX, this._y, 0,
-                            (posX * 0.99 + posX2 * 0.01), this._y - this._distFromPort * 0.5, 0, // TOP
-
-                            centerX, (Math.max(this._y, this._y2) * 0.75 + Math.min(this._y, this._y2) * 0.3) + hang, 0, // * 0.5 - (0.001 * distY), 0,
-
-                            posX2, this._y2 - this._distFromPort * 0.5, 0, // BOTTOM
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0,
-                        ], 8);
-
-                    this._splineDrawer.setSpline(
-                        this._splineIdx,
-                        this._points);
-                // }
                 }
             }
             else if (this._linetype == this.LINETYPE_STRAIGHT)
@@ -399,8 +356,7 @@ export default class GlCable
                     posX2, this._y2, 0
                 ];
 
-                this._splineDrawer.setSpline(this._splineIdx,
-                    this._points);
+                this._splineDrawer.setSpline(this._splineIdx, this._points);
             }
             if (this._linetype == this.LINETYPE_SIMPLE)
             {
@@ -475,7 +431,6 @@ export default class GlCable
     {
         if (this._disposed)
         {
-            console.log("disposed setcolor!!!!!!!!!!");
             // console.log((new Error()).stack);
             return;
         }
@@ -488,7 +443,6 @@ export default class GlCable
             if (this._link.isAPortHovering())hover = true;
             if (this._link.isAOpSelected())selected = true;
         }
-
 
         const col = GlPort.getColor(this._link.type, false, false);
 

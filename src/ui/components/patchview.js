@@ -395,8 +395,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         gui.serverOps.loadOpDependencies(opname, () =>
         {
-            const uiAttribs = {};
             options = options || {};
+            const uiAttribs = options.uiAttribs || {};
 
             if (options.subPatch) uiAttribs.subPatch = options.subPatch;
             if (options.createdLocally) uiAttribs.createdLocally = true;
@@ -830,7 +830,7 @@ export default class PatchView extends CABLES.EventTarget
     }
 
 
-    createSubPatchFromSelection(version = 0, next = null,)
+    createSubPatchFromSelection(version = 0, next = null, options = {})
     {
         let opname = defaultops.defaultOpNames.subPatch;
         if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
@@ -841,23 +841,21 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadOpDependencies(opname,
             () =>
             {
-                console.log("selectedOps", selectedOps);
+                // console.log("selectedOps", selectedOps);
                 const bounds = this.getSelectionBounds();
-                const trans = {
+                let trans = {
                     "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
                     "y": bounds.miny };
 
+                if (options.translate) trans = options.translate;
+
                 // let opname = defaultops.defaultOpNames.subPatch;
                 // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
-
                 // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
                 // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
 
-                const patchOp = this._p.addOp(opname, { "translate": trans });
+                const patchOp = this._p.addOp(opname, { "translate": trans, "subPatch": this.getCurrentSubPatch() });
                 const patchId = patchOp.patchId.get();
-
-                patchOp.uiAttr({ "translate": trans, "subPatch": this.getCurrentSubPatch(), });
-
 
                 if (version < 2)
                 {
@@ -929,27 +927,21 @@ export default class PatchView extends CABLES.EventTarget
                 }
                 else
                 {
-                    // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
-                    // this._p.emitEvent("subpatchExpose", patchId);
-
-                    // setTimeout(() => // timeout is shit but no event when the in/out ops are created from the subpatch op...
-                    // {
-
-
                     for (let i in selectedOps)
                     {
                         if (selectedOps[i].uiAttribs.subPatch == this.getCurrentSubPatch())
                             selectedOps[i].setUiAttribs({ "subPatch": patchId });
                     }
 
+                    this.setPositionSubPatchInputOutputOps();
                     // set positions of input/output
-                    let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
-                    let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+                    // let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
+                    // let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
 
-                    const b = this.getSubPatchBounds(patchId);
+                    // const b = this.getSubPatchBounds(patchId);
 
-                    if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-                    if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+                    // if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
+                    // if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
 
                     // this._p.emitEvent("subpatchExpose", this.getCurrentSubPatch());
                     // this._p.emitEvent("subpatchExpose", patchId);
@@ -962,6 +954,20 @@ export default class PatchView extends CABLES.EventTarget
                 gui.patchView.setCurrentSubPatch(this.getCurrentSubPatch());
                 this._p.emitEvent("subpatchCreated");
             });
+    }
+
+    setPositionSubPatchInputOutputOps(patchId)
+    {
+        const b = this.getSubPatchBounds(patchId);
+
+        let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
+        let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+
+
+        if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
+        else console.log("nto ofund!", patchId);
+        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+        else console.log("nto ofund!2");
     }
 
     getSubPatchName(subpatch)
