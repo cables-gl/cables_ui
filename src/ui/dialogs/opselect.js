@@ -35,17 +35,13 @@ export default class OpSelect
         this._typedSinceOpening = false;
         this._currentInfo = "";
         this._lastScrollTop = -5711;
-
         this._eleOpsearchmodal = null;
-
         this._opSearch = new OpSearch();
     }
 
     close()
     {
-        // ele.hide();
         this._bg.hide();
-        // ele.hide(this._eleOpsearchmodal);
         this._eleOpsearchmodal.style.zIndex = -9999;
 
         gui.patchView.focus();
@@ -154,7 +150,9 @@ export default class OpSelect
         }
 
         const html = getHandleBarHtml("op_select_sugggest", { "ops": ops, "vizops": vizops, "port": CABLES.UI.OPSELECT.linkNewOpToPort });
-        if (this._eleSearchinfo) this._eleSearchinfo.innerHTML = html;
+        if (this._eleSearchinfo)
+            this._eleSearchinfo.innerHTML = html;
+
 
         /*
             var helper buttons / shortcuts
@@ -506,7 +504,7 @@ export default class OpSelect
         if (gui.getRestriction() < Gui.RESTRICT_MODE_FULL) return;
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
-        this._eleSearchinfo = this._eleSearchinfo || document.getElementById("searchinfo");
+        this._eleSearchinfo = document.getElementById("searchinfo");
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;

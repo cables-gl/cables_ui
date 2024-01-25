@@ -33,7 +33,7 @@ blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
 
 blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 {
-    let src = "console.log(\"creating ports....\")\n";
+    let src = "";
 
     if (!ports || !ports.ports) ports = { "ports": [] };
 
@@ -188,7 +188,6 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
             res = res || {};
             res.content = res.content || JSON.stringify({ "ports": [] });
             const js = JSON.parse(res.content);
-
 
             let found = false;
             for (let i = 0; i < js.ports.length; i++)
@@ -525,15 +524,22 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
             if (eleType.value.indexOf("Object") == 0)type = CABLES.OP_PORT_TYPE_OBJECT;
             if (eleType.value.indexOf("Trigger") == 0)type = CABLES.OP_PORT_TYPE_FUNCTION;
 
+            if (!eleName.value)
+            {
+                eleName.value = eleType.value;
+
+                if (eleName.value.indexOf(" ") > -1)
+                    eleName.value = eleName.value.slice(0, eleName.value.indexOf(" "));
+
+                if (eleDir.value == 0)eleName.value += " Input";
+                else eleName.value += " Output";
+            }
             const port =
             {
                 "id": portId,
                 "title": eleName.value,
                 "dir": parseInt(eleDir.value),
-                "type": type,
-                // "uiDisplay": "range",
-                // "value": value,
-                // "order": 1
+                "type": type
             };
 
 

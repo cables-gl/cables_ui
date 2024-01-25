@@ -1597,6 +1597,8 @@ export default class Gui
         {
             if (e)
             {
+                CABLES.UI.OPSELECT.linkNewOpToPort =
+                CABLES.UI.OPSELECT.linkNewLink = null;
                 gui.opSelect().show({
                     "subPatch": this.patchView.getCurrentSubPatch(),
                     "x": 0,

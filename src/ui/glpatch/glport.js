@@ -73,31 +73,27 @@ export default class GlPort
         const isAssigned =
             this._port.uiAttribs.useVariable || this._port.uiAttribs.isAnimated;
 
+        const dotSize = GlUiConfig.portHeight * 0.75;
+
         if (!this._dot &&
             (isAssigned || this._port.uiAttribs.notWorking))
         {
             this._dot = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
 
             this._rect.addChild(this._dot);
+            this._dot.setSize(dotSize, dotSize);
         }
 
         if (this._dot)
         {
-            this._dot.setShape(6);
-
-            this._dot.setColor(0.24, 0.24, 0.24, 1);
-            let size = GlUiConfig.portHeight * 0.75;
-
             if (this._port.uiAttribs.notWorking) this._dot.setColor(0.8, 0.2, 0.2, 1);
+            else this._dot.setColor(0.24, 0.24, 0.24, 1);
 
-            this._dot.setSize(size, size);
-
-            let dotPosY = GlUiConfig.portHeight / 2 - size / 2;
-            if (this.direction == CABLES.PORT_DIR_IN)
-            {
-                dotPosY += GlUiConfig.portHeight;
-            }
-            this._dot.setPosition(GlUiConfig.portWidth / 2 - size / 2, dotPosY);
+            let dotPosY = GlUiConfig.portHeight / 2 - dotSize / 2;
+            if (this.direction == CABLES.PORT_DIR_IN) dotPosY += GlUiConfig.portHeight;
+            this._dot.setShape(6);
+            this._dot.setSize(dotSize, dotSize);
+            this._dot.setPosition(GlUiConfig.portWidth / 2 - dotSize / 2, dotPosY);
         }
 
         if (this._dot && !isAssigned && !this._port.uiAttribs.notWorking)
@@ -131,12 +127,9 @@ export default class GlPort
         if (!this._rect) return;
 
         let h = GlUiConfig.portHeight * 2;
-
         let y = 0;
-        if (this._port.direction == CABLES.PORT_DIR_OUT)
-        {
-            y = this._glop.h;
-        }
+
+        if (this._port.direction == CABLES.PORT_DIR_OUT) y = this._glop.h;
 
         if (this._port.isLinked())
         {
@@ -226,10 +219,6 @@ export default class GlPort
 
     setFlowModeActivity(a)
     {
-        // this._activity = a;
-        // this._glPatch.setDrawableColorByType(this._rect, this._type, this._getBrightness());
-        // console.log(a);
-
         if (this._activity != this._port.apf)
         {
             this._activity = this._port.apf;
