@@ -18,7 +18,7 @@
     background-color: $background-color-dark;
     border-radius: $border-radius-popups;
 
-    width:860px;
+    width:830px;
     height:580px;
     overflow: hidden;
 
@@ -31,10 +31,10 @@
 
     header
     {
-        width:440px;
+        width:420px;
         background-color: var(--color-03);
-        padding: 20px;
-        padding-top: 20px;
+        padding: 15px;
+        padding-top: 15px;
         padding-bottom: 25px;
 
         input
@@ -99,7 +99,7 @@
 
     .searchbrowserContainer
     {
-        width:480px;
+        width:450px;
         height: 521px;
         background-color: $background-color-brighter;
     }
@@ -119,7 +119,7 @@
     .searchresult
     {
         font-size: 16px;
-        padding: 15px 20px;
+        padding: 10px 15px;
 		border-bottom: 1px solid var(--color-01);
         background-color: $background-color-brighter;
 
@@ -155,13 +155,11 @@
     .searchinfo
     {
         margin-top: 60px;
-        // background-color: $background-color-dark;
 		border-bottom:30px solid $background-color-dark;
 		border-top:30px solid $background-color-dark;
-        margin-left: 480px;
+        margin-left:450px;
         position: absolute;
         width:350px;
-        // padding: 20px;
         padding: 0 15px;
         overflow-x: hidden;
         overflow-y: auto;
@@ -354,11 +352,6 @@
     .summary
     {
         display:inline;
-    }
-
-    .searchbrowserContainer
-    {
-        width: 428px;
     }
 
     header
