@@ -51,7 +51,7 @@
                     <span class="shortname {{ nscolor }}">{{shortName}}</span>
                     {{oldState}}
                     {{#if old}}OLD{{/if}}
-                    - <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
+                    <span class="namespace" onClick="gui.opSelect().searchFor('{{nameSpace}}');">{{nameSpace}}
                     </span>{{isFunction}}
 
                     {{#if notUsable}}<div class="summary warning">NOT USABLE - {{#each notUsableReasons}}{{.}}{{/each}}</div>{{else}}<div class="summary">{{summary}}&nbsp;</div>{{/if}}

@@ -18,7 +18,7 @@
     background-color: $background-color-dark;
     border-radius: $border-radius-popups;
 
-    width:875px;
+    width:860px;
     height:580px;
     overflow: hidden;
 
@@ -134,6 +134,11 @@
     {
         height:465px;
         overflow:auto;
+
+        .addbutton
+        {
+            margin-right: 0px;;
+        }
 
         .not-usable .addbutton
         {
@@ -258,7 +263,6 @@
 
             &:hover
             {
-                font-weight: bold;
                 color:white;
                 i
                 {
@@ -275,12 +279,12 @@
     {
         font-size: 11px;
         font-style: normal;
-        color:var(--text-color-textOpselect);
+        color:var(--color-08);
 
         &:hover
         {
-            font-weight: bold;
-            color:$highlight-color-dark;
+            color:var(--color-11);
+            // color:$highlight-color-dark;
         }
 
         i {

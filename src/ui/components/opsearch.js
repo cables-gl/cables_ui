@@ -346,7 +346,10 @@ export default class OpSearch extends CABLES.EventTarget
 
     search(query)
     {
+        document.getElementById("realsearch").innerHTML = "";
+        document.getElementById("opOptions").innerHTML = "";
         if (!query) return;
+
         const origQuery = query;
         if (this._wordsDb) // search through word db
         {
