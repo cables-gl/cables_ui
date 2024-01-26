@@ -1,4 +1,5 @@
 import PatchSaveServer from "../api/patchserverapi";
+import blueprintUtil from "../blueprint_util";
 import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";
@@ -1919,14 +1920,29 @@ export default class PatchView extends CABLES.EventTarget
         const p = op1.getPort(pid);
         const numFitting = op2.countFittingPorts(p);
 
-        if (numFitting > 1)
-        {
-            new SuggestPortDialog(op2, p, e, (thePort, newOpId) =>
-            {
-                console.log("p2n", thePort.id);
-                op2 = this._p.getOpById(newOpId);
+        const isInnerOp = op2.objName == defaultops.defaultOpNames.subPatchInput2 || op2.objName == defaultops.defaultOpNames.subPatchOutput2;
+        const isbpOp = defaultops.isBlueprintOp(op2) || isInnerOp;
 
-                this._p.link(op1, pid, op2, thePort.id);
+        if (isbpOp || numFitting > 1)
+        {
+            new SuggestPortDialog(op2, p, e, (thePort, newOpId, options) =>
+            {
+                if (options.createSpOpPort)
+                {
+                    console.log(options);
+
+                    blueprintUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
+                        "cb": (newPortJson, newOp) =>
+                        {
+                            console.log("cbcbcbcbcbcbcbc", op1, pid, op2, p);
+
+                            this._p.link(op1, pid, newOp, newPortJson.id);
+                        } });
+                }
+                else
+                {
+                    op2 = this._p.getOpById(newOpId);
+                }
             });
         }
         else

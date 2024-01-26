@@ -7,6 +7,8 @@ export default class SuggestPortDialog
     {
         this._suggestions = [];
         console.log("SuggestPortDialog");
+
+
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
         {
@@ -30,17 +32,24 @@ export default class SuggestPortDialog
                 CABLES.Link.canLink(theport, port)) this._addPort(theport);
         }
 
-        if (op.storage && op.storage.subPatchVer)
+
+        if (op.objName == defaultops.defaultOpNames.subPatchInput2 || op.objName == defaultops.defaultOpNames.subPatchOutput2)
         {
-            const ports = gui.patchView.getSubPatchExposedPorts(op.patchId.get());
-            for (let i = 0; i < ports.length; i++)
-            {
-                if (CABLES.Link.canLink(ports[i], port))
-                {
-                    this._addPort(ports[i]);
-                }
-            }
+            op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
+            // op = gui.corePatch().getOpById(op);
+            console.log("oppppp", op);
         }
+
+        if (defaultops.isBlueprintOp(op))
+        {
+            this._suggestions.push({
+                "p": null,
+                "op": op,
+                "name": "create SubPatch Port",
+                "createSpOpPort": true
+            });
+        }
+
 
 
         new SuggestionDialog(this._suggestions, op, mouseEvent, cb, (id) =>
@@ -48,12 +57,12 @@ export default class SuggestPortDialog
             for (const i in this._suggestions)
                 if (this._suggestions[i].id == id)
                 {
-                    if (port.op.uiAttribs.subPatch != this._suggestions[i].p.op.uiAttribs.subPatch)
-                    {
-                        this._suggestions[i].p.setUiAttribs({ "expose": true });
-                    }
+                    // if (this._suggestions[i].p && port.op.uiAttribs.subPatch != this._suggestions[i].p.op.uiAttribs.subPatch)
+                    // {
+                    //     this._suggestions[i].p.setUiAttribs({ "expose": true });
+                    // }
 
-                    cb(this._suggestions[i].p, this._suggestions[i].op);
+                    cb(this._suggestions[i].p, this._suggestions[i].op, this._suggestions[i]);
                 }
         }, false, cbCancel);
     }
