@@ -233,7 +233,7 @@ export default class GlOp extends CABLES.EventTarget
 
         if (gui.patchView.getSelectedOps().length == 1)
         {
-            this._glTitle.setOpacity(0.5);
+            // this._glTitle.setOpacity(0.5);
             this._glRectBg.setOpacity(0.8, false);
             this._preDragPosZ = this._glRectBg.z;
             // this._posZ = -0.5;

@@ -108,13 +108,12 @@ export default class OpSelect
             }
         }
 
-        if (num > 0)
-            optionsHtml += "&nbsp;Found " + num + " ops.";
+        if (num > 0) optionsHtml += "&nbsp;Found " + num + " ops.";
 
         let score = 0;
         const selected = document.getElementsByClassName("selected");
 
-        if (selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
+        if (query.length > 0 && selected.length > 0)score = Math.round(100 * selected[0].dataset.score) / 100;
 
         if (score && score === score)
         {
@@ -123,7 +122,7 @@ export default class OpSelect
             if (selected.length > 0) scoredebug = selected[0].dataset.scoreDebug;
 
             optionsHtml += "&nbsp;&nbsp;|&nbsp;&nbsp;<span class=\"tt\" data-tt=\"" + scoredebug + "\">";
-            optionsHtml += "Score:" + score;
+            optionsHtml += "Score: " + score;
             optionsHtml += "</span>";
         }
 
