@@ -187,6 +187,25 @@ export default function extendCoreOp()
         return false;
     };
 
+    CABLES.Op.prototype.isPatchOp = function ()
+    {
+        return this.objName.indexOf("Ops.Patch") == 0;
+    };
+
+    CABLES.Op.prototype.isTeamOp = function ()
+    {
+        return this.objName.indexOf("Ops.Team") == 0;
+    };
+
+    CABLES.Op.prototype.isUserOp = function ()
+    {
+        return this.objName.indexOf("Ops.User") == 0;
+    };
+
+    CABLES.Op.prototype.isCoreOp = function ()
+    {
+        return !this.isTeamOp() && !this.isPatchOp() && !this.isUserOp();
+    };
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
@@ -215,6 +234,24 @@ export default function extendCoreOp()
         //     }
         //     return false;
         // }
+
+
+
+        if (this.isInBlueprint2())
+        {
+            const outer = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+            if (outer)
+            {
+                let subPatchOpError = null;
+                if (this.isPatchOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in team ops";
+                if (this.isUserOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: User op can't be in team ops";
+                if (this.isPatchOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in core ops or extensions";
+                if (this.isUserOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: User op can't be in core ops or extensions";
+
+                this.setUiError("subPatchOpError", subPatchOpError);
+            }
+        }
+
 
         function hasTriggerInput(op)
         {
