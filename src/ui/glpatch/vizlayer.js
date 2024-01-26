@@ -291,6 +291,7 @@ export default class VizLayer extends CABLES.EventTarget
                             if (child.scope == "built_in")ctx.fillStyle = "#418ce9"; // blue
                             else if (child.scope == "comment")ctx.fillStyle = "#0b0"; // green
                             else if (child.scope == "number")ctx.fillStyle = "#49d6b2"; // cyan
+                            else if (child.scope == "literal")ctx.fillStyle = "#49d6b2"; // cyan
                             else if (child.scope == "meta" || child.scope == "keyword" || child.scope == "type")ctx.fillStyle = "#ecce64"; // yello
                             else
                             {

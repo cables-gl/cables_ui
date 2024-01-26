@@ -560,7 +560,11 @@ export default class FileManager
                                                     { "fileid": r.fileDb._id },
                                                     (errr, rr) =>
                                                     {
-                                                        if (rr && rr.success) this._manager.removeItem(itemId);
+                                                        if (rr && rr.success)
+                                                        {
+                                                            this._manager.removeItem(itemId);
+                                                            this.reload();
+                                                        }
                                                         else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
                                                     }
                                                 );
@@ -692,6 +696,7 @@ export default class FileManager
                                                     if (r.success)
                                                     {
                                                         this._manager.removeItem(fileId);
+                                                        this.reload();
                                                     }
                                                     else
                                                     {

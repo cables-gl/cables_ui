@@ -6,7 +6,7 @@ export default class OpWatchUiAttribs extends CABLES.EventTarget
     {
         super();
         this._tabs = tabs;
-        this._tab = new CABLES.UI.Tab("Serialized Op", { "icon": "op", "infotext": "tab_serialized", "padding": true, "singleton": "true", });
+        this._tab = new CABLES.UI.Tab("Op UiAttribs", { "icon": "op", "infotext": "tab_uiattribs", "padding": true, "singleton": "true", });
         this._tabs.addTab(this._tab, true);
 
         this._id = "hljs" + CABLES.uuid();
