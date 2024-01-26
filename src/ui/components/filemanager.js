@@ -512,14 +512,13 @@ export default class FileManager
                                                 let linkText = otherCount + " other patch";
                                                 if (otherCount > 1) linkText += "es";
                                                 content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                                if (countRes.data.viaBlueprint) content += ". " + countRes.data.viaBlueprint + " times via blueprint.";
                                             }
                                             if (countRes.data.countOps)
                                             {
                                                 let linkText = countRes.data.countOps + " op";
                                                 if (countRes.data.countOps > 1) linkText += "s";
+                                                if (otherCount) content += "<br/>";
                                                 content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
-                                                if (countRes.data.viaBlueprint) content += ". " + countRes.data.viaBlueprint + " times via blueprint.";
                                                 allowDelete = false;
                                             }
                                         }
@@ -640,6 +639,7 @@ export default class FileManager
                                 gui.endModalLoading();
                                 let content = "";
                                 let allowDelete = true;
+                                let showAssets = false;
                                 if (countRes && countRes.data)
                                 {
                                     const projectId = gui.project().shortId || gui.project()._id;
@@ -647,19 +647,33 @@ export default class FileManager
                                     {
                                         let linkText = countRes.data.countPatches + " other patch";
                                         if (countRes.data.countPatches > 1) linkText += "es";
-                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
+                                        content += "Some are used in " + linkText;
+                                        showAssets = true;
                                     }
                                     if (countRes.data.countOps)
                                     {
                                         let linkText = countRes.data.countPatches + " op";
                                         if (countRes.data.countOps > 1) linkText += "s";
-                                        content += "They are used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/dependencies/" + projectId + "\" target=\"_blank\">" + linkText + "</a>";
+                                        if (countRes.data.countPatches > 1) content += "<br/>";
+                                        content += "Some are used in " + linkText;
                                         allowDelete = false;
+                                        showAssets = true;
                                     }
                                 }
                                 else
                                 {
                                     content += "They may be used in other patches.";
+                                }
+
+                                if (showAssets && countRes.data.assets)
+                                {
+                                    content += "<br><ul>";
+                                    countRes.data.assets.forEach((asset) =>
+                                    {
+                                        const link = CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + asset;
+                                        content += "<li>Check usages of <a href='" + link + "' target='_blank'>" + CABLES.filename(asset) + "</a></li>";
+                                    });
+                                    content += "</ul>";
                                 }
 
                                 let title = "Really delete " + selectedFileIds.length + " files?";
