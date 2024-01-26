@@ -56,6 +56,7 @@ import undo from "./utils/undo";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
 import ManageOp from "./components/tabs/tab_manage_op";
 import extendCorePatch from "./core_extend_patch";
+import blueprintUtil from "./blueprint_util";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -157,6 +158,7 @@ CABLES.UI.undo = undo;
 
 CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.ManageOp = ManageOp;
+CABLES.UI.blueprintUtil = blueprintUtil;
 
 
 setHtmlDefaultListeners();

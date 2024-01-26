@@ -234,7 +234,7 @@ export default class EditorTab
                 {
                     this._editor.focus();
                 }.bind(this),
-                200,
+                100,
             );
         }
 

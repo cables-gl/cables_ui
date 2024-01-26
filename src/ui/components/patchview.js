@@ -1934,8 +1934,6 @@ export default class PatchView extends CABLES.EventTarget
                     blueprintUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp) =>
                         {
-                            console.log("cbcbcbcbcbcbcbc", op1, pid, op2, p);
-
                             this._p.link(op1, pid, newOp, newPortJson.id);
                         } });
                 }

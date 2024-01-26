@@ -60,7 +60,6 @@ export default class ManageOp
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
         clearTimeout(this._timeout);
-        console.log("show manage op");
         this._timeout = setTimeout(
             () =>
             {

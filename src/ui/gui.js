@@ -1496,14 +1496,7 @@ export default class Gui
                     if (bp)
                     {
                         gui.showLoadingProgress(true);
-                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
-                            {
-                                "oldSubId": bp,
-                                "next": () =>
-                                {
-
-                                }
-                            });
+                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp, "next": () => {} });
                     }
                     else
                     {
