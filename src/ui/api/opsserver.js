@@ -259,7 +259,6 @@ export default class ServerOps
 
     execute(name, next, refOldOp)
     {
-        console.log("execute", name);
         if (gui.corePatch()._crashedOps.indexOf(name) > -1)
         {
             let html = "";
@@ -987,11 +986,11 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(op);
-            if (!docs) return console.log("could not find docs", op, opid);
+            if (!docs) return console.log("[opsserver] could not find docs", op, opid);
             opid = docs.id;
 
             if (!opid)
-                console.log("deprecated: use serverOps.edit with op not just opname!");
+                console.log("[opsserver]deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1208,7 +1207,6 @@ export default class ServerOps
 
         this.loadOps(missingOps, (newOps, newIds) =>
         {
-            console.log("load ops", missingOps);
             const perf2 = CABLES.UI.uiProfiler.start("[opsserver] loadProjectDependencies");
 
             if (gui && gui.opSelect() && newOps.length > 0)

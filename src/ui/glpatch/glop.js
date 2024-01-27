@@ -675,7 +675,7 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glDotError) this._glDotError = this._glDotError.dispose();
         if (this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
         if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
-
+        if (this._glLoadingIndicator) this._glLoadingIndicator = this._glLoadingIndicator.dispose();
         if (this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
     }
 

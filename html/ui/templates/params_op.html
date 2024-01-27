@@ -156,9 +156,13 @@
 
             </table>
 
-            <span onclick="CABLES.CMD.DEBUG.watchOpSerialized()" class="button">serialized</span>
+        </div>
 
-            <br/>
+        <div class="groupSpacer"><h3>Watch</h3></div>
+        <div class="panel" >
+            <span onclick="CABLES.CMD.DEBUG.watchOpSerialized()" class="button">Serialized</span>
+            <span onclick="CABLES.CMD.DEBUG.watchOpUiAttribs()" class="button">UiAttribs</span>
+            <span onclick="CABLES.CMD.DEBUG.watchOpDocsJson()" class="button">OpDocs</span>
         </div>
     {{/if}}
 

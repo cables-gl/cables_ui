@@ -168,7 +168,6 @@ export default function extendCoreOp()
         if (count >= 1000)
         {
             console.log("hasparent loop....", name);
-            // this.removeLinks();
             this._ignoreParentChecks = true;
             return false;
         }
@@ -188,6 +187,25 @@ export default function extendCoreOp()
         return false;
     };
 
+    CABLES.Op.prototype.isPatchOp = function ()
+    {
+        return this.objName.indexOf("Ops.Patch") == 0;
+    };
+
+    CABLES.Op.prototype.isTeamOp = function ()
+    {
+        return this.objName.indexOf("Ops.Team") == 0;
+    };
+
+    CABLES.Op.prototype.isUserOp = function ()
+    {
+        return this.objName.indexOf("Ops.User") == 0;
+    };
+
+    CABLES.Op.prototype.isCoreOp = function ()
+    {
+        return !this.isTeamOp() && !this.isPatchOp() && !this.isUserOp();
+    };
 
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
@@ -216,6 +234,24 @@ export default function extendCoreOp()
         //     }
         //     return false;
         // }
+
+
+
+        if (this.isInBlueprint2())
+        {
+            const outer = gui.patchView.getSubPatchOuterOp(this.uiAttribs.subPatch);
+            if (outer)
+            {
+                let subPatchOpError = null;
+                if (this.isPatchOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in team ops";
+                if (this.isUserOp() && outer.isTeamOp()) subPatchOpError = "SubPatchOp Error: User op can't be in team ops";
+                if (this.isPatchOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in core ops or extensions";
+                if (this.isUserOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: User op can't be in core ops or extensions";
+
+                this.setUiError("subPatchOpError", subPatchOpError);
+            }
+        }
+
 
         function hasTriggerInput(op)
         {
@@ -443,21 +479,16 @@ export default function extendCoreOp()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.x;
         if (this.uiAttribs.translate) return this.uiAttribs.translate.x;
-
-        console.log("no uiattribs ?!", this);
     };
 
     CABLES.Op.prototype.getTempPosY = function ()
     {
         if (this.uiAttribs.translateTemp) return this.uiAttribs.translateTemp.y;
         if (this.uiAttribs.translate) return this.uiAttribs.translate.y;
-
-        console.log("no uiattribs ?!", this);
     };
 
     CABLES.Op.prototype.setPos = function (x, y)
     {
-        console.log("setpos", x, y);
         this.setUiAttribs({ "translate": { "x": x, "y": y } });
     };
 
