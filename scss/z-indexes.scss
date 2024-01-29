@@ -15,9 +15,11 @@ $zindex_highest :50;    // modal / splitter etc
         z-index: $zindex_lowest - 2;
     }
 
-    .menubar
+    .menubar,#subpatch_nav
     {
         z-index: $zindex_highest;
     }
+
+
 
 }
