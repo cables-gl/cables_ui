@@ -6,8 +6,6 @@ export default class SuggestPortDialog
     constructor(op, port, mouseEvent, cb, cbCancel)
     {
         this._suggestions = [];
-        console.log("SuggestPortDialog");
-
 
         // linkRecommendations
         for (let i = 0; i < op.portsIn.length; i++)
@@ -36,8 +34,6 @@ export default class SuggestPortDialog
         if (op.objName == defaultops.defaultOpNames.subPatchInput2 || op.objName == defaultops.defaultOpNames.subPatchOutput2)
         {
             op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
-            // op = gui.corePatch().getOpById(op);
-            console.log("oppppp", op);
         }
 
         if (defaultops.isBlueprintOp(op))
@@ -57,11 +53,6 @@ export default class SuggestPortDialog
             for (const i in this._suggestions)
                 if (this._suggestions[i].id == id)
                 {
-                    // if (this._suggestions[i].p && port.op.uiAttribs.subPatch != this._suggestions[i].p.op.uiAttribs.subPatch)
-                    // {
-                    //     this._suggestions[i].p.setUiAttribs({ "expose": true });
-                    // }
-
                     cb(this._suggestions[i].p, this._suggestions[i].op, this._suggestions[i]);
                 }
         }, false, cbCancel);

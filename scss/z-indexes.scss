@@ -6,7 +6,6 @@ $zindex_over :30;       // menu / subpatchnav / tabs / timeline etc
 $zindex_high :40;       // color picker / splitter
 $zindex_highest :50;    // modal / splitter etc
 
-
 .cablesCssUi
 {
 
@@ -19,11 +18,7 @@ $zindex_highest :50;    // modal / splitter etc
     {
         z-index: $zindex_highest;
     }
-
-
-
 }
-
 
 .gluiPreviewLayer
 {

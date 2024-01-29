@@ -1938,6 +1938,7 @@ export default class PatchView extends CABLES.EventTarget
                 else
                 {
                     op2 = this._p.getOpById(newOpId);
+                    this._p.link(op1, pid, op2, thePort.name);
                 }
             });
         }
