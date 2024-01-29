@@ -102,7 +102,7 @@ export default function extendCorePatch()
         }
         if (!this._subpatchOpCache[subPatchId] || !this._subpatchOpCache[subPatchId].ops)
         {
-            console.log("no cache", subPatchId);
+            // console.log("no cache", subPatchId);
         }
         else
             opids = Object.keys(this._subpatchOpCache[subPatchId].ops);
@@ -199,7 +199,7 @@ export default function extendCorePatch()
 
         if (!this._subpatchOpCache[subPatchId])
         {
-            console.log("subpatch [cache] not found", subPatchId);
+            // console.log("subpatch [cache] not found", subPatchId);
             return null;
         }
         let op = this.getOpById(this._subpatchOpCache[subPatchId].subPatchOpId);
