@@ -7,7 +7,17 @@ $zindex_high :40;       // color picker / splitter
 $zindex_highest :50;    // modal / splitter etc
 
 
-#meta,#options
+.cablesCssUi
 {
-    z-index: $zindex_lowest - 2;
+
+    #meta,#options
+    {
+        z-index: $zindex_lowest - 2;
+    }
+
+    .menubar
+    {
+        z-index: $zindex_highest;
+    }
+
 }
