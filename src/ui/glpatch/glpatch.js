@@ -36,7 +36,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.paused = false;
         this.blueprint = false;
 
-        this.clear = true;
+        // this.clear = true;
         this._cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
 
@@ -474,8 +474,8 @@ export default class GlPatch extends CABLES.EventTarget
         this._textWriter.setDebugRenderer(this._debugRenderStyle);
         this._textWriterOverlay.setDebugRenderer(this._debugRenderStyle);
 
-        if (this._debugRenderStyle == 3) this.clear = false;
-        else this.clear = true;
+        // if (this._debugRenderStyle == 3) this.clear = false;
+        // else this.clear = true;
     }
 
 
@@ -856,19 +856,13 @@ export default class GlPatch extends CABLES.EventTarget
 
     render(resX, resY)
     {
-        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG || !this.clear)
+        if (!gui || !gui.canvasManager) return;
+        if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG)
+        {
             this._cgl.gl.clearColor(0, 0, 0, 0);
+        }
         else
         {
-            // if (this.greyOutBlue)
-            // {
-            //     this._cgl.gl.clearColor(
-            //         gui.theme.colors_patch.background[0] + (0.3 * 0.0),
-            //         gui.theme.colors_patch.background[1] + (0.3 * 0.1),
-            //         gui.theme.colors_patch.background[2] + (0.3 * 0.3),
-            //         1);
-            // }
-            // else
             this._cgl.gl.clearColor(
                 gui.theme.colors_patch.background[0],
                 gui.theme.colors_patch.background[1],

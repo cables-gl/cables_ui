@@ -103,25 +103,10 @@ function initSplitPanes()
         CABLES.SPLITPANE.listeners.push(mm);
     });
 
-    // document.getElementById("splitterMeta").addEventListener("mousedown", function (ev)
-    // {
-    //     ev.preventDefault();
-    //     CABLES.SPLITPANE.bound = true;
-    //     function mm(e)
-    //     {
-    //         e.preventDefault();
-    //         gui.infoHeight = window.innerHeight - e.clientY;
-    //         gui.setLayout();
-    //     }
-
-    //     document.addEventListener("mousemove", mm);
-    //     CABLES.SPLITPANE.listeners.push(mm);
-    // });
-
 
     function resizeRenderer(ev)
     {
-        if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) return;
+        if (gui.canvasManager.mode == gui.canvasManager.CANVASMODE_PATCHBG) return;
 
         if (ev.shiftKey)
         {
