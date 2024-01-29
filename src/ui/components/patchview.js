@@ -1929,8 +1929,6 @@ export default class PatchView extends CABLES.EventTarget
             {
                 if (options.createSpOpPort)
                 {
-                    console.log(options);
-
                     blueprintUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp) =>
                         {
@@ -2534,7 +2532,7 @@ export default class PatchView extends CABLES.EventTarget
                 }
 
                 suggestions.push({
-                    p,
+                    "p": p,
                     "name": p.title + "<span class=\"icon icon-arrow-right\"></span>" + addText,
                     "classname": "port_text_color_" + p.getTypeString().toLowerCase()
                 });
