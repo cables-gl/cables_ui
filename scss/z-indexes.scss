@@ -23,3 +23,9 @@ $zindex_highest :50;    // modal / splitter etc
 
 
 }
+
+
+.gluiPreviewLayer
+{
+    z-index: $zindex_over;
+}
