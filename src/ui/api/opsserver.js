@@ -503,7 +503,7 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        new ModalError({ "title": "Error/Invalid response from server 3", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         return;
                     }
 
@@ -542,7 +542,7 @@ export default class ServerOps
                     {
                         if (err)
                         {
-                            new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                             return;
                         }
 
@@ -595,7 +595,7 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         return;
                     }
 
@@ -680,7 +680,7 @@ export default class ServerOps
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                new ModalError({ "title": "Error/Invalid response from server 6", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                 return;
             }
 
@@ -857,7 +857,7 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                     return;
                 }
 
@@ -1596,5 +1596,17 @@ export default class ServerOps
             incrementStartup();
             cb();
         }
+    }
+
+    showApiError(err)
+    {
+        // if (err.msg == "ILLEGAL_OPS")
+
+        new ModalError(
+            {
+                "title": "Error/Invalid response from server",
+                // "text": "<pre class=\"hljs language-json\">" + JSON.stringify(err, false, 4) + "</pre>",
+                "codeText": JSON.stringify(err, false, 4)
+            });
     }
 }

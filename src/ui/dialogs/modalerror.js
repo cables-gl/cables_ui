@@ -185,7 +185,7 @@ export default class ModalError
             str += this._options.text + "<br/><br/>";
 
         if (this._options.codeText)
-            str += "<div class=\"shaderErrorCode\">" + this._options.codeText + "</div>";
+            str += "<pre><code class=\"hljs language-json\">" + this._options.codeText + "</code></pre>";
 
         if (this._options.exception)
         {

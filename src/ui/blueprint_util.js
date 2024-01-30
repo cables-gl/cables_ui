@@ -656,13 +656,18 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                return;
+                gui.serverOps.showApiError(err);
+                // new ModalError({ "title": "Error/Invalid response from server 1", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                CABLES.UI.notifyError("Could not save " + newOp.objName);
             }
-            CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
+            else
+            {
+                CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
+            }
+
             gui.showLoadingProgress(false);
 
-            if (options.loadingModal)options.loadingModal.setTask("update project date...");
+            if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
             CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
             {
@@ -726,7 +731,7 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                new ModalError({ "title": "Error/Invalid response from server 2", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                 return;
             }
             loadingModal.setTask("update bp2 attachment");
