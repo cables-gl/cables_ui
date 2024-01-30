@@ -317,7 +317,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     {
                                         if (err2)
                                         {
-                                            new ModalError({ "title": "opAttachmentSave Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            // new ModalError({ "title": "opAttachmentSave Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            this.showApiError(err2);
                                             return;
                                         }
 
@@ -334,7 +335,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             {
                                                 if (err)
                                                 {
-                                                    new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    this.showApiError(err);
                                                     return;
                                                 }
 

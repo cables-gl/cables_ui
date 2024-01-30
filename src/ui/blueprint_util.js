@@ -731,7 +731,8 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server 2", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                // new ModalError({ "title": "Error/Invalid response from server 2", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                this.showApiError(err);
                 return;
             }
             loadingModal.setTask("update bp2 attachment");

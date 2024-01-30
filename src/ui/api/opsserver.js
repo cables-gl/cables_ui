@@ -503,7 +503,8 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server 3", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        // new ModalError({ "title": "Error/Invalid response from server 3", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        this.showApiError(err);
                         return;
                     }
 
@@ -542,7 +543,8 @@ export default class ServerOps
                     {
                         if (err)
                         {
-                            new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            this.showApiError(err);
                             return;
                         }
 
@@ -595,7 +597,8 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        // new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        this.showApiError(err);
                         return;
                     }
 
@@ -680,7 +683,8 @@ export default class ServerOps
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server 6", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                // new ModalError({ "title": "Error/Invalid response from server 6", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                this.showApiError(err);
                 return;
             }
 
@@ -857,7 +861,8 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    this.showApiError(err);
                     return;
                 }
 
@@ -1600,13 +1605,17 @@ export default class ServerOps
 
     showApiError(err)
     {
-        // if (err.msg == "ILLEGAL_OPS")
-
-        new ModalError(
-            {
-                "title": "Error/Invalid response from server",
-                // "text": "<pre class=\"hljs language-json\">" + JSON.stringify(err, false, 4) + "</pre>",
-                "codeText": JSON.stringify(err, false, 4)
-            });
+        CABLES.logStack();
+        if (err.msg == "ILLEGAL_OPS")
+        {
+            new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
+            console.log("illegal op", err);
+        }
+        else
+            new ModalError(
+                {
+                    "title": "Error/Invalid response from server",
+                    "codeText": JSON.stringify(err, false, 4)
+                });
     }
 }
