@@ -187,6 +187,13 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
         if (subOuter)
         {
+            if (!gui.opDocs.getOpDocByName(subOuter.objName).allowEdit)
+            {
+                new ModalDialog({ "title": "You don't have write access in this subPatchOp", "showOkButton": true });
+                return;
+            }
+
+
             const parts = subOuter.objName.split(".");
 
             if (parts.length > 1)
@@ -215,19 +222,22 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
     gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName) =>
     {
-        CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName });
+        CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName, "ignoreNsCheck": true });
     });
 };
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
-    if (gui.patchView.getCurrentSubPatch() != 0)
+    if (!options.ignoreNsCheck)
     {
-        const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
-        if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0)
+        if (gui.patchView.getCurrentSubPatch() != 0)
         {
-            CABLES_CMD_PATCH.createSubPatchOp();
-            return;
+            const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+            if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0)
+            {
+                CABLES_CMD_PATCH.createSubPatchOp();
+                return;
+            }
         }
     }
 
