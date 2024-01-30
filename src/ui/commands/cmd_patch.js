@@ -178,12 +178,23 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
     if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
     {
         new ModalDialog({ "title": "You don't have write access for this", "showOkButton": true });
-
         return;
     }
 
-
     let suggestedNamespace = defaultops.getPatchOpsNamespace();
+    if (gui.patchView.getCurrentSubPatch() != 0)
+    {
+        const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        if (subOuter)
+        {
+            const parts = subOuter.objName.split(".");
+
+            if (parts.length > 1)
+                suggestedNamespace = parts[0] + "." + parts[1] + "." + parts[2] + ".";
+        }
+    }
+
+    console.log("suggestedNamespace", suggestedNamespace);
     const dialogOptions = {
         "title": "Create operator",
         "shortName": blueprintUtil.getAutoName(true),
@@ -210,6 +221,17 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
+    if (gui.patchView.getCurrentSubPatch() != 0)
+    {
+        const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0)
+        {
+            CABLES_CMD_PATCH.createSubPatchOp();
+            return;
+        }
+    }
+
+
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const origOpsBounds = gui.patchView.getSelectionBounds();
     const newOpname = options.newOpName || blueprintUtil.getAutoName();
