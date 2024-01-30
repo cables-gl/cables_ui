@@ -142,21 +142,29 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                if (err) this._log.error(err);
-
-                loadingModal.setTask("Loading Op");
-                this.loadOp(res, () =>
+                if (err)
                 {
-                    if (openEditor)
-                    {
-                        gui.maintabPanel.show(true);
-                        this.edit(name, false, null, true);
-                    }
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    gui.endModalLoading();
+                    // this._log.error(err);
+                    gui.serverOps.showApiError(err);
+                    loadingModal.close();
                     if (cb)cb();
-                });
+                }
+                else
+                {
+                    loadingModal.setTask("Loading Op");
+                    this.loadOp(res, () =>
+                    {
+                        if (openEditor)
+                        {
+                            gui.maintabPanel.show(true);
+                            this.edit(name, false, null, true);
+                        }
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        gui.endModalLoading();
+                        if (cb)cb();
+                    });
+                }
             }
         );
     }
