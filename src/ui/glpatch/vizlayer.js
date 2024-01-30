@@ -32,7 +32,7 @@ export default class VizLayer extends CABLES.EventTarget
 
         this._eleCanvas.id = "gluiPreviewLayer";
         this._eleCanvas.classList.add("gluiPreviewLayer");
-        this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
+        // this._eleCanvas.style.zIndex = this._glPatch._cgl.canvas.style.zIndex + 2;
 
         document.body.appendChild(this._eleCanvas);
 

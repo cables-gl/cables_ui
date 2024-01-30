@@ -65,7 +65,7 @@ export default class GlUiCanvas
 
         gui.on("canvasModeChange", (mode) =>
         {
-            this.canvas.classList.toggle("gluiPatchBg", mode == gui.CANVASMODE_PATCHBG);
+            this.canvas.classList.toggle("gluiPatchBg", mode == gui.canvasManager.CANVASMODE_PATCHBG);
         });
 
         gui.on("uiIdleStart", () =>
@@ -217,10 +217,6 @@ export default class GlUiCanvas
 
         const cgl = this.patch.cgl;
 
-        // if (gui.canvasManager.mode == gui.CANVASMODE_PATCHBG) cgl.gl.clearColor(0, 0, 0, 0);
-        // else cgl.gl.clearColor(0, 0, 0, 1);
-
-        // cgl.gl.clear(cgl.gl.COLOR_BUFFER_BIT | cgl.gl.DEPTH_BUFFER_BIT);
 
 
         if (CGL.MESH.lastMesh)CGL.MESH.lastMesh.unBind();

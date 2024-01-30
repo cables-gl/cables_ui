@@ -389,6 +389,23 @@ blueprintUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
     atts[blueprintUtil.blueprintPortJsonAttachmentFilename] = JSON.stringify(portsJson, false, 4);
     atts["att_inc_gen_ports.js"] = blueprintUtil.generatePortsAttachmentJsSrc(portsJson);
 
+
+    if (!gui.savedState.isSavedSubPatch(gui.patchView.getCurrentSubPatch()))
+    {
+        const subOuterOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        if (
+            subOuterOp &&
+            (subOuterOp.opId == opname || subOuterOp.objName == opname) &&
+            gui.patchView.getCurrentSubPatch() != 0
+        )
+        {
+            const newSubId = CABLES.shortId();
+            const o = blueprintUtil._getSubPatchSerialized(gui.patchView.getCurrentSubPatch(), newSubId);
+
+            atts[blueprintUtil.blueprintSubpatchAttachmentFilename] = JSON.stringify(o, null, "  ");
+        }
+    }
+
     CABLESUILOADER.talkerAPI.send("opUpdate",
         {
             "opname": opname,
@@ -422,6 +439,14 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
     gui.patchView.unselectAllOps();
 
     loadingModal.setTask("getting ports json");
+
+
+
+
+
+
+
+
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
         {
@@ -587,16 +612,10 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
         });
 };
 
-
-blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
+blueprintUtil._getSubPatchSerialized = function (oldSubId, newSubId)
 {
-    const oldSubId = options.oldSubId;
-    gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
-
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     const o = { "ops": [] };
-    const subId = CABLES.shortId();
-    const loadingModal = gui.startModalLoading("serialize ops");
 
     ops.forEach((op) =>
     {
@@ -604,15 +623,23 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
         delete ser.uiAttribs.history;
         delete ser.uiAttribs.selected;
 
-        if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = subId;
+        if (ser.uiAttribs.subPatch == oldSubId)ser.uiAttribs.subPatch = newSubId;
         o.ops.push(ser);
     });
 
+    CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": newSubId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
 
+    return o;
+};
 
-    if (options.loadingModal)options.loadingModal.setTask("replace op ids");
+blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
+{
+    const oldSubId = options.oldSubId;
+    gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
+    const loadingModal = gui.startModalLoading("serialize ops");
 
-    CABLES.Patch.replaceOpIds(o, { "parentSubPatchId": subId, "refAsId": true, "doNotUnlinkLostLinks": true, "fixLostLinks": true });
+    const subId = CABLES.shortId();
+    const o = blueprintUtil._getSubPatchSerialized(oldSubId, subId);
 
     loadingModal.setTask("save attachment...");
 
@@ -623,7 +650,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
         {
             "opname": newOp.objName,
             "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
-            "content": JSON.stringify(o, null, "    "),
+            "content": JSON.stringify(o, null, "  "),
         },
         (err) =>
         {

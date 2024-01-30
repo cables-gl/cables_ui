@@ -76,8 +76,8 @@
 {
     width:100%;
     height:100%;
-
     position: absolute;
+    z-index: $zindex_low+2;;
 }
 
 #patch,#opselect-layout
@@ -224,7 +224,6 @@
 #subpatch_nav
 {
 	position: relative;
-	z-index: $zindex_superlow;
 
 	#subpatch_breadcrumb
 	{

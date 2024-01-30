@@ -195,6 +195,20 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
     const loadingModal = gui.startModalLoading("Create Subpatch");
 
+    const selops = gui.patchView.getSelectedOps();
+    for (let i = 0; i < selops.length; i++)
+    {
+        if (selops[i].isSubPatchOp())
+        {
+            if (selops[i].storage && selops[i].storage.subPatchVer != 2)
+            {
+                new ModalDialog({ "title": "Can not create subPatchOp", "text": "not possible To create a subpatch op containing old subpatches. ", "showOkButton": true });
+
+                return;
+            }
+        }
+    }
+
     gui.serverOps.create(newOpname, () =>
     {
         let newselectedOpIds = [];
@@ -211,9 +225,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     newselectedOpIds.push(newops[j].id);
             }
         }
-
-
-
 
 
         gui.patchView.createSubPatchFromSelection(2,
@@ -898,6 +909,8 @@ CABLES_CMD_PATCH.savePatchScreenshot = function ()
 CABLES_CMD_PATCH.setOpTitle = function ()
 {
     const ops = gui.patchView.getSelectedOps();
+
+
     if (ops.length != 1)
     {
         console.warn("rename canceled - select one op!");
