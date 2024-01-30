@@ -772,7 +772,7 @@ export default class ServerOps
         });
     }
 
-    cloneDialog(oldName)
+    cloneDialog(oldName, origOp)
     {
         if (gui.showGuestWarning()) return;
 
@@ -826,6 +826,8 @@ export default class ServerOps
 
                             if (op)
                             {
+                                if (origOp) gui.patchView.copyOpInputPorts(origOp, op);
+
                                 gui.patchView.focusOp(op.id);
                                 gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                             }

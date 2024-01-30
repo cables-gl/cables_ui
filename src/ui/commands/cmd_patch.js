@@ -101,7 +101,7 @@ CABLES_CMD_PATCH.editOp = function (userInteraction = true)
 CABLES_CMD_PATCH.cloneSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName);
+    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
 };
 
 CABLES_CMD_PATCH.manageSelectedOp = function (opid)
@@ -1125,7 +1125,6 @@ CABLES_CMD_PATCH.replaceOp = function ()
             const ops = gui.patchView.getSelectedOps();
             for (let i = 0; i < ops.length; i++)
             {
-                // gui.patchView.replaceOpCheck("{{op.id}}", "{{newestVersion.name}}");
                 gui.patchView.replaceOp(ops[i].id, opname);
             }
         }
