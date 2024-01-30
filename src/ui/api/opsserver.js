@@ -1620,10 +1620,15 @@ export default class ServerOps
             console.log("illegal op", err);
         }
         else
-            new ModalError(
-                {
-                    "title": "Error/Invalid response from server",
-                    "codeText": JSON.stringify(err, false, 4)
-                });
+        {
+            const options = {
+                "title": "Error/Invalid response from server",
+                "codeText": JSON.stringify(err, false, 4)
+            };
+
+            if (err && err.data && err.datam.msg) options.text = err.datam.msg;
+
+            new ModalError(options);
+        }
     }
 }
