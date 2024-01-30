@@ -203,7 +203,7 @@ float samp(in vec2 uv, float w) {
 
     if(border>=1.0) // border
     {
-       float outlinefrag=0.004;
+       float outlinefrag=0.004*zoom*500.0;
        float add=(1.0-step(outlinefrag,posSize.x));
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.y));
        if(add==0.0)add=(1.0-step(outlinefrag,posSize.z));
