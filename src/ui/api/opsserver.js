@@ -555,10 +555,18 @@ export default class ServerOps
         });
     }
 
-    opNameDialog(title, name, type, suggestedNamespace, cb, showReplace)
+    /**
+     * @param {string} options.title title of the dialog
+     * @param {string} options.shortName shortname of the new op
+     * @param {string} options.type type of op (patch/user/team/...)
+     * @param {string} options.suggestedNamespace suggested namespace in dropdown
+     * @param {boolean} options.showReplace show "create and replace existing" button
+     * @param {string|null} options.sourceOpName opname to clone from or create op into
+     */
+    opNameDialog(options, cb)
     {
-        let newName = name || "";
-        if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
+        let newName = options.shortName || "";
+        if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
 
         let html = "";
         html += "New op name:<br/><br/>";
@@ -570,8 +578,6 @@ export default class ServerOps
         html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
-
-
         html += "<br/><br/>";
 
         const _nameChangeListener = () =>
@@ -583,7 +589,8 @@ export default class ServerOps
             {
                 CABLESUILOADER.talkerAPI.send("checkOpName", {
                     "namespace": newNamespace,
-                    "v": v
+                    "v": v,
+                    "sourceName": options.sourceOpName
                 }, (err, res) =>
                 {
                     if (err)
@@ -645,7 +652,7 @@ export default class ServerOps
                     ele.byId("opcreateerrors").innerHTML = "";
                     ele.byId("opcreateerrors").classList.add("hidden");
                     ele.show(ele.byId("opNameDialogSubmit"));
-                    if (showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
+                    if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
                 }
             }
 
@@ -666,8 +673,9 @@ export default class ServerOps
         };
 
         CABLESUILOADER.talkerAPI.send("checkOpName", {
-            "namespace": suggestedNamespace,
-            "v": newName
+            "namespace": options.suggestedNamespace,
+            "v": newName,
+            "sourceName": options.sourceOpName
         }, (err, initialRes) =>
         {
             if (err)
@@ -677,11 +685,11 @@ export default class ServerOps
             }
 
             new CABLES.UI.ModalDialog({
-                "title": title,
+                "title": options.title,
                 "text": html
             });
 
-            _updateFormFromApi(initialRes, newName, suggestedNamespace);
+            _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
 
             ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
             ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
@@ -691,7 +699,7 @@ export default class ServerOps
                 cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value));
             });
 
-            if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
+            if (options.showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
                 (event) =>
                 {
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), true);
@@ -711,7 +719,17 @@ export default class ServerOps
         }
 
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
-        this.opNameDialog("Create operator", name, "patch", suggestedNamespace, (newNamespace, newName) =>
+
+        const dialogOptions = {
+            "title": "Create operator",
+            "shortName": name,
+            "type": "patch",
+            "suggestedNamespace": suggestedNamespace,
+            "showReplace": false,
+            "sourceOpName": null
+        };
+
+        this.opNameDialog(dialogOptions, (newNamespace, newName) =>
         {
             const opname = newNamespace + newName;
 
@@ -739,7 +757,7 @@ export default class ServerOps
                         });
                 });
             }, options.showEditor);
-        }, false);
+        });
     }
 
     cloneDialog(oldName)
@@ -758,7 +776,16 @@ export default class ServerOps
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
         if (defaultops.isTeamOp(oldName)) suggestedNamespace = defaultops.getNamespace(oldName);
 
-        this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
+        const dialogOptions = {
+            "title": "Clone operator",
+            "shortName": name,
+            "type": "patch",
+            "suggestedNamespace": suggestedNamespace,
+            "showReplace": true,
+            "sourceOpName": null
+        };
+
+        this.opNameDialog(dialogOptions, (newNamespace, newName, replace) =>
         {
             const opname = newNamespace + newName;
             gui.serverOps.clone(oldName, opname, () =>
@@ -794,7 +821,7 @@ export default class ServerOps
                     }
                 });
             });
-        }, true);
+        });
     }
 
 
