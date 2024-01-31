@@ -178,7 +178,7 @@ export default class ServerOps
             () =>
             {
                 this._saveOpLayout(op);
-            }, 1000);
+            }, 500);
     }
 
     _saveOpLayout(op)
