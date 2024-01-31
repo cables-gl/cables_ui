@@ -1028,11 +1028,11 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(op);
-            if (!docs) return console.log("[opsserver] could not find docs", op, opid);
+            if (!docs) return console.warn("[opsserver] could not find docs", op, opid);
             opid = docs.id;
 
             if (!opid)
-                console.log("[opsserver]deprecated: use serverOps.edit with op not just opname!");
+                console.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1637,7 +1637,6 @@ export default class ServerOps
         if (err.msg == "ILLEGAL_OPS")
         {
             new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
-            console.log("illegal op", err);
         }
         else
         {

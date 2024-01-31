@@ -326,7 +326,6 @@ export default class PatchView extends CABLES.EventTarget
                     op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
                     let y = b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY;
-                    console.log("y", y);
                     op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": y } });
                     found = true;
                 }
@@ -841,7 +840,6 @@ export default class PatchView extends CABLES.EventTarget
         gui.serverOps.loadOpDependencies(opname,
             () =>
             {
-                // console.log("selectedOps", selectedOps);
                 const bounds = this.getSelectionBounds();
                 let trans = {
                     "x": bounds.minx + (bounds.maxx - bounds.minx) / 2,
@@ -851,8 +849,6 @@ export default class PatchView extends CABLES.EventTarget
 
                 // let opname = defaultops.defaultOpNames.subPatch;
                 // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
-                // console.log("OPNAME", defaultops.defaultOpNames.subPatch);
-                // console.log("OPNAME", defaultops.defaultOpNames.subPatch2);
 
                 const patchOp = this._p.addOp(opname, { "translate": trans, "subPatch": this.getCurrentSubPatch() });
                 const patchId = patchOp.patchId.get();
@@ -2423,10 +2419,8 @@ export default class PatchView extends CABLES.EventTarget
         let newPortIn = op.portsIn[0];
         let newPortOut = op.portsOut[0];
 
-
         if (op.patchId && op.patchId.get() && op.isSubPatchOp())
         {
-            console.log("is subpatch...");
             const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
             const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
 
@@ -2734,7 +2728,6 @@ export default class PatchView extends CABLES.EventTarget
         // foundPorts = foundPorts.sort(function (a, b) { return (a.uiAttribs.order || 0) - (b.uiAttribs.order || 0); });
 
         // for (let i = 0; i < foundPorts.length; i++)
-        // console.log(i, foundPorts[i].title);
 
         return foundPorts;
     }

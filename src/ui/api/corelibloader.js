@@ -36,8 +36,6 @@ CABLES.loadedCoreLib = function (name)
 {
     if (CABLES.onLoadedCoreLib[name])
     {
-        console.log("onLoadedCoreLib[name]", name);
-
         for (let i = 0; i < CABLES.onLoadedCoreLib[name].length; i++)
         {
             if (!CABLES.onLoadedCoreLib[name][i].executed)

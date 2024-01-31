@@ -299,7 +299,7 @@ export default class GlCable
                         [
                             posX, this._y, 0,
                             // posX, this._y, 0,
-                            // posX2, this._y2, 0,
+                            posX2, this._y2, 0,
                             posX2, this._y2, 0
                         ];
                     // );
@@ -333,14 +333,12 @@ export default class GlCable
                     // for (let i = 0; i < (gui.theme.patch.cablesSubDivde); i++)
                     this._points = this._subdivide(this._points, 5);
 
-
                     // this._points.unshift(posX, this._y, 0);
                     // this._points.unshift(posX, this._y, 0);
                     // this._points.unshift(posX, this._y, 0);
                     // this._points.unshift(posX, this._y, 0);
                     // this._points.push(posX2, this._y2, 0);
                     // this._points.push(posX2, this._y2, 0);
-
 
                     this._splineDrawer.setSpline(this._splineIdx, this._points);
                 }

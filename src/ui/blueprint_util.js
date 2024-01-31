@@ -21,7 +21,6 @@ blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
 
     if (ops.length > 0)
     {
-        console.log("execute bp op");
         gui.serverOps.execute(opname, next);
     }
     else
@@ -522,8 +521,6 @@ blueprintUtil.getAutoName = (short) =>
         }
     }
 
-    console.log("newOpName", newOpName);
-
     return newOpName;
 };
 
@@ -606,9 +603,6 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 
 
             blueprintUtil.portJsonUtil(opId, portId, { "port": port });
-
-
-            console.log("port", port);
         });
 };
 
@@ -685,8 +679,6 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
                     gui.serverOps.execute(newOp.objName,
                         (newOps, refNewOp) =>
                         {
-                            if (refNewOp && refNewOp.patchId)console.log(refNewOp.patchId.get());
-
                             gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
                             gui.corePatch().clearSubPatchCache(newOp.patchId.get());
 
