@@ -142,21 +142,29 @@ export default class ServerOps
             },
             (err, res) =>
             {
-                if (err) this._log.error(err);
-
-                loadingModal.setTask("Loading Op");
-                this.loadOp(res, () =>
+                if (err)
                 {
-                    if (openEditor)
-                    {
-                        gui.maintabPanel.show(true);
-                        this.edit(name, false, null, true);
-                    }
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    gui.endModalLoading();
+                    // this._log.error(err);
+                    gui.serverOps.showApiError(err);
+                    loadingModal.close();
                     if (cb)cb();
-                });
+                }
+                else
+                {
+                    loadingModal.setTask("Loading Op");
+                    this.loadOp(res, () =>
+                    {
+                        if (openEditor)
+                        {
+                            gui.maintabPanel.show(true);
+                            this.edit(name, false, null, true);
+                        }
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        gui.endModalLoading();
+                        if (cb)cb();
+                    });
+                }
             }
         );
     }
@@ -503,7 +511,8 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        // new ModalError({ "title": "Error/Invalid response from server 3", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        this.showApiError(err);
                         return;
                     }
 
@@ -542,7 +551,8 @@ export default class ServerOps
                     {
                         if (err)
                         {
-                            new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            this.showApiError(err);
                             return;
                         }
 
@@ -555,10 +565,18 @@ export default class ServerOps
         });
     }
 
-    opNameDialog(title, name, type, suggestedNamespace, cb, showReplace)
+    /**
+     * @param {string} options.title title of the dialog
+     * @param {string} options.shortName shortname of the new op
+     * @param {string} options.type type of op (patch/user/team/...)
+     * @param {string} options.suggestedNamespace suggested namespace in dropdown
+     * @param {boolean} options.showReplace show "create and replace existing" button
+     * @param {string|null} options.sourceOpName opname to clone from or create op into
+     */
+    opNameDialog(options, cb)
     {
-        let newName = name || "";
-        if (name && name.indexOf("Ops.") === 0) newName = name.substr(4, name.length);
+        let newName = options.shortName || "";
+        if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
 
         let html = "";
         html += "New op name:<br/><br/>";
@@ -570,8 +588,6 @@ export default class ServerOps
         html += "<br/><br/>";
         html += "<a id=\"opNameDialogSubmit\" class=\"bluebutton hidden\">Create Op</a>";
         html += "<a id=\"opNameDialogSubmitReplace\" class=\"button hidden\">Create and replace existing</a>";
-
-
         html += "<br/><br/>";
 
         const _nameChangeListener = () =>
@@ -583,12 +599,14 @@ export default class ServerOps
             {
                 CABLESUILOADER.talkerAPI.send("checkOpName", {
                     "namespace": newNamespace,
-                    "v": v
+                    "v": v,
+                    "sourceName": options.sourceOpName
                 }, (err, res) =>
                 {
                     if (err)
                     {
-                        new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        // new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                        this.showApiError(err);
                         return;
                     }
 
@@ -645,7 +663,7 @@ export default class ServerOps
                     ele.byId("opcreateerrors").innerHTML = "";
                     ele.byId("opcreateerrors").classList.add("hidden");
                     ele.show(ele.byId("opNameDialogSubmit"));
-                    if (showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
+                    if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
                 }
             }
 
@@ -666,22 +684,24 @@ export default class ServerOps
         };
 
         CABLESUILOADER.talkerAPI.send("checkOpName", {
-            "namespace": suggestedNamespace,
-            "v": newName
+            "namespace": options.suggestedNamespace,
+            "v": newName,
+            "sourceName": options.sourceOpName
         }, (err, initialRes) =>
         {
             if (err)
             {
-                new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                // new ModalError({ "title": "Error/Invalid response from server 6", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                this.showApiError(err);
                 return;
             }
 
             new CABLES.UI.ModalDialog({
-                "title": title,
+                "title": options.title,
                 "text": html
             });
 
-            _updateFormFromApi(initialRes, newName, suggestedNamespace);
+            _updateFormFromApi(initialRes, newName, options.suggestedNamespace);
 
             ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
             ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
@@ -691,7 +711,7 @@ export default class ServerOps
                 cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value));
             });
 
-            if (showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
+            if (options.showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click",
                 (event) =>
                 {
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), true);
@@ -711,7 +731,17 @@ export default class ServerOps
         }
 
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
-        this.opNameDialog("Create operator", name, "patch", suggestedNamespace, (newNamespace, newName) =>
+
+        const dialogOptions = {
+            "title": "Create operator",
+            "shortName": name,
+            "type": "patch",
+            "suggestedNamespace": suggestedNamespace,
+            "showReplace": false,
+            "sourceOpName": null
+        };
+
+        this.opNameDialog(dialogOptions, (newNamespace, newName) =>
         {
             const opname = newNamespace + newName;
 
@@ -739,10 +769,10 @@ export default class ServerOps
                         });
                 });
             }, options.showEditor);
-        }, false);
+        });
     }
 
-    cloneDialog(oldName)
+    cloneDialog(oldName, origOp)
     {
         if (gui.showGuestWarning()) return;
 
@@ -758,7 +788,16 @@ export default class ServerOps
         let suggestedNamespace = defaultops.getPatchOpsNamespace();
         if (defaultops.isTeamOp(oldName)) suggestedNamespace = defaultops.getNamespace(oldName);
 
-        this.opNameDialog("Clone operator", name, "patch", suggestedNamespace, (newNamespace, newName, replace) =>
+        const dialogOptions = {
+            "title": "Clone operator",
+            "shortName": name,
+            "type": "patch",
+            "suggestedNamespace": suggestedNamespace,
+            "showReplace": true,
+            "sourceOpName": null
+        };
+
+        this.opNameDialog(dialogOptions, (newNamespace, newName, replace) =>
         {
             const opname = newNamespace + newName;
             gui.serverOps.clone(oldName, opname, () =>
@@ -787,6 +826,8 @@ export default class ServerOps
 
                             if (op)
                             {
+                                if (origOp) gui.patchView.copyOpInputPorts(origOp, op);
+
                                 gui.patchView.focusOp(op.id);
                                 gui.patchView.patchRenderer.viewBox.animateScrollTo(gui.patchView.patchRenderer.viewBox.mousePatchX, gui.patchView.patchRenderer.viewBox.mousePatchY);
                             }
@@ -794,7 +835,7 @@ export default class ServerOps
                     }
                 });
             });
-        }, true);
+        });
     }
 
 
@@ -830,7 +871,8 @@ export default class ServerOps
             {
                 if (err)
                 {
-                    new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    this.showApiError(err);
                     return;
                 }
 
@@ -1568,6 +1610,27 @@ export default class ServerOps
         {
             incrementStartup();
             cb();
+        }
+    }
+
+    showApiError(err)
+    {
+        CABLES.logStack();
+        if (err.msg == "ILLEGAL_OPS")
+        {
+            new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
+            console.log("illegal op", err);
+        }
+        else
+        {
+            const options = {
+                "title": "Error/Invalid response from server",
+                "codeText": JSON.stringify(err, false, 4)
+            };
+
+            if (err && err.data && err.datam.msg) options.text = err.datam.msg;
+
+            new ModalError(options);
         }
     }
 }

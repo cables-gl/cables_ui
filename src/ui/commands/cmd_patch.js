@@ -101,7 +101,7 @@ CABLES_CMD_PATCH.editOp = function (userInteraction = true)
 CABLES_CMD_PATCH.cloneSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
-    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName);
+    if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
 };
 
 CABLES_CMD_PATCH.manageSelectedOp = function (opid)
@@ -175,20 +175,73 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
 
 CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
+    if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
+    {
+        new ModalDialog({ "title": "You don't have write access for this", "showOkButton": true });
+        return;
+    }
+
     let suggestedNamespace = defaultops.getPatchOpsNamespace();
-    gui.serverOps.opNameDialog("Create operator",
-        blueprintUtil.getAutoName(true),
-        "patch",
-        suggestedNamespace,
-        (newNamespace, newName) =>
+    if (gui.patchView.getCurrentSubPatch() != 0)
+    {
+        const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        if (subOuter)
         {
-            console.log(newName);
-            CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName });
-        });
+            if (!gui.opDocs.getOpDocByName(subOuter.objName).allowEdit)
+            {
+                new ModalDialog({ "title": "You don't have write access in this subPatchOp", "showOkButton": true });
+                return;
+            }
+
+
+            const parts = subOuter.objName.split(".");
+
+            if (parts.length > 1)
+                suggestedNamespace = parts[0] + "." + parts[1] + "." + parts[2] + ".";
+        }
+    }
+
+    console.log("suggestedNamespace", suggestedNamespace);
+    const dialogOptions = {
+        "title": "Create operator",
+        "shortName": blueprintUtil.getAutoName(true),
+        "type": "patch",
+        "suggestedNamespace": suggestedNamespace,
+        "showReplace": false
+    };
+
+    if (gui.patchView.getCurrentSubPatch() != 0)
+    {
+        const outerOp = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+        if (outerOp)
+        {
+            const containerName = outerOp.objName;
+            dialogOptions.sourceOpName = containerName;
+        }
+    }
+
+    gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName) =>
+    {
+        CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName, "ignoreNsCheck": true });
+    });
 };
 
 CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 {
+    if (!options.ignoreNsCheck)
+    {
+        if (gui.patchView.getCurrentSubPatch() != 0)
+        {
+            const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+            if (subOuter && subOuter.objName.indexOf("Ops.Patch.") != 0)
+            {
+                CABLES_CMD_PATCH.createSubPatchOp();
+                return;
+            }
+        }
+    }
+
+
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
     const origOpsBounds = gui.patchView.getSelectionBounds();
     const newOpname = options.newOpName || blueprintUtil.getAutoName();
@@ -236,46 +289,42 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
 
                 // find ops that are crosslinked...
                 // todo: relink somehow ?
-                {
-                    const ops = gui.corePatch().getSubPatchOps(patchId);
+                const ops = gui.corePatch().getSubPatchOps(patchId);
 
-                    for (let i = 0; i < ops.length; i++)
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+                    for (let j = 0; j < op.portsIn.length; j++)
                     {
-                        const op = ops[i];
-                        for (let j = 0; j < op.portsIn.length; j++)
+                        if (op.portsIn[j].isLinked())
                         {
-                            if (op.portsIn[j].isLinked())
+                            const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
+                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
-                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                                {
-                                    const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
-                                    portJson.ports.push(pJson);
-                                    op.portsIn[j].removeLinks();
-                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsIn[j].name });
-                                }
+                                const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
+                                portJson.ports.push(pJson);
+                                op.portsIn[j].removeLinks();
+                                op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsIn[j].name });
                             }
                         }
-                        for (let j = 0; j < op.portsOut.length; j++)
+                    }
+                    for (let j = 0; j < op.portsOut.length; j++)
+                    {
+                        if (op.portsOut[j].isLinked())
                         {
-                            if (op.portsOut[j].isLinked())
+                            const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
+                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
-                                if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                                {
-                                    const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
-                                    portJson.ports.push(pJson);
-                                    op.portsOut[j].removeLinks();
-                                    op.setUiAttrib({ "tempSubOldOpId": op.id });
-                                    oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsOut[j].name });
-                                }
+                                const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
+                                portJson.ports.push(pJson);
+                                op.portsOut[j].removeLinks();
+                                op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsOut[j].name });
                             }
                         }
                     }
                 }
-
-
 
                 // todo: createSubPatchFromSelection should provide the cross links...
 
@@ -308,7 +357,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                     {
                                         if (err2)
                                         {
-                                            new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            // new ModalError({ "title": "opAttachmentSave Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            this.showApiError(err2);
                                             return;
                                         }
 
@@ -325,7 +375,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             {
                                                 if (err)
                                                 {
-                                                    new ModalError({ "title": "Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    this.showApiError(err);
                                                     return;
                                                 }
 
@@ -1074,7 +1125,6 @@ CABLES_CMD_PATCH.replaceOp = function ()
             const ops = gui.patchView.getSelectedOps();
             for (let i = 0; i < ops.length; i++)
             {
-                // gui.patchView.replaceOpCheck("{{op.id}}", "{{newestVersion.name}}");
                 gui.patchView.replaceOp(ops[i].id, opname);
             }
         }
