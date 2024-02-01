@@ -39,7 +39,7 @@ const text =
     "portObjectSnapshot": "See an object data snapshot",
 
     "patchSelectedMultiOps": "## Selected Multiple Ops\n\n* `d` disable ops and their children\n* `a` align ops left\n* `c` center ops\n* [shift]`a` reduce vertical spacing\n* `DEL` delete selected ops\n* [cmd_ctrl]`c` copy selected op ",
-    "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and children\n* [shift]`D` temporary unlink op \n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
+    "patchSelectedOp": "## Selected Single Op\n\n* `T` set op title\n* `D` disable op and children\n* `X` unlink op \n* `DEL` delete op\n* `page up/down` snap to parent/child op",
 
     "projectSettingsPublic": "Make patch public - Everyone can see it",
     "projectSettingsTitle": "## Patch Name \n\nIf this is your op, click to edit",
@@ -292,10 +292,6 @@ const text =
         {
             "descr": " Disable ops and its children by pressing `d`",
             "img": "p_disable_ops_with_d_key.gif"
-        },
-        {
-            "descr": " You can **temporarily disconnect/bypass a selected op** by pressing `SHIFT + d`, pressing `SHIFT + d` again reconnects the cable",
-            "img": "q_disable_op_with_shift_and_d_key.gif"
         },
         {
             "descr": " You can **upload files** by dragging them into the window",

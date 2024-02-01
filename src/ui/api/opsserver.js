@@ -178,7 +178,7 @@ export default class ServerOps
             () =>
             {
                 this._saveOpLayout(op);
-            }, 1000);
+            }, 500);
     }
 
     _saveOpLayout(op)
@@ -1028,11 +1028,11 @@ export default class ServerOps
         else
         {
             const docs = gui.opDocs.getOpDocByName(op);
-            if (!docs) return console.log("[opsserver] could not find docs", op, opid);
+            if (!docs) return console.warn("[opsserver] could not find docs", op, opid);
             opid = docs.id;
 
             if (!opid)
-                console.log("[opsserver]deprecated: use serverOps.edit with op not just opname!");
+                console.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1460,12 +1460,21 @@ export default class ServerOps
             ops.forEach((op) =>
             {
                 incrementStartup();
-                this.loadOp(op, (newOp, newId) =>
+                this.loadOp(op, (createdOps) =>
                 {
-                    if (newId) newIds[op.opId] = newId;
-                    newOps.push(newOp);
+                    if (createdOps)
+                    {
+                        createdOps.forEach((newOp) =>
+                        {
+                            if (newOp.oldOpId) newIds[newOp.oldOpId] = newOp.opId;
+                            newOps.push(newOp);
+                        });
+                    }
                     count--;
-                    if (count === 0) cb(newOps, newIds);
+                    if (count === 0)
+                    {
+                        cb(newOps, newIds);
+                    }
                 });
             });
         }
@@ -1490,22 +1499,31 @@ export default class ServerOps
                 }
                 else
                 {
-                    let identifier = res.newOpId || op.opId || op.id || op.objName;
+                    let opIdentifier = op.opId || op.id || op.objName;
+                    let allIdentifiers = [opIdentifier];
+                    if (res.newOps && res.newOps.length > 0)
+                    {
+                        res.newOps.forEach((newOp) =>
+                        {
+                            if (newOp.opId) allIdentifiers.push(newOp.opId);
+                        });
+                    }
 
-                    let lid = "missingop" + identifier + CABLES.uuid();
+                    let lid = "missingops_" + CABLES.uuid();
                     const missingOpUrl = [];
-
-                    let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "&p=" + gui.project().shortId;
-                    missingOpUrl.push(url);
+                    allIdentifiers.forEach((identifier) =>
+                    {
+                        let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "&p=" + gui.project().shortId;
+                        missingOpUrl.push(url);
+                    });
 
                     loadjs.ready(lid, () =>
                     {
-                        let newOp = null;
+                        let newOps = res.newOps;
                         if (!err && res && res.opDocs)
                         {
                             res.opDocs.forEach((opDoc) =>
                             {
-                                newOp = opDoc;
                                 this._ops.push(opDoc);
                             });
                             if (gui.opDocs)
@@ -1514,7 +1532,7 @@ export default class ServerOps
                             }
                         }
                         incrementStartup();
-                        cb(newOp, res.newOpId);
+                        cb(newOps);
                     });
                     loadjs(missingOpUrl, lid);
                 }
@@ -1619,7 +1637,6 @@ export default class ServerOps
         if (err.msg == "ILLEGAL_OPS")
         {
             new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
-            console.log("illegal op", err);
         }
         else
         {

@@ -23,7 +23,6 @@ export function bytesArrToBase64(arr)
     return result;
 }
 
-
 export default class PatchSaveServer extends CABLES.EventTarget
 {
     constructor()
@@ -425,7 +424,6 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                     if (op.patchId && op.isInBlueprint2())
                     {
-                        console.log("subpatch in blueprint found!", op);
                         blueprintIds.push(op.patchId.get());
                     }
                 }

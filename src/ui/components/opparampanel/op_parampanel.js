@@ -644,8 +644,6 @@ class OpParampanel extends CABLES.EventTarget
             },
         });
 
-
-
         items.push({
             "title": "Show Op Serialized",
             func()
