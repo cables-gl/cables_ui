@@ -179,7 +179,7 @@ class ParamsListener extends CABLES.EventTarget
 
         if (!inputElements[0] || !inputElements[1] || !inputElements[2])
         {
-            console.log("NOPEY", "portval_" + idx + "_" + panelid, ele.byId("portval_" + idx + "_" + panelid));
+            // console.log("NOPEY", "portval_" + idx + "_" + panelid, ele.byId("portval_" + idx + "_" + panelid));
             return;
         }
 
