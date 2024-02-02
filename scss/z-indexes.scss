@@ -14,9 +14,9 @@ $zindex_highest :50;    // modal / splitter etc
         z-index: $zindex_lowest - 2;
     }
 
-    .menubar,#subpatch_nav,#bgpreviewButtonsContainer,#bgpreview
+    .menubar,#subpatch_nav,#bgpreviewButtonsContainer,#bgpreview,.cbl_iconbarContainer
     {
-        z-index: $zindex_highest;
+        z-index: $zindex_over;
     }
 }
 
