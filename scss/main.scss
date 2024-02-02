@@ -667,11 +667,9 @@ body
     #bgpreviewButtonsContainer
     {
         position:absolute;
-        z-index: $zindex_superlow;
     }
 
 
-    // #bgpreviewButtonsContainer:hover
     #bgpreviewButtons
     {
         display:block;
@@ -688,7 +686,6 @@ body
     {
         display:none;
         position:absolute;
-        z-index: $zindex_superlow;
         pointer-events: none;
         transform:scale(1,-1);
     }

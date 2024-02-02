@@ -99,10 +99,11 @@ export default class ServerOps
             {
                 if (err) this._log.error(err);
 
-                res.forEach((newOp) =>
-                {
-                    this._ops.push(newOp);
-                });
+                if (res)
+                    res.forEach((newOp) =>
+                    {
+                        this._ops.push(newOp);
+                    });
                 if (gui.opDocs)
                 {
                     gui.opDocs.addOpDocs(res);
@@ -623,12 +624,15 @@ export default class ServerOps
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
             let consequencesHtml = "";
-            if (res.consequences.length > 0) consequencesHtml += "<ul>";
-            res.consequences.forEach((consequence) =>
+            if (res.consequences.length > 0)
             {
-                consequencesHtml += "<li>" + consequence + "</li>";
-            });
-            if (consequencesHtml) consequencesHtml += "</ul>";
+                consequencesHtml += "<ul>";
+                res.consequences.forEach((consequence) =>
+                {
+                    consequencesHtml += "<li>" + consequence + "</li>";
+                });
+                consequencesHtml += "</ul>";
+            }
             ele.byId("opNameDialogConsequences").innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
 
             if (newOpName)
@@ -646,7 +650,7 @@ export default class ServerOps
                     errorsEle.classList.remove("hidden");
 
                     const versionSuggestions = errorsEle.querySelectorAll(".versionSuggestion");
-                    versionSuggestions.forEach((suggest) =>
+                    if (versionSuggestions) versionSuggestions.forEach((suggest) =>
                     {
                         if (suggest.dataset.shortName)
                         {
@@ -671,7 +675,7 @@ export default class ServerOps
             namespaceEle.innerHTML = "";
             const patchOpsNamespace = defaultops.getPatchOpsNamespace();
             if (!res.namespaces.includes(patchOpsNamespace)) res.namespaces.unshift(patchOpsNamespace);
-            res.namespaces.forEach((ns) =>
+            if (res.namespaces)res.namespaces.forEach((ns) =>
             {
                 const option = document.createElement("option");
                 option.value = ns;
@@ -1346,7 +1350,7 @@ export default class ServerOps
         let libsToLoad = [];
         let coreLibsToLoad = [];
 
-        ops.forEach((op) =>
+        if (ops)ops.forEach((op) =>
         {
             libsToLoad = libsToLoad.concat(this.getOpLibs(op, true));
             coreLibsToLoad = coreLibsToLoad.concat(this.getCoreLibs(op, true));

@@ -520,7 +520,6 @@ export default class GlOp extends CABLES.EventTarget
             {
                 this._hidePorts = true;
                 this._glTitle.scale = 4;
-                this._glTitle.setColor(gui.theme.colors_patch.patchComment);
             }
             this._updateColors();
         }
@@ -1288,7 +1287,8 @@ export default class GlOp extends CABLES.EventTarget
         if (this.opUiAttribs.comment_title)
         {
             if (this.opUiAttribs.hasOwnProperty("color") && this.opUiAttribs.color) this._glTitle.setColor(chroma.hex(this.opUiAttribs.color).gl());
-            else this._glTitle.setColor(1, 1, 1);
+            else // this._glTitle.setColor(1, 1, 1);
+                this._glTitle.setColor(gui.theme.colors_patch.patchComment);
         }
         else
         {
