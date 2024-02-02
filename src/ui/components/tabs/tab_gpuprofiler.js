@@ -83,8 +83,12 @@ export default class GpuProfiler
                 html += "<td><span>" + Math.round((arr[i].time || 0) * 1000) / 1000 + "ms</span></td>";
                 html += "<td><span>" + Math.round((arr[i].perc || 0) * 100) + "%</span></td>";
                 html += "<td><span class=\"nobreak\">" + arr[i].id + "</span></td>";
-                if (arr[i].shaderOp)html += "<td><a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"button\" >op</a></td>";
 
+                html += "<td>";
+                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].shaderOp + "');gui.patchView.centerSelectOp('" + arr[i].shaderOp + "');\" class=\"button\" >shader</a></td>";
+                if (arr[i].shaderOp)html += "<a onclick=\"gui.patchView.focusOpAnim('" + arr[i].meshOp + "');gui.patchView.centerSelectOp('" + arr[i].meshOp + "');\" class=\"button\" >mesh</a></td>";
+
+                html += "</td>";
                 html += "</tr>";
             }
             html += "</table>";
