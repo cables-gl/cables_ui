@@ -537,7 +537,6 @@ export default class GlSplineDrawer
     rebuild()
     {
         if (this._splines.length == 0) return;
-        // console.log("this._rebuildReason",this._rebuildReason)
         this._rebuildReason = "unknown";
         this._splineIndex = [];
         let count = 0;
