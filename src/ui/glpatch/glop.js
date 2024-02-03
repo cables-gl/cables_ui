@@ -425,6 +425,8 @@ export default class GlOp extends CABLES.EventTarget
                 });
             }
         }
+
+
         if (newAttribs.hasOwnProperty("hidden")) this.updateVisible();
         if (newAttribs.color) this._updateColors();
 
@@ -601,8 +603,8 @@ export default class GlOp extends CABLES.EventTarget
         let minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
-        if (this.opUiAttribs.height) this._height = this.opUiAttribs.height;
-        if (this.opUiAttribs.width) this._width = Math.max(minWidth, this.opUiAttribs.width);
+        if (this.opUiAttribs.height) this._height = this.glPatch.snapLines.snapY(this.opUiAttribs.height);
+        if (this.opUiAttribs.width) this._width = this.glPatch.snapLines.snapX(Math.max(minWidth, this.opUiAttribs.width));
 
         if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 

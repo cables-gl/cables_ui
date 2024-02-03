@@ -184,7 +184,7 @@ helperMeshes.drawAxisMarker = function (op, size)
         ]);
         // geom.resetTextureCoords();
 
-        helperMeshes.MARKER.mesh = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+        helperMeshes.MARKER.mesh = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
         helperMeshes.MARKER.mesh.setGeom(geom);
 
         const frag = "".endl() + "IN vec3 axisColor;".endl() + "void main()".endl() + "{".endl() + "    vec4 col=vec4(axisColor,1.0);".endl() + "    outColor = col;".endl() + "}";
@@ -248,7 +248,7 @@ helperMeshes.drawLineSourceDest = function (op, sourceX, sourceY, sourceZ, destX
         geom.setTexCoords(tc);
         geom.vertexNormals = verts.slice();
         helperMeshes.ARROW_SRC_DST.geom = geom;
-        helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+        helperMeshes.ARROW_SRC_DST.cube = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
     }
     else
     {
@@ -300,7 +300,7 @@ helperMeshes.drawArrow = function (op, sizeX, rotX, rotY, rotZ)
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
 
-            helperMeshes.ARROW.cube = new CGL.Mesh(cgl, geom, cgl.gl.LINES);
+            helperMeshes.ARROW.cube = new CGL.Mesh(cgl, geom, { "glPrimitive": cgl.gl.LINES });
         }
 
         bufferData();

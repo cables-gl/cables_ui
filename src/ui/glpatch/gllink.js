@@ -293,8 +293,6 @@ export default class GlLink
     {
         const sub = this._glPatch.getCurrentSubPatch();
 
-
-
         if (!this._glOpIn || !this._glOpOut)
         {
             return;
