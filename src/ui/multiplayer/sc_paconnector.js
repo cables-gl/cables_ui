@@ -1,3 +1,5 @@
+import { PatchConnectionReceiver } from "./patchconnection";
+
 export default class PacoConnector extends CABLES.EventTarget
 {
     constructor(connection, paco)
@@ -43,7 +45,7 @@ export default class PacoConnector extends CABLES.EventTarget
     {
         if (!this._receiver)
         {
-            this._receiver = new CABLES.PatchConnectionReceiver(
+            this._receiver = new PatchConnectionReceiver(
                 gui.corePatch(), {}, this
             );
         }
