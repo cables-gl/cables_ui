@@ -94,7 +94,7 @@ export default class OpDocs
     {
         const perf = CABLES.UI.uiProfiler.start("[opdocs] parse markdown");
         if (!mdText) { return ""; }
-        const s = mmd(mdText);
+        const s = marked(mdText);
         perf.finish();
         return s;
     }
