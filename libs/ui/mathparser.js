@@ -52,6 +52,6 @@ MathParser.prototype.parse = function(e){
         }
     }
     return o.eval(e);
-}
+};
 
 
