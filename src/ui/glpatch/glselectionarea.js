@@ -45,13 +45,25 @@ export default class GlSelectionArea
         return this._selectRect._w != 0 && this._selectRect._h != 0;
     }
 
+    setMousePos(x, y)
+    {
+
+    }
+
     hideArea()
     {
         this._selectRect.setSize(0, 0);
+
+        this._x += this._w;
+        this._y += this._h;
+        this._w = this._h = 0;
+        gui.emitEvent("hideSelectionArea");
     }
 
     setPos(x, y)
     {
+        this._x = x;
+        this._y = y;
         this._selectRect.setPosition(x, y, -0.1);
     }
 

@@ -552,17 +552,13 @@ export default class GlCable
             )
             {
                 // no self hovering/linking
-
-
                 return false;
             }
 
-            // this.setColor();
             this.updateColor();
             this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
 
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
-
 
             this.setCloseToMouse(true);
 

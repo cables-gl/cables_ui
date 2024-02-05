@@ -518,7 +518,6 @@ export default class GlPatch extends CABLES.EventTarget
         if (this._selectionArea.active)
         {
             this._selectionArea.hideArea();
-            gui.emitEvent("hideSelectionArea");
         }
         CABLES.UI.hideToolTip();
 
@@ -611,6 +610,8 @@ export default class GlPatch extends CABLES.EventTarget
             if (!this._canvasMouseDown) return;
         }
 
+
+
         this._canvasMouseDown = false;
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
@@ -624,11 +625,20 @@ export default class GlPatch extends CABLES.EventTarget
         // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if ((gui.patchView.getSelectedOps().length == 0) || (this.mouseState.draggingDistance < 5 && this._hoverOps.length == 0 && !this._hoverLink))
+        if (!this._selectionArea.active)
         {
-            this.unselectAll();
-            gui.showInfo(text.patch);
-            gui.patchView.showDefaultPanel();
+            console.log(this._hoverOps.length == 0, this._hoverLink);
+            if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
+            {
+                this.unselectAll();
+                gui.showInfo(text.patch);
+                gui.patchView.showDefaultPanel();
+            }
+        }
+
+        if (this._selectionArea.active)
+        {
+            this._selectionArea.hideArea();
         }
 
         if (CABLES.mouseButtonWheelDown)
@@ -1156,6 +1166,7 @@ export default class GlPatch extends CABLES.EventTarget
                 if (this._pressedShiftKey || this._pressedCtrlKey) this._selectionArea.previousOps = gui.patchView.getSelectedOps();
 
             this._rectInstancer.interactive = false;
+
             this._selectionArea.setPos(this._lastMouseX, this._lastMouseY, 1000);
             this._selectionArea.setSize((x - this._lastMouseX), (y - this._lastMouseY));
             this._selectOpsInRect(x, y, this._lastMouseX, this._lastMouseY);
@@ -1199,7 +1210,6 @@ export default class GlPatch extends CABLES.EventTarget
             {
                 this._selectionArea.previousOps = [];
                 this._selectionArea.hideArea();
-                gui.emitEvent("hideSelectionArea");
             }
             this._lastMouseX = x;
             this._lastMouseY = y;
