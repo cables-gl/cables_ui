@@ -564,7 +564,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                         if (!r || !r.success)
                         {
-                            let msg = "no response";
+                            let msg = err || "no response";
                             if (r && r.msg) msg = r.msg;
 
                             new ModalDialog({
