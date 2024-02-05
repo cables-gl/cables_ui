@@ -1,4 +1,5 @@
 import { CONSTANTS } from "../../../../cables/src/core/constants";
+import Logger from "../utils/logger";
 
 const PatchConnectionReceiver = function (patch, options, connector)
 {
