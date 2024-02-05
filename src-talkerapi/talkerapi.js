@@ -14,17 +14,16 @@ CABLESUILOADER.TalkerAPI = function (target)
         {
             if (this._callbacks[msg.data.cb]) this._callbacks[msg.data.cb](msg.data.error, msg.data.response);
         }
-        else if (this.hasEventListener(msg.data.cb))
+        else
         {
+            if (!this.hasEventListener(msg.data.cb))
+            {
+                console.error("TalkerAPI in ui has no listener for", msg.data.cmd);
+            }
             this.emitEvent(msg.data.cmd, msg.data.data, (error, r) =>
             {
                 this._talker.send("cables", { "cmd": "callback", "cb": msg.data.cb, "response": r, "error": error });
             });
-        }
-        else
-        {
-            console.error("TalkerAPI has no listener for", msg.data.cmd);
-            this._talker.send("cables", { "cmd": "callback", "cb": msg.data.cb, "response": null, "error": "no callback for " + msg.data.cmd });
         }
     };
 };
