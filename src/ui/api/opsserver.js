@@ -594,6 +594,65 @@ export default class ServerOps
         });
     }
 
+
+    testServer()
+    {
+        let opname = "Ops.Dev.TestOp";
+        let attachmentName = "att_test.js";
+
+        const cont = "// " + CABLES.uuid();
+
+        const atts = {};
+        atts[attachmentName] = cont;
+
+        CABLESUILOADER.talkerAPI.send(
+            "opUpdate",
+            {
+                "opname": opname,
+                "update": {
+                    "attachments": atts,
+                }
+                // "name": attachmentName,
+                // "content": cont,
+            },
+
+            // CABLESUILOADER.talkerAPI.send(
+            //     "opAttachmentAdd",
+            //     {
+            //         "opname": opname,
+            //         "name": attachmentName,
+            //         "content": "hellowelt"
+            //     },
+            (err) =>
+            {
+                if (err)
+                {
+                // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                    this.showApiError(err);
+                }
+
+                CABLESUILOADER.talkerAPI.send(
+                    "opAttachmentGet",
+                    {
+                        "opname": opname,
+                        "name": attachmentName,
+                    },
+                    (err2, res) =>
+                    {
+                        if (err2)
+                        {
+                            // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            this.showApiError(err);
+                            return;
+                        }
+
+                        if (res.content.trim() != cont.trim())console.error("response", res.content, cont);
+                        else console.log("ok");
+                    });
+            }
+        );
+    }
+
     /**
      * @param {string} options.title title of the dialog
      * @param {string} options.shortName shortname of the new op
@@ -1666,7 +1725,7 @@ export default class ServerOps
     showApiError(err)
     {
         CABLES.logStack();
-        if (err.msg == "ILLEGAL_OPS")
+        if (err && err.msg == "ILLEGAL_OPS")
         {
             new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
         }
