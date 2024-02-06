@@ -16,16 +16,6 @@ export default function extendCorePatch()
         return ops;
     };
 
-    CABLES.Patch.prototype.getOpsByRefId = function (refId)
-    {
-        const perf = CABLES.UI.uiProfiler.start("[corepatchetend] getOpsByRefId");
-        const refOps = [];
-        const ops = gui.corePatch().ops;
-        for (let i = 0; i < ops.length; i++)
-            if (ops[i].storage && ops[i].storage.ref == refId) refOps.push(ops[i]);
-        perf.finish();
-        return refOps;
-    };
 
 
     CABLES.Patch.prototype.getOpByRefId = function (refId, subPatchId)

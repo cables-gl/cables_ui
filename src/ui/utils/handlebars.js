@@ -95,12 +95,18 @@ export function initHandleBarsHelper()
         return "";
     });
 
+
     Handlebars.registerHelper("logdate", (str) =>
     {
         if (CABLES.UTILS.isNumeric(str) && String(str).length < 11) str *= 1000;
         let date = str;
         if (moment) date = moment(str).format("YYYY-MM-DD HH:mm");
         return new Handlebars.SafeString("<span title=\"" + date + "\">" + date + "</span>");
+    });
+
+    Handlebars.registerHelper("md", (str) =>
+    {
+        return new Handlebars.SafeString(marked(str));
     });
 
     Handlebars.registerHelper("displaydate", (str) =>

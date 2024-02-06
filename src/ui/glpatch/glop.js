@@ -44,6 +44,7 @@ export default class GlOp extends CABLES.EventTarget
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
+        this._glRectArea = null;
 
         this._titleExtPortTimeout = null;
         this._titleExtPortLastTime = null;
@@ -683,6 +684,8 @@ export default class GlOp extends CABLES.EventTarget
     dispose()
     {
         this._disposed = true;
+
+        if (this._glRectArea) this._glRectArea = this._glRectArea.dispose();
         if (this._glRectBg) this._glRectBg = this._glRectBg.dispose();
         if (this._glRectSelected) this._glRectSelected = this._glRectSelected.dispose();
         if (this._glTitle) this._glTitle = this._glTitle.dispose();
@@ -1119,7 +1122,7 @@ export default class GlOp extends CABLES.EventTarget
         if (!this._wasInCurrentSubpatch) return this._setVisible();
         let doUpdateSize = false;
 
-        if (this._displayType == this.DISPLAY_UI_AREA && !this._resizableArea)
+        if ((this.opUiAttribs.hasArea || this._displayType == this.DISPLAY_UI_AREA) && !this._resizableArea)
             this._resizableArea = new GlArea(this._instancer, this);
 
 
@@ -1155,6 +1158,13 @@ export default class GlOp extends CABLES.EventTarget
             });
             this.updateSize();
         }
+
+        if (this.opUiAttribs.hasArea && this._glRectArea)
+        {
+            this._glRectArea = this._instancer.createRect({ "parent": this._glRectBg, "draggable": false });
+            this._glRectArea.setColor(0, 0, 0, 0.15);
+        }
+
 
         if (this.opUiAttribs.resizable && !this._rectResize)
         {
@@ -1344,10 +1354,10 @@ export default class GlOp extends CABLES.EventTarget
 
 
 
+
         if (this._displayType === this.DISPLAY_UI_AREA)
         {
             this._glRectBg.setColor(0, 0, 0, 0.15);
-            // this._glTitle.setOpacity(0.8);
         }
         else
         if (!this._op.enabled)

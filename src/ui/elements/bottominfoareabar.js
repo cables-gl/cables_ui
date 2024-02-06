@@ -70,7 +70,7 @@ export default class BottomInfoAreaBar extends CABLES.EventTarget
 
     replaceShortcuts(txt)
     {
-        txt = mmd(txt || "");
+        txt = marked(txt || "");
 
         txt = txt.replaceAll("[DRAG_LMB]", "<span class=\"icon icon-mouse_lmb_drag\"></span>");
         txt = txt.replaceAll("[DRAG_RMB]", "<span class=\"icon icon-mouse_rmb_drag\"></span>");

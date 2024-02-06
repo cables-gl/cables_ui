@@ -5,6 +5,7 @@ import ScState from "./sc_state";
 import ScUiMultiplayer from "./sc_ui_multiplayer";
 import { notify, notifyError } from "../elements/notification";
 import Gui from "../gui";
+import { PatchConnectionSender } from "./patchconnection";
 
 export default class ScConnection extends CABLES.EventTarget
 {
@@ -31,7 +32,7 @@ export default class ScConnection extends CABLES.EventTarget
 
         this._paco = null;
         this._pacoEnabled = false;
-        this._patchConnection = new CABLES.PatchConnectionSender(gui.corePatch());
+        this._patchConnection = new PatchConnectionSender(gui.corePatch());
         this._pacoSynced = false;
         this._pacoChannel = null;
         this._pacoLoopReady = false;

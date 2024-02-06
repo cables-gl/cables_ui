@@ -564,7 +564,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
                         if (!r || !r.success)
                         {
-                            let msg = "no response";
+                            let msg = err || "no response";
                             if (r && r.msg) msg = r.msg;
 
                             new ModalDialog({
@@ -806,7 +806,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
 
 
-        const reader = new FileReader();
+        // const reader = new FileReader();
 
         const url = gui.canvasManager.currentCanvas().toDataURL();
 
