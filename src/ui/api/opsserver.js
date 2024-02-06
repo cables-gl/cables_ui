@@ -597,7 +597,7 @@ export default class ServerOps
 
     testServer()
     {
-        let opname = "Ops.Dev.TestOp";
+        let opname = "Ops.Patch.P" + gui._currentProject.shortId + ".test_" + CABLES.shortId();
         let attachmentName = "att_test.js";
 
         const cont = "// " + CABLES.uuid();
@@ -605,52 +605,66 @@ export default class ServerOps
         const atts = {};
         atts[attachmentName] = cont;
 
+        CABLES.shittyTest = CABLES.shittyTest || 1;
+
         CABLESUILOADER.talkerAPI.send(
-            "opUpdate",
+            "opCreate",
             {
                 "opname": opname,
-                "update": {
-                    "attachments": atts,
-                }
-                // "name": attachmentName,
-                // "content": cont,
             },
-
-            // CABLESUILOADER.talkerAPI.send(
-            //     "opAttachmentAdd",
-            //     {
-            //         "opname": opname,
-            //         "name": attachmentName,
-            //         "content": "hellowelt"
-            //     },
-            (err) =>
+            (err3, res) =>
             {
-                if (err)
-                {
-                // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                    this.showApiError(err);
-                }
-
+                console.log("opname", opname);
                 CABLESUILOADER.talkerAPI.send(
-                    "opAttachmentGet",
+                    "opUpdate",
                     {
                         "opname": opname,
-                        "name": attachmentName,
+                        "update": {
+                            "attachments": atts,
+                        }
+                        // "name": attachmentName,
+                        // "content": cont,
                     },
-                    (err2, res) =>
+
+                    // CABLESUILOADER.talkerAPI.send(
+                    //     "opAttachmentAdd",
+                    //     {
+                    //         "opname": opname,
+                    //         "name": attachmentName,
+                    //         "content": "hellowelt"
+                    //     },
+                    (err) =>
                     {
-                        if (err2)
+                        if (err)
                         {
-                            // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                             this.showApiError(err);
-                            return;
                         }
 
-                        if (res.content.trim() != cont.trim())console.error("response", res.content, cont);
-                        else console.log("ok");
+                        CABLESUILOADER.talkerAPI.send(
+                            "opAttachmentGet",
+                            {
+                                "opname": opname,
+                                "name": attachmentName,
+                            },
+                            (err2, res) =>
+                            {
+                                if (err2)
+                                {
+                                    // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                    this.showApiError(err);
+                                    return;
+                                }
+
+                                if (res.content.trim() != cont.trim())console.error("response", res.content, cont);
+                                else console.log("ok");
+
+                                CABLES.shittyTest++;
+                                if (CABLES.shittyTest < 30) setTimeout(() => { this.testServer(); }, 100);
+                                else CABLES.shittyTest = 0;
+                            });
                     });
-            }
-        );
+            });
     }
 
     /**
