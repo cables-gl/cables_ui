@@ -443,16 +443,12 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
 
 
 
-
-
-
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",
         {
             "opname": opId,
             "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
         },
-
         (err, res) =>
         {
             res = res || {};

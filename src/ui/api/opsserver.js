@@ -288,8 +288,37 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
-        const s = document.createElement("script");
-        s.onload = () =>
+
+
+
+
+        // const s = document.createElement("script");
+        // s.onload = () =>
+        // {
+        //     gui.corePatch().reloadOp(
+        //         name,
+        //         (num, newOps) =>
+        //         {
+        //             CABLES.UI.notify(num + " ops reloaded");
+
+        //             for (let i = 0; i < newOps.length; i++)
+        //             {
+        //                 newOps[i].checkLinkTimeWarnings();
+        //             }
+
+        //             if (newOps.length > 0) this.saveOpLayout(newOps[0]);
+        //             gui.emitEvent("opReloaded", name, newOps[0]);
+        //             if (next)next(newOps, refOldOp);
+        //         },
+        //         refOldOp
+        //     );
+        // };
+        // document.body.appendChild(s);
+        // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
+
+        const lid = "executeOp_" + name + CABLES.uuid();
+
+        loadjs.ready(lid, () =>
         {
             gui.corePatch().reloadOp(
                 name,
@@ -308,9 +337,8 @@ export default class ServerOps
                 },
                 refOldOp
             );
-        };
-        document.body.appendChild(s);
-        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
+        });
+        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name), lid);
     }
 
     clone(oldname, name, cb)
