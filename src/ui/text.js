@@ -54,7 +54,7 @@ const text =
     "dragfile": "## File \n\n* [DRAG_LMB] Drag this File to the patchfield to create op!",
 
     "editor": "## Code editor \n\nHere you can edit the code of your ops, write op descriptions, as well as edit objects / arrays.",
-    "patch": "## Patchfield \n\n|| `ESC` Add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+``-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
+    "patch": "## Patchfield \n\n|| `ESC` Add ops || [DRAG_RMB] Pan || [cmd_ctrl]`s` Save patch || `c` center all op || `f` flow visualization  || `+`/`-`[MW] Adjust zoom || [cmd_ctrl]`F` Search || [cmd_ctrl]`P` Command palette",
     "canvas": "## Canvas\n\n|| Visual output of your patch || [cmd_ctrl][enter] || Maximize canvas",
     "projectFiles": "## Project Files \n\nOverview over your uploaded files",
     "undevLogo": "## UNDEV \n\ncables is made by **UNDEV**, come visit us in our office in Berlin and have a coffee with us! ",

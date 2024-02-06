@@ -289,7 +289,6 @@ export default class ServerOps
                 delete oldOps[i].uiAttribs.uierrors;
 
         const s = document.createElement("script");
-        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
         s.onload = () =>
         {
             gui.corePatch().reloadOp(
@@ -311,6 +310,7 @@ export default class ServerOps
             );
         };
         document.body.appendChild(s);
+        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
     }
 
     clone(oldname, name, cb)

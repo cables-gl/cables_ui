@@ -592,7 +592,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.emitEvent("mousedown", e);
         this._rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
-        this._canvasMouseDownSelecting=this.mouseState.buttonStateForSelecting;
+        this._canvasMouseDownSelecting = this.mouseState.buttonStateForSelecting;
     }
 
     _onCanvasMouseUp(e)
@@ -625,7 +625,6 @@ export default class GlPatch extends CABLES.EventTarget
 
 
 
-
         if (!this._selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
@@ -643,7 +642,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.emitEvent("mouseup", e);
 
 
-        if(this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)this._canvasMouseDownSelecting=false;
+        if (this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting) this._canvasMouseDownSelecting = false;
 
         if (CABLES.mouseButtonWheelDown)
         {
