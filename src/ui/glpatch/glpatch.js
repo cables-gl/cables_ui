@@ -592,6 +592,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.emitEvent("mousedown", e);
         this._rectInstancer.mouseDown(e);
         this._canvasMouseDown = true;
+        this._canvasMouseDownSelecting=this.mouseState.buttonStateForSelecting;
     }
 
     _onCanvasMouseUp(e)
@@ -610,8 +611,6 @@ export default class GlPatch extends CABLES.EventTarget
             if (!this._canvasMouseDown) return;
         }
 
-
-
         this._canvasMouseDown = false;
         const perf = CABLES.UI.uiProfiler.start("[glpatch] _onCanvasMouseUp");
 
@@ -621,13 +620,14 @@ export default class GlPatch extends CABLES.EventTarget
         try { this._cgl.canvas.releasePointerCapture(e.pointerId); }
         catch (er) { this._log.log(er); }
 
-        this.emitEvent("mouseup", e);
         // gui.longPressConnector.longPressCancel();
         this._rectInstancer.interactive = true;
 
-        if (!this._selectionArea.active)
+
+
+
+        if (!this._selectionArea.active && this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)
         {
-            console.log(this._hoverOps.length == 0, this._hoverLink);
             if ((gui.patchView.getSelectedOps().length == 0) || (this._hoverOps.length == 0))
             {
                 this.unselectAll();
@@ -640,6 +640,10 @@ export default class GlPatch extends CABLES.EventTarget
         {
             this._selectionArea.hideArea();
         }
+        this.emitEvent("mouseup", e);
+
+
+        if(this._canvasMouseDownSelecting && !this.mouseState.buttonStateForSelecting)this._canvasMouseDownSelecting=false;
 
         if (CABLES.mouseButtonWheelDown)
         {
