@@ -23,7 +23,9 @@ export default class MouseState extends CABLES.EventTarget
         this._mouseDownY = 0;
 
         this._useDragCablesButton = MouseState.BUTTON_RIGHT;
-        this._useScrollButton = MouseState.BUTTON_RIGHT;
+        this.buttonForScrolling = MouseState.BUTTON_RIGHT;
+        this.buttonForSelecting = MouseState.BUTTON_LEFT;
+
 
         this._initUserPrefs();
 
@@ -78,9 +80,12 @@ export default class MouseState extends CABLES.EventTarget
     {
         const userSettingScrollButton = userSettings.get("patch_button_scroll");
 
-        if (userSettingScrollButton == 4) this._useScrollButton = MouseState.BUTTON_WHEEL;
-        if (userSettingScrollButton == 1) this._useScrollButton = MouseState.BUTTON_LEFT;
-        if (userSettingScrollButton == 2) this._useScrollButton = MouseState.BUTTON_RIGHT;
+        if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
+        if (userSettingScrollButton == 4) this.buttonForScrolling = MouseState.BUTTON_WHEEL;
+        if (userSettingScrollButton == 1) this.buttonForScrolling = MouseState.BUTTON_LEFT;
+        if (userSettingScrollButton == 1) this.buttonForScrolling = MouseState.BUTTON_LEFT;
+        if (userSettingScrollButton == 2) this.buttonForScrolling = MouseState.BUTTON_RIGHT;
+        if (userSettingScrollButton == 2) this.buttonForScrolling = MouseState.BUTTON_RIGHT;
     }
 
     _updateDebug()
@@ -215,8 +220,14 @@ export default class MouseState extends CABLES.EventTarget
 
     get buttonStateForScrolling()
     {
-        if (this._useScrollButton == this._useDragCablesButton && gui.patchView.patchRenderer.isDraggingPort()) return false;
-        return this._buttonStates[this._useScrollButton].down;
+        if (this.buttonForScrolling == this._useDragCablesButton && gui.patchView.patchRenderer.isDraggingPort()) return false;
+        if (this.buttonForScrolling == this._useDragCablesButton && gui.patchView.patchRenderer.isDraggingPort()) return false;
+        return this._buttonStates[this.buttonForScrolling].down;
+    }
+
+    get buttonStateForSelecting()
+    {
+        return this._buttonStates[this.buttonForSelecting].down;
     }
 
     get buttonStateForLinkDrag()
@@ -239,6 +250,8 @@ export default class MouseState extends CABLES.EventTarget
         return MouseState.BUTTON_LEFT;
     }
 }
+
+
 
 MouseState.BUTTON_NONE = 0;
 MouseState.BUTTON_LEFT = 1;
