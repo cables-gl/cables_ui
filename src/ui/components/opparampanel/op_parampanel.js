@@ -571,30 +571,30 @@ class OpParampanel extends CABLES.EventTarget
             });
 
 
-            if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
-                items.push({
-                    "title": "Create op from subpatch",
-                    func()
-                    {
-                        gui.serverOps.createBlueprint2Op(el.dataset.id);
-                        // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    },
-                });
+            // if (el.dataset.subpatchver == "2" && el.dataset.blueprintver != 2)
+            //     items.push({
+            //         "title": "Create op from subpatch",
+            //         func()
+            //         {
+            //             gui.serverOps.createBlueprint2Op(el.dataset.id);
+            //             // gui.patchView.focusSubpatchOp(el.dataset.id);
+            //         },
+            //     });
 
-            if (el.dataset.blueprintver == 2)
-            {
-                items.push({
-                    "title": "Save Blueprint Op",
-                    func()
-                    {
-                        const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
+            // if (el.dataset.blueprintver == 2)
+            // {
+            //     items.push({
+            //         "title": "Save Blueprint Op",
+            //         func()
+            //         {
+            //             const op = gui.patchView.getSubPatchOuterOp(el.dataset.id);
 
 
-                        gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
-                        // gui.patchView.focusSubpatchOp(el.dataset.id);
-                    },
-                });
-            }
+            //             gui.serverOps.updateBluePrint2Attachment(op, { "oldSubId": el.dataset.id });
+            //             // gui.patchView.focusSubpatchOp(el.dataset.id);
+            //         },
+            //     });
+            // }
         }
         CABLES.contextMenu.show({ items }, el);
     }

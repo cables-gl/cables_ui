@@ -117,29 +117,29 @@ export default class PatchPanel extends CABLES.EventTarget
             },
         });
 
-        if (item.subPatchVer == "2" && item.blueprintVer != 2)
-            items.push({
-                "title": "Create op from subpatch",
-                func()
-                {
-                    blueprintUtil.createBlueprint2Op(item.subPatchId);
-                    // gui.patchView.focusSubpatchOp(item.subPatchId);
-                },
-            });
+        // if (item.subPatchVer == "2" && item.blueprintVer != 2)
+        //     items.push({
+        //         "title": "Create op from subpatch",
+        //         func()
+        //         {
+        //             blueprintUtil.createBlueprint2Op(item.subPatchId);
+        //             // gui.patchView.focusSubpatchOp(item.subPatchId);
+        //         },
+        //     });
 
-        if (item.blueprintver == 2)
-        {
-            items.push({
-                "title": "Save Blueprint Op",
-                func()
-                {
-                    const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+        // if (item.blueprintver == 2)
+        // {
+        //     items.push({
+        //         "title": "Save Blueprint Op",
+        //         func()
+        //         {
+        //             const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
-                    blueprintUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
-                    // gui.patchView.focusSubpatchOp(item.subPatchId);
-                },
-            });
-        }
+        //             blueprintUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
+        //             // gui.patchView.focusSubpatchOp(item.subPatchId);
+        //         },
+        //     });
+        // }
         CABLES.contextMenu.show({ items }, el);
     }
 }
