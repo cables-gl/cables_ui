@@ -262,170 +262,180 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
         }
     }
 
-    let newselectedOpIds = [];
-
-    for (let i = 0; i < selectedOpIds.length; i++)
+    gui.serverOps.create(newOpname, () =>
     {
-        gui.patchView.selectOpId(selectedOpIds[i]);
+        let newselectedOpIds = [];
 
-        const op = gui.corePatch().getOpById(selectedOpIds[i]);
-        if (op.isSubPatchOp())
+        for (let i = 0; i < selectedOpIds.length; i++)
         {
-            const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
-            for (let j = 0; j < newops.length; j++)
-                newselectedOpIds.push(newops[j].id);
-        }
-    }
+            gui.patchView.selectOpId(selectedOpIds[i]);
 
-
-    gui.patchView.createSubPatchFromSelection(2,
-        (patchId, OpTempSubpatch) =>
-        {
-            const portJson = { "ports": [] };
-
-            const oldLinks = [];
-
-            // find ops that are crosslinked...
-            // todo: relink somehow ?
-            const ops = gui.corePatch().getSubPatchOps(patchId);
-
-            for (let i = 0; i < ops.length; i++)
+            const op = gui.corePatch().getOpById(selectedOpIds[i]);
+            if (op.isSubPatchOp())
             {
-                const op = ops[i];
-                for (let j = 0; j < op.portsIn.length; j++)
-                {
-                    if (op.portsIn[j].isLinked())
-                    {
-                        const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
-                        if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                        {
-                            const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
-                            portJson.ports.push(pJson);
-                            op.portsIn[j].removeLinks();
-                            op.setUiAttrib({ "tempSubOldOpId": op.id });
-                            oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsIn[j].name });
-                        }
-                    }
-                }
-                for (let j = 0; j < op.portsOut.length; j++)
-                {
-                    if (op.portsOut[j].isLinked())
-                    {
-                        const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
-                        if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
-                        {
-                            const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
-                            portJson.ports.push(pJson);
-                            op.portsOut[j].removeLinks();
-                            op.setUiAttrib({ "tempSubOldOpId": op.id });
-                            oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsOut[j].name });
-                        }
-                    }
-                }
+                const newops = gui.corePatch().getSubPatchOps(op.patchId.get(), false);
+                for (let j = 0; j < newops.length; j++)
+                    newselectedOpIds.push(newops[j].id);
             }
+        }
 
 
-            loadingModal.setTask("Creating blueprint op");
-
-            const bpOptions = { "uiAttribs": {
-                "translate": { "x": origOpsBounds.minx, "y": origOpsBounds.miny }
-            } };
-            blueprintUtil.createBlueprint2Op(newOpname, OpTempSubpatch, bpOptions, () =>
+        gui.patchView.createSubPatchFromSelection(2,
+            (patchId, OpTempSubpatch) =>
             {
-                const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
+                const portJson = { "ports": [] };
 
-                gui.corePatch().deleteOp(OpTempSubpatch.id);
-                gui.patchView.setCurrentSubPatch(currentSubpatch);
+                const oldLinks = [];
 
-                loadingModal.setTask("Creating ports...");
+                // find ops that are crosslinked...
+                // todo: relink somehow ?
+                const ops = gui.corePatch().getSubPatchOps(patchId);
 
-                CABLESUILOADER.talkerAPI.send(
-                    "opAttachmentSave",
+                for (let i = 0; i < ops.length; i++)
+                {
+                    const op = ops[i];
+                    for (let j = 0; j < op.portsIn.length; j++)
                     {
-                        "opname": newOpname,
-                        "name": "att_inc_gen_ports.js",
-                        "content": src,
-                    },
-                    (err2) =>
-                    {
-                        if (err2)
+                        if (op.portsIn[j].isLinked())
                         {
-                            // new ModalError({ "title": "opAttachmentSave Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
-                            this.showApiError(err2);
-                            return;
+                            const p2 = op.portsIn[j].links[0].getOtherPort(op.portsIn[j]);
+                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
+                            {
+                                const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsIn[j]);
+                                portJson.ports.push(pJson);
+                                op.portsIn[j].removeLinks();
+                                op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsIn[j].name });
+                            }
                         }
-
-                        loadingModal.setTask("Saving ports...");
-
-                        CABLESUILOADER.talkerAPI.send(
-                            "opAttachmentSave",
+                    }
+                    for (let j = 0; j < op.portsOut.length; j++)
+                    {
+                        if (op.portsOut[j].isLinked())
+                        {
+                            const p2 = op.portsOut[j].links[0].getOtherPort(op.portsOut[j]);
+                            if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                "opname": newOpname,
-                                "name": "att_ports.json",
-                                "content": JSON.stringify(portJson),
-                            },
-                            (err) =>
+                                const pJson = blueprintUtil.createBlueprintPortJsonElement(op.portsOut[j]);
+                                portJson.ports.push(pJson);
+                                op.portsOut[j].removeLinks();
+                                op.setUiAttrib({ "tempSubOldOpId": op.id });
+                                oldLinks.push({ "pJson": pJson, "port": p2, "tempSubOldOpId": op.id, "origPortName": op.portsOut[j].name });
+                            }
+                        }
+                    }
+                }
+
+                // todo: createSubPatchFromSelection should provide the cross links...
+
+                loadingModal.setTask("Creating blueprint op");
+
+                gui.patchView.addOp(newOpname,
+                    {
+                        "uiAttribs": {
+                            "translate": { "x": origOpsBounds.minx, "y": origOpsBounds.miny }
+                        },
+                        "onOpAdd": (newOp) =>
+                        {
+                            blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                             {
-                                if (err)
-                                {
-                                    // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                                    this.showApiError(err);
-                                    return;
-                                }
+                                const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
 
-                                loadingModal.setTask("Execute code");
+                                gui.corePatch().deleteOp(OpTempSubpatch.id);
+                                gui.patchView.setCurrentSubPatch(currentSubpatch);
 
+                                loadingModal.setTask("Creating ports...");
 
-
-                                gui.serverOps.execute(newOpname, (newOps) =>
-                                {
-                                    const newOp = newOps[0];
-                                    const subPatchId = newOp.patchId.get();
-
-                                    // relink outside ports.......
-                                    for (let i = 0; i < oldLinks.length; i++)
-                                        newOp.patch.link(newOp, oldLinks[i].pJson.id, oldLinks[i].port.op, oldLinks[i].port.name);
-
-
-                                    // relink inside ports....
-                                    const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
-                                    for (let j = 0; j < oldLinks.length; j++)
-                                        for (let i = 0; i < subOps.length; i++)
+                                CABLESUILOADER.talkerAPI.send(
+                                    "opAttachmentSave",
+                                    {
+                                        "opname": newOpname,
+                                        "name": "att_inc_gen_ports.js",
+                                        "content": src,
+                                    },
+                                    (err2) =>
+                                    {
+                                        if (err2)
                                         {
-                                            if (subOps[i].uiAttribs.tempSubOldOpId == oldLinks[j].tempSubOldOpId)
-                                            {
-                                                const op = subOps[i];
-                                                op.setUiAttrib({ "tempSubOldOpId": null });
-
-                                                let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
-
-                                                if (!l)
-                                                {
-                                                    let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                    newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
-                                                }
-                                            }
+                                            // new ModalError({ "title": "opAttachmentSave Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err2, false, 4) + "</pre>" });
+                                            this.showApiError(err2);
+                                            return;
                                         }
 
-                                    if (selectedOpIds.length == 0) newOp.setPos(0, 0);
-                                    else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+                                        loadingModal.setTask("Saving ports...");
 
-                                    gui.patchView.testCollision(newOp);
+                                        CABLESUILOADER.talkerAPI.send(
+                                            "opAttachmentSave",
+                                            {
+                                                "opname": newOpname,
+                                                "name": "att_ports.json",
+                                                "content": JSON.stringify(portJson),
+                                            },
+                                            (err) =>
+                                            {
+                                                if (err)
+                                                {
+                                                    // new ModalError({ "title": "opAttachmentSave2 Error/Invalid response from server", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                                    this.showApiError(err);
+                                                    return;
+                                                }
 
-                                    gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+                                                loadingModal.setTask("Execute code");
 
-                                    gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
 
-                                    gui.endModalLoading();
-                                });
+
+                                                gui.serverOps.execute(newOpname, (newOps) =>
+                                                {
+                                                    newOp = newOps[0];
+                                                    const subPatchId = newOp.patchId.get();
+
+                                                    // relink outside ports.......
+                                                    for (let i = 0; i < oldLinks.length; i++)
+                                                        newOp.patch.link(newOp, oldLinks[i].pJson.id, oldLinks[i].port.op, oldLinks[i].port.name);
+
+
+                                                    // relink inside ports....
+                                                    const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
+                                                    for (let j = 0; j < oldLinks.length; j++)
+                                                        for (let i = 0; i < subOps.length; i++)
+                                                        {
+                                                            if (subOps[i].uiAttribs.tempSubOldOpId == oldLinks[j].tempSubOldOpId)
+                                                            {
+                                                                const op = subOps[i];
+                                                                op.setUiAttrib({ "tempSubOldOpId": null });
+
+                                                                let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
+                                                                const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
+
+                                                                if (!l)
+                                                                {
+                                                                    let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
+                                                                    newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
+                                                                }
+                                                            }
+                                                        }
+
+                                                    if (selectedOpIds.length == 0) newOp.setPos(0, 0);
+                                                    else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
+
+                                                    gui.patchView.testCollision(newOp);
+
+                                                    gui.patchView.patchRenderer.focusOpAnim(newOp.id);
+
+                                                    gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
+
+                                                    gui.endModalLoading();
+                                                });
+                                            });
+                                    }
+                                );
                             });
-                    }
+                        }
+                    },
                 );
             },
-            );
-        },
-        { "translate": { "x": -999999, "y": -999999 } });
+            { "translate": { "x": -999999, "y": -999999 } });
+    }, { "noLoadOp": true });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)

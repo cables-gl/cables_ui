@@ -703,14 +703,13 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
 
 
-blueprintUtil.createBlueprint2Op = (newOpName, oldSubpatchOp, options={},next=null) =>
+blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
 {
     const loadingModal = gui.startModalLoading("save op code");
 
-
     CABLESUILOADER.talkerAPI.send("opUpdate",
         {
-            "opname": newOpName,
+            "opname": newOp.objName,
             "update": {
                 "code": srcBluePrintOp,
                 "coreLibs": ["subpatchop"]
@@ -727,14 +726,13 @@ blueprintUtil.createBlueprint2Op = (newOpName, oldSubpatchOp, options={},next=nu
             loadingModal.setTask("update bp2 attachment");
 
             if (oldSubpatchOp && newOp)
-                options.uiAttribs=
-                    {
-                        "translate":
+                newOp.setUiAttrib(
+                    { "translate":
                         {
                             "x": oldSubpatchOp.uiAttribs.translate.x,
                             "y": oldSubpatchOp.uiAttribs.translate.y + gluiconfig.newOpDistanceY
                         }
-                    };
+                    });
 
             blueprintUtil.updateBluePrint2Attachment(
                 newOp,
@@ -744,10 +742,9 @@ blueprintUtil.createBlueprint2Op = (newOpName, oldSubpatchOp, options={},next=nu
                     "replaceIds": true,
                     "next": () =>
                     {
-                        gui.serverOps.execute(newOpName,
+                        gui.serverOps.execute(newOp.objName,
                             (newOps) =>
                             {
-                                if(options.uiAttribs) newOps[0].setUiAttrib(options.uiAttribs);
                                 gui.endModalLoading();
 
                                 if (next)next();
