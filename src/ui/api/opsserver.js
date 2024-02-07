@@ -130,7 +130,7 @@ export default class ServerOps
     }
 
 
-    create(name, cb, openEditor, options={})
+    create(name, cb, openEditor, options = {})
     {
         const loadingModal = gui.startModalLoading("Creating op...23");
 
@@ -139,7 +139,7 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send(
             "opCreate",
             {
-                "opname": name,
+                "opname": name
             },
             (err, res) =>
             {
@@ -156,8 +156,6 @@ export default class ServerOps
 
                     function done()
                     {
-                        gui.serverOps.execute(name);
-                        gui.opSelect().reload();
                         gui.endModalLoading();
                         if (cb)cb();
                     }
@@ -171,6 +169,8 @@ export default class ServerOps
                                 gui.maintabPanel.show(true);
                                 this.edit(name, false, null, true);
                             }
+                            gui.serverOps.execute(name);
+                            gui.opSelect().reload();
                             done();
                         });
                     }
@@ -287,6 +287,10 @@ export default class ServerOps
 
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
         }
+
+
+        console.warn("execute", name);
+        // CABLES.logStack("execute " + name);
 
         let oldOps = null;
         if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
