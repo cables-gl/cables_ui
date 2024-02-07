@@ -378,14 +378,44 @@ export default class ServerOps
 
                     return;
                 }
-                this.loadOp(res, () =>
+
+                const finished = () =>
                 {
-                    this.edit(name);
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    gui.endModalLoading();
-                    if (cb)cb();
-                });
+                    this.loadOp(res, () =>
+                    {
+                        this.edit(name);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        gui.endModalLoading();
+                        if (cb)cb();
+                    });
+                };
+
+                if (res && res.attachments && res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]) // subpatch op
+                {
+                    const sub = JSON.parse(res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]);
+
+                    CABLES.Patch.replaceOpIds(sub,
+                        {
+                            "oldIdAsRef": true
+                        });
+
+                    CABLESUILOADER.talkerAPI.send(
+                        "opAttachmentSave",
+                        {
+                            "opname": name,
+                            "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
+                            "content": JSON.stringify(sub),
+                        },
+                        (errr, re) =>
+                        {
+                            finished();
+                        });
+                }
+                else
+                {
+                    finished();
+                }
             },
         );
     }
@@ -1603,6 +1633,7 @@ export default class ServerOps
 
     loadOp(op, cb)
     {
+        console.warn("loadop", op.objName);
         if (op)
         {
             const options = {
