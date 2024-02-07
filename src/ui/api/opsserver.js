@@ -288,9 +288,37 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
-        const s = document.createElement("script");
-        s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
-        s.onload = () =>
+
+
+
+
+        // const s = document.createElement("script");
+        // s.onload = () =>
+        // {
+        //     gui.corePatch().reloadOp(
+        //         name,
+        //         (num, newOps) =>
+        //         {
+        //             CABLES.UI.notify(num + " ops reloaded");
+
+        //             for (let i = 0; i < newOps.length; i++)
+        //             {
+        //                 newOps[i].checkLinkTimeWarnings();
+        //             }
+
+        //             if (newOps.length > 0) this.saveOpLayout(newOps[0]);
+        //             gui.emitEvent("opReloaded", name, newOps[0]);
+        //             if (next)next(newOps, refOldOp);
+        //         },
+        //         refOldOp
+        //     );
+        // };
+        // document.body.appendChild(s);
+        // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
+
+        const lid = "executeOp_" + name + CABLES.uuid();
+
+        loadjs.ready(lid, () =>
         {
             gui.corePatch().reloadOp(
                 name,
@@ -309,8 +337,8 @@ export default class ServerOps
                 },
                 refOldOp
             );
-        };
-        document.body.appendChild(s);
+        });
+        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name), lid);
     }
 
     clone(oldname, name, cb)
@@ -564,6 +592,79 @@ export default class ServerOps
                 );
             }
         });
+    }
+
+
+    testServer()
+    {
+        let opname = "Ops.Patch.P" + gui._currentProject.shortId + ".test_" + CABLES.shortId();
+        let attachmentName = "att_test.js";
+
+        const cont = "// " + CABLES.uuid();
+
+        const atts = {};
+        atts[attachmentName] = cont;
+
+        CABLES.shittyTest = CABLES.shittyTest || 1;
+
+        CABLESUILOADER.talkerAPI.send(
+            "opCreate",
+            {
+                "opname": opname,
+            },
+            (err3, res) =>
+            {
+                console.log("opname", opname);
+                CABLESUILOADER.talkerAPI.send(
+                    "opUpdate",
+                    {
+                        "opname": opname,
+                        "update": {
+                            "attachments": atts,
+                        }
+                        // "name": attachmentName,
+                        // "content": cont,
+                    },
+
+                    // CABLESUILOADER.talkerAPI.send(
+                    //     "opAttachmentAdd",
+                    //     {
+                    //         "opname": opname,
+                    //         "name": attachmentName,
+                    //         "content": "hellowelt"
+                    //     },
+                    (err) =>
+                    {
+                        if (err)
+                        {
+                            // new ModalError({ "title": "Error/Invalid response from server 4", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                            this.showApiError(err);
+                        }
+
+                        CABLESUILOADER.talkerAPI.send(
+                            "opAttachmentGet",
+                            {
+                                "opname": opname,
+                                "name": attachmentName,
+                            },
+                            (err2, res) =>
+                            {
+                                if (err2)
+                                {
+                                    // new ModalError({ "title": "Error/Invalid response from server 7", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
+                                    this.showApiError(err);
+                                    return;
+                                }
+
+                                if (res.content.trim() != cont.trim())console.error("response", res.content, cont);
+                                else console.log("ok");
+
+                                CABLES.shittyTest++;
+                                if (CABLES.shittyTest < 30) setTimeout(() => { this.testServer(); }, 100);
+                                else CABLES.shittyTest = 0;
+                            });
+                    });
+            });
     }
 
     /**
@@ -1638,7 +1739,7 @@ export default class ServerOps
     showApiError(err)
     {
         CABLES.logStack();
-        if (err.msg == "ILLEGAL_OPS")
+        if (err && err.msg == "ILLEGAL_OPS")
         {
             new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "<b>" + err.data.msg + "</b><br/><br/>SubPatchOp can not contain this op because of their namespaces. <br/>Try to move or create the op outside of the subPatch." });
         }
