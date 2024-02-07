@@ -234,10 +234,8 @@ export default class GlOp extends CABLES.EventTarget
 
         if (gui.patchView.getSelectedOps().length == 1)
         {
-            // this._glTitle.setOpacity(0.5);
             this._glRectBg.setOpacity(0.8, false);
             this._preDragPosZ = this._glRectBg.z;
-            // this._posZ = -0.5;
             this.updatePosition();
         }
     }
@@ -883,6 +881,7 @@ export default class GlOp extends CABLES.EventTarget
         if (!this.opUiAttribs.translate) return;
         if (!this._visible) return;
 
+
         this.opUiAttribs.translate.x = this.opUiAttribs.translate.x || 1;
         this.opUiAttribs.translate.y = this.opUiAttribs.translate.y || 1;
         this._glRectBg.setPosition(this.opUiAttribs.translate.x, this.opUiAttribs.translate.y, this.getPosZ());
@@ -894,6 +893,14 @@ export default class GlOp extends CABLES.EventTarget
         this._updateCommentPosition();
         this._updateIndicators();
         // for (const i in this._links) if (this._links[i]) this._links[i].update();
+
+
+        if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
+        {
+            this._oldPosx = this.opUiAttribs.translate.x;
+            this._oldPosy = this.opUiAttribs.translate.y;
+            this.emitEvent("move");
+        }
     }
 
     getUiAttribs()
