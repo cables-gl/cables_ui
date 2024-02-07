@@ -734,7 +734,9 @@ export default class ServerOps
                 });
                 consequencesHtml += "</ul>";
             }
-            ele.byId("opNameDialogConsequences").innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
+
+            const eleCons = ele.byId("opNameDialogConsequences");
+            if (eleCons) eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
 
             if (newOpName)
             {
