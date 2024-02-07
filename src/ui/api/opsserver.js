@@ -130,7 +130,7 @@ export default class ServerOps
     }
 
 
-    create(name, cb, openEditor)
+    create(name, cb, openEditor, options={})
     {
         const loadingModal = gui.startModalLoading("Creating op...23");
 
@@ -153,18 +153,28 @@ export default class ServerOps
                 else
                 {
                     loadingModal.setTask("Loading Op");
-                    this.loadOp(res, () =>
+
+                    function done()
                     {
-                        if (openEditor)
-                        {
-                            gui.maintabPanel.show(true);
-                            this.edit(name, false, null, true);
-                        }
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
                         gui.endModalLoading();
                         if (cb)cb();
-                    });
+                    }
+
+                    if (!options.noLoadOp)
+                    {
+                        this.loadOp(res, () =>
+                        {
+                            if (openEditor)
+                            {
+                                gui.maintabPanel.show(true);
+                                this.edit(name, false, null, true);
+                            }
+                            done();
+                        });
+                    }
+                    else done();
                 }
             }
         );

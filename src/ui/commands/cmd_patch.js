@@ -435,7 +435,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                 );
             },
             { "translate": { "x": -999999, "y": -999999 } });
-    });
+    }, { "noLoadOp": true });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)
