@@ -11,7 +11,6 @@ import ManageOp from "../components/tabs/tab_manage_op";
 import blueprintUtil from "../blueprint_util";
 import ModalError from "../dialogs/modalerror";
 import defaultops from "../defaultops";
-import defaultOps from "../defaultops";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -326,6 +325,8 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                     }
                 }
 
+                console.log(oldLinks);
+
                 loadingModal.setTask("Creating blueprint op");
 
                 gui.patchView.addOp(newOpname,
@@ -374,29 +375,39 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             const subPatchId = newOp.patchId.get();
 
                                             // relink outside ports.......
-                                            for (let i = 0; i < oldLinks.length; i++)
-                                                newOp.patch.link(newOp, oldLinks[i].pJson.id, oldLinks[i].port.op, oldLinks[i].port.name);
+                                            // for (let i = 0; i < oldLinks.length; i++)
 
                                             // relink inside ports....
                                             const subOps = gui.corePatch().getSubPatchOps(subPatchId, false);
                                             for (let j = 0; j < oldLinks.length; j++)
+                                            {
+                                                // outer linking
+                                                const oldLink = oldLinks[j];
+                                                newOp.patch.link(newOp, oldLink.pJson.id, oldLink.port.op, oldLink.port.name);
+
                                                 for (let i = 0; i < subOps.length; i++)
                                                 {
-                                                    if (subOps[i].uiAttribs.tempSubOldOpId == oldLinks[j].tempSubOldOpId)
+                                                    if (subOps[i].uiAttribs.tempSubOldOpId == oldLink.tempSubOldOpId)
                                                     {
                                                         const op = subOps[i];
-                                                        op.setUiAttrib({ "tempSubOldOpId": null });
 
+
+
+                                                        console.log("innerOut_" + oldLink.pJson.id);
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
-                                                        const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
+                                                        const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
 
-                                                        if (!l)
+                                                        // if (!l)
                                                         {
+                                                            console.log("innerIn_" + oldLink.pJson.id);
                                                             let patchOutputOP = gui.corePatch().getSubPatch2InnerOutputOp(subPatchId);
-                                                            newOp.patch.link(patchOutputOP, "innerIn_" + oldLinks[j].pJson.id, subOps[i], oldLinks[j].origPortName);
+                                                            newOp.patch.link(patchOutputOP, "innerIn_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
                                                         }
                                                     }
                                                 }
+                                            }
+
+                                            for (let i = 0; i < subOps.length; i++) subOps[i].setUiAttrib({ "tempSubOldOpId": null });
 
                                             if (selectedOpIds.length == 0) newOp.setPos(0, 0);
                                             else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
