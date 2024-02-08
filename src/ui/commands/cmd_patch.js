@@ -201,7 +201,6 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         }
     }
 
-    console.log("suggestedNamespace", suggestedNamespace);
     const dialogOptions = {
         "title": "Create operator",
         "shortName": blueprintUtil.getAutoName(true),
@@ -429,13 +428,13 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             });
                                     }
                                 );
-                            });
+                            }, { "doNotExecute": true });
                         }
                     },
                 );
             },
             { "translate": { "x": -999999, "y": -999999 } });
-    });
+    }, false, { "noLoadOp": true });
 };
 
 CABLES_CMD_PATCH.createSubPatchFromSelection = function (version)

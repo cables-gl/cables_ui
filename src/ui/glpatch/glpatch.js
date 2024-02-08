@@ -846,6 +846,7 @@ export default class GlPatch extends CABLES.EventTarget
         else
         {
             if (this._cursor == CABLES.GLGUI.CURSOR_HAND) this._cgl.setCursor("move");
+            else if (this._cursor == CABLES.GLGUI.CURSOR_POINTER) this._cgl.setCursor("pointer");
             else this._cgl.setCursor("auto");
         }
 
@@ -1152,6 +1153,10 @@ export default class GlPatch extends CABLES.EventTarget
         if (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering()) allowSelectionArea = false;
         if (this._selectionArea.h == 0 && this._hoverOps.length > 0) allowSelectionArea = false;
         if (this._lastButton == 1 && this.mouseState.buttonLeft) this._selectionArea.hideArea();
+
+        if (this._hoverOps.length > 0
+    || (this._cablesHoverButtonRect && this._cablesHoverButtonRect.isHovering())) this.setCursor(CABLES.GLGUI.CURSOR_POINTER);
+        else this.setCursor(CABLES.GLGUI.CURSOR_NORMAL);
 
 
         if (gui.longPressConnector.isActive())

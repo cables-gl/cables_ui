@@ -130,7 +130,7 @@ export default class ServerOps
     }
 
 
-    create(name, cb, openEditor)
+    create(name, cb, openEditor, options = {})
     {
         const loadingModal = gui.startModalLoading("Creating op...23");
 
@@ -139,7 +139,7 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send(
             "opCreate",
             {
-                "opname": name,
+                "opname": name
             },
             (err, res) =>
             {
@@ -153,18 +153,28 @@ export default class ServerOps
                 else
                 {
                     loadingModal.setTask("Loading Op");
-                    this.loadOp(res, () =>
+
+                    function done()
                     {
-                        if (openEditor)
-                        {
-                            gui.maintabPanel.show(true);
-                            this.edit(name, false, null, true);
-                        }
-                        gui.serverOps.execute(name);
-                        gui.opSelect().reload();
                         gui.endModalLoading();
                         if (cb)cb();
-                    });
+                    }
+
+                    if (!options.noLoadOp)
+                    {
+                        this.loadOp(res, () =>
+                        {
+                            if (openEditor)
+                            {
+                                gui.maintabPanel.show(true);
+                                this.edit(name, false, null, true);
+                            }
+                            gui.serverOps.execute(name);
+                            gui.opSelect().reload();
+                            done();
+                        });
+                    }
+                    else done();
                 }
             }
         );
@@ -278,6 +288,10 @@ export default class ServerOps
             CABLES.UI.MODAL.show(html, { "title": "need to reload page" });
         }
 
+
+        console.warn("execute", name);
+        // CABLES.logStack("execute " + name);
+
         let oldOps = null;
         if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
         else oldOps = gui.corePatch().getOpsByOpId(name);
@@ -364,14 +378,44 @@ export default class ServerOps
 
                     return;
                 }
-                this.loadOp(res, () =>
+
+                const finished = () =>
                 {
-                    this.edit(name);
-                    gui.serverOps.execute(name);
-                    gui.opSelect().reload();
-                    gui.endModalLoading();
-                    if (cb)cb();
-                });
+                    this.loadOp(res, () =>
+                    {
+                        this.edit(name);
+                        gui.serverOps.execute(name);
+                        gui.opSelect().reload();
+                        gui.endModalLoading();
+                        if (cb)cb();
+                    });
+                };
+
+                if (res && res.attachments && res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]) // subpatch op
+                {
+                    const sub = JSON.parse(res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]);
+
+                    CABLES.Patch.replaceOpIds(sub,
+                        {
+                            "oldIdAsRef": true
+                        });
+
+                    CABLESUILOADER.talkerAPI.send(
+                        "opAttachmentSave",
+                        {
+                            "opname": name,
+                            "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
+                            "content": JSON.stringify(sub),
+                        },
+                        (errr, re) =>
+                        {
+                            finished();
+                        });
+                }
+                else
+                {
+                    finished();
+                }
             },
         );
     }
@@ -734,7 +778,9 @@ export default class ServerOps
                 });
                 consequencesHtml += "</ul>";
             }
-            ele.byId("opNameDialogConsequences").innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
+
+            const eleCons = ele.byId("opNameDialogConsequences");
+            if (eleCons) eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
 
             if (newOpName)
             {
@@ -1587,6 +1633,7 @@ export default class ServerOps
 
     loadOp(op, cb)
     {
+        console.warn("loadop", op.objName);
         if (op)
         {
             const options = {

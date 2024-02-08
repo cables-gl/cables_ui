@@ -12,7 +12,7 @@ export default class GlLink
     constructor(glpatch,
         link, id, opIdInput, opIdOutput,
         portNameIn,
-        portNameOut, portIdInput, portIdOutput, type, visible = true, subpatch)
+        portNameOut, portIdInput, portIdOutput, type, visible = true, subpatch = 0)
     {
         this._log = new Logger("gllink");
         this._id = id;
@@ -515,6 +515,7 @@ export default class GlLink
             if (this._glOpIn)
             {
                 this._glOpIn.addLink(this);
+                this._glOpIn.on("move", () => { this.update(); });
             }
         }
 
@@ -524,6 +525,7 @@ export default class GlLink
             if (this._glOpOut)
             {
                 this._glOpOut.addLink(this);
+                this._glOpOut.on("move", () => { this.update(); });
             }
         }
 

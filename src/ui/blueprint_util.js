@@ -703,7 +703,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
 
 
-blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
+blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
 {
     const loadingModal = gui.startModalLoading("save op code");
 
@@ -742,13 +742,18 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next) =>
                     "replaceIds": true,
                     "next": () =>
                     {
-                        gui.serverOps.execute(newOp.objName,
-                            (newOps) =>
-                            {
-                                gui.endModalLoading();
-
-                                if (next)next();
-                            });
+                        if (!options.doNotExecute)
+                            gui.serverOps.execute(newOp.objName,
+                                (newOps) =>
+                                {
+                                    gui.endModalLoading();
+                                    if (next)next();
+                                });
+                        else
+                        {
+                            gui.endModalLoading();
+                            if (next)next();
+                        }
                     }
                 });
         });

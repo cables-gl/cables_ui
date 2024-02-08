@@ -75,6 +75,7 @@ window.ele = ele;
 
 CABLES.GLGUI.CURSOR_NORMAL = 0;
 CABLES.GLGUI.CURSOR_HAND = 1;
+CABLES.GLGUI.CURSOR_POINTER = 2;
 
 // expose global classes
 CABLES.GLGUI.GlUiCanvas = GlUiCanvas;
