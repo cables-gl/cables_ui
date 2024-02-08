@@ -156,6 +156,7 @@ export default class ServerOps
 
                     function done()
                     {
+                        gui.opSelect().reload();
                         gui.endModalLoading();
                         if (cb)cb();
                     }
@@ -170,7 +171,6 @@ export default class ServerOps
                                 this.edit(name, false, null, true);
                             }
                             gui.serverOps.execute(name);
-                            gui.opSelect().reload();
                             done();
                         });
                     }
