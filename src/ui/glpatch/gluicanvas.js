@@ -209,6 +209,7 @@ export default class GlUiCanvas
 
     render()
     {
+        this.glPatch.updateTime();
         if (this.glPatch.paused) return;
         if (this._targetFps != 0 && !this.glPatch.mouseOverCanvas && performance.now() - this._lastTime < 1000 / this._targetFps)
         {
