@@ -9,7 +9,6 @@ import GlViewBox from "./glviewbox";
 import GlOp from "./glop";
 import MouseState from "./mousestate";
 import GlCursor from "./glcursor";
-import glUiConfig from "./gluiconfig";
 import ShakeDetector from "./shakedetect";
 import SnapLines from "./snaplines";
 import VizLayer from "./vizlayer";
@@ -20,7 +19,7 @@ import userSettings from "../components/usersettings";
 import Gui from "../gui";
 import glEditableSpline from "./gleditablespline";
 import defaultops from "../defaultops";
-import gluiconfig from "./gluiconfig";
+import glUiConfig from "./gluiconfig";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -32,12 +31,9 @@ export default class GlPatch extends CABLES.EventTarget
         this.logEvents(false, "glpatch");
         if (!cgl) this._logonsole.error("[glpatch] need cgl");
 
-
         this._log = new Logger("glpatch");
         this.paused = false;
         this.blueprint = false;
-
-        // this.clear = true;
         this._cgl = cgl;
         this.mouseState = new MouseState(cgl.canvas);
 
@@ -899,7 +895,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         if (this._subpatchoprect)
         {
-            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time));
+            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), glUiConfig.zPosGlRectSelected);
             this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
             this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
         }
@@ -1379,41 +1375,42 @@ export default class GlPatch extends CABLES.EventTarget
 
     subPatchOpAnimStart(bounds)
     {
-        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
-        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
-        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
-        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
-        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
         // this._subpatchAnimFade.clear();
         // this._subpatchAnimFade.setValue(this._time, 0.0);
         // this._subpatchAnimFade.setValue(this._time + 0.25, 1.0);
 
+        if (this._subpatchoprect) this._subpatchoprect.dispose();
         this._subpatchoprect = this._overLayRects.createRect();
-        this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
-
-        // this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
-        // this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
-        // this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
-        // this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
 
         this._subpatchoprect.setPosition(bounds.minx - gui.theme.patch.selectedOpBorderX / 2, bounds.miny - gui.theme.patch.selectedOpBorderY / 2);
         this._subpatchoprect.setSize(
             Math.abs((bounds.maxx + gui.theme.patch.selectedOpBorderX) - (bounds.minx - gui.theme.patch.selectedOpBorderX / 2)),
             Math.abs((bounds.maxy + gui.theme.patch.selectedOpBorderY * 2) - (bounds.miny - gui.theme.patch.selectedOpBorderY / 2))
         );
-        this._subpatchoprect.setColor(gui.theme.colors_patch.opBgRect);
-        // this._subpatchoprect.setColor(gui.theme.colors_patch.selected);
+        // this._subpatchoprect.setColor(gui.theme.colors_patch.opBgRect);
+        this._subpatchoprect.setColor(gui.theme.colors_patch.selected);
         // this._subpatchoprect.setColor(gui.theme.colors_patch.background);
+        this._subpatchAnimFade.setValue(this._time, 0.0);
+        this._subpatchAnimFade.setValue(this._time + 0.25, 0.25);
 
 
-        // this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
-        // this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
-        // this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
-        // this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
+        this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
+        this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
+        this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
+        this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
 
 
-        this.paused = true;
+
+        setTimeout(() =>
+        {
+            this.paused = true;
+        }, 250);
     }
 
     subPatchOpAnimEnd(opid)
@@ -1421,6 +1418,9 @@ export default class GlPatch extends CABLES.EventTarget
         this.paused = false;
         const dur = 0.25;
         const glop = this._glOpz[opid];
+
+        this._subpatchoprect.setBorder(glUiConfig.subPatchOpBorder);
+
         this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
         this._subpatchAnimOutX.setValue(this._time + dur, glop.op.uiAttribs.translate.x);
 
