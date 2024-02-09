@@ -27,6 +27,8 @@ class GlUiConfig
 
         this.zPosGlRectSelected = 0.4;
         this.zPosGlTitle = -0.01;
+
+        this.subPatchOpBorder = 2;
     }
 }
 

@@ -139,7 +139,7 @@ export default class GlOp extends CABLES.EventTarget
             this._displayType = this.DISPLAY_SUBPATCH;
             this._rectBorder = 1;
 
-            if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = 2;
+            if (this._op.storage && this._op.storage.blueprintVer >= 2) this._rectBorder = gluiconfig.subPatchOpBorder;
             this._updateColors();
             this.refreshPorts();
 

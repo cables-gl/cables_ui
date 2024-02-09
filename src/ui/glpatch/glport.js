@@ -23,6 +23,8 @@ export default class GlPort
         this._glPatch = glpatch;
         this._rectInstancer = rectInstancer;
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
+
+
         this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
         this._mouseButtonRightTimeDown = 0;
@@ -30,6 +32,8 @@ export default class GlPort
 
         if (!this._parent) this._log.warn("no parent rect given");
         else this._parent.addChild(this._rect);
+
+
 
         this._updateColor();
         this._activity = 1;
@@ -65,6 +69,7 @@ export default class GlPort
             if (this._direction == CABLES.PORT_DIR_OUT) this._rect.setShape(9);
             else this._rect.setShape(10);
         }
+        // this._rect.setShape(6);
     }
 
     _updateColor()
@@ -232,6 +237,11 @@ export default class GlPort
 
     dispose()
     {
+        for (const i in this._glop._links)
+            if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
+                this._glop._links[i].visible = false;
+
+
         for (let i = 0; i < this._mouseEvents.length; i++)
             this._rect.off(this._mouseEvents[i]);
 

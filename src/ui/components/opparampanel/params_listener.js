@@ -25,9 +25,6 @@ class ParamsListener extends CABLES.EventTarget
 
         this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
 
-
-
-
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();

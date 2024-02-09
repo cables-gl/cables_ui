@@ -20,6 +20,7 @@ import userSettings from "../components/usersettings";
 import Gui from "../gui";
 import glEditableSpline from "./gleditablespline";
 import defaultops from "../defaultops";
+import gluiconfig from "./gluiconfig";
 
 
 export default class GlPatch extends CABLES.EventTarget
@@ -99,6 +100,14 @@ export default class GlPatch extends CABLES.EventTarget
         this.cacheOIRxb = 0;
         this.cacheOIRyb = 0;
         this.cacheOIRops = null;
+
+
+        this._subpatchoprect = null;
+        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
+        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
 
         this._focusRectAnim = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_OUT });
         this._focusRect = this._overLayRects.createRect();
@@ -406,7 +415,6 @@ export default class GlPatch extends CABLES.EventTarget
     {
         this._dropInOpBorder.visible = false;
     }
-
 
     _onCanvasMouseMove(e)
     {
@@ -868,6 +876,11 @@ export default class GlPatch extends CABLES.EventTarget
         }
     }
 
+    updateTime()
+    {
+        this._time = (performance.now() - this._timeStart) / 1000;
+    }
+
     render(resX, resY)
     {
         if (!gui || !gui.canvasManager) return;
@@ -882,6 +895,13 @@ export default class GlPatch extends CABLES.EventTarget
                 gui.theme.colors_patch.background[1],
                 gui.theme.colors_patch.background[2],
                 gui.theme.colors_patch.background[3]);
+        }
+
+        if (this._subpatchoprect)
+        {
+            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time));
+            this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
+            this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
         }
 
         // if (
@@ -922,7 +942,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         this.frameCount++;
         this.isAnimated = false;
-        this._time = (performance.now() - this._timeStart) / 1000;
+
 
         for (const i in this._glCursors)
             this._glCursors[i].updateAnim();
@@ -1356,6 +1376,73 @@ export default class GlPatch extends CABLES.EventTarget
         }
     }
 
+
+    subPatchOpAnimStart(bounds)
+    {
+        this._subpatchAnimFade = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+        this._subpatchAnimOutX = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+        this._subpatchAnimOutY = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+        this._subpatchAnimOutW = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+        this._subpatchAnimOutH = new CABLES.Anim({ "defaultEasing": CABLES.EASING_CUBIC_IN });
+
+        // this._subpatchAnimFade.clear();
+        // this._subpatchAnimFade.setValue(this._time, 0.0);
+        // this._subpatchAnimFade.setValue(this._time + 0.25, 1.0);
+
+        this._subpatchoprect = this._overLayRects.createRect();
+        this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
+
+        // this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
+        // this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
+        // this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
+        // this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
+
+        this._subpatchoprect.setPosition(bounds.minx - gui.theme.patch.selectedOpBorderX / 2, bounds.miny - gui.theme.patch.selectedOpBorderY / 2);
+        this._subpatchoprect.setSize(
+            Math.abs((bounds.maxx + gui.theme.patch.selectedOpBorderX) - (bounds.minx - gui.theme.patch.selectedOpBorderX / 2)),
+            Math.abs((bounds.maxy + gui.theme.patch.selectedOpBorderY * 2) - (bounds.miny - gui.theme.patch.selectedOpBorderY / 2))
+        );
+        this._subpatchoprect.setColor(gui.theme.colors_patch.opBgRect);
+        // this._subpatchoprect.setColor(gui.theme.colors_patch.selected);
+        // this._subpatchoprect.setColor(gui.theme.colors_patch.background);
+
+
+        // this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
+        // this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
+        // this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
+        // this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
+
+
+        this.paused = true;
+    }
+
+    subPatchOpAnimEnd(opid)
+    {
+        this.paused = false;
+        const dur = 0.25;
+        const glop = this._glOpz[opid];
+        this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
+        this._subpatchAnimOutX.setValue(this._time + dur, glop.op.uiAttribs.translate.x);
+
+        this._subpatchAnimOutY.setValue(this._time, this._subpatchoprect.y);
+        this._subpatchAnimOutY.setValue(this._time + dur, glop.op.uiAttribs.translate.y);
+
+        this._subpatchAnimOutW.setValue(this._time, this._subpatchoprect.w);
+        this._subpatchAnimOutW.setValue(this._time + dur, glop.w);
+
+        this._subpatchAnimOutH.setValue(this._time, this._subpatchoprect.h);
+        this._subpatchAnimOutH.setValue(this._time + dur, glop.h);
+
+        this._subpatchAnimFade.setValue(this._time, 1);
+        this._subpatchAnimFade.setValue(this._time + dur / 2, 1.0);
+        this._subpatchAnimFade.setValue(this._time + dur, 0.0, () =>
+        {
+            this._subpatchoprect.dispose();
+            this._subpatchoprect = null;
+        });
+    }
+
+
     _selectOpsInRect(xa, ya, xb, yb)
     {
         const ops = this._getGlOpsInRect(xa, ya, xb, yb);
@@ -1391,9 +1478,9 @@ export default class GlPatch extends CABLES.EventTarget
         return 1200;
     }
 
-    getOpBounds()
+    getOpBounds(ops)
     {
-        const ops = this._glOpz;
+        ops = ops || this._glOpz;
         const bounds =
         {
             "minx": 9999,
@@ -1449,8 +1536,6 @@ export default class GlPatch extends CABLES.EventTarget
     {
         return this._glOpz[opid];
     }
-
-
 
     // make static util thing...
     setDrawableColorByType(e, t, diff)
