@@ -376,7 +376,7 @@ export default class GlLink
                     if (this._subPatchInputOp) this._subPatchInputOp.on("move", () => { this.update(); });
                 }
 
-                if (!this._subPatchOutputOp)
+                if (!this._subPatchOutputOp && this._glOpOut && this._glOpOut.op)
                 {
                     this._subPatchOutputOp = gui.corePatch().getSubPatchOp(this._glOpOut.op.uiAttribs.subPatch, defaultOps.subPatchOutput2);
                     // this._glSubPatchOutputOp = this._glPatch.getOp(this._subPatchOutputOp.id);
