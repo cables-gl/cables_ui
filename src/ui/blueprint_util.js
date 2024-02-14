@@ -431,6 +431,7 @@ blueprintUtil.sortPortsJsonPorts = (ports) =>
 
 blueprintUtil.addPortToBlueprint = (opId, port, options) =>
 {
+    options = options || {};
     const loadingModal = gui.startModalLoading("Adding port");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
