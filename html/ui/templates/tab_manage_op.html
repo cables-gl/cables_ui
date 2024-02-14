@@ -44,7 +44,7 @@
                     <th>Inputs</th>
                     <th style="width:40%">Title</th>
                     <th>default</th>
-                    <th>display</th>
+                    <th></th>
                     <th></th>
                 </tr>
                 {{#each portJson.ports}}
@@ -70,7 +70,17 @@
                         {{title}}
                     </td>
                     <td>{{value}}</td>
-                    <td>{{uiDisplay}}</td>
+                    <td>
+
+                        {{#if uiDisplay}}
+                            display: {{uiDisplay}}<br/>
+                        {{/if}}
+                        {{#if objType}}
+                            objType: {{objType}}<br/>
+                        {{/if}}
+
+
+                    </td>
                     <td>
                         <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
                     </td>

@@ -70,6 +70,8 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
             src += ");";
         }
 
+
+
         src += "\n";
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
@@ -77,6 +79,10 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.uiDisplay == "texture")src += "display:\"texture\",objType:\"texture\",";
         else if (p.uiDisplay == "int")src += "increment:\"integer\",";
         else if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
+        if (p.objType)src += "objType:\"" + p.objType + "\"";
+
+
+
         src += "});\n";
 
         src += "".endl();
@@ -464,7 +470,6 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
 
             loadingModal.setTask("saving ports json");
 
-
             blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
@@ -590,12 +595,10 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 
             if (type == CABLES.OP_PORT_TYPE_OBJECT)
             {
-                if (eleType.value.indexOf("Texture") > -1)
-                {
-                    port.uiDisplay = "texture";
-                    // port.uiAttribs = { "display": "texture" };
-                    // port.objType = "texture";
-                }
+                if (eleType.value.indexOf("Texture") > -1) port.objType = "texture";
+                if (eleType.value.indexOf("Geometry") > -1) port.objType = "geometry";
+                if (eleType.value.indexOf("Element") > -1) port.objType = "element";
+                if (eleType.value.indexOf("AudioNode") > -1) port.objType = "audioNode";
             }
 
 
