@@ -374,6 +374,11 @@ export default class FindTab
                 FindTab.searchOutDated(ops, results);
             }
 
+            if (str == ":selected")
+            {
+                FindTab.searchSelected(ops, results);
+            }
+
 
             if (str == ":recent")
             {
@@ -830,6 +835,18 @@ FindTab.searchOutDated = (ops, results) =>
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
         if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
+    }
+    return results;
+};
+
+FindTab.searchSelected = (ops, results) =>
+{
+    for (let i = 0; i < ops.length; i++)
+    {
+        if (ops[i].uiAttribs.selected)
+            results.push({ "op": ops[i], "score": 1 });
+        // const doc = gui.opDocs.getOpDocByName(ops[i].objName);
+        // if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(ops[i].objName))
     }
     return results;
 };

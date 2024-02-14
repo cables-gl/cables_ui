@@ -67,13 +67,13 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
         userList.innerHTML = html;
 
         const userListItems = userList.querySelectorAll(".item");
-        userListItems.forEach((ele) =>
+        userListItems.forEach((elem) =>
         {
-            const itemId = ele.dataset.clientId;
+            const itemId = elem.dataset.clientId;
             let client = this._connection.clients[itemId];
             if (client)
             {
-                const cursorColorEl = ele.querySelector(".cursorcolor");
+                const cursorColorEl = elem.querySelector(".cursorcolor");
                 if (cursorColorEl)
                 {
                     const clientColor = this._connection.getClientColor(itemId);
@@ -87,24 +87,24 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
 
                 if (client.isPilot)
                 {
-                    ele.classList.add("pilot");
+                    elem.classList.add("pilot");
                 }
                 else
                 {
-                    ele.classList.remove("pilot");
+                    elem.classList.remove("pilot");
                 }
 
                 if (client.isMe)
                 {
-                    ele.classList.add("me");
+                    elem.classList.add("me");
                 }
                 else
                 {
-                    ele.classList.remove("me");
+                    elem.classList.remove("me");
                 }
             }
 
-            ele.addEventListener("pointerdown", (event) =>
+            elem.addEventListener("pointerdown", (event) =>
             {
                 CABLES.contextMenu.show(
                     {
@@ -112,9 +112,6 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                     }, event.currentTarget);
             });
         });
-
-        // const messageNav = ele.byId("multiplayer_message_nav");
-        // const messageBox = ele.byId("multiplayer_message");
 
         if (this._connection.inMultiplayerSession)
         {
@@ -138,13 +135,9 @@ export default class ScUiMultiplayer extends CABLES.EventTarget
                 gui.restriction.setMessage("You are the pilot in this multiplayer session - changes will be sent to others");
                 gui.setRestriction(Gui.RESTRICT_MODE_FULL);
             }
-            // messageBox.style.display = "block";
-            // messageNav.style.display = "block";
         }
         else
         {
-            // messageBox.style.display = "none";
-            // messageNav.style.display = "none";
             gui.restriction.setMessage(null);
             gui.setRestriction(Gui.RESTRICT_MODE_FULL);
         }
