@@ -1309,7 +1309,11 @@ export default class PatchView extends CABLES.EventTarget
         {
             if (names[0].type == "blueprint_subpatch2")
             {
-                // this._patchRenderer.greyOutBlue = true;
+                // str += "<a style=\"margin:0;\" target=\"_blank\" onclick=\"" + 12 + "\">" + 32 + "</a>";
+
+                const outerOp = this.getSubPatchOuterOp(currentSubPatch);
+
+                str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageSelectedOp('" + outerOp.objName + "')\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
             }
             else if (names[0].type == "blueprint_subpatch")
             {

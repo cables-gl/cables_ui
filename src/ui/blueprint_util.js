@@ -70,8 +70,6 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
             src += ");";
         }
 
-
-
         src += "\n";
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
@@ -79,9 +77,8 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.uiDisplay == "texture")src += "display:\"texture\",objType:\"texture\",";
         else if (p.uiDisplay == "int")src += "increment:\"integer\",";
         else if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
+
         if (p.objType)src += "objType:\"" + p.objType + "\"";
-
-
 
         src += "});\n";
 
