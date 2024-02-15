@@ -1,18 +1,18 @@
-
 var CABLES = CABLES || {};
 
 CABLES.EventTarget = function ()
 {
+    this._log = console;
     this._eventCallbacks = {};
     this._logName = "";
-    this._doLog = false;
+    this._logEvents = false;
     this._listeners = {};
 
     this.addEventListener = this.on = function (which, cb, idPrefix)
     {
         const event =
         {
-            "id": (idPrefix || "") + CABLES.uuid(),
+            "id": (idPrefix || "") + CABLES.simpleId(),
             "name": which,
             "cb": cb,
         };
@@ -34,7 +34,7 @@ CABLES.EventTarget = function ()
         }
         else
         {
-            console.warn("old eventtarget function haseventlistener!");
+            this._log.warn("old eventtarget function haseventlistener!");
             if (which && cb)
             {
                 if (this._eventCallbacks[which])
@@ -47,6 +47,11 @@ CABLES.EventTarget = function ()
         }
     };
 
+    this.hasListenerForEventName = function (eventName)
+    {
+        return this._eventCallbacks[eventName] && this._eventCallbacks[eventName].length > 0;
+    };
+
     this.removeEventListener = this.off = function (which, cb)
     {
         if (which === null || which === undefined) return;
@@ -56,7 +61,7 @@ CABLES.EventTarget = function ()
             const event = this._listeners[which];
             if (!event)
             {
-                // console.log("could not find event...");
+                this._log.log("could not find event...");
                 return;
             }
 
@@ -84,7 +89,8 @@ CABLES.EventTarget = function ()
             return;
         }
 
-        console.warn("[eventtarget] old function signature: removeEventListener! use listener id");
+        this._log.info("[eventtaget] ", "old function signature: removeEventListener! use listener id");
+        this._log.log((new Error()).stack);
 
         let index = null;
         for (let i = 0; i < this._eventCallbacks[which].length; i++)
@@ -95,18 +101,18 @@ CABLES.EventTarget = function ()
         {
             delete this._eventCallbacks[index];
         }
-        else console.warn("[removeEventListener] not found " + which);
+        else this._log.warn("removeEventListener not found " + which);
     };
 
     this.logEvents = function (enabled, name)
     {
-        this._doLog = enabled;
+        this._logEvents = enabled;
         this._logName = name;
     };
 
     this.emitEvent = function (which, param1, param2, param3, param4, param5, param6)
     {
-        if (this._doLog) console.log("[event] ", this._logName, which, this._eventCallbacks);
+        if (this._logEvents) this._log.log("[event] ", this._logName, which, this._eventCallbacks);
 
         if (this._eventCallbacks[which])
         {
@@ -120,8 +126,7 @@ CABLES.EventTarget = function ()
         }
         else
         {
-            // Log.warn("has no event callback",which,this._eventCallbacks);
-            if (this._doLog) console.log("[event] has no event callback", which, this._eventCallbacks);
+            if (this._logEvents) this._log.log("[event] has no event callback", which, this._eventCallbacks);
         }
     };
 };
