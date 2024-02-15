@@ -221,6 +221,7 @@ export default class ServerOps
                 };
 
             if (op.portsIn[i].uiAttribs.title) l.uititle = op.portsIn[i].uiAttribs.title;
+            if (op.portsIn[i].uiAttribs.values) l.values = op.portsIn[i].uiAttribs.values;
 
             if (op.portsIn[i].uiAttribs.group) l.group = op.portsIn[i].uiAttribs.group;
             if (op.portsIn[i].uiAttribs.hidePort) continue;
@@ -235,7 +236,7 @@ export default class ServerOps
             }
 
             if (op.portsIn[i].uiAttribs.objType) l.objType = op.portsIn[i].uiAttribs.objType;
-
+            console.log(l);
             opObj.portsIn.push(l);
         }
 
