@@ -107,7 +107,9 @@ CABLES_CMD_PATCH.manageSelectedOp = function (opid)
 {
     const ops = gui.patchView.getSelectedOps();
 
-    if (ops.length > 0) new ManageOp(gui.mainTabs, opid || ops[0].objName);
+    if (ops.length > 0) opid = ops[0].objName;
+
+    new ManageOp(gui.mainTabs, opid);
 };
 
 

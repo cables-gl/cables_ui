@@ -43,20 +43,18 @@
                 <tr>
                     <th>Inputs</th>
                     <th style="width:40%">Title</th>
-                    <th>default</th>
-                    <th>display</th>
+                    <th>Attributes</th>
                     <th></th>
                 </tr>
                 {{#each portJson.ports}}
 
                 {{#if divider}}
-                <tr>
-                    <th>Outputs</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
-                </tr>
+                    <tr>
+                        <th>Outputs</th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
                 {{/if}}
 
                 <tr>
@@ -69,13 +67,22 @@
                         <span class="portType_{{type}}_background">&nbsp;&nbsp;&nbsp;</span>&nbsp;
                         {{title}}
                     </td>
-                    <td>{{value}}</td>
-                    <td>{{uiDisplay}}</td>
+                    <td>
+                        {{#if value}}
+                            Default: {{value}}<br/>
+                        {{/if}}
+
+                        {{#if uiDisplay}}
+                            Display: {{uiDisplay}}<br/>
+                        {{/if}}
+                        {{#if objType}}
+                            Object Type: {{objType}}<br/>
+                        {{/if}}
+                    </td>
                     <td>
                         <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
                     </td>
                 </tr>
-
 
                 {{/each}}
             </table>

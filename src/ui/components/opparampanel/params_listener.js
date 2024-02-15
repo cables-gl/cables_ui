@@ -465,7 +465,7 @@ class ParamsListener extends CABLES.EventTarget
 
             console.log("port.op.uiAttribs",);
 
-            if (port.op.isInBlueprint2())
+            if (port.op.isInBlueprint2() && port.op.objName.indexOf("Ops.Ui.") == -1)
             {
                 items.push(
                     {

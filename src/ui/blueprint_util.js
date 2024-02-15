@@ -77,6 +77,9 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.uiDisplay == "texture")src += "display:\"texture\",objType:\"texture\",";
         else if (p.uiDisplay == "int")src += "increment:\"integer\",";
         else if (p.uiDisplay)src += "display:\"" + p.uiDisplay + "\",";
+
+        if (p.objType)src += "objType:\"" + p.objType + "\"";
+
         src += "});\n";
 
         src += "".endl();
@@ -431,6 +434,7 @@ blueprintUtil.sortPortsJsonPorts = (ports) =>
 
 blueprintUtil.addPortToBlueprint = (opId, port, options) =>
 {
+    options = options || {};
     const loadingModal = gui.startModalLoading("Adding port");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
@@ -462,7 +466,6 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
             js.ports = blueprintUtil.sortPortsJsonPorts(js.ports);
 
             loadingModal.setTask("saving ports json");
-
 
             blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
@@ -589,12 +592,10 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 
             if (type == CABLES.OP_PORT_TYPE_OBJECT)
             {
-                if (eleType.value.indexOf("Texture") > -1)
-                {
-                    port.uiDisplay = "texture";
-                    // port.uiAttribs = { "display": "texture" };
-                    // port.objType = "texture";
-                }
+                if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";
+                if (eleType.value.indexOf("Geometry") > -1) port.objType = "geometry";
+                if (eleType.value.indexOf("Element") > -1) port.objType = "element";
+                if (eleType.value.indexOf("AudioNode") > -1) port.objType = "audioNode";
             }
 
 
