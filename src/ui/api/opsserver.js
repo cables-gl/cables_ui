@@ -236,7 +236,6 @@ export default class ServerOps
             }
 
             if (op.portsIn[i].uiAttribs.objType) l.objType = op.portsIn[i].uiAttribs.objType;
-            console.log(l);
             opObj.portsIn.push(l);
         }
 
