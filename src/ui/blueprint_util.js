@@ -592,6 +592,7 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
 
             if (type == CABLES.OP_PORT_TYPE_OBJECT)
             {
+                if (eleType.value.indexOf("Gradient") > -1) port.uiDisplay = port.objType = "gradient";
                 if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";
                 if (eleType.value.indexOf("Geometry") > -1) port.objType = "geometry";
                 if (eleType.value.indexOf("Element") > -1) port.objType = "element";
