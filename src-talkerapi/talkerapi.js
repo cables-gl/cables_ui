@@ -16,7 +16,7 @@ CABLESUILOADER.TalkerAPI = function (target)
         }
         else
         {
-            if (!this.hasEventListener(msg.data.cb))
+            if (!this.hasListenerForEventName(msg.data.cmd))
             {
                 console.error("TalkerAPI in ui has no listener for", msg.data.cmd);
             }
@@ -30,7 +30,7 @@ CABLESUILOADER.TalkerAPI = function (target)
 
 CABLESUILOADER.TalkerAPI.prototype.send = function (cmd, data, cb)
 {
-    let payload = { "cmd": cmd, "data": data };
+    const payload = { "cmd": cmd, "data": data };
     if (cb)
     {
         this._callbackCounter++;

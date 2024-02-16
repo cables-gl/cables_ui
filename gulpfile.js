@@ -11,7 +11,6 @@ const svgmin = require("gulp-svgmin");
 const fs = require("fs");
 const replace = require("gulp-replace");
 const autoprefixer = require("gulp-autoprefixer");
-const merge = require("merge-stream");
 const getRepoInfo = require("git-repo-info");
 const webpack = require("webpack-stream");
 const compiler = require("webpack");
@@ -30,14 +29,6 @@ const config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
 const isLiveBuild = config.env === "live";
 
 let buildInfo = getBuildInfo();
-
-function _lint(done)
-{
-    return gulp
-        .src("src/**/*.js")
-        .pipe(jshint())
-        .pipe(jshint.reporter("default"));
-}
 
 function _scripts_libs_ui(done)
 {
