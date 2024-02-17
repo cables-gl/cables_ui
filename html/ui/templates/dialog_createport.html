@@ -37,6 +37,7 @@
                     <option value="Object - Element" {{#compare port.objType '==' 'element'}}selected{{/compare}}>Object - Element</option>
                     <option value="Object - Geometry" {{#compare port.objType '==' 'geometry'}}selected{{/compare}}>Object - Geometry</option>
                     <option value="Object - AudioNode" {{#compare port.objType '==' 'audioNode'}}selected{{/compare}}>Object - AudioNode</option>
+                    <option value="Object - Gradient" {{#compare port.objType '==' 'gradient'}}selected{{/compare}}>Object - Gradient</option>
                     <option value="Trigger" {{#compare port.type '==' 1}}selected{{/compare}}>Trigger</option>
                     <option value="Trigger - Button" {{#compare port.uiDisplay '==' 'button'}}selected{{/compare}}>Trigger - Button</option>
                 </select>
@@ -56,6 +57,14 @@
             </td>
             <td>
                 <input id="createPortValue" value="{{port.value}}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Additional uiattribs
+            </td>
+            <td>
+                <input id="createPortAddUiAttribs" value="{{json port.addUiAttribs}}"/>
             </td>
         </tr>
     </table>

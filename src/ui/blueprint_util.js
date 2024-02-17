@@ -70,7 +70,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
             src += ");";
         }
 
-        src += "\n";
+        src += "".endl();
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
 
@@ -80,7 +80,9 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.objType)src += "objType:\"" + p.objType + "\"";
 
-        src += "});\n";
+        src += "});".endl();
+
+        if (p.addUiAttribs)src += "port_" + p.id + ".setUiAttribs(" + JSON.stringify(p.addUiAttribs) + ");".endl();
 
         src += "".endl();
     }
@@ -541,6 +543,9 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
             const eleName = ele.byId("createPortName");
             const eleType = ele.byId("createPortType");
             const eleValue = ele.byId("createPortValue");
+            const eleAddUiAttribs = ele.byId("createPortAddUiAttribs");
+
+
 
             let type = 0;
             if (eleType.value.indexOf("Number") == 0)type = CABLES.OP_PORT_TYPE_VALUE;
@@ -568,6 +573,14 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
                 "type": type
             };
 
+            try
+            {
+                port.addUiAttribs = JSON.parse(eleAddUiAttribs.value);
+            }
+            catch (e)
+            {
+                console.error("could not parse add ui attribs...");
+            }
 
             if (type == CABLES.OP_PORT_TYPE_STRING)
             {
@@ -589,9 +602,9 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Boolean") > -1) port.uiDisplay = "bool";
             }
 
-
             if (type == CABLES.OP_PORT_TYPE_OBJECT)
             {
+                if (eleType.value.indexOf("Gradient") > -1) port.uiDisplay = port.objType = "gradient";
                 if (eleType.value.indexOf("Texture") > -1) port.uiDisplay = port.objType = "texture";
                 if (eleType.value.indexOf("Geometry") > -1) port.objType = "geometry";
                 if (eleType.value.indexOf("Element") > -1) port.objType = "element";
@@ -660,9 +673,9 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
             if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
-            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
+            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e, res) =>
             {
-                gui.patchView.store._serverDate = e.data.updated;
+                gui.patchView.store._serverDate = res.data.updated;
             });
 
             if (newOp.patchId)

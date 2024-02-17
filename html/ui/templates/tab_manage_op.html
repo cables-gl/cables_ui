@@ -78,6 +78,10 @@
                         {{#if objType}}
                             Object Type: {{objType}}<br/>
                         {{/if}}
+                        {{#if addUiAttribs}}
+                            UiAttribs: {{json addUiAttribs}}<br/>
+                        {{/if}}
+
                     </td>
                     <td>
                         <span class="button-small button-icon" id="{{../viewId}}_port_delete_{{id}}"><span class="icon icon-x"></span></span>
