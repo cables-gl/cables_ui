@@ -675,9 +675,9 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
             if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
-            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e) =>
+            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e, res) =>
             {
-                gui.patchView.store._serverDate = e.data.updated;
+                gui.patchView.store._serverDate = res.data.updated;
             });
 
             if (newOp.patchId)

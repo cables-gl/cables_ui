@@ -1646,8 +1646,18 @@ export default class ServerOps
                 {
                     const title = err.msg.title || "Failed to load op";
                     let html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
-                    html += "<br/><br/>";
-                    new ModalDialog({ "title": title, "showOkButton": false, "html": html });
+                    const continueLoadingCallback = () =>
+                    {
+                        incrementStartup();
+                        cb([]);
+                    };
+                    const modal = new ModalDialog(
+                        {
+                            "title": title,
+                            "html": html,
+                            "showOkButton": true,
+                            "okButton": { "text": "Continue Loading", "cssClasses": "button" } });
+                    modal.on("onClose", continueLoadingCallback);
                 }
                 else
                 {
