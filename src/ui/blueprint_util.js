@@ -15,6 +15,8 @@ const blueprintUtil = {};
 blueprintUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
 blueprintUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 
+
+
 blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
 {
     const ops = gui.corePatch().getOpsByObjName(opname);

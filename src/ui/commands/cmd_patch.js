@@ -46,7 +46,6 @@ CABLES_CMD_PATCH.selectChilds = function ()
 {
     const ops = gui.patchView.getSelectedOps();
 
-
     if (!ops || ops.length == 0) return;
 
     for (let i = 0; i < ops.length; i++)
@@ -101,6 +100,13 @@ CABLES_CMD_PATCH.cloneSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
     if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
+};
+
+CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
+{
+    const oldSubPatchId = gui.patchView.getCurrentSubPatch();
+    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+    new ManageOp(gui.mainTabs, subOuter.opId);
 };
 
 CABLES_CMD_PATCH.manageSelectedOp = function (opid)
