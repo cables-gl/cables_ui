@@ -119,6 +119,8 @@ export default class SavedState extends CABLES.EventTarget
 
     setUnSaved(initiator, subpatch)
     {
+        console.log("setUnSaved", initiator);
+
         if (this._paused) return;
         if (subpatch === undefined)
         {
@@ -163,8 +165,32 @@ export default class SavedState extends CABLES.EventTarget
 
     getStateBlueprint(bp)
     {
+        if (!this._statesSaved.hasOwnProperty(bp))
+        {
+            console.log("does not have state for ", bp);
+        }
         return this._statesSaved[bp];
     }
+
+
+    getUnsavedPatchSubPatchOps()
+    {
+        const opIds = [];
+        for (let i in this._statesSaved)
+        {
+            if (!this._statesSaved[i])
+            {
+                const op = gui.patchView.getSubPatchOuterOp(i);
+
+                if (op && op.objName.indexOf("Ops.Patch.") > -1)
+                {
+                    opIds.push({ "objName": op.objName, "op": op, "opId": op.id, "subId": i });
+                }
+            }
+        }
+        return opIds;
+    }
+
 
     updateUiLater()
     {

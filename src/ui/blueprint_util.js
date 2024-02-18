@@ -675,10 +675,10 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
             if (options.loadingModal) options.loadingModal.setTask("update project date...");
 
-            CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e, res) =>
-            {
-                gui.patchView.store._serverDate = res.data.updated;
-            });
+            // CABLESUILOADER.talkerAPI.send("setProjectUpdated", { "projectId": gui.patchId }, (e, res) =>
+            // {
+            //     gui.patchView.store._serverDate = res.data.updated;
+            // });
 
             if (newOp.patchId)
                 gui.savedState.setSaved("saved bp", newOp.patchId.get());
@@ -687,7 +687,8 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
             {
                 if (gui.corePatch().getOpsByObjName(newOp.objName).length > 1)
                 {
-                    if (options.loadingModal)options.loadingModal.setTask("execute op...");
+                    if (options.loadingModal) options.loadingModal.setTask("execute op...");
+
                     gui.serverOps.execute(newOp.objName,
                         (newOps, refNewOp) =>
                         {
@@ -708,6 +709,8 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
                         },
                         newOp);
                 }
+                else
+                if (options.next)options.next();
             }
             else
             {
