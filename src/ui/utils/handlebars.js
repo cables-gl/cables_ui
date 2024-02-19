@@ -106,7 +106,7 @@ export function initHandleBarsHelper()
 
     Handlebars.registerHelper("md", (str) =>
     {
-        return new Handlebars.SafeString(marked(str));
+        return new Handlebars.SafeString(marked.parse(str));
     });
 
     Handlebars.registerHelper("displaydate", (str) =>
