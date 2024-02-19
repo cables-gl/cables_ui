@@ -46,7 +46,6 @@ CABLES_CMD_PATCH.selectChilds = function ()
 {
     const ops = gui.patchView.getSelectedOps();
 
-
     if (!ops || ops.length == 0) return;
 
     for (let i = 0; i < ops.length; i++)
@@ -103,15 +102,19 @@ CABLES_CMD_PATCH.cloneSelectedOp = function ()
     if (ops.length > 0) gui.serverOps.cloneDialog(ops[0].objName, ops[0]);
 };
 
+CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
+{
+    const oldSubPatchId = gui.patchView.getCurrentSubPatch();
+    const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+    new ManageOp(gui.mainTabs, subOuter.opId);
+};
+
 CABLES_CMD_PATCH.manageSelectedOp = function (opid)
 {
     const ops = gui.patchView.getSelectedOps();
-
     if (ops.length > 0) opid = ops[0].objName;
-
     new ManageOp(gui.mainTabs, opid);
 };
-
 
 CABLES_CMD_PATCH.save = function (force, cb)
 {
@@ -151,6 +154,15 @@ CABLES_CMD_PATCH.save = function (force, cb)
     if (doSave)
     {
         gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
+
+        const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+
+        console.log("unsabed,,", ops);
+        for (let i = 0; i < ops.length; i++)
+        {
+            const name = ops[i].op.shortName;
+            blueprintUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
+        }
     }
 };
 
@@ -396,7 +408,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                                     {
                                                         const op = subOps[i];
 
-
                                                         let patchInputOP = gui.corePatch().getSubPatch2InnerInputOp(subPatchId);
                                                         const l = newOp.patch.link(patchInputOP, "innerOut_" + oldLink.pJson.id, subOps[i], oldLink.origPortName);
 
@@ -414,10 +425,23 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             if (selectedOpIds.length == 0) newOp.setPos(0, 0);
                                             else newOp.setPos(origOpsBounds.minx, origOpsBounds.miny);
 
-                                            // todo: save again...?????
-
                                             gui.patchView.testCollision(newOp);
                                             gui.patchView.setPositionSubPatchInputOutputOps(subPatchId);
+
+                                            if (!gui.savedState.getStateBlueprint(subPatchId))
+                                            {
+                                                console.log("need so save subpatchop AGAIN");
+
+                                                blueprintUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                    "next": () =>
+                                                    {
+                                                        // console.log("bp", bp);
+
+                                                        // CABLES.CMD.PATCH.save();
+                                                    } });
+                                            }
+
+
                                             gui.patchView.patchRenderer.focusOpAnim(newOp.id);
                                             gui.endModalLoading();
                                             gui.patchView.patchRenderer.subPatchOpAnimEnd(newOp.id);

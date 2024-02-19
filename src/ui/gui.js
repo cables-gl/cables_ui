@@ -1500,14 +1500,27 @@ export default class Gui
                     if (bp)
                     {
                         gui.showLoadingProgress(true);
-                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp), { "oldSubId": bp, "next": () => {} });
+                        console.log(111);
+
+                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                            {
+                                "oldSubId": bp,
+                                "next": () =>
+                                {
+                                    if (!gui.savedState.getStateBlueprint(0))
+                                        CABLES.CMD.PATCH.save();
+                                }
+                            });
                     }
                     else
                     {
                         CABLES.CMD.PATCH.save();
                     }
                 }
-                else CABLES.CMD.PATCH.save();
+                else
+                {
+                    CABLES.CMD.PATCH.save();
+                }
             }
         });
 
