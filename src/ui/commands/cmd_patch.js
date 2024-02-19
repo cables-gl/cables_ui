@@ -157,7 +157,6 @@ CABLES_CMD_PATCH.save = function (force, cb)
 
         const ops = gui.savedState.getUnsavedPatchSubPatchOps();
 
-        console.log("unsabed,,", ops);
         for (let i = 0; i < ops.length; i++)
         {
             const name = ops[i].op.shortName;
