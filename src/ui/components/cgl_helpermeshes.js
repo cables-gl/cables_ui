@@ -211,7 +211,7 @@ helperMeshes.drawAxisMarker = function (op, size)
 
     helperMeshes.startFramebuffer(cgl);
 
-    if (!size) size = 2;
+    if (size === undefined) size = 2;
     cgl.pushModelMatrix();
 
     cgl.pushShader(helperMeshes.MARKER.shader);

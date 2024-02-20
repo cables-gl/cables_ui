@@ -119,7 +119,7 @@ export default class SavedState extends CABLES.EventTarget
 
     setUnSaved(initiator, subpatch)
     {
-        console.log("setUnSaved", initiator);
+        // console.log("setUnSaved", initiator);
 
         if (this._paused) return;
         if (subpatch === undefined)

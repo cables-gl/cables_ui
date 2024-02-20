@@ -43,7 +43,7 @@ export default class Tips
         html += "  </div>";
         html += "  <div style=\"width:320px;float:left;\">";
         html += "    <h3>" + (tip.title || "Did you know...") + "</h3>";
-        html += marked(tip.descr);
+        html += marked.parse(tip.descr);
         // html += '    <br/>';
         html += "    " + (this._index + 1) + "/" + CABLES.UI.TIPS.length;
         html += "  </div>";
