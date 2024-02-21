@@ -13,8 +13,6 @@ export default class SnapLines extends CABLES.EventTarget
         this._glPatch = glPatch;
         this._xCoords = [];
 
-        this._coords = [];
-
         this._instancer = instancer;
         this._timeout = null;
 
@@ -22,10 +20,11 @@ export default class SnapLines extends CABLES.EventTarget
 
         this.enabled = !userSettings.get("disableSnapLines");
 
-        userSettings.on("change", () =>
-        {
-            this.enabled = !userSettings.get("disableSnapLines");
-        });
+        this.enabled = true;
+        // userSettings.on("change", () =>
+        // {
+        //     this.enabled = !userSettings.get("disableSnapLines");
+        // });
 
         if (this.enabled)
         {
@@ -59,7 +58,6 @@ export default class SnapLines extends CABLES.EventTarget
             for (let i in hashmap)
             {
                 const ii = parseInt(i);
-                // if (hashmap[ii] > 1)
                 this._xCoords.push(ii);
             }
             perf.finish();
@@ -78,31 +76,6 @@ export default class SnapLines extends CABLES.EventTarget
         if (userSettings.get("snapToGrid"))
             x = gui.patchView.snapOpPosX(_x);
 
-        if (this.enabled)
-        {
-            if (gui.patchView.getSelectedOps().length > 0)
-            {
-                const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
-                let dist = 1;
-                if (forceSnap) dist = 13;
-
-                if (this.rect)
-                {
-                    this.rect.visible = false;
-                    for (let i = 0; i < this._xCoords.length; i++)
-                    {
-                        if (Math.abs(this._xCoords[i] - _x) < CABLES.UI.uiConfig.snapX * dist)
-                        {
-                            x = this._xCoords[i];
-                            this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
-                            this.rect.visible = true;
-                            break;
-                        }
-                    }
-                }
-                perf.finish();
-            }
-        }
         return x;
     }
 
@@ -141,7 +114,8 @@ export default class SnapLines extends CABLES.EventTarget
 
     snapOpX(_x, op, dist)
     {
-        dist = dist || 5;
+        let hasLinks = false;
+        dist = dist || gluiconfig.portWidth;
         if (op)
         {
             let index = 0;
@@ -150,6 +124,7 @@ export default class SnapLines extends CABLES.EventTarget
                 if (op.portsIn[i].uiAttribs.hidePort) continue;
                 index++;
                 if (!op.portsIn[i].isLinked()) continue;
+                hasLinks = true;
                 const s = this._snapPortX(_x, op.portsIn[i], index, dist);
                 if (s != -1) return s;
             }
@@ -160,12 +135,39 @@ export default class SnapLines extends CABLES.EventTarget
                 if (op.portsOut[i].uiAttribs.hidePort) continue;
                 index++;
                 if (!op.portsOut[i].isLinked()) continue;
+                hasLinks = true;
                 const s = this._snapPortX(_x, op.portsOut[i], index, dist);
                 if (s != -1) return s;
             }
-            console.warn("no port found...?");
         }
         else console.warn("snapopx no op");
+
+
+
+        if (!hasLinks)
+        {
+            // if (gui.patchView.getSelectedOps().length > 0)
+            // {
+            // const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
+            // let dist = 1;
+            // if (forceSnap) dist = 13;
+
+            if (this.rect)
+            {
+                this.rect.visible = false;
+                for (let i = 0; i < this._xCoords.length; i++)
+                {
+                    if (Math.abs(this._xCoords[i] - _x) < dist)
+                    {
+                        this.rect.setPosition(this._xCoords[i] - this._rectWidth, -300000);
+                        this.rect.visible = true;
+                        return this._xCoords[i];
+                    }
+                }
+            }
+            // perf.finish();
+            // }
+        }
 
         return _x;
     }

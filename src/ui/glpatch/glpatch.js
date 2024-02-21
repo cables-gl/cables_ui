@@ -219,17 +219,17 @@ export default class GlPatch extends CABLES.EventTarget
             for (let j = 0; j < 20; j++)
                 for (const i in this._selectedGlOps)
                 {
-                    console.log("i", i, this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op);
+                    // console.log("i", i, this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op);
 
+                    this._selectedGlOps[i].op.setUiAttribs(
+                        {
+                            "translate":
+                            {
+                                "x": this.snapLines.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
+                                "y": this._selectedGlOps[i].op.uiAttribs.translate.y
+                            } });
 
-                    this._selectedGlOps[i].op.setUiAttribs({
-                        "translate":
-                    {
-                        "x": this.snapLines.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
-                        "y": this._selectedGlOps[i].op.uiAttribs.translate.y
-                    }
-                    }
-                    );
+                    gui.patchView.testCollision(this._selectedGlOps[i].op);
                 }
         });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });

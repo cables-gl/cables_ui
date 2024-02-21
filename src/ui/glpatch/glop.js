@@ -208,6 +208,8 @@ export default class GlOp extends CABLES.EventTarget
 
     get op() { return this._op; }
 
+
+
     _onBgRectDrag(rect)
     {
         if (gui.longPressConnector.isActive()) return;
@@ -306,6 +308,9 @@ export default class GlOp extends CABLES.EventTarget
                     }
                 });
             }(this, this._dragOldUiAttribs + ""));
+
+
+            gui.patchView.testCollision(this._op);
 
             undo.endGroup(undoGroup, "Move Ops");
         }
