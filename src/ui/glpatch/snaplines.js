@@ -1,5 +1,8 @@
+import { CONSTANTS } from "../../../../cables/src/core/constants";
 import userSettings from "../components/usersettings";
 import GlRect from "../gldraw/glrect";
+import uiconfig from "../uiconfig";
+import gluiconfig from "./gluiconfig";
 
 export default class SnapLines extends CABLES.EventTarget
 {
@@ -9,6 +12,9 @@ export default class SnapLines extends CABLES.EventTarget
 
         this._glPatch = glPatch;
         this._xCoords = [];
+
+        this._coords = [];
+
         this._instancer = instancer;
         this._timeout = null;
 
@@ -104,5 +110,60 @@ export default class SnapLines extends CABLES.EventTarget
     {
         if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosY(y);
         else return y;
+    }
+
+    _snapPortX(_x, port, index)
+    {
+        if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosX(_x);
+
+        const otherPort = port.links[0].getOtherPort(port);
+
+        let otherPortIndex = 0;
+
+        let ports = otherPort.op.portsOut;
+        if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
+
+        otherPortIndex = 0;
+        for (let j = 0; j < ports.length; j++)
+        {
+            if (ports[j].uiAttribs.hidePort) continue;
+            otherPortIndex++;
+            if (ports[j] == otherPort) break;
+        }
+
+        const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
+        const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+
+        if (Math.abs(otherPortPosx - _x - portPosx) < 5) return otherPortPosx - portPosx;
+
+        return -1;
+    }
+
+    snapOpX(_x, op)
+    {
+        if (op)
+        {
+            let index = 0;
+            for (let i = 0; i < op.portsIn.length; i++)
+            {
+                if (op.portsIn[i].uiAttribs.hidePort) continue;
+                index++;
+                if (!op.portsIn[i].isLinked()) continue;
+                const s = this._snapPortX(_x, op.portsIn[i], index);
+                if (s != -1) return s;
+            }
+
+            index = 0;
+            for (let i = 0; i < op.portsOut.length; i++)
+            {
+                if (op.portsOut[i].uiAttribs.hidePort) continue;
+                index++;
+                if (!op.portsOut[i].isLinked()) continue;
+                const s = this._snapPortX(_x, op.portsOut[i], index);
+                if (s != -1) return s;
+            }
+        }
+
+        return _x;
     }
 }

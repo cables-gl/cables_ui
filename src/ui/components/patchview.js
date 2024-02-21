@@ -434,6 +434,7 @@ export default class PatchView extends CABLES.EventTarget
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
 
+
                     gui.corePatch().link(
                         options.linkNewOpToOp,
                         options.linkNewOpToPort.getName(),
@@ -504,6 +505,7 @@ export default class PatchView extends CABLES.EventTarget
             "x": oldOp.uiAttribs.translate.x,
             "y": oldOp.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY
         };
+
 
         gui.patchView.addOp(opname, {
             "onOpAdd": (newOp) =>
