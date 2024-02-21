@@ -362,7 +362,7 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     // console.log("collide");
                     let y = this.snapOpPosY(b.uiAttribs.translate.y + CABLES.UI.uiConfig.snapY / 2 + glopB.h);
-                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": y } });
+                    op.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": y } });
                     found = true;
                     count++;
                     collided[b.id] = true;
