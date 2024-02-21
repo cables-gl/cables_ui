@@ -959,8 +959,17 @@ export default class PatchView extends CABLES.EventTarget
         let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
         let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
 
-        if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+        if (patchInputOP)patchInputOP.setUiAttribs({ "translate":
+        {
+            "x": patchInputOP.uiAttribs.translate.x,
+            "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+        }
+        });
+        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate":
+        {
+            "x": patchOutputOP.uiAttribs.translate.x,
+            "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2) }
+        });
     }
 
     getSubPatchName(subpatch)

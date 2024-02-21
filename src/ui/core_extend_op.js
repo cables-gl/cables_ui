@@ -310,7 +310,7 @@ export default function extendCoreOp()
         this.setUiError("wrongstride", null);
         for (let i = 0; i < this.portsIn.length; i++)
         {
-            if (this.portsIn[i].type == CABLES.OP_PORT_TYPE_ARRAY && this.portsIn[i].links.length)
+            if (this.portsIn[i].type == CABLES.OP_PORT_TYPE_ARRAY && this.portsIn[i].links.length && this.portsIn[i].links[0])
             {
                 const otherPort = this.portsIn[i].links[0].getOtherPort(this.portsIn[i]);
                 if (
