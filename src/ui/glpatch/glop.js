@@ -1477,6 +1477,7 @@ export default class GlOp extends CABLES.EventTarget
         y = this._passiveDragStartY + y;
 
         x = this._glPatch.snapLines.snapOpX(x, this._op);
+
         y = this._glPatch.snapLines.snapY(y);
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });

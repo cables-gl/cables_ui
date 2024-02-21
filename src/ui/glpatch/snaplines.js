@@ -112,7 +112,7 @@ export default class SnapLines extends CABLES.EventTarget
         else return y;
     }
 
-    _snapPortX(_x, port, index)
+    _snapPortX(_x, port, index, dist)
     {
         if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosX(_x);
 
@@ -134,13 +134,14 @@ export default class SnapLines extends CABLES.EventTarget
         const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
         const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
 
-        if (Math.abs(otherPortPosx - _x - portPosx) < 5) return otherPortPosx - portPosx;
+        if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
 
         return -1;
     }
 
-    snapOpX(_x, op)
+    snapOpX(_x, op, dist)
     {
+        dist = dist || 5;
         if (op)
         {
             let index = 0;
@@ -149,7 +150,7 @@ export default class SnapLines extends CABLES.EventTarget
                 if (op.portsIn[i].uiAttribs.hidePort) continue;
                 index++;
                 if (!op.portsIn[i].isLinked()) continue;
-                const s = this._snapPortX(_x, op.portsIn[i], index);
+                const s = this._snapPortX(_x, op.portsIn[i], index, dist);
                 if (s != -1) return s;
             }
 
@@ -159,10 +160,12 @@ export default class SnapLines extends CABLES.EventTarget
                 if (op.portsOut[i].uiAttribs.hidePort) continue;
                 index++;
                 if (!op.portsOut[i].isLinked()) continue;
-                const s = this._snapPortX(_x, op.portsOut[i], index);
+                const s = this._snapPortX(_x, op.portsOut[i], index, dist);
                 if (s != -1) return s;
             }
+            console.warn("no port found...?");
         }
+        else console.warn("snapopx no op");
 
         return _x;
     }
