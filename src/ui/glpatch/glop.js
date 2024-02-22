@@ -208,6 +208,8 @@ export default class GlOp extends CABLES.EventTarget
 
     get op() { return this._op; }
 
+
+
     _onBgRectDrag(rect)
     {
         if (gui.longPressConnector.isActive()) return;
@@ -306,6 +308,9 @@ export default class GlOp extends CABLES.EventTarget
                     }
                 });
             }(this, this._dragOldUiAttribs + ""));
+
+
+            gui.patchView.testCollision(this._op);
 
             undo.endGroup(undoGroup, "Move Ops");
         }
@@ -1476,7 +1481,8 @@ export default class GlOp extends CABLES.EventTarget
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
-        x = this._glPatch.snapLines.snapX(x);
+        x = this._glPatch.snapLines.snapOpX(x, this._op);
+
         y = this._glPatch.snapLines.snapY(y);
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });

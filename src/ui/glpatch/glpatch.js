@@ -212,7 +212,26 @@ export default class GlPatch extends CABLES.EventTarget
         gui.keys.key("u", "Goto parent subpatch", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { CABLES.CMD.PATCH.gotoParentSubpatch(); });
 
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
-        gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () => { gui.patchView.alignOps(gui.patchView.getSelectedOps()); });
+        gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
+        {
+            //  gui.patchView.alignOps(gui.patchView.getSelectedOps());
+
+            for (let j = 0; j < 20; j++)
+                for (const i in this._selectedGlOps)
+                {
+                    // console.log("i", i, this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op);
+
+                    this._selectedGlOps[i].op.setUiAttribs(
+                        {
+                            "translate":
+                            {
+                                "x": this.snapLines.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
+                                "y": this._selectedGlOps[i].op.uiAttribs.translate.y
+                            } });
+
+                    gui.patchView.testCollision(this._selectedGlOps[i].op);
+                }
+        });
         gui.keys.key("a", "Compress selected ops vertically", "down", cgl.canvas.id, { "shiftKey": true, "displayGroup": "editor" }, (e) => { gui.patchView.compressSelectedOps(gui.patchView.getSelectedOps()); });
 
         gui.keys.key("j", "Navigate op history back", "down", cgl.canvas.id, { "displayGroup": "editor" }, (e) => { gui.opHistory.back(); });

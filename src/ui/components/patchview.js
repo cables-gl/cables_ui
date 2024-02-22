@@ -310,24 +310,69 @@ export default class PatchView extends CABLES.EventTarget
 
     testCollision(op)
     {
-        let found = true;
-        while (found)
+        let count = 0;
+        let collided = {};
+        for (let j = 0; j < gui.corePatch().ops.length; j++)
         {
-            found = false;
-            for (let j = 0; j < gui.corePatch().ops.length; j++)
-            {
-                const b = gui.corePatch().ops[j];
-                if (b.deleted || b == op) continue;
-                if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
+            const b = gui.corePatch().ops[j];
+            if (b.deleted || b == op) continue;
+            if (b.uiAttribs.subPatch != op.uiAttribs.subPatch) continue;
+            if (!b.uiAttribs.translate) continue;
+            if (!op.uiAttribs.translate) continue;
+            if (collided[b.id]) continue;
 
-                if (b.uiAttribs.translate &&
-                    op.uiAttribs.translate &&
-                    (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
-                    op.uiAttribs.translate.y == b.uiAttribs.translate.y)
+            const glopA = this._patchRenderer.getGlOp(op);
+            const glopB = this._patchRenderer.getGlOp(b);
+            // console.log(op.uiAttribs.translate.x, glopA.w, glopA.y, glopA.h);
+            let found = true;
+            while (found)
+            {
+                found = false;
+                if (
+                    (
+                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
+                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                    )
+                    ||
+                    (
+                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                    )
+                    ||
+                    (
+                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
+                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                    )
+                    ||
+                    (
+                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                    )
+                // || (
+                //     b.uiAttribs.translate.x >= op.uiAttribs.translate.x && b.uiAttribs.translate.x <= op.uiAttribs.translate.x + glopA.w &&
+                //     b.uiAttribs.translate.y >= op.uiAttribs.translate.y && b.uiAttribs.translate.y <= op.uiAttribs.translate.y + glopA.h)
+
+                )
+
+
+                // if (b.uiAttribs.translate &&
+                //     op.uiAttribs.translate &&
+                //     (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
+                //     op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
-                    let y = b.uiAttribs.translate.y + CABLES.GLUI.glUiConfig.newOpDistanceY;
-                    op.setUiAttrib({ "translate": { "x": b.uiAttribs.translate.x, "y": y } });
+                    // console.log("collide");
+                    let y = this.snapOpPosY(b.uiAttribs.translate.y + CABLES.UI.uiConfig.snapY / 2 + glopB.h);
+                    op.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": y } });
                     found = true;
+                    count++;
+                    collided[b.id] = true;
+                    collided[op.id] = true;
+                }
+
+                if (count > 100)
+                {
+                    console.log("count 100");
+                    return;
                 }
             }
         }
@@ -434,6 +479,7 @@ export default class PatchView extends CABLES.EventTarget
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
 
+
                     gui.corePatch().link(
                         options.linkNewOpToOp,
                         options.linkNewOpToPort.getName(),
@@ -504,6 +550,7 @@ export default class PatchView extends CABLES.EventTarget
             "x": oldOp.uiAttribs.translate.x,
             "y": oldOp.uiAttribs.translate.y - CABLES.GLUI.glUiConfig.newOpDistanceY
         };
+
 
         gui.patchView.addOp(opname, {
             "onOpAdd": (newOp) =>
@@ -959,8 +1006,17 @@ export default class PatchView extends CABLES.EventTarget
         let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
         let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
 
-        if (patchInputOP)patchInputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.miny - gluiconfig.newOpDistanceY * 2 } });
-        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate": { "x": b.minx, "y": b.maxy + gluiconfig.newOpDistanceY * 2 } });
+        if (patchInputOP)patchInputOP.setUiAttribs({ "translate":
+        {
+            "x": patchInputOP.uiAttribs.translate.x,
+            "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+        }
+        });
+        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate":
+        {
+            "x": patchOutputOP.uiAttribs.translate.x,
+            "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2) }
+        });
     }
 
     getSubPatchName(subpatch)
