@@ -48,7 +48,7 @@ export function notifyError(title, text, options = {})
     iziToast.error(
         {
             "id": toastId,
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            "position": "bottomRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
             "title": title,
             "message": text || "",
@@ -84,7 +84,7 @@ export function notifyWarn(title, text, options = {})
     iziToast.warning(
         {
             "id": toastId,
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            "position": "bottomRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
             "title": title,
             "message": text || "",
@@ -142,7 +142,7 @@ export function notify(title, text, options = {})
     iziToast.show(
         {
             "id": toastId,
-            "position": "topRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
+            "position": "bottomRight", // bottomRight, bottomLeft, topRight, topLeft, topCenter, bottomCenter, center
             "theme": "dark",
             "title": title,
             "message": text || "",
