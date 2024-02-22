@@ -1429,7 +1429,7 @@ export default class GlOp extends CABLES.EventTarget
     {
         if (!this._op) return;
         this._setPortIndexAttribs(this._op.portsIn);
-        return this._op.getPortPosX(id);
+        return this._op.getPortPosX(id, null, true);
     }
 
     isPassiveDrag()

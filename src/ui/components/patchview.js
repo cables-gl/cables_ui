@@ -348,21 +348,26 @@ export default class PatchView extends CABLES.EventTarget
                         glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
                         glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
                     )
-                // || (
-                //     b.uiAttribs.translate.x >= op.uiAttribs.translate.x && b.uiAttribs.translate.x <= op.uiAttribs.translate.x + glopA.w &&
-                //     b.uiAttribs.translate.y >= op.uiAttribs.translate.y && b.uiAttribs.translate.y <= op.uiAttribs.translate.y + glopA.h)
-
                 )
-
-
-                // if (b.uiAttribs.translate &&
-                //     op.uiAttribs.translate &&
-                //     (op.uiAttribs.translate.x <= b.uiAttribs.translate.x + 50 && op.uiAttribs.translate.x >= b.uiAttribs.translate.x) &&
-                //     op.uiAttribs.translate.y == b.uiAttribs.translate.y)
                 {
-                    // console.log("collide");
-                    let y = this.snapOpPosY(b.uiAttribs.translate.y + CABLES.UI.uiConfig.snapY / 2 + glopB.h);
-                    op.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": y } });
+                    let mulDirY = 1;
+                    if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
+                    let y = this.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
+                    let x = op.uiAttribs.translate.x;
+
+                    const link = op.isConnectedTo(b);
+                    if (link)
+                    {
+                        let p = link.portIn;
+                        if (link.portOut.op == op)p = link.portOut;
+                        const otherPort = link.getOtherPort(p);
+                        x = otherPort.op.uiAttribs.translate.x + otherPort.op.getPortPosX(otherPort.name);
+                    }
+
+                    op.setUiAttrib({ "translate": { "x": x, "y": y } });
+
+                    gui.patchView.testCollision(op);
+
                     found = true;
                     count++;
                     collided[b.id] = true;

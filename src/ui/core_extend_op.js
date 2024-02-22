@@ -159,6 +159,16 @@ export default function extendCoreOp()
             );
     };
 
+    CABLES.Op.prototype.isLinkedIn = function ()
+    {
+        for (let i = 0; i < this.portsIn.length; i++) if (this.portsIn[i] && this.portsIn[i].isLinked()) return true;
+        return false;
+    };
+    CABLES.Op.prototype.isLinkedOut = function ()
+    {
+        for (let i = 0; i < this.portsOut.length; i++) if (this.portsOut[i] && this.portsOut[i].isLinked()) return true;
+        return false;
+    };
 
     CABLES.Op.prototype.hasParent = function (type, name, count)
     {
@@ -186,6 +196,20 @@ export default function extendCoreOp()
         }
         return false;
     };
+
+    CABLES.Op.prototype.isConnectedTo = function (op2)
+    {
+        for (let i = 0; i < this.portsIn.length; i++)
+            if (this.portsIn[i].isLinked())
+                for (let j = 0; j < this.portsIn[i].links.length; j++)
+                    if (this.portsIn[i].links[j].getOtherPort(this.portsIn[i]).op == op2) return this.portsIn[i].links[j];
+
+        for (let i = 0; i < this.portsOut.length; i++)
+            if (this.portsOut[i].isLinked())
+                for (let j = 0; j < this.portsOut[i].links.length; j++)
+                    if (this.portsOut[i].links[j].getOtherPort(this.portsOut[i]).op == op2) return this.portsOut[i].links[j];
+    };
+
 
     CABLES.Op.prototype.isPatchOp = function ()
     {
@@ -628,47 +652,59 @@ export default function extendCoreOp()
         return 0;
     };
 
-    CABLES.Op.prototype.getPortPosX = function (name, opid)
+    CABLES.Op.prototype.getPortPosX = function (name, opid, center)
     {
+        let offCenter = uiconfig.portSize * 0.5;
+        if (!center)offCenter = 0;
+
+        let index = 0;
         if (this.isSubPatchOp() == 2)
         {
             const ports = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
 
+            index = 0;
             for (let i = 0; i < ports.length; i++)
             {
+                if (ports[i].uiAttribs.hidePort) continue;
                 if (ports[i].name == name)
-                {
-                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
-                }
+                    return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                index++;
             }
 
-
             const portsOut = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_OUT);
+            index = 0;
 
             for (let i = 0; i < portsOut.length; i++)
             {
+                if (portsOut[i].uiAttribs.hidePort) continue;
                 if (portsOut[i].name == name)
-                {
-                    return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
-                }
+                    return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                index++;
             }
         }
 
-
+        index = 0;
         for (let i = 0; i < this.portsIn.length; i++)
         {
+            if (this.portsIn[i].uiAttribs.hidePort) continue;
+
             if (this.portsIn[i].name == name)
             {
-                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
             }
+            index++;
         }
 
+        index = 0;
         for (let i = 0; i < this.portsOut.length; i++)
         {
+            if (this.portsOut[i].uiAttribs.hidePort) continue;
+
             if (this.portsOut[i].name == name)
             {
-                return i * (gluiconfig.portWidth + gluiconfig.portPadding) + uiconfig.portSize * 0.5;
+                return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
             }
+            index++;
         }
 
         // console.log("could not find port posx ", name, this.getTitle(), opid);

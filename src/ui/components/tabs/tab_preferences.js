@@ -72,7 +72,6 @@ export default class Preferences
         this.setSwitchValue("quickLinkLongPress", userSettings.get("quickLinkLongPress"));
         this.setSwitchValue("quickLinkMiddleMouse", userSettings.get("quickLinkMiddleMouse"));
 
-        this.setSwitchValue("disableSnapLines", userSettings.get("disableSnapLines"));
 
         this.setSwitchValue("forceWebGl1", userSettings.get("forceWebGl1"));
         this.setSwitchValue("devinfos", userSettings.get("devinfos") || false);
