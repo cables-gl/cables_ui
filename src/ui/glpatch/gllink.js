@@ -402,7 +402,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._glOpIn.getUiAttribs().translate.y,
-                        this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._portNameInput, this._subPatchInputOp.id),
+                        this._subPatchInputOp.uiAttribs.translate.x + this._subPatchInputOp.getPortPosX(this._portNameInput, this._subPatchInputOp.id, true),
                         this._subPatchInputOp.uiAttribs.translate.y + 30,
                     );
                 }
@@ -445,7 +445,7 @@ export default class GlLink
 
                     foundCableSub = true;
                     this._cableSub.setPosition(
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameInput, this._subPatchOp.id, true),
                         this._subPatchOp.uiAttribs.translate.y,
                         this._glOpOut.getUiAttribs().translate.x + this._offsetXOutput,
                         this._glOpOut.getUiAttribs().translate.y + 30,
@@ -469,7 +469,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._glOpIn.getUiAttribs().translate.y,
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
                 }
@@ -486,7 +486,7 @@ export default class GlLink
                     this._cable.setPosition(
                         this._glOpIn.getUiAttribs().translate.x + this._offsetXInput,
                         this._glOpIn.getUiAttribs().translate.y,
-                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id),
+                        this._subPatchOp.uiAttribs.translate.x + this._subPatchOp.getPortPosX(this._portNameOutput, this._subPatchOp.id, true),
                         this._subPatchOp.uiAttribs.translate.y + 30,
                     );
                 }
@@ -495,7 +495,7 @@ export default class GlLink
                 {
                     if (this._debugColor) this._cableSub.setColor(1, 0.5, 0.4, 1);
                     this._cableSub.setPosition(
-                        this._subPatchOutputOp.uiAttribs.translate.x + this._subPatchOutputOp.getPortPosX(this._portNameOutput, this._subPatchOutputOp.id),
+                        this._subPatchOutputOp.uiAttribs.translate.x + this._subPatchOutputOp.getPortPosX(this._portNameOutput, this._subPatchOutputOp.id, true),
                         this._subPatchOutputOp.uiAttribs.translate.y,
 
                         this._glOpOut.getUiAttribs().translate.x + this._offsetXOutput,

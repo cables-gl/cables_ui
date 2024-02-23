@@ -18,13 +18,7 @@ export default class SnapLines extends CABLES.EventTarget
 
         this._rectWidth = 1;
 
-        this.enabled = !userSettings.get("disableSnapLines");
-
         this.enabled = true;
-        // userSettings.on("change", () =>
-        // {
-        //     this.enabled = !userSettings.get("disableSnapLines");
-        // });
 
         if (this.enabled)
         {

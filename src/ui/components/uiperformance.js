@@ -108,7 +108,7 @@ export default class UiProfiler
             );
         }
 
-        console.table(data);
+        console.table("uiperf print", data);
     }
 
     clear()
