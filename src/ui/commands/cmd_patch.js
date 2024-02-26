@@ -221,11 +221,10 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
 
                 for (let j = 0; j < opdocs.length; j++) if (opdocs[j] && opdocs[j].id == ids[i])
                 {
-                    console.log(opdocs[j]);
                     opdocs[j].name =
-                    opdocs[j].shortName =
-                    opdocs[j].shortNameDisplay =
-                    opdocs[j].nameSpace = "deleted op";
+                        opdocs[j].shortName =
+                        opdocs[j].shortNameDisplay =
+                        opdocs[j].nameSpace = "deleted op";
                     break;
                 }
 

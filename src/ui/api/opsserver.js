@@ -763,7 +763,7 @@ export default class ServerOps
                     if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value + capitalize(ele.byId("opNameDialogInput").value))
                     {
                         ele.show(ele.byId("opNameDialogSubmit"));
-                        ele.show(ele.byId("opNameDialogSubmitReplace"));
+                        if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
 
                         _updateFormFromApi(res, v, newNamespace);
                     }
