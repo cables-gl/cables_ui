@@ -658,7 +658,7 @@ export default class FindTab
 
                 if (ops[i].opId.indexOf(str) > -1)
                 {
-                    where = "opid: " + ops[i].opid;
+                    where = "opid: " + ops[i].opId;
                     score += 1;
                     found = true;
                 }
