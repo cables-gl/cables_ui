@@ -756,26 +756,20 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        // new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         this.showApiError(err);
                         return;
                     }
 
-
-                    if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value)
+                    if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value + capitalize(ele.byId("opNameDialogInput").value))
                     {
                         ele.show(ele.byId("opNameDialogSubmit"));
                         ele.show(ele.byId("opNameDialogSubmitReplace"));
-                    }
-                    console.log(res.checkedName);
-                    gui.jobs().finish("checkOpName" + res.checkedName);
 
-                    _updateFormFromApi(res, v, newNamespace);
+                        _updateFormFromApi(res, v, newNamespace);
+                    }
+                    gui.jobs().finish("checkOpName" + res.checkedName);
                 });
             }
-            // else
-            // {
-            // }
         };
 
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
