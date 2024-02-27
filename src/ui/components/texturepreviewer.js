@@ -5,6 +5,8 @@ import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
 import ele from "../utils/ele";
 
+const MODE_CORNER = 0;
+const MODE_HOVER = 1;
 
 export default class TexturePreviewer
 {
@@ -15,7 +17,7 @@ export default class TexturePreviewer
         this._texturePorts = [];
         this._showing = false;
         this._lastTimeActivity = 0;
-        this._mode = 1;
+        this._mode = userSettings.get("texpreviewMode") == "corner" ? MODE_CORNER : MODE_HOVER;
         this._paused = false;
         this._shader = null;
         this._shaderTexUniform = null;
@@ -28,7 +30,6 @@ export default class TexturePreviewer
         this._currentHeight = -1;
         this._currentWidth = -1;
         this._lastClicked = null;
-        this.pinned = false;
         this.scale = 0.2;
 
         this._ele = document.getElementById("bgpreview");
@@ -43,6 +44,13 @@ export default class TexturePreviewer
 
         this._initListener();
         this.enableBgPreview();
+
+        if (this._mode == MODE_HOVER)
+        {
+            this._enabled = false;
+            ele.byId("bgpreviewButtonsContainer").classList.add("hidden");
+            ele.byId("bgpreview").classList.add("hidden");
+        }
     }
 
     _initListener()
@@ -54,20 +62,41 @@ export default class TexturePreviewer
             return;
         }
 
-        gui.opParams.on("opSelected", () =>
+        if (this._mode == MODE_HOVER)
         {
-            let foundPreview = false;
-            const ports = gui.opParams.op.portsOut;
-
-            for (let i = 0; i < ports.length; i++)
+            gui.on("portHovered", (port) =>
             {
-                if (!foundPreview && ports[i].uiAttribs.preview)
+                if (port && port.get() && port.get().tex)
                 {
-                    this.selectTexturePort(ports[i]);
-                    return;
+                    this._enabled = true;
+                    this.selectTexturePort(port);
+
+                    clearTimeout(this._hoverTimeout);
+                    this._hoverTimeout = setTimeout(() =>
+                    {
+                        this._enabled = false;
+                    }, 50);
                 }
-            }
-        });
+            });
+        }
+
+        if (this._mode == MODE_CORNER)
+        {
+            gui.opParams.on("opSelected", () =>
+            {
+                let foundPreview = false;
+                const ports = gui.opParams.op.portsOut;
+
+                for (let i = 0; i < ports.length; i++)
+                {
+                    if (!foundPreview && ports[i].uiAttribs.preview)
+                    {
+                        this.selectTexturePort(ports[i]);
+                        return;
+                    }
+                }
+            });
+        }
     }
 
 
@@ -186,10 +215,34 @@ export default class TexturePreviewer
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
-            previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
+            if (this._mode == MODE_CORNER)
+            {
+                previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
 
-            if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
-                previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+                if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
+                    previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+            }
+
+            if (this._mode == MODE_HOVER && this._enabled)
+            {
+                const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+
+                if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+
+                let w = 150;
+                let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
+                let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
+                let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
+                vizCtx.translate(x, y);
+
+                if (w <= 1)w = h / 2;
+                if (h <= 1)h = w / 2;
+                vizCtx.scale(1, -1);
+                vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
+                vizCtx.scale(1, 1);
+                vizCtx.globalAlpha = 1;
+            }
+
 
             perf2.finish();
 
@@ -298,40 +351,42 @@ export default class TexturePreviewer
 
         // console.log("bgpreviewMax", userSettings.get("bgpreviewMax"), enabled);
 
-        if (!enabled)
+
+        if (this._mode == MODE_CORNER)
         {
-            this.pressedEscape();
+            if (!enabled)
+            {
+                this.pressedEscape();
 
+                ele.byId("bgpreviewInfo").classList.add("hidden");
+                ele.byId("bgpreviewMin").classList.add("hidden");
+                ele.byId("bgpreviewMax").classList.remove("hidden");
+                ele.byId("texprevSize").classList.add("hidden");
+                ele.byId("texprevSize2").classList.add("hidden");
 
-            ele.byId("bgpreviewInfo").classList.add("hidden");
-            ele.byId("bgpreviewMin").classList.add("hidden");
-            ele.byId("bgpreviewMax").classList.remove("hidden");
-            ele.byId("bgpreviewInfoPin").classList.add("hidden");
-            ele.byId("texprevSize").classList.add("hidden");
-            ele.byId("texprevSize2").classList.add("hidden");
+                this._ele.classList.add("hidden");
+            }
+            else
+            {
+                this.paused = false;
+                ele.byId("bgpreviewInfo").classList.remove("hidden");
+                ele.byId("bgpreviewMin").classList.remove("hidden");
+                ele.byId("bgpreviewMax").classList.add("hidden");
+                ele.byId("texprevSize").classList.remove("hidden");
+                ele.byId("texprevSize2").classList.remove("hidden");
 
-            this._ele.classList.add("hidden");
-        }
-        else
-        {
-            this.paused = false;
-            ele.byId("bgpreviewInfo").classList.remove("hidden");
-            ele.byId("bgpreviewMin").classList.remove("hidden");
-            ele.byId("bgpreviewInfoPin").classList.remove("hidden");
-            ele.byId("bgpreviewMax").classList.add("hidden");
-            ele.byId("texprevSize").classList.remove("hidden");
-            ele.byId("texprevSize2").classList.remove("hidden");
+                this._ele.classList.remove("hidden");
 
-            this._ele.classList.remove("hidden");
-
-            if (this._lastClicked) this.selectTexturePort(this._lastClickedP);
+                if (this._lastClicked) this.selectTexturePort(this._lastClickedP);
+            }
         }
     }
 
     hide()
     {
         this._paused = true;
-        CABLES.UI.hideToolTip();
+
+        if (this._mode == MODE_CORNER) CABLES.UI.hideToolTip();
     }
 
     pressedEscape()
@@ -397,7 +452,6 @@ export default class TexturePreviewer
 
     selectTexturePort(p)
     {
-        if (this.pinned) return;
         if (!userSettings.get("bgpreview"))
         {
             this._lastClickedP = p;
@@ -407,7 +461,9 @@ export default class TexturePreviewer
         }
 
 
-        ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+        if (this._mode == MODE_CORNER)
+            ele.byId("bgpreviewButtonsContainer").classList.remove("hidden");
+
         CABLES.UI.hideToolTip();
 
         if (!this._listeningFrame && p)
@@ -439,10 +495,6 @@ export default class TexturePreviewer
     }
 
 
-    setMode(m)
-    {
-        this._mode = m;
-    }
 
     updateTexturePort(port)
     {
@@ -476,7 +528,7 @@ export default class TexturePreviewer
             this._texturePorts[idx].updated = CABLES.now();
             this._texturePorts[idx].activity++;
 
-            if (this._mode == CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow = true;
+            // if (this._mode == CABLES.UI.TexturePreviewer.MODE_ACTIVE) this._texturePorts[idx].doShow = true;
         }
 
         return this._texturePorts[idx];
@@ -502,66 +554,47 @@ export default class TexturePreviewer
         if (this._lastClickedP) gui.patchView.centerSelectOp(this._lastClickedP.op.id);
     }
 
-    pin(a)
-    {
-        if (a === undefined)
-            this.pinned = !this.pinned;
-        else
-            this.pinned = a;
-
-        if (this.pinned)
-        {
-            ele.byId("texPrevPin").classList.remove("icon-pin-outline");
-            ele.byId("texPrevPin").classList.add("icon-pin-filled");
-        }
-        else
-        {
-            ele.byId("texPrevPin").classList.add("icon-pin-outline");
-            ele.byId("texPrevPin").classList.remove("icon-pin-filled");
-        }
-    }
-
     deserialize(o)
     {
-        if (!o) return;
+        // if (!o) return;
 
-        this.enableBgPreview(o.enabled);
-        const op = gui.corePatch().getOpById(o.op);
+        // this.enableBgPreview(o.enabled);
+        // const op = gui.corePatch().getOpById(o.op);
 
-        if (!op)
-        {
-            console.log("texpreviewer cant find op");
-            return;
-        }
+        // if (!op)
+        // {
+        //     console.log("texpreviewer cant find op");
+        //     return;
+        // }
 
-        const p = op.getPort(o.port);
+        // const p = op.getPort(o.port);
 
-        this.selectTexturePort(p);
-        this._lastClicked = this.updateTexturePort(p);
+        // this.selectTexturePort(p);
+        // this._lastClicked = this.updateTexturePort(p);
 
-        this.pin(o.pinned);
-        this.enableBgPreview(o.enabled);
+        // // this.pin(o.pinned);
+        // this.enableBgPreview(o.enabled);
     }
 
     serialize()
     {
         const o = {};
 
-        o.pinned = gui.metaTexturePreviewer.pinned;
+        // // o.pinned = gui.metaTexturePreviewer.pinned;
 
-        if (this._lastClickedP || this._lastClicked)
-        {
-            const p = this._lastClicked || this._lastClickedP.port;
+        // if (this._lastClickedP || this._lastClicked)
+        // {
+        //     const p = this._lastClicked || this._lastClickedP.port;
 
-            if (p)
-            {
-                o.port = p.port.name;
-                o.op = p.port.op.id;
-                o.enabled = this._enabled;
-            }
+        //     if (p)
+        //     {
+        //         o.port = p.port.name;
+        //         o.op = p.port.op.id;
+        //         o.enabled = this._enabled;
+        //     }
 
-            // console.log(o);
-        }
+        //     // console.log(o);
+        // }
 
         return o;
     }

@@ -52,7 +52,9 @@ export default class Preferences
 
         this.setSwitchValue("hideCanvasUi", userSettings.get("hideCanvasUi"));
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
+
         this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
+        this.setSwitchValue("texpreviewMode", userSettings.get("texpreviewMode") || false);
 
         this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
         this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));

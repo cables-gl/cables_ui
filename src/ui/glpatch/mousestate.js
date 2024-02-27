@@ -60,6 +60,9 @@ export default class MouseState extends CABLES.EventTarget
         });
     }
 
+    get x() { return this._x; }
+
+    get y() { return this._y; }
 
     get numFingers() { return this._numFingers; }
 

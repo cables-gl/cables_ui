@@ -44,9 +44,12 @@ export function showToolTip(e, txt, nopadding)
 export function hideToolTip()
 {
     if (!eleTooltip) return;
-    // eleTooltip.style.display = "none";
+
+    gui.emitEvent("portHovered", null);
+
     clearTimeout(tooltipTimeout);
     clearInterval(CABLES.UI.hoverInterval);
+
     CABLES.UI.hoverInterval = -1;
     ele.hide(eleTooltip);
 }
@@ -159,7 +162,10 @@ function getPortDescription(thePort, overlink)
 
 export function updateHoverToolTip(event, port, overlink)
 {
+    gui.emitEvent("portHovered", port);
     if (!port) return;
+
+
 
     let txt = getPortDescription(port, overlink);
     let val = null;
