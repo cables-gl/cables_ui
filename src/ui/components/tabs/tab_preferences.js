@@ -54,7 +54,7 @@ export default class Preferences
         this.setSwitchValue("bgpreview", userSettings.get("bgpreview"));
 
         this.setSwitchValue("texpreviewTransparent", userSettings.get("texpreviewTransparent") || false);
-        this.setSwitchValue("texpreviewMode", userSettings.get("texpreviewMode") || false);
+        this.setSwitchValue("texpreviewMode", userSettings.get("texpreviewMode") || "");
 
         this.setSwitchValue("linetype", userSettings.get("linetype") || "curved");
         this.setSwitchValue("touchpadmode", userSettings.get("touchpadmode"));
