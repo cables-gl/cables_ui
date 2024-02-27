@@ -19,14 +19,18 @@ const webpackConfig = require("./webpack.config");
 let configLocation = "../cables_api/cables.json";
 if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
 
-if (!fs.existsSync(configLocation))
+let isLiveBuild = false;
+if (fs.existsSync(configLocation))
 {
-    console.error("config file not found at", configLocation);
-    process.exit(1);
+    const config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
+    isLiveBuild = config.env === "live";
+}
+else
+{
+    console.error("config file not found at", configLocation, "forcing dev build");
 }
 
-const config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
-const isLiveBuild = config.env === "live";
+
 
 let buildInfo = getBuildInfo();
 

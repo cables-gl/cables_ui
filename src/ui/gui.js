@@ -95,16 +95,18 @@ export default class Gui
         if (!cfg) cfg = {};
         if (!cfg.usersettings) cfg.usersettings = { "settings": {} };
 
-        this._corePatch = CABLES.patch = new CABLES.Patch({
+        let patchConfig = {
             "editorMode": true,
             "canvas":
-            {
-                "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
-                "alpha": true,
-                "premultipliedAlpha": true,
-            },
+                {
+                    "forceWebGl1": cfg.usersettings.settings.forceWebGl1 === true || cfg.usersettings.settings.forceWebGl1 === "true",
+                    "alpha": true,
+                    "premultipliedAlpha": true,
+                },
             "variables": {}
-        });
+        };
+        if (cfg.patchConfig) patchConfig = Object.assign(patchConfig, cfg.patchConfig);
+        this._corePatch = CABLES.patch = new CABLES.Patch(patchConfig);
 
         this._patchLoadEndiD = this._corePatch.on("patchLoadEnd",
             () =>

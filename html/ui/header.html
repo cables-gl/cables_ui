@@ -3,10 +3,14 @@
     <head>
         <title>| cables</title>
 
-        <script src="js/libs.ui.min.js?cb=1"></script>
-        <script src="js/talkerapi.js"></script>
-
         <script>
+            if(window.hasOwnProperty("require")) {
+                // electron npm load functionality
+                window.nodeRequire = require;
+                delete window.require;
+                delete window.exports;
+                delete window.module;
+            }
 
             if(parent !== window) {
                 window.addEventListener("hashchange", (event) => {
@@ -14,6 +18,10 @@
                 });
             }
         </script>
+
+        <script src="js/libs.ui.min.js?cb=1"></script>
+        <script src="js/talkerapi.js"></script>
+
         <meta name="robots" content="noindex, nofollow"/>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
         <style media="screen">

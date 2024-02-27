@@ -102,7 +102,11 @@ export default class OpSelect
         }
         else
         {
-            if (num === 0 && (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1))
+            const isOwner = gui.project().userId === gui.user.id;
+            const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
+            const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
+
+            if (num === 0 && !(isOwner || isFullCollab || isReadOnlyCollab))
             {
                 optionsHtml += "<div class=\"warning\">Your user ops are hidden, you are not a collaborator of patch </div>";
             }
