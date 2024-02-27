@@ -77,7 +77,14 @@ export default class LibLoader
                 newScript.async = true;
                 if (name.startsWith("/assets"))
                 {
-                    newScript.src = name + "?nc=" + this.getCacheBusterNumber();
+                    if (gui && gui.corePatch() && gui.corePatch().config.prefixAssetPath)
+                    {
+                        newScript.src = (gui.corePatch().config.prefixAssetPath + name).replace("//", "/");
+                    }
+                    else
+                    {
+                        newScript.src += name + "?nc=" + this.getCacheBusterNumber();
+                    }
                     newScript.onload = () =>
                     {
                         CABLES.loadedLib(name);
