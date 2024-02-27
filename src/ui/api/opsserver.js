@@ -741,6 +741,11 @@ export default class ServerOps
             const newNamespace = ele.byId("opNameDialogNamespace").value;
             let v = capitalize(ele.byId("opNameDialogInput").value);
 
+            ele.hide(ele.byId("opNameDialogSubmit"));
+            ele.hide(ele.byId("opNameDialogSubmitReplace"));
+
+            gui.jobs().start({ "id": "checkOpName" + newNamespace + v, "title": "checking iop name" + newNamespace });
+
             if (v)
             {
                 CABLESUILOADER.talkerAPI.send("checkOpName", {
@@ -751,18 +756,19 @@ export default class ServerOps
                 {
                     if (err)
                     {
-                        // new ModalError({ "title": "Error/Invalid response from server 5", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
                         this.showApiError(err);
                         return;
                     }
 
-                    _updateFormFromApi(res, v, newNamespace);
+                    if (res.checkedName && res.checkedName == ele.byId("opNameDialogNamespace").value + capitalize(ele.byId("opNameDialogInput").value))
+                    {
+                        ele.show(ele.byId("opNameDialogSubmit"));
+                        if (options.showReplace) ele.show(ele.byId("opNameDialogSubmitReplace"));
+
+                        _updateFormFromApi(res, v, newNamespace);
+                    }
+                    gui.jobs().finish("checkOpName" + res.checkedName);
                 });
-            }
-            else
-            {
-                ele.hide(ele.byId("opNameDialogSubmit"));
-                ele.hide(ele.byId("opNameDialogSubmitReplace"));
             }
         };
 

@@ -185,6 +185,55 @@ CABLES_CMD_PATCH.createAreaFromSelection = function ()
     gui.patchView.createAreaFromSelection();
 };
 
+CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
+{
+    const opdocs = gui.opDocs.getAll();
+    let text = "";
+    let ids = [];
+
+    for (let i = 0; i < opdocs.length; i++)
+    {
+        if (opdocs[i].name.indexOf("Ops.Patch") == 0)
+        {
+            const usedOps = gui.corePatch().getOpsByOpId(opdocs[i].id);
+
+            if (ids.indexOf(opdocs[i].id) == -1 && usedOps.length == 0)
+            {
+                text += "- " + opdocs[i].name + "<br/>";
+                ids.push(opdocs[i].id);
+                console.log("found patch op", opdocs[i].id);
+            }
+        }
+    }
+
+    if (ids.length == 0)
+    {
+        new ModalDialog({ "title": "Unused Patch Ops", "text": "No unused patch ops found.", "showOkButton": true });
+    }
+    else
+    {
+        const modal = new ModalDialog({ "title": "Delete unused ops?", "text": text, "choice": true });
+        modal.on("onSubmit", () =>
+        {
+            for (let i = 0; i < ids.length; i++)
+            {
+                CABLESUILOADER.talkerAPI.send("deleteOp", { "opId": ids[i] }, console.log);
+
+                for (let j = 0; j < opdocs.length; j++) if (opdocs[j] && opdocs[j].id == ids[i])
+                {
+                    opdocs[j].name =
+                        opdocs[j].shortName =
+                        opdocs[j].shortNameDisplay =
+                        opdocs[j].nameSpace = "deleted op";
+                    break;
+                }
+
+                gui.opSelect().reload();
+            }
+        });
+    }
+};
+
 CABLES_CMD_PATCH.createSubPatchOp = function ()
 {
     if (!gui.project().allowEdit && gui.patchView.getCurrentSubPatch() == 0)
@@ -1532,6 +1581,12 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "create subpatch op",
         "func": CABLES_CMD_PATCH.createSubPatchOp,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
+        "cmd": "delete unused patch ops",
+        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
         "category": "patch",
         "icon": "op"
     },
