@@ -246,6 +246,7 @@ export default class TexturePreviewer
                 vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
                 vizCtx.scale(1, 1);
                 vizCtx.globalAlpha = 1;
+                console.log("draw", x, y);
             }
 
 
