@@ -230,23 +230,30 @@ export default class TexturePreviewer
 
             if (this._mode == MODE_HOVER && this._enabled)
             {
-                // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+                const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+                vizCtx.save();
 
-                // if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+                if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
 
-                // let w = 150;
-                // let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
-                // let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
-                // let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
-                // vizCtx.translate(x, y);
+                let w = 150;
+                let h = Math.min(150, 150 * previewCanvasEle.height / this._currentWidth);
+                let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
+                let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
+                vizCtx.translate(x, y);
 
-                // if (w <= 1)w = h / 2;
-                // if (h <= 1)h = w / 2;
-                // vizCtx.scale(1, -1);
-                // vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
-                // vizCtx.scale(1, 1);
-                // vizCtx.globalAlpha = 1;
-                // console.log("draw", x, y);
+                if (w <= 1)w = h / 2;
+                if (h <= 1)h = w / 2;
+                // if (port.get().width < w && port.get().height < h)
+
+                console.log(w, h, port.get().width, port.get().height, cgl.canvas.width, cgl.canvas.height);
+
+                vizCtx.imageSmoothingEnabled = false;
+                vizCtx.scale(1, -1);
+                vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
+                vizCtx.scale(1, 1);
+                vizCtx.globalAlpha = 1;
+                console.log("draw", x, y);
+                vizCtx.restore();
             }
 
 
@@ -262,31 +269,34 @@ export default class TexturePreviewer
     drawVizLayer(vizCtx)
     {
         // vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
-        if (this._mode == MODE_HOVER && this._enabled && this._ele && this._ele.width > 0 && this._ele.height > 0)
-        {
-        // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
+        // if (this._mode == MODE_HOVER && this._enabled && this._ele && this._ele.width > 0 && this._ele.height > 0)
+        // {
+        // // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
 
-            if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
-            vizCtx.save();
-            let w = 150;
-            let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
-            let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
-            let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
-            vizCtx.translate(x, y);
+        //     if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
+        //     vizCtx.save();
+        //     let w = 150;
+        //     let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
+        //     let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
+        //     let y = Math.round(gui.patchView.patchRenderer.viewBox.mouseY * gui.patchView.patchRenderer._cgl.pixelDensity - 0);
+        //     vizCtx.translate(x, y);
 
-            if (w <= 1)w = h / 2;
-            if (h <= 1)h = w / 2;
-            vizCtx.scale(1, -1);
-            vizCtx.drawImage(this._ele, 0, 0, w, h);
-
-            vizCtx.strokeStyle = "black";
-            vizCtx.strokeRect(0, 0, w + 1, h + 1);
+        //     if (this._ele.width < w && this._ele.height < h)vizCtx.imageSmoothingEnabled = false;
 
 
-            vizCtx.scale(1, 1);
-            vizCtx.globalAlpha = 1;
-            vizCtx.restore();
-        }
+        //     if (w <= 1)w = h / 2;
+        //     if (h <= 1)h = w / 2;
+        //     vizCtx.scale(1, -1);
+        //     vizCtx.drawImage(this._ele, 0, 0, w, h);
+
+        //     vizCtx.strokeStyle = "black";
+        //     vizCtx.strokeRect(0, 0, w + 1, h + 1);
+
+
+        //     vizCtx.scale(1, 1);
+        //     vizCtx.globalAlpha = 1;
+        //     vizCtx.restore();
+        // }
     }
 
 
