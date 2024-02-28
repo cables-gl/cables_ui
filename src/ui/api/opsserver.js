@@ -266,7 +266,7 @@ export default class ServerOps
         CABLESUILOADER.talkerAPI.send(
             "opSaveLayout",
             {
-                "opname": op.objName,
+                "opname": op.opId,
                 "layout": opObj,
             },
             (err, res) =>
