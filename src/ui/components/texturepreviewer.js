@@ -243,16 +243,13 @@ export default class TexturePreviewer
 
                 if (w <= 1)w = h / 2;
                 if (h <= 1)h = w / 2;
-                // if (port.get().width < w && port.get().height < h)
 
-                console.log(w, h, port.get().width, port.get().height, cgl.canvas.width, cgl.canvas.height);
+                if (port.get().width < w && port.get().height < h) vizCtx.imageSmoothingEnabled = false;
 
-                vizCtx.imageSmoothingEnabled = false;
                 vizCtx.scale(1, -1);
                 vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
                 vizCtx.scale(1, 1);
                 vizCtx.globalAlpha = 1;
-                console.log("draw", x, y);
                 vizCtx.restore();
             }
 
