@@ -262,12 +262,12 @@ export default class TexturePreviewer
     drawVizLayer(vizCtx)
     {
         // vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
-        if (this._mode == MODE_HOVER && this._enabled)
+        if (this._mode == MODE_HOVER && this._enabled && this._ele && this._ele.width > 0 && this._ele.height > 0)
         {
         // const vizCtx = gui.patchView.patchRenderer.vizLayer._eleCanvas.getContext("2d");
 
             if (userSettings.get("texpreviewTransparent")) vizCtx.globalAlpha = 0.5;
-
+            vizCtx.save();
             let w = 150;
             let h = Math.min(150, 150 * this._ele.height / this._currentWidth);
             let x = Math.round(gui.patchView.patchRenderer.viewBox.mouseX * gui.patchView.patchRenderer._cgl.pixelDensity + 53);
@@ -285,6 +285,7 @@ export default class TexturePreviewer
 
             vizCtx.scale(1, 1);
             vizCtx.globalAlpha = 1;
+            vizCtx.restore();
         }
     }
 
