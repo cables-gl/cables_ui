@@ -105,6 +105,7 @@ export default class VizLayer extends CABLES.EventTarget
         }
 
         if (this._items.length == 0 && !gui.texturePreview().needsVizLayer()) return;
+
         this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
 
