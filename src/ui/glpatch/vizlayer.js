@@ -105,7 +105,7 @@ export default class VizLayer extends CABLES.EventTarget
             return;
         }
 
-        // if (this._items.length == 0 && !gui.texturePreview().needsVizLayer()) return;
+
 
         this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
         this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
@@ -191,8 +191,17 @@ export default class VizLayer extends CABLES.EventTarget
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
 
+
+
+
             this._canvasCtx.restore();
             count++;
+        }
+
+
+        if (gui.texturePreview().needsVizLayer())
+        {
+            gui.texturePreview().drawVizLayer(this._canvasCtx);
         }
 
         this._glPatch.debugData.numVizLayers = count;
