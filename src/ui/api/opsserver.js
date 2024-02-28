@@ -289,9 +289,6 @@ export default class ServerOps
         }
 
 
-        console.warn("execute", name);
-        // CABLES.logStack("execute " + name);
-
         let oldOps = null;
         if (name.indexOf(".") > 0) oldOps = gui.corePatch().getOpsByObjName(name);
         else oldOps = gui.corePatch().getOpsByOpId(name);
