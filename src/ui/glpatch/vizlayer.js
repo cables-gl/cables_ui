@@ -43,6 +43,7 @@ export default class VizLayer extends CABLES.EventTarget
             this._usingGl = true;
             this.renderGl();
         });
+
         gui.corePatch().on("reqAnimFrame", () =>
         {
             if (!this._usingGl)

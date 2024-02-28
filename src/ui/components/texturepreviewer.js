@@ -220,13 +220,13 @@ export default class TexturePreviewer
 
             const perf2 = CABLES.UI.uiProfiler.start("texpreview22");
 
-            if (this._mode == MODE_CORNER)
-            {
-                previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
+            // if (this._mode == MODE_CORNER)
+            // {
+            previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
 
-                if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
-                    previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
-            }
+            if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
+                previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
+            // }
 
             if (this._mode == MODE_HOVER && this._enabled)
             {
@@ -243,10 +243,10 @@ export default class TexturePreviewer
                 if (w <= 1)w = h / 2;
                 if (h <= 1)h = w / 2;
                 vizCtx.scale(1, -1);
-                vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
+                vizCtx.drawImage(previewCanvasEle, 0, 0, w, h);
                 vizCtx.scale(1, 1);
                 vizCtx.globalAlpha = 1;
-                console.log("draw", x, y);
+                // console.log("draw", x, y);
             }
 
 
