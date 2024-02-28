@@ -99,6 +99,11 @@ export default class TexturePreviewer
         }
     }
 
+    needsVizLayer()
+    {
+        return this._mode == MODE_HOVER;
+    }
+
 
     _renderTexture(tp, element)
     {
