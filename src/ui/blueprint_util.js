@@ -23,7 +23,7 @@ blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
 
     if (ops.length > 0)
     {
-        gui.serverOps.execute(opname, next);
+        gui.serverOps.execute(ops[0].opId, next);
     }
     else
     {
@@ -654,7 +654,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentSave",
         {
-            "opname": newOp.objName,
+            "opname": newOp.opId,
             "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
             "content": JSON.stringify(o, null, "  "),
         },
@@ -689,7 +689,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
                 {
                     if (options.loadingModal) options.loadingModal.setTask("execute op...");
 
-                    gui.serverOps.execute(newOp.objName,
+                    gui.serverOps.execute(newOp.opId,
                         (newOps, refNewOp) =>
                         {
                             gui.corePatch().clearSubPatchCache(refNewOp.uiAttribs.subPatch);
@@ -762,7 +762,7 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
                     "next": () =>
                     {
                         if (!options.doNotExecute)
-                            gui.serverOps.execute(newOp.objName,
+                            gui.serverOps.execute(newOp.opId,
                                 (newOps) =>
                                 {
                                     gui.endModalLoading();

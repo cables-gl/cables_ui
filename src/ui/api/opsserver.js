@@ -302,34 +302,6 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
-
-
-
-
-        // const s = document.createElement("script");
-        // s.onload = () =>
-        // {
-        //     gui.corePatch().reloadOp(
-        //         name,
-        //         (num, newOps) =>
-        //         {
-        //             CABLES.UI.notify(num + " ops reloaded");
-
-        //             for (let i = 0; i < newOps.length; i++)
-        //             {
-        //                 newOps[i].checkLinkTimeWarnings();
-        //             }
-
-        //             if (newOps.length > 0) this.saveOpLayout(newOps[0]);
-        //             gui.emitEvent("opReloaded", name, newOps[0]);
-        //             if (next)next(newOps, refOldOp);
-        //         },
-        //         refOldOp
-        //     );
-        // };
-        // document.body.appendChild(s);
-        // s.setAttribute("src", CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name));
-
         const lid = "executeOp_" + name + CABLES.uuid();
 
         loadjs.ready(lid, () =>
@@ -1075,7 +1047,7 @@ export default class ServerOps
 
                     new EditorTab({
                         "title": title,
-                        "name": editorObj.name,
+                        "name": opId,
                         "content": content,
                         "syntax": syntax,
                         "editorObj": editorObj,
@@ -1092,7 +1064,7 @@ export default class ServerOps
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
                                 {
-                                    "opname": opname,
+                                    "opname": opId,
                                     "name": attachmentName,
                                     "content": _content,
                                 },
@@ -1220,9 +1192,6 @@ export default class ServerOps
 
                 const editorObj = CABLES.editorSession.rememberOpenEditor("op", opname);
 
-                // var html = '';
-                // if (!readOnly) html += '<a class="button" onclick="gui.serverOps.execute(\'' + opname + '\');">execute</a>';
-
                 let save = null;
                 if (!readOnly)
                 {
@@ -1261,7 +1230,7 @@ export default class ServerOps
 
                                     loadingModal.setTask("Executing code");
 
-                                    gui.serverOps.execute(opname, () =>
+                                    gui.serverOps.execute(opid, () =>
                                     {
                                         setStatus("Saved " + opname);
                                         editor.focus();
