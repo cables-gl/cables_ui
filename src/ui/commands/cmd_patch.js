@@ -134,7 +134,11 @@ CABLES_CMD_PATCH.save = function (force, cb)
     if (!force)
     {
         const alwaysSave = gui.user.isAdmin;
-        const notCollaborator = (gui.project().userId !== gui.user.id && gui.project().users.indexOf(gui.user.id) === -1 && gui.project().usersReadOnly.indexOf(gui.user.id) === -1);
+        const isOwner = gui.project().userId === gui.user.id;
+        const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
+        const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
+
+        const notCollaborator = !(isOwner || isFullCollab || isReadOnlyCollab);
         if (alwaysSave && notCollaborator)
         {
             doSave = false;
