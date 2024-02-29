@@ -13,7 +13,6 @@ export default class Api
         this._log = new Logger("api");
         this.cache = [];
         this.lastErrorReport = null;
-        // this.pingTime = 0;
         this.maintenanceModeWarning = null;
     }
 
