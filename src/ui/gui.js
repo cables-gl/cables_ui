@@ -1300,6 +1300,7 @@ export default class Gui
             CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
             {
                 lastTimeRecent = performance.now();
+                if (!r) return;
 
                 let str = "";
                 for (let i = 0; i < r.length; i++)
