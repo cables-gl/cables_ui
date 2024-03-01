@@ -13,19 +13,19 @@ export default class HtmlInspector
         this._inspectEle.addEventListener("click", () =>
         {
             gui.patchView.centerSelectOp(this._hoveringOpId);
-        });
+        }, { "passive": true });
 
         this._inspectEle.addEventListener("mouseleave", () =>
         {
             this._inspectEle.classList.add("hidden");
-        });
+        }, { "passive": true });
 
         this._inspectEle.addEventListener("wheel", (e) =>
         {
             this._offsetEle++;
             this._move(e);
             e.preventDefault();
-        });
+        }, { "passive": true });
     }
 
 

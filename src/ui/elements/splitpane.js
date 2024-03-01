@@ -63,13 +63,13 @@ function initSplitPanes()
             gui.mainTabs.emitEvent("resize");
         }
 
-        document.addEventListener("mousemove", mm);
-        document.addEventListener("touchmove", mm);
+        document.addEventListener("mousemove", mm, { "passive": true });
+        document.addEventListener("touchmove", mm, { "passive": true });
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs);
-    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs);
+    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs, { "passive": true });
+    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs, { "passive": true });
 
     document.getElementById("splitterRenderer").addEventListener("mousedown", function (ev)
     {
@@ -148,8 +148,8 @@ function initSplitPanes()
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer);
-    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer);
+    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer, { "passive": true });
+    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer, { "passive": true });
 
 
     function stopSplit(e)

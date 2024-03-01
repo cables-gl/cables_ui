@@ -39,18 +39,18 @@ export default class GlViewBox
         this._animScrollY = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
         this._animZoom = new CABLES.Anim({ "defaultEasing": this._defaultEasing });
 
-        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this));
-        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this));
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this));
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this));
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this));
-        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this));
+        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("wheel", this._onCanvasWheel.bind(this), { "passive": true });
         // this.glPatch.on("dblclick", this._onCanvasDblClick.bind(this));
 
         this.glPatch.addEventListener("spacedown", this._onCanvasSpaceDown.bind(this));
         this.glPatch.addEventListener("spaceup", this._onCanvasSpaceUp.bind(this));
 
-        cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this));
+        cgl.canvas.addEventListener("touchmove", this._onCanvasTouchMove.bind(this), { "passive": true });
 
         this._eleTabs = document.getElementById("splitterMaintabs");
 

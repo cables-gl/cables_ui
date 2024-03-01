@@ -96,29 +96,29 @@ export default class GlUiCanvas
             this._mouseX = e.offsetX;
             this._mouseY = e.offsetY;
             this.glPatch.needsRedraw = true;
-        });
+        }, { "passive": true });
 
         this.canvas.addEventListener("pointerdown", (e) =>
         {
             this.activityHigh();
             this.glPatch.needsRedraw = true;
-        });
+        }, { "passive": true });
 
         this.canvas.addEventListener("pointerup", (e) =>
         {
             this.activityHigh();
             this.glPatch.needsRedraw = true;
-        });
+        }, { "passive": true });
 
         this.canvas.addEventListener("pointerleave", (e) =>
         {
             this.activityMedium();
-        });
+        }, { "passive": true });
 
         this.canvas.addEventListener("pointerenter", (e) =>
         {
             this.activityHigh();
-        });
+        }, { "passive": true });
 
 
         this.canvas.addEventListener("wheel", (event) =>
@@ -142,7 +142,7 @@ export default class GlUiCanvas
             //     event.preventDefault();
             //     event.stopImmediatePropagation();
             // }
-        });
+        }, { "passive": true });
 
 
         this.parentResized();
