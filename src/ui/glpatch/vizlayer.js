@@ -57,6 +57,7 @@ export default class VizLayer extends CABLES.EventTarget
             if (a.renderVizLayer)
             {
                 let item = this._itemsLookup[a.id];
+                if (item)console.log("vizlayer id already exists...");
                 if (!item)
                 {
                     item = {
@@ -191,9 +192,6 @@ export default class VizLayer extends CABLES.EventTarget
 
             this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
 
-
-
-
             this._canvasCtx.restore();
             count++;
         }
@@ -211,7 +209,11 @@ export default class VizLayer extends CABLES.EventTarget
 
     _removeOpItem(op)
     {
-        if (!op) return;
+        if (!op)
+        {
+            console.log("unknown vizlayer to remove");
+            return;
+        }
         const it = this._itemsLookup[op.id];
 
         let idx = this._items.indexOf(it);
