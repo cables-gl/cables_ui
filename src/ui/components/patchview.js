@@ -693,7 +693,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const elIcon = ele.byId("nav-item-error-icon");
         if (this.hasUiErrors) elIcon.style["background-color"] = "red";
-        if (!this.hasUiErrors && this.hasOldOps) elIcon.style["background-color"] = "#999";
+        // if (!this.hasUiErrors && this.hasOldOps) elIcon.style["background-color"] = "#999";
 
         if (wasHidden != elError.classList.contains("hidden")) gui.setLayout();
 

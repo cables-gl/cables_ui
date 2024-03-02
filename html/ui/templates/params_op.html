@@ -14,16 +14,22 @@
             <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
 			<br/>
             <div style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>{{#if op.summary}} - {{op.summary}}{{/if}}
+            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
+
+            {{#if oldVersion}}
+                <a href="{{cablesUrl}}/op/{{op.objName}}">- newer version available</a>
+                <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
+                <br/>
+            {{else}}
+                {{#if op.summary}} - {{op.summary}}{{/if}}
+            {{/if}}
+
+
+
         </div>
 
 
 
-        {{#if oldVersion}}
-            <a href="{{cablesUrl}}/op/{{op.objName}}"><b>NEWER VERSION AVAILABLE</b></a>
-            <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
-            <br/>
-        {{/if}}
 
         {{#if minified}}
         {{:else}}

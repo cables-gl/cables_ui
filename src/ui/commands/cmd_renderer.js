@@ -39,16 +39,22 @@ CABLES_CMD_RENDERER.scrollingPage = function ()
 {
     if (ele.byId("testcontent").innerHTML == "")
     {
+        document.body.classList.add("scrollPage");
+
         let str = "";
         for (let i = 0; i < 1000; i++)
-            str += "long page...<br/>";
+        {
+            str += "- long page...<br/>";
+        }
+
+        str += "<div style=\"position:fixed;bottom:50px;z-index:99999;border-radius:10px;left:40%;cursor:pointer;background-color:#07F78C;color:#000;padding:20px;\" class=\"button-small\" onclick=\"CABLES.CMD.RENDERER.scrollingPage();\">exit scrollmode<div>";
         ele.byId("testcontent").innerHTML = str;
-        document.body.style.overflow = "auto";
     }
     else
     {
+        document.body.scrollTo({ "top": 0, "behaviour": "smooth" });
+        document.body.classList.remove("scrollPage");
         ele.byId("testcontent").innerHTML = "";
-        document.body.style.overflow = "hidden";
     }
 };
 

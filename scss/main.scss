@@ -765,6 +765,10 @@ body
 }
 
 
+
+
+
+
 @import 'components/searchbox.scss';
 @import 'components/opsearch.scss';
 @import 'components/modal.scss';
@@ -801,3 +805,20 @@ body
 
 
 .hidden { display:none !important;}
+
+
+
+.scrollPage
+{
+    overflow:auto;
+
+    #cablescanvas
+    {
+        z-index: 9999 !important;
+    }
+    #cablescanvas,#meta
+    {
+        position: fixed !important;
+        right:15px !important;
+    }
+}

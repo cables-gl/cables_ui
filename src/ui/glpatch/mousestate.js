@@ -41,13 +41,13 @@ export default class MouseState extends CABLES.EventTarget
             this._mouseOverCanvas = false;
         });
 
-        canvas.addEventListener("pointerdown", this._down.bind(this));
-        canvas.addEventListener("pointerup", this._up.bind(this));
-        canvas.addEventListener("pointermove", this._move.bind(this));
-        canvas.addEventListener("touchmove", this._move.bind(this));
+        canvas.addEventListener("pointerdown", this._down.bind(this), { "passive": true });
+        canvas.addEventListener("pointerup", this._up.bind(this), { "passive": true });
+        canvas.addEventListener("pointermove", this._move.bind(this), { "passive": true });
+        canvas.addEventListener("touchmove", this._move.bind(this), { "passive": true });
 
-        canvas.addEventListener("touchstart", this._down.bind(this));
-        canvas.addEventListener("touchend", this._up.bind(this));
+        canvas.addEventListener("touchstart", this._down.bind(this), { "passive": true });
+        canvas.addEventListener("touchend", this._up.bind(this), { "passive": true });
 
         canvas.addEventListener("touchenter", (e) =>
         {

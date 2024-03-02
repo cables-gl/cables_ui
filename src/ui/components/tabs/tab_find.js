@@ -350,13 +350,12 @@ export default class FindTab
         {
             if (str == ":attention")
             {
-                FindTab.searchOutDated(ops, results);
-
-                for (let i = 0; i < results.length; i++)
-                {
-                    if (defaultops.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
-                    else results[i].hint = "Newer version of op available! Please upgrade";
-                }
+                // FindTab.searchOutDated(ops, results);
+                // for (let i = 0; i < results.length; i++)
+                // {
+                //     if (defaultops.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
+                //     else results[i].hint = "Newer version of op available! Please upgrade";
+                // }
 
                 for (let i = 0; i < ops.length; i++)
                 {

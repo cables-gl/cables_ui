@@ -1272,7 +1272,7 @@ export default function TimeLineGui()
         self.updateViewBox();
         updateTimeDisplay();
         self.updateOverviewLine();
-    });
+    }, { "passive": true });
 
     ele.byId("timeline").addEventListener("mousemove", (e) =>
     {
