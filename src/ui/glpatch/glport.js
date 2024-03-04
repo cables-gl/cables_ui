@@ -208,7 +208,6 @@ export default class GlPort
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
 
-
         this._updateColor();
     }
 
@@ -323,7 +322,7 @@ GlPort.getColor = (type, hovering, selected, activity) =>
 
     if (activity == 0)name = portname + "_inactive";
 
-    // if (hovering)name = portname + "_hover";
+    if (hovering)name = portname + "_hover";
     // else if (selected)name = portname + "_selected";
 
     let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
