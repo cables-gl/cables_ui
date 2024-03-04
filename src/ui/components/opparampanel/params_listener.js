@@ -360,6 +360,7 @@ class ParamsListener extends CABLES.EventTarget
             if (port) port.setVariable(e.target.value);
             else console.warn("[portsetvar] PORT NOT FOUND!! ", e.target.dataset.portid, e);
 
+
             // gui.setStateUnsaved();
             gui.savedState.setUnSaved("initPortClickListener");
         });
@@ -801,6 +802,7 @@ class ParamsListener extends CABLES.EventTarget
             }
 
 
+
             const op = ports[index].op;
             // update history on change
             if (op && !op.uiAttribs) op.uiAttribs = {};
@@ -814,6 +816,8 @@ class ParamsListener extends CABLES.EventTarget
 
             CABLES.UI.paramsHelper.checkDefaultValue(ports[index], index, panelid);
             if (ports[index].isAnimated()) gui.timeLine().scaleHeightDelayed();
+
+            ports[index].emitEvent("onValueChangeUi");
 
             if (!e.detail || !e.detail.ignorePaco)
             {

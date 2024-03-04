@@ -501,6 +501,24 @@ export default class GlOp extends CABLES.EventTarget
             title != "-" &&
             title != this._op.shortName) title = "\"" + title + "\"";
 
+        if (this.opUiAttribs.mathTitle)
+        {
+            let mathStr = "";
+
+            if (!this._op.portsIn[0].isLinked()) mathStr += this._op.portsIn[0].get();
+            else mathStr += "X";
+
+            if (this._op.objName.indexOf("Ops.Math.Sum") == 0) mathStr += "+";
+            else if (this._op.objName.indexOf("Ops.Math.Multiply") == 0) mathStr += "*";
+            else if (this._op.objName.indexOf("Ops.Math.Divide") == 0) mathStr += "/";
+            else if (this._op.objName.indexOf("Ops.Math.Subtract") == 0) mathStr += "-";
+
+            if (!this._op.portsIn[1].isLinked()) mathStr += this._op.portsIn[1].get();
+            else mathStr += "X";
+
+            title = mathStr;
+        }
+
         if (!this._glTitle)
         {
             this._glTitle = new GlText(this._textWriter, title);
@@ -1544,3 +1562,4 @@ export default class GlOp extends CABLES.EventTarget
         if (this._glLoadingIndicator) this._glLoadingIndicator.setSize(gui.theme.patch.opStateIndicatorSize, gui.theme.patch.opStateIndicatorSize);
     }
 }
+

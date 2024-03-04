@@ -36,6 +36,7 @@ const paramsHelper =
             }
             event.target.dispatchEvent(new Event("input"));
 
+
             return false;
         }
     },

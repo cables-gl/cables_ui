@@ -46,6 +46,10 @@ export default class GlPort
         this._mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
+        this._port.on("onValueChangeUi", () =>
+        {
+            if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
+        });
 
         p.on("onUiAttrChange", (attribs) =>
         {
@@ -150,6 +154,7 @@ export default class GlPort
 
     _onLinkChanged()
     {
+        if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
         this.updateSize();
     }
 
