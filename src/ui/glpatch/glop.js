@@ -506,7 +506,7 @@ export default class GlOp extends CABLES.EventTarget
             let mathStr = "";
 
             if (!this._op.portsIn[0].isLinked()) mathStr += this._op.portsIn[0].get();
-            // else if (!this._op.portsIn[1].isLinked())mathStr += "X";
+            else if (!this._op.portsIn[1].isLinked())mathStr += "x";
 
             if (this._op.objName.indexOf("Ops.Math.Sum") == 0) mathStr += "+";
             else if (this._op.objName.indexOf("Ops.Math.Multiply") == 0) mathStr += "*";
@@ -517,7 +517,7 @@ export default class GlOp extends CABLES.EventTarget
             else mathStr += "?";
 
             if (!this._op.portsIn[1].isLinked()) mathStr += this._op.portsIn[1].get();
-            // else if (!this._op.portsIn[0].isLinked()) mathStr += "X";
+            else if (!this._op.portsIn[0].isLinked()) mathStr += "x";
 
             title = mathStr;
         }
