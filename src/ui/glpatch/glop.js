@@ -505,7 +505,7 @@ export default class GlOp extends CABLES.EventTarget
         {
             let mathStr = "";
 
-            if (!this._op.portsIn[0].isLinked() && !this._op.portsIn[0].isLinked())
+            if (!this._op.portsIn[0].isLinked() && !this._op.portsIn[1].isLinked())
                 if (!this._op.portsIn[0].isLinked()) mathStr += this._op.portsIn[0].get();
                 else mathStr += "X";
 
@@ -517,7 +517,7 @@ export default class GlOp extends CABLES.EventTarget
             else if (this._op.objName.indexOf("Ops.Math.Compare.LessThan") == 0) mathStr += "<";
             else mathStr += "?";
 
-            if (!this._op.portsIn[0].isLinked() && !this._op.portsIn[0].isLinked())
+            if (!this._op.portsIn[0].isLinked() && !this._op.portsIn[1].isLinked())
                 if (!this._op.portsIn[1].isLinked()) mathStr += this._op.portsIn[1].get();
                 else mathStr += "X";
 
