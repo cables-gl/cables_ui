@@ -1503,7 +1503,6 @@ export default class Gui
                     if (bp)
                     {
                         gui.showLoadingProgress(true);
-                        console.log(111);
 
                         blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
                             {

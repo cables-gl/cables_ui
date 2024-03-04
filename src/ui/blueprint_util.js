@@ -495,6 +495,13 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
                             gui.corePatch().getSubPatch2InnerInputOp(newOp.patchId.get()),
                             "innerOut_" + newPortJson.id
                         );
+
+                        gui.corePatch().link(
+                            theOp,
+                            port.name,
+                            gui.corePatch().getSubPatch2InnerOutputOp(newOp.patchId.get()),
+                            "innerIn_" + newPortJson.id
+                        );
                     }
 
                     if (options.cb)options.cb(newPortJson, newOp);
