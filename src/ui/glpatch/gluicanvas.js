@@ -124,7 +124,7 @@ export default class GlUiCanvas
         this.canvas.addEventListener("wheel", (event) =>
         {
             this.activityHigh();
-            event.preventDefault();
+            // event.preventDefault();
             // const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
 
             // let delta = CGL.getWheelSpeed(event);

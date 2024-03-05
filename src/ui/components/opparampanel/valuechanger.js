@@ -1,5 +1,6 @@
 import text from "../../text";
 import ele from "../../utils/ele";
+import OpParampanel from "./op_parampanel";
 
 let pointerLockFirstTime = true;
 
@@ -211,7 +212,6 @@ function valueChanger(eleId, focus, portName, opid)
         document.removeEventListener("mouseup", up);
         document.removeEventListener("mousedown", down);
         document.removeEventListener("mousemove", move, false);
-
         if (performance.now() - mouseDownTime < 200) setTextEdit(true);
     }
 
@@ -226,6 +226,8 @@ function valueChanger(eleId, focus, portName, opid)
         eleInput.value = eleInput.value.replaceAll(",", ".");
 
         let str = eleInput.value;
+
+        // OpParampanel.MathOpTitle(theOp);
 
         let v = parseFloat(str);
         if (v != v)v = 0;

@@ -2024,11 +2024,12 @@ export default class PatchView extends CABLES.EventTarget
         {
             new SuggestPortDialog(op1, p, e, (suggport) =>
             {
-                for (let i = 0; i < portnames.length; i++)
-                {
-                    op2 = this._p.getOpById(opids[i]);
-                    this._p.link(op2, portnames[i], op1, suggport.id);
-                }
+                if (suggport)
+                    for (let i = 0; i < portnames.length; i++)
+                    {
+                        op2 = this._p.getOpById(opids[i]);
+                        this._p.link(op2, portnames[i], op1, suggport.id);
+                    }
             });
         }
         else

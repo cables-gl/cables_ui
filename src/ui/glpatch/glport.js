@@ -46,6 +46,10 @@ export default class GlPort
         this._mouseEvents.push(this._rect.on("unhover", this._onUnhover.bind(this)));
 
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
+        this._port.on("onValueChangeUi", () =>
+        {
+            if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
+        });
 
         p.on("onUiAttrChange", (attribs) =>
         {
@@ -150,6 +154,7 @@ export default class GlPort
 
     _onLinkChanged()
     {
+        if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
         this.updateSize();
     }
 
@@ -207,7 +212,6 @@ export default class GlPort
 
         for (const i in this._glop._links)
             this._glop._links[i].highlight(false);
-
 
         this._updateColor();
     }
@@ -323,7 +327,7 @@ GlPort.getColor = (type, hovering, selected, activity) =>
 
     if (activity == 0)name = portname + "_inactive";
 
-    // if (hovering)name = portname + "_hover";
+    if (hovering)name = portname + "_hover";
     // else if (selected)name = portname + "_selected";
 
     let col = gui.theme.colors_types[name] || gui.theme.colors_types[portname] || [1, 0, 0, 1];
