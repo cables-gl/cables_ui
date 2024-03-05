@@ -80,12 +80,20 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         report += "<h3>Vars</h3>";
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";
 
-
         report += "<br/>";
 
         report += "<h3>Most used Ops</h3>";
 
-        for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
+        let opscountSorted = [];
+
+        for (const i in opsCount) opscountSorted.push({ "name": i, "count": opsCount[i] });
+        opscountSorted.sort((b, a) => { return a.count - b.count; });
+
+        report += "<table>";
+        for (let i = 0; i < Math.min(25, opscountSorted.length); i++)
+
+            report += "<tr><td>" + opscountSorted[i].name + "</td><td> " + opscountSorted[i].count + "x </td></tr>";
+        report += "</table>";
 
         // ---
         report += "<hr/>";
@@ -102,6 +110,37 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         }
 
         for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
+
+        /// /////////////////////////////////////////////////
+
+
+        const serializeSizes = [];
+        for (let i = 0; i < patch.ops.length; i++)
+        {
+            const str = JSON.stringify(patch.ops[i].getSerialized());
+            serializeSizes.push(
+                { "name": patch.ops[i].objName,
+                    "id": patch.ops[i].id,
+                    "size": str.length
+                });
+        }
+
+        serializeSizes.sort((a, b) =>
+        {
+            return b.size - a.size;
+        });
+
+        report += "<hr/>";
+        report += "<h3>Biggest Serialized Ops</h3>";
+
+        report += "<table>";
+        for (let i = 0; i < Math.min(25, serializeSizes.length); i++)
+        {
+            const s = Math.round(serializeSizes[i].size / 1024);
+            if (s > 1)
+                report += "<tr><td>" + serializeSizes[i].name + "</td><td>" + s + "kb</td></tr>";
+        }
+        report += "</table>";
 
         // new ModalDialog({ "html": report, "title": "Stats" });
         // let list = gui.corePatch().loading.getList();
