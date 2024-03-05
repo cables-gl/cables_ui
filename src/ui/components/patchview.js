@@ -685,10 +685,7 @@ export default class PatchView extends CABLES.EventTarget
 
         const elError = ele.byId("nav-item-error");
         const wasHidden = elError.classList.contains("hidden");
-        if (this.hasUiErrors || this.hasOldOps)
-        {
-            ele.show(elError);
-        }
+        if (this.hasUiErrors) ele.show(elError);
         else ele.hide(elError);
 
         const elIcon = ele.byId("nav-item-error-icon");
