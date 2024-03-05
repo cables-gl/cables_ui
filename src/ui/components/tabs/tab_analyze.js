@@ -22,8 +22,8 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
     {
         let report = "";
         const patch = gui.corePatch();
-
-        report += "<h3>Ops</h3>";
+        report += "<div style=\"overflow:scroll;width:100%;height:100%\">";
+        report += "<h2>Ops</h2>";
 
         const opsCount = {};
         for (let i = 0; i < patch.ops.length; i++)
@@ -34,7 +34,11 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
-        report += "<br/>";
+
+
+        report += "<hr/>";
+        report += "<h2>Op Types</h2>";
+
 
         {
             let arr = FindTab.searchOutDated(gui.corePatch().ops, []);
@@ -77,12 +81,13 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
             report += "<br/>";
         }
 
-        report += "<h3>Vars</h3>";
+        report += "<hr/>";
+        report += "<h2>Vars</h2>";
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";
 
-        report += "<br/>";
 
-        report += "<h3>Most used Ops</h3>";
+        report += "<hr/>";
+        report += "<h2>Most used Ops</h2>";
 
         let opscountSorted = [];
 
@@ -96,9 +101,9 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         report += "</table>";
 
         // ---
-        report += "<hr/>";
 
-        report += "<h3>Subpatches</h3>";
+        report += "<hr/>";
+        report += "<h2>Subpatches</h2>";
 
         const subpatchNumOps = {};
         for (let i = 0; i < patch.ops.length; i++)
@@ -131,7 +136,7 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         });
 
         report += "<hr/>";
-        report += "<h3>Biggest Serialized Ops</h3>";
+        report += "<h2>Biggest Serialized Ops</h2>";
 
         report += "<table>";
         for (let i = 0; i < Math.min(25, serializeSizes.length); i++)
@@ -142,21 +147,8 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         }
         report += "</table>";
 
-        // new ModalDialog({ "html": report, "title": "Stats" });
-        // let list = gui.corePatch().loading.getList();
-        // let jobs = gui.jobs().getList();
+        report += "</div>";
 
-        // for (let i = 0; i < jobs.length; i++)
-        // {
-        //     jobs[i].name = jobs[i].name || jobs[i].title;
-        //     jobs[i].type = "editor";
-        //     jobs[i].finished = false || jobs[i].finished;
-        //     list.push(jobs[i]);
-        // }
-
-        // list.sort((a, b) => { return b.timeStart - a.timeStart; });
-
-        // const html = getHandleBarHtml("tab_jobs", { "user": gui.user, "texts": text.preferences, "list": list });
         this._tab.html(report);
     }
 }

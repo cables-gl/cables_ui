@@ -198,6 +198,17 @@
                 user-select: none !important;
             }
         }
+
+        h1,h2,h3,h4
+        {
+            color:var(--color-13);
+        }
+
+        hr
+        {
+            margin-top:20px;
+            border-top:2px solid var(--color-05);
+        }
     }
 }
 
