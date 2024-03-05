@@ -30,14 +30,10 @@ export default class GlUiCanvas
         this.canvas.style.outline = "0";
         this.canvas.style.position = "absolute";
 
-
         // this.canvas.style.cursor='none';
         // this.canvas.style['z-index']=9999999991;
         this.canvas.setAttribute("tabindex", 10);
-
-
         this._parentEle = parentEle;
-
 
         if (parentEle)parentEle.appendChild(this.canvas);
         else document.body.appendChild(this.canvas);
@@ -47,7 +43,7 @@ export default class GlUiCanvas
                 "glCanvasId": this.canvas.id,
                 "glCanvasResizeToParent": false,
                 "glCanvasResizeToWindow": false,
-                "canvas": { "alpha": true, "premultipliedAlpha": true }
+                "canvas": { "alpha": true, "premultipliedAlpha": true, "antialias": true }
             });
 
 

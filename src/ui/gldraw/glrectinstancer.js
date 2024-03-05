@@ -68,7 +68,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
         this._uniscrollX = new CGL.Uniform(this._shader, "f", "scrollX", 0);
         this._uniscrollY = new CGL.Uniform(this._shader, "f", "scrollY", 0);
         this._unimsdfUnit = new CGL.Uniform(this._shader, "f", "msdfUnit", 8 / 1024);
-
         this._uniTexture = new CGL.Uniform(this._shader, "t", "tex", 0);
 
         this._geom = new CGL.Geometry("rectinstancer " + this._name);
@@ -121,7 +120,6 @@ export default class GlRectInstancer extends CABLES.EventTarget
             }
 
             this._newBounds.changed = (this._newBounds.minX != defaultMin || this._newBounds.minY != defaultMin);
-
             this._needsBoundsRecalc = false;
             perf.finish();
         }

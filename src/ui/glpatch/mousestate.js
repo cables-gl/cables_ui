@@ -171,6 +171,9 @@ export default class MouseState extends CABLES.EventTarget
         }
 
         if (!button) return;
+
+        if (!this._buttonStates[button]) this._buttonStates[button] = {};
+
         if (this._buttonStates[button].down != newState)
         {
             const oldState = this._buttonStates[button].down;

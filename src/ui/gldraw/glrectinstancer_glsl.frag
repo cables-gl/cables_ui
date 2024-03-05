@@ -2,7 +2,6 @@
  IN vec4 col;
  IN vec4 posSize;
  IN float zz;
-    // IN float outlinefrag;'
  IN vec2 uv;
  IN vec4 decoration;
  IN float useTexture;
