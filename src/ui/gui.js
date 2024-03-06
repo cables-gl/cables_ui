@@ -15,7 +15,6 @@ import ModalDialog from "./dialogs/modaldialog";
 import ModalPortValue from "./components/opparampanel/show_port_value_modal";
 import uiconfig from "./uiconfig";
 import TexturePreviewer from "./components/texturepreviewer";
-import MetaHistory from "./components/tabs/tab_history";
 import Logger from "./utils/logger";
 import OpDocs from "./components/opdocs";
 import IconBar from "./elements/iconbar";
@@ -32,13 +31,10 @@ import ele from "./utils/ele";
 import text from "./text";
 import userSettings from "./components/usersettings";
 import LongPressConnector from "./elements/longpressconnector";
-import GlPatch from "./glpatch/glpatch";
 import CanvasManager from "./components/canvas/canvasmanager";
 import GuiRestrictions from "./components/guirestrictions";
-import defaultOps from "./defaultops";
 import PatchPanel from "./components/patchpanel";
 import SavedState from "./components/savedstate";
-import gluiconfig from "./glpatch/gluiconfig";
 import defaultTheme from "./defaulttheme.json";
 import blueprintUtil from "./blueprint_util";
 import ModalLoading from "./dialogs/modalloading";
@@ -1377,7 +1373,9 @@ export default class Gui
 
         ele.byId("nav_gpuprofiler").addEventListener("click", (event) => { CABLES.CMD.UI.profileGPU(); });
         ele.byId("nav_profiler").addEventListener("click", (event) => { new CABLES.UI.Profiler(gui.mainTabs); gui.maintabPanel.show(true); });
-        ele.byId("nav_history").addEventListener("click", (event) => { new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true); });
+        ele.byId("nav_patchanalysis").addEventListener("click", (event) => { CABLES.CMD.PATCH.analyze(); });
+
+
 
         ele.byId("nav-item-activity").addEventListener("click", (event) =>
         {

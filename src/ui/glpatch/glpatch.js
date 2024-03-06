@@ -1087,9 +1087,6 @@ export default class GlPatch extends CABLES.EventTarget
         this._updateGreyout();
         perf.finish();
 
-        // this._cgl.pushCullFace(false);
-
-
         this._cgl.profileData.clearGlQuery();
     }
 

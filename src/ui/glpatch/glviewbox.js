@@ -80,6 +80,9 @@ export default class GlViewBox
         const dx = 0;
         const dy = 0;
 
+        x = Math.round(x);
+        y = Math.round(y);
+
         const coord = this.screenToPatchCoord(x + dx, y + dy);
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
 

@@ -22,8 +22,8 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
     {
         let report = "";
         const patch = gui.corePatch();
-
-        report += "<h3>Ops</h3>";
+        report += "<div style=\"overflow:scroll;width:100%;height:100%\">";
+        report += "<h2>Ops</h2>";
 
         const opsCount = {};
         for (let i = 0; i < patch.ops.length; i++)
@@ -34,7 +34,11 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         report += patch.ops.length + " Ops total<br/>";
         report += Object.keys(opsCount).length + " unique ops<br/>";
-        report += "<br/>";
+
+
+        report += "<hr/>";
+        report += "<h2>Op Types</h2>";
+
 
         {
             let arr = FindTab.searchOutDated(gui.corePatch().ops, []);
@@ -77,20 +81,29 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
             report += "<br/>";
         }
 
-        report += "<h3>Vars</h3>";
+        report += "<hr/>";
+        report += "<h2>Vars</h2>";
         report += Object.keys(CABLES.patch.getVars()).length + " Variables<br/>";
 
 
-        report += "<br/>";
+        report += "<hr/>";
+        report += "<h2>Most used Ops</h2>";
 
-        report += "<h3>Most used Ops</h3>";
+        let opscountSorted = [];
 
-        for (const i in opsCount) report += opsCount[i] + "x " + i + " <br/>";
+        for (const i in opsCount) opscountSorted.push({ "name": i, "count": opsCount[i] });
+        opscountSorted.sort((b, a) => { return a.count - b.count; });
+
+        report += "<table>";
+        for (let i = 0; i < Math.min(25, opscountSorted.length); i++)
+
+            report += "<tr><td>" + opscountSorted[i].name + "</td><td> " + opscountSorted[i].count + "x </td></tr>";
+        report += "</table>";
 
         // ---
-        report += "<hr/>";
 
-        report += "<h3>Subpatches</h3>";
+        report += "<hr/>";
+        report += "<h2>Subpatches</h2>";
 
         const subpatchNumOps = {};
         for (let i = 0; i < patch.ops.length; i++)
@@ -103,21 +116,39 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         for (const i in subpatchNumOps) report += subpatchNumOps[i] + " ops in " + i + " <br/>";
 
-        // new ModalDialog({ "html": report, "title": "Stats" });
-        // let list = gui.corePatch().loading.getList();
-        // let jobs = gui.jobs().getList();
+        /// /////////////////////////////////////////////////
 
-        // for (let i = 0; i < jobs.length; i++)
-        // {
-        //     jobs[i].name = jobs[i].name || jobs[i].title;
-        //     jobs[i].type = "editor";
-        //     jobs[i].finished = false || jobs[i].finished;
-        //     list.push(jobs[i]);
-        // }
 
-        // list.sort((a, b) => { return b.timeStart - a.timeStart; });
+        const serializeSizes = [];
+        for (let i = 0; i < patch.ops.length; i++)
+        {
+            const str = JSON.stringify(patch.ops[i].getSerialized());
+            serializeSizes.push(
+                { "name": patch.ops[i].objName,
+                    "id": patch.ops[i].id,
+                    "size": str.length
+                });
+        }
 
-        // const html = getHandleBarHtml("tab_jobs", { "user": gui.user, "texts": text.preferences, "list": list });
+        serializeSizes.sort((a, b) =>
+        {
+            return b.size - a.size;
+        });
+
+        report += "<hr/>";
+        report += "<h2>Biggest Serialized Ops</h2>";
+
+        report += "<table>";
+        for (let i = 0; i < Math.min(25, serializeSizes.length); i++)
+        {
+            const s = Math.round(serializeSizes[i].size / 1024);
+            if (s > 1)
+                report += "<tr><td>" + serializeSizes[i].name + "</td><td>" + s + "kb</td></tr>";
+        }
+        report += "</table>";
+
+        report += "</div>";
+
         this._tab.html(report);
     }
 }

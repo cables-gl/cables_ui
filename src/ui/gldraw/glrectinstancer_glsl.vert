@@ -17,7 +17,7 @@ IN float contentTexture;
 OUT float useTexture;
 OUT float zz;
 
-UNI float zoom,resX,resY,scrollX,scrollY;
+UNI highp float zoom,resX,resY,scrollX,scrollY;
 
 void main()
 {
@@ -36,6 +36,11 @@ void main()
 
     posSize=vec4(pos.xy*zoom,instSize*zoom-pos.xy*zoom);
 
+    // posSize.x=floor(posSize.x*2384.0)/2384.0;
+    // posSize.y=floor(posSize.y*2384.0)/2384.0;
+    // posSize.z=floor(posSize.z*2384.0)/2384.0;
+    // posSize.w=floor(posSize.w*2384.0)/2384.0;
+
     pos.x+=instPos.x;
     pos.y+=instPos.y;
     pos.z+=instPos.z;
@@ -48,6 +53,9 @@ void main()
     pos.xy*=zoom;
     pos.x+=scrollX;
     pos.y+=scrollY;
+
+    pos.x=ceil(pos.x*resX)/resX;
+    pos.y=ceil(pos.y*resY)/resY;
 
     pos.z=zz=instPos.z;
 

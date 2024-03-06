@@ -1,4 +1,5 @@
 import GlDebugTab from "../components/tabs/tab_debugglui";
+import MetaHistory from "../components/tabs/tab_history";
 import LoggingTab from "../components/tabs/tab_logging";
 import OpDocsJson from "../components/tabs/tab_opdocsjson";
 import OpSerialized from "../components/tabs/tab_opserialized";
@@ -246,6 +247,11 @@ CABLES_CMD_DEBUG.saveWithOutObjnames = () =>
     CABLES.CMD.PATCH.save();
 };
 
+CABLES_CMD_DEBUG.undoHistory = () =>
+{
+    new MetaHistory(gui.mainTabs); gui.maintabPanel.show(true);
+};
+
 
 CMD_DEBUG_COMMANDS.push(
     {
@@ -352,6 +358,11 @@ CMD_DEBUG_COMMANDS.push(
     {
         "cmd": "test blueprint2",
         "func": CABLES_CMD_DEBUG.testBlueprint2,
+        "category": "debug",
+    },
+    {
+        "cmd": "undo history",
+        "func": CABLES_CMD_DEBUG.undoHistory,
         "category": "debug",
     },
 

@@ -40,15 +40,14 @@ void main()
 
         if(darken>0.5)finalColor=finactiveColor;
         else finalColor=fcolor;
-        // if(darken)
     }
 
     {{MODULE_COLOR}}
     // finalColor.rgb*=darken;
 
-// #ifdef LINE_OUTLINE
-//     if(abs(texCoord.y)>0.7) finalColor.rgb*=0.0;
-// #endif
+    // #ifdef LINE_OUTLINE
+    //     if(abs(texCoord.y)>0.7) finalColor.rgb*=0.0;
+    // #endif
 
     #ifdef DEBUG_1
         finalColor.rgb=vec3((zz+1.0)/2.0);
