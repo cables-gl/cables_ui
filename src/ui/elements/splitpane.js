@@ -49,13 +49,13 @@ function initSplitPanes()
     function resizeTabs(ev)
     {
         gui.pauseProfiling();
-        ev.preventDefault();
+        // ev.preventDefault();
         CABLES.SPLITPANE.bound = true;
         function mm(e)
         {
             gui.pauseInteractionSplitpanes();
 
-            e.preventDefault();
+            // e.preventDefault();
             gui.editorWidth = e.clientX;
             if (gui.editorWidth < 30)gui.editorWidth = 30;
             CABLES.UI.userSettings.set("editorWidth", gui.editorWidth);
