@@ -63,8 +63,8 @@ function initSplitPanes()
             gui.mainTabs.emitEvent("resize");
         }
 
-        document.addEventListener("mousemove", mm, { "passive": true });
-        document.addEventListener("touchmove", mm, { "passive": true });
+        document.addEventListener("mousemove", mm, { "passive": false });
+        document.addEventListener("touchmove", mm, { "passive": false });
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
