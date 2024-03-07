@@ -2062,7 +2062,7 @@ export default class Gui
         {
             try
             {
-                console.log("found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
+                console.log("🌈 found theme in localstorage!", JSON.parse(window.localStorage.getItem("cables_theme")));
                 this.setTheme(JSON.parse(window.localStorage.getItem("cables_theme")));
             }
             catch (e)

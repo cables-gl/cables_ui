@@ -225,6 +225,13 @@
                 <a class="icon icon-1x icon-search"></a>
             </span>
 
+            {{#if isEditable}}
+                <span class="iconbutton info" data-info="filemanager_delete_file" id="fileedit{{file.fileDb._id}}" >
+                    <a class="info icon icon-1x icon-edit" ></a>
+                </span>
+            {{/if}}
+
+
             {{#compare source '==' 'patch' }}
                 {{#if isReference}}
                 {{else}}
