@@ -2482,12 +2482,12 @@ export default class PatchView extends CABLES.EventTarget
         let newPortIn = op.portsIn[0];
         let newPortOut = op.portsOut[0];
 
-        if (op.patchId && op.patchId.get() && op.isSubPatchOp())
+        if (op.patchId && op.patchId.get() && op.isSubPatchOp() && oldLink && oldLink.portIn)
         {
             const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
             const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
 
-            if (!(portsIn[0].type == portsOut[0].type == oldLink.portIn.type)) return false;
+            if (!portsIn || portsIn.length == 0 || !(portsIn[0].type == portsOut[0].type == oldLink.portIn.type)) return false;
             newPortIn = portsIn[0];
             newPortOut = portsOut[0];
         }
