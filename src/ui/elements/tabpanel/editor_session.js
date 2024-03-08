@@ -1,3 +1,4 @@
+import ManageOp from "../../components/tabs/tab_manage_op";
 import userSettings from "../../components/usersettings";
 
 /**
@@ -18,6 +19,11 @@ export default class EditorSession
         this.addListener("param", (name, data) =>
         {
             CABLES.UI.paramsHelper.openParamStringEditor(data.opid, data.portname, null, userInteraction);
+        });
+
+        this.addListener("manageOp", (name, data) =>
+        {
+            new ManageOp(gui.mainTabs, name);
         });
     }
 

@@ -56,6 +56,8 @@ export default class ManageOp
 
     show()
     {
+        CABLES.editorSession.rememberOpenEditor("manageOp", this._currentName, { "opname": this._currentName }, true);
+
         this._id = CABLES.shortId();
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
 
