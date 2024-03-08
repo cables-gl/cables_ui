@@ -157,6 +157,9 @@ export default class FileManager
             shortTitle = shortTitle.substr(0, 24);
             shortTitle += "...";
         }
+        shortTitle = file.n.replaceAll(".", "<wbr>.");
+
+
 
 
         const item = {
