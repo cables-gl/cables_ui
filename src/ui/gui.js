@@ -38,6 +38,7 @@ import SavedState from "./components/savedstate";
 import defaultTheme from "./defaulttheme.json";
 import blueprintUtil from "./blueprint_util";
 import ModalLoading from "./dialogs/modalloading";
+import FileManagerEditor from "./components/filemanager_edit";
 
 
 export default class Gui
@@ -134,6 +135,8 @@ export default class Gui
         this._jobs = new Jobs();
         this.cmdPallet = new CommandPallete();
 
+        this.fileManager = null;
+        this.fileManagerEditor = new FileManagerEditor();
 
         this._opselect = new OpSelect();
         this.introduction = new Introduction();

@@ -8,7 +8,7 @@ import CanvasUi from "./components/canvas/canvasui";
 import helperMeshes from "./components/cgl_helpermeshes";
 import Collapsable from "./components/collapsable";
 import FileManager from "./components/filemanager";
-import DragNDrop from "./components/filemananager_dragdrop";
+import DragNDrop from "./components/filemanager_dragdrop";
 import setHtmlDefaultListeners from "./components/htmldefaultlisteners";
 import startIdleListeners from "./components/idlemode";
 import Keypresenter from "./components/keypresenter";
