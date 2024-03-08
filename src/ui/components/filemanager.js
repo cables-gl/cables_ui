@@ -502,7 +502,7 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                gui.fileManagerEditor.editAssetTextFile(r.fileDb.fileName);
+                                gui.fileManagerEditor.editAssetTextFile(r.fileDb.fileName, r.fileDb.type);
                             });
                     }
 

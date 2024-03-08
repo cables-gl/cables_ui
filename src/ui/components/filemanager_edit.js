@@ -28,6 +28,9 @@ export default class FileManagerEditor
         url = "/assets/" + gui.project()._id + "/" + filename;
 
 
+        if (syntax == "javascript")syntax = "js";
+        if (syntax == "shader")syntax = "glsl";
+
         CABLES.ajax(
             url,
             (err2, _data, xhr2) =>
@@ -35,7 +38,7 @@ export default class FileManagerEditor
                 const name = "edit " + filename;
 
                 const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "syntax": syntax }, true);
-
+                console.log("syntax", syntax);
 
                 new EditorTab(
                     {
