@@ -16,7 +16,7 @@ CABLESUILOADER.TalkerAPI = function (target)
         }
         else
         {
-            if (!this.hasEventListener(msg.data.cb))
+            if (!this.hasListenerForEventName(msg.data.cmd))
             {
                 console.error("TalkerAPI in ui has no listener for", msg.data.cmd);
             }
