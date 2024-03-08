@@ -68,8 +68,8 @@ function initSplitPanes()
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs, { "passive": true });
-    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs, { "passive": true });
+    document.getElementById("splitterMaintabs").addEventListener("mousedown", resizeTabs, { "passive": false });
+    document.getElementById("splitterMaintabs").addEventListener("touchstart", resizeTabs, { "passive": false });
 
     document.getElementById("splitterRenderer").addEventListener("mousedown", function (ev)
     {
@@ -148,8 +148,8 @@ function initSplitPanes()
         CABLES.SPLITPANE.listeners.push(mm);
     }
 
-    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer, { "passive": true });
-    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer, { "passive": true });
+    document.getElementById("splitterRendererWH").addEventListener("mousedown", resizeRenderer, { "passive": false });
+    document.getElementById("splitterRendererWH").addEventListener("touchstart", resizeRenderer, { "passive": false });
 
 
     function stopSplit(e)
