@@ -158,6 +158,7 @@ export default class FileManager
             shortTitle += "...";
         }
 
+
         const item = {
             "title": file.n,
             "shortTitle": shortTitle,
@@ -176,6 +177,9 @@ export default class FileManager
             "projectId": file.projectId,
             "icon": file.icon || "file"
         };
+
+        console.log(item);
+
 
         if (file.t === "SVG") item.preview = file.p;
         else if (file.t === "image") item.preview = file.p;
