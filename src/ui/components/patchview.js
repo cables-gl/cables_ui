@@ -2482,16 +2482,6 @@ export default class PatchView extends CABLES.EventTarget
         let newPortIn = op.portsIn[0];
         let newPortOut = op.portsOut[0];
 
-        if (op.patchId && op.patchId.get() && op.isSubPatchOp() && oldLink && oldLink.portIn)
-        {
-            const portsIn = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_IN);
-            const portsOut = gui.patchView.getSubPatchExposedPorts(op.patchId.get(), CABLES.PORT_DIR_OUT);
-
-            if (!portsIn || portsIn.length == 0 || !(portsIn[0].type == portsOut[0].type == oldLink.portIn.type)) return false;
-            newPortIn = portsIn[0];
-            newPortOut = portsOut[0];
-        }
-
         if (!newPortIn || !newPortOut) return;
         if (newPortIn.isLinked() || newPortOut.isLinked()) return;
 
@@ -2515,6 +2505,7 @@ export default class PatchView extends CABLES.EventTarget
             oldLink.remove();
         }
 
+
         if (portIn && portOut && newPortOut) // && !newPortIn.isLinked()
         {
             if (CABLES.Link.canLink(newPortIn, portOut)) //! portOut.isLinked() &&
@@ -2537,8 +2528,7 @@ export default class PatchView extends CABLES.EventTarget
             }
             else
             {
-                gui.corePatch().link(
-                    portIn.op, portIn.getName(), portOut.op, portOut.getName());
+                gui.corePatch().link(portIn.op, portIn.getName(), portOut.op, portOut.getName());
             }
         }
     }

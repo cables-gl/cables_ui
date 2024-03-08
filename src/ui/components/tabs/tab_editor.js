@@ -81,7 +81,7 @@ export default class EditorTab
             }
 
             let opname = null;
-
+            options.editorObj = options.editorObj || {};
             if (options.editorObj.type == "op")opname = options.editorObj.name;
             if (options.editorObj.data && options.editorObj.data.opname)opname = options.editorObj.data.opname;
 
@@ -166,7 +166,7 @@ export default class EditorTab
                 {
                     this._editor.resize(true);
                     this._editor.focus();
-                    userSettings.set("editortab", this._tab.editorObj.name);
+                    if (this._tab.editorObj && this._tab.editorObj.name)userSettings.set("editortab", this._tab.editorObj.name);
                 }.bind(this),
             );
 
