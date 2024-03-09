@@ -157,12 +157,13 @@ export default class TabPanel extends CABLES.EventTarget
 
         for (let i = 0; i < this._tabs.length; i++)
         {
-            if (this._tabs[i].options.name.toLowerCase() == name.toLowerCase())
-            {
-                this.activateTab(this._tabs[i].id);
-                found = true;
-            }
-            else this._tabs[i].deactivate();
+            if (this._tabs[i].options.name)
+                if (this._tabs[i].options.name.toLowerCase() == name.toLowerCase())
+                {
+                    this.activateTab(this._tabs[i].id);
+                    found = true;
+                }
+                else this._tabs[i].deactivate();
         }
 
         if (!found)

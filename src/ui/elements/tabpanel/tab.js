@@ -12,7 +12,7 @@ export default class Tab extends CABLES.EventTarget
         if (!options.hasOwnProperty("showTitle")) this.options.showTitle = true;
         if (!options.hasOwnProperty("hideToolbar")) this.options.hideToolbar = false;
         if (!options.hasOwnProperty("closable")) this.options.closable = true;
-        if (!options.hasOwnProperty("name")) this.options.name = title;
+        if (!options.hasOwnProperty("name")) this.options.name = title || "???";
 
         this.icon = this.options.icon || null;
         this.dataId = options.dataId;

@@ -157,6 +157,10 @@ export default class FileManager
             shortTitle = shortTitle.substr(0, 24);
             shortTitle += "...";
         }
+        shortTitle = file.n.replaceAll(".", "<wbr>.");
+
+
+
 
         const item = {
             "title": file.n,
@@ -176,6 +180,7 @@ export default class FileManager
             "projectId": file.projectId,
             "icon": file.icon || "file"
         };
+
 
         if (file.t === "SVG") item.preview = file.p;
         else if (file.t === "image") item.preview = file.p;
@@ -432,7 +437,7 @@ export default class FileManager
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
-                            "isEditable": r.type == "textfile" || r.type == "javascript" || r.type == "XML" || r.type == "JSON",
+                            "isEditable": r.type == "textfile" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
                             "isReference": detailItem.isReference,
                             "viaBlueprint": detailItem.viaBlueprint,
                             "isLibraryFile": detailItem.isLibraryFile,
@@ -497,50 +502,7 @@ export default class FileManager
                             "click",
                             (e) =>
                             {
-                                let url = "";
-                                url = "/assets/" + gui.project()._id + "/" + r.fileDb.fileName;
-
-                                CABLES.ajax(
-                                    url,
-                                    (err2, _data, xhr2) =>
-                                    {
-                                        const name = "edit " + r.fileDb.fileName;
-                                        new EditorTab(
-                                            {
-                                                "title": name,
-                                                "content": _data,
-                                                "syntax": r.type,
-                                                "onClose": function (which)
-                                                {
-                                                },
-                                                "onSave": function (setStatus, content)
-                                                {
-                                                    gui.jobs().start({ "id": "saveeditorcontent" + r.fileDb.fileName, "title": "saving file " + r.fileDb.fileName });
-
-                                                    CABLESUILOADER.talkerAPI.send(
-                                                        "updateFile",
-                                                        {
-                                                            "fileName": r.fileDb.fileName,
-                                                            "content": content,
-                                                        },
-                                                        (err3, res3) =>
-                                                        {
-                                                            gui.savedState.setSaved("editorOnChangeFile");
-                                                            gui.jobs().finish("saveeditorcontent" + r.fileDb.fileName);
-                                                            setStatus("saved");
-                                                        }
-                                                    );
-                                                },
-                                                "onChange": function (ev)
-                                                {
-                                                    gui.savedState.setUnSaved("editorOnChangeFile");
-                                                },
-                                                "onFinished": () =>
-                                                {
-                                                    // gui.mainTabs.activateTabByName(name);
-                                                }
-                                            });
-                                    });
+                                gui.fileManagerEditor.editAssetTextFile(r.fileDb.fileName, r.fileDb.type);
                             });
                     }
 
@@ -816,5 +778,12 @@ export default class FileManager
                 });
             }
         });
+    }
+
+
+
+    editTextFile()
+    {
+
     }
 }
