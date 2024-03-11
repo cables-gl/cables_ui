@@ -189,7 +189,6 @@ export default class ModalError
             str += "<br/><br/>";
         }
 
-
         if (this._options.text)
             str += this._options.text + "<br/><br/>";
 

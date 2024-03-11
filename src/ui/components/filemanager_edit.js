@@ -48,7 +48,7 @@ export default class FileManagerEditor
                         "syntax": syntax,
                         "onClose": function (which)
                         {
-                            CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                            CABLES.editorSession.remove(editorObj.type, editorObj.name);
                         },
                         "onSave": function (setStatus, content)
                         {

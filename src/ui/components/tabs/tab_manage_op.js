@@ -22,6 +22,8 @@ export default class ManageOp
 
         this._tab.on("close", () =>
         {
+            CABLES.editorSession.remove("manageOp", this._currentName);
+
             for (let i in this._refreshListener)
                 gui.off(this._refreshListener[i]);
         });
@@ -56,16 +58,26 @@ export default class ManageOp
 
     show()
     {
+        CABLES.editorSession.remove("manageOp", this._currentName);
+
         CABLES.editorSession.rememberOpenEditor("manageOp", this._currentName, { "opname": this._currentName }, true);
 
         this._id = CABLES.shortId();
         this._tab.html("<div class=\"loading\" style=\"width:40px;height:40px;\"></div>");
+        const opDoc = gui.opDocs.getOpDocByName(this._currentName);
+
+        if (!opDoc)
+        {
+            this._tab.html("error unknown op/no opdoc...");
+            return;
+        }
+
 
         clearTimeout(this._timeout);
         this._timeout = setTimeout(
             () =>
             {
-                CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": this._currentName }, (error, res) =>
+                CABLESUILOADER.talkerAPI.send("getOpInfo", { "opName": opDoc.id }, (error, res) =>
                 {
                     if (error) this._log.warn("error api?");
                     const perf = CABLES.UI.uiProfiler.start("showOpCodeMetaPanel");
@@ -83,8 +95,6 @@ export default class ManageOp
                             const parts = res.attachmentFiles[i].split(".");
                             let suffix = "";
                             suffix = parts[parts.length - 1];
-
-
 
                             attachmentFiles.push(
                                 {
@@ -113,14 +123,6 @@ export default class ManageOp
                         doc.attachmentFiles = attachmentFiles;
                     }
 
-
-                    const opDoc = gui.opDocs.getOpDocByName(opName);
-
-                    if (!opDoc)
-                    {
-                        this._tab.html("error unknown op/no opdoc...");
-                        return;
-                    }
 
                     doc.libs = gui.serverOps.getOpLibs(opName, false);
                     doc.coreLibs = gui.serverOps.getCoreLibs(opName, false);

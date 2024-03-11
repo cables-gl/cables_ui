@@ -69,7 +69,7 @@ export default class EditorSession
      * @param {string} name
      * @function
      */
-    remove(name, type)
+    remove(type, name)
     {
         let found = true;
         while (found)
@@ -77,7 +77,10 @@ export default class EditorSession
             found = false;
             for (let i = 0; i < this._openEditors.length; i++)
             {
-                if (this._openEditors[i].name == name && this._openEditors[i].type == type)
+                if (this._openEditors[i].name == name && this._openEditors[i].type == type
+                // ||
+                // this._openEditors[i].name == type && this._openEditors[i].type == name
+                )
                 {
                     found = true;
                     this._openEditors.splice(i, 1);

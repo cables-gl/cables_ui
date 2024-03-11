@@ -1007,7 +1007,7 @@ export default class ServerOps
                 if (err || !res || res.content === undefined)
                 {
                     if (err) this._log.log("[editAttachment] err", err);
-                    if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                    if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
                     return;
                 }
 
@@ -1016,7 +1016,7 @@ export default class ServerOps
                 if (err || !res || res.content == undefined)
                 {
                     if (err) this._log.log("[editAttachment] err", err);
-                    if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                    if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
                     return;
                 }
                 const content = res.content || "";
@@ -1053,7 +1053,7 @@ export default class ServerOps
                         "onClose": (which) =>
                         {
                             // this._log.log("close!!! missing infos...");
-                            if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
+                            if (which.editorObj && which.editorObj.name) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
                         },
                         "onSave": (_setStatus, _content) =>
                         {
@@ -1123,7 +1123,7 @@ export default class ServerOps
                 gui.jobs().finish("load_attachment_" + attachmentName);
                 this._log.error("error opening attachment " + attachmentName);
                 this._log.log(err);
-                if (editorObj) CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                if (editorObj) CABLES.editorSession.remove(editorObj.type, editorObj.name);
             }
         );
 
@@ -1183,7 +1183,7 @@ export default class ServerOps
                 if (er)
                 {
                     notifyError("Error receiving op code!");
-                    CABLES.editorSession.remove(opname, "op");
+                    CABLES.editorSession.remove("op", opname);
                     return;
                 }
 
@@ -1271,7 +1271,7 @@ export default class ServerOps
                         "editorObj": editorObj,
                         "onClose": (which) =>
                         {
-                            if (which.editorObj) CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
+                            if (which.editorObj) CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
                         },
                     });
                 }
