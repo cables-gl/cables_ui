@@ -35,7 +35,7 @@ export default class FileManagerEditor
             url,
             (err2, _data, xhr2) =>
             {
-                const name = "edit " + filename;
+                const name = filename;
 
                 const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "syntax": syntax }, true);
                 console.log("syntax", syntax);
