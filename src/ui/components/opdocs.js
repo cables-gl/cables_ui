@@ -402,14 +402,15 @@ export default class OpDocs
         if (doc.layout)
         {
             let svgStr = "";
+            let width = 200;
+            if (doc.layout.portsIn)
+                width = Math.max(width, doc.layout.portsIn.length * (gluiconfig.portWidth + gluiconfig.portPadding));
 
             svgStr += "<?xml version=\"1.0\"?>";
-            svgStr += "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" width=\"200\" height=\"" + gluiconfig.opHeight + "\">";
+            svgStr += "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\">";
 
 
-
-
-            svgStr += "<rect width=\"200\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
+            svgStr += "<rect width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
 
             if (doc.layout.portsIn)
                 for (let i = 0; i < doc.layout.portsIn.length; i++)
