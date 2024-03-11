@@ -161,12 +161,41 @@ export default class SandboxBrowser extends CABLES.EventTarget
 
         CABLESUILOADER.talkerAPI.addEventListener("fileUpdated", (options, next) =>
         {
-            for (let j = 0; j < gui.corePatch().ops.length; j++)
+            if (options && options.filename)
             {
-                if (gui.corePatch().ops[j])
+                for (let j = 0; j < gui.corePatch().ops.length; j++)
                 {
-                    if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.filename);
-                    else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+                    if (gui.corePatch().ops[j])
+                    {
+                        if (gui.corePatch().ops[j].onFileChanged) gui.corePatch().ops[j].onFileChanged(options.filename);
+                        else if (gui.corePatch().ops[j].onFileUploaded) gui.corePatch().ops[j].onFileUploaded(options.filename); // todo deprecate , rename to onFileChanged
+                    }
+                }
+                if (options.filename.endsWith(".js"))
+                {
+                    const libUrl = "/assets/" + gui.project()._id + "/" + options.filename;
+                    if (gui && gui.opDocs && gui.opDocs.libs && !gui.opDocs.libs.includes(libUrl))
+                    {
+                        gui.opDocs.libs.push(libUrl);
+                        gui.emitEvent("refreshManageOp");
+                    }
+                }
+            }
+        });
+
+        CABLESUILOADER.talkerAPI.addEventListener("fileDeleted", (options, next) =>
+        {
+            if (options && options.fileName && options.fileName.endsWith(".js"))
+            {
+                const libUrl = "/assets/" + gui.project()._id + "/" + options.fileName;
+                if (gui && gui.opDocs && gui.opDocs.libs && gui.opDocs.libs.includes(libUrl))
+                {
+                    const libIndex = gui.opDocs.libs.findIndex((lib) => { return lib === libUrl; });
+                    if (libIndex !== -1)
+                    {
+                        gui.opDocs.libs.splice(libIndex, 1);
+                        gui.emitEvent("refreshManageOp");
+                    }
                 }
             }
         });

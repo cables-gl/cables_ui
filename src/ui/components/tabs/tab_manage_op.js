@@ -136,7 +136,7 @@ export default class ManageOp
                                 if (portJson.ports[i - 1].dir != portJson.ports[i].dir)portJson.ports[i].divider = true;
                             }
                     }
-                    const allLibs = gui.opDocs.libs;
+                    const allLibs = gui.opDocs.libs.sort((a, b) => { return a.localeCompare(b); });
                     const libs = [];
                     allLibs.forEach((lib) =>
                     {
