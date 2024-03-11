@@ -654,7 +654,7 @@ export default function extendCoreOp()
 
     CABLES.Op.prototype.getPortPosX = function (name, opid, center)
     {
-        let offCenter = uiconfig.portSize * 0.5;
+        let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 
         let index = 0;

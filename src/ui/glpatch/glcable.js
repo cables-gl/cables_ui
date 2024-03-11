@@ -1,4 +1,4 @@
-import GlUiConfig from "./gluiconfig";
+import gluiconfig from "./gluiconfig";
 import Logger from "../utils/logger";
 import text from "../text";
 import userSettings from "../components/usersettings";
@@ -214,8 +214,8 @@ export default class GlCable
             this._distFromPort = 0;
             return;
         }
-        if (Math.abs(this._y - this._y2) < GlUiConfig.portHeight * 2) this._distFromPort = GlUiConfig.portHeight * 0.5;
-        else this._distFromPort = GlUiConfig.portHeight * 2.9; // magic number...?!
+        if (Math.abs(this._y - this._y2) < gluiconfig.portHeight * 2) this._distFromPort = gluiconfig.portHeight * 0.5;
+        else this._distFromPort = gluiconfig.portHeight * 2.9; // magic number...?!
     }
 
     _subdivide(inPoints, divs)
@@ -284,8 +284,8 @@ export default class GlCable
 
             if (this._x !== this._x2 !== 0)
             {
-                posX = this._x + GlUiConfig.portWidth / 2 - 5;
-                posX2 = this._x2 + GlUiConfig.portWidth / 2 - 5;
+                posX = this._x + gluiconfig.portWidth / 2 - 5;
+                posX2 = this._x2 + gluiconfig.portWidth / 2 - 5;
             }
 
             if (this._linetype == this.LINETYPE_CURVED)
@@ -402,7 +402,7 @@ export default class GlCable
         this._buttonRect.setPosition(
             this._x + ((this._x2 - this._x) / 2) - this._buttonSize / 2,
             (this._y + this._buttonSize) + (((this._y2 - this._buttonSize) - (this._y + this._buttonSize)) / 2) - this._buttonSize / 2,
-            GlUiConfig.zPosCableButtonRect);
+            gluiconfig.zPosCableButtonRect);
     }
 
     setPosition(x, y, x2, y2)
@@ -556,7 +556,7 @@ export default class GlCable
             }
 
             this.updateColor();
-            this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, GlUiConfig.zPosCableButtonRect);
+            this._buttonRect.setPosition(closestX - this._buttonSize / 2, closestY - this._buttonSize / 2, gluiconfig.zPosCableButtonRect);
 
             this._glPatch._cablesHoverButtonRect = this._buttonRect;
 

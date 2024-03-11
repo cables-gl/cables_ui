@@ -5,6 +5,7 @@ import ele from "../../utils/ele";
 import { PortHtmlGenerator } from "./op_params_htmlgen";
 import ParamsListener from "./params_listener";
 import userSettings from "../usersettings";
+import gluiconfig from "../../glpatch/gluiconfig";
 
 class OpParampanel extends CABLES.EventTarget
 {
@@ -324,7 +325,7 @@ class OpParampanel extends CABLES.EventTarget
                 {
                     const p = this._portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (gluiconfig.portWidth + gluiconfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p);
                 });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));

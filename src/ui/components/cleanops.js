@@ -1,3 +1,4 @@
+import gluiconfig from "../glpatch/gluiconfig";
 import WatchPortVisualizer from "./opparampanel/watchportvisualizer";
 
 export default class opCleaner
@@ -52,7 +53,7 @@ export default class opCleaner
             otherOps.push(ops[i]);
         }
 
-        let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+        let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (gluiconfig.portWidth + gluiconfig.portPadding));
 
         for (let i = 0; i < ops.length; i++)
             ops[i].setTempOpPos(startPosX, startPosY);
@@ -129,13 +130,13 @@ export default class opCleaner
         const other = op.testTempCollision(gui.corePatch().getSubPatchOps(gui.patchView.getCurrentSubPatch()), this._glpatch);
         if (other)
         {
-            console.log("yes colliding...", CABLES.GLUI.glUiConfig.newOpDistanceY);
+            console.log("yes colliding...", gluiconfig.newOpDistanceY);
 
             if (op.hasAnyOutLinked() && !op.hasAnyInLinked()) // eg mainloop
             {
                 if (other.hasAnyOutLinked() && !other.hasAnyInLinked()) // eg mainloop
                 {
-                    op.setTempOpPosX(op.getTempPosX() + 3 * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+                    op.setTempOpPosX(op.getTempPosX() + 3 * (gluiconfig.portWidth + gluiconfig.portPadding));
                     return true;
                 }
             }
@@ -148,25 +149,25 @@ export default class opCleaner
         const other = op.testTempCollision(gui.corePatch().ops, this._glpatch);
         if (other)
         {
-            console.log("yes colliding...", CABLES.GLUI.glUiConfig.newOpDistanceY);
+            console.log("yes colliding...", gluiconfig.newOpDistanceY);
 
             if (op.hasAnyOutLinked() && !op.hasAnyInLinked()) // eg mainloop
             {
                 // if (other.hasAnyOutLinked() && !other.hasAnyInLinked()) // eg mainloop
                 // {
-                //     op.setTempOpPosX(op.getTempPosX() + 3 * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+                //     op.setTempOpPosX(op.getTempPosX() + 3 * (gluiconfig.portWidth + gluiconfig.portPadding));
                 //     return true;
                 // }
             }
             else
             if (!op.hasAnyOutLinked() && !op.hasAnyInLinked())
             {
-                op.setTempOpPosY(op.getTempPosY() - CABLES.GLUI.glUiConfig.newOpDistanceY);
+                op.setTempOpPosY(op.getTempPosY() - gluiconfig.newOpDistanceY);
                 return true;
             }
             else
             {
-                op.setTempOpPosY(op.getTempPosY() + CABLES.GLUI.glUiConfig.newOpDistanceY);
+                op.setTempOpPosY(op.getTempPosY() + gluiconfig.newOpDistanceY);
                 return true;
             }
         }
@@ -186,7 +187,7 @@ export default class opCleaner
                 {
                     mul = 2;
                 }
-                offsetY = mul * CABLES.GLUI.glUiConfig.newOpDistanceY;
+                offsetY = mul * gluiconfig.newOpDistanceY;
 
                 // move one line below parent...
                 // if (parentOp.getTempPosY() >= op.getTempPosY())
@@ -230,7 +231,7 @@ export default class opCleaner
             if (!parent.hasMultipleOutLinked())
             {
                 // parent has one child...
-                op.setTempOpPosX(parent.getTempPosX() + this.getOutLinkPortIndex(parent, op) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+                op.setTempOpPosX(parent.getTempPosX() + this.getOutLinkPortIndex(parent, op) * (gluiconfig.portWidth + gluiconfig.portPadding));
             }
             else
             {
@@ -256,7 +257,7 @@ export default class opCleaner
                     if (found) break;
                 }
 
-                count *= (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding);
+                count *= (gluiconfig.portWidth + gluiconfig.portPadding);
 
 
                 // const s = op.getChildsBoundings(this._glpatch, null, op);
@@ -274,7 +275,7 @@ export default class opCleaner
                 do
                 {
                     op.setTempOpPosX(parent.getTempPosX() + count);
-                    count += 4 * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding);
+                    count += 4 * (gluiconfig.portWidth + gluiconfig.portPadding);
                     // if (count > 1000)
                     // {
                     // break;
