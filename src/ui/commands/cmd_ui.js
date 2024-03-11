@@ -4,6 +4,7 @@ import ChangelogToast from "../dialogs/changelog";
 import WatchVarTab from "../components/tabs/tab_watchvars";
 import userSettings from "../components/usersettings";
 import JobsTab from "../components/tabs/tab_jobs";
+import HtmlTab from "../components/tabs/tab_html";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -218,7 +219,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
         }
     }
 
-    CABLES.UI.MODAL.show(infoHtml, { "title": "build info" });
+    new HtmlTab(gui.mainTabs, infoHtml);
 };
 
 
