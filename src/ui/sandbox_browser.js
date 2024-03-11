@@ -44,6 +44,12 @@ export default class SandboxBrowser extends CABLES.EventTarget
         return this._cfg.urlCables;
     }
 
+    isPatchSameHost()
+    {
+        if (!gui.project() || !gui.project().buildInfo || !gui.project().buildInfo.host) return true;
+        return gui.project().buildInfo.host == CABLES.sandbox.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
+    }
+
     getSandboxUrl()
     {
         return this._cfg.urlSandbox || "";
