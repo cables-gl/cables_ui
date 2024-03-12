@@ -39,6 +39,7 @@ export default class Logger extends CABLES.EventTarget
     warn(args)
     {
         console.warn("[" + this.initiator + "]", ...arguments);
+
         if (window.gui) gui.emitEvent("logEvent", this.initiator, "warn", arguments);
     }
 
