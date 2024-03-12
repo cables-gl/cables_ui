@@ -48,7 +48,7 @@ export default class GlPort
         this._port.on("onLinkChanged", this._onLinkChanged.bind(this));
         this._port.on("onValueChangeUi", () =>
         {
-            if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
+            if (this._glop.op && this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
         });
 
         p.on("onUiAttrChange", (attribs) =>
