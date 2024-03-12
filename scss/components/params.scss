@@ -45,22 +45,10 @@
 
     }
 
-    .params
+
+
+    .contentcontainer
     {
-
-
-        .op-contextmenu {
-            position: absolute;
-            top: 9px;
-            right: 10px;
-        }
-        .toggle-bookmark-button
-        {
-            position: absolute;
-            top: 9px;
-            right: 34px;
-        }
-
 
         .warning,.warning-experimental,.warning-error
         {
@@ -103,14 +91,35 @@
             margin-bottom: 3px;;
         }
 
-        .icon-link {
-            position: relative;
-            top: 4px;
-        }
 
         .hint
         {
             background-color: $background-color-brighter;
+        }
+
+    }
+
+    .params
+    {
+
+
+        .op-contextmenu {
+            position: absolute;
+            top: 9px;
+            right: 10px;
+        }
+        .toggle-bookmark-button
+        {
+            position: absolute;
+            top: 9px;
+            right: 34px;
+        }
+
+
+
+        .icon-link {
+            position: relative;
+            top: 4px;
         }
 
         .params_op_head

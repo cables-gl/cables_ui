@@ -321,7 +321,11 @@ export default class OpSelect
             else
             {
                 html = "<div id=\"opselect-layout\" class=\"op\">";
-                html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+
+                const svg = gui.opDocs.getLayoutSvg(opName);
+                if (svg)html += svg;
+                else html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+
                 html += "</div>";
                 html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
                 html += opDocHtml;

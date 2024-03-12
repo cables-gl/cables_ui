@@ -35,7 +35,7 @@ export default class FileManagerEditor
             url,
             (err2, _data, xhr2) =>
             {
-                const name = "edit " + filename;
+                const name = filename;
 
                 const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "syntax": syntax }, true);
                 console.log("syntax", syntax);
@@ -48,7 +48,7 @@ export default class FileManagerEditor
                         "syntax": syntax,
                         "onClose": function (which)
                         {
-                            CABLES.editorSession.remove(editorObj.name, editorObj.type);
+                            CABLES.editorSession.remove(editorObj.type, editorObj.name);
                         },
                         "onSave": function (setStatus, content)
                         {

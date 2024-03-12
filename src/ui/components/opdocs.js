@@ -1,6 +1,10 @@
 import defaultops, { defaultOpNames } from "../defaultops";
 import Logger from "../utils/logger";
 import { getHandleBarHtml } from "../utils/handlebars";
+import uiconfig from "../uiconfig";
+import gluiconfig from "../glpatch/gluiconfig";
+import GlPatch from "../glpatch/glpatch";
+import GlPort from "../glpatch/glport";
 
 export default class OpDocs
 {
@@ -381,5 +385,65 @@ export default class OpDocs
         }
 
         perf.finish();
+    }
+
+    getLayoutSvg(opname)
+    {
+        function glColorToHtml(glCol)
+        {
+            const r = Math.round(glCol[0] * 255);
+            const g = Math.round(glCol[1] * 255);
+            const b = Math.round(glCol[2] * 255);
+
+            return "rgb(" + r + ", " + g + ", " + b + ")";
+        }
+
+        const doc = this.getOpDocByName(opname);
+        if (doc.layout)
+        {
+            let svgStr = "";
+            let width = 200;
+            if (doc.layout.portsIn)
+                width = Math.max(width, doc.layout.portsIn.length * (gluiconfig.portWidth + gluiconfig.portPadding));
+
+            svgStr += "<?xml version=\"1.0\"?>";
+            svgStr += "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\">";
+
+
+            svgStr += "<rect width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
+
+            if (doc.layout.portsIn)
+                for (let i = 0; i < doc.layout.portsIn.length; i++)
+                {
+                    if (!doc.layout.portsIn[i]) continue;
+                    let posx = i * (gluiconfig.portWidth + gluiconfig.portPadding);
+
+                    const pcol = GlPort.getColor(doc.layout.portsIn[i].type);
+                    const cssCol = glColorToHtml(pcol);
+
+                    svgStr += "<rect x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
+                }
+
+            if (doc.layout.portsOut)
+                for (let i = 0; i < doc.layout.portsOut.length; i++)
+                {
+                    if (!doc.layout.portsOut[i]) continue;
+                    let posx = i * (gluiconfig.portWidth + gluiconfig.portPadding);
+                    const pcol = GlPort.getColor(doc.layout.portsOut[i].type);
+                    const cssCol = glColorToHtml(pcol);
+
+
+                    svgStr += "<rect y=\"" + (gluiconfig.opHeight - gluiconfig.portHeight) + "\" x=\"" + posx + "\" width=\"" + gluiconfig.portWidth + "\" height=\"" + gluiconfig.portHeight + "\" fill=\"" + cssCol + "\"/>";
+                }
+
+            const nsCol = GlPatch.getOpNamespaceColor(opname);
+            const cssCol = glColorToHtml(nsCol);
+
+            svgStr += "<text x=\"" + gluiconfig.portWidth + "\" y=\"" + gluiconfig.opHeight * 0.63 + "\" style=\"font-family:roboto, arial;font-size:12px;\" fill=\"" + cssCol + "\">" + doc.shortNameDisplay + "</text>";
+
+            svgStr += "</svg>";
+
+            return svgStr;
+        }
     }
 }

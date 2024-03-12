@@ -181,6 +181,14 @@ export default class ModalError
             }
         }
 
+        const isSameHost = CABLES.sandbox.isPatchSameHost();
+
+        if (!isSameHost)
+        {
+            str += "<br/><br/>Patch was last saved on a different environment: <a class=\"link\" href=\"" + gui.project().buildInfo.host + "\" target=\"top\">" + gui.project().buildInfo.host + "</a>";
+            str += "<br/><br/>";
+        }
+
         if (this._options.text)
             str += this._options.text + "<br/><br/>";
 

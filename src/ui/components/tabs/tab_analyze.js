@@ -42,33 +42,23 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         {
             let arr = FindTab.searchOutDated(gui.corePatch().ops, []);
-            report += arr.length + " outdated ops ";
-            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':outdated');\">find</a>";
-            report += "<br/>";
+            if (arr.length > 0) report += "<a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':outdated');\">" + arr.length + " outdated ops </a><br/>";
         }
         {
             let arr = FindTab.searchPatchOps(gui.corePatch().ops, []);
-            report += arr.length + " patch ops ";
-            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops patch');\">find</a>";
-            report += "<br/>";
+            if (arr.length > 0) report += "<a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops patch');\">" + arr.length + " patch ops </a><br/>";
         }
         {
             let arr = FindTab.searchUserOps(gui.corePatch().ops, []);
-            report += arr.length + " user ops ";
-            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':user');\">find</a>";
-            report += "<br/>";
+            if (arr.length > 0) report += "<a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':user');\">" + arr.length + " user ops </a><br/>";
         }
         {
             let arr = FindTab.searchTeamOps(gui.corePatch().ops, []);
-            report += arr.length + " team ops ";
-            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops team');\">find</a>";
-            report += "<br/>";
+            if (arr.length > 0) report += "<a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops team');\">" + arr.length + " team ops </a><br/>";
         }
         {
             let arr = FindTab.searchExtensionOps(gui.corePatch().ops, []);
-            report += arr.length + " extension ops ";
-            if (arr.length > 0) report += "<a class=\"button-small\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops extension');\">find</a>";
-            report += "<br/>";
+            if (arr.length > 0) report += "<a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, ':notcoreops extension');\">" + arr.length + " extension ops </a><br/>";
         }
         {
             let numHidden = 0;
@@ -96,8 +86,8 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
 
         report += "<table>";
         for (let i = 0; i < Math.min(25, opscountSorted.length); i++)
+            report += "<tr><td> " + opscountSorted[i].count + "x </td><td><a class=\"link\" onclick=\"new CABLES.UI.FindTab(gui.mainTabs, '" + opscountSorted[i].name + "');\">" + opscountSorted[i].name + "</td></tr>";
 
-            report += "<tr><td>" + opscountSorted[i].name + "</td><td> " + opscountSorted[i].count + "x </td></tr>";
         report += "</table>";
 
         // ---
@@ -143,7 +133,7 @@ export default class AnalyzePatchTab extends CABLES.EventTarget
         {
             const s = Math.round(serializeSizes[i].size / 1024);
             if (s > 1)
-                report += "<tr><td>" + serializeSizes[i].name + "</td><td>" + s + "kb</td></tr>";
+                report += "<tr><td>" + s + "kb</td><td><a class=\"link\" onclick=\"console.log(456);gui.patchView.centerSelectOp('" + serializeSizes[i].id + "')\">" + serializeSizes[i].name + "</a></td></tr>";
         }
         report += "</table>";
 

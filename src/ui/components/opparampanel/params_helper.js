@@ -247,7 +247,7 @@ const paramsHelper =
                     "editorObj": editorObj,
                     "onClose": function (which)
                     {
-                        CABLES.editorSession.remove(which.editorObj.name, which.editorObj.type);
+                        CABLES.editorSession.remove(which.editorObj.type, which.editorObj.name);
                     },
                     "onSave": function (setStatus, content)
                     {

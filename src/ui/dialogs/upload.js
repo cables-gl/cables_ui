@@ -82,7 +82,8 @@ export default class FileUploader
                     {
                         this._log.error("file uploaded!");
                     });
-            }, false);
+            },
+            false);
         reader.readAsDataURL(file);
     }
 

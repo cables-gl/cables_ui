@@ -167,16 +167,16 @@ export default class GlPatch extends CABLES.EventTarget
         this._cachedNumSelectedOps = 0;
         this._cachedFirstSelectedOp = null;
 
-        cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("touchstart", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("touchend", this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("touchmove", this._onCanvasMouseMove.bind(this), { "passive": false });
 
-        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": true });
-        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": true });
+        cgl.canvas.addEventListener("pointerdown", this._onCanvasMouseDown.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointermove", this._onCanvasMouseMove.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerleave", this._onCanvasMouseLeave.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerenter", this._onCanvasMouseEnter.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("pointerup", this._onCanvasMouseUp.bind(this), { "passive": false });
+        cgl.canvas.addEventListener("dblclick", this._onCanvasDblClick.bind(this), { "passive": false });
 
         gui.on("themeChanged", this.updateTheme.bind(this));
 

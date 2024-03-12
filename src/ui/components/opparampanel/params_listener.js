@@ -1,6 +1,7 @@
 import blueprintUtil from "../../blueprint_util";
 import defaultops from "../../defaultops";
 import ModalDialog from "../../dialogs/modaldialog";
+import gluiconfig from "../../glpatch/gluiconfig";
 import ele from "../../utils/ele";
 import undo from "../../utils/undo";
 import EditorTab from "../tabs/tab_editor";
@@ -272,7 +273,7 @@ class ParamsListener extends CABLES.EventTarget
                 if (!p.uiAttribs.hidePort)
                     gui.opSelect().show(
                         {
-                            "x": p.op.uiAttribs.translate.x + (index * (CABLES.UI.uiConfig.portSize + CABLES.UI.uiConfig.portPadding)),
+                            "x": p.op.uiAttribs.translate.x + (index * (gluiconfig.portWidth + gluiconfig.portPadding)),
                             "y": p.op.uiAttribs.translate.y - 50,
                         }, thePort.op, p);
             });

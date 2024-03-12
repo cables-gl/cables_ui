@@ -2,7 +2,13 @@
 <script id="tab_manage_op" type="text/x-handlebars-template">
 
     <div class="tabContentScrollContainer">
-        <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
+
+        <br>
+        {{#if opLayoutSvg}}
+            {{{opLayoutSvg}}}
+        {{else}}
+            <img src="{{url}}/api/op/layout/{{opname}}" style="margin-top:10px;">
+        {{/if}}
         <br/>
         <h2>Op {{opDoc.shortName}}</h2>
         {{opname}}
@@ -194,7 +200,7 @@
             <select id="addoplib">
                 <option value="">---</option>
                 {{#each libs}}
-                <option value="{{url}}">{{#if isAssetLib}}in patch - {{/if}}{{name}}</option>
+                <option value="{{url}}">{{#if isAssetLib}}patch file - {{/if}}{{name}}</option>
                 {{/each}}
             </select>
             <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>

@@ -67,7 +67,13 @@ export default class PatchPanel extends CABLES.EventTarget
                 for (let i = 0; i < project.opExampleFor.length; i++)
                     if (gui.corePatch().getOpsByObjName(project.opExampleFor[i]).length == 0)missingExampleOps.push(project.opExampleFor[i]);
 
-            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps });
+
+            const isSameHost = CABLES.sandbox.isPatchSameHost();
+            let host = "";
+
+            if (!isSameHost)host = gui.project().buildInfo.host;
+
+            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps, "sameHost": isSameHost, "patchHost": host });
             // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
             // if (project.isOpExample || notCollab)
             // {

@@ -7,9 +7,9 @@ class UiConfig
 {
     constructor()
     {
-        this.portSize = 10;
-        this.portHeight = 6;
-        this.portPadding = 2;
+        // this.portSize = 10;
+        // this.portHeight = 6;
+        // this.portPadding = 2;
 
         this.snapX = 12;
         this.snapY = 20;
