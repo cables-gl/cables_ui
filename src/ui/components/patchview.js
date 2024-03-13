@@ -1412,6 +1412,11 @@ export default class PatchView extends CABLES.EventTarget
 
     clipboardCopyOps(e)
     {
+        function arrayContains(arr, obj)
+        {
+            return arr.indexOf(obj) > -1;
+        }
+
         let selectedOps = this.getSelectedOps();
         const ops = [];
         const opIds = [];
@@ -1469,7 +1474,7 @@ export default class PatchView extends CABLES.EventTarget
                         {
                             if (ops[i].portsIn[j].links[k] && ops[i].portsIn[j].links[k].objIn && ops[i].portsIn[j].links[k].objOut)
                             {
-                                if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
+                                if (!arrayContains(opIds, ops[i].portsIn[j].links[k].objIn) || !arrayContains(opIds, ops[i].portsIn[j].links[k].objOut))
                                 {
                                     const p = selectedOps[0].patch.getOpById(ops[i].portsIn[j].links[k].objOut).getPort(ops[i].portsIn[j].links[k].portOut);
                                     ops[i].portsIn[j].links[k] = null;
@@ -1495,7 +1500,7 @@ export default class PatchView extends CABLES.EventTarget
                     {
                         if (ops[i].portsOut[j].links[k] && ops[i].portsOut[j].links[k].objIn && ops[i].portsOut[j].links[k].objOut)
                         {
-                            if (!CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objIn) || !CABLES.UTILS.arrayContains(opIds, ops[i].portsOut[j].links[k].objOut))
+                            if (!arrayContains(opIds, ops[i].portsOut[j].links[k].objIn) || !arrayContains(opIds, ops[i].portsOut[j].links[k].objOut))
                             {
                                 const p = selectedOps[0].patch.getOpById(ops[i].portsOut[j].links[k].objOut).getPort(ops[i].portsOut[j].links[k].portOut);
                                 ops[i].portsOut[j].links[k] = null;

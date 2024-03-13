@@ -127,7 +127,7 @@ function valueChanger(eleId, focus, portName, opid)
 
         eleInput.removeEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
         // eleInput.removeEventListener("keydown", tabKeyListener);
-        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
+        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel, { "passive": false });
         eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();

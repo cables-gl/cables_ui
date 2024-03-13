@@ -50,7 +50,7 @@ import text from "./text";
 import uiconfig from "./uiconfig";
 import ele from "./utils/ele";
 import { initHandleBarsHelper } from "./utils/handlebars";
-import { arrayContains, uniqueArray } from "./utils/helper";
+import { uniqueArray } from "./utils/helper";
 import LogFilter from "./utils/loggerfilter";
 import undo from "./utils/undo";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect";
@@ -126,7 +126,6 @@ CABLES.UI.ModalError = ModalError;
 // expose global functions
 CABLES.UI.initSplitPanes = initSplitPanes;
 CABLES.UI.initHandleBarsHelper = initHandleBarsHelper;
-CABLES.UTILS.arrayContains = arrayContains;
 CABLES.UTILS.uniqueArray = uniqueArray;
 
 CABLES.UI.startIdleListeners = startIdleListeners;

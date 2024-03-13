@@ -224,7 +224,7 @@ export default class TexturePreviewer
             // {
             previewCanvas.clearRect(0, 0, this._currentWidth, previewCanvasEle.height);
 
-            if (this._currentWidth != 0 && cgl.canvas.width != 0 && cgl.canvas.height != 0 && previewCanvasEle.width != 0 && previewCanvasEle.height != 0)
+            if (this._currentWidth > 0 && cgl.canvas.width > 0 && cgl.canvas.height > 0 && previewCanvasEle.width != 0 && previewCanvasEle.height > 0)
                 previewCanvas.drawImage(cgl.canvas, 0, 0, this._currentWidth, previewCanvasEle.height);
             // }
 
@@ -247,7 +247,8 @@ export default class TexturePreviewer
                 if (port.get().width < w && port.get().height < h) vizCtx.imageSmoothingEnabled = false;
 
                 vizCtx.scale(1, -1);
-                vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
+
+                if (w > 0 && h > 0 && cgl.canvas && cgl.canvas.width > 0 && cgl.canvas.height > 0) vizCtx.drawImage(cgl.canvas, 0, 0, w, h);
                 vizCtx.scale(1, 1);
                 vizCtx.globalAlpha = 1;
                 vizCtx.restore();
@@ -536,8 +537,6 @@ export default class TexturePreviewer
                 else el.classList.add("activePreview");
         }
     }
-
-
 
     updateTexturePort(port)
     {
