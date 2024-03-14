@@ -1,7 +1,6 @@
-import ModalDialog from "../../dialogs/modaldialog";
-import Logger from "../../utils/logger";
-import ele from "../../utils/ele";
-import GlUiConfig from "../../glpatch/gluiconfig";
+import { Logger } from "cables-shared-client";
+import ModalDialog from "../../dialogs/modaldialog.js";
+import GlUiConfig from "../../glpatch/gluiconfig.js";
 
 export default class ModalPortValue
 {

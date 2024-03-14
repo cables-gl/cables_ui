@@ -1,8 +1,10 @@
-const path = require("path");
-const webpack = require("webpack");
+import path from "path";
 
-module.exports = (isLiveBuild, buildInfo) =>
+import webpack from "webpack";
+
+export default (isLiveBuild, buildInfo) =>
 {
+    const __dirname = new URL(".", import.meta.url).pathname;
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [

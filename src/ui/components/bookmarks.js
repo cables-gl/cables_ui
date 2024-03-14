@@ -1,6 +1,6 @@
-import defaultops from "../defaultops";
-import text from "../text";
-import { getHandleBarHtml } from "../utils/handlebars";
+import defaultOps from "../defaultops.js";
+import text from "../text.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
 
 
 export default class Bookmarks
@@ -82,7 +82,7 @@ export default class Bookmarks
                         "id": this._bookmarks[i],
                         "name": op.name,
                         "objName": op.objName,
-                        "class": defaultops.getNamespaceClassName(op.objName),
+                        "class": defaultOps.getNamespaceClassName(op.objName),
                     });
             }
         }

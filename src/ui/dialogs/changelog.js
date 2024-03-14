@@ -1,5 +1,5 @@
-import userSettings from "../components/usersettings";
-import Logger from "../utils/logger";
+import { Logger } from "cables-shared-client";
+import userSettings from "../components/usersettings.js";
 
 export default class ChangelogToast
 {

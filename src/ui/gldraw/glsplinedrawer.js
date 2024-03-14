@@ -1,4 +1,4 @@
-import userSettings from "../components/usersettings";
+import userSettings from "../components/usersettings.js";
 
 import srcShaderGlSplineDrawerFrag from "./glsplinedrawer_glsl.frag";
 import srcShaderGlSplineDrawerVert from "./glsplinedrawer_glsl.vert";

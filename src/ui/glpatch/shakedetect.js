@@ -1,5 +1,6 @@
+import { Events } from "cables-shared-client";
 
-export default class ShakeDetector extends CABLES.EventTarget
+export default class ShakeDetector extends Events
 {
     constructor()
     {

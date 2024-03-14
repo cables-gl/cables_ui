@@ -1,10 +1,10 @@
-import { CONSTANTS } from "../../../../cables/src/core/constants";
-import userSettings from "../components/usersettings";
-import GlRect from "../gldraw/glrect";
-import uiconfig from "../uiconfig";
-import gluiconfig from "./gluiconfig";
+import { Events } from "cables-shared-client";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import userSettings from "../components/usersettings.js";
+import GlRect from "../gldraw/glrect.js";
+import gluiconfig from "./gluiconfig.js";
 
-export default class Snap extends CABLES.EventTarget
+export default class SnapLines extends Events
 {
     constructor(cgl, glPatch, instancer)
     {

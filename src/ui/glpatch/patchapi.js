@@ -1,8 +1,7 @@
-
-import GlLink from "./gllink";
-import Logger from "../utils/logger";
-import userSettings from "../components/usersettings";
-import undo from "../utils/undo";
+import { Logger } from "cables-shared-client";
+import GlLink from "./gllink.js";
+import userSettings from "../components/usersettings.js";
+import undo from "../utils/undo.js";
 
 
 const DEFAULT_ACTIVITY = 0;

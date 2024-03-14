@@ -1,7 +1,8 @@
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
+import { Events } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
-export default class Chat extends CABLES.EventTarget
+export default class Chat extends Events
 {
     constructor(tabs, socket)
     {

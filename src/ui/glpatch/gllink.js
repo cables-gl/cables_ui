@@ -1,12 +1,9 @@
-import GlUiConfig from "./gluiconfig";
-import GlCable from "./glcable";
-import Logger from "../utils/logger";
-import MouseState from "./mousestate";
-import OpsMathInterpolate
-    from "../../../../cables/src/ops/base/Ops.Math.Interpolate/Ops.Math.Interpolate.json";
-import userSettings from "../components/usersettings";
-import defaultOps from "../defaultops";
-import Snap from "./snap";
+import { Logger } from "cables-shared-client";
+import GlUiConfig from "./gluiconfig.js";
+import GlCable from "./glcable.js";
+import MouseState from "./mousestate.js";
+import userSettings from "../components/usersettings.js";
+import defaultOps from "../defaultops.js";
 
 export default class GlLink
 {

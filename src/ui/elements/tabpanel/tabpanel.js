@@ -1,7 +1,8 @@
-import userSettings from "../../components/usersettings";
-import { getHandleBarHtml } from "../../utils/handlebars";
+import { Events } from "cables-shared-client";
+import userSettings from "../../components/usersettings.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
-export default class TabPanel extends CABLES.EventTarget
+export default class TabPanel extends Events
 {
     constructor(eleId)
     {

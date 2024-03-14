@@ -1,8 +1,6 @@
-
-import Logger from "../utils/logger";
-import ModalDialog from "../dialogs/modaldialog";
-import defaultops from "../defaultops";
-
+import { Logger, Events } from "cables-shared-client";
+import ModalDialog from "../dialogs/modaldialog.js";
+import defaultOps from "../defaultops.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -23,7 +21,7 @@ export function bytesArrToBase64(arr)
     return result;
 }
 
-export default class PatchSaveServer extends CABLES.EventTarget
+export default class PatchSaveServer extends Events
 {
     constructor()
     {
@@ -207,7 +205,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
                                 "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
                                 "checked": true,
                             };
-                            if (userOpsUsed.some((userOp) => { return defaultops.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
+                            if (userOpsUsed.some((userOp) => { return defaultOps.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
                             {
                                 checkboxData.disabled = true;
                                 checkboxData.tooltip = "Collaborator cannot be removed, their userops are used in the patch";
@@ -281,7 +279,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
 
             // const localBlueprints = gui.corePatch().ops.filter((op) =>
             // {
-            //     if (!defaultops.isBlueprintOp(op)) return false;
+            //     if (!defaultOps.isBlueprintOp(op)) return false;
             //     const port = op.getPortByName("externalPatchId");
             //     if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
             //     return false;
@@ -418,7 +416,7 @@ export default class PatchSaveServer extends CABLES.EventTarget
             const op = ops[i];
             if (op.uiAttribs)
             {
-                if (defaultops.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
+                if (defaultOps.isBlueprintOp(op) && op.uiAttribs.blueprintSubpatch)
                 {
                     blueprintIds.push(op.uiAttribs.blueprintSubpatch);
 

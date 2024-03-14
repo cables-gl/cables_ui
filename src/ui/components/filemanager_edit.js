@@ -1,12 +1,4 @@
-import ele from "../utils/ele";
-import Logger from "../utils/logger";
-import ItemManager from "./tabs/tab_item_manager";
-import { getHandleBarHtml } from "../utils/handlebars";
-import ModalDialog from "../dialogs/modaldialog";
-import text from "../text";
-import userSettings from "./usersettings";
-import ModalLoading from "../dialogs/modalloading";
-import EditorTab from "./tabs/tab_editor";
+import EditorTab from "./tabs/tab_editor.js";
 
 export default class FileManagerEditor
 {

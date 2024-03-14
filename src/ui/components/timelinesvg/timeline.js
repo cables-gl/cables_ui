@@ -1,7 +1,6 @@
-import MouseState from "../../glpatch/mousestate";
-import text from "../../text";
-import ele from "../../utils/ele";
-import MetaKeyframes from "../tabs/meta_keyframes";
+import { ele } from "cables-shared-client";
+import MouseState from "../../glpatch/mousestate.js";
+import text from "../../text.js";
 
 export default function TimeLineGui()
 {

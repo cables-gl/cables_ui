@@ -1,6 +1,7 @@
-import { PatchConnectionReceiver } from "./patchconnection";
+import { Events } from "cables-shared-client";
+import { PatchConnectionReceiver } from "./patchconnection.js";
 
-export default class PacoConnector extends CABLES.EventTarget
+export default class PacoConnector extends Events
 {
     constructor(connection, paco)
     {

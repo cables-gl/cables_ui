@@ -1,8 +1,8 @@
+import { Events } from "cables-shared-client";
+import userSettings from "../components/usersettings.js";
 
-import userSettings from "../components/usersettings";
 
-
-export default class MouseState extends CABLES.EventTarget
+export default class MouseState extends Events
 {
     constructor(canvas)
     {

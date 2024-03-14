@@ -1,5 +1,5 @@
-import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen";
-import ParamsListener from "../components/opparampanel/params_listener";
+import { PortHtmlGenerator } from "../components/opparampanel/op_params_htmlgen.js";
+import ParamsListener from "../components/opparampanel/params_listener.js";
 
 const CABLES_CMD_TIMELINE = {};
 

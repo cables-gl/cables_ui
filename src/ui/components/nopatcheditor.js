@@ -1,4 +1,6 @@
-export default class NoPatchEditor extends CABLES.EventTarget
+import { Events } from "cables-shared-client";
+
+export default class NoPatchEditor extends Events
 {
     constructor(cgl)
     {

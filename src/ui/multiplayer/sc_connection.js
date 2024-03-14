@@ -1,13 +1,13 @@
-import PacoConnector from "./sc_paconnector";
-import Logger from "../utils/logger";
+import { Logger, Events } from "cables-shared-client";
+import PacoConnector from "./sc_paconnector.js";
 
-import ScState from "./sc_state";
-import ScUiMultiplayer from "./sc_ui_multiplayer";
-import { notify, notifyError } from "../elements/notification";
-import Gui from "../gui";
-import { PatchConnectionSender } from "./patchconnection";
+import ScState from "./sc_state.js";
+import ScUiMultiplayer from "./sc_ui_multiplayer.js";
+import { notify, notifyError } from "../elements/notification.js";
+import Gui from "../gui.js";
+import { PatchConnectionSender } from "./patchconnection.js";
 
-export default class ScConnection extends CABLES.EventTarget
+export default class ScConnection extends Events
 {
     constructor(cfg)
     {

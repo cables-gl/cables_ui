@@ -1,4 +1,6 @@
-export default class ModalBackground extends CABLES.EventTarget
+import { Events } from "cables-shared-client";
+
+export default class ModalBackground extends Events
 {
     constructor()
     {

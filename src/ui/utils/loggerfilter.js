@@ -1,4 +1,5 @@
-import userSettings from "../components/usersettings";
+import { Events } from "cables-shared-client";
+import userSettings from "../components/usersettings.js";
 
 function defaultSetting(initiator)
 {
@@ -28,7 +29,7 @@ class LogInitiator
 }
 
 
-export default class LogFilter extends CABLES.EventTarget
+export default class LogFilter extends Events
 {
     constructor()
     {

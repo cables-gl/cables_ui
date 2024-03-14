@@ -1,6 +1,6 @@
-import Tab from "../../elements/tabpanel/tab";
-import ele from "../../utils/ele";
-import { getHandleBarHtml } from "../../utils/handlebars";
+import { ele } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
 export default class Profiler
 {
@@ -54,7 +54,7 @@ export default class Profiler
     update()
     {
         const profiler = gui.corePatch().profiler;
-        if(!profiler)return;
+        if (!profiler) return;
 
         const items = profiler.getItems();
         let html = "";
@@ -242,13 +242,13 @@ export default class Profiler
 
 
 
-        let pauseStr="Pause";
-        if(gui.corePatch().profiler)
+        let pauseStr = "Pause";
+        if (gui.corePatch().profiler)
         {
-            if(gui.corePatch().profiler.paused)pauseStr="Resume";
-            ele.byId("profiler_pause").innerHTML=pauseStr;
+            if (gui.corePatch().profiler.paused)pauseStr = "Resume";
+            ele.byId("profiler_pause").innerHTML = pauseStr;
         }
-        
+
 
         ele.byId("profilerui").style.display = "block";
         // ele.byId("profilerlistPeaks").innerHTML = htmlPeaks;

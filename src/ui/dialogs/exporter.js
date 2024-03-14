@@ -1,5 +1,5 @@
-import text from "../text";
-import ModalDialog from "./modaldialog";
+import text from "../text.js";
+import ModalDialog from "./modaldialog.js";
 
 export default class Exporter
 {

@@ -1,6 +1,6 @@
-import ele from "../utils/ele";
-import ModalDialog from "./modaldialog";
-import defaultops from "../defaultops";
+import { ele } from "cables-shared-client";
+import ModalDialog from "./modaldialog.js";
+import defaultOps from "../defaultops.js";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -92,7 +92,7 @@ export default class ModalError
         // if an acual op is given use the objName of that op
         // otherwise try to use the opname given in options, if set
         this.opName = "";
-        if (stack && stack.startsWith(defaultops.getOpsPrefix()))
+        if (stack && stack.startsWith(defaultOps.getOpsPrefix()))
         {
             this.opName = stack.split("/", 1)[0];
             this.opName = this.opName.substring(0, 128);
@@ -103,7 +103,7 @@ export default class ModalError
         if (this.opName)
         {
             // do not track errors in patchops/userops/teamops
-            if (defaultops.isPrivateOp(this.opName)) doTrack = false;
+            if (defaultOps.isPrivateOp(this.opName)) doTrack = false;
             if (window.gui)
             {
                 const ops = gui.corePatch().getOpsByObjName(this.opName);
@@ -218,8 +218,8 @@ export default class ModalError
         let isPrivateOp = false;
         if (this.opName)
         {
-            isPrivateOp = defaultops.isPrivateOp(this.opName);
-            isCustomOp = defaultops.isCustomOp(this.opName);
+            isPrivateOp = defaultOps.isPrivateOp(this.opName);
+            isCustomOp = defaultOps.isCustomOp(this.opName);
             if (isCustomOp && this._op)
             {
                 const codePortName = "JavaScript";
@@ -227,7 +227,7 @@ export default class ModalError
             }
             else
             {
-                if (window.gui && (gui.user.isStaff || defaultops.isCurrentUserOp(this.opName)))
+                if (window.gui && (gui.user.isStaff || defaultOps.isCurrentUserOp(this.opName)))
                 {
                     str += "<a class=\"button \" onclick=\"gui.serverOps.edit('" + this.opName + "',false,null,true);gui.closeModal();\"><span class=\"icon icon-edit\"></span>Edit op</a> &nbsp;&nbsp;";
                 }

@@ -3,7 +3,7 @@
  *
  */
 
-import { CONSTANTS } from "../../../cables/src/core/constants";
+import { CONSTANTS } from "../../../cables/src/core/constants.js";
 
 
 const defaultOpNames =

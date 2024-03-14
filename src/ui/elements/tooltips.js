@@ -1,5 +1,5 @@
-import text from "../text";
-import ele from "../utils/ele";
+import { ele } from "cables-shared-client";
+import text from "../text.js";
 
 let tooltipTimeout = null;
 let eleTooltip = null;

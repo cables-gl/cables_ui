@@ -1,4 +1,4 @@
-import ele from "../../utils/ele";
+import { ele } from "cables-shared-client";
 
 
 let currentEle = null;

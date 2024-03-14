@@ -1,18 +1,15 @@
-import GlPort from "./glport";
-import GlText from "../gldraw/gltext";
-import GlArea from "./glarea";
-import GlRect from "../gldraw/glrect";
-import userSettings from "../components/usersettings";
-import GlLinedrawer from "../gldraw/gllinedrawer";
-import undo from "../utils/undo";
-import MouseState from "./mousestate";
-import defaultops from "../defaultops";
-import uiconfig from "../uiconfig";
-import gluiconfig from "./gluiconfig";
-import GlPatch from "./glpatch";
+import { Events } from "cables-shared-client";
+import GlPort from "./glport.js";
+import GlText from "../gldraw/gltext.js";
+import GlArea from "./glarea.js";
+import userSettings from "../components/usersettings.js";
+import undo from "../utils/undo.js";
+import MouseState from "./mousestate.js";
+import gluiconfig from "./gluiconfig.js";
+import GlPatch from "./glpatch.js";
 
 
-export default class GlOp extends CABLES.EventTarget
+export default class GlOp extends Events
 {
     constructor(glPatch, instancer, op)
     {

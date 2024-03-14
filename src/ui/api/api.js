@@ -1,10 +1,6 @@
-import ModalDialog from "../dialogs/modaldialog";
-import Logger from "../utils/logger";
-import { hideNotificaton, notifyError } from "../elements/notification";
-import ChangelogToast from "../dialogs/changelog";
-import userSettings from "../components/usersettings";
-import Gui from "../gui";
-import undo from "../utils/undo";
+import { Logger } from "cables-shared-client";
+import ModalDialog from "../dialogs/modaldialog.js";
+import undo from "../utils/undo.js";
 
 export default class Api
 {

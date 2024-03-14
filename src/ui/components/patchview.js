@@ -1,22 +1,20 @@
-import PatchSaveServer from "../api/patchserverapi";
-import blueprintUtil from "../blueprint_util";
-import defaultops from "../defaultops";
-import ModalDialog from "../dialogs/modaldialog";
-import { notify, notifyError } from "../elements/notification";
-import gluiconfig from "../glpatch/gluiconfig";
-import Snap from "../glpatch/snap";
-import text from "../text";
-import ele from "../utils/ele";
-import { getHandleBarHtml } from "../utils/handlebars";
-import Logger from "../utils/logger";
-import undo from "../utils/undo";
-import opCleaner from "./cleanops";
-import { convertPorts, getConverters } from "./converterops";
-import SuggestionDialog from "./suggestiondialog";
-import SuggestPortDialog from "./suggestionportdialog";
-import userSettings from "./usersettings";
+import { Logger, ele, Events } from "cables-shared-client";
+import PatchSaveServer from "../api/patchserverapi.js";
+import blueprintUtil from "../blueprint_util.js";
+import defaultOps from "../defaultops.js";
+import ModalDialog from "../dialogs/modaldialog.js";
+import { notify, notifyError } from "../elements/notification.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
+import text from "../text.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import undo from "../utils/undo.js";
+import opCleaner from "./cleanops.js";
+import { convertPorts, getConverters } from "./converterops.js";
+import SuggestionDialog from "./suggestiondialog.js";
+import SuggestPortDialog from "./suggestionportdialog.js";
+import userSettings from "./usersettings.js";
 
-export default class PatchView extends CABLES.EventTarget
+export default class PatchView extends Events
 {
     constructor(corepatch)
     {
@@ -640,7 +638,7 @@ export default class PatchView extends CABLES.EventTarget
         {
             const doc = gui.opDocs.getOpDocByName(this._p.ops[i].objName);
 
-            if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(this._p.ops[i].objName))
+            if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(this._p.ops[i].objName))
             {
                 this.hasOldOps = true;
                 perf.finish();
@@ -882,8 +880,8 @@ export default class PatchView extends CABLES.EventTarget
 
     createSubPatchFromSelection(version = 0, next = null, options = {})
     {
-        let opname = defaultops.defaultOpNames.subPatch;
-        if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
+        let opname = defaultOps.defaultOpNames.subPatch;
+        if (version == 2)opname = defaultOps.defaultOpNames.subPatch2;
 
         const selectedOps = this.getSelectedOps();
 
@@ -897,8 +895,8 @@ export default class PatchView extends CABLES.EventTarget
 
                 if (options.translate) trans = options.translate;
 
-                // let opname = defaultops.defaultOpNames.subPatch;
-                // if (version == 2)opname = defaultops.defaultOpNames.subPatch2;
+                // let opname = defaultOps.defaultOpNames.subPatch;
+                // if (version == 2)opname = defaultOps.defaultOpNames.subPatch2;
 
                 const patchOp = this._p.addOp(opname, { "translate": trans, "subPatch": this.getCurrentSubPatch() });
                 const patchId = patchOp.patchId.get();
@@ -981,8 +979,8 @@ export default class PatchView extends CABLES.EventTarget
 
                     this.setPositionSubPatchInputOutputOps();
                     // set positions of input/output
-                    // let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
-                    // let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+                    // let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
+                    // let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
 
                     // const b = this.getSubPatchBounds(patchId);
 
@@ -1006,8 +1004,8 @@ export default class PatchView extends CABLES.EventTarget
     {
         const b = this.getSubPatchBounds(patchId);
 
-        let patchInputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchInput2);
-        let patchOutputOP = this._p.getSubPatchOp(patchId, defaultops.defaultOpNames.subPatchOutput2);
+        let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
+        let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
 
         if (patchInputOP)patchInputOP.setUiAttribs({ "translate":
         {
@@ -1210,7 +1208,7 @@ export default class PatchView extends CABLES.EventTarget
                     if (foundPatchIds.indexOf(ops[i].uiAttribs.subPatch) === -1) foundPatchIds.push(ops[i].uiAttribs.subPatch);
                 }
             }
-            if (defaultops.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
+            if (defaultOps.isBlueprintOp(ops[i]) == 1 && ops[i].uiAttribs)
             {
                 foundBlueprints[ops[i].id] = ops[i];
             }
@@ -1245,7 +1243,7 @@ export default class PatchView extends CABLES.EventTarget
                         o.type = "blueprintSub";
                     }
 
-                    // if (defaultops.isBlueprintOp(ops[j]) == 2)
+                    // if (defaultOps.isBlueprintOp(ops[j]) == 2)
                     // {
                     o.blueprintVer = ops[j].storage.blueprintVer;
                     // }
@@ -1984,8 +1982,8 @@ export default class PatchView extends CABLES.EventTarget
         const p = op1.getPort(pid);
         const numFitting = op2.countFittingPorts(p);
 
-        const isInnerOp = op2.objName == defaultops.defaultOpNames.subPatchInput2 || op2.objName == defaultops.defaultOpNames.subPatchOutput2;
-        const isbpOp = defaultops.isBlueprintOp(op2) || isInnerOp;
+        const isInnerOp = op2.objName == defaultOps.defaultOpNames.subPatchInput2 || op2.objName == defaultOps.defaultOpNames.subPatchOutput2;
+        const isbpOp = defaultOps.isBlueprintOp(op2) || isInnerOp;
 
         if (isbpOp || numFitting > 1)
         {
@@ -2886,7 +2884,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         const relevantOps = ops.filter((op) =>
         {
-            if (!defaultops.isBlueprintOp(op)) return false;
+            if (!defaultOps.isBlueprintOp(op)) return false;
             const port = op.getPortByName("externalPatchId");
             if (port)
             {
@@ -2936,7 +2934,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            if (!defaultops.isBlueprintOp(op)) return false;
+            if (!defaultOps.isBlueprintOp(op)) return false;
             let isLocal = false;
             if (localOnly)
             {
@@ -2970,7 +2968,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultops.isPatchOp(op.objName);
+            return defaultOps.isPatchOp(op.objName);
         });
     }
 
@@ -2980,7 +2978,7 @@ export default class PatchView extends CABLES.EventTarget
         const ops = patch.ops;
         return ops.filter((op) =>
         {
-            return defaultops.isUserOp(op.objName);
+            return defaultOps.isUserOp(op.objName);
         });
     }
 

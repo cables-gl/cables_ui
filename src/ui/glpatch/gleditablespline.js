@@ -1,9 +1,3 @@
-import glUiConfig from "./gluiconfig";
-import Logger from "../utils/logger";
-import MouseState from "./mousestate";
-import Gui from "../gui";
-import Snap from "./snap";
-
 export default class glEditableSpline
 {
     constructor(splineDrawer, rectInstancer,)

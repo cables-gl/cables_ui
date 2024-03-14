@@ -1,4 +1,4 @@
-import userSettings from "../components/usersettings";
+import userSettings from "../components/usersettings.js";
 
 export default class Tips
 {

@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class OpDocsJson extends CABLES.EventTarget
+export default class OpDocsJson extends Events
 {
     constructor(tabs)
     {

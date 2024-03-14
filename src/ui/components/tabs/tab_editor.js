@@ -1,8 +1,8 @@
-import Logger from "../../utils/logger";
-import Tab from "../../elements/tabpanel/tab";
-import text from "../../text";
-import userSettings from "../usersettings";
-import ManageOp from "./tab_manage_op";
+import { Logger } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import text from "../../text.js";
+import userSettings from "../usersettings.js";
+import ManageOp from "./tab_manage_op.js";
 
 
 export default class EditorTab

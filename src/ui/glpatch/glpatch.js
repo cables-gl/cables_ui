@@ -1,28 +1,24 @@
-import GlLinedrawer from "../gldraw/gllinedrawer";
-import GlRectInstancer from "../gldraw/glrectinstancer";
-import GlSplineDrawer from "../gldraw/glsplinedrawer";
-import GlTextWriter from "../gldraw/gltextwriter";
-import GlText from "../gldraw/gltext";
-import GlDragLine from "./gldragline";
-import GlSelectionArea from "./glselectionarea";
-import GlViewBox from "./glviewbox";
-import GlOp from "./glop";
-import MouseState from "./mousestate";
-import GlCursor from "./glcursor";
-import ShakeDetector from "./shakedetect";
-import Snap from "./snap";
-import VizLayer from "./vizlayer";
-import Logger from "../utils/logger";
-import ele from "../utils/ele";
-import text from "../text";
-import userSettings from "../components/usersettings";
-import Gui from "../gui";
-import glEditableSpline from "./gleditablespline";
-import defaultops from "../defaultops";
-import glUiConfig from "./gluiconfig";
+import { Logger, ele, Events } from "cables-shared-client";
+import GlLinedrawer from "../gldraw/gllinedrawer.js";
+import GlRectInstancer from "../gldraw/glrectinstancer.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import GlTextWriter from "../gldraw/gltextwriter.js";
+import GlText from "../gldraw/gltext.js";
+import GlDragLine from "./gldragline.js";
+import GlSelectionArea from "./glselectionarea.js";
+import GlViewBox from "./glviewbox.js";
+import GlOp from "./glop.js";
+import MouseState from "./mousestate.js";
+import GlCursor from "./glcursor.js";
+import ShakeDetector from "./shakedetect.js";
+import VizLayer from "./vizlayer.js";
+import text from "../text.js";
+import userSettings from "../components/usersettings.js";
+import Gui from "../gui.js";
+import glUiConfig from "./gluiconfig.js";
 
 
-export default class GlPatch extends CABLES.EventTarget
+export default class GlPatch extends Events
 {
     constructor(cgl)
     {

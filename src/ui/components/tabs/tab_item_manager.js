@@ -1,11 +1,12 @@
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
+import { Events } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
-export default class ItemManager
+export default class ItemManager extends Events
 {
     constructor(title, tabs)
     {
-        CABLES.EventTarget.apply(this);
+        super();
         this.listHtmlOptions = {};
         this._display = "icons";
         this._tab = new Tab(title, {

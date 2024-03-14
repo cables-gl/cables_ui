@@ -1,6 +1,6 @@
-import Tab from '../elements/tabpanel/tab';
+import Tab from "../elements/tabpanel/tab.js";
 
-export default function GlGuiTab (tabs)
+export default function GlGuiTab(tabs)
 {
     this._tab = new Tab("GlGui", { "icon": "cube", "infotext": "tab_glgui" });
     tabs.addTab(this._tab, true);
@@ -13,4 +13,4 @@ export default function GlGuiTab (tabs)
     {
         a.parentResized();
     });
-};
+}

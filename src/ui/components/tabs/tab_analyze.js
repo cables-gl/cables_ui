@@ -1,9 +1,8 @@
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import text from "../../text";
-import FindTab from "./tab_find";
+import { Events } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import FindTab from "./tab_find.js";
 
-export default class AnalyzePatchTab extends CABLES.EventTarget
+export default class AnalyzePatchTab extends Events
 {
     constructor(tabs)
     {

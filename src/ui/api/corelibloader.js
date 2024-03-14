@@ -1,4 +1,4 @@
-import LibLoader from "./libloader";
+import LibLoader from "./libloader.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};

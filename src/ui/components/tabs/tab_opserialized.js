@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class OpSerialized extends CABLES.EventTarget
+export default class OpSerialized extends Events
 {
     constructor(tabs)
     {

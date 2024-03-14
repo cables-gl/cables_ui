@@ -1,13 +1,12 @@
-import { getHandleBarHtml } from "../../utils/handlebars";
-import Logger from "../../utils/logger";
-import text from "../../text";
-import ele from "../../utils/ele";
-import { PortHtmlGenerator } from "./op_params_htmlgen";
-import ParamsListener from "./params_listener";
-import userSettings from "../usersettings";
-import gluiconfig from "../../glpatch/gluiconfig";
+import { Logger, ele, Events } from "cables-shared-client";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import text from "../../text.js";
+import { PortHtmlGenerator } from "./op_params_htmlgen.js";
+import ParamsListener from "./params_listener.js";
+import userSettings from "../usersettings.js";
+import gluiconfig from "../../glpatch/gluiconfig.js";
 
-class OpParampanel extends CABLES.EventTarget
+class OpParampanel extends Events
 {
     constructor(eleid)
     {

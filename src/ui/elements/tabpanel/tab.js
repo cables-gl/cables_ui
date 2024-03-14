@@ -1,12 +1,12 @@
-import text from "../../text";
-import { getHandleBarHtml } from "../../utils/handlebars";
+import { Events } from "cables-shared-client";
+import text from "../../text.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
 
-export default class Tab extends CABLES.EventTarget
+export default class Tab extends Events
 {
     constructor(title, options)
     {
         super();
-        CABLES.EventTarget.apply(this);
         this.id = CABLES.uuid();
         this.options = options || {};
         if (!options.hasOwnProperty("showTitle")) this.options.showTitle = true;

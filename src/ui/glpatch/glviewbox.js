@@ -1,7 +1,6 @@
-import GlUiConfig from "./gluiconfig";
-import ele from "../utils/ele";
-import userSettings from "../components/usersettings";
-import Gui from "../gui";
+import GlUiConfig from "./gluiconfig.js";
+import userSettings from "../components/usersettings.js";
+import Gui from "../gui.js";
 
 export default class GlViewBox
 {

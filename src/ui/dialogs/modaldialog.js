@@ -1,6 +1,5 @@
-import ele from "../utils/ele";
-import Logger from "../utils/logger";
-import ModalBackground from "./modalbg";
+import { Logger, ele, Events } from "cables-shared-client";
+import ModalBackground from "./modalbg.js";
 
 /**
  * configuration object for loading a patch
@@ -27,7 +26,7 @@ import ModalBackground from "./modalbg";
  *     "html":"hello world",
  * });
  */
-export default class ModalDialog extends CABLES.EventTarget
+export default class ModalDialog extends Events
 {
     constructor(options, autoOpen = true)
     {

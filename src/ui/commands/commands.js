@@ -1,8 +1,8 @@
-import debugCommands from "./cmd_debug";
-import patchCommands from "./cmd_patch";
-import rendererCommands from "./cmd_renderer";
-import timelineCommands from "./cmd_timeline";
-import uiCommands from "./cmd_ui";
+import debugCommands from "./cmd_debug.js";
+import patchCommands from "./cmd_patch.js";
+import rendererCommands from "./cmd_renderer.js";
+import timelineCommands from "./cmd_timeline.js";
+import uiCommands from "./cmd_ui.js";
 
 const CMD = {};
 let commands = [];

@@ -1,5 +1,5 @@
 // http://html5doctor.com/drag-and-drop-to-server/
-import Logger from "../utils/logger";
+import { Logger } from "cables-shared-client";
 
 
 export default class FileUploader

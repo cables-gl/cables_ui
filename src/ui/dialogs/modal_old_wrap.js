@@ -1,5 +1,5 @@
-import Logger from "../utils/logger";
-import ModalDialog from "./modaldialog";
+import { Logger } from "cables-shared-client";
+import ModalDialog from "./modaldialog.js";
 
 const oldModalWrap =
 {

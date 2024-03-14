@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class SpreadSheetTab extends CABLES.EventTarget
+export default class SpreadSheetTab extends Events
 {
     constructor(tabs, port, data, options)
     {

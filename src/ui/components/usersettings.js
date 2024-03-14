@@ -1,5 +1,6 @@
+import { Events } from "cables-shared-client";
 
-class UserSettings extends CABLES.EventTarget
+class UserSettings extends Events
 {
     constructor()
     {

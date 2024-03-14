@@ -1,8 +1,5 @@
-import ele from "../utils/ele";
-import ModalBackground from "../dialogs/modalbg";
-import { getHandleBarHtml } from "../utils/handlebars";
-import defaultOps from "../defaultops";
-import { CONSTANTS } from "../../../../cables/src/core/constants";
+import defaultOps from "../defaultops.js";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 
 
 

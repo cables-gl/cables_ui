@@ -1,6 +1,3 @@
-import glUiConfig from "./gluiconfig";
-
-
 export default class GlSelectionArea
 {
     constructor(rectinstancer, glpatch)

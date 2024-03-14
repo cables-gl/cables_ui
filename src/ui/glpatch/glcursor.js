@@ -1,5 +1,6 @@
+import { Events } from "cables-shared-client";
 
-export default class GlCursor extends CABLES.EventTarget
+export default class GlCursor extends Events
 {
     constructor(glPatch, instancer, clientId)
     {

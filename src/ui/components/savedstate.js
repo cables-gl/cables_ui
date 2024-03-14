@@ -1,8 +1,6 @@
-import { getHandleBarHtml } from "../utils/handlebars";
-import TreeView from "./treeview";
-import undo from "../utils/undo";
+import { Events } from "cables-shared-client";
 
-export default class SavedState extends CABLES.EventTarget
+export default class SavedState extends Events
 {
     constructor()
     {

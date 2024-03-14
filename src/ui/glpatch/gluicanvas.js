@@ -1,8 +1,5 @@
-import glUiConfig from "./gluiconfig";
-import GlPatch from "./glpatch";
-import GlPatchAPI from "./patchapi";
-import GlAlwaysCheckError from "./glalwayscheckerror";
-import userSettings from "../components/usersettings";
+import GlPatch from "./glpatch.js";
+import GlPatchAPI from "./patchapi.js";
 
 export default class GlUiCanvas
 {

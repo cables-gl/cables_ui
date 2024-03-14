@@ -1,4 +1,4 @@
-import ModalDialog from "../dialogs/modaldialog";
+import ModalDialog from "../dialogs/modaldialog.js";
 
 
 const CABLES_CMD_RENDERER = {};

@@ -1,13 +1,12 @@
-import defaultops from "../defaultops";
-import ele from "../utils/ele";
-import { getHandleBarHtml } from "../utils/handlebars";
-import ModalBackground from "./modalbg";
-import OpTreeList from "../components/opselect_treelist";
-import text from "../text";
-import userSettings from "../components/usersettings";
-import Gui from "../gui";
-import OpSearch from "../components/opsearch";
-import { UTILS } from "../../../../cables/src/core/utils";
+import { ele } from "cables-shared-client";
+import defaultOps from "../defaultops.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import ModalBackground from "./modalbg.js";
+import OpTreeList from "../components/opselect_treelist.js";
+import text from "../text.js";
+import userSettings from "../components/usersettings.js";
+import Gui from "../gui.js";
+import OpSearch from "../components/opsearch.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -142,8 +141,8 @@ export default class OpSelect
 
         const perf = CABLES.UI.uiProfiler.start("opselect.suggestioninfo");
 
-        let ops = defaultops.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
-        let vizops = defaultops.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let ops = defaultOps.getOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
+        let vizops = defaultOps.getVizOpsForPortLink(CABLES.UI.OPSELECT.linkNewOpToPort, CABLES.UI.OPSELECT.linkNewLink);
 
 
         if (ops.length == 0 && vizops.length == 0 && !CABLES.UI.OPSELECT.linkNewOpToPort && !CABLES.UI.OPSELECT.linkNewLink)

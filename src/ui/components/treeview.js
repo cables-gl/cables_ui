@@ -1,5 +1,6 @@
+import { Events } from "cables-shared-client";
 
-export default class TreeView extends CABLES.EventTarget
+export default class TreeView extends Events
 {
     constructor()
     {

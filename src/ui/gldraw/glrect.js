@@ -1,6 +1,6 @@
-import Logger from "../utils/logger";
+import { Logger, Events } from "cables-shared-client";
 
-export default class GlRect extends CABLES.EventTarget
+export default class GlRect extends Events
 {
     constructor(instancer, options)
     {

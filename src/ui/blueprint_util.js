@@ -1,14 +1,9 @@
-import OpDocs from "./components/opdocs";
-import defaultOps from "./defaultops";
-import ModalLoading from "./dialogs/modalloading";
-import gluiconfig from "./glpatch/gluiconfig";
+import defaultOps from "./defaultops.js";
+import gluiconfig from "./glpatch/gluiconfig.js";
 
 import srcBluePrintOp from "./blueprint_op.js.txt";
-import ModalDialog from "./dialogs/modaldialog";
-import { getHandleBarHtml } from "./utils/handlebars";
-
-import ModalError from "./dialogs/modalerror";
-
+import ModalDialog from "./dialogs/modaldialog.js";
+import { getHandleBarHtml } from "./utils/handlebars.js";
 
 const blueprintUtil = {};
 

@@ -1,8 +1,9 @@
-import blueprintUtil from "../blueprint_util";
-import { getHandleBarHtml } from "../utils/handlebars";
-import TreeView from "./treeview";
+import { Events } from "cables-shared-client";
+import blueprintUtil from "../blueprint_util.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import TreeView from "./treeview.js";
 
-export default class PatchPanel extends CABLES.EventTarget
+export default class PatchPanel extends Events
 {
     constructor()
     {

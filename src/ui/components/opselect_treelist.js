@@ -1,5 +1,4 @@
-import defaultops from "../defaultops";
-import GlPatch from "../glpatch/glpatch";
+import GlPatch from "../glpatch/glpatch.js";
 
 CABLES = CABLES || {};
 

@@ -1,5 +1,3 @@
-import ele from "../utils/ele";
-
 const Collapsable = {};
 
 export default Collapsable;

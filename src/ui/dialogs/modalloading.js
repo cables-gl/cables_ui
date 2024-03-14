@@ -1,4 +1,4 @@
-import ModalDialog from "./modaldialog";
+import ModalDialog from "./modaldialog.js";
 
 /**
  * Opens a modal dialog and shows a loading indicator animation

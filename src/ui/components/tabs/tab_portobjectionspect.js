@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class TabPortObjectInspect extends CABLES.EventTarget
+export default class TabPortObjectInspect extends Events
 {
     constructor(opid, portName)
     {
