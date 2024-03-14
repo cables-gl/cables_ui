@@ -547,6 +547,7 @@ export default class OpSelect
         ele.hide(ele.byId("search_noresults"));
 
         this._bg.show();
+        this._bg.on("hide", () => { this.close(); });
 
         ele.show(this._eleOpsearchmodal);
         this._eleOpsearchmodal.style.zIndex = 9999999;
