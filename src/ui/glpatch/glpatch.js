@@ -10,7 +10,7 @@ import GlOp from "./glop";
 import MouseState from "./mousestate";
 import GlCursor from "./glcursor";
 import ShakeDetector from "./shakedetect";
-import SnapLines from "./snaplines";
+import Snap from "./snap";
 import VizLayer from "./vizlayer";
 import Logger from "../utils/logger";
 import ele from "../utils/ele";
@@ -130,7 +130,7 @@ export default class GlPatch extends CABLES.EventTarget
         this.opShakeDetector = new ShakeDetector();
         this.opShakeDetector.on("shake", () => { if (gui.patchView.getSelectedOps().length === 1)gui.patchView.unlinkSelectedOps(); });
 
-        this.snapLines = new SnapLines(cgl, this, this._rectInstancer);
+        this.snap = new Snap(cgl, this, this._rectInstancer);
 
         this._redrawFlash = this._overLayRects.createRect();
         this._redrawFlash.setSize(50, 5);
@@ -225,7 +225,7 @@ export default class GlPatch extends CABLES.EventTarget
                         {
                             "translate":
                             {
-                                "x": this.snapLines.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
+                                "x": this.snap.snapOpX(this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op, 1000),
                                 "y": this._selectedGlOps[i].op.uiAttribs.translate.y
                             } });
 
@@ -282,7 +282,7 @@ export default class GlPatch extends CABLES.EventTarget
 
         gui.on("uiloaded", () =>
         {
-            this.snapLines.update();
+            this.snap.update();
             // update remote cursor positions
             gui.on("netCursorPos", (msg) =>
             {
@@ -395,7 +395,7 @@ export default class GlPatch extends CABLES.EventTarget
                     this.links[i].updateLineStyle();
         });
 
-        this.snapLines.update();
+        this.snap.update();
     }
 
 
@@ -684,7 +684,7 @@ export default class GlPatch extends CABLES.EventTarget
                     if (this.selectedGlOps[i].isHovering()) // && this.selectedGlOps[i].isDragging
                     {
                         const coord = this.screenToPatchCoord(e.offsetX, e.offsetY);
-                        gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, gui.patchView.snapOpPosX(coord[0]), gui.patchView.snapOpPosY(coord[1]));
+                        gui.patchView.insertOpInLink(this._dropInCircleLink.link, this.selectedGlOps[i].op, Snap.snapOpPosX(coord[0]), Snap.snapOpPosY(coord[1]));
                         return;
                     }
                 }
@@ -825,9 +825,9 @@ export default class GlPatch extends CABLES.EventTarget
         if (!op.uiAttribs.translate && op.uiAttribs.createdLocally)
         {
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
-                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(this.viewBox.mousePatchX), "y": gui.patchView.snapOpPosY(this.viewBox.mousePatchY) } });
+                op.uiAttr({ "translate": { "x": Snap.snapOpPosX(this.viewBox.mousePatchX), "y": Snap.snapOpPosY(this.viewBox.mousePatchY) } });
             else
-                op.uiAttr({ "translate": { "x": gui.patchView.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": gui.patchView.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
+                op.uiAttr({ "translate": { "x": Snap.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": Snap.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
         }
 
 
@@ -962,7 +962,7 @@ export default class GlPatch extends CABLES.EventTarget
         for (const i in this._glCursors)
             this._glCursors[i].updateAnim();
 
-        this.snapLines.render(this._canvasMouseDown);
+        this.snap.render(this._canvasMouseDown);
 
         this._fadeOutRect.visible = !this._fadeOutRectAnim.isFinished(this._time);
         // if (this._fadeOutRect.visible)
@@ -1676,7 +1676,7 @@ export default class GlPatch extends CABLES.EventTarget
         }
 
         this.viewBox.animSwitchSubPatch(dur, sub, timeGrey, timeVisibleAgain, next);
-        this.snapLines.update();
+        this.snap.update();
     }
 
 

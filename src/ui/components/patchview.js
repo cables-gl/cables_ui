@@ -4,6 +4,7 @@ import defaultops from "../defaultops";
 import ModalDialog from "../dialogs/modaldialog";
 import { notify, notifyError } from "../elements/notification";
 import gluiconfig from "../glpatch/gluiconfig";
+import Snap from "../glpatch/snap";
 import text from "../text";
 import ele from "../utils/ele";
 import { getHandleBarHtml } from "../utils/handlebars";
@@ -352,7 +353,7 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     let mulDirY = 1;
                     if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
-                    let y = this.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
+                    let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
                     let x = op.uiAttribs.translate.x;
 
                     const link = op.isConnectedTo(b);
@@ -425,8 +426,8 @@ export default class PatchView extends CABLES.EventTarget
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }
 
-            coord.x = gui.patchView.snapOpPosX(coord.x, true);
-            coord.y = gui.patchView.snapOpPosY(coord.y);
+            coord.x = Snap.snapOpPosX(coord.x, true);
+            coord.y = Snap.snapOpPosY(coord.y);
 
             uiAttr.translate = { "x": coord.x, "y": coord.y };
         }
@@ -849,15 +850,15 @@ export default class PatchView extends CABLES.EventTarget
         const bounds = this.getSelectionBounds();
         const padding = 80;
         const trans = {
-            "x": gui.patchView.snapOpPosX(bounds.minx - 0.8 * padding),
-            "y": gui.patchView.snapOpPosX(bounds.miny - 0.8 * padding) };
+            "x": Snap.snapOpPosX(bounds.minx - 0.8 * padding),
+            "y": Snap.snapOpPosX(bounds.miny - 0.8 * padding) };
 
         const areaOp = this._p.addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, {
             "translate": trans,
             "subPatch": this.getCurrentSubPatch(),
             "area": {
-                "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
-                "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+                "w": Snap.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
+                "h": Snap.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
 
         const undofunc = (function (opid)
         {
@@ -871,8 +872,8 @@ export default class PatchView extends CABLES.EventTarget
                 {
                     gui.corePatch().addOp(CABLES.UI.DEFAULTOPNAMES.uiArea, { "translate": trans,
                         "area": {
-                            "w": gui.patchView.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
-                            "h": gui.patchView.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
+                            "w": Snap.snapOpPosX(bounds.maxx - bounds.minx + (2.75 * padding)),
+                            "h": Snap.snapOpPosX(bounds.maxy - bounds.miny + (2 * padding)) } });
                 }
             });
         }(areaOp.id));
@@ -1595,8 +1596,8 @@ export default class PatchView extends CABLES.EventTarget
                         let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
                         if (userSettings.get("snapToGrid"))
                         {
-                            x = gui.patchView.snapOpPosX(x);
-                            y = gui.patchView.snapOpPosY(y);
+                            x = Snap.snapOpPosX(x);
+                            y = Snap.snapOpPosY(y);
                         }
                         project.ops[i].uiAttribs.translate.x = x;
                         project.ops[i].uiAttribs.translate.y = y;
@@ -1649,7 +1650,7 @@ export default class PatchView extends CABLES.EventTarget
         for (let j = 0; j < ops.length; j++)
         {
             const diffX = ops[j].uiAttribs.translate.x - centerX;
-            this.setOpPos(ops[j], this.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
+            this.setOpPos(ops[j], Snap.snapOpPosX(centerX + (diffX * 1.2)), ops[j].uiAttribs.translate.y);
         }
         undo.endGroup(undoGroup, "add space x");
     }
@@ -1664,7 +1665,7 @@ export default class PatchView extends CABLES.EventTarget
         for (let j = 0; j < ops.length; j++)
         {
             const diffY = ops[j].uiAttribs.translate.y - centerY;
-            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, this.snapOpPosY(centerY + (diffY * 1.8)));
+            this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, Snap.snapOpPosY(centerY + (diffY * 1.8)));
         }
         undo.endGroup(undoGroup, "add space y");
     }
@@ -1685,12 +1686,12 @@ export default class PatchView extends CABLES.EventTarget
         // {
         //     y += ops[j].uiAttribs.translate.y;
         // }
-        // y = this.snapOpPosY(y / ops.length);
+        // y = Snap.snapOpPosY(y / ops.length);
 
 
         // for (let j = 0; j < ops.length; j++)
         // {
-        //     y = this.snapOpPosY(y);
+        //     y = Snap.snapOpPosY(y);
 
         //     this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, y);
         //     this.testCollision(ops[j]);
@@ -1778,26 +1779,26 @@ export default class PatchView extends CABLES.EventTarget
         //         otherOps.push(ops[i]);
         //     }
 
-        //     let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
+        //     let theOpWidth = Snap.snapOpPosX((longestOpPorts + 1) * (CABLES.GLUI.glUiConfig.portWidth + CABLES.GLUI.glUiConfig.portPadding));
 
         //     for (let i = 0; i < ops.length; i++)
         //         this.setTempOpPos(ops[i], startPosX, startPosY);
 
 
-        // let firstRowX = gui.patchView.snapOpPosX(startPosX);
-        // startPosY = gui.patchView.snapOpPosY(startPosY);
+        // let firstRowX = Snap.snapOpPosX(startPosX);
+        // startPosY = Snap.snapOpPosY(startPosY);
 
 
         // for (let i = 0; i < entranceOps.length; i++)
         // {
         //     this.setTempOpPos(entranceOps[i], firstRowX, startPosY);
-        //     firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        //     firstRowX = Snap.snapOpPosX(firstRowX + theOpWidth);
         // }
 
         // for (let i = 0; i < unconnectedOps.length; i++)
         // {
         //     this.setTempOpPos(unconnectedOps[i], firstRowX, startPosY);
-        //     firstRowX = gui.patchView.snapOpPosX(firstRowX + theOpWidth);
+        //     firstRowX = Snap.snapOpPosX(firstRowX + theOpWidth);
         // }
 
 
@@ -1847,7 +1848,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosX(avg);
+            if (userSettings.get("snapToGrid")) avg = Snap.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1863,7 +1864,7 @@ export default class PatchView extends CABLES.EventTarget
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid")) avg = gui.patchView.snapOpPosY(avg);
+            if (userSettings.get("snapToGrid")) avg = Snap.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }
@@ -2245,15 +2246,7 @@ export default class PatchView extends CABLES.EventTarget
         return gui.opParams.isCurrentOpId(opid);
     }
 
-    snapOpPosX(posX)
-    {
-        return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX) || 1;
-    }
 
-    snapOpPosY(posY)
-    {
-        return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
-    }
 
     copyOpInputPorts(origOp, newOp)
     {

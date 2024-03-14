@@ -6,6 +6,7 @@ import OpsMathInterpolate
     from "../../../../cables/src/ops/base/Ops.Math.Interpolate/Ops.Math.Interpolate.json";
 import userSettings from "../components/usersettings";
 import defaultOps from "../defaultops";
+import Snap from "./snap";
 
 export default class GlLink
 {
@@ -118,8 +119,8 @@ export default class GlLink
 
                             op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
                                 "translate": {
-                                    "x": gui.patchView.snapOpPosX(x),
-                                    "y": gui.patchView.snapOpPosY(this._glPatch.viewBox.mousePatchY)
+                                    "x": Snap.snapOpPosX(x),
+                                    "y": Snap.snapOpPosY(this._glPatch.viewBox.mousePatchY)
                                 } });
                         } }, null, null, llink);
             }
