@@ -4,7 +4,7 @@ import userSettings from "../components/usersettings.js";
 import GlRect from "../gldraw/glrect.js";
 import gluiconfig from "./gluiconfig.js";
 
-export default class SnapLines extends Events
+export default class Snap extends Events
 {
     constructor(cgl, glPatch, instancer)
     {

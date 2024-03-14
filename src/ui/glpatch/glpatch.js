@@ -16,6 +16,7 @@ import text from "../text.js";
 import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 import glUiConfig from "./gluiconfig.js";
+import Snap from "./snap.js";
 
 
 export default class GlPatch extends Events

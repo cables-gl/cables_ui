@@ -4,6 +4,7 @@ import GlCable from "./glcable.js";
 import MouseState from "./mousestate.js";
 import userSettings from "../components/usersettings.js";
 import defaultOps from "../defaultops.js";
+import Snap from "./snap.js";
 
 export default class GlLink
 {

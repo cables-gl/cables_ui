@@ -13,6 +13,7 @@ import { convertPorts, getConverters } from "./converterops.js";
 import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
 import userSettings from "./usersettings.js";
+import Snap from "../glpatch/snap.js";
 
 export default class PatchView extends Events
 {

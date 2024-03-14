@@ -1,3 +1,5 @@
+import Snap from "./snap.js";
+
 export default class glEditableSpline
 {
     constructor(splineDrawer, rectInstancer,)
