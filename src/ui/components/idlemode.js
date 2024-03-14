@@ -1,6 +1,6 @@
 
 import { Logger } from "cables-shared-client";
-import ModalBackground from "../dialogs/modalbg.js";
+import ModalBackground from "cables-shared-client/src/modalbg.js";
 
 // let idleTime = 180;
 let idling = false;

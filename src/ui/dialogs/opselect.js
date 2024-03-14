@@ -1,7 +1,7 @@
 import { ele } from "cables-shared-client";
+import ModalBackground from "cables-shared-client/src/modalbg.js";
 import defaultOps from "../defaultops.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import ModalBackground from "./modalbg.js";
 import OpTreeList from "../components/opselect_treelist.js";
 import text from "../text.js";
 import userSettings from "../components/usersettings.js";

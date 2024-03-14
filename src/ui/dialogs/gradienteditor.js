@@ -1,7 +1,7 @@
 import { Logger } from "cables-shared-client";
+import ModalBackground from "cables-shared-client/src/modalbg.js";
 import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
-import ModalBackground from "./modalbg.js";
 
 export default class GradientEditor
 {
