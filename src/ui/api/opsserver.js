@@ -1612,23 +1612,32 @@ export default class ServerOps
                 "op": op,
                 "projectId": op.parentProject || gui.project().shortId
             };
+
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
             {
                 if (err)
                 {
-                    const title = err.msg.title || "Failed to load op";
-                    let html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
+                    let title = "Failed to load op";
+                    let html = "";
+                    if (err.msg)
+                    {
+                        if (err.msg.title) title = err.msg.title;
+                        html = err.msg.reasons ? err.msg.reasons.join("<br/>") : err.msg;
+                    }
+
                     const continueLoadingCallback = () =>
                     {
                         incrementStartup();
                         cb([]);
                     };
+
                     const modal = new ModalDialog(
                         {
                             "title": title,
                             "html": html,
                             "showOkButton": true,
-                            "okButton": { "text": "Continue Loading", "cssClasses": "button" } });
+                            "okButton": { "text": "Continue Loading", "cssClasses": "button" }
+                        });
                     modal.on("onClose", continueLoadingCallback);
                 }
                 else

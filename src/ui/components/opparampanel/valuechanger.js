@@ -127,7 +127,7 @@ function valueChanger(eleId, focus, portName, opid)
 
         eleInput.removeEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
         // eleInput.removeEventListener("keydown", tabKeyListener);
-        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel, { "passive": false });
+        eleInput.addEventListener("wheel", CABLES.UI.paramsHelper.inputListenerMousewheel);
         eleInput.addEventListener("keydown", CABLES.UI.paramsHelper.inputListenerCursorKeys);
 
         mouseDownTime = performance.now();
@@ -135,10 +135,10 @@ function valueChanger(eleId, focus, portName, opid)
 
         if (usePointerLock)
         {
-            document.addEventListener("pointerlockerror", lockError, false);
-            document.addEventListener("pointerlockchange", lockChange, false);
-            document.addEventListener("mozpointerlockchange", lockChange, false);
-            document.addEventListener("webkitpointerlockchange", lockChange, false);
+            document.addEventListener("pointerlockerror", lockError);
+            document.addEventListener("pointerlockchange", lockChange);
+            document.addEventListener("mozpointerlockchange", lockChange);
+            document.addEventListener("webkitpointerlockchange", lockChange);
 
             if (eleInput.classList.contains("inc_int")) incMode = 1;
 
@@ -147,7 +147,7 @@ function valueChanger(eleId, focus, portName, opid)
         }
         else
         {
-            document.addEventListener("mousemove", move, false);
+            document.addEventListener("mousemove", move);
         }
 
         CABLES.mouseDraggingValue = true;
@@ -302,7 +302,7 @@ function valueChanger(eleId, focus, portName, opid)
         if (document.pointerLockElement === eleInput || document.mozPointerLockElement === eleInput || document.webkitPointerLockElement === eleInput)
         {
             pointerLockFirstTime = true;
-            document.addEventListener("mousemove", move, false);
+            document.addEventListener("mousemove", move);
         }
         else
         {

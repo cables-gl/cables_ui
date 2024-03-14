@@ -15,18 +15,18 @@ export default class FileManagerEditor
         CABLES.editorSession.addListener("editAssetFile",
             (name, data) =>
             {
-                this.editAssetTextFile(data.filename, data.syntax);
+                this.editAssetTextFile(data.filename, data.syntax, data.patchId);
             }
         );
     }
 
 
 
-    editAssetTextFile(filename, syntax)
+    editAssetTextFile(filename, syntax, patchId)
     {
+        patchId = patchId || gui.project()._id;
         let url = "";
-        url = "/assets/" + gui.project()._id + "/" + filename;
-
+        url = "/assets/" + patchId + "/" + filename;
 
         if (syntax == "javascript")syntax = "js";
         if (syntax == "shader")syntax = "glsl";
@@ -37,8 +37,7 @@ export default class FileManagerEditor
             {
                 const name = filename;
 
-                const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "syntax": syntax }, true);
-                console.log("syntax", syntax);
+                const editorObj = CABLES.editorSession.rememberOpenEditor("editAssetFile", name, { "filename": filename, "patchId": patchId, "syntax": syntax }, true);
 
                 new EditorTab(
                     {
