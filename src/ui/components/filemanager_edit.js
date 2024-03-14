@@ -20,8 +20,6 @@ export default class FileManagerEditor
         );
     }
 
-
-
     editAssetTextFile(filename, syntax, patchId)
     {
         patchId = patchId || gui.project()._id;

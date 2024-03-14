@@ -83,25 +83,28 @@ export default class SnapLines extends CABLES.EventTarget
     {
         if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosX(_x);
 
-        const otherPort = port.links[0].getOtherPort(port);
-
-        let otherPortIndex = 0;
-
-        let ports = otherPort.op.portsOut;
-        if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
-
-        otherPortIndex = 0;
-        for (let j = 0; j < ports.length; j++)
+        for (let i = 0; i < port.links.length; i++)
         {
-            if (ports[j].uiAttribs.hidePort) continue;
-            otherPortIndex++;
-            if (ports[j] == otherPort) break;
+            const otherPort = port.links[i].getOtherPort(port);
+
+            let otherPortIndex = 0;
+
+            let ports = otherPort.op.portsOut;
+            if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
+
+            otherPortIndex = 0;
+            for (let j = 0; j < ports.length; j++)
+            {
+                if (ports[j].uiAttribs.hidePort) continue;
+                otherPortIndex++;
+                if (ports[j] == otherPort) break;
+            }
+
+            const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
+            const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+
+            if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
         }
-
-        const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
-        const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
-
-        if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
 
         return -1;
     }
