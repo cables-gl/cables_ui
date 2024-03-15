@@ -57,23 +57,14 @@ export default class ServerOps
             {
                 CABLES.editorSession.startLoadingTab();
 
-                // usersettings stores editortab as basename/att_example.inc
-                // editAttachment demands att_example.inc plus the opname to then store
-                // stuff in session
-                const opBasename = data.opname.substr(data.opname.lastIndexOf(".") + 1);
-                const attName = name.replace(opBasename + "/", "");
-
-                // gui.jobs().start("open att editor" + attName);
-
-                if (name.includes("att_") && data && data.opname)
+                if (data && data.opname)
                 {
                     const lastTab = userSettings.get("editortab");
-                    this.editAttachment(data.opname, attName, false, () =>
+                    this.editAttachment(data.opname, data.name, false, () =>
                     {
                         gui.mainTabs.activateTabByName(lastTab);
                         userSettings.set("editortab", lastTab);
                         CABLES.editorSession.finishLoadingTab();
-                        // gui.jobs().finish("open att editor" + attName);
                     }, true);
                 }
             },
@@ -573,6 +564,10 @@ export default class ServerOps
 
     addAttachmentDialog(opname)
     {
+        let opid = opname;
+        const docs = gui.opDocs.getOpDocByName(opname);
+        if (docs && docs)opid = docs.id;
+
         let html = "Use this attachment in " + opname + " by accessing <code>attachments[\"my_attachment\"]</code>.";
         // html += "<br/><br/>Attachments starting with <code>inc_</code> will be automatically added to your opcode";
         new CABLES.UI.ModalDialog({
@@ -584,7 +579,7 @@ export default class ServerOps
                 CABLESUILOADER.talkerAPI.send(
                     "opAttachmentAdd",
                     {
-                        "opname": opname,
+                        "opname": opid,
                         "name": attName,
                     },
                     (err) =>
@@ -968,11 +963,19 @@ export default class ServerOps
         let opname = op;
         let opId = opname;
 
+
         if (typeof opname == "object")
         {
             opname = op.objName;
             opId = op.opId;
         }
+        else
+        {
+            const docs = gui.opDocs.getOpDocByName(opname);
+            if (docs)opId = docs.id;
+            else console.warn("could not find opid for ", opname);
+        }
+
 
         const parts = opname.split(".");
         const shortname = parts[parts.length - 1];
@@ -1009,7 +1012,7 @@ export default class ServerOps
                     return;
                 }
 
-                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { opname }, true);
+                editorObj = CABLES.editorSession.rememberOpenEditor("attachment", title, { "opname": opname, "opid": opId, "name": attachmentName }, true);
 
                 if (err || !res || res.content == undefined)
                 {
@@ -1055,6 +1058,7 @@ export default class ServerOps
                         },
                         "onSave": (_setStatus, _content) =>
                         {
+                            console.log("sane", opId);
                             const loadingModal = gui.startModalLoading("Save attachment...");
                             CABLESUILOADER.talkerAPI.send(
                                 "opAttachmentSave",
