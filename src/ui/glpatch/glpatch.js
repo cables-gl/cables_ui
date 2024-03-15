@@ -761,12 +761,13 @@ export default class GlPatch extends Events
         const ops = gui.patchView.getSelectedOps();
         for (let i = 0; i < ops.length; i++)
         {
-            if (!ops[i].enabled)willDisable = false;
+            if (ops[i].uiAttribs.disabled)willDisable = false;
         }
 
         for (let i = 0; i < ops.length; i++)
         {
-            ops[i].setEnabled(!willDisable);
+            console.log("disabled", willDisable);
+            ops[i].setUiAttribs({ "disabled": willDisable });
         }
         gui.opParams.refresh();
     }
