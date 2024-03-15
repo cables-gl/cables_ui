@@ -1,4 +1,3 @@
-import ele from "../utils/ele";
 
 export default function setHtmlDefaultListeners()
 {

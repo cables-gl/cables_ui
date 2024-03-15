@@ -1,9 +1,9 @@
-import GlRect from "./glrect";
-import Logger from "../utils/logger";
+import { Logger, Events } from "cables-shared-client";
+import GlRect from "./glrect.js";
 import srcShaderGlRectInstancerFrag from "./glrectinstancer_glsl.frag";
 import srcShaderGlRectInstancerVert from "./glrectinstancer_glsl.vert";
 
-export default class GlRectInstancer extends CABLES.EventTarget
+export default class GlRectInstancer extends Events
 {
     constructor(cgl, options)
     {

@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class OpWatchUiAttribs extends CABLES.EventTarget
+export default class OpWatchUiAttribs extends Events
 {
     constructor(tabs)
     {

@@ -1,5 +1,4 @@
-import gluiconfig from "../glpatch/gluiconfig";
-import WatchPortVisualizer from "./opparampanel/watchportvisualizer";
+import gluiconfig from "../glpatch/gluiconfig.js";
 
 export default class opCleaner
 {

@@ -1,8 +1,9 @@
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import text from "../../text";
+import { Events } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import text from "../../text.js";
 
-export default class JobsTab extends CABLES.EventTarget
+export default class JobsTab extends Events
 {
     constructor(tabs)
     {

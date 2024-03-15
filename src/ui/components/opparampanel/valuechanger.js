@@ -1,6 +1,5 @@
-import text from "../../text";
-import ele from "../../utils/ele";
-import OpParampanel from "./op_parampanel";
+import { ele } from "cables-shared-client";
+import text from "../../text.js";
 
 let pointerLockFirstTime = true;
 
@@ -226,9 +225,6 @@ function valueChanger(eleId, focus, portName, opid)
         eleInput.value = eleInput.value.replaceAll(",", ".");
 
         let str = eleInput.value;
-
-        // OpParampanel.MathOpTitle(theOp);
-
         let v = parseFloat(str);
         if (v != v)v = 0;
 

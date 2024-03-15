@@ -1,5 +1,5 @@
-import { getHandleBarHtml } from "../utils/handlebars";
-import userSettings from "./usersettings";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import userSettings from "./usersettings.js";
 
 export default class UiProfiler
 {

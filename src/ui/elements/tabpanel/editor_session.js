@@ -1,5 +1,5 @@
-import ManageOp from "../../components/tabs/tab_manage_op";
-import userSettings from "../../components/usersettings";
+import ManageOp from "../../components/tabs/tab_manage_op.js";
+import userSettings from "../../components/usersettings.js";
 
 /**
  * stores opened editors to reopen when loading ui

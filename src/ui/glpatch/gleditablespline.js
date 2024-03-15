@@ -1,11 +1,8 @@
-import glUiConfig from "./gluiconfig";
-import Logger from "../utils/logger";
-import MouseState from "./mousestate";
-import Gui from "../gui";
+import Snap from "./snap.js";
 
 export default class glEditableSpline
 {
-    constructor(splineDrawer, rectInstancer, )
+    constructor(splineDrawer, rectInstancer,)
     {
         this._rectInstancer = rectInstancer;
         this._splineDrawer = splineDrawer;
@@ -37,13 +34,13 @@ export default class glEditableSpline
 
     snapX(x)
     {
-        if (this.snapToGrid) return gui.patchView.snapOpPosX(x);
+        if (this.snapToGrid) return Snap.snapOpPosX(x);
         else return x;
     }
 
     snapY(y)
     {
-        if (this.snapToGrid) return gui.patchView.snapOpPosY(y);
+        if (this.snapToGrid) return Snap.snapOpPosY(y);
         else return y;
     }
 

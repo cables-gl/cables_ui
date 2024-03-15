@@ -1,11 +1,10 @@
-import GlUiConfig from "./gluiconfig";
-import GlCable from "./glcable";
-import Logger from "../utils/logger";
-import MouseState from "./mousestate";
-import OpsMathInterpolate
-    from "../../../../cables/src/ops/base/Ops.Math.Interpolate/Ops.Math.Interpolate.json";
-import userSettings from "../components/usersettings";
-import defaultOps from "../defaultops";
+import { Logger } from "cables-shared-client";
+import GlUiConfig from "./gluiconfig.js";
+import GlCable from "./glcable.js";
+import MouseState from "./mousestate.js";
+import userSettings from "../components/usersettings.js";
+import defaultOps from "../defaultops.js";
+import Snap from "./snap.js";
 
 export default class GlLink
 {
@@ -118,8 +117,8 @@ export default class GlLink
 
                             op.setUiAttrib({ "subPatch": this._glPatch.subPatch,
                                 "translate": {
-                                    "x": gui.patchView.snapOpPosX(x),
-                                    "y": gui.patchView.snapOpPosY(this._glPatch.viewBox.mousePatchY)
+                                    "x": Snap.snapOpPosX(x),
+                                    "y": Snap.snapOpPosY(this._glPatch.viewBox.mousePatchY)
                                 } });
                         } }, null, null, llink);
             }

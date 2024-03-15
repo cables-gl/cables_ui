@@ -1,15 +1,13 @@
-import ModalLoading from "../dialogs/modalloading";
-import Logger from "../utils/logger";
-import EditorTab from "../components/tabs/tab_editor";
-import CoreLibLoader from "./corelibloader";
-import ModalDialog from "../dialogs/modaldialog";
-import text from "../text";
-import userSettings from "../components/usersettings";
-import { notifyError } from "../elements/notification";
-import defaultops from "../defaultops";
-import ele from "../utils/ele";
-import blueprintUtil from "../blueprint_util";
-import ModalError from "../dialogs/modalerror";
+import { Logger, ele } from "cables-shared-client";
+import EditorTab from "../components/tabs/tab_editor.js";
+import CoreLibLoader from "./corelibloader.js";
+import ModalDialog from "../dialogs/modaldialog.js";
+import text from "../text.js";
+import userSettings from "../components/usersettings.js";
+import { notifyError } from "../elements/notification.js";
+import defaultOps from "../defaultops.js";
+import blueprintUtil from "../blueprint_util.js";
+import ModalError from "../dialogs/modalerror.js";
 
 
 
@@ -795,7 +793,7 @@ export default class ServerOps
 
             const namespaceEle = ele.byId("opNameDialogNamespace");
             namespaceEle.innerHTML = "";
-            const patchOpsNamespace = defaultops.getPatchOpsNamespace();
+            const patchOpsNamespace = defaultOps.getPatchOpsNamespace();
             if (!res.namespaces.includes(patchOpsNamespace)) res.namespaces.unshift(patchOpsNamespace);
             if (res.namespaces)res.namespaces.forEach((ns) =>
             {
@@ -856,7 +854,7 @@ export default class ServerOps
             return;
         }
 
-        let suggestedNamespace = defaultops.getPatchOpsNamespace();
+        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
 
         const dialogOptions = {
             "title": "Create operator",
@@ -911,8 +909,8 @@ export default class ServerOps
         let name = "";
         let parts = oldName.split(".");
         if (parts) name = parts[parts.length - 1];
-        let suggestedNamespace = defaultops.getPatchOpsNamespace();
-        if (defaultops.isTeamOp(oldName)) suggestedNamespace = defaultops.getNamespace(oldName);
+        let suggestedNamespace = defaultOps.getPatchOpsNamespace();
+        if (defaultOps.isTeamOp(oldName)) suggestedNamespace = defaultOps.getNamespace(oldName);
 
         const dialogOptions = {
             "title": "Clone operator",
@@ -988,7 +986,7 @@ export default class ServerOps
             "opname": opId,
             "name": attachmentName,
         };
-        if (defaultops.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
+        if (defaultOps.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
@@ -1067,7 +1065,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.sandbox.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
 
                                     if (errr)
@@ -1221,7 +1219,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && defaultops.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.sandbox.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
@@ -1690,7 +1688,7 @@ export default class ServerOps
 
     loadExtensionOps(name, cb)
     {
-        if (name && defaultops.isExtensionOp(name))
+        if (name && defaultOps.isExtensionOp(name))
         {
             const extensionName = name.split(".", 3).join(".");
             const extensionOpUrl = [];
@@ -1733,7 +1731,7 @@ export default class ServerOps
 
     loadTeamNamespaceOps(name, cb)
     {
-        if (name && defaultops.isTeamOp(name))
+        if (name && defaultOps.isTeamOp(name))
         {
             const teamNamespaceName = name.split(".", 3).join(".");
             const teamOpUrl = [];

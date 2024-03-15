@@ -1,8 +1,7 @@
+import { Logger, Events } from "cables-shared-client";
+import userSettings from "../components/usersettings.js";
 
-import userSettings from "../components/usersettings";
-import Logger from "../utils/logger";
-
-export default class VizLayer extends CABLES.EventTarget
+export default class VizLayer extends Events
 {
     constructor(glPatch)
     {

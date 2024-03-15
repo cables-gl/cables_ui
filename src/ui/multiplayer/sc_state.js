@@ -1,10 +1,10 @@
-import Logger from "../utils/logger";
-import Gui from "../gui";
-import ScClient from "./sc_client";
+import { Logger, Events } from "cables-shared-client";
+import Gui from "../gui.js";
+import ScClient from "./sc_client.js";
 
 CABLES = CABLES || {};
 
-export default class ScState extends CABLES.EventTarget
+export default class ScState extends Events
 {
     constructor(connection)
     {

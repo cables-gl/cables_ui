@@ -1,6 +1,6 @@
-import defaultops from "../../defaultops";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import userSettings from "../usersettings";
+import defaultOps from "../../defaultops.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import userSettings from "../usersettings.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -41,7 +41,7 @@ export default class MetaKeyframes
                             "opname": ops[i].name,
                             "opid": ops[i].id,
                             "portname": p.name,
-                            "colorClass": "op_color_" + defaultops.getNamespaceClassName(ops[i].objName)
+                            "colorClass": "op_color_" + defaultOps.getNamespaceClassName(ops[i].objName)
                         });
                 }
             }

@@ -1,5 +1,5 @@
-import defaultops from "../defaultops";
-import SuggestionDialog from "./suggestiondialog";
+import defaultOps from "../defaultops.js";
+import SuggestionDialog from "./suggestiondialog.js";
 
 export default class SuggestPortDialog
 {
@@ -31,12 +31,12 @@ export default class SuggestPortDialog
         }
 
 
-        if (op.objName == defaultops.defaultOpNames.subPatchInput2 || op.objName == defaultops.defaultOpNames.subPatchOutput2)
+        if (op.objName == defaultOps.defaultOpNames.subPatchInput2 || op.objName == defaultOps.defaultOpNames.subPatchOutput2)
         {
             op = gui.patchView.getSubPatchOuterOp(op.uiAttribs.subPatch);
         }
 
-        if (defaultops.isBlueprintOp(op))
+        if (defaultOps.isBlueprintOp(op))
         {
             this._suggestions.push({
                 "p": null,

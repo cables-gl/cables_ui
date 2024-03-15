@@ -1,18 +1,15 @@
-import GlPort from "./glport";
-import GlText from "../gldraw/gltext";
-import GlArea from "./glarea";
-import GlRect from "../gldraw/glrect";
-import userSettings from "../components/usersettings";
-import GlLinedrawer from "../gldraw/gllinedrawer";
-import undo from "../utils/undo";
-import MouseState from "./mousestate";
-import defaultops from "../defaultops";
-import uiconfig from "../uiconfig";
-import gluiconfig from "./gluiconfig";
-import GlPatch from "./glpatch";
+import { Events } from "cables-shared-client";
+import GlPort from "./glport.js";
+import GlText from "../gldraw/gltext.js";
+import GlArea from "./glarea.js";
+import userSettings from "../components/usersettings.js";
+import undo from "../utils/undo.js";
+import MouseState from "./mousestate.js";
+import gluiconfig from "./gluiconfig.js";
+import GlPatch from "./glpatch.js";
 
 
-export default class GlOp extends CABLES.EventTarget
+export default class GlOp extends Events
 {
     constructor(glPatch, instancer, op)
     {
@@ -395,7 +392,7 @@ export default class GlOp extends CABLES.EventTarget
         this._glPatch.emitEvent("mouseUpOverOp", e, this._id);
 
         this.endPassiveDrag();
-        this.glPatch.snapLines.update();
+        this.glPatch.snap.update();
     }
 
     setUiAttribs(newAttribs, attr)
@@ -628,8 +625,8 @@ export default class GlOp extends CABLES.EventTarget
         let minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
-        if (this.opUiAttribs.height) this._height = this.glPatch.snapLines.snapY(this.opUiAttribs.height);
-        if (this.opUiAttribs.width) this._width = this.glPatch.snapLines.snapX(Math.max(minWidth, this.opUiAttribs.width));
+        if (this.opUiAttribs.height) this._height = this.glPatch.snap.snapY(this.opUiAttribs.height);
+        if (this.opUiAttribs.width) this._width = this.glPatch.snap.snapX(Math.max(minWidth, this.opUiAttribs.width));
 
         if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 
@@ -1217,8 +1214,8 @@ export default class GlOp extends CABLES.EventTarget
                 let w = this._rectResize.x - this.x + this._rectResize.w;
                 let h = this._rectResize.y - this.y + this._rectResize.h;
 
-                w = this.glPatch.snapLines.snapX(w);
-                h = this.glPatch.snapLines.snapY(h);
+                w = this.glPatch.snap.snapX(w);
+                h = this.glPatch.snap.snapY(h);
 
                 if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
                 this.updateSize();
@@ -1502,9 +1499,9 @@ export default class GlOp extends CABLES.EventTarget
         x = this._passiveDragStartX + x;
         y = this._passiveDragStartY + y;
 
-        x = this._glPatch.snapLines.snapOpX(x, this._op);
+        x = this._glPatch.snap.snapOpX(x, this._op);
 
-        y = this._glPatch.snapLines.snapY(y);
+        y = this._glPatch.snap.snapY(y);
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.emitEvent("drag");

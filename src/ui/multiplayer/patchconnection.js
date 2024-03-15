@@ -1,5 +1,5 @@
-import { CONSTANTS } from "../../../../cables/src/core/constants";
-import Logger from "../utils/logger";
+import { Logger } from "cables-shared-client";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 
 const PatchConnectionReceiver = function (patch, options, connector)
 {

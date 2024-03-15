@@ -1,6 +1,6 @@
-import defaultops from "../../defaultops";
-import text from "../../text";
-import userSettings from "../usersettings";
+import defaultOps from "../../defaultops.js";
+import text from "../../text.js";
+import userSettings from "../usersettings.js";
 
 class PortHtmlGenerator
 {
@@ -26,14 +26,14 @@ class PortHtmlGenerator
         if (op) isBookmarked = gui.bookmarks.hasBookmarkWithId(op.id);
 
         const canEditOp = gui.serverOps.canEditOp(gui.user, op.objName);
-        if (defaultops.isDeprecatedOp(op.objName))
+        if (defaultOps.isDeprecatedOp(op.objName))
         {
             op.isDeprecated = true;
             const notDeprecatedName = op.objName.replace("Deprecated.", "");
             const alt = CABLES.Patch.getOpClass(notDeprecatedName);
             if (alt) op.isDeprecatedAlternative = notDeprecatedName;
         }
-        if (defaultops.isDevOp(op.objName)) op.isExperimental = true;
+        if (defaultOps.isDevOp(op.objName)) op.isExperimental = true;
 
         if (gui.opDocs)
         {
@@ -52,11 +52,11 @@ class PortHtmlGenerator
             "op": op,
             "panelid": this._panelId,
             "isBookmarked": isBookmarked,
-            "colorClass": defaultops.getNamespaceClassName(op.objName),
+            "colorClass": defaultOps.getNamespaceClassName(op.objName),
             "texts": text,
             "user": gui.user,
             "optitle": op.getTitle(),
-            "showEditButton": canEditOp, // && defaultops.isNonCoreOp(op.objName),
+            "showEditButton": canEditOp, // && defaultOps.isNonCoreOp(op.objName),
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,

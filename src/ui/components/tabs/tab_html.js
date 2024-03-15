@@ -1,6 +1,7 @@
-import Tab from "../../elements/tabpanel/tab";
+import { Events } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
 
-export default class HtmlTab extends CABLES.EventTarget
+export default class HtmlTab extends Events
 {
     constructor(tabs, html, title, options = {})
     {

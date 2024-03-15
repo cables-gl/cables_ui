@@ -1,15 +1,13 @@
-import ServerOps from "./api/opsserver";
-import NoPatchEditor from "./components/nopatcheditor";
-import Gui from "./gui";
-import Tracking from "./tracking/tracking";
-import OpDocs from "./components/opdocs";
-import HtmlInspector from "./elements/canvasoverlays/htmlinspect";
-import ModalDialog from "./dialogs/modaldialog";
-import ScConnection from "./multiplayer/sc_connection";
-import text from "./text";
-import ele from "./utils/ele";
-import userSettings from "./components/usersettings";
-import ModalError from "./dialogs/modalerror";
+import { ele } from "cables-shared-client";
+import ServerOps from "./api/opsserver.js";
+import NoPatchEditor from "./components/nopatcheditor.js";
+import Gui from "./gui.js";
+import Tracking from "./tracking/tracking.js";
+import HtmlInspector from "./elements/canvasoverlays/htmlinspect.js";
+import ModalDialog from "./dialogs/modaldialog.js";
+import ScConnection from "./multiplayer/sc_connection.js";
+import text from "./text.js";
+import userSettings from "./components/usersettings.js";
 
 export default function startUi(cfg)
 {

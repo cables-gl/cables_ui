@@ -1,8 +1,8 @@
-import glUiConfig from "./gluiconfig";
-import Logger from "../utils/logger";
-import MouseState from "./mousestate";
-import Gui from "../gui";
-import GlPort from "./glport";
+import { Logger } from "cables-shared-client";
+import glUiConfig from "./gluiconfig.js";
+import MouseState from "./mousestate.js";
+import Gui from "../gui.js";
+import GlPort from "./glport.js";
 
 
 export default class GlDragLine

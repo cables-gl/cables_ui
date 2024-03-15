@@ -1,8 +1,9 @@
-import { notifyError } from "../elements/notification";
-import Gui from "../gui";
-import { getHandleBarHtml } from "./handlebars";
+import { Events } from "cables-shared-client";
+import { notifyError } from "../elements/notification.js";
+import Gui from "../gui.js";
+import { getHandleBarHtml } from "./handlebars.js";
 
-export default class KeyBindingsManager extends CABLES.EventTarget
+export default class KeyBindingsManager extends Events
 {
     constructor()
     {

@@ -1,6 +1,5 @@
-import ele from "../../utils/ele";
-import undo from "../../utils/undo";
-import EditorTab from "../tabs/tab_editor";
+import { ele } from "cables-shared-client";
+import EditorTab from "../tabs/tab_editor.js";
 
 const paramsHelper =
 {

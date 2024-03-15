@@ -1,16 +1,15 @@
-import ModalDialog from "../dialogs/modaldialog";
-import Gui from "../gui";
-import { getHandleBarHtml } from "../utils/handlebars";
-import { notifyError } from "../elements/notification";
-import AnalyzePatchTab from "../components/tabs/tab_analyze";
-import { CONSTANTS } from "../../../../cables/src/core/constants";
-import OpParampanel from "../components/opparampanel/op_parampanel";
-import GlOpWatcher from "../components/tabs/tab_glop";
-import ele from "../utils/ele";
-import ManageOp from "../components/tabs/tab_manage_op";
-import blueprintUtil from "../blueprint_util";
-import ModalError from "../dialogs/modalerror";
-import defaultops from "../defaultops";
+import { ele } from "cables-shared-client";
+import ModalDialog from "../dialogs/modaldialog.js";
+import Gui from "../gui.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import { notifyError } from "../elements/notification.js";
+import AnalyzePatchTab from "../components/tabs/tab_analyze.js";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import OpParampanel from "../components/opparampanel/op_parampanel.js";
+import GlOpWatcher from "../components/tabs/tab_glop.js";
+import ManageOp from "../components/tabs/tab_manage_op.js";
+import blueprintUtil from "../blueprint_util.js";
+import defaultOps from "../defaultops.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -246,7 +245,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         return;
     }
 
-    let suggestedNamespace = defaultops.getPatchOpsNamespace();
+    let suggestedNamespace = defaultOps.getPatchOpsNamespace();
     if (gui.patchView.getCurrentSubPatch() != 0)
     {
         const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
@@ -1266,7 +1265,7 @@ CABLES_CMD_PATCH.updateAllBlueprints = () =>
 {
     const patch = gui.corePatch();
     const ops = patch.ops;
-    const relevantOps = ops.filter((op) => { return defaultops.isBlueprintOp(op); });
+    const relevantOps = ops.filter((op) => { return defaultOps.isBlueprintOp(op); });
     gui.patchView.updateBlueprints(relevantOps);
 };
 

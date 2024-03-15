@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { Events } from "cables-shared-client";
 
-export default class GlOpWatcher extends CABLES.EventTarget
+export default class GlOpWatcher extends Events
 {
     constructor(tabs)
     {

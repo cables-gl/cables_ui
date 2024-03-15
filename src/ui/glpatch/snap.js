@@ -1,10 +1,10 @@
-import { CONSTANTS } from "../../../../cables/src/core/constants";
-import userSettings from "../components/usersettings";
-import GlRect from "../gldraw/glrect";
-import uiconfig from "../uiconfig";
-import gluiconfig from "./gluiconfig";
+import { Events } from "cables-shared-client";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import userSettings from "../components/usersettings.js";
+import GlRect from "../gldraw/glrect.js";
+import gluiconfig from "./gluiconfig.js";
 
-export default class SnapLines extends CABLES.EventTarget
+export default class Snap extends Events
 {
     constructor(cgl, glPatch, instancer)
     {
@@ -12,12 +12,9 @@ export default class SnapLines extends CABLES.EventTarget
 
         this._glPatch = glPatch;
         this._xCoords = [];
-
         this._instancer = instancer;
         this._timeout = null;
-
         this._rectWidth = 1;
-
         this.enabled = true;
 
         if (this.enabled)
@@ -36,7 +33,7 @@ export default class SnapLines extends CABLES.EventTarget
         clearTimeout(this._timeout);
         this._timeout = setTimeout(() =>
         {
-            const perf = CABLES.UI.uiProfiler.start("snaplines.update");
+            const perf = CABLES.UI.uiProfiler.start("Snap.update");
             const hashmap = {};
             const ops = gui.corePatch().getSubPatchOps(this._glPatch.getCurrentSubPatch());
             const selOps = gui.patchView.getSelectedOps();
@@ -68,40 +65,43 @@ export default class SnapLines extends CABLES.EventTarget
     {
         let x = _x;
         if (userSettings.get("snapToGrid"))
-            x = gui.patchView.snapOpPosX(_x);
+            x = Snap.snapOpPosX(_x);
 
         return x;
     }
 
     snapY(y)
     {
-        if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosY(y);
+        if (userSettings.get("snapToGrid")) return Snap.snapOpPosY(y);
         else return y;
     }
 
     _snapPortX(_x, port, index, dist)
     {
-        if (userSettings.get("snapToGrid")) return gui.patchView.snapOpPosX(_x);
+        if (userSettings.get("snapToGrid")) return Snap.snapOpPosX(_x);
 
-        const otherPort = port.links[0].getOtherPort(port);
-
-        let otherPortIndex = 0;
-
-        let ports = otherPort.op.portsOut;
-        if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
-
-        otherPortIndex = 0;
-        for (let j = 0; j < ports.length; j++)
+        for (let i = 0; i < port.links.length; i++)
         {
-            if (ports[j].uiAttribs.hidePort) continue;
-            otherPortIndex++;
-            if (ports[j] == otherPort) break;
+            const otherPort = port.links[i].getOtherPort(port);
+
+            let otherPortIndex = 0;
+
+            let ports = otherPort.op.portsOut;
+            if (otherPort.direction == CONSTANTS.PORT.PORT_DIR_IN) ports = otherPort.op.portsIn;
+
+            otherPortIndex = 0;
+            for (let j = 0; j < ports.length; j++)
+            {
+                if (ports[j].uiAttribs.hidePort) continue;
+                otherPortIndex++;
+                if (ports[j] == otherPort) break;
+            }
+
+            const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
+            const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+
+            if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
         }
-
-        const portPosx = index * (gluiconfig.portWidth + gluiconfig.portPadding);
-        const otherPortPosx = otherPort.op.uiAttribs.translate.x + otherPortIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
-
-        if (Math.abs(otherPortPosx - _x - portPosx) < dist) return otherPortPosx - portPosx;
 
         return -1;
     }
@@ -136,16 +136,8 @@ export default class SnapLines extends CABLES.EventTarget
         }
         else console.warn("snapopx no op");
 
-
-
         if (!hasLinks)
         {
-            // if (gui.patchView.getSelectedOps().length > 0)
-            // {
-            // const perf = CABLES.UI.uiProfiler.start("snaplines.coordloop");
-            // let dist = 1;
-            // if (forceSnap) dist = 13;
-
             if (this.rect)
             {
                 this.rect.visible = false;
@@ -159,10 +151,17 @@ export default class SnapLines extends CABLES.EventTarget
                     }
                 }
             }
-            // perf.finish();
-            // }
         }
 
         return _x;
     }
 }
+Snap.snapOpPosX = function (posX)
+{
+    return (Math.round(posX / CABLES.UI.uiConfig.snapX) * CABLES.UI.uiConfig.snapX) || 1;
+};
+
+Snap.snapOpPosY = function (posY)
+{
+    return Math.round(posY / CABLES.UI.uiConfig.snapY) * CABLES.UI.uiConfig.snapY;
+};

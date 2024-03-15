@@ -1,5 +1,5 @@
-import ele from "../../utils/ele";
-import userSettings from "../usersettings";
+import { ele } from "cables-shared-client";
+import userSettings from "../usersettings.js";
 
 export default class CanvasUi
 {

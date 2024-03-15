@@ -1,9 +1,8 @@
-import gluiconfig from "./gluiconfig";
-import Logger from "../utils/logger";
-import text from "../text";
-import userSettings from "../components/usersettings";
-import GlOp from "./glop";
-import GlPort from "./glport";
+import { Logger } from "cables-shared-client";
+import gluiconfig from "./gluiconfig.js";
+import text from "../text.js";
+import userSettings from "../components/usersettings.js";
+import GlPort from "./glport.js";
 
 export default class GlCable
 {

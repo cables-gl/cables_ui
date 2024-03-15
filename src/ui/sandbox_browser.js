@@ -1,9 +1,10 @@
-import ModalDialog from "./dialogs/modaldialog";
-import ChangelogToast from "./dialogs/changelog";
-import text from "./text";
-import userSettings from "./components/usersettings";
+import { Events } from "cables-shared-client";
+import ModalDialog from "./dialogs/modaldialog.js";
+import ChangelogToast from "./dialogs/changelog.js";
+import text from "./text.js";
+import userSettings from "./components/usersettings.js";
 
-export default class SandboxBrowser extends CABLES.EventTarget
+export default class SandboxBrowser extends Events
 {
     constructor(cfg)
     {
@@ -30,6 +31,7 @@ export default class SandboxBrowser extends CABLES.EventTarget
     }
 
     setManualScreenshot(b)
+
     {
         this._cfg.patch.settings.manualScreenshot = b;
     }

@@ -3,12 +3,16 @@
     "version": "0.0.0",
     "description": "",
     "main": "gulpfile.js",
+    "type": "module",
     "engines": {
         "node": "18.14.2"
     },
     "browserslist": [
         "last 2 versions"
     ],
+    "dependencies": {
+        "cables-shared-client": "file:../shared/client/"
+    },
     "devDependencies": {
         "git-repo-info": "2.1.1",
         "gulp": "4.0.2",

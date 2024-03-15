@@ -1,10 +1,10 @@
-import { notify } from "../elements/notification";
-import { getHandleBarHtml } from "../utils/handlebars";
-import ModalDialog from "../dialogs/modaldialog";
-import Gui from "../gui";
-import ele from "../utils/ele";
+import { ele, Events } from "cables-shared-client";
+import { notify } from "../elements/notification.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import ModalDialog from "../dialogs/modaldialog.js";
+import Gui from "../gui.js";
 
-export default class ScUiMultiplayer extends CABLES.EventTarget
+export default class ScUiMultiplayer extends Events
 {
     constructor(connection)
     {

@@ -1,5 +1,5 @@
 
-import GlRectInstancer from "./glrectinstancer";
+import GlRectInstancer from "./glrectinstancer.js";
 
 export default class GlTextWriter
 {

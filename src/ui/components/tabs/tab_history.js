@@ -1,4 +1,4 @@
-import undo from "../../utils/undo";
+import undo from "../../utils/undo.js";
 
 export default class MetaHistory
 {

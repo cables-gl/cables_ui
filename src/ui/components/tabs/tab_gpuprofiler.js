@@ -1,5 +1,5 @@
-import defaultOps from "../../defaultops";
-import Tab from "../../elements/tabpanel/tab";
+import defaultOps from "../../defaultops.js";
+import Tab from "../../elements/tabpanel/tab.js";
 
 export default class GpuProfiler
 {

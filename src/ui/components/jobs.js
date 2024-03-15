@@ -1,11 +1,10 @@
-import ele from "../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class Jobs
+export default class Jobs extends Events
 {
     constructor()
     {
-        CABLES.EventTarget.apply(this);
-
+        super();
         this._jobs = [];
         this._finishedJobs = [];
         this._lastIndicator = null;

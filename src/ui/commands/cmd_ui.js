@@ -1,10 +1,10 @@
-import GpuProfiler from "../components/tabs/tab_gpuprofiler";
-import Preferences from "../components/tabs/tab_preferences";
-import ChangelogToast from "../dialogs/changelog";
-import WatchVarTab from "../components/tabs/tab_watchvars";
-import userSettings from "../components/usersettings";
-import JobsTab from "../components/tabs/tab_jobs";
-import HtmlTab from "../components/tabs/tab_html";
+import GpuProfiler from "../components/tabs/tab_gpuprofiler.js";
+import Preferences from "../components/tabs/tab_preferences.js";
+import ChangelogToast from "../dialogs/changelog.js";
+import WatchVarTab from "../components/tabs/tab_watchvars.js";
+import userSettings from "../components/usersettings.js";
+import JobsTab from "../components/tabs/tab_jobs.js";
+import HtmlTab from "../components/tabs/tab_html.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];

@@ -1,9 +1,8 @@
-import Logger from "../utils/logger";
-import userSettings from "./usersettings";
+import { Logger, ele } from "cables-shared-client";
+import userSettings from "./usersettings.js";
 
 import srcShaderFragment from "./texturepreviewer_glsl.frag";
 import srcShaderVertex from "./texturepreviewer_glsl.vert";
-import ele from "../utils/ele";
 
 const MODE_CORNER = 0;
 const MODE_HOVER = 1;

@@ -1,8 +1,8 @@
-import userSettings from "../components/usersettings";
-import text from "../text";
-import ele from "../utils/ele";
+import { ele, Events } from "cables-shared-client";
+import userSettings from "../components/usersettings.js";
+import text from "../text.js";
 
-export default class BottomInfoAreaBar extends CABLES.EventTarget
+export default class BottomInfoAreaBar extends Events
 {
     constructor()
     {

@@ -1,16 +1,13 @@
-import blueprintUtil from "../../blueprint_util";
-import defaultops from "../../defaultops";
-import ModalDialog from "../../dialogs/modaldialog";
-import gluiconfig from "../../glpatch/gluiconfig";
-import ele from "../../utils/ele";
-import undo from "../../utils/undo";
-import EditorTab from "../tabs/tab_editor";
-import userSettings from "../usersettings";
-import paramsHelper from "./params_helper";
-import WatchPortVisualizer from "./watchportvisualizer";
+import { ele, Events } from "cables-shared-client";
+import blueprintUtil from "../../blueprint_util.js";
+import ModalDialog from "../../dialogs/modaldialog.js";
+import gluiconfig from "../../glpatch/gluiconfig.js";
+import undo from "../../utils/undo.js";
+import userSettings from "../usersettings.js";
+import paramsHelper from "./params_helper.js";
+import WatchPortVisualizer from "./watchportvisualizer.js";
 
-
-class ParamsListener extends CABLES.EventTarget
+class ParamsListener extends Events
 {
     constructor(panelid)
     {

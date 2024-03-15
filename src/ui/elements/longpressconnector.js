@@ -1,9 +1,9 @@
-import GlLinedrawer from "../gldraw/gllinedrawer";
-import SuggestionDialog from "../components/suggestiondialog";
-import GlSplineDrawer from "../gldraw/glsplinedrawer";
-import userSettings from "../components/usersettings";
+import { Events } from "cables-shared-client";
+import SuggestionDialog from "../components/suggestiondialog.js";
+import GlSplineDrawer from "../gldraw/glsplinedrawer.js";
+import userSettings from "../components/usersettings.js";
 
-export default class LongPressConnector extends CABLES.EventTarget
+export default class LongPressConnector extends Events
 {
     constructor()
     {
@@ -202,15 +202,14 @@ export default class LongPressConnector extends CABLES.EventTarget
                 return;
             }
 
-            new SuggestionDialog(sugIn, op2, mouseEvent, null,
-                function (sid)
-                {
-                    gui.corePatch().link(
-                        p.parent,
-                        p.name,
-                        sugIn[sid].p.parent,
-                        sugIn[sid].p.name);
-                });
+            new SuggestionDialog(sugIn, op2, mouseEvent, null, function (sid)
+            {
+                gui.corePatch().link(
+                    p.parent,
+                    p.name,
+                    sugIn[sid].p.parent,
+                    sugIn[sid].p.name);
+            });
         }
 
         if (suggestions.length == 1) showSuggestions2(0);

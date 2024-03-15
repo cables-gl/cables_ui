@@ -1,10 +1,9 @@
-import defaultops, { defaultOpNames } from "../defaultops";
-import Logger from "../utils/logger";
-import { getHandleBarHtml } from "../utils/handlebars";
-import uiconfig from "../uiconfig";
-import gluiconfig from "../glpatch/gluiconfig";
-import GlPatch from "../glpatch/glpatch";
-import GlPort from "../glpatch/glport";
+import { Logger } from "cables-shared-client";
+import defaultOps from "../defaultops.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import gluiconfig from "../glpatch/gluiconfig.js";
+import GlPatch from "../glpatch/glpatch.js";
+import GlPort from "../glpatch/glport.js";
 
 export default class OpDocs
 {
@@ -113,7 +112,7 @@ export default class OpDocs
         for (let i = 0; i < _opDocs.length; i++)
         {
             const opDoc = _opDocs[i];
-            opDoc.category = defaultops.getNamespaceClassName(opDoc.name);
+            opDoc.category = defaultOps.getNamespaceClassName(opDoc.name);
             let summaryParsed = false;
             if (opDoc.layout)
             {
@@ -135,7 +134,7 @@ export default class OpDocs
                     }
                 }
             }
-            if (defaultops.isCollection(opDoc.name))
+            if (defaultOps.isCollection(opDoc.name))
             {
                 if (!summaryParsed)
                 {
@@ -192,7 +191,7 @@ export default class OpDocs
     {
         let html = "";
 
-        const className = defaultops.getPortTypeClassHtml(type);
+        const className = defaultOps.getPortTypeClassHtml(type);
         html += "<li>";
         html += "<span class=\"" + className + "\">" + portname + "</span>";
 
@@ -264,11 +263,11 @@ export default class OpDocs
         let opDoc = this.getOpDocByName(opName);
 
         let template = "op-doc-template";
-        if (defaultops.isExtension(opName)) template = "op-doc-collection-template-extension";
-        if (defaultops.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
+        if (defaultOps.isExtension(opName)) template = "op-doc-collection-template-extension";
+        if (defaultOps.isTeamNamespace(opName)) template = "op-doc-collection-template-teamnamespace";
         if (!opDoc)
         {
-            if (defaultops.isCollection(opName))
+            if (defaultOps.isCollection(opName))
             {
                 opDoc =
                     {
@@ -374,13 +373,13 @@ export default class OpDocs
     checkDefaultOpsOutdated()
     {
         const perf = CABLES.UI.uiProfiler.start("[opdocs] checkDefaultOpsOutdated");
-        for (const i in defaultOpNames)
+        for (const i in defaultOps.defaultOpNames)
         {
-            const doc = this.getOpDocByName(defaultOpNames[i]);
+            const doc = this.getOpDocByName(defaultOps.defaultOpNames[i]);
 
             if (!doc)
             {
-                console.warn("default op " + i + " " + defaultOpNames[i] + " not found... outdated ?");
+                console.warn("default op " + i + " " + defaultOps.defaultOpNames[i] + " not found... outdated ?");
             }
         }
 

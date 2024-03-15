@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class WatchArrayTab extends CABLES.EventTarget
+export default class WatchArrayTab extends Events
 {
     constructor(tabs, op, port, options)
     {
@@ -143,8 +143,7 @@ export default class WatchArrayTab extends CABLES.EventTarget
             if (texChanged)
             {
                 gl.framebufferTexture2D(
-                    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-                    gl.TEXTURE_2D, realTexture.tex, 0
+                    gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, realTexture.tex, 0
                 );
 
                 let isFloatingPoint = realTexture.textureType == CGL.Texture.TYPE_FLOAT;
@@ -170,12 +169,7 @@ export default class WatchArrayTab extends CABLES.EventTarget
             gl.bindFramebuffer(gl.FRAMEBUFFER, this._fb);
 
             gl.readPixels(
-                0, 0,
-                Math.min(90, realTexture.width),
-                1,
-                channels,
-                channelType,
-                this._pixelData
+                0, 0, Math.min(90, realTexture.width), 1, channels, channelType, this._pixelData
             );
 
             return this._pixelData;

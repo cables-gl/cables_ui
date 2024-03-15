@@ -1,8 +1,8 @@
-import defaultops from "../../defaultops";
-import ele from "../../utils/ele";
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import text from "../../text";
+import { ele } from "cables-shared-client";
+import defaultOps from "../../defaultops.js";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import text from "../../text.js";
 
 export default class FindTab
 {
@@ -35,7 +35,7 @@ export default class FindTab
             if (!op) continue;
             if (op.uiAttribs.error)
             {
-                if (defaultops.isDeprecatedOp(op.objName)) op.isDeprecated = true;
+                if (defaultOps.isDeprecatedOp(op.objName)) op.isDeprecated = true;
             }
             if (op.uiAttribs.warning) warnOps.push(op);
             if (op.uiAttribs.color) colors.push(op.uiAttribs.color);
@@ -214,7 +214,7 @@ export default class FindTab
     {
         let html = "";
 
-        const colorClass = "" + defaultops.getVarClass(v.type);
+        const colorClass = "" + defaultOps.getVarClass(v.type);
 
         html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v.getName() + "\" > ";
         html += "<span class=\"" + colorClass + "\">#" + v.getName() + "</span> <span class=\"monospace\" id=\"varresult_" + v.getName() + "\">/span>";
@@ -227,7 +227,7 @@ export default class FindTab
     {
         let html = "";
 
-        const colorClass = "" + defaultops.getVarClass("trigger");
+        const colorClass = "" + defaultOps.getVarClass("trigger");
 
         html += "<div id=\"" + 0 + "\" class=\"info findresultvar_" + v + "\" > ";
         html += "<span class=\"" + colorClass + "\">#" + v + "</span> <span class=\"monospace\" style=\"opacity:0.1;background-color:var(--color_port_function);\" id=\"triggerresult_" + v + "\">&nbsp;&nbsp;</span>";
@@ -247,7 +247,7 @@ export default class FindTab
 
         if (op.op)op = op.op;
 
-        const colorClass = "" + defaultops.getNamespaceClassName(op.objName);
+        const colorClass = "" + defaultOps.getNamespaceClassName(op.objName);
 
         let hiddenClass = "";
         if (op.uiAttribs.hidden)hiddenClass = "resultHiddenOp";
@@ -353,7 +353,7 @@ export default class FindTab
                 // FindTab.searchOutDated(ops, results);
                 // for (let i = 0; i < results.length; i++)
                 // {
-                //     if (defaultops.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
+                //     if (defaultOps.isDeprecatedOp(results[i].op.objName)) results[i].hint = "Op is deprecated, should not be used anymore";
                 //     else results[i].hint = "Newer version of op available! Please upgrade";
                 // }
 
@@ -395,10 +395,10 @@ export default class FindTab
                 {
                     const op = ops[i];
                     if (
-                        defaultops.isPatchOp(op.objName) ||
-                        defaultops.isUserOp(op.objName) ||
-                        defaultops.isTeamOp(op.objName) ||
-                        defaultops.isExtensionOp(op.objName)
+                        defaultOps.isPatchOp(op.objName) ||
+                        defaultOps.isUserOp(op.objName) ||
+                        defaultOps.isTeamOp(op.objName) ||
+                        defaultOps.isExtensionOp(op.objName)
                     )
                     {
                         results.push({ op });
@@ -832,7 +832,7 @@ FindTab.searchOutDated = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(ops[i].objName))
+        if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(ops[i].objName))
             results.push({ "op": ops[i], "score": 1 });
     }
     return results;
@@ -845,7 +845,7 @@ FindTab.searchSelected = (ops, results) =>
         if (ops[i].uiAttribs.selected)
             results.push({ "op": ops[i], "score": 1 });
         // const doc = gui.opDocs.getOpDocByName(ops[i].objName);
-        // if ((doc && doc.oldVersion) || defaultops.isDeprecatedOp(ops[i].objName))
+        // if ((doc && doc.oldVersion) || defaultOps.isDeprecatedOp(ops[i].objName))
     }
     return results;
 };
@@ -855,7 +855,7 @@ FindTab.searchUserOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultops.isUserOp(op.objName))
+        if (defaultOps.isUserOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
@@ -866,7 +866,7 @@ FindTab.searchPatchOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultops.isPatchOp(op.objName))
+        if (defaultOps.isPatchOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
@@ -877,7 +877,7 @@ FindTab.searchTeamOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultops.isTeamOp(op.objName))
+        if (defaultOps.isTeamOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;
@@ -888,7 +888,7 @@ FindTab.searchExtensionOps = (ops, results) =>
     for (let i = 0; i < ops.length; i++)
     {
         const op = ops[i];
-        if (defaultops.isExtensionOp(op.objName))
+        if (defaultOps.isExtensionOp(op.objName))
             results.push({ op, "score": 1, "where": op.objName });
     }
     return results;

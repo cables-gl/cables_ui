@@ -1,6 +1,7 @@
-import userSettings from "../../components/usersettings";
+import { Events } from "cables-shared-client";
+import userSettings from "../../components/usersettings.js";
 
-export default class MainTabPanel extends CABLES.EventTarget
+export default class MainTabPanel extends Events
 {
     constructor(tabs)
     {

@@ -2,10 +2,8 @@
  * extending core classes for helper functions which will be only available in ui/editor mode
  */
 
-import defaultops from "./defaultops";
-import gluiconfig from "./glpatch/gluiconfig";
-import text from "./text";
-import uiconfig from "./uiconfig";
+import gluiconfig from "./glpatch/gluiconfig.js";
+import text from "./text.js";
 
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;

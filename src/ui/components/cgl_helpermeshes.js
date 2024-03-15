@@ -1,4 +1,4 @@
-import userSettings from "./usersettings";
+import userSettings from "./usersettings.js";
 
 const helperMeshes = {};
 helperMeshes.count = 0;

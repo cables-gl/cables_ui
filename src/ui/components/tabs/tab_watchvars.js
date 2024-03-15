@@ -1,6 +1,6 @@
-import ele from "../../utils/ele";
+import { ele, Events } from "cables-shared-client";
 
-export default class WatchVarTab extends CABLES.EventTarget
+export default class WatchVarTab extends Events
 {
     constructor(tabs, patch)
     {

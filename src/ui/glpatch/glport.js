@@ -1,8 +1,8 @@
 
-import gluiconfig from "./gluiconfig";
-import GlRect from "../gldraw/glrect";
-import MouseState from "./mousestate";
-import Logger from "../utils/logger";
+import { Logger } from "cables-shared-client";
+import gluiconfig from "./gluiconfig.js";
+import GlRect from "../gldraw/glrect.js";
+import MouseState from "./mousestate.js";
 
 export default class GlPort
 {

@@ -1,6 +1,7 @@
-import defaultOps from "../defaultops";
+import { Events } from "cables-shared-client";
+import defaultOps from "../defaultops.js";
 
-export default class OpSearch extends CABLES.EventTarget
+export default class OpSearch extends Events
 {
     constructor()
     {

@@ -1,9 +1,8 @@
-import Logger from "../../utils/logger";
-import Tab from "../../elements/tabpanel/tab";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import { hideToolTip, showToolTip } from "../../elements/tooltips";
-import defaultops from "../../defaultops";
-import blueprintUtil from "../../blueprint_util";
+import { Logger } from "cables-shared-client";
+import Tab from "../../elements/tabpanel/tab.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
+import blueprintUtil from "../../blueprint_util.js";
 
 export default class ManageOp
 {

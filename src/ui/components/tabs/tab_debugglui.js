@@ -1,4 +1,4 @@
-import Tab from "../../elements/tabpanel/tab";
+import Tab from "../../elements/tabpanel/tab.js";
 
 export default class GlDebugTab
 {

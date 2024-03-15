@@ -1,20 +1,25 @@
-const gulp = require("gulp");
-const jshint = require("gulp-jshint");
-const sass = require("gulp-sass-no-nodesass");
-sass.compiler = require("sass");
-const concat = require("gulp-concat");
-const uglify = require("gulp-uglify-es").default;
-const rename = require("gulp-rename");
-const sourcemaps = require("gulp-sourcemaps");
-const svgcss = require("gulp-svg-css");
-const svgmin = require("gulp-svgmin");
-const fs = require("fs");
-const replace = require("gulp-replace");
-const autoprefixer = require("gulp-autoprefixer");
-const getRepoInfo = require("git-repo-info");
-const webpack = require("webpack-stream");
-const compiler = require("webpack");
-const webpackConfig = require("./webpack.config");
+import gulp from "gulp";
+
+import sass from "gulp-sass-no-nodesass";
+
+import compiler from "webpack";
+import webpack from "webpack-stream";
+import getRepoInfo from "git-repo-info";
+import autoprefixer from "gulp-autoprefixer";
+import replace from "gulp-replace";
+import fs from "fs";
+import svgmin from "gulp-svgmin";
+import svgcss from "gulp-svg-css";
+import sourcemaps from "gulp-sourcemaps";
+import rename from "gulp-rename";
+import uglify from "gulp-uglify-es";
+import concat from "gulp-concat";
+import sass0 from "sass";
+
+import webpackConfig from "./webpack.config.js";
+import webpackTalkerApiConfig from "./webpack.talkerapi.config.js";
+
+sass.compiler = sass0;
 
 let configLocation = "../cables_api/cables.json";
 if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
@@ -30,8 +35,6 @@ else
     console.error("config file not found at", configLocation, "forcing dev build");
 }
 
-
-
 let buildInfo = getBuildInfo();
 
 function _scripts_libs_ui(done)
@@ -45,11 +48,33 @@ function _scripts_libs_ui(done)
 
 function _scripts_talkerapi(done)
 {
-    let task = gulp.src(["src-talkerapi/*.js"]);
-    if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("talkerapi.js")).pipe(gulp.dest("dist/js")).pipe(rename("talkerapi.js"));
-    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
-    return task.pipe(gulp.dest("dist/js"));
+    return gulp.src(["src-talkerapi/talkerapi.js"])
+        .pipe(
+            webpack(
+                {
+                    "config": webpackTalkerApiConfig(isLiveBuild, buildInfo),
+                },
+                compiler,
+                (err, stats) =>
+                {
+                    if (err) done(err);
+                    if (stats.hasErrors())
+                    {
+                        done(new Error(stats.compilation.errors.join("\n")));
+                    }
+                    else
+                    {
+                        done();
+                    }
+                }
+            )
+        )
+        .pipe(gulp.dest("dist/js"))
+        .on("error", (err) =>
+        {
+            console.error("WEBPACK ERROR NEU!!!!!!!", err);
+            done(err);
+        });
 }
 
 function _scripts_core()
@@ -194,7 +219,7 @@ function _svgcss(done)
 
 function _watch(done)
 {
-    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack));
+    gulp.watch(["src/ui/**/*.js", "src/ui/*.js", "src/ui/**/*.json", "src/ui/**/*.frag", "src/ui/**/*.vert", "../shared/client/*.js", "../shared/client/**/*.js"], { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_ui_webpack));
     gulp.watch(["scss/**/*.scss", "scss/*.scss"], { "usePolling": true }, gulp.series(_update_buildInfo, _sass));
     gulp.watch(["html/**/*.html", "html/*.html"], { "usePolling": true }, gulp.series(_update_buildInfo, _html_ui));
     gulp.watch("src-talkerapi/**/*", { "usePolling": true }, gulp.series(_update_buildInfo, _scripts_talkerapi));

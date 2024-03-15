@@ -1,5 +1,6 @@
+import { Events } from "cables-shared-client";
 
-export default class OpHistory extends CABLES.EventTarget
+export default class OpHistory extends Events
 {
     constructor()
     {

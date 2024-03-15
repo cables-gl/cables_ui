@@ -1,9 +1,7 @@
-import { Anim } from "../../../../cables/src/core/anim";
-import { CONSTANTS } from "../../../../cables/src/core/constants";
-import { getHandleBarHtml } from "../utils/handlebars";
-import Logger from "../utils/logger";
-import ModalBackground from "./modalbg";
-import ModalDialog from "./modaldialog";
+import { Logger } from "cables-shared-client";
+import ModalBackground from "cables-shared-client/src/modalbg.js";
+import { CONSTANTS } from "../../../../cables/src/core/constants.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
 
 export default class GradientEditor
 {

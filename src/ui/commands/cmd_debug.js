@@ -1,10 +1,10 @@
-import GlDebugTab from "../components/tabs/tab_debugglui";
-import MetaHistory from "../components/tabs/tab_history";
-import LoggingTab from "../components/tabs/tab_logging";
-import OpDocsJson from "../components/tabs/tab_opdocsjson";
-import OpSerialized from "../components/tabs/tab_opserialized";
-import OpWatchUiAttribs from "../components/tabs/tab_uiattribs";
-import Gui from "../gui";
+import GlDebugTab from "../components/tabs/tab_debugglui.js";
+import MetaHistory from "../components/tabs/tab_history.js";
+import LoggingTab from "../components/tabs/tab_logging.js";
+import OpDocsJson from "../components/tabs/tab_opdocsjson.js";
+import OpSerialized from "../components/tabs/tab_opserialized.js";
+import OpWatchUiAttribs from "../components/tabs/tab_uiattribs.js";
+import Gui from "../gui.js";
 
 const CABLES_CMD_DEBUG = {};
 const CMD_DEBUG_COMMANDS = [];

@@ -1,5 +1,5 @@
-import ele from "../utils/ele";
-import { getHandleBarHtml } from "../utils/handlebars";
+import { ele } from "cables-shared-client";
+import { getHandleBarHtml } from "../utils/handlebars.js";
 
 export default class IconBar
 {

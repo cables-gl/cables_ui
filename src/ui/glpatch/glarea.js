@@ -1,4 +1,4 @@
-import userSettings from "../components/usersettings";
+import userSettings from "../components/usersettings.js";
 
 export default class GlArea
 {
@@ -39,8 +39,8 @@ export default class GlArea
 
             if (userSettings.get("snapToGrid"))
             {
-                this._w = this._glop.glPatch.snapLines.snapX(this._w);
-                this._h = this._glop.glPatch.snapLines.snapY(this._h);
+                this._w = this._glop.glPatch.snap.snapX(this._w);
+                this._h = this._glop.glPatch.snap.snapY(this._h);
             }
 
             gui.savedState.setUnSaved("resizeGlArea");

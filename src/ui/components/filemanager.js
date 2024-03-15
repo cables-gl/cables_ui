@@ -1,12 +1,9 @@
-import ele from "../utils/ele";
-import Logger from "../utils/logger";
-import ItemManager from "./tabs/tab_item_manager";
-import { getHandleBarHtml } from "../utils/handlebars";
-import ModalDialog from "../dialogs/modaldialog";
-import text from "../text";
-import userSettings from "./usersettings";
-import ModalLoading from "../dialogs/modalloading";
-import EditorTab from "./tabs/tab_editor";
+import { Logger, ele } from "cables-shared-client";
+import ItemManager from "./tabs/tab_item_manager.js";
+import { getHandleBarHtml } from "../utils/handlebars.js";
+import ModalDialog from "../dialogs/modaldialog.js";
+import text from "../text.js";
+import userSettings from "./usersettings.js";
 
 export default class FileManager
 {

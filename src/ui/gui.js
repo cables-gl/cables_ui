@@ -1,52 +1,49 @@
-import MetaKeyframes from "./components/tabs/meta_keyframes";
-import Bookmarks from "./components/bookmarks";
-import Introduction from "./components/introduction";
-import Jobs from "./components/jobs";
-import OpHistory from "./components/ophistory";
-import OpParampanel from "./components/opparampanel/op_parampanel";
-import CommandPallete from "./dialogs/commandpalette";
-import OpSelect from "./dialogs/opselect";
-import BottomInfoAreaBar from "./elements/bottominfoareabar";
-import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay";
-import MainTabPanel from "./elements/tabpanel/maintabpanel";
-import TabPanel from "./elements/tabpanel/tabpanel";
-import KeyBindingsManager from "./utils/keybindingsmanager";
-import ModalDialog from "./dialogs/modaldialog";
-import ModalPortValue from "./components/opparampanel/show_port_value_modal";
-import uiconfig from "./uiconfig";
-import TexturePreviewer from "./components/texturepreviewer";
-import Logger from "./utils/logger";
-import OpDocs from "./components/opdocs";
-import IconBar from "./elements/iconbar";
-import ModalError from "./dialogs/modalerror";
-import Tips from "./dialogs/tips";
-import PatchView from "./components/patchview";
-import TimeLineGui from "./components/timelinesvg/timeline";
-import MetaOpParams from "./components/tabs/meta_opparams";
-import { getHandleBarHtml } from "./utils/handlebars";
-import WatchArrayTab from "./components/tabs/tab_watcharray";
-import Gizmo from "./elements/canvasoverlays/transformgizmo";
-import { showInfo } from "./elements/tooltips";
-import ele from "./utils/ele";
-import text from "./text";
-import userSettings from "./components/usersettings";
-import LongPressConnector from "./elements/longpressconnector";
-import CanvasManager from "./components/canvas/canvasmanager";
-import GuiRestrictions from "./components/guirestrictions";
-import PatchPanel from "./components/patchpanel";
-import SavedState from "./components/savedstate";
+import { Logger, Events } from "cables-shared-client";
+import MetaKeyframes from "./components/tabs/meta_keyframes.js";
+import Bookmarks from "./components/bookmarks.js";
+import Introduction from "./components/introduction.js";
+import Jobs from "./components/jobs.js";
+import OpHistory from "./components/ophistory.js";
+import OpParampanel from "./components/opparampanel/op_parampanel.js";
+import CommandPallete from "./dialogs/commandpalette.js";
+import OpSelect from "./dialogs/opselect.js";
+import BottomInfoAreaBar from "./elements/bottominfoareabar.js";
+import TransformsOverlay from "./elements/canvasoverlays/transformsoverlay.js";
+import MainTabPanel from "./elements/tabpanel/maintabpanel.js";
+import TabPanel from "./elements/tabpanel/tabpanel.js";
+import KeyBindingsManager from "./utils/keybindingsmanager.js";
+import ModalDialog from "./dialogs/modaldialog.js";
+import ModalPortValue from "./components/opparampanel/show_port_value_modal.js";
+import uiconfig from "./uiconfig.js";
+import TexturePreviewer from "./components/texturepreviewer.js";
+import OpDocs from "./components/opdocs.js";
+import IconBar from "./elements/iconbar.js";
+import ModalError from "./dialogs/modalerror.js";
+import Tips from "./dialogs/tips.js";
+import PatchView from "./components/patchview.js";
+import TimeLineGui from "./components/timelinesvg/timeline.js";
+import MetaOpParams from "./components/tabs/meta_opparams.js";
+import { getHandleBarHtml } from "./utils/handlebars.js";
+import WatchArrayTab from "./components/tabs/tab_watcharray.js";
+import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
+import { showInfo } from "./elements/tooltips.js";
+import text from "./text.js";
+import userSettings from "./components/usersettings.js";
+import LongPressConnector from "./elements/longpressconnector.js";
+import CanvasManager from "./components/canvas/canvasmanager.js";
+import GuiRestrictions from "./components/guirestrictions.js";
+import PatchPanel from "./components/patchpanel.js";
+import SavedState from "./components/savedstate.js";
 import defaultTheme from "./defaulttheme.json";
-import blueprintUtil from "./blueprint_util";
-import ModalLoading from "./dialogs/modalloading";
-import FileManagerEditor from "./components/filemanager_edit";
+import blueprintUtil from "./blueprint_util.js";
+import ModalLoading from "./dialogs/modalloading.js";
+import FileManagerEditor from "./components/filemanager_edit.js";
 
-
-export default class Gui
+export default class Gui extends Events
 {
     constructor(cfg)
     {
-        CABLES.EventTarget.apply(this);
-
+        super();
         this._log = new Logger("gui");
 
         this.theme = defaultTheme;
@@ -181,7 +178,6 @@ export default class Gui
         this._oldCanvasWidth = 0;
         this._oldCanvasHeight = 0;
         this._oldShowingEditor = false;
-        this._eventListeners = {};
         // this._onBeforeUnloadListener = null;
 
         this._currentProject = null;
@@ -2117,16 +2113,6 @@ export default class Gui
     setUser(u)
     {
         gui.user = u;
-    }
-
-
-    // todo use eventtarget...
-    addEventListener(name, cb)
-    {
-        this._log.warn("deprecated eventlistener:", name);
-        console.log((new Error()).stack);
-        this._eventListeners[name] = this._eventListeners[name] || [];
-        this._eventListeners[name].push(cb);
     }
 
     initCoreListeners()

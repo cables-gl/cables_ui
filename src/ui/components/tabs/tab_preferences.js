@@ -1,7 +1,7 @@
-import Tab from "../../elements/tabpanel/tab";
-import text from "../../text";
-import { getHandleBarHtml } from "../../utils/handlebars";
-import userSettings from "../usersettings";
+import Tab from "../../elements/tabpanel/tab.js";
+import text from "../../text.js";
+import { getHandleBarHtml } from "../../utils/handlebars.js";
+import userSettings from "../usersettings.js";
 
 export default class Preferences
 {
