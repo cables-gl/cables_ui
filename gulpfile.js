@@ -12,14 +12,15 @@ import svgmin from "gulp-svgmin";
 import svgcss from "gulp-svg-css";
 import sourcemaps from "gulp-sourcemaps";
 import rename from "gulp-rename";
-import uglify from "gulp-uglify-es";
+import gulpUglify from "gulp-uglify-es";
 import concat from "gulp-concat";
-import sass0 from "sass";
+import sassCompiler from "sass";
 
 import webpackConfig from "./webpack.config.js";
 import webpackTalkerApiConfig from "./webpack.talkerapi.config.js";
 
-sass.compiler = sass0;
+const uglify = gulpUglify.default;
+sass.compiler = sassCompiler;
 
 let configLocation = "../cables_api/cables.json";
 if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
