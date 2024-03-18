@@ -1,5 +1,4 @@
-import { Logger } from "cables-shared-client";
-import ModalBackground from "cables-shared-client/src/modalbg.js";
+import { ModalBackground, Logger } from "cables-shared-client";
 import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 

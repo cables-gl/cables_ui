@@ -15,10 +15,18 @@ export default (isLiveBuild, buildInfo) =>
             "filename": "talkerapi.js"
         },
         "stats": isLiveBuild,
-        "optimization": { "minimize": isLiveBuild },
+        "optimization": {
+            "minimize": isLiveBuild,
+            "usedExports": true
+        },
         "externals": ["CABLES"],
         "resolve": {
             "extensions": [".json", ".js"],
+        },
+        "module": {
+            "rules": [
+                { "sideEffects": false },
+            ]
         },
         "plugins": [
             new webpack.DefinePlugin({
