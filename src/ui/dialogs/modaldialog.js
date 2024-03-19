@@ -54,6 +54,8 @@ export default class ModalDialog extends Events
         ele.byId("modalclose").style.display = "block";
 
         if (window.gui) gui.currentModal = this;
+
+        this._bg.on("hide", this.close.bind(this));
     }
 
     close()

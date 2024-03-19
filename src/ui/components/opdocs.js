@@ -408,7 +408,6 @@ export default class OpDocs
             svgStr += "<?xml version=\"1.0\"?>";
             svgStr += "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" version=\"1.1\" width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\">";
 
-
             svgStr += "<rect width=\"" + width + "\" height=\"" + gluiconfig.opHeight + "\" fill=\"" + glColorToHtml(gui.theme.colors_patch.opBgRect) + "\"/>";
 
             if (doc.layout.portsIn)

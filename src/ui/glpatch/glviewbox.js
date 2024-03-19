@@ -79,8 +79,8 @@ export default class GlViewBox
         const dx = 0;
         const dy = 0;
 
-        x = Math.round(x);
-        y = Math.round(y);
+        x = Math.ceil(x);
+        y = Math.ceil(y);
 
         const coord = this.screenToPatchCoord(x + dx, y + dy);
         this.mousePatchNotPredicted = this.screenToPatchCoord(x, y);
@@ -281,9 +281,15 @@ export default class GlViewBox
 
     get scrollY() { return this._scrollY; }
 
-    get scrollXZoom() { return (-this._scrollX) / this._zoom; }
+    get scrollXZoom()
+    {
+        return (-this._scrollX) / this._zoom;
+    }
 
-    get scrollYZoom() { return this._scrollY / this._zoom; }
+    get scrollYZoom()
+    {
+        return (this._scrollY) / this._zoom;
+    }
 
     get mouseX() { return this._mouseX; }
 
