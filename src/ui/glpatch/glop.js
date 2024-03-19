@@ -207,7 +207,7 @@ export default class GlOp extends Events
 
 
 
-    _onBgRectDrag(rect)
+    _onBgRectDrag(e)
     {
         if (gui.longPressConnector.isActive()) return;
         if (!this._glRectBg) return;
@@ -1500,8 +1500,7 @@ export default class GlOp extends Events
         y = this._passiveDragStartY + y;
 
         x = this._glPatch.snap.snapOpX(x, this._op);
-
-        y = this._glPatch.snap.snapY(y);
+        y = this._glPatch.snap.snapY(y, this._glPatch._pressedCtrlKey);
 
         this._glPatch.patchAPI.setOpUiAttribs(this._id, "translate", { "x": x, "y": y });
         this.emitEvent("drag");
