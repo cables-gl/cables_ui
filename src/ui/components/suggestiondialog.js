@@ -1,5 +1,4 @@
-import { ele } from "cables-shared-client";
-import ModalBackground from "cables-shared-client/src/modalbg.js";
+import { ele, ModalBackground } from "cables-shared-client";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 
 export default class SuggestionDialog

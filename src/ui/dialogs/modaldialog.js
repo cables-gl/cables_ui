@@ -1,5 +1,4 @@
-import { Logger, ele, Events } from "cables-shared-client";
-import ModalBackground from "cables-shared-client/src/modalbg.js";
+import { ModalBackground, Logger, ele, Events } from "cables-shared-client";
 
 /**
  * configuration object for loading a patch

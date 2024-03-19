@@ -16,13 +16,17 @@ export default (isLiveBuild, buildInfo) =>
             "filename": isLiveBuild ? "cablesui.min.js" : "cablesui.max.js",
         },
         "stats": isLiveBuild,
-        "optimization": { "minimize": isLiveBuild },
+        "optimization": {
+            "minimize": isLiveBuild,
+            "usedExports": true
+        },
         "externals": ["CABLES"],
         "resolve": {
             "extensions": [".json", ".js"],
         },
         "module": {
             "rules": [
+                { "sideEffects": false },
                 {
                     "test": /\.frag/,
                     "use": "raw-loader",
