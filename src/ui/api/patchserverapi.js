@@ -491,12 +491,11 @@ export default class PatchSaveServer extends Events
         gui.patchView.serialize(data.ui);
 
         data.ui.renderer = {};
-        data.ui.renderer.w = gui.rendererWidth;
-        data.ui.renderer.h = gui.rendererHeight;
-        data.ui.renderer.s = data.ui.renderer.s = gui.corePatch().cgl.canvasScale || 1;
+        data.ui.renderer.w = Math.max(0, gui.rendererWidth);
+        data.ui.renderer.h = Math.max(0, gui.rendererHeight);
+        data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
 
         CABLES.patch.namespace = currentProject.namespace;
-
 
         setTimeout(() =>
         {
