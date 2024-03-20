@@ -34,13 +34,6 @@ void main()
     vec3 pos=vPosition;
     pos.xy*=instSize;
 
-    posSize=vec4(pos.xy*zoom,instSize*zoom-pos.xy*zoom);
-
-    // posSize.x=floor(posSize.x*2384.0)/2384.0;
-    // posSize.y=floor(posSize.y*2384.0)/2384.0;
-    // posSize.z=floor(posSize.z*2384.0)/2384.0;
-    // posSize.w=floor(posSize.w*2384.0)/2384.0;
-
     pos.x+=instPos.x;
     pos.y+=instPos.y;
     pos.z+=instPos.z;

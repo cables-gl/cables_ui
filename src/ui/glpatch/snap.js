@@ -61,7 +61,7 @@ export default class Snap extends Events
         if (!mouseDown) if (this.rect) this.rect.visible = false;
     }
 
-    snapX(_x, forceSnap)
+    snapX(_x)
     {
         let x = _x;
         if (userSettings.get("snapToGrid"))
@@ -70,9 +70,9 @@ export default class Snap extends Events
         return x;
     }
 
-    snapY(y)
+    snapY(y, force)
     {
-        if (userSettings.get("snapToGrid")) return Snap.snapOpPosY(y);
+        if (userSettings.get("snapToGrid") || force) return Snap.snapOpPosY(y);
         else return y;
     }
 
