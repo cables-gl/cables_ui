@@ -404,13 +404,6 @@ body
         z-index: $zindex_over;
     }
 
-    // #splitterMeta
-    // {
-    //     height:2px;
-    //     padding:4px !important;
-    //     z-index: $zindex_high;
-    //     cursor:ns-resize;
-    // }
 
     #splitterRendererWH
     {
@@ -425,7 +418,7 @@ body
         height:4px;
         right:0px;
         cursor:ns-resize;
-        z-index: $zindex_high;
+        z-index: $zindex_canvas;
     }
 
 

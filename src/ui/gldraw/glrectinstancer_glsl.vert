@@ -26,6 +26,7 @@ void main()
     useTexture=contentTexture;
     decoration=instDeco;
 
+
     uv=attrTexCoord*texRect.zw+texRect.xy;
     uv.y=1.0-uv.y;
 
@@ -33,6 +34,8 @@ void main()
 
     vec3 pos=vPosition;
     pos.xy*=instSize;
+
+    posSize=vec4(pos.xy*zoom,instSize*zoom-pos.xy*zoom);
 
     pos.x+=instPos.x;
     pos.y+=instPos.y;

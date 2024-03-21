@@ -207,6 +207,8 @@
     // left:50%;
     z-index: 99999;
     transform: translate(-50%, 0);
+    left:50%;
+    top:calc(100vh - 200px);
 
     color: var(--color_op_text_active);
     font-size: 15px;

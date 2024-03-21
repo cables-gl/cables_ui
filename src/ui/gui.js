@@ -466,7 +466,7 @@ export default class Gui extends Events
 
         let patchHeight = window.innerHeight;
 
-        if (window.innerWidth <= 480 || this.isRemoteClient)
+        if (this.isRemoteClient)
         {
             this.canvasManager.mode = this.canvasManager.CANVASMODE_FULLSCREEN;
             this._elGlCanvasDom.classList.add("maximized");
@@ -545,11 +545,7 @@ export default class Gui extends Events
         if (editorWidth > patchWidth - 50) editorWidth = patchWidth - 50;
 
         const patchLeft = iconBarWidth;
-
-
-        ele.byId("restriction_message").style.left = (patchLeft + patchWidth / 2) + "px";
-        ele.byId("restriction_message").style.top = (patchHeight - 100) + "px";
-
+        const acds = 1;
 
         if (this.maintabPanel.isVisible())
         {
@@ -1158,6 +1154,10 @@ export default class Gui extends Events
             {
                 "items":
                 [
+                    {
+                        "title": "Reset canvas size",
+                        "func": CABLES.CMD.RENDERER.resetSize
+                    },
                     {
                         "title": "Set canvas size",
                         "func": CABLES.CMD.RENDERER.changeSize
