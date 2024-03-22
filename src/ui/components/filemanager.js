@@ -779,8 +779,36 @@ export default class FileManager
 
 
 
-    editTextFile()
+    uploadFile(filename, content, cb)
     {
+        gui.jobs().start({ "id": "uploadfile" + filename, "title": "saving file " + filename });
 
+        CABLESUILOADER.talkerAPI.send("createFile", { "name": filename }, (err, res) =>
+        {
+            if (err)
+            {
+                CABLES.UI.notifyError("Error: " + err.msg);
+                gui.jobs().finish("uploadfile" + filename);
+                return;
+            }
+
+            CABLESUILOADER.talkerAPI.send(
+                "fileUploadStr",
+                {
+                    "fileStr": content,
+                    "filename": filename,
+                },
+                (err3, res3) =>
+                {
+                    gui.savedState.setSaved("editorOnChangeFile");
+                    gui.jobs().finish("uploadfile" + filename);
+                    gui.refreshFileManager();
+
+                    if (cb)cb(err3, res3);
+
+                    // setStatus("saved");
+                }
+            );
+        });
     }
 }
