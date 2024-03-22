@@ -150,19 +150,19 @@
                         console.error("preloading error", response);
                     });
 
-                    CABLES.sandbox = new CABLES.SandboxBrowser(cfg);
+                    let platformClass = "PlatformCommunity";
+                    if(cfg && cfg.platformClass) {
+                        if(CABLES.hasOwnProperty(cfg.platformClass)) {
+                            platformClass = cfg.platformClass;
+                            console.info("using sandbox from", platformClass);
+                        }else{
+                            console.error("could not find class for sandbox", cfg.platformClass, "using", platformClass);
+                        }
+
+                    }
+                    CABLES.sandbox = new CABLES[platformClass](cfg);
 
                     incrementStartup();
-                    const localOpCode = CABLES.sandbox.getLocalOpCode();
-                    if (localOpCode)
-                    {
-                        // append the local-op-code to document
-                        const s = document.createElement("script");
-                        s.type = "text/javascript";
-                        s.innerHTML = localOpCode;
-                        document.getElementsByTagName("head")[0].appendChild(s);
-                    }
-
                     loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
                     loadjs.ready('all_ops', () =>
                     {

@@ -4,7 +4,10 @@ import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
 import userSettings from "./components/usersettings.js";
 
-export default class SandboxBrowser extends Events
+/**
+ * @abstract
+ */
+export default class Platform extends Events
 {
     constructor(cfg)
     {
@@ -67,11 +70,6 @@ export default class SandboxBrowser extends Events
         return this.getCablesUrl() + "/api/ops/code/project/" + projectId;
     }
 
-    getLocalOpCode()
-    {
-        return ""; // no local ops in browser version
-    }
-
     getUrlApiPrefix()
     {
         return this._cfg.urlCables + "/api/";
@@ -122,16 +120,6 @@ export default class SandboxBrowser extends Events
                 "timeout": false,
             });
         }
-    }
-
-    addMeUserlist(options, cb)
-    {
-        CABLESUILOADER.talkerAPI.send("addMeUserlist", {}, (err, r) =>
-        {
-            gui.project().users.push(gui.user.id);
-
-            if (cb)cb();
-        });
     }
 
     getBlueprintOps(options, cb)
