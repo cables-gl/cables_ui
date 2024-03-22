@@ -108,6 +108,9 @@ export default class Snap extends Events
 
     snapOpX(_x, op, dist)
     {
+        if (userSettings.get("snapToGrid")) return Snap.snapOpPosX(_x);
+
+
         let hasLinks = false;
         dist = dist || gluiconfig.portWidth;
         if (op)
