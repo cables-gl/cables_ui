@@ -1015,9 +1015,19 @@ export default class Gui extends Events
         else this.showFileManager(null, true);
     }
 
-    showFileManager(cb, userInteraction)
+
+
+
+    getFileManager(cb, userInteraction)
     {
         if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
+        return this.fileManager;
+    }
+
+    showFileManager(cb, userInteraction)
+    {
+        // if (!this.fileManager) this.fileManager = new CABLES.UI.FileManager(cb, userInteraction);
+        this.getFileManager(cb, userInteraction);
 
         this.fileManager.show(userInteraction);
         gui.mainTabs.activateTabByName("Files");
