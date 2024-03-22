@@ -696,7 +696,7 @@ export default class GlLink
     {
         const perf = CABLES.UI.uiProfiler.start("[gllink] cableHoverChanged");
 
-        if (this._glOpOut)
+        if (this._glOpOut && this._glOpOut.op)
         {
             // console.log("cableHoverChanged", this._glOpOut);
             // let glop = this._glPatch.getGlOp(this._glOpOut);
@@ -707,7 +707,7 @@ export default class GlLink
             // else console.log("no glport");
         }
 
-        if (this._glOpIn)
+        if (this._glOpIn && this._glOpIn.op)
         {
             let port = this._glOpIn.op.getPortById(this._portIdInput);
             let glport = this._glOpIn.getGlPort(port.name);

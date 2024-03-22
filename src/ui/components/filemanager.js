@@ -411,12 +411,14 @@ export default class FileManager
             const itemId = detailItem.id;
             let projectId = gui.project()._id;
             if (detailItem.isReference && detailItem.file) projectId = detailItem.file.projectId;
+            const filename = detailItem.file ? detailItem.file.p : null;
 
             CABLESUILOADER.talkerAPI.send(
                 "getFileDetails",
                 {
                     "projectId": projectId,
-                    "fileid": itemId
+                    "fileid": itemId,
+                    "filename": filename
                 },
                 function (err, r)
                 {

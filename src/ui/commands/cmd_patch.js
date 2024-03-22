@@ -128,43 +128,14 @@ CABLES_CMD_PATCH.save = function (force, cb)
         return;
     }
 
-    let doSave = true;
+    gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
 
-    if (!force)
+    const ops = gui.savedState.getUnsavedPatchSubPatchOps();
+
+    for (let i = 0; i < ops.length; i++)
     {
-        const alwaysSave = gui.user.isAdmin;
-        const isOwner = gui.project().userId === gui.user.id;
-        const isFullCollab = gui.project().users && gui.project().users.includes(gui.user.id);
-        const isReadOnlyCollab = gui.project().usersReadOnly && gui.project().usersReadOnly.includes(gui.user.id);
-
-        const notCollaborator = !(isOwner || isFullCollab || isReadOnlyCollab);
-        if (alwaysSave && notCollaborator)
-        {
-            doSave = false;
-            const html = "You are not a collaborator of this patch<br/>Be sure the owner knows that you make changes to this patch...<br/><br/>"
-                    + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.sandbox.addMeUserlist(null,()=>{CABLES.CMD.PATCH.save(true);});\">Add me as collaborator and save</a>&nbsp;&nbsp;"
-                    + "<a class=\"button\" onclick=\"gui.closeModal();CABLES.CMD.PATCH.save(true);\">Save anyway</a>&nbsp;&nbsp;"
-                    + "<a class=\"button\" onclick=\"gui.closeModal();\">Close</a>&nbsp;&nbsp;";
-
-            new ModalDialog({
-                "warning": true,
-                "title": "Not Collaborator",
-                "html": html
-            });
-        }
-    }
-
-    if (doSave)
-    {
-        gui.patchView.store.saveCurrentProject(cb, undefined, undefined, force);
-
-        const ops = gui.savedState.getUnsavedPatchSubPatchOps();
-
-        for (let i = 0; i < ops.length; i++)
-        {
-            const name = ops[i].op.shortName;
-            blueprintUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
-        }
+        const name = ops[i].op.shortName;
+        blueprintUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
     }
 };
 
