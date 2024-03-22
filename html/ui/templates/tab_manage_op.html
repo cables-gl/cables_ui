@@ -206,7 +206,11 @@
             <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
         </div>
 
-
+        {{#if platformFeatures.npm}}
+            <br/><br/>
+            <div class="groupSpacer"><h3>NPMs</h3></div>
+            ...
+        {{/if}}
     </div>
 
 </script>

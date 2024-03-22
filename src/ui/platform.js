@@ -20,6 +20,10 @@ export default class Platform extends Events
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
         this.updateOnlineIndicator();
+
+        this.features = {
+            "npm": false
+        };
     }
 
     updateOnlineIndicator()
