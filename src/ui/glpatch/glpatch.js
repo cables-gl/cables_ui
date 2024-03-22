@@ -1290,7 +1290,7 @@ export default class GlPatch extends Events
             if (cops[j])
             {
                 const glop = this._glOpz[cops[j].id];
-                if (!glop.visible) continue;
+                if (!glop || !glop.visible) continue;
 
                 if (glop.x + glop.w >= x && // glop. right edge past r2 left
                         glop.x <= x2 && // glop. left edge past r2 right

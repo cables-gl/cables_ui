@@ -479,7 +479,6 @@ export default class PatchSaveServer extends Events
             }
         }
 
-
         data.ui = {
             "viewBox": {},
             "timeLineLength": gui.timeLine().getTimeLineLength()
