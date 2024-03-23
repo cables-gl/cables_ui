@@ -305,7 +305,7 @@ export default class GlPatch extends Events
                 }
                 else
                 {
-                    area.setColor([msg.color.r, msg.color.g, msg.color.b, glUiConfig.colorsSelectionArea[3]]);
+                    area.setColor([msg.color.r, msg.color.g, msg.color.b, gui.theme.colors_patch.patchSelectionArea[3]]);
                     area.setPos(msg.x, msg.y, 1000);
                     area.setSize(msg.sizeX, msg.sizeY);
                 }
@@ -1290,7 +1290,7 @@ export default class GlPatch extends Events
             if (cops[j])
             {
                 const glop = this._glOpz[cops[j].id];
-                if (!glop.visible) continue;
+                if (!glop || !glop.visible) continue;
 
                 if (glop.x + glop.w >= x && // glop. right edge past r2 left
                         glop.x <= x2 && // glop. left edge past r2 right

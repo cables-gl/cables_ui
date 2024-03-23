@@ -154,7 +154,7 @@ export default class GlPort
 
     _onLinkChanged()
     {
-        if (this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
+        if (this._glop.op && this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
         this.updateSize();
     }
 

@@ -44,7 +44,8 @@ import GlGuiFull from "./glpatch/gluifull.js";
 import GlGuiTab from "./glpatch/gluitab.js";
 import GlPatchAPI from "./glpatch/patchapi.js";
 import extendCoreOp from "./core_extend_op.js";
-import SandboxBrowser from "./sandbox_browser.js";
+import PlatformCommunity from "./platform_community.js";
+import PlatformStandalone from "./platform_standalone.js";
 import startUi from "./startgui.js";
 import text from "./text.js";
 import uiconfig from "./uiconfig.js";
@@ -63,7 +64,8 @@ CABLES.GLGUI = CABLES.GLGUI || {};
 CABLES.GLUI = CABLES.GLUI || {};
 CABLES.UTILS = CABLES.UTILS || {};
 
-CABLES.SandboxBrowser = SandboxBrowser;
+CABLES.PlatformCommunity = PlatformCommunity;
+CABLES.PlatformStandalone = PlatformStandalone;
 
 CABLES.UI.userSettings = userSettings;
 

@@ -23,6 +23,7 @@ export function getHandleBarHtml(name, obj)
 
     obj = obj || {};
     obj.cablesUrl = CABLES.sandbox.getCablesUrl();
+    obj.platformFeatures = CABLES.sandbox.features;
     const html = template(obj);
     perf.finish();
 
