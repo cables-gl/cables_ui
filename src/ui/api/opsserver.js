@@ -121,7 +121,7 @@ export default class ServerOps
 
     create(name, cb, openEditor, options = {})
     {
-        const loadingModal = gui.startModalLoading("Creating op...23");
+        const loadingModal = gui.startModalLoading("Creating op...");
 
         loadingModal.setTask("Creating Op");
 
