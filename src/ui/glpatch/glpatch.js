@@ -212,6 +212,7 @@ export default class GlPatch extends Events
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
             //  gui.patchView.alignOps(gui.patchView.getSelectedOps());
+            console.log("aaaaa");
 
             for (let j = 0; j < 20; j++)
                 for (const i in this._selectedGlOps)
