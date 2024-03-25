@@ -234,7 +234,7 @@ export default class GlViewBox
 
         if (delta == 0) return;
 
-        const wheelMultiplier = userSettings.get("wheelmultiplier") || 1;
+        const wheelMultiplier = (userSettings.get("wheelmultiplier") || 1) * 1.5;
 
         if (delta < 0) delta = 1.0 - 0.2 * wheelMultiplier;
         else delta = 1 + 0.2 * wheelMultiplier;
@@ -256,7 +256,7 @@ export default class GlViewBox
         if (animate)
         {
             this._zoom = oldZoom;
-            const dur = 0.3;
+            const dur = 0.5;
             this.animateZoom(newZoom, dur);
             this.animateScrollTo(
                 x - mouseAfterZoom[0],
@@ -510,7 +510,7 @@ export default class GlViewBox
 
         const zoomFactor = 0.1;
 
-        dur = 0.5;
+        dur = 0.25;
 
         // this._animZoom.clear();
         // this._animZoom.defaultEasing = CABLES.EASING_LINEAR;
