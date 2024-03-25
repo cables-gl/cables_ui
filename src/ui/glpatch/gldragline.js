@@ -60,14 +60,24 @@ export default class GlDragLine
             {
                 let x = this._glPatch.viewBox.mousePatchX;
 
-                if (Math.abs(this._glPort.glOp.x - x) < 100)x = this._glPort.glOp.x;
+
+                let pos =
+                {
+                    "subPatch": this._glPatch.subPatch,
+                    "x": x,
+                    "y": this._glPatch.viewBox.mousePatchY
+                };
+
+                if (Math.abs(this._glPort.glOp.x - x) < 200)
+                {
+                    pos.x = this._glPort.glOp.x + this._glPort.glOp.op.getPortPosX(this._glPort.port.name, this._glPort.glOp.op.id);
+                    pos.noSnap = true;
+                }
 
                 gui.opSelect().show(
-                    {
-                        "subPatch": this._glPatch.subPatch,
-                        "x": x,
-                        "y": this._glPatch.viewBox.mousePatchY
-                    }, this._glPort.port.op, this._glPort.port);
+                    pos,
+                    this._glPort.port.op,
+                    this._glPort.port);
             }
 
             this.stop();

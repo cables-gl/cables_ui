@@ -522,6 +522,7 @@ export default class OpSelect
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
 
+
         this._newOpOptions =
         {
             "subPatch": options.subPatch,
