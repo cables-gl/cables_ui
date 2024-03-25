@@ -67,8 +67,9 @@ export default class ManageOp
 
         if (!opDoc)
         {
-            this._tab.html("error unknown op/no opdoc...");
-            return;
+            // this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patcjh");
+            // return;
+            this._tab.remove();
         }
 
 
