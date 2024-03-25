@@ -1080,13 +1080,7 @@ export default class Gui extends Events
             "promptValue": randomize ? "" : "new project",
             "promptOk": (name) =>
             {
-                if (randomize || name)
-                    CABLESUILOADER.talkerAPI.send("newPatch", { "name": name }, function (err, d)
-                    {
-                        let id = d._id;
-                        if (d.shortId) id = d.shortId;
-                        CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": id });
-                    });
+                if (randomize || name) CABLESUILOADER.talkerAPI.send("newPatch", { "name": name });
             }
         });
     }
