@@ -117,7 +117,7 @@ export default class ModalError
 
         CABLES.lastError = {
             "title": this._options.title,
-            "exception": this._options.exception,
+            "exception": this._options.exception || this._options.codeText,
             "opName": this.opName,
             "opTriggerStack": stackStr,
             "stackInfo": info,

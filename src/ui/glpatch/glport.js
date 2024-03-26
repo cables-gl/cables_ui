@@ -131,6 +131,11 @@ export default class GlPort
         return this._rect.w;
     }
 
+    get port()
+    {
+        return this._port;
+    }
+
     updateSize()
     {
         if (!this._rect) return;

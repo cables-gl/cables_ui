@@ -15,7 +15,7 @@ export default class ManageOp
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
-        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true });
+        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true, "tabPanel": tabs });
         tabs.addTab(this._tab, true);
         this.show();
 
@@ -67,7 +67,9 @@ export default class ManageOp
 
         if (!opDoc)
         {
-            this._tab.html("error unknown op/no opdoc...");
+            this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patcjh");
+            this._tab.remove();
+
             return;
         }
 

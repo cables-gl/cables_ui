@@ -14,6 +14,7 @@ export default class Tab extends Events
         if (!options.hasOwnProperty("closable")) this.options.closable = true;
         if (!options.hasOwnProperty("name")) this.options.name = title || "???";
 
+        this.tabPanel = options.tabPanel || null;
         this.icon = this.options.icon || null;
         this.dataId = options.dataId;
         this.title = title;
@@ -74,9 +75,9 @@ export default class Tab extends Events
     remove()
     {
         this.emitEvent("close", this);
-        // this.emitEvent("onClose", this);
         this.contentEle.remove();
         this.toolbarContainerEle.remove();
+        if (this.tabPanel) this.tabPanel.closeTab(this.id);
     }
 
     html(html)

@@ -98,12 +98,14 @@ function eleInfoOut(e)
 
 document.querySelector("body").addEventListener("mouseover", function (evt)
 {
+    if (!evt || !evt.target || !evt.target.classList) return;
     if (evt.target.classList.contains("tt")) eleTtOver(evt);
     if (evt.target.classList.contains("info")) eleInfoOver(evt);
 }, true);
 
 document.querySelector("body").addEventListener("mouseout", function (evt)
 {
+    if (!evt || !evt.target || !evt.target.classList) return;
     if (evt.target.classList.contains("tt")) eleTtOut(evt);
     if (evt.target.classList.contains("info")) eleInfoOut(evt);
 }, true);

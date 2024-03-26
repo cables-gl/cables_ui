@@ -688,7 +688,7 @@ export default function extendCoreOp()
 
             if (this.portsIn[i].name == name)
             {
-                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || 0) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || index) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
             }
             index++;
         }

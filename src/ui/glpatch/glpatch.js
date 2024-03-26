@@ -212,6 +212,7 @@ export default class GlPatch extends Events
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
             //  gui.patchView.alignOps(gui.patchView.getSelectedOps());
+            console.log("aaaaa");
 
             for (let j = 0; j < 20; j++)
                 for (const i in this._selectedGlOps)
@@ -825,7 +826,15 @@ export default class GlPatch extends Events
             if (CABLES.UI.OPSELECT.newOpPos.y === 0 && CABLES.UI.OPSELECT.newOpPos.x === 0)
                 op.uiAttr({ "translate": { "x": Snap.snapOpPosX(this.viewBox.mousePatchX), "y": Snap.snapOpPosY(this.viewBox.mousePatchY) } });
             else
-                op.uiAttr({ "translate": { "x": Snap.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x), "y": Snap.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y) } });
+            {
+                if (!CABLES.UI.OPSELECT.newOpPos.noSnap)
+                {
+                    CABLES.UI.OPSELECT.newOpPos.x = Snap.snapOpPosX(CABLES.UI.OPSELECT.newOpPos.x);
+                    CABLES.UI.OPSELECT.newOpPos.y = Snap.snapOpPosY(CABLES.UI.OPSELECT.newOpPos.y);
+                }
+
+                op.uiAttr({ "translate": { "x": CABLES.UI.OPSELECT.newOpPos.x, "y": CABLES.UI.OPSELECT.newOpPos.y } });
+            }
         }
 
 
