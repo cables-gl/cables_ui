@@ -514,6 +514,9 @@ export default class PatchSaveServer extends Events
                 // bytesArrToBase
                 let b64 = bytesArrToBase64(uint8data);
 
+                if (datastr.length > 12 * 1024 * 1024)
+                    CABLES.UI.notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
+
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
                 document.getElementById("patchname").classList.add("blinking");
