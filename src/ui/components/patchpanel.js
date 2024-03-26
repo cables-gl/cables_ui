@@ -66,7 +66,7 @@ export default class PatchPanel extends Events
             let missingExampleOps = [];
             if (project.opExampleFor)
                 for (let i = 0; i < project.opExampleFor.length; i++)
-                    if (gui.corePatch().getOpsByObjName(project.opExampleFor[i]).length == 0)missingExampleOps.push(project.opExampleFor[i]);
+                    if (gui.corePatch().getOpsByObjName(project.opExampleFor[i]).length == 0) missingExampleOps.push(project.opExampleFor[i]);
 
 
             const isSameHost = CABLES.sandbox.isPatchSameHost();
@@ -75,16 +75,6 @@ export default class PatchPanel extends Events
             if (!isSameHost)host = gui.project().buildInfo.host;
 
             html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps, "sameHost": isSameHost, "patchHost": host });
-            // const notCollab = !gui.user.isPatchOwner && !project.users.includes(gui.user.id) && !project.usersReadOnly.includes(gui.user.id);
-            // if (project.isOpExample || notCollab)
-            // {
-            //     const projectId = project.shortId || project._id;
-            //     html += getHandleBarHtml("patch_summary", { "projectId": projectId });
-            // }
-            // if (notCollab)
-            // {
-            //     html += getHandleBarHtml("clonepatch", {});
-            // }
         }
 
         html += "<br/><div id=\"tree\"></div>";
