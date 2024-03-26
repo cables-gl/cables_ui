@@ -90,6 +90,9 @@ export default class EditorTab
                 this._tab.addButton("Manage Op", () => { new ManageOp(gui.mainTabs, opname); });
                 this._tab.addButton("Op Page", () => { window.open(CABLES.sandbox.getCablesUrl() + "/op/" + opname); });
 
+                this._tab.addButton("<span class=\"nomargin icon icon-1_25x icon-help\"></span>", () => { window.open(CABLES.sandbox.getCablesUrl() + "/docs/5_writing_ops/dev_ops/dev_ops"); });
+
+
                 const opdoc = gui.opDocs.getOpDocByName(opname);
 
                 if (!opdoc)console.log("could not get opdoc:" + opname);

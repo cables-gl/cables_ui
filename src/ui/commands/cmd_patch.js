@@ -1558,12 +1558,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-    {
-        "cmd": "delete unused patch ops",
-        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
-        "category": "patch",
-        "icon": "op"
-    },
+    // {
+    //     "cmd": "delete unused patch ops",
+    //     "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+    //     "category": "patch",
+    //     "icon": "op"
+    // },
 
 
 
