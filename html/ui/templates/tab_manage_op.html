@@ -163,13 +163,13 @@
         {{/if}}
 
         <div class="libselect">
-            <select id="addcorelib">
+            <select id="{{viewId}}_addcorelib">
                 <option value="">---</option>
                 {{#each coreLibs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addcorelib')));">Add</a>
         </div>
 
         <br/><br/>
@@ -197,13 +197,13 @@
         {{/if}}
 
         <div class="libselect">
-            <select id="addoplib">
+            <select id="{{viewId}}_addoplib">
                 <option value="">---</option>
                 {{#each libs}}
                 <option value="{{url}}">{{#if isAssetLib}}patch file - {{/if}}{{name}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addoplib')));">Add</a>
         </div>
 
         {{#if platformFeatures.npm}}
