@@ -73,7 +73,7 @@ export default class PatchPanel extends Events
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;
-
+            console.log("gui.project()", gui.project());
             html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps, "sameHost": isSameHost, "patchHost": host });
         }
 
@@ -102,7 +102,7 @@ export default class PatchPanel extends Events
 
     subPatchContextMenu(item, el)
     {
-        const outer = gui.patchView.getSubPatchOuterOp(item.subPatchId);
+        // const outer = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
         const items = [];
         items.push({
