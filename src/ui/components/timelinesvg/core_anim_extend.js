@@ -180,7 +180,7 @@ export default function extendCoreAnim()
         {
             startMoveX = -1;
             startMoveY = -1;
-            gui.metaKeyframes.update();
+            if (gui.metaKeyframes)gui.metaKeyframes.update();
             self.isDragging = false;
         };
 
@@ -258,7 +258,7 @@ export default function extendCoreAnim()
                 }
             });
 
-            gui.metaKeyframes.update();
+            if (gui.metaKeyframes)gui.metaKeyframes.update();
 
             self.isDragging = false;
         }
@@ -370,7 +370,7 @@ export default function extendCoreAnim()
                 return;
             }
         }
-        gui.metaKeyframes.update();
+        if (gui.metaKeyframes)gui.metaKeyframes.update();
     };
 
     CABLES.Anim.prototype.deleteSelectedKeys = function ()
@@ -411,6 +411,6 @@ export default function extendCoreAnim()
             }
         }
         this.sortKeys();
-        gui.metaKeyframes.update();
+        if (gui.metaKeyframes)gui.metaKeyframes.update();
     };
 }
