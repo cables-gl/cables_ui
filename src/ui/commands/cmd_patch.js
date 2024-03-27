@@ -95,6 +95,35 @@ CABLES_CMD_PATCH.editOp = function (userInteraction = true)
     }
 };
 
+
+
+CABLES_CMD_PATCH.createVersionSelectedOp = function ()
+{
+    const ops = gui.patchView.getSelectedOps();
+    if (ops.length == 0) return;
+
+    const opname = ops[0].objName;
+    let newOpname = "";
+    if (opname.contains("_v"))
+    {
+        const parts = opname.split("_v");
+        newOpname = parts[0] + "_v" + (parseFloat(parts[1]) + 1);
+    }
+    else newOpname = opname + "_v2";
+
+
+    gui.serverOps.clone(opname, newOpname, () =>
+    {
+        gui.serverOps.loadOpDependencies(opname, function ()
+        {
+            gui.patchView.replaceOp(ops[0].id, newOpname);
+            console.log("done");
+
+            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+        });
+    });
+};
+
 CABLES_CMD_PATCH.cloneSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -1495,6 +1524,11 @@ CMD_PATCH_COMMANDS.push(
         "icon": "op"
     },
     {
+        "cmd": "create new version of op",
+        "func": CABLES_CMD_PATCH.createVersionSelectedOp,
+        "icon": "op"
+    },
+    {
         "cmd": "manage selected op",
         "func": CABLES_CMD_PATCH.manageSelectedOp,
         "icon": "op"
@@ -1558,12 +1592,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-    {
-        "cmd": "delete unused patch ops",
-        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
-        "category": "patch",
-        "icon": "op"
-    },
+    // {
+    //     "cmd": "delete unused patch ops",
+    //     "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+    //     "category": "patch",
+    //     "icon": "op"
+    // },
 
 
 

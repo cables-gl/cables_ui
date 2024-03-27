@@ -22,6 +22,7 @@
         {{/if}}
 
         {{#compare port.uiAttribs.display '!=' 'none' }}
+        {{#compare project.summary.licence.name '!=' 'No licence chosen' }}
             <b>Licence</b>:
             {{#if project.summary.licence.link}}
                 <a href="{{project.summary.licence.link}}" class="link" target="_blank">{{project.summary.licence.name}}</a>
@@ -30,6 +31,7 @@
             {{/if}}
             <br/>{{project.summary.licence.description}}
             <br/><br/>
+        {{/compare}}
         {{/compare}}
 
         {{#if project.teams}}

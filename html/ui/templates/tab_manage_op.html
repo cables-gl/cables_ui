@@ -163,13 +163,13 @@
         {{/if}}
 
         <div class="libselect">
-            <select id="addcorelib">
+            <select id="{{viewId}}_addcorelib">
                 <option value="">---</option>
                 {{#each coreLibs}}
                 <option value="{{.}}">{{.}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('addcorelib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addCoreLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addcorelib')));">Add</a>
         </div>
 
         <br/><br/>
@@ -197,19 +197,34 @@
         {{/if}}
 
         <div class="libselect">
-            <select id="addoplib">
+            <select id="{{viewId}}_addoplib">
                 <option value="">---</option>
                 {{#each libs}}
                 <option value="{{url}}">{{#if isAssetLib}}patch file - {{/if}}{{name}}</option>
                 {{/each}}
             </select>
-            <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('addoplib')));">Add</a>
+            <a class="button-small" onclick="gui.serverOps.addOpLib('{{opname}}', ele.getSelectValue(ele.byId('{{viewId}}_addoplib')));">Add</a>
         </div>
 
-        {{#if platformFeatures.npm}}
+        {{#if doc.changelog}}
             <br/><br/>
-            <div class="groupSpacer"><h3>NPMs</h3></div>
-            ...
+            <div class="groupSpacer"><h3>Changelog</h3></div>
+            <table class="changelogtable">
+            {{#each doc.changelog}}
+                <tr>
+                    <td>
+                        <span class="changelogtype changelogtype-{{type}}">{{type}}</span>
+                    </td>
+                    <td style="">
+                        <span class="changelogText">{{message}}</span>
+                    </td>
+                    <td>
+                        <img class="nav-bar-avatar avatar-bg" alt="user avatar" src="{{../url}}/api/avatar/{{author}}/mini" style="vertical-align:middle;"/>
+                        <span class="time changelogDate"><a href="{{../url}}/user/{{author}}">{{author}}</a> - {{logdate date}}</span>
+                    </td>
+                </tr>
+            {{/each}}
+            </table>
         {{/if}}
     </div>
 

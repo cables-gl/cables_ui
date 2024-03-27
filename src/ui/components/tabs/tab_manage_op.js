@@ -15,7 +15,7 @@ export default class ManageOp
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
-        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true, "tabPanel": tabs });
+        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true, "tabPanel": tabs, "singleton": true });
         tabs.addTab(this._tab, true);
         this.show();
 
@@ -86,6 +86,11 @@ export default class ManageOp
                     const opName = this._currentName;
                     let summary = "";
                     let portJson = null;
+
+                    if (res.changelog && res.changelog.length > 0)
+                    {
+                        doc.changelog = res.changelog;
+                    }
 
                     if (res.attachmentFiles)
                     {
