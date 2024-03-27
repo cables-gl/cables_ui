@@ -84,6 +84,8 @@ export default class Snap extends Events
         {
             const otherPort = port.links[i].getOtherPort(port);
 
+            if (!otherPort.op.uiAttribs.translate || !otherPort.op.uiAttribs) continue;
+
             let otherPortIndex = 0;
 
             let ports = otherPort.op.portsOut;
