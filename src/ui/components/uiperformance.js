@@ -138,7 +138,7 @@ export default class UiProfiler
 
                 try
                 {
-                    if (perf._measures[name].times.length > 1000000)perf._measures[name].length = 0;
+                    if (perf._measures[name].times.length > 1000000)perf._measures[name].times.length = 0;
                     perf._measures[name].times.push(time);
                 }
                 catch (e)
