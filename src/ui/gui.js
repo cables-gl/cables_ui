@@ -1063,11 +1063,6 @@ export default class Gui extends Events
             ele.byId("patchname").dataset.patchname = name;
             gui.corePatch().name = name;
             if (this._currentProject) this._currentProject.name = name;
-            setTimeout(() =>
-            {
-            }, 30);
-            gui.patchParamPanel.show(true);
-            console.log("jojo...");
         }
     }
 

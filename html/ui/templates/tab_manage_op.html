@@ -209,18 +209,19 @@
         {{#if doc.changelog}}
             <br/><br/>
             <div class="groupSpacer"><h3>Changelog</h3></div>
-            <table class="changelogtable">
+            <table class="changelogtable" style="width:100%">
             {{#each doc.changelog}}
                 <tr>
-                    <td>
-                        <span class="changelogtype changelogtype-{{type}}">{{type}}</span>
+                    <td style="vertical-align: top">
+                        <span style="font-size:11px">{{relativedate date}}</span>
                     </td>
-                    <td style="">
-                        <span class="changelogText">{{message}}</span>
+                    <td style="vertical-align: top;font-size:11px ">
+                        {{#if type}}
+                            <span style="border-radius: 4px;text-transform: uppercase; background-color:#aaa;padding-left:4px;padding-right:4px;color:#000;" class="changelogtype-{{type}}">{{type}}</span>
+                        {{/if}}
                     </td>
-                    <td>
-                        <img class="nav-bar-avatar avatar-bg" alt="user avatar" src="{{../url}}/api/avatar/{{author}}/mini" style="vertical-align:middle;"/>
-                        <span class="time changelogDate"><a href="{{../url}}/user/{{author}}">{{author}}</a> - {{logdate date}}</span>
+                    <td style="width:65%;;">
+                        <span class="changelogText">- {{message}}</span>
                     </td>
                 </tr>
             {{/each}}

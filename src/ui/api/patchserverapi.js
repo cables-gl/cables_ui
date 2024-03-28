@@ -344,7 +344,7 @@ export default class PatchSaveServer extends Events
                                 //     gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
                                 // }
 
-                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true);
+                                this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
                             }
                             else
                             {
@@ -361,20 +361,20 @@ export default class PatchSaveServer extends Events
         });
     }
 
-    saveCurrentProject(cb, _id, _name, _force)
+    saveCurrentProject(cb, _id, _name, _force, _afterClone)
     {
         if (gui.showGuestWarning()) return;
         if (!_force && gui.showSaveWarning()) return;
 
         if (_force)
         {
-            this._saveCurrentProject(cb, _id, _name);
+            this._saveCurrentProject(cb, _id, _name, _afterClone);
         }
         else
             this.checkUpdated(
                 function (err)
                 {
-                    if (!err) this._saveCurrentProject(cb, _id, _name);
+                    if (!err) this._saveCurrentProject(cb, _id, _name, _afterClone);
                 }.bind(this), true);
 
         gui.patchView.removeLostSubpatches();
@@ -395,7 +395,7 @@ export default class PatchSaveServer extends Events
         }, 320);
     }
 
-    _saveCurrentProject(cb, _id, _name)
+    _saveCurrentProject(cb, _id, _name, _afterClone)
     {
         if (gui.jobs().hasJob("projectsave"))
         {
@@ -596,7 +596,7 @@ export default class PatchSaveServer extends Events
                             {
                                 CABLES.UI.notify("Patch saved (" + data.ops.length + " ops / " + Math.ceil(origSize) + " kb)", null, { "force": true });
                             }
-                            if (gui.socket)
+                            if (gui.socket && !_afterClone)
                             {
                                 if (gui.user.usernameLowercase)
                                     gui.socket.sendNotification(gui.user.usernameLowercase, "saved patch in other window");

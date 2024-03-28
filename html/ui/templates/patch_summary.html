@@ -4,8 +4,9 @@
 
 
         <h2 class="nomargin" style="margin-bottom:10px !important;">
-            {{#compare project.visibility '==' 'unlisted'}}<span class="icon icon-eye"></span>{{/compare}}
-            {{#compare project.visibility '==' 'private'}}<span class="icon icon-lock"></span>{{/compare}}
+            {{#compare project.summary.visibility '==' 'unlisted'}}<span class="icon icon-eye"></span>{{/compare}}
+            {{#compare project.summary.visibility '==' 'view_only'}}<span class="icon icon-eye"></span>{{/compare}}
+            {{#compare project.summary.visibility '==' 'private'}}<span class="icon icon-lock"></span>{{/compare}}
             <b style="color:var(--color-13)">
                 {{#if project.summary.allowEdit}}
                     <a onclick="gui.patchView.store.showModalTitleDialog(this)">{{project.name}}</a>

@@ -401,6 +401,12 @@ export default class TabPanel extends Events
             CABLESUILOADER.talkerAPI.send("updatePatchName", opts, (err, r) => {});
         });
 
+        talkerAPI.addEventListener("updatePatchSummary", (opts, next) =>
+        {
+            gui.project().summary = opts;
+            gui.patchParamPanel.show(true);
+        });
+
         this.activateTab(iframeTab.id);
         gui.maintabPanel.show(userInteraction);
         return iframeTab;

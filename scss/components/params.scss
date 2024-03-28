@@ -47,14 +47,14 @@
 
 
 
-    .contentcontainer
+    #options_meta
     {
 
         .warning,.warning-experimental,.warning-error
         {
             margin-top:10px;
             border: 3px solid;
-            padding: 6px;
+            padding: 2px;
 
             a {
                 text-decoration: underline;
@@ -88,9 +88,8 @@
             border-color: transparent;
             font-size: var(--font-size-bigger);
             border-radius: 5px;
-            margin-bottom: 3px;;
+            margin-bottom: 3px;
         }
-
 
         .hint
         {

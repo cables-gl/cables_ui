@@ -52,7 +52,7 @@ export default class opCleaner
             otherOps.push(ops[i]);
         }
 
-        let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (gluiconfig.portWidth + gluiconfig.portPadding));
+        // let theOpWidth = gui.patchView.snapOpPosX((longestOpPorts + 1) * (gluiconfig.portWidth + gluiconfig.portPadding));
 
         for (let i = 0; i < ops.length; i++)
             ops[i].setTempOpPos(startPosX, startPosY);
