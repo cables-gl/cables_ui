@@ -132,11 +132,13 @@ export default class UiProfiler
                 perf._measures[name].count = perf._measures[name].count || 0;
                 perf._measures[name].count++;
 
+
+
                 perf._measures[name].times = perf._measures[name].times || [];
 
                 try
                 {
-                    if (perf._measures[name].length > 10000000)perf._measures[name].length = 0;
+                    if (perf._measures[name].times.length > 1000000)perf._measures[name].length = 0;
                     perf._measures[name].times.push(time);
                 }
                 catch (e)
