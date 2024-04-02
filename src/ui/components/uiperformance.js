@@ -132,8 +132,6 @@ export default class UiProfiler
                 perf._measures[name].count = perf._measures[name].count || 0;
                 perf._measures[name].count++;
 
-
-
                 perf._measures[name].times = perf._measures[name].times || [];
 
                 try
