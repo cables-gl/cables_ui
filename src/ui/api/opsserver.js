@@ -1215,6 +1215,7 @@ export default class ServerOps
 
                                 if (err)
                                 {
+                                    gui.endModalLoading();
                                     setStatus("Error: " + err.msg || "Unknown error");
                                     return;
                                 }
