@@ -83,7 +83,7 @@ export default class ServerOps
     {
         CABLESUILOADER.talkerAPI.send(
             "getAllProjectOps",
-            { "projectId": this._patchId },
+            {},
             (err, res) =>
             {
                 if (err) this._log.error(err);
@@ -653,7 +653,7 @@ export default class ServerOps
                                 "opname": opname,
                                 "name": attachmentName,
                             },
-                            (err2, res) =>
+                            (err2, res2) =>
                             {
                                 if (err2)
                                 {
@@ -989,7 +989,6 @@ export default class ServerOps
             "opname": opId,
             "name": attachmentName,
         };
-        if (defaultOps.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
@@ -1616,8 +1615,7 @@ export default class ServerOps
         if (op)
         {
             const options = {
-                "op": op,
-                "projectId": op.parentProject || gui.project().shortId
+                "op": op
             };
 
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
@@ -1748,7 +1746,7 @@ export default class ServerOps
 
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
 
-            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName, "projectId": gui.project().shortId }, (err, res) =>
+            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
             {
                 if (!err && res && res.opDocs)
                 {

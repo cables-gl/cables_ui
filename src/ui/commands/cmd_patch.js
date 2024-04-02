@@ -1281,7 +1281,7 @@ CABLES_CMD_PATCH.updateLocalChangedBlueprints = () =>
 
 CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
 {
-    CABLESUILOADER.talkerAPI.send("toggleFav", { "projectId": gui.project()._id }, (err, res) =>
+    CABLESUILOADER.talkerAPI.send("toggleFav", {}, (err, res) =>
     {
         if (!err && res.success && targetElement)
         {
