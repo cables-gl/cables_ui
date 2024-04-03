@@ -1304,7 +1304,7 @@ export default class Gui extends Events
                 let str = "";
                 for (let i = 0; i < r.length; i++)
                 {
-                    str += "<li><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/edit/" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
+                    str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
                 }
 
                 str +=
@@ -1313,6 +1313,16 @@ export default class Gui extends Events
                     "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/\">Open cables.gl</a></li>";
 
                 ele.byId("nav_recentpatches").innerHTML = str;
+                ele.byId("nav_recentpatches").querySelectorAll("li a.mine").forEach((el) =>
+                {
+                    if (el.dataset.shortId)
+                    {
+                        el.addEventListener("click", () =>
+                        {
+                            CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": el.dataset.shortId });
+                        });
+                    }
+                });
 
                 // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
             });
