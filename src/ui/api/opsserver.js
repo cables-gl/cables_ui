@@ -83,7 +83,7 @@ export default class ServerOps
     {
         CABLESUILOADER.talkerAPI.send(
             "getAllProjectOps",
-            { "projectId": this._patchId },
+            {},
             (err, res) =>
             {
                 if (err) this._log.error(err);
@@ -653,7 +653,7 @@ export default class ServerOps
                                 "opname": opname,
                                 "name": attachmentName,
                             },
-                            (err2, res) =>
+                            (err2, res2) =>
                             {
                                 if (err2)
                                 {
@@ -989,7 +989,6 @@ export default class ServerOps
             "opname": opId,
             "name": attachmentName,
         };
-        if (defaultOps.isUserOp(opname) && gui.project()) apiParams.projectId = gui.project().shortId;
 
         CABLESUILOADER.talkerAPI.send(
             "opAttachmentGet",
@@ -1159,8 +1158,7 @@ export default class ServerOps
             if (!docs) return console.warn("[opsserver] could not find docs", op, opid);
             opid = docs.id;
 
-            if (!opid)
-                console.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
+            if (!opid)console.warn("[opsserver]deprecated: use serverOps.edit with op not just opname!");
         }
 
         if (!opname || opname == "")
@@ -1214,12 +1212,19 @@ export default class ServerOps
                                 let selOpTranslate = null;
                                 if (selOps && selOps.length > 0) selOpTranslate = selOps[0].uiAttribs.translate;
 
-                                if (!res || !res.success)
+                                if (err)
+                                {
+                                    gui.endModalLoading();
+                                    setStatus("Error: " + err.msg || "Unknown error");
+                                    return;
+                                }
+
+                                if (!res.success)
                                 {
                                     gui.endModalLoading();
 
-                                    if (res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
-                                    else setStatus("Error: " + err.msg || "Unknown error");
+                                    if (res && res.error && res.error.line != undefined) setStatus("Error: Line " + res.error.line + " : " + res.error.message, true);
+                                    else if (err)setStatus("Error: " + err.msg || "Unknown error");
                                 }
                                 else
                                 {
@@ -1282,7 +1287,6 @@ export default class ServerOps
                     gui.mainTabs.activateTabByName(opname);
                     gui.maintabPanel.show(userInteraction);
                 }
-
 
                 if (cb) cb();
                 else gui.maintabPanel.show(userInteraction);
@@ -1611,8 +1615,7 @@ export default class ServerOps
         if (op)
         {
             const options = {
-                "op": op,
-                "projectId": op.parentProject || gui.project().shortId
+                "op": op
             };
 
             CABLESUILOADER.talkerAPI.send("getOpDocs", options, (err, res) =>
@@ -1743,7 +1746,7 @@ export default class ServerOps
 
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
 
-            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName, "projectId": gui.project().shortId }, (err, res) =>
+            CABLESUILOADER.talkerAPI.send("getCollectionOpDocs", { "name": teamNamespaceName }, (err, res) =>
             {
                 if (!err && res && res.opDocs)
                 {

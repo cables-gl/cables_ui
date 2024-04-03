@@ -71,7 +71,7 @@ export default class PatchSaveServer extends Events
             "indicator": "canvas"
         });
 
-        CABLESUILOADER.talkerAPI.send("checkProjectUpdated", { "projectId": gui.project()._id }, (err, data) =>
+        CABLESUILOADER.talkerAPI.send("checkProjectUpdated", { }, (err, data) =>
         {
             if (err)
             {
@@ -326,7 +326,6 @@ export default class PatchSaveServer extends Events
                     CABLESUILOADER.talkerAPI.send("saveProjectAs",
                         {
                             "name": name,
-                            "originalId": gui.project()._id,
                             "copyCollaborators": copyCollaborators,
                             "collabUsers": collabUsers,
                             "collabTeams": collabTeams
@@ -530,7 +529,6 @@ export default class PatchSaveServer extends Events
 
                 CABLES.sandbox.savePatch(
                     {
-                        "id": id,
                         "name": name,
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
@@ -820,7 +818,6 @@ export default class PatchSaveServer extends Events
         CABLESUILOADER.talkerAPI.send(
             "saveScreenshot",
             {
-                "id": currentProject._id,
                 "screenshot": url
             },
             (error, re) =>
