@@ -141,7 +141,7 @@
 <script id="filemanager_details_lib" type="text/x-handlebars-template">
 
     <div class="filemanager-detail-element">
-        <div style="padding:10px;">
+        <div>
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{filename}}">
                 <span class="icon icon-1x icon-download" ></span>
@@ -213,7 +213,7 @@
     </div>
     <div class="filemanager-detail-element">
 
-        <div style="padding:10px;">
+        <div style="padding-left:10px;">
 
             <a class="iconbutton info" data-info="filemanager_file_download" download href="{{downloadUrl}}">
                 <span class="icon icon-1x icon-download" ></span>
@@ -232,14 +232,6 @@
             {{/if}}
 
 
-            {{#compare source '==' 'patch' }}
-                {{#if isReference}}
-                {{else}}
-                <span class="iconbutton info" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
-                    <a class="info icon icon-1x icon-trash" ></a>
-                </span>
-                {{/if}}
-            {{/compare}}
 
             <br/><br/>
 
@@ -273,7 +265,7 @@
 
                 <br/><br/>
                 last change: {{relativedate file.fileDb.updated}}<br/>
-                <br/><br/>
+
             {{/compare}}
         </div>
     </div>
@@ -296,6 +288,17 @@
                 <br/>
             {{/each}}
         {{/if}}
+
+        {{#compare source '==' 'patch' }}
+        {{#if isReference}}
+        {{else}}
+        <br/><br/>
+        <span class="button" data-info="filemanager_delete_file" id="filedelete{{file.fileDb._id}}" >
+            <a class="info icon icon-1x icon-trash" ></a>Delete File
+
+        </span>
+        {{/if}}
+    {{/compare}}
     </div>
     <div style="clear:both;"></div>
 

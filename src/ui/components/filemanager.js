@@ -156,9 +156,6 @@ export default class FileManager
         }
         shortTitle = file.n.replaceAll(".", "<wbr>.");
 
-
-
-
         const item = {
             "title": file.n,
             "shortTitle": shortTitle,
@@ -436,7 +433,7 @@ export default class FileManager
                             "projectId": gui.project()._id,
                             "file": r,
                             "source": this._fileSource,
-                            "isEditable": r.type == "textfile" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
+                            "isEditable": r.fileDb.fileName.indexOf(".md") || r.type == "textfile" || r.type == "CSS" || r.type == "javascript" || r.type == "XML" || r.type == "JSON" || r.type == "shader",
                             "isReference": detailItem.isReference,
                             "viaBlueprint": detailItem.viaBlueprint,
                             "isLibraryFile": detailItem.isLibraryFile,
@@ -598,7 +595,6 @@ export default class FileManager
 
             if (this._filePortEle)
             {
-                // gui.setStateUnsaved();
                 gui.savedState.setUnSaved("filemanager");
                 this._filePortEle.value = detailItems[0].p;
                 const event = document.createEvent("Event");
