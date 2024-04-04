@@ -41,11 +41,13 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         if (p.dir == 0) // INPUT
         {
-            if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.inFloat";
-            if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.inTrigger";
-            if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.inObject";
-            if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.inArray";
-            if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.inString";
+            if (p.type == CABLES.OP_PORT_TYPE_STRING && p.display == "switch") src += "op.inSwitch";
+            else if (p.type == CABLES.OP_PORT_TYPE_VALUE) src += "op.inFloat";
+            else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) src += "op.inTrigger";
+            else if (p.type == CABLES.OP_PORT_TYPE_OBJECT) src += "op.inObject";
+            else if (p.type == CABLES.OP_PORT_TYPE_ARRAY) src += "op.inArray";
+            else if (p.type == CABLES.OP_PORT_TYPE_STRING) src += "op.inString";
+
 
             src += "(\"" + p.id + "\""; // 1. name
 
@@ -79,6 +81,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 
         src += "});".endl();
 
+        if (p.values)src += "port_" + p.id + ".setUiAttribs({\"values\":" + JSON.stringify(p.values) + "});".endl();
         if (p.addUiAttribs)src += "port_" + p.id + ".setUiAttribs(" + JSON.stringify(p.addUiAttribs) + ");".endl();
 
         src += "".endl();
@@ -547,6 +550,8 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
             const eleName = ele.byId("createPortName");
             const eleType = ele.byId("createPortType");
             const eleValue = ele.byId("createPortValue");
+            const eleValues = ele.byId("createPortUiAttrValues");
+
             const eleAddUiAttribs = ele.byId("createPortAddUiAttribs");
 
 
@@ -558,6 +563,8 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
             if (eleType.value.indexOf("Array") == 0)type = CABLES.OP_PORT_TYPE_ARRAY;
             if (eleType.value.indexOf("Object") == 0)type = CABLES.OP_PORT_TYPE_OBJECT;
             if (eleType.value.indexOf("Trigger") == 0)type = CABLES.OP_PORT_TYPE_FUNCTION;
+
+            const values = String(eleValues.value);
 
             if (!eleName.value)
             {
@@ -574,8 +581,11 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
                 "id": portId,
                 "title": eleName.value,
                 "dir": parseInt(eleDir.value),
+                "values": values.split(","),
                 "type": type
             };
+
+            console.log(port);
 
             try
             {
@@ -586,17 +596,20 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
                 console.error("could not parse add ui attribs...");
             }
 
+
             if (type == CABLES.OP_PORT_TYPE_STRING)
             {
                 port.value = eleValue.value;
                 if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
                 if (eleType.value.indexOf("URL") > -1) port.uiDisplay = "file";
+                if (eleType.value.indexOf("Switch") > -1) port.uiDisplay = "switch";
             }
 
             if (type == CABLES.OP_PORT_TYPE_FUNCTION)
             {
                 if (eleType.value.indexOf("Button") > -1) port.uiDisplay = "button";
             }
+
             if (type == CABLES.OP_PORT_TYPE_VALUE)
             {
                 port.value = parseFloat(eleValue.value) || 0;

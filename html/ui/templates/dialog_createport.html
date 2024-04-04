@@ -31,6 +31,8 @@
                     <option value="String" {{#compare port.type '==' 5}}selected{{/compare}}>String</option>
                     <option value="String - URL" {{#compare port.uiDisplay '==' 'file'}}selected{{/compare}}>String - URL</option>
                     <option value="String - Editor" {{#compare port.uiDisplay '==' 'editor'}}selected{{/compare}}>String - Editor</option>
+                    <option value="String - Switch" {{#compare port.uiDisplay '==' 'switch'}}selected{{/compare}}>String - Switch</option>
+                    <option value="String - Dropdown" {{#compare port.uiDisplay '==' 'dropdown'}}selected{{/compare}}>String - Dropdown</option>
                     <option value="Array" {{#compare port.type '==' 3}}selected{{/compare}}>Array</option>
                     <option value="Object" {{#compare port.type '==' 2}}selected{{/compare}}>Object</option>
                     <option value="Object - Texture" {{#compare port.objType '==' 'texture'}}selected{{/compare}}>Object - Texture</option>
@@ -57,6 +59,14 @@
             </td>
             <td>
                 <input id="createPortValue" value="{{port.value}}"/>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Switch/Dropdown options (comma seperated)
+            </td>
+            <td>
+                <input id="createPortUiAttrValues" value="{{port.values}}"/>
             </td>
         </tr>
         <tr>
