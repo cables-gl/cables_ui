@@ -69,6 +69,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
             src += ");";
         }
 
+
         src += "".endl();
         src += "port_" + p.id + ".setUiAttribs({";
         if (p.title)src += "title:\"" + p.title + "\",";
@@ -104,10 +105,12 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
         if (p.dir != 0) continue; // only INPUT ports: add OUTPUTS to inner input op
 
         let outPortFunc = "outNumber";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_FUNCTION) outPortFunc = "outTrigger";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_OBJECT) outPortFunc = "outObject";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_ARRAY) outPortFunc = "outArray";
-        if (ports.ports[i].type == CABLES.OP_PORT_TYPE_STRING) outPortFunc = "outString";
+
+        if (p.type == CABLES.OP_PORT_TYPE_OBJECT && p.uiDisplay == "texture") outPortFunc = "outTexture";
+        else if (p.type == CABLES.OP_PORT_TYPE_FUNCTION) outPortFunc = "outTrigger";
+        else if (p.type == CABLES.OP_PORT_TYPE_OBJECT) outPortFunc = "outObject";
+        else if (p.type == CABLES.OP_PORT_TYPE_ARRAY) outPortFunc = "outArray";
+        else if (p.type == CABLES.OP_PORT_TYPE_STRING) outPortFunc = "outString";
 
         src += "const innerOut_" + p.id + " = addedOps[i]." + outPortFunc + "(\"innerOut_" + p.id + "\");".endl();
 
@@ -366,6 +369,7 @@ blueprintUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
         "title": port.getTitle(),
         "dir": port.direction,
         "type": port.type,
+        "objType": port.uiAttribs.objType,
         "uiDisplay": port.uiAttribs.display
     };
 
@@ -444,10 +448,6 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
     gui.patchView.unselectAllOps();
 
     loadingModal.setTask("getting ports json");
-
-
-
-
 
     CABLESUILOADER.talkerAPI.send(
         "opAttachmentGet",

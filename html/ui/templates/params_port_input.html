@@ -45,7 +45,11 @@
                 </td><td>
                     <span class="{{#if port.uiAttribs.buttonTitleClass }}{{port.uiAttribs.buttonTitleClass}}{{else}}button{{/if}}" id="portbutton_{{ portnum }}_{{ panelid }}" >
                         {{#if port.uiAttribs.buttonTitle }}{{port.uiAttribs.buttonTitle}}
-                        {{else}}{{port.name}}{{/if}}
+                        {{else}}
+                        {{#if port.uiAttribs.title }}{{port.uiAttribs.title}}
+                        {{else}}
+                        {{port.name}}{{/if}}
+                        {{/if}}
                     </span>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'editor' }}
