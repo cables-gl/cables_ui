@@ -603,6 +603,7 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
                 if (eleType.value.indexOf("Editor") > -1) port.uiDisplay = "editor";
                 if (eleType.value.indexOf("URL") > -1) port.uiDisplay = "file";
                 if (eleType.value.indexOf("Switch") > -1) port.uiDisplay = "switch";
+                if (eleType.value.indexOf("Dropdown") > -1) port.uiDisplay = "dropdown";
             }
 
             if (type == CABLES.OP_PORT_TYPE_FUNCTION)
