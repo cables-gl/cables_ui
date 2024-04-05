@@ -58,6 +58,12 @@
     {
         float:left;
         width:33%;
+
+        .iconbutton
+        {
+            display: inline-block;
+            margin-bottom:4px;
+        }
     }
 
     .fileManagerSource
