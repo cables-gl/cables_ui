@@ -1008,17 +1008,36 @@ export default class PatchView extends Events
         let patchInputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchInput2);
         let patchOutputOP = this._p.getSubPatchOp(patchId, defaultOps.defaultOpNames.subPatchOutput2);
 
-        if (patchInputOP)patchInputOP.setUiAttribs({ "translate":
+        console.log("sub patch bounds", b);
+
+
+
+        let x = 0;
+        if (patchInputOP || patchOutputOP)
         {
-            "x": patchInputOP.uiAttribs.translate.x,
-            "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+            x = (patchInputOP || patchOutputOP).uiAttribs.translate.x;
+
+            if (x < b.minx)x = b.minx;
+            if (x > b.maxx)x = b.maxx;
         }
-        });
-        if (patchOutputOP)patchOutputOP.setUiAttribs({ "translate":
-        {
-            "x": patchOutputOP.uiAttribs.translate.x,
-            "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2) }
-        });
+
+        if (patchInputOP)
+            patchInputOP.setUiAttribs(
+                { "translate":
+                    {
+                        "x": x,
+                        "y": Math.min(patchInputOP.uiAttribs.translate.y, b.miny - gluiconfig.newOpDistanceY * 2)
+                    }
+                });
+
+        if (patchOutputOP)
+            patchOutputOP.setUiAttribs(
+                { "translate":
+                    {
+                        "x": x,
+                        "y": Math.max(patchOutputOP.uiAttribs.translate.y, b.maxy + gluiconfig.newOpDistanceY * 2)
+                    }
+                });
     }
 
     getSubPatchName(subpatch)
