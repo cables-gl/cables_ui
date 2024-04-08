@@ -370,7 +370,6 @@ export default class TabPanel extends Events
 
         const talkerAPI = new CABLESUILOADER.TalkerAPI(frame.contentWindow);
 
-
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {
             CABLES.sandbox.setManualScreenshot(opts.manualScreenshot);
@@ -405,6 +404,34 @@ export default class TabPanel extends Events
         {
             gui.project().summary = opts;
             gui.patchParamPanel.show(true);
+        });
+
+        talkerAPI.addEventListener("opsDeleted", (opts, next) =>
+        {
+            const opdocs = gui.opDocs.getAll();
+            const deletedOps = opts.ops || [];
+            for (let i = 0; i < deletedOps.length; i++)
+            {
+                const deletedOp = deletedOps[i];
+                const opDocToDelete = opdocs.findIndex((opDoc) => { return opDoc.id === deletedOp.id; });
+                if (opDocToDelete) opdocs.splice(opDocToDelete, 1);
+
+                /*
+                for (let j = 0; j < opdocs.length; j++)
+                {
+                    if (opdocs[j] && opdocs[j].id === deletedOp.id)
+                    {
+                        opdocs[j].name =
+                            opdocs[j].shortName =
+                                opdocs[j].shortNameDisplay =
+                                    opdocs[j].nameSpace = "deleted op";
+                        break;
+                    }
+                }
+                 */
+                gui.opSelect().reload();
+            }
+            this.closeTab(iframeTab.id);
         });
 
         this.activateTab(iframeTab.id);
