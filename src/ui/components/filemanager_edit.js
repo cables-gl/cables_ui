@@ -15,8 +15,7 @@ export default class FileManagerEditor
     editAssetTextFile(filename, syntax, patchId)
     {
         patchId = patchId || gui.project()._id;
-        let url = "";
-        url = "/assets/" + patchId + "/" + filename;
+        let url = CABLES.sandbox.getSandboxUrl() + "/assets/" + patchId + "/" + filename;
 
         if (syntax == "javascript")syntax = "js";
         if (syntax == "shader")syntax = "glsl";

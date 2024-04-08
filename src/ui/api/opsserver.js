@@ -310,7 +310,7 @@ export default class ServerOps
                 refOldOp
             );
         });
-        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name), lid);
+        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name + "&p=" + gui.project().shortId), lid);
     }
 
     clone(oldname, name, cb)

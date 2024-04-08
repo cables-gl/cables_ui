@@ -571,7 +571,7 @@ export default class ScUiMultiplayer extends Events
                 this._requestResync(msg.username + " changed " + opName, (next) =>
                 {
                     const taskName = String(this._connection.getTimestamp());
-                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName)], taskName);
+                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + opName + "&p=" + gui.project().shortId)], taskName);
 
                     const loadJsCallback = () =>
                     {
