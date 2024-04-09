@@ -10,6 +10,9 @@ export default class Gizmo
         this._eleXZ = null;
         this._eleXY = null;
         this._eleYZ = null;
+        this.lineX = null;
+        this.lineY = null;
+        this.lineZ = null;
 
         this._params = null;
         this._origValue = 0;
@@ -17,6 +20,21 @@ export default class Gizmo
         this._dragSumY = 0;
         this._dir = 1;
         this.hidden = true;
+    }
+
+    dispose()
+    {
+        this.hidden = true;
+        if (this._eleCenter) this._eleCenter.remove();
+        if (this._eleX) this._eleX.remove();
+        if (this._eleY) this._eleY.remove();
+        if (this._eleZ) this._eleZ.remove();
+        if (this._eleXZ) this._eleXZ.remove();
+        if (this._eleXY) this._eleXY.remove();
+        if (this._eleYZ) this._eleYZ.remove();
+        if (this.lineX) this.lineX.remove();
+        if (this.lineY) this.lineY.remove();
+        if (this.lineZ) this.lineZ.remove();
     }
 
     getDir(x2, y2)
@@ -550,6 +568,11 @@ const htmlLine = function (parentElement, color)
         this.angle = alpha;
 
         setPos(x, y, c, alpha);
+    };
+
+    this.remove = function ()
+    {
+        line.remove();
     };
 
     this.hide = function ()
