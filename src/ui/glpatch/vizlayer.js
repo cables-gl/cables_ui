@@ -39,22 +39,24 @@ export default class VizLayer extends Events
 
         gui.corePatch().cgl.on("beginFrame", () =>
         {
+            this._fallBackrendererDisabled = true;
             this._usingGl = true;
-            this.renderGl();
+            this.renderVizLayer(true);
         });
+
 
         // gui.corePatch().on("reqAnimFrame", () =>
         // {
         //     if (!this._usingGl)
         //     {
         //         console.log(2);
-        //         this.renderGl();
+        //         this.renderVizLayer();
         //     }
         // });
 
         gui.corePatch().on("onOpAdd", (a) =>
         {
-            if (a.renderVizLayer)
+            if (a.renderVizLayer || a.renderVizLayerGl)
             {
                 let item = this._itemsLookup[a.id];
                 if (item)console.log("vizlayer id already exists...");
@@ -98,18 +100,25 @@ export default class VizLayer extends Events
 
     }
 
-    renderGl()
+    renderVizLayer(gl)
     {
-        if (!gui.corePatch().cgl.hasFrameStarted() && this._usingGl)
+        if (!gl && this._fallBackrendererDisabled)
+        {
+            if (performance.now() - this.lastGlRendering > 500) this._fallBackrendererDisabled = false;
+            return;
+        }
+        if (gl && !gui.corePatch().cgl.hasFrameStarted() && this._usingGl)
         {
             this._usingGl = false;
             return;
         }
 
-        this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
-        this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
+        if (gl) this.lastGlRendering = performance.now();
 
-        const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderGl");
+        this._canvasCtx.clearRect(0, 0, this._eleCanvas.width, this._eleCanvas.height);
+        this._canvasCtx.fillStyle = gui.theme.colors_vizlayer.colorBackground || "#222";
+
+        const perf = CABLES.UI.uiProfiler.start("glVizPreviewLayer.renderVizLayer");
         const paddingY = this._glPatch.viewBox.patchToScreenConv(0, 25)[1];
 
         this._updateSize();
@@ -121,9 +130,7 @@ export default class VizLayer extends Events
         {
             const item = this._items[i];
             const port = item.port;
-            if (!port || !item.op ||
-                !item.op.uiAttribs ||
-                !item.op.uiAttribs.translate) continue;
+            if (!port || !item.op || !item.op.uiAttribs || !item.op.uiAttribs.translate) continue;
 
             item.posX = item.op.uiAttribs.translate.x;
             item.posY = item.op.uiAttribs.translate.y;
@@ -149,9 +156,8 @@ export default class VizLayer extends Events
 
             this._canvasCtx.save();
 
-            this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
-            this._canvasCtx.strokeStyle = "transparent";
-
+            // this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
+            // this._canvasCtx.strokeStyle = "transparent";
 
             let region = new Path2D();
             region.rect(pos[0], pos[1], size[0], size[1]);
@@ -184,12 +190,15 @@ export default class VizLayer extends Events
                     "vizLayer": this
                 };
 
-                if (!this._items[i].op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < this._items[i].op.uiAttribs.vizLayerMaxZoom)
+                if (!item.op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < item.op.uiAttribs.vizLayerMaxZoom)
                     if (pos[0] === pos[0] && size[0] === size[0])
-                        this._items[i].op.renderVizLayer(this._canvasCtx, layer, this);
+                    {
+                        if (gl && item.op.renderVizLayerGl) item.op.renderVizLayerGl(this._canvasCtx, layer, this);
+                        if (item.op.renderVizLayer)item.op.renderVizLayer(this._canvasCtx, layer, this);
+                    }
             }
 
-            this._items[i].oldPos = [pos[0], pos[1], size[0], size[1]];
+            item.oldPos = [pos[0], pos[1], size[0], size[1]];
 
             this._canvasCtx.restore();
             count++;

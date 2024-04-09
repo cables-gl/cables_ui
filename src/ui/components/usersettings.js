@@ -25,7 +25,7 @@ class UserSettings extends Events
     init()
     {
         if (this.get("glflowmode") === null) this.set("glflowmode", 2);
-        if (this.get("snapToGrid") === null) this.set("snapToGrid", true);
+        if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
         if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);

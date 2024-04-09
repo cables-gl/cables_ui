@@ -274,7 +274,7 @@ CABLES_CMD_UI.gradientTest = function ()
 
 CABLES_CMD_UI.toggleSnapToGrid = function ()
 {
-    userSettings.set("snapToGrid", !userSettings.get("snapToGrid"));
+    userSettings.set("snapToGrid", !userSettings.get("snapToGrid2"));
 };
 
 CABLES_CMD_UI.toggleIntroCompleted = function ()

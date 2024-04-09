@@ -1612,7 +1612,7 @@ export default class PatchView extends Events
                     {
                         let x = project.ops[i].uiAttribs.translate.x + mouseX - minx;
                         let y = project.ops[i].uiAttribs.translate.y + mouseY - miny;
-                        if (userSettings.get("snapToGrid"))
+                        if (userSettings.get("snapToGrid2"))
                         {
                             x = Snap.snapOpPosX(x);
                             y = Snap.snapOpPosY(y);
@@ -1866,7 +1866,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid")) avg = Snap.snapOpPosX(avg);
+            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosX(avg);
 
             for (j in ops) this.setOpPos(ops[j], avg, ops[j].uiAttribs.translate.y);
         }
@@ -1882,7 +1882,7 @@ export default class PatchView extends Events
 
             let avg = sum / ops.length;
 
-            if (userSettings.get("snapToGrid")) avg = Snap.snapOpPosY(avg);
+            if (userSettings.get("snapToGrid2")) avg = Snap.snapOpPosY(avg);
 
             for (j in ops) this.setOpPos(ops[j], ops[j].uiAttribs.translate.x, avg);
         }

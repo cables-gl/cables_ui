@@ -64,7 +64,7 @@ export default class Snap extends Events
     snapX(_x)
     {
         let x = _x;
-        if (userSettings.get("snapToGrid"))
+        if (userSettings.get("snapToGrid2"))
             x = Snap.snapOpPosX(_x);
 
         return x;
@@ -72,13 +72,13 @@ export default class Snap extends Events
 
     snapY(y, force)
     {
-        if (userSettings.get("snapToGrid") || force) return Snap.snapOpPosY(y);
+        if (userSettings.get("snapToGrid2") || force) return Snap.snapOpPosY(y);
         else return y;
     }
 
     _snapPortX(_x, port, index, dist)
     {
-        if (userSettings.get("snapToGrid")) return Snap.snapOpPosX(_x);
+        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
         for (let i = 0; i < port.links.length; i++)
         {
@@ -110,7 +110,7 @@ export default class Snap extends Events
 
     snapOpX(_x, op, dist)
     {
-        if (userSettings.get("snapToGrid")) return Snap.snapOpPosX(_x);
+        if (userSettings.get("snapToGrid2")) return Snap.snapOpPosX(_x);
 
 
         let hasLinks = false;
