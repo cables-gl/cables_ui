@@ -54,6 +54,12 @@ export default class GlUiCanvas
         this.patch.cgl.pixelDensity = window.devicePixelRatio || 1;
         this.patch.cgl.updateSize();
 
+        this.patch.cgl.on("beginFrame", () =>
+        {
+            this.glPatch.vizLayer.renderVizLayer(false);
+        });
+
+
         this.setSize(100, 100);
 
         gui.on("canvasModeChange", (mode) =>

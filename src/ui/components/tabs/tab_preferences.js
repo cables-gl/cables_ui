@@ -46,7 +46,7 @@ export default class Preferences
 
     updateValues()
     {
-        this.setSwitchValue("snapToGrid", userSettings.get("snapToGrid"));
+        this.setSwitchValue("snapToGrid2", userSettings.get("snapToGrid2"));
         this.setSwitchValue("canvasMode", userSettings.get("canvasMode"));
 
 

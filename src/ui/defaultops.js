@@ -43,6 +43,8 @@ const defaultOpNames =
 
     "uiArea": "Ops.Ui.Area",
     "defaultOpSvg": "Ops.Gl.Textures.TextureSVG_v2",
+    "defaultOpCss": "Ops.Html.CssFile",
+
     "defaultOpVizTexture": "Ops.Ui.VizTexture",
 
     "NumberToString": "Ops.String.NumberToString_v2",
@@ -218,6 +220,8 @@ const defaultOps = {
         else if (filename.endsWith(".ttf") || filename.endsWith(".woff") || filename.endsWith(".woff2") || filename.endsWith(".otf")) ops.push(defaultOpNames.defaultFont);
         else if (filename.endsWith(".exr")) ops.push(defaultOpNames.defaultOpExr);
         else if (filename.endsWith(".svg")) ops.push(defaultOpNames.defaultOpSvg);
+        else if (filename.endsWith(".css")) ops.push(defaultOpNames.defaultOpCss);
+
         return ops;
     },
     "getVarGetterOpNameByType": (type, port) =>
