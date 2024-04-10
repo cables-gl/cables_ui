@@ -6,12 +6,35 @@ export default class Gizmo
         this._eleCenter = null;
         this._eleX = null;
         this._eleY = null;
+        this._eleZ = null;
+        this._eleXZ = null;
+        this._eleXY = null;
+        this._eleYZ = null;
+        this.lineX = null;
+        this.lineY = null;
+        this.lineZ = null;
 
         this._params = null;
         this._origValue = 0;
         this._dragSum = 0;
+        this._dragSumY = 0;
         this._dir = 1;
         this.hidden = true;
+    }
+
+    dispose()
+    {
+        this.hidden = true;
+        if (this._eleCenter) this._eleCenter.remove();
+        if (this._eleX) this._eleX.remove();
+        if (this._eleY) this._eleY.remove();
+        if (this._eleZ) this._eleZ.remove();
+        if (this._eleXZ) this._eleXZ.remove();
+        if (this._eleXY) this._eleXY.remove();
+        if (this._eleYZ) this._eleYZ.remove();
+        if (this.lineX) this.lineX.remove();
+        if (this.lineY) this.lineY.remove();
+        if (this.lineZ) this.lineZ.remove();
     }
 
     getDir(x2, y2)
@@ -153,21 +176,50 @@ export default class Gizmo
             container.appendChild(this._eleCenter);
 
             this._eleX = document.createElement("div");
-            this._eleX.id = "gizmo";
+            this._eleX.id = "gizmoX";
             this._eleX.style.background = "#f00";
             this._eleX.style.display = "none";
             this._eleX.classList.add("gizmo");
             container.appendChild(this._eleX);
 
+            this._eleXZ = document.createElement("div");
+            this._eleXZ.id = "gizmoXZ";
+            this._eleXZ.style.background = "#f0f";
+            this._eleXZ.style.display = "none";
+            this._eleXZ.style.opacity = "0.5";
+            this._eleXZ.style.borderRadius = "0";
+            this._eleXZ.classList.add("gizmo");
+            container.appendChild(this._eleXZ);
+
+            this._eleXY = document.createElement("div");
+            this._eleXY.id = "gizmoXY";
+            this._eleXY.style.background = "#ff0";
+            this._eleXY.style.display = "none";
+            this._eleXY.style.opacity = "0.5";
+            this._eleXY.style.borderRadius = "0";
+            this._eleXY.classList.add("gizmo");
+            container.appendChild(this._eleXY);
+
+            this._eleYZ = document.createElement("div");
+            this._eleYZ.id = "gizmoYZ";
+            this._eleYZ.style.background = "#0ff";
+            this._eleYZ.style.display = "none";
+            this._eleYZ.style.opacity = "0.5";
+            this._eleYZ.style.borderRadius = "0";
+            this._eleYZ.classList.add("gizmo");
+            container.appendChild(this._eleYZ);
+
+
+
             this._eleY = document.createElement("div");
-            this._eleY.id = "gizmo";
+            this._eleY.id = "gizmoY";
             this._eleY.style.background = "#0f0";
             this._eleY.style.display = "none";
             this._eleY.classList.add("gizmo");
             container.appendChild(this._eleY);
 
             this._eleZ = document.createElement("div");
-            this._eleZ.id = "gizmo";
+            this._eleZ.id = "gizmoZ";
             this._eleZ.style.background = "#00f";
             this._eleZ.style.display = "none";
             this._eleZ.classList.add("gizmo");
@@ -183,6 +235,7 @@ export default class Gizmo
                 {
                     if (!this._params) return;
                     this._draggingPort = this._params.posX;
+                    this._draggingPortY = null;
                     this._origValue = this._params.posX.get();
                     this._dragSum = 0;
                     this.dragger(this._eleCenter);
@@ -197,6 +250,7 @@ export default class Gizmo
                 {
                     if (!this._params) return;
                     this._draggingPort = this._params.posY;
+                    this._draggingPortY = null;
                     this._origValue = this._params.posY.get();
                     this._dragSum = 0;
                     this.dragger(this._eleCenter);
@@ -211,10 +265,67 @@ export default class Gizmo
                 {
                     if (!this._params) return;
                     this._draggingPort = this._params.posZ;
+                    this._draggingPortY = null;
                     this._origValue = this._params.posZ.get();
                     this._dragSum = 0;
                     this.dragger(this._eleCenter);
                     this._dir = this.getDir(this._params.zx, this._params.zy);
+                },
+            );
+
+            this._eleXZ.addEventListener(
+                "mousedown",
+                () =>
+                {
+                    if (!this._params) return;
+                    this._draggingPort = this._params.posX;
+                    this._draggingPortY = this._params.posZ;
+
+                    this._origValue = this._params.posX.get();
+                    this._origValueY = this._params.posZ.get();
+                    this._dragSum = 0;
+                    this._dragSumY = 0;
+                    this.dragger(this._eleCenter);
+                },
+            );
+
+            this._eleXY.addEventListener(
+                "mousedown",
+                () =>
+                {
+                    if (!this._params) return;
+                    this._draggingPort = this._params.posX;
+                    this._draggingPortY = this._params.posY;
+
+                    this._origValue = this._params.posX.get();
+                    this._origValueY = this._params.posY.get();
+
+                    this._dragSum = 0;
+                    this._dragSumY = 0;
+
+                    // this.flipX = true;
+                    this.flipY = true;
+
+                    this.dragger(this._eleCenter);
+                },
+            );
+            this._eleYZ.addEventListener(
+                "mousedown",
+                () =>
+                {
+                    if (!this._params) return;
+                    this._draggingPort = this._params.posZ;
+                    this._draggingPortY = this._params.posY;
+
+                    this._origValue = this._params.posZ.get();
+                    this._origValueY = this._params.posY.get();
+                    this._dragSum = 0;
+                    this._dragSumY = 0;
+
+                    this.flipY = true;
+                    this.flipX = true;
+
+                    this.dragger(this._eleCenter);
                 },
             );
         }
@@ -227,6 +338,9 @@ export default class Gizmo
             {
                 this.hidden = true;
                 this._eleCenter.style.display = "none";
+                this._eleXZ.style.display = "none";
+                this._eleXY.style.display = "none";
+                this._eleYZ.style.display = "none";
                 this._eleX.style.display = "none";
                 this._eleZ.style.display = "none";
                 this._eleY.style.display = "none";
@@ -246,6 +360,18 @@ export default class Gizmo
         this._eleCenter.style.display = "block";
         this._eleCenter.style.left = params.x + "px";
         this._eleCenter.style.top = params.y + "px";
+
+        this._eleXZ.style.display = "block";
+        this._eleXZ.style.left = (params.xx + params.zx) / 2 + "px";
+        this._eleXZ.style.top = (params.xy + params.zy) / 2 + "px";
+
+        this._eleXY.style.display = "block";
+        this._eleXY.style.left = (params.xx + params.yx) / 2 + "px";
+        this._eleXY.style.top = (params.xy + params.yy) / 2 + "px";
+
+        this._eleYZ.style.display = "block";
+        this._eleYZ.style.left = (params.zx + params.yx) / 2 + "px";
+        this._eleYZ.style.top = (params.zy + params.yy) / 2 + "px";
 
         this._eleX.style.display = "block";
         this._eleX.style.left = params.xx + "px";
@@ -288,6 +414,8 @@ export default class Gizmo
 
         function up(e)
         {
+            self.flipY = false;
+            self.flipX = false;
             if (self._draggingPort)
             {
                 const undofunc = (function (patch, p1Name, op1Id, oldValue, newValue)
@@ -317,7 +445,6 @@ export default class Gizmo
                 ));
             }
 
-            // if (CABLES.UI) gui.setStateUnsaved();
             if (CABLES.UI) gui.savedState.setUnSaved("transformUp");
 
             isDown = false;
@@ -338,15 +465,42 @@ export default class Gizmo
 
         function move(e)
         {
-            // if (CABLES.UI) gui.setStateUnsaved();
             if (CABLES.UI) gui.savedState.setUnSaved("transformMove");
 
-            let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
-            if (e.shiftKey) v *= 0.025;
-            self._dragSum += v;
-            const newValue = self._origValue + self._dragSum;
-            self._draggingPort.set(newValue);
-            if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
+            if (self._draggingPortY)
+            {
+                let vX = e.movementX * ((self._multi || 1) / 100);
+                let vY = e.movementY * ((self._multi || 1) / 100);
+
+                let p = [vX, vY];
+                vec2.rotate(p, p, [0, 0], -self.lineX.angle);
+                vX = p[0];
+                vY = p[1];
+
+                if (self.flipY) vY *= -1;
+                if (self.flipX) vX *= -1;
+
+                if (e.shiftKey) vX *= 0.025;
+                if (e.shiftKey) vY *= 0.025;
+                self._dragSum += vX;
+                self._dragSumY += vY;
+                const newValue = self._origValue + self._dragSum;
+                const newValueY = self._origValueY + self._dragSumY;
+                self._draggingPort.set(newValue);
+                self._draggingPortY.set(newValueY);
+                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
+                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPortY.op.id, self._draggingPortY.getName(), newValueY);
+            }
+            else
+            {
+                // one axis...
+                let v = (e.movementY + e.movementX) * (self._dir * ((self._multi || 1) / 100));
+                if (e.shiftKey) v *= 0.025;
+                self._dragSum += v;
+                const newValue = self._origValue + self._dragSum;
+                self._draggingPort.set(newValue);
+                if (CABLES.UI) gui.emitEvent("gizmoMove", self._draggingPort.op.id, self._draggingPort.getName(), newValue);
+            }
         }
 
         function lockChange(e)
@@ -372,6 +526,7 @@ export default class Gizmo
 const htmlLine = function (parentElement, color)
 {
     let line = null;
+    this.angle = 0;
 
     function createLineElement(x, y, length, angle)
     {
@@ -379,10 +534,7 @@ const htmlLine = function (parentElement, color)
         const styles = "border: 1px solid " + color + "; " +
                    "width: " + length + "px; " +
                    "height: 0px; " +
-                   "-moz-transform: rotate(" + angle + "rad); " +
-                   "-webkit-transform: rotate(" + angle + "rad); " +
-                   "-o-transform: rotate(" + angle + "rad); " +
-                   "-ms-transform: rotate(" + angle + "rad); " +
+                   "transform: rotate(" + angle + "rad); " +
                    "position: absolute; " +
                    "top: " + y + "px; " +
                    "left: " + x + "px; ";
@@ -396,12 +548,8 @@ const htmlLine = function (parentElement, color)
         line.style.width = length + "px";
         line.style.top = y + "px";
         line.style.left = x + "px";
-        line.style["-moz-transform"] = "rotate(" + angle + "rad)";
-        line.style["-webkit-transform"] = "rotate(" + angle + "rad)";
-        line.style["-o-transform"] = "rotate(" + angle + "rad)";
-        line.style["-ms-transform"] = "rotate(" + angle + "rad)";
+        line.style.transform = "rotate(" + angle + "rad)";
         line.style["z-index"] = "9999";
-        // line.setAttribute('style');
     }
 
     this.set = function (x1, y1, x2, y2)
@@ -417,8 +565,14 @@ const htmlLine = function (parentElement, color)
             y = sy;
 
         const alpha = Math.PI - Math.atan2(-b, a);
+        this.angle = alpha;
 
         setPos(x, y, c, alpha);
+    };
+
+    this.remove = function ()
+    {
+        line.remove();
     };
 
     this.hide = function ()
