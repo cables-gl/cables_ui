@@ -535,7 +535,7 @@ CABLES_CMD_PATCH.uploadFile = function ()
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
-    if (!window.gui) return;
+    if (!window.gui || !gui.project()) return;
     const fileElem = document.getElementById("uploaddialog");
 
     if (!fileElem)

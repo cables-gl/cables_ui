@@ -57,6 +57,7 @@ import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import ManageOp from "./components/tabs/tab_manage_op.js";
 import extendCorePatch from "./core_extend_patch.js";
 import blueprintUtil from "./blueprint_util.js";
+import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 
 CABLES = CABLES || {};
 CABLES.UI = CABLES.UI || {};
@@ -159,6 +160,7 @@ CABLES.UI.undo = undo;
 CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.ManageOp = ManageOp;
 CABLES.UI.blueprintUtil = blueprintUtil;
+CABLES.UI.Gizmo = Gizmo;
 
 
 setHtmlDefaultListeners();
