@@ -209,31 +209,16 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
         }
     }
 
-    if (ids.length == 0)
+    if (ids.length === 0)
     {
         new ModalDialog({ "title": "Unused Patch Ops", "text": "No unused patch ops found.", "showOkButton": true });
     }
     else
     {
-        const modal = new ModalDialog({ "title": "Delete unused ops?", "text": text, "choice": true });
-        modal.on("onSubmit", () =>
-        {
-            for (let i = 0; i < ids.length; i++)
-            {
-                CABLESUILOADER.talkerAPI.send("deleteOp", { "opId": ids[i] }, console.log);
-
-                for (let j = 0; j < opdocs.length; j++) if (opdocs[j] && opdocs[j].id == ids[i])
-                {
-                    opdocs[j].name =
-                        opdocs[j].shortName =
-                        opdocs[j].shortNameDisplay =
-                        opdocs[j].nameSpace = "deleted op";
-                    break;
-                }
-
-                gui.opSelect().reload();
-            }
-        });
+        // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
+        const idsParam = ids.join(",");
+        const url = CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
+        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
     }
 };
 
@@ -1592,12 +1577,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-    // {
-    //     "cmd": "delete unused patch ops",
-    //     "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
-    //     "category": "patch",
-    //     "icon": "op"
-    // },
+    {
+        "cmd": "delete unused patch ops",
+        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
 
 
 
