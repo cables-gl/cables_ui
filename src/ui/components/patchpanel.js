@@ -1,7 +1,7 @@
 import { Events } from "cables-shared-client";
-import blueprintUtil from "../blueprint_util.js";
 import { getHandleBarHtml } from "../utils/handlebars.js";
 import TreeView from "./treeview.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export default class PatchPanel extends Events
 {
@@ -118,8 +118,7 @@ export default class PatchPanel extends Events
                 "title": "Create op from subpatch",
                 func()
                 {
-                    blueprintUtil.createBlueprint2Op(item.subPatchId);
-                    // gui.patchView.focusSubpatchOp(item.subPatchId);
+                    subPatchOpUtil.createBlueprint2Op(item.subPatchId);
                 },
             });
 
@@ -131,8 +130,7 @@ export default class PatchPanel extends Events
                 {
                     const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
 
-                    blueprintUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
-                    // gui.patchView.focusSubpatchOp(item.subPatchId);
+                    subPatchOpUtil.updateBluePrint2Attachment(op, { "oldSubId": item.subPatchId });
                 },
             });
         }

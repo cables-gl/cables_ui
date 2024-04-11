@@ -6,8 +6,8 @@ import text from "../text.js";
 import userSettings from "../components/usersettings.js";
 import { notifyError } from "../elements/notification.js";
 import defaultOps from "../defaultops.js";
-import blueprintUtil from "../blueprint_util.js";
 import ModalError from "../dialogs/modalerror.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 
 
@@ -354,9 +354,9 @@ export default class ServerOps
                     });
                 };
 
-                if (res && res.attachments && res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]) // subpatch op
+                if (res && res.attachments && res.attachments[subPatchOpUtil.blueprintSubpatchAttachmentFilename]) // subpatch op
                 {
-                    const sub = JSON.parse(res.attachments[blueprintUtil.blueprintSubpatchAttachmentFilename]);
+                    const sub = JSON.parse(res.attachments[subPatchOpUtil.blueprintSubpatchAttachmentFilename]);
 
                     CABLES.Patch.replaceOpIds(sub,
                         {
@@ -367,7 +367,7 @@ export default class ServerOps
                         "opAttachmentSave",
                         {
                             "opname": name,
-                            "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
+                            "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
                             "content": JSON.stringify(sub),
                         },
                         (errr, re) =>
@@ -1093,7 +1093,7 @@ export default class ServerOps
 
                                     _setStatus("saved");
 
-                                    if (attachmentName == blueprintUtil.blueprintPortJsonAttachmentFilename)
+                                    if (attachmentName == subPatchOpUtil.blueprintPortJsonAttachmentFilename)
                                     {
                                         let ports = null;
                                         try
@@ -1104,11 +1104,11 @@ export default class ServerOps
                                         {
                                             ports = { "ports": [] };
                                         }
-                                        // const src = blueprintUtil.generatePortsAttachmentJsSrc(ports);
+                                        // const src = subPatchOpUtil.generatePortsAttachmentJsSrc(ports);
 
-                                        blueprintUtil.savePortJsonBlueprintAttachment(ports, opname, () =>
+                                        subPatchOpUtil.savePortJsonBlueprintAttachment(ports, opname, () =>
                                         {
-                                            blueprintUtil.executeBlueprintIfMultiple(opname, () =>
+                                            subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                             {
                                                 gui.opParams.refresh();
                                                 gui.endModalLoading();
@@ -1116,7 +1116,7 @@ export default class ServerOps
                                         });
                                     }
                                     else
-                                        blueprintUtil.executeBlueprintIfMultiple(opname, () =>
+                                        subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                         {
                                             gui.opParams.refresh();
                                             gui.endModalLoading();

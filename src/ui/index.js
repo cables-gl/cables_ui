@@ -1,5 +1,6 @@
 
 import { ele } from "cables-shared-client";
+import subPatchOpUtil from "./subpatchop_util.js";
 import Api from "./api/api.js";
 import LibLoader from "./api/libloader.js";
 import CMD from "./commands/commands.js";
@@ -56,7 +57,6 @@ import undo from "./utils/undo.js";
 import TabPortObjectInspect from "./components/tabs/tab_portobjectionspect.js";
 import ManageOp from "./components/tabs/tab_manage_op.js";
 import extendCorePatch from "./core_extend_patch.js";
-import blueprintUtil from "./blueprint_util.js";
 import Gizmo from "./elements/canvasoverlays/transformgizmo.js";
 
 CABLES = CABLES || {};
@@ -159,7 +159,7 @@ CABLES.UI.undo = undo;
 
 CABLES.UI.MODAL = oldModalWrap;
 CABLES.UI.ManageOp = ManageOp;
-CABLES.UI.blueprintUtil = blueprintUtil;
+CABLES.UI.SubPatchOpUtil = subPatchOpUtil;
 CABLES.UI.Gizmo = Gizmo;
 
 

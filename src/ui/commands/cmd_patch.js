@@ -8,8 +8,8 @@ import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
 import GlOpWatcher from "../components/tabs/tab_glop.js";
 import ManageOp from "../components/tabs/tab_manage_op.js";
-import blueprintUtil from "../blueprint_util.js";
 import defaultOps from "../defaultops.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -163,7 +163,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
     for (let i = 0; i < ops.length; i++)
     {
         const name = ops[i].op.shortName;
-        blueprintUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
+        subPatchOpUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
     }
 };
 
@@ -251,7 +251,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
     const dialogOptions = {
         "title": "Create operator",
-        "shortName": blueprintUtil.getAutoName(true),
+        "shortName": subPatchOpUtil.getAutoName(true),
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
         "showReplace": false
@@ -297,7 +297,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     const selops = gui.patchView.getSelectedOps();
 
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
-    const newOpname = options.newOpName || blueprintUtil.getAutoName();
+    const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
     const loadingModal = gui.startModalLoading("Create Subpatch");
 
@@ -353,7 +353,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             const p2 = portIn.links[0].getOtherPort(portIn);
                             if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const pJson = blueprintUtil.createBlueprintPortJsonElement(portIn);
+                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
                                 portJson.ports.push(pJson);
                                 portIn.removeLinks();
                                 op.setUiAttrib({ "tempSubOldOpId": op.id });
@@ -369,7 +369,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             const p2 = portOut.links[0].getOtherPort(portOut);
                             if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const pJson = blueprintUtil.createBlueprintPortJsonElement(portOut);
+                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
                                 portJson.ports.push(pJson);
                                 portOut.removeLinks();
                                 op.setUiAttrib({ "tempSubOldOpId": op.id });
@@ -378,8 +378,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         }
                     }
                 }
-
-                console.log(oldLinks);
 
                 loadingModal.setTask("Creating blueprint op");
 
@@ -390,9 +388,9 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         },
                         "onOpAdd": (newOp) =>
                         {
-                            blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                            subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                             {
-                                const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
+                                const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
                                 gui.corePatch().deleteOp(OpTempSubpatch.id);
                                 gui.patchView.setCurrentSubPatch(currentSubpatch);
@@ -467,7 +465,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             {
                                                 console.log("need so save subpatchop AGAIN");
 
-                                                blueprintUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
                                                     "next": () =>
                                                     {
                                                         // console.log("bp", bp);
