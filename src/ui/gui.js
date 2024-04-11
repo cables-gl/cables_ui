@@ -47,7 +47,7 @@ export default class Gui extends Events
         this._log = new Logger("gui");
 
         this.theme = defaultTheme;
-        this.patchId = cfg.patchId;
+
         this._showTiming = false;
 
         /**
@@ -183,6 +183,12 @@ export default class Gui extends Events
         this._currentProject = null;
         this.tips = new Tips();
         this.currentModal = null;
+    }
+
+
+    get patchId()
+    {
+        return gui.project().shortId;
     }
 
     project()

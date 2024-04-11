@@ -55,7 +55,6 @@ export default class PatchSaveServer extends Events
         });
     }
 
-
     checkUpdated(cb, fromSave = false)
     {
         if (!gui.project()) return;
@@ -185,9 +184,9 @@ export default class PatchSaveServer extends Events
             }
 
             const checkboxGroups = [];
-
             const hasCollaborators = project.userList.filter((u) => { return u.username !== gui.user.username; }).length > 0;
             const hasTeams = true;
+
             if (hasCollaborators)
             {
                 const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();

@@ -800,17 +800,23 @@ export default class FindTab
             const limitResults = 200;
             if (numResults > limitResults)
             {
-                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " results</div>";
+                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/>";
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
                 html += this._addResultOp(results[i].op, results[i], i);
 
             let onclickResults = "gui.patchView.unselectAllOps();";
+
             for (let i = 0; i < results.length; i++)
                 onclickResults += "gui.patchView.selectOpId('" + results[i].op.id + "');";
+
             onclickResults += "gui.patchView.showSelectedOpsPanel();";
-            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
+            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " ops found";
+
+            html += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
+
+            html += "</div>";
         }
 
         this._eleResults.innerHTML = html;

@@ -135,7 +135,7 @@ export default class CommandPallete
         html += "<div class=\"result " + dynclass + "\" id=\"result" + num + "\" data-index=\"" + idx + "\" data-cmd=\"" + cmd.cmd + "\" onclick=gui.cmdPallet.onResultClick(event)>";
         html += "<span class=\"icon icon-" + (cmd.icon || "square") + "\"></span>";
         html += "<span class=\"title\">" + cmd.cmd + "</span>";
-        html += "<span class=\"category\"> - " + cmd.category + "</span>";
+        html += "<span class=\"category\"> - " + cmd.category || "unknown category" + "</span>";
 
         const bookmarkIcon = this.getBookmarkIconForCmd(cmd.cmd);
         html += "<span class=\"icon " + bookmarkIcon + " bookmark\" onclick=gui.cmdPallet.onBookmarkIconClick(event)></span>";

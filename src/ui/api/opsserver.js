@@ -313,11 +313,14 @@ export default class ServerOps
         loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name), lid);
     }
 
-    clone(oldname, name, cb)
+    clone(oldname, name, cb, options)
     {
-        this._log.log("clone", name, oldname);
+        options = options || { "openEditor": true };
+        // this._log.log("clone", name, oldname);
 
-        const loadingModal = gui.startModalLoading("Cloning op...");
+        const loadingModal = options.loadingModal || gui.startModalLoading("Cloning op...");
+
+        loadingModal.setTask("cloning " + oldname + " to " + name);
 
         CABLESUILOADER.talkerAPI.send(
             "opClone",
@@ -341,10 +344,12 @@ export default class ServerOps
                 {
                     this.loadOp(res, () =>
                     {
-                        this.edit(name);
+                        if (options.openEditor) this.edit(name);
+
+                        loadingModal.setTask("loading new op: " + name);
                         gui.serverOps.execute(name);
                         gui.opSelect().reload();
-                        gui.endModalLoading();
+                        if (!options.loadingModal) gui.endModalLoading();
                         if (cb)cb();
                     });
                 };
@@ -1611,7 +1616,7 @@ export default class ServerOps
 
     loadOp(op, cb)
     {
-        console.warn("loadop", op.objName);
+        // console.warn("loadop", op);
         if (op)
         {
             const options = {

@@ -1288,6 +1288,40 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
     });
 };
 
+CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
+{
+    if (!ops)
+    {
+        ops = gui.patchView.getSelectedOps();
+        if (ops.length == 0) return;
+    }
+    loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+
+    if (ops.length == 0)
+    {
+        gui.endModalLoading();
+        return;
+    }
+    const op = ops.pop();
+    const opname = op.objName;
+    const newOpname = "Ops.Patch.P" + gui.patchId + "." + opname.replaceAll(".", "_");
+
+    console.log("cloning " + opname + " to " + newOpname);
+
+    // op.opId
+    gui.serverOps.clone(op.objName, newOpname, () =>
+    {
+        gui.serverOps.loadOpDependencies(opname, function ()
+        {
+            gui.patchView.replaceOp(op.id, newOpname);
+
+            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+
+            CABLES_CMD_PATCH.cloneSelectedOps(ops);
+        });
+    }, { "openEditor": false, "loadingModal": loadingModal });
+};
+
 CMD_PATCH_COMMANDS.push(
     {
         "cmd": "select all ops",
@@ -1504,8 +1538,15 @@ CMD_PATCH_COMMANDS.push(
         "icon": "op"
     },
     {
+        "cmd": "clone selected ops to patch ops",
+        "func": CABLES_CMD_PATCH.cloneSelectedOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
         "cmd": "clone selected op",
         "func": CABLES_CMD_PATCH.cloneSelectedOp,
+        "category": "patch",
         "icon": "op"
     },
     {
@@ -1583,12 +1624,7 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-    {
-        "cmd": "clone non core ops",
-        "func": CABLES_CMD_PATCH.cloneSelectedOps,
-        "category": "patch",
-        "icon": "op"
-    },
+
 
 
 
