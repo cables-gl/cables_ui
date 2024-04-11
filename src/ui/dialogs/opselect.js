@@ -511,6 +511,8 @@ export default class OpSelect
 
         this._eleSearchinfo = document.getElementById("searchinfo");
 
+        gui.currentModal = this;
+
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
         this._minimal = userSettings.get("miniopselect") == true;
