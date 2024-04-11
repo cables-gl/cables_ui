@@ -215,12 +215,10 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
     }
     else
     {
-        CABLESUILOADER.talkerAPI.send("deleteOps", { "opIds": ids }, () =>
-        {
-            const idsParam = ids.join(",");
-            const url = CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
-            gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
-        });
+        // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
+        const idsParam = ids.join(",");
+        const url = CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
+        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
     }
 };
 

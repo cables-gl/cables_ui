@@ -1,6 +1,7 @@
 import { Events } from "cables-shared-client";
 import userSettings from "../../components/usersettings.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
+import { notify } from "../notification.js";
 
 export default class TabPanel extends Events
 {
@@ -415,22 +416,10 @@ export default class TabPanel extends Events
                 const deletedOp = deletedOps[i];
                 const opDocToDelete = opdocs.findIndex((opDoc) => { return opDoc.id === deletedOp.id; });
                 if (opDocToDelete) opdocs.splice(opDocToDelete, 1);
-
-                /*
-                for (let j = 0; j < opdocs.length; j++)
-                {
-                    if (opdocs[j] && opdocs[j].id === deletedOp.id)
-                    {
-                        opdocs[j].name =
-                            opdocs[j].shortName =
-                                opdocs[j].shortNameDisplay =
-                                    opdocs[j].nameSpace = "deleted op";
-                        break;
-                    }
-                }
-                 */
                 gui.opSelect().reload();
+                let plural = deletedOps.length > 1 ? "s" : "";
             }
+            if (deletedOps.length > 0) notify("deleted " + deletedOps.length + " op" + plural);
             this.closeTab(iframeTab.id);
         });
 
