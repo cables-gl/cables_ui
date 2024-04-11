@@ -483,7 +483,6 @@ export default class PatchView extends Events
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
 
-
                     gui.corePatch().link(
                         options.linkNewOpToOp,
                         options.linkNewOpToPort.getName(),

@@ -41,6 +41,7 @@ export default class OpSelect
     {
         this._bg.hide();
         this._eleOpsearchmodal.style.zIndex = -9999;
+        gui.currentModal = null;
 
         gui.patchView.focus();
     }
