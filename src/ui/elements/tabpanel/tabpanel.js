@@ -417,8 +417,8 @@ export default class TabPanel extends Events
                 const opDocToDelete = opdocs.findIndex((opDoc) => { return opDoc.id === deletedOp.id; });
                 if (opDocToDelete) opdocs.splice(opDocToDelete, 1);
                 gui.opSelect().reload();
-                let plural = deletedOps.length > 1 ? "s" : "";
             }
+            let plural = deletedOps.length > 1 ? "s" : "";
             if (deletedOps.length > 0) notify("deleted " + deletedOps.length + " op" + plural);
             this.closeTab(iframeTab.id);
         });
