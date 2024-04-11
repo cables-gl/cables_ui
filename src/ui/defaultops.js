@@ -9,6 +9,8 @@ import { CONSTANTS } from "../../../cables/src/core/constants.js";
 const defaultOpNames =
 {
     "number": "Ops.Number.Number",
+    "array": "Ops.Array.Array_v3",
+    "randomarray": "Ops.Array.RandomNumbersArray_v4",
     "defaultOpImage": "Ops.Gl.Texture_v2",
     "defaultOpAudio": "Ops.WebAudio.AudioBuffer_v2",
     "defaultOpVideo": "Ops.Gl.Textures.VideoTexture_v3",
@@ -85,7 +87,12 @@ const defaultOpNames =
     "ArraySum": "Ops.Array.ArraySum",
     "ArraySubtract": "Ops.Array.ArraySubtract",
     "ArrayDivide": "Ops.Array.ArrayDivide",
-    "ArrayMultiply": "Ops.Array.ArrayMultiply"
+    "ArrayMultiply": "Ops.Array.ArrayMultiply",
+    "parseObject": "Ops.Json.ParseObject_v2",
+
+    "textureGradient": "Ops.Gl.GradientTexture",
+    "textureNoise": "Ops.Gl.Textures.NoiseTexture"
+
 };
 
 const defaultOps = {
@@ -181,7 +188,7 @@ const defaultOps = {
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.VizString, defaultOpNames.VizStringLong, defaultOpNames.VizLogger];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOpNames.VizBool, defaultOpNames.VizNumber,, defaultOpNames.VizLogger];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE && (p.uiAttribs.display == "bool" || p.uiAttribs.display == "boolnum")) return [defaultOpNames.VizBool, defaultOpNames.VizNumber, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.VizNumber, defaultOpNames.VizGraph, defaultOpNames.VizNumberBar, defaultOpNames.VizLogger];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return [defaultOpNames.VizArrayTable];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.VizTexture, defaultOpNames.VizTextureTable, defaultOpNames.VizObject];
@@ -195,10 +202,12 @@ const defaultOps = {
         {
             if (p.type == CONSTANTS.OP.OP_PORT_TYPE_STRING) return [defaultOpNames.string, defaultOpNames.stringEditor];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_VALUE) return [defaultOpNames.number];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_ARRAY) return [defaultOpNames.array, defaultOpNames.randomarray, defaultOpNames.StringToArray];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_FUNCTION) return [defaultOpNames.sequence];
-            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.defaultOpImage];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "texture") return [defaultOpNames.defaultOpImage, defaultOpNames.textureGradient, defaultOpNames.textureNoise];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "element") return [defaultOpNames.divElement];
             else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT && p.uiAttribs.objType == "shader") return [defaultOpNames.customShader];
+            else if (p.type == CONSTANTS.OP.OP_PORT_TYPE_OBJECT) return [defaultOpNames.parseObject];
         }
         if (p && p.direction == CONSTANTS.PORT.PORT_DIR_OUT)
         {
