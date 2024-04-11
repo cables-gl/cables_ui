@@ -13,6 +13,7 @@ import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
 import userSettings from "./usersettings.js";
 import Snap from "../glpatch/snap.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export default class PatchView extends Events
 {
