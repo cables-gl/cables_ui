@@ -8,6 +8,9 @@ export default class FindTab
 {
     constructor(tabs, str)
     {
+        this._toggles = ["recent", "outdated", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
+
+
         this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
@@ -42,7 +45,7 @@ export default class FindTab
         }
         colors = CABLES.uniqueArray(colors);
 
-        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
+        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId, "toggles": this._toggles });
 
         this._tab.html(html);
 
@@ -65,9 +68,6 @@ export default class FindTab
                 gui.corePatch().removeEventListener(this._listenerids[i]);
             }
 
-            // gui.corePatch().removeEventListener("onOpDelete", this._updateCb);
-            // gui.corePatch().removeEventListener("onOpAdd", this._updateCb);
-            // gui.corePatch().removeEventListener("commentChanged", this._updateCb);
             this._closed = true;
         });
 
@@ -77,6 +77,28 @@ export default class FindTab
         {
             this.search(e.target.value);
         });
+
+
+        for (let i = 0; i < this._toggles.length; i++)
+        {
+            const toggleEle = ele.byId(this._inputId + "_" + this._toggles[i]);
+
+            toggleEle.addEventListener("click", () =>
+            {
+                toggleEle.classList.toggle("findToggleActive");
+
+                const toggles = ele.byClassAll("findToggleActive");
+
+                let srchStr = "";
+                for (let j = 0; j < toggles.length; j++)
+                    srchStr += toggles[j].dataset.togglestr + " ";
+
+                const toggleInput = ele.byId(this._inputId + "_toggles");
+                toggleInput.value = srchStr;
+
+                document.getElementById(this._inputId).dispatchEvent(new Event("input"));
+            });
+        }
 
         ele.byId(this._inputId).addEventListener(
             "keydown",
@@ -717,6 +739,9 @@ export default class FindTab
         this._maxIdx = -1;
         this.setSelectedOp(null);
         this.setClicked(-1);
+
+        const toggleInput = ele.byId(this._inputId + "_toggles");
+        if (toggleInput && toggleInput.value)str += " " + toggleInput.value;
 
         const strs = str.split(" ");
         const startTime = performance.now();

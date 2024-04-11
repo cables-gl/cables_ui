@@ -1583,6 +1583,12 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
+    {
+        "cmd": "clone non core ops",
+        "func": CABLES_CMD_PATCH.cloneSelectedOps,
+        "category": "patch",
+        "icon": "op"
+    },
 
 
 
