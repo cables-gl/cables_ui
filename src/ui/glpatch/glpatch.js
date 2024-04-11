@@ -511,11 +511,6 @@ export default class GlPatch extends Events
                 gui.patchView.setCurrentSubPatch(hoverOp.patchId.get());
                 gui.patchView.updateSubPatchBreadCrumb(hoverOp.patchId.get());
             }
-            if (CABLES.UI.DEFAULTOPNAMES.blueprint == hoverOp.objName)
-            {
-                const subid = gui.patchView.getSubPatchIdFromBlueprintOpId(hoverOp.id);
-                if (subid)gui.patchView.setCurrentSubPatch(subid);
-            }
         }
         else
         {

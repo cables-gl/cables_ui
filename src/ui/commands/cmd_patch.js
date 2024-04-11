@@ -111,8 +111,7 @@ CABLES_CMD_PATCH.createVersionSelectedOp = function ()
     }
     else newOpname = opname + "_v2";
 
-
-    gui.serverOps.clone(opname, newOpname, () =>
+    gui.serverOps.clone(ops[0].opId, newOpname, () =>
     {
         gui.serverOps.loadOpDependencies(opname, function ()
         {
@@ -1142,10 +1141,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     }
                 });
         }
-        else if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
-        {
-            CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
-        }
+
 
         if (op.storage) delete op.storage.blueprint;
         delete op.uiAttribs.blueprintOpId;
@@ -1216,30 +1212,6 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
 };
 
 
-CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
-{
-    if (!ops)
-    {
-        const patch = gui.corePatch();
-        ops = patch.ops;
-    }
-    const relevantOps = [];
-    for (let i = 0; i < ops.length; i++)
-    {
-        const op = ops[i];
-        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
-        {
-            if (!op.storage || !op.storage.blueprint)
-            {
-                relevantOps.push(op);
-            }
-        }
-    }
-    relevantOps.forEach((blueprint, index) =>
-    {
-        CABLES_CMD_PATCH.convertBlueprintToSubpatch(blueprint, false, index === relevantOps.length - 1);
-    });
-};
 
 CABLES_CMD_PATCH.localizeBlueprints = () =>
 {
@@ -1306,10 +1278,9 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     const opname = op.objName;
     const newOpname = "Ops.Patch.P" + gui.patchId + "." + opname.replaceAll(".", "_");
 
-    console.log("cloning " + opname + " to " + newOpname);
 
     // op.opId
-    gui.serverOps.clone(op.objName, newOpname, () =>
+    gui.serverOps.clone(op.opId, newOpname, () =>
     {
         gui.serverOps.loadOpDependencies(opname, function ()
         {
@@ -1568,12 +1539,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "convert blueprints to subpatches",
-        "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
         "category": "patch",
         "icon": "op"
     },

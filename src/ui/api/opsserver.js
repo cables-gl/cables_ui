@@ -924,7 +924,14 @@ export default class ServerOps
         this.opNameDialog(dialogOptions, (newNamespace, newName, replace) =>
         {
             const opname = newNamespace + newName;
-            gui.serverOps.clone(oldName, opname, () =>
+
+
+            let nameOrId = oldName;
+            const doc = gui.opDocs.getOpDocByName(oldName);
+            console.log("doccc", doc);
+            if (doc && doc.id)nameOrId = doc.id;
+
+            gui.serverOps.clone(nameOrId, opname, () =>
             {
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {

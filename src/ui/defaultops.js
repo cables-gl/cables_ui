@@ -36,7 +36,6 @@ const defaultOpNames =
     "defaultFont": "Ops.Html.FontFile_v2",
 
     "performance": "Ops.Gl.Performance",
-    "blueprint": "Ops.Deprecated.Dev.Blueprint",
 
     "subPatch": "Ops.Ui.SubPatch",
     "subPatch2": "Ops.Ui.Subpatch2Temp",
