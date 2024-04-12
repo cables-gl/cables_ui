@@ -88,6 +88,7 @@ export default class ModalDialog extends Events
         {
             this._checkboxGroups.forEach((group) =>
             {
+                html += "<div class=\"checkbox_group\">";
                 html += "<div class=\"checkbox_group_title\">" + group.title + "</div>";
                 group.checkboxes.forEach((checkbox) =>
                 {
@@ -116,6 +117,7 @@ export default class ModalDialog extends Events
                     }
                     html += checkboxContainer.outerHTML;
                 });
+                html += "</div>";
             });
         }
 

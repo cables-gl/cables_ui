@@ -172,7 +172,7 @@ export default class PatchSaveServer extends Events
                 hasPrivateUserOps = project.ops.find((op) => { return op.objName && op.objName.startsWith("Ops.User") && !op.objName.startsWith("Ops.User." + gui.user.usernameLowercase + "."); });
             }
 
-            const copyCollaborators = (!project.isOpExample && project.visibility !== "public"); // dont do this for example and public patches
+            const copyCollaborators = project.visibility !== "public"; // don't do this for public patches
 
             let prompt = "Enter a name for the copy of this patch.";
 
@@ -192,22 +192,22 @@ export default class PatchSaveServer extends Events
                 const userOpsUsed = gui.patchView.getUserOpsUsedInPatch();
                 if (copyCollaborators)
                 {
-                    const checkboxGroup = { "title": "The following collaborators will have access to the copy:", "checkboxes": [] };
+                    const checkboxGroup = { "title": "Invite the following collaborators to the copy:", "checkboxes": [] };
                     project.userList.forEach((user, i) =>
                     {
                         if (user._id !== gui.user.id)
                         {
-                            const link = CABLES.sandbox.getCablesUrl() + "/u/" + user.username;
+                            const link = CABLES.sandbox.getCablesUrl() + "/user/" + user.username;
                             const checkboxData = {
                                 "name": "copy-collab-user-" + i,
                                 "value": user._id,
                                 "title": "<a href=\"" + link + "\" target=\"blank\">" + user.username + "</a>",
-                                "checked": true,
+                                "checked": false,
                             };
                             if (userOpsUsed.some((userOp) => { return defaultOps.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
                             {
-                                checkboxData.disabled = true;
-                                checkboxData.tooltip = "Collaborator cannot be removed, their userops are used in the patch";
+                                checkboxData.checked = true;
+                                checkboxData.title += "<br/><span class=\"warning\">Collaborator should not be removed, their userops are used in the patch</span>";
                             }
                             checkboxGroup.checkboxes.push(checkboxData);
                         }
@@ -276,27 +276,6 @@ export default class PatchSaveServer extends Events
             console.log("patch save as - gui.corePatch().name", gui.corePatch().name);
             console.log("patch save as - patchName", patchName);
 
-            // const localBlueprints = gui.corePatch().ops.filter((op) =>
-            // {
-            //     if (!defaultOps.isBlueprintOp(op)) return false;
-            //     const port = op.getPortByName("externalPatchId");
-            //     if (port && port.get()) return port.get() === gui.patchId || port.get() === gui.project().shortId;
-            //     return false;
-            // });
-            // if (localBlueprints.length > 0)
-            // {
-            //     checkboxGroups.push({
-            //         "title": "Blueprints:",
-            //         "checkboxes": [
-            //             {
-            //                 "name": "keepLocalBlueprints",
-            //                 "title": "Point local blueprints to new patch",
-            //                 "checked": true
-            //             }
-            //         ]
-            //     });
-            // }
-
             new ModalDialog({
                 "prompt": true,
                 "title": "Save As...",
@@ -336,11 +315,6 @@ export default class PatchSaveServer extends Events
                                 const newProjectId = d.shortId ? d.shortId : d._id;
                                 gui.corePatch().settings = gui.corePatch().settings || {};
                                 gui.corePatch().settings.secret = "";
-
-                                // if (checkboxStates && checkboxStates.keepLocalBlueprints)
-                                // {
-                                //     gui.patchView.replacePortValues(localBlueprints, "externalPatchId", newProjectId);
-                                // }
 
                                 this.saveCurrentProject(() => { CABLESUILOADER.talkerAPI.send("gotoPatch", { "id": newProjectId }); }, d._id, d.name, true, true);
                             }
