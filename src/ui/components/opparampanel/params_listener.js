@@ -1,11 +1,11 @@
 import { ele, Events } from "cables-shared-client";
-import blueprintUtil from "../../blueprint_util.js";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import gluiconfig from "../../glpatch/gluiconfig.js";
 import undo from "../../utils/undo.js";
 import userSettings from "../usersettings.js";
 import paramsHelper from "./params_helper.js";
 import WatchPortVisualizer from "./watchportvisualizer.js";
+import subPatchOpUtil from "../../subpatchop_util.js";
 
 class ParamsListener extends Events
 {
@@ -489,7 +489,7 @@ class ParamsListener extends Events
                             gui.patchView.unselectAllOps();
 
 
-                            blueprintUtil.addPortToBlueprint(subOuter.opId, port);
+                            subPatchOpUtil.addPortToBlueprint(subOuter.opId, port);
                         }
                     });
             }

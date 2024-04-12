@@ -525,13 +525,6 @@ export default class GlOp extends Events
             this._glTitle.setParentRect(this._glRectBg);
             this._OpNameSpaceColor = GlPatch.getOpNamespaceColor(this._op.objName);
 
-            // if (this._displayType === this.DISPLAY_SUBPATCH)
-            // {
-            //     this._rectBorder = 1;
-            // }
-            // if (this._op.objName.indexOf(CABLES.UI.DEFAULTOPNAMES.blueprint) === 0)
-
-
             if (this._op.objName.indexOf("Ops.Ui.Comment") === 0)
             {
                 this._displayType = this.DISPLAY_COMMENT;

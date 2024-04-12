@@ -41,6 +41,7 @@ export default class OpSelect
     {
         this._bg.hide();
         this._eleOpsearchmodal.style.zIndex = -9999;
+        gui.currentModal = null;
 
         gui.patchView.focus();
     }
@@ -510,6 +511,8 @@ export default class OpSelect
         const perf = CABLES.UI.uiProfiler.start("opselect.show");
 
         this._eleSearchinfo = document.getElementById("searchinfo");
+
+        gui.currentModal = this;
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;

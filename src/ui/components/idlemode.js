@@ -20,9 +20,8 @@ function startIdleMode()
     if (CABLES.UI.userSettings.get("noidlemode")) return;
     if (gui.socket && gui.socket.inMultiplayerSession) return;
 
-
     const wasActiveSeconds = (performance.now() - activeModeStart) / 1000;
-    if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode()))
+    if (window.gui && !(gui.currentModal && gui.currentModal.persistInIdleMode && gui.currentModal.persistInIdleMode()))
     {
         gui.restriction.setMessage("idlemode", "cables is paused! Click to resume");
         idleModal = new ModalBackground();

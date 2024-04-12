@@ -8,6 +8,9 @@ export default class FindTab
 {
     constructor(tabs, str)
     {
+        this._toggles = ["recent", "outdated", "bookmarked", "commented", "unconnected", "user", "error", "warning", "hint", "dupassets", "extassets", "textures", "history", "activity", "notcoreops", "currentSubpatch", "selected"];
+
+
         this._tab = new Tab("Search", { "icon": "search", "infotext": "tab_find", "padding": true });
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
@@ -42,7 +45,7 @@ export default class FindTab
         }
         colors = CABLES.uniqueArray(colors);
 
-        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId });
+        const html = getHandleBarHtml("tab_find", { colors, "inputid": this._inputId, "toggles": this._toggles });
 
         this._tab.html(html);
 
@@ -65,9 +68,6 @@ export default class FindTab
                 gui.corePatch().removeEventListener(this._listenerids[i]);
             }
 
-            // gui.corePatch().removeEventListener("onOpDelete", this._updateCb);
-            // gui.corePatch().removeEventListener("onOpAdd", this._updateCb);
-            // gui.corePatch().removeEventListener("commentChanged", this._updateCb);
             this._closed = true;
         });
 
@@ -77,6 +77,28 @@ export default class FindTab
         {
             this.search(e.target.value);
         });
+
+
+        for (let i = 0; i < this._toggles.length; i++)
+        {
+            const toggleEle = ele.byId(this._inputId + "_" + this._toggles[i]);
+
+            toggleEle.addEventListener("click", () =>
+            {
+                toggleEle.classList.toggle("findToggleActive");
+
+                const toggles = ele.byClassAll("findToggleActive");
+
+                let srchStr = "";
+                for (let j = 0; j < toggles.length; j++)
+                    srchStr += toggles[j].dataset.togglestr + " ";
+
+                const toggleInput = ele.byId(this._inputId + "_toggles");
+                toggleInput.value = srchStr;
+
+                document.getElementById(this._inputId).dispatchEvent(new Event("input"));
+            });
+        }
 
         ele.byId(this._inputId).addEventListener(
             "keydown",
@@ -718,6 +740,9 @@ export default class FindTab
         this.setSelectedOp(null);
         this.setClicked(-1);
 
+        const toggleInput = ele.byId(this._inputId + "_toggles");
+        if (toggleInput && toggleInput.value)str += " " + toggleInput.value;
+
         const strs = str.split(" ");
         const startTime = performance.now();
 
@@ -775,17 +800,23 @@ export default class FindTab
             const limitResults = 200;
             if (numResults > limitResults)
             {
-                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " results</div>";
+                html += "<div style=\"pointer-events:none\" class=\"warning-error-level1\">found " + numResults + " ops showing only first " + limitResults + " ops<br/>";
                 results = results.slice(0, limitResults);
             }
             for (let i = 0; i < results.length; i++)
                 html += this._addResultOp(results[i].op, results[i], i);
 
             let onclickResults = "gui.patchView.unselectAllOps();";
+
             for (let i = 0; i < results.length; i++)
                 onclickResults += "gui.patchView.selectOpId('" + results[i].op.id + "');";
+
             onclickResults += "gui.patchView.showSelectedOpsPanel();";
-            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\"><a class=\"button-small\" onclick=\"" + onclickResults + "\">" + results.length + " results</a></div>";
+            html += "<div style=\"background-color:var(--color-02);border-bottom:none;\">" + results.length + " ops found";
+
+            html += " &nbsp;&nbsp;<a class=\"button-small\" onclick=\"" + onclickResults + "\">Select results</a><br/>";
+
+            html += "</div>";
         }
 
         this._eleResults.innerHTML = html;

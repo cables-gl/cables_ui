@@ -8,8 +8,8 @@ import { CONSTANTS } from "../../../../cables/src/core/constants.js";
 import OpParampanel from "../components/opparampanel/op_parampanel.js";
 import GlOpWatcher from "../components/tabs/tab_glop.js";
 import ManageOp from "../components/tabs/tab_manage_op.js";
-import blueprintUtil from "../blueprint_util.js";
 import defaultOps from "../defaultops.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 const CABLES_CMD_PATCH = {};
 const CMD_PATCH_COMMANDS = [];
@@ -111,8 +111,7 @@ CABLES_CMD_PATCH.createVersionSelectedOp = function ()
     }
     else newOpname = opname + "_v2";
 
-
-    gui.serverOps.clone(opname, newOpname, () =>
+    gui.serverOps.clone(ops[0].opId, newOpname, () =>
     {
         gui.serverOps.loadOpDependencies(opname, function ()
         {
@@ -164,7 +163,7 @@ CABLES_CMD_PATCH.save = function (force, cb)
     for (let i = 0; i < ops.length; i++)
     {
         const name = ops[i].op.shortName;
-        blueprintUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
+        subPatchOpUtil.updateBluePrint2Attachment(ops[i].op, { "oldSubId": ops[i].subId });
     }
 };
 
@@ -209,31 +208,16 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
         }
     }
 
-    if (ids.length == 0)
+    if (ids.length === 0)
     {
         new ModalDialog({ "title": "Unused Patch Ops", "text": "No unused patch ops found.", "showOkButton": true });
     }
     else
     {
-        const modal = new ModalDialog({ "title": "Delete unused ops?", "text": text, "choice": true });
-        modal.on("onSubmit", () =>
-        {
-            for (let i = 0; i < ids.length; i++)
-            {
-                CABLESUILOADER.talkerAPI.send("deleteOp", { "opId": ids[i] }, console.log);
-
-                for (let j = 0; j < opdocs.length; j++) if (opdocs[j] && opdocs[j].id == ids[i])
-                {
-                    opdocs[j].name =
-                        opdocs[j].shortName =
-                        opdocs[j].shortNameDisplay =
-                        opdocs[j].nameSpace = "deleted op";
-                    break;
-                }
-
-                gui.opSelect().reload();
-            }
-        });
+        // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
+        const idsParam = ids.join(",");
+        const url = CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
+        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
     }
 };
 
@@ -267,7 +251,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
 
     const dialogOptions = {
         "title": "Create operator",
-        "shortName": blueprintUtil.getAutoName(true),
+        "shortName": subPatchOpUtil.getAutoName(true),
         "type": "patch",
         "suggestedNamespace": suggestedNamespace,
         "showReplace": false
@@ -313,7 +297,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
     const selops = gui.patchView.getSelectedOps();
 
     let selectedOpIds = gui.patchView.getSelectedOpsIds();
-    const newOpname = options.newOpName || blueprintUtil.getAutoName();
+    const newOpname = options.newOpName || subPatchOpUtil.getAutoName();
     const currentSubpatch = gui.patchView.getCurrentSubPatch();
     const loadingModal = gui.startModalLoading("Create Subpatch");
 
@@ -369,7 +353,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             const p2 = portIn.links[0].getOtherPort(portIn);
                             if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const pJson = blueprintUtil.createBlueprintPortJsonElement(portIn);
+                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portIn);
                                 portJson.ports.push(pJson);
                                 portIn.removeLinks();
                                 op.setUiAttrib({ "tempSubOldOpId": op.id });
@@ -385,7 +369,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                             const p2 = portOut.links[0].getOtherPort(portOut);
                             if (p2.op.uiAttribs.subPatch != op.uiAttribs.subPatch)
                             {
-                                const pJson = blueprintUtil.createBlueprintPortJsonElement(portOut);
+                                const pJson = subPatchOpUtil.createBlueprintPortJsonElement(portOut);
                                 portJson.ports.push(pJson);
                                 portOut.removeLinks();
                                 op.setUiAttrib({ "tempSubOldOpId": op.id });
@@ -394,8 +378,6 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         }
                     }
                 }
-
-                console.log(oldLinks);
 
                 loadingModal.setTask("Creating blueprint op");
 
@@ -406,9 +388,9 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                         },
                         "onOpAdd": (newOp) =>
                         {
-                            blueprintUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
+                            subPatchOpUtil.createBlueprint2Op(newOp, OpTempSubpatch, () =>
                             {
-                                const src = blueprintUtil.generatePortsAttachmentJsSrc(portJson);
+                                const src = subPatchOpUtil.generatePortsAttachmentJsSrc(portJson);
 
                                 gui.corePatch().deleteOp(OpTempSubpatch.id);
                                 gui.patchView.setCurrentSubPatch(currentSubpatch);
@@ -483,7 +465,7 @@ CABLES_CMD_PATCH.createOpFromSelection = function (options = {})
                                             {
                                                 console.log("need so save subpatchop AGAIN");
 
-                                                blueprintUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
+                                                subPatchOpUtil.updateBluePrint2Attachment(newOp, { "oldSubId": subPatchId,
                                                     "next": () =>
                                                     {
                                                         // console.log("bp", bp);
@@ -550,7 +532,7 @@ CABLES_CMD_PATCH.uploadFile = function ()
 
 CABLES_CMD_PATCH.uploadFileDialog = function ()
 {
-    if (!window.gui) return;
+    if (!window.gui || !gui.project()) return;
     const fileElem = document.getElementById("uploaddialog");
 
     if (!fileElem)
@@ -1157,10 +1139,7 @@ CABLES_CMD_PATCH.convertBlueprintToSubpatch = function (blueprint, skipSelection
                     }
                 });
         }
-        else if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
-        {
-            CABLES_CMD_PATCH.convertBlueprintToSubpatch(op, true, true);
-        }
+
 
         if (op.storage) delete op.storage.blueprint;
         delete op.uiAttribs.blueprintOpId;
@@ -1231,30 +1210,6 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
 };
 
 
-CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches = function (ops)
-{
-    if (!ops)
-    {
-        const patch = gui.corePatch();
-        ops = patch.ops;
-    }
-    const relevantOps = [];
-    for (let i = 0; i < ops.length; i++)
-    {
-        const op = ops[i];
-        if (op.objName && op.objName.startsWith(CABLES.UI.DEFAULTOPNAMES.blueprint))
-        {
-            if (!op.storage || !op.storage.blueprint)
-            {
-                relevantOps.push(op);
-            }
-        }
-    }
-    relevantOps.forEach((blueprint, index) =>
-    {
-        CABLES_CMD_PATCH.convertBlueprintToSubpatch(blueprint, false, index === relevantOps.length - 1);
-    });
-};
 
 CABLES_CMD_PATCH.localizeBlueprints = () =>
 {
@@ -1301,6 +1256,39 @@ CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
             }
         }
     });
+};
+
+CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
+{
+    if (!ops)
+    {
+        ops = gui.patchView.getSelectedOps();
+        if (ops.length == 0) return;
+    }
+    loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+
+    if (ops.length == 0)
+    {
+        gui.endModalLoading();
+        return;
+    }
+    const op = ops.pop();
+    const opname = op.objName;
+    const newOpname = "Ops.Patch.P" + gui.patchId + "." + opname.replaceAll(".", "_");
+
+
+    // op.opId
+    gui.serverOps.clone(op.opId, newOpname, () =>
+    {
+        gui.serverOps.loadOpDependencies(opname, function ()
+        {
+            gui.patchView.replaceOp(op.id, newOpname);
+
+            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+
+            CABLES_CMD_PATCH.cloneSelectedOps(ops);
+        });
+    }, { "openEditor": false, "loadingModal": loadingModal });
 };
 
 CMD_PATCH_COMMANDS.push(
@@ -1519,8 +1507,15 @@ CMD_PATCH_COMMANDS.push(
         "icon": "op"
     },
     {
+        "cmd": "clone selected ops to patch ops",
+        "func": CABLES_CMD_PATCH.cloneSelectedOps,
+        "category": "patch",
+        "icon": "op"
+    },
+    {
         "cmd": "clone selected op",
         "func": CABLES_CMD_PATCH.cloneSelectedOp,
+        "category": "patch",
         "icon": "op"
     },
     {
@@ -1542,12 +1537,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "open params in tab",
         "func": CABLES_CMD_PATCH.openParamsTab,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "convert blueprints to subpatches",
-        "func": CABLES_CMD_PATCH.convertAllBlueprintsToSubpatches,
         "category": "patch",
         "icon": "op"
     },
@@ -1592,12 +1581,13 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-    // {
-    //     "cmd": "delete unused patch ops",
-    //     "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
-    //     "category": "patch",
-    //     "icon": "op"
-    // },
+    {
+        "cmd": "delete unused patch ops",
+        "func": CABLES_CMD_PATCH.deleteUnusedPatchOps,
+        "category": "patch",
+        "icon": "op"
+    },
+
 
 
 
