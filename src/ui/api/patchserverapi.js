@@ -197,7 +197,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (user._id !== gui.user.id)
                         {
-                            const link = CABLES.sandbox.getCablesUrl() + "/u/" + user.username;
+                            const link = CABLES.sandbox.getCablesUrl() + "/user/" + user.username;
                             const checkboxData = {
                                 "name": "copy-collab-user-" + i,
                                 "value": user._id,
@@ -207,7 +207,7 @@ export default class PatchSaveServer extends Events
                             if (userOpsUsed.some((userOp) => { return defaultOps.isUserOpOfUser(userOp.objName, user.usernameLowercase); }))
                             {
                                 checkboxData.checked = true;
-                                checkboxData.tooltip = "Collaborator should not be removed, their userops are used in the patch";
+                                checkboxData.title += "<br/><span class=\"warning\">Collaborator should not be removed, their userops are used in the patch</span>";
                             }
                             checkboxGroup.checkboxes.push(checkboxData);
                         }
