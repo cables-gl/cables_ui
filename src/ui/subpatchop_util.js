@@ -1,18 +1,18 @@
 import defaultOps from "./defaultops.js";
 import gluiconfig from "./glpatch/gluiconfig.js";
 
-import srcBluePrintOp from "./blueprint_op.js.txt";
+import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
 
-const blueprintUtil = {};
+const subPatchOpUtil = {};
 
-blueprintUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
-blueprintUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
+subPatchOpUtil.blueprintPortJsonAttachmentFilename = "att_ports.json";
+subPatchOpUtil.blueprintSubpatchAttachmentFilename = "att_subpatch_json";
 
 
 
-blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
+subPatchOpUtil.executeBlueprintIfMultiple = (opname, next) =>
 {
     const ops = gui.corePatch().getOpsByObjName(opname);
 
@@ -27,7 +27,7 @@ blueprintUtil.executeBlueprintIfMultiple = (opname, next) =>
     }
 };
 
-blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
+subPatchOpUtil.generatePortsAttachmentJsSrc = (ports) =>
 {
     let src = "";
 
@@ -167,7 +167,7 @@ blueprintUtil.generatePortsAttachmentJsSrc = (ports) =>
 };
 
 
-blueprintUtil.portJsonUtil = (opId, portid, options) =>
+subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 {
     const loadingModal = gui.startModalLoading("Modify port ...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
@@ -188,7 +188,7 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
         "opAttachmentGet",
         {
             "opname": opId,
-            "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
         },
         (err, res) =>
         {
@@ -217,7 +217,7 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
 
             loadingModal.setTask("saving ports json");
 
-            blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -231,7 +231,7 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -240,7 +240,7 @@ blueprintUtil.portJsonUtil = (opId, portid, options) =>
     );
 };
 
-blueprintUtil.portJsonDelete = (opId, portid) =>
+subPatchOpUtil.portJsonDelete = (opId, portid) =>
 {
     const loadingModal = gui.startModalLoading("Deleting port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
@@ -254,7 +254,7 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
         "opAttachmentGet",
         {
             "opname": opId,
-            "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
         },
         (err, res) =>
         {
@@ -264,11 +264,11 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
 
             for (let i = 0; i < js.ports.length; i++) if (js.ports[i] && js.ports[i].id == portid) js.ports[i] = null;
 
-            js.ports = blueprintUtil.sortPortsJsonPorts(js.ports);
+            js.ports = subPatchOpUtil.sortPortsJsonPorts(js.ports);
 
             loadingModal.setTask("saving ports json");
 
-            blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -280,7 +280,7 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
 
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -289,7 +289,7 @@ blueprintUtil.portJsonDelete = (opId, portid) =>
     );
 };
 
-blueprintUtil.portJsonMove = (opId, portid, dir) =>
+subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 {
     const loadingModal = gui.startModalLoading("Moving port...");
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
@@ -302,7 +302,7 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
         "opAttachmentGet",
         {
             "opname": opId,
-            "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
         },
         (err, res) =>
         {
@@ -340,7 +340,7 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
 
             loadingModal.setTask("saving ports json");
 
-            blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -353,7 +353,7 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
                     gui.corePatch().clearSubPatchCache(newOps[0].patchId.get());
                     gui.corePatch().buildSubPatchCache();
 
-                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("blueprintutil", setSavedParentSubpatch);
+                    if (setSavedParentSubpatch !== false)gui.savedState.setSaved("subppatchoputil", setSavedParentSubpatch);
 
                     gui.endModalLoading();
                 });
@@ -362,7 +362,7 @@ blueprintUtil.portJsonMove = (opId, portid, dir) =>
     );
 };
 
-blueprintUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
+subPatchOpUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
 {
     const o = {
         "id": CABLES.shortId(),
@@ -383,7 +383,7 @@ blueprintUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
     return o;
 };
 
-blueprintUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
+subPatchOpUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
 {
     if (!portsJson.ports)
     {
@@ -391,11 +391,11 @@ blueprintUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
         return;
     }
 
-    portsJson.ports = blueprintUtil.sortPortsJsonPorts(portsJson.ports);
+    portsJson.ports = subPatchOpUtil.sortPortsJsonPorts(portsJson.ports);
 
     const atts = {};
-    atts[blueprintUtil.blueprintPortJsonAttachmentFilename] = JSON.stringify(portsJson, false, 4);
-    atts["att_inc_gen_ports.js"] = blueprintUtil.generatePortsAttachmentJsSrc(portsJson);
+    atts[subPatchOpUtil.blueprintPortJsonAttachmentFilename] = JSON.stringify(portsJson, false, 4);
+    atts["att_inc_gen_ports.js"] = subPatchOpUtil.generatePortsAttachmentJsSrc(portsJson);
 
 
     if (!gui.savedState.isSavedSubPatch(gui.patchView.getCurrentSubPatch()))
@@ -408,9 +408,9 @@ blueprintUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
         )
         {
             const newSubId = CABLES.shortId();
-            const o = blueprintUtil._getSubPatchSerialized(gui.patchView.getCurrentSubPatch(), newSubId);
+            const o = subPatchOpUtil._getSubPatchSerialized(gui.patchView.getCurrentSubPatch(), newSubId);
 
-            atts[blueprintUtil.blueprintSubpatchAttachmentFilename] = JSON.stringify(o, null, "  ");
+            atts[subPatchOpUtil.blueprintSubpatchAttachmentFilename] = JSON.stringify(o, null, "  ");
         }
     }
 
@@ -428,7 +428,7 @@ blueprintUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
         });
 };
 
-blueprintUtil.sortPortsJsonPorts = (ports) =>
+subPatchOpUtil.sortPortsJsonPorts = (ports) =>
 {
     ports = ports.filter((n) => { return n; }); // remove null objects
 
@@ -438,7 +438,7 @@ blueprintUtil.sortPortsJsonPorts = (ports) =>
     return ports.sort((a, b) => { return a.order - b.order; });
 };
 
-blueprintUtil.addPortToBlueprint = (opId, port, options) =>
+subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 {
     options = options || {};
     const loadingModal = gui.startModalLoading("Adding port");
@@ -453,7 +453,7 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
         "opAttachmentGet",
         {
             "opname": opId,
-            "name": blueprintUtil.blueprintPortJsonAttachmentFilename,
+            "name": subPatchOpUtil.blueprintPortJsonAttachmentFilename,
         },
         (err, res) =>
         {
@@ -462,14 +462,14 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
             const js = JSON.parse(res.content) || {};
             js.ports = js.ports || [];
 
-            const newPortJson = blueprintUtil.createBlueprintPortJsonElement(port, options.reverseDir);
+            const newPortJson = subPatchOpUtil.createBlueprintPortJsonElement(port, options.reverseDir);
 
             js.ports.push(newPortJson);
-            js.ports = blueprintUtil.sortPortsJsonPorts(js.ports);
+            js.ports = subPatchOpUtil.sortPortsJsonPorts(js.ports);
 
             loadingModal.setTask("saving ports json");
 
-            blueprintUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -511,7 +511,7 @@ blueprintUtil.addPortToBlueprint = (opId, port, options) =>
 };
 
 
-blueprintUtil.getAutoName = (short) =>
+subPatchOpUtil.getAutoName = (short) =>
 {
     let newOpName = "";
     const ns = defaultOps.getPatchOpsNamespace();
@@ -532,7 +532,7 @@ blueprintUtil.getAutoName = (short) =>
     return newOpName;
 };
 
-blueprintUtil.portEditDialog = (opId, portId, portData) =>
+subPatchOpUtil.portEditDialog = (opId, portId, portData) =>
 {
     if (!portId)portId = CABLES.shortId();
     const html = getHandleBarHtml("dialog_createport", { "portId": portId, "port": portData });
@@ -630,11 +630,11 @@ blueprintUtil.portEditDialog = (opId, portId, portData) =>
             }
 
 
-            blueprintUtil.portJsonUtil(opId, portId, { "port": port });
+            subPatchOpUtil.portJsonUtil(opId, portId, { "port": port });
         });
 };
 
-blueprintUtil._getSubPatchSerialized = function (oldSubId, newSubId)
+subPatchOpUtil._getSubPatchSerialized = function (oldSubId, newSubId)
 {
     const ops = gui.patchView.getAllOpsInBlueprint(oldSubId);
     const o = { "ops": [] };
@@ -654,14 +654,14 @@ blueprintUtil._getSubPatchSerialized = function (oldSubId, newSubId)
     return o;
 };
 
-blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
+subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
 {
     const oldSubId = options.oldSubId;
     gui.patchView.setPositionSubPatchInputOutputOps(oldSubId);
     const loadingModal = gui.startModalLoading("serialize ops");
 
     const subId = CABLES.shortId();
-    const o = blueprintUtil._getSubPatchSerialized(oldSubId, subId);
+    const o = subPatchOpUtil._getSubPatchSerialized(oldSubId, subId);
 
     loadingModal.setTask("save attachment...");
 
@@ -671,7 +671,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
         "opAttachmentSave",
         {
             "opname": newOp.opId,
-            "name": blueprintUtil.blueprintSubpatchAttachmentFilename,
+            "name": subPatchOpUtil.blueprintSubpatchAttachmentFilename,
             "content": JSON.stringify(o, null, "  "),
         },
         (err) =>
@@ -738,7 +738,7 @@ blueprintUtil.updateBluePrint2Attachment = (newOp, options) =>
 
 
 
-blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
+subPatchOpUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
 {
     const loadingModal = gui.startModalLoading("save op code");
 
@@ -746,7 +746,7 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
         {
             "opname": newOp.objName,
             "update": {
-                "code": srcBluePrintOp,
+                "code": srcSubPatchOp,
                 "coreLibs": ["subpatchop"]
             }
         },
@@ -769,7 +769,7 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
                         }
                     });
 
-            blueprintUtil.updateBluePrint2Attachment(
+            subPatchOpUtil.updateBluePrint2Attachment(
                 newOp,
                 {
                     "execute": false,
@@ -796,6 +796,6 @@ blueprintUtil.createBlueprint2Op = (newOp, oldSubpatchOp, next, options = {}) =>
 
 
 
-export default blueprintUtil;
+export default subPatchOpUtil;
 
 

@@ -1,6 +1,5 @@
 import { Logger, ele, Events } from "cables-shared-client";
 import PatchSaveServer from "../api/patchserverapi.js";
-import blueprintUtil from "../blueprint_util.js";
 import defaultOps from "../defaultops.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import { notify, notifyError } from "../elements/notification.js";
@@ -14,6 +13,7 @@ import SuggestionDialog from "./suggestiondialog.js";
 import SuggestPortDialog from "./suggestionportdialog.js";
 import userSettings from "./usersettings.js";
 import Snap from "../glpatch/snap.js";
+import subPatchOpUtil from "../subpatchop_util.js";
 
 export default class PatchView extends Events
 {
@@ -483,7 +483,6 @@ export default class PatchView extends Events
                         op.getPort("value").set(oldValue);
                         op.setTitle(options.linkNewOpToPort.getName());
                     }
-
 
                     gui.corePatch().link(
                         options.linkNewOpToOp,
@@ -2011,7 +2010,7 @@ export default class PatchView extends Events
             {
                 if (options.createSpOpPort)
                 {
-                    blueprintUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
+                    subPatchOpUtil.addPortToBlueprint(options.op.opId, p, { "reverseDir": !isInnerOp,
                         "cb": (newPortJson, newOp) =>
                         {
                             this._p.link(op1, pid, newOp, newPortJson.id);

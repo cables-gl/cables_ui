@@ -2,7 +2,7 @@ import { Logger } from "cables-shared-client";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
 import { hideToolTip, showToolTip } from "../../elements/tooltips.js";
-import blueprintUtil from "../../blueprint_util.js";
+import subPatchOpUtil from "../../subpatchop_util.js";
 
 export default class ManageOp
 {
@@ -136,7 +136,7 @@ export default class ManageOp
                     const canEditOp = gui.serverOps.canEditOp(gui.user, opName);
                     if (portJson && portJson.ports)
                     {
-                        portJson.ports = blueprintUtil.sortPortsJsonPorts(portJson.ports);
+                        portJson.ports = subPatchOpUtil.sortPortsJsonPorts(portJson.ports);
 
                         if (portJson.ports.length > 1)
                             for (let i = 1; i < portJson.ports.length; i++)
@@ -185,7 +185,7 @@ export default class ManageOp
                             const buttonCreate = ele.byId(this._id + "_port_create");
                             if (buttonCreate)buttonCreate.addEventListener("click", () =>
                             {
-                                blueprintUtil.portEditDialog(opName);
+                                subPatchOpUtil.portEditDialog(opName);
                             });
 
 
@@ -198,35 +198,25 @@ export default class ManageOp
                                 const buttonDelete = ele.byId(this._id + "_port_delete_" + id);
                                 if (buttonDelete)buttonDelete.addEventListener("click", () =>
                                 {
-                                    blueprintUtil.portJsonDelete(opName, id);
+                                    subPatchOpUtil.portJsonDelete(opName, id);
                                 });
 
                                 const buttonTitle = ele.byId(this._id + "_port_title_" + id);
                                 if (buttonTitle)buttonTitle.addEventListener("click", () =>
                                 {
-                                    blueprintUtil.portEditDialog(opName, id, p);
-                                    //     new CABLES.UI.ModalDialog({
-                                    //         "prompt": true,
-                                    //         "title": "Enter Title",
-                                    //         "text": "Enter a new title for " + p.title + " (" + id + ")",
-                                    //         "promptValue": p.title,
-                                    //         "promptOk": (title) =>
-                                    //         {
-                                    //             blueprintUtil.portJsonUtil(opName, id, { "title": title });
-                                    //         }
-                                    //     });
+                                    subPatchOpUtil.portEditDialog(opName, id, p);
                                 });
 
                                 const buttonMoveUp = ele.byId(this._id + "_port_up_" + id);
                                 if (buttonMoveUp)buttonMoveUp.addEventListener("click", () =>
                                 {
-                                    blueprintUtil.portJsonMove(opName, id, -1);
+                                    subPatchOpUtil.portJsonMove(opName, id, -1);
                                 });
 
                                 const buttonMoveDown = ele.byId(this._id + "_port_down_" + id);
                                 if (buttonMoveDown)buttonMoveDown.addEventListener("click", () =>
                                 {
-                                    blueprintUtil.portJsonMove(opName, id, 1);
+                                    subPatchOpUtil.portJsonMove(opName, id, 1);
                                 });
                             }
                         }

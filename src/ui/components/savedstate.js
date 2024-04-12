@@ -229,7 +229,7 @@ export default class SavedState extends Events
                     continue;
                 }
 
-                let onclick = "CABLES.UI.blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp('" + idx + "'), { 'oldSubId': '" + idx + "' })";
+                let onclick = "CABLES.UI.subPatchOpUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp('" + idx + "'), { 'oldSubId': '" + idx + "' })";
                 if (idx == 0) onclick = "CABLES.CMD.PATCH.save();";
                 str += "<li style=\"overflow:hidden;text-overflow:ellipsis\" onclick=\"" + onclick + "\" class=\"warning\">Unsaved:&nbsp;" + subname + "</li>";
             }

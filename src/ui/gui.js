@@ -35,9 +35,9 @@ import GuiRestrictions from "./components/guirestrictions.js";
 import PatchPanel from "./components/patchpanel.js";
 import SavedState from "./components/savedstate.js";
 import defaultTheme from "./defaulttheme.json";
-import blueprintUtil from "./blueprint_util.js";
 import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
+import subPatchOpUtil from "./subpatchop_util.js";
 
 export default class Gui extends Events
 {
@@ -47,7 +47,7 @@ export default class Gui extends Events
         this._log = new Logger("gui");
 
         this.theme = defaultTheme;
-        this.patchId = cfg.patchId;
+
         this._showTiming = false;
 
         /**
@@ -183,6 +183,12 @@ export default class Gui extends Events
         this._currentProject = null;
         this.tips = new Tips();
         this.currentModal = null;
+    }
+
+
+    get patchId()
+    {
+        return gui.project().shortId;
     }
 
     project()
@@ -1515,7 +1521,7 @@ export default class Gui extends Events
                     {
                         gui.showLoadingProgress(true);
 
-                        blueprintUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
+                        subPatchOpUtil.updateBluePrint2Attachment(gui.patchView.getSubPatchOuterOp(bp),
                             {
                                 "oldSubId": bp,
                                 "next": () =>
