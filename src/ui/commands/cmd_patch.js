@@ -1263,9 +1263,37 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     if (!ops)
     {
         ops = gui.patchView.getSelectedOps();
+
+
+        for (let i = 0; i < ops.length; i++)
+        {
+            const op = ops[i];
+            const opname = op.objName;
+            let sanitizedOpName = opname.replaceAll(".", "_");
+
+
+            let newOpname = "Ops.Patch.P" + gui.patchId + "." + sanitizedOpName;
+            newOpname = newOpname.replaceAll(".Ops_", ".");
+
+            const newOpnameNoVer = newOpname.replaceAll("_v", "V");
+
+            let count = 0;
+            newOpname = newOpnameNoVer;
+            while (gui.opDocs.getOpDocByName(newOpname))
+            {
+                newOpname = newOpnameNoVer + count;
+                count++;
+            }
+            op.renameopto = newOpname;
+
+            console.log("new renameto name:", newOpname);
+        }
+
         if (ops.length == 0) return;
     }
+
     loadingModal = loadingModal || gui.startModalLoading("Cloning ops...");
+
 
     if (ops.length == 0)
     {
@@ -1274,21 +1302,28 @@ CABLES_CMD_PATCH.cloneSelectedOps = (ops, loadingModal) =>
     }
     const op = ops.pop();
     const opname = op.objName;
-    const newOpname = "Ops.Patch.P" + gui.patchId + "." + opname.replaceAll(".", "_");
+    const newOpname = op.renameopto;
 
-
-    // op.opId
-    gui.serverOps.clone(op.opId, newOpname, () =>
+    if (gui.opDocs.getOpDocByName(newOpname))
     {
-        gui.serverOps.loadOpDependencies(opname, function ()
+        // that opname was already renamed in list
+        gui.patchView.replaceOp(op.id, newOpname);
+        CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+    }
+    else
+    {
+        gui.serverOps.clone(op.opId, newOpname, () =>
         {
-            gui.patchView.replaceOp(op.id, newOpname);
+            gui.serverOps.loadOpDependencies(opname, function ()
+            {
+                gui.patchView.replaceOp(op.id, newOpname);
 
-            CABLES.UI.notify("created op " + newOpname, null, { "force": true });
+                CABLES.UI.notify("created op " + newOpname, null, { "force": true });
 
-            CABLES_CMD_PATCH.cloneSelectedOps(ops);
-        });
-    }, { "openEditor": false, "loadingModal": loadingModal });
+                CABLES_CMD_PATCH.cloneSelectedOps(ops, loadingModal);
+            });
+        }, { "openEditor": false, "loadingModal": loadingModal });
+    }
 };
 
 CMD_PATCH_COMMANDS.push(
