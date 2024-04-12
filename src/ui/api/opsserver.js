@@ -310,7 +310,7 @@ export default class ServerOps
                 refOldOp
             );
         });
-        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name + "&p=" + gui.project().shortId), lid);
+        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name + "?p=" + gui.project().shortId), lid);
     }
 
     clone(oldname, name, cb, options)
@@ -1673,7 +1673,7 @@ export default class ServerOps
                     const missingOpUrl = [];
                     allIdentifiers.forEach((identifier) =>
                     {
-                        let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "&p=" + gui.project().shortId;
+                        let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "?p=" + gui.project().shortId;
                         missingOpUrl.push(url);
                     });
 
