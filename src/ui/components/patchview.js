@@ -577,14 +577,20 @@ export default class PatchView extends Events
 
     showSelectedOpsPanel()
     {
-        const numops = this.getSelectedOps().length;
+        const ops = this.getSelectedOps();
+        const numops = ops.length;
 
         if (numops > 0)
         {
+            let mulSubs = false;
+
+            for (let i = 0; i < ops.length; i++) if (ops[i].uiAttribs.subPatch != ops[0].uiAttribs.subPatch) { mulSubs = true; break; }
+
             const html = getHandleBarHtml(
                 "params_ops", {
                     "isDevEnv": CABLES.sandbox.isDevEnv(),
                     "numOps": numops,
+                    "mulSubs": mulSubs
                 });
 
             gui.opParams.clear();
