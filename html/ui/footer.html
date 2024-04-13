@@ -71,7 +71,9 @@
 
     CABLESUILOADER.noCacheUrl = function (url)
     {
-        return url + "?nc=" + (Date.now() + "").substr(-6);
+        let seperator = "?";
+        if(url.includes("?")) seperator = "&";
+        return url + seperator + "nc=" + (Date.now() + "").substr(-6);
     };
 
     CABLESUILOADER.builtVersionUrl = function (component, url)

@@ -490,7 +490,7 @@ export default class FileManager
                         document.getElementById("item_details").innerHTML = html;
 
 
-                    const editEle = document.getElementById("fileedit" + itemId);
+                    const editEle = document.querySelector("*[data-info=filemanager_edit_file]");
 
                     if (editEle)
                     {

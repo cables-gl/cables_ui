@@ -57,23 +57,26 @@ export default class PatchPanel extends Events
         if (!force && ele.byClass("patchParamPanel")) return;
 
         let html = "<div class=\"patchParamPanel panel bookmarkpanel\">";
-        // html += "<div id=\"patchsummary\"></div>";
 
         const project = gui.project();
         if (project)
         {
             const projectId = project.shortId || project._id;
-            let missingExampleOps = [];
-            if (project.opExampleFor)
-                for (let i = 0; i < project.opExampleFor.length; i++)
-                    if (gui.corePatch().getOpsByObjName(project.opExampleFor[i]).length == 0) missingExampleOps.push(project.opExampleFor[i]);
 
 
             const isSameHost = CABLES.sandbox.isPatchSameHost();
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;
-            html += getHandleBarHtml("patch_summary", { "projectId": projectId, "project": project, "cablesUrl": CABLES.sandbox.getCablesUrl(), "missingExampleOps": missingExampleOps, "sameHost": isSameHost, "patchHost": host });
+
+            html += getHandleBarHtml("patch_summary",
+                {
+                    "projectId": projectId,
+                    "project": project,
+                    "cablesUrl": CABLES.sandbox.getCablesUrl(),
+                    "sameHost": isSameHost,
+                    "patchHost": host
+                });
         }
 
         html += "<br/><div id=\"tree\"></div>";
