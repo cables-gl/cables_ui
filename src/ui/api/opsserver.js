@@ -1106,7 +1106,7 @@ export default class ServerOps
                                         }
                                         // const src = subPatchOpUtil.generatePortsAttachmentJsSrc(ports);
 
-                                        subPatchOpUtil.savePortJsonBlueprintAttachment(ports, opname, () =>
+                                        subPatchOpUtil.savePortJsonSubPatchOpAttachment(ports, opname, () =>
                                         {
                                             subPatchOpUtil.executeBlueprintIfMultiple(opname, () =>
                                             {

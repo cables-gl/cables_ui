@@ -217,7 +217,7 @@ subPatchOpUtil.portJsonUtil = (opId, portid, options) =>
 
             loadingModal.setTask("saving ports json");
 
-            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -268,7 +268,7 @@ subPatchOpUtil.portJsonDelete = (opId, portid) =>
 
             loadingModal.setTask("saving ports json");
 
-            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -340,7 +340,7 @@ subPatchOpUtil.portJsonMove = (opId, portid, dir) =>
 
             loadingModal.setTask("saving ports json");
 
-            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
@@ -383,7 +383,7 @@ subPatchOpUtil.createBlueprintPortJsonElement = (port, reverseDir) =>
     return o;
 };
 
-subPatchOpUtil.savePortJsonBlueprintAttachment = (portsJson, opname, next) =>
+subPatchOpUtil.savePortJsonSubPatchOpAttachment = (portsJson, opname, next) =>
 {
     if (!portsJson.ports)
     {
@@ -469,7 +469,7 @@ subPatchOpUtil.addPortToBlueprint = (opId, port, options) =>
 
             loadingModal.setTask("saving ports json");
 
-            subPatchOpUtil.savePortJsonBlueprintAttachment(js, opId, () =>
+            subPatchOpUtil.savePortJsonSubPatchOpAttachment(js, opId, () =>
             {
                 loadingModal.setTask("reload op");
 
