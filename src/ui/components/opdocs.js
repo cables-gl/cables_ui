@@ -234,6 +234,19 @@ export default class OpDocs
                 return this._teamnamespaces[i];
             }
         }
+
+        // console.log("could not find opdocs by name", opName);
+        // console.log((new Error()).stack);
+
+        const d = this.getOpDocById(opName);
+
+        if (!d)
+        {
+            console.log("could not find opdocs by name", opName);
+            console.log((new Error()).stack);
+        }
+
+        return d;
     }
 
     /**

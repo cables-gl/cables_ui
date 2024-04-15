@@ -8,6 +8,17 @@ export default class ManageOp
 {
     constructor(tabs, opname)
     {
+        if (!opname)
+        {
+            CABLES.editorSession.remove("manageOp", opname);
+            return;
+        }
+
+        const opDoc = gui.opDocs.getOpDocByName(this._currentName);
+
+        let opObjName = opname;
+        if (opDoc)opObjName = opDoc.name;
+
         this._log = new Logger("ManageOp");
         this._initialized = false;
         this._lastSelectedOp = null;
@@ -15,7 +26,7 @@ export default class ManageOp
         this._id = CABLES.shortId();
         this._refreshListener = [];
 
-        this._tab = new Tab(opname, { "icon": "op", "infotext": "tab_code", "padding": true, "tabPanel": tabs, "singleton": true });
+        this._tab = new Tab(opObjName, { "icon": "op", "infotext": "tab_code", "padding": true, "tabPanel": tabs, "singleton": true });
         tabs.addTab(this._tab, true);
         this.show();
 
@@ -69,7 +80,7 @@ export default class ManageOp
         {
             this._tab.html("unknown op/no opdoc...<br/>this may be related to patch access restrictions<br/>please try in original patcjh");
             this._tab.remove();
-
+            console.log("no opdocs?!");
             return;
         }
 
@@ -86,6 +97,9 @@ export default class ManageOp
                     const opName = this._currentName;
                     let summary = "";
                     let portJson = null;
+
+
+
 
                     if (res.changelog && res.changelog.length > 0)
                     {
@@ -161,7 +175,7 @@ export default class ManageOp
                             "url": CABLES.sandbox.getCablesUrl(),
                             "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
                             "opid": opDoc.id,
-                            "opname": opName,
+                            "opname": opDoc.name,
                             "doc": doc,
                             "opDoc": opDoc,
                             "viewId": this._id,

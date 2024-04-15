@@ -1307,15 +1307,26 @@ export default class ServerOps
     }
 
 
-    getOpLibs(opname, checkLoaded)
+    getOpLibs(opThing, checkLoaded)
     {
         const perf = CABLES.UI.uiProfiler.start("[opsserver] getOpLibs");
         let opDoc = null;
-        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
         else
         {
-            opDoc = gui.opDocs.getOpDocByName(opname.objName);
-            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+            if (opThing.objName)
+            {
+                // console.log("A ", opThing.opId, opThing.objName);
+                // op instance
+                opDoc = gui.opDocs.getOpDocByName(opThing.objName);
+                if (!opDoc) opDoc = gui.opDocs.getOpDocById(opThing.opId);
+            }
+            else
+            {
+                // console.log("B ", opThing, opThing.id);
+                // opdoc object
+                opDoc = gui.opDocs.getOpDocById(opThing.id);
+            }
         }
         const libs = [];
         if (opDoc && opDoc.libs)
@@ -1338,17 +1349,34 @@ export default class ServerOps
         return libs;
     }
 
-    getCoreLibs(opname, checkLoaded)
+    getCoreLibs(opThing, checkLoaded)
     {
         const perf = CABLES.UI.uiProfiler.start("[opsserver] getCoreLibs");
 
         let opDoc = null;
-        if (typeof opname === "string") opDoc = gui.opDocs.getOpDocByName(opname);
+        if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
         else
         {
-            opDoc = gui.opDocs.getOpDocByName(opname.objName);
-            if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+            if (opThing.objName)
+            {
+                // console.log("A ", opThing.opId, opThing.objName);
+                // op instance
+                opDoc = gui.opDocs.getOpDocByName(opThing.objName);
+                if (!opDoc) opDoc = gui.opDocs.getOpDocById(opThing.opId);
+            }
+            else
+            {
+                // console.log("B ", opThing, opThing.id);
+                // opdoc object
+                opDoc = gui.opDocs.getOpDocById(opThing.id);
+            }
         }
+
+        // else
+        // {
+        //     opDoc = gui.opDocs.getOpDocByName(opname.objName);
+        //     if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
+        // }
 
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)

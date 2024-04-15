@@ -1395,7 +1395,7 @@ export default class PatchView extends Events
 
                 const outerOp = this.getSubPatchOuterOp(currentSubPatch);
 
-                str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageCurrentSubpatchOp('" + outerOp.objName + "')\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
+                str += "<a class=\"blueprint_subpatch2 button-icon tt info\" data-tt=\"mange op\" style=\"margin-left:0px;\" onclick=\"CABLES.CMD.PATCH.manageCurrentSubpatchOp()\"><span class=\"icon icon-op\" style=\"vertical-align: sub;\"></span></a>";
             }
             else if (names[0].type == "blueprint_subpatch")
             {
