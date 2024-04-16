@@ -1014,7 +1014,6 @@ CABLES_CMD_PATCH.setOpTitle = function ()
 {
     const ops = gui.patchView.getSelectedOps();
 
-
     if (ops.length != 1)
     {
         console.warn("rename canceled - select one op!");
