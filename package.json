@@ -31,7 +31,8 @@
         "raw-loader": "^4.0.2",
         "sass": "1.58.3",
         "webpack": "5.75.0",
-        "webpack-stream": "7.0.0"
+        "webpack-stream": "7.0.0",
+        "terser-webpack-plugin": "5.3.10"
     },
     "scripts": {
         "start": "gulp",
