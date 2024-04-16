@@ -57,9 +57,11 @@ export default class Gizmo
         function toScreen(trans)
         {
             const vp = cgl.getViewPort();
-            const x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
-            const y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
+            let x = vp[2] - (vp[2] * 0.5 - (trans[0] * vp[2] * 0.5) / trans[2]);
+            let y = vp[3] - (vp[3] * 0.5 + (trans[1] * vp[3] * 0.5) / trans[2]);
 
+            if (cgl.canvas.styleMarginLeft) x += cgl.canvas.styleMarginLeft;
+            if (cgl.canvas.styleMarginTop) y += cgl.canvas.styleMarginTop;
             return { "x": x, "y": y };
         }
 
@@ -126,6 +128,8 @@ export default class Gizmo
             const screenX = toScreen(transX);
             const screenY = toScreen(transY);
             const screenZ = toScreen(transZ);
+
+
 
             // console.log(screenZ);
 

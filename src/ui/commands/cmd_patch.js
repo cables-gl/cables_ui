@@ -116,7 +116,6 @@ CABLES_CMD_PATCH.createVersionSelectedOp = function ()
         gui.serverOps.loadOpDependencies(opname, function ()
         {
             gui.patchView.replaceOp(ops[0].id, newOpname);
-            console.log("done");
 
             CABLES.UI.notify("created op " + newOpname, null, { "force": true });
         });
@@ -133,6 +132,8 @@ CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
 {
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
+
+    console.log("subOuter", subOuter);
     new ManageOp(gui.mainTabs, subOuter.opId);
 };
 

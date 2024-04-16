@@ -59,10 +59,11 @@ function eleTtOver(e)
 {
     clearTimeout(tooltipTimeout);
     const txt = e.target.dataset.tt;
-    tooltipTimeout = setTimeout(() =>
-    {
-        showToolTip(e, txt);
-    }, 300);
+    if (txt)
+        tooltipTimeout = setTimeout(() =>
+        {
+            showToolTip(e, txt);
+        }, 300);
 }
 
 function eleTtOut(e)
@@ -166,8 +167,6 @@ export function updateHoverToolTip(event, port, overlink)
 {
     gui.emitEvent("portHovered", port);
     if (!port) return;
-
-
 
     let txt = getPortDescription(port, overlink);
     let val = null;
