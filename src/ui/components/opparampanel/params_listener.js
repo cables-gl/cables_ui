@@ -786,7 +786,7 @@ class ParamsListener extends Events
                 // if (!ports[index].isLinked() && (!v || v.length < ports[index].uiAttribs.minLength)) ports[index].op.setUiError("strMinLength", ports[index].name + " length should be >= " + ports[index].uiAttribs.minLength);
                 // else ports[index].op.setUiError("strMinLength", null);
 
-                if (v && ports[index].uiAttribs.trim)v = String(v).trim();
+                if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
 
                 ports[index].set(v || "");
             }
