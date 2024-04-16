@@ -925,10 +925,9 @@ export default class ServerOps
         {
             const opname = newNamespace + newName;
 
-
             let nameOrId = oldName;
             const doc = gui.opDocs.getOpDocByName(oldName);
-            console.log("doccc", doc);
+
             if (doc && doc.id)nameOrId = doc.id;
 
             gui.serverOps.clone(nameOrId, opname, () =>

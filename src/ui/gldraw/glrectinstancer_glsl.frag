@@ -2,7 +2,7 @@
  IN vec4 col;
  IN vec4 posSize;
  IN float zz;
- IN vec2 uv;
+ IN highp vec2 uv;
  IN vec4 decoration;
  IN float useTexture;
  UNI float time;
@@ -20,25 +20,26 @@
     return max(min(rgb.r, rgb.g), min(max(rgb.r, rgb.g),rgb.b));
  }
 
-    float screenPxRange()
-    {
-        float pxRange=4.0;
+float screenPxRange()
+{
+    float pxRange=4.0;
 
-        #ifdef WEBGL1
-        vec2 unitRange = vec2(pxRange)/vec2(1024.0);
-        #endif
-        #ifdef WEBGL2
-            vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));
-        #endif
+    #ifdef WEBGL1
+    vec2 unitRange = vec2(pxRange)/vec2(1024.0);
+    #endif
+    #ifdef WEBGL2
+        vec2 unitRange = vec2(pxRange)/vec2(textureSize(tex, 0));
+    #endif
 
-        vec2 screenTexSize = vec2(1.0)/fwidth(uv);
-        return max(0.5*dot(unitRange, screenTexSize), 1.0);
-    }
+    vec2 screenTexSize = vec2(1.0)/fwidth(uv);
+    return max(0.5*dot(unitRange, screenTexSize), 1.0);
+}
 
 float contour(in float d, in float w) {
     // smoothstep(lower edge0, upper edge1, x)
     return smoothstep(0.5 - w, 0.5 + w, d);
 }
+
 float samp(in vec2 uv, float w) {
     return contour(median(texture2D(tex, uv).rgb), w);
 }
@@ -187,12 +188,14 @@ float samp(in vec2 uv, float w) {
     else
     if(shape==9.0) // half block top
     {
-        if(uv.y<=0.5)discard;
+        if(floor(uv.y*20.0)/20.0<0.5)discard;
     }
     else
     if(shape==10.0) // half block bottom
     {
-        if(uv.y>=0.5)discard;
+        // if(uv.y>=0.5)discard;
+        if(ceil(uv.y*20.0)/20.0>0.5)
+        discard;
     }
     else
     if(shape==11.0) // arrow down
