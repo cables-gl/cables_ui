@@ -20,9 +20,7 @@ class ParamsListener extends Events
         this._watchStrings = [];
         this._portsIn = [];
         this._portsOut = [];
-
         this._doFormatNumbers = !(userSettings.get("notlocalizeNumberformat") || false);
-
         this._watchPortVisualizer = new WatchPortVisualizer();
 
         this._updateWatchPorts();
@@ -783,7 +781,15 @@ class ParamsListener extends Events
             }
 
 
-            if (ports[index].uiAttribs.type == "string")ports[index].set(v || "");
+            if (ports[index].uiAttribs.type == "string")
+            {
+                // if (!ports[index].isLinked() && (!v || v.length < ports[index].uiAttribs.minLength)) ports[index].op.setUiError("strMinLength", ports[index].name + " length should be >= " + ports[index].uiAttribs.minLength);
+                // else ports[index].op.setUiError("strMinLength", null);
+
+                if (v && ports[index].uiAttribs.trim)v = String(v).trim();
+
+                ports[index].set(v || "");
+            }
             // else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
             else ports[index].set(v || 0);
 
