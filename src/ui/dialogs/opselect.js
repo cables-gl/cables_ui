@@ -41,7 +41,6 @@ export default class OpSelect
     {
         this._bg.hide();
         this._eleOpsearchmodal.style.zIndex = -9999;
-        gui.currentModal = null;
 
         gui.patchView.focus();
     }
@@ -512,18 +511,22 @@ export default class OpSelect
 
         this._eleSearchinfo = document.getElementById("searchinfo");
 
-        gui.currentModal = this;
+        if (window.gui) gui.currentModal = this;
 
         this._typedSinceOpening = false;
         this._lastScrollTop = -5711;
         this._minimal = userSettings.get("miniopselect") == true;
 
+        this._options = options;
         CABLES.UI.hideToolTip();
 
         this._enterPressedEarly = false;
         CABLES.UI.OPSELECT.linkNewLink = link;
         CABLES.UI.OPSELECT.linkNewOpToPort = linkPort;
         CABLES.UI.OPSELECT.newOpPos = options;
+
+
+
 
 
         this._newOpOptions =
@@ -690,12 +693,10 @@ export default class OpSelect
             this.prepare();
             setTimeout(() =>
             {
-                gui.opSelect().show({
-                    "search": name,
-                    "subPatch": gui.patchView.getCurrentSubPatch(),
-                    "x": 0,
-                    "y": 0
-                });
+                const opts = this._options;
+                opts.search = name;
+                opts.subPatch = gui.patchView.getCurrentSubPatch();
+                this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
             }, 50);
         });
     }
@@ -709,12 +710,10 @@ export default class OpSelect
             this.prepare();
             setTimeout(() =>
             {
-                gui.opSelect().show({
-                    "search": name,
-                    "subPatch": gui.patchView.getCurrentSubPatch(),
-                    "x": 0,
-                    "y": 0
-                });
+                const opts = this._options;
+                opts.search = name;
+                opts.subPatch = gui.patchView.getCurrentSubPatch();
+                this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
             }, 50);
         });
     }
@@ -727,11 +726,10 @@ export default class OpSelect
             {
                 setTimeout(() =>
                 {
-                    gui.opSelect().show({
-                        "subPatch": gui.patchView.getCurrentSubPatch(),
-                        "x": 0,
-                        "y": 0
-                    });
+                    const opts = this._options;
+                    opts.search = name;
+                    opts.subPatch = gui.patchView.getCurrentSubPatch();
+                    this.show(opts, this._newOpOptions.linkNewOpToOp, this._newOpOptions.linkNewOpToPort, this._newOpOptions.linkNewLink);
                 }, 50);
             }
 
