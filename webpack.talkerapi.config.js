@@ -1,7 +1,8 @@
 import path from "path";
 import webpack from "webpack";
+import TerserPlugin from "terser-webpack-plugin";
 
-export default (isLiveBuild, buildInfo) =>
+export default (isLiveBuild, buildInfo, minify = false) =>
 {
     const __dirname = new URL(".", import.meta.url).pathname;
     return {
@@ -9,14 +10,14 @@ export default (isLiveBuild, buildInfo) =>
         "entry": [
             path.join(__dirname, "src-talkerapi", "talkerapi.js"),
         ],
-        "devtool": isLiveBuild ? "source-map" : "eval-cheap-module-source-map",
+        "devtool": minify ? "source-map" : "eval-cheap-module-source-map",
         "output": {
             "path": path.join(__dirname, "dist/js"),
             "filename": "talkerapi.js"
         },
-        "stats": isLiveBuild,
         "optimization": {
-            "minimize": isLiveBuild,
+            "minimizer": [new TerserPlugin({ "extractComments": false })],
+            "minimize": minify,
             "usedExports": true
         },
         "externals": ["CABLES"],
