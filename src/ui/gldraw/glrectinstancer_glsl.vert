@@ -1,7 +1,7 @@
 IN vec3 vPosition;
 IN vec3 instPos;
 IN vec4 instCol;
-IN vec2 attrTexCoord;
+IN highp vec2 attrTexCoord;
 IN vec4 texRect;
 IN vec2 instSize;
 IN vec4 instDeco;
@@ -11,7 +11,7 @@ OUT vec4 decoration;
 // OUT float outlinefrag;
 OUT vec4 posSize;
 OUT vec4 col;
-OUT vec2 uv;
+OUT highp vec2 uv;
 
 IN float contentTexture;
 OUT float useTexture;

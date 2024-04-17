@@ -1,6 +1,7 @@
 import { Logger } from "cables-shared-client";
 import ModalDialog from "../../dialogs/modaldialog.js";
 import GlUiConfig from "../../glpatch/gluiconfig.js";
+import defaultOps from "../../defaultops.js";
 
 export default class ModalPortValue
 {
@@ -245,9 +246,11 @@ export default class ModalPortValue
 
     structureHelper_exposeNode(opId, portName, path, dataType, inputDataType = "Object")
     {
+        const jsonDataOpName = defaultOps.jsonPathOps[inputDataType + "Get" + dataType];
+        if (!jsonDataOpName) return;
         const op = gui.corePatch().getOpById(opId);
         gui.patchView.addOp(
-            "Ops.Json." + inputDataType + "Get" + dataType + "ByPath",
+            jsonDataOpName,
             {
                 "subPatch": gui.patchView.getCurrentSubPatch(),
                 "onOpAdd": (newop) =>
@@ -264,8 +267,11 @@ export default class ModalPortValue
 
     structureHelper_exposeArray(opId, portName, path, inputDataType = "Object")
     {
+        const jsonDataOpName = defaultOps.jsonPathOps[inputDataType + "GetArrayValues"];
+        if (!jsonDataOpName) return;
+
         const op = gui.corePatch().getOpById(opId);
-        const newop = gui.corePatch().addOp("Ops.Json." + inputDataType + "GetArrayValuesByPath");
+        const newop = gui.corePatch().addOp(jsonDataOpName);
 
         newop.setUiAttrib({ "translate": { "x": op.uiAttribs.translate.x, "y": op.uiAttribs.translate.y + GlUiConfig.newOpDistanceY } });
 

@@ -71,6 +71,7 @@ body
 
 *,*:hover
 {
+    -webkit-touch-callout: none;
     -webkit-tap-highlight-color: transparent;
     outline: none !important;
 }
@@ -294,11 +295,11 @@ body
         font-size: 20px;
     }
 
-    input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus {
-    outline: none;
-    //   background-color: $text-input-background-color-focus;
-    color: var(--color-13);
-    border: 1px solid $highlight-color;
+    input[type=text]:active, input[type=text]:focus, input[type=search]:active, input[type=search]:focus
+    {
+        outline: none;
+        color: var(--color-13);
+        border: 1px solid $highlight-color;
     }
 
 

@@ -158,6 +158,18 @@ const defaultOps = {
 
 
     ],
+    "jsonPathOps": {
+        "ArrayGetArray": "Ops.Json.ArrayGetArrayByPath",
+        "ArrayGetArrayValues": "Ops.Json.ArrayGetArrayValuesByPath",
+        "ArrayGetNumber": "Ops.Json.ArrayGetNumberByPath",
+        "ArrayGetObject": "Ops.Json.ArrayGetObjectByPath",
+        "ArrayGetString": "Ops.Json.ArrayGetStringByPath",
+        "ObjectGetArray": "Ops.Json.ObjectGetArrayByPath",
+        "ObjectGetArrayValues": "Ops.Json.ObjectGetArrayValuesByPath",
+        "ObjectGetNumber": "Ops.Json.ObjectGetNumberByPath",
+        "ObjectGetObject": "Ops.Json.ObjectGetObjectByPath",
+        "ObjectGetString": "Ops.Json.ObjectGetStringByPath"
+    },
     "defaultMathOps":
     {
         "default":

@@ -26,14 +26,17 @@ let configLocation = "../cables_api/cables.json";
 if (process.env.npm_config_apiconfig) configLocation = "../cables_api/cables_env_" + process.env.npm_config_apiconfig + ".json";
 
 let isLiveBuild = false;
+let minify = false;
+let config = {};
 if (fs.existsSync(configLocation))
 {
-    const config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
+    config = JSON.parse(fs.readFileSync(configLocation, "utf-8"));
     isLiveBuild = config.env === "live";
+    minify = config.hasOwnProperty("minifyJs") ? config.minifyJs : false;
 }
 else
 {
-    console.error("config file not found at", configLocation, "forcing dev build");
+    console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
 }
 
 let buildInfo = getBuildInfo();
@@ -53,7 +56,7 @@ function _scripts_talkerapi(done)
         .pipe(
             webpack(
                 {
-                    "config": webpackTalkerApiConfig(isLiveBuild, buildInfo),
+                    "config": webpackTalkerApiConfig(isLiveBuild, buildInfo, minify),
                 },
                 compiler,
                 (err, stats) =>
@@ -87,11 +90,12 @@ function _scripts_core()
 
 function _scripts_ui_webpack(done)
 {
+    const minify = config.hasOwnProperty("minifyJs") ? config.minifyJs : false;
     return gulp.src(["src/ui/index.js"])
         .pipe(
             webpack(
                 {
-                    "config": webpackConfig(isLiveBuild, buildInfo),
+                    "config": webpackConfig(isLiveBuild, buildInfo, minify),
                 },
                 compiler,
                 (err, stats) =>
@@ -145,40 +149,6 @@ function _html_ui(done)
         .src(["html/ui/header.html", "html/ui/templates/*.html", "html/ui/footer.html"])
         .pipe(concat("index.html"))
         .pipe(gulp.dest("dist/"));
-}
-
-function _cleanup_scripts(done)
-{
-    if (isLiveBuild)
-    {
-        console.log("live build: deleting map/max files...");
-        const filesToDelete = [
-            "./dist/js/stats.json",
-            "./dist/js/cablesui.min.js.map",
-            "./dist/js/talkerapi.js.map",
-            "./dist/js/cables.min.js.map",
-            "./dist/js/libs.ui.min.js.map",
-            "./dist/js/libs.core.min.js.map",
-            "./dist/js/babel.cables.min.js.map"
-        ];
-        filesToDelete.forEach((file) =>
-        {
-            if (fs.existsSync(file))
-            {
-                console.log("   deleting", file);
-                fs.unlinkSync(file);
-            }
-            const jsFile = file.slice(0, -4);
-            if (file.endsWith(".map") && fs.existsSync(jsFile))
-            {
-                let js = fs.readFileSync(jsFile, "utf-8");
-                const mapping = "# sourceMappingURL=";
-                js = js.replaceAll(mapping, "# originalSourceMappingURL=");
-                fs.writeFileSync(jsFile, js, { "encoding": "utf-8" });
-            }
-        });
-    }
-    done();
 }
 
 function _sass(done)
@@ -246,7 +216,6 @@ gulp.task("default", gulp.series(
     _sass,
     _svgcss,
     _scripts_talkerapi,
-    _cleanup_scripts,
     _watch
 ));
 
@@ -262,7 +231,6 @@ gulp.task("build", gulp.series(
     _scripts_core,
     _scripts_ui_webpack,
     _scripts_talkerapi,
-    _cleanup_scripts,
     _sass,
 ));
 
