@@ -1,3 +1,5 @@
+import userSettings from "../../components/usersettings.js";
+
 export default class TransformsOverlay
 {
     constructor()
@@ -31,6 +33,12 @@ export default class TransformsOverlay
 
             this._lastCheck = performance.now();
         }
+    }
+
+    updateVisibility()
+    {
+        CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms") && userSettings.get("overlaysShow");
+        this.setVisible(CABLES.UI.showCanvasTransforms);
     }
 
     setVisible(b)

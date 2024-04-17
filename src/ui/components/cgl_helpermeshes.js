@@ -457,12 +457,10 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
 helperMeshes.drawMarkerLayer = function (cgl, size)
 {
-    CABLES.UI.renderHelper = userSettings.get("helperMode");
-    CABLES.UI.renderHelperCurrent = userSettings.get("helperModeCurrentOp");
+    CABLES.UI.renderHelper = userSettings.get("overlaysShow");
 
-    if (!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper) return;
+    if (!CABLES.UI.renderHelper) return;
 
-    // if (!CABLES.UI.renderHelper) return;
     if (helperMeshes.count == 0) return;
     helperMeshes.count = 0;
 
