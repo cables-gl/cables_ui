@@ -10,13 +10,13 @@ export default (isLiveBuild, buildInfo, minify = false) =>
         "entry": [
             path.join(__dirname, "src-talkerapi", "talkerapi.js"),
         ],
-        "devtool": minify ? "source-map" : "eval-cheap-module-source-map",
+        "devtool": minify ? "source-map" : false,
         "output": {
             "path": path.join(__dirname, "dist/js"),
             "filename": "talkerapi.js"
         },
         "optimization": {
-            "minimizer": [new TerserPlugin({ "extractComments": false })],
+            "minimizer": [new TerserPlugin({ "extractComments": false, "terserOptions": { "output": { "comments": false } } })],
             "minimize": minify,
             "usedExports": true
         },

@@ -108,11 +108,8 @@
         incrementStartup();
 
         loadjs([
-            CABLESUILOADER.builtVersionUrl("core", "js/libs.core.min.js")
+            CABLESUILOADER.builtVersionUrl("core", "js/libs.core.js")
         ], "libs");
-
-        var jsType = "max";
-        if (!cfg.isDevEnv) jsType = "min";
 
         loadjs.ready("libs", function ()
         {
@@ -120,13 +117,11 @@
             logStartup("loaded libs");
 
 
-            loadjs([CABLESUILOADER.builtVersionUrl("core", "js/cables." + jsType + ".js")], "cables_core");
+            loadjs([CABLESUILOADER.builtVersionUrl("core", "js/cables.js")], "cables_core");
 
             loadjs.ready("cables_core", function ()
             {
                 logStartup("loaded cables core");
-                // console.log("core loaded",CABLES);
-
                 incrementStartup();
 
                 loadjs([CABLESUILOADER.builtVersionUrl("ui", "js/cablesui.js")], "cablesuinew");

@@ -44,9 +44,15 @@ let buildInfo = getBuildInfo();
 function _scripts_libs_ui(done)
 {
     let task = gulp.src(["libs/ui/*.js"]);
-    if (isLiveBuild) task = task.pipe(sourcemaps.init());
-    task = task.pipe(concat("libs.ui.js")).pipe(gulp.dest("dist/js")).pipe(rename("libs.ui.min.js"));
-    if (isLiveBuild) task = task.pipe(uglify()).pipe(sourcemaps.write("./"));
+
+    if (minify) task = task.pipe(sourcemaps.init());
+    task = task.pipe(concat("libs.ui.js")).pipe(gulp.dest("dist/js"));
+    if (minify)
+    {
+        task = task.pipe(uglify());
+        task = task.pipe(sourcemaps.write("./"));
+    }
+
     return task.pipe(gulp.dest("dist/js"));
 }
 
@@ -84,7 +90,7 @@ function _scripts_talkerapi(done)
 function _scripts_core()
 {
     return gulp
-        .src(["../cables/build/**/*.*", "!../cables/build/buildInfo.json", "!../cables/build/libs/*"])
+        .src(["../cables/build/**/*.*", "!../cables/build/buildinfo.json", "!../cables/build/libs/*"])
         .pipe(gulp.dest("dist/js/"));
 }
 
@@ -139,7 +145,7 @@ function getBuildInfo()
 function _update_buildInfo(done)
 {
     buildInfo = getBuildInfo();
-    fs.writeFileSync("./dist/buildInfo.json", JSON.stringify(buildInfo));
+    fs.writeFileSync("./dist/buildinfo.json", JSON.stringify(buildInfo));
     done();
 }
 
