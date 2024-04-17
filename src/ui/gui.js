@@ -1117,15 +1117,11 @@ export default class Gui extends Events
 
     helperContextMenu(el)
     {
-        let iconTransforms = "icon icon-check hidden";
-        if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
-
-
-        let iconShowOverlays = "icon icon-check hidden";
+        let iconShowOverlays = "icon icon-empty";
         if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
 
-        // let iconCurrentOpTransform = "icon icon-check hidden";
-        // if (userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "icon icon-check";
+        let iconTransforms = "icon icon-check hidden";
+        if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
         let items = [{
             "title": "Show Overlays",
@@ -1141,12 +1137,10 @@ export default class Gui extends Events
                     "iconClass": iconTransforms,
                 });
 
-
         CABLES.contextMenu.show(
             {
                 "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
                 "items": items
-
             }, el);
     }
 
