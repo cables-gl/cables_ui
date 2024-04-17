@@ -1546,7 +1546,7 @@ export default class Gui extends Events
             this._spaceBarStart = 0;
         });
 
-        this.keys.key("o", "Toggle Overlays", "down", null, { }, (e) =>
+        this.keys.key("o", "Toggle Overlays", "down", null, { "ignoreInput": true }, (e) =>
         {
             CABLES.CMD.UI.toggleOverlays();
         });
