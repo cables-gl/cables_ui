@@ -1822,7 +1822,7 @@ export default class ServerOps
         CABLES.logStack();
         if (err && err.msg == "ILLEGAL_OPS")
         {
-            new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "SubPatchOp can not contain this op because of their namespaces: <br/><span class=\"warning-error-level2\">" + err.data.msg + "</span><br/><br/>Try to move or create the op outside of the subPatch." });
+            new ModalDialog({ "title": "Namespace Hierarchy Problem", "showOkButton": true, "html": "SubPatchOp can not contain this op because of their namespaces: <br/><br/><span class=\"warning-error-level2\">" + err.data.msg + "</span><br/><br/>Try to move or create the op outside of the subPatch." });
         }
         else
         {

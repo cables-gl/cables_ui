@@ -158,17 +158,20 @@
     .warning-error-level2,.warning-error-level2:hover
     {
         background: var(--color-bg-error) !important;
+        color:white;
     }
 
 
     .warning-error-level1
     {
         background: var(--color-bg-warning);
+        color:white;
     }
 
     .warning-error-level0, .warning-error-level3
     {
         background: var(--color-bg-hint);
+
     }
 
 
