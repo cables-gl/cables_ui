@@ -1117,31 +1117,33 @@ export default class Gui extends Events
 
     helperContextMenu(el)
     {
-        let iconShowOverlays = "icon icon-empty";
-        if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
+        CABLES.CMD.UI.toggleOverlays();
 
-        let iconTransforms = "icon icon-check hidden";
-        if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
+        // let iconShowOverlays = "icon icon-empty";
+        // if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
 
-        let items = [{
-            "title": "Show Overlays",
-            "func": CABLES.CMD.UI.toggleOverlays,
-            "iconClass": iconShowOverlays,
-        }];
+        // let iconTransforms = "icon icon-check hidden";
+        // if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
-        // if (userSettings.get("overlaysShow"))
-        //     items.push(
-        //         {
-        //             "title": "Show all transforms",
-        //             "func": CABLES.CMD.UI.toggleTransformOverlay,
-        //             "iconClass": iconTransforms,
-        //         });
+        // let items = [{
+        //     "title": "Show Overlays",
+        //     "func": CABLES.CMD.UI.toggleOverlays,
+        //     "iconClass": iconShowOverlays,
+        // }];
 
-        CABLES.contextMenu.show(
-            {
-                "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
-                "items": items
-            }, el);
+        // // if (userSettings.get("overlaysShow"))
+        // //     items.push(
+        // //         {
+        // //             "title": "Show all transforms",
+        // //             "func": CABLES.CMD.UI.toggleTransformOverlay,
+        // //             "iconClass": iconTransforms,
+        // //         });
+
+        // CABLES.contextMenu.show(
+        //     {
+        //         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
+        //         "items": items
+        //     }, el);
     }
 
     rendererContextMenu(el)

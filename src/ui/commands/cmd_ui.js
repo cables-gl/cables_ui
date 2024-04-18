@@ -241,8 +241,10 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
 CABLES_CMD_UI.toggleOverlays = function ()
 {
-    userSettings.set("overlaysShow", !userSettings.get("overlaysShow"));
+    const act = !userSettings.get("overlaysShow");
+    userSettings.set("overlaysShow", act);
     gui.transformOverlay.updateVisibility();
+    gui.canvasManager.getCanvasUiBar().updateIconState();
 };
 
 // CABLES_CMD_UI.toggleHelper = function ()

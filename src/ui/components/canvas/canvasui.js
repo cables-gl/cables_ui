@@ -131,7 +131,7 @@ export default class CanvasUi
         if (this._oldSizeStr != sizeStr) this._elCanvasInfoSize.innerHTML = sizeStr;
         this._oldSizeStr = sizeStr;
 
-
+        this.updateIconState();
 
         let str = "<table>";
         str += "<tr><td>Canvas CSS Size:</td><td><code>" + gui.corePatch().cgl.canvas.clientWidth + "&nbsp;x&nbsp;" + gui.corePatch().cgl.canvas.clientHeight + "</td></tr>";
@@ -144,6 +144,14 @@ export default class CanvasUi
         return sizeStr;
     }
 
+    updateIconState()
+    {
+        const act = userSettings.get("overlaysShow");
+        const icon = ele.byId("canvUitoggleOverlay");
+        if (icon)
+            if (act)icon.style.backgroundColor = "var(--color-special)";
+            else icon.style.backgroundColor = "var(--color-07)";
+    }
 
 
     showCanvasModal(_show)
@@ -160,6 +168,7 @@ export default class CanvasUi
         this.isCanvasFocussed = _show;
         if (this.isCanvasFocussed) this._elCanvasIconbar.classList.remove("hidden");
         else this._elCanvasIconbar.classList.add("hidden");
+
 
 
 
