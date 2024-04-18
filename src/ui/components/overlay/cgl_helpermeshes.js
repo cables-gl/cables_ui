@@ -69,7 +69,7 @@ helperMeshes.getDefaultShader = function (cgl, options = {})
     if (!helperMeshes[name])
     {
         helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
-        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
+        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(1, 1, 1));
         if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
@@ -86,6 +86,7 @@ helperMeshes.getSelectedShader = function (cgl, options = {})
     {
         helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
         helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0, 1, 1));
+        if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
 };

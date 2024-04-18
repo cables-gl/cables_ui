@@ -211,14 +211,9 @@ export default class GlPatch extends Events
         gui.keys.key("a", "Select all ops in current subpatch", "down", cgl.canvas.id, { "cmdCtrl": true, "displayGroup": "editor" }, (e) => { gui.patchView.selectAllOpsSubPatch(this._currentSubpatch); });
         gui.keys.key("a", "Align selected ops", "down", cgl.canvas.id, { "displayGroup": "editor" }, () =>
         {
-            //  gui.patchView.alignOps(gui.patchView.getSelectedOps());
-            console.log("aaaaa");
-
             for (let j = 0; j < 20; j++)
                 for (const i in this._selectedGlOps)
                 {
-                    // console.log("i", i, this._selectedGlOps[i].op.uiAttribs.translate.x, this._selectedGlOps[i].op);
-
                     this._selectedGlOps[i].op.setUiAttribs(
                         {
                             "translate":
