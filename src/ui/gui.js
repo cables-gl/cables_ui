@@ -1117,44 +1117,30 @@ export default class Gui extends Events
 
     helperContextMenu(el)
     {
+        let iconShowOverlays = "icon icon-empty";
+        if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
+
         let iconTransforms = "icon icon-check hidden";
         if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
-        let iconShowAllHelpers = "icon icon-check hidden";
-        if (userSettings.get("helperMode")) iconShowAllHelpers = "icon icon-check";
+        let items = [{
+            "title": "Show Overlays",
+            "func": CABLES.CMD.UI.toggleOverlays,
+            "iconClass": iconShowOverlays,
+        }];
 
-        let iconShowCurrentOpHelper = "icon icon-check hidden";
-        if (userSettings.get("helperModeCurrentOp")) iconShowCurrentOpHelper = "icon icon-check";
-
-        let iconCurrentOpTransform = "icon icon-check hidden";
-        if (userSettings.get("toggleHelperCurrentTransforms")) iconCurrentOpTransform = "icon icon-check";
+        if (userSettings.get("overlaysShow"))
+            items.push(
+                {
+                    "title": "Show all transforms",
+                    "func": CABLES.CMD.UI.toggleTransformOverlay,
+                    "iconClass": iconTransforms,
+                });
 
         CABLES.contextMenu.show(
             {
                 "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
-                "items":
-                [
-                    {
-                        "title": "Show selected op helper",
-                        "func": CABLES.CMD.UI.toggleHelperCurrent,
-                        "iconClass": iconShowCurrentOpHelper,
-                    },
-                    {
-                        "title": "Show all helpers",
-                        "func": CABLES.CMD.UI.toggleHelper,
-                        "iconClass": iconShowAllHelpers,
-                    },
-                    {
-                        "title": "Show selected op transform gizmo",
-                        "func": CABLES.CMD.UI.toggleHelperCurrentTransform,
-                        "iconClass": iconCurrentOpTransform,
-                    },
-                    {
-                        "title": "Show all transforms",
-                        "func": CABLES.CMD.UI.toggleTransformOverlay,
-                        "iconClass": iconTransforms,
-                    }
-                ]
+                "items": items
             }, el);
     }
 
@@ -1559,6 +1545,11 @@ export default class Gui extends Events
             }
             this._spaceBarStart = 0;
         });
+
+        this.keys.key("o", "Toggle Overlays", "down", null, { "ignoreInput": true }, (e) =>
+        {
+            CABLES.CMD.UI.toggleOverlays();
+        });
     }
 
     metaKeyframesShowAnim(opid, portname)
@@ -1709,8 +1700,7 @@ export default class Gui extends Events
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms");
-        gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
+        gui.transformOverlay().updateVisibility();
 
         this.iconBarLeft = new IconBar("sidebar_left");
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
@@ -1860,7 +1850,8 @@ export default class Gui extends Events
 
         idx = idx || 0;
         if (!this._gizmo[idx]) this._gizmo[idx] = new Gizmo(this.scene().cgl);
-        if (!userSettings.get("toggleHelperCurrentTransforms"))
+
+        if (!userSettings.get("overlaysShow"))
         {
             this._gizmo[idx].set(null);
             return;

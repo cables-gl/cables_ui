@@ -233,23 +233,23 @@ CABLES_CMD_UI.showBuildInfo = function ()
 // }
 
 
-CABLES_CMD_UI.toggleHelperCurrentTransform = function ()
+// CABLES_CMD_UI.toggleHelperCurrentTransform = function ()
+// {
+//     const mode = !userSettings.get("toggleHelperCurrentTransforms");
+//     userSettings.set("toggleHelperCurrentTransforms", mode);
+// };
+
+CABLES_CMD_UI.toggleOverlays = function ()
 {
-    const mode = !userSettings.get("toggleHelperCurrentTransforms");
-    userSettings.set("toggleHelperCurrentTransforms", mode);
+    userSettings.set("overlaysShow", !userSettings.get("overlaysShow"));
+    gui.transformOverlay().updateVisibility();
 };
 
-CABLES_CMD_UI.toggleHelperCurrent = function ()
-{
-    const mode = !userSettings.get("helperModeCurrentOp");
-    userSettings.set("helperModeCurrentOp", mode);
-};
-
-CABLES_CMD_UI.toggleHelper = function ()
-{
-    const mode = !userSettings.get("helperMode");
-    userSettings.set("helperMode", mode);
-};
+// CABLES_CMD_UI.toggleHelper = function ()
+// {
+//     const mode = !userSettings.get("helperMode");
+//     userSettings.set("helperMode", mode);
+// };
 
 
 // CABLES_CMD_UI.toggleFloorGrid = function ()
@@ -262,8 +262,7 @@ CABLES_CMD_UI.toggleHelper = function ()
 CABLES_CMD_UI.toggleTransformOverlay = function ()
 {
     userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
-    CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms");
-    gui.transformOverlay().setVisible(CABLES.UI.showCanvasTransforms);
+    gui.transformOverlay().updateVisibility();
 };
 
 CABLES_CMD_UI.gradientTest = function ()
@@ -455,12 +454,7 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.windowFullscreen,
         "icon": "cables"
     },
-    {
-        "cmd": "toggle helper",
-        "category": "ui",
-        "func": CABLES_CMD_UI.toggleHelper,
-        "icon": "command"
-    },
+
     {
         "cmd": "gradient test",
         "category": "ui",

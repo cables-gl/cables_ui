@@ -28,10 +28,9 @@ class UserSettings extends Events
         if (this.get("snapToGrid2") === null) this.set("snapToGrid2", false);
         if (this.get("bgpreview") === null) this.set("bgpreview", true);
         if (this.get("showTipps") === null) this.set("showTipps", true);
-        if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
+        if (this.get("overlaysShow") === null) this.set("overlaysShow", true);
 
-        if (this.get("toggleHelperCurrent") === null) this.set("toggleHelperCurrent", true);
-        if (this.get("toggleHelperCurrentTransforms") === null) this.set("toggleHelperCurrentTransforms", true);
+        if (this.get("quickLinkMiddleMouse") === null) this.set("quickLinkMiddleMouse", true);
     }
 
     load(settings)

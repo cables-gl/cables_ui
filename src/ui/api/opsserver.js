@@ -1356,26 +1356,25 @@ export default class ServerOps
         if (typeof opThing === "string") opDoc = gui.opDocs.getOpDocByName(opThing);
         else
         {
+            if (opThing.opId)
+            {
+                // probably serialized patch
+                opDoc = gui.opDocs.getOpDocById(opThing.opId);
+            }
+            else
             if (opThing.objName)
             {
-                // console.log("A ", opThing.opId, opThing.objName);
-                // op instance
+                // probably op instance
                 opDoc = gui.opDocs.getOpDocByName(opThing.objName);
+
                 if (!opDoc) opDoc = gui.opDocs.getOpDocById(opThing.opId);
             }
             else
             {
-                // console.log("B ", opThing, opThing.id);
-                // opdoc object
+                // probably opDoc object
                 opDoc = gui.opDocs.getOpDocById(opThing.id);
             }
         }
-
-        // else
-        // {
-        //     opDoc = gui.opDocs.getOpDocByName(opname.objName);
-        //     if (!opDoc) opDoc = gui.opDocs.getOpDocById(opname.opId || opname.id);
-        // }
 
         const coreLibs = [];
         if (opDoc && opDoc.coreLibs)

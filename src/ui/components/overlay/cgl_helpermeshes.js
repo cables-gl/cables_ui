@@ -1,4 +1,8 @@
-import userSettings from "./usersettings.js";
+import userSettings from "../usersettings.js";
+
+import overlayShaderVert from "./overlaymeshes.vert";
+import overlayShaderFrag from "./overlaymeshes.frag";
+
 
 const helperMeshes = {};
 helperMeshes.count = 0;
@@ -53,24 +57,97 @@ helperMeshes.endFramebuffer = function (cgl)
     helperMeshes.FB.fb.renderEnd();
 };
 
-helperMeshes.getDefaultShader = function (cgl)
+
+
+helperMeshes.getDefaultShader = function (cgl, options = {})
 {
-    if (!helperMeshes.defaultShader)
+    let name = "defaultShader";
+
+    if (options.billboarded)name = "defaultShaderBillboard";
+
+
+    if (!helperMeshes[name])
     {
-        helperMeshes.defaultShader = new CGL.Shader(cgl, "marker shader");
-        helperMeshes.defaultShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
+        helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
+        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0.6, 0.6, 0.6));
+        if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
-    return helperMeshes.defaultShader;
+    return helperMeshes[name];
 };
 
-helperMeshes.getSelectedShader = function (cgl)
+helperMeshes.getSelectedShader = function (cgl, options = {})
 {
-    if (!helperMeshes.selectedShader)
+    let name = "selectedShader";
+
+
+    if (options.billboarded)name = "selectedShaderBillboard";
+
+    if (!helperMeshes[name])
     {
-        helperMeshes.selectedShader = new CGL.Shader(cgl, "marker shader");
-        helperMeshes.selectedShader.setSource(CGL.Shader.getDefaultVertexShader(), CGL.Shader.getDefaultFragmentShader(0, 1, 1));
+        helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
+        helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0, 1, 1));
     }
-    return helperMeshes.selectedShader;
+    return helperMeshes[name];
+};
+
+helperMeshes.drawCircle = function (op, size)
+{
+    const cgl = op.patch.cgl;
+
+    if (!helperMeshes.CIRCLE)
+    {
+        helperMeshes.CIRCLE = {};
+
+        helperMeshes.CIRCLE.vScale = vec3.create();
+        function bufferData()
+        {
+            let verts = [];
+            let tc = [];
+            const segments = 80;
+            let degInRad = 0;
+            const radius = 1;
+
+            for (let i = 0; i <= Math.round(segments); i++)
+            {
+                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                verts.push(
+                    Math.cos(degInRad) * radius,
+                    Math.sin(degInRad) * radius,
+                    0
+                );
+                tc.push(0, 0);
+            }
+
+            let geom = new CGL.Geometry("sphere marker");
+            geom.setPointVertices(verts);
+            geom.setTexCoords(tc);
+            geom.vertexNormals = verts.slice();
+            helperMeshes.CIRCLE.mesh = new CGL.Mesh(cgl, geom);
+        }
+
+        bufferData();
+    }
+
+    if (cgl.lastMesh) cgl.lastMesh.unBind();
+
+    cgl.pushModelMatrix();
+    helperMeshes.startFramebuffer(cgl);
+
+    vec3.set(helperMeshes.CIRCLE.vScale, size, size, size);
+    mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.CIRCLE.vScale);
+
+    let shader = helperMeshes.getDefaultShader(cgl, { "billboarded": true });
+
+    if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl, { "billboarded": true });
+    shader.glPrimitive = cgl.gl.LINE_STRIP;
+
+
+
+
+    helperMeshes.CIRCLE.mesh.render(shader);
+    helperMeshes.count++;
+    cgl.popModelMatrix();
+    helperMeshes.endFramebuffer(cgl);
 };
 
 helperMeshes.drawSphere = function (op, size)
@@ -457,12 +534,10 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
 helperMeshes.drawMarkerLayer = function (cgl, size)
 {
-    CABLES.UI.renderHelper = userSettings.get("helperMode");
-    CABLES.UI.renderHelperCurrent = userSettings.get("helperModeCurrentOp");
+    CABLES.UI.renderHelper = userSettings.get("overlaysShow");
 
-    if (!CABLES.UI.renderHelperCurrent && !CABLES.UI.renderHelper) return;
+    if (!CABLES.UI.renderHelper) return;
 
-    // if (!CABLES.UI.renderHelper) return;
     if (helperMeshes.count == 0) return;
     helperMeshes.count = 0;
 
