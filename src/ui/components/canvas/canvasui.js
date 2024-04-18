@@ -153,7 +153,6 @@ export default class CanvasUi
             else icon.style.backgroundColor = "var(--color-07)";
     }
 
-
     showCanvasModal(_show)
     {
         if (userSettings.get("hideCanvasUi")) return;

@@ -75,8 +75,8 @@ export default class TransformsOverlay
 
     updateVisibility()
     {
-        CABLES.UI.showCanvasTransforms = userSettings.get("overlaysShow");
-        this.setVisible(CABLES.UI.showCanvasTransforms);
+        // CABLES.UI.showCanvasTransforms = userSettings.get("overlaysShow");
+        this.setVisible(gui.shouldDrawOverlay);
     }
 
     setVisible(b)

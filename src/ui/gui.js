@@ -228,6 +228,15 @@ export default class Gui extends Events
         return this._jobs;
     }
 
+    get shouldDrawOverlay()
+    {
+        // if (gui.canvasManager.getCanvasUiBar().isCanvasFocussed) return false;
+
+
+        if (!userSettings.get("overlaysShow")) return false;
+
+        return true;
+    }
 
     startModalLoading(title)
     {
@@ -1866,7 +1875,9 @@ export default class Gui extends Events
 
     setTransform(id, x, y, z)
     {
-        if (CABLES.UI.showCanvasTransforms) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
+        // if (CABLES.UI.showCanvasTransforms)
+
+        if (this.shouldDrawOverlay) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
     }
 
     setElementBgPattern(el)
