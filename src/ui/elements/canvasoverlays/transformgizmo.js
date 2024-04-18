@@ -177,6 +177,7 @@ export default class Gizmo
             this._eleCenter.style.background = "#fff";
             this._eleCenter.style.display = "none";
             this._eleCenter.style.opacity = "0.9";
+            this._eleCenter.style.pointerEvents = "none";
             // this._eleCenter.style['border-radius']="1130px";
             // this._eleCenter.style.transform='scale(2)';
             this._eleCenter.classList.add("gizmo");
@@ -229,6 +230,7 @@ export default class Gizmo
             this._eleZ.id = "gizmoZ";
             this._eleZ.style.background = "#00f";
             this._eleZ.style.display = "none";
+
             this._eleZ.classList.add("gizmo");
             container.appendChild(this._eleZ);
 

@@ -23,6 +23,40 @@ export default class TransformsOverlay
         }
     }
 
+    click(screenPos)
+    {
+        const activateTransform = (op, id) =>
+        {
+            this._lastClicked = id;
+            gui.patchView.setCurrentSubPatch(op.uiAttribs.subPatch || 0);
+            gui.patchView.centerSelectOp(id);
+            gui.opParams.show(id);
+            gui.patchView.focus();
+        };
+
+        let found = [];
+        let foundIds = [];
+
+        for (const i in this._transforms)
+            if (this._transforms[i].screenPos[0] == screenPos[0] && this._transforms[i].screenPos[1] == screenPos[1])
+            {
+                found.push(i);
+                foundIds.push(this._transforms[i].id);
+            }
+
+        if (found.length == 0) return;
+
+        let i = 0;
+        if (foundIds.indexOf(this._lastClicked) > -1) i = foundIds.indexOf(this._lastClicked) + 1;
+        if (i == -1)i = 0;
+        if (i > found.length - 1)i = 0;
+
+        const trans = this._transforms[found[i]];
+        const op = gui.corePatch().getOpById(trans.id);
+
+        activateTransform(op, trans.id);
+    }
+
     add(cgl, id, x, y, z)
     {
         this._transforms[id] = this._transforms[id] || new TransformsIcon(cgl, id);

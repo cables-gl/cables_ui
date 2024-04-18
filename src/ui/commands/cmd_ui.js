@@ -242,7 +242,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
 CABLES_CMD_UI.toggleOverlays = function ()
 {
     userSettings.set("overlaysShow", !userSettings.get("overlaysShow"));
-    gui.transformOverlay().updateVisibility();
+    gui.transformOverlay.updateVisibility();
 };
 
 // CABLES_CMD_UI.toggleHelper = function ()
@@ -262,7 +262,7 @@ CABLES_CMD_UI.toggleOverlays = function ()
 CABLES_CMD_UI.toggleTransformOverlay = function ()
 {
     userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
-    gui.transformOverlay().updateVisibility();
+    gui.transformOverlay.updateVisibility();
 };
 
 CABLES_CMD_UI.gradientTest = function ()

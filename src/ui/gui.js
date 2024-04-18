@@ -138,7 +138,7 @@ export default class Gui extends Events
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
         this._gizmo = [];
-        this._transformOverlay = new TransformsOverlay();
+        this.transformOverlay = new TransformsOverlay();
 
         this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
@@ -1700,7 +1700,7 @@ export default class Gui extends Events
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.transformOverlay().updateVisibility();
+        gui.transformOverlay.updateVisibility();
 
         this.iconBarLeft = new IconBar("sidebar_left");
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
@@ -1860,14 +1860,11 @@ export default class Gui extends Events
         this._gizmo[idx].set(params);
     }
 
-    transformOverlay()
-    {
-        return this._transformOverlay;
-    }
+
 
     setTransform(id, x, y, z)
     {
-        this._transformOverlay.add(this.scene().cgl, id, x, y, z);
+        this.transformOverlay.add(this.scene().cgl, id, x, y, z);
     }
 
     setElementBgPattern(el)
