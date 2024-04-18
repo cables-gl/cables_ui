@@ -259,11 +259,11 @@ CABLES_CMD_UI.toggleOverlays = function ()
 //     // CABLES_CMD_UI.updateCanvasIcons();
 // };
 
-CABLES_CMD_UI.toggleTransformOverlay = function ()
-{
-    userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
-    gui.transformOverlay.updateVisibility();
-};
+// CABLES_CMD_UI.toggleTransformOverlay = function ()
+// {
+//     userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
+//     gui.transformOverlay.updateVisibility();
+// };
 
 CABLES_CMD_UI.gradientTest = function ()
 {

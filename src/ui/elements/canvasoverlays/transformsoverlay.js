@@ -38,7 +38,10 @@ export default class TransformsOverlay
         let foundIds = [];
 
         for (const i in this._transforms)
-            if (this._transforms[i].screenPos[0] == screenPos[0] && this._transforms[i].screenPos[1] == screenPos[1])
+            if (
+
+                Math.abs(this._transforms[i].screenPos[0] - screenPos[0] < 10) &&
+                Math.abs(this._transforms[i].screenPos[1] - screenPos[1]) < 10)
             {
                 found.push(i);
                 foundIds.push(this._transforms[i].id);
@@ -72,7 +75,7 @@ export default class TransformsOverlay
 
     updateVisibility()
     {
-        CABLES.UI.showCanvasTransforms = userSettings.get("showCanvasTransforms") && userSettings.get("overlaysShow");
+        CABLES.UI.showCanvasTransforms = userSettings.get("overlaysShow");
         this.setVisible(CABLES.UI.showCanvasTransforms);
     }
 

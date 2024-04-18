@@ -1129,13 +1129,13 @@ export default class Gui extends Events
             "iconClass": iconShowOverlays,
         }];
 
-        if (userSettings.get("overlaysShow"))
-            items.push(
-                {
-                    "title": "Show all transforms",
-                    "func": CABLES.CMD.UI.toggleTransformOverlay,
-                    "iconClass": iconTransforms,
-                });
+        // if (userSettings.get("overlaysShow"))
+        //     items.push(
+        //         {
+        //             "title": "Show all transforms",
+        //             "func": CABLES.CMD.UI.toggleTransformOverlay,
+        //             "iconClass": iconTransforms,
+        //         });
 
         CABLES.contextMenu.show(
             {
@@ -1864,7 +1864,7 @@ export default class Gui extends Events
 
     setTransform(id, x, y, z)
     {
-        this.transformOverlay.add(this.scene().cgl, id, x, y, z);
+        if (CABLES.UI.showCanvasTransforms) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
     }
 
     setElementBgPattern(el)
