@@ -1509,8 +1509,18 @@ export default class Gui extends Events
             }
             else
             {
-                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+                const ops = gui.corePatch().ops;
+                for (let i = 0; i < ops.length; i++)
+                {
+                    if (ops[i].hasUiError("subPatchOpNoSaveError"))
+                    {
+                        CABLES.UI.notifyError("NOT SAVED! Patch contains illegal op hierarchy, check op errors!", "", { "force": true });
+                        return;
+                    }
+                }
 
+
+                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
                 if (subOuter)
                 {
                     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
