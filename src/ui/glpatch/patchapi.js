@@ -135,7 +135,7 @@ export default class GlPatchAPI
 
         const perf = CABLES.UI.uiProfiler.start("[glpatch] update flow mode");
 
-        let numUpdates = Math.min(250, this._patch.ops.length);
+        let numUpdates = Math.min(350, this._patch.ops.length);
 
 
         for (let ii = 0; ii < numUpdates; ii++)
