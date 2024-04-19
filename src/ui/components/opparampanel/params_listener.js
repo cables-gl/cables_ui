@@ -723,14 +723,6 @@ class ParamsListener extends Events
 
 
 
-            if (ports[index].uiAttribs.display == "bool")
-            {
-                if (!v || v == "false" || v == "0" || v == 0) v = false;
-                else v = true;
-
-                el.value = v;
-            }
-
             if (!CABLES.mouseDraggingValue)
             {
                 const undoAdd = (function (oldv, newv, opid, portname)
@@ -783,15 +775,21 @@ class ParamsListener extends Events
 
             if (ports[index].uiAttribs.type == "string")
             {
-                // if (!ports[index].isLinked() && (!v || v.length < ports[index].uiAttribs.minLength)) ports[index].op.setUiError("strMinLength", ports[index].name + " length should be >= " + ports[index].uiAttribs.minLength);
-                // else ports[index].op.setUiError("strMinLength", null);
-
                 if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
 
                 ports[index].set(v || "");
             }
-            // else if (ports[index].uiAttribs.display == "bool") ports[index].set(v ? 1 : 0);
-            else ports[index].set(v || 0);
+            else if (ports[index].uiAttribs.display == "bool")
+            {
+                if (!v || v == "false" || v == "0" || v == 0) v = false;
+                else v = true;
+
+                ports[index].set(v ? 1 : 0);
+            }
+            else
+            {
+                ports[index].set(v || 0);
+            }
 
 
 
