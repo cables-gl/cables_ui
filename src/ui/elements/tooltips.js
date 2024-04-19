@@ -171,7 +171,7 @@ export function updateHoverToolTip(event, port, overlink)
     let txt = getPortDescription(port, overlink);
     let val = null;
 
-    if (port && !port.uiAttribs.hideParam && !port.uiAttribs.hidePort)
+    if (port && !port.uiAttribs.hidePort) //! port.uiAttribs.hideParam
     {
         if (port.type == CABLES.OP_PORT_TYPE_VALUE)
         {
@@ -243,7 +243,7 @@ export function updateHoverToolTip(event, port, overlink)
     }
     txt += "&nbsp;";
 
-    if (port.apf >= 0) txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
+    if (port.apf > 0) txt += "" + Math.round(port.apf * 100) / 100 + " APF ";
 
     CABLES.UI.showToolTip(event, txt, true);
 
