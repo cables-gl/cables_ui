@@ -10,16 +10,7 @@ export default function extendCoreAnim()
 
     CABLES.ANIM.Key.prototype.setAttribs = function (sel)
     {
-        // var opa=0.7;
-        // var fill='#222';
-        // if(this.isMainAnim)
-        // {
-        //     fill=CABLES.UI.uiConfig.colorKey;
-        //     opa=0.8;
-        // }
-
         this.circle.node.classList.add("timeline-key");
-        // this.circle.attr({ "fill-opacity":0.7 });
         this.circle.attr({ "cx": this.x, "cy": this.y }); // ,"fill-opacity":opa,fill:fill
 
         if (this.selected) this.circle.node.classList.add("timeline-key-selected"); // this.circle.attr({ fill:"white" });

@@ -680,7 +680,7 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
             {
                 gui.serverOps.showApiError(err);
                 // new ModalError({ "title": "Error/Invalid response from server 1", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                CABLES.UI.notifyError("Could not save " + newOp.objName);
+                CABLES.UI.notifyError("Could not save " + newOp.objName, "", { "force": true });
             }
             else
             {

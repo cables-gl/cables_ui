@@ -71,7 +71,7 @@ export default class ModalError
 
                         if (el)
                         {
-                            el.style.display = "block";
+                            ele.show(el);
                             el.innerHTML = html;
                         }
                     });

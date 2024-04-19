@@ -986,6 +986,18 @@ CABLES_CMD_PATCH.alignOpsLeft = () =>
 };
 
 
+
+CABLES_CMD_PATCH.upGradeOps = function ()
+{
+    const selops = gui.patchView.getSelectedOps();
+    for (let i = 0; i < selops.length; i++)
+    {
+        const opdoc = gui.opDocs.getOpDocById(selops[i].opId);
+        if (opdoc && opdoc.oldVersion && opdoc.newestVersion && opdoc.newestVersion.name)
+            gui.patchView.replaceOp(selops[i].id, opdoc.newestVersion.name);
+    }
+};
+
 CABLES_CMD_PATCH.downGradeOp = function ()
 {
     const selops = gui.patchView.getSelectedOps();
@@ -1539,6 +1551,11 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "downgrade selected op",
         "func": CABLES_CMD_PATCH.downGradeOp,
+        "icon": "op"
+    },
+    {
+        "cmd": "upgrade selected ops",
+        "func": CABLES_CMD_PATCH.upGradeOps,
         "icon": "op"
     },
     {

@@ -333,6 +333,7 @@ export default class PatchSaveServer extends Events
         });
     }
 
+
     saveCurrentProject(cb, _id, _name, _force, _afterClone)
     {
         if (gui.showGuestWarning()) return;

@@ -86,6 +86,7 @@ helperMeshes.getSelectedShader = function (cgl, options = {})
     {
         helperMeshes[name] = new CGL.Shader(cgl, "marker shader");
         helperMeshes[name].setSource(overlayShaderVert, CGL.Shader.getDefaultFragmentShader(0, 1, 1));
+        if (options.billboarded)helperMeshes[name].toggleDefine("BILLBOARD", true);
     }
     return helperMeshes[name];
 };
@@ -534,9 +535,9 @@ helperMeshes.drawCube = function (op, sizeX, sizeY, sizeZ)
 
 helperMeshes.drawMarkerLayer = function (cgl, size)
 {
-    CABLES.UI.renderHelper = userSettings.get("overlaysShow");
+    // CABLES.UI.renderHelper = userSettings.get("overlaysShow");
 
-    if (!CABLES.UI.renderHelper) return;
+    if (!gui.shouldDrawOverlay) return;
 
     if (helperMeshes.count == 0) return;
     helperMeshes.count = 0;

@@ -8,6 +8,9 @@ import text from "./text.js";
 CABLES.Op.unLinkTempReLinkP1 = null;
 CABLES.Op.unLinkTempReLinkP2 = null;
 
+
+
+
 export default function extendCoreOp()
 {
     CABLES.Op.prototype.initUi = function ()
@@ -229,35 +232,37 @@ export default function extendCoreOp()
         return !this.isTeamOp() && !this.isPatchOp() && !this.isUserOp();
     };
 
+    CABLES.Op.prototype.setUiError = function (id, txt, level)
+    {
+        if (!txt && !this.hasUiErrors) return;
+        if (!txt && !this._uiErrors.hasOwnProperty(id)) return;
+        if (this._uiErrors.hasOwnProperty(id) && this._uiErrors[id].txt == txt) return;
+
+        if (id.indexOf(" ") > -1) this._log.warn("setuierror id cant have spaces! ", id);
+        id = id.replaceAll(" ", "_");
+
+        if (!txt && this._uiErrors.hasOwnProperty(id)) delete this._uiErrors[id];
+        else
+        {
+            if (txt && (!this._uiErrors.hasOwnProperty(id) || this._uiErrors[id].txt != txt))
+            {
+                if (level == undefined) level = 2;
+                this._uiErrors[id] = { "txt": txt, "level": level, "id": id };
+            }
+        }
+
+        const errorArr = [];
+        for (const i in this._uiErrors) errorArr.push(this._uiErrors[i]);
+
+        this.uiAttr({ "uierrors": errorArr });
+        this.hasUiErrors = Object.keys(this._uiErrors).length;
+
+        this.emitEvent("uiErrorChange");
+    };
+
     CABLES.Op.prototype.checkLinkTimeWarnings = function ()
     {
         if (!CABLES.UI.loaded) return;
-        // function hasParent(op, type, name, count)
-        // {
-        //     count = count || 1;
-        //     count++;
-        //     if (count >= 1000)
-        //     {
-        //         console.log("hasparent loop....");
-        //         return false;
-        //     }
-        //     for (let i = 0; i < op.portsIn.length; i++)
-        //     {
-        //         if (((type === undefined || type === null) || op.portsIn[i].type == type) && op.portsIn[i].isLinked())
-        //         {
-        //             const pi = op.portsIn[i];
-        //             for (let li = 0; li < pi.links.length; li++)
-        //             {
-        //                 if (!pi.links[li]) continue;
-        //                 if (pi.links[li].portOut.op.objName.indexOf(name) > -1) return true;
-        //                 if (hasParent(pi.links[li].portOut.op, type, name, count)) return true;
-        //             }
-        //         }
-        //     }
-        //     return false;
-        // }
-
-
 
         if (this.isInBlueprint2())
         {
@@ -270,10 +275,9 @@ export default function extendCoreOp()
                 if (this.isPatchOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: Patch op can't be in core ops or extensions";
                 if (this.isUserOp() && outer.isCoreOp()) subPatchOpError = "SubPatchOp Error: User op can't be in core ops or extensions";
 
-                this.setUiError("subPatchOpError", subPatchOpError);
+                this.setUiError("subPatchOpNoSaveError", subPatchOpError);
             }
         }
-
 
         function hasTriggerInput(op)
         {

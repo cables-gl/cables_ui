@@ -138,7 +138,7 @@ export default class Gui extends Events
         this._opselect = new OpSelect();
         this.introduction = new Introduction();
         this._gizmo = [];
-        this._transformOverlay = new TransformsOverlay();
+        this.transformOverlay = new TransformsOverlay();
 
         this.opDocs = new OpDocs();
         this.opHistory = new OpHistory();
@@ -228,6 +228,15 @@ export default class Gui extends Events
         return this._jobs;
     }
 
+    get shouldDrawOverlay()
+    {
+        // if (gui.canvasManager.getCanvasUiBar().isCanvasFocussed) return false;
+
+
+        if (!userSettings.get("overlaysShow")) return false;
+
+        return true;
+    }
 
     startModalLoading(title)
     {
@@ -1117,31 +1126,33 @@ export default class Gui extends Events
 
     helperContextMenu(el)
     {
-        let iconShowOverlays = "icon icon-empty";
-        if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
+        CABLES.CMD.UI.toggleOverlays();
 
-        let iconTransforms = "icon icon-check hidden";
-        if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
+        // let iconShowOverlays = "icon icon-empty";
+        // if (userSettings.get("overlaysShow")) iconShowOverlays = "icon icon-check";
 
-        let items = [{
-            "title": "Show Overlays",
-            "func": CABLES.CMD.UI.toggleOverlays,
-            "iconClass": iconShowOverlays,
-        }];
+        // let iconTransforms = "icon icon-check hidden";
+        // if (CABLES.UI.showCanvasTransforms) iconTransforms = "icon icon-check";
 
-        if (userSettings.get("overlaysShow"))
-            items.push(
-                {
-                    "title": "Show all transforms",
-                    "func": CABLES.CMD.UI.toggleTransformOverlay,
-                    "iconClass": iconTransforms,
-                });
+        // let items = [{
+        //     "title": "Show Overlays",
+        //     "func": CABLES.CMD.UI.toggleOverlays,
+        //     "iconClass": iconShowOverlays,
+        // }];
 
-        CABLES.contextMenu.show(
-            {
-                "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
-                "items": items
-            }, el);
+        // // if (userSettings.get("overlaysShow"))
+        // //     items.push(
+        // //         {
+        // //             "title": "Show all transforms",
+        // //             "func": CABLES.CMD.UI.toggleTransformOverlay,
+        // //             "iconClass": iconTransforms,
+        // //         });
+
+        // CABLES.contextMenu.show(
+        //     {
+        //         "refresh": () => { gui.corePatch().cgl.canvas.focus(); gui.helperContextMenu(el); },
+        //         "items": items
+        //     }, el);
     }
 
     rendererContextMenu(el)
@@ -1498,8 +1509,13 @@ export default class Gui extends Events
             }
             else
             {
-                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
+                // const ops = gui.corePatch().ops;
+                // for (let i = 0; i < ops.length; i++)
+                //     if (ops[i].hasUiError("subPatchOpNoSaveError"))
+                //         return CABLES.UI.notifyError("NOT SAVED! Patch contains illegal op hierarchy, check op errors!", "", { "force": true });
 
+
+                const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
                 if (subOuter)
                 {
                     const bp = subOuter.isBlueprint2() || subOuter.isInBlueprint2();
@@ -1700,7 +1716,7 @@ export default class Gui extends Events
 
         if (userSettings.get("fileManagerOpened") == true) this.showFileManager();
 
-        gui.transformOverlay().updateVisibility();
+        gui.transformOverlay.updateVisibility();
 
         this.iconBarLeft = new IconBar("sidebar_left");
         this.iconBarPatchNav = new IconBar("sidebar_bottom");
@@ -1860,14 +1876,13 @@ export default class Gui extends Events
         this._gizmo[idx].set(params);
     }
 
-    transformOverlay()
-    {
-        return this._transformOverlay;
-    }
+
 
     setTransform(id, x, y, z)
     {
-        this._transformOverlay.add(this.scene().cgl, id, x, y, z);
+        // if (CABLES.UI.showCanvasTransforms)
+
+        if (this.shouldDrawOverlay) this.transformOverlay.add(this.scene().cgl, id, x, y, z);
     }
 
     setElementBgPattern(el)

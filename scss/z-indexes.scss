@@ -8,6 +8,7 @@ $zindex_highest :50;    // modal / splitter etc
 
 
 $zindex_canvas:$zindex_lowest;
+$zindex_patchfield:$zindex_lowest - 1;
 
 .cablesCssUi
 {

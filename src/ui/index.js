@@ -6,7 +6,7 @@ import LibLoader from "./api/libloader.js";
 import CMD from "./commands/commands.js";
 import CanvasLens from "./components/canvas/canvaslens.js";
 import CanvasUi from "./components/canvas/canvasui.js";
-import helperMeshes from "./components/overlay/cgl_helpermeshes.js";
+import helperMeshes from "./components/overlay/overlaymeshes.js";
 import Collapsable from "./components/collapsable.js";
 import FileManager from "./components/filemanager.js";
 import DragNDrop from "./components/filemanager_dragdrop.js";
