@@ -15,6 +15,11 @@ export default class OpSerialized extends Events
         this.rebuildHtml();
         this.setOp(gui.opParams.op);
 
+        this._tab.addButton("Refresh", () =>
+        {
+            this.rebuildHtml();
+        });
+
         gui.opParams.on("opSelected", () =>
         {
             this.setOp(gui.opParams.op);
