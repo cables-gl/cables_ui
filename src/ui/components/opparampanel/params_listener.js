@@ -776,6 +776,11 @@ class ParamsListener extends Events
             if (ports[index].uiAttribs.type == "string")
             {
                 if (v && ports[index].uiAttribs.stringTrim)v = String(v).trim();
+                if ((v || v == "") && v.length < ports[index].uiAttribs.minLength)
+                {
+                    ports[index].op.setUiError("uiminlength", "User Input: Minimum length of string " + ports[index].title + " is " + ports[index].uiAttribs.minLength, 2);
+                }
+                else ports[index].op.setUiError("uiminlength", null);
 
                 ports[index].set(v || "");
             }
