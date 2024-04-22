@@ -51,6 +51,8 @@ export default class ModalError
             const opid = this._options.exception.cause.substring("opId:".length);
 
             this.opDoc = gui.opDocs.getOpDocById(opid);
+
+            if (this.opDoc.forbidden) this._options.title = "Forbidden Op";
             if (this.opDoc) this._options.opname = this.opDoc.name;
 
             if (this.opDoc.forbidden) this._options.exception = null;
