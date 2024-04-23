@@ -1,6 +1,6 @@
 import { ele } from "cables-shared-client";
-import ModalDialog from "./modaldialog.js";
 import defaultOps from "../defaultops.js";
+import ModalDialog from "./modaldialog.js";
 
 /**
  * Opens a modal dialog and shows info about given exception
@@ -30,6 +30,8 @@ export default class ModalError
             if (i != s.length - 1)stackStr += " -> \n";
         }
 
+
+
         if (this._options.exception && this._options.exception.message && this._options.exception.message.indexOf("NetworkError") > -1 && this._options.exception.message.indexOf("/ace/worker") > -1)
         {
             console.log("yay! suppressed nonsense ace editor exception... ");
@@ -40,6 +42,20 @@ export default class ModalError
         {
             console.log("ignore file blob exception...");
             return;
+        }
+
+        this.opDoc = null;
+
+        if (this._options.exception.cause && this._options.exception.cause.indexOf("opId:") == 0)
+        {
+            const opid = this._options.exception.cause.substring("opId:".length);
+
+            this.opDoc = gui.opDocs.getOpDocById(opid);
+
+            if (this.opDoc.forbidden) this._options.title = "Forbidden Op";
+            if (this.opDoc) this._options.opname = this.opDoc.name;
+
+            if (this.opDoc.forbidden) this._options.exception = null;
         }
 
         let info = null;
@@ -170,6 +186,12 @@ export default class ModalError
 
         if (this.opName)
         {
+            if (this.opDoc && this.opDoc.forbidden)
+            {
+                str += "Op is forbidden op: <b>" + this.opName + "</b><br/>";
+                str += "Please check if you have the access rights to this op.<br/><br/>";
+            }
+            else
             if (gui && gui.serverOps.canEditOp(gui.user, this.opName) && CABLES.sandbox)
             {
                 const url = CABLES.sandbox.getCablesUrl() + "/op/edit/" + this.opName;
