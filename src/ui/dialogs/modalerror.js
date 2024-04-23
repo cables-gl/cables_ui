@@ -46,7 +46,7 @@ export default class ModalError
 
         this.opDoc = null;
 
-        if (this._options.exception.cause && this._options.exception.cause.indexOf("opId:") == 0)
+        if (this._options.exception && this._options.exception.cause && this._options.exception.cause.indexOf("opId:") == 0)
         {
             const opid = this._options.exception.cause.substring("opId:".length);
 
