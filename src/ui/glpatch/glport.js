@@ -78,12 +78,13 @@ export default class GlPort
                 this._parent.addChild(this._longPortRect);
             }
 
-            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight * 0.7);
+            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight * 0.5);
 
             this._longPortRect.setPosition(gluiconfig.portWidth, 0);
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
+            this._longPortRect.setOpacity(0.6);
         }
     }
 
