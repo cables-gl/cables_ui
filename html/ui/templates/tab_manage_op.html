@@ -41,11 +41,11 @@
             <div class="groupSpacer"><h3>Ports</h3></div>
 
 
-            {{#if bpSaved}}{{else}}
-                <span class="error">Please save your blueprint to make changes to ports!</span>
+            {{#if subPatchSaved}}{{else}}
+                <span class="error">Please save your subpatch to make changes to ports!</span>
             {{/if}}
 
-            <table class="table" style="{{#if bpSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}"">
+            <table class="table" style="{{#if subPatchSaved}}{{else}}opacity:0.33;pointer-events:none;{{/if}}"">
                 <tr>
                     <th>Inputs</th>
                     <th style="width:40%">Title</th>

@@ -126,14 +126,6 @@ export default class Platform extends Events
         }
     }
 
-    getBlueprintOps(options, cb)
-    {
-        CABLESUILOADER.talkerAPI.send("getBlueprintOps", options, (err, r) =>
-        {
-            if (cb)cb(err, r);
-        });
-    }
-
     savePatch(options, cb)
     {
         CABLESUILOADER.talkerAPI.send("savePatch", options, cb);
