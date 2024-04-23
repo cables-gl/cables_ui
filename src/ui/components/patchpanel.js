@@ -125,10 +125,10 @@ export default class PatchPanel extends Events
                 },
             });
 
-        if (item.blueprintver == 2)
+        if (item.blueprintVer == 2)
         {
             items.push({
-                "title": "Save Blueprint Op",
+                "title": "Save Op",
                 func()
                 {
                     const op = gui.patchView.getSubPatchOuterOp(item.subPatchId);
