@@ -16,7 +16,6 @@ export default class GlRect extends Events
         this._hovering = false;
         this._rectInstancer = instancer;
         this._attrIndex = instancer.getIndex();
-        this._parent = options.parent || null;
 
         this.childs = [];
         this._shape = false;
@@ -44,6 +43,8 @@ export default class GlRect extends Events
         this.draggableMove = false;
         this.interactive = true;
         if (options.hasOwnProperty("interactive")) this.interactive = options.interactive;
+
+        this._parent = null;
         if (options.parent) this.setParent(options.parent);
     }
 
@@ -338,13 +339,13 @@ export default class GlRect extends Events
     removeChild(child)
     {
         const idx = this.childs.indexOf(child);
-        child.parent = null;
+        child._parent = null;
         if (idx >= 0) this.childs.splice(idx, 1);
     }
 
     dispose()
     {
-        if (this.parent) this.parent.removeChild(this);
+        if (this._parent) this._parent.removeChild(this);
         this.setShape(0);
         this.setSize(0, 0);
         this.setPosition(0, 0);

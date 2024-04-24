@@ -889,6 +889,8 @@ export default class GlOp extends Events
     {
         const glp = new GlPort(this._glPatch, this, this._instancer, p, i, this._glRectBg);
         this._glPorts.push(glp);
+
+        console.log("this._glPorts", this._glPorts.length);
     }
 
     updatePosition()
