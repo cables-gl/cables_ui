@@ -87,7 +87,7 @@ export default class GlPort
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
-            this._longPortRect.setOpacity(0.6);
+            this._longPortRect.setOpacity(0.7);
         }
     }
 
