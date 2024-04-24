@@ -251,6 +251,38 @@ export default class VizLayer extends Events
     }
 
 
+    _textWrap(text, max)
+    {
+        if (text == null) return "";
+        if (text.length <= max) return text;
+        const nextNewLine = /\n/.exec(text);
+        const lineLength = nextNewLine ? nextNewLine.index : text.length;
+        if (lineLength <= max)
+        {
+            const line = text.substr(0, lineLength);
+            const rest = text.substr(lineLength + 1);
+            return line + "\n" + this._textWrap(rest, max);
+        }
+        else
+        {
+            let line = text.substr(0, max);
+            let rest = text.substr(max);
+            const res = (/([\s])[^\s]*$/.exec(line));
+            if (res)
+            { //
+                line = text.substr(0, res.index);
+                rest = text.substr(res.index + 1);
+            }
+            else
+            {
+                line += "-";
+            }
+            return line + "\n" + this._textWrap(rest, max);
+        }
+    }
+
+
+
     renderText(ctx, layer, lines, options)
     {
         let indent = "";
@@ -275,6 +307,7 @@ export default class VizLayer extends Events
         ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
         let hl = options.syntax && options.syntax != "text";
+
 
         for (let i = offset; i < offset + numLines; i += 1)
         {

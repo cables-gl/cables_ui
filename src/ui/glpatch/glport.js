@@ -23,7 +23,7 @@ export default class GlPort
         this._glPatch = glpatch;
         this._rectInstancer = rectInstancer;
         this._rect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": true });
-
+        this._longPortRect = null;
 
         this._dot = null;
         this._rect.colorHoverMultiply = 0.0;
@@ -51,15 +51,41 @@ export default class GlPort
             if (this._glop.op && this._glop.op.uiAttribs.mathTitle) this._glop.setTitle();
         });
 
-        p.on("onUiAttrChange", (attribs) =>
-        {
-            if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
-            if (attribs.hasOwnProperty("expose")) this._updateColor();
-        });
+        p.on("onUiAttrChange", this._onUiAttrChange.bind(this));
+
+        this._onUiAttrChange(p.uiAttribs);
 
         this.setFlowModeActivity(1);
         this.updateSize();
         this._updateColor();
+    }
+
+    _onUiAttrChange(attribs)
+    {
+        if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
+        if (attribs.hasOwnProperty("expose")) this._updateColor();
+
+        if (attribs.hasOwnProperty("longPort") && attribs.longPort === 0 && this._longPortRect)
+        {
+            this._longPortRect.dispose();
+            this._longPortRect = null;
+        }
+        if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
+        {
+            if (!this._longPortRect)
+            {
+                this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
+                this._parent.addChild(this._longPortRect);
+            }
+
+            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight * 0.5);
+
+            this._longPortRect.setPosition(gluiconfig.portWidth, 0);
+
+            const col = GlPort.getColor(this._type, false, false, false);
+            this._longPortRect.setColor(col);
+            this._longPortRect.setOpacity(0.6);
+        }
     }
 
     updateShape()

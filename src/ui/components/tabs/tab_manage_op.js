@@ -179,7 +179,7 @@ export default class ManageOp
                             "doc": doc,
                             "opDoc": opDoc,
                             "viewId": this._id,
-                            "bpSaved": gui.savedState.isSavedSubOp(opName),
+                            "subPatchSaved": gui.savedState.isSavedSubOp(opName),
                             "portJson": portJson,
                             "summary": summary,
                             "canEditOp": canEditOp,
