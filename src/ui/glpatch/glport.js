@@ -77,13 +77,13 @@ export default class GlPort
             {
                 // console.log("create longportrect", this._name);
                 // console.log("attribs.longPort", attribs.longPort, this._longPortRect);
-                this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._rect, "interactive": false });
+                this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
                 // console.log(this._longPortRect._parent);
                 // this._rect.addChild(this._longPortRect);
             }
 
             this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight);
-            this._longPortRect.setPosition(gluiconfig.portWidth, gluiconfig.portHeight / 2);
+            this._longPortRect.setPosition(gluiconfig.portWidth, 0);
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
