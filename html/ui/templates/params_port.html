@@ -41,12 +41,6 @@
 
 
 
-{{#if port.uiAttribs.multiPort}}
-
-multiport...
-
-{{/if}}
-
 
 
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
@@ -74,6 +68,8 @@ multiport...
 
     </td>
     <td class="">
+
+
         {{#if port.links}}
 
             {{#if port.direction }}
@@ -138,6 +134,8 @@ multiport...
 {{/if}}
 
 <a class="icon-three-dots icon iconhover" style="opacity:0.6" id="port_contextmenu_{{dirStr}}_{{portnum}}_{{panelid}}" data-portid="{{port.id}}"></a>
+
+
 
 
 </td>

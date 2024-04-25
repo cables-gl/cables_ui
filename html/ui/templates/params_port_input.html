@@ -1,6 +1,8 @@
 <script id="params_port_input" type="text/x-handlebars-template">
 
 
+
+
 {{#if port.uiAttribs.useVariable}}
         </td><td>
         Var
@@ -68,6 +70,19 @@
 
                     <a class="button-small" data-info="{{ texts.portCreateOp }}" id="portCreateOp_{{ dirStr }}_{{ portnum }}" ><span class="icon icon-plus-circle"></span></a>
                 {{/compare}} -->
+
+
+
+                {{#if port.uiAttribs.multiPort}}
+                    </td><td>
+
+                        <span class="button-small button-icon info" id="multiport_dec_{{op.id}}_{{port.name}}">-</span>
+                        <span class="button-small button-icon info" id="multiport_inc_{{op.id}}_{{port.name}}">+</span>
+                    </td>
+
+                {{/if}}
+
+
                 {{#compare port.uiAttribs.display '==' 'range' }}
                     </td><td>
                     <!-- new value input2 !!! -->

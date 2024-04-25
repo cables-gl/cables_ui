@@ -64,10 +64,10 @@ class ParamsListener extends Events
             }
         }
 
-        for (let ipi = 0; ipi < this._portsIn.length; ipi++) this.initPortClickListener(this._portsIn, ipi, this.panelId, "in");
-        for (let ipi = 0; ipi < this._portsOut.length; ipi++) this.initPortClickListener(this._portsOut, ipi, this.panelId, "out");
+        for (let i = 0; i < this._portsIn.length; i++) this.initPortClickListener(this._portsIn, i, this.panelId, "in");
+        for (let i = 0; i < this._portsOut.length; i++) this.initPortClickListener(this._portsOut, i, this.panelId, "out");
 
-        for (let ipip = 0; ipip < this._portsIn.length; ipip++)
+        for (let i = 0; i < this._portsIn.length; i++)
         {
             ((index) =>
             {
@@ -77,10 +77,32 @@ class ParamsListener extends Events
                     this._portsIn[index].removeLinks();
                     gui.opParams.show(this._portsIn[index].op);
                 });
-            })(ipip);
+            })(i);
         }
 
-        for (let ipii = 0; ipii < this._portsIn.length; ipii++) this.initPortInputListener(this._portsIn, ipii, this.panelId);
+        for (let i = 0; i < this._portsIn.length; i++) this.initPortInputListener(this._portsIn, i, this.panelId);
+
+
+        for (let i = 0; i < this._portsIn.length; i++)
+        {
+            if (this._portsIn[i].uiAttribs.multiPort)
+            {
+                const elInc = ele.byId("multiport_inc_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
+                elInc.addEventListener("click", () =>
+                {
+                    this._portsIn[i].incDec(1);
+                    console.log("click inc!!!");
+                });
+
+                const elDec = ele.byId("multiport_dec_" + this._portsIn[i].op.id + "_" + this._portsIn[i].name);
+                elDec.addEventListener("click", () =>
+                {
+                    this._portsIn[i].incDec(-1);
+                    console.log("click dec!!!");
+                });
+            }
+        }
+
 
 
         // watch anim ports... this should be in initPOrtInputListener !!
