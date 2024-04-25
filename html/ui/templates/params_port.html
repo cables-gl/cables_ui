@@ -38,6 +38,17 @@
             <a class="icon icon-edit iconhover" onclick="gui.patchView.setPortTitle('{{op.id}}','{{port.name}}');"></a>
         {{/if}} -->
 
+
+
+
+{{#if port.uiAttribs.multiPort}}
+
+multiport...
+
+{{/if}}
+
+
+
         <span id="portTitle_{{ dirStr }}_{{ portnum }}" data-opid="{{op.id}}" data-portname="{{port.name}}" class="{{#if port.uiAttribs.hidePort}}{{else}}paramsPortTitleClickable{{/if}} {{#if port.uiAttribs.axis}}axis{{ port.uiAttribs.axis }}{{/if}}">
             {{#compare port.uiAttribs.display '==' 'buttons' }}
             {{else}}
