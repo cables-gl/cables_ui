@@ -2,7 +2,7 @@ const text =
 {
     "save_screenshot": "## Save Screenshot\n\nDownload renderer output as an image file",
     "toggle_sound": "## Toggle Sound\n\nTurn sound on or off",
-    "toggle_helper": "Enable or disable of showing helper and bounding boxes",
+    "toggle_helper": "`o` Toggle the idsplay of overlays (helper outlines and bounding boxes)",
     "canvas_lens": "## Pixel Magnifier\n\nMove over canvas to magnify pixels.\n\n[cmd_ctrl]`c` copy hovered color to clipboard",
 
     "canvas_size": "## Canvas Size\n\nCanvas size in pixels\n\nclick to set the canvas manually",
