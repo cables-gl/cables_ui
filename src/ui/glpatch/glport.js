@@ -34,7 +34,6 @@ export default class GlPort
         else this._parent.addChild(this._rect);
 
 
-
         this._updateColor();
         this._activity = 1;
 
@@ -62,29 +61,33 @@ export default class GlPort
 
     _onUiAttrChange(attribs)
     {
+        if (this.disposed) return;
         if (attribs.hasOwnProperty("isAnimated") || attribs.hasOwnProperty("useVariable") || attribs.hasOwnProperty("notWorking")) this._updateColor();
         if (attribs.hasOwnProperty("expose")) this._updateColor();
 
-        if (attribs.hasOwnProperty("longPort") && attribs.longPort === 0 && this._longPortRect)
-        {
-            this._longPortRect.dispose();
-            this._longPortRect = null;
-        }
+        if (attribs.hasOwnProperty("longPort") && attribs.longPort == 0 && this._longPortRect) this._longPortRect = this._longPortRect.dispose();
         if (attribs.hasOwnProperty("longPort") && attribs.longPort > 0)
         {
+            if (!this._rect)
+            {
+                // console.log("has no rect!?!?!?");
+                return;
+            }
             if (!this._longPortRect)
             {
+                // console.log("create longportrect", this._name);
+                // console.log("attribs.longPort", attribs.longPort, this._longPortRect);
                 this._longPortRect = new GlRect(this._rectInstancer, { "parent": this._parent, "interactive": false });
-                this._parent.addChild(this._longPortRect);
+                // console.log(this._longPortRect._parent);
+                // this._rect.addChild(this._longPortRect);
             }
 
-            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight * 0.5);
-
+            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight);
             this._longPortRect.setPosition(gluiconfig.portWidth, 0);
 
             const col = GlPort.getColor(this._type, false, false, false);
             this._longPortRect.setColor(col);
-            this._longPortRect.setOpacity(0.6);
+            this._longPortRect.setOpacity(0.7);
         }
     }
 
@@ -155,11 +158,6 @@ export default class GlPort
     get width()
     {
         return this._rect.w;
-    }
-
-    get port()
-    {
-        return this._port;
     }
 
     updateSize()
@@ -272,10 +270,11 @@ export default class GlPort
 
     dispose()
     {
+        this.disposed = true;
+        if (this._longPortRect) this._longPortRect = this._longPortRect.dispose();
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].visible = false;
-
 
         for (let i = 0; i < this._mouseEvents.length; i++)
             this._rect.off(this._mouseEvents[i]);
