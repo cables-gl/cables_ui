@@ -629,6 +629,7 @@ export default class PatchSaveServer extends Events
                     }
                 }
 
+                gui.jobs().finish("projectsave");
                 console.log(e);
                 if (!found)
                     CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
