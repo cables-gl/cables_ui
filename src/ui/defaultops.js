@@ -170,6 +170,15 @@ const defaultOps = {
         "ObjectGetObject": "Ops.Json.ObjectGetObjectByPath",
         "ObjectGetString": "Ops.Json.ObjectGetStringByPath"
     },
+    "hideInOpSelect":
+    [
+        "Ops.Ui.SubPatch",
+        "Ops.Ui.Subpatch2Temp",
+        "Ops.Ui.SubPatchInput",
+        "Ops.Ui.SubPatchOutput",
+        "Ops.Ui.PatchInput",
+        "Ops.Ui.PatchOutput"
+    ],
     "defaultMathOps":
     {
         "default":
