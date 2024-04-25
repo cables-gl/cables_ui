@@ -81,8 +81,8 @@ export default class GlPort
                 // console.log(this._longPortRect._parent);
                 // this._rect.addChild(this._longPortRect);
             }
-
-            this._longPortRect.setSize((attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)) - gluiconfig.portWidth, gluiconfig.portHeight);
+            // (attribs.longPort * (gluiconfig.portPadding / 2 + gluiconfig.portWidth)),
+            this._longPortRect.setSize((attribs.longPort - 1) * (gluiconfig.portPadding + gluiconfig.portWidth), gluiconfig.portHeight);
             this._longPortRect.setPosition(gluiconfig.portWidth, 0);
 
             const col = GlPort.getColor(this._type, false, false, false);
@@ -148,6 +148,8 @@ export default class GlPort
 
         const col = GlPort.getColor(this._type, hover, false, this._activity);
         this._rect.setColor(col);
+
+        if (this._port.uiAttribs.hasOwnProperty("opacity")) this._rect.setOpacity(this._port.uiAttribs.opacity);
     }
 
     get direction()
