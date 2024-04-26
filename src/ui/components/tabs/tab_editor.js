@@ -489,6 +489,20 @@ function createEditor(id, val, cb)
         );
         snippetManager.register(snippets, "javascript");
 
+        const snippetsGlsl = snippetManager.parseSnippetFile("");
+
+        snippetsGlsl.push(
+            {
+                "content": "uniform float a;",
+                "name": "uniform float a;",
+            },
+            {
+                "content": "texture(texCoord,tex);",
+                "name": "texture(texCoord,tex);",
+            }
+        );
+        snippetManager.register(snippetsGlsl, "glsl");
+
         const cssSnippets = [];
         cssSnippets.push({ "name": "background", "content": "background: " });
         cssSnippets.push({ "name": "background-attachment", "content": "background-attachment: " });
@@ -650,7 +664,7 @@ function createEditor(id, val, cb)
         cssSnippets.push({ "name": "zoom", "content": "zoom: " });
         snippetManager.register(cssSnippets, "css");
 
-        const staticWordCompleter = {
+        const staticWordCompleterJs = {
             getCompletions(_editor, session, pos, prefix, callback)
             {
                 const wordList = [
@@ -683,8 +697,7 @@ function createEditor(id, val, cb)
             },
         };
 
-        // or
-        editor.completers.push(staticWordCompleter);
+        editor.completers.push(staticWordCompleterJs);
         editor.resize();
         editor.focus();
 

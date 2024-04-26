@@ -66,7 +66,7 @@ export default class TabPortObjectInspect extends Events
             html += "<br/>";
             html += "<a class=\"button\" id=\"portvaluejsonbutton" + this._id + "\" ><span class=\"icon icon-refresh\"></span>Update</a>";
             html += "&nbsp;";
-            html += "<a id=\"copybutton\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
+            html += "<a id=\"copybutton" + this._id + "\" class=\"button \" ><span class=\"icon icon-copy\"></span>Copy</a>";
             html += "<br/><br/>";
 
             if (thing && thing.constructor)
@@ -96,7 +96,7 @@ export default class TabPortObjectInspect extends Events
 
             hljs.highlightElement(el);
 
-            ele.byId("copybutton").addEventListener("click", (e) =>
+            ele.byId("copybutton" + this._id).addEventListener("click", (e) =>
             {
                 this.copyPortValuePreview(e, port.name);
             });
