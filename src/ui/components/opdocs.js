@@ -114,6 +114,7 @@ export default class OpDocs
             const opDoc = _opDocs[i];
             opDoc.category = defaultOps.getNamespaceClassName(opDoc.name);
             let summaryParsed = false;
+
             if (opDoc.layout)
             {
                 if (opDoc.layout.portsIn)
@@ -371,6 +372,12 @@ export default class OpDocs
             else
             {
                 this._opDocs[oldDoc] = doc;
+            }
+
+
+            if (defaultOps.hideInOpSelect.indexOf(doc.name) > -1)
+            {
+                doc.hidden = true;
             }
         });
         this._opDocs = this._opDocs.concat(newOpDocs);

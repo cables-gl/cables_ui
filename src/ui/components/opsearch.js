@@ -73,7 +73,7 @@ export default class OpSearch extends Events
             const opdoc = gui.opDocs.getOpDocByName(this._list[i].name);
             if (defaultOps.isDeprecatedOp(this._list[i].name) || (opdoc && opdoc.oldVersion)) this._list[i].old = true;
         }
-
+        // console.log("opselect build list...");
         this._rebuildWordList();
 
         CABLES.UI.OPSELECT.maxPop = maxPop;

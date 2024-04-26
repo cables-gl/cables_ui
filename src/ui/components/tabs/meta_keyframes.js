@@ -10,7 +10,7 @@ export default class MetaKeyframes
     constructor(tabs)
     {
         this.anim = null;
-        this._tab = new CABLES.UI.Tab("keyframes", { "icon": "clock", "infotext": "tab_keyframes", "padding": true });
+        this._tab = new CABLES.UI.Tab("keyframes", { "icon": "clock", "infotext": "tab_keyframes", "padding": true, "singleton": true });
         tabs.addTab(this._tab);
         // this._tab.addEventListener("onActivate", function ()
         // {
