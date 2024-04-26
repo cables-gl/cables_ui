@@ -254,7 +254,7 @@ const paramsHelper =
                         // gui.setStateUnsaved();
                         gui.savedState.setUnSaved("saveeditorcontent");
                         gui.jobs().finish("saveeditorcontent");
-                        port.set(content);
+                        port.setRef(content);
                         gui.emitEvent("portValueEdited", op, port, content);
                     },
                     "onChange": function (e)

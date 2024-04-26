@@ -273,7 +273,6 @@ export default class GlPort
     dispose()
     {
         this.disposed = true;
-        if (this._longPortRect) this._longPortRect = this._longPortRect.dispose();
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].visible = false;
@@ -284,6 +283,7 @@ export default class GlPort
         this._mouseEvents.length = 0;
         if (this._rect) this._rect = this._rect.dispose();
         if (this._dot) this._dot = this._dot.dispose();
+        if (this._longPortRect) this._longPortRect = this._longPortRect.dispose();
     }
 }
 
