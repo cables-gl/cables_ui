@@ -67,7 +67,7 @@ class PortHtmlGenerator
             "hasExample": hasExample,
         };
 
-        if (CABLES.platform.getCablesDocsUrl)o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+        o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
         return this._templateHead(o);
     }

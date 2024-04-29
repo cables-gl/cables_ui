@@ -12,6 +12,12 @@ export default class PlatformCommunity extends Platform
         this.frontendOptions.showPatchUrlLink = true;
         this.frontendOptions.showAssetExternalLink = true;
         this.frontendOptions.showAssetUpload = true;
+        this.frontendOptions.showPatchSettings = true;
+        this.frontendOptions.showPatchBackups = true;
+        this.frontendOptions.showPatchViewPage = true;
+        this.frontendOptions.showExport = true;
+        this.frontendOptions.showMyLinks = true;
+        this.frontendOptions.showChangeLogLink = true;
     }
 
     getCablesDocsUrl()

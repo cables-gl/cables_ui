@@ -692,9 +692,20 @@ export default class ServerOps
         if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
 
         let html = "";
+
+
+        if (CABLES.platform.frontendOptions.chooseOpDir)
+        {
+            html += "Choose op directory:<br/><br/>";
+            html += "<select>";
+            for (let i = 0; i < 10; i++)
+                html += "<option>" + i + "</option>";
+            html += "</select>";
+            html += "<hr/>";
+        }
+
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
-
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
