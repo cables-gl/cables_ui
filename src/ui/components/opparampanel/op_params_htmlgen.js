@@ -48,7 +48,7 @@ class PortHtmlGenerator
             newestVersion = doc.newestVersion;
         }
 
-        return this._templateHead({
+        const o = {
             "op": op,
             "panelid": this._panelId,
             "frontendOptions": CABLES.platform.frontendOptions,
@@ -62,8 +62,14 @@ class PortHtmlGenerator
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
             "cablesUrl": CABLES.platform.getCablesUrl(),
+
+
             "hasExample": hasExample,
-        });
+        };
+
+        if (CABLES.platform.getCablesDocsUrl)o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+
+        return this._templateHead(o);
     }
 
     getHtmlHeaderPorts(dir, title)

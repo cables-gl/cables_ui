@@ -25,7 +25,8 @@ export function getHandleBarHtml(name, obj)
 
     obj.frontendOptions = CABLES.platform.frontendOptions;
     obj.cablesUrl = CABLES.platform.getCablesUrl();
-    obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+    obj.cablesDocsUrl = obj.cablesUrl;
+    if (CABLES.platform.getCablesDocsUrl)obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
     const html = template(obj);
     perf.finish();
