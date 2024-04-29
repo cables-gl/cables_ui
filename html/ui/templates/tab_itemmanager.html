@@ -14,9 +14,11 @@
                 <i class="icon icon-refresh"></i>
             </span>
 
-            <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
-                <i class="icon icon-upload"></i>
-            </span>
+            {{#if frontendOptions.showAssetUpload }}
+                <span class="iconbutton info" data-info="filemanager_file_upload" onclick="CABLES.CMD.PATCH.uploadFileDialog();" >
+                    <i class="icon icon-upload"></i>
+                </span>
+            {{/if}}
 
             <span class="iconbutton info" data-info="filemanager_file_create" onclick="CABLES.CMD.PATCH.createFile();" >
                 <i class="icon icon-file-plus"></i>

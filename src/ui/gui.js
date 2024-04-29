@@ -1359,7 +1359,14 @@ export default class Gui extends Events
 
 
         ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
-        ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+
+
+        if (CABLES.platform.frontendOptions.showAssetUpload)
+            ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+        else
+            ele.hide(ele.byId("nav_uploadfile"));
+
+
         ele.byId("nav_changelog").addEventListener("click", () => { window.open("https://docs.cables.gl", "_blank"); });
 
         // --- Help menu
