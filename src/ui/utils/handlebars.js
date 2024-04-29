@@ -23,11 +23,9 @@ export function getHandleBarHtml(name, obj)
 
     obj = obj || {};
 
-    console.log(CABLES.sandbox.frontendOptions, CABLES.sandbox.frontendOptions.showLocalOpDirButton);
-
-    obj.frontendOptions = CABLES.sandbox.frontendOptions;
-    obj.cablesUrl = CABLES.sandbox.getCablesUrl();
-    obj.cablesDocsUrl = CABLES.sandbox.getCablesDocsUrl();
+    obj.frontendOptions = CABLES.platform.frontendOptions;
+    obj.cablesUrl = CABLES.platform.getCablesUrl();
+    obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
 
     const html = template(obj);
     perf.finish();

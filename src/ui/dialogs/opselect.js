@@ -323,10 +323,10 @@ export default class OpSelect
 
                 const svg = gui.opDocs.getLayoutSvg(opName);
                 if (svg)html += svg;
-                else html += "<img src=\"" + CABLES.sandbox.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
+                else html += "<img src=\"" + CABLES.platform.getCablesUrl() + "/api/op/layout/" + opName + "\"/>";
 
                 html += "</div>";
-                html += "<a target=\"_blank\" href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
+                html += "<a target=\"_blank\" href=\"" + CABLES.platform.getCablesUrl() + "/op/" + opName + "\" class=\"button-small\">View Documentation</a>";
                 html += opDocHtml;
             }
             this._eleSearchinfo.innerHTML = html;

@@ -546,7 +546,7 @@ class OpParampanel extends Events
                 "iconClass": "icon icon-external",
                 func()
                 {
-                    const url = CABLES.sandbox.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
+                    const url = CABLES.platform.getCablesUrl() + "/edit/" + outer.storage.blueprint.patchId;
                     window.open(url, "_blank");
                 },
             });

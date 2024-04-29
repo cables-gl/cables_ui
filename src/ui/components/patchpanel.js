@@ -64,7 +64,7 @@ export default class PatchPanel extends Events
             const projectId = project.shortId || project._id;
 
 
-            const isSameHost = CABLES.sandbox.isPatchSameHost();
+            const isSameHost = CABLES.platform.isPatchSameHost();
             let host = "";
 
             if (!isSameHost)host = gui.project().buildInfo.host;
@@ -73,8 +73,8 @@ export default class PatchPanel extends Events
                 {
                     "projectId": projectId,
                     "project": project,
-                    "frontendOptions": CABLES.sandbox.frontendOptions,
-                    "cablesUrl": CABLES.sandbox.getCablesUrl(),
+                    "frontendOptions": CABLES.platform.frontendOptions,
+                    "cablesUrl": CABLES.platform.getCablesUrl(),
                     "sameHost": isSameHost,
                     "patchHost": host
                 });

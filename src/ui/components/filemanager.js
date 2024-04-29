@@ -436,9 +436,9 @@ export default class FileManager
                             "isReference": detailItem.isReference,
                             "isLibraryFile": detailItem.isLibraryFile,
                             "referenceCount": detailItem.referenceCount,
-                            "projectUrl": CABLES.sandbox.getCablesUrl() + "/edit/" + detailItem.projectId,
+                            "projectUrl": CABLES.platform.getCablesUrl() + "/edit/" + detailItem.projectId,
                             "downloadUrl": downloadUrl,
-                            "assetPageUrl": CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
+                            "assetPageUrl": CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + detailItem.p
                         });
                     }
                     else
@@ -525,14 +525,14 @@ export default class FileManager
                                             {
                                                 let linkText = otherCount + " other patch";
                                                 if (otherCount > 1) linkText += "es";
-                                                content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                content += "It is used in <a href=\"" + CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                             }
                                             if (countRes.data.countOps)
                                             {
                                                 let linkText = countRes.data.countOps + " op";
                                                 if (countRes.data.countOps > 1) linkText += "s";
                                                 if (otherCount) content += "<br/>";
-                                                content += "It is used in <a href=\"" + CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
+                                                content += "It is used in <a href=\"" + CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + fullName + "\" target=\"_blank\">" + linkText + "</a>";
                                                 allowDelete = false;
                                             }
                                         }
@@ -683,7 +683,7 @@ export default class FileManager
                                     content += "<br><ul>";
                                     countRes.data.assets.forEach((asset) =>
                                     {
-                                        const link = CABLES.sandbox.getCablesUrl() + "/asset/patches/?filename=" + asset;
+                                        const link = CABLES.platform.getCablesUrl() + "/asset/patches/?filename=" + asset;
                                         content += "<li>Check usages of <a href='" + link + "' target='_blank'>" + CABLES.filename(asset) + "</a></li>";
                                     });
                                     content += "</ul>";

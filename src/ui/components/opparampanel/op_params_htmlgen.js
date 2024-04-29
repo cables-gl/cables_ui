@@ -51,7 +51,7 @@ class PortHtmlGenerator
         return this._templateHead({
             "op": op,
             "panelid": this._panelId,
-            "frontendOptions": CABLES.sandbox.frontendOptions,
+            "frontendOptions": CABLES.platform.frontendOptions,
             "isBookmarked": isBookmarked,
             "colorClass": defaultOps.getNamespaceClassName(op.objName),
             "texts": text,
@@ -61,7 +61,7 @@ class PortHtmlGenerator
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
-            "cablesUrl": CABLES.sandbox.getCablesUrl(),
+            "cablesUrl": CABLES.platform.getCablesUrl(),
             "hasExample": hasExample,
         });
     }
@@ -106,7 +106,7 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
-                "cablesUrl": CABLES.sandbox.getCablesUrl(),
+                "cablesUrl": CABLES.platform.getCablesUrl(),
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,

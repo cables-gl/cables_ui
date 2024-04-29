@@ -18,7 +18,7 @@ export default class Exporter
         }
 
         const projectId = this._project.shortId || this._project._id;
-        let gotoUrl = CABLES.sandbox.getCablesUrl() + "/export/" + projectId;
+        let gotoUrl = CABLES.platform.getCablesUrl() + "/export/" + projectId;
         if (this._versionId)
         {
             gotoUrl += "?version=" + this._versionId;

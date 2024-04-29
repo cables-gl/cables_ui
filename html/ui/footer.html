@@ -64,7 +64,7 @@
                 "time": timeUsed
             });
 
-        if (!window.CABLES || !CABLES.sandbox || !CABLES.sandbox.isDevEnv()) return;
+        if (!window.CABLES || !CABLES.platform || !CABLES.platform.isDevEnv()) return;
         document.getElementById("loadingstatusLog").innerHTML += title + " (" + timeUsed + ") <br/>";
         document.querySelectorAll(".devOnly").forEach(e => e.style.display = "inherit");
     }
@@ -157,10 +157,10 @@
                         }
 
                     }
-                    CABLES.sandbox = new CABLES[platformClass](cfg);
+                    CABLES.platform = new CABLES[platformClass](cfg);
 
                     incrementStartup();
-                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.sandbox.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
+                    loadjs([CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlOpsCode()), CABLESUILOADER.noCacheUrl(CABLES.platform.getUrlProjectOpsCode(cfg.patchId))], 'all_ops');
                     loadjs.ready('all_ops', () =>
                     {
                         incrementStartup();

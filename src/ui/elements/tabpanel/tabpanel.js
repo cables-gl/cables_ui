@@ -373,7 +373,7 @@ export default class TabPanel extends Events
 
         talkerAPI.addEventListener("manualScreenshot", (opts, next) =>
         {
-            CABLES.sandbox.setManualScreenshot(opts.manualScreenshot);
+            CABLES.platform.setManualScreenshot(opts.manualScreenshot);
 
             if (opts.manualScreenshot)
             {

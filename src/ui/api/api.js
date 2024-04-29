@@ -14,7 +14,7 @@ export default class Api
 
     request(method, url, data, cbSuccess, cbError, doCache)
     {
-        url = CABLES.sandbox.getUrlApiPrefix() + url;
+        url = CABLES.platform.getUrlApiPrefix() + url;
 
         const options = { "method": method };
 

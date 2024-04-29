@@ -53,7 +53,7 @@ export default class Platform extends Events
     isPatchSameHost()
     {
         if (!gui.project() || !gui.project().buildInfo || !gui.project().buildInfo.host) return true;
-        return gui.project().buildInfo.host == CABLES.sandbox.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
+        return gui.project().buildInfo.host == CABLES.platform.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
     }
 
     getSandboxUrl()

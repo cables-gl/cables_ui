@@ -34,7 +34,7 @@ export default class Jobs extends Events
 
         let str = "";
 
-        if (CABLES.sandbox.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
+        if (CABLES.platform.isOffline()) str += "<b>Offline! No internet connection.</b><br/><br/>";
 
         if (this._jobs.length === 0)
         {

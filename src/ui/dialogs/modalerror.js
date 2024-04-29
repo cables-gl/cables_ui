@@ -192,9 +192,9 @@ export default class ModalError
                 str += "Please check if you have the access rights to this op.<br/><br/>";
             }
             else
-            if (gui && gui.serverOps.canEditOp(gui.user, this.opName) && CABLES.sandbox)
+            if (gui && gui.serverOps.canEditOp(gui.user, this.opName) && CABLES.platform)
             {
-                const url = CABLES.sandbox.getCablesUrl() + "/op/edit/" + this.opName;
+                const url = CABLES.platform.getCablesUrl() + "/op/edit/" + this.opName;
                 str += "Error in op: <b><a href='" + url + "' target='_blank'>" + this.opName + "</a></b><br/><br/>";
             }
             else
@@ -203,7 +203,7 @@ export default class ModalError
             }
         }
 
-        const isSameHost = CABLES.sandbox.isPatchSameHost();
+        const isSameHost = CABLES.platform.isPatchSameHost();
 
         if (!isSameHost)
         {
@@ -273,7 +273,7 @@ export default class ModalError
 
         if (!isCustomOp && !isPrivateOp)
         {
-            if (CABLES && CABLES.sandbox && CABLES.sandbox.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
+            if (CABLES && CABLES.platform && CABLES.platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
             {
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";

@@ -11,7 +11,7 @@ export default class LibLoader
         this.title = options.title || "loading libs";
         this.list = options.list || loadedLibs;
         this.callbacks = options.callbacks || CABLES.onLoadedLib;
-        this.basePath = options.basePath || CABLES.sandbox.getCablesUrl() + "/api/lib/";
+        this.basePath = options.basePath || CABLES.platform.getCablesUrl() + "/api/lib/";
 
         if (libnames.length > 0)
         {
