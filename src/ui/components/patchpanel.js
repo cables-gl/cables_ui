@@ -73,6 +73,7 @@ export default class PatchPanel extends Events
                 {
                     "projectId": projectId,
                     "project": project,
+                    "frontendOptions": CABLES.sandbox.frontendOptions,
                     "cablesUrl": CABLES.sandbox.getCablesUrl(),
                     "sameHost": isSameHost,
                     "patchHost": host

@@ -22,18 +22,21 @@
             <br/><br/>
         {{/if}}
 
-        {{#compare port.uiAttribs.display '!=' 'none' }}
-        {{#compare project.summary.licence.name '!=' 'No licence chosen' }}
-            <b>Licence</b>:
-            {{#if project.summary.licence.link}}
-                <a href="{{project.summary.licence.link}}" class="link" target="_blank">{{project.summary.licence.name}}</a>
-            {{else}}
-                {{project.summary.licence.name}}
-            {{/if}}
-            <br/>{{project.summary.licence.description}}
-            <br/><br/>
-        {{/compare}}
-        {{/compare}}
+
+        {{#if project.summary.licence}}
+            {{#compare port.uiAttribs.display '!=' 'none' }}
+                {{#compare project.summary.licence.name '!=' 'No licence chosen' }}
+                    <b>Licence</b>:
+                    {{#if project.summary.licence.link}}
+                        <a href="{{project.summary.licence.link}}" class="link" target="_blank">{{project.summary.licence.name}}</a>
+                    {{else}}
+                        {{project.summary.licence.name}}
+                    {{/if}}
+                    <br/>{{project.summary.licence.description}}
+                    <br/><br/>
+                {{/compare}}
+            {{/compare}}
+        {{/if}}
 
         {{#if project.teams}}
             Teams:
@@ -66,9 +69,18 @@
         {{/if}}
 
         <div>
-            <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
-            <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
-            <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
+            {{#if frontendOptions.showFavs}}
+                <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
+            {{/if}}
+            {{#if frontendOptions.showPatchSettings}}
+                <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
+            {{/if}}
+            {{#if frontendOptions.showPatchUrlLink}}
+                <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
+            {{/if}}
+            {{#if frontendOptions.openLocalFiles}}
+                <a class="iconbutton" onclick="CABLES.CMD.STANDALONE.openProjectDir();"><span class="icon icon-folder"></span></a>
+            {{/if}}
         </div>
 
     </div>

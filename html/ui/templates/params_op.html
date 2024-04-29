@@ -14,10 +14,10 @@
             <span style="padding-left: 2px;font-size: 20px;font-weight: bold;">Op</span><input class="medium info" id="opname" oninput="gui.opParams.setCurrentOpTitle(this.value);" value="{{optitle}}" data-info="op_title">
 			<br/>
             <div style="max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:5px;">
-            <a href="{{cablesUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
+            <a href="{{cablesDocsUrl}}/op/{{op.objName}}" class="{{colorClass}}" target="_blank"></i>&nbsp;{{op.objName}}</a>
 
             {{#if oldVersion}}
-                <a href="{{cablesUrl}}/op/{{op.objName}}">- newer version available</a>
+                <a href="{{cablesDocsUrl}}/op/{{op.objName}}">- newer version available</a>
                 <a class="button-small" onclick="gui.patchView.replaceOpCheck('{{op.id}}','{{newestVersion.name}}')">Upgrade</a>
                 <br/>
             {{else}}
@@ -39,16 +39,22 @@
 
 
 
-        <a href="{{cablesUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
+        <a href="{{cablesDocsUrl}}/op/{{op.objName}}" class="button-small"  target="_blank"> Documentation</a>
         {{#if hasExample}}
-        <a href="{{cablesUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
+            <a href="{{cablesDocsUrl}}/op/example/{{op.objName}}" class="button-small"  target="_blank">Example</a>
         {{/if}}
 
         <a class="button-small button-icon tt info"  onclick="CABLES.CMD.PATCH.manageSelectedOp()"><span class="icon icon-op"></span></a>
 
-        {{#if showEditButton }}
+        {{#if showEditButton}}
             <a class="button-small button-icon tt info" data-into="[e] - edit op" data-tt="[e] - edit op " onclick="CABLES.CMD.PATCH.editOp()"><span class="icon icon-edit"></span></a>
         {{/if}}
+
+
+        {{#if frontendOptions.showLocalOpDirButton}}
+            <a class="button-small button-icon tt info" data-into="open op dir" data-tt="open op dir" onclick="CABLES.CMD.STANDALONE.openOpDir('{{op.objName}}')"><span class="icon icon-folder"></span></a>
+        {{/if}}
+
 
         {{#if op.crashed }}
             OP CRASHED

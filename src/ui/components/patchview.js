@@ -589,6 +589,7 @@ export default class PatchView extends Events
             const html = getHandleBarHtml(
                 "params_ops", {
                     "isDevEnv": CABLES.sandbox.isDevEnv(),
+                    "config": CABLES.sandbox.cfg,
                     "numOps": numops,
                     "mulSubs": mulSubs
                 });

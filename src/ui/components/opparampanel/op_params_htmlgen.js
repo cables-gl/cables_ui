@@ -51,6 +51,7 @@ class PortHtmlGenerator
         return this._templateHead({
             "op": op,
             "panelid": this._panelId,
+            "frontendOptions": CABLES.sandbox.frontendOptions,
             "isBookmarked": isBookmarked,
             "colorClass": defaultOps.getNamespaceClassName(op.objName),
             "texts": text,

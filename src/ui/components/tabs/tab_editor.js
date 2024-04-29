@@ -493,11 +493,15 @@ function createEditor(id, val, cb)
 
         snippetsGlsl.push(
             {
-                "content": "uniform float a;",
-                "name": "uniform float a;",
+                "content": "uniform float ${1:varName};",
+                "name": "uniform float ${1:varName};",
             },
             {
-                "content": "texture(texCoord,tex);",
+                "content": "uniform sampler2D ${1:texName};",
+                "name": "uniform sampler2D ${1:texName};",
+            },
+            {
+                "content": "texture(${1:texCoord},${2:samplerTex});",
                 "name": "texture(texCoord,tex);",
             }
         );
