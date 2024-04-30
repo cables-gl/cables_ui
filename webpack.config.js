@@ -1,11 +1,12 @@
-import path from "path";
+import path, { dirname } from "path";
 
 import webpack from "webpack";
 import TerserPlugin from "terser-webpack-plugin";
+import { fileURLToPath } from "url";
 
 export default (isLiveBuild, buildInfo, minify = false) =>
 {
-    const __dirname = new URL(".", import.meta.url).pathname;
+    let __dirname = dirname(fileURLToPath(import.meta.url));
     return {
         "mode": isLiveBuild ? "production" : "development",
         "entry": [
