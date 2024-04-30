@@ -164,8 +164,6 @@ export default class CommandPallete
         {
             const cmd = this.dynamicCmds[i].cmd;
 
-
-
             if (cmd.toLowerCase().indexOf(str) >= 0)
             {
                 html += this.addResult(this.dynamicCmds[i], count, i);
@@ -179,9 +177,7 @@ export default class CommandPallete
 
             let show = true;
             if (CABLES.CMD.commands[i].frontendOption)
-            {
                 show = CABLES.platform.frontendOptions[CABLES.CMD.commands[i].frontendOption];
-            }
 
             if (!show) continue;
             if (!str && CABLES.CMD.commands[i].category == "debug") continue;
