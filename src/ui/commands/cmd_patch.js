@@ -95,8 +95,6 @@ CABLES_CMD_PATCH.editOp = function (userInteraction = true)
     }
 };
 
-
-
 CABLES_CMD_PATCH.createVersionSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -133,7 +131,6 @@ CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
-    console.log("subOuter", subOuter);
     new ManageOp(gui.mainTabs, subOuter.opId);
 };
 

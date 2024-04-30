@@ -5,6 +5,7 @@ import WatchVarTab from "../components/tabs/tab_watchvars.js";
 import userSettings from "../components/usersettings.js";
 import JobsTab from "../components/tabs/tab_jobs.js";
 import HtmlTab from "../components/tabs/tab_html.js";
+import WelcomeTab from "../components/tabs/tab_welcome.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -223,6 +224,12 @@ CABLES_CMD_UI.showBuildInfo = function ()
 };
 
 
+CABLES_CMD_UI.welcomeTab = function ()
+{
+    new WelcomeTab(gui.mainTabs);
+};
+
+
 // CABLES_CMD_UI.updateCanvasIcons=()=>
 // {
 //     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
@@ -360,13 +367,6 @@ CMD_UI_COMMANDS.push(
         "cmd": "toggle mute",
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMute
-    },
-
-
-    {
-        "cmd": "hide minimap",
-        "category": "ui",
-        "func": CABLES_CMD_UI.hideMinimap
     },
     {
         "cmd": "search",
@@ -548,6 +548,13 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.activityFeed,
         "infotext": "",
         "icon": "activity"
+    },
+    {
+        "cmd": "Show Welcome",
+        "category": "ui",
+        "func": CABLES_CMD_UI.welcomeTab,
+        "infotext": "",
+        "icon": "cables"
     }
 
 
