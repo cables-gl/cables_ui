@@ -130,6 +130,11 @@ body
         user-select: none;
     }
 
+
+    .noselect
+    {
+        user-select: none;
+    }
     .selectable
     {
         user-select:text !important;
