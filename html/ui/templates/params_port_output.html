@@ -13,7 +13,7 @@
     {{/compare}}
 
     {{#compare port.type '==' 5 }}
-        <span class="value valuetext watchPort linkedValue monospace watchPortValue_{{ port.watchId }}_{{ panelid }}">{{port.port.getValueForDisplay}}</span>
+        <span data-portname="{{port.name}}" data-opid="{{op.id}}" class="value valuetext watchPort  portCopyClipboard linkedValue monospace watchPortValue_{{ port.watchId }}_{{ panelid }}">{{port.port.getValueForDisplay}}</span>
         <span class="button-small button-icon info" data-info="{{ texts.portObjectSnapshot }}" onclick="new CABLES.UI.TabPortObjectInspect('{{op.id}}','{{port.name}}');"><span class="icon icon-search"></span></span><br />
     {{/compare}}
 

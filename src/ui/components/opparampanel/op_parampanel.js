@@ -285,34 +285,13 @@ class OpParampanel extends Events
                 }
             };
 
-            ele.forEachClass("portCopyClipboard", (ell) =>
-            {
-                ell.addEventListener("click", (e) =>
-                {
-                    if (!navigator.clipboard) return;
-
-                    const cop = gui.corePatch().getOpById(e.target.dataset.opid);
-                    const port = cop.getPortByName(e.target.dataset.portname);
-
-                    navigator.clipboard
-                        .writeText(JSON.stringify(port.get()))
-                        .then(() =>
-                        {
-                            CABLES.UI.notify("Copied value to clipboard");
-                        })
-                        .catch((err) =>
-                        {
-                            console.warn("copy to clipboard failed", err);
-                        });
-
-                    e.preventDefault();
-                }, { "passive": false });
-            });
-
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerup", () => { this._isPortLineDragDown = false; this._portLineDraggedName = null; }, { "passive": false });
             document.getElementById("portLineTitle_in_" + i).addEventListener("pointerdown", (e) => { this._isPortLineDragDown = true; this._portLineDraggedName = e.target.dataset.portname; }, { "passive": false });
             if (document.getElementById("patchviews")) document.getElementById("patchviews").addEventListener("pointerenter", f);
         }
+
+
+
 
         for (const ipo in this._portsOut)
         {
@@ -324,7 +303,7 @@ class OpParampanel extends Events
                 {
                     const p = this._portsOut[index];
                     if (!p.uiAttribs.hidePort)
-                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (gluiconfig.portWidth + gluiconfig.portPadding), "y": p.parent.uiAttribs.translate.y + 50, }, op, p);
+                        gui.opSelect().show({ "x": p.parent.uiAttribs.translate.x + index * (gluiconfig.portWidth + gluiconfig.portPadding), "y": p.op.uiAttribs.translate.y + 50, }, op, p);
                 }, { "passive": false });
                 else this._log.warn("ele not found: portTitle_out_" + index);
             }.bind(this)(ipo));
@@ -347,6 +326,31 @@ class OpParampanel extends Events
                 }
             }, { "passive": false });
         }
+
+
+        ele.forEachClass("portCopyClipboard", (ell) =>
+        {
+            ell.addEventListener("click", (e) =>
+            {
+                if (!navigator.clipboard) return;
+
+                const cop = gui.corePatch().getOpById(e.target.dataset.opid);
+                const port = cop.getPortByName(e.target.dataset.portname);
+
+                navigator.clipboard
+                    .writeText(String(port.get()))
+                    .then(() =>
+                    {
+                        CABLES.UI.notify("Copied value to clipboard");
+                    })
+                    .catch((err) =>
+                    {
+                        console.warn("copy to clipboard failed", err);
+                    });
+
+                e.preventDefault();
+            }, { "passive": false });
+        });
 
 
         perf.finish();
