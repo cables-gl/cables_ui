@@ -175,7 +175,7 @@ CABLES_CMD_PATCH.saveAs = function ()
 
 CABLES_CMD_PATCH.createBackup = function ()
 {
-    CABLES.sandbox.createBackup();
+    CABLES.platform.createBackup();
 };
 
 CABLES_CMD_PATCH.clear = function ()
@@ -217,8 +217,8 @@ CABLES_CMD_PATCH.deleteUnusedPatchOps = function ()
     {
         // this will open an iframe tab an listen to "opsDeleted" that is sent by the iframe
         const idsParam = ids.join(",");
-        const url = CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
-        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
+        const url = CABLES.platform.getCablesUrl() + "/op/delete?ids=" + idsParam + "&iframe=true";
+        gui.mainTabs.addIframeTab("Delete Ops", url, { "icon": "ops", "closable": true, "singleton": true, "gotoUrl": CABLES.platform.getCablesUrl() + "/op/delete?ids=" + idsParam }, true);
     }
 };
 
@@ -546,8 +546,8 @@ CABLES_CMD_PATCH.uploadFileDialog = function ()
 
 CABLES_CMD_PATCH.showBackups = () =>
 {
-    const url = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
-    const gotoUrl = CABLES.sandbox.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
+    const url = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings?iframe=true#versions";
+    const gotoUrl = CABLES.platform.getCablesUrl() + "/patch/" + gui.project()._id + "/settings#versions";
     gui.mainTabs.addIframeTab(
         "Patch Backups",
         url,
@@ -562,7 +562,7 @@ CABLES_CMD_PATCH.showBackups = () =>
 
 CABLES_CMD_PATCH.export = function ()
 {
-    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.sandbox.getPatchVersion());
+    const exporter = new CABLES.UI.Exporter(gui.project(), CABLES.platform.getPatchVersion());
     exporter.show();
 };
 
@@ -606,7 +606,7 @@ CABLES_CMD_PATCH.addOp = function (x, y)
 
 CABLES_CMD_PATCH.patchWebsite = function ()
 {
-    window.open(CABLES.sandbox.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
+    window.open(CABLES.platform.getCablesUrl() + "/p/" + gui.project().shortId || gui.project()._id);
 };
 
 CABLES_CMD_PATCH.renameVariable = function (oldname)

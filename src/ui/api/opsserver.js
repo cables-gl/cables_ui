@@ -310,7 +310,7 @@ export default class ServerOps
                 refOldOp
             );
         });
-        loadjs(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + name + "?p=" + gui.project().shortId), lid);
+        loadjs(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + name + "?p=" + gui.project().shortId), lid);
     }
 
     clone(oldname, name, cb, options)
@@ -692,9 +692,20 @@ export default class ServerOps
         if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
 
         let html = "";
+
+
+        if (CABLES.platform.frontendOptions.chooseOpDir)
+        {
+            html += "Choose op directory:<br/><br/>";
+            html += "<select>";
+            for (let i = 0; i < 10; i++)
+                html += "<option>" + i + "</option>";
+            html += "</select>";
+            html += "<hr/>";
+        }
+
         html += "New op name:<br/><br/>";
         html += "<div class=\"clone\"><select class=\"left\" id=\"opNameDialogNamespace\"></select><br/><input type=\"text\" id=\"opNameDialogInput\" value=\"" + newName + "\" placeholder=\"MyAwesomeOpName\" autocomplete=\"off\" autocorrect=\"off\" autocapitalize=\"off\" spellcheck=\"false\"/></div></div>";
-
         html += "<br/><br/>";
         html += "<div id=\"opcreateerrors\" class=\"hidden issues\" ></div>";
         html += "<div id=\"opNameDialogConsequences\" class=\"consequences\"></div>";
@@ -1079,7 +1090,7 @@ export default class ServerOps
                                 },
                                 (errr, re) =>
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
 
                                     if (errr)
@@ -1239,7 +1250,7 @@ export default class ServerOps
                                 }
                                 else
                                 {
-                                    if (!CABLES.sandbox.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
+                                    if (!CABLES.platform.isDevEnv() && defaultOps.isCoreOp(opname)) notifyError("WARNING: op editing on live environment");
 
                                     if (!CABLES.Patch.getOpClass(opname))gui.opSelect().reload();
 
@@ -1699,7 +1710,7 @@ export default class ServerOps
                     const missingOpUrl = [];
                     allIdentifiers.forEach((identifier) =>
                     {
-                        let url = CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/op/" + identifier) + "?p=" + gui.project().shortId;
+                        let url = CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + identifier) + "?p=" + gui.project().shortId;
                         missingOpUrl.push(url);
                     });
 
@@ -1737,7 +1748,7 @@ export default class ServerOps
         {
             const extensionName = name.split(".", 3).join(".");
             const extensionOpUrl = [];
-            extensionOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/extension/" + extensionName));
+            extensionOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/extension/" + extensionName));
 
             const lid = "extensionops" + extensionName + CABLES.uuid();
 
@@ -1780,7 +1791,7 @@ export default class ServerOps
         {
             const teamNamespaceName = name.split(".", 3).join(".");
             const teamOpUrl = [];
-            teamOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.sandbox.getCablesUrl() + "/api/ops/code/team/" + teamNamespaceName));
+            teamOpUrl.push(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/ops/code/team/" + teamNamespaceName));
 
             const lid = "teamops" + teamNamespaceName + CABLES.uuid();
 

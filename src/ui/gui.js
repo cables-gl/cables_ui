@@ -334,7 +334,7 @@ export default class Gui extends Events
         {
             CABLES.UI.MODAL.showError(
                 "Demo Editor",
-                text.guestHint + "<br/><br/><a href=\"" + CABLES.sandbox.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
+                text.guestHint + "<br/><br/><a href=\"" + CABLES.platform.getCablesUrl() + "/signup\" target=\"_blank\" class=\"bluebutton\">Sign up</a> <a onclick=\"gui.pressedEscape();\" target=\"_blank\" class=\"button\">Close</a>"
             );
             return true;
         }
@@ -342,7 +342,7 @@ export default class Gui extends Events
 
     showBackupSaveWarning()
     {
-        if (!CABLES.sandbox.getPatchVersion()) return false;
+        if (!CABLES.platform.getPatchVersion()) return false;
 
         const html = "You are overwriting your original patch with a backup! Are you sure?<br/><br/>Saving will redirect back to the original patch.<br/><br/>" +
             "<a class=\"button\" onclick=\"gui.patchView.store.checkUpdatedSaveForce('');\"><span class=\"icon icon-save\"></span>Yes, save</a>&nbsp;&nbsp;" +
@@ -1306,14 +1306,14 @@ export default class Gui extends Events
 
                 let str = "";
                 for (let i = 0; i < r.length; i++)
-                {
                     str += "<li><a class=\"mine\" target=\"_top\" data-short-id=\"" + r[i].shortId + "\">Open Patch " + r[i].name + "</a></li>";
-                }
 
-                str +=
-                    "<li class=\"divide\"></li>" +
-                    "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/mypatches\">My Patches</a></li>" +
-                    "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.sandbox.getCablesUrl() + "/\">Open cables.gl</a></li>";
+                str += "<li class=\"divide\"></li>";
+
+                if (CABLES.platform.frontendOptions.showMyLinks)
+                    str += "<li id=\"nav_mypatches\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/mypatches\">My Patches</a></li>";
+
+                str += "<li id=\"nav_cablesweb\"><a target=\"_top\" href=\"" + CABLES.platform.getCablesUrl() + "/\">Open cables.gl</a></li>";
 
                 ele.byId("nav_recentpatches").innerHTML = str;
                 ele.byId("nav_recentpatches").querySelectorAll("li a.mine").forEach((el) =>
@@ -1327,7 +1327,7 @@ export default class Gui extends Events
                     }
                 });
 
-                // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.sandbox.getCablesUrl(), "_blank"); win.focus(); });
+                // ele.byId("nav_cablesweb").addEventListener("click", (event) => { const win = window.open(CABLES.platform.getCablesUrl(), "_blank"); win.focus(); });
             });
         });
 
@@ -1346,7 +1346,7 @@ export default class Gui extends Events
             const projectId = this._currentProject ? this._currentProject.shortId : null;
             if (projectId)
             {
-                const url = CABLES.sandbox.getCablesUrl() + "/p/" + projectId;
+                const url = CABLES.platform.getCablesUrl() + "/p/" + projectId;
                 const win = window.open(url, "_blank");
                 win.focus();
             }
@@ -1357,22 +1357,48 @@ export default class Gui extends Events
         ele.byId("nav_patch_saveas").addEventListener("click", (event) => { CABLES.CMD.PATCH.saveAs(); });
         ele.byId("nav_patch_export").addEventListener("click", (event) => { CABLES.CMD.PATCH.export(); });
 
-
         ele.byId("nav_patch_new").addEventListener("click", (event) => { CABLES.CMD.PATCH.newPatch(); });
-        ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
-        ele.byId("nav_changelog").addEventListener("click", () => { window.open("https://docs.cables.gl", "_blank"); });
+
+
+
+        if (CABLES.platform.frontendOptions.showAssetUpload) ele.byId("nav_uploadfile").addEventListener("click", CABLES.CMD.PATCH.uploadFileDialog);
+        else ele.hide(ele.byId("nav_uploadfile"));
+
+        if (!CABLES.platform.frontendOptions.showPatchSettings) ele.hide(ele.byId("nav_patch_settings"));
+        if (!CABLES.platform.frontendOptions.showPatchViewPage) ele.hide(ele.byId("nav_patch_page"));
+        if (!CABLES.platform.frontendOptions.showExport) ele.hide(ele.byId("nav_patch_export"));
+        if (!CABLES.platform.frontendOptions.showMyLinks) ele.hide(ele.byId("nav_mypatches"));
+
+
+
+        if (!CABLES.platform.frontendOptions.showPatchBackups)
+        {
+            ele.hide(ele.byId("nav_viewBackups"));
+            ele.hide(ele.byId("nav_createBackup"));
+        }
+
+
+
+
+
+        if (CABLES.platform.frontendOptions.showChangeLogLink) ele.byId("nav_changelog").addEventListener("click", () => { window.open(CABLES.platform.getCablesDocsUrl() + "/changelog", "_blank"); });
+        else ele.hide(ele.byId("nav_changelog"));
+
+        if (CABLES.platform.frontendOptions.showBuildInfoMenuLink) ele.byId("nav_buildinfo").addEventListener("click", () => { CABLES.CMD.UI.showBuildInfo(); });
+        else ele.hide(ele.byId("nav_buildinfo"));
+
 
         // --- Help menu
         // Documentation
 
         ele.byId("nav_help_keys").addEventListener("click", (event) => { CABLES.CMD.UI.showKeys(); });
-        ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open("https://docs.cables.gl", "_blank"); });
+        ele.byId("nav_help_documentation").addEventListener("click", (event) => { window.open(CABLES.platform.getCablesDocsUrl() + "/docs", "_blank"); });
         ele.byId("nav_help_forum").addEventListener("click", (event) => { window.open("https://github.com/cables-gl/cables_docs/discussions", "_blank"); });
         ele.byId("nav_help_tipps").addEventListener("click", (event) => { gui.tips.show(); });
 
         // Introduction
         ele.byId("nav_help_introduction").addEventListener("click", (event) => { gui.introduction.showIntroduction(); });
-        ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); win.focus(); });
+        ele.byId("nav_help_video").addEventListener("click", (event) => { const win = window.open("https://www.youtube.com/cablesgl", "_blank"); });
 
         ele.byId("nav_op_createOp").addEventListener("click", (event) => { gui.serverOps.createDialog(null); });
         ele.byId("nav_op_patchOp").addEventListener("click", (event) =>
@@ -1792,7 +1818,7 @@ export default class Gui extends Events
         }
 
 
-        if (CABLES.sandbox.getPatchVersion())
+        if (CABLES.platform.getPatchVersion())
             gui.restriction.setMessage("backup", "This is a backup version, saving will overwrite the current version!");
 
 
@@ -1814,8 +1840,8 @@ export default class Gui extends Events
         if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
         if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
 
-        if (!gui.isRemoteClient && CABLES.sandbox.showBrowserWarning) CABLES.sandbox.showBrowserWarning();
-        if (!gui.isRemoteClient && CABLES.sandbox.showStartupChangelog) CABLES.sandbox.showStartupChangelog();
+        if (!gui.isRemoteClient && CABLES.platform.showBrowserWarning) CABLES.platform.showBrowserWarning();
+        if (!gui.isRemoteClient && CABLES.platform.showStartupChangelog) CABLES.platform.showStartupChangelog();
     }
 
     getOpDoc(opname, html, cb)
@@ -1840,8 +1866,8 @@ export default class Gui extends Events
             }
         };
 
-        const url = CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
-        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.sandbox.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
+        const url = CABLES.platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings?iframe=true";
+        gui.mainTabs.addIframeTab("Patch Settings", url, { "icon": "settings", "closable": true, "singleton": true, "gotoUrl": CABLES.platform.getCablesUrl() + "/patch/" + this.project().shortId + "/settings" }, true);
     }
 
     setCursor(str)
@@ -1932,13 +1958,13 @@ export default class Gui extends Events
         // if (this._savedState)
         // {
         // let title = "";
-        // if (CABLES.sandbox.isDevEnv())title = "DEV ";
+        // if (CABLES.platform.isDevEnv())title = "DEV ";
         // title += gui.project.name + " *";
         // document.title = title;
 
         // CABLESUILOADER.talkerAPI.send("setIconUnsaved");
-        // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon-32_orange.png");
-        // this._favIconLink.href = CABLES.sandbox.getCablesUrl() + "/favicon/favicon_orange.ico";
+        // this.changeFavicon(CABLES.platform.getCablesUrl() + "/favicon/favicon-32_orange.png");
+        // this._favIconLink.href = CABLES.platform.getCablesUrl() + "/favicon/favicon_orange.ico";
 
         // ele.byId("patchname").classList.add("warning");
 
@@ -1965,7 +1991,7 @@ export default class Gui extends Events
     //     // this.resetSavedStateChangesBlueprintSubPatches();
 
     //     // CABLESUILOADER.talkerAPI.send("setIconSaved");
-    //     // this.changeFavicon(CABLES.sandbox.getCablesUrl() + "/favicon/favicon.ico");
+    //     // this.changeFavicon(CABLES.platform.getCablesUrl() + "/favicon/favicon.ico");
     //     // this._favIconLink.href = "/favicon/favicon.ico";
     //     // ele.byId("patchname").classList.remove("warning");
 
@@ -1987,7 +2013,7 @@ export default class Gui extends Events
     //     this.savedState.setSaved("unknown", 0);
 
     //     // let title = "";
-    //     // if (CABLES.sandbox.isDevEnv())title = "DEV ";
+    //     // if (CABLES.platform.isDevEnv())title = "DEV ";
     //     // title += gui.project.name;
     //     // document.title = title;
     //     // window.removeEventListener("beforeunload", this._onBeforeUnloadListener);

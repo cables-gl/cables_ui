@@ -16,7 +16,7 @@ export default class CoreLibLoader extends LibLoader
             "list": CABLES.UI.loadedCoreLibs,
             "callbacks": CABLES.onLoadedCoreLib,
             "globalCallback": CABLES.loadedCoreLib,
-            "basePath": CABLES.sandbox.getCablesUrl() + "/api/corelib/"
+            "basePath": CABLES.platform.getCablesUrl() + "/api/corelib/"
         });
     }
 

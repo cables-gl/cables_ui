@@ -35,7 +35,7 @@ export default class MetaDoc
 
         gui.getOpDoc(this._op.objName, true, function (html)
         {
-            const doclink = "<div><a href=\"" + CABLES.sandbox.getCablesUrl() + "/op/" + this._op.objName + "\" class=\"button \">View documentation</a>&nbsp;<br/><br/>";
+            const doclink = "<div><a href=\"" + CABLES.platform.getCablesUrl() + "/op/" + this._op.objName + "\" class=\"button \">View documentation</a>&nbsp;<br/><br/>";
             this.html = html + doclink;
         }.bind(this));
     }

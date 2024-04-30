@@ -48,9 +48,10 @@ class PortHtmlGenerator
             newestVersion = doc.newestVersion;
         }
 
-        return this._templateHead({
+        const o = {
             "op": op,
             "panelid": this._panelId,
+            "frontendOptions": CABLES.platform.frontendOptions,
             "isBookmarked": isBookmarked,
             "colorClass": defaultOps.getNamespaceClassName(op.objName),
             "texts": text,
@@ -60,9 +61,15 @@ class PortHtmlGenerator
             "oldVersion": oldversion,
             "minified": userSettings.get("minifiedOpHead"),
             "newestVersion": newestVersion,
-            "cablesUrl": CABLES.sandbox.getCablesUrl(),
+            "cablesUrl": CABLES.platform.getCablesUrl(),
+
+
             "hasExample": hasExample,
-        });
+        };
+
+        o.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+
+        return this._templateHead(o);
     }
 
     getHtmlHeaderPorts(dir, title)
@@ -105,7 +112,7 @@ class PortHtmlGenerator
                 "startGroup": startGroup,
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
-                "cablesUrl": CABLES.sandbox.getCablesUrl(),
+                "cablesUrl": CABLES.platform.getCablesUrl(),
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,

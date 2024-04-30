@@ -588,7 +588,8 @@ export default class PatchView extends Events
 
             const html = getHandleBarHtml(
                 "params_ops", {
-                    "isDevEnv": CABLES.sandbox.isDevEnv(),
+                    "isDevEnv": CABLES.platform.isDevEnv(),
+                    "config": CABLES.platform.cfg,
                     "numOps": numops,
                     "mulSubs": mulSubs
                 });
@@ -1408,7 +1409,7 @@ export default class PatchView extends Events
                     if (firstBlueprint) blueprintPatchId = firstBlueprint.blueprintPatchId;
                 }
                 let bpText = "<span class=\"icon icon-external\"></span> Open patch";
-                let bpClick = "window.open('" + CABLES.sandbox.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
+                let bpClick = "window.open('" + CABLES.platform.getCablesUrl() + "/edit/" + blueprintPatchId + "', '_blank');";
                 if (gui.patchId === blueprintPatchId || gui.project().shortId === blueprintPatchId)
                 {
                     bpText = "Go to subpatch";

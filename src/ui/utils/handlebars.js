@@ -22,8 +22,12 @@ export function getHandleBarHtml(name, obj)
     }
 
     obj = obj || {};
-    obj.cablesUrl = CABLES.sandbox.getCablesUrl();
-    obj.platformFeatures = CABLES.sandbox.features;
+
+    obj.frontendOptions = CABLES.platform.frontendOptions;
+    obj.cablesUrl = CABLES.platform.getCablesUrl();
+    obj.cablesDocsUrl = obj.cablesUrl;
+    if (CABLES.platform.getCablesDocsUrl)obj.cablesDocsUrl = CABLES.platform.getCablesDocsUrl();
+
     const html = template(obj);
     perf.finish();
 

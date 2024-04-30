@@ -26,7 +26,7 @@ CABLES_CMD_UI.settings = function ()
 
 CABLES_CMD_UI.activityFeed = function ()
 {
-    const url = CABLES.sandbox.getCablesUrl() + "/myactivityfeed";
+    const url = CABLES.platform.getCablesUrl() + "/myactivityfeed";
     gui.mainTabs.addIframeTab("Activity Feed", url + "?iframe=true", { "icon": "activity", "closable": true, "singleton": true, "gotoUrl": url }, true);
 };
 
@@ -39,7 +39,7 @@ CABLES_CMD_UI.openRemoteViewer = function ()
     {
         projectId = gui.project().shortId || gui.project()._id;
     }
-    window.open(CABLES.sandbox.getCablesUrl() + "/remote_client/" + projectId);
+    window.open(CABLES.platform.getCablesUrl() + "/remote_client/" + projectId);
 };
 
 CABLES_CMD_UI.files = function ()

@@ -48,7 +48,7 @@ export default class PatchSaveServer extends Events
         gui.closeModal();
         CABLES.CMD.PATCH.save(true, () =>
         {
-            if (CABLES.sandbox.getPatchVersion())
+            if (CABLES.platform.getPatchVersion())
             {
                 CABLESUILOADER.talkerAPI.send("reload", { "patchId": gui.project().shortId });
             }
@@ -58,7 +58,7 @@ export default class PatchSaveServer extends Events
     checkUpdated(cb, fromSave = false)
     {
         if (!gui.project()) return;
-        if (CABLES.sandbox.isOffline())
+        if (CABLES.platform.isOffline())
         {
             if (cb)cb();
             return;
@@ -197,7 +197,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (user._id !== gui.user.id)
                         {
-                            const link = CABLES.sandbox.getCablesUrl() + "/user/" + user.username;
+                            const link = CABLES.platform.getCablesUrl() + "/user/" + user.username;
                             const checkboxData = {
                                 "name": "copy-collab-user-" + i,
                                 "value": user._id,
@@ -229,7 +229,7 @@ export default class PatchSaveServer extends Events
                     {
                         if (team.allowEdit)
                         {
-                            const link = CABLES.sandbox.getCablesUrl() + team.link;
+                            const link = CABLES.platform.getCablesUrl() + team.link;
                             checkboxGroup.checkboxes.push({
                                 "name": "copy-collab-team-" + i,
                                 "value": team._id,
@@ -501,12 +501,12 @@ export default class PatchSaveServer extends Events
 
                 const startTime = performance.now();
 
-                CABLES.sandbox.savePatch(
+                CABLES.platform.savePatch(
                     {
                         "name": name,
                         "namespace": currentProject.namespace,
                         "dataB64": b64,
-                        "fromBackup": CABLES.sandbox.getPatchVersion() || false,
+                        "fromBackup": CABLES.platform.getPatchVersion() || false,
                         "buildInfo":
                         {
                             "core": CABLES.build,
@@ -581,7 +581,7 @@ export default class PatchSaveServer extends Events
 
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                        if (doSaveScreenshot && !CABLES.sandbox.manualScreenshot()) this.saveScreenshot();
+                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot()) this.saveScreenshot();
                         else this.finishAnimations();
                     }
 

@@ -48,7 +48,7 @@ export default function startUi(cfg)
         gui.bind(() =>
         {
             incrementStartup();
-            CABLES.sandbox.initRouting(() =>
+            CABLES.platform.initRouting(() =>
             {
                 document.addEventListener("visibilitychange", function ()
                 {
@@ -101,7 +101,7 @@ export default function startUi(cfg)
 
                 gui.bindKeys();
 
-                const socketClusterConfig = CABLES.sandbox.getSocketclusterConfig();
+                const socketClusterConfig = CABLES.platform.getSocketclusterConfig();
                 if (!gui.socket && socketClusterConfig.enabled)
                 {
                     gui.socket = new ScConnection(socketClusterConfig);
@@ -139,7 +139,7 @@ export default function startUi(cfg)
                     projectId = gui.project().shortId || gui.project()._id;
                 }
                 new QRCode(document.getElementById("remote_view_qr"), {
-                    "text": CABLES.sandbox.getCablesUrl() + "/remote_client/" + projectId,
+                    "text": CABLES.platform.getCablesUrl() + "/remote_client/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",
@@ -148,7 +148,7 @@ export default function startUi(cfg)
                 });
 
                 new QRCode(document.getElementById("patch_view_qr"), {
-                    "text": CABLES.sandbox.getCablesUrl() + "/p/" + projectId,
+                    "text": CABLES.platform.getCablesUrl() + "/p/" + projectId,
                     "width": 200,
                     "height": 200,
                     "colorDark": "#000000",

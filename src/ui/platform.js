@@ -13,6 +13,7 @@ export default class Platform extends Events
     {
         super();
         this._cfg = cfg;
+        this.frontendOptions = {};
 
         if (cfg.usersettings && cfg.usersettings.settings) userSettings.load(cfg.usersettings.settings);
         else userSettings.load({});
@@ -20,10 +21,6 @@ export default class Platform extends Events
         window.addEventListener("online", this.updateOnlineIndicator.bind(this));
         window.addEventListener("offline", this.updateOnlineIndicator.bind(this));
         this.updateOnlineIndicator();
-
-        this.features = {
-            "npm": false
-        };
     }
 
     updateOnlineIndicator()
@@ -56,7 +53,7 @@ export default class Platform extends Events
     isPatchSameHost()
     {
         if (!gui.project() || !gui.project().buildInfo || !gui.project().buildInfo.host) return true;
-        return gui.project().buildInfo.host == CABLES.sandbox.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
+        return gui.project().buildInfo.host == CABLES.platform.getCablesUrl().replaceAll("https://", "").replaceAll("http://", "");
     }
 
     getSandboxUrl()

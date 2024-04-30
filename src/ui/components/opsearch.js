@@ -488,7 +488,7 @@ export default class OpSearch extends Events
                 if (defaultOps.isAdminOp(opName) && !gui.user.isAdmin) hidden = true;
             }
 
-            if (defaultOps.isDevOp(opName) && !CABLES.sandbox.isDevEnv()) hidden = true;
+            if (defaultOps.isDevOp(opName) && !CABLES.platform.isDevEnv()) hidden = true;
 
             parts.length -= 1;
             const nameSpace = parts.join(".");
