@@ -210,7 +210,10 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
 CABLES_CMD_UI.welcomeTab = function ()
 {
-    new WelcomeTab(gui.mainTabs);
+    CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+    {
+        new WelcomeTab(gui.mainTabs, { "patches": r });
+    });
 };
 
 CABLES_CMD_UI.toggleOverlays = function ()
@@ -428,13 +431,15 @@ CMD_UI_COMMANDS.push(
         "cmd": "chat",
         "category": "ui",
         "func": CABLES_CMD_UI.showChat,
-        "icon": "command"
+        "icon": "command",
+        "frontendOption": "hasCommunity"
     },
     {
         "cmd": "open remote viewer",
         "category": "ui",
         "func": CABLES_CMD_UI.openRemoteViewer,
-        "icon": "command"
+        "icon": "command",
+        "frontendOption": "showRemoteViewer"
     },
     {
         "cmd": "zoom in",
@@ -476,7 +481,6 @@ CMD_UI_COMMANDS.push(
         "cmd": "Show Activity Feed",
         "category": "ui",
         "func": CABLES_CMD_UI.activityFeed,
-        "infotext": "",
         "icon": "activity",
         "frontendOption": "hasCommunity"
     },
@@ -484,7 +488,6 @@ CMD_UI_COMMANDS.push(
         "cmd": "Show Welcome",
         "category": "ui",
         "func": CABLES_CMD_UI.welcomeTab,
-        "infotext": "",
         "icon": "cables"
     }
 

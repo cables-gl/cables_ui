@@ -1439,7 +1439,8 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "open patch website",
         "category": "patch",
         "func": CABLES_CMD_PATCH.patchWebsite,
-        "icon": "link"
+        "icon": "link",
+        "frontendOption": "hasCommunity"
     },
     {
         "cmd": "pause patch execution",
@@ -1520,7 +1521,6 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "replace ops",
         "func": CABLES_CMD_PATCH.replaceOp,
         "icon": "op"
-
     },
     {
         "cmd": "link two selected ops",
@@ -1559,8 +1559,6 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.manageSelectedOp,
         "icon": "op"
     },
-
-
     {
         "cmd": "go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
@@ -1606,8 +1604,6 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-
-
 
 
 );
