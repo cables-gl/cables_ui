@@ -171,8 +171,7 @@ export default class ManageOp
 
                     const html = getHandleBarHtml("tab_manage_op",
                         {
-
-                            "url": CABLES.sandbox.getCablesUrl(),
+                            "url": CABLES.platform.getCablesUrl(),
                             "opLayoutSvg": gui.opDocs.getLayoutSvg(opName),
                             "opid": opDoc.id,
                             "opname": opDoc.name,
