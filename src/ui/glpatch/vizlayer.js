@@ -251,37 +251,40 @@ export default class VizLayer extends Events
     }
 
 
-    _textWrap(text, max)
+    _textWrap(str, max)
     {
-        if (text == null) return "";
-        if (text.length <= max) return text;
-        const nextNewLine = /\n/.exec(text);
-        const lineLength = nextNewLine ? nextNewLine.index : text.length;
-        if (lineLength <= max)
+        const space = " ";
+        const lines = str.split("\n");
+        const newLines = [];
+        const newLinesIdx = [];
+
+        for (let i = 0; i < lines.length; i++)
         {
-            const line = text.substr(0, lineLength);
-            const rest = text.substr(lineLength + 1);
-            return line + "\n" + this._textWrap(rest, max);
-        }
-        else
-        {
-            let line = text.substr(0, max);
-            let rest = text.substr(max);
-            const res = (/([\s])[^\s]*$/.exec(line));
-            if (res)
-            { //
-                line = text.substr(0, res.index);
-                rest = text.substr(res.index + 1);
-            }
-            else
+            const words = lines[i].split(" ");
+            let charCount = 0;
+            let lineWords = [];
+            for (let j = 0; j < words.length; j++)
             {
-                line += "-";
+                charCount += words[j].length + 1;
+
+                if (charCount >= max - 2)
+                {
+                    newLines.push(lineWords.join(space));
+                    newLinesIdx.push(i);
+                    charCount = words[j].length + 1;
+                    lineWords = [];
+                }
+                lineWords.push(words[j]);
             }
-            return line + "\n" + this._textWrap(rest, max);
+            newLines.push(lineWords.join(space));
+            newLinesIdx.push(i);
         }
+
+        return {
+            "linesIdx": newLinesIdx,
+            "lines": newLines
+        };
     }
-
-
 
     renderText(ctx, layer, lines, options)
     {
@@ -292,6 +295,12 @@ export default class VizLayer extends Events
         let padding = fs * 0.25;
         const lineHeight = fs + padding;
         let numLines = Math.floor(layer.height / layer.scale / lineHeight);
+
+
+
+
+
+
 
         let offset = Math.floor(options.scroll * lines.length);
 
@@ -304,22 +313,54 @@ export default class VizLayer extends Events
 
         if (options.showLineNum) for (let i = 0; i < (offset + numLines + " ").length; i++) indent += " ";
 
+
+        let numChars = Math.ceil(layer.width / layer.scale / 6) - indent.length;
+
+
         ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
 
         let hl = options.syntax && options.syntax != "text";
 
 
+
+
+        let linesIdx = null;
+        let lb = "\n";
+        if (options.showWhitespace) lb = "⏎" + lb;
+
+        if (options.wrap)
+        {
+            const r = this._textWrap(lines.join(lb), numChars);
+            lines = r.lines;
+            linesIdx = r.linesIdx;
+        }
+
+        let lastline = "Z";
+
         for (let i = offset; i < offset + numLines; i += 1)
         {
             if (i >= lines.length || i < 0) continue;
 
+            if (options.showWhitespace)
+            {
+                lines[i] = lines[i].replaceAll(" ", "·");
+                lines[i] = lines[i].replaceAll("\t", "⇿");
+            }
+
             if (options.showLineNum)
             {
-                ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
-                ctx.fillText(i,
-                    layer.x / layer.scale + padding,
-                    layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
-                ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+                let idx = i;
+                if (linesIdx)idx = linesIdx[i];
+
+                if (lastline != idx)
+                {
+                    lastline = idx;
+                    ctx.fillStyle = gui.theme.colors_vizlayer.colorLineNumbers || "#888";
+                    ctx.fillText(idx,
+                        layer.x / layer.scale + padding,
+                        layer.y / layer.scale + lineHeight + ((i - offset) * lineHeight));
+                    ctx.fillStyle = gui.theme.colors_vizlayer.colorText || "#FFF";
+                }
             }
 
             if (hl)
@@ -349,7 +390,6 @@ export default class VizLayer extends Events
                             else if (child.scope == "meta" || child.scope == "keyword" || child.scope == "type")ctx.fillStyle = "#ecce64"; // yello
                             else
                             {
-                                // console.log("unknown", child.scope);
                                 ctx.fillStyle = "#d00";
                             }
                             for (let l = 0; l < child.children.length; l++)

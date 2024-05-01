@@ -1,0 +1,41 @@
+<script id="tab_welcome" type="text/x-handlebars-template">
+
+    <h2>welcome to cables</h2>
+    ...now wat?
+
+    <br><br>
+
+    <a class="icon-button button" ><span class=" icon-file-plus icon-2x icon"></span>New patch </a>
+    <a class="icon-button button" ><span class=" icon-file icon-2x icon"></span>Open patch </a>
+
+    <hr>
+
+    <h3>Recent Patches</h3>
+
+    <div style="clear:both" class="item_manager">
+        {{#each patches}}
+
+            <div style="float:left;" class="item item-container text-center" onclick="CABLESUILOADER.talkerAPI.send('gotoPatch', { 'id': '{{shortId}}' });">
+                <img src="{{../url}}{{thumbnail}}" style="width:99px;"/>
+                <br/>
+                {{name}}
+            </div>
+
+        {{/each}}
+    </div>
+    <div style="clear:both"></div>
+
+    <hr>
+
+    <h3>Help</h3>
+
+    <a href="https://cables.gl/docs" target="_blank" class="button">Documentation</a>
+    <br>
+    <a href="https://cables.gl/docs" target="_blank" class="button">Video tutorials</a>
+    <br>
+    <a href="https://cables.gl/docs" target="_blank" class="button">Github discussions and issues</a>
+    <br>
+    <a href="https://discord.gg/cablesgl" target="_blank" class="button">Join cables discord community</a>
+
+
+</script>

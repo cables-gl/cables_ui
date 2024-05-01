@@ -356,11 +356,6 @@ CMD_DEBUG_COMMANDS.push(
         "category": "debug",
     },
     {
-        "cmd": "test blueprint2",
-        "func": CABLES_CMD_DEBUG.testBlueprint2,
-        "category": "debug",
-    },
-    {
         "cmd": "undo history",
         "func": CABLES_CMD_DEBUG.undoHistory,
         "category": "debug",

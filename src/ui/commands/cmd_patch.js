@@ -95,8 +95,6 @@ CABLES_CMD_PATCH.editOp = function (userInteraction = true)
     }
 };
 
-
-
 CABLES_CMD_PATCH.createVersionSelectedOp = function ()
 {
     const ops = gui.patchView.getSelectedOps();
@@ -133,7 +131,6 @@ CABLES_CMD_PATCH.manageCurrentSubpatchOp = function ()
     const oldSubPatchId = gui.patchView.getCurrentSubPatch();
     const subOuter = gui.patchView.getSubPatchOuterOp(oldSubPatchId);
 
-    console.log("subOuter", subOuter);
     new ManageOp(gui.mainTabs, subOuter.opId);
 };
 
@@ -1223,29 +1220,6 @@ CABLES_CMD_PATCH.uncollideOps = function (ops)
 
 
 
-CABLES_CMD_PATCH.localizeBlueprints = () =>
-{
-    gui.patchView.localizeBlueprints();
-};
-
-CABLES_CMD_PATCH.updateAllBlueprints = () =>
-{
-    const patch = gui.corePatch();
-    const ops = patch.ops;
-    const relevantOps = ops.filter((op) => { return defaultOps.isBlueprintOp(op); });
-    gui.patchView.updateBlueprints(relevantOps);
-};
-
-CABLES_CMD_PATCH.updateLocalChangedBlueprints = () =>
-{
-    const subPatchIds = gui.getSavedStateChangesBlueprintSubPatches();
-    const blueprintOps = gui.patchView.getBlueprintOpsForSubPatches(subPatchIds, true);
-    gui.patchView.updateBlueprints(blueprintOps);
-    gui.resetSavedStateChangesBlueprintSubPatches();
-    const reloadIcon = ele.byId("nav-item-bpReload");
-    if (reloadIcon) ele.hide(reloadIcon);
-};
-
 CABLES_CMD_PATCH.togglePatchLike = (targetElement = null) =>
 {
     CABLESUILOADER.talkerAPI.send("toggleFav", {}, (err, res) =>
@@ -1383,19 +1357,22 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "upload file dialog",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFileDialog,
-        "icon": "file"
+        "icon": "file",
+        "frontendOption": "uploadFiles"
     },
     {
         "cmd": "upload file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.uploadFile,
-        "icon": "file"
+        "icon": "file",
+        "frontendOption": "uploadFiles"
     },
     {
         "cmd": "create new file",
         "category": "patch",
         "func": CABLES_CMD_PATCH.createFile,
-        "icon": "file"
+        "icon": "file",
+        "frontendOption": "uploadFiles"
     },
     {
         "cmd": "select child ops",
@@ -1412,13 +1389,15 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "export static html",
         "category": "patch",
         "func": CABLES_CMD_PATCH.export,
-        "icon": "download"
+        "icon": "download",
+        "frontendOption": "showExport"
     },
     {
         "cmd": "show backups",
         "category": "patch",
         "func": CABLES_CMD_PATCH.showBackups,
-        "icon": "file"
+        "icon": "file",
+        "frontendOption": "showPatchBackups"
     },
     {
         "cmd": "create new patch",
@@ -1460,7 +1439,8 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "open patch website",
         "category": "patch",
         "func": CABLES_CMD_PATCH.patchWebsite,
-        "icon": "link"
+        "icon": "link",
+        "frontendOption": "hasCommunity"
     },
     {
         "cmd": "pause patch execution",
@@ -1541,7 +1521,6 @@ CMD_PATCH_COMMANDS.push(
         "cmd": "replace ops",
         "func": CABLES_CMD_PATCH.replaceOp,
         "icon": "op"
-
     },
     {
         "cmd": "link two selected ops",
@@ -1580,8 +1559,6 @@ CMD_PATCH_COMMANDS.push(
         "func": CABLES_CMD_PATCH.manageSelectedOp,
         "icon": "op"
     },
-
-
     {
         "cmd": "go to parent subpatch",
         "func": CABLES_CMD_PATCH.gotoParentSubpatch,
@@ -1595,18 +1572,6 @@ CMD_PATCH_COMMANDS.push(
     {
         "cmd": "point blueprints to local patch",
         "func": CABLES_CMD_PATCH.localizeBlueprints,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "update all blueprints",
-        "func": CABLES_CMD_PATCH.updateAllBlueprints,
-        "category": "patch",
-        "icon": "op"
-    },
-    {
-        "cmd": "update local blueprints with changes",
-        "func": CABLES_CMD_PATCH.updateLocalChangedBlueprints,
         "category": "patch",
         "icon": "op"
     },
@@ -1639,8 +1604,6 @@ CMD_PATCH_COMMANDS.push(
         "category": "patch",
         "icon": "op"
     },
-
-
 
 
 );

@@ -46,17 +46,3 @@ CMD.exec = function (cmd)
     if (!found)console.warn("command not found:" + cmd);
 };
 
-/*
- * Returns a command-object by its name
- */
-// CABLES.CMD.getCmd = function (cmd)
-// {
-//     const commands = CABLES.CMD.commands;
-//     for (let i = 0; i < commands.length; i++)
-//     {
-//         if (commands[i].cmd === cmd)
-//         {
-//             return commands[i];
-//         }
-//     }
-// };

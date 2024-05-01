@@ -5,6 +5,7 @@ import WatchVarTab from "../components/tabs/tab_watchvars.js";
 import userSettings from "../components/usersettings.js";
 import JobsTab from "../components/tabs/tab_jobs.js";
 import HtmlTab from "../components/tabs/tab_html.js";
+import WelcomeTab from "../components/tabs/tab_welcome.js";
 
 const CABLES_CMD_UI = {};
 const CMD_UI_COMMANDS = [];
@@ -73,22 +74,6 @@ CABLES_CMD_UI.toggleMute = function ()
         gui.corePatch().setVolume(1.0);
     }
 };
-
-// CABLES_CMD_UI.toggleEditor = function ()
-// {
-//     gui.toggleEditor();
-// };
-
-// CABLES_CMD_UI.hideEditor = function ()
-// {
-//     gui.closeEditor();
-// };
-
-// CABLES_CMD_UI.showEditor = function ()
-// {
-//     // gui.showEditor();
-// };
-
 
 CABLES_CMD_UI.showChat = function ()
 {
@@ -223,21 +208,13 @@ CABLES_CMD_UI.showBuildInfo = function ()
 };
 
 
-// CABLES_CMD_UI.updateCanvasIcons=()=>
-// {
-//     if(CABLES.UI.showCanvasTransforms) document.getElementById("canvasIconTransforms").classList.add("iconToggleActive");
-//     else document.getElementById("canvasIconTransforms").classList.remove("iconToggleActive");
-
-//     if(userSettings.get("helperMode")) document.getElementById("canvasIconHelper").classList.add("iconToggleActive");
-//     else document.getElementById("canvasIconHelper").classList.remove("iconToggleActive");
-// }
-
-
-// CABLES_CMD_UI.toggleHelperCurrentTransform = function ()
-// {
-//     const mode = !userSettings.get("toggleHelperCurrentTransforms");
-//     userSettings.set("toggleHelperCurrentTransforms", mode);
-// };
+CABLES_CMD_UI.welcomeTab = function ()
+{
+    CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
+    {
+        new WelcomeTab(gui.mainTabs, { "patches": r });
+    });
+};
 
 CABLES_CMD_UI.toggleOverlays = function ()
 {
@@ -246,26 +223,6 @@ CABLES_CMD_UI.toggleOverlays = function ()
     gui.transformOverlay.updateVisibility();
     gui.canvasManager.getCanvasUiBar().updateIconState();
 };
-
-// CABLES_CMD_UI.toggleHelper = function ()
-// {
-//     const mode = !userSettings.get("helperMode");
-//     userSettings.set("helperMode", mode);
-// };
-
-
-// CABLES_CMD_UI.toggleFloorGrid = function ()
-// {
-//     const mode=!userSettings.get("floorGrid");
-//     userSettings.set("floorGrid", mode);
-//     // CABLES_CMD_UI.updateCanvasIcons();
-// };
-
-// CABLES_CMD_UI.toggleTransformOverlay = function ()
-// {
-//     userSettings.set("showCanvasTransforms", !userSettings.get("showCanvasTransforms"));
-//     gui.transformOverlay.updateVisibility();
-// };
 
 CABLES_CMD_UI.gradientTest = function ()
 {
@@ -361,13 +318,6 @@ CMD_UI_COMMANDS.push(
         "category": "ui",
         "func": CABLES_CMD_UI.toggleMute
     },
-
-
-    {
-        "cmd": "hide minimap",
-        "category": "ui",
-        "func": CABLES_CMD_UI.hideMinimap
-    },
     {
         "cmd": "search",
         "category": "ui",
@@ -396,8 +346,6 @@ CMD_UI_COMMANDS.push(
         "icon": "canvas_op",
         "hotkey": "SHIFT + ENTER"
     },
-
-
     {
         "cmd": "show command pallet",
         "category": "ui",
@@ -443,20 +391,12 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.jobs,
         "icon": "cables"
     },
-
-    // {
-    //     "cmd": "download patch svg",
-    //     "category": "ui",
-    //     "func": CABLES_CMD_UI.downloadSVG,
-    //     "icon": "cables",
-    // },
     {
         "cmd": "toggle window fullscreen",
         "category": "ui",
         "func": CABLES_CMD_UI.windowFullscreen,
         "icon": "cables"
     },
-
     {
         "cmd": "gradient test",
         "category": "ui",
@@ -469,12 +409,6 @@ CMD_UI_COMMANDS.push(
         "func": CABLES_CMD_UI.toggleSnapToGrid,
         "icon": "command"
     },
-    // {
-    //     "cmd": "toggle mini map",
-    //     "category": "ui",
-    //     "func": CABLES_CMD_UI.toggleMinimap,
-    //     "icon": "command",
-    // },
     {
         "cmd": "toggle texture preview",
         "category": "ui",
@@ -497,15 +431,16 @@ CMD_UI_COMMANDS.push(
         "cmd": "chat",
         "category": "ui",
         "func": CABLES_CMD_UI.showChat,
-        "icon": "command"
+        "icon": "command",
+        "frontendOption": "hasCommunity"
     },
     {
         "cmd": "open remote viewer",
         "category": "ui",
         "func": CABLES_CMD_UI.openRemoteViewer,
-        "icon": "command"
+        "icon": "command",
+        "frontendOption": "showRemoteViewer"
     },
-
     {
         "cmd": "zoom in",
         "category": "ui",
@@ -546,8 +481,14 @@ CMD_UI_COMMANDS.push(
         "cmd": "Show Activity Feed",
         "category": "ui",
         "func": CABLES_CMD_UI.activityFeed,
-        "infotext": "",
-        "icon": "activity"
+        "icon": "activity",
+        "frontendOption": "hasCommunity"
+    },
+    {
+        "cmd": "Show Welcome",
+        "category": "ui",
+        "func": CABLES_CMD_UI.welcomeTab,
+        "icon": "cables"
     }
 
 

@@ -6,17 +6,16 @@ export default class PlatformCommunity extends Platform
     {
         super(cfg);
 
-        this.frontendOptions.uploadFiles = true;
-        this.frontendOptions.showFavs = true;
-        this.frontendOptions.showPatchSettings = true;
-        this.frontendOptions.showPatchUrlLink = true;
-        this.frontendOptions.showAssetExternalLink = true;
-        this.frontendOptions.showAssetUpload = true;
-        this.frontendOptions.showPatchSettings = true;
-        this.frontendOptions.showPatchBackups = true;
-        this.frontendOptions.showPatchViewPage = true;
-        this.frontendOptions.showExport = true;
-        this.frontendOptions.showMyLinks = true;
+        this.frontendOptions.hasCommunity = // facvs/comments/activity feed etc.
+        this.frontendOptions.uploadFiles =
+        this.frontendOptions.showAssetExternalLink =
+        this.frontendOptions.showAssetUpload =
+        this.frontendOptions.showPatchSettings =
+        this.frontendOptions.showPatchBackups =
+        this.frontendOptions.showPatchViewPage =
+        this.frontendOptions.showExport =
+        this.frontendOptions.showMyLinks =
+        this.frontendOptions.showRemoteViewer =
         this.frontendOptions.showChangeLogLink = true;
     }
 

@@ -1,4 +1,5 @@
 import ManageOp from "../../components/tabs/tab_manage_op.js";
+import WelcomeTab from "../../components/tabs/tab_welcome.js";
 import userSettings from "../../components/usersettings.js";
 
 /**
@@ -24,6 +25,10 @@ export default class EditorSession
         this.addListener("manageOp", (name, data) =>
         {
             new ManageOp(gui.mainTabs, name);
+        });
+        this.addListener("welcometab", (name, data) =>
+        {
+            new WelcomeTab(gui.mainTabs, name);
         });
     }
 

@@ -12,14 +12,14 @@
             <th>avg</th>
         </tr>
 
-    {{#each measures}}
-        <tr onclick="CABLES.UI.uiProfiler.highlight('{{name}}')" class="{{#if highlight}}highlighted{{/if}}" >
-            <td class="{{color}}">{{name}}</td>
-            <td class="{{color}}">{{count}}</td>
-            <td class="{{color}}">{{last}}</td>
-            <td class="{{color}}">{{avg}}</td>
-        </tr>
-    {{/each}}
+        {{#each measures}}
+            <tr onclick="CABLES.UI.uiProfiler.highlight('{{name}}')" class="{{#if highlight}}highlighted{{/if}}" >
+                <td class="{{color}}">{{name}}</td>
+                <td class="{{color}}">{{count}}</td>
+                <td class="{{color}}">{{last}}</td>
+                <td class="{{color}}">{{avg}}</td>
+            </tr>
+        {{/each}}
     </table>
 
     <a onclick="CABLES.UI.uiProfiler.clear();" class="button">reset</a>

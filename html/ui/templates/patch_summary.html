@@ -69,13 +69,13 @@
         {{/if}}
 
         <div>
-            {{#if frontendOptions.showFavs}}
+            {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" onclick="CABLES.CMD.PATCH.togglePatchLike(this);"><span class="icon icon-heart{{#if project.summary.isFav}}-fill{{/if}}"></span>{{project.summary.numFavs}}</a>
             {{/if}}
-            {{#if frontendOptions.showPatchSettings}}
+            {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" onclick="CABLES.CMD.UI.settings();"><span class="icon icon-settings"></span></a>
             {{/if}}
-            {{#if frontendOptions.showPatchUrlLink}}
+            {{#if frontendOptions.hasCommunity}}
                 <a class="iconbutton" target="_blank" href="{{cablesUrl}}/p/{{project.shortId}}"><span class="icon icon-external"></span></a>
             {{/if}}
             {{#if frontendOptions.openLocalFiles}}
