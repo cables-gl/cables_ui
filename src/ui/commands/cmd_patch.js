@@ -265,7 +265,7 @@ CABLES_CMD_PATCH.createSubPatchOp = function ()
         }
     }
 
-    gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName) =>
+    gui.serverOps.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
     {
         CABLES_CMD_PATCH.createOpFromSelection({ "newOpName": newNamespace + newName, "ignoreNsCheck": true });
     });
