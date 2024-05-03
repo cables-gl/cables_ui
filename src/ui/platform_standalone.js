@@ -25,4 +25,9 @@ export default class PlatformStandalone extends Platform
     {
         return "https://github.com/cables-gl/cables_electron/issues";
     }
+
+    getCablesStaticUrl()
+    {
+        return "file://";
+    }
 }

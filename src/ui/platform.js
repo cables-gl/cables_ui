@@ -55,6 +55,11 @@ export default class Platform extends Events
         return this._cfg.urlCables;
     }
 
+    getCablesStaticUrl()
+    {
+        return this.getCablesUrl();
+    }
+
     isPatchSameHost()
     {
         if (!gui.project() || !gui.project().buildInfo || !gui.project().buildInfo.host) return true;
