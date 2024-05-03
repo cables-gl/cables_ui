@@ -257,7 +257,10 @@ export default class ModalError
         }
 
         str += "<a class=\"button\" onclick=\"CABLES.CMD.PATCH.reload();\"><span class=\"icon icon-refresh\"></span>Reload patch</a>&nbsp;&nbsp;";
-        str += "<a class=\"button\" target=\"_blankk\" href=\"https://github.com/cables-gl/cables_docs/issues\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
+        if (CABLES && CABLES.platform && CABLES.platform.getIssueTrackerUrl())
+        {
+            str += "<a class=\"button\" target=\"_blankk\" href=\"" + CABLES.platform.getIssueTrackerUrl() + "\"><span class=\"icon icon-message\"></span>Report a problem</a>&nbsp;&nbsp;";
+        }
 
         let ignoreErrorReport = false;
 
@@ -271,6 +274,13 @@ export default class ModalError
                 CABLES.lastError.opTriggerStack.indexOf("Ops.Patch.") >= 0) ignoreErrorReport = true;
         }
 
+        let showSendButton = true;
+        if (CABLES && CABLES.platform && !CABLES.platform.frontendOptions.sendErrorReports)
+        {
+            ignoreErrorReport = true;
+            showSendButton = false;
+        }
+
         if (!isCustomOp && !isPrivateOp)
         {
             if (CABLES && CABLES.platform && CABLES.platform.isDevEnv() && gui && gui.user && !gui.user.isStaff && !ignoreErrorReport)
@@ -278,7 +288,7 @@ export default class ModalError
                 CABLES.api.sendErrorReport(CABLES.lastError, false);
                 str += "<br/><br/>Dev Environment: An automated error report has been created. We will look into it!";
             }
-            else
+            else if (showSendButton)
             {
                 str += "<a class=\"button \" onclick=\"CABLES.api.sendErrorReport();\">Send Error Report</a>&nbsp;&nbsp;";
             }

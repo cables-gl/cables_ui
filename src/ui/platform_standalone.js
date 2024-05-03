@@ -13,10 +13,16 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showLocalOpDirButton = true;
         this.frontendOptions.chooseOpDir = true;
         this.frontendOptions.showBuildInfoMenuLink = true;
+        this.frontendOptions.sendErrorReports = false;
     }
 
     getCablesDocsUrl()
     {
         return "https://cables.gl";
+    }
+
+    getIssueTrackerUrl()
+    {
+        return "https://github.com/cables-gl/cables_electron/issues";
     }
 }

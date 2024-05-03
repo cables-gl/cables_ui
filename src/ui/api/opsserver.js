@@ -692,6 +692,7 @@ export default class ServerOps
     opNameDialog(options, cb)
     {
         let newName = options.shortName || "";
+        let opTargetDir = null;
         if (options.shortName && options.shortName.indexOf("Ops.") === 0) newName = options.shortName.substr(4, options.shortName.length);
 
         const _checkOpName = () =>
@@ -701,8 +702,6 @@ export default class ServerOps
                 "v": newName,
                 "sourceName": options.sourceOpName
             };
-            const opTargetDirEle = ele.byId("opTargetDir");
-            if (opTargetDirEle) checkNameRequest.opTargetDir = opTargetDirEle.value;
 
             CABLESUILOADER.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
             {
@@ -722,23 +721,39 @@ export default class ServerOps
 
                 ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
                 ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
-                ele.byId("opTargetDir").addEventListener("change", _nameChangeListener);
+                ele.byId("opTargetDir").addEventListener("change", () =>
+                {
+                    const opTargetDirEle = ele.byId("opTargetDir");
+                    if (opTargetDirEle)
+                    {
+                        opTargetDir = opTargetDirEle.value;
+                    }
+                    else
+                    {
+                        opTargetDir = null;
+                    }
+                    _nameChangeListener();
+                });
 
                 const cbOptions = {
                     "replace": false,
                 };
+
                 ele.byId("opNameDialogSubmit").addEventListener("click", (event) =>
                 {
-                    if (opTargetDirEle) cbOptions.opTargetDir = opTargetDirEle.value;
+                    if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
                     cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
                 });
 
-                if (options.showReplace) ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
+                if (options.showReplace)
                 {
-                    if (opTargetDirEle) cbOptions.opTargetDir = opTargetDirEle.value;
-                    cbOptions.replace = true;
-                    cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
-                });
+                    ele.byId("opNameDialogSubmitReplace").addEventListener("click", (event) =>
+                    {
+                        cbOptions.replace = true;
+                        if (opTargetDir) cbOptions.opTargetDir = opTargetDir;
+                        cb(ele.byId("opNameDialogNamespace").value, capitalize(ele.byId("opNameDialogInput").value), cbOptions);
+                    });
+                }
             });
         };
 
@@ -909,7 +924,6 @@ export default class ServerOps
         this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newNamespace + newName;
-
             this.create(opname, () =>
             {
                 gui.closeModal();
@@ -962,7 +976,7 @@ export default class ServerOps
             "sourceOpName": null
         };
 
-        this.opNameDialog(dialogOptions, (newNamespace, newName, options) =>
+        this.opNameDialog(dialogOptions, (newNamespace, newName, cbOptions) =>
         {
             const opname = newNamespace + newName;
 
@@ -975,7 +989,7 @@ export default class ServerOps
             {
                 gui.serverOps.loadOpDependencies(opname, function ()
                 {
-                    if (options && options.replace)
+                    if (cbOptions && cbOptions.replace)
                     {
                         // replace existing ops
                         const ops = gui.corePatch().getOpsByObjName(oldName);
