@@ -325,12 +325,15 @@ export default class ServerOps
 
         loadingModal.setTask("cloning " + oldname + " to " + name);
 
+        const cloneRequest = {
+            "opname": oldname,
+            "name": name,
+        };
+        if (options.opTargetDir)cloneRequest.opTargetDir = options.opTargetDir;
+
         CABLESUILOADER.talkerAPI.send(
             "opClone",
-            {
-                "opname": oldname,
-                "name": name,
-            },
+            cloneRequest,
             (err, res) =>
             {
                 if (err)
@@ -702,6 +705,7 @@ export default class ServerOps
                 "v": newName,
                 "sourceName": options.sourceOpName
             };
+            if (opTargetDir) checkNameRequest.opTargetDir = opTargetDir;
 
             CABLESUILOADER.talkerAPI.send("checkOpName", checkNameRequest, (err, initialRes) =>
             {
@@ -780,6 +784,7 @@ export default class ServerOps
                 for (let i = 0; i < res.length; i++)
                 {
                     const dir = res[i];
+                    if (i === 0) opTargetDir = dir;
                     opDirSelect += "<option value=\"" + dir + "\">" + dir + "</option>";
                 }
                 opDirSelect += "</select>";
@@ -1022,7 +1027,7 @@ export default class ServerOps
                         } });
                     }
                 });
-            });
+            }, { "opTargetDir": cbOptions.opTargetDir });
         });
     }
 
