@@ -721,19 +721,22 @@ export default class ServerOps
 
                 ele.byId("opNameDialogInput").addEventListener("input", _nameChangeListener);
                 ele.byId("opNameDialogNamespace").addEventListener("input", _nameChangeListener);
-                ele.byId("opTargetDir").addEventListener("change", () =>
+                const opTargetDirEle = ele.byId("opTargetDir");
+                if (opTargetDirEle)
                 {
-                    const opTargetDirEle = ele.byId("opTargetDir");
-                    if (opTargetDirEle)
+                    opTargetDirEle.addEventListener("change", () =>
                     {
-                        opTargetDir = opTargetDirEle.value;
-                    }
-                    else
-                    {
-                        opTargetDir = null;
-                    }
-                    _nameChangeListener();
-                });
+                        if (opTargetDirEle)
+                        {
+                            opTargetDir = opTargetDirEle.value;
+                        }
+                        else
+                        {
+                            opTargetDir = null;
+                        }
+                        _nameChangeListener();
+                    });
+                }
 
                 const cbOptions = {
                     "replace": false,
