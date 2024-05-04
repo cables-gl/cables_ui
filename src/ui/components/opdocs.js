@@ -418,7 +418,7 @@ export default class OpDocs
         }
 
         const doc = this.getOpDocByName(opname);
-        if (doc.layout)
+        if (doc && doc.layout)
         {
             let svgStr = "";
             let width = 200;
