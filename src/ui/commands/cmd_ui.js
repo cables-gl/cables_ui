@@ -212,7 +212,8 @@ CABLES_CMD_UI.welcomeTab = function ()
 {
     CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
     {
-        new WelcomeTab(gui.mainTabs, { "patches": r });
+        const t = new WelcomeTab(gui.mainTabs, { "patches": r });
+        gui.mainTabs.activateTab(t.id);
     });
 };
 

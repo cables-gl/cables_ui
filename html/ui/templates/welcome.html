@@ -1,7 +1,6 @@
 <script id="tab_welcome" type="text/x-handlebars-template">
 
     <h2>welcome to cables</h2>
-    ...now wat?
 
     <br><br>
 
@@ -10,22 +9,26 @@
 
     <hr>
 
-    <h3>Recent Patches</h3>
+    {{#if patches}}
+        <h3>Recent Patches</h3>
 
-    <div style="clear:both" class="item_manager">
-        {{#each patches}}
+        <div style="clear:both" class="item_manager">
+            {{#each patches}}
 
-            <div style="float:left;" class="item item-container text-center" onclick="CABLESUILOADER.talkerAPI.send('gotoPatch', { 'id': '{{shortId}}' });">
-                <img src="{{../url}}{{thumbnail}}" style="width:99px;"/>
-                <br/>
-                {{name}}
-            </div>
+                <div style="float:left;cursor:pointer;" class="item item-container text-center" onclick="CABLESUILOADER.talkerAPI.send('gotoPatch', { 'id': '{{shortId}}' });">
+                    <img src="{{../url}}{{thumbnail}}" style="width:99px;"/>
+                    <br/>
+                    {{name}}
+                </div>
 
-        {{/each}}
-    </div>
-    <div style="clear:both"></div>
+            {{/each}}
+        </div>
+        <div style="clear:both"></div>
 
-    <hr>
+        <hr>
+
+    {{/if}}
+
 
     <h3>Help</h3>
 
