@@ -8,6 +8,7 @@ export default class FileUploader
     constructor()
     {
         this._log = new Logger("fileuploader");
+
         this._uploadDropEvent = null;
         this._uploadDropListener = this.uploadDrop.bind(this);
         this._uploadDragOverListener = this.uploadDragOver.bind(this);
@@ -32,6 +33,9 @@ export default class FileUploader
 
     uploadDragOver(event)
     {
+        console.log("drag over!", event);
+
+
         if (gui.isRemoteClient) return;
 
         this._uploadDropEvent = event.originalEvent;
@@ -45,17 +49,21 @@ export default class FileUploader
         event.preventDefault();
         event.stopPropagation();
 
-        const el = document.getElementById("uploadarea");
-        if (el)
+
+        if (CABLES.platform.frontendOptions.uploadFiles)
         {
-            if (event.target.classList.contains("uploadarea")) el.classList.add("uploadareaActive");
-            else el.classList.remove("uploadareaActive");
+            const el = document.getElementById("uploadarea");
+            if (el)
+            {
+                if (event.target.classList.contains("uploadarea")) el.classList.add("uploadareaActive");
+                else el.classList.remove("uploadareaActive");
+            }
+
+            let openDialog = true;
+
+            if (el) openDialog = window.getComputedStyle(el).display === "none";
+            if (openDialog) CABLES.CMD.PATCH.uploadFileDialog();
         }
-
-        let openDialog = true;
-
-        if (el) openDialog = window.getComputedStyle(el).display === "none";
-        if (openDialog) CABLES.CMD.PATCH.uploadFileDialog();
     }
 
     uploadDragLeave(event)
@@ -69,23 +77,32 @@ export default class FileUploader
     {
         if (gui.isRemoteClient) return;
 
-        const reader = new FileReader();
+        if (CABLES.platform.frontendOptions.uploadFiles)
+        {
+            const reader = new FileReader();
 
-        reader.addEventListener("load",
-            () =>
-            {
-                CABLESUILOADER.talkerAPI.send("fileUploadStr",
-                    {
-                        "fileStr": reader.result,
-                        "filename": filename || file.name,
-                    },
-                    (err, res) =>
-                    {
-                        if (err) notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
-                    });
-            },
-            false);
-        reader.readAsDataURL(file);
+            reader.addEventListener("load",
+                () =>
+                {
+                    CABLESUILOADER.talkerAPI.send("fileUploadStr",
+                        {
+                            "fileStr": reader.result,
+                            "filename": filename || file.name,
+                        },
+                        (err, res) =>
+                        {
+                            if (err) notifyError("ERROR: fileUploadStr " + err.msg || "Unknown error");
+                        });
+                },
+                false);
+            reader.readAsDataURL(file);
+        }
+
+        if (CABLES.platform.frontendOptions.dragDropLocalFiles)
+        {
+            console.log("this._uploadDropEvent", this._uploadDropEvent);
+            gui.patchView.addAssetOpAuto("file://" + file.path, this._uploadDropEventOrig);
+        }
     }
 
     uploadFiles(files)
@@ -108,6 +125,8 @@ export default class FileUploader
         event.stopPropagation();
 
         if (gui.isRemoteClient) return;
+
+        this._uploadDropEventOrig = event;
 
         gui.closeModal();
 

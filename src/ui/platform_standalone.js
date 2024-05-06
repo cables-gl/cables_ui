@@ -9,6 +9,7 @@ export default class PlatformStandalone extends Platform
         // this.frontendOptions.npm = true;
         this.frontendOptions.openLocalFiles = true;
         this.frontendOptions.uploadFiles = false;
+        this.frontendOptions.dragDropLocalFiles = true;
         this.frontendOptions.showLocalAssetDirOpen = true;
         this.frontendOptions.showLocalOpDirButton = true;
         this.frontendOptions.chooseOpDir = true;
