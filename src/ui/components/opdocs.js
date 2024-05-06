@@ -214,6 +214,7 @@ export default class OpDocs
      */
     getOpDocByName(opName)
     {
+        if (!opName) return null;
         for (let i = 0; i < this._opDocs.length; i++)
         {
             if (this._opDocs[i].name === opName)
