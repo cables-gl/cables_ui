@@ -842,7 +842,9 @@ export default class ServerOps
         const _updateFormFromApi = (res, newOpName, newNamespace) =>
         {
             let consequencesHtml = "";
-            if (res.consequences.length > 0)
+            const eleCons = ele.byId("opNameDialogConsequences");
+            if (eleCons) ele.hide(eleCons);
+            if (res.consequences && res.consequences.length > 0)
             {
                 consequencesHtml += "<ul>";
                 res.consequences.forEach((consequence) =>
@@ -850,10 +852,13 @@ export default class ServerOps
                     consequencesHtml += "<li>" + consequence + "</li>";
                 });
                 consequencesHtml += "</ul>";
-            }
 
-            const eleCons = ele.byId("opNameDialogConsequences");
-            if (eleCons) eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
+                if (eleCons)
+                {
+                    eleCons.innerHTML = "<h3>Consequences</h3>" + consequencesHtml;
+                    ele.show(eleCons);
+                }
+            }
 
             if (newOpName)
             {
