@@ -1,8 +1,5 @@
-import { ele } from "cables-shared-client";
-import defaultOps from "../../defaultops.js";
 import Tab from "../../elements/tabpanel/tab.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import text from "../../text.js";
 
 export default class WelcomeTab
 {
@@ -14,7 +11,7 @@ export default class WelcomeTab
 
         CABLESUILOADER.talkerAPI.send("getRecentPatches", {}, (err, r) =>
         {
-            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesUrl() });
+            const html = getHandleBarHtml("tab_welcome", { "patches": r, "url": CABLES.platform.getCablesStaticUrl() });
             this._tab.html(html);
         });
 

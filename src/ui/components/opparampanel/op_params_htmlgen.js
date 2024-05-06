@@ -113,6 +113,7 @@ class PortHtmlGenerator
                 "groupSpacer": groupSpacer,
                 "dirStr": "in",
                 "cablesUrl": CABLES.platform.getCablesUrl(),
+                "openLocalFiles": CABLES.platform.frontendOptions.openLocalFiles,
                 "portnum": i,
                 "isInput": true,
                 "op": ports[i].op,

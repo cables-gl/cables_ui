@@ -14,14 +14,13 @@ export default class ManageOp
             return;
         }
 
-        const opDoc = gui.opDocs.getOpDocByName(this._currentName);
+        const opDoc = gui.opDocs.getOpDocByName(opname);
 
         let opObjName = opname;
         if (opDoc)opObjName = opDoc.name;
 
         this._log = new Logger("ManageOp");
         this._initialized = false;
-        this._lastSelectedOp = null;
         this._currentName = opname;
         this._id = CABLES.shortId();
         this._refreshListener = [];

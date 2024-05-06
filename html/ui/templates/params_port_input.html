@@ -161,8 +161,11 @@
                     </td>
                 {{/compare}}
                 {{#compare port.uiAttribs.display '==' 'file' }}
-
-                        <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
+                        {{#if openLocalFiles}}
+                            <a class="icon icon-folder iconhover" onclick="CABLES.CMD.STANDALONE.openAssetDir('{{port.value}}')"></a>
+                        {{else}}
+                            <a class="icon icon-external iconhover" href="{{ cablesUrl }}/asset/patches/?filename={{ port.value }}" target="_blank"></a>
+                        {{/if}}
                         <a class="icon icon-download iconhover" href="{{ port.value }}" target="_blank" download></a>
                     </td>
                     <td>

@@ -17,6 +17,7 @@ export default class PlatformCommunity extends Platform
         this.frontendOptions.showMyLinks =
         this.frontendOptions.showRemoteViewer =
         this.frontendOptions.showChangeLogLink = true;
+        this.frontendOptions.sendErrorReports = true;
     }
 
     getCablesDocsUrl()

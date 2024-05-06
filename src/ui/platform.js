@@ -23,6 +23,11 @@ export default class Platform extends Events
         this.updateOnlineIndicator();
     }
 
+    getIssueTrackerUrl()
+    {
+        return "https://github.com/cables-gl/cables_docs/issues";
+    }
+
     updateOnlineIndicator()
     {
         if (this.isOffline()) document.getElementById("offlineIndicator").classList.remove("hidden");
@@ -48,6 +53,11 @@ export default class Platform extends Events
     getCablesUrl()
     {
         return this._cfg.urlCables;
+    }
+
+    getCablesStaticUrl()
+    {
+        return this.getCablesUrl();
     }
 
     isPatchSameHost()
