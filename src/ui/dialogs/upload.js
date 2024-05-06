@@ -33,9 +33,6 @@ export default class FileUploader
 
     uploadDragOver(event)
     {
-        console.log("drag over!", event);
-
-
         if (gui.isRemoteClient) return;
 
         this._uploadDropEvent = event.originalEvent;
@@ -100,7 +97,6 @@ export default class FileUploader
 
         if (CABLES.platform.frontendOptions.dragDropLocalFiles)
         {
-            console.log("this._uploadDropEvent", this._uploadDropEvent);
             gui.patchView.addAssetOpAuto("file://" + file.path, this._uploadDropEventOrig);
         }
     }

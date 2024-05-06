@@ -7,14 +7,13 @@ export default class PlatformStandalone extends Platform
         super(cfg);
 
         // this.frontendOptions.npm = true;
-        this.frontendOptions.openLocalFiles = true;
-        this.frontendOptions.uploadFiles = false;
-        this.frontendOptions.dragDropLocalFiles = true;
-        this.frontendOptions.showLocalAssetDirOpen = true;
-        this.frontendOptions.showLocalOpDirButton = true;
-        this.frontendOptions.chooseOpDir = true;
+        this.frontendOptions.openLocalFiles =
+        this.frontendOptions.dragDropLocalFiles =
+        this.frontendOptions.showLocalAssetDirOpen =
+        this.frontendOptions.showLocalOpDirButton =
+        this.frontendOptions.chooseOpDir =
+        this.frontendOptions.saveScreenshotInPatchJson =
         this.frontendOptions.showBuildInfoMenuLink = true;
-        this.frontendOptions.sendErrorReports = false;
     }
 
     getCablesDocsUrl()
