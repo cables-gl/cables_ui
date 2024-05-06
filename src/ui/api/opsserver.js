@@ -898,16 +898,17 @@ export default class ServerOps
 
             const namespaceEle = ele.byId("opNameDialogNamespace");
             namespaceEle.innerHTML = "";
-            const patchOpsNamespace = defaultOps.getPatchOpsNamespace();
-            if (!res.namespaces.includes(patchOpsNamespace)) res.namespaces.unshift(patchOpsNamespace);
-            if (res.namespaces)res.namespaces.forEach((ns) =>
+            if (res.namespaces)
             {
-                const option = document.createElement("option");
-                option.value = ns;
-                option.text = ns;
-                if (newNamespace && ns === newNamespace) option.selected = true;
-                namespaceEle.add(option);
-            });
+                res.namespaces.forEach((ns) =>
+                {
+                    const option = document.createElement("option");
+                    option.value = ns;
+                    option.text = ns;
+                    if (newNamespace && ns === newNamespace) option.selected = true;
+                    namespaceEle.add(option);
+                });
+            }
 
             ele.byId("opNameDialogInput").focus();
         };
