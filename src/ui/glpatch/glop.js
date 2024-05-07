@@ -436,34 +436,15 @@ export default class GlOp extends Events
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
+        if (newAttribs.hasOwnProperty("resizable"))
+        {
+            this.updateSize();
+            for (let i = 0; i < this._glPorts.length; i++)
+                this._glPorts[i].updateSize();
+        }
 
-        // needed for cross subpatches with new subpatch!!!!!!!!!!!!!!!!!!!!!!
 
-        // if (subPatchChanged)
-        // {
-        //     for (const i in this._links)
-        //     {
-        //         this._links[i].updateVisible();
-        //         if (this._links[i].subPatch != attr.subPatch)
-        //         {
-        //             const link = this._links[i].link;
 
-        //             this._links[i].dispose();
-
-        //             this._links[i] = new GlLink(
-        //                 this._glPatch,
-        //                 link,
-        //                 link.id,
-        //                 link.portIn.parent.id,
-        //                 link.portOut.parent.id,
-        //                 link.portIn.name,
-        //                 link.portOut.name,
-        //                 link.portIn.id,
-        //                 link.portOut.id,
-        //                 link.portIn.type, false, link.portIn.parent.uiAttribs.subPatch);
-        //         }
-        //     }
-        // }
         perf.finish();
         this._needsUpdate = true;
     }
@@ -478,7 +459,6 @@ export default class GlOp extends Events
         if (this._needsUpdate) this.update();
         this._needsUpdate = false;
     }
-
 
     setTitle(title, textWriter)
     {
@@ -632,14 +612,12 @@ export default class GlOp extends Events
             for (let i = 0; i < this._glPorts.length; i++)
                 this._glPorts[i].updateSize();
 
-        if (this._rectResize) // && !this.opUiAttribs.hasOwnProperty("height"))
-        {
-            this._width += this._rectResize.w;
-            this.minWidth += this._rectResize.w;
-            this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
-        }
+        if (this._rectResize)
+            this._rectResize.setPosition(this._width, this._height - this._rectResize.h);
 
-        this._glRectBg.setSize(this._width, this._height);
+        let ext = 0;
+        if (this._rectResize)ext = this._rectResize.w;
+        this._glRectBg.setSize(this._width + ext, this._height);
 
 
         if (this._glColorIndicator)
@@ -657,14 +635,12 @@ export default class GlOp extends Events
             }
             else
             {
-                // this._glRectSelected.setPosition(0, 0);
                 this._glRectSelected.setSize(0, 0);
             }
         }
 
         perf.finish();
         this._updateCommentPosition();
-        // this._updateSizeRightHandle();
     }
 
     addLink(l)
@@ -1203,7 +1179,7 @@ export default class GlOp extends Events
 
             this._rectResize.setSize(gluiconfig.rectResizeSize, gluiconfig.rectResizeSize);
             this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
-            this._rectResize.setColor(gui.theme.colors_patch.opBgRect);
+            this._rectResize.setColor([0.24, 0.24, 0.24, 1]);
 
             this._rectResize.draggable = true;
             this._rectResize.draggableMove = true;
@@ -1211,10 +1187,11 @@ export default class GlOp extends Events
 
             doUpdateSize = true;
 
+
             this._rectResize.on("drag", (e) =>
             {
-                let w = this._rectResize.x - this.x + this._rectResize.w;
-                let h = this._rectResize.y - this.y + this._rectResize.h;
+                let w = this._rectResize.x - this.x;
+                let h = this._rectResize.y - this.y;
 
                 w = Math.max(this.minWidth, w);
 

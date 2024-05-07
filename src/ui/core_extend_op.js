@@ -681,9 +681,13 @@ export default function extendCoreOp()
         if (!center)offCenter = 0;
 
         let p = 0;
-        if (this.uiAttribs.stretchPorts && this.uiAttribs.resizable) p = portIndex * ((this.uiAttribs.width - gluiconfig.rectResizeSize) / (numports - 1));
+
+        const onePort = (gluiconfig.portWidth + gluiconfig.portPadding);
+
+        if (this.uiAttribs.stretchPorts && this.uiAttribs.resizable)
+            p = portIndex * (((this.uiAttribs.width || ((numports - 1) * onePort + gluiconfig.rectResizeSize)) - gluiconfig.rectResizeSize) / (numports - 1));
         else
-            p = portIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+            p = portIndex * onePort;
 
 
 
