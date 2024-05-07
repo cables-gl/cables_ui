@@ -323,63 +323,65 @@ export default class PatchView extends Events
 
             const glopA = this._patchRenderer.getGlOp(op);
             const glopB = this._patchRenderer.getGlOp(b);
-            // console.log(op.uiAttribs.translate.x, glopA.w, glopA.y, glopA.h);
-            let found = true;
-            while (found)
-            {
-                found = false;
-                if (
-                    (
-                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
-                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
-                    )
-                    ||
-                    (
-                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
-                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
-                    )
-                    ||
-                    (
-                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
-                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
-                    )
-                    ||
-                    (
-                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
-                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
-                    )
-                )
-                {
-                    let mulDirY = 1;
-                    if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
-                    let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
-                    let x = op.uiAttribs.translate.x;
 
-                    const link = op.isConnectedTo(b);
-                    if (link)
+            let found = true;
+
+            if (!op.uiAttribs.resizable && !b.uiAttribs.resizable)
+                while (found)
+                {
+                    found = false;
+                    if (
+                        (
+                            glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
+                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                        )
+                    ||
+                    (
+                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                    )
+                    ||
+                    (
+                        glopA.x >= glopB.x && glopA.x <= glopB.x + glopB.w &&
+                        glopA.y + glopA.h >= glopB.y && glopA.y + glopA.h <= glopB.y + glopB.h
+                    )
+                    ||
+                    (
+                        glopA.x + glopA.w >= glopB.x && glopA.x + glopA.w <= glopB.x + glopB.w &&
+                        glopA.y >= glopB.y && glopA.y <= glopB.y + glopB.h
+                    )
+                    )
                     {
-                        let p = link.portIn;
-                        if (link.portOut.op == op)p = link.portOut;
-                        const otherPort = link.getOtherPort(p);
-                        x = otherPort.op.uiAttribs.translate.x + otherPort.op.getPortPosX(otherPort.name);
+                        let mulDirY = 1;
+                        if (op.isLinkedOut() && !op.isLinkedIn()) mulDirY = -1; // move upwards
+                        let y = Snap.snapOpPosY(b.uiAttribs.translate.y + mulDirY * (CABLES.UI.uiConfig.snapY / 2 + glopB.h));
+                        let x = op.uiAttribs.translate.x;
+
+                        const link = op.isConnectedTo(b);
+                        if (link)
+                        {
+                            let p = link.portIn;
+                            if (link.portOut.op == op)p = link.portOut;
+                            const otherPort = link.getOtherPort(p);
+                            x = otherPort.op.uiAttribs.translate.x + otherPort.op.getPortPosX(otherPort.name);
+                        }
+
+                        op.setUiAttrib({ "translate": { "x": x, "y": y } });
+
+                        gui.patchView.testCollision(op);
+
+                        found = true;
+                        count++;
+                        collided[b.id] = true;
+                        collided[op.id] = true;
                     }
 
-                    op.setUiAttrib({ "translate": { "x": x, "y": y } });
-
-                    gui.patchView.testCollision(op);
-
-                    found = true;
-                    count++;
-                    collided[b.id] = true;
-                    collided[op.id] = true;
+                    if (count > 100)
+                    {
+                        console.log("count 100");
+                        return;
+                    }
                 }
-
-                if (count > 100)
-                {
-                    console.log("count 100");
-                    return;
-                }
-            }
         }
     }
 
