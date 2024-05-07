@@ -8,16 +8,20 @@
             {{#compare project.summary.visibility '==' 'view_only'}}<span class="icon icon-eye"></span>{{/compare}}
             {{#compare project.summary.visibility '==' 'private'}}<span class="icon icon-lock"></span>{{/compare}}
             <b style="color:var(--color-13)">
-                {{#if project.summary.allowEdit}}
-                    <a onclick="gui.patchView.store.showModalTitleDialog(this)">{{project.name}}</a>
+                {{#if frontendOptions.showSetProjectTitle }}
+                    {{#if project.summary.allowEdit }}
+                        <a onclick="gui.patchView.store.showModalTitleDialog(this)">{{project.summary.title}}</a>
+                    {{else}}
+                        {{project.summary.title}}
+                    {{/if}}
                 {{else}}
-                    {{project.name}}
+                    {{project.summary.title}}
                 {{/if}}
             </b>{{#if project.summary.owner.username }} by <a target="_blank" href="{{cablesUrl}}/user/{{project.summary.owner.username}}">{{project.summary.owner.username}}{{/if}}</a>
         </h2>
 
 
-        {{#if project.description}}
+        {{#if project.summary.description}}
             {{md project.summary.description}}
             <br/><br/>
         {{/if}}
