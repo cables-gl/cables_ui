@@ -194,7 +194,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
         if (apiBuild)
         {
-            infoHtml += "<h3>API</h3>";
+            infoHtml += "<h3>Platform</h3>";
             infoHtml += "created: " + moment(apiBuild.created).fromNow() + " (" + apiBuild.created + ")<br/>";
             if (apiBuild.git)
             {
