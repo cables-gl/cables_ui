@@ -33,6 +33,7 @@ export default class GlPort
         if (!this._parent) this._log.warn("no parent rect given");
         else this._parent.addChild(this._rect);
 
+        this.portIndex = posCount;
 
         this._updateColor();
         this._activity = 1;
@@ -179,6 +180,11 @@ export default class GlPort
         }
 
         this.updateShape();
+
+        // this._posX = this._glop.op.posByIndex(this.portIndex, this._port.direction == CABLES.PORT_DIR_OUT ? this._glop.op.portsOut : this._glop.op.portsIn, false);
+        this._posX = this._glop.getPortPos(this._name, false);
+
+
         this._rect.setPosition(this._posX, y - gluiconfig.portHeight);
         this._rect.setSize(gluiconfig.portWidth, h);
     }
@@ -225,9 +231,6 @@ export default class GlPort
         for (const i in this._glop._links)
             if (this._glop._links[i].portIdIn == this._id || this._glop._links[i].portIdOut == this._id)
                 this._glop._links[i].highlight(true);
-
-
-
 
 
         CABLES.UI.updateHoverToolTip(event, this._port, false);

@@ -29,6 +29,7 @@ class GlUiConfig
         this.zPosGlTitle = -0.01;
 
         this.subPatchOpBorder = 2;
+        this.rectResizeSize = 10;
     }
 }
 
