@@ -626,7 +626,6 @@ export default class GlOp extends Events
         // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
-        this._glRectBg.setSize(this._width, this._height);
 
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
@@ -634,8 +633,11 @@ export default class GlOp extends Events
 
         if (this._rectResize) // && !this.opUiAttribs.hasOwnProperty("height"))
         {
+            this._width += this._rectResize.w;
             this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
         }
+
+        this._glRectBg.setSize(this._width, this._height);
 
 
         if (this._glColorIndicator)
@@ -1193,6 +1195,10 @@ export default class GlOp extends Events
         {
             this._rectResize = this._instancer.createRect({ "parent": this._glRectBg, "draggable": true });
             this._rectResize.setShape(2);
+
+            if (this.opUiAttribs.hasOwnProperty("resizableX")) this._rectResize.draggableX = this.opUiAttribs.resizableX;
+            if (this.opUiAttribs.hasOwnProperty("resizableY")) this._rectResize.draggableY = this.opUiAttribs.resizableY;
+
             this._rectResize.setSize(10, 10);
             this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
             this._rectResize.setColor([0.15, 0.15, 0.15, 1]);
@@ -1209,6 +1215,9 @@ export default class GlOp extends Events
 
                 w = this.glPatch.snap.snapX(w);
                 h = this.glPatch.snap.snapY(h);
+
+                for (let i = 0; i < this._glPorts.length; i++)
+                    this._glPorts[i].updateSize();
 
                 if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
                 this.updateSize();
@@ -1436,11 +1445,11 @@ export default class GlOp extends Events
         }
     }
 
-    getPortPos(id)
+    getPortPos(id, center = true)
     {
         if (!this._op) return;
         this._setPortIndexAttribs(this._op.portsIn);
-        return this._op.getPortPosX(id, null, true);
+        return this._op.getPortPosX(id, null, center, this.w);
     }
 
     isPassiveDrag()

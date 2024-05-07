@@ -654,22 +654,58 @@ export default function extendCoreOp()
         return 0;
     };
 
-    CABLES.Op.prototype.getPortPosX = function (name, opid, center)
+    CABLES.Op.prototype.countVisiblePorts = function (ports)
+    {
+        let index = 0;
+        for (let i = 0; i < ports.length; i++)
+        {
+            if (ports[i].uiAttribs.hidePort) continue;
+            index++;
+        }
+        return index;
+    };
+
+    CABLES.Op.prototype.getNumVisiblePortsOut = function ()
+    {
+        return this.countVisiblePorts(this.portsOut);
+    };
+
+    CABLES.Op.prototype.getNumVisiblePortsIn = function ()
+    {
+        return this.countVisiblePorts(this.portsIn);
+    };
+
+    CABLES.Op.prototype.posByIndex = function (portIndex, numports, center = false)
     {
         let offCenter = gluiconfig.portWidth * 0.5;
         if (!center)offCenter = 0;
 
+        let p = 0;
+        if (this.uiAttribs.stretchPorts && this.uiAttribs.resizable) p = portIndex * (this.uiAttribs.width / (numports - 0.8));
+        else
+            p = portIndex * (gluiconfig.portWidth + gluiconfig.portPadding);
+
+
+
+        p += (offCenter || 0);
+        return p;
+    };
+
+
+    CABLES.Op.prototype.getPortPosX = function (name, opid, center, opwidth)
+    {
         let index = 0;
+
         if (this.isSubPatchOp() == 2)
         {
-            const ports = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
+            const portsIn = gui.patchView.getSubPatchExposedPorts(this.patchId.get(), CABLES.PORT_DIR_IN);
 
             index = 0;
-            for (let i = 0; i < ports.length; i++)
+            for (let i = 0; i < portsIn.length; i++)
             {
-                if (ports[i].uiAttribs.hidePort) continue;
-                if (ports[i].name == name)
-                    return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                if (portsIn[i].uiAttribs.hidePort) continue;
+                if (portsIn[i].name == name)
+                    return this.posByIndex(index, this.countVisiblePorts(portsIn), center);// * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
                 index++;
             }
 
@@ -680,7 +716,7 @@ export default function extendCoreOp()
             {
                 if (portsOut[i].uiAttribs.hidePort) continue;
                 if (portsOut[i].name == name)
-                    return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                    return this.posByIndex(index, this.countVisiblePorts(portsOut), center);// * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
                 index++;
             }
         }
@@ -692,7 +728,8 @@ export default function extendCoreOp()
 
             if (this.portsIn[i].name == name)
             {
-                return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || index) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                // return (this.portsIn[i].uiAttribs["glPortIndex_" + opid] || this.portsIn[i].uiAttribs.glPortIndex || index) * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                return this.posByIndex(index, this.getNumVisiblePortsIn(), center);
             }
             index++;
         }
@@ -704,7 +741,7 @@ export default function extendCoreOp()
 
             if (this.portsOut[i].name == name)
             {
-                return index * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
+                return this.posByIndex(index, this.getNumVisiblePortsOut(), center);// * (gluiconfig.portWidth + gluiconfig.portPadding) + offCenter;
             }
             index++;
         }
