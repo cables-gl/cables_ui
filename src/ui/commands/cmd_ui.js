@@ -200,6 +200,7 @@ CABLES_CMD_UI.showBuildInfo = function ()
             {
                 infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
                 infoHtml += "message: " + apiBuild.git.message + "<br/>";
+                if (apiBuild.git.tag) infoHtml += "tag: " + apiBuild.git.tag + "<br/>";
             }
         }
     }
