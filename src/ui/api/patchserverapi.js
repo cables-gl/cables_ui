@@ -467,6 +467,10 @@ export default class PatchSaveServer extends Events
         data.ui.renderer.h = Math.max(0, gui.rendererHeight);
         data.ui.renderer.s = Math.abs(gui.corePatch().cgl.canvasScale) || 1;
 
+
+        if (CABLES.platform.frontendOptions.saveScreenshotInPatchJson)
+            data.screenshot = gui.canvasManager.currentCanvas().toDataURL();
+
         CABLES.patch.namespace = currentProject.namespace;
 
         setTimeout(() =>
@@ -579,9 +583,11 @@ export default class PatchSaveServer extends Events
                             this._serverDate = r.updated;
                         }
 
+
+
                         const doSaveScreenshot = gui.corePatch().isPlaying();
 
-                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot()) this.saveScreenshot();
+                        if (doSaveScreenshot && !CABLES.platform.manualScreenshot() && !CABLES.platform.frontendOptions.saveScreenshotInPatchJson) this.saveScreenshot();
                         else this.finishAnimations();
                     }
 
@@ -639,32 +645,6 @@ export default class PatchSaveServer extends Events
     }
 
 
-    /**
-     * Saves a patch to a file, overwrites the file it exists
-     *
-     * @param {object} patchData The data-object to be saved
-     * @param string} path The file-path to store the patch, e.g. '/Users/ulf/myPatch.cables'
-     */
-    // nativeWritePatchToFile(patchData, path)
-    // {
-    //     this._log.log("Saving patch to: ", path);
-    //     const fs = require("fs");
-    //     if (path)
-    //     {
-    //         fs.writeFile(path, JSON.stringify(patchData, null, 2), function (err)
-    //         {
-    //             if (err)
-    //             {
-    //                 CABLES.UI.notifyError("Error saving patch");
-    //                 return this._log.log(err);
-    //             }
-    //             this._log.log("Patch successfully saved");
-    //             CABLES.UI.notify("patch saved");
-    //             gui.jobs().finish("projectsave");
-    //             gui.setStateSaved();
-    //         });
-    //     }
-    // }
 
     /**
      * Extracts the postfix-filename from a full filename
@@ -729,11 +709,8 @@ export default class PatchSaveServer extends Events
     {
         const thePatch = gui.corePatch();
         const cgl = thePatch.cgl;
-        const currentProject = gui.project();
-
         const w = (cgl.canvas.width / cgl.pixelDensity) || 640;
         const h = (cgl.canvas.height / cgl.pixelDensity) || 360;
-
 
         let screenshotWidth = 640;
         let screenshotHeight = 360;
@@ -766,30 +743,10 @@ export default class PatchSaveServer extends Events
         thePatch.renderOneFrame();
         gui.jobs().start({ "id": "screenshotsave", "title": "save patch - create screenshot" });
 
-        // gui.canvasManager.screenShot(() =>
-        // {
-
-        // });
-        // cgl.screenShot((screenBlob) =>
-        // {
-        // clearTimeout(screenshotTimeout);
-
-
         if (cgl.gApi == CABLES.CG.GAPI_WEBGL)thePatch.resume();
-
-
-        // const reader = new FileReader();
 
         const url = gui.canvasManager.currentCanvas().toDataURL();
 
-        // reader.onload = (event) =>
-        // {
-
-        // gui.corePatch().pause();
-        // console.log(url);
-        // window.open(url);
-
-        // console.log("send screenshot", Math.round(url.length / 1024) + "kb");
         CABLESUILOADER.talkerAPI.send(
             "saveScreenshot",
             {
@@ -810,17 +767,5 @@ export default class PatchSaveServer extends Events
 
                 this.finishAnimations();
             });
-        // };
-
-        // try
-        // {
-        //     reader.readAsDataURL(screenBlob);
-        // }
-        // catch (e)
-        // {
-        //     this._log.log(e);
-        // }
-        // });
-        // }, false, "image/webp", 80);
     }
 }

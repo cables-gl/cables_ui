@@ -420,7 +420,7 @@ export default class PatchView extends Events
             let coord = { "x": 0, "y": 0 };
             if (this._patchRenderer.screenToPatchCoord)
             {
-                const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX, event.clientY);
+                const coordArr = this._patchRenderer.screenToPatchCoord(event.clientX || event.x, event.clientY || event.y);
 
                 coord = { "x": coordArr[0], "y": coordArr[1] };
             }

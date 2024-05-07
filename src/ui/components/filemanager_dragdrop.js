@@ -62,8 +62,11 @@ DragNDrop.startDragLibraryFile = function (_event, p)
         document.getElementById("patchviews").removeEventListener("dragleave", dragleave);
         document.getElementById("patchviews").removeEventListener("dragend", dragleave);
 
-        CABLES.fileUploader.unBindUploadDragNDrop();
-        CABLES.fileUploader.bindUploadDragNDrop();
+        if (CABLES.platform.frontendOptions.uploadFiles)
+        {
+            CABLES.fileUploader.unBindUploadDragNDrop();
+            CABLES.fileUploader.bindUploadDragNDrop();
+        }
         self.internal = false;
     }
 

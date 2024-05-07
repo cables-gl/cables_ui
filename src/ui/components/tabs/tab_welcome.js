@@ -5,7 +5,7 @@ export default class WelcomeTab
 {
     constructor(tabs)
     {
-        this._tab = new Tab("Welcome", { "icon": "cables", "infotext": "tab_welcome", "padding": true });
+        this._tab = new Tab("Welcome", { "icon": "cables", "infotext": "tab_welcome", "padding": true, "singleton": true });
         tabs.addTab(this._tab, true);
         this._tabs = tabs;
 
