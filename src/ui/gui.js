@@ -1755,7 +1755,7 @@ export default class Gui extends Events
                 userSettings.get("introCompleted")) gui.tips.show();
 
 
-        if (this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab();
+        if (CABLES.platform.frontendOptions.showWelcome && this.corePatch().ops.length == 0) CABLES.CMD.UI.welcomeTab();
 
         const buildInfo = this.project().buildInfo;
         this._log.groupCollapsed("welcome to cables!");

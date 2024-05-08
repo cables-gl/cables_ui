@@ -29,8 +29,8 @@ class GlUiConfig
         this.zPosCables = -0.4;
         this.zPosGreyOutRect = -0.1;
 
-        this.zPosGlRectSelected = 0.25; // is child of op
-        this.zPosGlTitle = -0.01; // is child of op
+        this.zPosGlRectSelected = 0.25; // is relative child of op glbgrect
+        this.zPosGlTitle = -0.01; // is relative child of op glbgrect
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;
