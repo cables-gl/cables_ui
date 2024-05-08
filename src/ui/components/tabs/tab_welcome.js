@@ -15,12 +15,12 @@ export default class WelcomeTab
             this._tab.html(html);
         });
 
-        CABLES.editorSession.remove("manageOp", "Welcome");
+        CABLES.editorSession.remove("welcometab", "Welcome");
         CABLES.editorSession.rememberOpenEditor("welcometab", "Welcome", true);
 
         this._tab.on("close", () =>
         {
-            CABLES.editorSession.remove("manageOp", "Welcome");
+            CABLES.editorSession.remove("welcometab", "Welcome");
         });
     }
 }
