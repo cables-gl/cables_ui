@@ -35,6 +35,8 @@ export default class GlRect extends Events
         this._texture = null;
         // draggable stuff
         this._draggable = false;
+        this.draggableX = true;
+        this.draggableY = true;
         this._isDragging = false;
         this._dragStartX = 0;
         this._dragStartY = 0;
@@ -262,8 +264,11 @@ export default class GlRect extends Events
     mouseDrag(x, y, button)
     {
         if (!this.interactive) return;
-        this._dragOffsetX = x - this._dragStartX;
-        this._dragOffsetY = y - this._dragStartY;
+
+        this._dragOffsetX = 0;
+        this._dragOffsetY = 0;
+        if (this.draggableX) this._dragOffsetX = x - this._dragStartX;
+        if (this.draggableY) this._dragOffsetY = y - this._dragStartY;
 
         if (this.draggableMove)
         {

@@ -38,6 +38,7 @@ export default class GlOp extends Events
         this._glRectBg = null;
         this._rectResize = null;
         this._glColorIndicator = null;
+        this.minWidth = 10;
 
         this._origPosZ = Math.random() * -0.3 - 0.1;
 
@@ -435,34 +436,15 @@ export default class GlOp extends Events
         if (newAttribs.hasOwnProperty("loading")) this._updateIndicators();
         if (newAttribs.hasOwnProperty("translate")) this.updatePosition();
 
+        if (newAttribs.hasOwnProperty("resizable"))
+        {
+            this.updateSize();
+            for (let i = 0; i < this._glPorts.length; i++)
+                this._glPorts[i].updateSize();
+        }
 
-        // needed for cross subpatches with new subpatch!!!!!!!!!!!!!!!!!!!!!!
 
-        // if (subPatchChanged)
-        // {
-        //     for (const i in this._links)
-        //     {
-        //         this._links[i].updateVisible();
-        //         if (this._links[i].subPatch != attr.subPatch)
-        //         {
-        //             const link = this._links[i].link;
 
-        //             this._links[i].dispose();
-
-        //             this._links[i] = new GlLink(
-        //                 this._glPatch,
-        //                 link,
-        //                 link.id,
-        //                 link.portIn.parent.id,
-        //                 link.portOut.parent.id,
-        //                 link.portIn.name,
-        //                 link.portOut.name,
-        //                 link.portIn.id,
-        //                 link.portOut.id,
-        //                 link.portIn.type, false, link.portIn.parent.uiAttribs.subPatch);
-        //         }
-        //     }
-        // }
         perf.finish();
         this._needsUpdate = true;
     }
@@ -477,7 +459,6 @@ export default class GlOp extends Events
         if (this._needsUpdate) this.update();
         this._needsUpdate = false;
     }
-
 
     setTitle(title, textWriter)
     {
@@ -615,27 +596,28 @@ export default class GlOp extends Events
 
         // this._width = Math.max(this._getTitleWidth(), this._glRectBg.w);
         this._width = this._getTitleWidth();
-        let minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
+        this.minWidth = this._width = Math.max(this._width, Math.max(portsWidthOut, portsWidthIn));
         if (this._glTitle) this._height = Math.max(this._glTitle.height + 5, this._glRectBg.h);
 
         if (this.opUiAttribs.height) this._height = this.glPatch.snap.snapY(this.opUiAttribs.height);
-        if (this.opUiAttribs.width) this._width = this.glPatch.snap.snapX(Math.max(minWidth, this.opUiAttribs.width));
+        if (this.opUiAttribs.width) this._width = this.glPatch.snap.snapX(Math.max(this.minWidth, this.opUiAttribs.width));
 
         if (this._height < gluiconfig.opHeight) this._height = gluiconfig.opHeight;
 
         // if (this._displayType == this.DISPLAY_UI_AREA) this._width = this._height = 20;
         if (this.opUiAttribs.widthOnlyGrow) this._width = Math.max(this._width, this._glRectBg.w);
 
-        this._glRectBg.setSize(this._width, this._height);
 
         if (oldHeight != this._height)
             for (let i = 0; i < this._glPorts.length; i++)
                 this._glPorts[i].updateSize();
 
-        if (this._rectResize) // && !this.opUiAttribs.hasOwnProperty("height"))
-        {
-            this._rectResize.setPosition(this._width - this._rectResize.w, this._height - this._rectResize.h); // - this._rectResize.h
-        }
+        if (this._rectResize)
+            this._rectResize.setPosition(this._width, this._height - this._rectResize.h);
+
+        let ext = 0;
+        if (this._rectResize)ext = this._rectResize.w;
+        this._glRectBg.setSize(this._width + ext, this._height);
 
 
         if (this._glColorIndicator)
@@ -653,14 +635,12 @@ export default class GlOp extends Events
             }
             else
             {
-                // this._glRectSelected.setPosition(0, 0);
                 this._glRectSelected.setSize(0, 0);
             }
         }
 
         perf.finish();
         this._updateCommentPosition();
-        // this._updateSizeRightHandle();
     }
 
     addLink(l)
@@ -1193,22 +1173,33 @@ export default class GlOp extends Events
         {
             this._rectResize = this._instancer.createRect({ "parent": this._glRectBg, "draggable": true });
             this._rectResize.setShape(2);
-            this._rectResize.setSize(10, 10);
+
+            if (this.opUiAttribs.hasOwnProperty("resizableX")) this._rectResize.draggableX = this.opUiAttribs.resizableX;
+            if (this.opUiAttribs.hasOwnProperty("resizableY")) this._rectResize.draggableY = this.opUiAttribs.resizableY;
+
+            this._rectResize.setSize(gluiconfig.rectResizeSize, gluiconfig.rectResizeSize);
             this._rectResize.setPosition((this.opUiAttribs.width || 0) - this._rectResize.w, (this.opUiAttribs.height || 0) - this._rectResize.h);
-            this._rectResize.setColor([0.15, 0.15, 0.15, 1]);
+            this._rectResize.setColor([0.24, 0.24, 0.24, 1]);
+
             this._rectResize.draggable = true;
             this._rectResize.draggableMove = true;
             this._rectResize.interactive = true;
 
             doUpdateSize = true;
 
+
             this._rectResize.on("drag", (e) =>
             {
-                let w = this._rectResize.x - this.x + this._rectResize.w;
-                let h = this._rectResize.y - this.y + this._rectResize.h;
+                let w = this._rectResize.x - this.x;
+                let h = this._rectResize.y - this.y;
+
+                w = Math.max(this.minWidth, w);
 
                 w = this.glPatch.snap.snapX(w);
                 h = this.glPatch.snap.snapY(h);
+
+                for (let i = 0; i < this._glPorts.length; i++)
+                    this._glPorts[i].updateSize();
 
                 if (this._op) this._op.setUiAttrib({ "height": h, "width": w });
                 this.updateSize();
@@ -1436,11 +1427,11 @@ export default class GlOp extends Events
         }
     }
 
-    getPortPos(id)
+    getPortPos(id, center = true)
     {
         if (!this._op) return;
         this._setPortIndexAttribs(this._op.portsIn);
-        return this._op.getPortPosX(id, null, true);
+        return this._op.getPortPosX(id, null, center, this.w);
     }
 
     isPassiveDrag()

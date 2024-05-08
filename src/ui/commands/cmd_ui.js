@@ -194,12 +194,13 @@ CABLES_CMD_UI.showBuildInfo = function ()
 
         if (apiBuild)
         {
-            infoHtml += "<h3>API</h3>";
+            infoHtml += "<h3>Platform</h3>";
             infoHtml += "created: " + moment(apiBuild.created).fromNow() + " (" + apiBuild.created + ")<br/>";
             if (apiBuild.git)
             {
                 infoHtml += "branch: " + apiBuild.git.branch + "<br/>";
                 infoHtml += "message: " + apiBuild.git.message + "<br/>";
+                if (apiBuild.git.tag) infoHtml += "tag: " + apiBuild.git.tag + "<br/>";
             }
         }
     }
