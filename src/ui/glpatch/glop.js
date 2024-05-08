@@ -40,7 +40,7 @@ export default class GlOp extends Events
         this._glColorIndicator = null;
         this.minWidth = 10;
 
-        this._origPosZ = Math.random() * -0.3 - 0.1;
+        this._origPosZ = gluiconfig.zPosOpSelected + (0.1 + Math.random() * 0.01);
 
         this._glRectArea = null;
 
@@ -888,8 +888,6 @@ export default class GlOp extends Events
         if (this._titleExt) this._titleExt.setPosition(this._getTitleExtPosition(), 0, gluiconfig.zPosGlTitle);
         this._updateCommentPosition();
         this._updateIndicators();
-        // for (const i in this._links) if (this._links[i]) this._links[i].update();
-
 
         if (this._oldPosx != this.opUiAttribs.translate.x || this._oldPosy != this.opUiAttribs.translate.y)
         {

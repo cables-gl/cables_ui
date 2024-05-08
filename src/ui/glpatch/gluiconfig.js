@@ -25,12 +25,12 @@ class GlUiConfig
         this.zPosOpArea =
         this.zPosOpSelected = -0.6;
 
-        this.zPosGlRectSelected = 0.2;
-        this.zPosGlTitle = -0.01;
-
-        this.zPosCableButtonRect = -0.5;
-        this.zPosCables = -0.5;
+        this.zPosCableButtonRect = -0.4;
+        this.zPosCables = -0.4;
         this.zPosGreyOutRect = -0.1;
+
+        this.zPosGlRectSelected = 0.25; // is child of op
+        this.zPosGlTitle = -0.01; // is child of op
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;
