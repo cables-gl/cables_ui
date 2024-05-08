@@ -719,13 +719,13 @@ CABLES_CMD_PATCH.replaceLinkTriggerReceiveExist = function ()
         {
             link.remove();
             p.removeLinks();
-            p.parent.patch.link(opGetter, getsetOp.portNameOut, p.parent, p.name);
+            p.op.patch.link(opGetter, getsetOp.portNameOut, p.op, p.name);
 
             opGetter.uiAttr({
                 "subPatch": gui.patchView.getCurrentSubPatch(),
                 "translate": {
-                    "x": p.parent.uiAttribs.translate.x + 20,
-                    "y": p.parent.uiAttribs.translate.y - 40
+                    "x": p.op.uiAttribs.translate.x + 20,
+                    "y": p.op.uiAttribs.translate.y - 40
                 } });
         } });
 };
@@ -751,19 +751,19 @@ CABLES_CMD_PATCH.createTriggerSendReceiveExist = function ()
 
             if (p.direction == CABLES.PORT_DIR_IN)
             {
-                p.parent.patch.link(op, getsetOp.portNameOut, p.parent, p.name);
+                p.op.patch.link(op, getsetOp.portNameOut, p.op, p.name);
             }
             else
             {
-                p.parent.patch.link(op, getsetOp.portName, p.parent, p.name);
+                p.op.patch.link(op, getsetOp.portName, p.op, p.name);
                 off *= -1;
             }
 
             op.uiAttr({
                 "subPatch": gui.patchView.getCurrentSubPatch(),
                 "translate": {
-                    "x": p.parent.uiAttribs.translate.x + 20,
-                    "y": p.parent.uiAttribs.translate.y + off
+                    "x": p.op.uiAttribs.translate.x + 20,
+                    "y": p.op.uiAttribs.translate.y + off
                 } });
         } });
 };
@@ -786,13 +786,13 @@ CABLES_CMD_PATCH.replaceLinkVariableExist = function ()
             link.remove();
             p.removeLinks();
 
-            p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
+            p.op.patch.link(opGetter, getsetOp.portName, p.op, p.name);
 
             opGetter.uiAttr({
                 "subPatch": gui.patchView.getCurrentSubPatch(),
                 "translate": {
-                    "x": p.parent.uiAttribs.translate.x + 20,
-                    "y": p.parent.uiAttribs.translate.y - 40
+                    "x": p.op.uiAttribs.translate.x + 20,
+                    "y": p.op.uiAttribs.translate.y - 40
                 } });
         } });
 };
@@ -808,8 +808,8 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
     CABLES.UI.OPSELECT.linkNewOpToPort = null;
 
     let opFunction = getsetOp.getter;
-    let newOpX = p.parent.uiAttribs.translate.x + 20;
-    let newOpY = p.parent.uiAttribs.translate.y - 40;
+    let newOpX = p.op.uiAttribs.translate.x + 20;
+    let newOpY = p.op.uiAttribs.translate.y - 40;
     if (p.direction === CONSTANTS.PORT.PORT_DIR_OUT)
     {
         if (createTrigger)
@@ -820,7 +820,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
         {
             opFunction = getsetOp.setter;
         }
-        newOpY = p.parent.uiAttribs.translate.y + 40;
+        newOpY = p.op.uiAttribs.translate.y + 40;
     }
 
     gui.patchView.addOp(
@@ -828,7 +828,7 @@ CABLES_CMD_PATCH.createLinkVariableExist = function (createTrigger = false)
         { "onOpAdd": (opGetter) =>
         {
             p.removeLinks();
-            p.parent.patch.link(opGetter, getsetOp.portName, p.parent, p.name);
+            p.op.patch.link(opGetter, getsetOp.portName, p.op, p.name);
 
             opGetter.uiAttr({
                 "subPatch": gui.patchView.getCurrentSubPatch(),
@@ -863,13 +863,13 @@ CABLES_CMD_PATCH.replaceLinkVariable = function ()
             CABLES_CMD_PATCH._createVariable(str, p2, p1, p2.get(), (setter, getter) =>
             {
                 getter.uiAttr({ "translate": {
-                    "x": p1.parent.uiAttribs.translate.x,
-                    "y": p1.parent.uiAttribs.translate.y - 40
+                    "x": p1.op.uiAttribs.translate.x,
+                    "y": p1.op.uiAttribs.translate.y - 40
                 } });
 
                 setter.uiAttr({ "translate": {
-                    "x": p2.parent.uiAttribs.translate.x,
-                    "y": p2.parent.uiAttribs.translate.y + 40
+                    "x": p2.op.uiAttribs.translate.x,
+                    "y": p2.op.uiAttribs.translate.y + 40
                 } });
             });
         } });
@@ -901,15 +901,15 @@ CABLES_CMD_PATCH.createTriggerSendReceive = () =>
                 getter.uiAttr({
                     "subPatch": gui.patchView.getCurrentSubPatch(),
                     "translate": {
-                        "x": p1.parent.uiAttribs.translate.x,
-                        "y": p1.parent.uiAttribs.translate.y - 40
+                        "x": p1.op.uiAttribs.translate.x,
+                        "y": p1.op.uiAttribs.translate.y - 40
                     } });
 
                 setter.uiAttr({
                     "subPatch": gui.patchView.getCurrentSubPatch(),
                     "translate": {
-                        "x": p2.parent.uiAttribs.translate.x,
-                        "y": p2.parent.uiAttribs.translate.y + 40
+                        "x": p2.op.uiAttribs.translate.x,
+                        "y": p2.op.uiAttribs.translate.y + 40
                     } });
             });
         } });
@@ -933,8 +933,8 @@ CABLES_CMD_PATCH.createAutoVariable = function ()
                     setter.uiAttr({
                         "subPatch": gui.patchView.getCurrentSubPatch(),
                         "translate": {
-                            "x": p.parent.uiAttribs.translate.x,
-                            "y": p.parent.uiAttribs.translate.y + 40
+                            "x": p.op.uiAttribs.translate.x,
+                            "y": p.op.uiAttribs.translate.y + 40
                         } });
 
                 getter.uiAttr({
