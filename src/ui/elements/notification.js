@@ -2,6 +2,12 @@
 let lastNotify = "";
 let lastText = "";
 
+let lastNotifyErr = "";
+let lastTextErr = "";
+
+let lastNotifyWarn = "";
+let lastTextWarn = "";
+
 /**
  * configuration object for loading a patch
  * @typedef {Object} NotificationDisplayOptions
@@ -34,14 +40,19 @@ export function notifyError(title, text, options = {})
 
     if (!force)
     {
-        if (title === lastNotify && text === lastText)
+        if (title === lastNotifyErr && text === lastTextErr)
         {
+            setTimeout(function ()
+            {
+                lastNotifyErr = "";
+                lastTextErr = "";
+            }, 1000);
             return;
         }
     }
 
-    lastNotify = title;
-    lastText = text;
+    lastNotifyErr = title;
+    lastTextErr = text;
 
     const toastId = CABLES.uuid();
 
@@ -70,14 +81,19 @@ export function notifyWarn(title, text, options = {})
 
     if (!force)
     {
-        if (title === lastNotify && text === lastText)
+        if (title === lastNotifyWarn && text === lastTextWarn)
         {
+            setTimeout(function ()
+            {
+                lastNotifyWarn = "";
+                lastTextWarn = "";
+            }, 1000);
             return;
         }
     }
 
-    lastNotify = title;
-    lastText = text;
+    lastNotifyWarn = title;
+    lastTextWarn = text;
 
     const toastId = CABLES.uuid();
 
