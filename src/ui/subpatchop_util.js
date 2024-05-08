@@ -4,6 +4,7 @@ import gluiconfig from "./glpatch/gluiconfig.js";
 import srcSubPatchOp from "./subpatchop.js.txt";
 import ModalDialog from "./dialogs/modaldialog.js";
 import { getHandleBarHtml } from "./utils/handlebars.js";
+import { notify, notifyError } from "./elements/notification.js";
 
 const subPatchOpUtil = {};
 
@@ -680,11 +681,11 @@ subPatchOpUtil.updateBluePrint2Attachment = (newOp, options) =>
             {
                 gui.serverOps.showApiError(err);
                 // new ModalError({ "title": "Error/Invalid response from server 1", "text": "<pre>" + JSON.stringify(err, false, 4) + "</pre>" });
-                CABLES.UI.notifyError("Could not save " + newOp.objName, "", { "force": true });
+                notifyError("Could not save " + newOp.objName, "", { "force": true });
             }
             else
             {
-                CABLES.UI.notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
+                notify("Saved " + newOp.objName + " (" + o.ops.length + " ops)");
             }
 
             gui.showLoadingProgress(false);

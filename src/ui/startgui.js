@@ -8,6 +8,7 @@ import ModalDialog from "./dialogs/modaldialog.js";
 import ScConnection from "./multiplayer/sc_connection.js";
 import text from "./text.js";
 import userSettings from "./components/usersettings.js";
+import { notifyError } from "./elements/notification.js";
 
 export default function startUi(cfg)
 {
@@ -121,7 +122,7 @@ export default function startUi(cfg)
 
                 setTimeout(() =>
                 {
-                    if (userSettings.get("forceWebGl1")) CABLES.UI.notifyError("Forcing WebGl v1 ");
+                    if (userSettings.get("forceWebGl1")) notifyError("Forcing WebGl v1 ");
                 }, 1000);
 
                 gui.patchView.checkPatchErrors();

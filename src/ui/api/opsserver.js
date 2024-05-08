@@ -1154,7 +1154,7 @@ export default class ServerOps
 
                                     if (errr)
                                     {
-                                        CABLES.UI.notifyError("error: op not saved");
+                                        notifyError("error: op not saved");
                                         // _setStatus('ERROR: not saved - '+res.msg);
                                         this._log.warn("[opAttachmentSave]", errr);
                                         return;

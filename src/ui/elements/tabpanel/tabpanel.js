@@ -1,7 +1,7 @@
 import { Events } from "cables-shared-client";
 import userSettings from "../../components/usersettings.js";
 import { getHandleBarHtml } from "../../utils/handlebars.js";
-import { notify } from "../notification.js";
+import { notify, notifyError } from "../notification.js";
 
 export default class TabPanel extends Events
 {
@@ -386,12 +386,12 @@ export default class TabPanel extends Events
 
         talkerAPI.addEventListener("notify", (opts, next) =>
         {
-            CABLES.UI.notify(opts.msg, opts.text, opts.options);
+            notify(opts.msg, opts.text, opts.options);
         });
 
         talkerAPI.addEventListener("notifyError", (opts, next) =>
         {
-            CABLES.UI.notifyError(opts.msg, opts.text, opts.options);
+            notifyError(opts.msg, opts.text, opts.options);
         });
 
         talkerAPI.addEventListener("updatePatchName", (opts, next) =>

@@ -4,6 +4,7 @@ import { getHandleBarHtml } from "../utils/handlebars.js";
 import ModalDialog from "../dialogs/modaldialog.js";
 import text from "../text.js";
 import userSettings from "./usersettings.js";
+import { notify, notifyError } from "../elements/notification.js";
 
 export default class FileManager
 {
@@ -578,7 +579,7 @@ export default class FileManager
                                                             this._manager.removeItem(itemId);
                                                             this.reload();
                                                         }
-                                                        else CABLES.UI.notifyError("Error: Could not delete file. " + errr.msg);
+                                                        else notifyError("Error: Could not delete file. " + errr.msg);
                                                     }
                                                 );
                                             });
@@ -727,7 +728,7 @@ export default class FileManager
                                                     }
                                                     else
                                                     {
-                                                        CABLES.UI.notifyError("error: could not delete file", err);
+                                                        notifyError("error: could not delete file", err);
                                                         this._log.warn(err);
                                                     }
 
@@ -762,11 +763,11 @@ export default class FileManager
                 {
                     if (err)
                     {
-                        CABLES.UI.notifyError("Error: " + err.msg);
+                        notifyError("Error: " + err.msg);
                         gui.refreshFileManager();
                         return;
                     }
-                    CABLES.UI.notify("file created");
+                    notify("file created");
                     gui.refreshFileManager();
                 });
             }
@@ -778,15 +779,6 @@ export default class FileManager
     uploadFile(filename, content, cb)
     {
         gui.jobs().start({ "id": "uploadfile" + filename, "title": "saving file " + filename });
-
-        // CABLESUILOADER.talkerAPI.send("createFile", { "name": filename }, (err, res) =>
-        // {
-        //     if (err)
-        //     {
-        //         CABLES.UI.notifyError("Error: " + err.msg);
-        //         gui.jobs().finish("uploadfile" + filename);
-        //         return;
-        //     }
 
         CABLESUILOADER.talkerAPI.send(
             "fileUploadStr",

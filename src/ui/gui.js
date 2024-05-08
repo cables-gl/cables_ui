@@ -38,6 +38,7 @@ import defaultTheme from "./defaulttheme.json";
 import ModalLoading from "./dialogs/modalloading.js";
 import FileManagerEditor from "./components/filemanager_edit.js";
 import subPatchOpUtil from "./subpatchop_util.js";
+import { notify, notifyError } from "./elements/notification.js";
 
 export default class Gui extends Events
 {
@@ -1535,12 +1536,6 @@ export default class Gui extends Events
             }
             else
             {
-                // const ops = gui.corePatch().ops;
-                // for (let i = 0; i < ops.length; i++)
-                //     if (ops[i].hasUiError("subPatchOpNoSaveError"))
-                //         return CABLES.UI.notifyError("NOT SAVED! Patch contains illegal op hierarchy, check op errors!", "", { "force": true });
-
-
                 const subOuter = gui.patchView.getSubPatchOuterOp(gui.patchView.getCurrentSubPatch());
                 if (subOuter)
                 {
@@ -1840,8 +1835,8 @@ export default class Gui extends Events
 
     showWelcomeNotifications()
     {
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") CABLES.UI.notifyError("core: using master branch not on live?!");
-        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") CABLES.UI.notifyError("UI: using master branch not on live?!");
+        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.build && CABLES.build.git.branch == "master") notifyError("core: using master branch not on live?!");
+        if ((document.location.hostname != "cables.gl" && document.location.hostname != "sandbox.cables.gl") && CABLES.UI.build && CABLES.UI.build.git.branch == "master") notifyError("UI: using master branch not on live?!");
 
         if (!gui.isRemoteClient && CABLES.platform.showBrowserWarning) CABLES.platform.showBrowserWarning();
         if (!gui.isRemoteClient && CABLES.platform.showStartupChangelog) CABLES.platform.showStartupChangelog();
@@ -1862,8 +1857,8 @@ export default class Gui extends Events
                 if (c.length > 1)
                 {
                     if (c[0] == "projectname") gui.setProjectName(c[1]);
-                    if (c[0] == "notify") CABLES.UI.notify(c[1]);
-                    if (c[0] == "notifyerror") CABLES.UI.notifyError(c[1]);
+                    if (c[0] == "notify") notify(c[1]);
+                    if (c[0] == "notifyerror") notifyError(c[1]);
                     if (c[0] == "cmd" && c[1] == "saveproject") this.patch().saveCurrentProject();
                 }
             }
