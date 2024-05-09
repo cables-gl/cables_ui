@@ -1,6 +1,7 @@
 import { Logger, Events } from "cables-shared-client";
 import ModalDialog from "../dialogs/modaldialog.js";
 import defaultOps from "../defaultops.js";
+import { notifyError } from "../elements/notification.js";
 
 export function bytesArrToBase64(arr)
 {
@@ -492,7 +493,7 @@ export default class PatchSaveServer extends Events
                 let b64 = bytesArrToBase64(uint8data);
 
                 if (datastr.length > 12 * 1024 * 1024)
-                    CABLES.UI.notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
+                    notifyError("Patch is huge, try to reduce amound of data stored in patch/ports");
 
 
                 document.getElementById("patchname").innerHTML = "Saving Patch";
@@ -638,7 +639,7 @@ export default class PatchSaveServer extends Events
                 gui.jobs().finish("projectsave");
                 console.log(e);
                 if (!found)
-                    CABLES.UI.notifyError("error saving patch - try to delete disabled ops");
+                    notifyError("error saving patch - try to delete disabled ops");
             }
             finally {}
         }, 100);

@@ -18,15 +18,19 @@ class GlUiConfig
         this.zoomDefault = 500;
 
         this.newOpDistanceY = 40;
-        this.zPosCableButtonRect = -0.9;
+
         this.drawBoundingRect = true;
         this.clickMaxDuration = 300;
 
         this.zPosOpArea =
-        this.zPosOpSelected = -0.5;
+        this.zPosOpSelected = -0.6;
 
-        this.zPosGlRectSelected = 0.4;
-        this.zPosGlTitle = -0.01;
+        this.zPosCableButtonRect = -0.4;
+        this.zPosCables = -0.4;
+        this.zPosGreyOutRect = -0.1;
+
+        this.zPosGlRectSelected = 0.25; // is relative child of op glbgrect
+        this.zPosGlTitle = -0.01; // is relative child of op glbgrect
 
         this.subPatchOpBorder = 2;
         this.rectResizeSize = 10;

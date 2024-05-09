@@ -3,6 +3,7 @@ import ModalDialog from "./dialogs/modaldialog.js";
 import ChangelogToast from "./dialogs/changelog.js";
 import text from "./text.js";
 import userSettings from "./components/usersettings.js";
+import { notify, notifyError } from "./elements/notification.js";
 
 /**
  * @abstract
@@ -144,12 +145,12 @@ export default class Platform extends Events
 
         CABLESUILOADER.talkerAPI.addEventListener("notify", (options, next) =>
         {
-            CABLES.UI.notify(options.msg);
+            notify(options.msg);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("notifyError", (options, next) =>
         {
-            CABLES.UI.notifyError(options.msg, options.text, options.options);
+            notifyError(options.msg, options.text, options.options);
         });
 
         CABLESUILOADER.talkerAPI.addEventListener("refreshFileManager", (options, next) =>

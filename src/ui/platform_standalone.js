@@ -13,6 +13,7 @@ export default class PlatformStandalone extends Platform
         this.frontendOptions.showLocalOpDirButton =
         this.frontendOptions.chooseOpDir =
         this.frontendOptions.saveScreenshotInPatchJson =
+        this.frontendOptions.showWelcome = true;
         this.frontendOptions.showBuildInfoMenuLink = true;
     }
 

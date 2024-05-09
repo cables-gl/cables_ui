@@ -17,6 +17,7 @@ import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
 import glUiConfig from "./gluiconfig.js";
 import Snap from "./snap.js";
+import gluiconfig from "./gluiconfig.js";
 
 
 export default class GlPatch extends Events
@@ -568,7 +569,7 @@ export default class GlPatch extends Events
                 gui.theme.colors_patch.background[2],
                 0.5);
             this._greyOutRect.setSize(20000000, 20000000);
-            this._greyOutRect.setPosition(-10000000, -10000000, -0.1);
+            this._greyOutRect.setPosition(-10000000, -10000000, gluiconfig.zPosGreyOutRect);
 
             this._cgl.canvas.style.cursor = "not-allowed";
         }

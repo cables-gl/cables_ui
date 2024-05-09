@@ -296,10 +296,10 @@ export default class GlCable
 
                     this._points = // this._subdivide(
                         [
-                            posX, this._y, 0,
-                            // posX, this._y, 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0
+                            posX, this._y, gluiconfig.zPosCables,
+                            // posX, this._y, gluiconfig.zPosCables,
+                            posX2, this._y2, gluiconfig.zPosCables,
+                            posX2, this._y2, gluiconfig.zPosCables
                         ];
                     // );
 
@@ -317,14 +317,14 @@ export default class GlCable
 
                     this._points =
                         [
-                            posX, this._y, 0,
-                            posX, this._y - (distY * 0.002) - this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
+                            posX, this._y, gluiconfig.zPosCables,
+                            posX, this._y - (distY * 0.002) - this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
 
-                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, 0, // center point
+                            (posX + posX2) * 0.5, (this._y + this._y2) * 0.5, gluiconfig.zPosCables, // center point
 
-                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), 0,
-                            posX2, this._y2, 0,
-                            posX2, this._y2, 0
+                            posX2, this._y2 + (distY * 0.002) + this._distFromPort * (gui.theme.patch.cablesCurveY || 1.25), gluiconfig.zPosCables,
+                            posX2, this._y2, gluiconfig.zPosCables,
+                            posX2, this._y2, gluiconfig.zPosCables
 
                         ];
 
@@ -347,10 +347,10 @@ export default class GlCable
                 // straight lines...
 
                 this._points = [
-                    posX, this._y, 0,
-                    posX, this._y - this._distFromPort, 0,
-                    posX2, this._y2 + this._distFromPort, 0,
-                    posX2, this._y2, 0
+                    posX, this._y, gluiconfig.zPosCables,
+                    posX, this._y - this._distFromPort, gluiconfig.zPosCables,
+                    posX2, this._y2 + this._distFromPort, gluiconfig.zPosCables,
+                    posX2, this._y2, gluiconfig.zPosCables
                 ];
 
                 this._splineDrawer.setSpline(this._splineIdx, this._points);
@@ -358,10 +358,10 @@ export default class GlCable
             if (this._linetype == this.LINETYPE_SIMPLE)
             {
                 this._points = [
-                    posX, this._y, 0,
-                    posX, this._y, 0,
-                    posX2, this._y2, 0,
-                    posX2, this._y2, 0
+                    posX, this._y, gluiconfig.zPosCables,
+                    posX, this._y, gluiconfig.zPosCables,
+                    posX2, this._y2, gluiconfig.zPosCables,
+                    posX2, this._y2, gluiconfig.zPosCables
                 ];
 
                 this._splineDrawer.setSpline(this._splineIdx, this._points);

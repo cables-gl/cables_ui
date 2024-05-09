@@ -3,6 +3,7 @@ import Tab from "../../elements/tabpanel/tab.js";
 import text from "../../text.js";
 import userSettings from "../usersettings.js";
 import ManageOp from "./tab_manage_op.js";
+import { notifyError } from "../../elements/notification.js";
 
 
 export default class EditorTab
@@ -198,7 +199,7 @@ export default class EditorTab
             {
                 if (!res || !res.success)
                 {
-                    CABLES.UI.notifyError("failed to format code, keeping old version");
+                    notifyError("failed to format code, keeping old version");
                     this._log.warn("code formating error", err);
                 }
                 else
@@ -209,7 +210,7 @@ export default class EditorTab
             },
             (result) =>
             {
-                CABLES.UI.notifyError("failed to format code, keeping old version");
+                notifyError("failed to format code, keeping old version");
                 this._log.warn("code formating http error", result);
             },
         );
@@ -221,7 +222,7 @@ export default class EditorTab
         {
             gui.jobs().finish("saveeditorcontent");
 
-            if (txt.toLowerCase().indexOf("error") == 0) CABLES.UI.notifyError(txt);
+            if (txt.toLowerCase().indexOf("error") == 0) notifyError(txt);
             else
             {
                 CABLES.UI.notify(txt);
