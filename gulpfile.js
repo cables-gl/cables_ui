@@ -4,7 +4,7 @@ import sass from "gulp-sass-no-nodesass";
 
 import compiler from "webpack";
 import webpack from "webpack-stream";
-import getRepoInfo from "git-repo-info";
+import git from "git-last-commit";
 import autoprefixer from "gulp-autoprefixer";
 import replace from "gulp-replace";
 import fs from "fs";
@@ -39,8 +39,6 @@ else
     console.error("config file not found at", configLocation, "assuming local build (dev/no minify)");
 }
 
-let buildInfo = getBuildInfo();
-
 function _scripts_libs_ui(done)
 {
     let task = gulp.src(["libs/ui/*.js"]);
@@ -58,33 +56,36 @@ function _scripts_libs_ui(done)
 
 function _scripts_talkerapi(done)
 {
-    return gulp.src(["src-talkerapi/talkerapi.js"])
-        .pipe(
-            webpack(
-                {
-                    "config": webpackTalkerApiConfig(isLiveBuild, buildInfo, minify),
-                },
-                compiler,
-                (err, stats) =>
-                {
-                    if (err) done(err);
-                    if (stats.hasErrors())
+    getBuildInfo((buildInfo) =>
+    {
+        return gulp.src(["src-talkerapi/talkerapi.js"])
+            .pipe(
+                webpack(
                     {
-                        done(new Error(stats.compilation.errors.join("\n")));
-                    }
-                    else
+                        "config": webpackTalkerApiConfig(isLiveBuild, buildInfo, minify),
+                    },
+                    compiler,
+                    (err, stats) =>
                     {
-                        done();
+                        if (err) done(err);
+                        if (stats.hasErrors())
+                        {
+                            done(new Error(stats.compilation.errors.join("\n")));
+                        }
+                        else
+                        {
+                            done();
+                        }
                     }
-                }
+                )
             )
-        )
-        .pipe(gulp.dest("dist/js"))
-        .on("error", (err) =>
-        {
-            console.error("WEBPACK ERROR NEU!!!!!!!", err);
-            done(err);
-        });
+            .pipe(gulp.dest("dist/js"))
+            .on("error", (err) =>
+            {
+                console.error("WEBPACK ERROR NEU!!!!!!!", err);
+                done(err);
+            });
+    });
 }
 
 function _scripts_core()
@@ -96,57 +97,63 @@ function _scripts_core()
 
 function _scripts_ui_webpack(done)
 {
-    const minify = config.hasOwnProperty("minifyJs") ? config.minifyJs : false;
-    return gulp.src(["src/ui/index.js"])
-        .pipe(
-            webpack(
-                {
-                    "config": webpackConfig(isLiveBuild, buildInfo, minify),
-                },
-                compiler,
-                (err, stats) =>
-                {
-                    if (err) done(err);
-                    if (stats.hasErrors())
+    getBuildInfo((buildInfo) =>
+    {
+        return gulp.src(["src/ui/index.js"])
+            .pipe(
+                webpack(
                     {
-                        done(new Error(stats.compilation.errors.join("\n")));
-                    }
-                    else
+                        "config": webpackConfig(isLiveBuild, buildInfo, minify),
+                    },
+                    compiler,
+                    (err, stats) =>
                     {
-                        done();
+                        if (err) done(err);
+                        if (stats.hasErrors())
+                        {
+                            done(new Error(stats.compilation.errors.join("\n")));
+                        }
+                        else
+                        {
+                            done();
+                        }
                     }
-                }
+                )
             )
-        )
-        .pipe(gulp.dest("dist/js"))
-        .on("error", (err) =>
-        {
-            console.error("WEBPACK ERROR NEU!!!!!!!", err);
-            done(err);
-        });
+            .pipe(gulp.dest("dist/js"))
+            .on("error", (err) =>
+            {
+                console.error("WEBPACK ERROR NEU!!!!!!!", err);
+                done(err);
+            });
+    });
 }
 
-function getBuildInfo()
+function getBuildInfo(cb)
 {
-    const git = getRepoInfo();
     const date = new Date();
-    return {
-        "timestamp": date.getTime(),
-        "created": date.toISOString(),
-        "git": {
-            "branch": git.branch,
-            "commit": git.sha,
-            "date": git.committerDate,
-            "message": git.commitMessage
-        }
-    };
+    git.getLastCommit((err, commit) =>
+    {
+        cb({
+            "timestamp": date.getTime(),
+            "created": date.toISOString(),
+            "git": {
+                "branch": commit.branch,
+                "commit": commit.hash,
+                "date": commit.committedOn,
+                "message": commit.subject
+            }
+        });
+    });
 }
 
 function _update_buildInfo(done)
 {
-    buildInfo = getBuildInfo();
-    fs.writeFileSync("./dist/buildinfo.json", JSON.stringify(buildInfo));
-    done();
+    getBuildInfo((buildInfo) =>
+    {
+        fs.writeFileSync("./dist/buildinfo.json", JSON.stringify(buildInfo));
+        done();
+    });
 }
 
 function _html_ui(done)

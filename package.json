@@ -14,7 +14,7 @@
         "cables-shared-client": "file:../shared/client/"
     },
     "devDependencies": {
-        "git-repo-info": "2.1.1",
+        "git-last-commit": "1.0.1",
         "gulp": "4.0.2",
         "gulp-autoprefixer": "8.0.0",
         "gulp-concat": "2.6.1",
