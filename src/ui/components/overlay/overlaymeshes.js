@@ -139,8 +139,6 @@ helperMeshes.drawCircle = function (op, size)
     shader.glPrimitive = cgl.gl.LINE_STRIP;
 
 
-
-
     helperMeshes.CIRCLE.mesh.render(shader);
     helperMeshes.count++;
     cgl.popModelMatrix();
@@ -161,8 +159,7 @@ helperMeshes.drawSphere = function (op, size)
             let verts = [];
             let tc = [];
             const segments = 80;
-            let i = 0,
-                degInRad = 0;
+            let i = 0, degInRad = 0;
             const radius = 1;
 
             for (i = 0; i <= Math.round(segments); i++)
@@ -178,7 +175,6 @@ helperMeshes.drawSphere = function (op, size)
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh = new CGL.Mesh(cgl, geom);
 
             //---
 
@@ -197,7 +193,6 @@ helperMeshes.drawSphere = function (op, size)
             geom2.setPointVertices(verts);
             geom2.setTexCoords(tc);
             geom2.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh2 = new CGL.Mesh(cgl, geom2);
 
             //---
 
@@ -216,7 +211,10 @@ helperMeshes.drawSphere = function (op, size)
             geom3.setPointVertices(verts);
             geom3.setTexCoords(tc);
             geom3.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh3 = new CGL.Mesh(cgl, geom3);
+
+            geom.merge(geom2);
+            geom.merge(geom3);
+            helperMeshes.SPHERE.mesh = new CGL.Mesh(cgl, geom);
         }
 
         bufferData();
@@ -235,8 +233,6 @@ helperMeshes.drawSphere = function (op, size)
 
     shader.glPrimitive = cgl.gl.LINE_STRIP;
     helperMeshes.SPHERE.mesh.render(shader);
-    helperMeshes.SPHERE.mesh2.render(shader);
-    helperMeshes.SPHERE.mesh3.render(shader);
     helperMeshes.count++;
     cgl.popModelMatrix();
 
