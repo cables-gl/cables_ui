@@ -538,10 +538,12 @@ export default class PatchSaveServer extends Events
 
                         gui.jobs().finish("projectsave");
 
-                        if (!r || !r.success)
+                        if (!r || !r.success || err)
                         {
                             let msg = err || "no response";
                             if (r && r.msg) msg = r.msg;
+
+                            if (!navigator.onLine)msg = "no internet connection";
 
                             new ModalDialog({
                                 "warning": true,
