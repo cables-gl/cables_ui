@@ -1,5 +1,6 @@
 import { Logger, Events } from "cables-shared-client";
 import userSettings from "../components/usersettings.js";
+import gluiconfig from "./gluiconfig.js";
 
 export default class VizLayer extends Events
 {
@@ -143,8 +144,16 @@ export default class VizLayer extends Events
 
             const glop = this._glPatch.getGlOp(item.op);
             if (!glop || glop.opUiAttribs.subPatch != this._glPatch.subPatch) continue;
-            const sizeOp = this._glPatch.viewBox.patchToScreenConv(glop.w, glop.h);
+
+
+            let ww = glop.w;
+            if (glop.opUiAttribs.resizable)ww += gluiconfig.rectResizeSize;
+
+
+            const sizeOp = this._glPatch.viewBox.patchToScreenConv(ww, glop.h);
             const size = [sizeOp[0], sizeOp[1] - paddingY - (paddingY / 2)];
+
+
 
             sizeOp[0] *= window.devicePixelRatio;
             sizeOp[1] *= window.devicePixelRatio;
@@ -158,6 +167,9 @@ export default class VizLayer extends Events
 
             // this._canvasCtx.clearRect(pos[0] - 1, pos[1] - 1, size[0] + 2, size[1] + 2);
             // this._canvasCtx.strokeStyle = "transparent";
+
+
+
 
             let region = new Path2D();
             region.rect(pos[0], pos[1], size[0], size[1]);
@@ -189,6 +201,9 @@ export default class VizLayer extends Events
                     "useGl": this._usingGl,
                     "vizLayer": this
                 };
+
+
+
 
                 if (!item.op.uiAttribs.vizLayerMaxZoom || this._glPatch.viewBox.zoom < item.op.uiAttribs.vizLayerMaxZoom)
                     if (pos[0] === pos[0] && size[0] === size[0])

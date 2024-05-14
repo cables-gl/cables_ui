@@ -15,7 +15,6 @@ import VizLayer from "./vizlayer.js";
 import text from "../text.js";
 import userSettings from "../components/usersettings.js";
 import Gui from "../gui.js";
-import glUiConfig from "./gluiconfig.js";
 import Snap from "./snap.js";
 import gluiconfig from "./gluiconfig.js";
 
@@ -912,7 +911,7 @@ export default class GlPatch extends Events
 
         if (this._subpatchoprect)
         {
-            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), glUiConfig.zPosGlRectSelected);
+            this._subpatchoprect.setPosition(this._subpatchAnimOutX.getValue(this._time), this._subpatchAnimOutY.getValue(this._time), gluiconfig.zPosGlRectSelected);
             this._subpatchoprect.setSize(this._subpatchAnimOutW.getValue(this._time), this._subpatchAnimOutH.getValue(this._time));
             this._subpatchoprect.setOpacity(this._subpatchAnimFade.getValue(this._time));
         }
@@ -1434,7 +1433,7 @@ export default class GlPatch extends Events
         const dur = 0.25;
         const glop = this._glOpz[opid];
 
-        this._subpatchoprect.setBorder(glUiConfig.subPatchOpBorder);
+        this._subpatchoprect.setBorder(gluiconfig.subPatchOpBorder);
 
         this._subpatchAnimOutX.setValue(this._time, this._subpatchoprect.x);
         this._subpatchAnimOutX.setValue(this._time + dur, glop.op.uiAttribs.translate.x);
@@ -1513,11 +1512,11 @@ export default class GlPatch extends Events
             bounds.maxy = Math.max(bounds.maxy, op.y);
         }
 
-        bounds.minx -= glUiConfig.opWidth;
-        bounds.maxx += glUiConfig.opWidth * 2;
+        bounds.minx -= gluiconfig.opWidth;
+        bounds.maxx += gluiconfig.opWidth * 2;
 
-        bounds.miny -= glUiConfig.opHeight;
-        bounds.maxy += glUiConfig.opHeight * 2;
+        bounds.miny -= gluiconfig.opHeight;
+        bounds.maxy += gluiconfig.opHeight * 2;
 
         return bounds;
     }
@@ -1556,7 +1555,7 @@ export default class GlPatch extends Events
     setDrawableColorByType(e, t, diff)
     {
         if (!e) return;
-        diff = diff || glUiConfig.colorMulInActive;
+        diff = diff || gluiconfig.colorMulInActive;
 
         let col = [0, 0, 0, 0];
         if (!gui.theme.colors.types) return;
