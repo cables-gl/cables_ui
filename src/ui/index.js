@@ -6,7 +6,7 @@ import LibLoader from "./api/libloader.js";
 import CMD from "./commands/commands.js";
 import CanvasLens from "./components/canvas/canvaslens.js";
 import CanvasUi from "./components/canvas/canvasui.js";
-import helperMeshes from "./components/overlay/overlaymeshes.js";
+import OverlayMeshes from "./components/overlay/overlaymeshes.js";
 import Collapsable from "./components/collapsable.js";
 import FileManager from "./components/filemanager.js";
 import DragNDrop from "./components/filemanager_dragdrop.js";
@@ -149,7 +149,8 @@ CABLES.UI.uiProfiler = new CABLES.UI.UiProfiler();
 
 CABLES.UI.logFilter = new LogFilter();
 
-CABLES.GL_MARKER = helperMeshes;
+CABLES.GL_MARKER = OverlayMeshes;
+CABLES.UI.OverlayMeshes = OverlayMeshes;
 
 CABLES.UI.paramsHelper = paramsHelper;
 CABLES.UI.valueChanger = valueChanger;
