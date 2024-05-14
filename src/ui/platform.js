@@ -31,8 +31,8 @@ export default class Platform extends Events
 
     updateOnlineIndicator()
     {
-        if (this.isOffline()) document.getElementById("offlineIndicator").classList.remove("hidden");
-        else document.getElementById("offlineIndicator").classList.add("hidden");
+        if (this.isOffline()) ele.show(ele.byId("nav-item-offline"));
+        else ele.hide(ele.byId("nav-item-offline"));
     }
 
     isOffline()

@@ -717,19 +717,6 @@ body
         transform:scale(1,-1);
     }
 
-    #offlineIndicator
-    {
-        border:2px solid red;
-        background-color: red;
-        position: absolute;
-        width:1px;
-        height:1px;
-        border-radius: 10px;
-        margin-left:-10px;
-        margin-top:-4px;
-    }
-
-
     .draggable
     {
         cursor: grab;
@@ -737,20 +724,11 @@ body
 
     .colorButton
     {
-        // width:20px;
-        // height:20px;
-        // display:block;
-        // border:3px solid black;
         color:black;
-        // float:left;
         padding-left:5px;
         padding-right:5px;
     }
 
-    // .fa-hide
-    // {
-    //     opacity: 0;
-    // }
 
     .patch_summary
     {
