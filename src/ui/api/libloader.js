@@ -83,7 +83,7 @@ export default class LibLoader
                     }
                     else
                     {
-                        newScript.src += name + "?nc=" + this.getCacheBusterNumber();
+                        newScript.src += name;// + "?nc=" + this.getCacheBusterNumber();
                     }
                     newScript.onload = () =>
                     {
@@ -92,7 +92,7 @@ export default class LibLoader
                 }
                 else
                 {
-                    newScript.src = this.basePath + name + "?nc=" + this.getCacheBusterNumber();
+                    newScript.src = this.basePath + name;// + "?nc=" + this.getCacheBusterNumber();
                 }
                 newScript.onerror = () =>
                 {
