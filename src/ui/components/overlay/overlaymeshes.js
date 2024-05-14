@@ -57,14 +57,11 @@ helperMeshes.endFramebuffer = function (cgl)
     helperMeshes.FB.fb.renderEnd();
 };
 
-
-
 helperMeshes.getDefaultShader = function (cgl, options = {})
 {
     let name = "defaultShader";
 
     if (options.billboarded)name = "defaultShaderBillboard";
-
 
     if (!helperMeshes[name])
     {
@@ -78,7 +75,6 @@ helperMeshes.getDefaultShader = function (cgl, options = {})
 helperMeshes.getSelectedShader = function (cgl, options = {})
 {
     let name = "selectedShader";
-
 
     if (options.billboarded)name = "selectedShaderBillboard";
 
@@ -178,7 +174,7 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            var geom = new CGL.Geometry("sphere marker");
+            const geom = new CGL.Geometry("sphere marker");
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
@@ -197,11 +193,11 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            var geom = new CGL.Geometry("sphere marker");
-            geom.setPointVertices(verts);
-            geom.setTexCoords(tc);
-            geom.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh2 = new CGL.Mesh(cgl, geom);
+            const geom2 = new CGL.Geometry("sphere marker");
+            geom2.setPointVertices(verts);
+            geom2.setTexCoords(tc);
+            geom2.vertexNormals = verts.slice();
+            helperMeshes.SPHERE.mesh2 = new CGL.Mesh(cgl, geom2);
 
             //---
 
@@ -216,11 +212,11 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            var geom = new CGL.Geometry("sphere marker");
-            geom.setPointVertices(verts);
-            geom.setTexCoords(tc);
-            geom.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh3 = new CGL.Mesh(cgl, geom);
+            const geom3 = new CGL.Geometry("sphere marker");
+            geom3.setPointVertices(verts);
+            geom3.setTexCoords(tc);
+            geom3.vertexNormals = verts.slice();
+            helperMeshes.SPHERE.mesh3 = new CGL.Mesh(cgl, geom3);
         }
 
         bufferData();
@@ -235,14 +231,15 @@ helperMeshes.drawSphere = function (op, size)
     mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.SPHERE.vScale);
 
     let shader = helperMeshes.getDefaultShader(cgl);
-
     if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
+
     shader.glPrimitive = cgl.gl.LINE_STRIP;
     helperMeshes.SPHERE.mesh.render(shader);
     helperMeshes.SPHERE.mesh2.render(shader);
     helperMeshes.SPHERE.mesh3.render(shader);
     helperMeshes.count++;
     cgl.popModelMatrix();
+
     helperMeshes.endFramebuffer(cgl);
 };
 
