@@ -73,7 +73,8 @@
     {
         let seperator = "?";
         if(url.includes("?")) seperator = "&";
-        return url + seperator + "nc=" + (Date.now() + "").substr(-6);
+
+        return url;// + seperator + "nc=" + (Date.now() + "").substr(-6);
     };
 
     CABLESUILOADER.builtVersionUrl = function (component, url)
@@ -83,7 +84,7 @@
         {
             if (CABLESUILOADER.buildInfo[component])
             {
-                ncUrl = url + "?nc=" + CABLESUILOADER.buildInfo[component].timestamp;
+                ncUrl = url;// + "?nc=" + CABLESUILOADER.buildInfo[component].timestamp;
             }
         }
         return ncUrl;

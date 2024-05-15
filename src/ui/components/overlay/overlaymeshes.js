@@ -57,14 +57,11 @@ helperMeshes.endFramebuffer = function (cgl)
     helperMeshes.FB.fb.renderEnd();
 };
 
-
-
 helperMeshes.getDefaultShader = function (cgl, options = {})
 {
     let name = "defaultShader";
 
     if (options.billboarded)name = "defaultShaderBillboard";
-
 
     if (!helperMeshes[name])
     {
@@ -78,7 +75,6 @@ helperMeshes.getDefaultShader = function (cgl, options = {})
 helperMeshes.getSelectedShader = function (cgl, options = {})
 {
     let name = "selectedShader";
-
 
     if (options.billboarded)name = "selectedShaderBillboard";
 
@@ -143,8 +139,6 @@ helperMeshes.drawCircle = function (op, size)
     shader.glPrimitive = cgl.gl.LINE_STRIP;
 
 
-
-
     helperMeshes.CIRCLE.mesh.render(shader);
     helperMeshes.count++;
     cgl.popModelMatrix();
@@ -165,8 +159,7 @@ helperMeshes.drawSphere = function (op, size)
             let verts = [];
             let tc = [];
             const segments = 80;
-            let i = 0,
-                degInRad = 0;
+            let i = 0, degInRad = 0;
             const radius = 1;
 
             for (i = 0; i <= Math.round(segments); i++)
@@ -178,49 +171,50 @@ helperMeshes.drawSphere = function (op, size)
                 tc.push(0, 0);
             }
 
-            var geom = new CGL.Geometry("sphere marker");
+            const geom = new CGL.Geometry("sphere marker");
             geom.setPointVertices(verts);
             geom.setTexCoords(tc);
             geom.vertexNormals = verts.slice();
+
+            //---
+
+            verts = [];
+            tc = [];
+            for (i = 0; i <= Math.round(segments); i++)
+            {
+                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                verts.push(Math.cos(degInRad) * radius);
+                verts.push(Math.sin(degInRad) * radius);
+                verts.push(0);
+                tc.push(0, 0);
+            }
+
+            const geom2 = new CGL.Geometry("sphere marker");
+            geom2.setPointVertices(verts);
+            geom2.setTexCoords(tc);
+            geom2.vertexNormals = verts.slice();
+
+            //---
+
+            verts = [];
+            tc = [];
+            for (i = 0; i <= Math.round(segments); i++)
+            {
+                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
+                verts.push(0);
+                verts.push(Math.cos(degInRad) * radius);
+                verts.push(Math.sin(degInRad) * radius);
+                tc.push(0, 0);
+            }
+
+            const geom3 = new CGL.Geometry("sphere marker");
+            geom3.setPointVertices(verts);
+            geom3.setTexCoords(tc);
+            geom3.vertexNormals = verts.slice();
+
+            geom.merge(geom2);
+            geom.merge(geom3);
             helperMeshes.SPHERE.mesh = new CGL.Mesh(cgl, geom);
-
-            //---
-
-            verts = [];
-            tc = [];
-            for (i = 0; i <= Math.round(segments); i++)
-            {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
-                verts.push(Math.cos(degInRad) * radius);
-                verts.push(Math.sin(degInRad) * radius);
-                verts.push(0);
-                tc.push(0, 0);
-            }
-
-            var geom = new CGL.Geometry("sphere marker");
-            geom.setPointVertices(verts);
-            geom.setTexCoords(tc);
-            geom.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh2 = new CGL.Mesh(cgl, geom);
-
-            //---
-
-            verts = [];
-            tc = [];
-            for (i = 0; i <= Math.round(segments); i++)
-            {
-                degInRad = (360.0 / Math.round(segments)) * i * CGL.DEG2RAD;
-                verts.push(0);
-                verts.push(Math.cos(degInRad) * radius);
-                verts.push(Math.sin(degInRad) * radius);
-                tc.push(0, 0);
-            }
-
-            var geom = new CGL.Geometry("sphere marker");
-            geom.setPointVertices(verts);
-            geom.setTexCoords(tc);
-            geom.vertexNormals = verts.slice();
-            helperMeshes.SPHERE.mesh3 = new CGL.Mesh(cgl, geom);
         }
 
         bufferData();
@@ -235,14 +229,13 @@ helperMeshes.drawSphere = function (op, size)
     mat4.scale(cgl.mvMatrix, cgl.mvMatrix, helperMeshes.SPHERE.vScale);
 
     let shader = helperMeshes.getDefaultShader(cgl);
-
     if (gui.patchView.isCurrentOp(op)) shader = helperMeshes.getSelectedShader(cgl);
+
     shader.glPrimitive = cgl.gl.LINE_STRIP;
     helperMeshes.SPHERE.mesh.render(shader);
-    helperMeshes.SPHERE.mesh2.render(shader);
-    helperMeshes.SPHERE.mesh3.render(shader);
     helperMeshes.count++;
     cgl.popModelMatrix();
+
     helperMeshes.endFramebuffer(cgl);
 };
 
