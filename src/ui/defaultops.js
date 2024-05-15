@@ -159,16 +159,16 @@ const defaultOps = {
 
     ],
     "jsonPathOps": {
-        "ArrayGetArray": "Ops.Json.ArrayGetArrayByPath",
-        "ArrayGetArrayValues": "Ops.Json.ArrayGetArrayValuesByPath",
-        "ArrayGetNumber": "Ops.Json.ArrayGetNumberByPath",
-        "ArrayGetObject": "Ops.Json.ArrayGetObjectByPath",
-        "ArrayGetString": "Ops.Json.ArrayGetStringByPath",
-        "ObjectGetArray": "Ops.Json.ObjectGetArrayByPath",
-        "ObjectGetArrayValues": "Ops.Json.ObjectGetArrayValuesByPath",
-        "ObjectGetNumber": "Ops.Json.ObjectGetNumberByPath",
-        "ObjectGetObject": "Ops.Json.ObjectGetObjectByPath",
-        "ObjectGetString": "Ops.Json.ObjectGetStringByPath"
+        "ArrayGetArray": "Ops.Data.JsonPath.ArrayGetArrayByPath",
+        "ArrayGetArrayValues": "Ops.Data.JsonPath.ArrayGetArrayValuesByPath",
+        "ArrayGetNumber": "Ops.Data.JsonPath.ArrayGetNumberByPath",
+        "ArrayGetObject": "Ops.Data.JsonPath.ArrayGetObjectByPath",
+        "ArrayGetString": "Ops.Data.JsonPath.ArrayGetStringByPath",
+        "ObjectGetArray": "Ops.Data.JsonPath.ObjectGetArrayByPath",
+        "ObjectGetArrayValues": "Ops.Data.JsonPath.ObjectGetArrayValuesByPath",
+        "ObjectGetNumber": "Ops.Data.JsonPath.ObjectGetNumberByPath",
+        "ObjectGetObject": "Ops.Data.JsonPath.ObjectGetObjectByPath",
+        "ObjectGetString": "Ops.Data.JsonPath.ObjectGetStringByPath"
     },
     "hideInOpSelect":
     [
