@@ -291,9 +291,7 @@ export default class ServerOps
             if (oldOps[i].uiAttribs)
                 delete oldOps[i].uiAttribs.uierrors;
 
-        const lid = "executeOp_" + name + CABLES.uuid();
-
-        loadjs.ready(lid, () =>
+        this.loadOpDependencies(name, () =>
         {
             gui.corePatch().reloadOp(
                 name,
@@ -312,8 +310,7 @@ export default class ServerOps
                 },
                 refOldOp
             );
-        });
-        loadjs(CABLESUILOADER.noCacheUrl(CABLES.platform.getCablesUrl() + "/api/op/" + name + "?p=" + gui.project().shortId), lid);
+        }, true);
     }
 
     clone(oldname, name, cb, options)
