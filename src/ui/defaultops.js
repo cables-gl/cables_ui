@@ -52,7 +52,7 @@ const defaultOpNames =
     "TriggerOnChangeNumber": "Ops.Number.TriggerOnChangeNumber",
     "TriggerOnChangeString": "Ops.Trigger.TriggerOnChangeString",
     "TriggerCounter": "Ops.Trigger.TriggerCounter",
-    "parseFloat": "Ops.String.ParseFloat",
+    "parseFloat": "Ops.String.StringToNumber",
     "arrayLength": "Ops.Array.ArrayLength_v2",
     "StringToArray": "Ops.Array.StringToArray_v2",
     "arrayToString": "Ops.Array.ArrayToString_v3",
@@ -65,7 +65,7 @@ const defaultOpNames =
     "VizNumberBar": "Ops.Ui.VizNumberBar",
     "VizObject": "Ops.Ui.VizObject",
     "VizString": "Ops.Ui.VizString",
-    "VizStringLong": "Ops.Ui.VizStringLong",
+    "VizStringLong": "Ops.Ui.VizString",
     "VizTexture": "Ops.Ui.VizTexture",
     "VizLogger": "Ops.Ui.VizLogger",
     "VizTextureTable": "Ops.Ui.VizTextureTable",
@@ -173,7 +173,7 @@ const defaultOps = {
     "hideInOpSelect":
     [
         "Ops.Ui.SubPatch",
-        "Ops.Ui.Subpatch2Temp",
+        // "Ops.Ui.Subpatch2Temp",
         "Ops.Ui.SubPatchInput",
         "Ops.Ui.SubPatchOutput",
         "Ops.Ui.PatchInput",
