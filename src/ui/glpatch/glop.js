@@ -1087,11 +1087,6 @@ export default class GlOp extends Events
                 dotX += 2;
             }
 
-            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
-            if (!hasWarnings && this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
-            if (!hasErrors && this._glDotError) this._glDotError = this._glDotError.dispose();
-            if (!notworking && this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
-            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
 
             if (hasWarnings)
             {
@@ -1112,6 +1107,20 @@ export default class GlOp extends Events
                 this._glNotWorkingCross.setPosition(-(this._height * 0.125), (this._height * 0.375));
                 this._glNotWorkingCross.visible = true;
             }
+
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+            if (!hasWarnings && this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+            if (!hasErrors && this._glDotError) this._glDotError = this._glDotError.dispose();
+            if (!notworking && this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
+            if (!hasHints && this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+        }
+        else
+        {
+            if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
+            if (this._glDotWarning) this._glDotWarning = this._glDotWarning.dispose();
+            if (this._glDotError) this._glDotError = this._glDotError.dispose();
+            if (this._glNotWorkingCross) this._glNotWorkingCross = this._glNotWorkingCross.dispose();
+            if (this._glDotHint) this._glDotHint = this._glDotHint.dispose();
         }
 
         if (
