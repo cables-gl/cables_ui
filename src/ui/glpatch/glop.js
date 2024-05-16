@@ -533,8 +533,10 @@ export default class GlOp extends Events
     _updateCommentPosition()
     {
         if (this._glComment)
-            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, this.getPosZ());
-            else this._glComment.setPosition(0, this._height + 20, this.getPosZ());
+        {
+            if (!this._hideBgRect) this._glComment.setPosition(this.w + 10, 0, this.getPosZ()); // normal op comment
+            else this._glComment.setPosition(12, this._height, 0, this.getPosZ()); // comment op (weird hardcoded values because of title scaling)
+        }
     }
 
 
@@ -1230,14 +1232,7 @@ export default class GlOp extends Events
             if (comment != this._glComment.text) this._glComment.text = comment;
             this._glComment.visible = this.visible;
         }
-        else
-        {
-            if (this._glComment)
-            {
-                this._glComment.dispose();
-                this._glComment = null;
-            }
-        }
+        else if (this._glComment) this._glComment = this._glComment.dispose();
 
 
         if (this.opUiAttribs.hasOwnProperty("comment_title")) this.setTitle(this.opUiAttribs.comment_title);
@@ -1378,7 +1373,7 @@ export default class GlOp extends Events
 
 
 
-        if (this._displayType === this.DISPLAY_UI_AREA)
+        if (this._displayType === this.DISPLAY_UI_AREA && !this.selected)
         {
             this._glRectBg.setColor(0, 0, 0, 0.15);
         }
@@ -1399,14 +1394,13 @@ export default class GlOp extends Events
             this._glTitle.setOpacity(0.7, false);
         }
 
-
-        if (this._hideBgRect)
+        if (this._hideBgRect && !this.selected)
         {
             this._glRectBg.setOpacity(0.0, true);
         }
+
         if (this._hidePorts) for (let i = 0; i < this._glPorts.length; i++) this._glPorts[i].rect.setOpacity(0);
         if (this._resizableArea) this._resizableArea._updateColor();
-        // this._glRectNames.push("_glTitle");
     }
 
     get selected() { return this.opUiAttribs.selected; }
