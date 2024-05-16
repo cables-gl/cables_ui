@@ -212,7 +212,7 @@ export default class GlPort
                 return;
             }
         }
-        this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port);
+        this._glPatch.emitEvent("mouseUpOverPort", this._port.op.id, this._port, e);
     }
 
     _onHover(rect)
